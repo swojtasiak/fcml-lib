@@ -19,7 +19,7 @@ void ira_disassemble( struct disassemble_info *info, struct disassemble_result *
     stream.size = info->size;
     stream.offset = 0;
 
-    // Prepare disassemblation context.
+    // Prepare disassemble context.
     struct diss_context context;
     context.stream = &stream;
     context.mode = info->mode;
@@ -28,6 +28,12 @@ void ira_disassemble( struct disassemble_info *info, struct disassemble_result *
 
     // Identify prefixes.
     identify_prefixes( &context );
+
+    if( stream_size( &stream ) == 0 ) {
+    	disassemble_default( &context, result );
+    } else {
+
+    }
 }
 
 /* Disassemblation. */
@@ -107,37 +113,10 @@ void identify_prefixes( struct diss_context *context ) {
 
 }
 
-/* Streaming. */
+void disassemble_default( struct diss_context *context, struct disassemble_result *result ) {
 
-void stream_seek( struct memory_stream *stream, uint32_t offset, enum seek_type type ) {
-    switch(type) {
-        case START:
-            stream->offset = offset;
-        break;
-        case CURRENT:
-            stream->offset += offset;
-        break;
-        case END:
-            stream->offset = (stream->size - offset);
-        break;
-    }
 }
 
-uint8_t stream_read( struct memory_stream *stream, int *result ) {
-    uint8_t *base_address = (uint8_t *)stream->base_address;
-    *result = ( stream->offset == stream->size ) ? 0 : 1;
-    if( result )
-        return base_address[stream->offset++];
-    return 0;
-}
-
-uint8_t stream_peek( struct memory_stream *stream, int *result ) {
-    uint8_t *base_address = (uint8_t *)stream->base_address;
-    *result = ( stream->offset == stream->size ) ? 0 : 1;
-    if( result )
-        return base_address[stream->offset];
-    return 0;
-}
 
 void prepare_disassemble_info(struct disassemble_info *info, struct disassemble_result *result) {
     /* Mode has to be set. */
@@ -178,3 +157,40 @@ void prepare_disassemble_info(struct disassemble_info *info, struct disassemble_
     }
     result->code = RC_OK;
 }
+
+/* Streaming. */
+
+void stream_seek( struct memory_stream *stream, uint32_t offset, enum seek_type type ) {
+    switch(type) {
+        case START:
+            stream->offset = offset;
+        break;
+        case CURRENT:
+            stream->offset += offset;
+        break;
+        case END:
+            stream->offset = (stream->size - offset);
+        break;
+    }
+}
+
+uint8_t stream_read( struct memory_stream *stream, int *result ) {
+    uint8_t *base_address = (uint8_t *)stream->base_address;
+    *result = ( stream->offset == stream->size ) ? 0 : 1;
+    if( result )
+        return base_address[stream->offset++];
+    return 0;
+}
+
+uint8_t stream_peek( struct memory_stream *stream, int *result ) {
+    uint8_t *base_address = (uint8_t *)stream->base_address;
+    *result = ( stream->offset == stream->size ) ? 0 : 1;
+    if( result )
+        return base_address[stream->offset];
+    return 0;
+}
+
+uint32_t stream_size( struct memory_stream *stream ) {
+	return stream->size - stream->offset;
+}
+

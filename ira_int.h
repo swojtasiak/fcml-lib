@@ -41,6 +41,9 @@ uint8_t stream_read( struct memory_stream *stream, int *result );
 
 uint8_t stream_peek( struct memory_stream *stream, int *result );
 
+/* Gets size of the data to read. */
+uint32_t stream_size( struct memory_stream *stream );
+
 /* Disassemblation context. */
 
 enum prefix_types {
@@ -99,5 +102,7 @@ struct primary_opcode_def {
 };
 
 void identify_prefixes( struct diss_context *context );
+
+void disassemble_default( struct diss_context *context, struct disassemble_result *result );
 
 #endif // IRA_INT_H_INCLUDED
