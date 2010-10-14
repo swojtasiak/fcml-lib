@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="ira.c" open="1" top="1" tabpos="3">
+		<Cursor position="904" topLine="18" />
+	</File>
+	<File name="ira.h" open="1" top="0" tabpos="4">
+		<Cursor position="48" topLine="0" />
+	</File>
+	<File name="ira_int.h" open="1" top="0" tabpos="2">
+		<Cursor position="1379" topLine="33" />
+	</File>
+	<File name="main.c" open="1" top="0" tabpos="1">
+		<Cursor position="368" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>
