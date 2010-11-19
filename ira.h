@@ -5,7 +5,7 @@
 
 enum operation_mode {
     mod_16bit,
-    mod_32bit,
+    mod_32bit, // IA32/IA32e.
     mod_64bit
 };
 

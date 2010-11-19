@@ -105,4 +105,21 @@ void identify_prefixes( struct diss_context *context );
 
 void disassemble_default( struct diss_context *context, struct disassemble_result *result );
 
+/* Structures used to describe instructions. */
+
+struct opcode_desc {
+	char *name_override;
+	uint16_t allowed_prefixes;
+	uint32_t opcode_flags;
+	uint8_t opcode[2];
+};
+
+struct instruction_desc {
+	char *name; // mnemonic.
+	uint8_t opcodes_count;
+	struct opcode_desc opcodes[];
+};
+
+extern struct instruction_desc _instructions_desc[];
+
 #endif // IRA_INT_H_INCLUDED
