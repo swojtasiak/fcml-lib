@@ -5,20 +5,6 @@
 #include <stdio.h>
 #include "ira.h"
 
-/* Internal description of instructions' details. */
-
-struct opcode_details {
-    uint16_t allowed_prefixes;     /* Flags describing prefixes, that are allowed for specified opcode. */
-    uint32_t opcode_flags;         /* Flags describing some details about instruction opcodes. */
-    uint8_t **opcode_part_pos;     /* Overrides the standard location of opcode fields. */
-	uint8_t opcodes[4];            /* 1,2 or 3 byte of available opcodes */
-};
-
-struct instruction_details {
-    char mnemonic[20];                  /* Instruction mnemonic. */
-    struct opcode_details** opcodes;    /* Description of all available instruction's opcodes. */
-};
-
 /* Structures used to store information about memory. */
 
 struct memory_stream {
@@ -108,17 +94,32 @@ void disassemble_default( struct diss_context *context, struct disassemble_resul
 /* Structures used to describe instructions. */
 
 struct opcode_desc {
-	char *name_override;
-	uint16_t allowed_prefixes;
-	uint32_t opcode_flags;
-	uint8_t opcode[2];
+	char *name_override; // Mnemonic, if there is another mnemonic available for this opcode.
+	uint16_t allowed_prefixes; // Flags describing allowed prefixes.
+	uint32_t opcode_flags; // Some flags that contains various information about opcode.
+	uint8_t primary_opcode; // Index of primary opcode in table below.
+	uint8_t opcode[3]; // Opcode bytes.
+	uint8_t opperand_1; // Addressing of first instruction operand .
+	uint8_t oppernad_2; // Second etc.
+	uint8_t opperand_3;
+	uint8_t opperand_4;
 };
 
 struct instruction_desc {
-	char *name; // mnemonic.
-	uint8_t opcodes_count;
-	struct opcode_desc opcodes[];
+	char *name; // Mnemonic.
+	uint8_t opcode_desc_count; // Number of opcodes' descriptions.
+	struct opcode_desc *opcodes; // Opcodes' descriptions.
 };
+
+/* Operands encoding */
+
+#define _IRA_NA	0x00
+
+#define _IRA_MODRM_BASE 0x80 // Base for ModRM based operands.
+
+#define _IRA_MODRM(x) _MOD_RM_BASE + x
+
+/* Instruction definitions. */
 
 extern struct instruction_desc _instructions_desc[];
 

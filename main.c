@@ -3,6 +3,13 @@
 
 #include "ira.h"
 
+struct ab {
+	uint32_t t;
+	uint32_t t1;
+};
+
+struct ab a[] = {{ 1,1 }};
+
 int main()
 {
 
