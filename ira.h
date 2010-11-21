@@ -3,21 +3,21 @@
 
 #include <stdint.h>
 
-enum operation_mode {
-    mod_16bit,
-    mod_32bit, // IA32/IA32e.
-    mod_64bit
+enum ira_operation_mode {
+    IRA_MOD_16BIT,
+    IRA_MOD_32BIT, // IA32/IA32e.
+    IRA_MOD_64BIT
 };
 
-enum result_code {
+enum ira_result_code {
     RC_OK = 0,
     RC_ERROR_ILLEGAL_OPERATION_MODE,
     RC_ERROR_ILLEGAL_ADDRESS_ATTRIBUTE_SIZE
 };
 
-struct disassemble_info {
+struct ira_disassemble_info {
     /* Architecture. */
-    enum operation_mode mode;
+    enum ira_operation_mode mode;
     /* Operand size attribute. */
     uint16_t operand_size_attribute;
     /* Address size attribute. */
@@ -28,13 +28,25 @@ struct disassemble_info {
     uint32_t size;
 };
 
-struct disassemble_result {
-    /* Disassemblation result. */
-    enum result_code code;
+struct ira_instruction_operand {
+	/* Type of operand. */
+	int operand_type;
+	/* Pointer to structure describing given operand. */
+	void *operand_details;
 };
 
-void ira_disassemble( struct disassemble_info *info, struct disassemble_result *result );
+struct ira_disassemble_result {
+    /* Disassemblation result. */
+    enum ira_result_code code;
+    /* Disassembled operands. */
+    struct ira_instruction_operand operands[4];
+};
 
 
+void ira_init(void);
+
+void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_result *result );
+
+void ira_deinit(void);
 
 #endif // IRA_H_INCLUDED
