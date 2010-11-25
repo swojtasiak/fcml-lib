@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define _IRA_ERROR_NO_ERROR			 	0
+#define _IRA_ERROR_OUT_OF_MEMORY		10
+
 enum ira_operation_mode {
     IRA_MOD_16BIT,
     IRA_MOD_32BIT, // IA32/IA32e.
@@ -13,6 +16,10 @@ enum ira_result_code {
     RC_OK = 0,
     RC_ERROR_ILLEGAL_OPERATION_MODE,
     RC_ERROR_ILLEGAL_ADDRESS_ATTRIBUTE_SIZE
+};
+
+enum ira_operand_type {
+	IRA_IMMEDIATE_ADDRESS = 0
 };
 
 struct ira_disassemble_info {
@@ -30,7 +37,7 @@ struct ira_disassemble_info {
 
 struct ira_instruction_operand {
 	/* Type of operand. */
-	int operand_type;
+	enum ira_operand_type operand_type;
 	/* Pointer to structure describing given operand. */
 	void *operand_details;
 };

@@ -75,10 +75,15 @@ struct ira_diss_tree_opcode {
 };
 
 struct ira_diss_tree_instruction_decoding {
+	/* Pointer to the next decoding. There is no need to provide additional structure for one directional list */
+	struct ira_diss_tree_instruction_decoding *next_instruction_decoding;
+	/* Instruction mnemonic */
 	char *mnemonic;
+	/* Flags that describe prefixes usage. */
 	uint16_t allowed_prefixes;
+	/* Flags that describe some details of opcodes. */
 	uint32_t opcode_flags;
-	uint8_t mandatory_prefix;
+	/* Function used to decode instruction operands. */
 	ira_operand_decoder operand_decoders[4];
 };
 
@@ -92,18 +97,18 @@ extern struct ira_diss_tree_opcode* _ira_disassemblation_tree[256];
 #define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) ( ( (uint32_t)x & 0x000C0000 ) >> 18 )
 
 struct ira_opcode_desc {
-	char *name_override; // Mnemonic, if there is another mnemonic available for this opcode.
+	char *mnemonic_override; // Mnemonic, if there is another mnemonic available for this opcode.
 	uint16_t allowed_prefixes; // Flags describing allowed prefixes.
 	uint32_t opcode_flags; // Some flags that contains various information about opcode.
 	uint8_t opcode[3]; // Opcode bytes.
 	uint8_t opperand_1; // Addressing of first instruction operand .
-	uint8_t oppernad_2; // Second etc.
+	uint8_t opperand_2; // Second etc.
 	uint8_t opperand_3;
 	uint8_t opperand_4;
 };
 
 struct ira_instruction_desc {
-	char *name; // Mnemonic.
+	char *mnemonic; // Mnemonic.
 	uint8_t opcode_desc_count; // Number of opcodes' descriptions.
 	struct ira_opcode_desc *opcodes; // Opcodes' descriptions.
 };

@@ -13,7 +13,7 @@ struct ab a[] = {{ 1,1 }};
 int main()
 {
 
-    uint8_t data[] = {0x66, 0x36, 0xf2, 0xF3, 0x42, 0x0F, 0x6E};
+    uint8_t data[] = {0xD4, 0x0A};
 
     struct ira_disassemble_info info;
     info.address = &data;

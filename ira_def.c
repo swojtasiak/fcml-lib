@@ -8,7 +8,7 @@
 #include "ira_int.h"
 
 struct ira_opcode_desc _ira_opcode_desc_AAA[] = {
-	{ NULL, 0x0001, 0x00540000, { 0x00, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00540000, { 0x37, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_AAD[] = {
