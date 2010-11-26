@@ -94,8 +94,6 @@ extern struct ira_diss_tree_opcode* _ira_disassemblation_tree[256];
 
 /* Structures used to describe instructions. */
 
-#define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) ( ( (uint32_t)x & 0x000C0000 ) >> 18 )
-
 struct ira_opcode_desc {
 	char *mnemonic_override; // Mnemonic, if there is another mnemonic available for this opcode.
 	uint16_t allowed_prefixes; // Flags describing allowed prefixes.
@@ -112,6 +110,23 @@ struct ira_instruction_desc {
 	uint8_t opcode_desc_count; // Number of opcodes' descriptions.
 	struct ira_opcode_desc *opcodes; // Opcodes' descriptions.
 };
+
+/* Macro for flags manipulation. */
+
+#define _IRA_GET_BIT(x,y)  ( ( x >> y ) & 0x01 )
+
+/* Prefixes flags. */
+
+#define _IRA_PREFIX_REX(x) 					_IRA_GET_BIT(x,11)
+#define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
+#define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
+#define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)
+
+/* Opcode flags. */
+
+#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 	_IRA_GET_BIT(x,16)
+#define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x) _IRA_GET_BIT(x,17)
+#define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 	_IRA_GET_BIT(x,18)
 
 /* Operands encoding */
 

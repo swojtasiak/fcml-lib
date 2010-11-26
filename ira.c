@@ -8,19 +8,22 @@
 struct ira_diss_tree_opcode* _ira_disassemblation_tree[256] = {NULL};
 
 /* Validates and fills structure with data from user. */
-void ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira_disassemble_result *result);
+void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira_disassemble_result *result);
 
 /* Adds new instructions to disassemblation tree. */
-int ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_desc );
+int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_desc );
 
 /* Add instruction decoding to disassemblation tree. */
-int ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc );
+int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc );
 
 /* Free memory allocated during build phase of disassemblation tree. */
-void ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblation_tree );
+void _ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblation_tree );
+
+/* Gets order of given decoding in the node of decoding tree. */
+int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding );
 
 /* Factory method that returns operand decoder for given type. */
-ira_operand_decoder ira_choose_operand_decoder( uint8_t decoder_type );
+ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type );
 
 /* Opcode decoders. */
 
@@ -34,7 +37,7 @@ struct ira_instruction_operand _ira_opcode_decoder_io( struct ira_diss_context *
 void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_result *result ) {
 
     // Validate info structure.
-    ira_prepare_disassemble_info( info, result );
+    _ira_prepare_disassemble_info( info, result );
     if( result->code != RC_OK ) {
         return;
     }
@@ -66,7 +69,7 @@ void ira_init(void) {
 
 	memset( _ira_disassemblation_tree, 0, sizeof( _ira_disassemblation_tree ) );
 
-	ira_update_disassemblation_tree( _ira_instructions_desc );
+	_ira_update_disassemblation_tree( _ira_instructions_desc );
 
 }
 
@@ -76,7 +79,7 @@ void ira_deinit(void) {
 
 /* Initialization. */
 
-int ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_desc_src ) {
+int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_desc_src ) {
 
 	// Get instruction description.
 	int instruction_index = 0;
@@ -103,7 +106,7 @@ int ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_de
 					inst_desc = malloc( sizeof(struct ira_diss_tree_opcode) );
 					if( inst_desc == NULL ) {
 						// Free disassemblation tree.
-						ira_free_disassemblation_tree( _ira_disassemblation_tree );
+						_ira_free_disassemblation_tree( _ira_disassemblation_tree );
 						// Return error.
 						return _IRA_ERROR_OUT_OF_MEMORY;
 					}
@@ -116,10 +119,10 @@ int ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_de
 			}
 
 			// Prepare instruction decoding.
-			int error = ira_add_instruction_decoding( inst_desc, instruction_desc, opcode_desc);
+			int error = _ira_add_instruction_decoding( inst_desc, instruction_desc, opcode_desc);
 			if( error != _IRA_ERROR_NO_ERROR ) {
 				// Free disassemblation tree.
-				ira_free_disassemblation_tree( _ira_disassemblation_tree );
+				_ira_free_disassemblation_tree( _ira_disassemblation_tree );
 				// Return error.
 				return error;
 			}
@@ -130,7 +133,7 @@ int ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_de
 
 }
 
-int ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc ) {
+int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc ) {
 
 	// Prepare instruction decoding structure.
 	struct ira_diss_tree_instruction_decoding* decoding = malloc( sizeof( struct ira_diss_tree_instruction_decoding ) );
@@ -149,17 +152,52 @@ int ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct
 	decoding->opcode_flags = opcode_desc->opcode_flags;
 
 	// Choose functions used to decode operands.
-	decoding->operand_decoders[0] = ira_choose_operand_decoder( opcode_desc->opperand_1 );
-	decoding->operand_decoders[1] = ira_choose_operand_decoder( opcode_desc->opperand_2 );
-	decoding->operand_decoders[2] = ira_choose_operand_decoder( opcode_desc->opperand_3 );
-	decoding->operand_decoders[3] = ira_choose_operand_decoder( opcode_desc->opperand_4 );
+	decoding->operand_decoders[0] = _ira_choose_operand_decoder( opcode_desc->opperand_1 );
+	decoding->operand_decoders[1] = _ira_choose_operand_decoder( opcode_desc->opperand_2 );
+	decoding->operand_decoders[2] = _ira_choose_operand_decoder( opcode_desc->opperand_3 );
+	decoding->operand_decoders[3] = _ira_choose_operand_decoder( opcode_desc->opperand_4 );
 
 	// Insert it in appropriate order.
+	int order = _ira_get_decoding_order( decoding );
+
+	struct ira_diss_tree_instruction_decoding **next_decoding_addr = &(inst_desc->instructions);
+
+	while( *next_decoding_addr != NULL && _ira_get_decoding_order( *next_decoding_addr ) >= order ) {
+		next_decoding_addr = &((*next_decoding_addr)->next_instruction_decoding);
+	}
+
+	decoding->next_instruction_decoding = *next_decoding_addr;
+	*next_decoding_addr = decoding;
 
 	return _IRA_ERROR_NO_ERROR;
 }
 
-ira_operand_decoder ira_choose_operand_decoder( uint8_t decoder_type ) {
+int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding ) {
+
+	uint16_t prefixes = decoding->allowed_prefixes;
+	uint32_t opcodes = decoding->opcode_flags;
+
+	int order = 0;
+
+	// Mandatory prefix.
+	if( _IRA_PREFIX_MANDATORY_66(prefixes) | _IRA_PREFIX_MANDATORY_F2(prefixes) | _IRA_PREFIX_MANDATORY_F3(prefixes) ) {
+		order++;
+	}
+
+	// Opcode extension.
+	if( _IRA_OPCODE_FLAGS_OPCODE_EXT(opcodes) ) {
+		order++;
+	}
+
+	// REX prefix.
+	if( _IRA_PREFIX_REX(prefixes) ) {
+		order += 2;
+	}
+
+	return order;
+}
+
+ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type ) {
 	switch( decoder_type ) {
 	case _IRA_OPERAND_IB:
 		return &_ira_opcode_decoder_ib;
@@ -173,7 +211,7 @@ ira_operand_decoder ira_choose_operand_decoder( uint8_t decoder_type ) {
 	return NULL;
 }
 
-void ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblation_tree ) {
+void _ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblation_tree ) {
 	// TODO: Implement it.
 }
 
@@ -258,7 +296,7 @@ void ira_disassemble_default( struct ira_diss_context *context, struct ira_disas
 
 }
 
-void ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira_disassemble_result *result) {
+void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira_disassemble_result *result) {
     /* Mode has to be set. */
     if( info->mode != IRA_MOD_16BIT && info->mode != IRA_MOD_32BIT && info->mode != IRA_MOD_64BIT ) {
         result->code = RC_ERROR_ILLEGAL_OPERATION_MODE;
