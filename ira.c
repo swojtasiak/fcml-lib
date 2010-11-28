@@ -30,6 +30,15 @@ int _ira_interpret_prefixes( struct ira_diss_context *context );
 /* Interprets prefixes. */
 int _ira_prepare_environment( struct ira_diss_context *context );
 
+/* Default disassemblation when disassembler was unable to decode any instruction. */
+int _ira_disassemble_default( struct ira_diss_context *context, struct ira_disassemble_result *result );
+
+/* Instruction definitions. */
+void _ira_identify_prefixes( struct ira_diss_context *context );
+
+/* Chooses instruction variant for decoding. */
+struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding* instruction );
+
 /* Factory method that returns operand decoder for given type. */
 ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type );
 
@@ -38,7 +47,7 @@ ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_typ
 
 /* Instruction decoders. */
 
-struct ira_disassemble_result ira_instruction_decoder_IA( struct ira_diss_context *context );
+void ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
 /* Opcode decoders. */
 
@@ -76,12 +85,63 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     // Prepares environment for disassemblation.
     _ira_prepare_environment( &context );
 
+    // Found instruction.
+    struct ira_diss_tree_instruction_decoding *instruction = NULL;
+    // Current opcode table used to find instruction description.
+    struct ira_diss_tree_opcode** opcodes = _ira_disassemblation_tree;
 
-   /* if( _ira_stream_size( &stream ) == 0 ) {
-    	_ira_disassemble_default( &context, result );
+    int opcode_length = 0;
+    while( opcodes != NULL ) {
+    	// Get next potential opcode byte from stream.
+    	int result;
+    	uint8_t opcode_byte =_ira_stream_peek( context.stream, &result );
+    	if( result == 0 ) {
+    		break;
+    	}
+
+    	// This length is used to restore stream position in some cases.
+    	opcode_length++;
+
+    	// Check if there is instruction for this opcode.
+    	struct ira_diss_tree_opcode *opcode = opcodes[opcode_byte];
+    	if( opcode != NULL ) {
+    		// Last found instruction.
+    		instruction = opcode->instructions;
+    		opcodes = opcode->opcodes;
+    		// Go to next opcode byte.
+    		_ira_stream_seek( context.stream, 1, IRA_CURRENT );
+    	} else {
+    		break;
+    	}
+    }
+
+    struct ira_disassemble_result diss_result = {0};
+
+    // Start disassemblation.
+    if( instruction != NULL ) {
+    	// Choose appropriate instruction variant.
+    	instruction = _ira_choose_instruction( &context, instruction );
+    	if( instruction != NULL ) {
+    		instruction->instruction_decoder( &context, instruction, &diss_result );
+    	} else {
+    		// Instruction is not decodable.
+			if( _ira_disassemble_default( &context, &diss_result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
+				result->code = RC_ERROR_INSTRUCTION_INCOMPLETE;
+				return;
+			}
+    	}
     } else {
+    	// Instruction wasn't found, so restore stream and start default disassemblation process.
+    	_ira_stream_seek( context.stream, opcode_length * -1, IRA_CURRENT );
+    	if( _ira_disassemble_default( &context, &diss_result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
+    		result->code = RC_ERROR_INSTRUCTION_INCOMPLETE;
+    		return;
+    	}
+    }
+}
 
-    }*/
+struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding* instruction ) {
+	return NULL;
 }
 
 void ira_init(void) {
@@ -182,8 +242,8 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 
 }
 
-void _ira_disassemble_default( struct ira_diss_context *context, struct ira_disassemble_result *result ) {
-
+int _ira_disassemble_default( struct ira_diss_context *context, struct ira_disassemble_result *result ) {
+	return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 }
 
 void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira_disassemble_result *result) {
@@ -426,9 +486,7 @@ uint32_t _ira_stream_size( struct ira_memory_stream *stream ) {
 
 /* Instruction decoders. */
 
-struct ira_disassemble_result ira_instruction_decoder_IA( struct ira_diss_context *context ) {
-	struct ira_disassemble_result result;
-	return result;
+void ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result ) {
 }
 
 /* Operand decoders. */

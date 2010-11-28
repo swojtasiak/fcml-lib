@@ -15,7 +15,9 @@ enum ira_operation_mode {
 enum ira_result_code {
     RC_OK = 0,
     RC_ERROR_ILLEGAL_OPERATION_MODE,
-    RC_ERROR_ILLEGAL_ADDRESS_ATTRIBUTE_SIZE
+    RC_ERROR_ILLEGAL_ADDRESS_ATTRIBUTE_SIZE,
+    /* When disassembler is not able to disassemble instruction due to incomplete data in stream. */
+    RC_ERROR_INSTRUCTION_INCOMPLETE
 };
 
 enum ira_operand_type {

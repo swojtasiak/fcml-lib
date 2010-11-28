@@ -68,16 +68,16 @@ struct ira_diss_context {
 
 /* Disassemblation tree. */
 
-/* Decoders responsible for instruction disassemblation. */
-typedef struct ira_disassemble_result (*ira_instruction_decoder)( struct ira_diss_context *context );
-
-/* Decoders responsible for operand disassemblation. */
-typedef struct ira_instruction_operand (*ira_operand_decoder)( struct ira_diss_context *context );
-
 struct ira_diss_tree_opcode {
 	struct ira_diss_tree_opcode* opcodes[256];
 	struct ira_diss_tree_instruction_decoding *instructions;
 };
+
+/* Decoders responsible for instruction disassemblation. */
+typedef void (*ira_instruction_decoder)( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
+
+/* Decoders responsible for operand disassemblation. */
+typedef struct ira_instruction_operand (*ira_operand_decoder)( struct ira_diss_context *context );
 
 struct ira_diss_tree_instruction_decoding {
 	/* Pointer to the next decoding. There is no need to provide additional structure for one directional list */
@@ -156,12 +156,6 @@ struct ira_instruction_desc {
 #define _IRA_MODRM_BASE 0x80 // Base for ModRM based operands.
 
 #define _IRA_MODRM(x) _MOD_RM_BASE + x
-
-/* Instruction definitions. */
-
-void _ira_identify_prefixes( struct ira_diss_context *context );
-
-void _ira_disassemble_default( struct ira_diss_context *context, struct ira_disassemble_result *result );
 
 /* Externals. */
 
