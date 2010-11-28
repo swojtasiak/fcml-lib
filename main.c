@@ -22,10 +22,11 @@ int main()
     info.operand_size_attribute = 64;
     info.mode = IRA_MOD_64BIT;
 
-    struct ira_disassemble_result result;
+   // struct ira_disassemble_result result;
 
     ira_init();
-    ira_disassemble( &info, &result );
+    //Sira_disassemble( &info, &result );
+    ira_deinit();
 
     return 0;
 }

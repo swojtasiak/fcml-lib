@@ -5,6 +5,11 @@
 #include <stdio.h>
 #include "ira.h"
 
+/* Internal error codes */
+
+#define _IRA_INT_ERROR_NO_ERROR				0x00
+#define _IRA_INT_ERROR_CODE_UNEXPECTED_EOS	0x01
+
 /* Structures used to store information about memory. */
 
 struct ira_memory_stream {
@@ -21,14 +26,14 @@ enum ira_seek_type {
     IRA_CURRENT
 };
 
-void ira_stream_seek( struct ira_memory_stream *stream, uint32_t offset, enum ira_seek_type type );
+void _ira_stream_seek( struct ira_memory_stream *stream, uint32_t offset, enum ira_seek_type type );
 
-uint8_t ira_stream_read( struct ira_memory_stream *stream, int *result );
+uint8_t _ira_stream_read( struct ira_memory_stream *stream, int *result );
 
-uint8_t ira_stream_peek( struct ira_memory_stream *stream, int *result );
+uint8_t _ira_stream_peek( struct ira_memory_stream *stream, int *result );
 
 /* Gets size of the data to read. */
-uint32_t ira_stream_size( struct ira_memory_stream *stream );
+uint32_t _ira_stream_size( struct ira_memory_stream *stream );
 
 /* Disassemblation context. */
 
@@ -83,6 +88,8 @@ struct ira_diss_tree_instruction_decoding {
 	uint16_t allowed_prefixes;
 	/* Flags that describe some details of opcodes. */
 	uint32_t opcode_flags;
+	/* Instruction decoder. */
+	ira_instruction_decoder instruction_decoder;
 	/* Function used to decode instruction operands. */
 	ira_operand_decoder operand_decoders[4];
 };
@@ -106,9 +113,14 @@ struct ira_opcode_desc {
 };
 
 struct ira_instruction_desc {
-	char *mnemonic; // Mnemonic.
-	uint8_t opcode_desc_count; // Number of opcodes' descriptions.
-	struct ira_opcode_desc *opcodes; // Opcodes' descriptions.
+	// Mnemonic.
+	char *mnemonic;
+	// Type of the instruction.
+	uint8_t instruction_type;
+	// Number of opcodes' descriptions.
+	uint8_t opcode_desc_count;
+	// Opcodes' descriptions.
+	struct ira_opcode_desc *opcodes;
 };
 
 /* Macro for flags manipulation. */
@@ -126,7 +138,11 @@ struct ira_instruction_desc {
 
 #define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 	_IRA_GET_BIT(x,16)
 #define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x) _IRA_GET_BIT(x,17)
-#define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 	_IRA_GET_BIT(x,18)
+#define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) ( ( x & 0x000C0000 ) >> 18 )
+
+/* Instruction types. */
+
+#define _IRA_IT_IA			0x00
 
 /* Operands encoding */
 
@@ -143,9 +159,9 @@ struct ira_instruction_desc {
 
 /* Instruction definitions. */
 
-void ira_identify_prefixes( struct ira_diss_context *context );
+void _ira_identify_prefixes( struct ira_diss_context *context );
 
-void ira_disassemble_default( struct ira_diss_context *context, struct ira_disassemble_result *result );
+void _ira_disassemble_default( struct ira_diss_context *context, struct ira_disassemble_result *result );
 
 /* Externals. */
 

@@ -17,9 +17,9 @@ struct ira_opcode_desc _ira_opcode_desc_AAD[] = {
 };
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
-		{ "AAA", 1, _ira_opcode_desc_AAA },
-		{ "AAD", 2, _ira_opcode_desc_AAD },
-		{ NULL, 0, NULL }
+		{ "AAA", _IRA_IT_IA, 1, _ira_opcode_desc_AAA },
+		{ "AAD", _IRA_IT_IA, 2, _ira_opcode_desc_AAD },
+		{ NULL, 0, 0, NULL }
 };
 
 
