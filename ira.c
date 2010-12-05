@@ -45,6 +45,12 @@ ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type );
 /* Factory method that returns operand decoder for given type. */
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type );
 
+/* Returns 1 is there is given prefix found for given instruction. */
+int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix );
+
+/* Gets REX prefix. */
+uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int *found );
+
 /* Instruction decoders. */
 
 void ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
@@ -141,7 +147,51 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
 }
 
 struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding* instruction ) {
-	return NULL;
+
+	struct ira_diss_tree_instruction_decoding *current = instruction;
+
+	do {
+
+		// Check mandatory prefixes.
+		int prefixes_ok = 0;
+		if( _IRA_PREFIX_REX( current->allowed_prefixes ) ) {
+			// Check if there is REX prefix found.
+			_ira_diss_context_get_REX_prefix(context, &prefixes_ok);
+		} else if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
+			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0x66);
+		} else if( _IRA_PREFIX_MANDATORY_F2( current->allowed_prefixes ) ) {
+			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF2);
+		} else if( _IRA_PREFIX_MANDATORY_F3( current->allowed_prefixes ) ) {
+			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF3);
+		} else {
+			prefixes_ok = 1;
+		}
+		if( !prefixes_ok ) {
+			// Something wrong with prefixes, so go to next instruction.
+			continue;
+		}
+
+		// Check opcode extension.
+		int opcodes_ok = 0;
+		if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( current->opcode_flags ) ) {
+			int result;
+			uint8_t modrm = _ira_stream_peek(context->stream, &result );
+			opcodes_ok = ( result && _IRA_MODRM_REG_OPCODE( modrm ) == _IRA_OPCODE_FLAGS_OPCODE_EXT(current->opcode_flags) );
+		} else if( _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT( current->opcode_flags ) ) {
+			// TODO: Support fox REX opcode extension.
+		} else {
+			opcodes_ok = 1;
+		}
+		if( !opcodes_ok ) {
+			// Something wrong with prefixes, so go to next instruction.
+			continue;
+		}
+
+		break;
+
+	} while( ( current = instruction->next_instruction_decoding ) != NULL );
+
+	return current;
 }
 
 void ira_init(void) {
@@ -414,7 +464,7 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 	}
 
 	// Opcode extension.
-	if( _IRA_OPCODE_FLAGS_OPCODE_EXT(opcodes) ) {
+	if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(opcodes) ) {
 		order++;
 	}
 
@@ -446,6 +496,37 @@ ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_typ
 		return &ira_instruction_decoder_IA;
 	}
 	return NULL;
+}
+
+/* Helpers for disassemblation context. */
+
+uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int *found ) {
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	int prefix_count = decoding_context->instruction_prefix_count;
+	*found = 0;
+	int i;
+	uint8_t rex = 0;
+	for( i = 0; i < prefix_count; i++ ) {
+		if( decoding_context->prefixes[i].prefix_type == IRA_REX ) {
+			*found = 1;
+			rex = decoding_context->prefixes[i].prefix;
+			break;
+		}
+	}
+	return rex;
+}
+
+int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix ) {
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	int prefix_count = decoding_context->instruction_prefix_count;
+	int i, found = 0;
+	for( i = 0; i < prefix_count; i++ ) {
+		if( decoding_context->prefixes[i].prefix == prefix ) {
+			found = 1;
+			break;
+		}
+	}
+	return found;
 }
 
 /* Streaming. */

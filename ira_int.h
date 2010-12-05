@@ -66,6 +66,12 @@ struct ira_diss_context {
     struct ira_memory_stream *stream; /* Stream. */
 };
 
+/* Returns 1 is there is given prefix found for given instruction. */
+int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix );
+
+/* Gets REX prefix. */
+uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int *found );
+
 /* Disassemblation tree. */
 
 struct ira_diss_tree_opcode {
@@ -123,9 +129,13 @@ struct ira_instruction_desc {
 	struct ira_opcode_desc *opcodes;
 };
 
-/* Macro for flags manipulation. */
+/* Macro for bit manipulations. */
 
-#define _IRA_GET_BIT(x,y)  ( ( x >> y ) & 0x01 )
+#define _IRA_GET_BIT(x,y)	( ( x >> y ) & 0x01 )
+
+/* ModR/M decoding. */
+
+#define _IRA_MODRM_REG_OPCODE(x)	( ( x & 0x38 ) >> 3 )
 
 /* Prefixes flags. */
 
@@ -136,9 +146,11 @@ struct ira_instruction_desc {
 
 /* Opcode flags. */
 
-#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 	_IRA_GET_BIT(x,16)
-#define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x) _IRA_GET_BIT(x,17)
+#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) ( ( x & 0x00007000 ) >> 12 )
+#define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 	_IRA_GET_BIT(x,16)
+#define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) _IRA_GET_BIT(x,17)
 #define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) ( ( x & 0x000C0000 ) >> 18 )
+
 
 /* Instruction types. */
 
