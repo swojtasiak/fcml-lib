@@ -53,7 +53,7 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 
 /* Instruction decoders. */
 
-void ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
+void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
 /* Opcode decoders. */
 
@@ -493,7 +493,7 @@ ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type ) {
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type ) {
 	switch( instruction_type ) {
 	case _IRA_IT_IA:
-		return &ira_instruction_decoder_IA;
+		return &_ira_instruction_decoder_IA;
 	}
 	return NULL;
 }
@@ -567,35 +567,53 @@ uint32_t _ira_stream_size( struct ira_memory_stream *stream ) {
 
 /* Instruction decoders. */
 
-void ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result ) {
+void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result ) {
+
+	// Set mnemonic of disassembled instruction.
+	result->mnemonic = instruction->mnemonic;
+
+	// Decode operands, one by one.
+	int i;
+	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
+		ira_operand_decoder decoder = instruction->operand_decoders[i];
+		if( decoder != NULL ) {
+			result->operands[i] = decoder( context );
+		} else {
+			struct ira_instruction_operand *operand = &(result->operands[i]);
+			memset( operand, 0, sizeof( struct ira_instruction_operand ) );
+			operand->operand_type = IRA_NONE;
+		}
+	}
+
+	result->code = RC_OK;
 }
 
 /* Operand decoders. */
 
 struct ira_instruction_operand _ira_opcode_decoder_ib( struct ira_diss_context *context ) {
-	struct ira_instruction_operand io;
-	io.operand_details = NULL;
+	struct ira_instruction_operand io = {0};
+	io.immediate.immediate_8 = 0;
 	io.operand_type = IRA_IMMEDIATE_ADDRESS;
 	return io;
 }
 
 struct ira_instruction_operand _ira_opcode_decoder_iw( struct ira_diss_context *context ) {
-	struct ira_instruction_operand io;
-	io.operand_details = NULL;
+	struct ira_instruction_operand io = {0};;
+	io.immediate.immediate_16 = 0;
 	io.operand_type = IRA_IMMEDIATE_ADDRESS;
 	return io;
 }
 
 struct ira_instruction_operand _ira_opcode_decoder_id( struct ira_diss_context *context ) {
-	struct ira_instruction_operand io;
-	io.operand_details = NULL;
+	struct ira_instruction_operand io = {0};
+	io.immediate.immediate_32 = 0;
 	io.operand_type = IRA_IMMEDIATE_ADDRESS;
 	return io;
 }
 
 struct ira_instruction_operand _ira_opcode_decoder_io( struct ira_diss_context *context ) {
 	struct ira_instruction_operand io;
-	io.operand_details = NULL;
+	io.immediate.immediate_64 = 0;
 	io.operand_type = IRA_IMMEDIATE_ADDRESS;
 	return io;
 }

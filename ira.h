@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define _IRA_OPERANDS_COUNT				4
+
 #define _IRA_ERROR_NO_ERROR			 	0
 #define _IRA_ERROR_OUT_OF_MEMORY		10
 
@@ -21,7 +23,8 @@ enum ira_result_code {
 };
 
 enum ira_operand_type {
-	IRA_IMMEDIATE_ADDRESS = 0
+	IRA_NONE = 0,
+	IRA_IMMEDIATE_ADDRESS
 };
 
 struct ira_disassemble_info {
@@ -40,15 +43,22 @@ struct ira_disassemble_info {
 struct ira_instruction_operand {
 	/* Type of operand. */
 	enum ira_operand_type operand_type;
-	/* Pointer to structure describing given operand. */
-	void *operand_details;
+	/* Place for immediate data. */
+	union immediate_data {
+		uint8_t immediate_8;
+		uint16_t immediate_16;
+		uint32_t immediate_32;
+		uint64_t immediate_64;
+	} immediate;
 };
 
 struct ira_disassemble_result {
-    /* Disassemblation result. */
+    /* Disassemblation result code. */
     enum ira_result_code code;
+    /* Mnemonic */
+    char *mnemonic;
     /* Disassembled operands. */
-    struct ira_instruction_operand operands[4];
+    struct ira_instruction_operand operands[_IRA_OPERANDS_COUNT];
 };
 
 

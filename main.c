@@ -13,7 +13,7 @@ struct ab a[] = {{ 1,1 }};
 int main()
 {
 
-    uint8_t data[] = {0xD4, 0x0A};
+    uint8_t data[] = {0xD4, 0x50};
 
     struct ira_disassemble_info info;
     info.address = &data;
@@ -22,10 +22,10 @@ int main()
     info.operand_size_attribute = 64;
     info.mode = IRA_MOD_64BIT;
 
-   // struct ira_disassemble_result result;
+    struct ira_disassemble_result result;
 
     ira_init();
-    //Sira_disassemble( &info, &result );
+    ira_disassemble( &info, &result );
     ira_deinit();
 
     return 0;
