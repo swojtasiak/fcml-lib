@@ -9,6 +9,8 @@
 
 #define _IRA_INT_ERROR_NO_ERROR				0x00
 #define _IRA_INT_ERROR_CODE_UNEXPECTED_EOS	0x01
+#define _IRA_INT_ERROR_OUT_OF_MEMORY		0x02
+#define _IRA_INT_ERROR_ILLEGAL_ARGUMENT		0x03
 
 /* Structures used to store information about memory. */
 
@@ -35,6 +37,9 @@ uint8_t _ira_stream_peek( struct ira_memory_stream *stream, int *result );
 /* Gets size of the data to read. */
 uint32_t _ira_stream_size( struct ira_memory_stream *stream );
 
+/* Reads specified number of bytes from stream and stores them in given buffer. */
+int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int size);
+
 /* Disassemblation context. */
 
 enum ira_prefix_types {
@@ -45,14 +50,8 @@ enum ira_prefix_types {
     IRA_REX
 };
 
-struct ira_instruction_prefix {
-    uint8_t prefix;             /* Prefix itself. */
-    uint8_t prefix_type;        /* Type of prefix, see enumeration above. */
-    uint8_t mandatory_prefix;   /* 1 if prefix can be treated as mendatory one. */
-};
-
 struct ira_decoding_context {
-	struct ira_instruction_prefix prefixes[12];      /* Identified prefixes. */
+	struct ira_instruction_prefix prefixes[_IRA_PREFIXES_COUNT];      /* Identified prefixes. */
 	uint8_t instruction_prefix_count;    /* Number of prefixes identified for instruction. */
 	uint8_t mod_rm; /* ModR/M byte. */
 	uint8_t sib; /* SIB byte. */

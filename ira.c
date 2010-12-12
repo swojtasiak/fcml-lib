@@ -62,6 +62,10 @@ struct ira_instruction_operand _ira_opcode_decoder_iw( struct ira_diss_context *
 struct ira_instruction_operand _ira_opcode_decoder_id( struct ira_diss_context *context );
 struct ira_instruction_operand _ira_opcode_decoder_io( struct ira_diss_context *context );
 
+/* Decoders' helpers methods. */
+
+int _ira_decode_immediate( struct ira_diss_context *context, union ira_immediate_data *data, int size );
+
 /* End of opcode decoders. */
 
 void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_result *result ) {
@@ -121,17 +125,15 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     	}
     }
 
-    struct ira_disassemble_result diss_result = {0};
-
     // Start disassemblation.
     if( instruction != NULL ) {
     	// Choose appropriate instruction variant.
     	instruction = _ira_choose_instruction( &context, instruction );
     	if( instruction != NULL ) {
-    		instruction->instruction_decoder( &context, instruction, &diss_result );
+    		instruction->instruction_decoder( &context, instruction, result );
     	} else {
     		// Instruction is not decodable.
-			if( _ira_disassemble_default( &context, &diss_result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
+			if( _ira_disassemble_default( &context, result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
 				result->code = RC_ERROR_INSTRUCTION_INCOMPLETE;
 				return;
 			}
@@ -139,7 +141,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     } else {
     	// Instruction wasn't found, so restore stream and start default disassemblation process.
     	_ira_stream_seek( context.stream, opcode_length * -1, IRA_CURRENT );
-    	if( _ira_disassemble_default( &context, &diss_result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
+    	if( _ira_disassemble_default( &context, result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
     		result->code = RC_ERROR_INSTRUCTION_INCOMPLETE;
     		return;
     	}
@@ -385,7 +387,7 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 						// Free disassemblation tree.
 						_ira_free_disassemblation_tree( _ira_disassemblation_tree );
 						// Return error.
-						return _IRA_ERROR_OUT_OF_MEMORY;
+						return _IRA_INT_ERROR_OUT_OF_MEMORY;
 					}
 					memset( inst_desc, 0, sizeof( struct ira_diss_tree_opcode ) );
 					current_diss_tree_opcode[opcode] = inst_desc;
@@ -396,7 +398,7 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 
 			// Prepare instruction decoding.
 			int error = _ira_add_instruction_decoding( inst_desc, instruction_desc, opcode_desc);
-			if( error != _IRA_ERROR_NO_ERROR ) {
+			if( error != _IRA_INT_ERROR_OUT_OF_MEMORY ) {
 				// Free disassemblation tree.
 				_ira_free_disassemblation_tree( _ira_disassemblation_tree );
 				// Return error.
@@ -405,7 +407,7 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 		}
 	}
 
-	return _IRA_ERROR_NO_ERROR;
+	return _IRA_INT_ERROR_OUT_OF_MEMORY;
 
 }
 
@@ -414,7 +416,7 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	// Prepare instruction decoding structure.
 	struct ira_diss_tree_instruction_decoding* decoding = malloc( sizeof( struct ira_diss_tree_instruction_decoding ) );
 	if( decoding == NULL ) {
-		return _IRA_ERROR_OUT_OF_MEMORY;
+		return _IRA_INT_ERROR_OUT_OF_MEMORY;
 	}
 
 	// Choose instruction mnemonic.
@@ -448,7 +450,7 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	decoding->next_instruction_decoding = *next_decoding_addr;
 	*next_decoding_addr = decoding;
 
-	return _IRA_ERROR_NO_ERROR;
+	return _IRA_INT_ERROR_OUT_OF_MEMORY;
 }
 
 int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding ) {
@@ -565,6 +567,18 @@ uint32_t _ira_stream_size( struct ira_memory_stream *stream ) {
 	return stream->size - stream->offset;
 }
 
+int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int size) {
+	if( size == 0 ) {
+		return 0;
+	}
+	uint8_t *destination_buffer = (uint8_t*)buffer;
+	int i = 0;
+	while( stream->offset < stream->size && i < size ) {
+		destination_buffer[i++] = ((uint8_t*)stream->base_address)[stream->offset++];
+	}
+	return i;
+}
+
 /* Instruction decoders. */
 
 void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result ) {
@@ -572,8 +586,20 @@ void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_d
 	// Set mnemonic of disassembled instruction.
 	result->mnemonic = instruction->mnemonic;
 
-	// Decode operands, one by one.
+	// Copy prefixes.
+	result->prefixes_count = context->decoding_context.instruction_prefix_count;
+
 	int i;
+	for( i = 0; i < result->prefixes_count && i < _IRA_PREFIXES_COUNT; i++ ) {
+		result->prefixes[i] = context->decoding_context.prefixes[i];
+	}
+
+	// Copy opcodes.
+	result->opcodes_count = instruction->
+
+	for( i = 0; i < result->opcodes_count && i < _IRA_PREFIXES_COUNT; i++ ) {
+
+	// Decode operands, one by one.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
 		ira_operand_decoder decoder = instruction->operand_decoders[i];
 		if( decoder != NULL ) {
@@ -592,29 +618,60 @@ void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_d
 
 struct ira_instruction_operand _ira_opcode_decoder_ib( struct ira_diss_context *context ) {
 	struct ira_instruction_operand io = {0};
-	io.immediate.immediate_8 = 0;
-	io.operand_type = IRA_IMMEDIATE_ADDRESS;
+	_ira_decode_immediate( context, &(io.immediate), 8 );
+	io.operand_type = IRA_IMMEDIATE_DATA_8;
 	return io;
 }
 
 struct ira_instruction_operand _ira_opcode_decoder_iw( struct ira_diss_context *context ) {
-	struct ira_instruction_operand io = {0};;
-	io.immediate.immediate_16 = 0;
-	io.operand_type = IRA_IMMEDIATE_ADDRESS;
+	struct ira_instruction_operand io = {0};
+	_ira_decode_immediate( context, &(io.immediate), 16 );
+	io.operand_type = IRA_IMMEDIATE_DATA_16;
 	return io;
 }
 
 struct ira_instruction_operand _ira_opcode_decoder_id( struct ira_diss_context *context ) {
 	struct ira_instruction_operand io = {0};
-	io.immediate.immediate_32 = 0;
-	io.operand_type = IRA_IMMEDIATE_ADDRESS;
+	_ira_decode_immediate( context, &(io.immediate), 32 );
+		io.operand_type = IRA_IMMEDIATE_DATA_32;
 	return io;
 }
 
 struct ira_instruction_operand _ira_opcode_decoder_io( struct ira_diss_context *context ) {
 	struct ira_instruction_operand io;
-	io.immediate.immediate_64 = 0;
-	io.operand_type = IRA_IMMEDIATE_ADDRESS;
+	_ira_decode_immediate( context, &(io.immediate), 64 );
+		io.operand_type = IRA_IMMEDIATE_DATA_64;
 	return io;
 }
 
+/* Helpers used to decode operands. */
+
+int _ira_decode_immediate( struct ira_diss_context *context, union ira_immediate_data *data, int size ) {
+	int result = 0;
+	switch(size) {
+	case 8:
+		data->immediate_8 =_ira_stream_read( context->stream, &result );
+		if( !result ) {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+		break;
+	case 16:
+		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_16), sizeof(uint16_t) ) ) {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+		break;
+	case 32:
+		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_32), sizeof(uint32_t) ) ) {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+		break;
+	case 64:
+		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_64), sizeof(uint64_t) ) ) {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+		break;
+	default:
+		return _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
+	}
+	return _IRA_INT_ERROR_NO_ERROR;
+}
