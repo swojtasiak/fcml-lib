@@ -419,6 +419,12 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 		return _IRA_INT_ERROR_OUT_OF_MEMORY;
 	}
 
+	// Copy opcodes.
+	int i;
+	for( i = 0; i < 3; i++ ) {
+		decoding->opcodes[i] = opcode_desc->opcode[i];
+	}
+
 	// Choose instruction mnemonic.
 	decoding->mnemonic = instruction_desc->mnemonic;
 	if( opcode_desc->mnemonic_override != NULL ) {
@@ -583,21 +589,24 @@ int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int
 
 void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result ) {
 
+	int i;
+
 	// Set mnemonic of disassembled instruction.
 	result->mnemonic = instruction->mnemonic;
 
 	// Copy prefixes.
 	result->prefixes_count = context->decoding_context.instruction_prefix_count;
 
-	int i;
 	for( i = 0; i < result->prefixes_count && i < _IRA_PREFIXES_COUNT; i++ ) {
 		result->prefixes[i] = context->decoding_context.prefixes[i];
 	}
 
 	// Copy opcodes.
-	result->opcodes_count = instruction->
+	result->opcodes_count = _IRA_OPCODE_FLAGS_OPCODE_NUM( instruction->opcode_flags );
 
-	for( i = 0; i < result->opcodes_count && i < _IRA_PREFIXES_COUNT; i++ ) {
+	for( i = 0; i < sizeof( instruction->opcodes ) ; i++ ) {
+		result->opcodes[i] = instruction->opcodes[i];
+	}
 
 	// Decode operands, one by one.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {

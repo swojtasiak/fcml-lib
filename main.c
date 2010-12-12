@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "ira.h"
+#include "ira_ren.h"
 
 struct ab {
 	uint32_t t;
@@ -25,7 +26,19 @@ int main()
     struct ira_disassemble_result result;
 
     ira_init();
+
+    // Disassemble.
     ira_disassemble( &info, &result );
+
+    // Print.
+    char buffer[512];
+
+    struct ira_format_info format;
+
+    ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
+
+    printf( buffer );
+
     ira_deinit();
 
     return 0;

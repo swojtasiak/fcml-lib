@@ -87,6 +87,8 @@ typedef struct ira_instruction_operand (*ira_operand_decoder)( struct ira_diss_c
 struct ira_diss_tree_instruction_decoding {
 	/* Pointer to the next decoding. There is no need to provide additional structure for one directional list */
 	struct ira_diss_tree_instruction_decoding *next_instruction_decoding;
+	/* Opcodes. */
+	uint8_t opcodes[3];
 	/* Instruction mnemonic */
 	char *mnemonic;
 	/* Flags that describe prefixes usage. */
