@@ -36,6 +36,12 @@ int _ira_disassemble_default( struct ira_diss_context *context, struct ira_disas
 /* Instruction definitions. */
 void _ira_identify_prefixes( struct ira_diss_context *context );
 
+/* Puts some useful informations to disassemblation context. */
+int _ira_prepare_context_for_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction );
+
+/* Maps internal error code to external error code. */
+int _ira_map_internall_error_code( int internal_error );
+
 /* Chooses instruction variant for decoding. */
 struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding* instruction );
 
@@ -53,14 +59,14 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 
 /* Instruction decoders. */
 
-void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
+int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
 /* Opcode decoders. */
 
-struct ira_instruction_operand _ira_opcode_decoder_ib( struct ira_diss_context *context );
-struct ira_instruction_operand _ira_opcode_decoder_iw( struct ira_diss_context *context );
-struct ira_instruction_operand _ira_opcode_decoder_id( struct ira_diss_context *context );
-struct ira_instruction_operand _ira_opcode_decoder_io( struct ira_diss_context *context );
+int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 
 /* Decoders' helpers methods. */
 
@@ -125,20 +131,22 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     	}
     }
 
+    int default_diss = 1;
+
     // Start disassemblation.
     if( instruction != NULL ) {
     	// Choose appropriate instruction variant.
     	instruction = _ira_choose_instruction( &context, instruction );
     	if( instruction != NULL ) {
-    		instruction->instruction_decoder( &context, instruction, result );
-    	} else {
-    		// Instruction is not decodable.
-			if( _ira_disassemble_default( &context, result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
-				result->code = RC_ERROR_INSTRUCTION_INCOMPLETE;
-				return;
-			}
+    		int rc = instruction->instruction_decoder( &context, instruction, result );
+    		if( rc != _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
+    			result->code = _ira_map_internall_error_code( rc );
+    			default_diss = 0;
+    		}
     	}
-    } else {
+    }
+
+    if( default_diss ) {
     	// Instruction wasn't found, so restore stream and start default disassemblation process.
     	_ira_stream_seek( context.stream, opcode_length * -1, IRA_CURRENT );
     	if( _ira_disassemble_default( &context, result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
@@ -146,6 +154,18 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     		return;
     	}
     }
+}
+
+int _ira_map_internall_error_code( int internal_error ) {
+	switch( internal_error ) {
+	case _IRA_INT_ERROR_NO_ERROR:
+		return RC_OK;
+	case _IRA_INT_ERROR_CODE_UNEXPECTED_EOS:
+		return RC_ERROR_INSTRUCTION_INCOMPLETE;
+	case _IRA_INT_ERROR_OUT_OF_MEMORY:
+		return RC_ERROR_OUT_OF_MEMORY;
+	}
+	return RC_ERROR_UNEXPECTED_INTERNAL_ERROR;
 }
 
 struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding* instruction ) {
@@ -587,9 +607,9 @@ int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int
 
 /* Instruction decoders. */
 
-void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result ) {
+int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result ) {
 
-	int i;
+	int i, rc;
 
 	// Set mnemonic of disassembled instruction.
 	result->mnemonic = instruction->mnemonic;
@@ -608,11 +628,20 @@ void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_d
 		result->opcodes[i] = instruction->opcodes[i];
 	}
 
+	// Modify context basing on found instruction.
+	rc = _ira_prepare_context_for_instruction( context, instruction );
+	if( rc != _IRA_INT_ERROR_NO_ERROR ) {
+		return rc;
+	}
+
 	// Decode operands, one by one.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
 		ira_operand_decoder decoder = instruction->operand_decoders[i];
 		if( decoder != NULL ) {
-			result->operands[i] = decoder( context );
+			rc = decoder( context, &(result->operands[i]) );
+			if( rc != _IRA_INT_ERROR_NO_ERROR ) {
+				return rc;
+			}
 		} else {
 			struct ira_instruction_operand *operand = &(result->operands[i]);
 			memset( operand, 0, sizeof( struct ira_instruction_operand ) );
@@ -621,36 +650,69 @@ void _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_d
 	}
 
 	result->code = RC_OK;
+
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int _ira_prepare_context_for_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction ) {
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	if( _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM( instruction->opcode_flags ) ) {
+
+		// Gets ModR/M.
+		int result = 0;
+		decoding_context->mod_rm =_ira_stream_read( context->stream, &result );
+		if( !result ) {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+
+		decoding_context->mod_rm_exists = 1;
+	} else {
+		decoding_context->mod_rm_exists = 0;
+	}
+
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 /* Operand decoders. */
 
-struct ira_instruction_operand _ira_opcode_decoder_ib( struct ira_diss_context *context ) {
+int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
 	struct ira_instruction_operand io = {0};
-	_ira_decode_immediate( context, &(io.immediate), 8 );
+	int result = _ira_decode_immediate( context, &(io.immediate), 8 );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
 	io.operand_type = IRA_IMMEDIATE_DATA_8;
-	return io;
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-struct ira_instruction_operand _ira_opcode_decoder_iw( struct ira_diss_context *context ) {
+int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
 	struct ira_instruction_operand io = {0};
-	_ira_decode_immediate( context, &(io.immediate), 16 );
+	int result = _ira_decode_immediate( context, &(io.immediate), 16 );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
 	io.operand_type = IRA_IMMEDIATE_DATA_16;
-	return io;
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-struct ira_instruction_operand _ira_opcode_decoder_id( struct ira_diss_context *context ) {
+int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
 	struct ira_instruction_operand io = {0};
-	_ira_decode_immediate( context, &(io.immediate), 32 );
-		io.operand_type = IRA_IMMEDIATE_DATA_32;
-	return io;
+	int result = _ira_decode_immediate( context, &(io.immediate), 32 );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+	io.operand_type = IRA_IMMEDIATE_DATA_32;
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-struct ira_instruction_operand _ira_opcode_decoder_io( struct ira_diss_context *context ) {
+int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
 	struct ira_instruction_operand io;
-	_ira_decode_immediate( context, &(io.immediate), 64 );
-		io.operand_type = IRA_IMMEDIATE_DATA_64;
-	return io;
+	int result = _ira_decode_immediate( context, &(io.immediate), 64 );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+	io.operand_type = IRA_IMMEDIATE_DATA_64;
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 /* Helpers used to decode operands. */

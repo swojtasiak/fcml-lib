@@ -31,7 +31,7 @@ int main()
     ira_disassemble( &info, &result );
 
     // Print.
-    char buffer[512];
+    char buffer[512] = {0};
 
     struct ira_format_info format;
 

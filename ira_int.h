@@ -54,7 +54,7 @@ struct ira_decoding_context {
 	struct ira_instruction_prefix prefixes[_IRA_PREFIXES_COUNT];      /* Identified prefixes. */
 	uint8_t instruction_prefix_count;    /* Number of prefixes identified for instruction. */
 	uint8_t mod_rm; /* ModR/M byte. */
-	uint8_t sib; /* SIB byte. */
+	uint8_t mod_rm_exists; /* 1 if ModR/M exists, otherwise 0. */
 };
 
 struct ira_diss_context {
@@ -79,10 +79,10 @@ struct ira_diss_tree_opcode {
 };
 
 /* Decoders responsible for instruction disassemblation. */
-typedef void (*ira_instruction_decoder)( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
+typedef int (*ira_instruction_decoder)( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
 /* Decoders responsible for operand disassemblation. */
-typedef struct ira_instruction_operand (*ira_operand_decoder)( struct ira_diss_context *context );
+typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 
 struct ira_diss_tree_instruction_decoding {
 	/* Pointer to the next decoding. There is no need to provide additional structure for one directional list */
@@ -147,10 +147,11 @@ struct ira_instruction_desc {
 
 /* Opcode flags. */
 
-#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) ( ( x & 0x00007000 ) >> 12 )
-#define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 	_IRA_GET_BIT(x,16)
-#define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) _IRA_GET_BIT(x,17)
-#define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) ( ( x & 0x000C0000 ) >> 18 )
+#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 		( ( x & 0x00007000 ) >> 12 )
+#define _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 	_IRA_GET_BIT(x,15)
+#define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 		_IRA_GET_BIT(x,16)
+#define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) 	_IRA_GET_BIT(x,17)
+#define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 		( ( x & 0x000C0000 ) >> 18 )
 
 
 /* Instruction types. */
