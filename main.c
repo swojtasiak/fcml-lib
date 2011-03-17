@@ -14,14 +14,14 @@ struct ab a[] = {{ 1,1 }};
 int main()
 {
 
-    uint8_t data[] = {0x3F, 0x0A};
+    uint8_t data[] = {0x10, 0x16, 0x01, 0x02};
 
     struct ira_disassemble_info info;
     info.address = &data;
-    info.size = 2;
-    info.address_size_attribute = 32;
-    info.operand_size_attribute = 64;
-    info.mode = IRA_MOD_64BIT;
+    info.size = 4;
+    info.address_size_attribute = 16;
+    info.operand_size_attribute = 16;
+    info.mode = IRA_MOD_16BIT;
 
     struct ira_disassemble_result result;
 

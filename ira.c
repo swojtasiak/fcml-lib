@@ -63,6 +63,60 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 /* ModRM decoding */
 
+/* Register configurations used for 16 bit addressing form decoding */
+
+struct ira_register _ira_addressing_form_reg_array_16[8][2] = {
+	{ { IRA_REG_GPR_16, _IRA_REG_BX }, { IRA_REG_GPR_16, _IRA_REG_SI } },
+	{ { IRA_REG_GPR_16, _IRA_REG_BX }, { IRA_REG_GPR_16, _IRA_REG_DI } },
+	{ { IRA_REG_GPR_16, _IRA_REG_BP }, { IRA_REG_GPR_16, _IRA_REG_SI } },
+	{ { IRA_REG_GPR_16, _IRA_REG_BP }, { IRA_REG_GPR_16, _IRA_REG_DI } },
+	{ { IRA_REG_GPR_16, _IRA_REG_SI }, { IRA_NO_REG, 0 } },
+	{ { IRA_REG_GPR_16, _IRA_REG_DI }, { IRA_NO_REG, 0 } },
+	{ { IRA_REG_GPR_16, _IRA_REG_BP }, { IRA_NO_REG, 0 } },
+	{ { IRA_REG_GPR_16, _IRA_REG_BX }, { IRA_NO_REG, 0 } }
+};
+
+/* Registers map used in decoding process. */
+
+/*
+
+struct ira_register _ira_registers_decoding_table[16][6] = {
+		{ {IRA_REG_GPR_8, _IRA_REG_AL}, {IRA_REG_GPR_16, _IRA_REG_AX}, { IRA_REG_GPR_32, _IRA_REG_EAX }, { IRA_REG_GPR_64, _IRA_REG_RAX },
+				{ IRA_REG_MMX, _IRA_REG_MM0 }, { IRA_REG_XMM, _IRA_REG_XMM0 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_CL}, {IRA_REG_GPR_16, _IRA_REG_CX}, { IRA_REG_GPR_32, _IRA_REG_ECX }, { IRA_REG_GPR_64, _IRA_REG_RCX },
+				{ IRA_REG_MMX, _IRA_REG_MM1 }, { IRA_REG_XMM, _IRA_REG_XMM1 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_DL}, {IRA_REG_GPR_16, _IRA_REG_DX}, { IRA_REG_GPR_32, _IRA_REG_EDX }, { IRA_REG_GPR_64, _IRA_REG_RDX },
+				{ IRA_REG_MMX, _IRA_REG_MM2 }, { IRA_REG_XMM, _IRA_REG_XMM2 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_BL}, {IRA_REG_GPR_16, _IRA_REG_BX}, { IRA_REG_GPR_32, _IRA_REG_EBX }, { IRA_REG_GPR_64, _IRA_REG_RBX },
+				{ IRA_REG_MMX, _IRA_REG_MM3 }, { IRA_REG_XMM, _IRA_REG_XMM3 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_AH}, {IRA_REG_GPR_16, _IRA_REG_SP}, { IRA_REG_GPR_32, _IRA_REG_ESP }, { IRA_REG_GPR_64, _IRA_REG_RSP },
+				{ IRA_REG_MMX, _IRA_REG_MM4 }, { IRA_REG_XMM, _IRA_REG_XMM4 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_CH}, {IRA_REG_GPR_16, _IRA_REG_BP}, { IRA_REG_GPR_32, _IRA_REG_EBP }, { IRA_REG_GPR_64, _IRA_REG_RBP },
+				{ IRA_REG_MMX, _IRA_REG_MM5 }, { IRA_REG_XMM, _IRA_REG_XMM5 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_DH}, {IRA_REG_GPR_16, _IRA_REG_SI}, { IRA_REG_GPR_32, _IRA_REG_ESI }, { IRA_REG_GPR_64, _IRA_REG_RSI },
+				{ IRA_REG_MMX, _IRA_REG_MM6 }, { IRA_REG_XMM, _IRA_REG_XMM6 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_BH}, {IRA_REG_GPR_16, _IRA_REG_DI}, { IRA_REG_GPR_32, _IRA_REG_EDI }, { IRA_REG_GPR_64, _IRA_REG_RDI },
+				{ IRA_REG_MMX, _IRA_REG_MM7 }, { IRA_REG_XMM, _IRA_REG_XMM7 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_R8L}, {IRA_REG_GPR_16, _IRA_REG_R8W}, { IRA_REG_GPR_32, _IRA_REG_R8D }, { IRA_REG_GPR_64, _IRA_REG_R8 },
+				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM8 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_R9L}, {IRA_REG_GPR_16, _IRA_REG_R9W}, { IRA_REG_GPR_32, _IRA_REG_R9D }, { IRA_REG_GPR_64, _IRA_REG_R9 },
+				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM9 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_R10L}, {IRA_REG_GPR_16, _IRA_REG_R10W}, { IRA_REG_GPR_32, _IRA_REG_R10D }, { IRA_REG_GPR_64, _IRA_REG_R10 },
+				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM10 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_R11L}, {IRA_REG_GPR_16, _IRA_REG_R11W}, { IRA_REG_GPR_32, _IRA_REG_R11D }, { IRA_REG_GPR_64, _IRA_REG_R11 },
+				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM11 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_R12L}, {IRA_REG_GPR_16, _IRA_REG_R12W}, { IRA_REG_GPR_32, _IRA_REG_R12D }, { IRA_REG_GPR_64, _IRA_REG_R12 },
+				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM12 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_R13L}, {IRA_REG_GPR_16, _IRA_REG_R13W}, { IRA_REG_GPR_32, _IRA_REG_R13D }, { IRA_REG_GPR_64, _IRA_REG_R13 },
+				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM13 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_R14L}, {IRA_REG_GPR_16, _IRA_REG_R14W}, { IRA_REG_GPR_32, _IRA_REG_R14D }, { IRA_REG_GPR_64, _IRA_REG_R14 },
+				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM14 } },
+		{ {IRA_REG_GPR_8, _IRA_REG_R15L}, {IRA_REG_GPR_16, _IRA_REG_R15W}, { IRA_REG_GPR_32, _IRA_REG_R15D }, { IRA_REG_GPR_64, _IRA_REG_R15 },
+				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM15 } }
+};
+
+*/
+
 int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size );
 
 /* Opcode decoders. */
@@ -84,6 +138,9 @@ int _ira_get_effective_osa( struct ira_diss_context *context );
 
 /* Decodes immediate data. */
 int _ira_decode_immediate( struct ira_diss_context *context, union ira_immediate_data *data, int size );
+
+/* Decodes displacement */
+int _ira_decode_displacement( struct ira_diss_context *context, struct ira_displacement *displacement, int size, int extension_size );
 
 /* End of opcode decoders. */
 
@@ -240,7 +297,6 @@ void ira_deinit(void) {
 	// Free whole disassemblation tree.
 	_ira_free_disassemblation_tree( _ira_disassemblation_tree );
 }
-
 
 /* Disassemblation. */
 
@@ -600,7 +656,7 @@ void _ira_stream_seek( struct ira_memory_stream *stream, uint32_t offset, enum i
 uint8_t _ira_stream_read( struct ira_memory_stream *stream, int *result ) {
     uint8_t *base_address = (uint8_t *)stream->base_address;
     *result = ( stream->offset == stream->size ) ? 0 : 1;
-    if( result )
+    if( *result )
         return base_address[stream->offset++];
     return 0;
 }
@@ -608,7 +664,7 @@ uint8_t _ira_stream_read( struct ira_memory_stream *stream, int *result ) {
 uint8_t _ira_stream_peek( struct ira_memory_stream *stream, int *result ) {
     uint8_t *base_address = (uint8_t *)stream->base_address;
     *result = ( stream->offset == stream->size ) ? 0 : 1;
-    if( result )
+    if( *result )
         return base_address[stream->offset];
     return 0;
 }
@@ -627,6 +683,26 @@ int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int
 		destination_buffer[i++] = ((uint8_t*)stream->base_address)[stream->offset++];
 	}
 	return i;
+}
+
+uint16_t _ira_stream_read_word( struct ira_memory_stream *stream, int *result ) {
+	uint16_t value = 0;
+	*result = stream->size - stream->offset >= sizeof(uint16_t);
+	if( *result ) {
+		value = (((uint16_t*)((uint8_t*)stream->base_address + stream->offset))[0]);
+		stream->offset += sizeof(uint16_t);
+	}
+	return value;
+}
+
+uint32_t _ira_stream_read_dword( struct ira_memory_stream *stream, int *result ) {
+	uint32_t value = 0;
+	*result = stream->size - stream->offset >= sizeof(uint32_t);
+	if( *result ) {
+		value = (((uint32_t*)((uint8_t*)stream->base_address + stream->offset))[0]);
+		stream->offset += sizeof(uint32_t);
+	}
+	return value;
 }
 
 /* Instruction decoders. */
@@ -653,6 +729,7 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	}
 
 	// Calculates effective operand sizes. It's not important if they will be used or not.
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	decoding_context->effective_address_size_attribute = _ira_get_effective_asa( context );
 	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context );
 
@@ -744,14 +821,141 @@ int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_
 
 /* ModRM decoding. */
 
-int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size ) {
+struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, int reg ) {
+	int type = reg_type;
+	if( reg_type == IRA_REG_GPR && operand_register_size == _IRA_OR_8 ) {
+		type = IRA_REG_GPR_8;
+	} else if( reg_type == IRA_REG_GPR ) {
+		switch( context->decoding_context.effective_operand_size_attribute ) {
+		case _IRA_OSA_16:
+			type = IRA_REG_GPR_16;
+			break;
+		case _IRA_OSA_32:
+			type = IRA_REG_GPR_32;
+			break;
+		case _IRA_OSA_64:
+			type = IRA_REG_GPR_64;
+			break;
+		}
+	}
+	struct ira_register result_reg = {0};
+
+	// There is no MMX registers for reg > 7.
+	if( !( reg_type == IRA_REG_MMX && reg > 7 ) ) {
+		result_reg.reg = reg;
+		result_reg.reg_type = type;
+	}
+
+	return result_reg;
+}
+
+int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size ) {
+
+	int result = _IRA_INT_ERROR_NO_ERROR;
+
+	// ModR/M.
+	uint8_t mod, rm;
 
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
-	struct ira_decoded_mod_rm *mod_rm = &(decoding_context->mod_rm);
+	struct ira_decoded_mod_rm *decoded_mod_rm = &(decoding_context->mod_rm);
+
+	// Get raw ModR/M byte to decode it.
+	uint8_t mod_rm = context->decoding_context.mod_rm.raw_mod_rm.value;
+
+	// Decode ModRM.
+	mod = _IRA_MODRM_MOD(mod_rm);
+	rm = _IRA_MODRM_RM(mod_rm);
+
+	if( mod == 0 && rm == 6 ) {
+		// disp16.
+		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_16, IRA_DISPLACEMENT_EXT_SIZE_16 );
+	} else if( mod < 3 ) {
+		decoded_mod_rm->base_reg = _ira_addressing_form_reg_array_16[rm][0];
+		decoded_mod_rm->index_reg = _ira_addressing_form_reg_array_16[rm][1];
+		if( mod > 0 ) {
+			result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), ( mod == 1 ) ? IRA_DISPLACEMENT_8 : IRA_DISPLACEMENT_16, IRA_DISPLACEMENT_EXT_SIZE_16 );
+		}
+	} else {
+		// Straight copy of registers.
+		decoded_mod_rm->reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, rm );
+	}
+
+	return result;
+}
+
+int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size ) {
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size ) {
+	uint8_t scale, index, base;
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size ) {
+
+	int result;
+	int is_sib = _IRA_FALSE;
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_decoded_mod_rm *decoded_mod_rm = &(decoding_context->mod_rm);
 
 	// Check if ModRM has already been decoded.
-	if( !mod_rm->decoded ) {
+	if( !decoded_mod_rm->decoded ) {
 
+		ira_mod_rm_addressing_decoder decoder;
+
+		// Get ModRM byte.
+		uint8_t mod_rm = _ira_stream_read( context->stream, &result );
+		if( result ) {
+			decoded_mod_rm->raw_mod_rm.value = mod_rm;
+			decoded_mod_rm->raw_mod_rm.is_not_null = _IRA_TRUE;
+		} else {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+
+		uint8_t effective_asa = decoding_context->effective_address_size_attribute;
+
+		// Get SIB if exists.
+		if( effective_asa == _IRA_ASA_32 || effective_asa == _IRA_ASA_64 ) {
+			if( _IRA_MODRM_RM(mod_rm) == 4 && _IRA_MODRM_MOD(mod_rm) != 3 ) {
+				uint8_t sib = _ira_stream_read( context->stream, &result );
+				if( result ) {
+					decoded_mod_rm->raw_sib.value = sib;
+					decoded_mod_rm->raw_sib.is_not_null = _IRA_TRUE;
+					is_sib = _IRA_TRUE;
+				} else {
+					return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+				}
+			}
+		}
+
+		// Get REX.
+		if( context->mode == IRA_MOD_64BIT ) {
+			uint8_t rex = _ira_diss_context_get_REX_prefix( context, &result );
+			if( result ) {
+				decoded_mod_rm->raw_rex.value = rex;
+				decoded_mod_rm->raw_rex.is_not_null = _IRA_TRUE;
+			}
+		}
+
+		// Choose addressing form decoder.
+		if( is_sib ) {
+			decoder = _ira_modrm_addressing_decoder_sib;
+		} else {
+			if( effective_asa == _IRA_ASA_16 ) {
+				decoder = _ira_modrm_addressing_decoder_16_bit;
+			} else {
+				decoder = _ira_modrm_addressing_decoder_32_64_bit;
+			}
+		}
+
+		result = decoder( context, reg_type, operand_size );
+		if( result != _IRA_INT_ERROR_NO_ERROR ) {
+			return result;
+		}
+
+		decoded_mod_rm->decoded = _IRA_TRUE;
 	}
 
 	return _IRA_INT_ERROR_NO_ERROR;
@@ -817,6 +1021,37 @@ int _ira_get_effective_osa( struct ira_diss_context *context ) {
 	}
 
 	return effective_osa;
+}
+
+int _ira_decode_displacement( struct ira_diss_context *context, struct ira_displacement *displacement, int size, int extension_size ) {
+	int result = 0;
+	switch(size) {
+	case 8:
+		displacement->displacement.displacement_8 = _ira_stream_read( context->stream, &result );
+		if( !result ) {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+		displacement->displacement_type = IRA_DISPLACEMENT_8;
+		break;
+	case 16:
+		displacement->displacement.displacement_16 = _ira_stream_read_word( context->stream, &result );
+		if( !result ) {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+		displacement->displacement_type = IRA_DISPLACEMENT_16;
+		break;
+	case 32:
+		displacement->displacement.displacement_32 = _ira_stream_read_dword( context->stream, &result );
+		if( !result ) {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+		displacement->displacement_type = IRA_DISPLACEMENT_32;
+		break;
+	default:
+		return _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
+	}
+	displacement->extension_size = extension_size;
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 int _ira_decode_immediate( struct ira_diss_context *context, union ira_immediate_data *data, int size ) {

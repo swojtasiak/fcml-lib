@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include "ira.h"
 
+#define _IRA_TRUE 1
+#define _IRA_FALSE 0
+
 /* Internal error codes */
 
 #define _IRA_INT_ERROR_NO_ERROR				0x00
@@ -40,19 +43,36 @@ uint32_t _ira_stream_size( struct ira_memory_stream *stream );
 /* Reads specified number of bytes from stream and stores them in given buffer. */
 int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int size);
 
+/* Common data types. */
+
+struct ira_nullable_byte {
+	// 0 if null, otherwise 1.
+	uint8_t is_not_null;
+	// Value.
+	uint8_t value;
+} typedef n_byte;
+
 /* ModRM decoding. */
 
 struct ira_decoded_mod_rm {
 	// Set to 1 if ModRM exists and has been decoded for the current instruction.
 	int decoded;
+	// ModRM byte.
+	n_byte raw_mod_rm;
+	// SIB byte.
+	n_byte raw_sib;
+	// REX prefix.
+	n_byte raw_rex;
 	// Base register.
 	struct ira_register base_reg;
 	// Index register.
 	struct ira_register index_reg;
 	// Scale factor value for 32 and 64 bit addressing modes.
-	struct ira_register scale;
+	n_byte scale;
 	// Displacement value.
 	struct ira_displacement displacement;
+	// Register decoded if "mod" = 3.
+	struct ira_register reg;
 	// Register operand encoded in "reg" field of the ModRM.
 	struct ira_register operand_reg;
 };
@@ -69,9 +89,9 @@ enum ira_prefix_types {
 
 struct ira_decoding_context {
 	// Operand size attribute.
-	uint16_t effective_operand_size_attribute;
+	uint8_t effective_operand_size_attribute;
 	// Address size attribute.
-	uint16_t effective_address_size_attribute;
+	uint8_t effective_address_size_attribute;
 	// Decoded prefixes.
 	struct ira_instruction_prefix prefixes[_IRA_PREFIXES_COUNT];
 	// Number of prefixes decoded for instruction.
@@ -84,9 +104,9 @@ struct ira_diss_context {
 	// Architecture.
     enum ira_operation_mode mode;
     // Operand size attribute.
-    uint16_t operand_size_attribute;
+    uint8_t operand_size_attribute;
     // Address size attribute.
-    uint16_t address_size_attribute;
+    uint8_t address_size_attribute;
     // Context that is shared by methods taking part in the decoding process.
     struct ira_decoding_context decoding_context;
     // Stream.
@@ -111,6 +131,9 @@ typedef int (*ira_instruction_decoder)( struct ira_diss_context *context, struct
 
 /* Decoders responsible for operand disassemblation. */
 typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+
+/* Decoders responsible for ModR/M decoding */
+typedef int (*ira_mod_rm_addressing_decoder)( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size );
 
 struct ira_diss_tree_instruction_decoding {
 	/* Pointer to the next decoding. There is no need to provide additional structure for one directional list */
@@ -164,14 +187,22 @@ struct ira_instruction_desc {
 
 /* ModR/M decoding. */
 
+#define _IRA_MODRM_MOD(x)			( x >> 6 )
 #define _IRA_MODRM_REG_OPCODE(x)	( ( x & 0x38 ) >> 3 )
+#define _IRA_MODRM_RM(x)			( x & 0x07 )
+
+/* SIB decoding */
+
+#define _IRA_SIB_SS(x)				( x >> 6 )
+#define _IRA_SIB_INDEX(x)			( ( x & 0x38 ) >> 3 );
+#define _IRA_SIB_BASE(x)			( x & 0x07 );
 
 /* REX decoding */
 
-#define _IRA_REX_W(x)				( ( x & 0x08 ) >> 3 )
-#define _IRA_REX_R(x)				( ( x & 0x04 ) >> 2 )
-#define _IRA_REX_X(x)				( ( x & 0x02 ) >> 1 )
-#define _IRA_REX_B(x)				( x & 0x01 )
+#define _IRA_REX_W(x)				_IRA_GET_BIT(x, 3)
+#define _IRA_REX_R(x)				_IRA_GET_BIT(x, 2)
+#define _IRA_REX_X(x)				_IRA_GET_BIT(x, 1)
+#define _IRA_REX_B(x)				_IRA_GET_BIT(x, 0)
 
 /* Prefixes flags. */
 
