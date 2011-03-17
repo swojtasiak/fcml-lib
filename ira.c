@@ -61,12 +61,18 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 
 int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
+/* ModRM decoding */
+
+int _ira_modrm_decoder( struct ira_diss_context *context, int operand_size );
+
 /* Opcode decoders. */
 
 int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 
 /* Decoders' helpers methods. */
 
@@ -333,11 +339,11 @@ void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira
     if( info->address_size_attribute == 0 ) {
         switch(info->mode) {
             case IRA_MOD_16BIT:
-                info->address_size_attribute = 16;
+                info->address_size_attribute = _IRA_ASA_16;
                 break;
             case IRA_MOD_32BIT:
             case IRA_MOD_64BIT:
-                info->address_size_attribute = 32;
+                info->address_size_attribute = _IRA_ASA_32;
                 break;
 
         }
@@ -345,13 +351,13 @@ void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira
     if( info->operand_size_attribute == 0 ) {
         switch(info->mode) {
             case IRA_MOD_16BIT:
-                info->operand_size_attribute = 16;
+                info->operand_size_attribute = _IRA_OSA_16;
                 break;
             case IRA_MOD_32BIT:
-                info->operand_size_attribute = 32;
+                info->operand_size_attribute = _IRA_OSA_32;
                 break;
             case IRA_MOD_64BIT:
-                info->operand_size_attribute = 64;
+                info->operand_size_attribute = _IRA_OSA_64;
                 break;
         }
     }
@@ -514,6 +520,10 @@ ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type ) {
 		return &_ira_opcode_decoder_id;
 	case _IRA_OPERAND_IO:
 		return &_ira_opcode_decoder_io;
+	case _IRA_OPERAND_MODRM_RM_8:
+			return &_ira_opcode_decoder_modrm_rm_8;
+	case _IRA_OPERAND_MODRM_R_8:
+			return &_ira_opcode_decoder_modrm_r_8;
 	}
 	return NULL;
 }
@@ -521,6 +531,7 @@ ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type ) {
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type ) {
 	switch( instruction_type ) {
 	case _IRA_IT_IA:
+		// Currently only IA decoder is supported.
 		return &_ira_instruction_decoder_IA;
 	}
 	return NULL;
@@ -629,10 +640,10 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	}
 
 	// Modify context basing on found instruction.
-	rc = _ira_prepare_context_for_instruction( context, instruction );
-	if( rc != _IRA_INT_ERROR_NO_ERROR ) {
-		return rc;
-	}
+	//rc = _ira_prepare_context_for_instruction( context, instruction );
+	//if( rc != _IRA_INT_ERROR_NO_ERROR ) {
+	//	return rc;
+	//}
 
 	// Decode operands, one by one.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
@@ -654,6 +665,9 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
+// Najprawdopodobniej kwalifikuje siê do wyrzucenia, ten kod sprawdzaj¹cy istnienie modrm chcialbym wrzuci do
+// dekodera dla modrm.
+/*
 int _ira_prepare_context_for_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	if( _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM( instruction->opcode_flags ) ) {
@@ -672,6 +686,7 @@ int _ira_prepare_context_for_instruction( struct ira_diss_context *context, stru
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }
+*/
 
 /* Operand decoders. */
 
@@ -682,6 +697,7 @@ int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruc
 		return result;
 	}
 	io.operand_type = IRA_IMMEDIATE_DATA_8;
+	*operand = io;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
@@ -692,6 +708,7 @@ int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruc
 		return result;
 	}
 	io.operand_type = IRA_IMMEDIATE_DATA_16;
+	*operand = io;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
@@ -702,6 +719,7 @@ int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruc
 		return result;
 	}
 	io.operand_type = IRA_IMMEDIATE_DATA_32;
+	*operand = io;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
@@ -712,6 +730,36 @@ int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruc
 		return result;
 	}
 	io.operand_type = IRA_IMMEDIATE_DATA_64;
+	*operand = io;
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+	struct ira_instruction_operand io;
+
+	// Decode ModR/M.
+	int result = _ira_modrm_decoder( context, _IRA_OR_8 );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+
+	// Prepare operand using decoded ModRM.
+
+
+	*operand = io;
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+	return 0;
+}
+
+/* ModRM decoding. */
+
+int _ira_modrm_decoder( struct ira_diss_context *context, int operand_size ) {
+
+
+
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 

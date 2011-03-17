@@ -14,7 +14,7 @@ struct ab a[] = {{ 1,1 }};
 int main()
 {
 
-    uint8_t data[] = {0xD4, 0x50};
+    uint8_t data[] = {0x3F, 0x0A};
 
     struct ira_disassemble_info info;
     info.address = &data;
@@ -37,7 +37,7 @@ int main()
 
     ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
 
-    printf( buffer );
+    printf( "%s\n", buffer );
 
     ira_deinit();
 

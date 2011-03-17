@@ -40,6 +40,21 @@ uint32_t _ira_stream_size( struct ira_memory_stream *stream );
 /* Reads specified number of bytes from stream and stores them in given buffer. */
 int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int size);
 
+/* ModRM decoding. */
+
+struct ira_decoded_mod_rm {
+	// Base register.
+	struct ira_register base_reg;
+	// Index register.
+	struct ira_register index_reg;
+	// Scale factor value for 32 and 64 bit addressing modes.
+	struct ira_register scale;
+	// Displacement value.
+	struct ira_displacement displacement;
+	// Register operand encoded in "reg" field of the ModRM.
+	struct ira_register operand_reg;
+};
+
 /* Disassemblation context. */
 
 enum ira_prefix_types {
@@ -153,10 +168,23 @@ struct ira_instruction_desc {
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) 	_IRA_GET_BIT(x,17)
 #define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 		( ( x & 0x000C0000 ) >> 18 )
 
-
 /* Instruction types. */
 
 #define _IRA_IT_IA			0x00
+
+/* Operand register size */
+
+#define _IRA_OR_8		0
+#define _IRA_OR_16		1
+#define _IRA_OR_32		2
+#define _IRA_OR_64		3
+#define _IRA_OR_16_32	4 // Default size can be overridden by prefixes.
+#define _IRA_OR_32_64	5 // Default size can be overridden by prefixes.
+
+/* Operands */
+
+#define _IRA_RM_8		0
+#define _IRA_R_8		1
 
 /* Operands encoding */
 
@@ -169,7 +197,10 @@ struct ira_instruction_desc {
 
 #define _IRA_MODRM_BASE 0x80 // Base for ModRM based operands.
 
-#define _IRA_MODRM(x) _MOD_RM_BASE + x
+#define _IRA_MODRM(x) _IRA_MODRM_BASE + x
+
+#define _IRA_OPERAND_MODRM_RM_8		_IRA_MODRM(_IRA_RM_8)
+#define _IRA_OPERAND_MODRM_R_8		_IRA_MODRM(_IRA_R_8)
 
 /* Externals. */
 
