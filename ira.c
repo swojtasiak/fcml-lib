@@ -36,9 +36,6 @@ int _ira_disassemble_default( struct ira_diss_context *context, struct ira_disas
 /* Instruction definitions. */
 void _ira_identify_prefixes( struct ira_diss_context *context );
 
-/* Puts some useful informations to disassemblation context. */
-int _ira_prepare_context_for_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction );
-
 /* Maps internal error code to external error code. */
 int _ira_map_internall_error_code( int internal_error );
 
@@ -54,6 +51,9 @@ ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_typ
 /* Returns 1 is there is given prefix found for given instruction. */
 int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix );
 
+/* Gets prefix if it's available. */
+struct ira_instruction_prefix* _ira_diss_context_get_prefix_if_available( struct ira_diss_context *context, uint8_t prefix );
+
 /* Gets REX prefix. */
 uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int *found );
 
@@ -63,7 +63,7 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 /* ModRM decoding */
 
-int _ira_modrm_decoder( struct ira_diss_context *context, int operand_size );
+int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size );
 
 /* Opcode decoders. */
 
@@ -76,6 +76,13 @@ int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_
 
 /* Decoders' helpers methods. */
 
+/* Calculates effective address-size attribute */
+int _ira_get_effective_asa( struct ira_diss_context *context );
+
+/* Calculates effective operand-size attribute */
+int _ira_get_effective_osa( struct ira_diss_context *context );
+
+/* Decodes immediate data. */
 int _ira_decode_immediate( struct ira_diss_context *context, union ira_immediate_data *data, int size );
 
 /* End of opcode decoders. */
@@ -342,8 +349,10 @@ void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira
                 info->address_size_attribute = _IRA_ASA_16;
                 break;
             case IRA_MOD_32BIT:
+            	info->address_size_attribute = _IRA_ASA_32;
+            	break;
             case IRA_MOD_64BIT:
-                info->address_size_attribute = _IRA_ASA_32;
+                info->address_size_attribute = _IRA_ASA_64;
                 break;
 
         }
@@ -357,7 +366,7 @@ void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira
                 info->operand_size_attribute = _IRA_OSA_32;
                 break;
             case IRA_MOD_64BIT:
-                info->operand_size_attribute = _IRA_OSA_64;
+                info->operand_size_attribute = _IRA_OSA_32;
                 break;
         }
     }
@@ -434,7 +443,6 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 	}
 
 	return _IRA_INT_ERROR_OUT_OF_MEMORY;
-
 }
 
 int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc ) {
@@ -555,17 +563,22 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 	return rex;
 }
 
-int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix ) {
+struct ira_instruction_prefix* _ira_diss_context_get_prefix_if_available( struct ira_diss_context *context, uint8_t prefix_value ) {
+	struct ira_instruction_prefix* prefix = NULL;
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	int prefix_count = decoding_context->instruction_prefix_count;
-	int i, found = 0;
+	int i;
 	for( i = 0; i < prefix_count; i++ ) {
-		if( decoding_context->prefixes[i].prefix == prefix ) {
-			found = 1;
+		if( decoding_context->prefixes[i].prefix == prefix_value ) {
+			prefix = &(decoding_context->prefixes[i]);
 			break;
 		}
 	}
-	return found;
+	return prefix;
+}
+
+int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix ) {
+	return _ira_diss_context_get_prefix_if_available( context, prefix ) != NULL;
 }
 
 /* Streaming. */
@@ -639,11 +652,9 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 		result->opcodes[i] = instruction->opcodes[i];
 	}
 
-	// Modify context basing on found instruction.
-	//rc = _ira_prepare_context_for_instruction( context, instruction );
-	//if( rc != _IRA_INT_ERROR_NO_ERROR ) {
-	//	return rc;
-	//}
+	// Calculates effective operand sizes. It's not important if they will be used or not.
+	decoding_context->effective_address_size_attribute = _ira_get_effective_asa( context );
+	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context );
 
 	// Decode operands, one by one.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
@@ -664,29 +675,6 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }
-
-// Najprawdopodobniej kwalifikuje siê do wyrzucenia, ten kod sprawdzaj¹cy istnienie modrm chcialbym wrzuci do
-// dekodera dla modrm.
-/*
-int _ira_prepare_context_for_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction ) {
-	struct ira_decoding_context *decoding_context = &(context->decoding_context);
-	if( _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM( instruction->opcode_flags ) ) {
-
-		// Gets ModR/M.
-		int result = 0;
-		decoding_context->mod_rm =_ira_stream_read( context->stream, &result );
-		if( !result ) {
-			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
-		}
-
-		decoding_context->mod_rm_exists = 1;
-	} else {
-		decoding_context->mod_rm_exists = 0;
-	}
-
-	return _IRA_INT_ERROR_NO_ERROR;
-}
-*/
 
 /* Operand decoders. */
 
@@ -738,7 +726,7 @@ int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira
 	struct ira_instruction_operand io;
 
 	// Decode ModR/M.
-	int result = _ira_modrm_decoder( context, _IRA_OR_8 );
+	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_OR_8 );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -756,14 +744,80 @@ int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_
 
 /* ModRM decoding. */
 
-int _ira_modrm_decoder( struct ira_diss_context *context, int operand_size ) {
+int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size ) {
 
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_decoded_mod_rm *mod_rm = &(decoding_context->mod_rm);
 
+	// Check if ModRM has already been decoded.
+	if( !mod_rm->decoded ) {
+
+	}
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 /* Helpers used to decode operands. */
+
+int _ira_get_effective_asa( struct ira_diss_context *context ) {
+
+	uint16_t effective_asa = context->address_size_attribute;
+
+	// Checks if address size attribute is overridden.
+	if( _ira_diss_context_is_prefix_available(context, 0x67) ) {
+		switch( context->mode ) {
+		case IRA_MOD_16BIT:
+		case IRA_MOD_32BIT:
+			effective_asa = ( effective_asa == _IRA_ASA_32 ) ? _IRA_ASA_16 : _IRA_ASA_32;
+			break;
+		case IRA_MOD_64BIT:
+			effective_asa = ( effective_asa == _IRA_ASA_32 ) ? _IRA_ASA_64 : _IRA_ASA_32;
+			break;
+		}
+	}
+
+	return effective_asa;
+}
+
+int _ira_get_effective_osa( struct ira_diss_context *context ) {
+
+	struct ira_instruction_prefix *prefix;
+	int rex_w = 0, result;
+	uint8_t rex;
+
+	uint16_t effective_osa = context->operand_size_attribute;
+
+	// Gets effective address-size attribute for used mode.
+	switch( context->mode ) {
+	case IRA_MOD_16BIT:
+	case IRA_MOD_32BIT:
+		// In 16 and 32 bit mode only prefixes can change address-size attribute.
+		prefix = _ira_diss_context_get_prefix_if_available( context, 0x66 );
+		if( prefix != NULL && !prefix->mandatory_prefix ) {
+			effective_osa = ( effective_osa == _IRA_OSA_16 ) ? _IRA_OSA_32 : _IRA_OSA_16;
+		}
+		break;
+	case IRA_MOD_64BIT:
+		// 0 = Operand Size determined by CS.D, 1 = 64 Bit Operand Size.
+		rex = _ira_diss_context_get_REX_prefix( context, &result );
+		if( result ) {
+			// REX prefix is available, so get W bit.
+			rex_w = _IRA_REX_W( rex );
+		}
+		if( rex_w ) {
+			// Prefixes can not override REX.W.
+			effective_osa = _IRA_OSA_64;
+		} else {
+			prefix = _ira_diss_context_get_prefix_if_available( context, 0x66 );
+			if( prefix != NULL && !prefix->mandatory_prefix ) {
+				effective_osa = ( effective_osa == _IRA_OSA_16 ) ? _IRA_OSA_32 : _IRA_OSA_16;
+			}
+		}
+		break;
+	}
+
+	return effective_osa;
+}
 
 int _ira_decode_immediate( struct ira_diss_context *context, union ira_immediate_data *data, int size ) {
 	int result = 0;

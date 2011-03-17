@@ -43,6 +43,8 @@ int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int
 /* ModRM decoding. */
 
 struct ira_decoded_mod_rm {
+	// Set to 1 if ModRM exists and has been decoded for the current instruction.
+	int decoded;
 	// Base register.
 	struct ira_register base_reg;
 	// Index register.
@@ -66,18 +68,29 @@ enum ira_prefix_types {
 };
 
 struct ira_decoding_context {
-	struct ira_instruction_prefix prefixes[_IRA_PREFIXES_COUNT];      /* Identified prefixes. */
-	uint8_t instruction_prefix_count;    /* Number of prefixes identified for instruction. */
-	uint8_t mod_rm; /* ModR/M byte. */
-	uint8_t mod_rm_exists; /* 1 if ModR/M exists, otherwise 0. */
+	// Operand size attribute.
+	uint16_t effective_operand_size_attribute;
+	// Address size attribute.
+	uint16_t effective_address_size_attribute;
+	// Decoded prefixes.
+	struct ira_instruction_prefix prefixes[_IRA_PREFIXES_COUNT];
+	// Number of prefixes decoded for instruction.
+	uint8_t instruction_prefix_count;
+	// Decoded ModRM.
+	struct ira_decoded_mod_rm mod_rm;
 };
 
 struct ira_diss_context {
-    enum ira_operation_mode mode; /* Architecture. */
-    uint16_t operand_size_attribute; /* Operand size attribute. */
-    uint16_t address_size_attribute; /* Address size attribute. */
+	// Architecture.
+    enum ira_operation_mode mode;
+    // Operand size attribute.
+    uint16_t operand_size_attribute;
+    // Address size attribute.
+    uint16_t address_size_attribute;
+    // Context that is shared by methods taking part in the decoding process.
     struct ira_decoding_context decoding_context;
-    struct ira_memory_stream *stream; /* Stream. */
+    // Stream.
+    struct ira_memory_stream *stream;
 };
 
 /* Returns 1 is there is given prefix found for given instruction. */
@@ -153,6 +166,13 @@ struct ira_instruction_desc {
 
 #define _IRA_MODRM_REG_OPCODE(x)	( ( x & 0x38 ) >> 3 )
 
+/* REX decoding */
+
+#define _IRA_REX_W(x)				( ( x & 0x08 ) >> 3 )
+#define _IRA_REX_R(x)				( ( x & 0x04 ) >> 2 )
+#define _IRA_REX_X(x)				( ( x & 0x02 ) >> 1 )
+#define _IRA_REX_B(x)				( x & 0x01 )
+
 /* Prefixes flags. */
 
 #define _IRA_PREFIX_REX(x) 					_IRA_GET_BIT(x,11)
@@ -174,12 +194,8 @@ struct ira_instruction_desc {
 
 /* Operand register size */
 
-#define _IRA_OR_8		0
-#define _IRA_OR_16		1
-#define _IRA_OR_32		2
-#define _IRA_OR_64		3
-#define _IRA_OR_16_32	4 // Default size can be overridden by prefixes.
-#define _IRA_OR_32_64	5 // Default size can be overridden by prefixes.
+#define _IRA_OR_8			0
+#define _IRA_OR_DEFAULT		1
 
 /* Operands */
 

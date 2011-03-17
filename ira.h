@@ -66,7 +66,7 @@ enum ira_result_code {
 	RC_OK = 0,
 	RC_ERROR_ILLEGAL_OPERATION_MODE,
 	RC_ERROR_ILLEGAL_ADDRESS_ATTRIBUTE_SIZE,
-	/* When disassembler is not able to disassemble instruction due to incomplete data in stream. */
+	// When disassembler is not able to disassemble instruction due to incomplete data in stream.
 	RC_ERROR_INSTRUCTION_INCOMPLETE,
 	RC_ERROR_OUT_OF_MEMORY,
 	RC_ERROR_UNEXPECTED_INTERNAL_ERROR
@@ -78,11 +78,13 @@ enum ira_operand_type {
 	IRA_IMMEDIATE_DATA_8,
 	IRA_IMMEDIATE_DATA_16,
 	IRA_IMMEDIATE_DATA_32,
-	IRA_IMMEDIATE_DATA_64
+	IRA_IMMEDIATE_DATA_64,
+	IRA_GPR
 };
 
 enum ira_register_type {
 	IRA_NO_REG,
+	IRA_REG_GPR,
 	IRA_REG_GPR_8,
 	IRA_REG_GPR_16,
 	IRA_REG_GPR_32,
@@ -106,6 +108,7 @@ struct ira_register {
 /* Constants describing allowed values of address size attribute. */
 #define _IRA_ASA_16		16
 #define _IRA_ASA_32		32
+#define _IRA_ASA_64		64
 
 struct ira_disassemble_info {
 	/* Architecture. */
