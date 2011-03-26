@@ -11,17 +11,22 @@ struct ab {
 
 struct ab a[] = {{ 1,1 }};
 
+#define _IRA_CLEAR_BIT(x,y)	( ~(0x01 << y) & x )
+
 int main()
 {
+	int i = 0x0111;
 
-    uint8_t data[] = {0x10, 0x16, 0x01, 0x02};
+	int a = _IRA_CLEAR_BIT( i, 0 );
+
+    uint8_t data[] = { 0x67, 0x47, 0x10, 0x4c, 0x5c, 0x00 };
 
     struct ira_disassemble_info info;
     info.address = &data;
-    info.size = 4;
-    info.address_size_attribute = 16;
-    info.operand_size_attribute = 16;
-    info.mode = IRA_MOD_16BIT;
+    info.size = sizeof(data);
+    info.address_size_attribute = 64;
+    info.operand_size_attribute = 32;
+    info.mode = IRA_MOD_64BIT;
 
     struct ira_disassemble_result result;
 

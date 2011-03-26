@@ -115,7 +115,6 @@
 enum ira_operation_mode {
 	IRA_MOD_16BIT,
 	IRA_MOD_32BIT,
-	// IA32/IA32e.
 	IRA_MOD_64BIT
 };
 

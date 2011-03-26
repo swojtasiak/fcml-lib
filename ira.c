@@ -117,7 +117,10 @@ struct ira_register _ira_registers_decoding_table[16][6] = {
 
 */
 
-int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size );
+#define _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING		1
+#define _IRA_MOD_RM_FLAGS_DECODE_REG			2
+
+int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size, uint8_t flags );
 
 /* Opcode decoders. */
 
@@ -803,7 +806,7 @@ int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira
 	struct ira_instruction_operand io;
 
 	// Decode ModR/M.
-	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_OR_8 );
+	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_OR_8, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -820,6 +823,38 @@ int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_
 }
 
 /* ModRM decoding. */
+
+int _ira_modrm_decoder_get_modrm( struct ira_diss_context *context, struct ira_decoded_mod_rm *decoded_mod_rm ) {
+	// Get ModRM byte if it has not been got yet.
+	if( !decoded_mod_rm->raw_mod_rm.is_not_null ) {
+		int result;
+		uint8_t mod_rm = _ira_stream_read( context->stream, &result );
+		if( result ) {
+			decoded_mod_rm->raw_mod_rm.value = mod_rm;
+			decoded_mod_rm->raw_mod_rm.is_not_null = _IRA_TRUE;
+		} else {
+			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+		}
+	}
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+
+int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_decoded_mod_rm *decoded_mod_rm ) {
+	int rex_found = decoded_mod_rm->raw_rex.is_not_null;
+	// Check if there is REX register.
+	if( context->mode == IRA_MOD_64BIT && !rex_found ) {
+		int rex_found;
+		uint8_t rex = _ira_diss_context_get_REX_prefix( context, &rex_found );
+		if( rex_found ) {
+			// Store its value in decoded ModRM structure.
+			decoded_mod_rm->raw_rex.value = rex;
+			decoded_mod_rm->raw_rex.is_not_null = _IRA_TRUE;
+			rex_found = _IRA_TRUE;
+		}
+	}
+	return rex_found;
+}
 
 struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, int reg ) {
 	int type = reg_type;
@@ -849,7 +884,7 @@ struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context
 	return result_reg;
 }
 
-int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size ) {
+int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, uint8_t flags ) {
 
 	int result = _IRA_INT_ERROR_NO_ERROR;
 
@@ -880,53 +915,10 @@ int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, enum
 		decoded_mod_rm->reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, rm );
 	}
 
-	return result;
-}
-
-int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size ) {
-
-	int result = _IRA_INT_ERROR_NO_ERROR;
-
-	// ModR/M.
-	uint8_t mod, rm, reg_opcode;
-
-	struct ira_decoding_context *decoding_context = &(context->decoding_context);
-	struct ira_decoded_mod_rm *decoded_mod_rm = &(decoding_context->mod_rm);
-
-	// Get raw ModR/M byte to decode it.
-	uint8_t mod_rm = context->decoding_context.mod_rm.raw_mod_rm.value;
-
-	// Decode ModRM.
-	mod = _IRA_MODRM_MOD(mod_rm);
-	rm = _IRA_MODRM_RM(mod_rm);
-	reg_opcode = _IRA_MODRM_REG_OPCODE(mod_rm);
-
-	if( context->mode == IRA_MOD_64BIT && decoded_mod_rm->raw_rex.is_not_null ) {
-		uint8_t rex = decoded_mod_rm->raw_rex.value;
-		reg_opcode |= ( _IRA_REX_R(rex) << 3 );
-		rm |= ( _IRA_REX_B(rex) << 3 );
-	}
-
-	if( mod == 3 ) {
-		// Registers.
-		decoded_mod_rm->reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, rm );
-	} else if( rm == 4 ) {
-		// SIB is decoded by dedicated decoder.
-		result = _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
-	} else if( mod == 1 && rm == 5 ) {
-		// disp32.
-		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_32,
-				( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
-	} else {
-		// Base register.
-		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
-		decoded_mod_rm->base_reg.reg_type = (effective_address_size == _IRA_ASA_64) ? IRA_REG_GPR_64 : IRA_REG_GPR_32;
-		decoded_mod_rm->base_reg.reg = rm;
-		// Displacement.
-		if( mod != 0 ) {
-			result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), ( mod == 1 ) ? IRA_DISPLACEMENT_8 : IRA_DISPLACEMENT_32,
-					( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
-		}
+	// Decode register if something needs it.
+	if ( flags & _IRA_MOD_RM_FLAGS_DECODE_REG ) {
+		decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, _IRA_MODRM_REG_OPCODE(mod_rm) );
+		decoded_mod_rm->decoded_reg = _IRA_TRUE;
 	}
 
 	return result;
@@ -946,7 +938,15 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ir
 
 	// Get raw ModR/M and SIB bytes to decode them.
 	uint8_t mod_rm = context->decoding_context.mod_rm.raw_mod_rm.value;
-	uint8_t sib = context->decoding_context.mod_rm.raw_sib.value;
+
+	// Get SIB.
+	uint8_t sib = _ira_stream_read( context->stream, &result );
+	if( result ) {
+		decoded_mod_rm->raw_sib.value = sib;
+		decoded_mod_rm->raw_sib.is_not_null = _IRA_TRUE;
+	} else {
+		return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+	}
 
 	base = _IRA_SIB_BASE(sib);
 	index = _IRA_SIB_INDEX(sib);
@@ -962,27 +962,27 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ir
 	mod = _IRA_MODRM_MOD(mod_rm);
 
 	// Index register.
-	if( index != 4 ) {
-		// TODO: Check if effective address size affects index register.
+	if( _IRA_SIB_INDEX(sib) != 4 ) {
+		// Effective address size affects index register.
 		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
 		decoded_mod_rm->index_reg.reg_type = (effective_address_size == _IRA_ASA_64) ? IRA_REG_GPR_64 : IRA_REG_GPR_32;
 		decoded_mod_rm->index_reg.reg = index;
 	}
 
 	// Scale.
-	decoded_mod_rm->scale.value = scale * 2;
+	decoded_mod_rm->scale.value = scale << 1; // scale * 2
 	decoded_mod_rm->scale.is_not_null = _IRA_TRUE;
 
 	// Base register and displacement.
-	if( mod == 0 && base == 5 ) {
+	if( mod == 0 && _IRA_SIB_BASE(sib) == 5 ) {
 		// In this case base register doesn't exist.
 		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_32,
 						( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
 	} else {
-		// TODO: Check if effective address size affects base register.
+		// Effective address size affects base register.
 		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
 		decoded_mod_rm->base_reg.reg_type = (effective_address_size == _IRA_ASA_64) ? IRA_REG_GPR_64 : IRA_REG_GPR_32;
-		decoded_mod_rm->base_reg.reg = index;
+		decoded_mod_rm->base_reg.reg = base;
 
 		// Displacement.
 		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), ( mod == 1 ) ? IRA_DISPLACEMENT_8 : IRA_DISPLACEMENT_32,
@@ -992,70 +992,124 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ir
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size ) {
+int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, uint8_t flags ) {
 
-	int result;
-	int is_sib = _IRA_FALSE;
+	int result = _IRA_INT_ERROR_NO_ERROR;
+
+	// ModR/M.
+	uint8_t mod, rm;
 
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	struct ira_decoded_mod_rm *decoded_mod_rm = &(decoding_context->mod_rm);
 
-	// Check if ModRM has already been decoded.
-	if( !decoded_mod_rm->decoded ) {
+	// Get raw ModR/M byte to decode it.
+	uint8_t mod_rm = context->decoding_context.mod_rm.raw_mod_rm.value;
 
-		ira_mod_rm_addressing_decoder decoder;
+	// Decode ModRM.
+	mod = _IRA_MODRM_MOD(mod_rm);
+	rm = _IRA_MODRM_RM(mod_rm);
 
-		// Get ModRM byte.
-		uint8_t mod_rm = _ira_stream_read( context->stream, &result );
-		if( result ) {
-			decoded_mod_rm->raw_mod_rm.value = mod_rm;
-			decoded_mod_rm->raw_mod_rm.is_not_null = _IRA_TRUE;
-		} else {
-			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+	uint8_t rex;
+
+	// Check if there is REX register and get it.
+	if( _ira_modrm_decoder_get_rex(context, decoded_mod_rm) ) {
+		rex = decoded_mod_rm->raw_rex.value;
+		rm |= ( _IRA_REX_B(rex) << 3 );
+	}
+
+	if( mod == 3 ) {
+		// Registers.
+		decoded_mod_rm->reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, rm );
+	} else if( _IRA_MODRM_RM(mod_rm) == 4 ) {
+		// Decode SIB addressing format.
+		result = _ira_modrm_addressing_decoder_sib( context, reg_type, operand_register_size );
+	} else if( mod == 1 && _IRA_MODRM_RM(mod_rm) == 5 ) {
+		// disp32.
+		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_32,
+				( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
+	} else {
+		// Base register.
+		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
+		decoded_mod_rm->base_reg.reg_type = (effective_address_size == _IRA_ASA_64) ? IRA_REG_GPR_64 : IRA_REG_GPR_32;
+		decoded_mod_rm->base_reg.reg = rm;
+		// Displacement.
+		if( mod != 0 ) {
+			result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), ( mod == 1 ) ? IRA_DISPLACEMENT_8 : IRA_DISPLACEMENT_32,
+					( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
 		}
+	}
 
-		uint8_t effective_asa = decoding_context->effective_address_size_attribute;
+	// Decodes register if something needs it.
+	if ( flags & _IRA_MOD_RM_FLAGS_DECODE_REG ) {
+		uint8_t reg = _IRA_MODRM_REG_OPCODE(mod_rm);
+		if( decoded_mod_rm->raw_rex.is_not_null ) {
+			reg |= ( _IRA_REX_R(rex) << 3 );
+		}
+		decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, reg );
+		decoded_mod_rm->decoded_reg = _IRA_TRUE;
+	}
 
-		// Get SIB if exists.
-		if( effective_asa == _IRA_ASA_32 || effective_asa == _IRA_ASA_64 ) {
-			if( _IRA_MODRM_RM(mod_rm) == 4 && _IRA_MODRM_MOD(mod_rm) != 3 ) {
-				uint8_t sib = _ira_stream_read( context->stream, &result );
-				if( result ) {
-					decoded_mod_rm->raw_sib.value = sib;
-					decoded_mod_rm->raw_sib.is_not_null = _IRA_TRUE;
-					is_sib = _IRA_TRUE;
-				} else {
-					return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
-				}
+	return result;
+}
+
+int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, uint8_t flags ) {
+
+	int result;
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_decoded_mod_rm *decoded_mod_rm = &(decoding_context->mod_rm);
+
+	if( flags & _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING ) {
+
+		// Decodes addressing mode and optionally register.
+		// Check if ModRM addressing has already been decoded.
+		if( !decoded_mod_rm->decoded_addressing ) {
+
+			// Get ModRM byte.
+			result = _ira_modrm_decoder_get_modrm( context, decoded_mod_rm );
+			if( result != _IRA_INT_ERROR_NO_ERROR ) {
+				return result;
 			}
-		}
 
-		// Get REX.
-		if( context->mode == IRA_MOD_64BIT ) {
-			uint8_t rex = _ira_diss_context_get_REX_prefix( context, &result );
-			if( result ) {
-				decoded_mod_rm->raw_rex.value = rex;
-				decoded_mod_rm->raw_rex.is_not_null = _IRA_TRUE;
-			}
-		}
+			uint8_t effective_asa = decoding_context->effective_address_size_attribute;
 
-		// Choose addressing form decoder.
-		if( is_sib ) {
-			decoder = _ira_modrm_addressing_decoder_sib;
-		} else {
 			if( effective_asa == _IRA_ASA_16 ) {
-				decoder = _ira_modrm_addressing_decoder_16_bit;
+				result = _ira_modrm_addressing_decoder_16_bit(context, reg_type, operand_register_size, flags);
 			} else {
-				decoder = _ira_modrm_addressing_decoder_32_64_bit;
+				result = _ira_modrm_addressing_decoder_32_64_bit(context, reg_type, operand_register_size, flags);
 			}
+
+			if( result != _IRA_INT_ERROR_NO_ERROR ) {
+				return result;
+			}
+
+			decoded_mod_rm->decoded_addressing = _IRA_TRUE;
 		}
 
-		result = decoder( context, reg_type, operand_size );
-		if( result != _IRA_INT_ERROR_NO_ERROR ) {
-			return result;
-		}
+	}
 
-		decoded_mod_rm->decoded = _IRA_TRUE;
+	if ( flags & _IRA_MOD_RM_FLAGS_DECODE_REG ) {
+
+		// Decodes only register ignoring addressing mode. There are commands that
+		// do not need addressing form decoded. In such cases we only perform register
+		// decoding.
+		if( !decoded_mod_rm->decoded_reg ) {
+
+			// Get ModRM byte.
+			result = _ira_modrm_decoder_get_modrm( context, decoded_mod_rm );
+			if( result != _IRA_INT_ERROR_NO_ERROR ) {
+				return result;
+			}
+
+			uint8_t reg = _IRA_MODRM_REG_OPCODE(decoded_mod_rm->raw_mod_rm.value);
+
+			// Check if there is REX prefix that can extend register and get it.
+			if( _ira_modrm_decoder_get_rex( context, decoded_mod_rm ) ) {
+				reg |= ( _IRA_REX_R(decoded_mod_rm->raw_rex.value) << 3 );
+			}
+
+			decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, reg );
+		}
 	}
 
 	return _IRA_INT_ERROR_NO_ERROR;

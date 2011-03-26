@@ -55,8 +55,10 @@ struct ira_nullable_byte {
 /* ModRM decoding. */
 
 struct ira_decoded_mod_rm {
-	// Set to 1 if ModRM exists and has been decoded for the current instruction.
-	int decoded;
+	// Set to _IRA_TRUE if ModRM exists and addressing has been decoded for the current instruction.
+	int decoded_addressing;
+	// Set to _IRA_TRUE if ModRM exists and register has been decoded for the current instruction.
+	int decoded_reg;
 	// ModRM byte.
 	n_byte raw_mod_rm;
 	// SIB byte.
@@ -132,9 +134,6 @@ typedef int (*ira_instruction_decoder)( struct ira_diss_context *context, struct
 /* Decoders responsible for operand disassemblation. */
 typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 
-/* Decoders responsible for ModR/M decoding */
-typedef int (*ira_mod_rm_addressing_decoder)( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size );
-
 struct ira_diss_tree_instruction_decoding {
 	/* Pointer to the next decoding. There is no need to provide additional structure for one directional list */
 	struct ira_diss_tree_instruction_decoding *next_instruction_decoding;
@@ -194,8 +193,8 @@ struct ira_instruction_desc {
 /* SIB decoding */
 
 #define _IRA_SIB_SS(x)				( x >> 6 )
-#define _IRA_SIB_INDEX(x)			( ( x & 0x38 ) >> 3 );
-#define _IRA_SIB_BASE(x)			( x & 0x07 );
+#define _IRA_SIB_INDEX(x)			( ( x & 0x38 ) >> 3 )
+#define _IRA_SIB_BASE(x)			( x & 0x07 )
 
 /* REX decoding */
 
