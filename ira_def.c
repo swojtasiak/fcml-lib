@@ -27,7 +27,7 @@ struct ira_opcode_desc _ira_opcode_desc_AAS[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_ADC[] = {
 	// 10 /r ADC r/m8, r8 A Valid Valid Add with carry byte register to r/m8.
-	{ NULL, 0x01F9, 0x00D48000, { 0x10, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA }
+	{ NULL, 0x01F9, 0x00D48000, { 0x10, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA }
 };
 
 

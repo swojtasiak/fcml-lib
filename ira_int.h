@@ -43,22 +43,13 @@ uint32_t _ira_stream_size( struct ira_memory_stream *stream );
 /* Reads specified number of bytes from stream and stores them in given buffer. */
 int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int size);
 
-/* Common data types. */
-
-struct ira_nullable_byte {
-	// 0 if null, otherwise 1.
-	uint8_t is_not_null;
-	// Value.
-	uint8_t value;
-} typedef n_byte;
-
 /* ModRM decoding. */
 
 struct ira_decoded_mod_rm {
 	// Set to _IRA_TRUE if ModRM exists and addressing has been decoded for the current instruction.
-	int decoded_addressing;
+	uint8_t decoded_addressing;
 	// Set to _IRA_TRUE if ModRM exists and register has been decoded for the current instruction.
-	int decoded_reg;
+	uint8_t decoded_reg;
 	// ModRM byte.
 	n_byte raw_mod_rm;
 	// SIB byte.
@@ -134,6 +125,13 @@ typedef int (*ira_instruction_decoder)( struct ira_diss_context *context, struct
 /* Decoders responsible for operand disassemblation. */
 typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 
+struct ira_operand_decoding {
+	// Operand access mode.
+	enum ira_access_mode access_mode;
+	// Operand decoder.
+	ira_operand_decoder decoder;
+};
+
 struct ira_diss_tree_instruction_decoding {
 	/* Pointer to the next decoding. There is no need to provide additional structure for one directional list */
 	struct ira_diss_tree_instruction_decoding *next_instruction_decoding;
@@ -148,7 +146,7 @@ struct ira_diss_tree_instruction_decoding {
 	/* Instruction decoder. */
 	ira_instruction_decoder instruction_decoder;
 	/* Function used to decode instruction operands. */
-	ira_operand_decoder operand_decoders[4];
+	struct ira_operand_decoding operand_decodings[4];
 };
 
 struct ira_diss_tree_instruction_details {
@@ -234,19 +232,29 @@ struct ira_instruction_desc {
 
 /* Operands encoding */
 
+#define _IRA_R	0x00
+#define _IRA_W	0x80
+
 #define _IRA_NA	0x00
 
 #define _IRA_OPERAND_IB		0x01
+#define _IRA_OPERAND_IB_W	( _IRA_OPERAND_IB | _IRA_W )
 #define _IRA_OPERAND_IW		0x02
+#define _IRA_OPERAND_IW_W	( _IRA_OPERAND_IW | _IRA_W )
 #define _IRA_OPERAND_ID		0x03
+#define _IRA_OPERAND_ID_W	( _IRA_OPERAND_ID | _IRA_W )
 #define _IRA_OPERAND_IO		0x04
+#define _IRA_OPERAND_IO_W	( _IRA_OPERAND_IO | _IRA_W )
 
-#define _IRA_MODRM_BASE 0x80 // Base for ModRM based operands.
 
-#define _IRA_MODRM(x) _IRA_MODRM_BASE + x
+#define _IRA_MODRM_BASE 0x40 // Base for ModRM based operands.
+
+#define _IRA_MODRM(x) ( _IRA_MODRM_BASE + x )
 
 #define _IRA_OPERAND_MODRM_RM_8		_IRA_MODRM(_IRA_RM_8)
+#define _IRA_OPERAND_MODRM_RM_8_W	( _IRA_OPERAND_MODRM_RM_8 | _IRA_W )
 #define _IRA_OPERAND_MODRM_R_8		_IRA_MODRM(_IRA_R_8)
+#define _IRA_OPERAND_MODRM_R_8_W	( _IRA_OPERAND_MODRM_R_8 | _IRA_W )
 
 /* Externals. */
 

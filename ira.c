@@ -43,7 +43,7 @@ int _ira_map_internall_error_code( int internal_error );
 struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding* instruction );
 
 /* Factory method that returns operand decoder for given type. */
-ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type );
+void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding, uint8_t decoder_type );
 
 /* Factory method that returns operand decoder for given type. */
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type );
@@ -132,6 +132,9 @@ int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira
 int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 
 /* Decoders' helpers methods. */
+
+/* Maps decoded addressing form from ModR/M to given operand. */
+int _ira_modrm_decoder_get_address( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 
 /* Calculates effective address-size attribute */
 int _ira_get_effective_asa( struct ira_diss_context *context );
@@ -532,10 +535,10 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	decoding->instruction_decoder = _ira_choose_instruction_decoder( instruction_desc->instruction_type );
 
 	// Choose functions used to decode operands.
-	decoding->operand_decoders[0] = _ira_choose_operand_decoder( opcode_desc->opperand_1 );
-	decoding->operand_decoders[1] = _ira_choose_operand_decoder( opcode_desc->opperand_2 );
-	decoding->operand_decoders[2] = _ira_choose_operand_decoder( opcode_desc->opperand_3 );
-	decoding->operand_decoders[3] = _ira_choose_operand_decoder( opcode_desc->opperand_4 );
+	_ira_prepare_operand_decoding( &(decoding->operand_decodings[0]), opcode_desc->opperand_1 );
+	_ira_prepare_operand_decoding( &(decoding->operand_decodings[1]), opcode_desc->opperand_2 );
+	_ira_prepare_operand_decoding( &(decoding->operand_decodings[2]), opcode_desc->opperand_3 );
+	_ira_prepare_operand_decoding( &(decoding->operand_decodings[3]), opcode_desc->opperand_4 );
 
 	// Insert it in appropriate order.
 	int order = _ira_get_decoding_order( decoding );
@@ -577,22 +580,33 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 	return order;
 }
 
-ira_operand_decoder _ira_choose_operand_decoder( uint8_t decoder_type ) {
+void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding, uint8_t decoder_type ) {
 	switch( decoder_type ) {
 	case _IRA_OPERAND_IB:
-		return &_ira_opcode_decoder_ib;
+		operand_decoding->decoder = &_ira_opcode_decoder_ib;
+		break;
 	case _IRA_OPERAND_IW:
-		return &_ira_opcode_decoder_iw;
+		operand_decoding->decoder = &_ira_opcode_decoder_iw;
+		break;
 	case _IRA_OPERAND_ID:
-		return &_ira_opcode_decoder_id;
+		operand_decoding->decoder = &_ira_opcode_decoder_id;
+		break;
 	case _IRA_OPERAND_IO:
-		return &_ira_opcode_decoder_io;
+		operand_decoding->decoder = &_ira_opcode_decoder_io;
+		break;
 	case _IRA_OPERAND_MODRM_RM_8:
-			return &_ira_opcode_decoder_modrm_rm_8;
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm_8;
+		break;
 	case _IRA_OPERAND_MODRM_R_8:
-			return &_ira_opcode_decoder_modrm_r_8;
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r_8;
+		break;
+	default:
+		operand_decoding->decoder = NULL;
+		operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;
+		return;
 	}
-	return NULL;
+	// Store access mode for this operand decoding.
+	operand_decoding->access_mode = ( decoder_type & _IRA_W ) ? IRA_WRITE : IRA_READ;
 }
 
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type ) {
@@ -738,12 +752,14 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	// Decode operands, one by one.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
-		ira_operand_decoder decoder = instruction->operand_decoders[i];
+		ira_operand_decoder decoder = instruction->operand_decodings[i].decoder;
 		if( decoder != NULL ) {
 			rc = decoder( context, &(result->operands[i]) );
 			if( rc != _IRA_INT_ERROR_NO_ERROR ) {
 				return rc;
 			}
+			// Copy access mode to decoded operand.
+			result->operands[i].access_mode = instruction->operand_decodings[i].access_mode;
 		} else {
 			struct ira_instruction_operand *operand = &(result->operands[i]);
 			memset( operand, 0, sizeof( struct ira_instruction_operand ) );
@@ -803,7 +819,6 @@ int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruc
 }
 
 int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	struct ira_instruction_operand io;
 
 	// Decode ModR/M.
 	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_OR_8, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
@@ -812,9 +827,11 @@ int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira
 	}
 
 	// Prepare operand using decoded ModRM.
+	result = _ira_modrm_decoder_get_address( context, operand );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
 
-
-	*operand = io;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
@@ -823,6 +840,27 @@ int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_
 }
 
 /* ModRM decoding. */
+
+int _ira_modrm_decoder_get_address( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+	// IAE because we shouldn't call this method if ModRM hasn't been decoded.
+	int result = _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
+	struct ira_decoded_mod_rm *decoded_mod_rm = &(context->decoding_context.mod_rm);
+	if( decoded_mod_rm->decoded_addressing ) {
+		operand->operand_type = IRA_ADDRESS;
+		operand->addressing.addressing_type = IRA_MOD_RM;
+		struct ira_mod_rm_addressing *mod_rm = &(operand->addressing.mod_rm);
+		// Copy all needed fields.
+		mod_rm->raw_mod_rm = decoded_mod_rm->raw_mod_rm;
+		mod_rm->raw_sib = decoded_mod_rm->raw_sib;
+		mod_rm->raw_rex = decoded_mod_rm->raw_rex;
+		mod_rm->base_reg = decoded_mod_rm->base_reg;
+		mod_rm->index_reg = decoded_mod_rm->index_reg;
+		mod_rm->scale = decoded_mod_rm->scale;
+		mod_rm->displacement = decoded_mod_rm->displacement;
+		result = _IRA_INT_ERROR_NO_ERROR;
+	}
+	return result;
+}
 
 int _ira_modrm_decoder_get_modrm( struct ira_diss_context *context, struct ira_decoded_mod_rm *decoded_mod_rm ) {
 	// Get ModRM byte if it has not been got yet.

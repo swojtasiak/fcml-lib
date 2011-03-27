@@ -112,6 +112,15 @@
 #define _IRA_REG_R15	15
 #define _IRA_REG_XMM15	15
 
+/* Common data types. */
+
+struct ira_nullable_byte {
+	// 0 if null, otherwise 1.
+	uint8_t is_not_null;
+	// Value.
+	uint8_t value;
+} typedef n_byte;
+
 enum ira_operation_mode {
 	IRA_MOD_16BIT,
 	IRA_MOD_32BIT,
@@ -130,12 +139,12 @@ enum ira_result_code {
 
 enum ira_operand_type {
 	IRA_NONE = 0,
-	IRA_IMMEDIATE_ADDRESS,
+	IRA_ADDRESS,
 	IRA_IMMEDIATE_DATA_8,
 	IRA_IMMEDIATE_DATA_16,
 	IRA_IMMEDIATE_DATA_32,
 	IRA_IMMEDIATE_DATA_64,
-	IRA_GPR
+	IRA_REGISTER
 };
 
 enum ira_register_type {
@@ -216,11 +225,52 @@ struct ira_displacement {
 	union ira_displacement_value displacement;
 };
 
+enum ira_addressing_type {
+	IRA_MOD_RM,
+	IRA_IMMEDIATE_ADDRESS,
+	IRA_RELATIVE_ADDRESS
+};
+
+enum ira_access_mode {
+	IRA_ACCESS_MODE_UNDEFINED,
+	IRA_READ,
+	IRA_WRITE
+};
+
+struct ira_mod_rm_addressing {
+	// ModRM byte.
+	n_byte raw_mod_rm;
+	// SIB byte.
+	n_byte raw_sib;
+	// REX prefix.
+	n_byte raw_rex;
+	// Base register.
+	struct ira_register base_reg;
+	// Index register.
+	struct ira_register index_reg;
+	// Scale factor value for 32 and 64 bit addressing modes.
+	n_byte scale;
+	// Displacement value.
+	struct ira_displacement displacement;
+};
+
+struct ira_addressing {
+	// Type of addressing.
+	enum ira_addressing_type addressing_type;
+	// ModRM addressing.
+	struct ira_mod_rm_addressing mod_rm;
+};
+
 struct ira_instruction_operand {
-	/* Type of operand. */
+	// Type of operand.
 	enum ira_operand_type operand_type;
-	/* Place for immediate data. */
+	// Access mode.
+	enum ira_access_mode access_mode;
+	// Place for immediate data.
 	union ira_immediate_data immediate;
+	// Addressing.
+	struct ira_addressing addressing;
+
 };
 
 struct ira_instruction_prefix {
