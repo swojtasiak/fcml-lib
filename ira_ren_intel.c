@@ -11,7 +11,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-#include "ira_ren.h"
+#include "ira_ren_intel.h"
 
 #define _IRA_TRUE 1
 #define _IRA_FALSE 0
@@ -161,7 +161,7 @@ void _ira_format_printf( struct _ira_format_stream *stream, const char *format, 
 /* Operand formating functions. */
 
 void _ira_operand_formater_addressing( struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
-	switch( operand->addressing->addressing_type ) {
+	switch( operand->addressing.addressing_type ) {
 	case IRA_MOD_RM:
 		break;
 	case IRA_IMMEDIATE_ADDRESS:

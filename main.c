@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "ira.h"
-#include "ira_ren.h"
+#include "ira_ren_intel.h"
 
 struct ab {
 	uint32_t t;
