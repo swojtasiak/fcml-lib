@@ -1,7 +1,7 @@
 #ifndef IRA_H_INCLUDED
 #define IRA_H_INCLUDED
 
-#include <stdint.h>
+#include <inttypes.h>
 
 #define _IRA_OPERANDS_COUNT						4
 #define _IRA_PREFIXES_COUNT						12
@@ -270,7 +270,8 @@ struct ira_instruction_operand {
 	union ira_immediate_data immediate;
 	// Addressing.
 	struct ira_addressing addressing;
-
+	// Register.
+	struct ira_register reg;
 };
 
 struct ira_instruction_prefix {
@@ -295,6 +296,8 @@ struct ira_disassemble_result {
 	uint8_t opcodes_count;
 	// Opcode bytes without mandatory prefixes.
 	uint8_t opcodes[3];
+	// REX prefix.
+	n_byte rex;
 	/* Disassembled operands. */
 	struct ira_instruction_operand operands[_IRA_OPERANDS_COUNT];
 };

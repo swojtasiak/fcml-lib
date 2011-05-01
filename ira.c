@@ -76,47 +76,6 @@ struct ira_register _ira_addressing_form_reg_array_16[8][2] = {
 	{ { IRA_REG_GPR_16, _IRA_REG_BX }, { IRA_NO_REG, 0 } }
 };
 
-/* Registers map used in decoding process. */
-
-/*
-
-struct ira_register _ira_registers_decoding_table[16][6] = {
-		{ {IRA_REG_GPR_8, _IRA_REG_AL}, {IRA_REG_GPR_16, _IRA_REG_AX}, { IRA_REG_GPR_32, _IRA_REG_EAX }, { IRA_REG_GPR_64, _IRA_REG_RAX },
-				{ IRA_REG_MMX, _IRA_REG_MM0 }, { IRA_REG_XMM, _IRA_REG_XMM0 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_CL}, {IRA_REG_GPR_16, _IRA_REG_CX}, { IRA_REG_GPR_32, _IRA_REG_ECX }, { IRA_REG_GPR_64, _IRA_REG_RCX },
-				{ IRA_REG_MMX, _IRA_REG_MM1 }, { IRA_REG_XMM, _IRA_REG_XMM1 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_DL}, {IRA_REG_GPR_16, _IRA_REG_DX}, { IRA_REG_GPR_32, _IRA_REG_EDX }, { IRA_REG_GPR_64, _IRA_REG_RDX },
-				{ IRA_REG_MMX, _IRA_REG_MM2 }, { IRA_REG_XMM, _IRA_REG_XMM2 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_BL}, {IRA_REG_GPR_16, _IRA_REG_BX}, { IRA_REG_GPR_32, _IRA_REG_EBX }, { IRA_REG_GPR_64, _IRA_REG_RBX },
-				{ IRA_REG_MMX, _IRA_REG_MM3 }, { IRA_REG_XMM, _IRA_REG_XMM3 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_AH}, {IRA_REG_GPR_16, _IRA_REG_SP}, { IRA_REG_GPR_32, _IRA_REG_ESP }, { IRA_REG_GPR_64, _IRA_REG_RSP },
-				{ IRA_REG_MMX, _IRA_REG_MM4 }, { IRA_REG_XMM, _IRA_REG_XMM4 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_CH}, {IRA_REG_GPR_16, _IRA_REG_BP}, { IRA_REG_GPR_32, _IRA_REG_EBP }, { IRA_REG_GPR_64, _IRA_REG_RBP },
-				{ IRA_REG_MMX, _IRA_REG_MM5 }, { IRA_REG_XMM, _IRA_REG_XMM5 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_DH}, {IRA_REG_GPR_16, _IRA_REG_SI}, { IRA_REG_GPR_32, _IRA_REG_ESI }, { IRA_REG_GPR_64, _IRA_REG_RSI },
-				{ IRA_REG_MMX, _IRA_REG_MM6 }, { IRA_REG_XMM, _IRA_REG_XMM6 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_BH}, {IRA_REG_GPR_16, _IRA_REG_DI}, { IRA_REG_GPR_32, _IRA_REG_EDI }, { IRA_REG_GPR_64, _IRA_REG_RDI },
-				{ IRA_REG_MMX, _IRA_REG_MM7 }, { IRA_REG_XMM, _IRA_REG_XMM7 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_R8L}, {IRA_REG_GPR_16, _IRA_REG_R8W}, { IRA_REG_GPR_32, _IRA_REG_R8D }, { IRA_REG_GPR_64, _IRA_REG_R8 },
-				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM8 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_R9L}, {IRA_REG_GPR_16, _IRA_REG_R9W}, { IRA_REG_GPR_32, _IRA_REG_R9D }, { IRA_REG_GPR_64, _IRA_REG_R9 },
-				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM9 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_R10L}, {IRA_REG_GPR_16, _IRA_REG_R10W}, { IRA_REG_GPR_32, _IRA_REG_R10D }, { IRA_REG_GPR_64, _IRA_REG_R10 },
-				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM10 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_R11L}, {IRA_REG_GPR_16, _IRA_REG_R11W}, { IRA_REG_GPR_32, _IRA_REG_R11D }, { IRA_REG_GPR_64, _IRA_REG_R11 },
-				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM11 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_R12L}, {IRA_REG_GPR_16, _IRA_REG_R12W}, { IRA_REG_GPR_32, _IRA_REG_R12D }, { IRA_REG_GPR_64, _IRA_REG_R12 },
-				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM12 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_R13L}, {IRA_REG_GPR_16, _IRA_REG_R13W}, { IRA_REG_GPR_32, _IRA_REG_R13D }, { IRA_REG_GPR_64, _IRA_REG_R13 },
-				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM13 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_R14L}, {IRA_REG_GPR_16, _IRA_REG_R14W}, { IRA_REG_GPR_32, _IRA_REG_R14D }, { IRA_REG_GPR_64, _IRA_REG_R14 },
-				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM14 } },
-		{ {IRA_REG_GPR_8, _IRA_REG_R15L}, {IRA_REG_GPR_16, _IRA_REG_R15W}, { IRA_REG_GPR_32, _IRA_REG_R15D }, { IRA_REG_GPR_64, _IRA_REG_R15 },
-				{ IRA_NO_REG, 0 }, { IRA_REG_XMM, _IRA_REG_XMM15 } }
-};
-
-*/
-
 #define _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING		1
 #define _IRA_MOD_RM_FLAGS_DECODE_REG			2
 
@@ -129,12 +88,17 @@ int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruc
 int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size );
 int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size );
 
 /* Decoders' helpers methods. */
 
 /* Maps decoded addressing form from ModR/M to given operand. */
-int _ira_modrm_decoder_get_address( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+
+/* Maps decoded register from ModR/M to given operand. */
+int _ira_modrm_decoder_operand_fill_register( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 
 /* Calculates effective address-size attribute */
 int _ira_get_effective_asa( struct ira_diss_context *context );
@@ -600,6 +564,9 @@ void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decodin
 	case _IRA_OPERAND_MODRM_R_8:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r_8;
 		break;
+	case _IRA_OPERAND_MODRM_RM_8_W:
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm_8;
+		break;
 	default:
 		operand_decoding->decoder = NULL;
 		operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;
@@ -767,6 +734,9 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 		}
 	}
 
+	// Store REX in result if exists.
+	result->rex = context->decoding_context.mod_rm.raw_rex;
+
 	result->code = RC_OK;
 
 	return _IRA_INT_ERROR_NO_ERROR;
@@ -819,15 +789,34 @@ int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruc
 }
 
 int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+	return _ira_opcode_decoder_modrm_rm( context, operand, IRA_REG_GPR, _IRA_OR_8 );
+}
+
+int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+	return _ira_opcode_decoder_modrm_r( context, operand, IRA_REG_GPR, _IRA_OR_8 );
+}
+
+//! Generic ModR/M addressing mode decoder.
+/*!
+ * \brief Generic ModR/M addressing mode decoder. This is a generic decoder that should be only used in functions
+ * that are prepared to decode specific addressing modes.
+ *
+ * \param context Disassembling context.
+ * \param operand Destination operand.
+ * \param reg_type Register type used if "Mod" field of ModR/M is 3.
+ * \param operand_register_size Register size used if "Mod" field of ModR/M is 3.
+ * \return Error code.
+ */
+int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size ) {
 
 	// Decode ModR/M.
-	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_OR_8, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
+	int result = _ira_modrm_decoder( context, reg_type, operand_register_size, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
 
 	// Prepare operand using decoded ModRM.
-	result = _ira_modrm_decoder_get_address( context, operand );
+	result = _ira_modrm_decoder_operand_fill_address( context, operand );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -835,13 +824,37 @@ int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	return 0;
+int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size ) {
+
+	// Decode ModR/M.
+	int result = _ira_modrm_decoder( context, reg_type, operand_register_size, _IRA_MOD_RM_FLAGS_DECODE_REG );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+
+	// Prepare operand using decoded ModRM.
+	result = _ira_modrm_decoder_operand_fill_register( context, operand );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 /* ModRM decoding. */
 
-int _ira_modrm_decoder_get_address( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+int _ira_modrm_decoder_operand_fill_register( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+	int result = _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
+	struct ira_decoded_mod_rm *decoded_mod_rm = &(context->decoding_context.mod_rm);
+	if( decoded_mod_rm->decoded_reg ) {
+		operand->operand_type = IRA_REGISTER;
+		operand->reg = decoded_mod_rm->operand_reg;
+		result = _IRA_INT_ERROR_NO_ERROR;
+	}
+	return result;
+}
+
+int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
 	// IAE because we shouldn't call this method if ModRM hasn't been decoded.
 	int result = _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
 	struct ira_decoded_mod_rm *decoded_mod_rm = &(context->decoding_context.mod_rm);
@@ -1147,6 +1160,8 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 			}
 
 			decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, reg );
+
+			decoded_mod_rm->decoded_reg = _IRA_TRUE;
 		}
 	}
 

@@ -232,7 +232,9 @@ struct ira_instruction_desc {
 
 /* Operands encoding */
 
+// Source operand (Reads).
 #define _IRA_R	0x00
+// Destination operand (Writes).
 #define _IRA_W	0x80
 
 #define _IRA_NA	0x00
