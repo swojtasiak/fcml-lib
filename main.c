@@ -15,18 +15,15 @@ struct ab a[] = {{ 1,1 }};
 
 int main()
 {
-	int i = 0x0111;
-
-	int a = _IRA_CLEAR_BIT( i, 0 );
-
-    uint8_t data[] = { 0x67, 0x47, 0x10, 0x4c, 0x5c, 0x00 };
+    //uint8_t data[] = { 0x67, 0x47, 0x10, 0x4c, 0x5c, 0x81 };
+	uint8_t data[] = { 0x67, 0x10, 0x4c, 0x5c, 0x81 };
 
     struct ira_disassemble_info info;
     info.address = &data;
     info.size = sizeof(data);
-    info.address_size_attribute = 64;
+    info.address_size_attribute = 32;
     info.operand_size_attribute = 32;
-    info.mode = IRA_MOD_64BIT;
+    info.mode = IRA_MOD_32BIT;
 
     struct ira_disassemble_result result;
 
@@ -35,14 +32,20 @@ int main()
     // Disassemble.
     ira_disassemble( &info, &result );
 
-    // Print.
-    char buffer[512] = {0};
+    if( result.code == RC_OK ) {
 
-    struct ira_format_info format;
+		// Print.
+		char buffer[512] = {0};
 
-    ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
+		struct ira_intel_format_info format;
+		format.show_zero_displacement = 0;
+		format.show_extended_displacement = 1;
 
-    printf( "%s\n", buffer );
+		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
+
+		printf( "%s\n", buffer );
+
+    }
 
     ira_deinit();
 

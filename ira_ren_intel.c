@@ -15,15 +15,15 @@
 
 // Operand formating methods.
 
-typedef void (*_ira_operand_formater)( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+typedef void (*_ira_operand_formater)( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 
-void _ira_operand_formater_addressing( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_immediate_8( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_immediate_16( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_immediate_32( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_immediate_64( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_addressing( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_immediate_8( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_immediate_16( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_immediate_32( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_immediate_64( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 
 /* Maps operand type to formating function. */
 _ira_operand_formater _ira_formating_table[] = {
@@ -36,7 +36,7 @@ _ira_operand_formater _ira_formating_table[] = {
 	&_ira_operand_formater_register // IRA_REGISTER
 };
 
-int _ira_format_print_operand( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+int _ira_format_print_operand( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 	int res = _IRA_FALSE;
 	_ira_operand_formater operand_formater = _ira_formating_table[operand->operand_type];
 	if( operand_formater != NULL ) {
@@ -47,7 +47,7 @@ int _ira_format_print_operand( struct ira_disassemble_result *result, struct ira
 }
 
 /* Function used to format instructions using Intel syntax. */
-void ira_format_intel_instruction( char *buffer, int size, struct ira_disassemble_result *result, struct ira_format_info *format_info ) {
+void ira_format_intel_instruction( char *buffer, int size, struct ira_disassemble_result *result, struct ira_intel_format_info *format_info ) {
 
 	int i;
 	char local_buffer[_IRA_LOCAL_BUFFER_SIZE] = {0};
@@ -60,12 +60,12 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 
 	// Local stream.
 	struct _ira_format_stream local_stream;
-	stream.buffer = local_buffer;
-	stream.size = _IRA_LOCAL_BUFFER_SIZE;
-	stream.offset = 0;
+	local_stream.buffer = local_buffer;
+	local_stream.size = _IRA_LOCAL_BUFFER_SIZE;
+	local_stream.offset = 0;
 
 	// Add mnemonic.
-	_ira_format_printf( &stream, "%s", result->mnemonic );
+	_ira_format_printf( &stream, "%s ", result->mnemonic );
 
 	// Add all operands.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
@@ -84,7 +84,7 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 
 /* Operand formating functions. */
 
-void _ira_operand_formater_addressing( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_addressing( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 	switch( operand->addressing.addressing_type ) {
 	case IRA_MOD_RM:
 		_ira_operand_formater_addressing_modrm( result, format_info, operand, stream );
@@ -96,7 +96,7 @@ void _ira_operand_formater_addressing( struct ira_disassemble_result *result, st
 	}
 }
 
-void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 
 	struct ira_addressing *addressing = &operand->addressing;
 	struct ira_mod_rm_addressing *mod_rm = &addressing->mod_rm;
@@ -111,55 +111,68 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 	if( mod_rm->index_reg.reg_type != IRA_NO_REG ) {
 		_ira_format_append_if_not_first( stream, &first, "+" );
-		_ira_format_append_reg( stream, &mod_rm->base_reg, result->rex.is_not_null );
+		_ira_format_append_reg( stream, &mod_rm->index_reg, result->rex.is_not_null );
 	}
 
 	if( mod_rm->scale.is_not_null ) {
 		_ira_format_append_if_not_first( stream, &first, "*" );
 
-		struct _ira_integer scale_value;
+		struct _ira_integer scale_value = {0};
 		scale_value.is_signed = _IRA_FALSE;
 		scale_value.size = 8;
 		scale_value.value.v8 = mod_rm->scale.value;
 
 		// 10 means decimal.
-		_ira_format_append_integer( stream, scale_value, 10 );
+		_ira_format_append_integer( stream, &scale_value, 10 );
 	}
 
-	if( mod_rm->displacement.displacement_type != IRA_NO_DISPLACEMENT ) {
+	if( mod_rm->displacement.displacement_type != IRA_NO_DISPLACEMENT
+			&& ( format_info->show_zero_displacement || mod_rm->displacement.displacement.displacement_32 != 0 ) ) {
 
-		struct _ira_integer displacement_value;
-		scale_value.is_signed = _IRA_FALSE;
-		scale_value.size = mod_rm->displacement.extension_size;
+		_ira_format_append_if_not_first( stream, &first, "+" );
+
+		struct _ira_integer displacement_value = {0};
+		displacement_value.is_signed = _IRA_TRUE;
+		displacement_value.size = mod_rm->displacement.displacement_type;
 
 		switch(mod_rm->displacement.displacement_type) {
 		case IRA_DISPLACEMENT_8:
-			scale_value.value.v8 =  mod_rm->displacement.displacement.displacement_8;
+			displacement_value.value.v8 = mod_rm->displacement.displacement.displacement_8;
 			break;
 		case IRA_DISPLACEMENT_16:
-			scale_value.value.v16 =  mod_rm->displacement.displacement.displacement_16;
+			displacement_value.value.v16 = mod_rm->displacement.displacement.displacement_16;
 			break;
 		case IRA_DISPLACEMENT_32:
-			scale_value.value.v32 =  mod_rm->displacement.displacement.displacement_32;
+			displacement_value.value.v32 = mod_rm->displacement.displacement.displacement_32;
+			break;
+		case IRA_NO_DISPLACEMENT:
+			// Should never happened.
 			break;
 		}
+
+		// Extend displacement if there is such need.
+		if( displacement_value.size != mod_rm->displacement.extension_size && format_info->show_extended_displacement ) {
+			_ira_extend_integer( &displacement_value, mod_rm->displacement.extension_size, _IRA_TRUE );
+		}
+
+		_ira_format_append_integer( stream, &displacement_value, 16 );
 	}
 
 	_ira_format_append_str( stream, "]" );
 
 }
 
-void _ira_operand_formater_immediate_8( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_immediate_8( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 }
 
-void _ira_operand_formater_immediate_16( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_immediate_16( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 }
 
-void _ira_operand_formater_immediate_32( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_immediate_32( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 }
 
-void _ira_operand_formater_immediate_64( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_immediate_64( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 }
 
-void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 }

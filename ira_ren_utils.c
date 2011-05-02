@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <ctype.h>
 
 #include "ira_ren_utils.h"
 
@@ -40,9 +41,9 @@ char *_ira_integer_formats[4][4] = {
 	// Unsigned integer values.
 	{"%"PRIu8, "%"PRIu16, "%"PRIu32, "%"PRIu64},
 	// Signed hex values.
-	{"%02"PRIx8, "%04"PRIx16, "%08"PRIx32, "%016"PRIx64},
+	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"},
 	// Unsigned hex values.
-	{"%02"PRIx8, "%04"PRIx16, "%08"PRIx32, "%016"PRIx64}
+	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"}
 };
 
 void _ira_format_append_str( struct _ira_format_stream *destination_stream, const char *source ) {
@@ -113,39 +114,129 @@ void _ira_format_append_if_not_first( struct _ira_format_stream *stream, int *fi
 	}
 }
 
+// Prints integer value.
 void _ira_format_append_integer( struct _ira_format_stream *stream, struct _ira_integer *integer, int format ) {
 
-	char *value_format = _ira_integer_formats[ ( integer->is_signed ? 1 : 0 ) + ( ( format == 10 ) ? 0 : 1 ) ][integer->size / 8];
+	char *value_format = _ira_integer_formats[ ( integer->is_signed ? 1 : 0 ) + ( ( format == 10 ) ? 0 : 1 ) ][integer->size / 8 - 1];
 
-	if( integer->is_signed ) {
+	char local_buffer[32];
+
+	// Hex values should be always treated as unsigned.
+	if( integer->is_signed && format == 10 ) {
 		switch(integer->size) {
 		case 8:
-			_ira_format_printf( stream, value_format, (signed)integer->value.v8 );
+			sprintf( local_buffer, value_format, (int8_t)integer->value.v8 );
 			break;
 		case 16:
-			_ira_format_printf( stream, value_format, (signed)integer->value.v16 );
+			sprintf( local_buffer, value_format, (int16_t)integer->value.v16 );
 			break;
 		case 32:
-			_ira_format_printf( stream, value_format, (signed)integer->value.v32 );
+			sprintf( local_buffer, value_format, (int32_t)integer->value.v32 );
 			break;
 		case 64:
-			_ira_format_printf( stream, value_format, (signed)integer->value.v64 );
+			sprintf( local_buffer, value_format, (int64_t)integer->value.v64 );
 			break;
 		}
 	} else {
 		switch(integer->size) {
 		case 8:
-			_ira_format_printf( stream, value_format, integer->value.v8 );
+			sprintf( local_buffer, value_format, integer->value.v8 );
 			break;
 		case 16:
-			_ira_format_printf( stream, value_format, integer->value.v16 );
+			sprintf( local_buffer, value_format, integer->value.v16 );
 			break;
 		case 32:
-			_ira_format_printf( stream, value_format, integer->value.v32 );
+			sprintf( local_buffer, value_format, integer->value.v32 );
 			break;
 		case 64:
-			_ira_format_printf( stream, value_format, integer->value.v64 );
+			sprintf( local_buffer, value_format, integer->value.v64 );
 			break;
 		}
 	}
+
+	// If value doesn't start with a digit add 0 at the beginning.
+	if( !isdigit( local_buffer[0] ) ) {
+		_ira_format_append_str( stream, "0" );
+	}
+
+	_ira_format_append_str( stream, local_buffer );
+}
+
+// Extends given integer to given size with sign or not.
+void _ira_extend_integer( struct _ira_integer *value, int extension_size, int sign_extend ) {
+
+	if( sign_extend ) {
+
+		int64_t temp_int;
+
+		switch( value->size ) {
+		case 8:
+			temp_int = (int64_t)((int8_t)value->value.v8);
+			break;
+		case 16:
+			temp_int = (int64_t)((int16_t)value->value.v16);
+			break;
+		case 32:
+			temp_int = (int64_t)((int32_t)value->value.v32);
+			break;
+		case 64:
+			temp_int = (int64_t)value->value.v64;
+			break;
+		}
+
+		value->value.v64 = 0;
+
+		switch( extension_size ) {
+		case 8:
+			value->value.v8 = (int8_t)temp_int;
+			break;
+		case 16:
+			value->value.v16 = (int16_t)temp_int;
+			break;
+		case 32:
+			value->value.v32 = (int32_t)temp_int;
+			break;
+		case 64:
+			value->value.v64 = (int64_t)temp_int;
+			break;
+		}
+
+	} else {
+
+		uint64_t temp_int;
+
+		switch( value->size ) {
+		case 8:
+			temp_int = (uint64_t)value->value.v8;
+			break;
+		case 16:
+			temp_int = (uint64_t)value->value.v16;
+			break;
+		case 32:
+			temp_int = (uint64_t)value->value.v32;
+			break;
+		case 64:
+			temp_int = (uint64_t)value->value.v64;
+			break;
+		}
+
+		value->value.v64 = 0;
+
+		switch( extension_size ) {
+		case 8:
+			value->value.v8 = (uint8_t)temp_int;
+			break;
+		case 16:
+			value->value.v16 = (uint16_t)temp_int;
+			break;
+		case 32:
+			value->value.v32 = (uint32_t)temp_int;
+			break;
+		case 64:
+			value->value.v64 = (uint64_t)temp_int;
+			break;
+		}
+	}
+	value->size = extension_size;
+
 }

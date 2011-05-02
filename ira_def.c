@@ -32,11 +32,11 @@ struct ira_opcode_desc _ira_opcode_desc_ADC[] = {
 
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
-		{ "AAA", _IRA_IT_IA, 1, _ira_opcode_desc_AAA },
-		{ "AAD", _IRA_IT_IA, 2, _ira_opcode_desc_AAD },
-		{ "AAM", _IRA_IT_IA, 2, _ira_opcode_desc_AAM },
-		{ "AAS", _IRA_IT_IA, 1, _ira_opcode_desc_AAS },
-		{ "ADC", _IRA_IT_IA, 1, _ira_opcode_desc_ADC },
+		{ "aaa", _IRA_IT_IA, 1, _ira_opcode_desc_AAA },
+		{ "aad", _IRA_IT_IA, 2, _ira_opcode_desc_AAD },
+		{ "aam", _IRA_IT_IA, 2, _ira_opcode_desc_AAM },
+		{ "aas", _IRA_IT_IA, 1, _ira_opcode_desc_AAS },
+		{ "adc", _IRA_IT_IA, 1, _ira_opcode_desc_ADC },
 		{ NULL, 0, 0, NULL }
 };
 
