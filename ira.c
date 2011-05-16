@@ -926,7 +926,7 @@ struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context
 	}
 	struct ira_register result_reg = {0};
 
-	// There is no MMX registers for reg > 7.
+	// There are no MMX registers for reg > 7.
 	if( !( reg_type == IRA_REG_MMX && reg > 7 ) ) {
 		result_reg.reg = reg;
 		result_reg.reg_type = type;

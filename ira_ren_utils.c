@@ -13,23 +13,23 @@
 
 #include "ira_ren_utils.h"
 
-char *_ira_reg_type_table[8][18] = {
+char *_ira_reg_symbol_table[8][18] = {
 	{ "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>" },
-	{ "al", "bl", "cl", "dl", "ah", "bh", "ch", "dh", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
-	{ "ax", "bx", "cx", "dx", "di", "si", "bp", "sp", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w" },
-	{ "eax", "ebx", "ecx", "edx", "edi", "esi", "ebp", "esp", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d" },
-	{ "rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rbp", "rsp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15" },
+	{ "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
+	{ "ax", "cx", "dx", "bx", "sp", "bp", "si", "di", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w" },
+	{ "eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d" },
+	{ "rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15" },
 	{ "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>" },
 	{ "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15" },
 	{ "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>" }
 };
 
-char *_ira_reg_type_table_rex[8][18] = {
+char *_ira_reg_symbol_table_rex[8][18] = {
 	{ "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>" },
-	{ "al", "bl", "cl", "dl", "dil", "sil", "bpl", "spl", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
-	{ "ax", "bx", "cx", "dx", "di", "si", "bp", "sp", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w" },
-	{ "eax", "ebx", "ecx", "edx", "edi", "esi", "ebp", "esp", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d" },
-	{ "rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rbp", "rsp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15" },
+	{ "al", "cl", "dl", "bl", "dil", "sil", "bpl", "spl", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
+	{ "ax", "cx", "dx", "bx", "sp", "bp", "si", "di", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w" },
+	{ "eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d" },
+	{ "rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15" },
 	{ "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>" },
 	{ "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15" },
 	{ "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>" }
@@ -99,9 +99,9 @@ void _ira_format_printf( struct _ira_format_stream *stream, const char *format, 
 // Append given register to stream.
 void _ira_format_append_reg( struct _ira_format_stream *stream, struct ira_register *reg, uint8_t is_rex ) {
 	if( is_rex ) {
-		_ira_format_append_str( stream, _ira_reg_type_table_rex[reg->reg_type][reg->reg] );
+		_ira_format_append_str( stream, _ira_reg_symbol_table_rex[reg->reg_type][reg->reg] );
 	} else {
-		_ira_format_append_str( stream, _ira_reg_type_table[reg->reg_type][reg->reg] );
+		_ira_format_append_str( stream, _ira_reg_symbol_table[reg->reg_type][reg->reg] );
 	}
 }
 
@@ -123,6 +123,7 @@ void _ira_format_append_integer( struct _ira_format_stream *stream, struct _ira_
 
 	// Hex values should be always treated as unsigned.
 	if( integer->is_signed && format == 10 ) {
+
 		switch(integer->size) {
 		case 8:
 			sprintf( local_buffer, value_format, (int8_t)integer->value.v8 );
@@ -137,7 +138,9 @@ void _ira_format_append_integer( struct _ira_format_stream *stream, struct _ira_
 			sprintf( local_buffer, value_format, (int64_t)integer->value.v64 );
 			break;
 		}
+
 	} else {
+
 		switch(integer->size) {
 		case 8:
 			sprintf( local_buffer, value_format, integer->value.v8 );
@@ -152,6 +155,7 @@ void _ira_format_append_integer( struct _ira_format_stream *stream, struct _ira_
 			sprintf( local_buffer, value_format, integer->value.v64 );
 			break;
 		}
+
 	}
 
 	// If value doesn't start with a digit add 0 at the beginning.
@@ -237,6 +241,6 @@ void _ira_extend_integer( struct _ira_integer *value, int extension_size, int si
 			break;
 		}
 	}
-	value->size = extension_size;
 
+	value->size = extension_size;
 }
