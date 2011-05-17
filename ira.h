@@ -189,15 +189,30 @@ struct ira_disassemble_info {
 	uint32_t size;
 };
 
-union ira_immediate_data {
+enum ira_immediate_data_type {
+	IRA_NO_IMMEDIATE_DATA = 0,
+	IRA_IMMEDIATE_8 = 8,
+	IRA_IMMEDIATE_16 = 16,
+	IRA_IMMEDIATE_32 = 32,
+	IRA_IMMEDIATE_64 = 64
+};
+
+union ira_immediate_data_value {
 	uint8_t immediate_8;
 	uint16_t immediate_16;
 	uint32_t immediate_32;
 	uint64_t immediate_64;
 };
 
+struct ira_immediate_data {
+	// Immediate data type.
+	enum ira_immediate_data_type immediate_data_type;
+	// Immediate data.
+	union ira_immediate_data_value immediate_data;
+};
+
 enum ira_displacement_type {
-	IRA_NO_DISPLACEMENT,
+	IRA_NO_DISPLACEMENT = 0,
 	IRA_DISPLACEMENT_8 = 8,
 	IRA_DISPLACEMENT_16 = 16,
 	IRA_DISPLACEMENT_32 = 32,
@@ -267,7 +282,7 @@ struct ira_instruction_operand {
 	// Access mode.
 	enum ira_access_mode access_mode;
 	// Place for immediate data.
-	union ira_immediate_data immediate;
+	struct ira_immediate_data immediate;
 	// Addressing.
 	struct ira_addressing addressing;
 	// Register.

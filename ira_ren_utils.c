@@ -114,12 +114,12 @@ void _ira_format_append_if_not_first( struct _ira_format_stream *stream, int *fi
 // Prints integer value.
 void _ira_format_append_integer( struct _ira_format_stream *stream, struct _ira_integer *integer, int format ) {
 
-	char *value_format = _ira_integer_formats[ ( integer->is_signed ? 1 : 0 ) + ( ( format == 10 ) ? 0 : 1 ) ][integer->size / 8 - 1];
+	char *value_format = _ira_integer_formats[ ( integer->is_signed ? 1 : 0 ) + ( ( format == _IRA_FORMAT_DEC ) ? 0 : 1 ) ][integer->size / 8 - 1];
 
 	char local_buffer[32];
 
 	// Hex values should be always treated as unsigned.
-	if( integer->is_signed && format == 10 ) {
+	if( integer->is_signed && format == _IRA_FORMAT_DEC ) {
 
 		switch(integer->size) {
 		case 8:

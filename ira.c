@@ -107,7 +107,7 @@ int _ira_get_effective_asa( struct ira_diss_context *context );
 int _ira_get_effective_osa( struct ira_diss_context *context );
 
 /* Decodes immediate data. */
-int _ira_decode_immediate( struct ira_diss_context *context, union ira_immediate_data *data, int size );
+int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediate_data *data, int size );
 
 /* Decodes displacement */
 int _ira_decode_displacement( struct ira_diss_context *context, struct ira_displacement *displacement, int size, int extension_size );
@@ -1253,27 +1253,27 @@ int _ira_decode_displacement( struct ira_diss_context *context, struct ira_displ
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-int _ira_decode_immediate( struct ira_diss_context *context, union ira_immediate_data *data, int size ) {
+int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediate_data *data, int size ) {
 	int result = 0;
 	switch(size) {
 	case 8:
-		data->immediate_8 =_ira_stream_read( context->stream, &result );
+		data->immediate_data.immediate_8 =_ira_stream_read( context->stream, &result );
 		if( !result ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
 	case 16:
-		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_16), sizeof(uint16_t) ) ) {
+		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_16), sizeof(uint16_t) ) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
 	case 32:
-		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_32), sizeof(uint32_t) ) ) {
+		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_32), sizeof(uint32_t) ) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
 	case 64:
-		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_64), sizeof(uint64_t) ) ) {
+		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_64), sizeof(uint64_t) ) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;

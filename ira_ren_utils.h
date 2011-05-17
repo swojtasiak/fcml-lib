@@ -11,6 +11,9 @@
 #define _IRA_TRUE 1
 #define _IRA_FALSE 0
 
+#define _IRA_FORMAT_HEX		16
+#define _IRA_FORMAT_DEC		10
+
 #include "ira.h"
 
 struct ira_format_info {

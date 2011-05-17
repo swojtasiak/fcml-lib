@@ -172,9 +172,16 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 }
 
 void _ira_operand_formater_immediate_8( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
-	/*struct _ira_integer displacement_value = {0};
-	displacement_value.is_signed = _IRA_TRUE;
-	displacement_value.size = operand->immediate;*/
+	struct ira_immediate_data *immediate = &operand->immediate;
+	if( immediate->immediate_data_type != IRA_NO_IMMEDIATE_DATA ) {
+		struct _ira_integer displacement_value = {0};
+		// Check if immediate data should be treated as signed value.
+		if( !format_info->immediate_hex_display && format_info->immediate_signed ) {
+			displacement_value.is_signed = _IRA_TRUE;
+		}
+		displacement_value.size = operand->immediate.immediate_data_type;
+		_ira_format_append_integer( stream, &displacement_value, format_info->immediate_hex_display ? _IRA_FORMAT_HEX : _IRA_FORMAT_DEC );
+	}
 }
 
 void _ira_operand_formater_immediate_16( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
