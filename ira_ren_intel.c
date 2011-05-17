@@ -18,10 +18,7 @@
 typedef void (*_ira_operand_formater)( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 
 void _ira_operand_formater_addressing( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_immediate_8( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_immediate_16( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_immediate_32( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_immediate_64( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_immediate( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 
@@ -29,10 +26,7 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 _ira_operand_formater _ira_formating_table[] = {
 	NULL, // IRA_NONE
 	&_ira_operand_formater_addressing, // IRA_ADDRESS
-	&_ira_operand_formater_immediate_8, // IRA_IMMEDIATE_DATA_8
-	&_ira_operand_formater_immediate_16, // IRA_IMMEDIATE_DATA_16
-	&_ira_operand_formater_immediate_32, // IRA_IMMEDIATE_DATA_32
-	&_ira_operand_formater_immediate_64, // IRA_IMMEDIATE_DATA_64
+	&_ira_operand_formater_immediate, // IRA_IMMEDIATE_DATA
 	&_ira_operand_formater_register // IRA_REGISTER
 };
 
@@ -171,26 +165,35 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 }
 
-void _ira_operand_formater_immediate_8( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_immediate( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 	struct ira_immediate_data *immediate = &operand->immediate;
 	if( immediate->immediate_data_type != IRA_NO_IMMEDIATE_DATA ) {
-		struct _ira_integer displacement_value = {0};
+		struct _ira_integer immediate_value = {0};
 		// Check if immediate data should be treated as signed value.
 		if( !format_info->immediate_hex_display && format_info->immediate_signed ) {
-			displacement_value.is_signed = _IRA_TRUE;
+			immediate_value.is_signed = _IRA_TRUE;
 		}
-		displacement_value.size = operand->immediate.immediate_data_type;
-		_ira_format_append_integer( stream, &displacement_value, format_info->immediate_hex_display ? _IRA_FORMAT_HEX : _IRA_FORMAT_DEC );
+		immediate_value.size = immediate->immediate_data_type;
+		// Copy value.
+		// TODO: Consider using the same union to represent integer value.
+		switch( immediate->immediate_data_type ) {
+		case IRA_IMMEDIATE_8:
+			immediate_value.value.v8 = immediate->immediate_data.immediate_8;
+			break;
+		case IRA_IMMEDIATE_16:
+			immediate_value.value.v16 = immediate->immediate_data.immediate_16;
+			break;
+		case IRA_IMMEDIATE_32:
+			immediate_value.value.v32 = immediate->immediate_data.immediate_32;
+			break;
+		case IRA_IMMEDIATE_64:
+			immediate_value.value.v64 = immediate->immediate_data.immediate_64;
+			break;
+		case IRA_NO_IMMEDIATE_DATA:
+			break;
+		}
+		_ira_format_append_integer( stream, &immediate_value, format_info->immediate_hex_display ? _IRA_FORMAT_HEX : _IRA_FORMAT_DEC );
 	}
-}
-
-void _ira_operand_formater_immediate_16( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
-}
-
-void _ira_operand_formater_immediate_32( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
-}
-
-void _ira_operand_formater_immediate_64( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 }
 
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {

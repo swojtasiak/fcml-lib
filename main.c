@@ -16,7 +16,8 @@ struct ab a[] = {{ 1,1 }};
 int main()
 {
     //uint8_t data[] = { 0x67, 0x47, 0x10, 0x4c, 0x5c, 0x81 };
-	uint8_t data[] = { 0x67, 0x10, 0x4c, 0x5c, 0x81 };
+	//uint8_t data[] = { 0x67, 0x10, 0x4c, 0x5c, 0x81 };
+	uint8_t data[] = { 0xD5, 0xff };
 
     struct ira_disassemble_info info;
     info.address = &data;
@@ -40,6 +41,8 @@ int main()
 		struct ira_intel_format_info format;
 		format.show_zero_displacement = 0;
 		format.show_extended_displacement = 1;
+		format.immediate_hex_display = 0;
+		format.immediate_signed = 0;
 
 		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
 

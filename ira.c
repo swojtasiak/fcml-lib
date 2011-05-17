@@ -83,6 +83,7 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 
 /* Opcode decoders. */
 
+int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, int size );
 int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand );
@@ -745,38 +746,27 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 /* Operand decoders. */
 
 int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	int result = _ira_decode_immediate( context, &(operand->immediate), 8 );
-	if( result != _IRA_INT_ERROR_NO_ERROR ) {
-		return result;
-	}
-	operand->operand_type = IRA_IMMEDIATE_DATA_8;
-	return _IRA_INT_ERROR_NO_ERROR;
+	return _ira_opcode_decoder_immediate( context, operand, 8 );
 }
 
 int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	int result = _ira_decode_immediate( context, &(operand->immediate), 16 );
-	if( result != _IRA_INT_ERROR_NO_ERROR ) {
-		return result;
-	}
-	operand->operand_type = IRA_IMMEDIATE_DATA_16;
-	return _IRA_INT_ERROR_NO_ERROR;
+	return _ira_opcode_decoder_immediate( context, operand, 16 );
 }
 
 int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	int result = _ira_decode_immediate( context, &(operand->immediate), 32 );
-	if( result != _IRA_INT_ERROR_NO_ERROR ) {
-		return result;
-	}
-	operand->operand_type = IRA_IMMEDIATE_DATA_32;
-	return _IRA_INT_ERROR_NO_ERROR;
+	return _ira_opcode_decoder_immediate( context, operand, 32 );
 }
 
 int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	int result = _ira_decode_immediate( context, &(operand->immediate), 64 );
+	return _ira_opcode_decoder_immediate( context, operand, 64 );
+}
+
+int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, int size ) {
+	int result = _ira_decode_immediate( context, &(operand->immediate), size );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
-	operand->operand_type = IRA_IMMEDIATE_DATA_64;
+	operand->operand_type = IRA_IMMEDIATE_DATA;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
@@ -1280,5 +1270,6 @@ int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediat
 	default:
 		return _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
 	}
+	data->immediate_data_type = size;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
