@@ -71,7 +71,7 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
 		int res = _ira_format_print_operand( result, format_info, &result->operands[i], &local_stream );
 		if( res ) {
-			if( i < 0 ) {
+			if( i > 0 ) {
 				_ira_format_append_str( &stream, "," );
 			}
 			_ira_format_append( &stream, &local_stream );
@@ -104,16 +104,20 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 	int first = _IRA_TRUE;
 
 	_ira_format_append_str( stream, "[" );
+
+	// Append base register.
 	if( mod_rm->base_reg.reg_type != IRA_NO_REG ) {
 		_ira_format_append_reg( stream, &mod_rm->base_reg, result->rex.is_not_null );
 		first = _IRA_FALSE;
 	}
 
+	// Append index register.
 	if( mod_rm->index_reg.reg_type != IRA_NO_REG ) {
 		_ira_format_append_if_not_first( stream, &first, "+" );
 		_ira_format_append_reg( stream, &mod_rm->index_reg, result->rex.is_not_null );
 	}
 
+	// Append scale.
 	if( mod_rm->scale.is_not_null ) {
 		_ira_format_append_if_not_first( stream, &first, "*" );
 
@@ -126,11 +130,13 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 		_ira_format_append_integer( stream, &scale_value, 10 );
 	}
 
+	// Append displacement.
 	if( mod_rm->displacement.displacement_type != IRA_NO_DISPLACEMENT
 			&& ( format_info->show_zero_displacement || mod_rm->displacement.displacement.displacement_32 != 0 ) ) {
 
 		_ira_format_append_if_not_first( stream, &first, "+" );
 
+		// Treat displacement like a plain integer value.
 		struct _ira_integer displacement_value = {0};
 		displacement_value.is_signed = _IRA_TRUE;
 		displacement_value.size = mod_rm->displacement.displacement_type;
@@ -146,15 +152,18 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 			displacement_value.value.v32 = mod_rm->displacement.displacement.displacement_32;
 			break;
 		case IRA_NO_DISPLACEMENT:
-			// Should never happened.
+			// Should never happened. Added only to avoid warnings.
 			break;
 		}
 
 		// Extend displacement if there is such need.
-		if( displacement_value.size != mod_rm->displacement.extension_size && format_info->show_extended_displacement ) {
-			_ira_extend_integer( &displacement_value, mod_rm->displacement.extension_size, _IRA_TRUE );
+		if( format_info->show_extended_displacement ) {
+			if( displacement_value.size != mod_rm->displacement.extension_size ) {
+				_ira_extend_integer( &displacement_value, mod_rm->displacement.extension_size, _IRA_TRUE );
+			}
 		}
 
+		// Append integer as a hex string.
 		_ira_format_append_integer( stream, &displacement_value, 16 );
 	}
 
@@ -163,6 +172,9 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 }
 
 void _ira_operand_formater_immediate_8( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+	/*struct _ira_integer displacement_value = {0};
+	displacement_value.is_signed = _IRA_TRUE;
+	displacement_value.size = operand->immediate;*/
 }
 
 void _ira_operand_formater_immediate_16( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
@@ -175,4 +187,5 @@ void _ira_operand_formater_immediate_64( struct ira_disassemble_result *result, 
 }
 
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+	_ira_format_append_reg( stream, &operand->reg, result->rex.is_not_null );
 }

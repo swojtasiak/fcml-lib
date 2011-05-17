@@ -12,8 +12,14 @@
 #include "ira_ren_utils.h"
 
 struct ira_intel_format_info {
+	// Displacement.
 	int show_zero_displacement;
 	int show_extended_displacement;
+	// If true immediate data is displayed as hex string.
+	int immediate_hex_display;
+	// If immediate data is displayed as decimal this
+	// flag can be used to display signed values.
+	int immediate_signed;
 };
 
 void ira_format_intel_instruction( char *buffer, int size, struct ira_disassemble_result *result, struct ira_intel_format_info *format_info );

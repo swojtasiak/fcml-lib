@@ -745,46 +745,38 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 /* Operand decoders. */
 
 int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	struct ira_instruction_operand io = {0};
-	int result = _ira_decode_immediate( context, &(io.immediate), 8 );
+	int result = _ira_decode_immediate( context, &(operand->immediate), 8 );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
-	io.operand_type = IRA_IMMEDIATE_DATA_8;
-	*operand = io;
+	operand->operand_type = IRA_IMMEDIATE_DATA_8;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	struct ira_instruction_operand io = {0};
-	int result = _ira_decode_immediate( context, &(io.immediate), 16 );
+	int result = _ira_decode_immediate( context, &(operand->immediate), 16 );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
-	io.operand_type = IRA_IMMEDIATE_DATA_16;
-	*operand = io;
+	operand->operand_type = IRA_IMMEDIATE_DATA_16;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	struct ira_instruction_operand io = {0};
-	int result = _ira_decode_immediate( context, &(io.immediate), 32 );
+	int result = _ira_decode_immediate( context, &(operand->immediate), 32 );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
-	io.operand_type = IRA_IMMEDIATE_DATA_32;
-	*operand = io;
+	operand->operand_type = IRA_IMMEDIATE_DATA_32;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	struct ira_instruction_operand io;
-	int result = _ira_decode_immediate( context, &(io.immediate), 64 );
+	int result = _ira_decode_immediate( context, &(operand->immediate), 64 );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
-	io.operand_type = IRA_IMMEDIATE_DATA_64;
-	*operand = io;
+	operand->operand_type = IRA_IMMEDIATE_DATA_64;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 

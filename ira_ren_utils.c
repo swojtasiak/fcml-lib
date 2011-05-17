@@ -76,24 +76,21 @@ void _ira_stream_clean( struct _ira_format_stream *stream ) {
 	stream->buffer[0] = '\0';
 }
 
-void _ira_format_printf( struct _ira_format_stream *stream, const char *format, ... ) {
+void _ira_format_printf(struct _ira_format_stream *stream, const char *format, ...) {
 
-	 va_list arg_list;
-	 va_start(arg_list, format);
+	// We'll never reach this limit.
+	char local_buffer[512];
 
-	 // We'll never reach this limit.
-	 char local_buffer[512];
-	 vsprintf( local_buffer, format, arg_list );
+	va_list arg_list;
+	va_start(arg_list, format);
 
-	 int part_size = strlen(local_buffer);
-
-	 if( part_size > stream->size - stream->offset - 1 ) {
-		 part_size = stream->size - stream->offset - 1;
-	 }
-
-	 strncpy( stream->buffer + stream->offset, local_buffer, part_size );
-
-	 stream->offset += part_size;
+	vsprintf(local_buffer, format, arg_list);
+	int part_size = strlen(local_buffer);
+	if (part_size > stream->size - stream->offset - 1) {
+		part_size = stream->size - stream->offset - 1;
+	}
+	strncpy(stream->buffer + stream->offset, local_buffer, part_size);
+	stream->offset += part_size;
 }
 
 // Append given register to stream.
