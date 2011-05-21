@@ -58,6 +58,12 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 	local_stream.size = _IRA_LOCAL_BUFFER_SIZE;
 	local_stream.offset = 0;
 
+	// Instruction code.
+	if( format_info->show_instruction_code ) {
+		_ira_format_append_code( &stream, result->instruction_code, result->instruction_size );
+		_ira_format_append_str( &stream, " " );
+	}
+
 	// Add mnemonic.
 	_ira_format_printf( &stream, "%s ", result->mnemonic );
 

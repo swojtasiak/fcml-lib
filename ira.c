@@ -86,6 +86,7 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, int size );
 int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_ios( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand );
 int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand );
@@ -195,6 +196,12 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     		return;
     	}
     }
+
+    // Calculate instruction size basing on the stream.
+    result->instruction_size = stream.offset;
+
+    // Copy instruction code.
+    memcpy( result->instruction_code, stream.base_address, result->instruction_size );
 }
 
 int _ira_map_internall_error_code( int internal_error ) {
@@ -230,7 +237,7 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			prefixes_ok = 1;
 		}
 		if( !prefixes_ok ) {
-			// Something wrong with prefixes, so go to next instruction.
+			// Something wrong with prefixes, so go to the next instruction.
 			continue;
 		}
 
@@ -246,7 +253,7 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			opcodes_ok = 1;
 		}
 		if( !opcodes_ok ) {
-			// Something wrong with prefixes, so go to next instruction.
+			// Something wrong with prefixes, so go to the next instruction.
 			continue;
 		}
 
@@ -556,6 +563,9 @@ void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decodin
 	case _IRA_OPERAND_ID:
 		operand_decoding->decoder = &_ira_opcode_decoder_id;
 		break;
+	case _IRA_OPERAND_IOS:
+		operand_decoding->decoder = &_ira_opcode_decoder_ios;
+		break;
 	case _IRA_OPERAND_IO:
 		operand_decoding->decoder = &_ira_opcode_decoder_io;
 		break;
@@ -703,6 +713,12 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	result->prefixes_count = context->decoding_context.instruction_prefix_count;
 
 	for( i = 0; i < result->prefixes_count && i < _IRA_PREFIXES_COUNT; i++ ) {
+		struct ira_instruction_prefix *prefix = &context->decoding_context.prefixes[i];
+		// Check if 66 prefix is mandatory one. It has to be done here because prefix 66 is always
+		// treated as mandatory one in first phase.
+		if( prefix->prefix == 0x66 && !_IRA_PREFIX_MANDATORY_66( instruction->allowed_prefixes ) ) {
+			prefix->mandatory_prefix = 0;
+		}
 		result->prefixes[i] = context->decoding_context.prefixes[i];
 	}
 
@@ -751,6 +767,11 @@ int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruc
 
 int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
 	return _ira_opcode_decoder_immediate( context, operand, 16 );
+}
+
+/* Immediate value size based on operand size attribute. */
+int _ira_opcode_decoder_ios( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+	return _ira_opcode_decoder_immediate( context, operand, context->decoding_context.effective_operand_size_attribute );
 }
 
 int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
@@ -1253,17 +1274,17 @@ int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediat
 		}
 		break;
 	case 16:
-		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_16), sizeof(uint16_t) ) ) {
+		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_16), sizeof(uint16_t) ) < sizeof(uint16_t) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
 	case 32:
-		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_32), sizeof(uint32_t) ) ) {
+		if( _ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_32), sizeof(uint32_t) ) < sizeof(uint32_t) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
 	case 64:
-		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_64), sizeof(uint64_t) ) ) {
+		if( _ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_64), sizeof(uint64_t) ) < sizeof(uint64_t) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;

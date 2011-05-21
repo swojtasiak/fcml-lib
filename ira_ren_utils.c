@@ -114,7 +114,12 @@ void _ira_format_append_if_not_first( struct _ira_format_stream *stream, int *fi
 // Prints integer value.
 void _ira_format_append_integer( struct _ira_format_stream *stream, struct _ira_integer *integer, int format ) {
 
-	char *value_format = _ira_integer_formats[ ( integer->is_signed ? 0 : 1 ) + ( ( format == _IRA_FORMAT_DEC ) ? 0 : 1 ) * 2 ][integer->size / 8 - 1];
+	int format_pos = integer->size / 16;
+	if( format_pos == 4 ) {
+		format_pos = 3;
+	}
+
+	char *value_format = _ira_integer_formats[ ( integer->is_signed ? 0 : 1 ) + ( ( format == _IRA_FORMAT_DEC ) ? 0 : 1 ) * 2 ][ format_pos ];
 
 	char local_buffer[32];
 
@@ -240,4 +245,15 @@ void _ira_extend_integer( struct _ira_integer *value, int extension_size, int si
 	}
 
 	value->size = extension_size;
+}
+
+void _ira_format_append_hex_byte( struct _ira_format_stream *stream, uint8_t hex_byte ) {
+	_ira_format_printf( stream, "%02"PRIx8, hex_byte );
+}
+
+void _ira_format_append_code( struct _ira_format_stream *stream, uint8_t *instrunction_code, uint8_t instruction_size ) {
+	int i;
+	for( i = 0; i < instruction_size; i++ ) {
+		_ira_format_append_hex_byte( stream, instrunction_code[i] );
+	}
 }

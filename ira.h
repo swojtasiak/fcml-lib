@@ -310,14 +310,17 @@ struct ira_disassemble_result {
 	uint8_t opcodes[3];
 	// REX prefix.
 	n_byte rex;
-	/* Disassembled operands. */
+	// Instruction size in bytes.
+	uint8_t instruction_size;
+	// Instruction size is limited to 15 bytes.
+	uint8_t instruction_code[15];
+	// Disassembled operands.
 	struct ira_instruction_operand operands[_IRA_OPERANDS_COUNT];
 };
 
 void ira_init(void);
 
-void ira_disassemble(struct ira_disassemble_info *info,
-		struct ira_disassemble_result *result);
+void ira_disassemble(struct ira_disassemble_info *info, struct ira_disassemble_result *result);
 
 void ira_deinit(void);
 

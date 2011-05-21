@@ -239,15 +239,16 @@ struct ira_instruction_desc {
 
 #define _IRA_NA	0x00
 
-#define _IRA_OPERAND_IB		0x01
-#define _IRA_OPERAND_IB_W	( _IRA_OPERAND_IB | _IRA_W )
-#define _IRA_OPERAND_IW		0x02
-#define _IRA_OPERAND_IW_W	( _IRA_OPERAND_IW | _IRA_W )
-#define _IRA_OPERAND_ID		0x03
-#define _IRA_OPERAND_ID_W	( _IRA_OPERAND_ID | _IRA_W )
-#define _IRA_OPERAND_IO		0x04
-#define _IRA_OPERAND_IO_W	( _IRA_OPERAND_IO | _IRA_W )
-
+// Zatanowic sie nad rozszerzeniem operand flag do 16 bitow i mniejsze 8 bitow na flagi.
+#define _IRA_OPERAND_IB			0x01
+#define _IRA_OPERAND_IB_EOSA	0x02
+#define _IRA_OPERAND_IW			0x03
+#define _IRA_OPERAND_IW_EOSA	0x04
+#define _IRA_OPERAND_ID			0x05
+#define _IRA_OPERAND_ID_EOSA	0x06
+#define _IRA_OPERAND_IO			0x07
+#define _IRA_OPERAND_IO_EOSA	0x08
+#define _IRA_OPERAND_IOS		0x09
 
 #define _IRA_MODRM_BASE 0x40 // Base for ModRM based operands.
 
@@ -257,6 +258,10 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_RM_8_W	( _IRA_OPERAND_MODRM_RM_8 | _IRA_W )
 #define _IRA_OPERAND_MODRM_R_8		_IRA_MODRM(_IRA_R_8)
 #define _IRA_OPERAND_MODRM_R_8_W	( _IRA_OPERAND_MODRM_R_8 | _IRA_W )
+
+#define _IRA_OPERAND_RG_BASE				0xE0
+#define _IRA_OPERAND_REG_ACCUMULATOR_8		( _IRA_OPERAND_RG_BASE + 0 )
+#define _IRA_OPERAND_REG_ACCUMULATOR_OSA	( _IRA_OPERAND_RG_BASE + 1 )
 
 /* Externals. */
 

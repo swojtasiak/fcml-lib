@@ -65,7 +65,12 @@ void _ira_format_append_if_not_first( struct _ira_format_stream *stream, int *fi
 // Prints integer value.
 void _ira_format_append_integer( struct _ira_format_stream *stream, struct _ira_integer *integer, int format );
 
+// Prints plain hex byte.
+void _ira_format_append_hex_byte( struct _ira_format_stream *stream, uint8_t hex_byte );
+
 // Extends given integer to given size with sign or not.
 void _ira_extend_integer( struct _ira_integer *value, int extension_size, int sign_extend );
+
+void _ira_format_append_code( struct _ira_format_stream *stream, uint8_t *instrunction_code, uint8_t instruction_size );
 
 #endif /* IRA_REN_UTILS_H_ */

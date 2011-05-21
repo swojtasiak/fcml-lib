@@ -20,6 +20,8 @@ struct ira_intel_format_info {
 	// If immediate data is displayed as decimal this
 	// flag can be used to display signed values.
 	int immediate_signed;
+	// Flags indicating if whether instruction code should be shown or not.
+	int show_instruction_code;
 };
 
 void ira_format_intel_instruction( char *buffer, int size, struct ira_disassemble_result *result, struct ira_intel_format_info *format_info );
