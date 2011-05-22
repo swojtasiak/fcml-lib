@@ -18,13 +18,13 @@ int main()
     //uint8_t data[] = { 0x67, 0x47, 0x10, 0x4c, 0x5c, 0x81 };
 	//uint8_t data[] = { 0x67, 0x10, 0x4c, 0x5c, 0x81 };
 	//uint8_t data[] = { 0xD5, 0xff };
-	uint8_t data[] = { 0x48, 0x15, 0xff, 0xff, 0x11, 0x11 };
+	uint8_t data[] = { 0x66, 0x40, 0x15, 0xff, 0xff, 0x11, 0x11 };
 
     struct ira_disassemble_info info;
     info.address = &data;
     info.size = sizeof(data);
-    info.address_size_attribute = 64;
-    info.operand_size_attribute = 32;
+    info.address_size_attribute = 0;
+    info.operand_size_attribute = 0;
     info.mode = IRA_MOD_64BIT;
 
     struct ira_disassemble_result result;
@@ -44,6 +44,8 @@ int main()
 		format.show_extended_displacement = 1;
 		format.immediate_hex_display = 1;
 		format.immediate_signed = 0;
+		format.show_instruction_code = 1;
+		format.show_extended_immediate = 1;
 
 		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
 

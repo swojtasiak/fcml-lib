@@ -123,13 +123,15 @@ struct ira_diss_tree_opcode {
 typedef int (*ira_instruction_decoder)( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
 /* Decoders responsible for operand disassemblation. */
-typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
 
 struct ira_operand_decoding {
 	// Operand access mode.
 	enum ira_access_mode access_mode;
 	// Operand decoder.
 	ira_operand_decoder decoder;
+	// Optional arguments passed to operand decoder.
+	int args;
 };
 
 struct ira_diss_tree_instruction_decoding {
@@ -232,6 +234,8 @@ struct ira_instruction_desc {
 
 /* Operands encoding */
 
+#define _IRA_OPERANDS_SIZEOF(x)	( sizeof( x ) / sizeof( struct ira_opcode_desc ) )
+
 // Source operand (Reads).
 #define _IRA_R	0x00
 // Destination operand (Writes).
@@ -239,7 +243,6 @@ struct ira_instruction_desc {
 
 #define _IRA_NA	0x00
 
-// Zatanowic sie nad rozszerzeniem operand flag do 16 bitow i mniejsze 8 bitow na flagi.
 #define _IRA_OPERAND_IB			0x01
 #define _IRA_OPERAND_IB_EOSA	0x02
 #define _IRA_OPERAND_IW			0x03
@@ -249,6 +252,10 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_IO			0x07
 #define _IRA_OPERAND_IO_EOSA	0x08
 #define _IRA_OPERAND_IOS		0x09
+#define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A
+#define _IRA_OPERAND_REG_ACCUMULATOR_OSA	0x0B
+#define _IRA_OPERAND_REG_ACCUMULATOR_8_W	( 0x0A | _IRA_W )
+#define _IRA_OPERAND_REG_ACCUMULATOR_OSA_W	( 0x0B | _IRA_W )
 
 #define _IRA_MODRM_BASE 0x40 // Base for ModRM based operands.
 
@@ -259,9 +266,6 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_R_8		_IRA_MODRM(_IRA_R_8)
 #define _IRA_OPERAND_MODRM_R_8_W	( _IRA_OPERAND_MODRM_R_8 | _IRA_W )
 
-#define _IRA_OPERAND_RG_BASE				0xE0
-#define _IRA_OPERAND_REG_ACCUMULATOR_8		( _IRA_OPERAND_RG_BASE + 0 )
-#define _IRA_OPERAND_REG_ACCUMULATOR_OSA	( _IRA_OPERAND_RG_BASE + 1 )
 
 /* Externals. */
 

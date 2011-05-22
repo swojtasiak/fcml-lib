@@ -130,7 +130,8 @@ enum ira_operation_mode {
 enum ira_result_code {
 	RC_OK = 0,
 	RC_ERROR_ILLEGAL_OPERATION_MODE,
-	RC_ERROR_ILLEGAL_ADDRESS_ATTRIBUTE_SIZE,
+	RC_ERROR_ILLEGAL_ADDRESS_SIZE_ATTRIBUTE,
+	RC_ERROR_ILLEGAL_OPERAND_SIZE_ATTRIBUTE,
 	// When disassembler is not able to disassemble instruction due to incomplete data in stream.
 	RC_ERROR_INSTRUCTION_INCOMPLETE,
 	RC_ERROR_OUT_OF_MEMORY,
@@ -206,6 +207,8 @@ struct ira_immediate_data {
 	enum ira_immediate_data_type immediate_data_type;
 	// Immediate data.
 	union ira_immediate_data_value immediate_data;
+	// Value set to the size value is extended to. 0 mean no extension.
+	uint8_t extension_size;
 };
 
 enum ira_displacement_type {

@@ -22,6 +22,8 @@ struct ira_intel_format_info {
 	int immediate_signed;
 	// Flags indicating if whether instruction code should be shown or not.
 	int show_instruction_code;
+	// Show extended immediate value.
+	int show_extended_immediate;
 };
 
 void ira_format_intel_instruction( char *buffer, int size, struct ira_disassemble_result *result, struct ira_intel_format_info *format_info );

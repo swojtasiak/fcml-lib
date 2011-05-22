@@ -57,6 +57,9 @@ struct ira_instruction_prefix* _ira_diss_context_get_prefix_if_available( struct
 /* Gets REX prefix. */
 uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int *found );
 
+/* Maps OSA to general purpose register type. */
+enum ira_register_type _ira_map_osa_to_register_type( struct ira_diss_context *context );
+
 /* Instruction decoders. */
 
 int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
@@ -83,15 +86,13 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 
 /* Opcode decoders. */
 
-int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, int size );
-int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand );
-int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand );
-int _ira_opcode_decoder_ios( struct ira_diss_context *context, struct ira_instruction_operand *operand );
-int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand );
-int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand );
-int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+void _ira_opcode_decoder_reg( struct ira_instruction_operand *operand, enum ira_register_type reg_type, int reg );
+int _ira_opcode_decoder_accumulator( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
+int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
+int _ira_opcode_decoder_immediate_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
+int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
 int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size );
-int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
 int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size );
 
 /* Decoders' helpers methods. */
@@ -366,14 +367,15 @@ int _ira_disassemble_default( struct ira_diss_context *context, struct ira_disas
 }
 
 void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira_disassemble_result *result) {
+
     /* Mode has to be set. */
     if( info->mode != IRA_MOD_16BIT && info->mode != IRA_MOD_32BIT && info->mode != IRA_MOD_64BIT ) {
         result->code = RC_ERROR_ILLEGAL_OPERATION_MODE;
         return;
     }
     /* 16 bit address size attribute is not supported in 64bit mode. */
-    if( info->mode == IRA_MOD_64BIT && info->address_size_attribute == IRA_MOD_16BIT ) {
-        result->code = RC_ERROR_ILLEGAL_ADDRESS_ATTRIBUTE_SIZE;
+    if( info->mode == IRA_MOD_64BIT && info->address_size_attribute == _IRA_ASA_16 ) {
+        result->code = RC_ERROR_ILLEGAL_ADDRESS_SIZE_ATTRIBUTE;
         return;
     }
     /* Check if attributes are valid and set them to default values. */
@@ -404,7 +406,28 @@ void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira
                 break;
         }
     }
+
     result->code = RC_OK;
+
+    // Check if address size attribute is correct.
+    switch( info->address_size_attribute ) {
+    case _IRA_ASA_16:
+    case _IRA_ASA_32:
+    case _IRA_ASA_64:
+    	break;
+    default:
+    	result->code = RC_ERROR_ILLEGAL_ADDRESS_SIZE_ATTRIBUTE;
+    }
+
+    // Check if operand size attribute is correct.
+    switch( info->operand_size_attribute ) {
+	case _IRA_OSA_16:
+	case _IRA_OSA_32:
+	case _IRA_OSA_64:
+		break;
+	default:
+		result->code = RC_ERROR_ILLEGAL_OPERAND_SIZE_ATTRIBUTE;
+	}
 }
 
 /* Initialization. */
@@ -553,21 +576,57 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 }
 
 void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding, uint8_t decoder_type ) {
+
+	// Store access mode for this operand decoding.
+	operand_decoding->access_mode = ( decoder_type & _IRA_W ) ? IRA_WRITE : IRA_READ;
+
+	// Clear access mode.
+	decoder_type &= ~_IRA_W;
+
 	switch( decoder_type ) {
+	case _IRA_OPERAND_REG_ACCUMULATOR_8:
+		operand_decoding->decoder = &_ira_opcode_decoder_accumulator;
+		operand_decoding->args = IRA_REG_GPR_8;
+		break;
+	case _IRA_OPERAND_REG_ACCUMULATOR_OSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_accumulator;
+		operand_decoding->args = IRA_REG_GPR; // EOSA.
+		break;
 	case _IRA_OPERAND_IB:
-		operand_decoding->decoder = &_ira_opcode_decoder_ib;
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
+		operand_decoding->args = IRA_IMMEDIATE_8;
+		break;
+	case _IRA_OPERAND_IB_EOSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_eosa;
+		operand_decoding->args = IRA_IMMEDIATE_8;
 		break;
 	case _IRA_OPERAND_IW:
-		operand_decoding->decoder = &_ira_opcode_decoder_iw;
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
+		operand_decoding->args = IRA_IMMEDIATE_16;
+		break;
+	case _IRA_OPERAND_IW_EOSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_eosa;
+		operand_decoding->args = IRA_IMMEDIATE_16;
 		break;
 	case _IRA_OPERAND_ID:
-		operand_decoding->decoder = &_ira_opcode_decoder_id;
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
+		operand_decoding->args = IRA_IMMEDIATE_32;
+		break;
+	case _IRA_OPERAND_ID_EOSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_eosa;
+		operand_decoding->args = IRA_IMMEDIATE_32;
 		break;
 	case _IRA_OPERAND_IOS:
-		operand_decoding->decoder = &_ira_opcode_decoder_ios;
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
+		operand_decoding->args = 0; // EOSA.
 		break;
 	case _IRA_OPERAND_IO:
-		operand_decoding->decoder = &_ira_opcode_decoder_io;
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
+		operand_decoding->args = IRA_IMMEDIATE_64;
+		break;
+	case _IRA_OPERAND_IO_EOSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_eosa;
+		operand_decoding->args = IRA_IMMEDIATE_64;
 		break;
 	case _IRA_OPERAND_MODRM_RM_8:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm_8;
@@ -583,8 +642,6 @@ void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decodin
 		operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;
 		return;
 	}
-	// Store access mode for this operand decoding.
-	operand_decoding->access_mode = ( decoder_type & _IRA_W ) ? IRA_WRITE : IRA_READ;
 }
 
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type ) {
@@ -736,9 +793,10 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	// Decode operands, one by one.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
-		ira_operand_decoder decoder = instruction->operand_decodings[i].decoder;
+		struct ira_operand_decoding *decoding = &instruction->operand_decodings[i];
+		ira_operand_decoder decoder = decoding->decoder;
 		if( decoder != NULL ) {
-			rc = decoder( context, &(result->operands[i]) );
+			rc = decoder( context, &(result->operands[i]), decoding->args );
 			if( rc != _IRA_INT_ERROR_NO_ERROR ) {
 				return rc;
 			}
@@ -761,28 +819,40 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 /* Operand decoders. */
 
-int _ira_opcode_decoder_ib( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	return _ira_opcode_decoder_immediate( context, operand, 8 );
+void _ira_opcode_decoder_reg( struct ira_instruction_operand *operand, enum ira_register_type reg_type, int reg ) {
+	operand->operand_type = IRA_REGISTER;
+	operand->reg.reg_type = reg_type;
+	operand->reg.reg = reg;
 }
 
-int _ira_opcode_decoder_iw( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	return _ira_opcode_decoder_immediate( context, operand, 16 );
+/* Decodes accumulator register. */
+int _ira_opcode_decoder_accumulator( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
+	enum ira_register_type reg_type = args;
+	if( args == IRA_REG_GPR ) {
+		// A general purpose register, we should calculate it's size basing on EOSA.
+		reg_type = _ira_map_osa_to_register_type( context );
+	}
+	_ira_opcode_decoder_reg( operand, reg_type, _IRA_REG_AL );
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-/* Immediate value size based on operand size attribute. */
-int _ira_opcode_decoder_ios( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	return _ira_opcode_decoder_immediate( context, operand, context->decoding_context.effective_operand_size_attribute );
+/* Decodes immediate value and extends it to the effective operand size. */
+int _ira_opcode_decoder_immediate_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
+	int result = _ira_opcode_decoder_immediate( context, operand, args );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+	// Set extension size.
+	operand->immediate.extension_size = context->decoding_context.effective_operand_size_attribute;
+	return result;
 }
 
-int _ira_opcode_decoder_id( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	return _ira_opcode_decoder_immediate( context, operand, 32 );
-}
-
-int _ira_opcode_decoder_io( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
-	return _ira_opcode_decoder_immediate( context, operand, 64 );
-}
-
-int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, int size ) {
+int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
+	int size = args;
+	if( size == 0 ) {
+		// If size is not specified use EOSA.
+		size = context->decoding_context.effective_operand_size_attribute;
+	}
 	int result = _ira_decode_immediate( context, &(operand->immediate), size );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
@@ -791,11 +861,11 @@ int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
 	return _ira_opcode_decoder_modrm_rm( context, operand, IRA_REG_GPR, _IRA_OR_8 );
 }
 
-int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand ) {
+int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
 	return _ira_opcode_decoder_modrm_r( context, operand, IRA_REG_GPR, _IRA_OR_8 );
 }
 
@@ -1293,4 +1363,20 @@ int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediat
 	}
 	data->immediate_data_type = size;
 	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+enum ira_register_type _ira_map_osa_to_register_type( struct ira_diss_context *context ) {
+	enum ira_register_type reg_type = IRA_REG_GPR;
+	switch( context->decoding_context.effective_operand_size_attribute ) {
+	case _IRA_OSA_16:
+		reg_type = IRA_REG_GPR_16;
+		break;
+	case _IRA_OSA_32:
+		reg_type = IRA_REG_GPR_32;
+		break;
+	case _IRA_OSA_64:
+		reg_type = IRA_REG_GPR_64;
+		break;
+	}
+	return reg_type;
 }
