@@ -214,7 +214,8 @@ struct ira_instruction_desc {
 
 /* Opcode flags. */
 
-#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 		( ( x & 0x00007000 ) >> 12 )
+#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 		( ( x & 0x00007000 ) >> 11 )
+#define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x)		( ( x & 0x00007800 ) >> 11 )
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 	_IRA_GET_BIT(x,15)
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 		_IRA_GET_BIT(x,16)
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) 	_IRA_GET_BIT(x,17)

@@ -37,7 +37,7 @@ int _ira_disassemble_default( struct ira_diss_context *context, struct ira_disas
 void _ira_identify_prefixes( struct ira_diss_context *context );
 
 /* Maps internal error code to external error code. */
-int _ira_map_internall_error_code( int internal_error );
+enum ira_result_code _ira_map_internall_error_code( int internal_error );
 
 /* Chooses instruction variant for decoding. */
 struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding* instruction );
@@ -205,7 +205,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     memcpy( result->instruction_code, stream.base_address, result->instruction_size );
 }
 
-int _ira_map_internall_error_code( int internal_error ) {
+enum ira_result_code _ira_map_internall_error_code( int internal_error ) {
 	switch( internal_error ) {
 	case _IRA_INT_ERROR_NO_ERROR:
 		return RC_OK;
@@ -253,12 +253,21 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 
 		// Check opcode extension.
 		int opcodes_ok = 0;
-		if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( current->opcode_flags ) ) {
-			int result;
-			uint8_t modrm = _ira_stream_peek(context->stream, &result );
-			opcodes_ok = ( result && _IRA_MODRM_REG_OPCODE( modrm ) == _IRA_OPCODE_FLAGS_OPCODE_EXT(current->opcode_flags) );
-		} else if( _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT( current->opcode_flags ) ) {
-			// TODO: Support fox REX opcode extension.
+		if( _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT( current->opcode_flags ) ) {
+			// Instruction with ModRM opcode extension extended by R field of REX prefix.
+			int rex_found = 0;
+			int modrm_found = 0;
+			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
+			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
+			if( modrm_found && rex_found ) {
+				uint8_t ext_reg_opcode = ( ( rex & 0x04 ) << 1 ) | ( _IRA_MODRM_REG_OPCODE( modrm ) );
+				uint8_t expected_ext_reg_opcode = _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(current->opcode_flags);
+				opcodes_ok = ( ext_reg_opcode == expected_ext_reg_opcode );
+			}
+		} else if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( current->opcode_flags ) ) {
+			int modrm_found;
+			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
+			opcodes_ok = ( modrm_found && _IRA_MODRM_REG_OPCODE( modrm ) == _IRA_OPCODE_FLAGS_OPCODE_EXT(current->opcode_flags) );
 		} else {
 			opcodes_ok = 1;
 		}
@@ -274,11 +283,11 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 	return current;
 }
 
-void ira_init(void) {
+enum ira_result_code ira_init(void) {
 	// Clear disassemblation tree.
 	memset( _ira_disassemblation_tree, 0, sizeof( _ira_disassemblation_tree ) );
 	// Builds disassemblation tree basing on predefined instruction set.
-	_ira_update_disassemblation_tree( _ira_instructions_desc );
+	return _ira_map_internall_error_code( _ira_update_disassemblation_tree( _ira_instructions_desc ) );
 }
 
 void ira_deinit(void) {
@@ -508,7 +517,7 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 		}
 	}
 
-	return _IRA_INT_ERROR_OUT_OF_MEMORY;
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc ) {

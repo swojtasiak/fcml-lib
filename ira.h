@@ -321,7 +321,7 @@ struct ira_disassemble_result {
 	struct ira_instruction_operand operands[_IRA_OPERANDS_COUNT];
 };
 
-void ira_init(void);
+enum ira_result_code ira_init(void);
 
 void ira_disassemble(struct ira_disassemble_info *info, struct ira_disassemble_result *result);
 

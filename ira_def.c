@@ -34,12 +34,15 @@ struct ira_opcode_desc _ira_opcode_desc_ADC[] = {
 	// REX.W + 15 id ADC RAX, imm32 C Valid N.E. Add with carry imm32 sign extended to 64-bits to RAX.
 	{ NULL, 0x0809, 0x00940000, { 0x15, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /2 ib ADC r/m8, imm8 B Valid Valid Add with carry imm8 to r/m8.
-	{ NULL, 0x0809, 0x00940000, { 0x15, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C59000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// REX + 80 /2 ib ADC r/m8*, imm8 B Valid N.E. Add with carry imm8 tor/m8.
+	{ NULL, 0x0801, 0x00879000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 10 /r ADC r/m8, r8 A Valid Valid Add with carry byte register to r/m8.
-	{ NULL, 0x0001, 0x00C5A000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D48000, { 0x10, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
 	// REX + 10 /r ADC r/m8*, r8* A Valid N.E. Add with carry byte register to r/m64.
 	{ NULL, 0x0801, 0x00D48000, { 0x10, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA }
 };
+
 
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
