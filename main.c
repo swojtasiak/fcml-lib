@@ -18,7 +18,8 @@ int main()
     //uint8_t data[] = { 0x67, 0x47, 0x10, 0x4c, 0x5c, 0x81 };
 	//uint8_t data[] = { 0x67, 0x10, 0x4c, 0x5c, 0x81 };
 	//uint8_t data[] = { 0xD5, 0xff };
-	uint8_t data[] = { 0x66, 0x40, 0x15, 0xff, 0xff, 0x11, 0x11 };
+	//uint8_t data[] = { 0x66, 0x40, 0x15, 0xff, 0xff, 0xff, 0xff }; // adc
+	uint8_t data[] = { 0x80, 0xD5, 0x15, 0xff, 0xff, 0xff, 0xff }; // adc
 
     struct ira_disassemble_info info;
     info.address = &data;
@@ -43,7 +44,7 @@ int main()
 		format.show_zero_displacement = 0;
 		format.show_extended_displacement = 1;
 		format.immediate_hex_display = 1;
-		format.immediate_signed = 0;
+		format.immediate_signed = 1;
 		format.show_instruction_code = 1;
 		format.show_extended_immediate = 1;
 

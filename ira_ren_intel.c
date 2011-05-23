@@ -180,12 +180,6 @@ void _ira_operand_formater_immediate( struct ira_disassemble_result *result, str
 			immediate_value.is_signed = _IRA_TRUE;
 		}
 		immediate_value.size = immediate->immediate_data_type;
-		// Extend integer if immediate value is extended.
-		if( format_info->show_extended_immediate ) {
-			if( immediate->extension_size != 0 && immediate->extension_size != immediate->immediate_data_type ) {
-				_ira_extend_integer( &immediate_value, immediate->extension_size, _IRA_TRUE );
-			}
-		}
 		// Copy value.
 		switch( immediate->immediate_data_type ) {
 		case IRA_IMMEDIATE_8:
@@ -202,6 +196,12 @@ void _ira_operand_formater_immediate( struct ira_disassemble_result *result, str
 			break;
 		case IRA_NO_IMMEDIATE_DATA:
 			break;
+		}
+		// Extend integer if immediate value is extended.
+		if( format_info->show_extended_immediate ) {
+			if( immediate->extension_size != 0 && immediate->extension_size != immediate->immediate_data_type ) {
+				_ira_extend_integer( &immediate_value, immediate->extension_size, _IRA_TRUE );
+			}
 		}
 		_ira_format_append_integer( stream, &immediate_value, format_info->immediate_hex_display ? _IRA_FORMAT_HEX : _IRA_FORMAT_DEC );
 	}

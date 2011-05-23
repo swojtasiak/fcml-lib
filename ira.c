@@ -228,6 +228,15 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		if( _IRA_PREFIX_REX( current->allowed_prefixes ) ) {
 			// Check if there is REX prefix found.
 			_ira_diss_context_get_REX_prefix(context, &prefixes_ok);
+		} else if( _IRA_PREFIX_REX_W_0( current->allowed_prefixes ) ) {
+			// REX prefix with W byte = 0 is allowed and is silently ignored.
+			int rex_found = 0;
+			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
+			prefixes_ok = ( !rex_found || !_IRA_REX_W( rex ) );
+		} else if( _IRA_PREFIX_REX_W_1( current->allowed_prefixes ) ) {
+			int rex_found = 0;
+			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
+			prefixes_ok = ( rex_found && _IRA_REX_W( rex ) );
 		} else if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0x66);
 		} else if( _IRA_PREFIX_MANDATORY_F2( current->allowed_prefixes ) ) {
@@ -568,7 +577,7 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 	}
 
 	// REX prefix.
-	if( _IRA_PREFIX_REX(prefixes) ) {
+	if( _IRA_PREFIX_REX(prefixes) || _IRA_PREFIX_REX_W_1(prefixes) || _IRA_PREFIX_REX_W_0(prefixes) ) {
 		order += 2;
 	}
 
@@ -858,6 +867,7 @@ int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_
 		return result;
 	}
 	operand->operand_type = IRA_IMMEDIATE_DATA;
+	operand->immediate.extension_size = 0;
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
@@ -932,17 +942,25 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 	int result = _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
 	struct ira_decoded_mod_rm *decoded_mod_rm = &(context->decoding_context.mod_rm);
 	if( decoded_mod_rm->decoded_addressing ) {
-		operand->operand_type = IRA_ADDRESS;
-		operand->addressing.addressing_type = IRA_MOD_RM;
-		struct ira_mod_rm_addressing *mod_rm = &(operand->addressing.mod_rm);
-		// Copy all needed fields.
-		mod_rm->raw_mod_rm = decoded_mod_rm->raw_mod_rm;
-		mod_rm->raw_sib = decoded_mod_rm->raw_sib;
-		mod_rm->raw_rex = decoded_mod_rm->raw_rex;
-		mod_rm->base_reg = decoded_mod_rm->base_reg;
-		mod_rm->index_reg = decoded_mod_rm->index_reg;
-		mod_rm->scale = decoded_mod_rm->scale;
-		mod_rm->displacement = decoded_mod_rm->displacement;
+
+		// Check if there is register or memory address encoded in ModR/M.
+		if( decoded_mod_rm->reg.reg_type != IRA_NO_REG ) {
+			// There is just plain register (mod = 3).
+			_ira_opcode_decoder_reg( operand, decoded_mod_rm->reg.reg_type, decoded_mod_rm->reg.reg );
+		} else {
+			operand->operand_type = IRA_ADDRESS;
+			operand->addressing.addressing_type = IRA_MOD_RM;
+			struct ira_mod_rm_addressing *mod_rm = &(operand->addressing.mod_rm);
+			// Copy all needed fields.
+			mod_rm->raw_mod_rm = decoded_mod_rm->raw_mod_rm;
+			mod_rm->raw_sib = decoded_mod_rm->raw_sib;
+			mod_rm->raw_rex = decoded_mod_rm->raw_rex;
+			mod_rm->base_reg = decoded_mod_rm->base_reg;
+			mod_rm->index_reg = decoded_mod_rm->index_reg;
+			mod_rm->scale = decoded_mod_rm->scale;
+			mod_rm->displacement = decoded_mod_rm->displacement;
+		}
+
 		result = _IRA_INT_ERROR_NO_ERROR;
 	}
 	return result;
@@ -1344,7 +1362,7 @@ int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediat
 		}
 		break;
 	case 16:
-		if( !_ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_16), sizeof(uint16_t) ) < sizeof(uint16_t) ) {
+		if( _ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_16), sizeof(uint16_t) ) < sizeof(uint16_t) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
