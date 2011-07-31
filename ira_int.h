@@ -234,6 +234,8 @@ struct ira_instruction_desc {
 
 #define _IRA_RM_8		0
 #define _IRA_R_8		1
+#define _IRA_RM_ASA		2
+#define _IRA_R_OSA		3
 
 /* Operands encoding */
 
@@ -247,10 +249,12 @@ struct ira_instruction_desc {
 #define _IRA_NA	0x00
 
 #define _IRA_OPERAND_IB			0x01
+// imm8 sign extended to effective operand size attribute.
 #define _IRA_OPERAND_IB_EOSA	0x02
 #define _IRA_OPERAND_IW			0x03
 #define _IRA_OPERAND_IW_EOSA	0x04
 #define _IRA_OPERAND_ID			0x05
+// imm32 sign extended to effective operand size attribute.
 #define _IRA_OPERAND_ID_EOSA	0x06
 #define _IRA_OPERAND_IO			0x07
 #define _IRA_OPERAND_IO_EOSA	0x08
@@ -266,9 +270,12 @@ struct ira_instruction_desc {
 
 #define _IRA_OPERAND_MODRM_RM_8		_IRA_MODRM(_IRA_RM_8)
 #define _IRA_OPERAND_MODRM_RM_8_W	( _IRA_OPERAND_MODRM_RM_8 | _IRA_W )
+#define _IRA_OPERAND_MODRM_RM_ASA	_IRA_MODRM(_IRA_RM_ASA)
+#define _IRA_OPERAND_MODRM_RM_ASA_W	( _IRA_OPERAND_MODRM_RM_ASA | _IRA_W )
 #define _IRA_OPERAND_MODRM_R_8		_IRA_MODRM(_IRA_R_8)
 #define _IRA_OPERAND_MODRM_R_8_W	( _IRA_OPERAND_MODRM_R_8 | _IRA_W )
-
+#define _IRA_OPERAND_MODRM_R_OSA	_IRA_MODRM(_IRA_R_OSA)
+#define _IRA_OPERAND_MODRM_R_OSA_W	( _IRA_OPERAND_MODRM_R_OSA | _IRA_W )
 
 /* Externals. */
 

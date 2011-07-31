@@ -94,6 +94,8 @@ int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira
 int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size );
 int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
 int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size );
+int _ira_opcode_decoder_modrm_rm_easa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
+int _ira_opcode_decoder_modrm_r_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
 
 /* Decoders' helpers methods. */
 
@@ -223,7 +225,7 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 
 	do {
 
-		// Check mandatory prefixes.
+		// Check prefixes.
 		int prefixes_ok = 0;
 		if( _IRA_PREFIX_REX( current->allowed_prefixes ) ) {
 			// Check if there is REX prefix found.
@@ -237,6 +239,12 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			int rex_found = 0;
 			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
 			prefixes_ok = ( rex_found && _IRA_REX_W( rex ) );
+		} else if( !_IRA_PREFIX_REX( current->allowed_prefixes ) ) {
+			// Check if REX prefix doesn't present. REX prefix can be identified only in
+			// 64 bit mode, so there is no need to check mode.
+			int found;
+			_ira_diss_context_get_REX_prefix(context, &found);
+			prefixes_ok = !found;
 		} else if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0x66);
 		} else if( _IRA_PREFIX_MANDATORY_F2( current->allowed_prefixes ) ) {
@@ -276,9 +284,10 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			continue;
 		}
 
+		// This is instruction we was looking for, so return it.
 		break;
 
-	} while( ( current = instruction->next_instruction_decoding ) != NULL );
+	} while( ( current = current->next_instruction_decoding ) != NULL );
 
 	return current;
 }
@@ -652,8 +661,11 @@ void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decodin
 	case _IRA_OPERAND_MODRM_R_8:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r_8;
 		break;
-	case _IRA_OPERAND_MODRM_RM_8_W:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm_8;
+	case _IRA_OPERAND_MODRM_RM_ASA:
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm_easa;
+		break;
+	case _IRA_OPERAND_MODRM_R_OSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r_eosa;
 		break;
 	default:
 		operand_decoding->decoder = NULL;
@@ -880,12 +892,22 @@ int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
+// TODO: Change this model, see there instruction pairs are identical!
+
 int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
 	return _ira_opcode_decoder_modrm_rm( context, operand, IRA_REG_GPR, _IRA_OR_8 );
 }
 
 int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
 	return _ira_opcode_decoder_modrm_r( context, operand, IRA_REG_GPR, _IRA_OR_8 );
+}
+
+int _ira_opcode_decoder_modrm_rm_easa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
+	return _ira_opcode_decoder_modrm_rm( context, operand, IRA_REG_GPR, _IRA_OR_DEFAULT );
+}
+
+int _ira_opcode_decoder_modrm_r_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
+	return _ira_opcode_decoder_modrm_r( context, operand, IRA_REG_GPR, _IRA_OR_DEFAULT );
 }
 
 //! Generic ModR/M addressing mode decoder.

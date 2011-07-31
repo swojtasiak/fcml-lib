@@ -15,18 +15,27 @@ struct ab a[] = {{ 1,1 }};
 
 int main()
 {
+	//REX.W - 48.
+
     //uint8_t data[] = { 0x67, 0x47, 0x10, 0x4c, 0x5c, 0x81 };
 	//uint8_t data[] = { 0x67, 0x10, 0x4c, 0x5c, 0x81 };
 	//uint8_t data[] = { 0xD5, 0xff };
 	//uint8_t data[] = { 0x66, 0x40, 0x15, 0xff, 0xff, 0xff, 0xff }; // adc
-	uint8_t data[] = { 0x40, 0x80, 0xD5, 0x15, 0xff, 0xff, 0xff, 0xff }; // adc
+
+	// REX.W + 81 /2 id ADC r/m64, imm32 B Valid N.E. Add with CF imm32 sign extended to 64-bits to r/m64.
+	// uint8_t data[] = { 0x48, 0x81, 0xD5, 0x15, 0xff, 0xff, 0xff }; // adc
+
+	// REX.W + 83 /2 ib ADC r/m64, imm8 B Valid N.E. Add with CF sign-extended imm8 into r/m64.
+	// uint8_t data[] = { 0x48, 0x83, 0xD5, 0x15, 0xff, 0xff, 0xff }; // adc
+
+	uint8_t data[] = { 0x10, 0x48, 0xD5, 0x15, 0xff, 0xff, 0xff }; // adc
 
     struct ira_disassemble_info info;
     info.address = &data;
     info.size = sizeof(data);
     info.address_size_attribute = 0;
     info.operand_size_attribute = 0;
-    info.mode = IRA_MOD_64BIT;
+    info.mode = IRA_MOD_32BIT;
 
     struct ira_disassemble_result result;
 
