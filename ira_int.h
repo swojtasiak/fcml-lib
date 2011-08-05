@@ -250,15 +250,16 @@ struct ira_instruction_desc {
 
 #define _IRA_OPERAND_IB			0x01
 // imm8 sign extended to effective operand size attribute.
-#define _IRA_OPERAND_IB_EOSA	0x02
+#define _IRA_OPERAND_IB_EX_EOSA	0x02
 #define _IRA_OPERAND_IW			0x03
-#define _IRA_OPERAND_IW_EOSA	0x04
+#define _IRA_OPERAND_IW_EX_EOSA	0x04
 #define _IRA_OPERAND_ID			0x05
 // imm32 sign extended to effective operand size attribute.
-#define _IRA_OPERAND_ID_EOSA	0x06
+#define _IRA_OPERAND_ID_EX_EOSA	0x06
 #define _IRA_OPERAND_IO			0x07
 #define _IRA_OPERAND_IO_EOSA	0x08
-#define _IRA_OPERAND_IOS		0x09
+// Immediate value with size calculated using EOSA.
+#define _IRA_OPERAND_IMM_EOSA		0x09
 #define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A
 #define _IRA_OPERAND_REG_ACCUMULATOR_OSA	0x0B
 #define _IRA_OPERAND_REG_ACCUMULATOR_8_W	( 0x0A | _IRA_W )

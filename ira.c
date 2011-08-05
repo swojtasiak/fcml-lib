@@ -89,7 +89,7 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 void _ira_opcode_decoder_reg( struct ira_instruction_operand *operand, enum ira_register_type reg_type, int reg );
 int _ira_opcode_decoder_accumulator( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
 int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
-int _ira_opcode_decoder_immediate_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
+int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
 int _ira_opcode_decoder_modrm_rm_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
 int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, enum ira_register_type reg_type, int operand_register_size );
 int _ira_opcode_decoder_modrm_r_8( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
@@ -227,10 +227,8 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 
 		// Check prefixes.
 		int prefixes_ok = 0;
-		if( _IRA_PREFIX_REX( current->allowed_prefixes ) ) {
-			// Check if there is REX prefix found.
-			_ira_diss_context_get_REX_prefix(context, &prefixes_ok);
-		} else if( _IRA_PREFIX_REX_W_0( current->allowed_prefixes ) ) {
+		// TODO: These two following conditions are probably not necessary!
+		if( _IRA_PREFIX_REX_W_0( current->allowed_prefixes ) ) {
 			// REX prefix with W byte = 0 is allowed and is silently ignored.
 			int rex_found = 0;
 			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
@@ -517,7 +515,7 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 
 			// Prepare instruction decoding.
 			int error = _ira_add_instruction_decoding( inst_desc, instruction_desc, opcode_desc);
-			if( error != _IRA_INT_ERROR_OUT_OF_MEMORY ) {
+			if( error != _IRA_INT_ERROR_NO_ERROR ) {
 				// Free disassemblation tree.
 				_ira_free_disassemblation_tree( _ira_disassemblation_tree );
 				// Return error.
@@ -574,7 +572,7 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	decoding->next_instruction_decoding = *next_decoding_addr;
 	*next_decoding_addr = decoding;
 
-	return _IRA_INT_ERROR_OUT_OF_MEMORY;
+	return _IRA_INT_ERROR_NO_ERROR;
 }
 
 int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding ) {
@@ -623,27 +621,27 @@ void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decodin
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
 		operand_decoding->args = IRA_IMMEDIATE_8;
 		break;
-	case _IRA_OPERAND_IB_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_eosa;
+	case _IRA_OPERAND_IB_EX_EOSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
 		operand_decoding->args = IRA_IMMEDIATE_8;
 		break;
 	case _IRA_OPERAND_IW:
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
 		operand_decoding->args = IRA_IMMEDIATE_16;
 		break;
-	case _IRA_OPERAND_IW_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_eosa;
+	case _IRA_OPERAND_IW_EX_EOSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
 		operand_decoding->args = IRA_IMMEDIATE_16;
 		break;
 	case _IRA_OPERAND_ID:
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
 		operand_decoding->args = IRA_IMMEDIATE_32;
 		break;
-	case _IRA_OPERAND_ID_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_eosa;
+	case _IRA_OPERAND_ID_EX_EOSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
 		operand_decoding->args = IRA_IMMEDIATE_32;
 		break;
-	case _IRA_OPERAND_IOS:
+	case _IRA_OPERAND_IMM_EOSA:
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
 		operand_decoding->args = 0; // EOSA.
 		break;
@@ -652,7 +650,7 @@ void _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decodin
 		operand_decoding->args = IRA_IMMEDIATE_64;
 		break;
 	case _IRA_OPERAND_IO_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_eosa;
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
 		operand_decoding->args = IRA_IMMEDIATE_64;
 		break;
 	case _IRA_OPERAND_MODRM_RM_8:
@@ -867,7 +865,7 @@ int _ira_opcode_decoder_accumulator( struct ira_diss_context *context, struct ir
 }
 
 /* Decodes immediate value and extends it to the effective operand size. */
-int _ira_opcode_decoder_immediate_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
+int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args ) {
 	int result = _ira_opcode_decoder_immediate( context, operand, args );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
@@ -1143,7 +1141,7 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ir
 	}
 
 	// Scale.
-	decoded_mod_rm->scale.value = scale << 1; // scale * 2
+	decoded_mod_rm->scale.value = scale ? 1 << scale : 0; // scale * 2
 	decoded_mod_rm->scale.is_not_null = _IRA_TRUE;
 
 	// Base register and displacement.
