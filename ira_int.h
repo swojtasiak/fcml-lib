@@ -206,8 +206,9 @@ struct ira_instruction_desc {
 /* Prefixes flags. */
 
 #define _IRA_PREFIX_REX_W_1(x)				_IRA_GET_BIT(x,03)
-#define _IRA_PREFIX_REX_W_0(x)				_IRA_GET_BIT(x,04)
-#define _IRA_PREFIX_REX(x) 					_IRA_GET_BIT(x,11)
+// TODO: Remove it when it is really not necessary.
+//#define _IRA_PREFIX_REX_W_0(x)				_IRA_GET_BIT(x,04)
+//#define _IRA_PREFIX_REX(x) 					_IRA_GET_BIT(x,11)
 #define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
 #define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)

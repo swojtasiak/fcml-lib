@@ -228,22 +228,24 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		// Check prefixes.
 		int prefixes_ok = 0;
 		// TODO: These two following conditions are probably not necessary!
-		if( _IRA_PREFIX_REX_W_0( current->allowed_prefixes ) ) {
+		/*if( _IRA_PREFIX_REX_W_0( current->allowed_prefixes ) ) {
 			// REX prefix with W byte = 0 is allowed and is silently ignored.
 			int rex_found = 0;
 			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
 			prefixes_ok = ( !rex_found || !_IRA_REX_W( rex ) );
-		} else if( _IRA_PREFIX_REX_W_1( current->allowed_prefixes ) ) {
+		} else*/
+
+		if( _IRA_PREFIX_REX_W_1( current->allowed_prefixes ) ) {
 			int rex_found = 0;
 			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
 			prefixes_ok = ( rex_found && _IRA_REX_W( rex ) );
-		} else if( !_IRA_PREFIX_REX( current->allowed_prefixes ) ) {
+		} /*else if( !_IRA_PREFIX_REX( current->allowed_prefixes ) ) {
 			// Check if REX prefix doesn't present. REX prefix can be identified only in
 			// 64 bit mode, so there is no need to check mode.
 			int found;
 			_ira_diss_context_get_REX_prefix(context, &found);
 			prefixes_ok = !found;
-		} else if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
+		}*/ else if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0x66);
 		} else if( _IRA_PREFIX_MANDATORY_F2( current->allowed_prefixes ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF2);
@@ -593,7 +595,8 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 	}
 
 	// REX prefix.
-	if( _IRA_PREFIX_REX(prefixes) || _IRA_PREFIX_REX_W_1(prefixes) || _IRA_PREFIX_REX_W_0(prefixes) ) {
+	// TODO: Remove it when it is really not necessary.
+	if( /*_IRA_PREFIX_REX(prefixes) ||*/ _IRA_PREFIX_REX_W_1(prefixes) /* || _IRA_PREFIX_REX_W_0(prefixes)*/ ) {
 		order += 2;
 	}
 
@@ -1132,17 +1135,16 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ir
 	// Decode ModRM.
 	mod = _IRA_MODRM_MOD(mod_rm);
 
-	// Index register.
-	if( _IRA_SIB_INDEX(sib) != 4 ) {
+	// Index register and scale.
+	if( index != 4 ) {
 		// Effective address size affects index register.
 		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
 		decoded_mod_rm->index_reg.reg_type = (effective_address_size == _IRA_ASA_64) ? IRA_REG_GPR_64 : IRA_REG_GPR_32;
 		decoded_mod_rm->index_reg.reg = index;
+		// Scale.
+		decoded_mod_rm->scale.value = scale ? 1 << scale : 0; // scale * 2
+		decoded_mod_rm->scale.is_not_null = _IRA_TRUE;
 	}
-
-	// Scale.
-	decoded_mod_rm->scale.value = scale ? 1 << scale : 0; // scale * 2
-	decoded_mod_rm->scale.is_not_null = _IRA_TRUE;
 
 	// Base register and displacement.
 	if( mod == 0 && _IRA_SIB_BASE(sib) == 5 ) {
