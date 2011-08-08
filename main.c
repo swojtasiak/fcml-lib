@@ -122,8 +122,8 @@ void test_code_32( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 	// ADC
+
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
-	// { NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	_TEST32( "1442 adc al,42h", 0x14, 0x42 );
 	_TEST32( "1400 adc al,00h", 0x14, 0x00 );
 	_TEST32( "14ff adc al,0ffh", 0x14, 0xff );
@@ -132,14 +132,19 @@ void test(void) {
 	_TEST64( "14ff adc al,0ffh", 0x14, 0xff );
 	// 15 iw ADC AX, imm16 C Valid Valid Add with carry imm16 to AX.
 	// 15 id ADC EAX, imm32 C Valid Valid Add with carry imm32 to EAX.
-	// { NULL, 0x0001, 0x00D40000, { 0x15, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	_TEST32( "66154280 adc ax,8042h", 0x66, 0x15, 0x42, 0x80 );
 	_TEST32( "1521658042 adc eax,42806521h", 0x15, 0x21, 0x65, 0x80, 0x42 );
 	_TEST64( "401521658042 adc eax,42806521h", 0x40, 0x15, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "6640152165 adc ax,6521h", 0x66, 0x40, 0x15, 0x21, 0x65, 0x80, 0x42 );
+	// REX.W + 15 id ADC RAX, imm32 C Valid N.E. Add with carry imm32 sign extended to 64-bits to RAX.
 	_TEST64( "481521658042 adc rax,0000000042806521h", 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
 	_TEST64( "66481521658042 adc rax,0000000042806521h", 0x66, 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
 	_TEST64( "6766481521658042 adc rax,0000000042806521h", 0x67, 0x66, 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
-	_TEST64( "6640152165 adc ax,6521h", 0x66, 0x40, 0x15, 0x21, 0x65, 0x80, 0x42 );
-	//_TEST32( "1400 adc al,00h", 0x14, 0x00 );
+	_TEST64( "67664815ffffffff adc rax,0ffffffffffffffffh", 0x67, 0x66, 0x48, 0x15, 0xff, 0xff, 0xff, 0xff );
+	// 80 /2 ib ADC r/m8, imm8 B Valid Valid Add with carry imm8 to r/m8.
+	// REX + 80 /2 ib ADC r/m8*, imm8 B Valid N.E. Add with carry imm8 to r/m8.
+	_TEST32( "801501020304ff adc [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
+	_TEST32( "809601020304ff adc [esi+04030201h],0ffh", 0x80, 0x96, 0x01, 0x02, 0x03, 0x04, 0xff, 0x00, 0x00 );
+	_TEST32( "8054010203 adc [ecx+eax+00000002h],03h", 0x80, 0x54, 0x01, 0x02, 0x03 );
 }
 

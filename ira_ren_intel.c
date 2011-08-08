@@ -118,7 +118,7 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 	}
 
 	// Append scale.
-	if( mod_rm->scale.is_not_null ) {
+	if( mod_rm->scale.is_not_null && mod_rm->scale.value > 0 ) {
 		_ira_format_append_if_not_first( stream, &first, "*" );
 
 		struct _ira_integer scale_value = {0};

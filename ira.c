@@ -184,8 +184,12 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     	instruction = _ira_choose_instruction( &context, instruction );
     	if( instruction != NULL ) {
     		int rc = instruction->instruction_decoder( &context, instruction, result );
-    		if( rc != _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
-    			result->code = _ira_map_internall_error_code( rc );
+    		if( rc != _IRA_INT_ERROR_NO_ERROR ) {
+    			if( rc != _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
+    				result->code = _ira_map_internall_error_code( rc );
+    				default_diss = 0;
+    			}
+    		} else {
     			default_diss = 0;
     		}
     	}
@@ -1196,7 +1200,7 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 	} else if( _IRA_MODRM_RM(mod_rm) == 4 ) {
 		// Decode SIB addressing format.
 		result = _ira_modrm_addressing_decoder_sib( context, reg_type, operand_register_size );
-	} else if( mod == 1 && _IRA_MODRM_RM(mod_rm) == 5 ) {
+	} else if( mod == 0 && _IRA_MODRM_RM(mod_rm) == 5 ) {
 		// disp32.
 		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_32,
 				( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
