@@ -27,7 +27,7 @@ struct ira_opcode_desc _ira_opcode_desc_AAS[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_ADC[] = {
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
-	{ NULL, 0x0001, 0x00D40000, { 0x14, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 15 iw ADC AX, imm16 C Valid Valid Add with carry imm16 to AX.
 	// 15 id ADC EAX, imm32 C Valid Valid Add with carry imm32 to EAX.
 	{ NULL, 0x0001, 0x00D40000, { 0x15, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
