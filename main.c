@@ -111,8 +111,10 @@ void test_code_32( int is32, uint8_t code[], int size, char *mnemonic ) {
 		}
 
 	} else {
-		printf("Failed: %s\n", mnemonic);
-		exit(0);
+		if( strcmp( "FAIL", mnemonic ) != 0 ) {
+			printf("Failed: %s\n", mnemonic);
+			exit(0);
+		}
 	}
 
 }
@@ -122,7 +124,6 @@ void test_code_32( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 	// ADC
-
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
 	_TEST32( "1442 adc al,42h", 0x14, 0x42 );
 	_TEST32( "1400 adc al,00h", 0x14, 0x00 );
@@ -146,5 +147,11 @@ void test(void) {
 	_TEST32( "801501020304ff adc [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
 	_TEST32( "809601020304ff adc [esi+04030201h],0ffh", 0x80, 0x96, 0x01, 0x02, 0x03, 0x04, 0xff, 0x00, 0x00 );
 	_TEST32( "8054010203 adc [ecx+eax+00000002h],03h", 0x80, 0x54, 0x01, 0x02, 0x03 );
+	// 81 /2 iw ADC r/m16, imm16 B Valid Valid Add with carry imm16 to r/m16.
+	// 81 /2 id ADC r/m32, imm32 B Valid Valid Add with CF imm32 to r/m32.
+	_TEST32( "81d501020304 adc ebp,04030201h", 0x81, 0xD5, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "6681d50102 adc bp,0201h", 0x66, 0x81, 0xD5, 0x01, 0x02 );
+	_TEST32( "FAIL", 0x67, 0x66, 0x40, 0x81, 0xD5, 0x01, 0x02, 0x03, 0x04 ); // 32 bit mode doesn't not allow REX.
+	_TEST64( "67664081d50102 adc bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xD5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
 }
 
