@@ -1022,13 +1022,11 @@ int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_dec
 	int rex_found = decoded_mod_rm->raw_rex.is_not_null;
 	// Check if there is REX register.
 	if( context->mode == IRA_MOD_64BIT && !rex_found ) {
-		int rex_found;
 		uint8_t rex = _ira_diss_context_get_REX_prefix( context, &rex_found );
 		if( rex_found ) {
 			// Store its value in decoded ModRM structure.
 			decoded_mod_rm->raw_rex.value = rex;
 			decoded_mod_rm->raw_rex.is_not_null = _IRA_TRUE;
-			rex_found = _IRA_TRUE;
 		}
 	}
 	return rex_found;
