@@ -112,6 +112,28 @@ int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uin
 /* Gets REX prefix. */
 uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int *found );
 
+/* Decoding arguments. */
+
+/* Structure that can be used to pass register type to operand decoding function. */
+struct ira_reg_type_args {
+	// Register type.
+	enum ira_register_type reg_type;
+};
+
+/* Structure that can be used to pass immediate value type/size to operand decoding function. */
+struct ira_immediate_type_args {
+	// Immediate value type.
+	enum ira_immediate_data_type immediate_data_type;
+};
+
+/* Structure that can be used to pass register type and its size to operand decoding function. */
+struct ira_register_type_size_args {
+	// Register type.
+	enum ira_register_type reg_type;
+	// Register size.
+	int operand_register_size;
+};
+
 /* Disassemblation tree. */
 
 struct ira_diss_tree_opcode {
@@ -123,7 +145,7 @@ struct ira_diss_tree_opcode {
 typedef int (*ira_instruction_decoder)( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
 /* Decoders responsible for operand disassemblation. */
-typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand, int args );
+typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
 
 struct ira_operand_decoding {
 	// Operand access mode.
@@ -131,7 +153,7 @@ struct ira_operand_decoding {
 	// Operand decoder.
 	ira_operand_decoder decoder;
 	// Optional arguments passed to operand decoder.
-	int args;
+	void *args;
 };
 
 struct ira_diss_tree_instruction_decoding {
