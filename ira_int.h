@@ -127,11 +127,13 @@ struct ira_immediate_type_args {
 };
 
 /* Structure that can be used to pass register type and its size to operand decoding function. */
-struct ira_register_type_size_args {
+struct ira_modrm_decoding_args {
 	// Register type.
 	enum ira_register_type reg_type;
 	// Register size.
 	int operand_register_size;
+	// Size directive.
+	int size_directive;
 };
 
 /* Disassemblation tree. */
@@ -228,9 +230,6 @@ struct ira_instruction_desc {
 /* Prefixes flags. */
 
 #define _IRA_PREFIX_REX_W_1(x)				_IRA_GET_BIT(x,03)
-// TODO: Remove it when it is really not necessary.
-//#define _IRA_PREFIX_REX_W_0(x)				_IRA_GET_BIT(x,04)
-//#define _IRA_PREFIX_REX(x) 					_IRA_GET_BIT(x,11)
 #define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
 #define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)
@@ -253,12 +252,24 @@ struct ira_instruction_desc {
 #define _IRA_OR_8			0
 #define _IRA_OR_DEFAULT		1
 
+/* Size directive */
+
+#define _IRA_DEFAULT_SIZE_DIRECTIVE	-1
+
 /* Operands */
 
 #define _IRA_RM_8		0
 #define _IRA_R_8		1
 #define _IRA_RM_ASA		2
 #define _IRA_R_OSA		3
+#define _IRA_RM_MMX		4
+#define _IRA_R_MMX		5
+#define _IRA_RM_XMM_128	6
+#define _IRA_R_XMM_128	7
+#define _IRA_RM_XMM_64	8
+#define _IRA_R_XMM_64	9
+#define _IRA_RM_XMM_32	10
+#define _IRA_R_XMM_32	11
 
 /* Operands encoding */
 
@@ -292,14 +303,30 @@ struct ira_instruction_desc {
 
 #define _IRA_MODRM(x) ( _IRA_MODRM_BASE + x )
 
-#define _IRA_OPERAND_MODRM_RM_8		_IRA_MODRM(_IRA_RM_8)
-#define _IRA_OPERAND_MODRM_RM_8_W	( _IRA_OPERAND_MODRM_RM_8 | _IRA_W )
-#define _IRA_OPERAND_MODRM_RM_ASA	_IRA_MODRM(_IRA_RM_ASA)
-#define _IRA_OPERAND_MODRM_RM_ASA_W	( _IRA_OPERAND_MODRM_RM_ASA | _IRA_W )
-#define _IRA_OPERAND_MODRM_R_8		_IRA_MODRM(_IRA_R_8)
-#define _IRA_OPERAND_MODRM_R_8_W	( _IRA_OPERAND_MODRM_R_8 | _IRA_W )
-#define _IRA_OPERAND_MODRM_R_OSA	_IRA_MODRM(_IRA_R_OSA)
-#define _IRA_OPERAND_MODRM_R_OSA_W	( _IRA_OPERAND_MODRM_R_OSA | _IRA_W )
+#define _IRA_OPERAND_MODRM_RM_8			_IRA_MODRM(_IRA_RM_8)
+#define _IRA_OPERAND_MODRM_RM_8_W		( _IRA_OPERAND_MODRM_RM_8 | _IRA_W )
+#define _IRA_OPERAND_MODRM_RM_ASA		_IRA_MODRM(_IRA_RM_ASA)
+#define _IRA_OPERAND_MODRM_RM_ASA_W		( _IRA_OPERAND_MODRM_RM_ASA | _IRA_W )
+#define _IRA_OPERAND_MODRM_R_8			_IRA_MODRM(_IRA_R_8)
+#define _IRA_OPERAND_MODRM_R_8_W		( _IRA_OPERAND_MODRM_R_8 | _IRA_W )
+#define _IRA_OPERAND_MODRM_R_OSA		_IRA_MODRM(_IRA_R_OSA)
+#define _IRA_OPERAND_MODRM_R_OSA_W		( _IRA_OPERAND_MODRM_R_OSA | _IRA_W )
+#define _IRA_OPERAND_MODRM_RM_MMX		_IRA_MODRM(_IRA_RM_MMX)
+#define _IRA_OPERAND_MODRM_RM_MMX_W		( _IRA_OPERAND_MODRM_RM_MMX | _IRA_W )
+#define _IRA_OPERAND_MODRM_R_MMX		_IRA_MODRM(_IRA_R_MMX)
+#define _IRA_OPERAND_MODRM_R_MMX_W		( _IRA_OPERAND_MODRM_R_MMX | _IRA_W )
+#define _IRA_OPERAND_MODRM_RM_XMM_128	_IRA_MODRM(_IRA_RM_XMM_128)
+#define _IRA_OPERAND_MODRM_RM_XMM_128_W	( _IRA_OPERAND_MODRM_RM_XMM_128 | _IRA_W )
+#define _IRA_OPERAND_MODRM_R_XMM_128	_IRA_MODRM(_IRA_R_XMM_128)
+#define _IRA_OPERAND_MODRM_R_XMM_128_W	( _IRA_OPERAND_MODRM_R_XMM_128 | _IRA_W )
+#define _IRA_OPERAND_MODRM_RM_XMM_64	_IRA_MODRM(_IRA_RM_XMM_64)
+#define _IRA_OPERAND_MODRM_RM_XMM_64_W	( _IRA_OPERAND_MODRM_RM_XMM_64 | _IRA_W )
+#define _IRA_OPERAND_MODRM_R_XMM_64		_IRA_MODRM(_IRA_R_XMM_64)
+#define _IRA_OPERAND_MODRM_R_XMM_64_W	( _IRA_OPERAND_MODRM_R_XMM_64 | _IRA_W )
+#define _IRA_OPERAND_MODRM_RM_XMM_32	_IRA_MODRM(_IRA_RM_XMM_32)
+#define _IRA_OPERAND_MODRM_RM_XMM_32_W	( _IRA_OPERAND_MODRM_RM_XMM_32 | _IRA_W )
+#define _IRA_OPERAND_MODRM_R_XMM_32		_IRA_MODRM(_IRA_R_XMM_32)
+#define _IRA_OPERAND_MODRM_R_XMM_32_W	( _IRA_OPERAND_MODRM_R_XMM_32 | _IRA_W )
 
 /* Externals. */
 

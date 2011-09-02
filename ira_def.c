@@ -98,11 +98,11 @@ struct ira_opcode_desc _ira_opcode_desc_ADD[] = {
 	// REX.W + 03 /r ADD r64, r/m64 A Valid N.E. Add r/m64 to r64.
 	{ NULL, 0x0001, 0x00C48000, { 0x03, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_OSA_W, _IRA_OPERAND_MODRM_RM_ASA, _IRA_NA, _IRA_NA }
 };
-/*
-struct ira_opcode_desc _ira_opcode_desc_ADD[] = {
-	// 04 ib ADD AL, imm8 C Valid Valid Add imm8 to AL..
-	{ NULL, 0x0001, 0x00C40000, { 0x04, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
-}*/
+
+struct ira_opcode_desc _ira_opcode_desc_ADDPD[] = {
+	// 66 0F 58 /r ADDPD xmm1, xmm2/m128 A Valid Valid Add packed double-precision floating-point values from xmm2/m128 to xmm1.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x58, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		{ "aaa", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AAA), _ira_opcode_desc_AAA },
@@ -111,6 +111,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		{ "aas", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AAS), _ira_opcode_desc_AAS },
 		{ "adc", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADC), _ira_opcode_desc_ADC },
 		{ "add", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADD), _ira_opcode_desc_ADD },
+		{ "addpd", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADDPD), _ira_opcode_desc_ADDPD },
 		{ NULL, 0, 0, NULL }
 };
 

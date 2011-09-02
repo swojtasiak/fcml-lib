@@ -124,7 +124,7 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 	// ADC
-
+	_TEST32( "801501020304ff adc [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
 	_TEST32( "1442 adc al,42h", 0x14, 0x42 );
 	_TEST32( "1400 adc al,00h", 0x14, 0x00 );
@@ -260,6 +260,10 @@ void test(void) {
 	_TEST32( "6703a50102 add esp,[di+0201h]", 0x67, 0x03, 0xa5, 0x01, 0x02 );
 	_TEST64( "4d03648901 add r12,[r9+rcx*4+0000000000000001h]", 0x4D, 0x03, 0x64, 0x89, 0x01 );
 
+	// ADDPD
+
+	_TEST32( "660f581401 addpd xmm2,[ecx+eax]", 0x66, 0x0F, 0x58, 0x14, 0x01 );
+	_TEST64( "660f581401 addpd xmm2,[rcx+rax]", 0x66, 0x0F, 0x58, 0x14, 0x01 );
 }
 
 

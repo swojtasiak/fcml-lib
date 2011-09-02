@@ -272,6 +272,8 @@ struct ira_mod_rm_addressing {
 struct ira_addressing {
 	// Type of addressing.
 	enum ira_addressing_type addressing_type;
+	// Data size.
+	int size_directive;
 	// ModRM addressing.
 	struct ira_mod_rm_addressing mod_rm;
 };
