@@ -708,6 +708,14 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
 		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_8, 8, &result );
 		break;
+	case _IRA_OPERAND_MODRM_RM_16:
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, 16, &result );
+		break;
+	case _IRA_OPERAND_MODRM_R_16:
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, 16, &result );
+		break;
 	case _IRA_OPERAND_MODRM_RM_ASA:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
 		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
@@ -1107,8 +1115,15 @@ int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_dec
 
 struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, int reg ) {
 	int type = reg_type;
-	if( reg_type == IRA_REG_GPR && operand_register_size == _IRA_OR_8 ) {
-		type = IRA_REG_GPR_8;
+	if( reg_type == IRA_REG_GPR && operand_register_size != _IRA_OR_DEFAULT ) {
+		switch( operand_register_size ) {
+		case _IRA_OR_8:
+			type = IRA_REG_GPR_8;
+			break;
+		case _IRA_OR_16:
+			type = IRA_REG_GPR_16;
+			break;
+		}
 	} else if( reg_type == IRA_REG_GPR ) {
 		switch( context->decoding_context.effective_operand_size_attribute ) {
 		case _IRA_OSA_16:

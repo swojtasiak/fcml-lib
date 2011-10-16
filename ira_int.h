@@ -247,10 +247,11 @@ struct ira_instruction_desc {
 
 #define _IRA_IT_IA			0x00
 
-/* Operand register size */
+/* Operand register size. Adding new values here, you probably have to modify _ira_modrm_decode_register() also. */
 
 #define _IRA_OR_8			0
-#define _IRA_OR_DEFAULT		1
+#define _IRA_OR_16			1
+#define _IRA_OR_DEFAULT		2
 
 /* Size directive */
 
@@ -260,16 +261,18 @@ struct ira_instruction_desc {
 
 #define _IRA_RM_8		0
 #define _IRA_R_8		1
-#define _IRA_RM_ASA		2
-#define _IRA_R_OSA		3
-#define _IRA_RM_MMX		4
-#define _IRA_R_MMX		5
-#define _IRA_RM_XMM_128	6
-#define _IRA_R_XMM_128	7
-#define _IRA_RM_XMM_64	8
-#define _IRA_R_XMM_64	9
-#define _IRA_RM_XMM_32	10
-#define _IRA_R_XMM_32	11
+#define _IRA_RM_16		2
+#define _IRA_R_16		3
+#define _IRA_RM_ASA		4
+#define _IRA_R_OSA		5
+#define _IRA_RM_MMX		6
+#define _IRA_R_MMX		7
+#define _IRA_RM_XMM_128	8
+#define _IRA_R_XMM_128	9
+#define _IRA_RM_XMM_64	10
+#define _IRA_R_XMM_64	11
+#define _IRA_RM_XMM_32	12
+#define _IRA_R_XMM_32	13
 
 /* Operands encoding */
 
@@ -305,10 +308,14 @@ struct ira_instruction_desc {
 
 #define _IRA_OPERAND_MODRM_RM_8			_IRA_MODRM(_IRA_RM_8)
 #define _IRA_OPERAND_MODRM_RM_8_W		( _IRA_OPERAND_MODRM_RM_8 | _IRA_W )
+#define _IRA_OPERAND_MODRM_RM_16		_IRA_MODRM(_IRA_RM_16)
+#define _IRA_OPERAND_MODRM_RM_16_W		( _IRA_OPERAND_MODRM_RM_16 | _IRA_W )
 #define _IRA_OPERAND_MODRM_RM_ASA		_IRA_MODRM(_IRA_RM_ASA)
 #define _IRA_OPERAND_MODRM_RM_ASA_W		( _IRA_OPERAND_MODRM_RM_ASA | _IRA_W )
 #define _IRA_OPERAND_MODRM_R_8			_IRA_MODRM(_IRA_R_8)
 #define _IRA_OPERAND_MODRM_R_8_W		( _IRA_OPERAND_MODRM_R_8 | _IRA_W )
+#define _IRA_OPERAND_MODRM_R_16			_IRA_MODRM(_IRA_R_16)
+#define _IRA_OPERAND_MODRM_R_16_W		( _IRA_OPERAND_MODRM_R_16 | _IRA_W )
 #define _IRA_OPERAND_MODRM_R_OSA		_IRA_MODRM(_IRA_R_OSA)
 #define _IRA_OPERAND_MODRM_R_OSA_W		( _IRA_OPERAND_MODRM_R_OSA | _IRA_W )
 #define _IRA_OPERAND_MODRM_RM_MMX		_IRA_MODRM(_IRA_RM_MMX)

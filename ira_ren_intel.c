@@ -103,6 +103,27 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 	int first = _IRA_TRUE;
 
+	switch( addressing->size_directive ) {
+	case 8:
+		_ira_format_append_str( stream, "byte ptr " );
+		break;
+	case 16:
+		_ira_format_append_str( stream, "word ptr " );
+		break;
+	case 32:
+		_ira_format_append_str( stream, "dword ptr " );
+		break;
+	case 64:
+		_ira_format_append_str( stream, "qword ptr " );
+		break;
+	case 128:
+		_ira_format_append_str( stream, "oword ptr " );
+		break;
+	default:
+		// TODO: Maybe we should write size here?
+		_ira_format_append_str( stream, "unknown size ptr " );
+	}
+
 	_ira_format_append_str( stream, "[" );
 
 	// Append base register.
