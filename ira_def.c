@@ -221,31 +221,49 @@ struct ira_opcode_desc _ira_opcode_desc_ARPL[] = {
 	{ NULL, 0x0001, 0x00448000, { 0x63, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16, _IRA_OPERAND_MODRM_R_16, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_BLENDPD[] = {
+	// 66 0F 3A 0D /r ib BLENDPD xmm1, xmm2/m128, imm8 A Valid Valid Select packed DP-FP values from xmm1 and xmm2/m128 from mask specified in imm8 and store the values into xmm1.
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x0D }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLENDPS[] = {
+	// 66 0F 3A 0C /r ib BLENDPS xmm1, xmm2/m128, imm8 A Valid Valid Select packed single precision floating-point values from xmm1 and xmm2/m128 from mask specified in imm8 and store the values into xmm1.
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x0C }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLENDVPD[] = {
+	// 66 0F 38 15 /r BLENDVPD xmm1, xmm2/m128 , <XMM0> A Valid Valid Select packed DP FP values from xmm1 and xmm2 from mask specified in XMM0 and store the values in xmm1.
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x15 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
-		{ "aaa", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AAA), _ira_opcode_desc_AAA },
-		{ "aad", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AAD), _ira_opcode_desc_AAD },
-		{ "aam", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AAM), _ira_opcode_desc_AAM },
-		{ "aas", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AAS), _ira_opcode_desc_AAS },
-		{ "adc", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADC), _ira_opcode_desc_ADC },
-		{ "add", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADD), _ira_opcode_desc_ADD },
-		{ "addpd", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADDPD), _ira_opcode_desc_ADDPD },
-		{ "addps", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADDPS), _ira_opcode_desc_ADDPS },
-		{ "addsd", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADDSD), _ira_opcode_desc_ADDSD },
-		{ "addss", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADDSS), _ira_opcode_desc_ADDSS },
-		{ "addsubpd", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADDSUBPD), _ira_opcode_desc_ADDSUBPD },
-		{ "addsubps", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ADDSUBPS), _ira_opcode_desc_ADDSUBPS },
-		{ "aesdec", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AESDEC), _ira_opcode_desc_AESDEC },
-		{ "aesdeclast", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AESDECLAST), _ira_opcode_desc_AESDECLAST },
-		{ "aesenc", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AESENC), _ira_opcode_desc_AESENC },
-		{ "aesenclast", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AESENCLAST), _ira_opcode_desc_AESENCLAST },
-		{ "aesimc", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AESIMC), _ira_opcode_desc_AESIMC },
-		{ "aeskeygenassist", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AESKEYGENASSIST), _ira_opcode_desc_AESKEYGENASSIST },
-		{ "and", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_AND), _ira_opcode_desc_AND },
-		{ "andpd", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ANDPD), _ira_opcode_desc_ANDPD },
-		{ "andps", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ANDPS), _ira_opcode_desc_ANDPS },
-		{ "andnpd", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ANDNPD), _ira_opcode_desc_ANDNPD },
-		{ "andnps", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ANDNPS), _ira_opcode_desc_ANDNPS },
-		{ "arpl", _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(_ira_opcode_desc_ARPL), _ira_opcode_desc_ARPL },
+		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
+		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
+		_IA_INSTRUCTION( "aam", _ira_opcode_desc_AAM ),
+		_IA_INSTRUCTION( "aas", _ira_opcode_desc_AAS ),
+		_IA_INSTRUCTION( "adc", _ira_opcode_desc_ADC ),
+		_IA_INSTRUCTION( "add", _ira_opcode_desc_ADD ),
+		_IA_INSTRUCTION( "addpd", _ira_opcode_desc_ADDPD ),
+		_IA_INSTRUCTION( "addps", _ira_opcode_desc_ADDPS ),
+		_IA_INSTRUCTION( "addsd", _ira_opcode_desc_ADDSD ),
+		_IA_INSTRUCTION( "addss", _ira_opcode_desc_ADDSS ),
+		_IA_INSTRUCTION( "addsubpd", _ira_opcode_desc_ADDSUBPD ),
+		_IA_INSTRUCTION( "addsubps", _ira_opcode_desc_ADDSUBPS ),
+		_IA_INSTRUCTION( "aesdec", _ira_opcode_desc_AESDEC ),
+		_IA_INSTRUCTION( "aesdeclast", _ira_opcode_desc_AESDECLAST ),
+		_IA_INSTRUCTION( "aesenc", _ira_opcode_desc_AESENC ),
+		_IA_INSTRUCTION( "aesenclast", _ira_opcode_desc_AESENCLAST ),
+		_IA_INSTRUCTION( "aesimc", _ira_opcode_desc_AESIMC ),
+		_IA_INSTRUCTION( "aeskeygenassist", _ira_opcode_desc_AESKEYGENASSIST ),
+		_IA_INSTRUCTION( "and", _ira_opcode_desc_AND ),
+		_IA_INSTRUCTION( "andpd", _ira_opcode_desc_ANDPD ),
+		_IA_INSTRUCTION( "andps", _ira_opcode_desc_ANDPS ),
+		_IA_INSTRUCTION( "andnpd", _ira_opcode_desc_ANDNPD ),
+		_IA_INSTRUCTION( "andnps", _ira_opcode_desc_ANDNPS ),
+		_IA_INSTRUCTION( "arpl", _ira_opcode_desc_ARPL ),
+		_IA_INSTRUCTION( "blendpd", _ira_opcode_desc_BLENDPD),
+		_IA_INSTRUCTION( "blendps", _ira_opcode_desc_BLENDPS),
+		_IA_INSTRUCTION( "blendvpd", _ira_opcode_desc_BLENDVPD),
 		{ NULL, 0, 0, NULL }
 };
 

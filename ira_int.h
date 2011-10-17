@@ -118,6 +118,8 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 struct ira_reg_type_args {
 	// Register type.
 	enum ira_register_type reg_type;
+	// Register number.
+	int reg;
 };
 
 /* Structure that can be used to pass immediate value type/size to operand decoding function. */
@@ -187,10 +189,10 @@ struct ira_opcode_desc {
 	uint16_t allowed_prefixes; // Flags describing allowed prefixes.
 	uint32_t opcode_flags; // Some flags that contains various information about opcode.
 	uint8_t opcode[3]; // Opcode bytes.
-	uint8_t opperand_1; // Addressing of first instruction operand .
-	uint8_t opperand_2; // Second etc.
-	uint8_t opperand_3;
-	uint8_t opperand_4;
+	uint16_t opperand_1; // Addressing of first instruction operand .
+	uint16_t opperand_2; // Second etc.
+	uint16_t opperand_3;
+	uint16_t opperand_4;
 };
 
 struct ira_instruction_desc {
@@ -257,7 +259,41 @@ struct ira_instruction_desc {
 
 #define _IRA_DEFAULT_SIZE_DIRECTIVE	-1
 
-/* Operands */
+/* Operands encoding */
+
+#define _IRA_OPERANDS_SIZEOF(x)	( sizeof( x ) / sizeof( struct ira_opcode_desc ) )
+
+#define _IA_INSTRUCTION(x,y) { x, _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(y), y }
+
+// Source operand (Reads).
+#define _IRA_R	0x0000
+
+// Destination operand (Writes).
+#define _IRA_W	0x8000
+
+#define _IRA_NA	0x0000
+
+#define _IRA_OPERAND_IB						0x0100
+// imm8 sign extended to effective operand size attribute.
+#define _IRA_OPERAND_IB_EX_EOSA				0x0200
+#define _IRA_OPERAND_IW						0x0300
+#define _IRA_OPERAND_IW_EX_EOSA				0x0400
+#define _IRA_OPERAND_ID						0x0500
+// imm32 sign extended to effective operand size attribute.
+#define _IRA_OPERAND_ID_EX_EOSA				0x0600
+#define _IRA_OPERAND_IO						0x0700
+#define _IRA_OPERAND_IO_EOSA				0x0800
+// Immediate value with size calculated using EOSA.
+#define _IRA_OPERAND_IMM_EOSA				0x0900
+#define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A00
+#define _IRA_OPERAND_REG_ACCUMULATOR_OSA	0x0B00
+#define _IRA_OPERAND_REG_ACCUMULATOR_8_W	( _IRA_OPERAND_REG_ACCUMULATOR_8   | _IRA_W )
+#define _IRA_OPERAND_REG_ACCUMULATOR_OSA_W	( _IRA_OPERAND_REG_ACCUMULATOR_OSA | _IRA_W )
+
+// Base for ModRM based operands.
+#define _IRA_MODRM_BASE 					0x0C00
+
+/* Operands for ModRM encoding. */
 
 #define _IRA_RM_8		0
 #define _IRA_R_8		1
@@ -274,35 +310,7 @@ struct ira_instruction_desc {
 #define _IRA_RM_XMM_32	12
 #define _IRA_R_XMM_32	13
 
-/* Operands encoding */
-
-#define _IRA_OPERANDS_SIZEOF(x)	( sizeof( x ) / sizeof( struct ira_opcode_desc ) )
-
-// Source operand (Reads).
-#define _IRA_R	0x00
-// Destination operand (Writes).
-#define _IRA_W	0x80
-
-#define _IRA_NA	0x00
-
-#define _IRA_OPERAND_IB			0x01
-// imm8 sign extended to effective operand size attribute.
-#define _IRA_OPERAND_IB_EX_EOSA	0x02
-#define _IRA_OPERAND_IW			0x03
-#define _IRA_OPERAND_IW_EX_EOSA	0x04
-#define _IRA_OPERAND_ID			0x05
-// imm32 sign extended to effective operand size attribute.
-#define _IRA_OPERAND_ID_EX_EOSA	0x06
-#define _IRA_OPERAND_IO			0x07
-#define _IRA_OPERAND_IO_EOSA	0x08
-// Immediate value with size calculated using EOSA.
-#define _IRA_OPERAND_IMM_EOSA		0x09
-#define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A
-#define _IRA_OPERAND_REG_ACCUMULATOR_OSA	0x0B
-#define _IRA_OPERAND_REG_ACCUMULATOR_8_W	( 0x0A | _IRA_W )
-#define _IRA_OPERAND_REG_ACCUMULATOR_OSA_W	( 0x0B | _IRA_W )
-
-#define _IRA_MODRM_BASE 0x40 // Base for ModRM based operands.
+/* ModRM based operands. */
 
 #define _IRA_MODRM(x) ( _IRA_MODRM_BASE + x )
 
@@ -334,6 +342,10 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_RM_XMM_32_W	( _IRA_OPERAND_MODRM_RM_XMM_32 | _IRA_W )
 #define _IRA_OPERAND_MODRM_R_XMM_32		_IRA_MODRM(_IRA_R_XMM_32)
 #define _IRA_OPERAND_MODRM_R_XMM_32_W	( _IRA_OPERAND_MODRM_R_XMM_32 | _IRA_W )
+
+// Implicit register.
+#define _IRA_REG_OPCODE_BASE			0x0D00
+#define _IRA_IMPLICIT_REG(x,y)			( _IRA_REG_OPCODE_BASE | x << 4 | y )
 
 /* Externals. */
 
