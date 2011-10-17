@@ -344,8 +344,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_R_XMM_32_W	( _IRA_OPERAND_MODRM_R_XMM_32 | _IRA_W )
 
 // Implicit register.
-#define _IRA_REG_OPCODE_BASE			0x0D00
-#define _IRA_IMPLICIT_REG(x,y)			( _IRA_REG_OPCODE_BASE | x << 4 | y )
+#define _IRA_IMPLICIT_REG_BASE			0x0D00
+#define _IRA_IMPLICIT_REG(x,y)			( _IRA_IMPLICIT_REG_BASE | x << 4 | y )
 
 /* Externals. */
 

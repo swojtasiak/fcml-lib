@@ -656,7 +656,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	// Clear access mode.
 	decoder_type &= ~_IRA_W;
 
-	if( ( decoder_type & 0xFF00 ) == _IRA_REG_OPCODE_BASE ) {
+	if( ( decoder_type & 0xFF00 ) == _IRA_IMPLICIT_REG_BASE ) {
 		// Implicit register.
 		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
 		operand_decoding->args = _ira_alloc_reg_type_args( ( decoder_type & 0x00F0 ) >> 4, ( decoder_type & 0x000F ), &result );
