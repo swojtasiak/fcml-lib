@@ -10,10 +10,12 @@
 
 /* Internal error codes */
 
-#define _IRA_INT_ERROR_NO_ERROR				0x00
-#define _IRA_INT_ERROR_CODE_UNEXPECTED_EOS	0x01
-#define _IRA_INT_ERROR_OUT_OF_MEMORY		0x02
-#define _IRA_INT_ERROR_ILLEGAL_ARGUMENT		0x03
+#define _IRA_INT_ERROR_NO_ERROR						0x00
+#define _IRA_INT_ERROR_CODE_UNEXPECTED_EOS			0x01
+#define _IRA_INT_ERROR_OUT_OF_MEMORY				0x02
+#define _IRA_INT_ERROR_ILLEGAL_ARGUMENT				0x03
+#define _IRA_INT_ERROR_ILLEGAL_ADDRESSING			0x04
+#define _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE	0x05
 
 /* Structures used to store information about memory. */
 
@@ -238,12 +240,14 @@ struct ira_instruction_desc {
 
 /* Opcode flags. */
 
-#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 		( ( x & 0x00007000 ) >> 11 )
-#define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x)		( ( x & 0x00007800 ) >> 11 )
-#define _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 	_IRA_GET_BIT(x,15)
-#define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 		_IRA_GET_BIT(x,16)
-#define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) 	_IRA_GET_BIT(x,17)
-#define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 		( ( x & 0x000C0000 ) >> 18 )
+#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 				( ( x & 0x00007000 ) >> 11 )
+#define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x)				( ( x & 0x00007800 ) >> 11 )
+#define _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 			_IRA_GET_BIT(x,15)
+#define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 				_IRA_GET_BIT(x,16)
+#define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) 			_IRA_GET_BIT(x,17)
+#define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 				( ( x & 0x000C0000 ) >> 18 )
+#define _IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(x)		( x & 0x00800000 )
+#define _IRA_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(x)	( x & 0x00400000 )
 
 /* Instruction types. */
 
@@ -309,6 +313,8 @@ struct ira_instruction_desc {
 #define _IRA_R_XMM_64	11
 #define _IRA_RM_XMM_32	12
 #define _IRA_R_XMM_32	13
+// m16&16, m32&32.
+#define _IRA_OSA_MM		14
 
 /* ModRM based operands. */
 
@@ -342,6 +348,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_RM_XMM_32_W	( _IRA_OPERAND_MODRM_RM_XMM_32 | _IRA_W )
 #define _IRA_OPERAND_MODRM_R_XMM_32		_IRA_MODRM(_IRA_R_XMM_32)
 #define _IRA_OPERAND_MODRM_R_XMM_32_W	( _IRA_OPERAND_MODRM_R_XMM_32 | _IRA_W )
+#define _IRA_OPERAND_MODRM_MM_OSA		_IRA_MODRM(_IRA_OSA_MM)
+
 
 // Implicit register.
 #define _IRA_IMPLICIT_REG_BASE			0x0D00

@@ -135,7 +135,9 @@ enum ira_result_code {
 	// When disassembler is not able to disassemble instruction due to incomplete data in stream.
 	RC_ERROR_INSTRUCTION_INCOMPLETE,
 	RC_ERROR_OUT_OF_MEMORY,
-	RC_ERROR_UNEXPECTED_INTERNAL_ERROR
+	RC_ERROR_UNEXPECTED_INTERNAL_ERROR,
+	RC_ERROR_ILLEGAL_ADDRESSING_MODE,
+	RC_ERROR_INSTRUCTION_NOT_ENCODABLE
 };
 
 enum ira_operand_type {

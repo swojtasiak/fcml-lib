@@ -236,6 +236,31 @@ struct ira_opcode_desc _ira_opcode_desc_BLENDVPD[] = {
 	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x15 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_BLENDVPS[] = {
+	// 66 0F 38 14 /r BLENDVPS xmm1, xmm2/m128, <XMM0> A Valid Valid Select packed single precision floating-point values from xmm1 and xmm2/m128 from mask specified in XMM0 and store the values into xmm1.
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x14 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BOUND[] = {
+	// 62 /r BOUND r16, m16&16 A Invalid Valid Check if r16 (array index) is within bounds specified by m16&16.
+	// 62 /r BOUND r32, m32&32 A Invalid Valid Check if r32 (array index) is within bounds specified by m16&16.
+	{ NULL, 0x0001, 0x00448000, { 0x62 }, _IRA_OPERAND_MODRM_R_OSA, _IRA_OPERAND_MODRM_MM_OSA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BSF[] = {
+	// 0F BC /r BSF r16, r/m16 A Valid Valid Bit scan forward on r/m16.
+	// 0F BC /r BSF r32, r/m32 A Valid Valid Bit scan forward on r/m32.
+	// REX.W + 0F BC BSF r64, r/m64 A Valid N.E. Bit scan forward on r/m64.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBC, 0x00 }, _IRA_OPERAND_MODRM_R_OSA_W, _IRA_OPERAND_MODRM_RM_ASA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BSR[] = {
+	// 0F BD /r BSR r16, r/m16 A Valid Valid Bit scan reverse on r/m16.
+	// 0F BD /r BSR r32, r/m32 A Valid Valid Bit scan reverse on r/m32.
+	// REX.W + 0F BD BSR r64, r/m64 A Valid N.E. Bit scan reverse on r/m64.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBC, 0x00 }, _IRA_OPERAND_MODRM_R_OSA_W, _IRA_OPERAND_MODRM_RM_ASA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -264,6 +289,10 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "blendpd", _ira_opcode_desc_BLENDPD),
 		_IA_INSTRUCTION( "blendps", _ira_opcode_desc_BLENDPS),
 		_IA_INSTRUCTION( "blendvpd", _ira_opcode_desc_BLENDVPD),
+		_IA_INSTRUCTION( "blendvps", _ira_opcode_desc_BLENDVPS),
+		_IA_INSTRUCTION( "bound", _ira_opcode_desc_BOUND),
+		_IA_INSTRUCTION( "bsf", _ira_opcode_desc_BSF),
+		_IA_INSTRUCTION( "bsr", _ira_opcode_desc_BSR),
 		{ NULL, 0, 0, NULL }
 };
 

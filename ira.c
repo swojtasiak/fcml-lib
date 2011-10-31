@@ -91,6 +91,7 @@ int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, str
 int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
 int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
 int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
+int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
 int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
 
 /* Arguments allocators. */
@@ -221,6 +222,12 @@ enum ira_result_code _ira_map_internall_error_code( int internal_error ) {
 		return RC_ERROR_INSTRUCTION_INCOMPLETE;
 	case _IRA_INT_ERROR_OUT_OF_MEMORY:
 		return RC_ERROR_OUT_OF_MEMORY;
+	case _IRA_INT_ERROR_ILLEGAL_ARGUMENT:
+		return RC_ERROR_UNEXPECTED_INTERNAL_ERROR;
+	case _IRA_INT_ERROR_ILLEGAL_ADDRESSING:
+		return RC_ERROR_ILLEGAL_ADDRESSING_MODE;
+	case _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE:
+		return RC_ERROR_INSTRUCTION_NOT_ENCODABLE;
 	}
 	return RC_ERROR_UNEXPECTED_INTERNAL_ERROR;
 }
@@ -764,6 +771,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
 		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 32, &result );
 		break;
+	case _IRA_OPERAND_MODRM_MM_OSA:
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_mm;
+		operand_decoding->args = NULL;
+		break;
 	default:
 		operand_decoding->decoder = NULL;
 		operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;
@@ -891,6 +902,16 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	int i, rc;
 
+	// Check if this instruction is supported in this mode.
+	uint32_t opcode_flags = instruction->opcode_flags;
+
+	enum ira_operation_mode mode = context->mode;
+
+	if( ( ( mode == IRA_MOD_16BIT || mode == IRA_MOD_32BIT ) && !_IRA_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( opcode_flags ) )
+			|| ( mode == IRA_MOD_64BIT && !_IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( opcode_flags ) ) ) {
+		return _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE;
+	}
+
 	// Set mnemonic of disassembled instruction.
 	result->mnemonic = instruction->mnemonic;
 
@@ -992,6 +1013,42 @@ int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
+//! m16&16, m32&32 addressing mode decoder.
+/*!
+ * \brief m16&16, m32&32 addressing mode decoder
+ *
+ * \param context Disassembling context.
+ * \param operand Destination operand.
+ * \param args Should be NULL here.
+ * \return Error code.
+ */
+int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
+
+	// Setting size directive for addressing.
+	operand->addressing.size_directive = context->decoding_context.effective_operand_size_attribute * 2;
+
+	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_decoded_mod_rm *decoded_mod_rm = &(decoding_context->mod_rm);
+
+	if( decoded_mod_rm->reg.reg_type != IRA_NO_REG ) {
+		// Only memory addressing are allowed.
+		return _IRA_INT_ERROR_ILLEGAL_ADDRESSING;
+	}
+
+	// Prepare operand using decoded ModRM.
+	result = _ira_modrm_decoder_operand_fill_address( context, operand );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
 //! Generic ModR/M addressing mode decoder.
 /*!
  * \brief Generic ModR/M addressing mode decoder. This is a generic decoder that should be only used in functions
@@ -999,8 +1056,7 @@ int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_
  *
  * \param context Disassembling context.
  * \param operand Destination operand.
- * \param reg_type Register type used if "Mod" field of ModR/M is 3.
- * \param operand_register_size Register size used if "Mod" field of ModR/M is 3.
+ * \param args Decoding arguments.
  * \return Error code.
  */
 int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
