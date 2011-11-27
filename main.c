@@ -16,8 +16,12 @@ struct ab a[] = {{ 1,1 }};
 
 void test();
 
+#include "ira_int.h"
+
 int main()
 {
+	//int i = _IRA_OPERAND_MODRM_RM_ASA_W;
+
 	ira_init();
 	test();
 	ira_deinit();
@@ -429,6 +433,52 @@ void test(void) {
 	_TEST32( "670fbca50102 bsf esp,dword ptr [di+0201h]", 0x67, 0x0f, 0xbc, 0xa5, 0x01, 0x02 );
 	_TEST64( "4d0fbc648901 bsf r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x0f, 0xbc, 0x64, 0x89, 0x01 );
 
+	// BSWAP
+	_TEST32( "0fc8 bswap eax", 0x0f, 0xc8 );
+	_TEST32( "0fc9 bswap ecx", 0x0f, 0xc9 );
+	_TEST32( "0fca bswap edx", 0x0f, 0xca );
+	_TEST32( "0fcb bswap ebx", 0x0f, 0xcb );
+	_TEST32( "0fcc bswap esp", 0x0f, 0xcc );
+	_TEST32( "0fcd bswap ebp", 0x0f, 0xcd );
+	_TEST32( "0fce bswap esi", 0x0f, 0xce );
+	_TEST32( "0fcf bswap edi", 0x0f, 0xcf );
+
+	_TEST32( "660fc8 bswap eax", 0x66, 0x0f, 0xc8 );
+	_TEST32( "660fc9 bswap ecx", 0x66, 0x0f, 0xc9 );
+	_TEST32( "660fca bswap edx", 0x66, 0x0f, 0xca );
+	_TEST32( "660fcb bswap ebx", 0x66, 0x0f, 0xcb );
+	_TEST32( "660fcc bswap esp", 0x66, 0x0f, 0xcc );
+	_TEST32( "660fcd bswap ebp", 0x66, 0x0f, 0xcd );
+	_TEST32( "660fce bswap esi", 0x66, 0x0f, 0xce );
+	_TEST32( "660fcf bswap edi", 0x66, 0x0f, 0xcf );
+
+	_TEST64( "0fc8 bswap eax", 0x0f, 0xc8 );
+	_TEST64( "0fc9 bswap ecx", 0x0f, 0xc9 );
+	_TEST64( "0fca bswap edx", 0x0f, 0xca );
+	_TEST64( "0fcb bswap ebx", 0x0f, 0xcb );
+	_TEST64( "0fcc bswap esp", 0x0f, 0xcc );
+	_TEST64( "0fcd bswap ebp", 0x0f, 0xcd );
+	_TEST64( "0fce bswap esi", 0x0f, 0xce );
+	_TEST64( "0fcf bswap edi", 0x0f, 0xcf );
+
+	_TEST64( "660fc8 bswap eax", 0x66, 0x0f, 0xc8 );
+	_TEST64( "660fc9 bswap ecx", 0x66, 0x0f, 0xc9 );
+	_TEST64( "660fca bswap edx", 0x66, 0x0f, 0xca );
+	_TEST64( "660fcb bswap ebx", 0x66, 0x0f, 0xcb );
+	_TEST64( "660fcc bswap esp", 0x66, 0x0f, 0xcc );
+	_TEST64( "660fcd bswap ebp", 0x66, 0x0f, 0xcd );
+	_TEST64( "660fce bswap esi", 0x66, 0x0f, 0xce );
+	_TEST64( "660fcf bswap edi", 0x66, 0x0f, 0xcf );
+
+	// only REX.R
+	_TEST64( "4c0fc8 bswap r8", 0x4c, 0x0f, 0xc8 );
+	_TEST64( "4c0fc9 bswap r9", 0x4c, 0x0f, 0xc9 );
+	_TEST64( "4c0fca bswap r10", 0x4c, 0x0f, 0xca );
+	_TEST64( "4c0fcb bswap r11", 0x4c, 0x0f, 0xcb );
+	_TEST64( "4c0fcc bswap r12", 0x4c, 0x0f, 0xcc );
+	_TEST64( "4c0fcd bswap r13", 0x4c, 0x0f, 0xcd );
+	_TEST64( "4c0fce bswap r14", 0x4c, 0x0f, 0xce );
+	_TEST64( "4c0fcf bswap r15", 0x4c, 0x0f, 0xcf );
 }
 
 

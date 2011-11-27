@@ -311,10 +311,12 @@ struct ira_disassemble_result {
 	uint8_t prefixes_count;
 	// Prefixes.
 	struct ira_instruction_prefix prefixes[_IRA_PREFIXES_COUNT];
-	// Number of opcode bytes.
-	uint8_t opcodes_count;
 	// Opcode bytes without mandatory prefixes.
 	uint8_t opcodes[3];
+	// Number of opcode bytes.
+	uint8_t opcodes_count;
+	// Primary opcode byte.
+	uint8_t primary_opcode_index;
 	// REX prefix.
 	n_byte rex;
 	// Instruction size in bytes.

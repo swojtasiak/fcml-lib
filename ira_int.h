@@ -89,6 +89,14 @@ struct ira_decoding_context {
 	uint8_t effective_address_size_attribute;
 	// Decoded prefixes.
 	struct ira_instruction_prefix prefixes[_IRA_PREFIXES_COUNT];
+	// Base opcode bytes without opcode fields applied.
+	uint8_t base_opcodes[3];
+	// Opcode bytes without mandatory prefixes.
+	uint8_t opcodes[3];
+	// Number of opcode bytes.
+	uint8_t opcodes_count;
+	// Primary opcode byte.
+	uint8_t primary_opcode_index;
 	// Number of prefixes decoded for instruction.
 	uint8_t instruction_prefix_count;
 	// Decoded ModRM.
@@ -240,12 +248,20 @@ struct ira_instruction_desc {
 
 /* Opcode flags. */
 
+#define _IRA_REG_FIELD_SIZE								3
+#define _IRA_REG_FIELD_POS								0
+
+#define _IRA_REG_FIELD_NUMBER_OF_REGISTERS				8
+
+#define _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG(x)			( x & 0x00000001 )
+#define _IRA_OPCODE_FLAGS_POS(x)						( ( x & 0x00000700 ) >> 8 )
 #define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 				( ( x & 0x00007000 ) >> 11 )
 #define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x)				( ( x & 0x00007800 ) >> 11 )
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 			_IRA_GET_BIT(x,15)
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 				_IRA_GET_BIT(x,16)
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) 			_IRA_GET_BIT(x,17)
 #define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 				( ( x & 0x000C0000 ) >> 18 )
+#define _IRA_OPCODE_FLAGS_PRIMARY_OPCODE(x) 			( ( x & 0x00300000 ) >> 20 )
 #define _IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(x)		( x & 0x00800000 )
 #define _IRA_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(x)	( x & 0x00400000 )
 
@@ -352,8 +368,12 @@ struct ira_instruction_desc {
 
 
 // Implicit register.
-#define _IRA_IMPLICIT_REG_BASE			0x0D00
-#define _IRA_IMPLICIT_REG(x,y)			( _IRA_IMPLICIT_REG_BASE | x << 4 | y )
+#define _IRA_IMPLICIT_REG_BASE						0x0D00
+#define _IRA_IMPLICIT_REG(reg_type,reg_num)			( _IRA_IMPLICIT_REG_BASE | reg_type << 4 | reg_num )
+
+// Register field in opcode byte.
+#define _IRA_OPERAND_OPCODE_REG_BASE				0x0E00
+#define _IRA_OPERAND_OPCODE_REG(reg_type)			( _IRA_OPERAND_OPCODE_REG_BASE | reg_type )
 
 /* Externals. */
 

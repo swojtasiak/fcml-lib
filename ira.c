@@ -1,11 +1,17 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "ira_int.h"
 #include "ira.h"
 
+#include <assert.h>
+
 #define _IRA_OPCODE_TABLE_SIZE	256
+
+/* Callback used during disassemblation tree generation. */
+typedef int ( *fp_ira_opcode_callback )( struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc, uint8_t opcode[3] );
 
 struct ira_diss_tree_opcode* _ira_disassemblation_tree[_IRA_OPCODE_TABLE_SIZE] = {NULL};
 
@@ -18,7 +24,6 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 /* Add instruction decoding to disassemblation tree. */
 int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc );
 
-/* Free memory allocated during build phase of disassemblation tree. */
 void _ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblation_tree );
 
 /* Gets order of given decoding in the node of decoding tree. */
@@ -60,6 +65,12 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 /* Maps OSA to general purpose register type. */
 enum ira_register_type _ira_map_osa_to_register_type( struct ira_diss_context *context );
 
+/* Sets opcode field into a opcode byte. */
+uint8_t _ira_set_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, int field_size, uint8_t field_value );
+
+/* Gets opcode field from opcode byte. */
+uint8_t _ira_get_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, int field_size );
+
 /* Instruction decoders. */
 
 int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
@@ -88,6 +99,7 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 
 void _ira_opcode_decoder_reg( struct ira_instruction_operand *operand, enum ira_register_type reg_type, int reg );
 int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
+int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
 int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
 int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
 int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
@@ -154,6 +166,9 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     // Current opcode table used to find instruction description.
     struct ira_diss_tree_opcode** opcodes = _ira_disassemblation_tree;
 
+    struct ira_decoding_context *decoding_context = &(context.decoding_context);
+
+    int opcode_num = 0;
     int opcode_length = 0;
     while( opcodes != NULL ) {
     	// Get next potential opcode byte from stream.
@@ -172,6 +187,8 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     		// Last found instruction.
     		instruction = opcode->instructions;
     		opcodes = opcode->opcodes;
+    		// Store this opcode byte.
+    		decoding_context->opcodes[opcode_num++] = opcode_byte;
     		// Go to next opcode byte.
     		_ira_stream_seek( context.stream, 1, IRA_CURRENT );
     	} else {
@@ -456,7 +473,9 @@ void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira
 	}
 }
 
-/* Initialization. */
+/****************************************/
+/* Disassemblation tree initialization. */
+/****************************************/
 
 void _ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblation_tree ) {
 
@@ -481,7 +500,114 @@ void _ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblati
 			free( diss_tree_opcode );
 		}
 	}
+}
 
+/* Sets opcode field into a opcode byte. */
+uint8_t _ira_set_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, int field_size, uint8_t field_value ) {
+	uint8_t bit_mask = ~( (int)pow( 2, field_size ) - 1 );
+	return ( opcode_byte & bit_mask ) | ( field_value << opcode_field_pos );
+}
+
+/* Gets opcode field from opcode byte. */
+uint8_t _ira_get_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, int field_size ) {
+	uint8_t bit_mask = (int)pow( 2, field_size ) - 1;
+	return ( opcode_byte & bit_mask ) >> opcode_field_pos;
+}
+
+/* Function used to calculate all instruction opcode bytes using recursion. */
+int _ira_handle_next_opcode_byte( struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc, uint8_t opcode_bytes[3], fp_ira_opcode_callback callback, int opcode_bytes_count, int opcode_byte_num, int primary_opcode_byte_num ) {
+
+	// Get next opcode byte from instruction.
+	if( opcode_byte_num == opcode_bytes_count ) {
+		// There is no more opcode bytes available.
+		int error = callback( instruction_desc, opcode_desc, opcode_bytes );
+		return error;
+	}
+
+	uint8_t opcode_byte = opcode_desc->opcode[opcode_byte_num];
+
+	// Check if this is an opcode with opcode fields.
+	if( opcode_byte_num == primary_opcode_byte_num ) {
+
+		uint32_t opcode_flags = opcode_desc->opcode_flags;
+
+		int opcode_flags_pos = _IRA_OPCODE_FLAGS_POS( opcode_flags );
+
+		// Opcode field: REG
+		if( _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG( opcode_flags ) ) {
+
+			int i;
+			for( i = 0; i < _IRA_REG_FIELD_NUMBER_OF_REGISTERS; i++ ) {
+				// Prepare opcode byte with reg field.
+				uint8_t opcode_byte_with_field = _ira_set_opcode_byte_field( opcode_byte, opcode_flags_pos, _IRA_REG_FIELD_SIZE, (uint8_t)i );
+				opcode_bytes[opcode_byte_num] = opcode_byte_with_field;
+				// Handle next opcode byte.
+				_ira_handle_next_opcode_byte( instruction_desc, opcode_desc, opcode_bytes, callback, opcode_bytes_count, opcode_byte_num + 1, primary_opcode_byte_num );
+			}
+
+			return _IRA_INT_ERROR_NO_ERROR;
+		}
+	}
+
+	// This is a plain opcode byte that shouldn't be modified in any way.
+	opcode_bytes[opcode_byte_num] = opcode_byte;
+	// Handle next opcode byte.
+	return _ira_handle_next_opcode_byte( instruction_desc, opcode_desc, opcode_bytes, callback, opcode_bytes_count, opcode_byte_num + 1, primary_opcode_byte_num );
+}
+
+int _ira_iterate_through_all_opcodes( struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc, fp_ira_opcode_callback callback ) {
+
+	// Number of opcode bytes.
+	int opcode_bytes_count = _IRA_OPCODE_FLAGS_OPCODE_NUM( opcode_desc->opcode_flags );
+
+	// Opcode byte with potential flags.
+	int primary_opcode_byte_num = _IRA_OPCODE_FLAGS_PRIMARY_OPCODE(opcode_desc->opcode_flags );
+
+	assert( primary_opcode_byte_num < opcode_bytes_count );
+
+	uint8_t opcode_bytes[3] = {0};
+
+	// Handle all opcode bytes.
+	return _ira_handle_next_opcode_byte( instruction_desc, opcode_desc, opcode_bytes, callback, opcode_bytes_count, 0, primary_opcode_byte_num );
+}
+
+int _ira_default_opcode_callback( struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc, uint8_t opcode_bytes[3] ) {
+
+	struct ira_diss_tree_opcode** current_diss_tree_opcode = _ira_disassemblation_tree;
+	struct ira_diss_tree_opcode* inst_desc = NULL;
+
+	// Looking for a node in the instruction tree where now instruction should be placed. If there is no
+	// appropriate node a new one is allocated.
+	int i;
+	int opcode_num = _IRA_OPCODE_FLAGS_OPCODE_NUM( opcode_desc->opcode_flags );
+	for( i = 0; i < opcode_num; i++ ) {
+		uint8_t opcode = opcode_bytes[i];
+		inst_desc = current_diss_tree_opcode[opcode];
+		if( inst_desc == NULL ) {
+			inst_desc = malloc( sizeof(struct ira_diss_tree_opcode) );
+			if( inst_desc == NULL ) {
+				// Free disassemblation tree.
+				_ira_free_disassemblation_tree( _ira_disassemblation_tree );
+				// Return error.
+				return _IRA_INT_ERROR_OUT_OF_MEMORY;
+			}
+			memset( inst_desc, 0, sizeof( struct ira_diss_tree_opcode ) );
+			current_diss_tree_opcode[opcode] = inst_desc;
+		}
+		// Get next level of opcodes for the next loop.
+		current_diss_tree_opcode = inst_desc->opcodes;
+	}
+
+	// Prepare instruction decoding.
+	int error = _ira_add_instruction_decoding( inst_desc, instruction_desc, opcode_desc);
+	if( error != _IRA_INT_ERROR_NO_ERROR ) {
+		// Free disassemblation tree.
+		_ira_free_disassemblation_tree( _ira_disassemblation_tree );
+		// Return error.
+		return error;
+	}
+
+	return error;
 }
 
 int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_desc_src ) {
@@ -495,37 +621,10 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 		int opcode_index = 0;
 		for( opcode_index = 0; opcode_index < instruction_desc->opcode_desc_count; opcode_index++ ) {
 			struct ira_opcode_desc *opcode_desc = &(instruction_desc->opcodes[opcode_index]);
-			struct ira_diss_tree_opcode** current_diss_tree_opcode = _ira_disassemblation_tree;
-			// Structure where instruction should be placed.
-			struct ira_diss_tree_opcode *inst_desc;
 
-			// Looking for structure where instruction should be placed, using instruction opcodes.
-			int i;
-			int opcode_num = _IRA_OPCODE_FLAGS_OPCODE_NUM( opcode_desc->opcode_flags );
-			for( i = 0; i < opcode_num; i++ ) {
-				uint8_t opcode = opcode_desc->opcode[i];
-				inst_desc = current_diss_tree_opcode[opcode];
-				if( inst_desc == NULL ) {
-					inst_desc = malloc( sizeof(struct ira_diss_tree_opcode) );
-					if( inst_desc == NULL ) {
-						// Free disassemblation tree.
-						_ira_free_disassemblation_tree( _ira_disassemblation_tree );
-						// Return error.
-						return _IRA_INT_ERROR_OUT_OF_MEMORY;
-					}
-					memset( inst_desc, 0, sizeof( struct ira_diss_tree_opcode ) );
-					current_diss_tree_opcode[opcode] = inst_desc;
-				}
-				// Get next level of opcodes for the next loop.
-				current_diss_tree_opcode = inst_desc->opcodes;
-			}
-
-			// Prepare instruction decoding.
-			int error = _ira_add_instruction_decoding( inst_desc, instruction_desc, opcode_desc);
+			// Iterate through all opcode combination for this instruction form.
+			int error = _ira_iterate_through_all_opcodes( instruction_desc, opcode_desc, &_ira_default_opcode_callback );
 			if( error != _IRA_INT_ERROR_NO_ERROR ) {
-				// Free disassemblation tree.
-				_ira_free_disassemblation_tree( _ira_disassemblation_tree );
-				// Return error.
 				return error;
 			}
 		}
@@ -548,7 +647,7 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 
 	// Copy opcodes.
 	int i;
-	for( i = 0; i < 3; i++ ) {
+	for( i = 0; i < sizeof( opcode_desc->opcode ); i++ ) {
 		decoding->opcodes[i] = opcode_desc->opcode[i];
 	}
 
@@ -653,22 +752,17 @@ void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, int opera
 	return args;
 }
 
-int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding, uint16_t decoder_type ) {
+int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding, uint16_t decoding ) {
 
 	int result = _IRA_INT_ERROR_NO_ERROR;
 
 	// Store access mode for this operand decoding.
-	operand_decoding->access_mode = ( decoder_type & _IRA_W ) ? IRA_WRITE : IRA_READ;
+	operand_decoding->access_mode = ( decoding & _IRA_W ) ? IRA_WRITE : IRA_READ;
 
 	// Clear access mode.
-	decoder_type &= ~_IRA_W;
+	decoding &= ~_IRA_W;
 
-	if( ( decoder_type & 0xFF00 ) == _IRA_IMPLICIT_REG_BASE ) {
-		// Implicit register.
-		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( ( decoder_type & 0x00F0 ) >> 4, ( decoder_type & 0x000F ), &result );
-		return result;
-	}
+	uint16_t decoder_type = decoding & 0xFF00;
 
 	switch( decoder_type ) {
 	case _IRA_OPERAND_REG_ACCUMULATOR_8:
@@ -715,65 +809,80 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
 		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_64, &result );
 		break;
-	case _IRA_OPERAND_MODRM_RM_8:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_8, 8, &result );
+	case _IRA_MODRM_BASE:
+
+		// Gets appropriate ModR/M decoder.
+		switch( decoding & 0x00FF ) {
+		case _IRA_RM_8:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_8, 8, &result );
+			break;
+		case _IRA_R_8:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_8, 8, &result );
+			break;
+		case _IRA_RM_16:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, 16, &result );
+			break;
+		case _IRA_R_16:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, 16, &result );
+			break;
+		case _IRA_RM_ASA:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
+			break;
+		case _IRA_R_OSA:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
+			break;
+		case _IRA_RM_MMX:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
+			break;
+		case _IRA_R_MMX:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
+			break;
+		case _IRA_RM_XMM_128:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 128, &result );
+			break;
+		case _IRA_R_XMM_128:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 128, &result );
+			break;
+		case _IRA_RM_XMM_64:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 64, &result );
+			break;
+		case _IRA_R_XMM_64:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 64, &result );
+			break;
+		case _IRA_RM_XMM_32:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 32, &result );
+			break;
+		case _IRA_R_XMM_32:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 32, &result );
+			break;
+		case _IRA_OSA_MM:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_mm;
+			operand_decoding->args = NULL;
+			break;
+		}
+
 		break;
-	case _IRA_OPERAND_MODRM_R_8:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_8, 8, &result );
+	case _IRA_IMPLICIT_REG_BASE:
+		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
+		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x00F0 ) >> 4, ( decoding & 0x000F ), &result );
 		break;
-	case _IRA_OPERAND_MODRM_RM_16:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, 16, &result );
-		break;
-	case _IRA_OPERAND_MODRM_R_16:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, 16, &result );
-		break;
-	case _IRA_OPERAND_MODRM_RM_ASA:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
-		break;
-	case _IRA_OPERAND_MODRM_R_OSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
-		break;
-	case _IRA_OPERAND_MODRM_RM_MMX:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
-		break;
-	case _IRA_OPERAND_MODRM_R_MMX:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
-		break;
-	case _IRA_OPERAND_MODRM_RM_XMM_128:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 128, &result );
-		break;
-	case _IRA_OPERAND_MODRM_R_XMM_128:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 128, &result );
-		break;
-	case _IRA_OPERAND_MODRM_RM_XMM_64:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 64, &result );
-		break;
-	case _IRA_OPERAND_MODRM_R_XMM_64:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 64, &result );
-		break;
-	case _IRA_OPERAND_MODRM_RM_XMM_32:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 32, &result );
-		break;
-	case _IRA_OPERAND_MODRM_R_XMM_32:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, 32, &result );
-		break;
-	case _IRA_OPERAND_MODRM_MM_OSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_modrm_mm;
-		operand_decoding->args = NULL;
+	case _IRA_OPERAND_OPCODE_REG_BASE:
+		operand_decoding->decoder = &_ira_opcode_decoder_opcode_register;
+		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x00FF ), 0 /*From opcode.*/, &result );
 		break;
 	default:
 		operand_decoding->decoder = NULL;
@@ -791,6 +900,10 @@ ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_typ
 	}
 	return NULL;
 }
+
+/***********************************************/
+/* End of disassemblation tree initialization. */
+/***********************************************/
 
 /* Helpers for disassemblation context. */
 
@@ -928,15 +1041,25 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 		result->prefixes[i] = context->decoding_context.prefixes[i];
 	}
 
-	// Copy opcodes.
-	result->opcodes_count = _IRA_OPCODE_FLAGS_OPCODE_NUM( instruction->opcode_flags );
+	// Prepare decoding context.
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 
 	for( i = 0; i < sizeof( instruction->opcodes ) ; i++ ) {
-		result->opcodes[i] = instruction->opcodes[i];
+		decoding_context->base_opcodes[i] = instruction->opcodes[i];
 	}
 
+	for( i = 0; i < sizeof( result->opcodes ) ; i++ ) {
+		result->opcodes[i] = decoding_context->opcodes[i];
+	}
+
+	// Copy opcodes' details.
+	decoding_context->opcodes_count = _IRA_OPCODE_FLAGS_OPCODE_NUM( instruction->opcode_flags );
+	decoding_context->primary_opcode_index = _IRA_OPCODE_FLAGS_PRIMARY_OPCODE( instruction->opcode_flags );
+
+	result->opcodes_count = decoding_context->opcodes_count;
+	result->primary_opcode_index = decoding_context->primary_opcode_index;
+
 	// Calculates effective operand sizes. It's not important if they will be used or not.
-	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	decoding_context->effective_address_size_attribute = _ira_get_effective_asa( context );
 	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context );
 
@@ -983,6 +1106,35 @@ int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, str
 		reg_type = _ira_map_osa_to_register_type( context );
 	}
 	_ira_opcode_decoder_reg( operand, reg_type, reg_type_args->reg );
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+/* Decodes opcode register. */
+int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
+	struct ira_reg_type_args *reg_type_args = (struct ira_reg_type_args*)args;
+	enum ira_register_type reg_type = reg_type_args->reg_type;
+	if( reg_type == IRA_REG_GPR ) {
+		// A general purpose register, we should calculate it's size basing on EOSA.
+		reg_type = _ira_map_osa_to_register_type( context );
+	}
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+
+	// We need primary opcode to calculate register.
+	uint8_t primary_opcode_byte = decoding_context->opcodes[decoding_context->primary_opcode_index];
+
+	uint8_t reg = _ira_get_opcode_byte_field( primary_opcode_byte, _IRA_REG_FIELD_POS, _IRA_REG_FIELD_SIZE );
+
+	// TODO: Get it out of here...it should be in some utility function.
+	int rex_found;
+	uint8_t rex = _ira_diss_context_get_REX_prefix( context, &rex_found );
+	if( context->mode == IRA_MOD_64BIT && rex_found ) {
+		if( _IRA_REX_R( rex ) ) {
+			reg |= 0x08;
+		}
+	}
+
+	_ira_opcode_decoder_reg( operand, reg_type, reg );
+
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
