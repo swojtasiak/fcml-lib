@@ -268,6 +268,50 @@ struct ira_opcode_desc _ira_opcode_desc_BSWAP[] = {
 	{ NULL, 0x0009, 0x00980001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR_64 ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_BT[] = {
+	// 0F A3 BT r/m16, r16 A Valid Valid Store selected bit in CF flag.
+	// 0F A3 BT r/m32, r32 A Valid Valid Store selected bit in CF flag.
+	// REX.W + 0F A3 BT r/m64, r64 A Valid N.E. Store selected bit in CF flag.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xA3, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	// 0F BA /4 ib BT r/m16, imm8 B Valid Valid Store selected bit in CF flag.
+	// 0F BA /4 ib BT r/m32, imm8 B Valid Valid Store selected bit in CF flag.
+	// REX.W + 0F BA /4 ib BT r/m64, imm8 B Valid N.E. Store selected bit in CF flag.
+	{ NULL, 0x0001, 0x00D9A000, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BTC[] = {
+	// 0F BB BTC r/m16, r16 A Valid Valid Store selected bit in CF flag and complement.
+	// 0F BB BTC r/m32, r32 A Valid Valid Store selected bit in CF flag and complement.
+	// REX.W + 0F BB BTC r/m64, r64 A Valid N.E. Store selected bit in CF flag and complement.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBB, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	// 0F BA /7 ib BTC r/m16, imm8 B Valid Valid Store selected bit in CF flag and complement.
+	// 0F BA /7 ib BTC r/m32, imm8 B Valid Valid Store selected bit in CF flag and complement.
+	// REX.W + 0F BA /7 ib BTC r/m64, imm8 B Valid N.E. Store selected bit in CF flag and complement.
+	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BTR[] = {
+	// 0F B3 BTR r/m16, r16 A Valid Valid Store selected bit in CF flag and clear.
+	// 0F B3 BTR r/m32, r32 A Valid Valid Store selected bit in CF flag and clear.
+	// REX.W + 0F B3 BTR r/m64, r64 A Valid N.E. Store selected bit in CF flag and clear.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xB3, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	// 0F BA /6 ib BTR r/m16, imm8 B Valid Valid Store selected bit in CF flag and clear.
+	// 0F BA /6 ib BTR r/m32, imm8 B Valid Valid Store selected bit in CF flag and clear.
+	// REX.W + 0F BA /6 ib BTR r/m64, imm8 B Valid N.E. Store selected bit in CF flag and clear.
+	{ NULL, 0x0001, 0x00D9B000, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BTS[] = {
+	// 0F AB BTS r/m16, r16 A Valid Valid Store selected bit in CF flag and set.
+	// 0F AB BTS r/m32, r32 A Valid Valid Store selected bit in CF flag and set.
+	// REX.W + 0F AB BTS r/m64, r64 A Valid N.E. Store selected bit in CF flag and set.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xAB, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	// 0F BA /5 ib BTS r/m16, imm8 B Valid Valid Store selected bit in CF flag and set.
+	// 0F BA /5 ib BTS r/m32, imm8 B Valid Valid Store selected bit in CF flag and set.
+	// REX.W + 0F BA /5 ib BTS r/m64, imm8 B Valid N.E. Store selected bit in CF flag and set.
+	{ NULL, 0x0001, 0x00D9A800, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -301,6 +345,10 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "bsf", _ira_opcode_desc_BSF),
 		_IA_INSTRUCTION( "bsr", _ira_opcode_desc_BSR),
 		_IA_INSTRUCTION( "bswap", _ira_opcode_desc_BSWAP),
+		_IA_INSTRUCTION( "bt", _ira_opcode_desc_BT),
+		_IA_INSTRUCTION( "btc", _ira_opcode_desc_BTC),
+		_IA_INSTRUCTION( "btr", _ira_opcode_desc_BTR),
+		_IA_INSTRUCTION( "bts", _ira_opcode_desc_BTS),
 		{ NULL, 0, 0, NULL }
 };
 

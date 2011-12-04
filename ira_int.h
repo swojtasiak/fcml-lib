@@ -255,7 +255,7 @@ struct ira_instruction_desc {
 
 #define _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG(x)			( x & 0x00000001 )
 #define _IRA_OPCODE_FLAGS_POS(x)						( ( x & 0x00000700 ) >> 8 )
-#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 				( ( x & 0x00007000 ) >> 11 )
+#define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 				( ( x & 0x00003800 ) >> 11 )
 #define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x)				( ( x & 0x00007800 ) >> 11 )
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 			_IRA_GET_BIT(x,15)
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 				_IRA_GET_BIT(x,16)

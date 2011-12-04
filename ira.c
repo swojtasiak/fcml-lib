@@ -1455,8 +1455,9 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ir
 	// Base register and displacement.
 	if( mod == 0 && _IRA_SIB_BASE(sib) == 5 ) {
 		// In this case base register doesn't exist.
+		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
 		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_32,
-						( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
+						( effective_address_size == _IRA_ASA_64 ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
 	} else {
 		// Effective address size affects base register.
 		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
@@ -1467,7 +1468,7 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ir
 		// TODO: Sprawdzic jak sie to ma do r/m == 5 przy dekodowaniu 32 bitowym.
 		if( mod > 0 ) {
 			result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), ( mod == 1 ) ? IRA_DISPLACEMENT_8 : IRA_DISPLACEMENT_32,
-						( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
+						( effective_address_size == _IRA_ASA_64 ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
 		}
 	}
 
@@ -1507,8 +1508,9 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 		result = _ira_modrm_addressing_decoder_sib( context, reg_type, operand_register_size );
 	} else if( mod == 0 && _IRA_MODRM_RM(mod_rm) == 5 ) {
 		// disp32.
+		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
 		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_32,
-				( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
+				( effective_address_size == _IRA_ASA_64 ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
 	} else {
 		// Base register.
 		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
@@ -1517,7 +1519,7 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 		// Displacement.
 		if( mod != 0 ) {
 			result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), ( mod == 1 ) ? IRA_DISPLACEMENT_8 : IRA_DISPLACEMENT_32,
-					( context->mode == IRA_MOD_64BIT ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
+					( effective_address_size == _IRA_ASA_64 ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
 		}
 	}
 
