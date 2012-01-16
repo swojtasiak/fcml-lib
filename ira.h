@@ -137,7 +137,8 @@ enum ira_result_code {
 	RC_ERROR_OUT_OF_MEMORY,
 	RC_ERROR_UNEXPECTED_INTERNAL_ERROR,
 	RC_ERROR_ILLEGAL_ADDRESSING_MODE,
-	RC_ERROR_INSTRUCTION_NOT_ENCODABLE
+	RC_ERROR_INSTRUCTION_NOT_ENCODABLE,
+	RC_ERROR_SYNTAX_NOT_SUPPORTED
 };
 
 enum ira_operand_type {
@@ -146,6 +147,14 @@ enum ira_operand_type {
 	IRA_IMMEDIATE_DATA,
 	IRA_REGISTER
 };
+
+/*
+ * Important aspect of RIP-relative addressing is, that it is not possible to use any other register
+ * in the address, like [RIP+EAX] or similar. Another (not so obvious) aspect of RIP-relative addressing
+ * is fact, that it is (just like any other addressing) controlled by address-size override prefix 67.
+ * With this prefix, it is possible to address relative to EIP:
+ * 67 8B 05 10 00 00 00   MOV EAX, [EIP+10h]
+ */
 
 enum ira_register_type {
 	IRA_NO_REG = 0,
@@ -187,6 +196,8 @@ struct ira_disassemble_info {
 	void *address;
 	/* Size of the data to disassemble. */
 	uint32_t size;
+	/* Instruction pointer. In case of 32 bit addressing, only lower 32 bits are used and so on. */
+	uint64_t instruction_pointer;
 };
 
 enum ira_immediate_data_type {
@@ -251,7 +262,8 @@ enum ira_addressing_type {
 enum ira_access_mode {
 	IRA_ACCESS_MODE_UNDEFINED,
 	IRA_READ,
-	IRA_WRITE
+	IRA_WRITE,
+	IRA_READ_RITE
 };
 
 struct ira_mod_rm_addressing {
@@ -271,10 +283,46 @@ struct ira_mod_rm_addressing {
 	struct ira_displacement displacement;
 };
 
+enum ira_address_size {
+	IRA_ADDRESS_16 = 16,
+	IRA_ADDRESS_32 = 32,
+	IRA_ADDRESS_64 = 64
+};
+
+enum ira_relative_address_size {
+	IRA_RELATIVE_ADDRESS_8 = 8,
+	IRA_RELATIVE_ADDRESS_16 = 16,
+	IRA_RELATIVE_ADDRESS_32 = 32,
+	IRA_RELATIVE_ADDRESS_64 = 64
+};
+
+union ira_address_value {
+	uint16_t address_16;
+	uint32_t address_32;
+	uint32_t address_64;
+};
+
+union ira_relative_address_value {
+	uint8_t address_8;
+	uint16_t address_16;
+	uint32_t address_32;
+	uint32_t address_64;
+};
+
 struct ira_addressing {
 	// Type of addressing.
 	enum ira_addressing_type addressing_type;
+	// Size of the direct address (ESA).
+	enum ira_address_size;
+	// Size of the relative address.
+	enum ira_relative_address_size;
+	// Value of the direct address.
+	union ira_address_value;
+	// Value of the relative address.
+	union ira_relative_address_value;
 	// Data size.
+	// TODO: Przniesc to gdzies, to nie wielkosc adresu tylko
+	// wiekosc danych jakie trafia pod ten adres, trzeba znalezc na to lepsze miejsce.
 	int size_directive;
 	// ModRM addressing.
 	struct ira_mod_rm_addressing mod_rm;

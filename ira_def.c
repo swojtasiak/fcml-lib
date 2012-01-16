@@ -312,6 +312,11 @@ struct ira_opcode_desc _ira_opcode_desc_BTS[] = {
 	{ NULL, 0x0001, 0x00D9A800, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_CALL[] = {
+	// E8 cw CALL rel16 B N.S. Valid Call near, relative, displacement relative to next instruction.
+	{ NULL, 0x0001, 0x00440000, { 0xE8, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -349,6 +354,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "btc", _ira_opcode_desc_BTC),
 		_IA_INSTRUCTION( "btr", _ira_opcode_desc_BTR),
 		_IA_INSTRUCTION( "bts", _ira_opcode_desc_BTS),
+		_IA_INSTRUCTION( "call", _ira_opcode_desc_CALL),
 		{ NULL, 0, 0, NULL }
 };
 

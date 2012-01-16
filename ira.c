@@ -98,13 +98,14 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 /* Opcode decoders. */
 
 void _ira_opcode_decoder_reg( struct ira_instruction_operand *operand, enum ira_register_type reg_type, int reg );
-int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
-int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
-int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
-int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
-int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
-int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
-int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
+int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+int _ira_opcode_decoder_immediate_relative_dis_addressing( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
 
 /* Arguments allocators. */
 
@@ -225,7 +226,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     }
 
     // Calculate instruction size basing on the stream.
-    result->instruction_size = stream.offset;
+    result->instruction_size = context.decoding_context.instruction_size;
 
     // Copy instruction code.
     memcpy( result->instruction_code, stream.base_address, result->instruction_size );
@@ -245,6 +246,8 @@ enum ira_result_code _ira_map_internall_error_code( int internal_error ) {
 		return RC_ERROR_ILLEGAL_ADDRESSING_MODE;
 	case _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE:
 		return RC_ERROR_INSTRUCTION_NOT_ENCODABLE;
+	case _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED:
+		return RC_ERROR_SYNTAX_NOT_SUPPORTED;
 	}
 	return RC_ERROR_UNEXPECTED_INTERNAL_ERROR;
 }
@@ -809,6 +812,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
 		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_64, &result );
 		break;
+	case _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE:
+		operand_decoding->decoder = &_ira_opcode_decoder_immediate_relative_dis_addressing;
+		operand_decoding->args = NULL;
+		break;
 	case _IRA_MODRM_BASE:
 
 		// Gets appropriate ModR/M decoder.
@@ -1063,12 +1070,16 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	decoding_context->effective_address_size_attribute = _ira_get_effective_asa( context );
 	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context );
 
+	struct ira_instruction_operand_wrapper operand_wrappers[4];
+
+	memset( &operand_wrappers, 0, sizeof(operand_wrappers) );
+
 	// Decode operands, one by one.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
 		struct ira_operand_decoding *decoding = &instruction->operand_decodings[i];
 		ira_operand_decoder decoder = decoding->decoder;
 		if( decoder != NULL ) {
-			rc = decoder( context, &(result->operands[i]), decoding->args );
+			rc = decoder( context, &(operand_wrappers[i]), decoding->args );
 			if( rc != _IRA_INT_ERROR_NO_ERROR ) {
 				return rc;
 			}
@@ -1086,6 +1097,17 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	result->code = RC_OK;
 
+	// Instruction size can be calculated here, and used during post processing phase.
+	// This value can be used for instance to calculate relative addresses.
+	context->decoding_context.instruction_size = context->stream->offset;
+
+	// Post processing.
+	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
+		if( operand_wrappers[i].post_processor != NULL ) {
+			operand_wrappers[i].post_processor(context, &(operand_wrappers[i].operand) );
+		}
+		result->operands[i] = operand_wrappers[i].operand;
+	}
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
@@ -1098,7 +1120,7 @@ void _ira_opcode_decoder_reg( struct ira_instruction_operand *operand, enum ira_
 }
 
 /* Decodes accumulator register. */
-int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
+int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args ) {
 	struct ira_reg_type_args *reg_type_args = (struct ira_reg_type_args*)args;
 	enum ira_register_type reg_type = reg_type_args->reg_type;
 	if( reg_type == IRA_REG_GPR ) {
@@ -1110,7 +1132,7 @@ int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, str
 }
 
 /* Decodes opcode register. */
-int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
+int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args ) {
 	struct ira_reg_type_args *reg_type_args = (struct ira_reg_type_args*)args;
 	enum ira_register_type reg_type = reg_type_args->reg_type;
 	if( reg_type == IRA_REG_GPR ) {
@@ -1138,24 +1160,49 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
+int _ira_opcode_decoder_immediate_relative_dis_addressing( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args ) {
+	int result;
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	uint8_t eosa = decoding_context->effective_operand_size_attribute;
+	switch ( eosa ) {
+	case _IRA_OSA_16:
+		if( context->mode == IRA_MOD_64BIT ) {
+			return _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED;
+		}
+		uint16_t displacement = _ira_stream_read_word( context->stream, &result );
+		if( !result ) {
+
+		}
+		break;
+	case _IRA_OSA_32:
+		//type = IRA_REG_GPR_32;
+		break;
+	case _IRA_OSA_64:
+		//type = IRA_REG_GPR_64;
+		break;
+	}
+	return 0;
+}
+
 /* Decodes immediate value and extends it to the effective operand size. */
-int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
-	int result = _ira_opcode_decoder_immediate( context, operand, args );
+int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+	int result = _ira_opcode_decoder_immediate( context, operand_wrapper, args );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
 	// Set extension size.
-	operand->immediate.extension_size = context->decoding_context.effective_operand_size_attribute;
+	operand_wrapper->operand.immediate.extension_size = context->decoding_context.effective_operand_size_attribute;
 	return result;
 }
 
-int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
+int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 	struct ira_immediate_type_args *immediate_type_args = (struct ira_immediate_type_args*)args;
 	int size = immediate_type_args->immediate_data_type;
 	if( size == 0 ) {
 		// If size is not specified use EOSA.
 		size = context->decoding_context.effective_operand_size_attribute;
 	}
+	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
 	int result = _ira_decode_immediate( context, &(operand->immediate), size );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
@@ -1174,10 +1221,10 @@ int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_
  * \param args Should be NULL here.
  * \return Error code.
  */
-int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
+int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 
 	// Setting size directive for addressing.
-	operand->addressing.size_directive = context->decoding_context.effective_operand_size_attribute * 2;
+	operand_wrapper->operand.addressing.size_directive = context->decoding_context.effective_operand_size_attribute * 2;
 
 	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
@@ -1193,7 +1240,7 @@ int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_i
 	}
 
 	// Prepare operand using decoded ModRM.
-	result = _ira_modrm_decoder_operand_fill_address( context, operand );
+	result = _ira_modrm_decoder_operand_fill_address( context, &(operand_wrapper->operand) );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -1211,9 +1258,11 @@ int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_i
  * \param args Decoding arguments.
  * \return Error code.
  */
-int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
+int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 
 	struct ira_modrm_decoding_args *register_type_size_args = (struct ira_modrm_decoding_args*)args;
+
+	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
 
 	// Setting size directive for addressing.
 	int size_directive = register_type_size_args->size_directive;
@@ -1238,7 +1287,7 @@ int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_i
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args ) {
+int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 
 	struct ira_modrm_decoding_args *register_type_size_args = (struct ira_modrm_decoding_args*)args;
 
@@ -1247,6 +1296,8 @@ int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_in
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
+
+	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
 
 	// Prepare operand using decoded ModRM.
 	result = _ira_modrm_decoder_operand_fill_register( context, operand );

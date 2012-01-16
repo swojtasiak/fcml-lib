@@ -16,6 +16,7 @@
 #define _IRA_INT_ERROR_ILLEGAL_ARGUMENT				0x03
 #define _IRA_INT_ERROR_ILLEGAL_ADDRESSING			0x04
 #define _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE	0x05
+#define _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED			0x06
 
 /* Structures used to store information about memory. */
 
@@ -101,6 +102,8 @@ struct ira_decoding_context {
 	uint8_t instruction_prefix_count;
 	// Decoded ModRM.
 	struct ira_decoded_mod_rm mod_rm;
+	// Instruction size. This value is only available during post processing.
+	int instruction_size;
 };
 
 struct ira_diss_context {
@@ -155,11 +158,22 @@ struct ira_diss_tree_opcode {
 	struct ira_diss_tree_instruction_decoding *instructions;
 };
 
+/* Operand wrapper. */
+
+typedef int (*ira_instruction_operand_handler)( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+
+struct ira_instruction_operand_wrapper {
+	// Instruction operand.
+	struct ira_instruction_operand operand;
+	// Optional post processor, that can be registered by decoder.
+	ira_instruction_operand_handler post_processor;
+};
+
 /* Decoders responsible for instruction disassemblation. */
 typedef int (*ira_instruction_decoder)( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
 /* Decoders responsible for operand disassemblation. */
-typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand *operand, void *args );
+typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
 
 struct ira_operand_decoding {
 	// Operand access mode.
@@ -374,6 +388,9 @@ struct ira_instruction_desc {
 // Register field in opcode byte.
 #define _IRA_OPERAND_OPCODE_REG_BASE				0x0E00
 #define _IRA_OPERAND_OPCODE_REG(reg_type)			( _IRA_OPERAND_OPCODE_REG_BASE | reg_type )
+
+// Relative addressing.
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE			0x0F00
 
 /* Externals. */
 
