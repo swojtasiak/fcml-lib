@@ -160,7 +160,7 @@ struct ira_diss_tree_opcode {
 
 /* Operand wrapper. */
 
-typedef int (*ira_instruction_operand_handler)( struct ira_diss_context *context, struct ira_instruction_operand *operand );
+typedef int (*ira_instruction_operand_handler)( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] );
 
 struct ira_instruction_operand_wrapper {
 	// Instruction operand.

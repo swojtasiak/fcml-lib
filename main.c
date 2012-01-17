@@ -88,6 +88,7 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 	info.address_size_attribute = 0;
 	info.operand_size_attribute = 0;
 	info.mode = is32 ? IRA_MOD_32BIT : IRA_MOD_64BIT;
+	info.instruction_pointer = 0x00400000;
 
 	struct ira_disassemble_result result;
 
@@ -127,6 +128,11 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 #define _TEST64(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, code, sizeof(code), x ); }
 
 void test(void) {
+
+	// CALL
+	_TEST32( "E800000000 call 00000008", 0xE8, 0x00, 0x00, 0x30, 0xFF );
+
+
 	// ADC
 	_TEST32( "801501020304ff adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
@@ -555,6 +561,7 @@ void test(void) {
 	_TEST64( "480fbaaf0102030405 bts qword ptr [rdi+0000000004030201h],05h", 0x48, 0x0F, 0xBA, 0xAF, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=64 EAS=64
 	_TEST64( "480fbaaf01020304ff bts qword ptr [rdi+0000000004030201h],0ffh", 0x48, 0x0F, 0xBA, 0xAF, 0x01, 0x02, 0x03, 0x4, 0xff );
+
 }
 
 
