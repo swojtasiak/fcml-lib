@@ -103,7 +103,7 @@ struct ira_decoding_context {
 	// Decoded ModRM.
 	struct ira_decoded_mod_rm mod_rm;
 	// Instruction size. This value is only available during post processing.
-	int instruction_size;
+	int32_t instruction_size;
 };
 
 struct ira_diss_context {
@@ -117,6 +117,8 @@ struct ira_diss_context {
     struct ira_decoding_context decoding_context;
     // Stream.
     struct ira_memory_stream *stream;
+    // Instruction pointer.
+    union ira_instruction_pointer instruction_pointer;
 };
 
 /* Returns 1 is there is given prefix found for given instruction. */

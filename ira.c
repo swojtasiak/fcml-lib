@@ -159,6 +159,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     context.mode = info->mode;
     context.address_size_attribute = info->address_size_attribute;
     context.operand_size_attribute = info->operand_size_attribute;
+    context.instruction_pointer = info->instruction_pointer;
 
     // Identify prefixes.
     _ira_identify_prefixes( &context );
@@ -1175,51 +1176,38 @@ int _ira_opcode_decoder_immediate_relative_dis_addressing( struct ira_diss_conte
 
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 
+	// 16 bit relative addressing is not available in 64 bit mode.
 	if( decoding_context->effective_operand_size_attribute == _IRA_OSA_16 && context->mode == IRA_MOD_64BIT ) {
 		return _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED;
 	}
 
 	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
 
-	// Do not specify immediate data size, EOSA should be used here.
-	int result;
-	void *immediate_args =_ira_alloc_immediate_type_args( 0, &result );
+	// Calculate size of immediate value that should be used to calculate relative address.
+	struct ira_immediate_type_args immediate_args;
+
+	immediate_args.immediate_data_type = IRA_IMMEDIATE_32;
+
+	// For 32 and 64 bit addressing, 32 bit immediate value should be used.
+	// Only for 16 bit addressing value differs and is equal to 16.
+	if( context->decoding_context.effective_operand_size_attribute == 16 ) {
+		immediate_args.immediate_data_type = IRA_IMMEDIATE_16;
+	}
+
+	// Read immediate value used then to calculate relative address.
+	int result = _ira_opcode_decoder_immediate( context, operand_wrapper, &immediate_args );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
 
-	result = _ira_opcode_decoder_immediate( context, operand_wrapper, immediate_args );
-	if( result != _IRA_INT_ERROR_NO_ERROR ) {
-		return result;
-	}
-	// Set extension size.
+	// Set extension size. It's not used in next phases, it's for informational purpose only.
 	operand->immediate.extension_size = context->decoding_context.effective_operand_size_attribute;
 
+	// This handler is responsible for calculating address in post processing phase when
+	// instruction size is already available.
 	operand_wrapper->post_processor = &ira_relative_addressing_instruction_operand_handler;
 
 	return _IRA_INT_ERROR_NO_ERROR;
-
-	/*int result;
-	struct ira_decoding_context *decoding_context = &(context->decoding_context);
-	uint8_t eosa = decoding_context->effective_operand_size_attribute;
-	switch ( eosa ) {
-	case _IRA_OSA_16:
-		if( context->mode == IRA_MOD_64BIT ) {
-			return _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED;
-		}
-		uint16_t displacement = _ira_stream_read_word( context->stream, &result );
-		if( !result ) {
-
-		}
-		break;
-	case _IRA_OSA_32:
-		//type = IRA_REG_GPR_32;
-		break;
-	case _IRA_OSA_64:
-		//type = IRA_REG_GPR_64;
-		break;
-	}
-	return 0;*/
 }
 
 /* Decodes immediate value and extends it to the effective operand size. */
@@ -1830,14 +1818,46 @@ enum ira_register_type _ira_map_osa_to_register_type( struct ira_diss_context *c
 	return reg_type;
 }
 
-// Postprocesor handlers.
+// Post processor handlers.
 
 int ira_relative_addressing_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] ) {
 
-	//struct ira_decoding_context *decoding_context = &(context->decoding_context);
-
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	struct ira_immediate_data *immediate_data = &(operand->immediate);
+	struct ira_addressing *addressing = &(operand->addressing);
 
-	immediate_data->
+	operand->operand_type = IRA_ADDRESS;
 
+	addressing->addressing_type = IRA_RELATIVE_ADDRESS;
+
+	int instruction_size = decoding_context->instruction_size;
+
+	switch( decoding_context->effective_operand_size_attribute ) {
+	case 16:
+		{
+			// 16 bit addressing.
+			int16_t address = immediate_data->immediate_data.immediate_16;
+			addressing->address_size = IRA_ADDRESS_32;
+			addressing->address_value.address_32 = ((int32_t)(context->instruction_pointer.eip + instruction_size) + address) & 0x0000FFFF;
+			break;
+		}
+		case 32:
+		{
+			// 32 bit addressing.
+			int32_t address = immediate_data->immediate_data.immediate_32;
+			addressing->address_size = IRA_ADDRESS_32;
+			addressing->address_value.address_32 = (int32_t)(context->instruction_pointer.eip + instruction_size) + address;
+			break;
+		}
+		case 64:
+		{
+			// 64 bit addressing.
+			int64_t address = (int32_t)immediate_data->immediate_data.immediate_32;
+			addressing->address_size = IRA_ADDRESS_64;
+			addressing->address_value.address_64 = (int64_t)(context->instruction_pointer.rip + (int64_t)instruction_size) + (int64_t)address;
+			break;
+		}
+	}
+
+	return _IRA_INT_ERROR_NO_ERROR;
 }

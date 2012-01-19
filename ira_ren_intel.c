@@ -18,6 +18,7 @@
 typedef void (*_ira_operand_formater)( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 
 void _ira_operand_formater_addressing( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_immediate( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
@@ -92,6 +93,7 @@ void _ira_operand_formater_addressing( struct ira_disassemble_result *result, st
 	case IRA_IMMEDIATE_ADDRESS:
 		break;
 	case IRA_RELATIVE_ADDRESS:
+		_ira_operand_formater_addressing_address( result, format_info, operand, stream );
 		break;
 	}
 }
@@ -189,6 +191,32 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 	}
 
 	_ira_format_append_str( stream, "]" );
+
+}
+
+void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+	struct ira_addressing *addressing = &operand->addressing;
+
+	struct _ira_integer address_value = {0};
+	address_value.is_signed = _IRA_TRUE;
+
+	switch( addressing->address_size ) {
+
+	case IRA_ADDRESS_16:
+		address_value.size = addressing->address_size;
+		address_value.value.v16 = addressing->address_value.address_16;
+		break;
+	case IRA_ADDRESS_32:
+		address_value.size = addressing->address_size;
+		address_value.value.v32 = addressing->address_value.address_64;
+		break;
+	case IRA_ADDRESS_64:
+		address_value.size = addressing->address_size;
+		address_value.value.v64 = addressing->address_value.address_64;
+		break;
+	}
+
+	_ira_format_append_integer( stream, &address_value, 16 );
 
 }
 

@@ -88,7 +88,12 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 	info.address_size_attribute = 0;
 	info.operand_size_attribute = 0;
 	info.mode = is32 ? IRA_MOD_32BIT : IRA_MOD_64BIT;
-	info.instruction_pointer = 0x00400000;
+
+	if( is32 ) {
+		info.instruction_pointer.eip = 0x00401000;
+	} else {
+		info.instruction_pointer.rip = 0x0000800000401000;
+	}
 
 	struct ira_disassemble_result result;
 
@@ -130,8 +135,7 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 void test(void) {
 
 	// CALL
-	_TEST32( "E800000000 call 00000008", 0xE8, 0x00, 0x00, 0x30, 0xFF );
-
+	_TEST32( "e8000030ff call 0ff701005h", 0xE8, 0x00, 0x00, 0x30, 0xFF );
 
 	// ADC
 	_TEST32( "801501020304ff adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );

@@ -185,6 +185,11 @@ struct ira_register {
 #define _IRA_ASA_32		32
 #define _IRA_ASA_64		64
 
+union ira_instruction_pointer {
+	uint32_t eip;
+	uint64_t rip;
+};
+
 struct ira_disassemble_info {
 	/* Architecture. */
 	enum ira_operation_mode mode;
@@ -197,7 +202,7 @@ struct ira_disassemble_info {
 	/* Size of the data to disassemble. */
 	uint32_t size;
 	/* Instruction pointer. In case of 32 bit addressing, only lower 32 bits are used and so on. */
-	uint64_t instruction_pointer;
+	union ira_instruction_pointer instruction_pointer;
 };
 
 enum ira_immediate_data_type {
@@ -289,37 +294,19 @@ enum ira_address_size {
 	IRA_ADDRESS_64 = 64
 };
 
-enum ira_relative_address_size {
-	IRA_RELATIVE_ADDRESS_8 = 8,
-	IRA_RELATIVE_ADDRESS_16 = 16,
-	IRA_RELATIVE_ADDRESS_32 = 32,
-	IRA_RELATIVE_ADDRESS_64 = 64
-};
-
 union ira_address_value {
 	uint16_t address_16;
 	uint32_t address_32;
-	uint32_t address_64;
-};
-
-union ira_relative_address_value {
-	uint8_t address_8;
-	uint16_t address_16;
-	uint32_t address_32;
-	uint32_t address_64;
+	uint64_t address_64;
 };
 
 struct ira_addressing {
 	// Type of addressing.
 	enum ira_addressing_type addressing_type;
 	// Size of the direct address (ESA).
-	enum ira_address_size;
-	// Size of the relative address.
-	enum ira_relative_address_size;
+	enum ira_address_size address_size;
 	// Value of the direct address.
-	union ira_address_value;
-	// Value of the relative address.
-	union ira_relative_address_value;
+	union ira_address_value address_value;
 	// Data size.
 	// TODO: Przniesc to gdzies, to nie wielkosc adresu tylko
 	// wiekosc danych jakie trafia pod ten adres, trzeba znalezc na to lepsze miejsce.
