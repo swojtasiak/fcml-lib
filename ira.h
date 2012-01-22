@@ -261,7 +261,8 @@ struct ira_displacement {
 enum ira_addressing_type {
 	IRA_MOD_RM,
 	IRA_IMMEDIATE_ADDRESS,
-	IRA_RELATIVE_ADDRESS
+	IRA_RELATIVE_ADDRESS,
+	IRA_FAR_CALL
 };
 
 enum ira_access_mode {
@@ -307,6 +308,12 @@ struct ira_addressing {
 	enum ira_address_size address_size;
 	// Value of the direct address.
 	union ira_address_value address_value;
+	// code segment register...wartosc dla code segment, trzeba sie zastanowic jak to tu wrzucic zeby gralo z adresem.
+	// W dalekich skokach mamy do cynienia z numerem egmentu i ofsetem w tym segmencie. Wiec teoretycznie ten ofset mozna
+	// by wrziuc do adress jako ze jesto to bezposredni w tym segencie. tylko trzeba jeszcze sie zastanowic gdzie wrzucic segment.
+	// Moze zrobic jaka strukture segment type (SEGMENT, CS, DS itd) i segment value w ktory mozna ustawic w przypadku wyboru SEGMENT.
+	// Trzeba by sie tez zastanowic na segment size, ktory chyba tez moze byc rozny, tak samo jak CS, DS, chociaz tu nie jestem taki pewny.
+	// Trzeba sprawdzic czy dla 64 bit jest ECS, EDS.
 	// Data size.
 	// TODO: Przniesc to gdzies, to nie wielkosc adresu tylko
 	// wiekosc danych jakie trafia pod ten adres, trzeba znalezc na to lepsze miejsce.

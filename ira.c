@@ -106,6 +106,7 @@ int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_i
 int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
 int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
 int _ira_opcode_decoder_immediate_relative_dis_addressing( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+int _ira_opcode_decoder_call_rm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 
 /* Arguments allocators. */
 
@@ -765,10 +766,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	int result = _IRA_INT_ERROR_NO_ERROR;
 
 	// Store access mode for this operand decoding.
-	operand_decoding->access_mode = ( decoding & _IRA_W ) ? IRA_WRITE : IRA_READ;
+	operand_decoding->access_mode = ( decoding & _IRA_WRITE ) ? IRA_WRITE : IRA_READ;
 
 	// Clear access mode.
-	decoding &= ~_IRA_W;
+	decoding &= ~_IRA_WRITE;
 
 	uint16_t decoder_type = decoding & 0xFF00;
 
@@ -821,6 +822,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate_relative_dis_addressing;
 		operand_decoding->args = NULL;
 		break;
+	case _IRA_OPERAND_CALL_RM:
+		operand_decoding->decoder = &_ira_opcode_decoder_call_rm;
+		operand_decoding->args = NULL;
+		break;
 	case _IRA_MODRM_BASE:
 
 		// Gets appropriate ModR/M decoder.
@@ -841,11 +846,11 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, 16, &result );
 			break;
-		case _IRA_RM_ASA:
+		case _IRA_RM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
 			break;
-		case _IRA_R_OSA:
+		case _IRA_R:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
 			break;
@@ -1170,6 +1175,26 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 	_ira_opcode_decoder_reg( &(operand_wrapper->operand), reg_type, reg );
 
 	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int _ira_opcode_decoder_call_rm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+
+	// The operand-size attribute determines the size of the target operand (16, 32 or 64 bits).
+	int operand_size = decoding_context->effective_operand_size_attribute;
+
+	// When in 64-bit mode, the operand size for near call (and all near branches) is forced to 64-bits.
+	if( context->mode == IRA_MOD_64BIT ) {
+		operand_size = 64;
+	}
+
+	struct ira_modrm_decoding_args modrm_args;
+	modrm_args.reg_type = IRA_REG_GPR;
+	modrm_args.operand_register_size = operand_size;
+	modrm_args.size_directive = operand_size;
+
+	return _ira_opcode_decoder_modrm_rm( context, operand_wrapper, &modrm_args );
 }
 
 int _ira_opcode_decoder_immediate_relative_dis_addressing( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {

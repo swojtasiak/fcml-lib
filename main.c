@@ -135,6 +135,14 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 void test(void) {
 
 	// CALL
+	// r/m32
+	_TEST32( "ff5701 call dword ptr [edi+00000001h]", 0xFF, 0x57, 0x01 );
+	// r/m16
+	_TEST32( "66ff5701 call word ptr [edi+00000001h]", 0x66, 0xFF, 0x57, 0x01 );
+	// r/m64 (Size directives are the same for operand size 32 and 64 bits.)
+	_TEST64( "4866ff5701 call qword ptr [rdi+0000000000000001h]", 0x48, 0x66, 0xFF, 0x57, 0x01 );
+	_TEST64( "66ff5701 call qword ptr [rdi+0000000000000001h]", 0x66, 0xFF, 0x57, 0x01 );
+
 	_TEST32( "e8000030ff call 0ff701005h", 0xE8, 0x00, 0x00, 0x30, 0xFF );
 
 	// ADC

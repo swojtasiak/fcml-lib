@@ -38,28 +38,28 @@ struct ira_opcode_desc _ira_opcode_desc_ADC[] = {
 	{ NULL, 0x0001, 0x00C59000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 81 /2 iw ADC r/m16, imm16 B Valid Valid Add with carry imm16 to r/m16.
 	// 81 /2 id ADC r/m32, imm32 B Valid Valid Add with CF imm32 to r/m32.
-	{ NULL, 0x0001, 0x00C59000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C59000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 81 /2 id ADC r/m64, imm32 B Valid N.E. Add with CF imm32 sign extended to 64-bits to r/m64.
-	{ NULL, 0x0009, 0x00859000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00859000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 83 /2 ib ADC r/m16, imm8 B Valid Valid Add with CF sign-extended imm8 to r/m16.
 	// 83 /2 ib ADC r/m32, imm8 B Valid Valid Add with CF sign-extended imm8 into r/m32.
-	{ NULL, 0x0001, 0x00C59000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C59000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 83 /2 ib ADC r/m64, imm8 B Valid N.E. Add with CF sign-extended imm8 into r/m64.
-	{ NULL, 0x0009, 0x00859000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00859000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 10 /r ADC r/m8, r8 A Valid Valid Add with carry byte register to r/m8.
 	// REX + 10 /r ADC r/m8*, r8* A Valid N.E. Add with carry byte register to r/m64.
 	{ NULL, 0x0001, 0x00C48000, { 0x10, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
 	// 11 /r ADC r/m16, r16 A Valid Valid Add with carry r16 to r/m16.
 	// 11 /r ADC r/m32, r32 A Valid Valid Add with CF r32 to r/m32.
 	// REX.W + 11 /r ADC r/m64, r64 A Valid N.E. Add with CF r64 to r/m64.
-	{ NULL, 0x0001, 0x00C48000, { 0x11, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C48000, { 0x11, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
 	// 12 /r ADC r8, r/m8 A Valid Valid Add with carry r/m8 to byte register.
 	// REX + 12 /r ADC r8*, r/m8* A Valid N.E. Add with carry r/m64 to byte register.
 	{ NULL, 0x0001, 0x00C48000, { 0x12, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
 	// 13 /r ADC r16, r/m16 A Valid Valid Add with carry r/m16 to r16.
 	// 13 /r ADC r32, r/m32 A Valid Valid Add with CF r/m32 to r32.
 	// REX.W + 13 /r ADC r64, r/m64 A Valid N.E. Add with CF r/m64 to r64.
-	{ NULL, 0x0001, 0x00C48000, { 0x13, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_OSA_W, _IRA_OPERAND_MODRM_RM_ASA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00C48000, { 0x13, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_ADD[] = {
@@ -75,28 +75,28 @@ struct ira_opcode_desc _ira_opcode_desc_ADD[] = {
 	{ NULL, 0x0001, 0x00C58000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 81 /0 iw ADD r/m16, imm16 B Valid Valid Add imm16 to r/m16.
 	// 81 /0 id ADD r/m32, imm32 B Valid Valid Add imm32 to r/m32.
-	{ NULL, 0x0001, 0x00C58000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C58000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 81 /0 id ADD r/m64, imm32 B Valid N.E. Add imm32 sign-extended to 64-bits to r/m64.
-	{ NULL, 0x0009, 0x00858000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00858000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 83 /0 ib ADD r/m16, imm8 B Valid Valid Add sign-extended imm8 to r/m16.
 	// 83 /0 ib ADD r/m32, imm8 B Valid Valid Add sign-extended imm8 to r/m32.
-	{ NULL, 0x0001, 0x00C58000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C58000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 83 /0 ib ADD r/m64, imm8 B Valid N.E. Add sign-extended imm8 to r/m64.
-	{ NULL, 0x0009, 0x00858000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00858000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 00 /r ADD r/m8, r8 A Valid Valid Add r8 to r/m8.
 	// REX + 00 /r ADD r/m8*, r8* A Valid N.E. Add r8 to r/m8.
 	{ NULL, 0x0001, 0x00C48000, { 0x00, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
 	// 01 /r ADD r/m16, r16 A Valid Valid Add r16 to r/m16.
 	// 01 /r ADD r/m32, r32 A Valid Valid Add r32 to r/m32.
 	// REX.W + 01 /r ADD r/m64, r64 A Valid N.E. Add r64 to r/m64.
-	{ NULL, 0x0001, 0x00C48000, { 0x01, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C48000, { 0x01, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
 	// 02 /r ADD r8, r/m8 A Valid Valid Add r/m8 to r8.
 	// REX + 02 /r ADD r8*, r/m8* A Valid N.E. Add r/m8 to r8.
 	{ NULL, 0x0001, 0x00C48000, { 0x02, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
 	// 03 /r ADD r16, r/m16 A Valid Valid Add r/m16 to r16.
 	// 03 /r ADD r32, r/m32 A Valid Valid Add r/m32 to r32.
 	// REX.W + 03 /r ADD r64, r/m64 A Valid N.E. Add r/m64 to r64.
-	{ NULL, 0x0001, 0x00C48000, { 0x03, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_OSA_W, _IRA_OPERAND_MODRM_RM_ASA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00C48000, { 0x03, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_ADDPD[] = {
@@ -172,28 +172,28 @@ struct ira_opcode_desc _ira_opcode_desc_AND[] = {
 	{ NULL, 0x0001, 0x00C5A000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 81 /4 iw AND r/m16, imm16 B Valid Valid r/m16 AND imm16.
 	// 81 /4 id AND r/m32, imm32 B Valid Valid r/m32 AND imm32.
-	{ NULL, 0x0001, 0x00C5A000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C5A000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 81 /4 id AND r/m64, imm32 B Valid N.E. r/m64 AND imm32 sign extended to 64-bits.
-	{ NULL, 0x0009, 0x0085A000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x0085A000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 83 /4 ib AND r/m16, imm8 B Valid Valid r/m16 AND imm8 (signextended).
 	// 83 /4 ib AND r/m32, imm8 B Valid Valid r/m32 AND imm8 (signextended).
-	{ NULL, 0x0001, 0x00C5A000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C5A000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 83 /4 ib AND r/m64, imm8 B Valid N.E. r/m64 AND imm8 (signextended).
-	{ NULL, 0x0009, 0x0085A0000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x0085A0000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 20 /r AND r/m8, r8 A Valid Valid r/m8 AND r8.
 	// REX + 20 /r AND r/m8*, r8* A Valid N.E. r/m64 AND r8 (signextended).
 	{ NULL, 0x0001, 0x00C48000, { 0x20, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
 	// 21 /r AND r/m16, r16 A Valid Valid r/m16 AND r16.
 	// 21 /r AND r/m32, r32 A Valid Valid r/m32 AND r32.
 	// REX.W + 21 /r AND r/m64, r64 A Valid N.E. r/m64 AND r32.
-	{ NULL, 0x0001, 0x00C48000, { 0x21, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C48000, { 0x21, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
 	// 22 /r AND r8, r/m8 A Valid Valid r8 AND r/m8.
 	// REX + 22 /r AND r8*, r/m8* A Valid N.E. r/m64 AND r8 (signextended).
 	{ NULL, 0x0001, 0x00C48000, { 0x22, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
 	// 23 /r AND r16, r/m16 A Valid Valid r16 AND r/m16.
 	// 23 /r AND r32, r/m32 A Valid Valid r32 AND r/m32.
 	// REX.W + 23 /r AND r64, r/m64 A Valid N.E. r64 AND r/m64.
-	{ NULL, 0x0001, 0x00C48000, { 0x23, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_OSA_W, _IRA_OPERAND_MODRM_RM_ASA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00C48000, { 0x23, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_ANDPD[] = {
@@ -244,21 +244,21 @@ struct ira_opcode_desc _ira_opcode_desc_BLENDVPS[] = {
 struct ira_opcode_desc _ira_opcode_desc_BOUND[] = {
 	// 62 /r BOUND r16, m16&16 A Invalid Valid Check if r16 (array index) is within bounds specified by m16&16.
 	// 62 /r BOUND r32, m32&32 A Invalid Valid Check if r32 (array index) is within bounds specified by m16&16.
-	{ NULL, 0x0001, 0x00448000, { 0x62 }, _IRA_OPERAND_MODRM_R_OSA, _IRA_OPERAND_MODRM_MM_OSA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00448000, { 0x62 }, _IRA_OPERAND_MODRM_R, _IRA_OPERAND_MODRM_MM_OSA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BSF[] = {
 	// 0F BC /r BSF r16, r/m16 A Valid Valid Bit scan forward on r/m16.
 	// 0F BC /r BSF r32, r/m32 A Valid Valid Bit scan forward on r/m32.
 	// REX.W + 0F BC BSF r64, r/m64 A Valid N.E. Bit scan forward on r/m64.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBC, 0x00 }, _IRA_OPERAND_MODRM_R_OSA_W, _IRA_OPERAND_MODRM_RM_ASA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBC, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BSR[] = {
 	// 0F BD /r BSR r16, r/m16 A Valid Valid Bit scan reverse on r/m16.
 	// 0F BD /r BSR r32, r/m32 A Valid Valid Bit scan reverse on r/m32.
 	// REX.W + 0F BD BSR r64, r/m64 A Valid N.E. Bit scan reverse on r/m64.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBC, 0x00 }, _IRA_OPERAND_MODRM_R_OSA_W, _IRA_OPERAND_MODRM_RM_ASA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBC, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BSWAP[] = {
@@ -272,49 +272,55 @@ struct ira_opcode_desc _ira_opcode_desc_BT[] = {
 	// 0F A3 BT r/m16, r16 A Valid Valid Store selected bit in CF flag.
 	// 0F A3 BT r/m32, r32 A Valid Valid Store selected bit in CF flag.
 	// REX.W + 0F A3 BT r/m64, r64 A Valid N.E. Store selected bit in CF flag.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xA3, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xA3, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
 	// 0F BA /4 ib BT r/m16, imm8 B Valid Valid Store selected bit in CF flag.
 	// 0F BA /4 ib BT r/m32, imm8 B Valid Valid Store selected bit in CF flag.
 	// REX.W + 0F BA /4 ib BT r/m64, imm8 B Valid N.E. Store selected bit in CF flag.
-	{ NULL, 0x0001, 0x00D9A000, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D9A000, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BTC[] = {
 	// 0F BB BTC r/m16, r16 A Valid Valid Store selected bit in CF flag and complement.
 	// 0F BB BTC r/m32, r32 A Valid Valid Store selected bit in CF flag and complement.
 	// REX.W + 0F BB BTC r/m64, r64 A Valid N.E. Store selected bit in CF flag and complement.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBB, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBB, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
 	// 0F BA /7 ib BTC r/m16, imm8 B Valid Valid Store selected bit in CF flag and complement.
 	// 0F BA /7 ib BTC r/m32, imm8 B Valid Valid Store selected bit in CF flag and complement.
 	// REX.W + 0F BA /7 ib BTC r/m64, imm8 B Valid N.E. Store selected bit in CF flag and complement.
-	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BTR[] = {
 	// 0F B3 BTR r/m16, r16 A Valid Valid Store selected bit in CF flag and clear.
 	// 0F B3 BTR r/m32, r32 A Valid Valid Store selected bit in CF flag and clear.
 	// REX.W + 0F B3 BTR r/m64, r64 A Valid N.E. Store selected bit in CF flag and clear.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xB3, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xB3, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
 	// 0F BA /6 ib BTR r/m16, imm8 B Valid Valid Store selected bit in CF flag and clear.
 	// 0F BA /6 ib BTR r/m32, imm8 B Valid Valid Store selected bit in CF flag and clear.
 	// REX.W + 0F BA /6 ib BTR r/m64, imm8 B Valid N.E. Store selected bit in CF flag and clear.
-	{ NULL, 0x0001, 0x00D9B000, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D9B000, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BTS[] = {
 	// 0F AB BTS r/m16, r16 A Valid Valid Store selected bit in CF flag and set.
 	// 0F AB BTS r/m32, r32 A Valid Valid Store selected bit in CF flag and set.
 	// REX.W + 0F AB BTS r/m64, r64 A Valid N.E. Store selected bit in CF flag and set.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xAB, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_MODRM_R_OSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xAB, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
 	// 0F BA /5 ib BTS r/m16, imm8 B Valid Valid Store selected bit in CF flag and set.
 	// 0F BA /5 ib BTS r/m32, imm8 B Valid Valid Store selected bit in CF flag and set.
 	// REX.W + 0F BA /5 ib BTS r/m64, imm8 B Valid N.E. Store selected bit in CF flag and set.
-	{ NULL, 0x0001, 0x00D9A800, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_ASA_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D9A800, { 0x0F, 0xBA, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_CALL[] = {
 	// E8 cw CALL rel16 B N.S. Valid Call near, relative, displacement relative to next instruction.
-	{ NULL, 0x0001, 0x00440000, { 0xE8, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE, _IRA_NA, _IRA_NA, _IRA_NA }
+	// E8 cd CALL rel32 B Valid Valid Call near, relative, displacement relative to next instruction.
+	// 32-bit displacement sign extended to 64-bits in 64-bit mode.
+	{ NULL, 0x0001, 0x00440000, { 0xE8, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE, _IRA_NA, _IRA_NA, _IRA_NA },
+	// FF /2 CALL r/m16 B N.E. Valid Call near, absolute indirect, address given in r/m16.
+	// FF /2 CALL r/m32 B N.E. Valid Call near, absolute indirect, address given in r/m32.
+	// FF /2 CALL r/m64 B Valid N.E. Call near, absolute indirect, address given in r/m64.
+	{ NULL, 0x0001, 0x00C59000, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_CALL_RM, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
