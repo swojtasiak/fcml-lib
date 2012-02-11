@@ -19,6 +19,7 @@ typedef void (*_ira_operand_formater)( struct ira_disassemble_result *result, st
 
 void _ira_operand_formater_addressing( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_immediate( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
@@ -94,6 +95,9 @@ void _ira_operand_formater_addressing( struct ira_disassemble_result *result, st
 		break;
 	case IRA_RELATIVE_ADDRESS:
 		_ira_operand_formater_addressing_address( result, format_info, operand, stream );
+		break;
+	case IRA_FAR_POINTER:
+		_ira_operand_formater_addressing_far_pointer( result, format_info, operand, stream );
 		break;
 	}
 }
@@ -194,7 +198,25 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 }
 
+void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+
+	_ira_format_append_str( stream, "far " );
+
+	struct _ira_integer cs_reg_value = {0};
+	cs_reg_value.is_signed = _IRA_TRUE;
+	cs_reg_value.size = 16;
+	cs_reg_value.value.v16 = operand->addressing.segment_selector.segment_register_value;
+
+	_ira_format_append_integer( stream, &cs_reg_value, 16 );
+
+	_ira_format_append_str( stream, ":" );
+
+	_ira_operand_formater_addressing_address( result, format_info,operand, stream );
+
+}
+
 void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+
 	struct ira_addressing *addressing = &operand->addressing;
 
 	struct _ira_integer address_value = {0};
@@ -217,7 +239,6 @@ void _ira_operand_formater_addressing_address( struct ira_disassemble_result *re
 	}
 
 	_ira_format_append_integer( stream, &address_value, 16 );
-
 }
 
 void _ira_operand_formater_immediate( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {

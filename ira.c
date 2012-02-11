@@ -107,6 +107,7 @@ int _ira_opcode_decoder_modrm_mm( struct ira_diss_context *context, struct ira_i
 int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
 int _ira_opcode_decoder_immediate_relative_dis_addressing( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
 int _ira_opcode_decoder_call_rm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
+int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 
 /* Arguments allocators. */
 
@@ -254,6 +255,8 @@ enum ira_result_code _ira_map_internall_error_code( int internal_error ) {
 		return RC_ERROR_INSTRUCTION_NOT_ENCODABLE;
 	case _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED:
 		return RC_ERROR_SYNTAX_NOT_SUPPORTED;
+	case _IRA_INT_ERROR_ILLEGAL_INSTRUCTION:
+		return RC_ERROR_ILLEGAL_INSTRUCTION;
 	}
 	return RC_ERROR_UNEXPECTED_INTERNAL_ERROR;
 }
@@ -773,6 +776,8 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 
 	uint16_t decoder_type = decoding & 0xFF00;
 
+	operand_decoding->args = NULL;
+
 	switch( decoder_type ) {
 	case _IRA_OPERAND_REG_ACCUMULATOR_8:
 		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
@@ -820,11 +825,12 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		break;
 	case _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE:
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate_relative_dis_addressing;
-		operand_decoding->args = NULL;
 		break;
 	case _IRA_OPERAND_CALL_RM:
 		operand_decoding->decoder = &_ira_opcode_decoder_call_rm;
-		operand_decoding->args = NULL;
+		break;
+	case _IRA_OPERAND_FAR_POINTER:
+		operand_decoding->decoder = &_ira_opcode_decoder_far_pointer;
 		break;
 	case _IRA_MODRM_BASE:
 
@@ -888,7 +894,6 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			break;
 		case _IRA_OSA_MM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_mm;
-			operand_decoding->args = NULL;
 			break;
 		}
 
@@ -1010,7 +1015,9 @@ uint16_t _ira_stream_read_word( struct ira_memory_stream *stream, int *result ) 
 	uint16_t value = 0;
 	*result = stream->size - stream->offset >= sizeof(uint16_t);
 	if( *result ) {
-		value = (((uint16_t*)((uint8_t*)stream->base_address + stream->offset))[0]);
+		int offset = stream->offset;
+		value |= ((uint8_t*)stream->base_address)[offset];
+		value |= ((uint8_t*)stream->base_address)[offset + 1] << 8;
 		stream->offset += sizeof(uint16_t);
 	}
 	return value;
@@ -1020,8 +1027,27 @@ uint32_t _ira_stream_read_dword( struct ira_memory_stream *stream, int *result )
 	uint32_t value = 0;
 	*result = stream->size - stream->offset >= sizeof(uint32_t);
 	if( *result ) {
-		value = (((uint32_t*)((uint8_t*)stream->base_address + stream->offset))[0]);
+		int offset = stream->offset;
+		value |= ((uint8_t*)stream->base_address)[offset];
+		value |= ((uint8_t*)stream->base_address)[offset + 1] << 8;
+		value |= ((uint8_t*)stream->base_address)[offset + 2] << 16;
+		value |= ((uint8_t*)stream->base_address)[offset + 3] << 24;
 		stream->offset += sizeof(uint32_t);
+	}
+	return value;
+}
+
+uint64_t _ira_stream_read_qword( struct ira_memory_stream *stream, int *result ) {
+	// TODO: test it!
+	uint64_t value = 0;
+	*result = stream->size - stream->offset >= sizeof(uint64_t);
+	if( *result ) {
+		int i;
+		int offset = stream->offset;
+		for( i = 0; i < sizeof(uint64_t); i++ ) {
+			value |= ((uint8_t*)stream->base_address)[offset + i] << ( i << 3 );
+		}
+		stream->offset += sizeof(uint64_t);
 	}
 	return value;
 }
@@ -1173,6 +1199,54 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 	}
 
 	_ira_opcode_decoder_reg( &(operand_wrapper->operand), reg_type, reg );
+
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+// This decoding mode is used by CALL and JMP instructions.
+int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
+
+	operand->operand_type = IRA_ADDRESS;
+
+	struct ira_addressing *addressing = &(operand->addressing);
+
+	addressing->addressing_type = IRA_FAR_POINTER;
+
+	// Decoding offset.
+	int result;
+
+	switch( decoding_context->effective_operand_size_attribute ) {
+	case 16:
+		addressing->address_size = IRA_ADDRESS_16;
+		addressing->address_value.address_16 = _ira_stream_read_word( context->stream, &result );
+		break;
+	case 32:
+		addressing->address_size = IRA_ADDRESS_32;
+		addressing->address_value.address_32 = _ira_stream_read_dword( context->stream, &result );
+		break;
+	case 64:
+		addressing->address_size = IRA_ADDRESS_64;
+		addressing->address_value.address_64 = _ira_stream_read_qword( context->stream, &result );
+		break;
+	}
+
+	if( !result ) {
+		return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+	}
+
+	// Decoding value for code segment register.
+	struct ira_segment_selector *segment_selector = &(addressing->segment_selector);
+
+	// This register cannot be overridden.
+	segment_selector->segment_register = _IRA_SEG_REG_CS;
+
+	segment_selector->segment_register_value = _ira_stream_read_word( context->stream, &result );
+	if( !result ) {
+		return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+	}
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }

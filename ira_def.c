@@ -320,7 +320,11 @@ struct ira_opcode_desc _ira_opcode_desc_CALL[] = {
 	// FF /2 CALL r/m16 B N.E. Valid Call near, absolute indirect, address given in r/m16.
 	// FF /2 CALL r/m32 B N.E. Valid Call near, absolute indirect, address given in r/m32.
 	// FF /2 CALL r/m64 B Valid N.E. Call near, absolute indirect, address given in r/m64.
-	{ NULL, 0x0001, 0x00C59000, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_CALL_RM, _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00C59000, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_CALL_RM, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 9A cd CALL ptr16:16 A Invalid Valid Call far, absolute, address given in operand.
+	// 9A cp CALL ptr16:32 A Invalid Valid Call far, absolute, address given in operand.
+	{ NULL, 0x0001, 0x00440000, { 0x9A, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER, _IRA_NA, _IRA_NA, _IRA_NA }
+
 };
 
 struct ira_instruction_desc _ira_instructions_desc[] = {

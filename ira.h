@@ -112,6 +112,16 @@
 #define _IRA_REG_R15	15
 #define _IRA_REG_XMM15	15
 
+/* Segment registers */
+
+#define _IRA_SEG_REG_NONE	0
+#define _IRA_SEG_REG_CS		1
+#define _IRA_SEG_REG_DS 	2
+#define _IRA_SEG_REG_SS 	3
+#define _IRA_SEG_REG_ES 	4
+#define _IRA_SEG_REG_FS 	5
+#define _IRA_SEG_REG_GS 	6
+
 /* Common data types. */
 
 struct ira_nullable_byte {
@@ -120,6 +130,14 @@ struct ira_nullable_byte {
 	// Value.
 	uint8_t value;
 } typedef n_byte;
+
+struct ira_nullable_word {
+	// 0 if null, otherwise 1.
+	uint16_t is_not_null;
+	// Value.
+	uint16_t value;
+} typedef n_word;
+
 
 enum ira_operation_mode {
 	IRA_MOD_16BIT,
@@ -138,7 +156,8 @@ enum ira_result_code {
 	RC_ERROR_UNEXPECTED_INTERNAL_ERROR,
 	RC_ERROR_ILLEGAL_ADDRESSING_MODE,
 	RC_ERROR_INSTRUCTION_NOT_ENCODABLE,
-	RC_ERROR_SYNTAX_NOT_SUPPORTED
+	RC_ERROR_SYNTAX_NOT_SUPPORTED,
+	RC_ERROR_ILLEGAL_INSTRUCTION
 };
 
 enum ira_operand_type {
@@ -262,7 +281,7 @@ enum ira_addressing_type {
 	IRA_MOD_RM,
 	IRA_IMMEDIATE_ADDRESS,
 	IRA_RELATIVE_ADDRESS,
-	IRA_FAR_CALL
+	IRA_FAR_POINTER
 };
 
 enum ira_access_mode {
@@ -301,20 +320,22 @@ union ira_address_value {
 	uint64_t address_64;
 };
 
+struct ira_segment_selector {
+	// Type of the segment register using with addressing.
+	uint8_t segment_register;
+	// Value destined for the segment register, for example see: "ptr16:32" addressing mode.
+	uint16_t segment_register_value;
+};
+
 struct ira_addressing {
 	// Type of addressing.
 	enum ira_addressing_type addressing_type;
+	// Segment register used with addressing.
+	struct ira_segment_selector segment_selector;
 	// Size of the direct address (ESA).
 	enum ira_address_size address_size;
 	// Value of the direct address.
 	union ira_address_value address_value;
-	// code segment register...wartosc dla code segment, trzeba sie zastanowic jak to tu wrzucic zeby gralo z adresem.
-	// W dalekich skokach mamy do cynienia z numerem egmentu i ofsetem w tym segmencie. Wiec teoretycznie ten ofset mozna
-	// by wrziuc do adress jako ze jesto to bezposredni w tym segencie. tylko trzeba jeszcze sie zastanowic gdzie wrzucic segment.
-	// Moze zrobic jaka strukture segment type (SEGMENT, CS, DS itd) i segment value w ktory mozna ustawic w przypadku wyboru SEGMENT.
-	// Trzeba by sie tez zastanowic na segment size, ktory chyba tez moze byc rozny, tak samo jak CS, DS, chociaz tu nie jestem taki pewny.
-	// Trzeba sprawdzic czy dla 64 bit jest ECS, EDS.
-	// Data size.
 	// TODO: Przniesc to gdzies, to nie wielkosc adresu tylko
 	// wiekosc danych jakie trafia pod ten adres, trzeba znalezc na to lepsze miejsce.
 	int size_directive;

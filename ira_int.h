@@ -15,8 +15,10 @@
 #define _IRA_INT_ERROR_OUT_OF_MEMORY				0x02
 #define _IRA_INT_ERROR_ILLEGAL_ARGUMENT				0x03
 #define _IRA_INT_ERROR_ILLEGAL_ADDRESSING			0x04
+
 #define _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE	0x05
 #define _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED			0x06
+#define _IRA_INT_ERROR_ILLEGAL_INSTRUCTION			0x07
 
 /* Structures used to store information about memory. */
 
@@ -402,6 +404,9 @@ struct ira_instruction_desc {
 
 // Addressing based on ModR/M value for CALL.
 #define _IRA_OPERAND_CALL_RM						0x1000
+
+// Far call.
+#define _IRA_OPERAND_FAR_POINTER					0x1100
 
 /* Externals. */
 

@@ -135,6 +135,9 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 void test(void) {
 
 	// CALL
+	// prt16:16 ptr16:32
+	_TEST32( "9a112233445566 call far 6655h:44332211h", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
+	_TEST32( "669a11223344 call far 4433h:2211h", 0x66, 0x9A, 0x11, 0x22, 0x33, 0x44 );
 	// r/m32
 	_TEST32( "ff5701 call dword ptr [edi+00000001h]", 0xFF, 0x57, 0x01 );
 	// r/m16
