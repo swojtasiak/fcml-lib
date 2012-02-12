@@ -155,6 +155,14 @@ struct ira_modrm_decoding_args {
 	int size_directive;
 };
 
+typedef int (*ira_size_directive_provider)( struct ira_diss_context *context );
+
+/* Structure used to decode  */
+struct ira_modm_decoding_args {
+	// Size directive provider.
+	ira_size_directive_provider size_directive_provider;
+};
+
 /* Disassemblation tree. */
 
 struct ira_diss_tree_opcode {
@@ -405,8 +413,11 @@ struct ira_instruction_desc {
 // Addressing based on ModR/M value for CALL.
 #define _IRA_OPERAND_CALL_RM						0x1000
 
-// Far call.
+// Far pointers.
 #define _IRA_OPERAND_FAR_POINTER					0x1100
+
+// Far indirect pointer.
+#define _IRA_OPERAND_FAR_POINTER_INDIRECT			0x1200
 
 /* Externals. */
 

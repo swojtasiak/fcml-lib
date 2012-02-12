@@ -119,8 +119,14 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 	case 32:
 		_ira_format_append_str( stream, "dword ptr " );
 		break;
+	case 48:
+		_ira_format_append_str( stream, "fword ptr " );
+		break;
 	case 64:
 		_ira_format_append_str( stream, "qword ptr " );
+		break;
+	case 80:
+		_ira_format_append_str( stream, "tbyte ptr " );
 		break;
 	case 128:
 		_ira_format_append_str( stream, "oword ptr " );

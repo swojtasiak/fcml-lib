@@ -323,8 +323,11 @@ struct ira_opcode_desc _ira_opcode_desc_CALL[] = {
 	{ NULL, 0x0001, 0x00C59000, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_CALL_RM, _IRA_NA, _IRA_NA, _IRA_NA },
 	// 9A cd CALL ptr16:16 A Invalid Valid Call far, absolute, address given in operand.
 	// 9A cp CALL ptr16:32 A Invalid Valid Call far, absolute, address given in operand.
-	{ NULL, 0x0001, 0x00440000, { 0x9A, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER, _IRA_NA, _IRA_NA, _IRA_NA }
-
+	{ NULL, 0x0001, 0x00440000, { 0x9A, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER, _IRA_NA, _IRA_NA, _IRA_NA },
+	// FF /3 CALL m16:16 B Valid Valid Call far, absolute indirect address given in m16:16.
+	// FF /3 CALL m16:32 B Valid Valid In 64-bit mode.
+	// REX.W + FF /3 CALL m16:64 B Valid N.E. In 64-bit mode.
+	{ NULL, 0x0001, 0x00C79800, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
 struct ira_instruction_desc _ira_instructions_desc[] = {

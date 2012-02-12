@@ -135,6 +135,14 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 void test(void) {
 
 	// CALL
+	// m16:16,m16:32,m16:64
+	_TEST32( "ff5b01 call fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
+	_TEST32( "66ff5b01 call dword ptr [ebx+00000001h]", 0x66, 0xFF, 0x5B, 0x01 );
+	// TODO: Check it on 64 bit visual studio!
+	_TEST64( "6648ff5b01 call tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x5B, 0x01 );
+	_TEST64( "6640ff5b01 call dword ptr [rbx+0000000000000001h]", 0x66, 0x40, 0xFF, 0x5B, 0x01 );
+	_TEST64( "676640ff5b01 call dword ptr [ebx+00000001h]", 0x67, 0x66, 0x40, 0xFF, 0x5B, 0x01 );
+	_TEST64( "40ff5b01 call fword ptr [rbx+0000000000000001h]", 0x40, 0xFF, 0x5B, 0x01 );
 	// prt16:16 ptr16:32
 	_TEST32( "9a112233445566 call far 6655h:44332211h", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
 	_TEST32( "669a11223344 call far 4433h:2211h", 0x66, 0x9A, 0x11, 0x22, 0x33, 0x44 );
