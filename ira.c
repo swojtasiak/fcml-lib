@@ -320,11 +320,12 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		}
 
 		// Check EOSA. These fields allow us to restrict instruction decoding only
-		// for specific effective operand sizes. For instance we define instruction
+		// to specific effective operand sizes. For instance we can define instruction
 		// that can be chosen only if EOSA is equal to 16.
 		if( _IRA_OPCODE_FLAGS_IS_EOSA_RESTRICTION(current->opcode_flags) ) {
 			int mandatory_prefix = 0;
-			// Ignore 0x66 prefix if this instruction uses it as mandatory prefix.
+			// Ignore 0x66 prefix if this instruction uses it as mandatory prefix. This correction is also
+			// done in the next phase for already chosen instruction.
 			struct ira_instruction_prefix *prefix = _ira_diss_context_get_prefix_if_available( context, 0x66 );
 			// Set this prefix as a mandatory one if this instruction defines 66 as mandatory.
 			// This is set only temporarily only to calculate correct EOSA for instruction.
