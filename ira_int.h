@@ -290,6 +290,11 @@ struct ira_instruction_desc {
 #define _IRA_OPCODE_FLAGS_PRIMARY_OPCODE(x) 			( ( x & 0x00300000 ) >> 20 )
 #define _IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(x)		( x & 0x00800000 )
 #define _IRA_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(x)	( x & 0x00400000 )
+#define _IRA_OPCODE_FLAGS_EOSA_16(x)					( x & 0x01000000 )
+#define _IRA_OPCODE_FLAGS_EOSA_32(x)					( x & 0x02000000 )
+#define _IRA_OPCODE_FLAGS_EOSA_64(x)					( x & 0x04000000 )
+#define _IRA_OPCODE_FLAGS_IS_EOSA_RESTRICTION(x)		( x & 0x07000000 )
+
 
 /* Instruction types. */
 

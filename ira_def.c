@@ -330,6 +330,15 @@ struct ira_opcode_desc _ira_opcode_desc_CALL[] = {
 	{ NULL, 0x0001, 0x00C79800, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
+struct ira_opcode_desc _ira_opcode_desc_CBW[] = {
+	// 98 CBW A Valid Valid AX  sign-extend of AL.
+	{ "cbw", 0x0001, 0x01C40000, { 0x98, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 98 CWDE A Valid Valid EAX  sign-extend of AX.
+	{ "cwde", 0x0001, 0x02C40000, { 0x98, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W + 98 CDQE A Valid N.E. RAX  sign-extend of EAX.
+	{ "cdqe", 0x0001, 0x04C40000, { 0x98, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -368,6 +377,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "btr", _ira_opcode_desc_BTR),
 		_IA_INSTRUCTION( "bts", _ira_opcode_desc_BTS),
 		_IA_INSTRUCTION( "call", _ira_opcode_desc_CALL),
+		_IA_INSTRUCTION( "cbw", _ira_opcode_desc_CBW),
 		{ NULL, 0, 0, NULL }
 };
 

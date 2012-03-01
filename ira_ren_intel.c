@@ -67,7 +67,7 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 	}
 
 	// Add mnemonic.
-	_ira_format_printf( &stream, "%s ", result->mnemonic );
+	_ira_format_append_str( &stream, result->mnemonic );
 
 	// Add all operands.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
@@ -75,6 +75,8 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 		if( res ) {
 			if( i > 0 ) {
 				_ira_format_append_str( &stream, "," );
+			} else {
+				_ira_format_append_str( &stream, " " );
 			}
 			_ira_format_append( &stream, &local_stream );
 			_ira_stream_clean(&local_stream);

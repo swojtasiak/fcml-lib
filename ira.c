@@ -319,6 +319,31 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			continue;
 		}
 
+		// Check EOSA. These fields allow us to restrict instruction decoding only
+		// for specific effective operand sizes. For instance we define instruction
+		// that can be chosen only if EOSA is equal to 16.
+		if( _IRA_OPCODE_FLAGS_IS_EOSA_RESTRICTION(current->opcode_flags) ) {
+			int mandatory_prefix = 0;
+			// Ignore 0x66 prefix if this instruction uses it as mandatory prefix.
+			struct ira_instruction_prefix *prefix = _ira_diss_context_get_prefix_if_available( context, 0x66 );
+			// Set this prefix as a mandatory one if this instruction defines 66 as mandatory.
+			// This is set only temporarily only to calculate correct EOSA for instruction.
+			if( prefix != NULL ) {
+				mandatory_prefix = prefix->mandatory_prefix;
+				prefix->mandatory_prefix = _IRA_PREFIX_MANDATORY_66( instruction->allowed_prefixes );
+			}
+			int eosa = _ira_get_effective_osa( context );
+			if( prefix != NULL ) {
+				prefix->mandatory_prefix = mandatory_prefix;
+			}
+			if( ( _IRA_OPCODE_FLAGS_EOSA_16( current->opcode_flags ) && eosa != 16 ) ||
+				( _IRA_OPCODE_FLAGS_EOSA_32( current->opcode_flags ) && eosa != 32 ) ||
+				( _IRA_OPCODE_FLAGS_EOSA_64( current->opcode_flags ) && eosa != 64 ) ) {
+				// Wrong EOSA, ignore instruction.
+				continue;
+			}
+		}
+
 		// This is instruction we was looking for, so return it.
 		break;
 
@@ -673,7 +698,7 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	// Choose instruction mnemonic.
 	decoding->mnemonic = instruction_desc->mnemonic;
 	if( opcode_desc->mnemonic_override != NULL ) {
-		decoding->mnemonic = opcode_desc->mnemonic_override ;
+		decoding->mnemonic = opcode_desc->mnemonic_override;
 	}
 
 	// Copy flags.
@@ -1086,6 +1111,7 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	if( ( ( mode == IRA_MOD_16BIT || mode == IRA_MOD_32BIT ) && !_IRA_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( opcode_flags ) )
 			|| ( mode == IRA_MOD_64BIT && !_IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( opcode_flags ) ) ) {
+		// TODO: Czy zawsze not encodable? Moze w niektorych przypadkach jest invalid, albo cos w tym rodzaju?
 		return _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE;
 	}
 
@@ -1362,9 +1388,7 @@ int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_
 int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 
 	struct ira_modm_decoding_args *register_type_size_args = (struct ira_modm_decoding_args*)args;
-
 	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
-
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 
 	int size_directive;

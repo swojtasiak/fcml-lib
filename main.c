@@ -134,6 +134,11 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// CBW, CWDE, CDQE
+	_TEST32( "6698 cbw", 0x66, 0x98 );
+	_TEST32( "98 cwde", 0x98 );
+	_TEST64( "4898 cdqe", 0x48, 0x98 );
+
 	// CALL
 	// m16:16,m16:32,m16:64
 	_TEST32( "ff5b01 call fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
