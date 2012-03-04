@@ -122,6 +122,17 @@
 #define _IRA_SEG_REG_FS 	5
 #define _IRA_SEG_REG_GS 	6
 
+/* IRA conditions. */
+
+#define _IRA_CONDITION_O		0 // Overflow
+#define _IRA_CONDITION_B		1 // Below
+#define _IRA_CONDITION_E		2 // Equal
+#define _IRA_CONDITION_BE		3 // Below or equal
+#define _IRA_CONDITION_S		4 // Sign
+#define _IRA_CONDITION_P		5 // Parity
+#define _IRA_CONDITION_L		6 // Less than
+#define _IRA_CONDITION_LE		7 // Less than or equal to
+
 /* Common data types. */
 
 struct ira_nullable_byte {
@@ -365,11 +376,20 @@ struct ira_instruction_prefix {
 	uint8_t mandatory_prefix;
 };
 
+struct ira_instruction_condition {
+	// 1 - If instruction is conditional one.
+	int8_t is_conditional;
+	// 1 - If this is a negation of the condition.
+	int8_t is_condition_negation;
+};
+
 struct ira_disassemble_result {
 	/* Disassemblation result code. */
 	enum ira_result_code code;
 	/* Mnemonic */
 	char *mnemonic;
+	// Condition used by conditional instructions.
+	struct ira_instruction_condition condition;
 	// Number of prefixes.
 	uint8_t prefixes_count;
 	// Prefixes.

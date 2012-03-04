@@ -120,6 +120,7 @@ void *_ira_alloc_modm_decoding_args( ira_size_directive_provider size_directive_
 
 int ira_far_indirect_pointer_size_directive_provider( struct ira_diss_context *context );
 int ira_mm_size_directive_provider( struct ira_diss_context *context );
+int ira_m8_size_directive_provider( struct ira_diss_context *context );
 
 /* Post processing handlers. */
 
@@ -293,24 +294,22 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			continue;
 		}
 
-		int rex_found = 0;
-		uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
-
 		// Check opcode extension.
 		int opcodes_ok = 0;
-		if( _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT( current->opcode_flags ) && rex_found ) {
-			// Instruction with ModRM opcode extension extended by R field of REX prefix.
+		if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( current->opcode_flags ) ) {
 			int modrm_found = 0;
 			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
 			if( modrm_found ) {
-				uint8_t ext_reg_opcode = ( ( rex & 0x04 ) << 1 ) | ( _IRA_MODRM_REG_OPCODE( modrm ) );
-				uint8_t expected_ext_reg_opcode = _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(current->opcode_flags);
-				opcodes_ok = ( ext_reg_opcode == expected_ext_reg_opcode );
+				int rex_found = 0;
+				uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
+				if( rex_found ) {
+					uint8_t ext_reg_opcode = ( ( rex & 0x04 ) << 1 ) | ( _IRA_MODRM_REG_OPCODE( modrm ) );
+					uint8_t expected_ext_reg_opcode = _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(current->opcode_flags);
+					opcodes_ok = ( ext_reg_opcode == expected_ext_reg_opcode );
+				} else {
+					opcodes_ok = ( modrm_found && _IRA_MODRM_REG_OPCODE( modrm ) == _IRA_OPCODE_FLAGS_OPCODE_EXT(current->opcode_flags) );
+				}
 			}
-		} else if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( current->opcode_flags ) ) {
-			int modrm_found;
-			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
-			opcodes_ok = ( modrm_found && _IRA_MODRM_REG_OPCODE( modrm ) == _IRA_OPCODE_FLAGS_OPCODE_EXT(current->opcode_flags) );
 		} else {
 			opcodes_ok = 1;
 		}
@@ -328,7 +327,7 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			// done in the next phase for already chosen instruction.
 			struct ira_instruction_prefix *prefix = _ira_diss_context_get_prefix_if_available( context, 0x66 );
 			// Set this prefix as a mandatory one if this instruction defines 66 as mandatory.
-			// This is set only temporarily only to calculate correct EOSA for instruction.
+			// This is set temporarily, only to calculate correct EOSA for instruction.
 			if( prefix != NULL ) {
 				mandatory_prefix = prefix->mandatory_prefix;
 				prefix->mandatory_prefix = _IRA_PREFIX_MANDATORY_66( instruction->allowed_prefixes );
@@ -413,6 +412,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
                     prefix_type = IRA_GROUP_4;
                     break;
                 default:
+                	// REX prefix is the last one, so we have to break this loop after finding one.
                     if( context->mode == IRA_MOD_64BIT && prefix >= 0x40 && prefix <= 0x4F ) {
                         // REX prefix found.
                         prefix_type = IRA_REX;
@@ -427,7 +427,8 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
                 prefix_index++;
             }
         }
-    } while(prefix_type);
+        // Break loop if REX prefix is already found.
+    } while(prefix_type && prefix_type != IRA_REX);
 
     context->decoding_context.instruction_prefix_count = prefix_index;
 
@@ -439,7 +440,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
              if( found_plain_prefix ) {
                  context->decoding_context.prefixes[i - 1].mandatory_prefix = 0;
              } else {
-                 // REX prefixes have to be preceded by mandatory prefixes if there are any.
+                 // REX prefixes have to be preceded by mandatory and optional prefixes if there are any.
                  struct ira_instruction_prefix *prefix = &(context->decoding_context.prefixes[i - 1]);
                  if( !prefix->mandatory_prefix && prefix->prefix_type != IRA_REX ) {
                      found_plain_prefix = 1;
@@ -589,6 +590,13 @@ int _ira_handle_next_opcode_byte( struct ira_instruction_desc *instruction_desc,
 				// Handle next opcode byte.
 				_ira_handle_next_opcode_byte( instruction_desc, opcode_desc, opcode_bytes, callback, opcode_bytes_count, opcode_byte_num + 1, primary_opcode_byte_num );
 			}
+
+			return _IRA_INT_ERROR_NO_ERROR;
+		}
+
+		// Opcode field: TTTN
+		else if( _IRA_OPCODE_FLAGS_OPCODE_FIELD_TTTN( opcode_flags ) ) {
+
 
 			return _IRA_INT_ERROR_NO_ERROR;
 		}
@@ -941,6 +949,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		case _IRA_OSA_MM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_mm_size_directive_provider, &result );
+			break;
+		case _IRA_M_8:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
+			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_m8_size_directive_provider, &result );
 			break;
 		}
 
@@ -2025,5 +2037,9 @@ int ira_far_indirect_pointer_size_directive_provider( struct ira_diss_context *c
 int ira_mm_size_directive_provider( struct ira_diss_context *context ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	return decoding_context->effective_operand_size_attribute * 2;
+}
+
+int ira_m8_size_directive_provider( struct ira_diss_context *context ) {
+	return 8;
 }
 

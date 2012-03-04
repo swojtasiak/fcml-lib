@@ -272,6 +272,9 @@ struct ira_instruction_desc {
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
 #define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)
 
+/* TTTN - Conditional instructions. */
+
+
 /* Opcode flags. */
 
 #define _IRA_REG_FIELD_SIZE								3
@@ -280,6 +283,7 @@ struct ira_instruction_desc {
 #define _IRA_REG_FIELD_NUMBER_OF_REGISTERS				8
 
 #define _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG(x)			( x & 0x00000001 )
+#define _IRA_OPCODE_FLAGS_OPCODE_FIELD_TTTN(x)			( x & 0x00000040 )
 #define _IRA_OPCODE_FLAGS_POS(x)						( ( x & 0x00000700 ) >> 8 )
 #define _IRA_OPCODE_FLAGS_OPCODE_EXT(x) 				( ( x & 0x00003800 ) >> 11 )
 #define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x)				( ( x & 0x00007800 ) >> 11 )
@@ -365,9 +369,10 @@ struct ira_instruction_desc {
 #define _IRA_R_XMM_64	11
 #define _IRA_RM_XMM_32	12
 #define _IRA_R_XMM_32	13
-
 // m16&16, m32&32.
 #define _IRA_OSA_MM		14
+// m8
+#define _IRA_M_8		15
 
 /* ModRM based operands. */
 
@@ -402,6 +407,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_R_XMM_32		_IRA_MODRM(_IRA_R_XMM_32)
 #define _IRA_OPERAND_MODRM_R_XMM_32_W	( _IRA_OPERAND_MODRM_R_XMM_32 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_MM_OSA		_IRA_MODRM(_IRA_OSA_MM)
+#define _IRA_OPERAND_MODRM_M_8			_IRA_MODRM(_IRA_M_8)
+#define _IRA_OPERAND_MODRM_M_8_W		(_IRA_OPERAND_MODRM_M_8 | _IRA_WRITE)
 
 
 // Implicit register.

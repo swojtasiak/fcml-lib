@@ -1,0 +1,12 @@
+1. CALL bug in VS.
+
+IRA    (66ff5701 call qword ptr [rdi+0000000000000001h])
+VS2008 (66ff5701 call word [rdi+1])
+
+Manual says:
+"When in 64-bit mode, the operand size for near call (and all near branches) is forced to 64-bits"
+
+So it's probably a bug in VS.
+
+TODO: To check how it really works using example code ad debugging.
+

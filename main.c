@@ -134,6 +134,33 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// CMC
+	_TEST32( "f5 cmc", 0xf5 );
+	_TEST64( "f5 cmc", 0xf5 );
+
+	// CLTS.
+	_TEST32( "0f06 clts", 0x0f, 0x06 );
+	_TEST64( "0f06 clts", 0x0f, 0x06 );
+
+	// CLFLUSH.
+	_TEST32( "0fae7c1420 clflush byte ptr [esp+edx+00000020h]", 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
+	_TEST32( "660fae7c1420 clflush byte ptr [esp+edx+00000020h]", 0x66, 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
+	_TEST64( "0fae7c1420 clflush byte ptr [rsp+rdx+0000000000000020h]", 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
+	_TEST64( "660fae7c1420 clflush byte ptr [rsp+rdx+0000000000000020h]", 0x66, 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
+	_TEST64( "0fae7d01 clflush byte ptr [rbp+0000000000000001h]", 0x0F, 0xAE, 0x7D, 0x01 );
+
+	// CLD.
+	_TEST32( "fc cld", 0xfc );
+	_TEST64( "fc cld", 0xfc );
+
+	// CLD.
+	_TEST32( "fc cld", 0xfc );
+	_TEST64( "fc cld", 0xfc );
+
+	// CLC.
+	_TEST32( "f8 clc", 0xf8 );
+	_TEST64( "f8 clc", 0xf8 );
+
 	// CBW, CWDE, CDQE
 	_TEST32( "6698 cbw", 0x66, 0x98 );
 	_TEST32( "98 cwde", 0x98 );
@@ -143,9 +170,8 @@ void test(void) {
 	// m16:16,m16:32,m16:64
 	_TEST32( "ff5b01 call fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
 	_TEST32( "66ff5b01 call dword ptr [ebx+00000001h]", 0x66, 0xFF, 0x5B, 0x01 );
-	// TODO: Check it on 64 bit visual studio!
-	_TEST64( "6648ff5b01 call tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x5B, 0x01 );
-	_TEST64( "6640ff5b01 call dword ptr [rbx+0000000000000001h]", 0x66, 0x40, 0xFF, 0x5B, 0x01 );
+	_TEST64( "6648ff5b01 call tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x5B, 0x01 ); // Verified.
+	_TEST64( "6640ff5b01 call dword ptr [rbx+0000000000000001h]", 0x66, 0x40, 0xFF, 0x5B, 0x01 ); // Verified.
 	_TEST64( "676640ff5b01 call dword ptr [ebx+00000001h]", 0x67, 0x66, 0x40, 0xFF, 0x5B, 0x01 );
 	_TEST64( "40ff5b01 call fword ptr [rbx+0000000000000001h]", 0x40, 0xFF, 0x5B, 0x01 );
 	// prt16:16 ptr16:32
@@ -156,9 +182,10 @@ void test(void) {
 	// r/m16
 	_TEST32( "66ff5701 call word ptr [edi+00000001h]", 0x66, 0xFF, 0x57, 0x01 );
 	// r/m64 (Size directives are the same for operand size 32 and 64 bits.)
-	_TEST64( "4866ff5701 call qword ptr [rdi+0000000000000001h]", 0x48, 0x66, 0xFF, 0x57, 0x01 );
+	_TEST64( "6648ff5701 call qword ptr [rdi+0000000000000001h]", 0x66, 0x48, 0xFF, 0x57, 0x01 );
+	// Look at the position of REX prefix, it has to fail.
+	_TEST64( "FAIL", 0x48, 0x66, 0xFF, 0x57, 0x01 );
 	_TEST64( "66ff5701 call qword ptr [rdi+0000000000000001h]", 0x66, 0xFF, 0x57, 0x01 );
-
 	_TEST32( "e8000030ff call 0ff701005h", 0xE8, 0x00, 0x00, 0x30, 0xFF );
 
 	// ADC

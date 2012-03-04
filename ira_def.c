@@ -327,7 +327,7 @@ struct ira_opcode_desc _ira_opcode_desc_CALL[] = {
 	// FF /3 CALL m16:16 B Valid Valid Call far, absolute indirect address given in m16:16.
 	// FF /3 CALL m16:32 B Valid Valid In 64-bit mode.
 	// REX.W + FF /3 CALL m16:64 B Valid N.E. In 64-bit mode.
-	{ NULL, 0x0001, 0x00C79800, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C59800, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_CBW[] = {
@@ -337,6 +337,43 @@ struct ira_opcode_desc _ira_opcode_desc_CBW[] = {
 	{ "cwde", 0x0001, 0x02C40000, { 0x98, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
 	// REX.W + 98 CDQE A Valid N.E. RAX  sign-extend of EAX.
 	{ "cdqe", 0x0001, 0x04C40000, { 0x98, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CLC[] = {
+	// F8 CLC A Valid Valid Clear CF flag.
+	{ NULL, 0x0001, 0x00C40000, { 0xF8, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CLD[] = {
+	// F8 CLC A Valid Valid Clear CF flag.
+	{ NULL, 0x0001, 0x00C40000, { 0xFC, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CLFLUSH[] = {
+	// 0F AE /7 CLFLUSH m8 A Valid Valid Flushes cache line containing m8.
+	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_8_W, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CLI[] = {
+	// FA CLI A Valid Valid Clear interrupt flag interrupts disabled when interrupt flag cleared.
+	{ NULL, 0x0001, 0x00C40000, { 0xFA, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CLTS[] = {
+	// 0F 06 CLTS A Valid Valid Clears TS flag in CR0.
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0x06, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CMC[] = {
+	// F5 CMC A Valid Valid Complement CF flag. Op/En
+	{ NULL, 0x0001, 0x00C40000, { 0xF5, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CMOVA[] = {
+	// 0F 47 /r CMOVA r16, r/m16 A Valid Valid Move if above (CF=0 and ZF=0).
+	// 0F 47 /r CMOVA r32, r/m32 A Valid Valid Move if above (CF=0 and ZF=0).
+	// REX.W + 0F 47 /r CMOVA r64, r/m64 A Valid N.E. Move if above (CF=0 and ZF=0).
+	{ NULL, 0x0001, 0x00D88040, { 0x0F, 0x40, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -378,6 +415,12 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "bts", _ira_opcode_desc_BTS),
 		_IA_INSTRUCTION( "call", _ira_opcode_desc_CALL),
 		_IA_INSTRUCTION( "cbw", _ira_opcode_desc_CBW),
+		_IA_INSTRUCTION( "clc", _ira_opcode_desc_CLC),
+		_IA_INSTRUCTION( "cld", _ira_opcode_desc_CLD),
+		_IA_INSTRUCTION( "clflush", _ira_opcode_desc_CLFLUSH),
+		_IA_INSTRUCTION( "cli", _ira_opcode_desc_CLI),
+		_IA_INSTRUCTION( "clts", _ira_opcode_desc_CLTS),
+		_IA_INSTRUCTION( "cmc", _ira_opcode_desc_CMC),
 		{ NULL, 0, 0, NULL }
 };
 
