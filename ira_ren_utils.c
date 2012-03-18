@@ -13,6 +13,13 @@
 
 #include "ira_ren_utils.h"
 
+// Suffixes for conditional instructions.
+
+char* ira_ren_conditional_suffixes[2][16] = {
+	{ "o", "no", "b", "nb", "e", "ne", "be", "nbe", "s", "ns", "p", "np", "l", "nl", "le", "nle" },
+	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
+};
+
 char *_ira_reg_symbol_table[8][18] = {
 	{ "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>" },
 	{ "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
@@ -45,6 +52,18 @@ char *_ira_integer_formats[4][4] = {
 	// Unsigned hex values.
 	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"}
 };
+
+char* _ira_get_conditional_prefix( int group, int condition, int carry ) {
+	if( carry ) {
+		if( condition == 2 ) {
+			return "c";
+		} else if( condition == 3 ) {
+			return "nc";
+		}
+	}
+	return ira_ren_conditional_suffixes[group][condition];
+
+}
 
 void _ira_format_append_str( struct _ira_format_stream *destination_stream, const char *source ) {
 

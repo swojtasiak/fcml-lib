@@ -69,6 +69,12 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 	// Add mnemonic.
 	_ira_format_append_str( &stream, result->mnemonic );
 
+	if( result->condition.is_conditional ) {
+		int condition = ( result->condition.condition_type << 1 ) | ( ( result->condition.is_condition_negation ) ? 1 : 0 );
+		char *suffix = _ira_get_conditional_prefix( format_info->conditional_suffix_group, condition, format_info->show_conditional_mnemonics_for_carry_flag );
+		_ira_format_append_str( &stream, suffix );
+	}
+
 	// Add all operands.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
 		int res = _ira_format_print_operand( result, format_info, &result->operands[i], &local_stream );

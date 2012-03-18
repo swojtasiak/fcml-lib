@@ -11,6 +11,11 @@
 #include "ira.h"
 #include "ira_ren_utils.h"
 
+enum ira_conditional_suffix_group {
+	_IRA_CONDITIONAL_SUFFIX_GROUP_0,
+	_IRA_CONDITIONAL_SUFFIX_GROUP_1
+};
+
 struct ira_intel_format_info {
 	// Displacement.
 	int show_zero_displacement;
@@ -24,6 +29,10 @@ struct ira_intel_format_info {
 	int show_instruction_code;
 	// Show extended immediate value.
 	int show_extended_immediate;
+	// Group of conditional suffixes.
+	enum ira_conditional_suffix_group conditional_suffix_group;
+	// Show mnemonics for carry flags.
+	int show_conditional_mnemonics_for_carry_flag;
 };
 
 void ira_format_intel_instruction( char *buffer, int size, struct ira_disassemble_result *result, struct ira_intel_format_info *format_info );

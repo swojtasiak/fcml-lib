@@ -370,9 +370,9 @@ struct ira_opcode_desc _ira_opcode_desc_CMC[] = {
 };
 
 struct ira_opcode_desc _ira_opcode_desc_CMOVA[] = {
-	// 0F 47 /r CMOVA r16, r/m16 A Valid Valid Move if above (CF=0 and ZF=0).
-	// 0F 47 /r CMOVA r32, r/m32 A Valid Valid Move if above (CF=0 and ZF=0).
-	// REX.W + 0F 47 /r CMOVA r64, r/m64 A Valid N.E. Move if above (CF=0 and ZF=0).
+	// 0F 4X /r CMOVA r16, r/m16 A Valid Valid Move if above (CF=0 and ZF=0).
+	// 0F 4X /r CMOVA r32, r/m32 A Valid Valid Move if above (CF=0 and ZF=0).
+	// REX.W + 0F 4X /r CMOVA r64, r/m64 A Valid N.E. Move if above (CF=0 and ZF=0).
 	{ NULL, 0x0001, 0x00D88040, { 0x0F, 0x40, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
@@ -421,6 +421,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "cli", _ira_opcode_desc_CLI),
 		_IA_INSTRUCTION( "clts", _ira_opcode_desc_CLTS),
 		_IA_INSTRUCTION( "cmc", _ira_opcode_desc_CMC),
+		_IA_INSTRUCTION( "cmov", _ira_opcode_desc_CMOVA),
 		{ NULL, 0, 0, NULL }
 };
 

@@ -98,6 +98,8 @@ struct ira_decoding_context {
 	uint8_t opcodes[3];
 	// Number of opcode bytes.
 	uint8_t opcodes_count;
+	// Position of the opcode fields in the byte. To be more precise it's a bit shift.
+	uint8_t opcode_fields_pos;
 	// Primary opcode byte.
 	uint8_t primary_opcode_index;
 	// Number of prefixes decoded for instruction.
@@ -138,6 +140,13 @@ struct ira_reg_type_args {
 	// Register number.
 	int reg;
 };
+
+/* Structure that can be used to pass condition type to operand decoding function. */
+struct ira_condition_type_args {
+	// Condition type.
+	enum ira_condition_type condition_type;
+};
+
 
 /* Structure that can be used to pass immediate value type/size to operand decoding function. */
 struct ira_immediate_type_args {
@@ -274,13 +283,16 @@ struct ira_instruction_desc {
 
 /* TTTN - Conditional instructions. */
 
+#define _IRA_TTTN_IS_NEGATION(opcode)		(opcode & 0x01)
 
 /* Opcode flags. */
 
 #define _IRA_REG_FIELD_SIZE								3
+#define _IRA_CONDITION_FIELD_SIZE						4
 #define _IRA_REG_FIELD_POS								0
 
 #define _IRA_REG_FIELD_NUMBER_OF_REGISTERS				8
+#define _IRA_REG_FIELD_NUMBER_OF_CONDITIONS				16
 
 #define _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG(x)			( x & 0x00000001 )
 #define _IRA_OPCODE_FLAGS_OPCODE_FIELD_TTTN(x)			( x & 0x00000040 )

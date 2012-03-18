@@ -229,7 +229,6 @@ REX + 0F 9F SETNLE r/m8* A Valid N.E. Set byte if not less or equal (ZF=0 and SF
 0F 48 /r CMOVS r32, r/m32 A Valid Valid Move if sign (SF=1).
 0F 49 /r CMOVNS r16, r/m16 A Valid Valid Move if not sign (SF=0).
 0F 49 /r CMOVNS r32, r/m32 A Valid Valid Move if not sign (SF=0). 
-
 0F 4A /r CMOVP r16, r/m16 A Valid Valid Move if parity (PF=1).
 0F 4A /r CMOVP r32, r/m32 A Valid Valid Move if parity (PF=1).
 0F 4A /r CMOVPE r16, r/m16 A Valid Valid Move if parity even (PF=1).

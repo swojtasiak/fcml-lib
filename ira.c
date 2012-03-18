@@ -71,6 +71,9 @@ uint8_t _ira_set_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, i
 /* Gets opcode field from opcode byte. */
 uint8_t _ira_get_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, int field_size );
 
+/* Decodes operand fields. */
+void _ira_opcode_fields_decoder_IA( struct ira_diss_context *context, struct ira_disassemble_result *result, uint32_t opcode_flags );
+
 /* Instruction decoders. */
 
 int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
@@ -149,6 +152,9 @@ int _ira_decode_displacement( struct ira_diss_context *context, struct ira_displ
 /* End of opcode decoders. */
 
 void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_result *result ) {
+
+	// Clean result.
+	memset( result, 0, sizeof(struct ira_disassemble_result) );
 
     // Validate info structure.
     _ira_prepare_disassemble_info( info, result );
@@ -579,24 +585,27 @@ int _ira_handle_next_opcode_byte( struct ira_instruction_desc *instruction_desc,
 
 		int opcode_flags_pos = _IRA_OPCODE_FLAGS_POS( opcode_flags );
 
-		// Opcode field: REG
-		if( _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG( opcode_flags ) ) {
+		// Opcode field: REG and TTTN.
+		if( _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG( opcode_flags ) || _IRA_OPCODE_FLAGS_OPCODE_FIELD_TTTN( opcode_flags ) ) {
+
+			int number_of_opcodes = 0;
+			int field_size = 0;
+			if( _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG( opcode_flags ) ) {
+				number_of_opcodes = _IRA_REG_FIELD_NUMBER_OF_REGISTERS;
+				field_size = _IRA_REG_FIELD_SIZE;
+			} else if( _IRA_OPCODE_FLAGS_OPCODE_FIELD_TTTN( opcode_flags ) ) {
+				number_of_opcodes = _IRA_REG_FIELD_NUMBER_OF_CONDITIONS;
+				field_size = _IRA_CONDITION_FIELD_SIZE;
+			}
 
 			int i;
-			for( i = 0; i < _IRA_REG_FIELD_NUMBER_OF_REGISTERS; i++ ) {
+			for( i = 0; i < number_of_opcodes; i++ ) {
 				// Prepare opcode byte with reg field.
-				uint8_t opcode_byte_with_field = _ira_set_opcode_byte_field( opcode_byte, opcode_flags_pos, _IRA_REG_FIELD_SIZE, (uint8_t)i );
+				uint8_t opcode_byte_with_field = _ira_set_opcode_byte_field( opcode_byte, opcode_flags_pos, field_size, (uint8_t)i );
 				opcode_bytes[opcode_byte_num] = opcode_byte_with_field;
 				// Handle next opcode byte.
 				_ira_handle_next_opcode_byte( instruction_desc, opcode_desc, opcode_bytes, callback, opcode_bytes_count, opcode_byte_num + 1, primary_opcode_byte_num );
 			}
-
-			return _IRA_INT_ERROR_NO_ERROR;
-		}
-
-		// Opcode field: TTTN
-		else if( _IRA_OPCODE_FLAGS_OPCODE_FIELD_TTTN( opcode_flags ) ) {
-
 
 			return _IRA_INT_ERROR_NO_ERROR;
 		}
@@ -1166,6 +1175,10 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	decoding_context->effective_address_size_attribute = _ira_get_effective_asa( context );
 	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context );
 
+	// Decode additional instruction's opcode fields. Context is fully initialized here
+	// and is in the same state as during operand decoding.
+	_ira_opcode_fields_decoder_IA( context, result, opcode_flags );
+
 	struct ira_instruction_operand_wrapper operand_wrappers[4];
 
 	memset( &operand_wrappers, 0, sizeof(operand_wrappers) );
@@ -1214,6 +1227,28 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
+/* This function decodes opcode flags on the level of instruction. */
+void _ira_opcode_fields_decoder_IA( struct ira_diss_context *context, struct ira_disassemble_result *result, uint32_t opcode_flags ) {
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+
+	if( _IRA_OPCODE_FLAGS_OPCODE_FIELD_TTTN( opcode_flags ) ) {
+
+		// Primary opcode byte contains TTTN.
+		uint8_t primary_opcode_byte = decoding_context->opcodes[decoding_context->primary_opcode_index];
+
+		// Gets condition bits from opcode byte.
+		uint8_t condition_type = _ira_get_opcode_byte_field( primary_opcode_byte, decoding_context->opcode_fields_pos, _IRA_CONDITION_FIELD_SIZE );
+
+		struct ira_instruction_condition *condition = &(result->condition);
+
+		// Set details of conditional instruction.
+		condition->is_conditional = _IRA_TRUE;
+		condition->is_condition_negation = _IRA_TTTN_IS_NEGATION( condition_type );
+		condition->condition_type = ( condition_type >> 1 );
+	}
+}
+
 /* Operand decoders. */
 
 void _ira_opcode_decoder_reg( struct ira_instruction_operand *operand, enum ira_register_type reg_type, int reg ) {
@@ -1234,6 +1269,25 @@ int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, str
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
+// TODO: Remove it.
+/*
+ Decodes conditional instructions.
+int _ira_operand_decoder_conditional( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
+
+	// Primary opcode byte contains TTTN.
+	uint8_t primary_opcode_byte = decoding_context->opcodes[decoding_context->primary_opcode_index];
+
+	// Gets condition bits from opcode byte.
+	uint8_t condition = _ira_get_opcode_byte_field( primary_opcode_byte, decoding_context->opcode_fields_pos, _IRA_CONDITION_FIELD_SIZE );
+
+	// Prepare instruction decoding.
+
+	return _IRA_INT_ERROR_NO_ERROR;
+}*/
+
 /* Decodes opcode register. */
 int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 	struct ira_reg_type_args *reg_type_args = (struct ira_reg_type_args*)args;
@@ -1247,6 +1301,7 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 	// We need primary opcode to calculate register.
 	uint8_t primary_opcode_byte = decoding_context->opcodes[decoding_context->primary_opcode_index];
 
+	// TODO: Pozycja chyba powinna byc brana z opcode flags.
 	uint8_t reg = _ira_get_opcode_byte_field( primary_opcode_byte, _IRA_REG_FIELD_POS, _IRA_REG_FIELD_SIZE );
 
 	// TODO: Get it out of here...it should be in some utility function.

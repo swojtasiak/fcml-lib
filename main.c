@@ -112,6 +112,8 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 		format.immediate_signed = 1;
 		format.show_instruction_code = 1;
 		format.show_extended_immediate = 1;
+		format.show_conditional_mnemonics_for_carry_flag = 1;
+		format.conditional_suffix_group = 0;
 
 		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
 
@@ -133,6 +135,29 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 #define _TEST64(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, code, sizeof(code), x ); }
 
 void test(void) {
+
+	// CMOV
+	_TEST32( "0f40a501020304 cmovo esp,dword ptr [ebp+04030201h]", 0x0f, 0x40, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "67660f40a50102 cmovo sp,word ptr [di+0201h]", 0x67, 0x66, 0x0f, 0x40, 0xa5, 0x01, 0x02 );
+	_TEST32( "670f40a50102 cmovo esp,dword ptr [di+0201h]", 0x67, 0x0f, 0x40, 0xa5, 0x01, 0x02 );
+	_TEST64( "4d0f40648901 cmovo r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x0f, 0x40, 0x64, 0x89, 0x01 );
+
+	_TEST32( "0f40a501020304 cmovo esp,dword ptr [ebp+04030201h]", 0x0f, 0x40, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f41a501020304 cmovno esp,dword ptr [ebp+04030201h]", 0x0f, 0x41, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f42a501020304 cmovc esp,dword ptr [ebp+04030201h]", 0x0f, 0x42, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f43a501020304 cmovnc esp,dword ptr [ebp+04030201h]", 0x0f, 0x43, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f44a501020304 cmove esp,dword ptr [ebp+04030201h]", 0x0f, 0x44, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f45a501020304 cmovne esp,dword ptr [ebp+04030201h]", 0x0f, 0x45, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f46a501020304 cmovbe esp,dword ptr [ebp+04030201h]", 0x0f, 0x46, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f47a501020304 cmovnbe esp,dword ptr [ebp+04030201h]", 0x0f, 0x47, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f48a501020304 cmovs esp,dword ptr [ebp+04030201h]", 0x0f, 0x48, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f49a501020304 cmovns esp,dword ptr [ebp+04030201h]", 0x0f, 0x49, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f4aa501020304 cmovp esp,dword ptr [ebp+04030201h]", 0x0f, 0x4a, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f4ba501020304 cmovnp esp,dword ptr [ebp+04030201h]", 0x0f, 0x4b, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f4ca501020304 cmovl esp,dword ptr [ebp+04030201h]", 0x0f, 0x4c, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f4da501020304 cmovnl esp,dword ptr [ebp+04030201h]", 0x0f, 0x4d, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f4ea501020304 cmovle esp,dword ptr [ebp+04030201h]", 0x0f, 0x4e, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "0f4fa501020304 cmovnle esp,dword ptr [ebp+04030201h]", 0x0f, 0x4f, 0xa5, 0x01, 0x02, 0x03, 04 );
 
 	// CMC
 	_TEST32( "f5 cmc", 0xf5 );

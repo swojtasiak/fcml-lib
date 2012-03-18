@@ -73,4 +73,7 @@ void _ira_extend_integer( struct _ira_integer *value, int extension_size, int si
 
 void _ira_format_append_code( struct _ira_format_stream *stream, uint8_t *instrunction_code, uint8_t instruction_size );
 
+// Gets suffix for conditional instruction.
+char* _ira_get_conditional_prefix( int group, int condition, int carry );
+
 #endif /* IRA_REN_UTILS_H_ */

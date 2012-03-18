@@ -6,6 +6,9 @@
 #define _IRA_OPERANDS_COUNT						4
 #define _IRA_PREFIXES_COUNT						12
 
+#define _IRA_TRUE		1
+#define _IRA_FALSE		0
+
 /* Registers */
 
 #define _IRA_REG_AL		0
@@ -124,14 +127,16 @@
 
 /* IRA conditions. */
 
-#define _IRA_CONDITION_O		0 // Overflow
-#define _IRA_CONDITION_B		1 // Below
-#define _IRA_CONDITION_E		2 // Equal
-#define _IRA_CONDITION_BE		3 // Below or equal
-#define _IRA_CONDITION_S		4 // Sign
-#define _IRA_CONDITION_P		5 // Parity
-#define _IRA_CONDITION_L		6 // Less than
-#define _IRA_CONDITION_LE		7 // Less than or equal to
+enum ira_condition_type {
+	_IRA_CONDITION_O = 0,		// 0 Overflow
+	_IRA_CONDITION_B,		// 1 Below
+	_IRA_CONDITION_E,		// 2 Equal
+	_IRA_CONDITION_BE,		// 3 Below or equal
+	_IRA_CONDITION_S,		// 4 Sign
+	_IRA_CONDITION_P,		// 5 Parity
+	_IRA_CONDITION_L,		// 6 Less than
+	_IRA_CONDITION_LE		// 7 Less than or equal to
+};
 
 /* Common data types. */
 
@@ -381,13 +386,18 @@ struct ira_instruction_condition {
 	int8_t is_conditional;
 	// 1 - If this is a negation of the condition.
 	int8_t is_condition_negation;
+	// Condition type of the instruction.
+	enum ira_condition_type condition_type;
 };
 
+
+// TODO: Pomyslec and typami instrunkcji CONDITIONAL/ MOVE itd.
 struct ira_disassemble_result {
 	/* Disassemblation result code. */
 	enum ira_result_code code;
 	/* Mnemonic */
 	char *mnemonic;
+	// TODO: Moze to przeniesc doc egos w rodzaju instruction details.?
 	// Condition used by conditional instructions.
 	struct ira_instruction_condition condition;
 	// Number of prefixes.
