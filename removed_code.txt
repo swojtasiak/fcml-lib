@@ -1,0 +1,19 @@
+
+int64_t _ira_get_immediate_as_64bit_signed_integer( struct ira_immediate_data *immediate_data ) {
+	int64_t immediate;
+	switch( immediate_data->immediate_data_type ) {
+	case IRA_IMMEDIATE_8:
+		immediate = (int8_t)immediate_data->immediate_data.immediate_8;
+		break;
+	case IRA_IMMEDIATE_16:
+		immediate = (int16_t)immediate_data->immediate_data.immediate_16;
+		break;
+	case IRA_IMMEDIATE_32:
+		immediate = (int32_t)immediate_data->immediate_data.immediate_32;
+		break;
+	case IRA_IMMEDIATE_64:
+		immediate = (int64_t)immediate_data->immediate_data.immediate_64;
+		break;
+	}
+	return immediate;
+}

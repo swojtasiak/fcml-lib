@@ -61,7 +61,7 @@ F  NLE, G
 7D cb JGE rel8 A Valid Valid Jump short if greater or equal (SF=OF).
 7D cb JNL rel8 A Valid Valid Jump short if not less (SF=OF).
 7E cb JLE rel8 A Valid Valid Jump short if less or equal (ZF=1 or SF? OF).
-7E cb JNG rel8 A Valid Valid Jump short if not greater (ZF=1 or SF? OF). 3-564 Vol. 2A Jcc—Jump if Condition Is Met INSTRUCTION SET REFERENCE, A-M
+7E cb JNG rel8 A Valid Valid Jump short if not greater (ZF=1 or SF? OF). 
 7F cb JG rel8 A Valid Valid Jump short if greater (ZF=0 and SF=OF).
 7F cb JNLE rel8 A Valid Valid Jump short if not less or equal (ZF=0 and SF=OF).
 

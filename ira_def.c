@@ -7,6 +7,8 @@
 
 #include "ira_int.h"
 
+#define _IRA_EMPTY_MNEMONIC	""
+
 struct ira_opcode_desc _ira_opcode_desc_AAA[] = {
 	{ NULL, 0x0001, 0x00440000, { 0x37, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
@@ -316,7 +318,7 @@ struct ira_opcode_desc _ira_opcode_desc_CALL[] = {
 	// E8 cw CALL rel16 B N.S. Valid Call near, relative, displacement relative to next instruction.
 	// E8 cd CALL rel32 B Valid Valid Call near, relative, displacement relative to next instruction.
 	// 32-bit displacement sign extended to 64-bits in 64-bit mode.
-	{ NULL, 0x0001, 0x00440000, { 0xE8, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0xE8, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA, _IRA_NA, _IRA_NA, _IRA_NA },
 	// FF /2 CALL r/m16 B N.E. Valid Call near, absolute indirect, address given in r/m16.
 	// FF /2 CALL r/m32 B N.E. Valid Call near, absolute indirect, address given in r/m32.
 	// FF /2 CALL r/m64 B Valid N.E. Call near, absolute indirect, address given in r/m64.
@@ -376,6 +378,15 @@ struct ira_opcode_desc _ira_opcode_desc_CMOVA[] = {
 	{ NULL, 0x0001, 0x00D88040, { 0x0F, 0x40, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_JCXZ[] = {
+	// E3 cb JCXZ rel8 A N.E. Valid Jump short if CX register is 0.
+	{ "jcxz", 0x0001, 0x08440000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// E3 cb JECXZ rel8 A Valid Valid Jump short if ECX register is 0.
+	{ "jecxz", 0x0001, 0x10C40000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// E3 cb JRCXZ rel8 A Valid N.E. Jump short if RCX register is 0.
+	{ "jrcxz", 0x0001, 0x20840000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -422,6 +433,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "clts", _ira_opcode_desc_CLTS),
 		_IA_INSTRUCTION( "cmc", _ira_opcode_desc_CMC),
 		_IA_INSTRUCTION( "cmov", _ira_opcode_desc_CMOVA),
+		_IA_INSTRUCTION( "jcxz", _ira_opcode_desc_JCXZ),
 		{ NULL, 0, 0, NULL }
 };
 

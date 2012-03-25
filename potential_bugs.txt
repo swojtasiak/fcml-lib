@@ -10,3 +10,16 @@ So it's probably a bug in VS.
 
 TODO: To check how it really works using example code ad debugging.
 
+2. JMP bug in VS.
+
+Manual says:
+In 64-Bit Mode — The instruction’s operation size is fixed at 64 bits.
+
+0000000000401000 48 EB FF         jmp         0000000000401002 
+0000000000401003 66 EB FF         jmp         0000000000001005 <-- It's uses operand size 16, when operand size is forced to 64 bits. 
+0000000000401006 67 EB FF         jmp         0000000000401008 
+0000000000401009 EB FF            jmp         000000000040100A 
+000000000040100B E3 FF            jrcxz       000000000040100C 
+000000000040100D 67 E3 FF         jecxz       000000000040100F 
+0000000000401010 66 E3 FF         jrcxz       0000000000001012 <-- The same problem as above.
+0000000000401013 67 66 E3 FF      jecxz       0000000000001016 <-- The same problem as above.

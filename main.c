@@ -136,6 +136,16 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// JCXZ
+	_TEST64( "ss", 0xe8, 0xff, 0xff, 0x66, 0xeb );
+
+
+	// 16 bit
+	_TEST32( "6667e3ff jcxz 00001003h", 0x66, 0x67, 0xe3, 0xff );
+	_TEST32( "67e3ff jcxz 00401002h", 0x67, 0xe3, 0xff );
+	_TEST32( "e3ff jecxz 00401001h", 0xe3, 0xff );
+	_TEST64( "", 0x67, 0xe3, 0xff );
+
 	// CMOV
 	_TEST32( "0f40a501020304 cmovo esp,dword ptr [ebp+04030201h]", 0x0f, 0x40, 0xa5, 0x01, 0x02, 0x03, 04 );
 	_TEST32( "67660f40a50102 cmovo sp,word ptr [di+0201h]", 0x67, 0x66, 0x0f, 0x40, 0xa5, 0x01, 0x02 );
