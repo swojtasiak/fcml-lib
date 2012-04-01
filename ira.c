@@ -111,7 +111,6 @@ int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_i
 int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_immediate_relative_dis( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
-int _ira_opcode_decoder_call_rm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 
 /* Arguments allocators. */
@@ -143,7 +142,7 @@ int _ira_modrm_decoder_operand_fill_register( struct ira_diss_context *context, 
 int _ira_get_effective_asa( struct ira_diss_context *context );
 
 /* Calculates effective operand-size attribute */
-int _ira_get_effective_osa( struct ira_diss_context *context );
+int _ira_get_effective_osa( struct ira_diss_context *context, uint32_t opcode_flags );
 
 /* Decodes immediate data. */
 int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediate_data *data, int size );
@@ -340,7 +339,7 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 				mandatory_prefix = prefix->mandatory_prefix;
 				prefix->mandatory_prefix = _IRA_PREFIX_MANDATORY_66( instruction->allowed_prefixes );
 			}
-			int eosa = _ira_get_effective_osa( context );
+			int eosa = _ira_get_effective_osa( context, current->opcode_flags );
 			if( prefix != NULL ) {
 				prefix->mandatory_prefix = mandatory_prefix;
 			}
@@ -906,9 +905,6 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		// Displacement size is described using immediate type arguments.
 		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_8, &result );
 		break;
-	case _IRA_OPERAND_CALL_RM:
-		operand_decoding->decoder = &_ira_opcode_decoder_call_rm;
-		break;
 	case _IRA_OPERAND_FAR_POINTER:
 		operand_decoding->decoder = &_ira_opcode_decoder_far_pointer;
 		break;
@@ -1194,7 +1190,7 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	// Calculates effective operand sizes. It's not important if they will be used or not.
 	decoding_context->effective_address_size_attribute = _ira_get_effective_asa( context );
-	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context );
+	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context, instruction->opcode_flags );
 
 	// Decode additional instruction's opcode fields. Context is fully initialized here
 	// and is in the same state as during operand decoding.
@@ -1385,26 +1381,6 @@ int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ir
 	}
 
 	return _IRA_INT_ERROR_NO_ERROR;
-}
-
-int _ira_opcode_decoder_call_rm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
-
-	struct ira_decoding_context *decoding_context = &(context->decoding_context);
-
-	// The operand-size attribute determines the size of the target operand (16, 32 or 64 bits).
-	int operand_size = decoding_context->effective_operand_size_attribute;
-
-	// When in 64-bit mode, the operand size for near call (and all near branches) is forced to 64-bits.
-	if( context->mode == IRA_MOD_64BIT ) {
-		operand_size = 64;
-	}
-
-	struct ira_modrm_decoding_args modrm_args;
-	modrm_args.reg_type = IRA_REG_GPR;
-	modrm_args.operand_register_size = operand_size;
-	modrm_args.size_directive = operand_size;
-
-	return _ira_opcode_decoder_modrm_rm( context, operand_wrapper, &modrm_args );
 }
 
 int _ira_opcode_decoder_immediate_relative_dis( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
@@ -1948,7 +1924,7 @@ int _ira_get_effective_asa( struct ira_diss_context *context ) {
 	return effective_asa;
 }
 
-int _ira_get_effective_osa( struct ira_diss_context *context ) {
+int _ira_get_effective_osa( struct ira_diss_context *context, uint32_t opcode_flags ) {
 
 	struct ira_instruction_prefix *prefix;
 	int rex_w = 0, result;
@@ -1967,19 +1943,24 @@ int _ira_get_effective_osa( struct ira_diss_context *context ) {
 		}
 		break;
 	case IRA_MOD_64BIT:
-		// 0 = Operand Size determined by CS.D, 1 = 64 Bit Operand Size.
-		rex = _ira_diss_context_get_REX_prefix( context, &result );
-		if( result ) {
-			// REX prefix is available, so get W bit.
-			rex_w = _IRA_REX_W( rex );
-		}
-		if( rex_w ) {
-			// Prefixes can not override REX.W.
+		// For some instructions EOSA can be forced to 64 bits.
+		if( _IRA_OPCODE_FLAGS_FORCE_64BITS_EOSA( opcode_flags ) ) {
 			effective_osa = _IRA_OSA_64;
 		} else {
-			prefix = _ira_diss_context_get_prefix_if_available( context, 0x66 );
-			if( prefix != NULL && !prefix->mandatory_prefix ) {
-				effective_osa = ( effective_osa == _IRA_OSA_16 ) ? _IRA_OSA_32 : _IRA_OSA_16;
+			// 0 = Operand Size determined by CS.D, 1 = 64 Bit Operand Size.
+			rex = _ira_diss_context_get_REX_prefix( context, &result );
+			if( result ) {
+				// REX prefix is available, so get W bit.
+				rex_w = _IRA_REX_W( rex );
+			}
+			if( rex_w ) {
+				// Prefixes can not override REX.W.
+				effective_osa = _IRA_OSA_64;
+			} else {
+				prefix = _ira_diss_context_get_prefix_if_available( context, 0x66 );
+				if( prefix != NULL && !prefix->mandatory_prefix ) {
+					effective_osa = ( effective_osa == _IRA_OSA_16 ) ? _IRA_OSA_32 : _IRA_OSA_16;
+				}
 			}
 		}
 		break;

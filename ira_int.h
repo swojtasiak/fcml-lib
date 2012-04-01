@@ -314,6 +314,7 @@ struct ira_instruction_desc {
 #define _IRA_OPCODE_FLAGS_EASA_32(x)					( x & 0x10000000 )
 #define _IRA_OPCODE_FLAGS_EASA_64(x)					( x & 0x20000000 )
 #define _IRA_OPCODE_FLAGS_IS_EASA_RESTRICTION(x)		( x & 0x38000000 )
+#define _IRA_OPCODE_FLAGS_FORCE_64BITS_EOSA(x)			( x & 0x40000000 )
 
 /* Instruction types. */
 
@@ -435,19 +436,16 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_OPCODE_REG(reg_type)			( _IRA_OPERAND_OPCODE_REG_BASE | reg_type )
 
 // Relative addressing.
-#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA			0x0F00
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x0F00
 
-// Addressing based on ModR/M value for CALL.
-#define _IRA_OPERAND_CALL_RM						0x1000
+// rel8
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		0x1000
 
 // Far pointers.
 #define _IRA_OPERAND_FAR_POINTER					0x1100
 
 // Far indirect pointer.
 #define _IRA_OPERAND_FAR_POINTER_INDIRECT			0x1200
-
-// rel8
-#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		0x1300
 
 /* Externals. */
 

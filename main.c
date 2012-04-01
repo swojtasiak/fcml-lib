@@ -136,15 +136,22 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+//	_TEST32( "ff5701 call dword ptr [edi+00000001h]", 0xFF, 0x57, 0x01 );
+		// r/m16
+//		_TEST32( "66ff5701 call word ptr [edi+00000001h]", 0x66, 0xFF, 0x57, 0x01 );
+//		// r/m64 (Size directives are the same for operand size 32 and 64 bits.)
+//		_TEST64( "6648ff5701 call qword ptr [rdi+0000000000000001h]", 0x66, 0x48, 0xFF, 0x57, 0x01 );
+//	_TEST32( "ff5b01 call fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
+
 	// JCXZ
-	_TEST64( "ss", 0xe8, 0xff, 0xff, 0x66, 0xeb );
+	//_TEST64( "ss", 0xe8, 0xff, 0xff, 0x66, 0xeb );
 
 
 	// 16 bit
 	_TEST32( "6667e3ff jcxz 00001003h", 0x66, 0x67, 0xe3, 0xff );
 	_TEST32( "67e3ff jcxz 00401002h", 0x67, 0xe3, 0xff );
 	_TEST32( "e3ff jecxz 00401001h", 0xe3, 0xff );
-	_TEST64( "", 0x67, 0xe3, 0xff );
+	//_TEST64( "", 0x67, 0xe3, 0xff );
 
 	// CMOV
 	_TEST32( "0f40a501020304 cmovo esp,dword ptr [ebp+04030201h]", 0x0f, 0x40, 0xa5, 0x01, 0x02, 0x03, 04 );
