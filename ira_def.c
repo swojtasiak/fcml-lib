@@ -382,9 +382,9 @@ struct ira_opcode_desc _ira_opcode_desc_JCXZ[] = {
 	// E3 cb JCXZ rel8 A N.E. Valid Jump short if CX register is 0.
 	{ "jcxz", 0x0001, 0x08440000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
 	// E3 cb JECXZ rel8 A Valid Valid Jump short if ECX register is 0.
-	{ "jecxz", 0x0001, 0x10C40000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ "jecxz", 0x0001, 0x50C40000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
 	// E3 cb JRCXZ rel8 A Valid N.E. Jump short if RCX register is 0.
-	{ "jrcxz", 0x0001, 0x20840000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA }
+	{ "jrcxz", 0x0001, 0x60840000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
