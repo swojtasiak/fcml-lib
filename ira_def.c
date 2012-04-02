@@ -387,6 +387,14 @@ struct ira_opcode_desc _ira_opcode_desc_JCXZ[] = {
 	{ "jrcxz", 0x0001, 0x60840000, { 0xE3, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_Jcc[] = {
+	// JA rel8 A Valid Valid Jump short if ...
+	{ NULL, 0x0001, 0x40C40040, { 0x70, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// JA rel32 A Valid Valid Jump near if ...
+	// JAE rel16 A N.S. Valid Jump near if ...
+	{ NULL, 0x0001, 0x40D80040, { 0x0F, 0x80, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -434,6 +442,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "cmc", _ira_opcode_desc_CMC),
 		_IA_INSTRUCTION( "cmov", _ira_opcode_desc_CMOVA),
 		_IA_INSTRUCTION( "jcxz", _ira_opcode_desc_JCXZ),
+		_IA_INSTRUCTION( "j", _ira_opcode_desc_Jcc),
 		{ NULL, 0, 0, NULL }
 };
 
