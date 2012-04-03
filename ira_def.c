@@ -395,6 +395,25 @@ struct ira_opcode_desc _ira_opcode_desc_Jcc[] = {
 	{ NULL, 0x0001, 0x40D80040, { 0x0F, 0x80, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
+struct ira_opcode_desc _ira_opcode_desc_JMP[] = {
+	// EB cb JMP rel8 A Valid Valid Jump short, RIP = RIP + 8-bit displacement sign extended to 64-bits
+	{ NULL, 0x0001, 0x40C40000, { 0xEB, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// E9 cw JMP rel16 A N.S. Valid Jump near, relative, displacement relative to next instruction. Not supported in 64-bit mode.
+	// E9 cd JMP rel32 A Valid Valid Jump near, relative, RIP = RIP + 32-bit displacement sign extended to 64-bits
+	{ NULL, 0x0001, 0x40C40000, { 0xE9, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// FF /4 JMP r/m16 B N.S. Valid Jump near, absolute indirect, address = zero-extended r/m16. Not supported in 64- bit mode.
+	// FF /4 JMP r/m32 B N.S. Valid Jump near, absolute indirect, address given in r/m32. Not supported in 64-bit mode.
+	// FF /4 JMP r/m64 B Valid N.E. Jump near, absolute indirect, RIP = 64-Bit offset from register or memory
+	{ NULL, 0x0001, 0x40C5A000, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA, _IRA_NA },
+	// EA cd JMP ptr16:16 A Inv. Valid Jump far, absolute, address given in operand
+	// EA cp JMP ptr16:32 A Inv. Valid Jump far, absolute, address given in operand
+	{ NULL, 0x0001, 0x00440000, { 0xEA, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER, _IRA_NA, _IRA_NA, _IRA_NA },
+	// FF /5 JMP m16:16 A Valid Valid Jump far, absolute indirect, address given in m16:16
+	// FF /5 JMP m16:32 A Valid Valid Jump far, absolute indirect, address given in m16:32.
+	// REX.W + FF /5 JMP m16:64 A Valid N.E. Jump far, absolute indirect, address given in m16:64.
+	{ NULL, 0x0001, 0x00C5A800, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -443,6 +462,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "cmov", _ira_opcode_desc_CMOVA),
 		_IA_INSTRUCTION( "jcxz", _ira_opcode_desc_JCXZ),
 		_IA_INSTRUCTION( "j", _ira_opcode_desc_Jcc),
+		_IA_INSTRUCTION( "jmp", _ira_opcode_desc_JMP),
 		{ NULL, 0, 0, NULL }
 };
 
