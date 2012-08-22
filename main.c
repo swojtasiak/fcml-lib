@@ -136,6 +136,37 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// TODO: Testy dla CMP, CMPPD
+
+	// JMP
+	_TEST32( "ebff jmp 00401001h", 0xeb, 0xff );
+	// E9 cw JMP rel16 A N.S. Valid Jump near, relative, displacement relative to next instruction. Not supported in 64-bit mode.
+	// E9 cd JMP rel32 A Valid Valid Jump near, relative, RIP = RIP + 32-bit displacement sign extended to 64-bits
+	_TEST32( "e9ffff9090 jmp 90d11004h", 0xe9, 0xff,0xff, 0x90, 0x90 );
+	_TEST32( "66e9ff90 jmp 0000a103h", 0x66, 0xe9, 0xff, 0x90 );
+	// FF /4 JMP r/m16 B N.S. Valid Jump near, absolute indirect, address = zero-extended r/m16. Not supported in 64- bit mode.
+	// FF /4 JMP r/m32 B N.S. Valid Jump near, absolute indirect, address given in r/m32. Not supported in 64-bit mode.
+	// FF /4 JMP r/m64 B Valid N.E. Jump near, absolute indirect, RIP = 64-Bit offset from register or memory
+	_TEST32( "ffe5 jmp ebp", 0xff, 0xe5, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "66ffe5 jmp bp", 0x66, 0xff, 0xe5, 0x01, 0x02 );
+	_TEST32( "FAIL", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02, 0x03, 0x04 ); // 32 bit mode doesn't not allow REX.
+
+	/// TODO: Sprawdziæ pod visualem, ppowino wykorzystaæ rejestr 8 bitory a nie 64 bitowy.
+	_TEST64( "676640ffe5 jmp rbp", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
+
+	_TEST32( "ea112233445566 jmp far 6655h:44332211h", 0xEA, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
+	_TEST32( "66ea11223344 jmp far 4433h:2211h", 0x66, 0xEA, 0x11, 0x22, 0x33, 0x44 );
+
+	// m16:16,m16:32,m16:64
+	_TEST32( "ff6b01 jmp fword ptr [ebx+00000001h]", 0xFF, 0x6B, 0x01 );
+	_TEST32( "66ff6b01 jmp dword ptr [ebx+00000001h]", 0x66, 0xFF, 0x6B, 0x01 );
+	_TEST64( "6648ff6b01 jmp tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x6B, 0x01 ); // Verified.
+	_TEST64( "6640ff6b01 jmp dword ptr [rbx+0000000000000001h]", 0x66, 0x40, 0xFF, 0x6B, 0x01 ); // Verified.
+	_TEST64( "676640ff6b01 jmp dword ptr [ebx+00000001h]", 0x67, 0x66, 0x40, 0xFF, 0x6B, 0x01 );
+	_TEST64( "40ff6b01 jmp fword ptr [rbx+0000000000000001h]", 0x40, 0xFF, 0x6B, 0x01 );
+
+	//{ NULL, 0x0001, 0x40C40000, { 0xE9, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA, _IRA_NA, _IRA_NA, _IRA_NA },
+
 	// Jcc.
 	_TEST64( "6673ff jnc 0000800000401002h", 0x66, 0x73, 0xff );
 	_TEST64( "666773ff jnc 0000800000401003h", 0x66, 0x67, 0x73, 0xff );

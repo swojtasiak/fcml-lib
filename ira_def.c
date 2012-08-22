@@ -414,6 +414,61 @@ struct ira_opcode_desc _ira_opcode_desc_JMP[] = {
 	{ NULL, 0x0001, 0x00C5A800, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+// TODO: Sprobowac polaczyc z ADC/ADD it, moze jakis pattern?
+
+struct ira_opcode_desc _ira_opcode_desc_CMP[] = {
+	// 3C ib CMP AL, imm8 D Valid Valid Compare imm8 with AL.
+	{ NULL, 0x0001, 0x00C40000, { 0x3C, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 3D iw CMP AX, imm16 D Valid Valid Compare imm16 with AX.
+	// 3D id CMP EAX, imm32 D Valid Valid Compare imm32 with EAX.
+	{ NULL, 0x0001, 0x00C40000, { 0x3D, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 3D id CMP RAX, imm32 D Valid N.E. Compare imm32 sign extended to 64-bits with RAX.
+	{ NULL, 0x0009, 0x00840000, { 0x3D, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 80 /7 ib CMP r/m8, imm8 C Valid Valid Compare imm8 with r/m8.
+	// REX + 80 /7 ib CMP r/m8*, imm8 C Valid N.E. Compare imm8 with r/m8.
+	{ NULL, 0x0001, 0x00C5B800, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 81 /7 iw CMP r/m16, imm16 C Valid Valid Compare imm16 with r/m16.
+	// 81 /7 id CMP r/m32, imm32 C Valid Valid Compare imm32 with r/m32.
+	{ NULL, 0x0001, 0x00C5B800, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 81 /7 id CMP r/m64, imm32 C Valid N.E. Compare imm32 sign extended to 64-bits with r/m64.
+	{ NULL, 0x0009, 0x0085B800, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 83 /7 ib CMP r/m16, imm8 C Valid Valid Compare imm8 with r/m16.
+	// 83 /7 ib CMP r/m32, imm8 C Valid Valid Compare imm8 with r/m32.
+	{ NULL, 0x0001, 0x00C5B800, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 83 /7 ib CMP r/m64, imm8 C Valid N.E. Compare imm8 with r/m64.
+	{ NULL, 0x0009, 0x0085B800, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 38 /r CMP r/m8, r8 B Valid Valid Compare r8 with r/m8.
+	// REX + 38 /r CMP r/m8*, r8* B Valid N.E. Compare r8 with r/m8.
+	{ NULL, 0x0001, 0x00C48000, { 0x38, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 39 /r CMP r/m16, r16 B Valid Valid Compare r16 with r/m16.
+	// 39 /r CMP r/m32, r32 B Valid Valid Compare r32 with r/m32.
+	// REX.W + 39 /r CMP r/m64,r64 B Valid N.E. Compare r64 with r/m64.
+	{ NULL, 0x0001, 0x00C48000, { 0x39, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
+	// 3A /r CMP r8, r/m8 A Valid Valid Compare r/m8 with r8.
+	// REX + 3A /r CMP r8*, r/m8* A Valid N.E. Compare r/m8 with r8.
+	{ NULL, 0x0001, 0x00C48000, { 0x3A, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
+	// 3B /r CMP r16, r/m16 A Valid Valid Compare r/m16 with r16.
+	// 3B /r CMP r32, r/m32 A Valid Valid Compare r/m32 with r32.
+	// REX.W + 3B /r CMP r64, r/m64 A Valid N.E. Compare r/m64 with r64.
+	{ NULL, 0x0001, 0x00C48000, { 0x3B, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
+};
+
+// Poalczyc z BLENDPS
+
+struct ira_opcode_desc _ira_opcode_desc_CMPPD[] = {
+	// 66 0F C2 /r ib CMPPD xmm1, xmm2/m128, imm8 A Valid Valid Compare packed doubleprecision floating-point values in xmm2/m128 and xmm1 using imm8 as comparison predicate.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CMPPS[] = {
+	// 0F C2 /r ib CMPPS xmm1, xmm2/m128, imm8 A Valid Valid Compare packed singleprecision floating-point values in xmm2/mem and xmm1 using imm8 as comparison predicate.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+// 00401000 > $ A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
+
+
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -460,9 +515,12 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "clts", _ira_opcode_desc_CLTS),
 		_IA_INSTRUCTION( "cmc", _ira_opcode_desc_CMC),
 		_IA_INSTRUCTION( "cmov", _ira_opcode_desc_CMOVA),
+		_IA_INSTRUCTION( "cmp", _ira_opcode_desc_CMP),
 		_IA_INSTRUCTION( "jcxz", _ira_opcode_desc_JCXZ),
 		_IA_INSTRUCTION( "j", _ira_opcode_desc_Jcc),
 		_IA_INSTRUCTION( "jmp", _ira_opcode_desc_JMP),
+		_IA_INSTRUCTION( "cmppd", _ira_opcode_desc_CMPPD),
+		_IA_INSTRUCTION( "cmpps", _ira_opcode_desc_CMPPS),
 		{ NULL, 0, 0, NULL }
 };
 
