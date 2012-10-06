@@ -1,5 +1,10 @@
-22.08.2012 Opcode A6 dekoduje siÃª na: -> A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
-NaleÂ¿y zastanowiÃ¦ siÃª jak zakodowaÃ¦ taki tryb adresowania gdzie rejestr ogolnego przeznaczenia i rejestr adresowy sÂ¹ podane bezpoÂœrednio.
+22.08.2012 Opcode A6 dekoduje siê na: -> A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
+Nale¿y zastanowiæ siê jak zakodowaæ taki tryb adresowania gdzie rejestr ogolnego przeznaczenia i rejestr adresowy s¹ podane bezpoœrednio.
 
 02.09.2012
-ZastanowiÃ¦ siÃª wrescie nad implementacja DS, ES itd rejestrÃ³w segmentowych.
+Zastanowiæ siê wrescie nad implementacja DS, ES itd rejestrów segmentowych.
+
+06.10.2012
+Branch hints:
+• 2EH—Branch not taken (used only with Jcc instructions)
+• 3EH—Branch taken (used only with Jcc instructions)

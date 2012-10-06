@@ -135,6 +135,7 @@
 #define _IRA_SD_MMWORD_PTR		64
 #define _IRA_SD_TBYTE_PTR		80
 #define _IRA_SD_OWORD_PTR		128
+#define _IRA_SD_XMMWORD_PTR		128
 
 /* Data types. */
 #define _IRA_DT_UNKNOWN			0x0000

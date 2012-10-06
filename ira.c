@@ -120,7 +120,7 @@ void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, int reg, enum S
 void *_ira_alloc_immediate_type_args( enum ira_immediate_data_type immediate_type, int *result );
 void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, int operand_register_size, uint16_t size_directive, int *result );
 void *_ira_alloc_modm_decoding_args( ira_size_directive_provider size_directive_provider, int *result );
-void *_ira_alloc_reg_addressing_args( enum SizeAttributeType size_attribute_type, int reg, uint16_t size_directive, int *result );
+void *_ira_alloc_reg_addressing_args( enum SizeAttributeType size_attribute_type, int reg, uint16_t size_directive, uint8_t encoded_segment_register, int *result );
 
 // Size directive providers for memory based addressing decoders.
 
@@ -132,6 +132,7 @@ uint16_t ira_m8_size_directive_provider( struct ira_diss_context *context );
 
 //TODO: Move it somewhere else! a dedicated file or something.
 uint16_t _ira_util_decode_size_directive( struct ira_diss_context *context, uint16_t size_directive );
+void _ira_decode_segment_register( struct ira_diss_context *context, struct ira_segment_selector *segment_selector, uint8_t encoded_segment_register );
 
 /* Post processing handlers. */
 
@@ -816,12 +817,14 @@ void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, int reg, enum S
 	return args;
 }
 
-void *_ira_alloc_reg_addressing_args( enum SizeAttributeType size_attribute_type, int reg, uint16_t size_directive, int *result ) {
+void *_ira_alloc_reg_addressing_args( enum SizeAttributeType size_attribute_type, int reg, uint16_t size_directive, uint8_t encoded_segment_register, int *result ) {
 	struct ira_reg_addressing_arg *args = (struct ira_reg_addressing_arg*)malloc( sizeof( struct ira_reg_addressing_arg ) );
 	if( args != NULL ) {
 		args->base_reg.reg_type = IRA_REG_GPR;
 		args->base_reg.reg = reg;
 		args->size_directive = size_directive;
+		args->encoded_segment_selector = encoded_segment_register;
+		// Size attribute used to calculate size the directive
 		args->size_attribute_type = size_attribute_type;
 	}
 	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
@@ -1017,11 +1020,11 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		break;
 	case _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_explicit_register_addressing;
-		operand_decoding->args = _ira_alloc_reg_addressing_args( IRA_SAT_ASA, ( decoding & 0x00FF0000 ) >> 16 /*Register number*/, ( decoding & 0x0000FFFF ) /*Size directive*/, &result );
+		operand_decoding->args = _ira_alloc_reg_addressing_args( IRA_SAT_ASA, ( decoding & 0x00FF0000 ) >> 16 /*Register number*/, ( decoding & 0x00FFFF00 ) >> 8 /*Size directive*/, ( decoding & 0x000000FF ) /* Segment register */, &result );
 		break;
 	case _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_explicit_register_addressing;
-		operand_decoding->args = _ira_alloc_reg_addressing_args( IRA_SAT_OSA, ( decoding & 0x00FF0000 ) >> 16 /*Register number*/, ( decoding & 0x0000FFFF ) /*Size directive*/, &result );
+		operand_decoding->args = _ira_alloc_reg_addressing_args( IRA_SAT_OSA, ( decoding & 0x00FF0000 ) >> 16 /*Register number*/, ( decoding & 0x00FFFF00 ) >> 8 /*Size directive*/, ( decoding & 0x000000FF ) /* Segment register */, &result );
 		break;
 	default:
 		operand_decoding->decoder = NULL;
@@ -1315,14 +1318,19 @@ int _ira_opcode_decoder_explicit_register_addressing( struct ira_diss_context *c
 	operand->operand_type = IRA_ADDRESS;
 	struct ira_addressing *addressing = &(operand->addressing);
 	addressing->addressing_type = IRA_IMPLICIT_REGISTER_ADDRESSING;
+
+	// Encodes size directive.
 	addressing->size_directive = _ira_util_decode_size_directive( context, reg_args->size_directive );
 
+	// Encodes register.
 	struct ira_register *reg = &(addressing->address_register);
-
 	*reg = reg_args->base_reg;
 	if( reg->reg_type == IRA_REG_GPR ) {
 		reg->reg_type = _ira_determine_gpr_type( context, reg_args->size_attribute_type );
 	}
+
+	// Encodes segment selector.
+	_ira_decode_segment_register( context, &(addressing->segment_selector), reg_args->encoded_segment_selector );
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }
@@ -2189,5 +2197,57 @@ uint16_t ira_m8_size_directive_provider( struct ira_diss_context *context ) {
  */
 uint16_t _ira_util_decode_size_directive( struct ira_diss_context *context, uint16_t size_directive ) {
 	return (size_directive == _IRA_DEFAULT_SIZE_DIRECTIVE) ? context->decoding_context.effective_operand_size_attribute : size_directive;
+}
+
+//! Decoding segment register encoded by _IRA_SEG_ENCODE_REGISTER macro.
+/*!
+ * \brief Decoding segment register encoded by _IRA_SEG_ENCODE_REGISTER macro and fills segment selector structure given in arguments.
+ *
+ * \param context Disassembling context.
+ * \param segment_selector Segment selector structure to fill.
+ * \param encoded_segment_selector Encoded segment register.
+ * \return Decoded size directive size.
+ */
+void _ira_decode_segment_register( struct ira_diss_context *context, struct ira_segment_selector *segment_selector, uint8_t encoded_segment_register ) {
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+
+	uint8_t reg = _IRA_SEG_DECODE_REGISTER(encoded_segment_register);
+
+	// TODO: Check instruction type to verify if segment register really can be overridden.
+
+	// Checks if segment can be overridden.
+	if( _IRA_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded_segment_register ) ) {
+		// Register can be overridden, so check if there is appropriate prefix.
+		int i;
+		for( i = 0; i < decoding_context->instruction_prefix_count; i++ ) {
+			if( context->decoding_context.prefixes[i].prefix_type == IRA_GROUP_2 ) {
+				struct ira_instruction_prefix *prefix = &(context->decoding_context.prefixes[i]);
+				switch( prefix->prefix ) {
+				case 0x2E:
+					reg = _IRA_SEG_REG_CS;
+					break;
+				case 0x36:
+					reg = _IRA_SEG_REG_SS;
+					break;
+				case 0x3E:
+					reg = _IRA_SEG_REG_DS;
+					break;
+				case 0x26:
+					reg = _IRA_SEG_REG_ES;
+					break;
+				case 0x64:
+					reg = _IRA_SEG_REG_FS;
+					break;
+				case 0x65:
+					reg = _IRA_SEG_REG_GS;
+					break;
+				}
+			}
+		}
+	}
+
+	segment_selector->segment_register = reg;
+	segment_selector->segment_register_value = 0;
 }
 

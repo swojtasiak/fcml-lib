@@ -148,6 +148,8 @@ struct ira_reg_addressing_arg {
 	uint16_t size_directive;
 	// Size attribute type.
 	enum SizeAttributeType size_attribute_type;
+	// Encoded segment selector.
+	uint8_t encoded_segment_selector;
 };
 
 /* Structure that can be used to pass register type to operand decoding function. */
@@ -270,6 +272,14 @@ struct ira_instruction_desc {
 	// Opcodes' descriptions.
 	struct ira_opcode_desc *opcodes;
 };
+
+/* Segment registers encoding. */
+
+#define _IRA_SEG_ALLOW_OVERRIDE		0x80
+#define _IRA_SEG_DENY_OVERRIDE		0x00
+#define _IRA_SEG_ENCODE_REGISTER( reg_num, override )		( reg_num | override )
+#define _IRA_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded )		( _IRA_SEG_ALLOW_OVERRIDE & encoded )
+#define _IRA_SEG_DECODE_REGISTER( encoded )					( encoded & ~_IRA_SEG_ALLOW_OVERRIDE )
 
 /* Macro for bit manipulations. */
 
@@ -471,11 +481,11 @@ struct ira_instruction_desc {
 
 // Addressing by explicit GPR register with size calculated basing on OSA. (Used by CMPS for instance.)
 #define _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING_BASE		0x14000000
-#define _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING(reg_num,size_directive)	( _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING_BASE | reg_num << 16 | size_directive )
+#define _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING(reg_num,size_directive, encoded_segment_register)	( _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING_BASE | reg_num << 24 | size_directive << 8 | encoded_segment_register )
 
 // Addressing by explicit GPR register with size calculated basing on OSA. (Used by CMPS for instance.)
 #define _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING_BASE		0x15000000
-#define _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING(reg_num,size_directive)	( _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING_BASE | reg_num << 16 | size_directive )
+#define _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING(reg_num,size_directive, encoded_segment_reqister)	( _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING_BASE | reg_num << 24 | size_directive << 8 | encoded_segment_reqister )
 
 /* Externals. */
 
