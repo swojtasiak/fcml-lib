@@ -1,3 +1,5 @@
-22.08.2012 Opcode A6 dekoduje siê na: -> A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
-Nale¿y zastanowiæ siê jak zakodowaæ taki tryb adresowania gdzie rejestr ogolnego przeznaczenia i rejestr adresowy s¹ podane bezpoœrednio.
+22.08.2012 Opcode A6 dekoduje siÃª na: -> A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
+NaleÂ¿y zastanowiÃ¦ siÃª jak zakodowaÃ¦ taki tryb adresowania gdzie rejestr ogolnego przeznaczenia i rejestr adresowy sÂ¹ podane bezpoÂœrednio.
 
+02.09.2012
+ZastanowiÃ¦ siÃª wrescie nad implementacja DS, ES itd rejestrÃ³w segmentowych.

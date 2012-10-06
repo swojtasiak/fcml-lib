@@ -20,6 +20,13 @@
 #define _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED			0x06
 #define _IRA_INT_ERROR_ILLEGAL_INSTRUCTION			0x07
 
+/* Size attribute types */
+
+enum SizeAttributeType {
+	IRA_SAT_ASA,
+	IRA_SAT_OSA
+};
+
 /* Structures used to store information about memory. */
 
 struct ira_memory_stream {
@@ -133,8 +140,20 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 
 /* Decoding arguments. */
 
+/* Addressing by given register */
+struct ira_reg_addressing_arg {
+	// Base register.
+	struct ira_register base_reg;
+	// Number of bytes address points to.
+	uint16_t size_directive;
+	// Size attribute type.
+	enum SizeAttributeType size_attribute_type;
+};
+
 /* Structure that can be used to pass register type to operand decoding function. */
 struct ira_reg_type_args {
+	// Attribute used to calculate register size, if calculation is needed.
+	enum SizeAttributeType size_attribute_type;
 	// Register type.
 	enum ira_register_type reg_type;
 	// Register number.
@@ -159,12 +178,13 @@ struct ira_modrm_decoding_args {
 	// Register type.
 	enum ira_register_type reg_type;
 	// Register size.
+	// TODO: Sprawdzic czy moze byc int, a moze zmienic na uintxx tak jak ponizej.
 	int operand_register_size;
 	// Size directive.
-	int size_directive;
+	uint16_t size_directive;
 };
 
-typedef int (*ira_size_directive_provider)( struct ira_diss_context *context );
+typedef uint16_t (*ira_size_directive_provider)( struct ira_diss_context *context );
 
 /* Structure used to decode  */
 struct ira_modm_decoding_args {
@@ -234,10 +254,10 @@ struct ira_opcode_desc {
 	uint16_t allowed_prefixes; // Flags describing allowed prefixes.
 	uint32_t opcode_flags; // Some flags that contains various information about opcode.
 	uint8_t opcode[3]; // Opcode bytes.
-	uint16_t opperand_1; // Addressing of first instruction operand .
-	uint16_t opperand_2; // Second etc.
-	uint16_t opperand_3;
-	uint16_t opperand_4;
+	uint32_t opperand_1; // Addressing of first instruction operand.
+	uint32_t opperand_2; // Second etc.
+	uint32_t opperand_3;
+	uint32_t opperand_4;
 };
 
 struct ira_instruction_desc {
@@ -301,7 +321,6 @@ struct ira_instruction_desc {
 #define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x)				( ( x & 0x00007800 ) >> 11 )
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 			_IRA_GET_BIT(x,15)
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 				_IRA_GET_BIT(x,16)
-#define _IRA_OPCODE_FLAGS_OPCODE_IS_REX_EXT(x) 			_IRA_GET_BIT(x,17)
 #define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 				( ( x & 0x000C0000 ) >> 18 )
 #define _IRA_OPCODE_FLAGS_PRIMARY_OPCODE(x) 			( ( x & 0x00300000 ) >> 20 )
 #define _IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(x)		( x & 0x00800000 )
@@ -333,7 +352,7 @@ struct ira_instruction_desc {
 
 // If operand size directive is set to _IRA_DEFAULT_SIZE_DIRECTIVE,
 // size is set to EOSA.
-#define _IRA_DEFAULT_SIZE_DIRECTIVE	-1
+#define _IRA_DEFAULT_SIZE_DIRECTIVE	0xFFFF
 
 /* Operands encoding */
 
@@ -342,32 +361,32 @@ struct ira_instruction_desc {
 #define _IA_INSTRUCTION(x,y) { x, _IRA_IT_IA, _IRA_OPERANDS_SIZEOF(y), y }
 
 // Source operand (Reads).
-#define _IRA_READ	0x0000
+#define _IRA_READ	0x00000000
 
 // Destination operand (Writes).
-#define _IRA_WRITE	0x8000
+#define _IRA_WRITE	0x80000000
 
-#define _IRA_NA	0x0000
+#define _IRA_NA	0x00000000
 
-#define _IRA_OPERAND_IB						0x0100
+#define _IRA_OPERAND_IB						0x01000000
 // imm8 sign extended to effective operand size attribute.
-#define _IRA_OPERAND_IB_EX_EOSA				0x0200
-#define _IRA_OPERAND_IW						0x0300
-#define _IRA_OPERAND_IW_EX_EOSA				0x0400
-#define _IRA_OPERAND_ID						0x0500
+#define _IRA_OPERAND_IB_EX_EOSA				0x02000000
+#define _IRA_OPERAND_IW						0x03000000
+#define _IRA_OPERAND_IW_EX_EOSA				0x04000000
+#define _IRA_OPERAND_ID						0x05000000
 // imm32 sign extended to effective operand size attribute.
-#define _IRA_OPERAND_ID_EX_EOSA				0x0600
-#define _IRA_OPERAND_IO						0x0700
-#define _IRA_OPERAND_IO_EOSA				0x0800
+#define _IRA_OPERAND_ID_EX_EOSA				0x06000000
+#define _IRA_OPERAND_IO						0x07000000
+#define _IRA_OPERAND_IO_EOSA				0x08000000
 // Immediate value with size calculated using EOSA.
-#define _IRA_OPERAND_IMM_EOSA				0x0900
-#define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A00
-#define _IRA_OPERAND_REG_ACCUMULATOR_OSA	0x0B00
+#define _IRA_OPERAND_IMM_EOSA				0x09000000
+#define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A000000
+#define _IRA_OPERAND_REG_ACCUMULATOR_OSA	0x0B000000
 #define _IRA_OPERAND_REG_ACCUMULATOR_8_W	( _IRA_OPERAND_REG_ACCUMULATOR_8   | _IRA_WRITE )
 #define _IRA_OPERAND_REG_ACCUMULATOR_OSA_W	( _IRA_OPERAND_REG_ACCUMULATOR_OSA | _IRA_WRITE )
 
 // Base for ModRM based operands.
-#define _IRA_MODRM_BASE 					0x0C00
+#define _IRA_MODRM_BASE 					0x0C000000
 
 /* Operands for ModRM encoding. */
 
@@ -426,26 +445,37 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_M_8			_IRA_MODRM(_IRA_M_8)
 #define _IRA_OPERAND_MODRM_M_8_W		(_IRA_OPERAND_MODRM_M_8 | _IRA_WRITE)
 
+// Implicit registers with size determined by operand-size-attribute.
+#define _IRA_IMPLICIT_REG_BASE_OSA						0x0D000000
+#define _IRA_IMPLICIT_REG_OSA(reg_type,reg_num)			( _IRA_IMPLICIT_REG_BASE_OSA | reg_type << 4 | reg_num )
 
-// Implicit register.
-#define _IRA_IMPLICIT_REG_BASE						0x0D00
-#define _IRA_IMPLICIT_REG(reg_type,reg_num)			( _IRA_IMPLICIT_REG_BASE | reg_type << 4 | reg_num )
+// Implicit registers with size determined by address-size-attribute.
+#define _IRA_IMPLICIT_REG_BASE_ASA						0x0E000000
+#define _IRA_IMPLICIT_REG_ASA(reg_type,reg_num)			( _IRA_IMPLICIT_REG_BASE_ASA | reg_type << 4 | reg_num )
 
 // Register field in opcode byte.
-#define _IRA_OPERAND_OPCODE_REG_BASE				0x0E00
+#define _IRA_OPERAND_OPCODE_REG_BASE				0x0F000000
 #define _IRA_OPERAND_OPCODE_REG(reg_type)			( _IRA_OPERAND_OPCODE_REG_BASE | reg_type )
 
 // Relative addressing.
-#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x0F00
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x10000000
 
 // rel8
-#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		0x1000
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		0x11000000
 
 // Far pointers.
-#define _IRA_OPERAND_FAR_POINTER					0x1100
+#define _IRA_OPERAND_FAR_POINTER					0x12000000
 
 // Far indirect pointer.
-#define _IRA_OPERAND_FAR_POINTER_INDIRECT			0x1200
+#define _IRA_OPERAND_FAR_POINTER_INDIRECT			0x13000000
+
+// Addressing by explicit GPR register with size calculated basing on OSA. (Used by CMPS for instance.)
+#define _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING_BASE		0x14000000
+#define _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING(reg_num,size_directive)	( _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING_BASE | reg_num << 16 | size_directive )
+
+// Addressing by explicit GPR register with size calculated basing on OSA. (Used by CMPS for instance.)
+#define _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING_BASE		0x15000000
+#define _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING(reg_num,size_directive)	( _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING_BASE | reg_num << 16 | size_directive )
 
 /* Externals. */
 

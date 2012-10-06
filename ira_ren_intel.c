@@ -4,6 +4,8 @@
  * ira_ren.c
  *
  *  Created on: 12-12-2010
+ *  Last Modification: 01-10-2012
+ *
  *      Author: Slawomir Wojtasiak
  */
 
@@ -23,6 +25,11 @@ void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result
 void _ira_operand_formater_immediate( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_addressing_implicit_reg( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+
+// Utilities.
+
+void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream );
 
 /* Maps operand type to formating function. */
 _ira_operand_formater _ira_formating_table[] = {
@@ -107,6 +114,9 @@ void _ira_operand_formater_addressing( struct ira_disassemble_result *result, st
 	case IRA_FAR_POINTER:
 		_ira_operand_formater_addressing_far_pointer( result, format_info, operand, stream );
 		break;
+	case IRA_IMPLICIT_REGISTER_ADDRESSING:
+		_ira_operand_formater_addressing_implicit_reg( result, format_info, operand, stream );
+		break;
 	}
 }
 
@@ -117,32 +127,7 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 	int first = _IRA_TRUE;
 
-	switch( addressing->size_directive ) {
-	case 8:
-		_ira_format_append_str( stream, "byte ptr " );
-		break;
-	case 16:
-		_ira_format_append_str( stream, "word ptr " );
-		break;
-	case 32:
-		_ira_format_append_str( stream, "dword ptr " );
-		break;
-	case 48:
-		_ira_format_append_str( stream, "fword ptr " );
-		break;
-	case 64:
-		_ira_format_append_str( stream, "qword ptr " );
-		break;
-	case 80:
-		_ira_format_append_str( stream, "tbyte ptr " );
-		break;
-	case 128:
-		_ira_format_append_str( stream, "oword ptr " );
-		break;
-	default:
-		// TODO: Maybe we should write size here?
-		_ira_format_append_str( stream, "unknown size ptr " );
-	}
+	_ira_print_size_directive( addressing->size_directive, stream );
 
 	_ira_format_append_str( stream, "[" );
 
@@ -229,6 +214,19 @@ void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result
 
 }
 
+void _ira_operand_formater_addressing_implicit_reg( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+
+	_ira_print_size_directive( operand->addressing.size_directive, stream );
+
+	_ira_format_append_str( stream, "[" );
+
+	// Append register with memory location.
+	_ira_format_append_reg( stream, &(operand->addressing.address_register), result->rex.is_not_null );
+
+	_ira_format_append_str( stream, "]" );
+
+}
+
 void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 
 	struct ira_addressing *addressing = &operand->addressing;
@@ -293,4 +291,33 @@ void _ira_operand_formater_immediate( struct ira_disassemble_result *result, str
 
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 	_ira_format_append_reg( stream, &operand->reg, result->rex.is_not_null );
+}
+
+void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream ) {
+	switch( size_directive ) {
+	case 8:
+		_ira_format_append_str( stream, "byte ptr " );
+		break;
+	case 16:
+		_ira_format_append_str( stream, "word ptr " );
+		break;
+	case 32:
+		_ira_format_append_str( stream, "dword ptr " );
+		break;
+	case 48:
+		_ira_format_append_str( stream, "fword ptr " );
+		break;
+	case 64:
+		_ira_format_append_str( stream, "qword ptr " );
+		break;
+	case 80:
+		_ira_format_append_str( stream, "tbyte ptr " );
+		break;
+	case 128:
+		_ira_format_append_str( stream, "oword ptr " );
+		break;
+	default:
+		// TODO: Maybe we should write size here?
+		_ira_format_append_str( stream, "unknown size ptr " );
+	}
 }

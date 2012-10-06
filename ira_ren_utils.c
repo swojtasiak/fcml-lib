@@ -192,7 +192,7 @@ void _ira_extend_integer( struct _ira_integer *value, int extension_size, int si
 
 	if( sign_extend ) {
 
-		int64_t temp_int;
+		int64_t temp_int = 0;
 
 		switch( value->size ) {
 		case 8:
@@ -228,7 +228,7 @@ void _ira_extend_integer( struct _ira_integer *value, int extension_size, int si
 
 	} else {
 
-		uint64_t temp_int;
+		uint64_t temp_int = 0;
 
 		switch( value->size ) {
 		case 8:

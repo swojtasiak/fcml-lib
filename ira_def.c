@@ -235,12 +235,12 @@ struct ira_opcode_desc _ira_opcode_desc_BLENDPS[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_BLENDVPD[] = {
 	// 66 0F 38 15 /r BLENDVPD xmm1, xmm2/m128 , <XMM0> A Valid Valid Select packed DP FP values from xmm1 and xmm2 from mask specified in XMM0 and store the values in xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x15 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x15 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG_OSA( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BLENDVPS[] = {
 	// 66 0F 38 14 /r BLENDVPS xmm1, xmm2/m128, <XMM0> A Valid Valid Select packed single precision floating-point values from xmm1 and xmm2/m128 from mask specified in XMM0 and store the values into xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x14 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x14 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG_OSA( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BOUND[] = {
@@ -416,6 +416,7 @@ struct ira_opcode_desc _ira_opcode_desc_JMP[] = {
 
 // TODO: Sprobowac polaczyc z ADC/ADD it, moze jakis pattern?
 
+//TODO: tests.
 struct ira_opcode_desc _ira_opcode_desc_CMP[] = {
 	// 3C ib CMP AL, imm8 D Valid Valid Compare imm8 with AL.
 	{ NULL, 0x0001, 0x00C40000, { 0x3C, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -453,21 +454,57 @@ struct ira_opcode_desc _ira_opcode_desc_CMP[] = {
 	{ NULL, 0x0001, 0x00C48000, { 0x3B, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
 };
 
-// Poalczyc z BLENDPS
+// TODO: Poalczyc z BLENDPS
 
+//TODO: tests.
 struct ira_opcode_desc _ira_opcode_desc_CMPPD[] = {
 	// 66 0F C2 /r ib CMPPD xmm1, xmm2/m128, imm8 A Valid Valid Compare packed doubleprecision floating-point values in xmm2/m128 and xmm1 using imm8 as comparison predicate.
 	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
 };
 
+//TODO: tests.
 struct ira_opcode_desc _ira_opcode_desc_CMPPS[] = {
 	// 0F C2 /r ib CMPPS xmm1, xmm2/m128, imm8 A Valid Valid Compare packed singleprecision floating-point values in xmm2/mem and xmm1 using imm8 as comparison predicate.
 	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
 };
 
-// 00401000 > $ A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
+struct ira_opcode_desc _ira_opcode_desc_CMPS[] = {
+	// A6 CMPS m8, m8 A Valid Valid For legacy mode, compare byte at address DS:(E)SI with byte at address ES:(E)DI; For 64-bit mode compare byte at address (R|E)SI to byte at address (R|E)DI. The status flags are set accordingly.
+	{ NULL, 0x0001, 0x00C40000, { 0xA6, 0x00, 0x00 }, _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING( _IRA_REG_SI, _IRA_SD_BYTE_PTR ), _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING( _IRA_REG_DI, _IRA_SD_BYTE_PTR ), _IRA_NA, _IRA_NA },
+	// A7 CMPS m16, m16 A Valid Valid For legacy mode, compare word at address DS:(E)SI with word at address ES:(E)DI; For 64-bit mode compare word at address (R|E)SI with word at address (R|E)DI. The status flags are set accordingly.
+	// A7 CMPS m32, m32 A Valid Valid For legacy mode, compare dword at address DS:(E)SI at dword at address ES:(E)DI; For 64-bit mode compare dword at address (R|E)SI at dword at address (R|E)DI. The status flags are set accordingly.
+	// REX.W + A7 CMPS m64, m64 A Valid N.E. Compares quadword at address (R|E)SI with quadword at address (R|E)DI and sets the status flags accordingly.
+	{ NULL, 0x0001, 0x00C40000, { 0xA7, 0x00, 0x00 }, _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING( _IRA_REG_SI, _IRA_DEFAULT_SIZE_DIRECTIVE ), _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING( _IRA_REG_DI, _IRA_DEFAULT_SIZE_DIRECTIVE ), _IRA_NA, _IRA_NA }
+};
 
+//TODO: tests.
+struct ira_opcode_desc _ira_opcode_desc_CMPSD[] = {
+	// F2 0F C2 /r ib CMPSD xmm1, xmm2/m64, imm8 A Valid Valid Compare low doubleprecision floating-point value in xmm2/m64 and xmm1 using imm8 as comparison predicate.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_OPERAND_IB, _IRA_NA }
+};
 
+struct ira_opcode_desc _ira_opcode_desc_CMPSS[] = {
+	// F3 0F C2 /r ib CMPSS xmm1, xmm2/m32, imm8 A Valid Valid Compare low singleprecision floating-point value in xmm2/m32 and xmm1 using imm8 as comparison predicate.
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_32_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+// TODO: tests.
+struct ira_opcode_desc _ira_opcode_desc_CMPXCHG[] = {
+	// 0F B0/r CMPXCHG r/m8, r8 A Valid Valid* Compare AL with r/m8. If equal, ZF is set and r8 is loaded into r/m8. Else, clear ZF and load r/m8 into AL.
+	// REX + 0F B0/r CMPXCHG r/m8**,r8 A Valid N.E. Compare AL with r/m8. If equal, ZF is set and r8 is loaded into r/m8. Else, clear ZF and load r/m8 into AL.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xB0, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 0F B1/r CMPXCHG r/m16, r16 A Valid Valid* Compare AX with r/m16. If equal, ZF is set and r16 is loaded into r/m16. Else, clear ZF and load r/m16 into AX.
+	// 0F B1/r CMPXCHG r/m32, r32 A Valid Valid* Compare EAX with r/m32. If equal, ZF is set and r32 is loaded into r/m32. Else, clear ZF and load r/m32 into EAX.
+	// REX.W + 0F B1/r CMPXCHG r/m64, r64 A Valid N.E. Compare RAX with r/m64. If equal, ZF is set and r64 is loaded into r/m64. Else, clear ZF and load r/m64 into RAX.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xB1, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CMPXCHGxB[] = {
+	// 0F C7 /1 m64 CMPXCHG8B m64 A Valid Valid* Compare EDX:EAX with m64. If equal, set ZF and load ECX:EBX into m64. Else, clear ZF and load m64 into EDX:EAX.
+	// REX.W + 0F C7 /1 m128 CMPXCHG16B m128 A Valid N.E. Compare RDX:RAX with m128. If equal, set ZF and load RCX:RBX into m128. Else, clear ZF and load m128 into RDX:RAX.
+	{ "cmpxchg8b", 0x0001, 0x03D98800, { 0x0F, 0xC7, 0x00 }, _IRA_OPERAND_MODRM_MM_OSA, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ "cmpxchg16b", 0x0001, 0x04D98800, { 0x0F, 0xC7, 0x00 }, _IRA_OPERAND_MODRM_MM_OSA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
@@ -521,6 +558,13 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "jmp", _ira_opcode_desc_JMP),
 		_IA_INSTRUCTION( "cmppd", _ira_opcode_desc_CMPPD),
 		_IA_INSTRUCTION( "cmpps", _ira_opcode_desc_CMPPS),
+		// TODO:CMPS
+		// TODO:CMPSW/CMPSD/CMPSQ
+		_IA_INSTRUCTION( "cmps", _ira_opcode_desc_CMPS),
+		_IA_INSTRUCTION( "cmpsd", _ira_opcode_desc_CMPSD),
+		_IA_INSTRUCTION( "cmpss", _ira_opcode_desc_CMPSS),
+		_IA_INSTRUCTION( "cmpxchg", _ira_opcode_desc_CMPXCHG),
+		_IA_INSTRUCTION( "cmpxchg8b", _ira_opcode_desc_CMPXCHGxB),
 		{ NULL, 0, 0, NULL }
 };
 

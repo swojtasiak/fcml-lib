@@ -125,6 +125,20 @@
 #define _IRA_SEG_REG_FS 	5
 #define _IRA_SEG_REG_GS 	6
 
+/* Size directives */
+
+#define _IRA_SD_BYTE_PTR		8
+#define _IRA_SD_WORD_PTR		16
+#define _IRA_SD_DWORD_PTR		32
+#define _IRA_SD_FWORD_PTR		48
+#define _IRA_SD_QWORD_PTR		64
+#define _IRA_SD_MMWORD_PTR		64
+#define _IRA_SD_TBYTE_PTR		80
+#define _IRA_SD_OWORD_PTR		128
+
+/* Data types. */
+#define _IRA_DT_UNKNOWN			0x0000
+
 /* IRA conditions. */
 
 enum ira_condition_type {
@@ -210,15 +224,20 @@ struct ira_register {
 	int reg;
 };
 
+// Allowed values of size attributes (ASA/OSA).
+#define _IRA_GSA_16		16
+#define _IRA_GSA_32		32
+#define _IRA_GSA_64		64
+
 /* Constants describing allowed values of operand size attribute. */
-#define _IRA_OSA_16		16
-#define _IRA_OSA_32		32
-#define _IRA_OSA_64		64
+#define _IRA_OSA_16		_IRA_GSA_16
+#define _IRA_OSA_32		_IRA_GSA_32
+#define _IRA_OSA_64		_IRA_GSA_64
 
 /* Constants describing allowed values of address size attribute. */
-#define _IRA_ASA_16		16
-#define _IRA_ASA_32		32
-#define _IRA_ASA_64		64
+#define _IRA_ASA_16		_IRA_GSA_16
+#define _IRA_ASA_32		_IRA_GSA_32
+#define _IRA_ASA_64		_IRA_GSA_64
 
 union ira_instruction_pointer {
 	uint32_t eip;
@@ -297,7 +316,8 @@ enum ira_addressing_type {
 	IRA_MOD_RM,
 	IRA_IMMEDIATE_ADDRESS,
 	IRA_RELATIVE_ADDRESS,
-	IRA_FAR_POINTER
+	IRA_FAR_POINTER,
+	IRA_IMPLICIT_REGISTER_ADDRESSING
 };
 
 enum ira_access_mode {
@@ -343,6 +363,21 @@ struct ira_segment_selector {
 	uint16_t segment_register_value;
 };
 
+/* Used to describe size and format/meaning of
+ * data accessed by addressing mode or register.
+ */
+struct ira_data_type {
+	// Used to calculate size directive. It's size of the data
+	// accessed using given addressing mode or register. Size in bytes.
+	uint16_t data_size;
+	// Type of the accessed data. Apart of the size in bytes every
+	// data can have specific format and meaning in given context.
+	// For example some instructions can treat XMM registers as
+	// 4 single floats when other as 2 double precision floats. This
+	// field is used to describe such data format whenever possible.
+	uint16_t data_type;
+};
+
 struct ira_addressing {
 	// Type of addressing.
 	enum ira_addressing_type addressing_type;
@@ -352,9 +387,11 @@ struct ira_addressing {
 	enum ira_address_size address_size;
 	// Value of the direct address.
 	union ira_address_value address_value;
+	// Implicit register addressing.
+	struct ira_register address_register;
 	// TODO: Przniesc to gdzies, to nie wielkosc adresu tylko
 	// wiekosc danych jakie trafia pod ten adres, trzeba znalezc na to lepsze miejsce.
-	int size_directive;
+	uint16_t size_directive;
 	// ModRM addressing.
 	struct ira_mod_rm_addressing mod_rm;
 };

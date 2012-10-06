@@ -136,7 +136,42 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// CMPSD
+	//	_TEST32( "f20fc2402050 cmpss xmm0,dword ptr [eax+00000020h],50h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+	//	_TEST64( "f20fc2402050 cmpss xmm0,dword ptr [rax+0000000000000020h],50h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+
+
+	// CMPS
+	// A6
+	_TEST32( "67a6 cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
+	_TEST32( "6667a6 cmps byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xA6 );
+	_TEST32( "a6 cmps byte ptr [esi],byte ptr [edi]", 0xA6 );
+	_TEST64( "48a6 cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
+	_TEST64( "40a6 cmps byte ptr [rsi],byte ptr [rdi]", 0x40, 0xA6 );
+	_TEST64( "6740a6 cmps byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xA6 );
+	_TEST64( "666740a6 cmps byte ptr [esi],byte ptr [edi]", 0x66, 0x67, 0x40, 0xA6 );
+	// A7
+	_TEST32( "67a7 cmps dword ptr [si],dword ptr [di]", 0x67, 0xA7 );
+	_TEST32( "6667a7 cmps word ptr [si],word ptr [di]", 0x66, 0x67, 0xA7 );
+	_TEST32( "a7 cmps dword ptr [esi],dword ptr [edi]", 0xA7 );
+	_TEST64( "48a7 cmps qword ptr [rsi],qword ptr [rdi]", 0x48, 0xA7 );
+	_TEST64( "40a7 cmps dword ptr [rsi],dword ptr [rdi]", 0x40, 0xA7 );
+	_TEST64( "6740a7 cmps dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xA7 );
+	_TEST64( "666740a7 cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );
+
+	// CMPXCHG16B/CMPXCHG8B
+	// REX.W + 0F C7 /1 m128 CMPXCHG16B m128 A Valid N.E. Compare RDX:RAX with m128. If equal, set ZF and load RCX:RBX into m128. Else, clear ZF and load m128 into RDX:RAX.
+	_TEST64( "480fc749ff cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
+	// 0F C7 /1 m64 CMPXCHG8B m64 A Valid Valid* Compare EDX:EAX with m64. If equal, set ZF and load ECX:EBX into m64. Else, clear ZF and load m64 into EDX:EAX.
+	_TEST64( "0fc749ff cmpxchg8b qword ptr [rcx+0ffffffffffffffffh]", 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
+	_TEST32( "0fc749ff cmpxchg8b qword ptr [ecx+0ffffffffh]", 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
+
 	// TODO: Testy dla CMP, CMPPD
+
+	// CMPSS
+	// dodac support dla mmword i odkomentowac.
+	//_TEST64( "f30fc2402050 cmpss xmm0,dword ptr [rax+0000000000000020h],50h", 0xF3, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+	//_TEST32( "f30fc2402050 cmpss xmm0,dword ptr [eax+00000020h],50h", 0xF3, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
 
 	// JMP
 	_TEST32( "ebff jmp 00401001h", 0xeb, 0xff );
@@ -151,7 +186,7 @@ void test(void) {
 	_TEST32( "66ffe5 jmp bp", 0x66, 0xff, 0xe5, 0x01, 0x02 );
 	_TEST32( "FAIL", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02, 0x03, 0x04 ); // 32 bit mode doesn't not allow REX.
 
-	/// TODO: Sprawdziæ pod visualem, ppowino wykorzystaæ rejestr 8 bitory a nie 64 bitowy.
+	/// TODO: SprawdziÃ¦ pod visualem, ppowino wykorzystaÃ¦ rejestr 8 bitory a nie 64 bitowy.
 	_TEST64( "676640ffe5 jmp rbp", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
 
 	_TEST32( "ea112233445566 jmp far 6655h:44332211h", 0xEA, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
