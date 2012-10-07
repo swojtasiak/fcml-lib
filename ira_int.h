@@ -22,6 +22,7 @@
 
 /* Size attribute types */
 
+// Pytanie czy to faktycznie jest potrzebne? Wyaje sie troche nadmiarowe. Patrz: common and operand size encoding.
 enum SizeAttributeType {
 	IRA_SAT_ASA,
 	IRA_SAT_OSA
@@ -143,11 +144,9 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 /* Addressing by given register */
 struct ira_reg_addressing_arg {
 	// Base register.
-	struct ira_register base_reg;
+	struct ira_register reg;
 	// Number of bytes address points to.
-	uint16_t size_directive;
-	// Size attribute type.
-	enum SizeAttributeType size_attribute_type;
+	uint8_t encoded_operand_size;
 	// Encoded segment selector.
 	uint8_t encoded_segment_selector;
 };
@@ -442,6 +441,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_M_8			_IRA_MODRM(_IRA_M_8)
 #define _IRA_OPERAND_MODRM_M_8_W		(_IRA_OPERAND_MODRM_M_8 | _IRA_WRITE)
 
+// todo: nie implicit tylko explicit
+// todo: dodac kodowanie wilkosci rejestru na podstawie encoded operand size.
 // Implicit registers with size determined by operand-size-attribute.
 #define _IRA_IMPLICIT_REG_BASE_OSA						0x0D000000
 #define _IRA_IMPLICIT_REG_OSA(reg_type,reg_num)			( _IRA_IMPLICIT_REG_BASE_OSA | reg_type << 4 | reg_num )
@@ -466,13 +467,9 @@ struct ira_instruction_desc {
 // Far indirect pointer.
 #define _IRA_OPERAND_FAR_POINTER_INDIRECT			0x13000000
 
-// Addressing by explicit GPR register with size calculated basing on OSA. (Used by CMPS for instance.)
-#define _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING_BASE		0x14000000
-#define _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING(reg_num,size_directive, encoded_segment_register)	( _IRA_EXPLICIT_GPS_REG_OSA_ADDRESSING_BASE | reg_num << 24 | size_directive << 8 | encoded_segment_register )
-
-// Addressing by explicit GPR register with size calculated basing on OSA. (Used by CMPS for instance.)
-#define _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING_BASE		0x15000000
-#define _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING(reg_num,size_directive, encoded_segment_reqister)	( _IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING_BASE | reg_num << 24 | size_directive << 8 | encoded_segment_reqister )
+// Addressing by explicit GPR register. (Used by CMPS for instance.)
+#define _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE		0x14000000
+#define _IRA_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE | reg_num << 16 | encoded_operand_size << 8 | encoded_segment_register )
 
 /* Externals. */
 

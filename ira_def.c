@@ -6,6 +6,7 @@
  */
 
 #include "ira_int.h"
+#include "common.h"
 
 #define _IRA_EMPTY_MNEMONIC	""
 
@@ -471,15 +472,15 @@ struct ira_opcode_desc _ira_opcode_desc_CMPPS[] = {
 struct ira_opcode_desc _ira_opcode_desc_CMPS[] = {
 	// A6 CMPS m8, m8 A Valid Valid For legacy mode, compare byte at address DS:(E)SI with byte at address ES:(E)DI; For 64-bit mode compare byte at address (R|E)SI to byte at address (R|E)DI. The status flags are set accordingly.
 	{ NULL, 0x0001, 0x00C40000, { 0xA6, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING( _IRA_REG_SI, _IRA_OS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
-			_IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING( _IRA_REG_DI, _IRA_OS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
 			_IRA_NA, _IRA_NA },
 	// A7 CMPS m16, m16 A Valid Valid For legacy mode, compare word at address DS:(E)SI with word at address ES:(E)DI; For 64-bit mode compare word at address (R|E)SI with word at address (R|E)DI. The status flags are set accordingly.
 	// A7 CMPS m32, m32 A Valid Valid For legacy mode, compare dword at address DS:(E)SI at dword at address ES:(E)DI; For 64-bit mode compare dword at address (R|E)SI at dword at address (R|E)DI. The status flags are set accordingly.
 	// REX.W + A7 CMPS m64, m64 A Valid N.E. Compares quadword at address (R|E)SI with quadword at address (R|E)DI and sets the status flags accordingly.
 	{ NULL, 0x0001, 0x00C40000, { 0xA7, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING( _IRA_REG_SI, _IRA_DEFAULT_OPERAND_SIZE,_IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
-			_IRA_EXPLICIT_GPS_REG_ASA_ADDRESSING( _IRA_REG_DI, _IRA_DEFAULT_OPERAND_SIZE,_IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
 			_IRA_NA, _IRA_NA }
 };
 

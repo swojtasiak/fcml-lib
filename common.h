@@ -14,20 +14,48 @@
 
 /* Constants. */
 
-/* Size directives */
+/* Constants used to encode operand size on one byte. Used only in instruction descriptions. */
 
-#define _IRA_OS_BYTE		8
-#define _IRA_OS_WORD		16
-#define _IRA_OS_DWORD		32
-#define _IRA_OS_FWORD		48
-#define _IRA_OS_QWORD		64
-#define _IRA_OS_MMWORD		64
-#define _IRA_OS_TBYTE		80
-#define _IRA_OS_OWORD		128
-#define _IRA_OS_XMMWORD		128
+// Operand size calculated by Effective Operand Size Attribute.
+#define _IRA_EOS_EOSA		0xFF
+
+// Operand size calculated by Effective Address Size Attribute.
+#define _IRA_EOS_EASA		0xFE
+
+// Take into account that every size is given in a number of bytes.
+#define _IRA_EOS_BYTE		1
+#define _IRA_EOS_WORD		2
+#define _IRA_EOS_DWORD		4
+#define _IRA_EOS_FWORD		6
+#define _IRA_EOS_QWORD		8
+#define _IRA_EOS_MMWORD		8
+#define _IRA_EOS_TBYTE		10
+#define _IRA_EOS_OWORD		16
+#define _IRA_EOS_XMMWORD	16
 
 /* Methods. */
 
-unit8_t _ira_common_decode_size_directive();
+//! Decoding given encoded operand size.
+/*!
+ * \brief Decodes given operand size using provided EOSA. Some functions have operand size described on 8 bits using
+ * IRA_EOS_ constants. This form of operand size description notation is used to allow encoding more than 128
+ * bits operand sizes using only one byte.
+ *
+ * \param effective_operand_size_attribute Size of EOSA that should be used if operand size is encoded as _IRA_EOS_EOSA.
+ * \param effective_address_size_attribute Size of EASA that should be used if operand size is encoded as _IRA_EOS_EASA.
+ * \param encoded_operand_size Size directive to decode.
+ * \return Decoded operand size.
+ */
+uint16_t _ira_common_decode_size_directive( uint8_t effective_operand_size_attribute, uint8_t effective_address_size_attribute, uint8_t encoded_operand_size );
+
+
+//! Decodes GPR register type by operand size given in argument.
+/*!
+ * \brief Maps operand size given in argument to appropriate general purpose register.
+ *
+ * \param operand_size Operand size used to decode register.
+ * \return Decoded GPR.
+ */
+enum ira_register_type _ira_common_decode_gpr_type( uint16_t operand_size );
 
 #endif /* COMMON_H_ */
