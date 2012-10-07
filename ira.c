@@ -98,7 +98,7 @@ struct ira_register _ira_addressing_form_reg_array_16[8][2] = {
 #define _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING		1
 #define _IRA_MOD_RM_FLAGS_DECODE_REG			2
 
-int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size, uint8_t flags );
+int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, uint16_t operand_size, uint8_t flags );
 
 /* Opcode decoders. */
 
@@ -118,20 +118,20 @@ int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ir
 
 void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, int reg, enum SizeAttributeType size_attribute_type, int *result );
 void *_ira_alloc_immediate_type_args( enum ira_immediate_data_type immediate_type, int *result );
-void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, int operand_register_size, uint16_t size_directive, int *result );
-void *_ira_alloc_modm_decoding_args( ira_size_directive_provider size_directive_provider, int *result );
+void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, uint16_t operand_size, int *result );
+void *_ira_alloc_modm_decoding_args( ira_operand_size_provider size_directive_provider, int *result );
 void *_ira_alloc_reg_addressing_args( enum SizeAttributeType size_attribute_type, int reg, uint16_t size_directive, uint8_t encoded_segment_register, int *result );
 
 // Size directive providers for memory based addressing decoders.
 
-uint16_t ira_far_indirect_pointer_size_directive_provider( struct ira_diss_context *context );
-uint16_t ira_mm_size_directive_provider( struct ira_diss_context *context );
-uint16_t ira_m8_size_directive_provider( struct ira_diss_context *context );
+uint16_t ira_far_indirect_pointer_operand_size_provider( struct ira_diss_context *context );
+uint16_t ira_mm_operand_size_provider( struct ira_diss_context *context );
+uint16_t ira_m8_operand_size_provider( struct ira_diss_context *context );
 
 /* Utilities */
 
 //TODO: Move it somewhere else! a dedicated file or something.
-uint16_t _ira_util_decode_size_directive( struct ira_diss_context *context, uint16_t size_directive );
+uint16_t _ira_util_decode_operand_size( struct ira_diss_context *context, uint16_t size_directive );
 void _ira_decode_segment_register( struct ira_diss_context *context, struct ira_segment_selector *segment_selector, uint8_t encoded_segment_register );
 
 /* Post processing handlers. */
@@ -840,21 +840,20 @@ void *_ira_alloc_immediate_type_args( enum ira_immediate_data_type immediate_typ
 	return args;
 }
 
-void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, int operand_register_size, uint16_t size_directive, int *result ) {
+void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, uint16_t operand_size, int *result ) {
 	struct ira_modrm_decoding_args *args = (struct ira_modrm_decoding_args*)malloc( sizeof( struct ira_modrm_decoding_args ) );
 	if( args != NULL ) {
 		args->reg_type = reg_type;
-		args->operand_register_size = operand_register_size;
-		args->size_directive = size_directive;
+		args->operand_size = operand_size;
 	}
 	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
 	return args;
 }
 
-void *_ira_alloc_modm_decoding_args( ira_size_directive_provider size_directive_provider, int *result ) {
+void *_ira_alloc_modm_decoding_args( ira_operand_size_provider size_directive_provider, int *result ) {
 	struct ira_modm_decoding_args *args = (struct ira_modm_decoding_args*)malloc( sizeof( struct ira_modm_decoding_args ) );
 	if( args != NULL ) {
-		args->size_directive_provider = size_directive_provider;
+		args->operand_size_provider = size_directive_provider;
 	}
 	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
 	return args;
@@ -933,7 +932,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		break;
 	case _IRA_OPERAND_FAR_POINTER_INDIRECT:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
-		operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_far_indirect_pointer_size_directive_provider, &result );
+		operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_far_indirect_pointer_operand_size_provider, &result );
 		break;
 	case _IRA_MODRM_BASE:
 
@@ -941,67 +940,67 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		switch( decoding & 0x000000FF ) {
 		case _IRA_RM_8:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_8, _IRA_SD_BYTE_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_BYTE, &result );
 			break;
 		case _IRA_R_8:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_8, _IRA_SD_BYTE_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_BYTE, &result );
 			break;
 		case _IRA_RM_16:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, _IRA_SD_WORD_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_WORD, &result );
 			break;
 		case _IRA_R_16:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_16, _IRA_SD_WORD_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_WORD, &result );
 			break;
 		case _IRA_RM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_DEFAULT_OPERAND_SIZE, &result );
 			break;
 		case _IRA_R:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_DEFAULT_OPERAND_SIZE, &result );
 			break;
 		case _IRA_RM_MMX:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_DEFAULT_OPERAND_SIZE, &result );
 			break;
 		case _IRA_R_MMX:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_OR_DEFAULT, _IRA_DEFAULT_SIZE_DIRECTIVE, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_DEFAULT_OPERAND_SIZE, &result );
 			break;
 		case _IRA_RM_XMM_128:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, _IRA_SD_OWORD_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OS_OWORD, &result );
 			break;
 		case _IRA_R_XMM_128:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, _IRA_SD_OWORD_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OS_OWORD, &result );
 			break;
 		case _IRA_RM_XMM_64:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, _IRA_SD_QWORD_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OS_QWORD, &result );
 			break;
 		case _IRA_R_XMM_64:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, _IRA_SD_QWORD_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OS_QWORD, &result );
 			break;
 		case _IRA_RM_XMM_32:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, _IRA_SD_DWORD_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OS_DWORD, &result );
 			break;
 		case _IRA_R_XMM_32:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OR_DEFAULT, _IRA_SD_DWORD_PTR, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_OS_DWORD, &result );
 			break;
 		case _IRA_OSA_MM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
-			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_mm_size_directive_provider, &result );
+			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_mm_operand_size_provider, &result );
 			break;
 		case _IRA_M_8:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
-			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_m8_size_directive_provider, &result );
+			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_m8_operand_size_provider, &result );
 			break;
 		}
 
@@ -1319,8 +1318,8 @@ int _ira_opcode_decoder_explicit_register_addressing( struct ira_diss_context *c
 	struct ira_addressing *addressing = &(operand->addressing);
 	addressing->addressing_type = IRA_IMPLICIT_REGISTER_ADDRESSING;
 
-	// Encodes size directive.
-	addressing->size_directive = _ira_util_decode_size_directive( context, reg_args->size_directive );
+	// Encodes operand size.
+	operand->operand_size = _ira_util_decode_operand_size( context, reg_args->size_directive );
 
 	// Encodes register.
 	struct ira_register *reg = &(addressing->address_register);
@@ -1482,6 +1481,7 @@ int _ira_opcode_decoder_immediate_relative_dis( struct ira_diss_context *context
 	}
 
 	// Set extension size. It's not used in next phases, it's for informational purpose only.
+	// Currently only renderers make good use of it.
 	operand->immediate.extension_size = context->decoding_context.effective_operand_size_attribute;
 
 	// This handler is responsible for calculating address in post processing phase when
@@ -1526,18 +1526,18 @@ int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_in
 	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 
-	uint16_t size_directive;
+	uint16_t operand_size;
 	// Size directive can be provided but calculated using effective operand size attribute.
-	if( register_type_size_args != NULL && register_type_size_args->size_directive_provider != NULL ) {
-		size_directive = register_type_size_args->size_directive_provider( context );
+	if( register_type_size_args != NULL && register_type_size_args->operand_size_provider != NULL ) {
+		operand_size = register_type_size_args->operand_size_provider( context );
 	} else {
 		// By default size directive is based on effective operand size attribute.
-		size_directive = decoding_context->effective_operand_size_attribute;
+		operand_size = decoding_context->effective_operand_size_attribute;
 	}
 
-	operand->addressing.size_directive = size_directive;
+	operand->operand_size = operand_size;
 
-	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_OR_DEFAULT, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
+	int result = _ira_modrm_decoder( context, IRA_REG_GPR, _IRA_DEFAULT_OPERAND_SIZE, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -1576,10 +1576,10 @@ int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_i
 	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
 
 	// Setting size directive for addressing.
-	operand->addressing.size_directive = _ira_util_decode_size_directive( context, register_type_size_args->size_directive );
+	operand->operand_size = _ira_util_decode_operand_size( context, register_type_size_args->operand_size );
 
 	// Decode ModR/M.
-	int result = _ira_modrm_decoder( context, register_type_size_args->reg_type, register_type_size_args->operand_register_size, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
+	int result = _ira_modrm_decoder( context, register_type_size_args->reg_type, register_type_size_args->operand_size, _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -1598,7 +1598,7 @@ int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_in
 	struct ira_modrm_decoding_args *register_type_size_args = (struct ira_modrm_decoding_args*)args;
 
 	// Decode ModR/M.
-	int result = _ira_modrm_decoder( context, register_type_size_args->reg_type, register_type_size_args->operand_register_size, _IRA_MOD_RM_FLAGS_DECODE_REG );
+	int result = _ira_modrm_decoder( context, register_type_size_args->reg_type, register_type_size_args->operand_size, _IRA_MOD_RM_FLAGS_DECODE_REG );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -1686,14 +1686,14 @@ int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_dec
 	return rex_found;
 }
 
-struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, int reg ) {
+struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size, int reg ) {
 	int type = reg_type;
-	if( reg_type == IRA_REG_GPR && operand_register_size != _IRA_OR_DEFAULT ) {
-		switch( operand_register_size ) {
-		case _IRA_OR_8:
+	if( reg_type == IRA_REG_GPR && operand_size != _IRA_DEFAULT_OPERAND_SIZE ) {
+		switch( operand_size ) {
+		case _IRA_OS_BYTE:
 			type = IRA_REG_GPR_8;
 			break;
-		case _IRA_OR_16:
+		case _IRA_OS_WORD:
 			type = IRA_REG_GPR_16;
 			break;
 		}
@@ -1721,7 +1721,7 @@ struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context
 	return result_reg;
 }
 
-int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, uint8_t flags ) {
+int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size, uint8_t flags ) {
 
 	int result = _IRA_INT_ERROR_NO_ERROR;
 
@@ -1749,19 +1749,19 @@ int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, enum
 		}
 	} else {
 		// Straight copy of registers.
-		decoded_mod_rm->reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, rm );
+		decoded_mod_rm->reg = _ira_modrm_decode_register( context, reg_type, operand_size, rm );
 	}
 
 	// Decode register if something needs it.
 	if ( flags & _IRA_MOD_RM_FLAGS_DECODE_REG ) {
-		decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, _IRA_MODRM_REG_OPCODE(mod_rm) );
+		decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, operand_size, _IRA_MODRM_REG_OPCODE(mod_rm) );
 		decoded_mod_rm->decoded_reg = _IRA_TRUE;
 	}
 
 	return result;
 }
 
-int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size ) {
+int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ira_register_type reg_type ) {
 
 	uint8_t scale, index, base;
 
@@ -1862,7 +1862,7 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 		decoded_mod_rm->reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, rm );
 	} else if( _IRA_MODRM_RM(mod_rm) == 4 ) {
 		// Decode SIB addressing format.
-		result = _ira_modrm_addressing_decoder_sib( context, reg_type, operand_register_size );
+		result = _ira_modrm_addressing_decoder_sib( context, reg_type );
 	} else if( mod == 0 && _IRA_MODRM_RM(mod_rm) == 5 ) {
 		// disp32.
 		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
@@ -1893,7 +1893,7 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 	return result;
 }
 
-int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_register_size, uint8_t flags ) {
+int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type reg_type, uint16_t operand_size, uint8_t flags ) {
 
 	int result;
 
@@ -1915,9 +1915,9 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 			uint8_t effective_asa = decoding_context->effective_address_size_attribute;
 
 			if( effective_asa == _IRA_ASA_16 ) {
-				result = _ira_modrm_addressing_decoder_16_bit(context, reg_type, operand_register_size, flags);
+				result = _ira_modrm_addressing_decoder_16_bit(context, reg_type, operand_size, flags);
 			} else {
-				result = _ira_modrm_addressing_decoder_32_64_bit(context, reg_type, operand_register_size, flags);
+				result = _ira_modrm_addressing_decoder_32_64_bit(context, reg_type, operand_size, flags);
 			}
 
 			if( result != _IRA_INT_ERROR_NO_ERROR ) {
@@ -1949,7 +1949,7 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 				reg |= ( _IRA_REX_R(decoded_mod_rm->raw_rex.value) << 3 );
 			}
 
-			decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, operand_register_size, reg );
+			decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, operand_size, reg );
 
 			decoded_mod_rm->decoded_reg = _IRA_TRUE;
 		}
@@ -2167,17 +2167,17 @@ int ira_relative_addressing_instruction_operand_handler( struct ira_diss_context
  * Size directive providers for memory based addressing decoders.
  */
 
-uint16_t ira_far_indirect_pointer_size_directive_provider( struct ira_diss_context *context ) {
+uint16_t ira_far_indirect_pointer_operand_size_provider( struct ira_diss_context *context ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	return decoding_context->effective_operand_size_attribute + 16;
 }
 
-uint16_t ira_mm_size_directive_provider( struct ira_diss_context *context ) {
+uint16_t ira_mm_operand_size_provider( struct ira_diss_context *context ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	return decoding_context->effective_operand_size_attribute * 2;
 }
 
-uint16_t ira_m8_size_directive_provider( struct ira_diss_context *context ) {
+uint16_t ira_m8_operand_size_provider( struct ira_diss_context *context ) {
 	return 8;
 }
 
@@ -2195,8 +2195,8 @@ uint16_t ira_m8_size_directive_provider( struct ira_diss_context *context ) {
  * \param size_directive Size directive to decode.
  * \return Decoded size directive size.
  */
-uint16_t _ira_util_decode_size_directive( struct ira_diss_context *context, uint16_t size_directive ) {
-	return (size_directive == _IRA_DEFAULT_SIZE_DIRECTIVE) ? context->decoding_context.effective_operand_size_attribute : size_directive;
+uint16_t _ira_util_decode_operand_size( struct ira_diss_context *context, uint16_t operand_size ) {
+	return (operand_size == _IRA_DEFAULT_OPERAND_SIZE) ? context->decoding_context.effective_operand_size_attribute : operand_size;
 }
 
 //! Decoding segment register encoded by _IRA_SEG_ENCODE_REGISTER macro.

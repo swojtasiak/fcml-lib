@@ -127,7 +127,7 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 	int first = _IRA_TRUE;
 
-	_ira_print_size_directive( addressing->size_directive, stream );
+	_ira_print_size_directive( operand->operand_size, stream );
 
 	_ira_format_append_str( stream, "[" );
 
@@ -216,7 +216,7 @@ void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result
 
 void _ira_operand_formater_addressing_implicit_reg( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 
-	_ira_print_size_directive( operand->addressing.size_directive, stream );
+	_ira_print_size_directive( operand->operand_size, stream );
 
 	_ira_format_append_str( stream, "[" );
 

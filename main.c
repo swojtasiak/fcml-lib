@@ -143,7 +143,7 @@ void test(void) {
 
 	// CMPS
 	// A6
-	_TEST32( "67a6 cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
+	/*_TEST32( "67a6 cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
 	_TEST32( "6667a6 cmps byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xA6 );
 	_TEST32( "a6 cmps byte ptr [esi],byte ptr [edi]", 0xA6 );
 	_TEST64( "48a6 cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
@@ -157,7 +157,7 @@ void test(void) {
 	_TEST64( "48a7 cmps qword ptr [rsi],qword ptr [rdi]", 0x48, 0xA7 );
 	_TEST64( "40a7 cmps dword ptr [rsi],dword ptr [rdi]", 0x40, 0xA7 );
 	_TEST64( "6740a7 cmps dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xA7 );
-	_TEST64( "666740a7 cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );
+	_TEST64( "666740a7 cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );*/
 
 	// CMPXCHG16B/CMPXCHG8B
 	// REX.W + 0F C7 /1 m128 CMPXCHG16B m128 A Valid N.E. Compare RDX:RAX with m128. If equal, set ZF and load RCX:RBX into m128. Else, clear ZF and load m128 into RDX:RAX.
@@ -186,7 +186,7 @@ void test(void) {
 	_TEST32( "66ffe5 jmp bp", 0x66, 0xff, 0xe5, 0x01, 0x02 );
 	_TEST32( "FAIL", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02, 0x03, 0x04 ); // 32 bit mode doesn't not allow REX.
 
-	/// TODO: SprawdziÃ¦ pod visualem, ppowino wykorzystaÃ¦ rejestr 8 bitory a nie 64 bitowy.
+	/// TODO: Sprawdziæ pod visualem, ppowino wykorzystaæ rejestr 8 bitory a nie 64 bitowy.
 	_TEST64( "676640ffe5 jmp rbp", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
 
 	_TEST32( "ea112233445566 jmp far 6655h:44332211h", 0xEA, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );

@@ -179,19 +179,16 @@ struct ira_immediate_type_args {
 struct ira_modrm_decoding_args {
 	// Register type.
 	enum ira_register_type reg_type;
-	// Register size.
-	// TODO: Sprawdzic czy moze byc int, a moze zmienic na uintxx tak jak ponizej.
-	int operand_register_size;
-	// Size directive.
-	uint16_t size_directive;
+	// Operand size.
+	uint16_t operand_size;
 };
 
-typedef uint16_t (*ira_size_directive_provider)( struct ira_diss_context *context );
+typedef uint16_t (*ira_operand_size_provider)( struct ira_diss_context *context );
 
 /* Structure used to decode  */
 struct ira_modm_decoding_args {
 	// Size directive provider.
-	ira_size_directive_provider size_directive_provider;
+	ira_operand_size_provider operand_size_provider;
 };
 
 /* Disassemblation tree. */
@@ -349,20 +346,10 @@ struct ira_instruction_desc {
 
 #define _IRA_IT_IA			0x00
 
-/* Operand register size. Adding new values here, you probably have to modify _ira_modrm_decode_register() also. */
+/* Operand size. */
 
-// Register size forced to 8 bits.
-#define _IRA_OR_8			0
-// Register size forced to 16 bits.
-#define _IRA_OR_16			1
-// Choose operand size (register) using EOSA.
-#define _IRA_OR_DEFAULT		2
-
-/* Size directive */
-
-// If operand size directive is set to _IRA_DEFAULT_SIZE_DIRECTIVE,
-// size is set to EOSA.
-#define _IRA_DEFAULT_SIZE_DIRECTIVE	0xFFFF
+// If operand size is set to _IRA_DEFAULT_OPERAND_SIZE, its size is calculated by EOSA.
+#define _IRA_DEFAULT_OPERAND_SIZE	0xFFFF
 
 /* Operands encoding */
 

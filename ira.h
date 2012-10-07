@@ -127,15 +127,15 @@
 
 /* Size directives */
 
-#define _IRA_SD_BYTE_PTR		8
-#define _IRA_SD_WORD_PTR		16
-#define _IRA_SD_DWORD_PTR		32
-#define _IRA_SD_FWORD_PTR		48
-#define _IRA_SD_QWORD_PTR		64
-#define _IRA_SD_MMWORD_PTR		64
-#define _IRA_SD_TBYTE_PTR		80
-#define _IRA_SD_OWORD_PTR		128
-#define _IRA_SD_XMMWORD_PTR		128
+#define _IRA_OS_BYTE		8
+#define _IRA_OS_WORD		16
+#define _IRA_OS_DWORD		32
+#define _IRA_OS_FWORD		48
+#define _IRA_OS_QWORD		64
+#define _IRA_OS_MMWORD		64
+#define _IRA_OS_TBYTE		80
+#define _IRA_OS_OWORD		128
+#define _IRA_OS_XMMWORD		128
 
 /* Data types. */
 #define _IRA_DT_UNKNOWN			0x0000
@@ -198,6 +198,7 @@ enum ira_operand_type {
 	IRA_REGISTER
 };
 
+// TODO: It has to be taken into account during RIP addressing.
 /*
  * Important aspect of RIP-relative addressing is, that it is not possible to use any other register
  * in the address, like [RIP+EAX] or similar. Another (not so obvious) aspect of RIP-relative addressing
@@ -260,6 +261,8 @@ struct ira_disassemble_info {
 	union ira_instruction_pointer instruction_pointer;
 };
 
+// Size of the immediate value is also described in size directive of
+// the operand, but it might be more convenient to have it here in some cases.
 enum ira_immediate_data_type {
 	IRA_NO_IMMEDIATE_DATA = 0,
 	IRA_IMMEDIATE_8 = 8,
@@ -390,9 +393,6 @@ struct ira_addressing {
 	union ira_address_value address_value;
 	// Implicit register addressing.
 	struct ira_register address_register;
-	// TODO: Przniesc to gdzies, to nie wielkosc adresu tylko
-	// wiekosc danych jakie trafia pod ten adres, trzeba znalezc na to lepsze miejsce.
-	uint16_t size_directive;
 	// ModRM addressing.
 	struct ira_mod_rm_addressing mod_rm;
 };
@@ -408,6 +408,8 @@ struct ira_instruction_operand {
 	struct ira_addressing addressing;
 	// Register.
 	struct ira_register reg;
+	// Operand size in bits.
+	uint16_t operand_size;
 };
 
 struct ira_instruction_prefix {
