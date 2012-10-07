@@ -48,14 +48,4 @@
  */
 uint16_t _ira_common_decode_size_directive( uint8_t effective_operand_size_attribute, uint8_t effective_address_size_attribute, uint8_t encoded_operand_size );
 
-
-//! Decodes GPR register type by operand size given in argument.
-/*!
- * \brief Maps operand size given in argument to appropriate general purpose register.
- *
- * \param operand_size Operand size used to decode register.
- * \return Decoded GPR.
- */
-enum ira_register_type _ira_common_decode_gpr_type( uint16_t operand_size );
-
 #endif /* COMMON_H_ */

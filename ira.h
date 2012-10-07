@@ -115,6 +115,14 @@
 #define _IRA_REG_R15	15
 #define _IRA_REG_XMM15	15
 
+/* GPR sizes. */
+
+#define _IRA_GPRS_UNDEFINED	0
+#define _IRA_GPRS_8			8
+#define _IRA_GPRS_16		16
+#define _IRA_GPRS_32		32
+#define _IRA_GPRS_64		64
+
 /* Segment registers */
 
 #define _IRA_SEG_REG_NONE	0
@@ -209,21 +217,19 @@ enum ira_operand_type {
 
 enum ira_register_type {
 	IRA_NO_REG = 0,
-	IRA_REG_GPR_8,
-	IRA_REG_GPR_16,
-	IRA_REG_GPR_32,
-	IRA_REG_GPR_64,
+	IRA_REG_GPR,
 	IRA_REG_MMX,
-	IRA_REG_XMM,
-	IRA_REG_GPR
+	IRA_REG_XMM
 };
 
 /* Common structure to describe register. */
 struct ira_register {
 	// Type of the register encoded in next field.
 	enum ira_register_type reg_type;
+	// Size of the register if bytes. Used mainly in case of GPR.
+	uint16_t reg_size;
 	// Register.
-	int reg;
+	uint8_t reg;
 };
 
 // Allowed values of size attributes (ASA/OSA).

@@ -155,10 +155,8 @@ struct ira_reg_addressing_arg {
 struct ira_reg_type_args {
 	// Attribute used to calculate register size, if calculation is needed.
 	enum SizeAttributeType size_attribute_type;
-	// Register type.
-	enum ira_register_type reg_type;
-	// Register number.
-	int reg;
+	// Register details.
+	struct ira_register reg;
 };
 
 /* Structure that can be used to pass condition type to operand decoding function. */
@@ -452,8 +450,8 @@ struct ira_instruction_desc {
 #define _IRA_IMPLICIT_REG_ASA(reg_type,reg_num)			( _IRA_IMPLICIT_REG_BASE_ASA | reg_type << 4 | reg_num )
 
 // Register field in opcode byte.
-#define _IRA_OPERAND_OPCODE_REG_BASE				0x0F000000
-#define _IRA_OPERAND_OPCODE_REG(reg_type)			( _IRA_OPERAND_OPCODE_REG_BASE | reg_type )
+#define _IRA_OPERAND_OPCODE_REG_BASE					0x0F000000
+#define _IRA_OPERAND_OPCODE_REG(reg_type, reg_size)	( _IRA_OPERAND_OPCODE_REG_BASE | reg_type << 16 | reg_size)
 
 // Relative addressing.
 #define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x10000000

@@ -266,9 +266,9 @@ struct ira_opcode_desc _ira_opcode_desc_BSR[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_BSWAP[] = {
 	// 0F C8+rd BSWAP r32 A Valid* Valid Reverses the byte order of a 32-bit register.
-	{ NULL, 0x0001, 0x00D80001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR_32 ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_32 ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// REX.W + 0F C8+rd BSWAP r64 A Valid N.E. Reverses the byte order of a 64-bit register.
-	{ NULL, 0x0009, 0x00980001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR_64 ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0009, 0x00980001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_64 ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BT[] = {
