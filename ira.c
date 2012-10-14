@@ -1654,7 +1654,14 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 			mod_rm->displacement = decoded_mod_rm->displacement;
 
 			// Calculate segment selector.
-			//if( mod_rm->base_reg.reg_type ==  )
+			struct ira_segment_selector *segment_selector = &(operand->addressing.segment_selector);
+			segment_selector->segment_register_value = 0;
+
+			if( mod_rm->base_reg.reg_type == IRA_REG_GPR && ( mod_rm->base_reg.reg == _IRA_REG_BP || mod_rm->base_reg.reg == _IRA_REG_SP ) ) {
+				segment_selector->segment_register = _IRA_SEG_REG_SS;
+			} else {
+				segment_selector->segment_register = _ira_util_override_segment_reg( context, _IRA_SEG_REG_DS );
+			}
 		}
 
 		result = _IRA_INT_ERROR_NO_ERROR;
@@ -2212,8 +2219,8 @@ uint8_t _ira_util_override_segment_reg( struct ira_diss_context *context, uint8_
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	int i;
 	for( i = 0; i < decoding_context->instruction_prefix_count; i++ ) {
-		if( context->decoding_context.prefixes[i].prefix_type == IRA_GROUP_2 ) {
-			struct ira_instruction_prefix *prefix = &(context->decoding_context.prefixes[i]);
+		struct ira_instruction_prefix *prefix = &(context->decoding_context.prefixes[i]);
+		if( prefix->prefix_type == IRA_GROUP_2 && !prefix->mandatory_prefix ) {
 			switch( prefix->prefix ) {
 			case 0x2E:
 				reg = _IRA_SEG_REG_CS;

@@ -8,3 +8,7 @@ Zastanowiæ siê wrescie nad implementacja DS, ES itd rejestrów segmentowych.
 Branch hints:
 • 2EH—Branch not taken (used only with Jcc instructions)
 • 3EH—Branch taken (used only with Jcc instructions)
+
+14.10.2012
+Sprawdziæ segment register dla trybów adreowania la instrukcji skoków, czy DS , czy moze CS takih jak CALL, bo aktualnie wszystkie
+dotaja DS.

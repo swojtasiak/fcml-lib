@@ -259,6 +259,10 @@ struct ira_opcode_desc {
 struct ira_instruction_desc {
 	// Mnemonic.
 	char *mnemonic;
+	// tODO: Dodac na koncu.
+	/*// Instruction group.
+	uint16_t instruction_group;
+	*/
 	// Type of the instruction.
 	uint8_t instruction_type;
 	// Number of opcodes' descriptions.
