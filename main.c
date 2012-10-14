@@ -136,10 +136,57 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
-	// CMPSD
-	//	_TEST32( "f20fc2402050 cmpss xmm0,dword ptr [eax+00000020h],50h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
-	//	_TEST64( "f20fc2402050 cmpss xmm0,dword ptr [rax+0000000000000020h],50h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+	// CVTPD2DQ
+	_TEST64( "f20fe64020 cvtpd2dq xmm0,oword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0xE6, 0x40, 0x20, 0x50 );
+	_TEST32( "f20fe6c2 cvtpd2dq xmm0,xmm2", 0xF2, 0x0F, 0xE6, 0xC2 );
+	_TEST32( "f20fe64020 cvtpd2dq xmm0,oword ptr [eax+00000020h]", 0xF2, 0x0F, 0xE6, 0x40, 0x20, 0x50 );
 
+	// CVTDQ2PS
+	_TEST64( "0f5b4020 cvtdq2ps xmm0,oword ptr [rax+0000000000000020h]", 0x0F, 0x5b, 0x40, 0x20, 0x50 );
+	_TEST32( "0f5bc2 cvtdq2ps xmm0,xmm2", 0x0F, 0x5b, 0xC2 );
+	_TEST32( "0f5b4020 cvtdq2ps xmm0,oword ptr [eax+00000020h]", 0x0F, 0x5b, 0x40, 0x20, 0x50 );
+
+	// CVTDQ2PD
+	_TEST64( "f30fe64020 cvtdq2pd xmm0,qword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0xE6, 0x40, 0x20, 0x50 );
+	_TEST32( "f30fe6c2 cvtdq2pd xmm0,xmm2", 0xF3, 0x0F, 0xE6, 0xC2 );
+	_TEST32( "f30fe64020 cvtdq2pd xmm0,qword ptr [eax+00000020h]", 0xF3, 0x0F, 0xE6, 0x40, 0x20, 0x50 );
+
+	// CRC32
+	// F2 0F 38 F0 /r CRC32 r32, r/m8 A Valid Valid Accumulate CRC32 on r/m8.
+	// F2 REX 0F 38 F0 /r CRC32 r32, r/m8* A Valid N.E. Accumulate CRC32 on r/m8.
+	_TEST64( "f2400f38f04020 crc32 eax,byte ptr [rax+0000000000000020h]", 0xF2, 0x40, 0x0F, 0x38, 0xF0, 0x40, 0x20, 0x50 );
+	_TEST64( "66f20f38f04020 crc32 eax,byte ptr [rax+0000000000000020h]", 0x66, 0xF2, 0x0F, 0x38, 0xF0, 0x40, 0x20, 0x50 );
+	_TEST64( "f20f38f04020 crc32 eax,byte ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x38, 0xF0, 0x40, 0x20, 0x50 );
+	_TEST32( "66f20f38f04020 crc32 eax,byte ptr [eax+00000020h]", 0x66, 0xF2, 0x0F, 0x38, 0xF0, 0x40, 0x20, 0x50 );
+	_TEST32( "f20f38f04020 crc32 eax,byte ptr [eax+00000020h]", 0xF2, 0x0F, 0x38, 0xF0, 0x40, 0x20, 0x50 );
+	// F2 REX.W 0F 38 F0 /r CRC32 r64, r/m8 A Valid N.E. Accumulate CRC32 on r/m8.
+	_TEST64( "f2480f38f04020 crc32 rax,byte ptr [rax+0000000000000020h]", 0xF2, 0x48, 0x0F, 0x38, 0xF0, 0x40, 0x20, 0x50 );
+
+	// F2 0F 38 F1 /r CRC32 r32, r/m16 A Valid Valid Accumulate CRC32 on r/m16.
+	// F2 0F 38 F1 /r CRC32 r32, r/m32 A Valid Valid Accumulate CRC32 on r/m32.
+	_TEST64( "f2400f38f14020 crc32 eax,dword ptr [rax+0000000000000020h]", 0xF2, 0x40, 0x0F, 0x38, 0xF1, 0x40, 0x20, 0x50 );
+	_TEST64( "66f20f38f14020 crc32 eax,word ptr [rax+0000000000000020h]", 0x66, 0xF2, 0x0F, 0x38, 0xF1, 0x40, 0x20, 0x50 );
+	_TEST64( "f20f38f14020 crc32 eax,dword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x38, 0xF1, 0x40, 0x20, 0x50 );
+	_TEST32( "66f20f38f14020 crc32 eax,word ptr [eax+00000020h]", 0x66, 0xF2, 0x0F, 0x38, 0xF1, 0x40, 0x20, 0x50 );
+	_TEST32( "f20f38f14020 crc32 eax,dword ptr [eax+00000020h]", 0xF2, 0x0F, 0x38, 0xF1, 0x40, 0x20, 0x50 );
+	// F2 REX.W 0F 38 F1 /r CRC32 r64, r/m64 A Valid N.E. Accumulate CRC32 on r/m64.
+	_TEST64( "f2480f38f14020 crc32 rax,qword ptr [rax+0000000000000020h]", 0xF2, 0x48, 0x0F, 0x38, 0xF1, 0x40, 0x20, 0x50 );
+
+	// CPUID
+	_TEST64( "0fa2 cpuid", 0x0F, 0xA2 );
+	_TEST32( "0fa2 cpuid", 0x0F, 0xA2 );
+
+	// COMISS
+	_TEST64( "0f2fc2 comiss xmm0,xmm2", 0x0F, 0x2F, 0xC2, 0x40, 0x20, 0x50 );
+	_TEST64( "0f2f4020 comiss xmm0,dword ptr [rax+0000000000000020h]", 0x0F, 0x2F, 0x40, 0x20, 0x50 );
+	_TEST32( "0f2fc2 comiss xmm0,xmm2", 0x0F, 0x2F, 0xC2 );
+	_TEST32( "0f2f4020 comiss xmm0,dword ptr [eax+00000020h]", 0x0F, 0x2F, 0x40, 0x20, 0x50 );
+
+	// COMISD
+	_TEST64( "660f2fc2 comisd xmm0,xmm2", 0x66, 0x0F, 0x2F, 0xC2, 0x40, 0x20, 0x50 );
+	_TEST64( "660f2f4020 comisd xmm0,qword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x2F, 0x40, 0x20, 0x50 );
+	_TEST32( "660f2fc2 comisd xmm0,xmm2", 0x66, 0x0F, 0x2F, 0xC2 );
+	_TEST32( "660f2f4020 comisd xmm0,qword ptr [eax+00000020h]", 0x66, 0x0F, 0x2F, 0x40, 0x20, 0x50 );
 
 	// CMPS
 	// A6
@@ -170,8 +217,12 @@ void test(void) {
 
 	// CMPSS
 	// dodac support dla mmword i odkomentowac.
-	//_TEST64( "f30fc2402050 cmpss xmm0,dword ptr [rax+0000000000000020h],50h", 0xF3, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
-	//_TEST32( "f30fc2402050 cmpss xmm0,dword ptr [eax+00000020h],50h", 0xF3, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+	_TEST64( "f30fc2402050 cmpss xmm0,dword ptr [rax+0000000000000020h],50h", 0xF3, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+	_TEST32( "f30fc2402050 cmpss xmm0,dword ptr [eax+00000020h],50h", 0xF3, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+
+	// CMPSD
+	_TEST32( "f20fc2402050 cmpsd xmm0,qword ptr [eax+00000020h],50h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+	_TEST64( "f20fc2402050 cmpsd xmm0,qword ptr [rax+0000000000000020h],50h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
 
 	// JMP
 	_TEST32( "ebff jmp 00401001h", 0xeb, 0xff );

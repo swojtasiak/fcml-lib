@@ -943,21 +943,29 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_BYTE, &result );
 			break;
-		case _IRA_R_8:
-			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_BYTE, &result );
-			break;
 		case _IRA_RM_16:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_WORD, &result );
-			break;
-		case _IRA_R_16:
-			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_WORD, &result );
 			break;
 		case _IRA_RM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_DEFAULT_OPERAND_SIZE, &result );
+			break;
+		case _IRA_R_8:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_BYTE, &result );
+			break;
+		case _IRA_R_16:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_WORD, &result );
+			break;
+		case _IRA_R_32:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_DWORD, &result );
+			break;
+		case _IRA_R_64:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_QWORD, &result );
 			break;
 		case _IRA_R:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
@@ -2090,7 +2098,6 @@ int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediat
 }
 
 uint16_t _ira_determine_gpr_size( struct ira_diss_context *context, enum SizeAttributeType size_attribute_type ) {
-	enum ira_register_type reg_type = IRA_REG_GPR;
 	uint16_t sa;
 	if( size_attribute_type == IRA_SAT_OSA ) {
 		// OSA

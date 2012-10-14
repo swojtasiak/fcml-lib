@@ -513,6 +513,54 @@ struct ira_opcode_desc _ira_opcode_desc_CMPXCHGxB[] = {
 	{ "cmpxchg16b", 0x0001, 0x04D98800, { 0x0F, 0xC7, 0x00 }, _IRA_OPERAND_MODRM_MM_OSA, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
+// MMWORD
+struct ira_opcode_desc _ira_opcode_desc_COMISD[] = {
+	// 66 0F 2F /r COMISD xmm1, xmm2/m64 A Valid Valid Compare low doubleprecision floating-point values in xmm1 and xmm2/mem64 and set the EFLAGS flags accordingly.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x2F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+// MMWORD
+struct ira_opcode_desc _ira_opcode_desc_COMISS[] = {
+	// 0F 2F /r COMISS xmm1, xmm2/m32 A Valid Valid Compare low singleprecision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x2F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_32_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CPUID[] = {
+	// 0F A2 CPUID A Valid Valid Returns processor identification and feature information to the EAX, EBX, ECX, and EDX registers, as determined by input entered in EAX (in some cases, ECX as well).
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA2, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CRC32[] = {
+	// F2 0F 38 F0 /r CRC32 r32, r/m8 A Valid Valid Accumulate CRC32 on r/m8.
+	// F2 REX 0F 38 F0 /r CRC32 r32, r/m8* A Valid N.E. Accumulate CRC32 on r/m8.
+	{ NULL, 0x2001, 0x03EC8000, { 0x0F, 0x38, 0xF0 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
+	// F2 REX.W 0F 38 F0 /r CRC32 r64, r/m8 A Valid N.E. Accumulate CRC32 on r/m8.
+	{ NULL, 0x2009, 0x04AC8000, { 0x0F, 0x38, 0xF0 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
+	// F2 0F 38 F1 /r CRC32 r32, r/m16 A Valid Valid Accumulate CRC32 on r/m16.
+	// F2 0F 38 F1 /r CRC32 r32, r/m32 A Valid Valid Accumulate CRC32 on r/m32.
+	{ NULL, 0x2001, 0x03EC8000, { 0x0F, 0x38, 0xF1 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA },
+	// F2 REX.W 0F 38 F1 /r CRC32 r64, r/m64 A Valid N.E. Accumulate CRC32 on r/m64.
+	{ NULL, 0x2009, 0x04AC8000, { 0x0F, 0x38, 0xF1 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA },
+};
+
+// MMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTDQ2PD[] = {
+	// F3 0F E6 CVTDQ2PD xmm1, xmm2/m64 A Valid Valid Convert two packed signed doubleword integers from xmm2/m128 to two packed double-precision floatingpoint values in xmm1.
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0xE6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTDQ2PS[] = {
+	// 0F 5B /r CVTDQ2PS xmm1, xmm2/m128 A Valid Valid Convert four packed signed doubleword integers from xmm2/m128 to four packed single-precision floatingpoint
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5B, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTPD2DQ[] = {
+	// F2 0F E6 CVTPD2DQ xmm1, xmm2/m128 A Valid Valid Convert two packed doubleprecision floating-point values from xmm2/m128 to two packed signed doubleword integers in xmm1.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xE6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -565,13 +613,18 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "jmp", _ira_opcode_desc_JMP),
 		_IA_INSTRUCTION( "cmppd", _ira_opcode_desc_CMPPD),
 		_IA_INSTRUCTION( "cmpps", _ira_opcode_desc_CMPPS),
-		// TODO:CMPS
-		// TODO:CMPSW/CMPSD/CMPSQ
 		_IA_INSTRUCTION( "cmps", _ira_opcode_desc_CMPS),
 		_IA_INSTRUCTION( "cmpsd", _ira_opcode_desc_CMPSD),
 		_IA_INSTRUCTION( "cmpss", _ira_opcode_desc_CMPSS),
 		_IA_INSTRUCTION( "cmpxchg", _ira_opcode_desc_CMPXCHG),
 		_IA_INSTRUCTION( "cmpxchg8b", _ira_opcode_desc_CMPXCHGxB),
+		_IA_INSTRUCTION( "comisd", _ira_opcode_desc_COMISD),
+		_IA_INSTRUCTION( "comiss", _ira_opcode_desc_COMISS),
+		_IA_INSTRUCTION( "cpuid", _ira_opcode_desc_CPUID),
+		_IA_INSTRUCTION( "crc32", _ira_opcode_desc_CRC32),
+		_IA_INSTRUCTION( "cvtdq2pd", _ira_opcode_desc_CVTDQ2PD),
+		_IA_INSTRUCTION( "cvtdq2ps", _ira_opcode_desc_CVTDQ2PS),
+		_IA_INSTRUCTION( "cvtpd2dq", _ira_opcode_desc_CVTPD2DQ),
 		{ NULL, 0, 0, NULL }
 };
 

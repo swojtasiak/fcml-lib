@@ -12,3 +12,7 @@ Branch hints:
 14.10.2012
 Sprawdziæ segment register dla trybów adreowania la instrukcji skoków, czy DS , czy moze CS takih jak CALL, bo aktualnie wszystkie
 dotaja DS.
+
+Dodaæ renderowanie rjestrów segmentowych.
+
+Podczas assemblacji dodaæ obs³ugê: CMPSW/CMPSD/CMPSQ

@@ -392,20 +392,24 @@ struct ira_instruction_desc {
 #define _IRA_R_8		1
 #define _IRA_RM_16		2
 #define _IRA_R_16		3
-#define _IRA_RM			4
-#define _IRA_R			5
-#define _IRA_RM_MMX		6
-#define _IRA_R_MMX		7
-#define _IRA_RM_XMM_128	8
-#define _IRA_R_XMM_128	9
-#define _IRA_RM_XMM_64	10
-#define _IRA_R_XMM_64	11
-#define _IRA_RM_XMM_32	12
-#define _IRA_R_XMM_32	13
+#define _IRA_RM_32		4
+#define _IRA_R_32		5
+#define _IRA_RM_64		6
+#define _IRA_R_64		7
+#define _IRA_RM			8
+#define _IRA_R			9
+#define _IRA_RM_MMX		10
+#define _IRA_R_MMX		11
+#define _IRA_RM_XMM_128	12
+#define _IRA_R_XMM_128	13
+#define _IRA_RM_XMM_64	14
+#define _IRA_R_XMM_64	15
+#define _IRA_RM_XMM_32	16
+#define _IRA_R_XMM_32	17
 // m16&16, m32&32.
-#define _IRA_OSA_MM		14
+#define _IRA_OSA_MM		18
 // m8
-#define _IRA_M_8		15
+#define _IRA_M_8		19
 
 /* ModRM based operands. */
 
@@ -421,6 +425,10 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_R_8_W		( _IRA_OPERAND_MODRM_R_8 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R_16			_IRA_MODRM(_IRA_R_16)
 #define _IRA_OPERAND_MODRM_R_16_W		( _IRA_OPERAND_MODRM_R_16 | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_R_32			_IRA_MODRM(_IRA_R_32)
+#define _IRA_OPERAND_MODRM_R_32_W		( _IRA_OPERAND_MODRM_R_32 | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_R_64			_IRA_MODRM(_IRA_R_64)
+#define _IRA_OPERAND_MODRM_R_64_W		( _IRA_OPERAND_MODRM_R_64 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R		_IRA_MODRM(_IRA_R)
 #define _IRA_OPERAND_MODRM_R_W		( _IRA_OPERAND_MODRM_R | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_RM_MMX		_IRA_MODRM(_IRA_RM_MMX)

@@ -23,3 +23,18 @@ In 64-Bit Mode — The instruction’s operation size is fixed at 64 bits.
 000000000040100D 67 E3 FF         jecxz       000000000040100F 
 0000000000401010 66 E3 FF         jrcxz       0000000000001012 <-- The same problem as above.
 0000000000401013 67 66 E3 FF      jecxz       0000000000001016 <-- The same problem as above.
+
+3. CRC32 Disassemblation bug.
+
+Starting with an initial value in the first operand (destination operand), accumulates
+a CRC32 (polynomial 0x11EDC6F41) value for the second operand (source operand)
+and stores the result in the destination operand. The source operand can be a
+register or a memory location. The destination operand must be an r32 or r64
+register. If the destination is an r64 register, then the 32-bit result is stored in the
+least significant double word and 00000000H is stored in the most significant double
+word of the r64 register.
+
+So disassembler shouldn't respect 0x66 prefix:
+
+66f20f38f04020  crc32   ax,byte ptr [rax+20h] (Wrong!)
+
