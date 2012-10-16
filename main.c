@@ -136,15 +136,45 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// CVTPS2PI
+	_TEST64( "0f2d4020 cvtps2pi mm0,qword ptr [rax+0000000000000020h]", 0x0F, 0x2D, 0x40, 0x20 );
+	_TEST32( "0f2dc2 cvtps2pi mm0,xmm2", 0x0F, 0x2D, 0xC2 );
+	_TEST32( "0f2d4020 cvtps2pi mm0,qword ptr [eax+00000020h]", 0x0F, 0x2D, 0x40, 0x20 );
+
+	// CVTPS2PD
+	_TEST64( "0f5a4020 cvtps2pd xmm0,qword ptr [rax+0000000000000020h]", 0x0F, 0x5A, 0x40, 0x20 );
+	_TEST32( "0f5ac2 cvtps2pd xmm0,xmm2", 0x0F, 0x5A, 0xC2 );
+	_TEST32( "0f5a4020 cvtps2pd xmm0,qword ptr [eax+00000020h]", 0x0F, 0x5A, 0x40, 0x20 );
+
+	// CVTPS2DQ
+	_TEST64( "660f5b4020 cvtps2dq xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x5B, 0x40, 0x20 );
+	_TEST32( "660f5bc2 cvtps2dq xmm0,xmm2", 0x66, 0x0F, 0x5B, 0xC2 );
+	_TEST32( "660f5b4020 cvtps2dq xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x5B, 0x40, 0x20 );
+
+	// CVTPI2PS
+	_TEST64( "0f2a4020 cvtpi2ps xmm0,dword ptr [rax+0000000000000020h]", 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST32( "0f2ac2 cvtpi2ps xmm0,mm2", 0x0F, 0x2A, 0xC2 );
+	_TEST32( "0f2a4020 cvtpi2ps xmm0,dword ptr [eax+00000020h]", 0x0F, 0x2A, 0x40, 0x20 );
+
+	// CVTPI2PD
+	_TEST64( "660f2a4020 cvtpi2pd xmm0,dword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST32( "660f2ac2 cvtpi2pd xmm0,mm2", 0x66, 0x0F, 0x2A, 0xC2 );
+	_TEST32( "660f2a4020 cvtpi2pd xmm0,dword ptr [eax+00000020h]", 0x66, 0x0F, 0x2A, 0x40, 0x20 );
+
+	// CVTPD2PI
+	_TEST64( "660f2d4020 cvtpd2pi mm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x2D, 0x40, 0x20 );
+	_TEST32( "660f2dc2 cvtpd2pi mm0,xmm2", 0x66, 0x0F, 0x2D, 0xC2 );
+	_TEST32( "660f2d4020 cvtpd2pi mm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x2D, 0x40, 0x20 );
+
 	// CVTPD2DQ
-	_TEST64( "f20fe64020 cvtpd2dq xmm0,oword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0xE6, 0x40, 0x20, 0x50 );
+	_TEST64( "f20fe64020 cvtpd2dq xmm0,oword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0xE6, 0x40, 0x20 );
 	_TEST32( "f20fe6c2 cvtpd2dq xmm0,xmm2", 0xF2, 0x0F, 0xE6, 0xC2 );
-	_TEST32( "f20fe64020 cvtpd2dq xmm0,oword ptr [eax+00000020h]", 0xF2, 0x0F, 0xE6, 0x40, 0x20, 0x50 );
+	_TEST32( "f20fe64020 cvtpd2dq xmm0,oword ptr [eax+00000020h]", 0xF2, 0x0F, 0xE6, 0x40, 0x20 );
 
 	// CVTDQ2PS
-	_TEST64( "0f5b4020 cvtdq2ps xmm0,oword ptr [rax+0000000000000020h]", 0x0F, 0x5b, 0x40, 0x20, 0x50 );
+	_TEST64( "0f5b4020 cvtdq2ps xmm0,oword ptr [rax+0000000000000020h]", 0x0F, 0x5b, 0x40, 0x20 );
 	_TEST32( "0f5bc2 cvtdq2ps xmm0,xmm2", 0x0F, 0x5b, 0xC2 );
-	_TEST32( "0f5b4020 cvtdq2ps xmm0,oword ptr [eax+00000020h]", 0x0F, 0x5b, 0x40, 0x20, 0x50 );
+	_TEST32( "0f5b4020 cvtdq2ps xmm0,oword ptr [eax+00000020h]", 0x0F, 0x5b, 0x40, 0x20 );
 
 	// CVTDQ2PD
 	_TEST64( "f30fe64020 cvtdq2pd xmm0,qword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0xE6, 0x40, 0x20, 0x50 );

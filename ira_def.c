@@ -561,6 +561,48 @@ struct ira_opcode_desc _ira_opcode_desc_CVTPD2DQ[] = {
 	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xE6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
 };
 
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTPD2PI[] = {
+	// 66 0F 2D /r CVTPD2PI mm, xmm/m128 A Valid Valid Convert two packed doubleprecision floating-point values from xmm/m128 to two packed signed doubleword integers in mm.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x2D, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTPD2PS[] = {
+	// 66 0F 5A /r CVTPD2PS//  xmm1,xmm2/m128 A Valid Valid Convert two packed doubleprecision floating-point values in xmm2/m128 to two packed single-precision floating-point values in xmm1.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5A, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTPI2PD[] = {
+	// 66 0F 2A /r CVTPI2PD xmm, mm/m64* A Valid Valid Convert two packed signed doubleword integers from mm/mem64 to two packed double-precision floatingpoint values in xmm.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x2A, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTPI2PS[] = {
+	// 0F 2A /r CVTPI2PS xmm, mm/m64 A Valid Valid Convert two signed doubleword integers from mm/m64 to two singleprecision floating-point values in xmm.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x2A, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTPS2DQ[] = {
+	// 66 0F 5B /r CVTPS2DQ xmm1, xmm2/m128 A Valid Valid Convert four packed singleprecision floating-point values from xmm2/m128 to four packed signed doubleword integers in xmm1.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5B, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTPS2PD[] = {
+	// 0F 5A /r CVTPS2PD xmm1, xmm2/m64 A Valid Valid Convert two packed singleprecision floating-point values in xmm2/m64 to two packed double-precision floating-point values in xmm1.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5A, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTPS2PI[] = {
+	// 0F 2D /r CVTPS2PI mm, xmm/m64 A Valid Valid Convert two packed singleprecision floating-point values from xmm/m64 to two packed signed doubleword integers in mm.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x2D, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -625,6 +667,13 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "cvtdq2pd", _ira_opcode_desc_CVTDQ2PD),
 		_IA_INSTRUCTION( "cvtdq2ps", _ira_opcode_desc_CVTDQ2PS),
 		_IA_INSTRUCTION( "cvtpd2dq", _ira_opcode_desc_CVTPD2DQ),
+		_IA_INSTRUCTION( "cvtpd2pi", _ira_opcode_desc_CVTPD2PI),
+		_IA_INSTRUCTION( "cvtpd2ps", _ira_opcode_desc_CVTPD2PS),
+		_IA_INSTRUCTION( "cvtpi2pd", _ira_opcode_desc_CVTPI2PD),
+		_IA_INSTRUCTION( "cvtpi2ps", _ira_opcode_desc_CVTPI2PS),
+		_IA_INSTRUCTION( "cvtps2dq", _ira_opcode_desc_CVTPS2DQ),
+		_IA_INSTRUCTION( "cvtps2pd", _ira_opcode_desc_CVTPS2PD),
+		_IA_INSTRUCTION( "cvtps2pi", _ira_opcode_desc_CVTPS2PI),
 		{ NULL, 0, 0, NULL }
 };
 
