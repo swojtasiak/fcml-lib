@@ -947,6 +947,14 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_WORD, &result );
 			break;
+		case _IRA_RM_32:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_DWORD, &result );
+			break;
+		case _IRA_RM_64:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_OS_QWORD, &result );
+			break;
 		case _IRA_RM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_DEFAULT_OPERAND_SIZE, &result );
