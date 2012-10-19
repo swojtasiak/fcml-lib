@@ -295,8 +295,12 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		if( _IRA_PREFIX_REX_W_1( current->allowed_prefixes ) ) {
 			int rex_found = 0;
 			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
-			prefixes_ok = ( rex_found && _IRA_REX_W( rex ) );
-		} else if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
+			if( ! ( rex_found && _IRA_REX_W( rex ) ) ) {
+				continue;
+			}
+		}
+
+		if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0x66);
 		} else if( _IRA_PREFIX_MANDATORY_F2( current->allowed_prefixes ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF2);

@@ -624,6 +624,27 @@ struct ira_opcode_desc _ira_opcode_desc_CVTSI2SD[] = {
 	{ NULL, 0x2009, 0x04988000, { 0x0F, 0x2A, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA },
 };
 
+struct ira_opcode_desc _ira_opcode_desc_CVTSI2SS[] = {
+	// F3 0F 2A /r CVTSI2SS xmm, r/m32 A Valid Valid Convert one signed doubleword integer from r/m32 to one singleprecision floating-point value in xmm.
+	{ NULL, 0x4001, 0x03D88000, { 0x0F, 0x2A, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// F3 REX.W 0F 2A /r CVTSI2SS xmm, r/m64 A Valid N.E. Convert one signed quadword integer from r/m64 to one singleprecision floating-point value in xmm.
+	{ NULL, 0x4009, 0x04988000, { 0x0F, 0x2A, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA },
+};
+
+// MMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTSS2SD[] = {
+	// F3 0F 5A /r CVTSS2SD xmm1, xmm2/m32 A Valid Valid Convert one single-precision floating-point value in xmm2/m32 to one doubleprecision floating-point value in xmm1.
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5A, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+};
+
+// MMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTSS2SI[] = {
+	// F3 0F 2D /r CVTSS2SI r32, xmm/m32 A Valid Valid Convert one single-precision floating-point value from xmm/m32 to one signed doubleword integer in r32.
+	{ NULL, 0x4001, 0x03D88000, { 0x0F, 0x2D, 0x00 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// F3 REX.W 0F 2D /r CVTSS2SI r64, xmm/m32 A Valid N.E. Convert one single-precision floating-point value from xmm/m32 to one signed quadword integer in r64.
+	{ NULL, 0x4009, 0x04988000, { 0x0F, 0x2D, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -698,6 +719,9 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "cvtsd2si", _ira_opcode_desc_CVTSD2SI),
 		_IA_INSTRUCTION( "cvtsd2ss", _ira_opcode_desc_CVTSD2SS),
 		_IA_INSTRUCTION( "cvtsi2sd", _ira_opcode_desc_CVTSI2SD),
+		_IA_INSTRUCTION( "cvtsi2ss", _ira_opcode_desc_CVTSI2SS),
+		_IA_INSTRUCTION( "cvtss2sd", _ira_opcode_desc_CVTSS2SD),
+		_IA_INSTRUCTION( "cvtss2si", _ira_opcode_desc_CVTSS2SI),
 		{ NULL, 0, 0, NULL }
 };
 

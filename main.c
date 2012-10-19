@@ -136,6 +136,27 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// CVTSS2SI
+	_TEST64( "f3480f2dc2 cvtss2si rax,xmm2", 0xF3, 0x48, 0x0F, 0x2D, 0xC2 );
+	_TEST64( "f30f2d4020 cvtss2si eax,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x2D, 0x40, 0x20 );
+	_TEST32( "f30f2dc2 cvtss2si eax,xmm2", 0xF3, 0x0F, 0x2D, 0xC2 );
+	_TEST32( "f30f2d4020 cvtss2si eax,dword ptr [eax+00000020h]", 0xF3, 0x0F, 0x2D, 0x40, 0x20 );
+	_TEST64( "f30f2d4020 cvtss2si eax,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x2D, 0x40, 0x20 );
+	_TEST64( "f30f2dc2 cvtss2si eax,xmm2", 0xF3, 0x0F, 0x2D, 0xC2 );
+
+	// CVTSS2SD
+	_TEST64( "f30f5a4020 cvtss2sd xmm0,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x5A, 0x40, 0x20 );
+	_TEST32( "f30f5ac2 cvtss2sd xmm0,xmm2", 0xF3, 0x0F, 0x5A, 0xC2 );
+	_TEST32( "f30f5a4020 cvtss2sd xmm0,dword ptr [eax+00000020h]", 0xF3, 0x0F, 0x5A, 0x40, 0x20 );
+
+	// CVTSI2SS
+	_TEST64( "f3480f2ac2 cvtsi2ss xmm0,rdx", 0xF3, 0x48, 0x0F, 0x2A, 0xC2 );
+	_TEST64( "f30f2a4020 cvtsi2ss xmm0,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST32( "f30f2ac2 cvtsi2ss xmm0,edx", 0xF3, 0x0F, 0x2A, 0xC2 );
+	_TEST32( "f30f2a4020 cvtsi2ss xmm0,dword ptr [eax+00000020h]", 0xF3, 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST64( "f30f2a4020 cvtsi2ss xmm0,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST64( "f30f2ac2 cvtsi2ss xmm0,edx", 0xF3, 0x0F, 0x2A, 0xC2 );
+
 	// CVTSI2SD
 	_TEST64( "f20f2a4020 cvtsi2sd xmm0,dword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x2A, 0x40, 0x20 );
 	_TEST32( "f20f2ac2 cvtsi2sd xmm0,edx", 0xF2, 0x0F, 0x2A, 0xC2 );
