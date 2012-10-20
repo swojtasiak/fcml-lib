@@ -138,6 +138,7 @@
 
 #define _IRA_REG_AH		4
 #define _IRA_REG_SP		4
+#define _IRA_REG_SPL	4
 #define _IRA_REG_ESP	4
 #define _IRA_REG_RSP	4
 #define _IRA_REG_MM4	4
@@ -145,6 +146,7 @@
 
 #define _IRA_REG_CH		5
 #define _IRA_REG_BP		5
+#define _IRA_REG_BPL	5
 #define _IRA_REG_EBP	5
 #define _IRA_REG_RBP	5
 #define _IRA_REG_MM5	5
@@ -152,6 +154,7 @@
 
 #define _IRA_REG_DH		6
 #define _IRA_REG_SI		6
+#define _IRA_REG_SIL	6
 #define _IRA_REG_ESI	6
 #define _IRA_REG_RSI	6
 #define _IRA_REG_MM6	6
@@ -159,6 +162,7 @@
 
 #define _IRA_REG_BH		7
 #define _IRA_REG_DI		7
+#define _IRA_REG_DIL	7
 #define _IRA_REG_EDI	7
 #define _IRA_REG_RDI	7
 #define _IRA_REG_MM7	7

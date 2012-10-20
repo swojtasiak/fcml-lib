@@ -136,6 +136,83 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// DEC
+	// 48+rw DEC r16 B N.E. Valid Decrement r16 by 1.
+	// 48+rd DEC r32 B N.E. Valid Decrement r32 by 1.
+	_TEST32( "48 dec eax", 0x48 );
+	_TEST32( "6648 dec ax", 0x66, 0x48 );
+	_TEST32( "49 dec ecx", 0x49 );
+	_TEST32( "6649 dec cx", 0x66, 0x49 );
+	_TEST64( "FAIL", 0x48 );
+	// FE /1 DEC r/m8 A Valid Valid Decrement r/m8 by 1.
+	// REX + FE /1 DEC r/m8* A Valid N.E. Decrement r/m8 by 1.
+	_TEST32( "fe0b dec byte ptr [ebx]", 0xFE, 0x0B );
+	_TEST64( "fe0b dec byte ptr [rbx]", 0xFE, 0x0B );
+	_TEST64( "48fe0b dec byte ptr [rbx]", 0x48, 0xFE, 0x0B );
+	_TEST64( "48fecc dec spl", 0x48, 0xFE, 0xCC );
+	// FF /1 DEC r/m16 A Valid Valid Decrement r/m16 by 1.
+	// FF /1 DEC r/m32 A Valid Valid Decrement r/m32 by 1.
+	// REX.W + FF /1 DEC r/m64 A Valid N.E. Decrement r/m64 by 1.
+	_TEST32( "ff0b dec dword ptr [ebx]", 0xFF, 0x0B );
+	_TEST32( "66ff0b dec word ptr [ebx]", 0x66, 0xFF, 0x0B );
+	_TEST64( "ff0b dec dword ptr [rbx]", 0xFF, 0x0B );
+	_TEST64( "48ff0b dec qword ptr [rbx]", 0x48, 0xFF, 0x0B );
+	_TEST64( "6640ff0b dec word ptr [rbx]", 0x66, 0x40, 0xFF, 0x0B );
+	_TEST64( "49ffcc dec r12", 0x49, 0xFF, 0xCC );
+
+	// DAS
+	_TEST32( "2f das", 0x2F );
+	_TEST64( "FAIL", 0x2F );
+
+	// DAA
+	_TEST32( "27 daa", 0x27 );
+	_TEST64( "FAIL", 0x27 );
+
+	// CWD_CDQ_CQO
+	_TEST32( "99 cdq", 0x99 );
+	_TEST32( "6699 cwd", 0x66, 0x99 );
+	_TEST64( "99 cdq", 0x99 );
+	_TEST64( "6699 cwd", 0x66, 0x99 );
+	_TEST64( "664899 cqo", 0x66, 0x48, 0x99 );
+	_TEST64( "4899 cqo", 0x48, 0x99 );
+	_TEST64( "4099 cdq", 0x40, 0x99 );
+
+	// CVTTSS2SI
+	_TEST64( "f3480f2cc2 cvttss2si rax,xmm2", 0xF3, 0x48, 0x0F, 0x2C, 0xC2 );
+	_TEST64( "f30f2c4020 cvttss2si eax,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x2C, 0x40, 0x20 );
+	_TEST32( "f30f2cc2 cvttss2si eax,xmm2", 0xF3, 0x0F, 0x2C, 0xC2 );
+	_TEST32( "f30f2c4020 cvttss2si eax,dword ptr [eax+00000020h]", 0xF3, 0x0F, 0x2C, 0x40, 0x20 );
+	_TEST64( "f30f2c4020 cvttss2si eax,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x2C, 0x40, 0x20 );
+	_TEST64( "f30f2cc2 cvttss2si eax,xmm2", 0xF3, 0x0F, 0x2C, 0xC2 );
+
+	// CVTTSD2SI
+	_TEST64( "f2480f2cc2 cvttsd2si rax,xmm2", 0xF2, 0x48, 0x0F, 0x2C, 0xC2 );
+	_TEST64( "f20f2c4020 cvttsd2si eax,qword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x2C, 0x40, 0x20 );
+	_TEST32( "f20f2cc2 cvttsd2si eax,xmm2", 0xF2, 0x0F, 0x2C, 0xC2 );
+	_TEST32( "f20f2c4020 cvttsd2si eax,qword ptr [eax+00000020h]", 0xF2, 0x0F, 0x2C, 0x40, 0x20 );
+	_TEST64( "f20f2c4020 cvttsd2si eax,qword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x2C, 0x40, 0x20 );
+	_TEST64( "f20f2cc2 cvttsd2si eax,xmm2", 0xF2, 0x0F, 0x2C, 0xC2 );
+
+	// CVTTPS2PI
+	_TEST64( "0f2c4020 cvttps2pi mm0,qword ptr [rax+0000000000000020h]", 0x0F, 0x2C, 0x40, 0x20 );
+	_TEST32( "0f2cc2 cvttps2pi mm0,xmm2", 0x0F, 0x2C, 0xC2 );
+	_TEST32( "0f2c4020 cvttps2pi mm0,qword ptr [eax+00000020h]", 0x0F, 0x2C, 0x40, 0x20 );
+
+	// CVTTPS2DQ
+	_TEST64( "f30f5b4020 cvttps2dq xmm0,oword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x5B, 0x40, 0x20 );
+	_TEST32( "f30f5bc2 cvttps2dq xmm0,xmm2", 0xF3, 0x0F, 0x5B, 0xC2 );
+	_TEST32( "f30f5b4020 cvttps2dq xmm0,oword ptr [eax+00000020h]", 0xF3, 0x0F, 0x5B, 0x40, 0x20 );
+
+	// CVTTPD2PI
+	_TEST64( "660f2c4020 cvttpd2pi mm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x2C, 0x40, 0x20 );
+	_TEST32( "660f2cc2 cvttpd2pi mm0,xmm2", 0x66, 0x0F, 0x2C, 0xC2 );
+	_TEST32( "660f2c4020 cvttpd2pi mm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x2C, 0x40, 0x20 );
+
+	// CVTTPD2DQ
+	_TEST64( "660fe64020 cvttpd2dq xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xE6, 0x40, 0x20 );
+	_TEST32( "660fe6c2 cvttpd2dq xmm0,xmm2", 0x66, 0x0F, 0xE6, 0xC2 );
+	_TEST32( "660fe64020 cvttpd2dq xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0xE6, 0x40, 0x20 );
+
 	// CVTSS2SI
 	_TEST64( "f3480f2dc2 cvtss2si rax,xmm2", 0xF3, 0x48, 0x0F, 0x2D, 0xC2 );
 	_TEST64( "f30f2d4020 cvtss2si eax,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x2D, 0x40, 0x20 );
@@ -476,8 +553,8 @@ void test(void) {
 	// 10 /r ADC r/m8, r8 A Valid Valid Add with carry byte register to r/m8.
 	// REX + 10 /r ADC r/m8*, r8* A Valid N.E. Add with carry byte register to r/m64.
 	_TEST32( "10a501020304 adc byte ptr [ebp+04030201h],ah", 0x10, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "4810a501020304 adc byte ptr [rbp+0000000004030201h],dil", 0x48, 0x10, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "481064a501 adc byte ptr [rbp+0000000000000001h],dil", 0x48, 0x10, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4810a501020304 adc byte ptr [rbp+0000000004030201h],spl", 0x48, 0x10, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "481064a501 adc byte ptr [rbp+0000000000000001h],spl", 0x48, 0x10, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
 	// 11 /r ADC r/m16, r16 A Valid Valid Add with carry r16 to r/m16.
 	// 11 /r ADC r/m32, r32 A Valid Valid Add with CF r32 to r/m32.
 	// REX.W + 11 /r ADC r/m64, r64 A Valid N.E. Add with CF r64 to r/m64.
@@ -488,8 +565,8 @@ void test(void) {
 	// 12 /r ADC r8, r/m8 A Valid Valid Add with carry r/m8 to byte register.
 	// REX + 12 /r ADC r8*, r/m8* A Valid N.E. Add with carry r/m64 to byte register.
 	_TEST32( "12a501020304 adc ah,byte ptr [ebp+04030201h]", 0x12, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "4812a501020304 adc dil,byte ptr [rbp+0000000004030201h]", 0x48, 0x12, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "481264a501 adc dil,byte ptr [rbp+0000000000000001h]", 0x48, 0x12, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4812a501020304 adc spl,byte ptr [rbp+0000000004030201h]", 0x48, 0x12, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "481264a501 adc spl,byte ptr [rbp+0000000000000001h]", 0x48, 0x12, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
 	// 13 /r ADC r16, r/m16 A Valid Valid Add with carry r/m16 to r16.
 	// 13 /r ADC r32, r/m32 A Valid Valid Add with CF r/m32 to r32.
 	// REX.W + 13 /r ADC r64, r/m64 A Valid N.E. Add with CF r/m64 to r64.
@@ -544,8 +621,8 @@ void test(void) {
 	// 00 /r ADD r/m8, r8 A Valid Valid Add r8 to r/m8.
 	// REX + 00 /r ADD r/m8*, r8* A Valid N.E. Add r8 to r/m8.
 	_TEST32( "00a501020304 add byte ptr [ebp+04030201h],ah", 0x00, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "4800a501020304 add byte ptr [rbp+0000000004030201h],dil", 0x48, 0x00, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "480064a501 add byte ptr [rbp+0000000000000001h],dil", 0x48, 0x00, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4800a501020304 add byte ptr [rbp+0000000004030201h],spl", 0x48, 0x00, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "480064a501 add byte ptr [rbp+0000000000000001h],spl", 0x48, 0x00, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
 	// 01 /r ADD r/m16, r16 A Valid Valid Add r16 to r/m16.
 	// 01 /r ADD r/m32, r32 A Valid Valid Add r32 to r/m32.
 	// REX.W + 01 /r ADD r/m64, r64 A Valid N.E. Add r64 to r/m64.
@@ -556,8 +633,8 @@ void test(void) {
 	// 02 /r ADD r8, r/m8 A Valid Valid Add r/m8 to r8.
 	// REX + 02 /r ADD r8*, r/m8* A Valid N.E. Add r/m8 to r8.
 	_TEST32( "02a501020304 add ah,byte ptr [ebp+04030201h]", 0x02, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "4802a501020304 add dil,byte ptr [rbp+0000000004030201h]", 0x48, 0x02, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "480264a501 add dil,byte ptr [rbp+0000000000000001h]", 0x48, 0x02, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4802a501020304 add spl,byte ptr [rbp+0000000004030201h]", 0x48, 0x02, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "480264a501 add spl,byte ptr [rbp+0000000000000001h]", 0x48, 0x02, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
 	// 03 /r ADD r16, r/m16 A Valid Valid Add r/m16 to r16.
 	// 03 /r ADD r32, r/m32 A Valid Valid Add r/m32 to r32.
 	// REX.W + 03 /r ADD r64, r/m64 A Valid N.E. Add r/m64 to r64.
@@ -660,8 +737,8 @@ void test(void) {
 	// 20 /r AND r/m8, r8 A Valid Valid r/m8 AND r8.
 	// REX + 20 /r AND r/m8*, r8* A Valid N.E. r/m64 AND r8 (signextended).
 	_TEST32( "20a501020304 and byte ptr [ebp+04030201h],ah", 0x20, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "4820a501020304 and byte ptr [rbp+0000000004030201h],dil", 0x48, 0x20, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "482064a501 and byte ptr [rbp+0000000000000001h],dil", 0x48, 0x20, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4820a501020304 and byte ptr [rbp+0000000004030201h],spl", 0x48, 0x20, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "482064a501 and byte ptr [rbp+0000000000000001h],spl", 0x48, 0x20, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
 	// 21 /r AND r/m16, r16 A Valid Valid r/m16 AND r16.
 	// 21 /r AND r/m32, r32 A Valid Valid r/m32 AND r32.
 	// REX.W + 21 /r AND r/m64, r64 A Valid N.E. r/m64 AND r32.
@@ -672,8 +749,8 @@ void test(void) {
 	// 22 /r AND r8, r/m8 A Valid Valid r8 AND r/m8.
 	// REX + 22 /r AND r8*, r/m8* A Valid N.E. r/m64 AND r8 (signextended).
 	_TEST32( "22a501020304 and ah,byte ptr [ebp+04030201h]", 0x22, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "4822a501020304 and dil,byte ptr [rbp+0000000004030201h]", 0x48, 0x22, 0xa5, 0x01, 0x02, 0x03, 04 );
-	_TEST64( "482264a501 and dil,byte ptr [rbp+0000000000000001h]", 0x48, 0x22, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4822a501020304 and spl,byte ptr [rbp+0000000004030201h]", 0x48, 0x22, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "482264a501 and spl,byte ptr [rbp+0000000000000001h]", 0x48, 0x22, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
 	// 23 /r AND r16, r/m16 A Valid Valid r16 AND r/m16.
 	// 23 /r AND r32, r/m32 A Valid Valid r32 AND r/m32.
 	// REX.W + 23 /r AND r64, r/m64 A Valid N.E. r64 AND r/m64.

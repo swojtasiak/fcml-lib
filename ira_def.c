@@ -645,6 +645,78 @@ struct ira_opcode_desc _ira_opcode_desc_CVTSS2SI[] = {
 	{ NULL, 0x4009, 0x04988000, { 0x0F, 0x2D, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
 };
 
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTTPD2DQ[] = {
+	// 66 0F E6 CVTTPD2DQ xmm1, xmm2/m128 A Valid Valid Convert two packed doubleprecision floating-point values from xmm2/m128 to two packed signed doubleword integers in xmm1 using truncation.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xE6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTTPD2PI[] = {
+	// 66 0F 2C /r CVTTPD2PI mm, xmm/m128 A Valid Valid Convert two packer doubleprecision floating-point values from xmm/m128 to two packed signed doubleword integers in mm using truncation.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x2C, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTTPS2DQ[] = {
+	// F3 0F 5B /r CVTTPS2DQ xmm1, xmm2/m128 A Valid Valid Convert four singleprecision floating-point values from xmm2/m128 to four signed doubleword integers in xmm1 using truncation.
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5B, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTTPS2PI[] = {
+	// 0F 2C /r CVTTPS2PI mm, xmm/m64 A Valid Valid Convert two singleprecision floating-point values from xmm/m64 to two signed doubleword signed integers in mm using truncation.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x2C, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+// MMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTTSD2SI[] = {
+	// F2 0F 2C /r CVTTSD2SI r32, xmm/m64 A Valid Valid Convert one doubleprecision floating-point value from xmm/m64 to one signed doubleword integer in r32 using truncation.
+	{ NULL, 0x2001, 0x03D88000, { 0x0F, 0x2C, 0x00 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// F2 REX.W 0F 2C /r CVTTSD2SI r64, xmm/m64 A Valid N.E. Convert one double precision floating-point value from xmm/m64 to one signedquad wordinteger in r64 using truncation.
+	{ NULL, 0x2009, 0x04988000, { 0x0F, 0x2C, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+};
+
+// MMWORD
+struct ira_opcode_desc _ira_opcode_desc_CVTTSS2SI[] = {
+	// F3 0F 2C /r CVTTSS2SI r32, xmm/m32 A Valid Valid Convert one single-precision floating-point value from xmm/m32 to one signed doubleword integer in r32 using truncation.
+	{ NULL, 0x4001, 0x03D88000, { 0x0F, 0x2C, 0x00 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// F3 REX.W 0F 2C /r CVTTSS2SI r64, xmm/m32 A Valid N.E. Convert one single-precision floating-point value from xmm/m32 to one signed quadword integer in
+	{ NULL, 0x4009, 0x04988000, { 0x0F, 0x2C, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CWD_CDQ_CQO[] = {
+	// 99 CWD A Valid Valid DX:AX <- sign-extend of AX.
+	{ "cwd", 0x0001, 0x01C40000, { 0x99, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 99 CDQ A Valid Valid EDX:EAX <- sign-extend of EAX.
+	{ "cdq", 0x0001, 0x02C40000, { 0x99, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W + 99 CQO A Valid N.E. RDX:RAX <- sign-extend of RAX.
+	{ "cqo", 0x0001, 0x04840000, { 0x99, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DAA[] = {
+	// 27 DAA A Invalid Valid Decimal adjust AL after addition.
+	{ NULL, 0x0001, 0x00440000, { 0x27, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DAS[] = {
+	// 2F DAS A Invalid Valid Decimal adjust AL after subtraction.
+	{ NULL, 0x0001, 0x00440000, { 0x2F, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DEC[] = {
+	// FE /1 DEC r/m8 A Valid Valid Decrement r/m8 by 1.
+	// REX + FE /1 DEC r/m8* A Valid N.E. Decrement r/m8 by 1.
+	{ NULL, 0x0001, 0x00C58800, { 0xFE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// FF /1 DEC r/m16 A Valid Valid Decrement r/m16 by 1.
+	// FF /1 DEC r/m32 A Valid Valid Decrement r/m32 by 1.
+	// REX.W + FF /1 DEC r/m64 A Valid N.E. Decrement r/m64 by 1.
+	{ NULL, 0x0001, 0x00C58800, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 48+rw DEC r16 B N.E. Valid Decrement r16 by 1.
+	// 48+rd DEC r32 B N.E. Valid Decrement r32 by 1.
+	{ NULL, 0x0001, 0x00440001, { 0x48, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -722,6 +794,16 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "cvtsi2ss", _ira_opcode_desc_CVTSI2SS),
 		_IA_INSTRUCTION( "cvtss2sd", _ira_opcode_desc_CVTSS2SD),
 		_IA_INSTRUCTION( "cvtss2si", _ira_opcode_desc_CVTSS2SI),
+		_IA_INSTRUCTION( "cvttpd2dq", _ira_opcode_desc_CVTTPD2DQ),
+		_IA_INSTRUCTION( "cvttpd2pi", _ira_opcode_desc_CVTTPD2PI),
+		_IA_INSTRUCTION( "cvttps2dq", _ira_opcode_desc_CVTTPS2DQ),
+		_IA_INSTRUCTION( "cvttps2pi", _ira_opcode_desc_CVTTPS2PI),
+		_IA_INSTRUCTION( "cvttsd2si", _ira_opcode_desc_CVTTSD2SI),
+		_IA_INSTRUCTION( "cvttss2si", _ira_opcode_desc_CVTTSS2SI),
+		_IA_INSTRUCTION( "cwd", _ira_opcode_desc_CWD_CDQ_CQO),
+		_IA_INSTRUCTION( "daa", _ira_opcode_desc_DAA),
+		_IA_INSTRUCTION( "das", _ira_opcode_desc_DAS),
+		_IA_INSTRUCTION( "dec", _ira_opcode_desc_DEC),
 		{ NULL, 0, 0, NULL }
 };
 
