@@ -236,12 +236,12 @@ struct ira_opcode_desc _ira_opcode_desc_BLENDPS[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_BLENDVPD[] = {
 	// 66 0F 38 15 /r BLENDVPD xmm1, xmm2/m128 , <XMM0> A Valid Valid Select packed DP FP values from xmm1 and xmm2 from mask specified in XMM0 and store the values in xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x15 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG_OSA( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x15 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_EXPLICIT_REG_OSA( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BLENDVPS[] = {
 	// 66 0F 38 14 /r BLENDVPS xmm1, xmm2/m128, <XMM0> A Valid Valid Select packed single precision floating-point values from xmm1 and xmm2/m128 from mask specified in XMM0 and store the values into xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x14 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_IMPLICIT_REG_OSA( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x14 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_EXPLICIT_REG_OSA( IRA_REG_XMM, _IRA_REG_XMM0 ), _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BOUND[] = {
@@ -717,6 +717,46 @@ struct ira_opcode_desc _ira_opcode_desc_DEC[] = {
 	{ NULL, 0x0001, 0x00440001, { 0x48, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_DIV[] = {
+	// F6 /6 DIV r/m8 A Valid Valid Unsigned divide AX by r/m8,with result stored in AL Quotient, AH Remainder.
+	// REX + F6 /6 DIV r/m8* A Valid N.E. Unsigned divide AX by r/m8, with result stored in AL Quotient, AH Remainder.
+	{ NULL, 0x0001, 0x00C5B000, { 0xF6, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, _IRA_OS_WORD ), _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA },
+	// F7 /6 DIV r/m16 A Valid Valid Unsigned divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
+	// F7 /6 DIV r/m32 A Valid Valid Unsigned divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
+	// REX.W + F7 /6 DIV r/m64 A Valid N.E. Unsigned divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
+	{ NULL, 0x0001, 0x00C5B000, { 0xF7, 0x00, 0x00 }, _IRA_EXPLICIT_REG_OSA( IRA_REG_GPR, _IRA_REG_AL ), _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DIVPD[] = {
+	// 66 0F 5E /r DIVPD xmm1, xmm2/m128 A Valid Valid Divide packed doubleprecision floating-point values in xmm1 by packed double-precision floatingpoint values xmm2/m128.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DIVPS[] = {
+	// 0F 5E /r DIVPS xmm1, xmm2/m128 A Valid Valid Divide packed singleprecision floating-point values in xmm1 by packed single-precision floatingpoint values xmm2/m128.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DIVSD[] = {
+	// F2 0F 5E /r DIVSD xmm1, xmm2/m64 A Valid Valid Divide low double-precision floating-point value n xmm1 by low double-precision floating-point value in xmm2/mem64.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DIVSS[] = {
+	// F3 0F 5E /r DIVSS xmm1, xmm2/m32 A Valid Valid Divide low single-precision floating-point value in xmm1 by low singleprecision floating-point value in xmm2/m32.
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_32_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DPPD[] = {
+	// 66 0F 3A 41 /r ib DPPD xmm1, xmm2/m128, imm8 A Valid Valid Selectively multiply packed DP floating-point values from xmm1 with packed DP floating-point values from xmm2, add and selectively store the packed DP floating-point values to xmm1.
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x41 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_DPPS[] = {
+	// 66 0F 3A 40 /r ib DPPS xmm1, xmm2/m128, imm8 A Valid Valid Selectively multiply packed SP floating-point values from xmm1 with packed SP floating-point values from xmm2, add and selectively store the packed SP floating-point values or zero values to xmm1.
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -804,6 +844,13 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "daa", _ira_opcode_desc_DAA),
 		_IA_INSTRUCTION( "das", _ira_opcode_desc_DAS),
 		_IA_INSTRUCTION( "dec", _ira_opcode_desc_DEC),
+		_IA_INSTRUCTION( "div", _ira_opcode_desc_DIV),
+		_IA_INSTRUCTION( "divpd", _ira_opcode_desc_DIVPD),
+		_IA_INSTRUCTION( "divps", _ira_opcode_desc_DIVPS),
+		_IA_INSTRUCTION( "divsd", _ira_opcode_desc_DIVSD),
+		_IA_INSTRUCTION( "divss", _ira_opcode_desc_DIVSS),
+		_IA_INSTRUCTION( "dppd", _ira_opcode_desc_DPPD),
+		_IA_INSTRUCTION( "dpps", _ira_opcode_desc_DPPS),
 		{ NULL, 0, 0, NULL }
 };
 

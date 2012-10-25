@@ -38,3 +38,10 @@ So disassembler shouldn't respect 0x66 prefix:
 
 66f20f38f04020  crc32   ax,byte ptr [rax+20h] (Wrong!)
 
+4. DIV Disassemblation bug.
+
+Result is stored in AX not AL!
+
+00000000`00401000 48f6f6          div     al,sil
+
+

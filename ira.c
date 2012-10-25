@@ -1026,13 +1026,18 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		}
 
 		break;
-	case _IRA_IMPLICIT_REG_BASE_OSA:
+	case _IRA_EXPLICIT_REG_BASE_OSA:
 		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
 		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x000000F0 ) >> 4, ( decoding & 0x0000000F ), _IRA_GPRS_UNDEFINED, IRA_SAT_OSA, &result );
 		break;
-	case _IRA_IMPLICIT_REG_BASE_ASA:
+	case _IRA_EXPLICIT_REG_BASE_ASA:
 		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
 		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x000000F0 ) >> 4, ( decoding & 0x0000000F ), _IRA_GPRS_UNDEFINED, IRA_SAT_ASA, &result );
+		break;
+	case _IRA_EXPLICIT_REG_BASE:
+		//TODO: Change to explicit!
+		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
+		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x00F00000 ) >> 20, ( decoding & 0x000F0000 ) >> 16, ( decoding & 0x0000FFFF ), IRA_SAT_UNDEFINED, &result );
 		break;
 	case _IRA_OPERAND_OPCODE_REG_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_opcode_register;

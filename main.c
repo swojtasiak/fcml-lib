@@ -136,6 +136,49 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 void test(void) {
 
+	// DPPD
+	_TEST32( "660f3a411401ff dppd xmm2,oword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0x3A, 0x41, 0x14, 0x01, 0xFF );
+	_TEST64( "660f3a411401ff dppd xmm2,oword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3A, 0x41, 0x14, 0x01, 0xFF );
+
+	// DPPS
+	_TEST32( "660f3a401401ff dpps xmm2,oword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0x3A, 0x40, 0x14, 0x01, 0xFF );
+	_TEST64( "660f3a401401ff dpps xmm2,oword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3A, 0x40, 0x14, 0x01, 0xFF );
+
+	// DIVSD
+	_TEST64( "f20f5e4020 divsd xmm0,qword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x5E, 0x40, 0x20 );
+	_TEST32( "f20f5ec2 divsd xmm0,xmm2", 0xF2, 0x0F, 0x5E, 0xC2 );
+	_TEST32( "f20f5e4020 divsd xmm0,qword ptr [eax+00000020h]", 0xF2, 0x0F, 0x5E, 0x40, 0x20 );
+
+	// DIVSS
+	_TEST64( "f30f5e4020 divss xmm0,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x5E, 0x40, 0x20 );
+	_TEST32( "f30f5ec2 divss xmm0,xmm2", 0xF3, 0x0F, 0x5E, 0xC2 );
+	_TEST32( "f30f5e4020 divss xmm0,dword ptr [eax+00000020h]", 0xF3, 0x0F, 0x5E, 0x40, 0x20 );
+
+	// DIVPD
+	_TEST32( "660f5e1401 divpd xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x5E, 0x14, 0x01 );
+	_TEST64( "660f5e1401 divpd xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x5E, 0x14, 0x01 );
+
+	// DIVPS
+	_TEST32( "0f5e1401 divps xmm2,oword ptr [ecx+eax]", 0x0F, 0x5E, 0x14, 0x01 );
+	_TEST64( "0f5e1401 divps xmm2,oword ptr [rcx+rax]", 0x0F, 0x5E, 0x14, 0x01 );
+
+	// DIV
+	// F6 /6 DIV r/m8 A Valid Valid Unsigned divide AX by r/m8,with result stored in AL Quotient, AH Remainder.
+	// REX + F6 /6 DIV r/m8* A Valid N.E. Unsigned divide AX by r/m8, with result stored in AL Quotient, AH Remainder.
+	_TEST32( "f633 div ax,byte ptr [ebx]", 0xF6, 0x33 );
+	_TEST32( "66f633 div ax,byte ptr [ebx]", 0x66, 0xF6, 0x33 );
+	_TEST64( "48f6f6 div ax,sil", 0x48, 0xF6, 0xF6 );
+	_TEST64( "f6f6 div ax,dh", 0xF6, 0xF6 );
+	_TEST64( "FAIL", 0xF6, 0xEE );
+	// F7 /6 DIV r/m16 A Valid Valid Unsigned divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
+	// F7 /6 DIV r/m32 A Valid Valid Unsigned divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
+	// REX.W + F7 /6 DIV r/m64 A Valid N.E. Unsigned divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
+	_TEST32( "f733 div eax,byte ptr [ebx]", 0xF7, 0x33 );
+	_TEST32( "66f733 div ax,byte ptr [ebx]", 0x66, 0xF7, 0x33 );
+	_TEST64( "48f7f6 div rax,sil", 0x48, 0xF7, 0xF6 );
+	_TEST64( "f7f6 div eax,dh", 0xF7, 0xF6 );
+	_TEST64( "FAIL", 0xF7, 0xEE );
+
 	// DEC
 	// 48+rw DEC r16 B N.E. Valid Decrement r16 by 1.
 	// 48+rd DEC r32 B N.E. Valid Decrement r32 by 1.

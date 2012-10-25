@@ -25,7 +25,8 @@
 // Pytanie czy to faktycznie jest potrzebne? Wyaje sie troche nadmiarowe. Patrz: common and operand size encoding.
 enum SizeAttributeType {
 	IRA_SAT_ASA,
-	IRA_SAT_OSA
+	IRA_SAT_OSA,
+	IRA_SAT_UNDEFINED
 };
 
 /* Structures used to store information about memory. */
@@ -458,31 +459,34 @@ struct ira_instruction_desc {
 // todo: nie implicit tylko explicit
 // todo: dodac kodowanie wilkosci rejestru na podstawie encoded operand size.
 // Implicit registers with size determined by operand-size-attribute.
-#define _IRA_IMPLICIT_REG_BASE_OSA						0x0D000000
-#define _IRA_IMPLICIT_REG_OSA(reg_type,reg_num)			( _IRA_IMPLICIT_REG_BASE_OSA | reg_type << 4 | reg_num )
+#define _IRA_EXPLICIT_REG_BASE_OSA						0x0D000000
+#define _IRA_EXPLICIT_REG_OSA(reg_type,reg_num)			( _IRA_EXPLICIT_REG_BASE_OSA | reg_type << 4 | reg_num )
 
 // Implicit registers with size determined by address-size-attribute.
-#define _IRA_IMPLICIT_REG_BASE_ASA						0x0E000000
-#define _IRA_IMPLICIT_REG_ASA(reg_type,reg_num)			( _IRA_IMPLICIT_REG_BASE_ASA | reg_type << 4 | reg_num )
+#define _IRA_EXPLICIT_REG_BASE_ASA						0x0E000000
+#define _IRA_EXPLICIT_REG_ASA(reg_type,reg_num)			( _IRA_EXPLICIT_REG_BASE_ASA | reg_type << 4 | reg_num )
+
+#define _IRA_EXPLICIT_REG_BASE							0x0F000000
+#define _IRA_EXPLICIT_REG(reg_type, reg_num, reg_size)	( _IRA_EXPLICIT_REG_BASE | reg_type << 20 | reg_num << 16 | reg_size )
 
 // Register field in opcode byte.
-#define _IRA_OPERAND_OPCODE_REG_BASE					0x0F000000
+#define _IRA_OPERAND_OPCODE_REG_BASE					0x10000000
 #define _IRA_OPERAND_OPCODE_REG(reg_type, reg_size)	( _IRA_OPERAND_OPCODE_REG_BASE | reg_type << 16 | reg_size)
 
 // Relative addressing.
-#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x10000000
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x11000000
 
 // rel8
-#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		0x11000000
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		0x12000000
 
 // Far pointers.
-#define _IRA_OPERAND_FAR_POINTER					0x12000000
+#define _IRA_OPERAND_FAR_POINTER					0x13000000
 
 // Far indirect pointer.
-#define _IRA_OPERAND_FAR_POINTER_INDIRECT			0x13000000
+#define _IRA_OPERAND_FAR_POINTER_INDIRECT			0x14000000
 
 // Addressing by explicit GPR register. (Used by CMPS for instance.)
-#define _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE		0x14000000
+#define _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE		0x15000000
 #define _IRA_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE | reg_num << 16 | encoded_operand_size << 8 | encoded_segment_register )
 
 /* Externals. */
