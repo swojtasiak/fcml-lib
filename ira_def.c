@@ -757,6 +757,34 @@ struct ira_opcode_desc _ira_opcode_desc_DPPS[] = {
 	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_EMMS[] = {
+	// 0F 77 EMMS A Valid Valid Set the x87 FPU tag word to empty.
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0x77, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_ENTER[] = {
+	// C8 iw 00 ENTER imm16, 0 A Valid Valid Create a stack frame for a procedure.
+	// C8 iw 01 ENTER imm16, 1 A Valid Valid Create a nested stack frame for a procedure.
+	// C8 iw ib ENTER imm16, imm8 A Valid Valid Create a nested stack frame for a procedure.
+	{ NULL, 0x0001, 0x00C40000, { 0xC8, 0x00, 0x00 }, _IRA_OPERAND_IW | _IRA_WRITE, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_EXTRACTPS[] = {
+	// 66 0F 3A 17 /r ib EXTRACTPS reg/m32, xmm2, imm8 A Valid Valid Extract a single-precision floating-point value from xmm2 at the source offset specified by imm8 and store the result to reg or m32. The upper 32 bits of r64 is zeroed if reg is r64.
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, _IRA_OPERAND_MODRM_RM_32_W, _IRA_OPERAND_MODRM_R_XMM_32, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+
+struct ira_opcode_desc _ira_opcode_desc_F2XM1[] = {
+	// D9 F0 F2XM1 Valid Valid Replace ST(0) with (2ST(0) – 1).
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF0, 0x17 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FABS[] = {
+	// D9 E1 FABS Valid Valid Replace ST with its absolute value.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xE1, 0x17 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -851,6 +879,11 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "divss", _ira_opcode_desc_DIVSS),
 		_IA_INSTRUCTION( "dppd", _ira_opcode_desc_DPPD),
 		_IA_INSTRUCTION( "dpps", _ira_opcode_desc_DPPS),
+		_IA_INSTRUCTION( "emms", _ira_opcode_desc_EMMS),
+		_IA_INSTRUCTION( "enter", _ira_opcode_desc_ENTER),
+		_IA_INSTRUCTION( "extractps", _ira_opcode_desc_EXTRACTPS),
+		_IA_INSTRUCTION( "f2xm1", _ira_opcode_desc_F2XM1),
+		_IA_INSTRUCTION( "fabs", _ira_opcode_desc_FABS),
 		{ NULL, 0, 0, NULL }
 };
 
