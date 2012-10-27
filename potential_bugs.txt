@@ -44,4 +44,14 @@ Result is stored in AX not AL!
 
 00000000`00401000 48f6f6          div     al,sil
 
+5. FPU bug.
+
+00000000`00401000 9b              wait
+00000000`00401001 dbe2            fnclex
+00000000`00401003 dbe2            fnclex
+
+Fist instruction should be disassembled to: 9bdbe2 fclex
+
+
+
 

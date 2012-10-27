@@ -133,8 +133,133 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 #define _TEST32(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 1, code, sizeof(code), x ); }
 #define _TEST64(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, code, sizeof(code), x ); }
-
+//102
 void test(void) {
+
+	// D8 /6 FDIV m32fp Valid Valid Divide ST(0) by m32fp and store result in ST(0).
+	// DC /6 FDIV m64fp Valid Valid Divide ST(0) by m64fp and store result in ST(0).
+	// D8 F0+i FDIV ST(0), ST(i) Valid Valid Divide ST(0) by ST(i) and store result in ST(0).
+	// DC F8+i FDIV ST(i), ST(0) Valid Valid Divide ST(i) by ST(0) and store result in ST(i).
+	// DE F8+i FDIVP ST(i), ST(0) Valid Valid Divide ST(i) by ST(0), store result in ST(i), and pop the register stack.
+	// DA /6 FIDIV m32int Valid Valid Divide ST(0) by m32int and store result in ST(0).
+	// DE /6 FIDIV m16int Valid Valid Divide ST(0) by m64int and store result in ST(0).
+
+	// FDIV
+	_TEST64( "d87020 fdiv dword ptr [rax+0000000000000020h]", 0xD8, 0x70, 0x20 );
+	_TEST32( "d87020 fdiv dword ptr [eax+00000020h]", 0xD8, 0x70, 0x20 );
+	_TEST64( "dc7020 fdiv qword ptr [rax+0000000000000020h]", 0xDC, 0x70, 0x20 );
+	_TEST32( "dc7020 fdiv qword ptr [eax+00000020h]", 0xDC, 0x70, 0x20 );
+	_TEST32( "d8f1 fdiv st(0),st(1)", 0xD8, 0xF1 );
+	_TEST64( "d8f1 fdiv st(0),st(1)", 0xD8, 0xF1 );
+	_TEST64( "dcf9 fdiv st(1),st(0)", 0xDC, 0xF9 );
+	_TEST32( "dcf9 fdiv st(1),st(0)", 0xDC, 0xF9 );
+	_TEST64( "def9 fdivp st(1),st(0)", 0xDE, 0xF9 );
+	_TEST32( "def9 fdivp st(1),st(0)", 0xDE, 0xF9 );
+	_TEST64( "da7020 fidiv dword ptr [rax+0000000000000020h]", 0xDA, 0x70, 0x20 );
+	_TEST32( "da7020 fidiv dword ptr [eax+00000020h]", 0xDA, 0x70, 0x20 );
+	_TEST64( "de7020 fidiv word ptr [rax+0000000000000020h]", 0xDE, 0x70, 0x20 );
+	_TEST32( "de7020 fidiv word ptr [eax+00000020h]", 0xDE, 0x70, 0x20 );
+
+
+	// FDECSTP
+	_TEST64( "d9f6 fdecstp", 0xD9, 0xf6 );
+	_TEST32( "d9f6 fdecstp", 0xD9, 0xf6 );
+
+	// FCOS
+	_TEST64( "d9ff fcos", 0xD9, 0xFF );
+	_TEST32( "d9ff fcos", 0xD9, 0xFF );
+
+	// FCOMI
+	_TEST64( "dbf1 fcomi st(0),st(1)", 0xDB, 0xF1 );
+	_TEST32( "dbf1 fcomi st(0),st(1)", 0xDB, 0xF1 );
+
+	// FCOMIP
+	_TEST64( "dff1 fcomip st(0),st(1)", 0xDF, 0xF1 );
+	_TEST32( "dff1 fcomip st(0),st(1)", 0xDF, 0xF1 );
+
+	// FUCOMI
+	_TEST64( "dbe9 fucomi st(0),st(1)", 0xDB, 0xE9 );
+	_TEST32( "dbe9 fucomi st(0),st(1)", 0xDB, 0xE9 );
+
+	// FUCOMIP
+	_TEST64( "dfe9 fucomip st(0),st(1)", 0xDF, 0xE9 );
+	_TEST32( "dfe9 fucomip st(0),st(1)", 0xDF, 0xE9 );
+
+	// FCMOVNU
+	_TEST64( "dbd9 fcmovnu st(0),st(1)", 0xDB, 0xD9 );
+	_TEST32( "dbd9 fcmovnu st(0),st(1)", 0xDB, 0xD9 );
+
+	// FCMOVNBE
+	_TEST64( "dbd1 fcmovnbe st(0),st(1)", 0xDB, 0xD1 );
+	_TEST32( "dbd1 fcmovnbe st(0),st(1)", 0xDB, 0xD1 );
+
+	// FCMOVNE
+	_TEST64( "dbc9 fcmovne st(0),st(1)", 0xDB, 0xC9 );
+	_TEST32( "dbc9 fcmovne st(0),st(1)", 0xDB, 0xC9 );
+
+	// FCMOVNB
+	_TEST64( "dbc1 fcmovnb st(0),st(1)", 0xDB, 0xC1 );
+	_TEST32( "dbc1 fcmovnb st(0),st(1)", 0xDB, 0xC1 );
+
+	// FCMOVU
+	_TEST64( "dad9 fcmovu st(0),st(1)", 0xDA, 0xD9 );
+	_TEST32( "dad9 fcmovu st(0),st(1)", 0xDA, 0xD9);
+
+	// FCMOVBE
+	_TEST64( "dad1 fcmovbe st(0),st(1)", 0xDA, 0xD1 );
+	_TEST32( "dad1 fcmovbe st(0),st(1)", 0xDA, 0xD1 );
+
+	// FCMOVB
+	_TEST64( "dac1 fcmovb st(0),st(1)", 0xDA, 0xC1 );
+	_TEST32( "dac1 fcmovb st(0),st(1)", 0xDA, 0xC1 );
+
+	// FCMOVE
+	_TEST64( "dac9 fcmove st(0),st(1)", 0xDA, 0xC9 );
+	_TEST32( "dac9 fcmove st(0),st(1)", 0xDA, 0xC9 );
+
+	// FNCLEX
+	_TEST64( "dbe2 fnclex", 0xDB, 0xE2 );
+	_TEST32( "dbe2 fnclex", 0xDB, 0xE2 );
+
+	// FCHS
+	_TEST64( "d9e0 fchs", 0xD9, 0xE0 ) ;
+	_TEST32( "d9e0 fchs", 0xD9, 0xE0 );
+
+	// FBSTP
+	_TEST64( "df7020 fbstp tbyte ptr [rax+0000000000000020h]", 0xDf, 0x70, 0x20 ) ;
+	_TEST32( "df7020 fbstp tbyte ptr [eax+00000020h]", 0xDf, 0x70, 0x20 );
+
+	// FBLD
+	_TEST64( "df6020 fbld tbyte ptr [rax+0000000000000020h]", 0xDf, 0x60, 0x20 ) ;
+	_TEST32( "df6020 fbld tbyte ptr [eax+00000020h]", 0xDf, 0x60, 0x20 );
+
+	// FADD
+	_TEST64( "d84020 fadd dword ptr [rax+0000000000000020h]", 0xD8, 0x40, 0x20 );
+	_TEST32( "d84020 fadd dword ptr [eax+00000020h]", 0xD8, 0x40, 0x20 );
+	_TEST64( "dc4020 fadd qword ptr [rax+0000000000000020h]", 0xDC, 0x40, 0x20 );
+	_TEST32( "dc4020 fadd qword ptr [eax+00000020h]", 0xDC, 0x40, 0x20 );
+
+	_TEST32( "d8c0 fadd st(0),st(0)", 0xD8, 0xC0 );
+	_TEST32( "d8c1 fadd st(0),st(1)", 0xD8, 0xC1 );
+	_TEST32( "d8c2 fadd st(0),st(2)", 0xD8, 0xC2 );
+	_TEST32( "d8c3 fadd st(0),st(3)", 0xD8, 0xC3 );
+	_TEST32( "d8c4 fadd st(0),st(4)", 0xD8, 0xC4 );
+	_TEST32( "d8c5 fadd st(0),st(5)", 0xD8, 0xC5 );
+	_TEST32( "d8c6 fadd st(0),st(6)", 0xD8, 0xC6 );
+	_TEST32( "d8c7 fadd st(0),st(7)", 0xD8, 0xC7 );
+
+	_TEST64( "d8c0 fadd st(0),st(0)", 0xD8, 0xC0 );
+
+	_TEST64( "dcc1 fadd st(1),st(0)", 0xDC, 0xC1 );
+	_TEST32( "dcc1 fadd st(1),st(0)", 0xDC, 0xC1 );
+
+	_TEST64( "dec1 faddp st(1),st(0)", 0xDE, 0xC1 );
+	_TEST32( "dec1 faddp st(1),st(0)", 0xDE, 0xC1 );
+
+	_TEST64( "da4020 fiadd dword ptr [rax+0000000000000020h]", 0xDA, 0x40, 0x20 );
+	_TEST32( "da4020 fiadd dword ptr [eax+00000020h]", 0xDA, 0x40, 0x20 );
+	_TEST64( "de4020 fiadd word ptr [rax+0000000000000020h]", 0xDE, 0x40, 0x20 );
+	_TEST32( "de4020 fiadd word ptr [eax+00000020h]", 0xDE, 0x40, 0x20 );
 
 	// F2XM1
 	_TEST64( "d9f0 f2xm1", 0xD9, 0xF0 );

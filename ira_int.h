@@ -187,6 +187,8 @@ typedef uint16_t (*ira_operand_size_provider)( struct ira_diss_context *context 
 struct ira_modm_decoding_args {
 	// Size directive provider.
 	ira_operand_size_provider operand_size_provider;
+	// Explicit addressing size.
+	uint16_t operand_size;
 };
 
 /* Disassemblation tree. */
@@ -367,6 +369,8 @@ struct ira_instruction_desc {
 
 #define _IRA_NA	0x00000000
 
+
+// todo: zmienic to na jedno parametryzowane makro, ktore jako parametr przyjmie wielkosc wartosci natychmiastowej.
 #define _IRA_OPERAND_IB						0x01000000
 // imm8 sign extended to effective operand size attribute.
 #define _IRA_OPERAND_IB_EX_EOSA				0x02000000
@@ -379,6 +383,9 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_IO_EOSA				0x08000000
 // Immediate value with size calculated using EOSA.
 #define _IRA_OPERAND_IMM_EOSA				0x09000000
+
+
+// todo: wywalic to, mamy explicit register, tylko komplikutje model opisu trybow adreowania.
 #define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A000000
 #define _IRA_OPERAND_REG_ACCUMULATOR_OSA	0x0B000000
 #define _IRA_OPERAND_REG_ACCUMULATOR_8_W	( _IRA_OPERAND_REG_ACCUMULATOR_8   | _IRA_WRITE )
@@ -409,13 +416,19 @@ struct ira_instruction_desc {
 #define _IRA_R_XMM_32	17
 // m16&16, m32&32.
 #define _IRA_OSA_MM		18
-// m8
+// m8-m128
 #define _IRA_M_8		19
+#define _IRA_M_16		20
+#define _IRA_M_32		21
+#define _IRA_M_64		22
+#define _IRA_M_80		23
+#define _IRA_M_128		24
 
 /* ModRM based operands. */
 
 #define _IRA_MODRM(x) ( _IRA_MODRM_BASE + x )
 
+// todo: czy to nie ejst nadmiarowe? sprobowal przepisac na parametryzowane makra.
 #define _IRA_OPERAND_MODRM_RM_8			_IRA_MODRM(_IRA_RM_8)
 #define _IRA_OPERAND_MODRM_RM_8_W		( _IRA_OPERAND_MODRM_RM_8 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_RM_16		_IRA_MODRM(_IRA_RM_16)
@@ -455,6 +468,16 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_MM_OSA		_IRA_MODRM(_IRA_OSA_MM)
 #define _IRA_OPERAND_MODRM_M_8			_IRA_MODRM(_IRA_M_8)
 #define _IRA_OPERAND_MODRM_M_8_W		(_IRA_OPERAND_MODRM_M_8 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_16			_IRA_MODRM(_IRA_M_16)
+#define _IRA_OPERAND_MODRM_M_16_W		(_IRA_OPERAND_MODRM_M_16 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_32			_IRA_MODRM(_IRA_M_32)
+#define _IRA_OPERAND_MODRM_M_32_W		(_IRA_OPERAND_MODRM_M_32 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_64			_IRA_MODRM(_IRA_M_64)
+#define _IRA_OPERAND_MODRM_M_64_W		(_IRA_OPERAND_MODRM_M_64 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_80			_IRA_MODRM(_IRA_M_80)
+#define _IRA_OPERAND_MODRM_M_80_W		(_IRA_OPERAND_MODRM_M_80 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_128		_IRA_MODRM(_IRA_M_128)
+#define _IRA_OPERAND_MODRM_M_128_W		(_IRA_OPERAND_MODRM_M_128 | _IRA_WRITE)
 
 // todo: nie implicit tylko explicit
 // todo: dodac kodowanie wilkosci rejestru na podstawie encoded operand size.

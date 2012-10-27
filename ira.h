@@ -216,6 +216,17 @@
 #define _IRA_REG_R15	15
 #define _IRA_REG_XMM15	15
 
+/* FPU registers */
+
+#define _IRA_REG_ST0	0
+#define _IRA_REG_ST1	1
+#define _IRA_REG_ST2	2
+#define _IRA_REG_ST3	3
+#define _IRA_REG_ST4	4
+#define _IRA_REG_ST5	5
+#define _IRA_REG_ST6	6
+#define _IRA_REG_ST7	7
+
 /* GPR sizes. */
 
 #define _IRA_GPRS_UNDEFINED	0
@@ -236,6 +247,8 @@
 
 /* Size directives */
 
+// todo: wszdzie uzywac tych wielkosci do parametryzacji wilkosci adresacji i rejestrow, zeby nie bylo burdelu ze rozne makra adresujace uzywaja roznych wielkosci.
+#define _IRA_OS_UNDEFINED	0
 #define _IRA_OS_BYTE		8
 #define _IRA_OS_WORD		16
 #define _IRA_OS_DWORD		32
@@ -320,7 +333,8 @@ enum ira_register_type {
 	IRA_NO_REG = 0,
 	IRA_REG_GPR,
 	IRA_REG_MMX,
-	IRA_REG_XMM
+	IRA_REG_XMM,
+	IRA_REG_FPU
 };
 
 /* Common structure to describe register. */
