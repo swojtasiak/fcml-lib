@@ -986,6 +986,11 @@ struct ira_opcode_desc _ira_opcode_desc_FLDx[] = {
 	{ "fldz", 0x0001, 0x00D80000, { 0xD9, 0xEE, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_FLDCW[] = {
+	// D9 /5 FLDCW m2byte Valid Valid Load FPU control word from m2byte.
+	{ NULL, 0x0001, 0x00C5A800, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_FLDENV[] = {
 	// D9 /4 FLDENV m14/28byte Valid Valid Load FPU environment from m14byte or m28byte.
 	{ NULL, 0x0001, 0x00C5A000, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_14_28, _IRA_NA, _IRA_NA, _IRA_NA }
@@ -1078,13 +1083,13 @@ struct ira_opcode_desc _ira_opcode_desc_FST[] = {
 	// DD D0+i FST ST(i) Valid Valid Copy ST(0) to ST(i).
 	{ NULL, 0x0001, 0x00D80001, { 0xDD, 0xD0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// D9 /3 FSTP m32fp Valid Valid Copy ST(0) to m32fp and pop register stack.
-	{ "FSTP", 0x0001, 0x00C59800, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ "fstp", 0x0001, 0x00C59800, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DD /3 FSTP m64fp Valid Valid Copy ST(0) to m64fp and pop register stack.
-	{ "FSTP", 0x0001, 0x00C59800, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ "fstp", 0x0001, 0x00C59800, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DB /7 FSTP m80fp Valid Valid Copy ST(0) to m80fp and pop register stack.
-	{ "FSTP", 0x0001, 0x00C5B800, { 0xDB, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_80, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ "fstp", 0x0001, 0x00C5B800, { 0xDB, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_80, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DD D8+i FSTP ST(i) Valid Valid Copy ST(0) to ST(i) and pop register stack.
-	{ "FSTP", 0x0001, 0x00D80001, { 0xDD, 0xD8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ "fstp", 0x0001, 0x00D80001, { 0xDD, 0xD8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_FSTCW[] = {
@@ -1154,12 +1159,8 @@ struct ira_opcode_desc _ira_opcode_desc_FTST[] = {
 struct ira_opcode_desc _ira_opcode_desc_FUCOM[] = {
 	// DD E0+i FUCOM ST(i) Valid Valid Compare ST(0) with ST(i).
 	{ NULL, 0x0001, 0x00D80001, { 0xDD, 0xE0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
-	// DD E1 FUCOM Valid Valid Compare ST(0) with ST(1).
-	{ NULL, 0x0001, 0x00D80000, { 0xDD, 0xE1, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DD E8+i FUCOMP ST(i) Valid Valid Compare ST(0) with ST(i) and pop register stack.
 	{ "fucomp", 0x0001, 0x00D80001, { 0xDD, 0xE8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
-	// DD E9 FUCOMP Valid Valid Compare ST(0) with ST(1) and pop register stack.
-	{ "fucomp", 0x0001, 0x00D80000, { 0xDD, 0xE9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DA E9 FUCOMPP Valid Valid Compare ST(0) with ST(1) and pop register stack twice.
 	{ "fucompp", 0x0001, 0x00D80000, { 0xDA, 0xE9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
@@ -1171,16 +1172,14 @@ struct ira_opcode_desc _ira_opcode_desc_FXAM[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_FXCH[] = {
 	// D9 C8+i FXCH ST(i) Valid Valid Exchange the contents of ST(0) and ST(i).
-	{ NULL, 0x0001, 0x00D80001, { 0xD9, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
-	// D9 C9 FXCH Valid Valid Exchange the contents of ST(0) and ST(1).
-	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xC9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D80001, { 0xD9, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_FXRSTOR[] = {
 	// 0F AE /1 FXRSTOR m512byte A Valid Valid Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.
-	{ NULL, 0x0001, 0x03D98800, { 0x9B, 0xDD, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03D98800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA },
 	// REX.W+ 0F AE /1 FXRSTOR64 m512byte A Valid N.E. Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.
-	{ "fxrstor64", 0x0008, 0x04998800, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA }
+	{ "fxrstor64", 0x0008, 0x04998800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_FXSAVE[] = {
@@ -1324,6 +1323,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "fisttp", _ira_opcode_desc_FISTTP ),
 		_IA_INSTRUCTION( "fld", _ira_opcode_desc_FLD ),
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_FLDx ),
+		_IA_INSTRUCTION( "fldcw", _ira_opcode_desc_FLDCW),
 		_IA_INSTRUCTION( "fldenv", _ira_opcode_desc_FLDENV),
 		_IA_INSTRUCTION( "fmul", _ira_opcode_desc_FMUL ),
 		_IA_INSTRUCTION( "fnop", _ira_opcode_desc_FNOP ),

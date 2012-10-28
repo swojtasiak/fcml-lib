@@ -60,4 +60,11 @@ Fist instruction should be disassembled to: 9bdbe2 fclex
 
 Fist instruction should be disassembled to: 9bdbe3 finit
 
+7. FPU bug.
+
+0000000`00401000 480fae4820      fxrstor [rax+20h]     ds:00000000`77416540=65
+
+-> 480fae4820 fxrstor64 512byte ptr [rax+0000000000000020h]
+
+
 
