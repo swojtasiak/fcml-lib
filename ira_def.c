@@ -1204,6 +1204,16 @@ struct ira_opcode_desc _ira_opcode_desc_FYL2XP1[] = {
 	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_HADDPD[] = {
+	// 66 0F 7C /r HADDPD xmm1, xmm2/m128 A Valid Valid Horizontal add packed double-precision floatingpoint values from xmm2/m128 to xmm1.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_HADDPS[] = {
+	// F2 0F 7C /r HADDPS xmm1, xmm2/m128 A Valid Valid Horizontal add packed single-precision floatingpoint values from xmm2/m128 to xmm1.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -1353,6 +1363,8 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "fxtract", _ira_opcode_desc_FXTRACT ),
 		_IA_INSTRUCTION( "fyl2x", _ira_opcode_desc_FYL2X ),
 		_IA_INSTRUCTION( "fyl2xp1", _ira_opcode_desc_FYL2XP1 ),
+		_IA_INSTRUCTION( "haddpd", _ira_opcode_desc_HADDPD ),
+		_IA_INSTRUCTION( "haddps", _ira_opcode_desc_HADDPS ),
 		{ NULL, 0, 0, NULL }
 };
 

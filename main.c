@@ -137,6 +137,14 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 //102
 void test(void) {
 
+	// HADDPS
+	_TEST64( "f20f7c4020 haddps xmm0,oword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x7C, 0x40, 0x20 );
+	_TEST32( "f20f7c4020 haddps xmm0,oword ptr [eax+00000020h]", 0xF2, 0x0F, 0x7C, 0x40, 0x20 );
+
+	// HADDPD
+	_TEST64( "660f7c4020 haddpd xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x7C, 0x40, 0x20 );
+	_TEST32( "660f7c4020 haddpd xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x7C, 0x40, 0x20 );
+
 	// FYL2X
 	_TEST64( "d9f9 fyl2xp1", 0xD9, 0xF9 );
 	_TEST32( "d9f9 fyl2xp1", 0xD9, 0xF9 );
