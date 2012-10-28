@@ -8,19 +8,6 @@
 #include "ira_int.h"
 #include "common.h"
 
-// Utility macros used to describe instructions that have something in common.
-
-#define _IRA_OPCODE_COMMON_DESCRIPTION_FPU_BASIC_ARITHMETIC( reg_opcode_flags, fpu_reg_opcode_1, fpu_reg_opcode_2, mnemonic_1, mnemonic_2 ) \
-{ \
-	{ NULL, 0x0001, reg_opcode_flags, { 0xD8, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA }, \
-	{ NULL, 0x0001, reg_opcode_flags, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA }, \
-	{ NULL, 0x0001, 0x00D80001, { 0xD8, fpu_reg_opcode_1, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA }, \
-	{ NULL, 0x0001, 0x00D80001, { 0xDC, fpu_reg_opcode_2, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA }, \
-	{ mnemonic_1, 0x0001, 0x00D80001, { 0xDE, fpu_reg_opcode_2, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA }, \
-	{ mnemonic_2, 0x0001, reg_opcode_flags, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA }, \
-	{ mnemonic_2, 0x0001, reg_opcode_flags, { 0xDE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA } \
-}
-
 // Instruction descriptions.
 
 #define _IRA_EMPTY_MNEMONIC	""
@@ -895,7 +882,328 @@ struct ira_opcode_desc _ira_opcode_desc_FDIV[] = {
 	{ "fidiv", 0x0001, 0x00C5B000, { 0xDE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
-struct ira_opcode_desc _ira_opcode_desc_FDIVR[] = _IRA_OPCODE_COMMON_DESCRIPTION_FPU_BASIC_ARITHMETIC(0x00C5B800, 0xF8, 0xF0, "FDIVRP", "FIDIVR" );
+struct ira_opcode_desc _ira_opcode_desc_FDIVR[] = {
+	// D8 /7 FDIVR m32fp Valid Valid Divide m32fp by ST(0) and store result in ST(0).
+	{ NULL, 0x0001, 0x00C5B800, { 0xD8, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DC /7 FDIVR m64fp Valid Valid Divide m64fp by ST(0) and store result in ST(0).
+	{ NULL, 0x0001, 0x00C5B800, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D8 F8+i FDIVR ST(0), ST(i) Valid Valid Divide ST(i) by ST(0) and store result in ST(0).
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xF8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA },
+	// DC F0+i FDIVR ST(i), ST(0) Valid Valid Divide ST(0) by ST(i) and store result in ST(i).
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xF0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	// DE F0+i FDIVRP ST(i), ST(0) Valid Valid Divide ST(0) by ST(i), store result in ST(i), and pop the register stack.
+	{ "fdivrp", 0x0001, 0x00D80001, { 0xDE, 0xF0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	// DA /7 FIDIVR m32int Valid Valid Divide m32int by ST(0) and store result in ST(0).
+	{ "fidivr", 0x0001, 0x00C5B800, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DE /7 FIDIVR m16int Valid Valid Divide m16int by ST(0) and store result in ST(0).
+	{ "fidivr", 0x0001, 0x00C5B800, { 0xDE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FFREE[] = {
+	// DD C0+i FFREE ST(i) Valid Valid Sets tag for ST(i) to empty.
+	{ NULL, 0x0001, 0x00D80001, { 0xDD, 0xC0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FICOM[] = {
+	// DE /2 FICOM m16int Valid Valid Compare ST(0) with m16int.
+	{ NULL, 0x0001, 0x00C59000, { 0xDE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DA /2 FICOM m32int Valid Valid Compare ST(0) with m32int.
+	{ NULL, 0x0001, 0x00C59000, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DE /3 FICOMP m16int Valid Valid Compare ST(0) with m16int and pop stack register.
+	{ "ficomp", 0x0001, 0x00C59800, { 0xDE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DA /3 FICOMP m32int Valid Valid Compare ST(0) with m32int and pop stack register.
+	{ "ficomp", 0x0001, 0x00C59800, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FILD[] = {
+	// DF /0 FILD m16int Valid Valid Push m16int onto the FPU register stack.
+	{ NULL, 0x0001, 0x00C58000, { 0xDF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DB /0 FILD m32int Valid Valid Push m32int onto the FPU register stack.
+	{ NULL, 0x0001, 0x00C58000, { 0xDB, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DF /5 FILD m64int Valid Valid Push m64int onto the FPU register stack.
+	{ NULL, 0x0001, 0x00C5A800, { 0xDF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FINCSTP[] = {
+	// D9 F7 FINCSTP Valid Valid Increment the TOP field in the FPU status register.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF7, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FINIT[] = {
+	// 9B DB E3 FINIT Valid Valid Initialize FPU after checking for pending unmasked floating-point exceptions.
+	{ NULL, 0x0001, 0x00EC0000, { 0x9B, 0xDB, 0xE3 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DB E3 FNINIT* Valid Valid Initialize FPU without checking for pending unmasked floating-point exceptions.
+	{ "fninit", 0x0001, 0x00D80000, { 0xDB, 0xE3, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FIST[] = {
+	// DF /2 FIST m16int Valid Valid Store ST(0) in m16int.
+	{ NULL, 0x0001, 0x00C59000, { 0xDF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DB /2 FIST m32int Valid Valid Store ST(0) in m32int.
+	{ NULL, 0x0001, 0x00C59000, { 0xDB, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DF /3 FISTP m16int Valid Valid Store ST(0) in m16int and pop register stack.
+	{ "fistp", 0x0001, 0x00C59800, { 0xDF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DB /3 FISTP m32int Valid Valid Store ST(0) in m32int and pop register stack.
+	{ "fistp", 0x0001, 0x00C59800, { 0xDB, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DF /7 FISTP m64int Valid Valid Store ST(0) in m64int and pop register stack.
+	{ "fistp", 0x0001, 0x00C5B800, { 0xDF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FISTTP[] = {
+	// DF /1 FISTTP m16int Valid Valid Store ST(0) in m16int with truncation.
+	{ NULL, 0x0001, 0x00C58800, { 0xDF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DB /1 FISTTP m32int Valid Valid Store ST(0) in m32int with truncation.
+	{ NULL, 0x0001, 0x00C58800, { 0xDB, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD /1 FISTTP m64int Valid Valid Store ST(0) in m64int with truncation.
+	{ NULL, 0x0001, 0x00C58800, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FLD[] = {
+	// D9 /0 FLD m32fp Valid Valid Push m32fp onto the FPU register stack.
+	{ NULL, 0x0001, 0x00C58000, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD /0 FLD m64fp Valid Valid Push m64fp onto the FPU register stack.
+	{ NULL, 0x0001, 0x00C58000, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DB /5 FLD m80fp Valid Valid Push m80fp onto the FPU register stack.
+	{ NULL, 0x0001, 0x00C5A800, { 0xDB, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_80, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 C0+i FLD ST(i) Valid Valid Push ST(i) onto the FPU register stack.
+	{ NULL, 0x0001, 0x00D80001, { 0xD9, 0xC0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FLDx[] = {
+	// D9 E8 FLD1 Valid Valid Push +1.0 onto the FPU register stack.
+	{ "fld1", 0x0001, 0x00D80000, { 0xD9, 0xE8, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 E9 FLDL2T Valid Valid Push log210 onto the FPU register stack.
+	{ "fldl2t", 0x0001, 0x00D80000, { 0xD9, 0xE9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 EA FLDL2E Valid Valid Push log2e onto the FPU register stack.
+	{ "fldl2e", 0x0001, 0x00D80000, { 0xD9, 0xEA, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 EB FLDPI Valid Valid Push onto the FPU register stack.
+	{ "fldpi", 0x0001, 0x00D80000, { 0xD9, 0xEB, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 EC FLDLG2 Valid Valid Push log102 onto the FPU register stack.
+	{ "fldlg2", 0x0001, 0x00D80000, { 0xD9, 0xEC, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 ED FLDLN2 Valid Valid Push loge2 onto the FPU register stack.
+	{ "fldln2", 0x0001, 0x00D80000, { 0xD9, 0xED, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 EE FLDZ Valid Valid Push +0.0 onto the FPU register stack.
+	{ "fldz", 0x0001, 0x00D80000, { 0xD9, 0xEE, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FLDENV[] = {
+	// D9 /4 FLDENV m14/28byte Valid Valid Load FPU environment from m14byte or m28byte.
+	{ NULL, 0x0001, 0x00C5A000, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_14_28, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FMUL[] = {
+	// D8 /1 FMUL m32fp Valid Valid Multiply ST(0) by m32fp and store result in ST(0).
+	{ NULL, 0x0001, 0x00C58800, { 0xD8, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DC /1 FMUL m64fp Valid Valid Multiply ST(0) by m64fp and store result in ST(0).
+	{ NULL, 0x0001, 0x00C58800, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D8 C8+i FMUL ST(0), ST(i) Valid Valid Multiply ST(0) by ST(i) and store result in ST(0).
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xC8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA },
+	// DC C8+i FMUL ST(i), ST(0) Valid Valid Multiply ST(i) by ST(0) and store result in ST(i).
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	// DE C8+i FMULP ST(i), ST(0) Valid Valid Multiply ST(i) by ST(0), store result in ST(i), and pop the register stack.
+	{ "fmulp", 0x0001, 0x00D80001, { 0xDE, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	// DA /1 FIMUL m32int Valid Valid Multiply ST(0) by m32int and store result in ST(0).
+	{ "fimul", 0x0001, 0x00C58800, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DE /1 FIMUL m16int Valid Valid Multiply ST(0) by m16int and store result in ST(0).
+	{ "fimul", 0x0001, 0x00C58800, { 0xDE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FNOP[] = {
+	// D9 D0 FNOP Valid Valid No operation is performed.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xD0, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FPATAN[] = {
+	// D9 F3 FPATAN Valid Valid Replace ST(1) with arctan(ST(1) ST(0)) and pop the register stack.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF3, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FPREM[] = {
+	// D9 F8 FPREM Valid Valid Replace ST(0) with the remainder obtained from dividing ST(0) by ST(1).
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF8, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FPREM1[] = {
+	// D9 F5 FPREM1 Valid Valid Replace ST(0) with the IEEE remainder obtained from dividing ST(0) by ST(1).
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF5, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FPTAN[] = {
+	// D9 F2 FPTAN Valid Valid Replace ST(0) with its tangent and push 1 onto the FPU stack.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF2, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FRNDINT[] = {
+	// D9 FC FRNDINT Valid Valid Round ST(0) to an integer.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xFC, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FRSTOR[] = {
+	// DD /4 FRSTOR m94/108byte Valid Valid Load FPU state from m94byte or m108byte.
+	{ NULL, 0x0001, 0x00C5A000, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_94_108, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSAVE[] = {
+	// 9B DD /6 FSAVE m94/108byte Valid Valid Store FPU state to m94byte or m108byte after checking for pending unmasked floatingpoint exceptions. Then reinitialize the FPU.
+	{ NULL, 0x0001, 0x00D9B000, { 0x9B, 0xDD, 0x00 }, _IRA_OPERAND_MODRM_M_94_108, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD /6 FNSAVE* m94/108byte Valid Valid Store FPU environment to m94byte or m108byte without checking for pending unmasked floating-point exceptions.
+	{ "fnsave", 0x0001, 0x00C5B000, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_94_108, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSCALE[] = {
+	// D9 FD FSCALE Valid Valid Scale ST(0) by ST(1).
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xFD, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSIN[] = {
+	// D9 FE FSIN Valid Valid Replace ST(0) with its sine.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xFE, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSINCOS[] = {
+	// D9 FB FSINCOS Valid Valid Compute the sine and cosine of ST(0); replace ST(0) with the sine, and push the cosine onto the register stack.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xFB, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSQRT[] = {
+	// D9 FA FSQRT Valid Valid Computes square root of ST(0) and stores the result in ST(0).
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xFA, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FST[] = {
+	// D9 /2 FST m32fp Valid Valid Copy ST(0) to m32fp.
+	{ NULL, 0x0001, 0x00C59000, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD /2 FST m64fp Valid Valid Copy ST(0) to m64fp.
+	{ NULL, 0x0001, 0x00C59000, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD D0+i FST ST(i) Valid Valid Copy ST(0) to ST(i).
+	{ NULL, 0x0001, 0x00D80001, { 0xDD, 0xD0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 /3 FSTP m32fp Valid Valid Copy ST(0) to m32fp and pop register stack.
+	{ "FSTP", 0x0001, 0x00C59800, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD /3 FSTP m64fp Valid Valid Copy ST(0) to m64fp and pop register stack.
+	{ "FSTP", 0x0001, 0x00C59800, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DB /7 FSTP m80fp Valid Valid Copy ST(0) to m80fp and pop register stack.
+	{ "FSTP", 0x0001, 0x00C5B800, { 0xDB, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_80, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD D8+i FSTP ST(i) Valid Valid Copy ST(0) to ST(i) and pop register stack.
+	{ "FSTP", 0x0001, 0x00D80001, { 0xDD, 0xD8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSTCW[] = {
+	// 9B D9 /7 FSTCW m2byte Valid Valid Store FPU control word to m2byte after checking for pending unmasked floating-point exceptions.
+	{ NULL, 0x0001, 0x00D9B800, { 0x9B, 0xD9, 0x00 }, _IRA_OPERAND_MODRM_M_16_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 /7 FNSTCW* m2byte Valid Valid Store FPU control word to m2byte without checking for pending unmasked floating-point exceptions.
+	{ "fnstcw", 0x0001, 0x00C5B800, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16_W, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSTENV[] = {
+	// 9B D9 /6 FSTENV m14/28byte Valid Valid Store FPU environment to m14byte or m28byte after checking for pending unmasked floating-point exceptions. Then mask all floatingpoint exceptions.
+	{ NULL, 0x0001, 0x00D9B000, { 0x9B, 0xD9, 0x00 }, _IRA_OPERAND_MODRM_M_14_28_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 /6 FNSTENV* m14/28byte Valid Valid Store FPU environment to m14byte or m28byte without checking for pending unmasked floating-point exceptions. Then mask all floatingpoint exceptions.
+	{ "fnstenv", 0x0001, 0x00C5B000, { 0xD9, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_14_28_W, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSTSW[] = {
+	// 9B DD /7 FSTSW m2byte Valid Valid Store FPU status word at m2byte after checking for pending unmasked floatingpoint exceptions.
+	{ NULL, 0x0001, 0x00D9B800, { 0x9B, 0xDD, 0x00 }, _IRA_OPERAND_MODRM_M_16_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 9B DF E0 FSTSW AX Valid Valid Store FPU status word in AX register after checking for pending unmasked floatingpoint exceptions.
+	{ NULL, 0x0001, 0x00EC0000, { 0x9B, 0xDF, 0xE0 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD /7 FNSTSW* m2byte Valid Valid Store FPU status word at m2byte without checking for pending unmasked floatingpoint exceptions.
+	{ "fnstsw", 0x0001, 0x00C5B800, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DF E0 FNSTSW* AX Valid Valid Store FPU status word in AX register without checking for pending unmasked floatingpoint exceptions.
+	{ "fnstsw", 0x0001, 0x00D80000, { 0xDF, 0xE0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSUB[] = {
+	// D8 /4 FSUB m32fp Valid Valid Subtract m32fp from ST(0) and store result in ST(0).
+	{ NULL, 0x0001, 0x00C5A000, { 0xD8, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DC /4 FSUB m64fp Valid Valid Subtract m64fp from ST(0) and store result in ST(0).
+	{ NULL, 0x0001, 0x00C5A000, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D8 E0+i FSUB ST(0), ST(i) Valid Valid Subtract ST(i) from ST(0) and store result in ST(0).
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xE0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA },
+	// DC E8+i FSUB ST(i), ST(0) Valid Valid Subtract ST(0) from ST(i) and store result in ST(i).
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xE8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	// DE E8+i FSUBP ST(i), ST(0) Valid Valid Subtract ST(0) from ST(i), store result in ST(i), and pop register stack.
+	{ "fsubp", 0x0001, 0x00D80001, { 0xDE, 0xE8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	// DA /4 FISUB m32int Valid Valid Subtract m32int from ST(0) and store result in ST(0).
+	{ "fisub", 0x0001, 0x00C5A000, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DE /4 FISUB m16int Valid Valid Subtract m16int from ST(0) and store result in ST(0).
+	{ "fisub", 0x0001, 0x00C5A000, { 0xDE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FSUBR[] = {
+	// D8 /5 FSUBR m32fp Valid Valid Subtract ST(0) from m32fp and store result in ST(0).
+	{ NULL, 0x0001, 0x00C5A800, { 0xD8, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DC /5 FSUBR m64fp Valid Valid Subtract ST(0) from m64fp and store result in ST(0).
+	{ NULL, 0x0001, 0x00C5A800, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
+	// D8 E8+i FSUBR ST(0), ST(i) Valid Valid Subtract ST(0) from ST(i) and store result in ST(0).
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xE8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA },
+	// DC E0+i FSUBR ST(i), ST(0) Valid Valid Subtract ST(i) from ST(0) and store result in ST(i).
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xE0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	// DE E0+i FSUBRP ST(i), ST(0) Valid Valid Subtract ST(i) from ST(0), store result in ST(i), and pop register stack.
+	{ "fsubrp", 0x0001, 0x00D80001, { 0xDE, 0xE0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	// DA /5 FISUBR m32int Valid Valid Subtract ST(0) from m32int and store result in ST(0).
+	{ "fisubr", 0x0001, 0x00C5A800, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DE /5 FISUBR m16int Valid Valid Subtract ST(0) from m16int and store result in ST(0).
+	{ "fisubr", 0x0001, 0x00C5A800, { 0xDE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FTST[] = {
+	// D9 E4 FTST Valid Valid Compare ST(0) with 0.0.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xE4, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FUCOM[] = {
+	// DD E0+i FUCOM ST(i) Valid Valid Compare ST(0) with ST(i).
+	{ NULL, 0x0001, 0x00D80001, { 0xDD, 0xE0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD E1 FUCOM Valid Valid Compare ST(0) with ST(1).
+	{ NULL, 0x0001, 0x00D80000, { 0xDD, 0xE1, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD E8+i FUCOMP ST(i) Valid Valid Compare ST(0) with ST(i) and pop register stack.
+	{ "fucomp", 0x0001, 0x00D80001, { 0xDD, 0xE8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// DD E9 FUCOMP Valid Valid Compare ST(0) with ST(1) and pop register stack.
+	{ "fucomp", 0x0001, 0x00D80000, { 0xDD, 0xE9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// DA E9 FUCOMPP Valid Valid Compare ST(0) with ST(1) and pop register stack twice.
+	{ "fucompp", 0x0001, 0x00D80000, { 0xDA, 0xE9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FXAM[] = {
+	// D9 E5 FXAM Valid Valid Classify value or number in ST(0).
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xE5, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FXCH[] = {
+	// D9 C8+i FXCH ST(i) Valid Valid Exchange the contents of ST(0) and ST(i).
+	{ NULL, 0x0001, 0x00D80001, { 0xD9, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// D9 C9 FXCH Valid Valid Exchange the contents of ST(0) and ST(1).
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xC9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FXRSTOR[] = {
+	// 0F AE /1 FXRSTOR m512byte A Valid Valid Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.
+	{ NULL, 0x0001, 0x03D98800, { 0x9B, 0xDD, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W+ 0F AE /1 FXRSTOR64 m512byte A Valid N.E. Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.
+	{ "fxrstor64", 0x0008, 0x04998800, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FXSAVE[] = {
+	// 0F AE /0 FXSAVE m512byte A Valid Valid Save the x87 FPU, MMX, XMM, and MXCSR register state to m512byte.
+	{ NULL, 0x0001, 0x03D98000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W+ 0F AE /0 FXSAVE64 m512byte A Valid N.E. Save the x87 FPU, MMX, XMM, and MXCSR register state to m512byte.
+	{ "fxsave64", 0x0008, 0x04998000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FXTRACT[] = {
+	// D9 F4 FXTRACT Valid Valid Separate value in ST(0) into exponent and significand, store exponent in ST(0), and push the significand onto the register stack.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF4, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FYL2X[] = {
+	// D9 F1 FYL2X Valid Valid Replace ST(1) with (ST(1) log2ST(0)) and pop the register stack.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF1, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_FYL2XP1[] = {
+	// D9 F9 FYL2XP1 Valid Valid Replace ST(1) with ST(1) log2(ST(0) + 1.0) and pop the register stack.
+	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF9, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
@@ -1006,6 +1314,45 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "fcos", _ira_opcode_desc_FCOS),
 		_IA_INSTRUCTION( "fdecstp", _ira_opcode_desc_FDECSTP),
 		_IA_INSTRUCTION( "fdiv", _ira_opcode_desc_FDIV),
+		_IA_INSTRUCTION( "fdivr", _ira_opcode_desc_FDIVR),
+		_IA_INSTRUCTION( "ffree", _ira_opcode_desc_FFREE ),
+		_IA_INSTRUCTION( "ficom", _ira_opcode_desc_FICOM ),
+		_IA_INSTRUCTION( "fild", _ira_opcode_desc_FILD ),
+		_IA_INSTRUCTION( "fincstp", _ira_opcode_desc_FINCSTP ),
+		_IA_INSTRUCTION( "finit", _ira_opcode_desc_FINIT ),
+		_IA_INSTRUCTION( "fist", _ira_opcode_desc_FIST ),
+		_IA_INSTRUCTION( "fisttp", _ira_opcode_desc_FISTTP ),
+		_IA_INSTRUCTION( "fld", _ira_opcode_desc_FLD ),
+		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_FLDx ),
+		_IA_INSTRUCTION( "fldenv", _ira_opcode_desc_FLDENV),
+		_IA_INSTRUCTION( "fmul", _ira_opcode_desc_FMUL ),
+		_IA_INSTRUCTION( "fnop", _ira_opcode_desc_FNOP ),
+		_IA_INSTRUCTION( "fpatan", _ira_opcode_desc_FPATAN ),
+		_IA_INSTRUCTION( "fprem", _ira_opcode_desc_FPREM ),
+		_IA_INSTRUCTION( "fprem1", _ira_opcode_desc_FPREM1 ),
+		_IA_INSTRUCTION( "fptan", _ira_opcode_desc_FPTAN ),
+		_IA_INSTRUCTION( "frndint", _ira_opcode_desc_FRNDINT ),
+		_IA_INSTRUCTION( "frstor", _ira_opcode_desc_FRSTOR),
+		_IA_INSTRUCTION( "fsave", _ira_opcode_desc_FSAVE ),
+		_IA_INSTRUCTION( "fscale", _ira_opcode_desc_FSCALE ),
+		_IA_INSTRUCTION( "fsin", _ira_opcode_desc_FSIN ),
+		_IA_INSTRUCTION( "fsincos", _ira_opcode_desc_FSINCOS ),
+		_IA_INSTRUCTION( "fsqrt", _ira_opcode_desc_FSQRT ),
+		_IA_INSTRUCTION( "fst", _ira_opcode_desc_FST ),
+		_IA_INSTRUCTION( "fstcw", _ira_opcode_desc_FSTCW ),
+		_IA_INSTRUCTION( "fstenv", _ira_opcode_desc_FSTENV ),
+		_IA_INSTRUCTION( "fstsw", _ira_opcode_desc_FSTSW ),
+		_IA_INSTRUCTION( "fsub", _ira_opcode_desc_FSUB ),
+		_IA_INSTRUCTION( "fsubr", _ira_opcode_desc_FSUBR ),
+		_IA_INSTRUCTION( "ftst", _ira_opcode_desc_FTST ),
+		_IA_INSTRUCTION( "fucom", _ira_opcode_desc_FUCOM ),
+		_IA_INSTRUCTION( "fxam", _ira_opcode_desc_FXAM ),
+		_IA_INSTRUCTION( "fxch", _ira_opcode_desc_FXCH ),
+		_IA_INSTRUCTION( "fxrstor", _ira_opcode_desc_FXRSTOR ),
+		_IA_INSTRUCTION( "fxsave", _ira_opcode_desc_FXSAVE ),
+		_IA_INSTRUCTION( "fxtract", _ira_opcode_desc_FXTRACT ),
+		_IA_INSTRUCTION( "fyl2x", _ira_opcode_desc_FYL2X ),
+		_IA_INSTRUCTION( "fyl2xp1", _ira_opcode_desc_FYL2XP1 ),
 		{ NULL, 0, 0, NULL }
 };
 

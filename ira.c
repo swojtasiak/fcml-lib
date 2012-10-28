@@ -126,6 +126,8 @@ void *_ira_alloc_reg_addressing_args( int reg, uint8_t encoded_operand_size, uin
 
 uint16_t ira_far_indirect_pointer_operand_size_provider( struct ira_diss_context *context );
 uint16_t ira_mm_operand_size_provider( struct ira_diss_context *context );
+uint16_t ira_m14_28byte_operand_size_provider( struct ira_diss_context *context );
+uint16_t ira_m94_108byte_operand_size_provider( struct ira_diss_context *context );
 
 /* Utilities */
 
@@ -1044,8 +1046,19 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 			operand_decoding->args = _ira_alloc_modm_decoding_args( NULL, _IRA_OS_OWORD, &result );
 			break;
+		case _IRA_M_14_28:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
+			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_m14_28byte_operand_size_provider, 0, &result );
+			break;
+		case _IRA_M_94_108:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
+			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_m94_108byte_operand_size_provider, 0, &result );
+			break;
+		case _IRA_M_512B:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
+			operand_decoding->args = _ira_alloc_modm_decoding_args( NULL, 512 * 8, &result );
+			break;
 		}
-
 		break;
 	case _IRA_EXPLICIT_REG_BASE_OSA:
 		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
@@ -2213,6 +2226,16 @@ uint16_t ira_far_indirect_pointer_operand_size_provider( struct ira_diss_context
 uint16_t ira_mm_operand_size_provider( struct ira_diss_context *context ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	return decoding_context->effective_operand_size_attribute * 2;
+}
+
+uint16_t ira_m14_28byte_operand_size_provider( struct ira_diss_context *context ) {
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	return ( decoding_context->effective_operand_size_attribute == _IRA_OSA_16 ) ? ( 14 * 8 ) : ( 28 * 8 );
+}
+
+uint16_t ira_m94_108byte_operand_size_provider( struct ira_diss_context *context ) {
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	return ( decoding_context->effective_operand_size_attribute == _IRA_OSA_16 ) ? ( 94 * 8 ) : ( 108 * 8 );
 }
 
 /*

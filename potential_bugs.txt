@@ -53,5 +53,11 @@ Result is stored in AX not AL!
 Fist instruction should be disassembled to: 9bdbe2 fclex
 
 
+6. FPU bug.
+
+00000000`00401000 9b              wait
+00000000`00401001 dbe3            fninit
+
+Fist instruction should be disassembled to: 9bdbe3 finit
 
 

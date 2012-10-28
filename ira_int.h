@@ -423,6 +423,9 @@ struct ira_instruction_desc {
 #define _IRA_M_64		22
 #define _IRA_M_80		23
 #define _IRA_M_128		24
+#define _IRA_M_14_28	25
+#define _IRA_M_94_108	26
+#define _IRA_M_512B		27
 
 /* ModRM based operands. */
 
@@ -478,6 +481,13 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_M_80_W		(_IRA_OPERAND_MODRM_M_80 | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_128		_IRA_MODRM(_IRA_M_128)
 #define _IRA_OPERAND_MODRM_M_128_W		(_IRA_OPERAND_MODRM_M_128 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_14_28		_IRA_MODRM(_IRA_M_14_28)
+#define _IRA_OPERAND_MODRM_M_14_28_W	(_IRA_OPERAND_MODRM_M_14_28 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_94_108		_IRA_MODRM(_IRA_M_94_108)
+#define _IRA_OPERAND_MODRM_M_94_108_W	(_IRA_OPERAND_MODRM_M_94_108 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_512B		_IRA_MODRM(_IRA_M_512B)
+#define _IRA_OPERAND_MODRM_M_512B_W	(_IRA_OPERAND_MODRM_M_512B | _IRA_WRITE)
+
 
 // todo: nie implicit tylko explicit
 // todo: dodac kodowanie wilkosci rejestru na podstawie encoded operand size.

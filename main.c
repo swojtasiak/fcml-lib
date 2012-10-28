@@ -133,16 +133,97 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 
 #define _TEST32(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 1, code, sizeof(code), x ); }
 #define _TEST64(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, code, sizeof(code), x ); }
+
 //102
 void test(void) {
 
-	// D8 /6 FDIV m32fp Valid Valid Divide ST(0) by m32fp and store result in ST(0).
-	// DC /6 FDIV m64fp Valid Valid Divide ST(0) by m64fp and store result in ST(0).
-	// D8 F0+i FDIV ST(0), ST(i) Valid Valid Divide ST(0) by ST(i) and store result in ST(0).
-	// DC F8+i FDIV ST(i), ST(0) Valid Valid Divide ST(i) by ST(0) and store result in ST(i).
-	// DE F8+i FDIVP ST(i), ST(0) Valid Valid Divide ST(i) by ST(0), store result in ST(i), and pop the register stack.
-	// DA /6 FIDIV m32int Valid Valid Divide ST(0) by m32int and store result in ST(0).
-	// DE /6 FIDIV m16int Valid Valid Divide ST(0) by m64int and store result in ST(0).
+	// FLD
+	_TEST32( "d94020 fld dword ptr [eax+00000020h]", 0xD9, 0x40, 0x20 );
+	_TEST64( "d94020 fld dword ptr [rax+0000000000000020h]", 0xD9, 0x40, 0x20 );
+	_TEST32( "dd4020 fld qword ptr [eax+00000020h]", 0xDD, 0x40, 0x20 );
+	_TEST64( "dd4020 fld qword ptr [rax+0000000000000020h]", 0xDD, 0x40, 0x20 );
+	_TEST32( "db6820 fld tbyte ptr [eax+00000020h]", 0xDB, 0x68, 0x20 );
+	_TEST64( "db6820 fld tbyte ptr [rax+0000000000000020h]", 0xDB, 0x68, 0x20 );
+	_TEST32( "d9c1 fld st(1)", 0xD9, 0xC1 );
+	_TEST64( "d9c1 fld st(1)", 0xD9, 0xC1 );
+
+	// FISTTP
+	_TEST32( "df4820 fisttp word ptr [eax+00000020h]", 0xDF, 0x48, 0x20 );
+	_TEST64( "df4820 fisttp word ptr [rax+0000000000000020h]", 0xDF, 0x48, 0x20 );
+	_TEST32( "db4820 fisttp dword ptr [eax+00000020h]", 0xDB, 0x48, 0x20 );
+	_TEST64( "db4820 fisttp dword ptr [rax+0000000000000020h]", 0xDB, 0x48, 0x20 );
+	_TEST32( "dd4820 fisttp qword ptr [eax+00000020h]", 0xDD, 0x48, 0x20 );
+	_TEST64( "dd4820 fisttp qword ptr [rax+0000000000000020h]", 0xDD, 0x48, 0x20 );
+
+	// FIST/FISTP
+	_TEST32( "df5020 fist word ptr [eax+00000020h]", 0xDF, 0x50, 0x20 );
+	_TEST64( "df5020 fist word ptr [rax+0000000000000020h]", 0xDF, 0x50, 0x20 );
+	_TEST32( "db5020 fist dword ptr [eax+00000020h]", 0xDB, 0x50, 0x20 );
+	_TEST64( "db5020 fist dword ptr [rax+0000000000000020h]", 0xDB, 0x50, 0x20 );
+	_TEST32( "df5820 fistp word ptr [eax+00000020h]", 0xDF, 0x58, 0x20 );
+	_TEST64( "df5820 fistp word ptr [rax+0000000000000020h]", 0xDF, 0x58, 0x20 );
+	_TEST32( "db5820 fistp dword ptr [eax+00000020h]", 0xDB, 0x58, 0x20 );
+	_TEST64( "db5820 fistp dword ptr [rax+0000000000000020h]", 0xDB, 0x58, 0x20 );
+	_TEST32( "df7820 fistp qword ptr [eax+00000020h]", 0xDF, 0x78, 0x20 );
+	_TEST64( "df7820 fistp qword ptr [rax+0000000000000020h]", 0xDF, 0x78, 0x20 );
+
+	// FINIT/FNINIT
+	_TEST32( "9bdbe3 finit", 0x9B, 0xDB, 0xE3 );
+	_TEST64( "dbe3 fninit", 0xDB, 0xE3 );
+
+	// FINCSTP
+	_TEST32( "d9f7 fincstp", 0xD9, 0xF7 );
+	_TEST64( "d9f7 fincstp", 0xD9, 0xF7);
+
+	// FILD
+	_TEST32( "df4040 fild word ptr [eax+00000040h]", 0xDF, 0x40, 0x40 );
+	_TEST64( "df4040 fild word ptr [rax+0000000000000040h]", 0xDF, 0x40, 0x40 );
+	_TEST32( "db4040 fild dword ptr [eax+00000040h]", 0xDB, 0x40, 0x40 );
+	_TEST64( "db4040 fild dword ptr [rax+0000000000000040h]", 0xDB, 0x40, 0x40 );
+	_TEST32( "df6840 fild qword ptr [eax+00000040h]", 0xDF, 0x68, 0x40 );
+	_TEST64( "df6840 fild qword ptr [rax+0000000000000040h]", 0xDF, 0x68, 0x40 );
+
+	// FICOM
+	_TEST32( "de5040 ficom word ptr [eax+00000040h]", 0xDE, 0x50, 0x40 );
+	_TEST64( "de5040 ficom word ptr [rax+0000000000000040h]", 0xDE, 0x50, 0x40 );
+	_TEST32( "da5040 ficom dword ptr [eax+00000040h]", 0xDA, 0x50, 0x40 );
+	_TEST64( "da5040 ficom dword ptr [rax+0000000000000040h]", 0xDA, 0x50, 0x40 );
+	_TEST32( "de5840 ficomp word ptr [eax+00000040h]", 0xDE, 0x58, 0x40 );
+	_TEST64( "de5840 ficomp word ptr [rax+0000000000000040h]", 0xDE, 0x58, 0x40 );
+	_TEST32( "da5840 ficomp dword ptr [eax+00000040h]", 0xDA, 0x58, 0x40 );
+	_TEST64( "da5840 ficomp dword ptr [rax+0000000000000040h]", 0xDA, 0x58, 0x40 );
+
+	// FFREE
+	_TEST32( "ddc1 ffree st(1)", 0xDD, 0xC1 );
+	_TEST64( "ddc1 ffree st(1)", 0xDD, 0xC1 );
+
+	// FRSTOR
+	//todo: drokowanie niestandardowych size directive opcjonanie. opcja konfiguracyjna do wylaczania drukowania takich wartosci.
+	_TEST64( "dd6020 frstor 108byte ptr [rax+0000000000000020h]", 0xDD, 0x60, 0x20 );
+	_TEST32( "dd6020 frstor 108byte ptr [eax+00000020h]", 0xDD, 0x60, 0x20 );
+	_TEST32( "66dd6020 frstor 94byte ptr [eax+00000020h]", 0x66, 0xDD, 0x60, 0x20 );
+
+	// FLDENV
+	//todo: drokowanie niestandardowych size directive opcjonanie. opcja konfiguracyjna do wylaczania drukowania takich wartosci.
+	_TEST64( "d96020 fldenv 28byte ptr [rax+0000000000000020h]", 0xD9, 0x60, 0x20 );
+	_TEST32( "d96020 fldenv 28byte ptr [eax+00000020h]", 0xD9, 0x60, 0x20 );
+	_TEST32( "66d96020 fldenv 14byte ptr [eax+00000020h]", 0x66, 0xD9, 0x60, 0x20 );
+
+	// FDIVR
+	_TEST64( "d87820 fdivr dword ptr [rax+0000000000000020h]", 0xD8, 0x78, 0x20 );
+	_TEST32( "d87820 fdivr dword ptr [eax+00000020h]", 0xD8, 0x78, 0x20 );
+	_TEST64( "dc7820 fdivr qword ptr [rax+0000000000000020h]", 0xDC, 0x78, 0x20 );
+	_TEST32( "dc7820 fdivr qword ptr [eax+00000020h]", 0xDC, 0x78, 0x20 );
+	_TEST32( "d8f9 fdivr st(0),st(1)", 0xD8, 0xF9 );
+	_TEST64( "d8f9 fdivr st(0),st(1)", 0xD8, 0xF9 );
+	_TEST64( "dcf1 fdivr st(1),st(0)", 0xDC, 0xF1 );
+	_TEST32( "dcf1 fdivr st(1),st(0)", 0xDC, 0xF1 );
+	_TEST64( "def1 fdivrp st(1),st(0)", 0xDE, 0xF1 );
+	_TEST32( "def1 fdivrp st(1),st(0)", 0xDE, 0xF1 );
+	_TEST64( "da7820 fidivr dword ptr [rax+0000000000000020h]", 0xDA, 0x78, 0x20 );
+	_TEST32( "da7820 fidivr dword ptr [eax+00000020h]", 0xDA, 0x78, 0x20 );
+	_TEST64( "de7820 fidivr word ptr [rax+0000000000000020h]", 0xDE, 0x78, 0x20 );
+	_TEST32( "de7820 fidivr word ptr [eax+00000020h]", 0xDE, 0x78, 0x20 );
 
 	// FDIV
 	_TEST64( "d87020 fdiv dword ptr [rax+0000000000000020h]", 0xD8, 0x70, 0x20 );

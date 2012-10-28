@@ -294,6 +294,9 @@ void _ira_operand_formater_register( struct ira_disassemble_result *result, stru
 }
 
 void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream ) {
+
+	struct _ira_integer size_directive_int;
+
 	switch( size_directive ) {
 	case 8:
 		_ira_format_append_str( stream, "byte ptr " );
@@ -317,7 +320,10 @@ void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stre
 		_ira_format_append_str( stream, "oword ptr " );
 		break;
 	default:
-		// TODO: Maybe we should write size here?
-		_ira_format_append_str( stream, "unknown size ptr " );
+		size_directive_int.is_signed = 0;
+		size_directive_int.size = 16;
+		size_directive_int.value.v16 = size_directive / 8;
+		_ira_format_append_integer( stream, &size_directive_int, 10 );
+		_ira_format_append_str( stream, "byte ptr " );
 	}
 }
