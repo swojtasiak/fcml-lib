@@ -298,6 +298,8 @@ void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stre
 	struct _ira_integer size_directive_int;
 
 	switch( size_directive ) {
+	case 0:
+		break;
 	case 8:
 		_ira_format_append_str( stream, "byte ptr " );
 		break;

@@ -166,11 +166,18 @@ struct ira_condition_type_args {
 	enum ira_condition_type condition_type;
 };
 
-
 /* Structure that can be used to pass immediate value type/size to operand decoding function. */
 struct ira_immediate_type_args {
 	// Immediate value type.
 	enum ira_immediate_data_type immediate_data_type;
+};
+
+/* Structure that can be used to pass explicit immediate value to operand decoding function. */
+struct ira_explicit_immediate_type_args {
+	// Immediate value type.
+	enum ira_immediate_data_type immediate_data_type;
+	// Immediate value.
+	union ira_immediate_data_value immediate_data;
 };
 
 /* Structure that can be used to pass register type and its size to operand decoding function. */
@@ -307,6 +314,7 @@ struct ira_instruction_desc {
 
 /* Prefixes flags. */
 
+// TODO: nadmiarowy! zobacz EOSA restrictions! wywalic, tylko gmatwa
 #define _IRA_PREFIX_REX_W_1(x)				_IRA_GET_BIT(x,03)
 #define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
@@ -426,6 +434,7 @@ struct ira_instruction_desc {
 #define _IRA_M_14_28	25
 #define _IRA_M_94_108	26
 #define _IRA_M_512B		27
+#define _IRA_M_UNDEF	28
 
 /* ModRM based operands. */
 
@@ -487,6 +496,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_M_94_108_W	(_IRA_OPERAND_MODRM_M_94_108 | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_512B		_IRA_MODRM(_IRA_M_512B)
 #define _IRA_OPERAND_MODRM_M_512B_W	(_IRA_OPERAND_MODRM_M_512B | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_UNDEF		_IRA_MODRM(_IRA_M_UNDEF)
+#define _IRA_OPERAND_MODRM_M_UNDEF_W	(_IRA_OPERAND_MODRM_M_UNDEF | _IRA_WRITE)
 
 
 // todo: nie implicit tylko explicit
@@ -521,6 +532,9 @@ struct ira_instruction_desc {
 // Addressing by explicit GPR register. (Used by CMPS for instance.)
 #define _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE		0x15000000
 #define _IRA_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE | reg_num << 16 | encoded_operand_size << 8 | encoded_segment_register )
+
+#define _IRA_EXPLICIT_OPERAND_IB_BASE				0x16000000
+#define _IRA_EXPLICIT_OPERAND_IB(value)				( _IRA_EXPLICIT_OPERAND_IB_BASE | value )
 
 /* Externals. */
 

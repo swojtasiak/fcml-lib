@@ -14,15 +14,21 @@
 
 /* Constants. */
 
+// Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute.
+
+//TODO: Zunifikowac zapis wielkosci obliczanych na bazie EASA i EOSA, wykorzytac te stale
+
+#define _IRA_OS_EOSA		0xFFFF
+#define _IRA_OS_EASA		0xFFFE
+
 /* Constants used to encode operand size on one byte. Used only in instruction descriptions. */
 
-// Operand size calculated by Effective Operand Size Attribute.
+// Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute.
 #define _IRA_EOS_EOSA		0xFF
-
-// Operand size calculated by Effective Address Size Attribute.
 #define _IRA_EOS_EASA		0xFE
 
 // Take into account that every size is given in a number of bytes.
+#define _IRA_EOS_UNDEFINED	0
 #define _IRA_EOS_BYTE		1
 #define _IRA_EOS_WORD		2
 #define _IRA_EOS_DWORD		4

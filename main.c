@@ -137,6 +137,152 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 //102
 void test(void) {
 
+	// IRET
+	_TEST32( "cf iretd", 0xCF );
+	_TEST32( "66cf iret", 0x66, 0xCF );
+	_TEST64( "cf iretd", 0xCF );
+	_TEST64( "66cf iret", 0x66, 0xCF );
+	_TEST64( "48cf iretq", 0x48, 0xCF );
+
+	// INVLPG
+	_TEST32( "0f017820 invlpg [eax+00000020h]", 0x0F, 0x01, 0x78, 0x20 );
+	_TEST64( "0f017820 invlpg [rax+0000000000000020h]", 0x0F, 0x01, 0x78, 0x20 );
+
+	// INVD
+	_TEST32( "0f08 invd", 0x0F, 0x08 );
+	_TEST64( "0f08 invd", 0x0F, 0x08 );
+
+	// INT
+	_TEST32( "cc int 03h", 0xCC );
+	_TEST64( "cc int 03h", 0xCC );
+	_TEST32( "cd20 int 20h", 0xCD, 0x20 );
+	_TEST64( "cd20 int 20h", 0xCD, 0x20 );
+	_TEST64( "ce into", 0xCE );
+	_TEST32( "ce into", 0xCE );
+
+	// INSERTPS
+	_TEST32( "660f3a212040 insertps xmm4,dword ptr [eax],40h", 0x66, 0x0F, 0x3A, 0x21, 0x20, 0x40 );
+	_TEST64( "660f3a212040 insertps xmm4,dword ptr [rax],40h", 0x66, 0x0F, 0x3A, 0x21, 0x20, 0x40 );
+
+	// INS
+	// 6C INS m8, DX A Valid Valid Input byte from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.*
+	_TEST32( "6c ins byte ptr [edi],dx", 0x6c );
+	_TEST64( "6c ins byte ptr [rdi],dx", 0x6c );
+	_TEST64( "676c ins byte ptr [edi],dx", 0x67, 0x6c );
+	// 6D INS m16, DX A Valid Valid Input word from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
+	// 6D INS m32, DX A Valid Valid Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
+	_TEST32( "6d ins dword ptr [edi],dx", 0x6D );
+	_TEST64( "6d ins dword ptr [rdi],dx", 0x6D );
+	_TEST64( "676d ins dword ptr [edi],dx", 0x67, 0x6D );
+	_TEST64( "67666d ins word ptr [edi],dx", 0x67, 0x66, 0x6D );
+	_TEST64( "486d ins dword ptr [rdi],dx", 0x48, 0x6D );
+
+	// INC
+	// FE /0 INC r/m8 A Valid Valid Increment r/m byte by 1.
+	// REX + FE /0 INC r/m8* A Valid N.E. Increment r/m byte by 1.
+	_TEST32( "40 inc eax", 0x40 );
+	_TEST32( "6640 inc ax", 0x66, 0x40 );
+	_TEST32( "41 inc ecx", 0x41 );
+	_TEST32( "6641 inc cx", 0x66, 0x41 );
+	// FF /0 INC r/m16 A Valid Valid Increment r/m word by 1.
+	// FF /0 INC r/m32 A Valid Valid Increment r/m doubleword by 1.
+	// REX.W + FF /0 INC r/m64 A Valid N.E. Increment r/m quadword by 1.
+	_TEST32( "fe00 inc byte ptr [eax]", 0xFE, 0x00 );
+	_TEST64( "fe00 inc byte ptr [rax]", 0xFE, 0x00 );
+	_TEST64( "48fe00 inc byte ptr [rax]", 0x48, 0xFE, 0x00 );
+	_TEST64( "48fec4 inc spl", 0x48, 0xFE, 0xC4 );
+	// 40+ rw** INC r16 B N.E. Valid Increment word register by 1.
+	// 40+ rd INC r32 B N.E. Valid Increment doubleword register by 1.
+	_TEST32( "ff03 inc dword ptr [ebx]", 0xFF, 0x03 );
+	_TEST32( "66ff03 inc word ptr [ebx]", 0x66, 0xFF, 0x03 );
+	_TEST64( "ff03 inc dword ptr [rbx]", 0xFF, 0x03 );
+	_TEST64( "48ff03 inc qword ptr [rbx]", 0x48, 0xFF, 0x03 );
+	_TEST64( "6640ff03 inc word ptr [rbx]", 0x66, 0x40, 0xFF, 0x03 );
+	_TEST64( "49ffc4 inc r12", 0x49, 0xFF, 0xC4 );
+
+	// IN
+	// E4 ib IN AL, imm8 A Valid Valid Input byte from imm8 I/O port address into AL.
+	// E5 ib IN AX, imm8 A Valid Valid Input word from imm8 I/O port address into AX.
+	// E5 ib IN EAX, imm8 A Valid Valid Input dword from imm8 I/O port address into EAX.
+	_TEST32( "e420 in al,20h", 0xE4, 0x20 );
+	_TEST64( "66e420 in al,20h", 0x66, 0xE4, 0x20 );
+	_TEST32( "e520 in eax,20h", 0xE5, 0x20 );
+	_TEST32( "66e520 in ax,20h", 0x66, 0xE5, 0x20 );
+	_TEST64( "48e520 in eax,20h", 0x48, 0xE5, 0x20 );
+	// EC IN AL,DX B Valid Valid Input byte from I/O port in DX into AL.
+	// ED IN AX,DX B Valid Valid Input word from I/O port in DX into AX.
+	// ED IN EAX,DX B Valid Valid Input doubleword from I/O port in DX into EAX.
+	_TEST32( "ec in al,dx", 0xEC, 0x20 );
+	_TEST64( "66ec in al,dx", 0x66, 0xEC, 0x20 );
+	_TEST32( "ed in eax,dx", 0xED, 0x20 );
+	_TEST32( "66ed in ax,dx", 0x66, 0xED, 0x20 );
+	_TEST64( "48ed in eax,dx", 0x48, 0xED, 0x20 );
+
+	// IMUL
+	// F6 /5 IMUL r/m8* A Valid Valid AX AL r/m byte.
+	_TEST32( "f66820 imul byte ptr [eax+00000020h]", 0xF6, 0x68, 0x20 );
+	_TEST32( "66f66820 imul byte ptr [eax+00000020h]", 0x66, 0xF6, 0x68, 0x20 );
+	_TEST64( "f66820 imul byte ptr [rax+0000000000000020h]", 0xF6, 0x68, 0x20 );
+	// F7 /5 IMUL r/m16 A Valid Valid DX:AX AX r/m word.
+	// F7 /5 IMUL r/m32 A Valid Valid EDX:EAX EAX r/m32.
+	// REX.W + F7 /5 IMUL r/m64 A Valid N.E. RDX:RAX RAX r/m64.
+	_TEST32( "f76820 imul dword ptr [eax+00000020h]", 0xF7, 0x68, 0x20 );
+	_TEST32( "66f76820 imul word ptr [eax+00000020h]", 0x66, 0xF7, 0x68, 0x20 );
+	_TEST64( "f76820 imul dword ptr [rax+0000000000000020h]", 0xF7, 0x68, 0x20 );
+	_TEST64( "66f76820 imul word ptr [rax+0000000000000020h]", 0x66, 0xF7, 0x68, 0x20 );
+	_TEST64( "48f76820 imul qword ptr [rax+0000000000000020h]", 0x48, 0xF7, 0x68, 0x20 );
+	// 0F AF /r IMUL r16, r/m16 B Valid Valid word register word register r/m16.
+	// 0F AF /r IMUL r32, r/m32 B Valid Valid doubleword register doubleword register r/m32.
+	// REX.W + 0F AF /r IMUL r64, r/m64 B Valid N.E. Quadword register Quadword register r/m64.
+	_TEST32( "0faf6820 imul ebp,dword ptr [eax+00000020h]", 0x0F, 0xAF, 0x68, 0x20 );
+	_TEST32( "660faf6820 imul bp,word ptr [eax+00000020h]", 0x66, 0x0F, 0xAF, 0x68, 0x20 );
+	_TEST64( "0faf6820 imul ebp,dword ptr [rax+0000000000000020h]", 0x0F, 0xAF, 0x68, 0x20 );
+	_TEST64( "660faf6820 imul bp,word ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xAF, 0x68, 0x20 );
+	_TEST64( "480faf6820 imul rbp,qword ptr [rax+0000000000000020h]", 0x48, 0x0F, 0xAF, 0x68, 0x20 );
+	// 6B /r ib IMUL r16, r/m16, imm8 C Valid Valid word register r/m16 sign-extended immediate byte.
+	// 6B /r ib IMUL r32, r/m32, imm8 C Valid Valid doubleword register r/m32 sign-extended immediate byte.
+	// REX.W + 6B /r ib IMUL r64, r/m64, imm8 C Valid N.E. Quadword register r/m64 sign-extended immediate byte.
+	_TEST32( "6b682040 imul ebp,dword ptr [eax+00000020h],00000040h", 0x6B, 0x68, 0x20, 0x40 );
+	_TEST32( "666b682040 imul bp,word ptr [eax+00000020h],0040h", 0x66, 0x6B, 0x68, 0x20, 0x40 );
+	_TEST64( "6b682040 imul ebp,dword ptr [rax+0000000000000020h],00000040h", 0x6B, 0x68, 0x20, 0x40 );
+	_TEST64( "666b682040 imul bp,word ptr [rax+0000000000000020h],0040h", 0x66, 0x6B, 0x68, 0x20, 0x40 );
+	_TEST64( "486b682040 imul rbp,qword ptr [rax+0000000000000020h],0000000000000040h", 0x48, 0x6B, 0x68, 0x20, 0x40 );
+	// 69 /r iw IMUL r16, r/m16, imm16 C Valid Valid word register r/m16 immediate word.
+	// 69 /r id IMUL r32, r/m32, imm32 C Valid Valid doubleword register r/m32 immediate doubleword.
+	// REX.W + 69 /r id IMUL r64, r/m64, imm32 C Valid N.E. Quadword register r/m64 immediate doubleword.
+	_TEST32( "69682040506070 imul ebp,dword ptr [eax+00000020h],70605040h", 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0x70 );
+	_TEST32( "666968204050 imul bp,word ptr [eax+00000020h],5040h", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
+	_TEST64( "69682040506070 imul ebp,dword ptr [rax+0000000000000020h],70605040h", 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0x70 );
+	_TEST64( "666968204050 imul bp,word ptr [rax+0000000000000020h],5040h", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
+	_TEST64( "48696820405060ff imul rbp,qword ptr [rax+0000000000000020h],0ffffffffff605040h", 0x48, 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0xFF );
+
+	// IDIV
+	// F6 /7 IDIV r/m8 A Valid Valid Signed divide AX by r/m8,with result stored in: AL Quotient, AH Remainder.
+	// REX + F6 /7 IDIV r/m8* A Valid N.E. Signed divide AX by r/m8, with result stored in AL Quotient, AH Remainder.
+	_TEST32( "f63b idiv ax,byte ptr [ebx]", 0xF6, 0x3B );
+	_TEST32( "66f63b idiv ax,byte ptr [ebx]", 0x66, 0xF6, 0x3B );
+	_TEST64( "48f6fe idiv ax,sil", 0x48, 0xF6, 0xFE );
+	_TEST64( "f6fe idiv ax,dh", 0xF6, 0xFE );
+	// F7 /7 IDIV r/m16 A Valid Valid Signed divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
+	// F7 /7 IDIV r/m32 A Valid Valid Signed divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
+	// REX.W + F7 /7 IDIV r/m64 A Valid N.E. Signed divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
+	_TEST32( "f73b idiv eax,dword ptr [ebx]", 0xF7, 0x3B );
+	_TEST32( "66f73b idiv ax,word ptr [ebx]", 0x66, 0xF7, 0x3B );
+	_TEST64( "48f7fe idiv rax,rsi", 0x48, 0xF7, 0xFE );
+	_TEST64( "f7fe idiv eax,esi", 0xF7, 0xFE );
+
+	// HSUBPS
+	_TEST64( "f20f7d4020 hsubps xmm0,oword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x7D, 0x40, 0x20 );
+	_TEST32( "f20f7d4020 hsubps xmm0,oword ptr [eax+00000020h]", 0xF2, 0x0F, 0x7D, 0x40, 0x20 );
+
+	// HSUBPD
+	_TEST64( "660f7d4020 hsubpd xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x7D, 0x40, 0x20 );
+	_TEST32( "660f7d4020 hsubpd xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x7D, 0x40, 0x20 );
+
+	// HLT
+	_TEST64( "f4 hlt", 0xF4 );
+	_TEST32( "f4 hlt", 0xF4 );
+
 	// HADDPS
 	_TEST64( "f20f7c4020 haddps xmm0,oword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x7C, 0x40, 0x20 );
 	_TEST32( "f20f7c4020 haddps xmm0,oword ptr [eax+00000020h]", 0xF2, 0x0F, 0x7C, 0x40, 0x20 );
@@ -616,15 +762,13 @@ void test(void) {
 	_TEST32( "66f633 div ax,byte ptr [ebx]", 0x66, 0xF6, 0x33 );
 	_TEST64( "48f6f6 div ax,sil", 0x48, 0xF6, 0xF6 );
 	_TEST64( "f6f6 div ax,dh", 0xF6, 0xF6 );
-	_TEST64( "FAIL", 0xF6, 0xEE );
 	// F7 /6 DIV r/m16 A Valid Valid Unsigned divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
 	// F7 /6 DIV r/m32 A Valid Valid Unsigned divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
 	// REX.W + F7 /6 DIV r/m64 A Valid N.E. Unsigned divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
-	_TEST32( "f733 div eax,byte ptr [ebx]", 0xF7, 0x33 );
-	_TEST32( "66f733 div ax,byte ptr [ebx]", 0x66, 0xF7, 0x33 );
-	_TEST64( "48f7f6 div rax,sil", 0x48, 0xF7, 0xF6 );
-	_TEST64( "f7f6 div eax,dh", 0xF7, 0xF6 );
-	_TEST64( "FAIL", 0xF7, 0xEE );
+	_TEST32( "f733 div eax,dword ptr [ebx]", 0xF7, 0x33 );
+	_TEST32( "66f733 div ax,word ptr [ebx]", 0x66, 0xF7, 0x33 );
+	_TEST64( "48f7f6 div rax,rsi", 0x48, 0xF7, 0xF6 );
+	_TEST64( "f7f6 div eax,esi", 0xF7, 0xF6 );
 
 	// DEC
 	// 48+rw DEC r16 B N.E. Valid Decrement r16 by 1.
@@ -872,7 +1016,6 @@ void test(void) {
 	// FF /4 JMP r/m64 B Valid N.E. Jump near, absolute indirect, RIP = 64-Bit offset from register or memory
 	_TEST32( "ffe5 jmp ebp", 0xff, 0xe5, 0x01, 0x02, 0x03, 0x04 );
 	_TEST32( "66ffe5 jmp bp", 0x66, 0xff, 0xe5, 0x01, 0x02 );
-	_TEST32( "FAIL", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02, 0x03, 0x04 ); // 32 bit mode doesn't not allow REX.
 
 	/// TODO: Sprawdziæ pod visualem, ppowino wykorzystaæ rejestr 8 bitory a nie 64 bitowy.
 	_TEST64( "676640ffe5 jmp rbp", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
@@ -1025,7 +1168,6 @@ void test(void) {
 	// 81 /2 id ADC r/m32, imm32 B Valid Valid Add with CF imm32 to r/m32.
 	_TEST32( "81d501020304 adc ebp,04030201h", 0x81, 0xD5, 0x01, 0x02, 0x03, 0x04 );
 	_TEST32( "6681d50102 adc bp,0201h", 0x66, 0x81, 0xD5, 0x01, 0x02 );
-	_TEST32( "FAIL", 0x67, 0x66, 0x40, 0x81, 0xD5, 0x01, 0x02, 0x03, 0x04 ); // 32 bit mode doesn't not allow REX.
 	_TEST64( "67664081d50102 adc bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xD5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
 	// REX.W + 81 /2 id ADC r/m64, imm32 B Valid N.E. Add with CF imm32 sign extended to 64-bits to r/m64.
 	_TEST64( "4881d501020304 adc rbp,0000000004030201h", 0x48, 0x81, 0xD5, 0x01, 0x02, 0x03, 0x04 );
@@ -1093,7 +1235,6 @@ void test(void) {
 	// 81 /0 id ADD r/m32, imm32 B Valid Valid Add imm32 to r/m32.
 	_TEST32( "81c501020304 add ebp,04030201h", 0x81, 0xc5, 0x01, 0x02, 0x03, 0x04 );
 	_TEST32( "6681c50102 add bp,0201h", 0x66, 0x81, 0xc5, 0x01, 0x02 );
-	_TEST32( "FAIL", 0x67, 0x66, 0x40, 0x81, 0xc5, 0x01, 0x02, 0x03, 0x04 ); // 32 bit mode doesn't not allow REX.
 	_TEST64( "67664081c50102 add bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xc5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
 	// REX.W + 81 /0 id ADD r/m64, imm32 B Valid N.E. Add imm32 sign-extended to 64-bits to r/m64.
 	_TEST64( "4881c501020304 add rbp,0000000004030201h", 0x48, 0x81, 0xc5, 0x01, 0x02, 0x03, 0x04 );
@@ -1209,7 +1350,6 @@ void test(void) {
 	// 81 /4 id AND r/m32, imm32 B Valid Valid r/m32 AND imm32.
 	_TEST32( "81e501020304 and ebp,04030201h", 0x81, 0xe5, 0x01, 0x02, 0x03, 0x04 );
 	_TEST32( "6681e50102 and bp,0201h", 0x66, 0x81, 0xe5, 0x01, 0x02 );
-	_TEST32( "FAIL", 0x67, 0x66, 0x40, 0x81, 0xe5, 0x01, 0x02, 0x03, 0x04 ); // 32 bit mode doesn't not allow REX.
 	_TEST64( "67664081e50102 and bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xe5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
 	// REX.W + 81 /4 id AND r/m64, imm32 B Valid N.E. r/m64 AND imm32 sign extended to 64-bits.
 	_TEST64( "4881e501020304 and rbp,0000000004030201h", 0x48, 0x81, 0xe5, 0x01, 0x02, 0x03, 0x04 );

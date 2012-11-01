@@ -66,5 +66,18 @@ Fist instruction should be disassembled to: 9bdbe3 finit
 
 -> 480fae4820 fxrstor64 512byte ptr [rax+0000000000000020h]
 
+8. IN bug.
+
+00000000`00401000 e520            in      eax,20h
+00000000`00401002 66e520          in      ax,20h
+00000000`00401005 e420            in      al,20h
+00000000`00401007 48e520          in      rax,20h <-- This operand size is not allowed.
+
+
+9. INS
+
+00000000`00401000 486d            ins     qword ptr [rdi],dx ds:00000000`00000000=????????????????
+ -->
+486d ins dword ptr [rdi],dx
 
 

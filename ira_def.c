@@ -726,7 +726,7 @@ struct ira_opcode_desc _ira_opcode_desc_DIV[] = {
 	// F7 /6 DIV r/m16 A Valid Valid Unsigned divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
 	// F7 /6 DIV r/m32 A Valid Valid Unsigned divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
 	// REX.W + F7 /6 DIV r/m64 A Valid N.E. Unsigned divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
-	{ NULL, 0x0001, 0x00C5B000, { 0xF7, 0x00, 0x00 }, _IRA_EXPLICIT_REG_OSA( IRA_REG_GPR, _IRA_REG_AL ), _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00C5B000, { 0xF7, 0x00, 0x00 }, _IRA_EXPLICIT_REG_OSA( IRA_REG_GPR, _IRA_REG_AL ), _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_DIVPD[] = {
@@ -1214,6 +1214,137 @@ struct ira_opcode_desc _ira_opcode_desc_HADDPS[] = {
 	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_HLT[] = {
+	// F4 HLT A Valid Valid Halt
+	{ NULL, 0x0001, 0x00C40000, { 0xF4, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_HSUBPD[] = {
+	// 66 0F 7D /r HSUBPD xmm1, xmm2/m128A Valid Valid Horizontal subtract packed double-precision floating pointvalues from xmm2/m128 to xmm1.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x7D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_HSUBPS[] = {
+	// F2 0F 7D /r HSUBPS xmm1, xmm2/m128 A Valid Valid Horizontal subtract packedsingle-precision floatingpoint values from xmm2/m128 to xmm1.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x7D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_IDIV[] = {
+	// F6 /7 IDIV r/m8 A Valid Valid Signed divide AX by r/m8,with result stored in: AL Quotient, AH Remainder.
+	// REX + F6 /7 IDIV r/m8* A Valid N.E. Signed divide AX by r/m8, with result stored in AL Quotient, AH Remainder.
+	{ NULL, 0x0001, 0x00C5B800, { 0xF6, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, _IRA_OS_WORD ), _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA },
+	// F7 /7 IDIV r/m16 A Valid Valid Signed divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
+	// F7 /7 IDIV r/m32 A Valid Valid Signed divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
+	// REX.W + F7 /7 IDIV r/m64 A Valid N.E. Signed divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
+	{ NULL, 0x0001, 0x00C5B800, { 0xF7, 0x00, 0x00 }, _IRA_EXPLICIT_REG_OSA( IRA_REG_GPR, _IRA_REG_AL ), _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA }
+};
+
+// ***********************************
+// TODO: RWX(W) is not used from here!
+// ***********************************
+
+struct ira_opcode_desc _ira_opcode_desc_IMUL[] = {
+	// F6 /5 IMUL r/m8* A Valid Valid AX AL r/m byte.
+	{ NULL, 0x0001, 0x00C5A800, { 0xF6, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// F7 /5 IMUL r/m16 A Valid Valid DX:AX AX r/m word.
+	// F7 /5 IMUL r/m32 A Valid Valid EDX:EAX EAX r/m32.
+	// REX.W + F7 /5 IMUL r/m64 A Valid N.E. RDX:RAX RAX r/m64.
+	{ NULL, 0x0001, 0x00C5A800, { 0xF7, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 0F AF /r IMUL r16, r/m16 B Valid Valid word register word register r/m16.
+	// 0F AF /r IMUL r32, r/m32 B Valid Valid doubleword register doubleword register r/m32.
+	// REX.W + 0F AF /r IMUL r64, r/m64 B Valid N.E. Quadword register Quadword register r/m64.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xAF, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM,  _IRA_NA, _IRA_NA },
+	// 6B /r ib IMUL r16, r/m16, imm8 C Valid Valid word register r/m16 sign-extended immediate byte.
+	// 6B /r ib IMUL r32, r/m32, imm8 C Valid Valid doubleword register r/m32 sign-extended immediate byte.
+	// REX.W + 6B /r ib IMUL r64, r/m64, imm8 C Valid N.E. Quadword register r/m64 sign-extended immediate byte.
+	{ NULL, 0x0001, 0x00C48000, { 0x6B, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA },
+	// 69 /r iw IMUL r16, r/m16, imm16 C Valid Valid word register r/m16 immediate word.
+	// 69 /r id IMUL r32, r/m32, imm32 C Valid Valid doubleword register r/m32 immediate doubleword.
+	{ NULL, 0x0001, 0x03C48000, { 0x69, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_OPERAND_IMM_EOSA, _IRA_NA },
+	// REX.W + 69 /r id IMUL r64, r/m64, imm32 C Valid N.E. Quadword register r/m64 immediate doubleword.
+	{ NULL, 0x0001, 0x04848000, { 0x69, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_IN[] = {
+	// E4 ib IN AL, imm8 A Valid Valid Input byte from imm8 I/O port address into AL.
+	{ NULL, 0x0001, 0x07C40000, { 0xE4, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// E5 ib IN AX, imm8 A Valid Valid Input word from imm8 I/O port address into AX.
+	{ NULL, 0x0001, 0x01C40000, { 0xE5, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_WORD), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// E5 ib IN EAX, imm8 A Valid Valid Input dword from imm8 I/O port address into EAX.
+	{ NULL, 0x0001, 0x06C40000, { 0xE5, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_DWORD), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// EC IN AL,DX B Valid Valid Input byte from I/O port in DX into AL.
+	{ NULL, 0x0001, 0x07C40000, { 0xEC, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_BYTE ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
+	// ED IN AX,DX B Valid Valid Input word from I/O port in DX into AX.
+	{ NULL, 0x0001, 0x01C40000, { 0xED, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_WORD ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
+	// ED IN EAX,DX B Valid Valid Input doubleword from I/O port in DX into EAX.
+	{ NULL, 0x0001, 0x06C40000, { 0xED, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_DWORD ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_INC[] = {
+	// FE /0 INC r/m8 A Valid Valid Increment r/m byte by 1.
+	// REX + FE /0 INC r/m8* A Valid N.E. Increment r/m byte by 1.
+	{ NULL, 0x0001, 0x00C58000, { 0xFE, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// FF /0 INC r/m16 A Valid Valid Increment r/m word by 1.
+	// FF /0 INC r/m32 A Valid Valid Increment r/m doubleword by 1.
+	// REX.W + FF /0 INC r/m64 A Valid N.E. Increment r/m quadword by 1.
+	{ NULL, 0x0001, 0x00C58000, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 40+ rw** INC r16 B N.E. Valid Increment word register by 1.
+	// 40+ rd INC r32 B N.E. Valid Increment doubleword register by 1.
+	{ NULL, 0x0001, 0x00440001, { 0x40, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_INS[] = {
+	// 6C INS m8, DX A Valid Valid Input byte from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.*
+	{ NULL, 0x0001, 0x07C40000, { 0x6C, 0x00, 0x00 },
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
+	// 6D INS m16, DX A Valid Valid Input word from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
+	{ NULL, 0x0001, 0x01C40000, { 0x6D, 0x00, 0x00 },
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_WORD, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
+	// 6D INS m32, DX A Valid Valid Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
+	{ NULL, 0x0001, 0x06C40000, { 0x6D, 0x00, 0x00 },
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_DWORD, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA }
+	// TODO: W przypadku assemblera trzeba to bedzie obsluzyc.
+	// 6C INSB A Valid Valid Input byte from I/O port specified in DX into memory location specified with ES:(E)DI or RDI.1
+	// 6D INSW A Valid Valid Input word from I/O portspecified in DX into memory location specified in ES:(E)DI or RDI.1
+	// 6D INSD A Valid Valid Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
+};
+
+struct ira_opcode_desc _ira_opcode_desc_INSERTPS[] = {
+	// 66 0F 3A 21 /r ib INSERTPS xmm1, xmm2/m32, imm8 A Valid Valid Insert a single precision floating-point value selected by imm8 from xmm2/m32 into xmm1 at the specified destination element specified by imm8 and zero out destination elements in xmm1 as indicated in imm8.
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x021 }, _IRA_OPERAND_MODRM_R_XMM_32_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_INT[] = {
+	// CC INT 3 A Valid Valid Interrupt 3—trap to debugger.
+	{ NULL, 0x0001, 0x00C40000, { 0xCC, 0x00, 0x00 }, _IRA_EXPLICIT_OPERAND_IB( 3 ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// CD ib INT imm8 B Valid Valid Interrupt vector number specified by immediate byte.
+	{ NULL, 0x0001, 0x00C40000, { 0xCD, 0x00, 0x00 }, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA, _IRA_NA },
+	// CE INTO A Invalid Valid Interrupt 4—if overflow flag is 1.
+	{ "into", 0x0001, 0x00C40000, { 0xCE, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_INVD[] = {
+	// 0F 08 INVD A Valid Valid Flush internal caches; initiate flushing of external caches.
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0x08, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_INVLPG[] = {
+	// 0F 01/7 INVLPG m A Valid Valid Invalidate TLB Entry for page that contains m.
+	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_IRET[] = {
+	// CF IRET A Valid Valid Interrupt return (16-bit operand size).
+	{ NULL, 0x0001, 0x01C40000, { 0xCF, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// CF IRETD A Valid Valid Interrupt return (32-bit operand size).
+	{ "iretd", 0x0001, 0x02C40000, { 0xCF, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W + CF IRETQ A Valid N.E. Interrupt return (64-bit operand size).
+	{ "iretq", 0x0001, 0x04C40000, { 0xCF, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -1261,9 +1392,6 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "cmc", _ira_opcode_desc_CMC),
 		_IA_INSTRUCTION( "cmov", _ira_opcode_desc_CMOVA),
 		_IA_INSTRUCTION( "cmp", _ira_opcode_desc_CMP),
-		_IA_INSTRUCTION( "jcxz", _ira_opcode_desc_JCXZ),
-		_IA_INSTRUCTION( "j", _ira_opcode_desc_Jcc),
-		_IA_INSTRUCTION( "jmp", _ira_opcode_desc_JMP),
 		_IA_INSTRUCTION( "cmppd", _ira_opcode_desc_CMPPD),
 		_IA_INSTRUCTION( "cmpps", _ira_opcode_desc_CMPPS),
 		_IA_INSTRUCTION( "cmps", _ira_opcode_desc_CMPS),
@@ -1365,6 +1493,22 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "fyl2xp1", _ira_opcode_desc_FYL2XP1 ),
 		_IA_INSTRUCTION( "haddpd", _ira_opcode_desc_HADDPD ),
 		_IA_INSTRUCTION( "haddps", _ira_opcode_desc_HADDPS ),
+		_IA_INSTRUCTION( "hlt", _ira_opcode_desc_HLT ),
+		_IA_INSTRUCTION( "hsubpd", _ira_opcode_desc_HSUBPD ),
+		_IA_INSTRUCTION( "hsubps", _ira_opcode_desc_HSUBPS ),
+		_IA_INSTRUCTION( "idiv", _ira_opcode_desc_IDIV ),
+		_IA_INSTRUCTION( "imul", _ira_opcode_desc_IMUL ),
+		_IA_INSTRUCTION( "in", _ira_opcode_desc_IN ),
+		_IA_INSTRUCTION( "inc", _ira_opcode_desc_INC ),
+		_IA_INSTRUCTION( "ins", _ira_opcode_desc_INS ),
+		_IA_INSTRUCTION( "insertps", _ira_opcode_desc_INSERTPS ),
+		_IA_INSTRUCTION( "int", _ira_opcode_desc_INT ),
+		_IA_INSTRUCTION( "invd", _ira_opcode_desc_INVD ),
+		_IA_INSTRUCTION( "invlpg", _ira_opcode_desc_INVLPG ),
+		_IA_INSTRUCTION( "iret", _ira_opcode_desc_IRET ),
+		_IA_INSTRUCTION( "jcxz", _ira_opcode_desc_JCXZ),
+		_IA_INSTRUCTION( "j", _ira_opcode_desc_Jcc),
+		_IA_INSTRUCTION( "jmp", _ira_opcode_desc_JMP),
 		{ NULL, 0, 0, NULL }
 };
 
