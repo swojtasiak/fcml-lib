@@ -137,6 +137,18 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 //102
 void test(void) {
 
+	// 0F AE /2 LDMXCSR m32 A Valid Valid Load MXCSR register from m32.
+	_TEST32( "0fae5020 ldmxcsr dword ptr [eax+00000020h]", 0x0F, 0xAE, 0x50, 0x20 );
+	_TEST64( "0fae5020 ldmxcsr dword ptr [rax+0000000000000020h]", 0x0F, 0xAE, 0x50, 0x20 );
+
+	// LDDQU
+	_TEST32( "f20ff06820 lddqu xmm5,[eax+00000020h]", 0xF2, 0x0F, 0xF0, 0x68, 0x20 );
+	_TEST64( "f20ff06820 lddqu xmm5,[rax+0000000000000020h]", 0xF2, 0x0F, 0xF0, 0x68, 0x20 );
+
+	// LAHF
+	_TEST32( "9f lahf", 0x9F );
+	_TEST64( "9f lahf", 0x9F );
+
 	// IRET
 	_TEST32( "cf iretd", 0xCF );
 	_TEST32( "66cf iret", 0x66, 0xCF );

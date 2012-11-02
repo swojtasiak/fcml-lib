@@ -184,8 +184,10 @@ struct ira_explicit_immediate_type_args {
 struct ira_modrm_decoding_args {
 	// Register type.
 	enum ira_register_type reg_type;
-	// Operand size.
-	uint16_t operand_size;
+	// Memory operand size.
+	uint16_t memory_operand_size;
+	// Register operand size.
+	uint16_t register_operand_size;
 };
 
 typedef uint16_t (*ira_operand_size_provider)( struct ira_diss_context *context );
@@ -358,11 +360,6 @@ struct ira_instruction_desc {
 
 #define _IRA_IT_IA			0x00
 
-/* Operand size. */
-
-// If operand size is set to _IRA_DEFAULT_OPERAND_SIZE, its size is calculated by EOSA.
-#define _IRA_DEFAULT_OPERAND_SIZE	0xFFFF
-
 /* Operands encoding */
 
 #define _IRA_OPERANDS_SIZEOF(x)	( sizeof( x ) / sizeof( struct ira_opcode_desc ) )
@@ -533,8 +530,20 @@ struct ira_instruction_desc {
 #define _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE		0x15000000
 #define _IRA_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE | reg_num << 16 | encoded_operand_size << 8 | encoded_segment_register )
 
+// It allows defining explicit IMM8 operand type. See INT instruction.
 #define _IRA_EXPLICIT_OPERAND_IB_BASE				0x16000000
 #define _IRA_EXPLICIT_OPERAND_IB(value)				( _IRA_EXPLICIT_OPERAND_IB_BASE | value )
+
+// todo: Mozna sie zastanowic nad dodaniem flag M, R zeby mona bylo wybierac kt
+
+// Flags for _IRA_OPERAND_RM macro.
+#define _IRA_OF_M										0x01
+#define _IRA_OF_R										0x02
+#define _IRA_OF_RM										0x03
+
+// Allows to encode all common ModR/M based addressing modes using only one macro.
+#define _IRA_OPERAND_RM_BASE						0x17000000
+#define _IRA_OPERAND_RM(encoded_memory_operand_size, encoded_register_operand_size, flags)			( 0x17000000 | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | flags )
 
 /* Externals. */
 

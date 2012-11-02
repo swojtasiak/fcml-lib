@@ -80,4 +80,12 @@ Fist instruction should be disassembled to: 9bdbe3 finit
  -->
 486d ins dword ptr [rdi],dx
 
+10. 
 
+00000000`00401000 0f026820        lar     ebp,dword ptr [rax+20h]
+00000000`00401004 660f026820      lar     bp,word ptr [rax+20h]
+
+-->
+
+lar     ebp,word [rax+20h]
+lar     bp,word [rax+20h] 
