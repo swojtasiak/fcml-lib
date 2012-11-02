@@ -1350,18 +1350,17 @@ struct ira_opcode_desc _ira_opcode_desc_LAHF[] = {
 	{ NULL, 0x0001, 0x00C40000, { 0x9F, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
-// TODO: Dziwne tryy adresowania.
 struct ira_opcode_desc _ira_opcode_desc_LAR[] = {
 	// 0F 02 /r LAR r16, r16/m16 A Valid Valid r16 r16/m16 masked by FF00H.
 	// 0F 02 /r LAR r32, r32/m16 A Valid Valid r32 r32/m16 masked by 00FxFF00H
+	{ NULL, 0x0001, 0x03D80000, { 0x0F, 0x02, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_WORD ), _IRA_NA, _IRA_NA },
 	// REX.W + 0F 02 /r LAR r64, r32/m16 A Valid N.E. r64 r32/m16 masked by 00FxFF00H
-	{ NULL, 0x0001, 0x00C40000, { 0x9F, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x04980000, { 0x0F, 0x02, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_WORD ), _IRA_NA, _IRA_NA }
 };
 
-// TODO: dodac mozliwosc definicji rejestrów XMM bez wielkosci: _IRA_OPERAND_MODRM_R_XMM_W
 struct ira_opcode_desc _ira_opcode_desc_LDDQU[] = {
 	// F2 0F F0 /r LDDQU xmm1, mem A Valid Valid Load unaligned data from mem and return double quadword in xmm1.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xF0, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_32_W, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA }
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xF0, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_LDMXCSR[] = {
@@ -1534,6 +1533,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "j", _ira_opcode_desc_Jcc),
 		_IA_INSTRUCTION( "jmp", _ira_opcode_desc_JMP),
 		_IA_INSTRUCTION( "lahf", _ira_opcode_desc_LAHF),
+		_IA_INSTRUCTION( "lar", _ira_opcode_desc_LAR),
 		_IA_INSTRUCTION( "lddqu", _ira_opcode_desc_LDDQU),
 		_IA_INSTRUCTION( "ldmxcsr", _ira_opcode_desc_LDMXCSR),
 		{ NULL, 0, 0, NULL }

@@ -137,7 +137,20 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 //102
 void test(void) {
 
-	// 0F AE /2 LDMXCSR m32 A Valid Valid Load MXCSR register from m32.
+	// LAR
+	// 0F 02 /r LAR r16, r16/m16 A Valid Valid r16 r16/m16 masked by FF00H.
+	// 0F 02 /r LAR r32, r32/m16 A Valid Valid r32 r32/m16 masked by 00FxFF00H
+	_TEST32( "0f026820 lar ebp,word ptr [eax+00000020h]", 0x0f, 0x02, 0x68, 0x20 );
+	_TEST32( "0f02cc lar ecx,esp", 0x0f, 0x02, 0xcc );
+	_TEST32( "660f026820 lar bp,word ptr [eax+00000020h]", 0x66, 0x0f, 0x02, 0x68, 0x20 );
+	_TEST32( "660f02cc lar cx,sp", 0x66, 0x0f, 0x02, 0xcc );
+	_TEST64( "0f026820 lar ebp,word ptr [rax+0000000000000020h]", 0x0f, 0x02, 0x68, 0x20 );
+	_TEST64( "0f02cc lar ecx,esp", 0x0f, 0x02, 0xcc );
+	// REX.W + 0F 02 /r LAR r64, r32/m16 A Valid N.E. r64 r32/m16 masked by 00FxFF00H
+	_TEST64( "480f026820 lar rbp,word ptr [rax+0000000000000020h]", 0x48, 0x0f, 0x02, 0x68, 0x20 );
+	_TEST64( "480f02cc lar rcx,esp", 0x48, 0x0f, 0x02, 0xcc );
+
+	// LDMXCSR
 	_TEST32( "0fae5020 ldmxcsr dword ptr [eax+00000020h]", 0x0F, 0xAE, 0x50, 0x20 );
 	_TEST64( "0fae5020 ldmxcsr dword ptr [rax+0000000000000020h]", 0x0F, 0xAE, 0x50, 0x20 );
 

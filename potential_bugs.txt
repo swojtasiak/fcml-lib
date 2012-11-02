@@ -87,5 +87,7 @@ Fist instruction should be disassembled to: 9bdbe3 finit
 
 -->
 
-lar     ebp,word [rax+20h]
-lar     bp,word [rax+20h] 
+Wrong operand size! (Ignore the fact that instructions were disassembled in different modes it doesn't matter)
+
+0f026820 lar ebp,word ptr [eax+00000020h]
+660f026820 lar bp,word ptr [eax+00000020h]

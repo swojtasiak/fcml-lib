@@ -543,7 +543,7 @@ struct ira_instruction_desc {
 
 // Allows to encode all common ModR/M based addressing modes using only one macro.
 #define _IRA_OPERAND_RM_BASE						0x17000000
-#define _IRA_OPERAND_RM(encoded_memory_operand_size, encoded_register_operand_size, flags)			( 0x17000000 | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | flags )
+#define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type )
 
 /* Externals. */
 

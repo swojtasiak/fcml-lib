@@ -47,11 +47,9 @@
  * IRA_EOS_ constants. This form of operand size description notation is used to allow encoding more than 128
  * bits operand sizes using only one byte.
  *
- * \param effective_operand_size_attribute Size of EOSA that should be used if operand size is encoded as _IRA_EOS_EOSA.
- * \param effective_address_size_attribute Size of EASA that should be used if operand size is encoded as _IRA_EOS_EASA.
  * \param encoded_operand_size Size directive to decode.
  * \return Decoded operand size.
  */
-uint16_t _ira_common_decode_size_directive( uint8_t effective_operand_size_attribute, uint8_t effective_address_size_attribute, uint8_t encoded_operand_size );
+uint16_t _ira_common_decode_8b_operand_size( uint8_t encoded_operand_size );
 
 #endif /* COMMON_H_ */

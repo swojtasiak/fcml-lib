@@ -8,14 +8,14 @@
 #include "common.h"
 
 // Description in common.h
-uint16_t _ira_common_decode_size_directive( uint8_t effective_operand_size_attribute, uint8_t effective_address_size_attribute, uint8_t encoded_operand_size ) {
+uint16_t _ira_common_decode_8b_operand_size( uint8_t encoded_operand_size ) {
 
 	if( encoded_operand_size == _IRA_EOS_EASA ) {
-		return effective_address_size_attribute;
+		return _IRA_OS_EASA;
 	}
 
 	if( encoded_operand_size == _IRA_EOS_EOSA ) {
-		return effective_operand_size_attribute;
+		return _IRA_OS_EOSA;
 	}
 
 	return encoded_operand_size * 8;
