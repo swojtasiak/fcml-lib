@@ -137,6 +137,53 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 //102
 void test(void) {
 
+	// LFENCE
+	_TEST32( "0faee8 lfence", 0x0F, 0xAE, 0xE8 );
+	_TEST64( "0faee8 lfence",0x0F, 0xAE, 0xE8 );
+
+	// LEAVE
+	_TEST32( "c9 leave", 0xc9 );
+	_TEST64( "c9 leave", 0xc9 );
+
+	// LEA
+	_TEST32( "8d6820 lea ebp,[eax+00000020h]", 0x8D, 0x68, 0x20 );
+	_TEST32( "668d6820 lea bp,[eax+00000020h]", 0x66, 0x8D, 0x68, 0x20 );
+	_TEST64( "488d6820 lea rbp,[rax+0000000000000020h]", 0x48, 0x8D, 0x68, 0x20 );
+
+	// LDS
+	// C5 /r LDS r16,m16:16 A Invalid Valid Load DS:r16 with far pointer from memory.
+	// C5 /r LDS r32,m16:32 A Invalid Valid Load DS:r32 with far pointer from memory.
+	_TEST32( "c56820 lds ebp,fword ptr [eax+00000020h]", 0xC5, 0x68, 0x20, 0x40, 0x60 );
+	_TEST32( "66c56820 lds bp,dword ptr [eax+00000020h]", 0x66, 0xc5, 0x68, 0x20 );
+	// 0F B2 /r LSS r16,m16:16 A Valid Valid Load SS:r16 with far pointer from memory.
+	// 0F B2 /r LSS r32,m16:32 A Valid Valid Load SS:r32 with far pointer from memory.
+	// REX + 0F B2 /r LSS r64,m16:64 A Valid N.E. Load SS:r64 with far pointer from memory.
+	_TEST32( "0fb26820 lss ebp,fword ptr [eax+00000020h]", 0x0F, 0xB2, 0x68, 0x20, 0x40, 0x60 );
+	_TEST64( "0fb26820 lss ebp,fword ptr [rax+0000000000000020h]", 0x0F, 0xB2, 0x68, 0x20, 0x40, 0x60 );
+	_TEST32( "660fb26820 lss bp,dword ptr [eax+00000020h]", 0x66, 0x0F, 0xB2, 0x68, 0x20 );
+	_TEST64( "660fb26820 lss bp,dword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xB2, 0x68, 0x20 );
+	_TEST64( "480fb26820 lss rbp,tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0xB2, 0x68, 0x20 );
+	// C4 /r LES r16,m16:16 A Invalid Valid Load ES:r16 with far pointer from memory.
+	// C4 /r LES r32,m16:32 A Invalid Valid Load ES:r32 with far pointer from memory.
+	_TEST32( "c46820 les ebp,fword ptr [eax+00000020h]", 0xC4, 0x68, 0x20, 0x40, 0x60 );
+	_TEST32( "66c46820 les bp,dword ptr [eax+00000020h]", 0x66, 0xc4, 0x68, 0x20 );
+	// 0F B4 /r LFS r16,m16:16 A Valid Valid Load FS:r16 with far pointer from memory.
+	// 0F B4 /r LFS r32,m16:32 A Valid Valid Load FS:r32 with far pointer from memory.
+	// REX + 0F B4 /r LFS r64,m16:64 A Valid N.E. Load FS:r64 with far pointer from memory.
+	_TEST32( "0fb46820 lfs ebp,fword ptr [eax+00000020h]", 0x0F, 0xB4, 0x68, 0x20, 0x40, 0x60 );
+	_TEST64( "0fb46820 lfs ebp,fword ptr [rax+0000000000000020h]", 0x0F, 0xB4, 0x68, 0x20, 0x40, 0x60 );
+	_TEST32( "660fb46820 lfs bp,dword ptr [eax+00000020h]", 0x66, 0x0F, 0xB4, 0x68, 0x20 );
+	_TEST64( "660fb46820 lfs bp,dword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xB4, 0x68, 0x20 );
+	_TEST64( "480fb46820 lfs rbp,tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0xB4, 0x68, 0x20 );
+	// 0F B5 /r LGS r16,m16:16 A Valid Valid Load GS:r16 with far pointer from memory.
+	// 0F B5 /r LGS r32,m16:32 A Valid Valid Load GS:r32 with far pointer from memory.
+	// REX + 0F B5 /r LGS r64,m16:64 A Valid N.E. Load GS:r64 with far pointer from memory.
+	_TEST32( "0fb56820 lgs ebp,fword ptr [eax+00000020h]", 0x0F, 0xB5, 0x68, 0x20, 0x40, 0x60 );
+	_TEST64( "0fb56820 lgs ebp,fword ptr [rax+0000000000000020h]", 0x0F, 0xB5, 0x68, 0x20, 0x40, 0x60 );
+	_TEST32( "660fb56820 lgs bp,dword ptr [eax+00000020h]", 0x66, 0x0F, 0xB5, 0x68, 0x20 );
+	_TEST64( "660fb56820 lgs bp,dword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xB5, 0x68, 0x20 );
+	_TEST64( "480fb56820 lgs rbp,tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0xB5, 0x68, 0x20 );
+
 	// LAR
 	// 0F 02 /r LAR r16, r16/m16 A Valid Valid r16 r16/m16 masked by FF00H.
 	// 0F 02 /r LAR r32, r32/m16 A Valid Valid r32 r32/m16 masked by 00FxFF00H

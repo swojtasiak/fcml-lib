@@ -534,13 +534,7 @@ struct ira_instruction_desc {
 #define _IRA_EXPLICIT_OPERAND_IB_BASE				0x16000000
 #define _IRA_EXPLICIT_OPERAND_IB(value)				( _IRA_EXPLICIT_OPERAND_IB_BASE | value )
 
-// todo: Mozna sie zastanowic nad dodaniem flag M, R zeby mona bylo wybierac kt
-
-// Flags for _IRA_OPERAND_RM macro.
-#define _IRA_OF_M										0x01
-#define _IRA_OF_R										0x02
-#define _IRA_OF_RM										0x03
-
+// todo: Mozna sie zastanowic nad dodaniem flag M, R zeby mona bylo wybierac tryb adreacji rm/r/m
 // Allows to encode all common ModR/M based addressing modes using only one macro.
 #define _IRA_OPERAND_RM_BASE						0x17000000
 #define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type )

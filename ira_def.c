@@ -1368,6 +1368,48 @@ struct ira_opcode_desc _ira_opcode_desc_LDMXCSR[] = {
 	{ NULL, 0x0001, 0x00D99000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+// TODO: Nie ma aktualnie mozliwosci sprawdzenia po disassemblacji, czy to byl far indirect czy nie, poniewaz jest to
+// disassemblowane poprostu jako RM z okrelslona wielkoscia operandu.
+struct ira_opcode_desc _ira_opcode_desc_LDS[] = {
+	// C5 /r LDS r16,m16:16 A Invalid Valid Load DS:r16 with far pointer from memory.
+	// C5 /r LDS r32,m16:32 A Invalid Valid Load DS:r32 with far pointer from memory.
+	{ NULL, 0x0001, 0x00448000, { 0xC5, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA },
+	// 0F B2 /r LSS r16,m16:16 A Valid Valid Load SS:r16 with far pointer from memory.
+	// 0F B2 /r LSS r32,m16:32 A Valid Valid Load SS:r32 with far pointer from memory.
+	// REX + 0F B2 /r LSS r64,m16:64 A Valid N.E. Load SS:r64 with far pointer from memory.
+	{ "lss", 0x0001, 0x00D88000, { 0x0F, 0xB2, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA },
+	// C4 /r LES r16,m16:16 A Invalid Valid Load ES:r16 with far pointer from memory.
+	// C4 /r LES r32,m16:32 A Invalid Valid Load ES:r32 with far pointer from memory.
+	{ "les", 0x0001, 0x00448000, { 0xC4, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA },
+	// 0F B4 /r LFS r16,m16:16 A Valid Valid Load FS:r16 with far pointer from memory.
+	// 0F B4 /r LFS r32,m16:32 A Valid Valid Load FS:r32 with far pointer from memory.
+	// REX + 0F B4 /r LFS r64,m16:64 A Valid N.E. Load FS:r64 with far pointer from memory.
+	{ "lfs", 0x0001, 0x00D88000, { 0x0F, 0xB4, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA },
+	// 0F B5 /r LGS r16,m16:16 A Valid Valid Load GS:r16 with far pointer from memory.
+	// 0F B5 /r LGS r32,m16:32 A Valid Valid Load GS:r32 with far pointer from memory.
+	// REX + 0F B5 /r LGS r64,m16:64 A Valid N.E. Load GS:r64 with far pointer from memory.
+	{ "lgs", 0x0001, 0x00D88000, { 0x0F, 0xB5, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_FAR_POINTER_INDIRECT, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LEA[] = {
+	// 8D /r LEA r16,m A Valid Valid Store effective address for m in register r16.
+	// 8D /r LEA r32,m A Valid Valid Store effective address for m in register r32.
+	// REX.W + 8D /r LEA r64,m A Valid N.E. Store effective address for m in register r64.
+	{ NULL, 0x0001, 0x00C48000, { 0x8D, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LEAVE[] = {
+	// C9 LEAVE A Valid Valid Set SP to BP, then pop BP.
+	// C9 LEAVE A N.E. Valid Set ESP to EBP, then pop EBP.
+	// C9 LEAVE A Valid N.E. Set RSP
+	{ NULL, 0x0001, 0x00C40000, { 0xC9, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LFENCE[] = {
+	// 0F AE /5 LFENCE A Valid Valid Serializes load operations.
+	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0xAE, 0xE8 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -1536,6 +1578,10 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "lar", _ira_opcode_desc_LAR),
 		_IA_INSTRUCTION( "lddqu", _ira_opcode_desc_LDDQU),
 		_IA_INSTRUCTION( "ldmxcsr", _ira_opcode_desc_LDMXCSR),
+		_IA_INSTRUCTION( "lds", _ira_opcode_desc_LDS),
+		_IA_INSTRUCTION( "lea", _ira_opcode_desc_LEA),
+		_IA_INSTRUCTION( "leave", _ira_opcode_desc_LEAVE),
+		_IA_INSTRUCTION( "lfence", _ira_opcode_desc_LFENCE),
 		{ NULL, 0, 0, NULL }
 };
 
