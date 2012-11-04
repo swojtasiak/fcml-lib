@@ -539,6 +539,9 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_RM_BASE						0x17000000
 #define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type )
 
+#define _IRA_OPERAND_M_BASE							0x18000000
+#define _IRA_OPERAND_M(memory_operand_size )		( _IRA_OPERAND_M_BASE | memory_operand_size )
+
 /* Externals. */
 
 extern struct ira_instruction_desc _ira_instructions_desc[];

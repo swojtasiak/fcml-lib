@@ -137,6 +137,27 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 //102
 void test(void) {
 
+	// LOCK
+	_TEST32( "660f017020 lmsw word ptr [eax+00000020h]", 0xF0 );
+	_TEST64( "480f017020 lmsw word ptr [rax+0000000000000020h]", 0xF0 );
+
+	// LMSW
+	_TEST32( "0f017020 lmsw word ptr [eax+00000020h]", 0x0F, 0x01, 0x70, 0x20 );
+	_TEST32( "660f017020 lmsw word ptr [eax+00000020h]", 0x66, 0x0F, 0x01, 0x70, 0x20 );
+	_TEST64( "480f017020 lmsw word ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 0x70, 0x20 );
+
+	// LGDT
+	_TEST32( "0f005020 lldt word ptr [eax+00000020h]", 0x0F, 0x00, 0x50, 0x20 );
+	_TEST32( "660f005020 lldt word ptr [eax+00000020h]", 0x66, 0x0F, 0x00, 0x50, 0x20 );
+	_TEST64( "480f005020 lldt word ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x00, 0x50, 0x20 );
+
+	// LGDT
+	_TEST32( "0f015020 lgdt fword ptr [eax+00000020h]", 0x0F, 0x01, 0x50, 0x20 );
+	_TEST32( "660f015020 lgdt fword ptr [eax+00000020h]", 0x66, 0x0F, 0x01, 0x50, 0x20 );
+	_TEST64( "0f015020 lgdt fword ptr [rax+0000000000000020h]", 0x0F, 0x01, 0x50, 0x20 );
+	_TEST64( "660f015020 lgdt fword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x01, 0x50, 0x20 );
+	_TEST64( "480f015020 lgdt tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 0x50, 0x20 );
+
 	// LFENCE
 	_TEST32( "0faee8 lfence", 0x0F, 0xAE, 0xE8 );
 	_TEST64( "0faee8 lfence",0x0F, 0xAE, 0xE8 );

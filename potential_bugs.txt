@@ -91,3 +91,16 @@ Wrong operand size! (Ignore the fact that instructions were disassembled in diff
 
 0f026820 lar ebp,word ptr [eax+00000020h]
 660f026820 lar bp,word ptr [eax+00000020h]
+
+11.
+
+00000000`00401000 0f015020        lgdt    fword ptr [rax+20h] ds:00000000`77386540=3025048b4865
+00000000`00401004 660f015020      lgdt    fword ptr [rax+20h]
+00000000`00401009 480f015020      lgdt    fword ptr [rax+20h]
+
+--->
+
+_TEST64( "0f015020 lgdt fword ptr [rax+0000000000000020h]", 0x0F, 0x01, 0x50, 0x20 );
+_TEST64( "660f015020 lgdt fword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x01, 0x50, 0x20 );
+_TEST64( "480f015020 lgdt tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 0x50, 0x20 );
+	

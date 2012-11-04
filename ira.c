@@ -1104,6 +1104,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->args = _ira_alloc_modrm_decoding_args( decoding & 0x000000FF, _ira_common_decode_8b_operand_size( ( decoding & 0x00FF0000 ) >> 16 ), _ira_common_decode_8b_operand_size( ( decoding & 0x0000FF00 ) >> 8 ), &result );
 		break;
 	}
+	case _IRA_OPERAND_M_BASE:
+		operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
+		operand_decoding->args = _ira_alloc_modm_decoding_args( NULL,  decoding & 0x0000FFFF, &result );
+		break;
 	case _IRA_EXPLICIT_OPERAND_IB_BASE:
 	{
 		// TODO: Przerobic to, brzydko wyglada przekazywanie tej unii.

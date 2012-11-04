@@ -1410,6 +1410,32 @@ struct ira_opcode_desc _ira_opcode_desc_LFENCE[] = {
 	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0xAE, 0xE8 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_LGDT[] = {
+	// 0F 01 /2 LGDT m16&32 A N.E. Valid Load m into GDTR.
+	{ NULL, 0x0001, 0x03D99000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_DWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// 0F 01 /2 LGDT m16&64 A Valid N.E. Load m into GDTR.
+	{ NULL, 0x0001, 0x04999000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_QWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// 0F 01 /3 LIDT m16&32 A N.E. Valid Load m into IDTR.
+	{ "lidt", 0x0001, 0x04999800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_DWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// 0F 01 /3 LIDT m16&64 A Valid N.E. Load m into IDTR.
+	{ "lidt", 0x0001, 0x04980000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_QWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LLDT[] = {
+	// 0F 00 /2 LLDT r/m16 A Valid Valid Load segment selector r/m16 into LDTR.
+	{ NULL, 0x0001, 0x00D99000, { 0x0F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LMSW[] = {
+	// 0F 01 /6 LMSW r/m16 A Valid Valid Loads r/m16 in machine status word of CR0.
+	{ NULL, 0x0001, 0x00D9B000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_RM_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LOCK[] = {
+	// F0 LOCK A Valid Valid Asserts LOCK# signal for duration of the accompanying instruction.
+	{ NULL, 0x0001, 0x00C40000, { 0xF0, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -1582,6 +1608,10 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "lea", _ira_opcode_desc_LEA),
 		_IA_INSTRUCTION( "leave", _ira_opcode_desc_LEAVE),
 		_IA_INSTRUCTION( "lfence", _ira_opcode_desc_LFENCE),
+		_IA_INSTRUCTION( "lgdt", _ira_opcode_desc_LGDT),
+		_IA_INSTRUCTION( "lldt", _ira_opcode_desc_LLDT),
+		_IA_INSTRUCTION( "lmsw", _ira_opcode_desc_LMSW),
+		_IA_INSTRUCTION( "lock", _ira_opcode_desc_LOCK),
 		{ NULL, 0, 0, NULL }
 };
 
