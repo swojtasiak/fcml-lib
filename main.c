@@ -36,6 +36,54 @@ int main()
 //102
 void test(void) {
 
+	//
+	_TEST64( "0f01c8 monitor rax,rcx,rdx", 0x0F, 0x01, 0xC8 );
+	_TEST32( "0f01c8 monitor eax,ecx,edx", 0x0F, 0x01, 0xC8 );
+
+	// MINSD
+	_TEST64( "f30f5d4020 minss xmm0,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x5D, 0x40, 0x20 );
+	_TEST32( "f30f5dc2 minss xmm0,xmm2", 0xF3, 0x0F, 0x5D, 0xC2 );
+	_TEST32( "f30f5d4020 minss xmm0,dword ptr [eax+00000020h]", 0xF3, 0x0F, 0x5D, 0x40, 0x20 );
+
+	// MINSD
+	_TEST64( "f20f5d4020 minsd xmm0,qword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x5D, 0x40, 0x20 );
+	_TEST32( "f20f5dc2 minsd xmm0,xmm2", 0xF2, 0x0F, 0x5D, 0xC2 );
+	_TEST32( "f20f5d4020 minsd xmm0,qword ptr [eax+00000020h]", 0xF2, 0x0F, 0x5D, 0x40, 0x20 );
+
+	// MINPS
+	_TEST64( "0f5d4020 minps xmm0,oword ptr [rax+0000000000000020h]", 0x0F, 0x5D, 0x40, 0x20 );
+	_TEST32( "0f5dc2 minps xmm0,xmm2", 0x0F, 0x5D, 0xC2 );
+	_TEST32( "0f5d4020 minps xmm0,oword ptr [eax+00000020h]", 0x0F, 0x5D, 0x40, 0x20 );
+
+	// MINPD
+	_TEST64( "660f5d4020 minpd xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x5D, 0x40, 0x20 );
+	_TEST32( "660f5dc2 minpd xmm0,xmm2", 0x66, 0x0F, 0x5D, 0xC2 );
+	_TEST32( "660f5d4020 minpd xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x5D, 0x40, 0x20 );
+
+	// MFENCE
+	_TEST32( "0faef0 mfence", 0x0F, 0xAE, 0xF0 );
+	_TEST64( "0faef0 mfence",0x0F, 0xAE, 0xF0 );
+
+	// MAXSD
+	_TEST64( "f30f5f4020 maxss xmm0,dword ptr [rax+0000000000000020h]", 0xF3, 0x0F, 0x5F, 0x40, 0x20 );
+	_TEST32( "f30f5fc2 maxss xmm0,xmm2", 0xF3, 0x0F, 0x5F, 0xC2 );
+	_TEST32( "f30f5f4020 maxss xmm0,dword ptr [eax+00000020h]", 0xF3, 0x0F, 0x5F, 0x40, 0x20 );
+
+	// MAXSD
+	_TEST64( "f20f5f4020 maxsd xmm0,qword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x5F, 0x40, 0x20 );
+	_TEST32( "f20f5fc2 maxsd xmm0,xmm2", 0xF2, 0x0F, 0x5F, 0xC2 );
+	_TEST32( "f20f5f4020 maxsd xmm0,qword ptr [eax+00000020h]", 0xF2, 0x0F, 0x5F, 0x40, 0x20 );
+
+	// MAXPS
+	_TEST64( "0f5f4020 maxps xmm0,oword ptr [rax+0000000000000020h]", 0x0F, 0x5F, 0x40, 0x20 );
+	_TEST32( "0f5fc2 maxps xmm0,xmm2", 0x0F, 0x5F, 0xC2 );
+	_TEST32( "0f5f4020 maxps xmm0,oword ptr [eax+00000020h]", 0x0F, 0x5F, 0x40, 0x20 );
+
+	// MAXPD
+	_TEST64( "660f5f4020 maxpd xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x5F, 0x40, 0x20 );
+	_TEST32( "660f5fc2 maxpd xmm0,xmm2", 0x66, 0x0F, 0x5F, 0xC2 );
+	_TEST32( "660f5f4020 maxpd xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x5F, 0x40, 0x20 );
+
 	// MASKMOVDQU
 	_TEST64( "0ff7d8 maskmovq mm3,mm0", 0x0F, 0xF7, 0xD8 );
 	_TEST32( "0ff7e0 maskmovq mm4,mm0", 0x0F, 0xF7, 0xE0 );

@@ -293,6 +293,16 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 
 	do {
 
+		uint32_t opcode_flags = current->opcode_flags;
+
+		enum ira_operation_mode mode = context->mode;
+
+		// Check if instruction is allowed in current mode.
+		if( ( ( mode == IRA_MOD_16BIT || mode == IRA_MOD_32BIT ) && !_IRA_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( opcode_flags ) )
+					|| ( mode == IRA_MOD_64BIT && !_IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( opcode_flags ) ) ) {
+			continue;
+		}
+
 		// Check prefixes.
 		int prefixes_ok = 0;
 		if( _IRA_PREFIX_REX_W_1( current->allowed_prefixes ) ) {
@@ -319,7 +329,7 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 
 		// Check opcode extension.
 		int opcodes_ok = 0;
-		if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( current->opcode_flags ) ) {
+		if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( opcode_flags ) ) {
 			int modrm_found = 0;
 			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
 			if( modrm_found ) {
@@ -327,10 +337,10 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 				uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
 				if( rex_found ) {
 					uint8_t ext_reg_opcode = ( ( rex & 0x04 ) << 1 ) | ( _IRA_MODRM_REG_OPCODE( modrm ) );
-					uint8_t expected_ext_reg_opcode = _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(current->opcode_flags);
+					uint8_t expected_ext_reg_opcode = _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(opcode_flags);
 					opcodes_ok = ( ext_reg_opcode == expected_ext_reg_opcode );
 				} else {
-					opcodes_ok = ( modrm_found && _IRA_MODRM_REG_OPCODE( modrm ) == _IRA_OPCODE_FLAGS_OPCODE_EXT(current->opcode_flags) );
+					opcodes_ok = ( modrm_found && _IRA_MODRM_REG_OPCODE( modrm ) == _IRA_OPCODE_FLAGS_OPCODE_EXT(opcode_flags) );
 				}
 			}
 		} else {
@@ -344,7 +354,7 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		// Check EOSA. These fields allow us to restrict instruction decoding only
 		// to specific effective operand sizes. For instance we can define instruction
 		// that can be chosen only if EOSA is equal to 16.
-		if( _IRA_OPCODE_FLAGS_IS_EOSA_RESTRICTION(current->opcode_flags) ) {
+		if( _IRA_OPCODE_FLAGS_IS_EOSA_RESTRICTION(opcode_flags) ) {
 			int mandatory_prefix = 0;
 			// Ignore 0x66 prefix if this instruction uses it as mandatory prefix. This correction is also
 			// done in the next phase for already chosen instruction.
@@ -355,13 +365,13 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 				mandatory_prefix = prefix->mandatory_prefix;
 				prefix->mandatory_prefix = _IRA_PREFIX_MANDATORY_66( instruction->allowed_prefixes );
 			}
-			int eosa = _ira_get_effective_osa( context, current->opcode_flags );
+			int eosa = _ira_get_effective_osa( context, opcode_flags);
 			if( prefix != NULL ) {
 				prefix->mandatory_prefix = mandatory_prefix;
 			}
-			if( !( ( _IRA_OPCODE_FLAGS_EOSA_16( current->opcode_flags ) && eosa == 16 ) ||
-				( _IRA_OPCODE_FLAGS_EOSA_32( current->opcode_flags ) && eosa == 32 ) ||
-				( _IRA_OPCODE_FLAGS_EOSA_64( current->opcode_flags ) && eosa == 64 ) ) ) {
+			if( !( ( _IRA_OPCODE_FLAGS_EOSA_16( opcode_flags ) && eosa == 16 ) ||
+				( _IRA_OPCODE_FLAGS_EOSA_32( opcode_flags ) && eosa == 32 ) ||
+				( _IRA_OPCODE_FLAGS_EOSA_64( opcode_flags ) && eosa == 64 ) ) ) {
 				// Wrong EOSA, ignore instruction.
 				continue;
 			}
@@ -370,11 +380,11 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		// Check EASA. These fields allow us to restrict instruction decoding only
 		// to specific effective address sizes. For instance we can define instruction
 		// that can be chosen only if EASA is equal to 16.
-		if( _IRA_OPCODE_FLAGS_IS_EASA_RESTRICTION(current->opcode_flags) ) {
+		if( _IRA_OPCODE_FLAGS_IS_EASA_RESTRICTION(opcode_flags) ) {
 			int easa = _ira_get_effective_asa( context );
-			if( !( ( _IRA_OPCODE_FLAGS_EASA_16( current->opcode_flags ) && easa == 16 ) ||
-				( _IRA_OPCODE_FLAGS_EASA_32( current->opcode_flags ) && easa == 32 ) ||
-				( _IRA_OPCODE_FLAGS_EASA_64( current->opcode_flags ) && easa == 64 ) ) ) {
+			if( !( ( _IRA_OPCODE_FLAGS_EASA_16( opcode_flags ) && easa == 16 ) ||
+				( _IRA_OPCODE_FLAGS_EASA_32( opcode_flags ) && easa == 32 ) ||
+				( _IRA_OPCODE_FLAGS_EASA_64( opcode_flags ) && easa == 64 ) ) ) {
 				// Wrong EASA, ignore instruction.
 				continue;
 			}
@@ -1275,16 +1285,7 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	int i, rc;
 
-	// Check if this instruction is supported in this mode.
 	uint32_t opcode_flags = instruction->opcode_flags;
-
-	enum ira_operation_mode mode = context->mode;
-
-	if( ( ( mode == IRA_MOD_16BIT || mode == IRA_MOD_32BIT ) && !_IRA_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( opcode_flags ) )
-			|| ( mode == IRA_MOD_64BIT && !_IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( opcode_flags ) ) ) {
-		// TODO: Czy zawsze not encodable? Moze w niektorych przypadkach jest invalid, albo cos w tym rodzaju?
-		return _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE;
-	}
 
 	// Set mnemonic of disassembled instruction.
 	result->mnemonic = instruction->mnemonic;
@@ -1314,15 +1315,15 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	}
 
 	// Copy opcodes' details.
-	decoding_context->opcodes_count = _IRA_OPCODE_FLAGS_OPCODE_NUM( instruction->opcode_flags );
-	decoding_context->primary_opcode_index = _IRA_OPCODE_FLAGS_PRIMARY_OPCODE( instruction->opcode_flags );
+	decoding_context->opcodes_count = _IRA_OPCODE_FLAGS_OPCODE_NUM( opcode_flags);
+	decoding_context->primary_opcode_index = _IRA_OPCODE_FLAGS_PRIMARY_OPCODE( opcode_flags );
 
 	result->opcodes_count = decoding_context->opcodes_count;
 	result->primary_opcode_index = decoding_context->primary_opcode_index;
 
 	// Calculates effective operand sizes. It's not important if they will be used or not.
 	decoding_context->effective_address_size_attribute = _ira_get_effective_asa( context );
-	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context, instruction->opcode_flags );
+	decoding_context->effective_operand_size_attribute = _ira_get_effective_osa( context, opcode_flags );
 
 	// Decode additional instruction's opcode fields. Context is fully initialized here
 	// and is in the same state as during operand decoding.

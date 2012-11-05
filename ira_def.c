@@ -1481,6 +1481,66 @@ struct ira_opcode_desc _ira_opcode_desc_MASKMOVQ[] = {
 	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_R( IRA_REG_MMX, _IRA_OS_QWORD ), _IRA_OPERAND_RM( IRA_REG_MMX, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_MAXPD[] = {
+	// 66 0F 5F /r MAXPD xmm1, xmm2/m128 A Valid Valid Return the maximum double-precision floatingpoint values between xmm2/m128 and xmm1.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MAXPS[] = {
+	// 0F 5F /r MAXPS xmm1, xmm2/m128 A Valid Valid Return the maximum singleprecision floating-point values between xmm2/m128 and xmm1.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+// TODO: Zastanowic sie na dwiloscia operandu podawanego dla trubow _IRA_OPERAND_MODRM_R_, czy ma ona sens? Najprwdopodobniejnie ma to zadnego znaczenia przynajmniej z punktu widzenia assemblera, no moze tylko dla GPR tu ma.
+
+struct ira_opcode_desc _ira_opcode_desc_MAXSD[] = {
+	// F2 0F 5F /r MAXSD xmm1, xmm2/m64 A Valid Valid Return the maximum scalardouble-precision floatingpoint value between xmm2/mem64 and xmm1.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MAXSS[] = {
+	// F3 0F 5F /r MAXSS xmm1, xmm2/m32 A Valid Valid Return the maximum scalarsingle-precision floatingpoint value between xmm2/mem32 and xmm1.
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_32_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MFENCE[] = {
+	// MFENCE 0F AE /6  A Valid Valid Serializes load and store operations.
+	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0xAE, 0xF0 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MINPD[] = {
+	// 66 0F 5D /r MINPD xmm1, xmm2/m128 A Valid Valid Return the minimum doubleprecision floating-point values between xmm2/m128 and xmm1.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MINPS[] = {
+	// 0F 5D /r MINPS xmm1, xmm2/m128 A Valid Valid Return the minimum singleprecision floating-point values between xmm2/m128 and xmm1.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MINSD[] = {
+	// F2 0F 5D /r MINSD xmm1, xmm2/m64 A Valid Valid Return the minimum scalar double-precision floatingpoint value between xmm2/mem64 and xmm1.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MINSS[] = {
+	// F3 0F 5D /r MINSS xmm1, xmm2/m32 A Valid Valid Return the minimum scalar single-precision floatingpoint value between xmm2/mem32 and xmm1.
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_32_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+};
+
+// TODO: Zastanowic sie nad operandami virtualnymi, czyli takimi ktore wystepuja w instrukcji ale tak naprawde nie sa zapiane w pecyfikacji jako operancdy patrz instrukcja ponizej:
+
+struct ira_opcode_desc _ira_opcode_desc_MONITOR[] = {
+	// 0F 01 C8 MONITOR A Valid Valid Sets up a linear address range to be monitored by hardware and activates the monitor. The address range should be a write-back memory caching type. The address is DS:EAX
+	{ NULL, 0x0001, 0x006C0000, { 0x0F, 0x01, 0xC8 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, _IRA_OS_DWORD ),
+		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_ECX, _IRA_OS_DWORD ),
+		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EDX, _IRA_OS_DWORD ), _IRA_NA },
+	{ NULL, 0x0001, 0x00AC0000, { 0x0F, 0x01, 0xC8 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RAX, _IRA_OS_QWORD ),
+		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RCX, _IRA_OS_QWORD ),
+		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RDX, _IRA_OS_QWORD ), _IRA_NA }
+	// TODO: Przy assemblacji pameitac zeby pozwolic na assemblacje samej mnemoniki!
+};
+
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
 		_IA_INSTRUCTION( "aad", _ira_opcode_desc_AAD ),
@@ -1662,7 +1722,16 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "ltr", _ira_opcode_desc_LTR),
 		_IA_INSTRUCTION( "maskmovdqu", _ira_opcode_desc_MASKMOVDQU),
 		_IA_INSTRUCTION( "maskmovq", _ira_opcode_desc_MASKMOVQ),
-
+		_IA_INSTRUCTION( "maxpd", _ira_opcode_desc_MAXPD),
+		_IA_INSTRUCTION( "maxps", _ira_opcode_desc_MAXPS),
+		_IA_INSTRUCTION( "maxsd", _ira_opcode_desc_MAXSD),
+		_IA_INSTRUCTION( "maxss", _ira_opcode_desc_MAXSS),
+		_IA_INSTRUCTION( "mfence", _ira_opcode_desc_MFENCE),
+		_IA_INSTRUCTION( "minpd", _ira_opcode_desc_MINPD),
+		_IA_INSTRUCTION( "minps", _ira_opcode_desc_MINPS),
+		_IA_INSTRUCTION( "minsd", _ira_opcode_desc_MINSD),
+		_IA_INSTRUCTION( "minss", _ira_opcode_desc_MINSS),
+		_IA_INSTRUCTION( "monitor", _ira_opcode_desc_MONITOR),
 		{ NULL, 0, 0, NULL }
 };
 
