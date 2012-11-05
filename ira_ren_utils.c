@@ -15,6 +15,8 @@
 
 // Suffixes for conditional instructions.
 
+#define _IRA_CONST_STR_LOCK		"lock "
+
 char* ira_ren_conditional_suffixes[2][16] = {
 	{ "o", "no", "b", "nb", "e", "ne", "be", "nbe", "s", "ns", "p", "np", "l", "nl", "le", "nle" },
 	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
@@ -295,6 +297,19 @@ void _ira_extend_integer( struct _ira_integer *value, int extension_size, int si
 	}
 
 	value->size = extension_size;
+}
+
+void _ira_format_append_prefixes( struct _ira_format_stream *stream, struct ira_instruction_prefix *prefixes, uint8_t prefixes_count ) {
+	struct ira_instruction_prefix *prefix;
+	if( prefixes_count > 0 ) {
+		int i;
+		for( i = 0; i < prefixes_count; i++ ) {
+			prefix = &prefixes[i];
+			if( !prefix->mandatory_prefix && prefix->prefix == _IRA_PREFIX_LOCK ) {
+				_ira_format_append_str( stream, _IRA_CONST_STR_LOCK );
+			}
+		}
+	}
 }
 
 void _ira_format_append_hex_byte( struct _ira_format_stream *stream, uint8_t hex_byte ) {

@@ -18,118 +18,17 @@ void test();
 
 #include "ira_int.h"
 
+void test_code( int is32, uint8_t code[], int size, char *mnemonic );
+
 int main()
 {
-	//int i = _IRA_OPERAND_MODRM_RM_ASA_W;
-
 	ira_init();
 	test();
 	ira_deinit();
 
-	//REX.W - 48.
-
-    //uint8_t data[] = { 0x67, 0x47, 0x10, 0x4c, 0x5c, 0x81 };
-	//uint8_t data[] = { 0x67, 0x10, 0x4c, 0x5c, 0x81 };
-	//uint8_t data[] = { 0xD5, 0xff };
-	//uint8_t data[] = { 0x66, 0x40, 0x15, 0xff, 0xff, 0xff, 0xff }; // adc
-
-	// REX.W + 81 /2 id ADC r/m64, imm32 B Valid N.E. Add with CF imm32 sign extended to 64-bits to r/m64.
-	// uint8_t data[] = { 0x48, 0x81, 0xD5, 0x15, 0xff, 0xff, 0xff }; // adc
-
-	// REX.W + 83 /2 ib ADC r/m64, imm8 B Valid N.E. Add with CF sign-extended imm8 into r/m64.
-	// uint8_t data[] = { 0x48, 0x83, 0xD5, 0x15, 0xff, 0xff, 0xff }; // adc
-
-	/*
-	uint8_t data[] = { 0x66, 0x40, 0x15, 0x54, 0x64, 0xD5, 0x15, 0xff, 0xff, 0xff,0xff,0xff,0xff,0xff,0xff }; // adc
-
-    struct ira_disassemble_info info;
-    info.address = &data;
-    info.size = sizeof(data);
-    info.address_size_attribute = 0;
-    info.operand_size_attribute = 0;
-    info.mode = IRA_MOD_64BIT;
-
-    struct ira_disassemble_result result;
-
-    ira_init();
-
-    // Disassemble.
-    ira_disassemble( &info, &result );
-
-    if( result.code == RC_OK ) {
-
-		// Print.
-		char buffer[512] = {0};
-
-		struct ira_intel_format_info format;
-		format.show_zero_displacement = 0;
-		format.show_extended_displacement = 1;
-		format.immediate_hex_display = 1;
-		format.immediate_signed = 1;
-		format.show_instruction_code = 1;
-		format.show_extended_immediate = 1;
-
-		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
-
-		printf( "%s\n", buffer );
-
-    }
-
-
-*/
     return 0;
 }
 
-void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
-
-	struct ira_disassemble_info info;
-	info.address = code;
-	info.size = size;
-	info.address_size_attribute = 0;
-	info.operand_size_attribute = 0;
-	info.mode = is32 ? IRA_MOD_32BIT : IRA_MOD_64BIT;
-
-	if( is32 ) {
-		info.instruction_pointer.eip = 0x00401000;
-	} else {
-		info.instruction_pointer.rip = 0x0000800000401000;
-	}
-
-	struct ira_disassemble_result result;
-
-	// Disassemble.
-	ira_disassemble( &info, &result );
-
-	if( result.code == RC_OK ) {
-
-		// Print.
-		char buffer[512] = {0};
-
-		struct ira_intel_format_info format;
-		format.show_zero_displacement = 0;
-		format.show_extended_displacement = 1;
-		format.immediate_hex_display = 1;
-		format.immediate_signed = 1;
-		format.show_instruction_code = 1;
-		format.show_extended_immediate = 1;
-		format.show_conditional_mnemonics_for_carry_flag = 1;
-		format.conditional_suffix_group = 0;
-
-		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
-
-		if( strcmp( buffer, mnemonic ) != 0 ) {
-			printf("Failed: %s (%s)\n", mnemonic, buffer);
-			exit(0);
-		}
-
-	} else {
-		if( strcmp( "FAIL", mnemonic ) != 0 ) {
-			printf("Failed: %s\n", mnemonic);
-			exit(0);
-		}
-	}
-
-}
 
 #define _TEST32(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 1, code, sizeof(code), x ); }
 #define _TEST64(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, code, sizeof(code), x ); }
@@ -137,9 +36,45 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 //102
 void test(void) {
 
-	// LOCK
-	_TEST32( "660f017020 lmsw word ptr [eax+00000020h]", 0xF0 );
-	_TEST64( "480f017020 lmsw word ptr [rax+0000000000000020h]", 0xF0 );
+	// MASKMOVDQU
+	_TEST64( "660ff7d8 maskmovdqu xmm3,xmm0", 0x66, 0x0F, 0xF7, 0xD8 );
+	_TEST32( "660ff7e0 maskmovdqu xmm4,xmm0", 0x66, 0x0F, 0xF7, 0xE0 );
+
+	// LTR
+	_TEST32( "0f005820 ltr word ptr [eax+00000020h]", 0x0F, 0x00, 0x58, 0x20);
+	_TEST32( "0f00d8 ltr ax", 0x0F, 0x00, 0xD8);
+	_TEST64( "0f005820 ltr word ptr [rax+0000000000000020h]", 0x0F, 0x00, 0x58, 0x20);
+
+	// LSL
+	// 0F 03 /r LSL r16, r16/m16 A Valid Valid Load: r16 segment limit, selector r16/m16.
+	// 0F 03 /r LSL r32, r32/m16*A Valid Valid Load: r32 segment limit, selector r32/m16.
+	_TEST32( "0f036820 lsl ebp,word ptr [eax+00000020h]", 0x0f, 0x03, 0x68, 0x20 );
+	_TEST32( "0f03cc lsl ecx,esp", 0x0f, 0x03, 0xcc );
+	_TEST32( "660f036820 lsl bp,word ptr [eax+00000020h]", 0x66, 0x0f, 0x03, 0x68, 0x20 );
+	_TEST32( "660f03cc lsl cx,sp", 0x66, 0x0f, 0x03, 0xcc );
+	_TEST64( "0f036820 lsl ebp,word ptr [rax+0000000000000020h]", 0x0f, 0x03, 0x68, 0x20 );
+	_TEST64( "0f03cc lsl ecx,esp", 0x0f, 0x03, 0xcc );
+	// REX.W + 0F 03 /r LSL r64, r32/m16*A Valid Valid Load: r64 segment limit, selector r32/m16
+	_TEST64( "480f036820 lsl rbp,word ptr [rax+0000000000000020h]", 0x48, 0x0f, 0x03, 0x68, 0x20 );
+	_TEST64( "480f03cc lsl rcx,esp", 0x48, 0x0f, 0x03, 0xcc );
+
+	// LOOP
+	_TEST32( "e210 loop 00401012h", 0xE2, 0x10);
+	_TEST32( "67e210 loop 00401013h", 0x67, 0xE2, 0x10);
+	_TEST64( "48e210 loop 0000800000401013h", 0x48, 0xE2, 0x10);
+
+	// LODS
+	// TODO: Dodac mozliwosc wyswietlania rejestrow segmentowych. i dodac tu test nadpisywania.
+	_TEST32( "26ac lods byte ptr [esi]", 0x26, 0xAC );
+	_TEST32( "ac lods byte ptr [esi]", 0xAC );
+	_TEST32( "ad lods dword ptr [esi]", 0xAD );
+	_TEST32( "6667ad lods word ptr [si]",0x66, 0x67, 0xAD );
+	_TEST64( "66ad lods word ptr [rsi]",0x66, 0xAD );
+	_TEST64( "48ad lods qword ptr [rsi]", 0x48, 0xAD );
+
+	// TODO: Allow to add LOCK prefix only to instructions for wjich this prefix ais allowed, see LOCK instruction description.
+	// LOCK Prefix.
+	_TEST32( "f02442 lock and al,42h", 0xF0, 0x24, 0x42 );
 
 	// LMSW
 	_TEST32( "0f017020 lmsw word ptr [eax+00000020h]", 0x0F, 0x01, 0x70, 0x20 );
@@ -1110,7 +1045,7 @@ void test(void) {
 	_TEST32( "ffe5 jmp ebp", 0xff, 0xe5, 0x01, 0x02, 0x03, 0x04 );
 	_TEST32( "66ffe5 jmp bp", 0x66, 0xff, 0xe5, 0x01, 0x02 );
 
-	/// TODO: Sprawdziæ pod visualem, ppowino wykorzystaæ rejestr 8 bitory a nie 64 bitowy.
+	/// TODO: Sprawdzi\E6 pod visualem, ppowino wykorzysta\E6 rejestr 8 bitory a nie 64 bitowy.
 	_TEST64( "676640ffe5 jmp rbp", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
 
 	_TEST32( "ea112233445566 jmp far 6655h:44332211h", 0xEA, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
@@ -1657,6 +1592,58 @@ void test(void) {
 	_TEST64( "480fbaaf0102030405 bts qword ptr [rdi+0000000004030201h],05h", 0x48, 0x0F, 0xBA, 0xAF, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=64 EAS=64
 	_TEST64( "480fbaaf01020304ff bts qword ptr [rdi+0000000004030201h],0ffh", 0x48, 0x0F, 0xBA, 0xAF, 0x01, 0x02, 0x03, 0x4, 0xff );
+
+}
+
+
+void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
+
+	struct ira_disassemble_info info;
+	info.address = code;
+	info.size = size;
+	info.address_size_attribute = 0;
+	info.operand_size_attribute = 0;
+	info.mode = is32 ? IRA_MOD_32BIT : IRA_MOD_64BIT;
+
+	if( is32 ) {
+		info.instruction_pointer.eip = 0x00401000;
+	} else {
+		info.instruction_pointer.rip = 0x0000800000401000;
+	}
+
+	struct ira_disassemble_result result;
+
+	// Disassemble.
+	ira_disassemble( &info, &result );
+
+	if( result.code == RC_OK ) {
+
+		// Print.
+		char buffer[512] = {0};
+
+		struct ira_intel_format_info format;
+		format.show_zero_displacement = 0;
+		format.show_extended_displacement = 1;
+		format.immediate_hex_display = 1;
+		format.immediate_signed = 1;
+		format.show_instruction_code = 1;
+		format.show_extended_immediate = 1;
+		format.show_conditional_mnemonics_for_carry_flag = 1;
+		format.conditional_suffix_group = 0;
+
+		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
+
+		if( strcmp( buffer, mnemonic ) != 0 ) {
+			printf("Failed: %s (%s)\n", mnemonic, buffer);
+			exit(0);
+		}
+
+	} else {
+		if( strcmp( "FAIL", mnemonic ) != 0 ) {
+			printf("Failed: %s\n", mnemonic);
+			exit(0);
+		}
+	}
 
 }
 

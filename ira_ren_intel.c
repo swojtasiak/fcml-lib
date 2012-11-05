@@ -4,7 +4,7 @@
  * ira_ren.c
  *
  *  Created on: 12-12-2010
- *  Last Modification: 01-10-2012
+ *  Last Modification: 05-11-2012
  *
  *      Author: Slawomir Wojtasiak
  */
@@ -72,6 +72,8 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 		_ira_format_append_code( &stream, result->instruction_code, result->instruction_size );
 		_ira_format_append_str( &stream, " " );
 	}
+
+	_ira_format_append_prefixes( &stream, result->prefixes, result->prefixes_count );
 
 	// Add mnemonic.
 	_ira_format_append_str( &stream, result->mnemonic );

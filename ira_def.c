@@ -1431,9 +1431,49 @@ struct ira_opcode_desc _ira_opcode_desc_LMSW[] = {
 	{ NULL, 0x0001, 0x00D9B000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_RM_16, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
-struct ira_opcode_desc _ira_opcode_desc_LOCK[] = {
-	// F0 LOCK A Valid Valid Asserts LOCK# signal for duration of the accompanying instruction.
-	{ NULL, 0x0001, 0x00C40000, { 0xF0, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+struct ira_opcode_desc _ira_opcode_desc_LODS[] = {
+	// AC LODS m8 A Valid Valid For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.
+	{ NULL, 0x0001, 0x00C48000, { 0xAC, 0x00, 0x00 },
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_NA, _IRA_NA, _IRA_NA },
+	// AD LODS m16 A Valid Valid For legacy mode, Load word at address DS:(E)SI into AX. For 64-bit mode load word at address (R)SI into AX.
+	// AD  LODS m32 A Valid Valid For legacy mode, Load dword at address DS:(E)SI into EAX. For 64-bit mode load dword at address (R)SI into EAX.
+	// REX.W + AD LODS m64 A Valid N.E. Load qword at address (R)SI into RAX.
+	{ NULL, 0x0001, 0x00C48000, { 0xAD, 0x00, 0x00 },
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_NA, _IRA_NA, _IRA_NA }
+	// TODO: Probably nedded by assembler.
+	// AC LODSB A Valid Valid For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.
+	// AD LODSW A Valid Valid For legacy mode, Load word at address DS:(E)SI into AX. For 64-bit mode load word at address (R)SI into AX.
+	// AD LODSD A Valid Valid For legacy mode, Load dword at address DS:(E)SI into EAX. For 64-bit mode load dword at address (R)SI into EAX.
+	// REX.W + AD LODSQ A Valid N.E. Load qword at address (R)SI into RAX.
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LOOP[] = {
+	// E2 cb LOOP rel8 A Valid Valid Decrement count; jump short if count 0.
+	{ NULL, 0x0001, 0x00C40000, { 0xE2, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// E1 cb LOOPE rel8 A Valid Valid Decrement count; jump short if count 0 and ZF = 1.
+	{ "loope", 0x0001, 0x00C40000, { 0xE1, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// E0 cb LOOPNE rel8 A Valid Valid Decrement count; jump short if count 0 and ZF = 0.
+	{ "loopne", 0x0001, 0x00C40000, { 0xE0, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LSL[] = {
+	// 0F 03 /r LSL r16, r16/m16 A Valid Valid Load: r16 segment limit, selector r16/m16.
+	// 0F 03 /r LSL r32, r32/m16* A Valid Valid Load: r32 segment limit, selector r32/m16.
+	{ NULL, 0x0001, 0x03D80000, { 0x0F, 0x03, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_WORD ), _IRA_NA, _IRA_NA },
+	// REX.W + 0F 03 /r LSL r64, r32/m16* A Valid Valid Load: r64 segment limit, selector r32/m16
+	{ NULL, 0x0001, 0x04980000, { 0x0F, 0x03, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_WORD ), _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LTR[] = {
+	// 0F 00 /3 LTR r/m16 A Valid Valid Load r/m16 into task register.
+	{ NULL, 0x0001, 0x00D99800, { 0x0F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MASKMOVDQU[] = {
+	// 66 0F F7 /r MASKMOVDQU xmm1, xmm2 A Valid Valid Selectively write bytes from xmm1 to memory location using the byte mask in xmm2. The default memory location is specified by DS:EDI/RDI.
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
 };
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -1611,7 +1651,12 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "lgdt", _ira_opcode_desc_LGDT),
 		_IA_INSTRUCTION( "lldt", _ira_opcode_desc_LLDT),
 		_IA_INSTRUCTION( "lmsw", _ira_opcode_desc_LMSW),
-		_IA_INSTRUCTION( "lock", _ira_opcode_desc_LOCK),
+		_IA_INSTRUCTION( "lods", _ira_opcode_desc_LODS),
+		_IA_INSTRUCTION( "loop", _ira_opcode_desc_LOOP),
+		_IA_INSTRUCTION( "lsl", _ira_opcode_desc_LSL),
+		_IA_INSTRUCTION( "ltr", _ira_opcode_desc_LTR),
+		_IA_INSTRUCTION( "maskmovdqu", _ira_opcode_desc_MASKMOVDQU),
+
 		{ NULL, 0, 0, NULL }
 };
 

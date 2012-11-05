@@ -200,6 +200,16 @@ struct ira_modm_decoding_args {
 	uint16_t operand_size;
 };
 
+/* Structure that can be used to pass register type and its size to operand decoding function. */
+struct ira_modrm_r_decoding_args {
+	// Register type.
+	enum ira_register_type reg_type;
+	// Size directive provider.
+	ira_operand_size_provider operand_size_provider;
+	// Explicit addressing size.
+	uint16_t operand_size;
+};
+
 /* Disassemblation tree. */
 
 struct ira_diss_tree_opcode {
@@ -540,7 +550,11 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type )
 
 #define _IRA_OPERAND_M_BASE							0x18000000
-#define _IRA_OPERAND_M(memory_operand_size )		( _IRA_OPERAND_M_BASE | memory_operand_size )
+#define _IRA_OPERAND_M( memory_operand_size )		( _IRA_OPERAND_M_BASE | memory_operand_size )
+
+#define _IRA_OPERAND_RMR_BASE						0x19000000
+#define _IRA_OPERAND_RMR( reg_type, register_operand_size )		( _IRA_OPERAND_RMR_BASE | register_operand_size << 8 | reg_type )
+
 
 /* Externals. */
 

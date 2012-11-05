@@ -245,6 +245,10 @@
 #define _IRA_SEG_REG_FS 	5
 #define _IRA_SEG_REG_GS 	6
 
+// Prefixes.
+
+#define _IRA_PREFIX_LOCK	0xF0
+
 /* Size directives */
 
 // todo: wszdzie uzywac tych wielkosci do parametryzacji wilkosci adresacji i rejestrow, zeby nie bylo burdelu ze rozne makra adresujace uzywaja roznych wielkosci.
