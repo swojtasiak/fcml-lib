@@ -180,30 +180,26 @@ struct ira_explicit_immediate_type_args {
 	union ira_immediate_data_value immediate_data;
 };
 
+typedef uint16_t (*ira_operand_size_provider)( struct ira_diss_context *context );
+
 /* Structure that can be used to pass register type and its size to operand decoding function. */
 struct ira_modrm_decoding_args {
 	// Register type.
 	enum ira_register_type reg_type;
+	// Allows to dynamically calculate memory operand size.
+	ira_operand_size_provider memory_operand_size_provider;
 	// Memory operand size.
 	uint16_t memory_operand_size;
+	// Allows to dynamically calculate register operand size.
+	ira_operand_size_provider register_operand_size_provider;
 	// Register operand size.
 	uint16_t register_operand_size;
+	// Flags.
+	uint8_t flags;
 };
-
-typedef uint16_t (*ira_operand_size_provider)( struct ira_diss_context *context );
 
 /* Structure used to decode  */
 struct ira_modm_decoding_args {
-	// Size directive provider.
-	ira_operand_size_provider operand_size_provider;
-	// Explicit addressing size.
-	uint16_t operand_size;
-};
-
-/* Structure that can be used to pass register type and its size to operand decoding function. */
-struct ira_modrm_r_decoding_args {
-	// Register type.
-	enum ira_register_type reg_type;
 	// Size directive provider.
 	ira_operand_size_provider operand_size_provider;
 	// Explicit addressing size.
@@ -546,15 +542,20 @@ struct ira_instruction_desc {
 
 // todo: Mozna sie zastanowic nad dodaniem flag M, R zeby mona bylo wybierac tryb adreacji rm/r/m
 // Allows to encode all common ModR/M based addressing modes using only one macro.
-#define _IRA_OPERAND_RM_BASE						0x17000000
-#define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type )
 
+#define _IRA_RMF_R		0x01
+#define _IRA_RMF_M		0x02
+#define _IRA_RMF_RM		( _IRA_RMF_R | _IRA_RMF_M )
+
+#define _IRA_OPERAND_RM_BASE						0x17000000
+#define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
+
+// TODO: do usuniecia, wytarczy _IRA_OPERAND_RM z flaga: _IRA_RMF_M
 #define _IRA_OPERAND_M_BASE							0x18000000
 #define _IRA_OPERAND_M( memory_operand_size )		( _IRA_OPERAND_M_BASE | memory_operand_size )
 
-#define _IRA_OPERAND_RMR_BASE						0x19000000
-#define _IRA_OPERAND_RMR( reg_type, register_operand_size )		( _IRA_OPERAND_RMR_BASE | register_operand_size << 8 | reg_type )
-
+#define _IRA_OPERAND_R_BASE							0x19000000
+#define _IRA_OPERAND_R( reg_type, register_operand_size )	( _IRA_OPERAND_R_BASE | register_operand_size << 4 | reg_type )
 
 /* Externals. */
 

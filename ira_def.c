@@ -1353,9 +1353,9 @@ struct ira_opcode_desc _ira_opcode_desc_LAHF[] = {
 struct ira_opcode_desc _ira_opcode_desc_LAR[] = {
 	// 0F 02 /r LAR r16, r16/m16 A Valid Valid r16 r16/m16 masked by FF00H.
 	// 0F 02 /r LAR r32, r32/m16 A Valid Valid r32 r32/m16 masked by 00FxFF00H
-	{ NULL, 0x0001, 0x03D80000, { 0x0F, 0x02, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_WORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03D80000, { 0x0F, 0x02, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_WORD, _IRA_RMF_RM ), _IRA_NA, _IRA_NA },
 	// REX.W + 0F 02 /r LAR r64, r32/m16 A Valid N.E. r64 r32/m16 masked by 00FxFF00H
-	{ NULL, 0x0001, 0x04980000, { 0x0F, 0x02, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_WORD ), _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x04980000, { 0x0F, 0x02, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_WORD, _IRA_RMF_RM ), _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_LDDQU[] = {
@@ -1461,9 +1461,9 @@ struct ira_opcode_desc _ira_opcode_desc_LOOP[] = {
 struct ira_opcode_desc _ira_opcode_desc_LSL[] = {
 	// 0F 03 /r LSL r16, r16/m16 A Valid Valid Load: r16 segment limit, selector r16/m16.
 	// 0F 03 /r LSL r32, r32/m16* A Valid Valid Load: r32 segment limit, selector r32/m16.
-	{ NULL, 0x0001, 0x03D80000, { 0x0F, 0x03, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_WORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03D80000, { 0x0F, 0x03, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_WORD, _IRA_RMF_RM ), _IRA_NA, _IRA_NA },
 	// REX.W + 0F 03 /r LSL r64, r32/m16* A Valid Valid Load: r64 segment limit, selector r32/m16
-	{ NULL, 0x0001, 0x04980000, { 0x0F, 0x03, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_WORD ), _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x04980000, { 0x0F, 0x03, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_WORD, _IRA_RMF_RM ), _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_LTR[] = {
@@ -1473,7 +1473,12 @@ struct ira_opcode_desc _ira_opcode_desc_LTR[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_MASKMOVDQU[] = {
 	// 66 0F F7 /r MASKMOVDQU xmm1, xmm2 A Valid Valid Selectively write bytes from xmm1 to memory location using the byte mask in xmm2. The default memory location is specified by DS:EDI/RDI.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_R( IRA_REG_XMM, _IRA_OS_OWORD ), _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_OWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MASKMOVQ[] = {
+	// 0F F7 /r MASKMOVQ mm1, mm2 A Valid Valid Selectively write bytes from mm1 to memory location using the byte mask in mm2. The default memory location is specified by DS:EDI/RDI.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_R( IRA_REG_MMX, _IRA_OS_QWORD ), _IRA_OPERAND_RM( IRA_REG_MMX, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
 };
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -1656,6 +1661,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "lsl", _ira_opcode_desc_LSL),
 		_IA_INSTRUCTION( "ltr", _ira_opcode_desc_LTR),
 		_IA_INSTRUCTION( "maskmovdqu", _ira_opcode_desc_MASKMOVDQU),
+		_IA_INSTRUCTION( "maskmovq", _ira_opcode_desc_MASKMOVQ),
 
 		{ NULL, 0, 0, NULL }
 };
