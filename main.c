@@ -36,7 +36,47 @@ int main()
 //102
 void test(void) {
 
-	//
+	// MOVBE
+	// 0F 38 F0 /r MOVBE r16, m16 A Valid Valid Reverse byte order in m16 and move to r16
+	// 0F 38 F0 /r MOVBE r32, m32 A Valid Valid Reverse byte order in m32 and move to r32
+	// REX.W + 0F 38 F0 /r MOVBE r64, m64 A Valid N.E. Reverse byte order in m64 and move to r64.
+	_TEST64( "0f38f010 movbe edx,dword ptr [rax]", 0x0F, 0x38, 0xF0, 0x10 );
+	_TEST64( "480f38f010 movbe rdx,qword ptr [rax]", 0x48, 0x0F, 0x38, 0xF0, 0x10 );
+	_TEST32( "0f38f0c2 movbe eax,edx", 0x0F, 0x38, 0xF0, 0xC2 );
+	_TEST32( "660f38f010 movbe dx,word ptr [eax]", 0x66, 0x0F, 0x38, 0xF0, 0x10 );
+	// 0F 38 F1 /r MOVBE m16, r16 B Valid Valid Reverse byte order in r16 and move to m16
+	// 0F 38 F1 /r MOVBE m32, r32 B Valid Valid Reverse byte order in r32 and move to m32
+	// REX.W + 0F 38 F1 /r MOVBE m64, r64 B Valid N.E. Reverse byte order in
+	_TEST64( "0f38f110 movbe dword ptr [rax],edx", 0x0F, 0x38, 0xF1, 0x10 );
+	_TEST64( "480f38f110 movbe qword ptr [rax],rdx", 0x48, 0x0F, 0x38, 0xF1, 0x10 );
+	_TEST32( "0f38f1c2 movbe edx,eax", 0x0F, 0x38, 0xF1, 0xC2 );
+	_TEST32( "660f38f110 movbe word ptr [eax],dx", 0x66, 0x0F, 0x38, 0xF1, 0x10 );
+
+	// MOVAPS
+	// 66 0F 28 /r MOVAPD xmm1, xmm2/m128 A Valid Valid Move packed doubleprecision floating-point values from xmm2/m128 to xmm1.
+	_TEST64( "0f284020 movaps xmm0,oword ptr [rax+0000000000000020h]", 0x0F, 0x28, 0x40, 0x20 );
+	_TEST64( "480f284020 movaps xmm0,oword ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x28, 0x40, 0x20 );
+	_TEST32( "0f28c2 movaps xmm0,xmm2", 0x0F, 0x28, 0xC2 );
+	_TEST32( "0f284020 movaps xmm0,oword ptr [eax+00000020h]", 0x0F, 0x28, 0x40, 0x20 );
+	// 66 0F 29 /r MOVAPD xmm2/m128, xmm1 B Valid Valid Move packed doubleprecision floating-point values from xmm1 to xmm2/m128.
+	_TEST64( "0f294020 movaps oword ptr [rax+0000000000000020h],xmm0", 0x0F, 0x29, 0x40, 0x20 );
+	_TEST64( "480f294020 movaps oword ptr [rax+0000000000000020h],xmm0", 0x48, 0x0F, 0x29, 0x40, 0x20 );
+	_TEST32( "0f29c2 movaps xmm2,xmm0", 0x0F, 0x29, 0xC2 );
+	_TEST32( "0f294020 movaps oword ptr [eax+00000020h],xmm0", 0x0F, 0x29, 0x40, 0x20 );
+
+	// MOVAPD
+	// 66 0F 28 /r MOVAPD xmm1, xmm2/m128 A Valid Valid Move packed doubleprecision floating-point values from xmm2/m128 to xmm1.
+	_TEST64( "660f284020 movapd xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x28, 0x40, 0x20 );
+	_TEST64( "66480f284020 movapd xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x48, 0x0F, 0x28, 0x40, 0x20 );
+	_TEST32( "660f28c2 movapd xmm0,xmm2", 0x66, 0x0F, 0x28, 0xC2 );
+	_TEST32( "660f284020 movapd xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x28, 0x40, 0x20 );
+	// 66 0F 29 /r MOVAPD xmm2/m128, xmm1 B Valid Valid Move packed doubleprecision floating-point values from xmm1 to xmm2/m128.
+	_TEST64( "660f294020 movapd oword ptr [rax+0000000000000020h],xmm0", 0x66, 0x0F, 0x29, 0x40, 0x20 );
+	_TEST64( "66480f294020 movapd oword ptr [rax+0000000000000020h],xmm0", 0x66, 0x48, 0x0F, 0x29, 0x40, 0x20 );
+	_TEST32( "660f29c2 movapd xmm2,xmm0", 0x66, 0x0F, 0x29, 0xC2 );
+	_TEST32( "660f294020 movapd oword ptr [eax+00000020h],xmm0", 0x66, 0x0F, 0x29, 0x40, 0x20 );
+
+	// MONITOR
 	_TEST64( "0f01c8 monitor rax,rcx,rdx", 0x0F, 0x01, 0xC8 );
 	_TEST32( "0f01c8 monitor eax,ecx,edx", 0x0F, 0x01, 0xC8 );
 
