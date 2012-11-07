@@ -104,3 +104,13 @@ _TEST64( "0f015020 lgdt fword ptr [rax+0000000000000020h]", 0x0F, 0x01, 0x50, 0x
 _TEST64( "660f015020 lgdt fword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x01, 0x50, 0x20 );
 _TEST64( "480f015020 lgdt tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 0x50, 0x20 );
 	
+12.
+
+00000000`00401000 488c10          mov     word ptr [rax],ss ds:00000000`769a6520=0e75c98528ec8348
+00000000`00401003 8c10            mov     word ptr [rax],ss
+
+-->
+
+488c10 mov qword ptr [rax],ss
+8c10 mov word ptr [rax],ss
+

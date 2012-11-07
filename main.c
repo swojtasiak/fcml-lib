@@ -36,6 +36,34 @@ int main()
 //102
 void test(void) {
 
+	// MOV
+	// 88 /r MOV r/m8,r8 A Valid Valid Move r8 to r/m8.
+	// REX + 88 /r MOV r/m8***,r8*** A Valid N.E. Move r8 to r/m8.
+	_TEST64( "488810 mov byte ptr [rax],dl", 0x48, 0x88, 0x10 );
+	_TEST32( "8810 mov byte ptr [eax],dl", 0x88, 0x10 );
+	// 89 /r MOV r/m16,r16 A Valid Valid Move r16 to r/m16.
+	// 89 /r MOV r/m32,r32 A Valid Valid Move r32 to r/m32.
+	// REX.W + 89 /r MOV r/m64,r64 A Valid N.E. Move r64 to r/m64.
+	_TEST64( "488910 mov qword ptr [rax],rdx", 0x48, 0x89, 0x10 );
+	_TEST32( "8910 mov dword ptr [eax],edx", 0x89, 0x10 );
+	_TEST32( "668910 mov word ptr [eax],dx", 0x66, 0x89, 0x10 );
+	// 8A /r MOV r8,r/m8 B Valid Valid Move r/m8 to r8.
+	// REX + 8A /r MOV r8***,r/m8*** B Valid N.E. Move r/m8 to r8.
+	_TEST64( "488a10 mov dl,byte ptr [rax]", 0x48, 0x8A, 0x10 );
+	_TEST32( "8a10 mov dl,byte ptr [eax]", 0x8A, 0x10 );
+	// 8B /r MOV r16,r/m16 B Valid Valid Move r/m16 to r16.
+	// 8B /r MOV r32,r/m32 B Valid Valid Move r/m32 to r32.
+	// REX.W + 8B /r MOV r64,r/m64 B Valid N.E. Move r/m64 to r64.
+	_TEST64( "488b10 mov rdx,qword ptr [rax]", 0x48, 0x8B, 0x10 );
+	_TEST32( "8b10 mov edx,dword ptr [eax]", 0x8B, 0x10 );
+	_TEST32( "668b10 mov dx,word ptr [eax]", 0x66, 0x8B, 0x10 );
+	// 8C /r MOV r/m16,Sreg** A Valid Valid Move segment register to r/m16.
+	_TEST32( "8c10 mov word ptr [eax],ss", 0x8C, 0x10 );
+	_TEST32( "668c10 mov word ptr [eax],ss", 0x66, 0x8C, 0x10 );
+	_TEST64( "8c10 mov word ptr [rax],ss", 0x8C, 0x10 );
+	// REX.W + 8C /r MOV r/m64,Sreg** A Valid Valid Move zero extended 16-bit segment register to r/m64.
+	_TEST64( "488c10 mov qword ptr [rax],ss", 0x48, 0x8C, 0x10 );
+
 	// MOVBE
 	// 0F 38 F0 /r MOVBE r16, m16 A Valid Valid Reverse byte order in m16 and move to r16
 	// 0F 38 F0 /r MOVBE r32, m32 A Valid Valid Reverse byte order in m32 and move to r32

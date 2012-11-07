@@ -114,6 +114,7 @@
 #define _IRA_REG_RAX	0
 #define _IRA_REG_MM0	0
 #define _IRA_REG_XMM0	0
+#define _IRA_REG_ES		0
 
 #define _IRA_REG_CL		1
 #define _IRA_REG_CX		1
@@ -121,6 +122,7 @@
 #define _IRA_REG_RCX	1
 #define _IRA_REG_MM1	1
 #define _IRA_REG_XMM1	1
+#define _IRA_REG_CS		1
 
 #define _IRA_REG_DL		2
 #define _IRA_REG_DX		2
@@ -128,6 +130,7 @@
 #define _IRA_REG_RDX	2
 #define _IRA_REG_MM2	2
 #define _IRA_REG_XMM2	2
+#define _IRA_REG_SS		2
 
 #define _IRA_REG_BL		3
 #define _IRA_REG_BX		3
@@ -135,6 +138,7 @@
 #define _IRA_REG_RBX	3
 #define _IRA_REG_MM3	3
 #define _IRA_REG_XMM3	3
+#define _IRA_REG_DS		3
 
 #define _IRA_REG_AH		4
 #define _IRA_REG_SP		4
@@ -143,6 +147,7 @@
 #define _IRA_REG_RSP	4
 #define _IRA_REG_MM4	4
 #define _IRA_REG_XMM4	4
+#define _IRA_REG_FS		4
 
 #define _IRA_REG_CH		5
 #define _IRA_REG_BP		5
@@ -151,6 +156,7 @@
 #define _IRA_REG_RBP	5
 #define _IRA_REG_MM5	5
 #define _IRA_REG_XMM5	5
+#define _IRA_REG_GS		5
 
 #define _IRA_REG_DH		6
 #define _IRA_REG_SI		6
@@ -234,16 +240,6 @@
 #define _IRA_GPRS_16		16
 #define _IRA_GPRS_32		32
 #define _IRA_GPRS_64		64
-
-/* Segment registers */
-
-#define _IRA_SEG_REG_NONE	0
-#define _IRA_SEG_REG_CS		1
-#define _IRA_SEG_REG_DS 	2
-#define _IRA_SEG_REG_SS 	3
-#define _IRA_SEG_REG_ES 	4
-#define _IRA_SEG_REG_FS 	5
-#define _IRA_SEG_REG_GS 	6
 
 // Prefixes.
 
@@ -338,7 +334,8 @@ enum ira_register_type {
 	IRA_REG_GPR,
 	IRA_REG_MMX,
 	IRA_REG_XMM,
-	IRA_REG_FPU
+	IRA_REG_FPU,
+	IRA_REG_SEG
 };
 
 /* Common structure to describe register. */

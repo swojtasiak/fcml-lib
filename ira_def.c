@@ -474,15 +474,15 @@ struct ira_opcode_desc _ira_opcode_desc_CMPPS[] = {
 struct ira_opcode_desc _ira_opcode_desc_CMPS[] = {
 	// A6 CMPS m8, m8 A Valid Valid For legacy mode, compare byte at address DS:(E)SI with byte at address ES:(E)DI; For 64-bit mode compare byte at address (R|E)SI to byte at address (R|E)DI. The status flags are set accordingly.
 	{ NULL, 0x0001, 0x00C40000, { 0xA6, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
 			_IRA_NA, _IRA_NA },
 	// A7 CMPS m16, m16 A Valid Valid For legacy mode, compare word at address DS:(E)SI with word at address ES:(E)DI; For 64-bit mode compare word at address (R|E)SI with word at address (R|E)DI. The status flags are set accordingly.
 	// A7 CMPS m32, m32 A Valid Valid For legacy mode, compare dword at address DS:(E)SI at dword at address ES:(E)DI; For 64-bit mode compare dword at address (R|E)SI at dword at address (R|E)DI. The status flags are set accordingly.
 	// REX.W + A7 CMPS m64, m64 A Valid N.E. Compares quadword at address (R|E)SI with quadword at address (R|E)DI and sets the status flags accordingly.
 	{ NULL, 0x0001, 0x00C40000, { 0xA7, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
 			_IRA_NA, _IRA_NA }
 };
 
@@ -1296,15 +1296,15 @@ struct ira_opcode_desc _ira_opcode_desc_INC[] = {
 struct ira_opcode_desc _ira_opcode_desc_INS[] = {
 	// 6C INS m8, DX A Valid Valid Input byte from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.*
 	{ NULL, 0x0001, 0x07C40000, { 0x6C, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
 			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
 	// 6D INS m16, DX A Valid Valid Input word from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
 	{ NULL, 0x0001, 0x01C40000, { 0x6D, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_WORD, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_WORD, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
 			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
 	// 6D INS m32, DX A Valid Valid Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
 	{ NULL, 0x0001, 0x06C40000, { 0x6D, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_DWORD, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_DWORD, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
 			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, _IRA_OS_WORD ), _IRA_NA, _IRA_NA }
 	// TODO: W przypadku assemblera trzeba to bedzie obsluzyc.
 	// 6C INSB A Valid Valid Input byte from I/O port specified in DX into memory location specified with ES:(E)DI or RDI.1
@@ -1434,13 +1434,13 @@ struct ira_opcode_desc _ira_opcode_desc_LMSW[] = {
 struct ira_opcode_desc _ira_opcode_desc_LODS[] = {
 	// AC LODS m8 A Valid Valid For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.
 	{ NULL, 0x0001, 0x00C48000, { 0xAC, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
 			_IRA_NA, _IRA_NA, _IRA_NA },
 	// AD LODS m16 A Valid Valid For legacy mode, Load word at address DS:(E)SI into AX. For 64-bit mode load word at address (R)SI into AX.
 	// AD  LODS m32 A Valid Valid For legacy mode, Load dword at address DS:(E)SI into EAX. For 64-bit mode load dword at address (R)SI into EAX.
 	// REX.W + AD LODS m64 A Valid N.E. Load qword at address (R)SI into RAX.
 	{ NULL, 0x0001, 0x00C48000, { 0xAD, 0x00, 0x00 },
-			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_SEG_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
 			_IRA_NA, _IRA_NA, _IRA_NA }
 	// TODO: Probably nedded by assembler.
 	// AC LODSB A Valid Valid For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.
@@ -1538,7 +1538,33 @@ struct ira_opcode_desc _ira_opcode_desc_MONITOR[] = {
 	{ NULL, 0x0001, 0x00AC0000, { 0x0F, 0x01, 0xC8 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RAX, _IRA_OS_QWORD ),
 		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RCX, _IRA_OS_QWORD ),
 		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RDX, _IRA_OS_QWORD ), _IRA_NA }
-	// TODO: Przy assemblacji pameitac zeby pozwolic na assemblacje samej mnemoniki!
+	// TODO: Przy assemblacji pameitac zeby pozwolic na assemblacje samej mnemoniki!, byc moze idea virtualnych opcod rozwiaze problem
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MOV[] = {
+	// 88 /r MOV r/m8,r8 A Valid Valid Move r8 to r/m8.
+	// REX + 88 /r MOV r/m8***,r8*** A Valid N.E. Move r8 to r/m8.
+	{ NULL, 0x0001, 0x00C48000, { 0x88, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 89 /r MOV r/m16,r16 A Valid Valid Move r16 to r/m16.
+	// 89 /r MOV r/m32,r32 A Valid Valid Move r32 to r/m32.
+	// REX.W + 89 /r MOV r/m64,r64 A Valid N.E. Move r64 to r/m64.
+	{ NULL, 0x0001, 0x00C48000, { 0x89, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
+	// 8A /r MOV r8,r/m8 B Valid Valid Move r/m8 to r8.
+	// REX + 8A /r MOV r8***,r/m8*** B Valid N.E. Move r/m8 to r8.
+	{ NULL, 0x0001, 0x00C48000, { 0x8A, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
+	// 8B /r MOV r16,r/m16 B Valid Valid Move r/m16 to r16.
+	// 8B /r MOV r32,r/m32 B Valid Valid Move r/m32 to r32.
+	// REX.W + 8B /r MOV r64,r/m64 B Valid N.E. Move r/m64 to r64.
+	{ NULL, 0x0001, 0x00C48000, { 0x8B, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA },
+	// 8C /r MOV r/m16,Sreg** A Valid Valid Move segment register to r/m16.
+	{ NULL, 0x0001, 0x03C48000, { 0x8C, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16_W, _IRA_OPERAND_R( IRA_REG_SEG, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
+	// REX.W + 8C /r MOV r/m64,Sreg** A Valid Valid Move zero extended 16-bit segment register to r/m64.
+	{ NULL, 0x0001, 0x04848000, { 0x8C, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_OPERAND_R( IRA_REG_SEG, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
+	// A0 MOV AL,moffs8* C Valid Valid Move byte at (seg:offset) to AL.
+	// REX.W + A0 MOV AL,moffs8* C Valid N.E. Move byte at (offset) to AL.
+	//{ NULL, 0x0001, 0x04848000, { 0x8C, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
+
+
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVAPD[] = {
@@ -1565,6 +1591,7 @@ struct ira_opcode_desc _ira_opcode_desc_MOVBE[] = {
 	// REX.W + 0F 38 F1 /r MOVBE m64, r64 B Valid N.E. Reverse byte order in
 	{ NULL, 0x0001, 0x00EC8000, { 0x0F, 0x38, 0xF1 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA }
 };
+
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
@@ -1760,6 +1787,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "movapd", _ira_opcode_desc_MOVAPD),
 		_IA_INSTRUCTION( "movaps", _ira_opcode_desc_MOVAPS),
 		_IA_INSTRUCTION( "movbe", _ira_opcode_desc_MOVBE),
+		_IA_INSTRUCTION( "mov", _ira_opcode_desc_MOV),
 		{ NULL, 0, 0, NULL }
 };
 

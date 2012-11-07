@@ -1532,7 +1532,7 @@ int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ir
 	struct ira_segment_selector *segment_selector = &(addressing->segment_selector);
 
 	// This register cannot be overridden.
-	segment_selector->segment_register = _IRA_SEG_REG_CS;
+	segment_selector->segment_register = _IRA_REG_CS;
 
 	segment_selector->segment_register_value = _ira_stream_read_word( context->stream, &result );
 	if( !result ) {
@@ -1786,9 +1786,9 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 			segment_selector->segment_register_value = 0;
 
 			if( mod_rm->base_reg.reg_type == IRA_REG_GPR && ( mod_rm->base_reg.reg == _IRA_REG_BP || mod_rm->base_reg.reg == _IRA_REG_SP ) ) {
-				segment_selector->segment_register = _IRA_SEG_REG_SS;
+				segment_selector->segment_register = _IRA_REG_SS;
 			} else {
-				segment_selector->segment_register = _ira_util_override_segment_reg( context, _IRA_SEG_REG_DS );
+				segment_selector->segment_register = _ira_util_override_segment_reg( context, _IRA_REG_DS );
 			}
 		}
 
@@ -2366,22 +2366,22 @@ uint8_t _ira_util_override_segment_reg( struct ira_diss_context *context, uint8_
 		if( prefix->prefix_type == IRA_GROUP_2 && !prefix->mandatory_prefix ) {
 			switch( prefix->prefix ) {
 			case 0x2E:
-				reg = _IRA_SEG_REG_CS;
+				reg = _IRA_REG_CS;
 				break;
 			case 0x36:
-				reg = _IRA_SEG_REG_SS;
+				reg = _IRA_REG_SS;
 				break;
 			case 0x3E:
-				reg = _IRA_SEG_REG_DS;
+				reg = _IRA_REG_DS;
 				break;
 			case 0x26:
-				reg = _IRA_SEG_REG_ES;
+				reg = _IRA_REG_ES;
 				break;
 			case 0x64:
-				reg = _IRA_SEG_REG_FS;
+				reg = _IRA_REG_FS;
 				break;
 			case 0x65:
-				reg = _IRA_SEG_REG_GS;
+				reg = _IRA_REG_GS;
 				break;
 			}
 		}
