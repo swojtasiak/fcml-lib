@@ -22,12 +22,12 @@
 
 /* Size attribute types */
 
-// Pytanie czy to faktycznie jest potrzebne? Wyaje sie troche nadmiarowe. Patrz: common and operand size encoding.
-enum SizeAttributeType {
+// TODO: Pytanie czy to faktycznie jest potrzebne? Wyaje sie troche nadmiarowe. Patrz: common and operand size encoding.
+/*enum SizeAttributeType {
 	IRA_SAT_ASA,
 	IRA_SAT_OSA,
 	IRA_SAT_UNDEFINED
-};
+};*/
 
 /* Structures used to store information about memory. */
 
@@ -155,7 +155,9 @@ struct ira_reg_addressing_arg {
 /* Structure that can be used to pass register type to operand decoding function. */
 struct ira_reg_type_args {
 	// Attribute used to calculate register size, if calculation is needed.
-	enum SizeAttributeType size_attribute_type;
+	// TODO: Dlaczego camel casE?
+	// TODO: Zmineic na _IRA_OSktory umozliwia zakodowanie konkretnej wielkosci jak i EOSA/EASA.
+	// enum SizeAttributeType size_attribute_type;
 	// Register details.
 	struct ira_register reg;
 };
@@ -164,6 +166,16 @@ struct ira_reg_type_args {
 struct ira_condition_type_args {
 	// Condition type.
 	enum ira_condition_type condition_type;
+};
+
+// TODO: Zastanowic sie nad kilkoma generycznymi aterybutami typów i wykorzystaniem kontenera i kompozycji do przekazywania typow do dekoderów, mogli bysmy zrezygnowac z dedykowanych struktur, dla ulatwinia kopozycja moze zawierac od razu pola dla wszystkich dotepnych typow argumentowe.
+
+/* Generic structure used to store size of the operand. */
+struct ira_seg_relative_offset_args {
+	// Number of bytes address points to.
+	uint16_t offset_size;
+	// Encoded segment selector.
+	uint8_t encoded_segment_selector;
 };
 
 /* Structure that can be used to pass immediate value type/size to operand decoding function. */
@@ -556,6 +568,9 @@ struct ira_instruction_desc {
 
 #define _IRA_OPERAND_R_BASE							0x19000000
 #define _IRA_OPERAND_R( reg_type, register_operand_size )	( _IRA_OPERAND_R_BASE | register_operand_size << 4 | reg_type )
+
+#define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE	0x1A000000
+#define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
 
 /* Externals. */
 

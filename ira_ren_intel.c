@@ -20,7 +20,7 @@
 typedef void (*_ira_operand_formater)( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 
 void _ira_operand_formater_addressing( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
-void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
+void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream, int is_addressing );
 void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_immediate( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
@@ -108,10 +108,13 @@ void _ira_operand_formater_addressing( struct ira_disassemble_result *result, st
 	case IRA_MOD_RM:
 		_ira_operand_formater_addressing_modrm( result, format_info, operand, stream );
 		break;
-	case IRA_IMMEDIATE_ADDRESS:
+		// TODO: trzeba sprawdzic dlaczego IRA_RELATIVE_ADDRESS nie dodaje ptr[] IRA_SEGMENT_RELATIVE_ADDRESS dodaje, bo troche niekonsekwentne, trzeba to jakos ujednolicic i parametryzoac, zeby zalezalo to jakieo tyopu adresowania?
+		// bo trzeba zauwazyyc ze niektor instrukcje jako adreowanie poprostu uzywaja odresu jako operandu a niektore danj z pod tego adresu.
+	case IRA_SEGMENT_RELATIVE_ADDRESS:
+		_ira_operand_formater_addressing_address( result, format_info, operand, stream, _IRA_TRUE );
 		break;
 	case IRA_RELATIVE_ADDRESS:
-		_ira_operand_formater_addressing_address( result, format_info, operand, stream );
+		_ira_operand_formater_addressing_address( result, format_info, operand, stream, _IRA_FALSE );
 		break;
 	case IRA_FAR_POINTER:
 		_ira_operand_formater_addressing_far_pointer( result, format_info, operand, stream );
@@ -212,7 +215,7 @@ void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result
 
 	_ira_format_append_str( stream, ":" );
 
-	_ira_operand_formater_addressing_address( result, format_info,operand, stream );
+	_ira_operand_formater_addressing_address( result, format_info,operand, stream, _IRA_FALSE );
 
 }
 
@@ -229,9 +232,14 @@ void _ira_operand_formater_addressing_implicit_reg( struct ira_disassemble_resul
 
 }
 
-void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
+void _ira_operand_formater_addressing_address( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream, int is_addressing ) {
 
 	struct ira_addressing *addressing = &operand->addressing;
+
+	if( is_addressing ) {
+		_ira_print_size_directive( operand->operand_size, stream );
+		_ira_format_append_str( stream, "[" );
+	}
 
 	struct _ira_integer address_value = {0};
 	address_value.is_signed = _IRA_TRUE;
@@ -253,6 +261,10 @@ void _ira_operand_formater_addressing_address( struct ira_disassemble_result *re
 	}
 
 	_ira_format_append_integer( stream, &address_value, 16 );
+
+	if( is_addressing ) {
+		_ira_format_append_str( stream, "]" );
+	}
 }
 
 void _ira_operand_formater_immediate( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {

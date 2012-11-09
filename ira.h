@@ -235,11 +235,15 @@
 
 /* GPR sizes. */
 
+// TODO: Potrzebujemy to? Moze warto zamienic na _IRA_OS
+
+/*
 #define _IRA_GPRS_UNDEFINED	0
 #define _IRA_GPRS_8			8
 #define _IRA_GPRS_16		16
 #define _IRA_GPRS_32		32
 #define _IRA_GPRS_64		64
+*/
 
 // Prefixes.
 
@@ -383,6 +387,8 @@ struct ira_disassemble_info {
 	union ira_instruction_pointer instruction_pointer;
 };
 
+// TODO: Trzeba sie zastanowic nad wywaleniem tylu tupow okresljacych wielkosc, po co to nam? Mozna wykorzystaæ _IRA_OS
+
 // Size of the immediate value is also described in size directive of
 // the operand, but it might be more convenient to have it here in some cases.
 enum ira_immediate_data_type {
@@ -440,9 +446,10 @@ struct ira_displacement {
 
 enum ira_addressing_type {
 	IRA_MOD_RM,
-	IRA_IMMEDIATE_ADDRESS,
+	IRA_SEGMENT_RELATIVE_ADDRESS,
 	IRA_RELATIVE_ADDRESS,
 	IRA_FAR_POINTER,
+	// TODO: A nie explicit? ;)
 	IRA_IMPLICIT_REGISTER_ADDRESSING
 };
 

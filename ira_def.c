@@ -268,9 +268,9 @@ struct ira_opcode_desc _ira_opcode_desc_BSR[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_BSWAP[] = {
 	// 0F C8+rd BSWAP r32 A Valid* Valid Reverses the byte order of a 32-bit register.
-	{ NULL, 0x0001, 0x00D80001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_32 ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// REX.W + 0F C8+rd BSWAP r64 A Valid N.E. Reverses the byte order of a 64-bit register.
-	{ NULL, 0x0009, 0x00980001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_64 ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0009, 0x00980001, { 0x0F, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BT[] = {
@@ -716,7 +716,7 @@ struct ira_opcode_desc _ira_opcode_desc_DEC[] = {
 	{ NULL, 0x0001, 0x00C58800, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA },
 	// 48+rw DEC r16 B N.E. Valid Decrement r16 by 1.
 	// 48+rd DEC r32 B N.E. Valid Decrement r32 by 1.
-	{ NULL, 0x0001, 0x00440001, { 0x48, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00440001, { 0x48, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_EOSA ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_DIV[] = {
@@ -1290,7 +1290,7 @@ struct ira_opcode_desc _ira_opcode_desc_INC[] = {
 	{ NULL, 0x0001, 0x00C58000, { 0xFF, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA },
 	// 40+ rw** INC r16 B N.E. Valid Increment word register by 1.
 	// 40+ rd INC r32 B N.E. Valid Increment doubleword register by 1.
-	{ NULL, 0x0001, 0x00440001, { 0x40, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_GPRS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00440001, { 0x40, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_EOSA ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_INS[] = {
@@ -1562,9 +1562,33 @@ struct ira_opcode_desc _ira_opcode_desc_MOV[] = {
 	{ NULL, 0x0001, 0x04848000, { 0x8C, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_OPERAND_R( IRA_REG_SEG, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
 	// A0 MOV AL,moffs8* C Valid Valid Move byte at (seg:offset) to AL.
 	// REX.W + A0 MOV AL,moffs8* C Valid N.E. Move byte at (offset) to AL.
-	//{ NULL, 0x0001, 0x04848000, { 0x8C, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
-
-
+	{ NULL, 0x0001, 0x00C40000, { 0xA0, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_BYTE ), _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_NA, _IRA_NA },
+	// A1 MOV AX,moffs16* C Valid Valid Move word at (seg:offset) to AX.
+	// A1 MOV EAX,moffs32* C Valid Valid Move doubleword at (seg:offset) to EAX.
+	// REX.W + A1 MOV RAX,moffs64* C Valid N.E. Move quadword at (offset) to RAX.
+	{ NULL, 0x0001, 0x00C40000, { 0xA1, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_EOSA ), _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( _IRA_EOS_EOSA, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_NA, _IRA_NA },
+	// A2 MOV moffs8,AL D Valid Valid Move AL to (seg:offset).
+	// REX.W + A2 MOV moffs8***,AL D Valid N.E. Move AL to (offset).
+	{ NULL, 0x0001, 0x00C40000, { 0xA2, 0x00, 0x00 }, _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
+	// A3 MOV moffs16*,AX D Valid Valid Move AX to (seg:offset).
+	// A3 MOV moffs32*,EAX D Valid Valid Move EAX to (seg:offset).
+	// REX.W + A3 MOV moffs64*,RAX D Valid N.E. Move RAX to (offset).
+	{ NULL, 0x0001, 0x00C40000, { 0xA3, 0x00, 0x00 }, _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( _IRA_EOS_EOSA, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_EOSA ), _IRA_NA, _IRA_NA },
+	// B0+ rb MOV r8, imm8 E Valid Valid Move imm8 to r8.
+	// REX + B0+ rb MOV r8***, imm8 E Valid N.E. Move imm8 to r8.
+	{ NULL, 0x0001, 0x00C40001, { 0xB0, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_BYTE ) | _IRA_WRITE, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// B8+ rw MOV r16, imm16 E Valid Valid Move imm16 to r16.
+	// B8+ rd MOV r32, imm32 E Valid Valid Move imm32 to r32.
+	// REX.W + B8+ rd MOV r64, imm64 E Valid N.E. Move imm64 to r64.
+	{ NULL, 0x0001, 0x00C40001, { 0xB8, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// C6 /0 MOV r/m8, imm8 F Valid Valid Move imm8 to r/m8.
+	// REX + C6 /0 MOV r/m8***, imm8 F Valid N.E. Move imm8 to r/m8.
+	{ NULL, 0x0001, 0x00C58000, { 0xC6, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// C7 /0 MOV r/m16, imm16 F Valid Valid Move imm16 to r/m16.
+	// C7 /0 MOV r/m32, imm32 F Valid Valid Move imm32 to r/m32.
+	{ NULL, 0x0001, 0x03C58000, { 0xC7, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + C7 /0 MOV r/m64, imm32 F Valid N.E. Move imm32 sign extended to 64-bits to r/m64.
+	{ NULL, 0x0001, 0x04858000, { 0xC7, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVAPD[] = {
