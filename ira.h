@@ -339,7 +339,9 @@ enum ira_register_type {
 	IRA_REG_MMX,
 	IRA_REG_XMM,
 	IRA_REG_FPU,
-	IRA_REG_SEG
+	IRA_REG_SEG,
+	IRA_REG_CR,
+	IRA_REG_DR,
 };
 
 /* Common structure to describe register. */

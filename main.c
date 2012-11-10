@@ -36,6 +36,137 @@ int main()
 //102
 void test(void) {
 
+	// MOVHLPS
+	// 0F 12 /r MOVHLPS xmm1, xmm2 A Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm2 to low quadword of xmm1.
+	_TEST32( "0f12d0 movhlps mm2,xmm0", 0x0F, 0x12, 0xD0 );
+	_TEST32( "0f12d8 movhlps mm3,xmm0", 0x0F, 0x12, 0xD8 );
+	_TEST64( "0f12d0 movhlps mm2,xmm0", 0x0F, 0x12, 0xD0 );
+	_TEST64( "480126d0 movhlps mm2,xmm0", 0x48, 0x0F, 0x12, 0xD0 );
+
+	// MOVDQ2Q
+	// F2 0F D6 MOVDQ2Q mm, xmm A Valid Valid Move low quadword from xmm to mmx register.
+	_TEST32( "f20fd6d0 movdq2q mm2,xmm0", 0xF2, 0x0F, 0xD6, 0xD0 );
+	_TEST32( "f20fd6d8 movdq2q mm3,xmm0", 0xF2, 0x0F, 0xD6, 0xD8 );
+	_TEST64( "f20fd6d0 movdq2q mm2,xmm0", 0xF2, 0x0F, 0xD6, 0xD0 );
+	_TEST64( "f2480fd6d0 movdq2q mm2,xmm0", 0xF2, 0x48, 0x0F, 0xD6, 0xD0 );
+
+	// MOVDQU
+	// F3 0F 6F /r MOVDQU xmm1, xmm2/m128 A Valid Valid Move unaligned double quadword from xmm2/m128 to xmm1.
+	_TEST32( "f30f6f10 movdqu xmm2,oword ptr [eax]", 0xF3, 0x0F, 0x6F, 0x10 );
+	_TEST32( "f30f6fd8 movdqu xmm3,xmm0", 0xF3, 0x0F, 0x6F, 0xD8 );
+	_TEST64( "f30f6f10 movdqu xmm2,oword ptr [rax]", 0xF3, 0x0F, 0x6F, 0x10 );
+	// F3 0F 7F /r MOVDQU xmm2/m128, xmm1 B Valid Valid Move unaligned double quadword from xmm1 to xmm2/m128.
+	_TEST32( "f30f7f10 movdqu oword ptr [eax],xmm2", 0xF3, 0x0F, 0x7F, 0x10 );
+	_TEST32( "f30f7fd8 movdqu xmm0,xmm3", 0xF3, 0x0F, 0x7F, 0xD8 );
+	_TEST64( "f30f7f10 movdqu oword ptr [rax],xmm2", 0xF3, 0x0F, 0x7F, 0x10 );
+
+	// MOVDQA
+	// 66 0F 6F /r MOVDQA xmm1, xmm2/m128 A Valid Valid Move aligned double quadword from xmm2/m128 to xmm1.
+	_TEST32( "660f6f10 movdqa xmm2,oword ptr [eax]", 0x66, 0x0F, 0x6F, 0x10 );
+	_TEST32( "660f6fd8 movdqa xmm3,xmm0", 0x66, 0x0F, 0x6F, 0xD8 );
+	_TEST64( "660f6f10 movdqa xmm2,oword ptr [rax]", 0x66, 0x0F, 0x6F, 0x10 );
+	// 66 0F 7F /r MOVDQA xmm2/m128, xmm1 B Valid Valid Move aligned double quadword from xmm1 to xmm2/m128.
+	_TEST32( "660f7f10 movdqa oword ptr [eax],xmm2", 0x66, 0x0F, 0x7F, 0x10 );
+	_TEST32( "660f7fd8 movdqa xmm0,xmm3", 0x66, 0x0F, 0x7F, 0xD8 );
+	_TEST64( "660f7f10 movdqa oword ptr [rax],xmm2", 0x66, 0x0F, 0x7F, 0x10 );
+
+	// MOVDDUP
+	// F2 0F 12 /r MOVDDUP xmm1, xmm2/m64 A Valid Valid Move one double-precision floating-point value from the lower 64-bit operand in xmm2/m64 to xmm1 and duplicate.
+	_TEST32( "f20f1210 movddup xmm2,qword ptr [eax]", 0xF2, 0x0F, 0x12, 0x10 );
+	_TEST32( "f20f12d8 movddup xmm3,xmm0", 0xF2, 0x0F, 0x12, 0xD8 );
+	_TEST64( "f20f1210 movddup xmm2,qword ptr [rax]", 0xF2, 0x0F, 0x12, 0x10 );
+
+	// MOVD
+	// 0F 6E /r MOVD mm,r/m32 A Valid Valid Move doubleword from r/m32 to mm.
+	_TEST32( "0f6e10 movd mm2,dword ptr [eax]", 0x0F, 0x6E, 0x10 );
+	_TEST64( "0f6e10 movd mm2,dword ptr [rax]", 0x0F, 0x6E, 0x10 );
+	// REX.W + 0F 6E /r MOVQ mm, r/m64 A Valid N.E. Move quadword from r/m64 to mm.
+	_TEST64( "480f6e10 movq mm2,qword ptr [rax]", 0x48, 0x0F, 0x6E, 0x10 );
+	// 0F 7E /r MOVD r/m32, mm B Valid Valid Move doubleword from mm to r/m32.
+	_TEST32( "0f7e10 movd dword ptr [eax],mm2", 0x0F, 0x7E, 0x10 );
+	_TEST64( "0f7e10 movd dword ptr [rax],mm2", 0x0F, 0x7E, 0x10 );
+	// REX.W + 0F 7E /r MOVQ r/m64, mm B Valid N.E. Move quadword from mm to r/m64.
+	_TEST64( "480f7e10 movq qword ptr [rax],mm2", 0x48, 0x0F, 0x7E, 0x10 );
+	// 66 0F 6E /r MOVD xmm, r/m32 A Valid Valid Move doubleword from r/m32 to xmm.
+	_TEST32( "660f6e10 movd xmm2,dword ptr [eax]", 0x66, 0x0F, 0x6E, 0x10 );
+	_TEST64( "660f6e10 movd xmm2,dword ptr [rax]", 0x66, 0x0F, 0x6E, 0x10 );
+	// 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.
+	_TEST64( "66480f6e10 movq xmm2,qword ptr [rax]", 0x66, 0x48, 0x0F, 0x6E, 0x10 );
+	// 66 0F 7E /r MOVD r/m32, xmm B Valid Valid Move doubleword from xmm register to r/m32.
+	_TEST32( "660f7e10 movd dword ptr [eax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
+	_TEST64( "660f7e10 movd dword ptr [rax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
+	// 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
+	_TEST64( "66480f7e10 movq qword ptr [rax],xmm2", 0x66, 0x48, 0x0F, 0x7E, 0x10 );
+
+	// MOV (DR)
+	// 0F 21/r MOV r32, DR0–DR7 A N.E. Valid Move debug register to r32
+	_TEST32( "0f21d0 mov eax,dr2", 0x0F, 0x21, 0xD0 );
+	_TEST32( "660f21d0 mov eax,dr2", 0x66, 0x0F, 0x21, 0xD0 );
+	// 0F 21/r MOV r64, DR0–DR7 A Valid N.E. Move extended debug register to r64.
+	_TEST64( "660f21d0 mov rax,dr2", 0x66, 0x0F, 0x21, 0xD0 );
+	_TEST64( "480f21d0 mov rax,dr2", 0x48, 0x0F, 0x21, 0xD0 );
+	_TEST64( "0f21d0 mov rax,dr2", 0x0F, 0x21, 0xD0 );
+	// 0F 23 /r MOV DR0–DR7, r32 A N.E. Valid Move r32 to debug register
+	_TEST32( "0f23d0 mov dr2,eax", 0x0F, 0x23, 0xD0 );
+	_TEST32( "660f23d0 mov dr2,eax", 0x66, 0x0F, 0x23, 0xD0 );
+	// 0F 23 /r MOV DR0–DR7, r64 A Valid N.E. Move r64 to extended debug register.
+	_TEST64( "660f23d0 mov dr2,rax", 0x66, 0x0F, 0x23, 0xD0 );
+	_TEST64( "480f23d0 mov dr2,rax", 0x48, 0x0F, 0x23, 0xD0 );
+	_TEST64( "0f23d0 mov dr2,rax", 0x0F, 0x23, 0xD0 );
+
+	_TEST32( "0f21c0 mov eax,dr0", 0x0F, 0x21, 0xC0 );
+	_TEST32( "0f21c8 mov eax,dr1", 0x0F, 0x21, 0xC8 );
+	_TEST32( "0f21d0 mov eax,dr2", 0x0F, 0x21, 0xD0 );
+	_TEST32( "0f21d8 mov eax,dr3", 0x0F, 0x21, 0xD8 );
+	_TEST32( "0f21e0 mov eax,dr4", 0x0F, 0x21, 0xE0 );
+	_TEST32( "0f21e8 mov eax,dr5", 0x0F, 0x21, 0xE8 );
+	_TEST32( "0f21f0 mov eax,dr6", 0x0F, 0x21, 0xF0 );
+	_TEST32( "0f21f8 mov eax,dr7", 0x0F, 0x21, 0xF8 );
+	_TEST64( "440f21c0 mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xC0 );
+	_TEST64( "440f21c8 mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xC8 );
+	_TEST64( "440f21d0 mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xD0 );
+	_TEST64( "440f21d8 mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xD8 );
+	_TEST64( "440f21e0 mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xE0 );
+	_TEST64( "440f21e8 mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xE8 );
+	_TEST64( "440f21f0 mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xF0 );
+	_TEST64( "440f21f8 mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xF8 );
+
+	// MOV (CR)
+	// 0F 20/r MOV r32, CR0–CR7 A N.E. Valid Move control register to r32
+	// 0F 20/r MOV r64, CR0–CR7 A Valid N.E. Move extended control register to r64.
+	_TEST32( "0f20d0 mov eax,cr2", 0x0F, 0x20, 0xD0 );
+	_TEST32( "660f20d0 mov eax,cr2", 0x66, 0x0F, 0x20, 0xD0 );
+	// REX.R + 0F 20 /0 MOV r64, CR8 A Valid N.E. Move extended CR8 to r64.1
+	_TEST64( "660f20d0 mov rax,cr2", 0x66, 0x0F, 0x20, 0xD0 );
+	_TEST64( "480f20d0 mov rax,cr2", 0x48, 0x0F, 0x20, 0xD0 );
+	_TEST64( "0f20d0 mov rax,cr2", 0x0F, 0x20, 0xD0 );
+	// 0F 22 /r MOV CR0–CR7, r32 A N.E. Valid Move r32 to control register
+	// 0F 22 /r MOV CR0–CR7, r64 A Valid N.E. Move r64 to extended control register.
+	_TEST32( "0f22d0 mov cr2,eax", 0x0F, 0x22, 0xD0 );
+	_TEST32( "660f22d0 mov cr2,eax", 0x66, 0x0F, 0x22, 0xD0 );
+	// REX.R + 0F 22 /0 MOV CR8, r64 A Valid N.E. Move r64 to extended CR8.1
+	_TEST64( "660f22d0 mov cr2,rax", 0x66, 0x0F, 0x22, 0xD0 );
+	_TEST64( "480f22d0 mov cr2,rax", 0x48, 0x0F, 0x22, 0xD0 );
+	_TEST64( "0f22d0 mov cr2,rax", 0x0F, 0x22, 0xD0 );
+
+	// TODO: Zastanowic sie na koncu czyc chemy pokazywac unknown czy takze nieistiejace numerowac.
+	_TEST32( "0f20c0 mov eax,cr0", 0x0F, 0x20, 0xC0 );
+	_TEST32( "0f20c8 mov eax,<unknown CR>", 0x0F, 0x20, 0xC8 );
+	_TEST32( "0f20d0 mov eax,cr2", 0x0F, 0x20, 0xD0 );
+	_TEST32( "0f20d8 mov eax,cr3", 0x0F, 0x20, 0xD8 );
+	_TEST32( "0f20e0 mov eax,cr4", 0x0F, 0x20, 0xE0 );
+	_TEST32( "0f20e8 mov eax,<unknown CR>", 0x0F, 0x20, 0xE8 );
+	_TEST32( "0f20f0 mov eax,<unknown CR>", 0x0F, 0x20, 0xF0 );
+	_TEST32( "0f20f8 mov eax,<unknown CR>", 0x0F, 0x20, 0xF8 );
+	_TEST64( "440f20c0 mov rax,cr8", 0x44, 0x0F, 0x20, 0xC0 );
+	_TEST64( "440f20c8 mov rax,<unknown CR>", 0x44, 0x0F, 0x20, 0xC8 );
+	_TEST64( "440f20d0 mov rax,<unknown CR>", 0x44, 0x0F, 0x20, 0xD0 );
+	_TEST64( "440f20d8 mov rax,<unknown CR>", 0x44, 0x0F, 0x20, 0xD8 );
+	_TEST64( "440f20e0 mov rax,<unknown CR>", 0x44, 0x0F, 0x20, 0xE0 );
+	_TEST64( "440f20e8 mov rax,<unknown CR>", 0x44, 0x0F, 0x20, 0xE8 );
+	_TEST64( "440f20f0 mov rax,<unknown CR>", 0x44, 0x0F, 0x20, 0xF0 );
+	_TEST64( "440f20f8 mov rax,<unknown CR>", 0x44, 0x0F, 0x20, 0xF8 );
+
 	// MOV
 	// 88 /r MOV r/m8,r8 A Valid Valid Move r8 to r/m8.
 	// REX + 88 /r MOV r/m8***,r8*** A Valid N.E. Move r8 to r/m8.
