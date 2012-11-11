@@ -326,6 +326,22 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			continue;
 		}
 
+		// Check addressing mode for ModRM opcodes.
+		if( _IRA_OPCODE_FLAGS_MODRM_M( opcode_flags ) ) {
+			int modrm_found = 0;
+			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
+			if( !modrm_found || _IRA_MODRM_MOD( modrm ) == 3 ) {
+				continue;
+			}
+		}
+		if( _IRA_OPCODE_FLAGS_MODRM_R( opcode_flags ) ) {
+			int modrm_found = 0;
+			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
+			if( !modrm_found || _IRA_MODRM_MOD( modrm ) != 3 ) {
+				continue;
+			}
+		}
+
 		// Check opcode extension.
 		int opcodes_ok = 0;
 		if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( opcode_flags ) ) {
@@ -1022,11 +1038,11 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			break;
 		case _IRA_RM_MMX:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_RMF_RM, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_RMF_RM, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
 			break;
 		case _IRA_R_MMX:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, 0, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, 0, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
 			break;
 		case _IRA_RM_XMM_128:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;

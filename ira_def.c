@@ -169,22 +169,22 @@ struct ira_opcode_desc _ira_opcode_desc_AND[] = {
 	{ NULL, 0x0001, 0x00C40000, { 0x24, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 25 iw AND AX, imm16 C Valid Valid AX AND imm16.
 	// 25 id AND EAX, imm32 C Valid Valid EAX AND imm32.
-	{ NULL, 0x0001, 0x00C40000, { 0x25, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03C40000, { 0x25, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 25 id AND RAX, imm32 C Valid N.E. RAX AND imm32 signextended to 64-bits.
-	{ NULL, 0x0009, 0x00840000, { 0x25, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
-	// 80 /4 ib AND r/m8, imm8 B Valid Valid r/m8 AND imm8.
-	// REX + 80 /4 ib AND r/m8*, imm8 B Valid N.E. r/m64 AND imm8 (signextended).
+	{ NULL, 0x0001, 0x04840000, { 0x25, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 80 /4 ib AND r/m8, imm8 MR Valid Valid r/m8 AND imm8.
+	// REX + 80 /4 ib AND r/m8*, imm8 MR Valid N.E. r/m8 AND imm8.
 	{ NULL, 0x0001, 0x00C5A000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 81 /4 iw AND r/m16, imm16 B Valid Valid r/m16 AND imm16.
 	// 81 /4 id AND r/m32, imm32 B Valid Valid r/m32 AND imm32.
-	{ NULL, 0x0001, 0x00C5A000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03C5A000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 81 /4 id AND r/m64, imm32 B Valid N.E. r/m64 AND imm32 sign extended to 64-bits.
-	{ NULL, 0x0009, 0x0085A000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x0485A000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 83 /4 ib AND r/m16, imm8 B Valid Valid r/m16 AND imm8 (signextended).
 	// 83 /4 ib AND r/m32, imm8 B Valid Valid r/m32 AND imm8 (signextended).
-	{ NULL, 0x0001, 0x00C5A000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03C5A000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 83 /4 ib AND r/m64, imm8 B Valid N.E. r/m64 AND imm8 (signextended).
-	{ NULL, 0x0009, 0x0085A0000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x0485A000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 20 /r AND r/m8, r8 A Valid Valid r/m8 AND r8.
 	// REX + 20 /r AND r/m8*, r8* A Valid N.E. r/m64 AND r8 (signextended).
 	{ NULL, 0x0001, 0x00C48000, { 0x20, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
@@ -1336,6 +1336,13 @@ struct ira_opcode_desc _ira_opcode_desc_INVLPG[] = {
 	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
+struct ira_opcode_desc _ira_opcode_desc_INVPCID[] = {
+	// 66 0F 38 82 /r INVPCID r32, m128 RM NE/V INVPCID Invalidates entries in the TLBs and paging-structure caches based on invalidation type in r32 and descriptor in m128.
+	{ NULL, 0x1001, 0x806C8000, { 0x0F, 0x38, 0x82 }, _IRA_OPERAND_MODRM_R_32, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
+	// 66 0F 38 82 /r INVPCID r64, m128 RM V/NE INVPCID Invalidates entries in the TLBs and paging-structure caches based on invalidation type in r64 and descriptor in m128.
+	{ NULL, 0x1001, 0x80AC8000, { 0x0F, 0x38, 0x82 }, _IRA_OPERAND_MODRM_R_64, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_IRET[] = {
 	// CF IRET A Valid Valid Interrupt return (16-bit operand size).
 	{ NULL, 0x0001, 0x01C40000, { 0xCF, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
@@ -1682,89 +1689,89 @@ struct ira_opcode_desc _ira_opcode_desc_MOVDQU[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_MOVDQ2Q[] = {
 	// F2 0F D6 MOVDQ2Q mm, xmm A Valid Valid Move low quadword from xmm to mmx register.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xD6, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x2001, 0x00DA8000, { 0x0F, 0xD6, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVHLPS[] = {
 	// 0F 12 /r MOVHLPS xmm1, xmm2 A Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm2 to low quadword of xmm1.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xD6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00DA8000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVHPD[] = {
 	// 66 0F 16 /r MOVHPD xmm, m64 A Valid Valid Move double-precision floating-point value from m64 to high quadword of xmm.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x16, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x16, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 	// 66 0F 17 /r MOVHPD m64, xmm B Valid Valid Move double-precision floating-point value from high quadword of xmm to m64.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x17, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x17, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVHPS[] = {
 	// 0F 16 /r MOVHPS xmm, m64 A Valid Valid Move two packed singleprecision floating-point values from m64 to high quadword of xmm.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x16, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x16, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 	// 0F 17 /r MOVHPS m64, xmm B Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm to m64.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x17, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x17, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVLHPS[] = {
 	// 0F 16 /r MOVLHPS xmm1, xmm2 A Valid Valid Move two packed singleprecision floating-point values from low quadword of xmm2 to high quadword of xmm1.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x16, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00DA8000, { 0x0F, 0x16, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVLPD[] = {
 	// 66 0F 12 /r MOVLPD xmm, m64 A Valid Valid Move double-precision floating-point value from m64 to low quadword of xmm register.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 	// 66 0F 13 /r MOVLPD m64, xmm B Valid Valid Move double-precision floating-point nvalue from low quadword of xmm register to m64.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x13, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x13, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVLPS[] = {
 	// 0F 12 /r MOVLPS xmm, m64 A Valid Valid Move two packed singleprecision floating-point values from m64 to low quadword of xmm.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 	// 0F 13 /r MOVLPS m64, xmm B Valid Valid Move two packed singleprecision floating-point values from low quadword of xmm to m64.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x13, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x13, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVMSKPD[] = {
 	// 66 0F 50 /r MOVMSKPD reg, xmm A Valid Valid Extract 2-bit sign mask from xmm and store in reg. The upper bits of r32 or r64 are filled with zeros.
-	{ NULL, 0x1001, 0x00588000, { 0x0F, 0x50, 0x00 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
-	{ NULL, 0x1001, 0x00988000, { 0x0F, 0x50, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x1001, 0x005A8000, { 0x0F, 0x50, 0x00 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x1001, 0x009A8000, { 0x0F, 0x50, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVMSKPS[] = {
 	// 0F 50 /r MOVMSKPS reg, xmm A Valid Valid Extract 4-bit sign mask from xmm and store in reg. The upper bits of r32 or r64 are filled with zeros.
-	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x50, 0x00 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
-	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x50, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x005A8000, { 0x0F, 0x50, 0x00 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x009A8000, { 0x0F, 0x50, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVNTDQA[] = {
 	// 66 0F 38 2A /r MOVNTDQA xmm1, m128 A Valid Valid Move double quadword from m128 to xmm using non-temporal hint if WC memory type.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x2A }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x1001, 0x80EC8000, { 0x0F, 0x38, 0x2A }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVNTDQ[] = {
 	// 66 0F E7 /r MOVNTDQ m128, xmm A Valid Valid Move double quadword from xmm to m128 using non-temporal hint.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xE7, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_128 , _IRA_NA, _IRA_NA },
+	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0xE7, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_128 , _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVNTI[] = {
 	// 0F C3 /r MOVNTI m32, r32 A Valid Valid Move doubleword from r32 to m32 using non-temporal hint.
-	{ NULL, 0x0001, 0x03D88000, { 0x0F, 0xC3, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_DWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_32 , _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x83D88000, { 0x0F, 0xC3, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_DWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_32 , _IRA_NA, _IRA_NA },
 	// REX.W + 0F C3 /rMOVNTI m64, r64 A Valid N.E. Move quadword from r64 to m64 using non-temporal hint.
-	{ NULL, 0x0001, 0x04988000, { 0x0F, 0xC3, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_64 , _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x84988000, { 0x0F, 0xC3, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_64 , _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVNTPD[] = {
 	// 66 0F 2B /r MOVNTPD m128, xmm A Valid Valid Move packed doubleprecision floating-point values from xmm to m128 using non-temporal hint.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x2B, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_128 , _IRA_NA, _IRA_NA },
+	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x2B, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_128 , _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVNTPS[] = {
 	// 0F 2B /r MOVNTPS m128, xmm A Valid Valid Move packed singleprecision floating-point values from xmm to m128 using non-temporal hint.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x2B, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_128 , _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x2B, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_128 , _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVNTQ[] = {
 	// 0F E7 /r MOVNTQ m64, mm A Valid Valid Move quadword from mm to m64 using non-temporal hint.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x2B, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_MMX , _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0xE7, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_MMX , _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVQ[] = {
@@ -1780,7 +1787,7 @@ struct ira_opcode_desc _ira_opcode_desc_MOVQ[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_MOVQ2DQ[] = {
 	// F3 0F D6 MOVQ2DQ xmm, mm A Valid Valid Move quadword from mmx to low quadword of xmm.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xD6, 0x00 }, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_MMX, _IRA_NA, _IRA_NA },
+	{ NULL, 0x4001, 0x00DA8000, { 0x0F, 0xD6, 0x00 }, _IRA_OPERAND_RM( IRA_REG_XMM, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_MMX, _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVS[] = {
@@ -1835,7 +1842,7 @@ struct ira_opcode_desc _ira_opcode_desc_MOVSX[] = {
 	// REX.W + 0F BF /r MOVSX r64, r/m16 A Valid N.E. Move word to quadword with sign-extension.
 	{ NULL, 0x0001, 0x04988000, { 0x0F, 0xBF, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_16, _IRA_NA, _IRA_NA },
 	// REX.W** + 63 /r MOVSXD r64, r/m32 A Valid N.E. Move doubleword to quadword with signextension.
-	{ NULL, 0x0001, 0x04848000, { 0x63, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA }
+	{ "movsxd", 0x0001, 0x04848000, { 0x63, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVUPD[] = {
@@ -1849,7 +1856,7 @@ struct ira_opcode_desc _ira_opcode_desc_MOVUPS[] = {
 	// 0F 10 /r MOVUPS xmm1, xmm2/m128 A Valid Valid Move packed singleprecision floating-point values from xmm2/m128 to xmm1.
 	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x10, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_128_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
 	// 0F 11 /r MOVUPS xmm2/m128, xmm1 B Valid Valid Move packed singleprecision floating-point values from xmm1 to xmm2/m128.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x10, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x11, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM_128, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVZX[] = {
@@ -1902,6 +1909,75 @@ struct ira_opcode_desc _ira_opcode_desc_MWAIT[] = {
 	// 0F 01 C9 MWAIT A Valid Valid A hint that allow the processor to stop instruction execution and enter an implementationdependent optimized state until occurrence of a class of events.
 	{ NULL, 0x0001, 0x00EC8000, { 0x0F, 0x01, 0xC9 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
+
+struct ira_opcode_desc _ira_opcode_desc_NEG[] = {
+	// F6 /3 NEG r/m8 M Valid Valid Two's complement negate r/m8.
+	// REX + F6 /3 NEG r/m8* M Valid N.E. Two's complement negate r/m8.
+	{ NULL, 0x0001, 0x00C59800, { 0xF6, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// F7 /3 NEG r/m16 M Valid Valid Two's complement negate r/m16.
+	// F7 /3 NEG r/m32 M Valid Valid Two's complement negate r/m32.
+	// REX.W + F7 /3 NEG r/m64 M Valid N.E. Two's complement negate r/m64.
+	{ NULL, 0x0001, 0x00C59800, { 0xF7, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_NOP[] = {
+	// 90 NOP NP Valid Valid One byte no-operation instruction.
+	{ NULL, 0x0001, 0x00C40000, { 0x90, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 0F 1F /0 NOP r/m16 M Valid Valid Multi-byte no-operation instruction.
+	// 0F 1F /0 NOP r/m32 M Valid Valid Multi-byte no-operation instruction.
+	{ NULL, 0x0001, 0x00D98000, { 0x0F, 0x1F, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_NOT[] = {
+	// F6 /2 NOT r/m8 M Valid Valid Reverse each bit of r/m8.
+	// REX + F6 /2 NOT r/m8* M Valid N.E. Reverse each bit of r/m8.
+	{ NULL, 0x0001, 0x00C59000, { 0xF6, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// F7 /2 NOT r/m16 M Valid Valid Reverse each bit of r/m16.
+	// F7 /2 NOT r/m32 M Valid Valid Reverse each bit of r/m32.
+	// REX.W + F7 /2 NOT r/m64 M Valid N.E. Reverse each bit of r/m64.
+	{ NULL, 0x0001, 0x00C59000, { 0xF7, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_OR[] = {
+	// 0C ib OR AL, imm8 I Valid Valid AL OR imm8.
+	{ NULL, 0x0001, 0x00C40000, { 0x0C, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 0D iw OR AX, imm16 I Valid Valid AX OR imm16.
+	// 0D id OR EAX, imm32 I Valid Valid EAX OR imm32.
+	{ NULL, 0x0001, 0x03C40000, { 0x0D, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 0D id OR RAX, imm32 I Valid N.E. RAX OR imm32 (sign-extended).
+	{ NULL, 0x0001, 0x04840000, { 0x0D, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 80 /1 ib OR r/m8, imm8 MI Valid Valid r/m8 OR imm8.
+	// REX + 80 /1 ib OR r/m8*, imm8 MI Valid N.E. r/m8 OR imm8.
+	{ NULL, 0x0001, 0x00C58800, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 81 /1 iw OR r/m16, imm16 MI Valid Valid r/m16 OR imm16.
+	// 81 /1 id OR r/m32, imm32 MI Valid Valid r/m32 OR imm32.
+	{ NULL, 0x0001, 0x03C58800, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 81 /1 id OR r/m64, imm32 MI Valid N.E. r/m64 OR imm32 (sign-extended).
+	{ NULL, 0x0001, 0x04858800, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 83 /1 ib OR r/m16, imm8 MI Valid Valid r/m16 OR imm8 (sign-extended).
+	// 83 /1 ib OR r/m32, imm8 MI Valid Valid r/m32 OR imm8 (sign-extended).
+	{ NULL, 0x0001, 0x03C58800, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 83 /1 ib OR r/m64, imm8 MI Valid N.E. r/m64 OR imm8 (sign-extended).
+	{ NULL, 0x0001, 0x04858800, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 08 /r OR r/m8, r8 MR Valid Valid r/m8 OR r8.
+	// REX + 08 /r OR r/m8*, r8* MR Valid N.E. r/m8 OR r8.
+	{ NULL, 0x0001, 0x00C48000, { 0x08, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 09 /r OR r/m16, r16 MR Valid Valid r/m16 OR r16.
+	// 09 /r OR r/m32, r32 MR Valid Valid r/m32 OR r32.
+	// REX.W + 09 /r OR r/m64, r64 MR Valid N.E. r/m64 OR r64.
+	{ NULL, 0x0001, 0x00C48000, { 0x09, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
+	// 0A /r OR r8, r/m8 RM Valid Valid r8 OR r/m8.
+	// REX + 0A /r OR r8*, r/m8* RM Valid N.E. r8 OR r/m8.
+	{ NULL, 0x0001, 0x00C48000, { 0x0A, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
+	// 0B /r OR r16, r/m16 RM Valid Valid r16 OR r/m16.
+	// 0B /r OR r32, r/m32 RM Valid Valid r32 OR r/m32.
+	// REX.W + 0B /r OR r64, r/m64 RM Valid N.E. r64 OR r/m64.
+	{ NULL, 0x0001, 0x00C48000, { 0x0B, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
+};
+
+// 66 0F 56 /r ORPD xmm1, xmm2/m128 RM V/V SSE2 Bitwise OR of xmm2/m128 and xmm1. VEX.NDS.128.66.0F.WIG 56 /r
+// VORPD xmm1,xmm2, xmm3/m128 RVM V/V AVX Return the bitwise logical OR of packed double-precision floating-point values in xmm2 and xmm3/mem.
+// VEX.NDS.256.66.0F.WIG 56 /r VORPD ymm1, ymm2, ymm3/m256  RVM V/V AVX Return the bitwise logical OR of packed double-precision floating-point values in ymm2 and ymm3/mem.
 
 struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "aaa", _ira_opcode_desc_AAA ),
@@ -2063,6 +2139,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "int", _ira_opcode_desc_INT ),
 		_IA_INSTRUCTION( "invd", _ira_opcode_desc_INVD ),
 		_IA_INSTRUCTION( "invlpg", _ira_opcode_desc_INVLPG ),
+		_IA_INSTRUCTION( "invpcid", _ira_opcode_desc_INVPCID ),
 		_IA_INSTRUCTION( "iret", _ira_opcode_desc_IRET ),
 		_IA_INSTRUCTION( "jcxz", _ira_opcode_desc_JCXZ),
 		_IA_INSTRUCTION( "j", _ira_opcode_desc_Jcc),
@@ -2106,6 +2183,41 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "movdqu", _ira_opcode_desc_MOVDQU),
 		_IA_INSTRUCTION( "movdq2q", _ira_opcode_desc_MOVDQ2Q),
 		_IA_INSTRUCTION( "movhlps", _ira_opcode_desc_MOVHLPS),
+		_IA_INSTRUCTION( "movhpd", _ira_opcode_desc_MOVHPD),
+		_IA_INSTRUCTION( "movhps", _ira_opcode_desc_MOVHPS),
+		_IA_INSTRUCTION( "movlhps", _ira_opcode_desc_MOVLHPS),
+		_IA_INSTRUCTION( "movlpd", _ira_opcode_desc_MOVLPD),
+		_IA_INSTRUCTION( "movlps", _ira_opcode_desc_MOVLPS),
+		_IA_INSTRUCTION( "movmskpd", _ira_opcode_desc_MOVMSKPD),
+		_IA_INSTRUCTION( "movmskps", _ira_opcode_desc_MOVMSKPS),
+		_IA_INSTRUCTION( "movntdqa", _ira_opcode_desc_MOVNTDQA),
+		_IA_INSTRUCTION( "movntdq", _ira_opcode_desc_MOVNTDQ),
+		_IA_INSTRUCTION( "movnti", _ira_opcode_desc_MOVNTI),
+		_IA_INSTRUCTION( "movntpd", _ira_opcode_desc_MOVNTPD),
+		_IA_INSTRUCTION( "movntps", _ira_opcode_desc_MOVNTPS),
+		_IA_INSTRUCTION( "movntq", _ira_opcode_desc_MOVNTQ),
+		_IA_INSTRUCTION( "movq", _ira_opcode_desc_MOVQ),
+		_IA_INSTRUCTION( "movq2dq", _ira_opcode_desc_MOVQ2DQ),
+		_IA_INSTRUCTION( "movs", _ira_opcode_desc_MOVS),
+		_IA_INSTRUCTION( "movsd", _ira_opcode_desc_MOVSD),
+		_IA_INSTRUCTION( "movshdup", _ira_opcode_desc_MOVSHDUP),
+		_IA_INSTRUCTION( "movsldup", _ira_opcode_desc_MOVSLDUP),
+		_IA_INSTRUCTION( "movss", _ira_opcode_desc_MOVSS),
+		_IA_INSTRUCTION( "movsx", _ira_opcode_desc_MOVSX),
+		_IA_INSTRUCTION( "movupd", _ira_opcode_desc_MOVUPD),
+		_IA_INSTRUCTION( "movups", _ira_opcode_desc_MOVUPS),
+		_IA_INSTRUCTION( "movzx", _ira_opcode_desc_MOVZX),
+		_IA_INSTRUCTION( "mpsadbw", _ira_opcode_desc_MPSADBW),
+		_IA_INSTRUCTION( "mul", _ira_opcode_desc_MUL),
+		_IA_INSTRUCTION( "mulpd", _ira_opcode_desc_MULPD),
+		_IA_INSTRUCTION( "mulps", _ira_opcode_desc_MULPS),
+		_IA_INSTRUCTION( "mulsd", _ira_opcode_desc_MULSD),
+		_IA_INSTRUCTION( "mulss", _ira_opcode_desc_MULSS),
+		_IA_INSTRUCTION( "mwait", _ira_opcode_desc_MWAIT),
+		_IA_INSTRUCTION( "neg", _ira_opcode_desc_NEG),
+		_IA_INSTRUCTION( "nop", _ira_opcode_desc_NOP),
+		_IA_INSTRUCTION( "not", _ira_opcode_desc_NOT),
+		_IA_INSTRUCTION( "or", _ira_opcode_desc_OR),
 		{ NULL, 0, 0, NULL }
 };
 

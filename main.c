@@ -36,12 +36,396 @@ int main()
 //102
 void test(void) {
 
+	// OR
+	// 0C ib OR AL, imm8 I Valid Valid AL OR imm8.
+	_TEST32( "0c42 or al,42h", 0x0c, 0x42 );
+	_TEST32( "0cff or al,0ffh", 0x0c, 0xff );
+	_TEST64( "0c42 or al,42h", 0x0c, 0x42 );
+	_TEST64( "0c00 or al,00h", 0x0c, 0x00 );
+	_TEST64( "0cff or al,0ffh", 0x0c, 0xff );
+	// 0D iw OR AX, imm16 I Valid Valid AX OR imm16.
+	// 0D id OR EAX, imm32 I Valid Valid EAX OR imm32.
+	_TEST32( "660d4280 or ax,8042h", 0x66, 0x0d, 0x42, 0x80 );
+	_TEST32( "0d21658042 or eax,42806521h", 0x0d, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "400d21658042 or eax,42806521h", 0x40, 0x0d, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "66400d2165 or ax,6521h", 0x66, 0x40, 0x0d, 0x21, 0x65, 0x80, 0x42 );
+	// REX.W + 0D id OR RAX, imm32 I Valid N.E. RAX OR imm32 (sign-extended).
+	_TEST64( "480d21658042 or rax,0000000042806521h", 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "66480d21658042 or rax,0000000042806521h", 0x66, 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "6766480d21658042 or rax,0000000042806521h", 0x67, 0x66, 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "6766480dffffffff or rax,0ffffffffffffffffh", 0x67, 0x66, 0x48, 0x0d, 0xff, 0xff, 0xff, 0xff );
+	// 80 /1 ib OR r/m8, imm8 MI Valid Valid r/m8 OR imm8.
+	// REX + 80 /1 ib OR r/m8*, imm8 MI Valid N.E. r/m8 OR imm8.
+	_TEST32( "800d01020304ff or byte ptr [04030201h],0ffh", 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
+	_TEST32( "808e01020304ff or byte ptr [esi+04030201h],0ffh", 0x80, 0x8e, 0x01, 0x02, 0x03, 0x04, 0xff, 0x00, 0x00 );
+	_TEST32( "804c010203 or byte ptr [ecx+eax+00000002h],03h", 0x80, 0x4c, 0x01, 0x02, 0x03 );
+	// 81 /1 iw OR r/m16, imm16 MI Valid Valid r/m16 OR imm16.
+	// 81 /1 id OR r/m32, imm32 MI Valid Valid r/m32 OR imm32.
+	_TEST32( "81cd01020304 or ebp,04030201h", 0x81, 0xcd, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "6681cd0102 or bp,0201h", 0x66, 0x81, 0xcd, 0x01, 0x02 );
+	_TEST64( "67664081cd0102 or bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xcd, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
+	// REX.W + 81 /1 id OR r/m64, imm32 MI Valid N.E. r/m64 OR imm32 (sign-extended).
+	_TEST64( "4881cd01020304 or rbp,0000000004030201h", 0x48, 0x81, 0xcd, 0x01, 0x02, 0x03, 0x04 );
+	_TEST64( "4881cdffffffff or rbp,0ffffffffffffffffh", 0x48, 0x81, 0xcd, 0xff, 0xff, 0xff, 0xff );
+	_TEST64( "674881cdffffffff or rbp,0ffffffffffffffffh", 0x67, 0x48, 0x81, 0xcd, 0xff, 0xff, 0xff, 0xff );
+	_TEST64( "664881cdffffffff or rbp,0ffffffffffffffffh", 0x66, 0x48, 0x81, 0xcd, 0xff, 0xff, 0xff, 0xff );
+	// 83 /1 ib OR r/m16, imm8 MI Valid Valid r/m16 OR imm8 (sign-extended).
+	// 83 /1 ib OR r/m32, imm8 MI Valid Valid r/m32 OR imm8 (sign-extended).
+	_TEST32( "830e01 or dword ptr [esi],00000001h", 0x83, 0x0e, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "66830e01 or word ptr [esi],0001h", 0x66, 0x83, 0x0e, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "67830e010203 or dword ptr [0201h],00000003h", 0x67, 0x83, 0x0e, 0x01, 0x02, 0x03 );
+	// REX.W + 83 /1 ib OR r/m64, imm8 MI Valid N.E. r/m64 OR imm8 (sign-extended).
+	_TEST64( "48838f0102030405 or qword ptr [rdi+0000000004030201h],0000000000000005h", 0x48, 0x83, 0x8f, 0x01, 0x02, 0x03, 0x4, 0x05 );
+	_TEST64( "48838f01020304ff or qword ptr [rdi+0000000004030201h],0ffffffffffffffffh", 0x48, 0x83, 0x8f, 0x01, 0x02, 0x03, 0x4, 0xff );
+	// 08 /r OR r/m8, r8 MR Valid Valid r/m8 OR r8.
+	// REX + 08 /r OR r/m8*, r8* MR Valid N.E. r/m8 OR r8.
+	_TEST32( "08a501020304 or byte ptr [ebp+04030201h],ah", 0x08, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4808a501020304 or byte ptr [rbp+0000000004030201h],spl", 0x48, 0x08, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "480864a501 or byte ptr [rbp+0000000000000001h],spl", 0x48, 0x08, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	// 09 /r OR r/m16, r16 MR Valid Valid r/m16 OR r16.
+	// 09 /r OR r/m32, r32 MR Valid Valid r/m32 OR r32.
+	// REX.W + 09 /r OR r/m64, r64 MR Valid N.E. r/m64 OR r64.
+	_TEST32( "09a501020304 or dword ptr [ebp+04030201h],esp", 0x09, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "676609a50102 or word ptr [di+0201h],sp", 0x67, 0x66, 0x09, 0xa5, 0x01, 0x02 );
+	_TEST32( "6709a50102 or dword ptr [di+0201h],esp", 0x67, 0x09, 0xa5, 0x01, 0x02 );
+	_TEST64( "4d09648901 or qword ptr [r9+rcx*4+0000000000000001h],r12", 0x4D, 0x09, 0x64, 0x89, 0x01 );
+	// 0A /r OR r8, r/m8 RM Valid Valid r8 OR r/m8.
+	// REX + 0A /r OR r8*, r/m8* RM Valid N.E. r8 OR r/m8.
+	_TEST32( "0aa501020304 or ah,byte ptr [ebp+04030201h]", 0x0a, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "480aa501020304 or spl,byte ptr [rbp+0000000004030201h]", 0x48, 0x0a, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "480a64a501 or spl,byte ptr [rbp+0000000000000001h]", 0x48, 0x0a, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	// 0B /r OR r16, r/m16 RM Valid Valid r16 OR r/m16.
+	// 0B /r OR r32, r/m32 RM Valid Valid r32 OR r/m32.
+	// REX.W + 0B /r OR r64, r/m64 RM Valid N.E. r64 OR r/m64.
+	_TEST32( "0ba501020304 or esp,dword ptr [ebp+04030201h]", 0x0b, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "67660ba50102 or sp,word ptr [di+0201h]", 0x67, 0x66, 0x0b, 0xa5, 0x01, 0x02 );
+	_TEST32( "670ba50102 or esp,dword ptr [di+0201h]", 0x67, 0x0b, 0xa5, 0x01, 0x02 );
+	_TEST64( "4d0b648901 or r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x0b, 0x64, 0x89, 0x01 );
+
+	// NOT
+	// F6 /2 NOT r/m8 M Valid Valid Reverse each bit of r/m8.
+	// REX + F6 /2 NOT r/m8* M Valid N.E. Reverse each bit of r/m8.
+	_TEST32( "f610 not byte ptr [eax]", 0xF6, 0x10 );
+	_TEST64( "48f610 not byte ptr [rax]", 0x48, 0xF6, 0x10 );
+	// F7 /2 NOT r/m16 M Valid Valid Reverse each bit of r/m16.
+	// F7 /2 NOT r/m32 M Valid Valid Reverse each bit of r/m32.
+	// REX.W + F7 /2 NOT r/m64 M Valid N.E. Reverse each bit of r/m64.
+	_TEST32( "66f710 not word ptr [eax]", 0x66, 0xF7, 0x10 );
+	_TEST32( "f710 not dword ptr [eax]", 0xF7, 0x10 );
+	_TEST64( "48f710 not qword ptr [rax]", 0x48, 0xF7, 0x10 );
+
+	// NOP
+	// 90 NOP NP Valid Valid One byte no-operation instruction.
+	_TEST32( "90 nop", 0x90 );
+	_TEST64( "90 nop", 0x90 );
+	// 0F 1F /0 NOP r/m16 M Valid Valid Multi-byte no-operation instruction.
+	// 0F 1F /0 NOP r/m32 M Valid Valid Multi-byte no-operation instruction.
+	_TEST32( "660f1f00 nop word ptr [eax]", 0x66, 0x0f, 0x1f, 0x00 );
+	_TEST32( "0f1f00 nop dword ptr [eax]", 0x0f, 0x1f, 0x00 );
+	_TEST64( "480f1f00 nop qword ptr [rax]", 0x48, 0x0f, 0x1f, 0x00 );
+
+	// NEG
+	// F6 /3 NEG r/m8 M Valid Valid Two's complement negate r/m8.
+	// REX + F6 /3 NEG r/m8* M Valid N.E. Two's complement negate r/m8.
+	_TEST32( "f618 neg byte ptr [eax]", 0xF6, 0x18 );
+	_TEST64( "48f618 neg byte ptr [rax]", 0x48, 0xF6, 0x18);
+	// F7 /3 NEG r/m16 M Valid Valid Two's complement negate r/m16.
+	// F7 /3 NEG r/m32 M Valid Valid Two's complement negate r/m32.
+	// REX.W + F7 /3 NEG r/m64 M Valid N.E. Two's complement negate r/m64.
+	_TEST32( "66f718 neg word ptr [eax]", 0x66, 0xF7, 0x18 );
+	_TEST32( "f718 neg dword ptr [eax]", 0xF7, 0x18 );
+	_TEST64( "48f718 neg qword ptr [rax]", 0x48, 0xF7, 0x18 );
+
+	// MWAIT
+	// 0F 01 C9
+	_TEST32( "0f01c9 mwait", 0x0F, 0x01, 0xC9 );
+	_TEST64( "0f01c9 mwait", 0x0F, 0x01, 0xC9 );
+
+	// MULSS
+	// F3 0F 59 /r MULSS xmm1,xmm2/m32
+	_TEST32( "f30f5910 mulss xmm2,dword ptr [eax]", 0xF3, 0x0F, 0x59, 0x10 );
+	_TEST32( "f30f59d8 mulss xmm3,xmm0", 0xF3, 0x0F, 0x59, 0xD8 );
+	_TEST64( "f30f5910 mulss xmm2,dword ptr [rax]", 0xF3, 0x0F, 0x59, 0x10 );
+
+	// MULSD
+	//F2 0F 59 /r MULSD xmm1,xmm2/m64
+	_TEST32( "f20f5910 mulsd xmm2,qword ptr [eax]", 0xF2, 0x0F, 0x59, 0x10 );
+	_TEST32( "f20f59d8 mulsd xmm3,xmm0", 0xF2, 0x0F, 0x59, 0xD8 );
+	_TEST64( "f20f5910 mulsd xmm2,qword ptr [rax]", 0xF2, 0x0F, 0x59, 0x10 );
+
+	// MULPS
+	// 0F 59 /r MULPS xmm1,xmm2/m128
+	_TEST32( "0f5910 mulps xmm2,oword ptr [eax]", 0x0F, 0x59, 0x10 );
+	_TEST32( "0f59d8 mulps xmm3,xmm0", 0x0F, 0x59, 0xD8 );
+	_TEST64( "0f5910 mulps xmm2,oword ptr [rax]", 0x0F, 0x59, 0x10 );
+
+	// MULPD
+	// 66 0F 59 /r MULPD xmm1,xmm2/m128
+	_TEST32( "660f5910 mulpd xmm2,oword ptr [eax]", 0x66, 0x0F, 0x59, 0x10 );
+	_TEST32( "660f59d8 mulpd xmm3,xmm0", 0x66, 0x0F, 0x59, 0xD8 );
+	_TEST64( "660f5910 mulpd xmm2,oword ptr [rax]", 0x66, 0x0F, 0x59, 0x10 );
+
+	// MUL
+	// F6 /4 MUL r/m8
+	// REX + F6 /4 MUL r/m8
+	_TEST32( "66f620 mul byte ptr [eax]", 0x66, 0xF6, 0x20 );
+	_TEST32( "f620 mul byte ptr [eax]", 0xF6, 0x20 );
+	_TEST64( "66f620 mul byte ptr [rax]", 0x66, 0xF6, 0x20 );
+	_TEST64( "f620 mul byte ptr [rax]", 0xF6, 0x20 );
+	_TEST64( "48f620 mul byte ptr [rax]", 0x48, 0xF6, 0x20 );
+	// F7 /4 MUL r/m16
+	// F7 /4 MUL r/m32
+	// REX.W + F7 /4 MUL r/m64
+	_TEST32( "66f720 mul word ptr [eax]", 0x66, 0xF7, 0x20 );
+	_TEST32( "f720 mul dword ptr [eax]", 0xF7, 0x20 );
+	_TEST64( "66f720 mul word ptr [rax]", 0x66, 0xF7, 0x20 );
+	_TEST64( "f720 mul dword ptr [rax]", 0xF7, 0x20 );
+	_TEST64( "48f720 mul qword ptr [rax]", 0x48, 0xF7, 0x20 );
+
+	// MPSADBW
+	// 66 0F 3A 42 /r ib MPSADBW xmm1, xmm2/m128, imm8
+	_TEST32( "660f3a421020 mpsadbw xmm2,oword ptr [eax],20h", 0x66, 0x0F, 0x3A, 0x42, 0x10, 0x20 );
+	_TEST32( "660f3a42d620 mpsadbw xmm2,xmm6,20h", 0x66, 0x0F, 0x3A, 0x42, 0xD6, 0x20 );
+	_TEST64( "660f3a421020 mpsadbw xmm2,oword ptr [rax],20h", 0x66, 0x0F, 0x3A, 0x42, 0x10, 0x20 );
+	_TEST64( "66480f3a421020 mpsadbw xmm2,oword ptr [rax],20h", 0x66, 0x48, 0x0F, 0x3A, 0x42, 0x10, 0x20 );
+
+	// 0F B6 /r MOVZX r16, r/m8
+	// 0F B6 /r MOVZX r32, r/m8
+	// REX.W + 0F B6 /r MOVZX r64, r/m8
+	_TEST32( "660fb610 movzx dx,byte ptr [eax]", 0x66, 0x0F, 0xB6, 0x10 );
+	_TEST32( "0fb610 movzx edx,byte ptr [eax]", 0x0F, 0xB6, 0x10 );
+	_TEST64( "660fb610 movzx dx,byte ptr [rax]", 0x66, 0x0F, 0xB6, 0x10 );
+	_TEST64( "0fb610 movzx edx,byte ptr [rax]", 0x0F, 0xB6, 0x10 );
+	_TEST64( "480fb610 movzx rdx,byte ptr [rax]", 0x48, 0x0F, 0xB6, 0x10 );
+	// 0F B7 /r MOVZX r32,r/m16
+	// REX.W + 0F B7 /r MOVZX r64,r/m16
+	_TEST32( "660fb710 movzx edx,word ptr [eax]", 0x66, 0x0F, 0xB7, 0x10 );
+	_TEST32( "0fb710 movzx edx,word ptr [eax]", 0x0F, 0xB7, 0x10 );
+	_TEST64( "660fb710 movzx edx,word ptr [rax]", 0x66, 0x0F, 0xB7, 0x10 );
+	_TEST64( "480fb710 movzx rdx,word ptr [rax]", 0x48, 0x0F, 0xB7, 0x10 );
+
+	// MOVUPS
+	// 0F 10 /r MOVUPS xmm1,xmm2/m128
+	_TEST32( "0f1010 movups xmm2,oword ptr [eax]", 0x0F, 0x10, 0x10 );
+	_TEST32( "0f10d8 movups xmm3,xmm0", 0x0F, 0x10, 0xD8 );
+	_TEST64( "0f1010 movups xmm2,oword ptr [rax]",0x0F, 0x10, 0x10 );
+	// 0F 11 /r MOVUPS xmm2/m128, xmm1
+	_TEST32( "0f1110 movups oword ptr [eax],xmm2", 0x0F, 0x11, 0x10 );
+	_TEST32( "0f11d8 movups xmm0,xmm3", 0x0F, 0x11, 0xD8 );
+	_TEST64( "0f1110 movups oword ptr [rax],xmm2", 0x0F, 0x11, 0x10 );
+
+	// MOVUPD
+	// 66 0F 10 /r MOVUPD xmm1,xmm2/m128
+	_TEST32( "660f1010 movupd xmm2,oword ptr [eax]", 0x66, 0x0F, 0x10, 0x10 );
+	_TEST32( "660f10d8 movupd xmm3,xmm0", 0x66, 0x0F, 0x10, 0xD8 );
+	_TEST64( "660f1010 movupd xmm2,oword ptr [rax]", 0x66, 0x0F, 0x10, 0x10 );
+	// 66 0F 11 /r MOVUPD xmm2/m128,xmm
+	_TEST32( "660f1110 movupd oword ptr [eax],xmm2", 0x66, 0x0F, 0x11, 0x10 );
+	_TEST32( "660f11d8 movupd xmm0,xmm3", 0x66, 0x0F, 0x11, 0xD8 );
+	_TEST64( "660f1110 movupd oword ptr [rax],xmm2", 0x66, 0x0F, 0x11, 0x10 );
+
+	// MOVSX
+	// 0F BE /r MOVSX r16, r/m8
+	// 0F BE /r MOVSX r32, r/m8
+	_TEST32( "660fbe10 movsx dx,byte ptr [eax]", 0x66, 0x0F, 0xBE, 0x10 );
+	_TEST32( "0fbe10 movsx edx,byte ptr [eax]", 0x0F, 0xBE, 0x10 );
+	// REX + 0F BE /r MOVSX r64, r/m8
+	_TEST64( "660fbe10 movsx dx,byte ptr [rax]", 0x66, 0x0F, 0xBE, 0x10 );
+	_TEST64( "0fbe10 movsx edx,byte ptr [rax]", 0x0F, 0xBE, 0x10 );
+	_TEST64( "480fbe10 movsx rdx,byte ptr [rax]", 0x48, 0x0F, 0xBE, 0x10 );
+	// 0F BF /r MOVSX r32, r/m16
+	// REX.W + 0F BF /r MOVSX r64, r/m16
+	_TEST32( "660fbf10 movsx edx,word ptr [eax]", 0x66, 0x0F, 0xBF, 0x10 );
+	_TEST32( "0fbf10 movsx edx,word ptr [eax]", 0x0F, 0xBF, 0x10 );
+	_TEST64( "480fbf10 movsx rdx,word ptr [rax]", 0x48, 0x0F, 0xBF, 0x10 );
+	// REX.W** + 63 /r MOVSXD r64, r/m32
+	_TEST64( "486310 movsxd rdx,dword ptr [rax]", 0x48, 0x63, 0x10 );
+
+	// MOVSS
+	// F3 0F 10 /r MOVSS xmm1,xmm2/m32
+	_TEST32( "f30f1010 movss xmm2,dword ptr [eax]", 0xF3, 0x0F, 0x10, 0x10 );
+	_TEST32( "f30f10d8 movss xmm3,xmm0", 0xF3, 0x0F, 0x10, 0xD8 );
+	_TEST64( "f30f1010 movss xmm2,dword ptr [rax]", 0xF3, 0x0F, 0x10, 0x10 );
+	// F3 0F 11 /r MOVSS xmm2/m32, xmm
+	_TEST32( "f30f1110 movss dword ptr [eax],xmm2", 0xF3, 0x0F, 0x11, 0x10 );
+	_TEST32( "f30f11d8 movss xmm0,xmm3", 0xF3, 0x0F, 0x11, 0xD8 );
+	_TEST64( "f30f1110 movss dword ptr [rax],xmm2", 0xF3, 0x0F, 0x11, 0x10 );
+
+	// MOVSLDUP
+	// F3 0F 12 /r MOVSLDUP xmm1,xmm2/m128
+	_TEST32( "f30f1210 movsldup xmm2,oword ptr [eax]", 0xF3, 0x0F, 0x12, 0x10 );
+	_TEST32( "f30f12d8 movsldup xmm3,xmm0", 0xF3, 0x0F, 0x12, 0xD8 );
+	_TEST64( "f30f1210 movsldup xmm2,oword ptr [rax]", 0xF3, 0x0F, 0x12, 0x10 );
+
+	// MOVSHDUP
+	// F3 0F 16 /r MOVSHDUP xmm1,xmm2/m128
+	_TEST32( "f30f1610 movshdup xmm2,oword ptr [eax]", 0xF3, 0x0F, 0x16, 0x10 );
+	_TEST32( "f30f16d8 movshdup xmm3,xmm0", 0xF3, 0x0F, 0x16, 0xD8 );
+	_TEST64( "f30f1610 movshdup xmm2,oword ptr [rax]", 0xF3, 0x0F, 0x16, 0x10 );
+
+	// MOVSD
+	// F2 0F 10 /r MOVSD xmm1,xmm2/m64
+	_TEST32( "f20f1010 movsd xmm2,qword ptr [eax]", 0xF2, 0x0F, 0x10, 0x10 );
+	_TEST32( "f20f10d8 movsd xmm3,xmm0", 0xF2, 0x0F, 0x10, 0xD8 );
+	_TEST64( "f20f1010 movsd xmm2,qword ptr [rax]", 0xF2, 0x0F, 0x10, 0x10 );
+	// F2 0F 11 /r MOVSD xmm2/m64, xmm1
+	_TEST32( "f20f1110 movsd qword ptr [eax],xmm2", 0xF2, 0x0F, 0x11, 0x10 );
+	_TEST32( "f20f11d8 movsd xmm0,xmm3", 0xF2, 0x0F, 0x11, 0xD8 );
+	_TEST64( "f20f1110 movsd qword ptr [rax],xmm2", 0xF2, 0x0F, 0x11, 0x10 );
+
+	// MOVS
+	// A4 MOVS m8, m8
+	_TEST32( "67a4 movs byte ptr [si],byte ptr [di]", 0x67, 0xA4 );
+	_TEST32( "6667a4 movs byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xA4 );
+	_TEST32( "a4 movs byte ptr [esi],byte ptr [edi]", 0xA4 );
+	_TEST64( "48a4 movs byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA4 );
+	_TEST64( "40a4 movs byte ptr [rsi],byte ptr [rdi]", 0x40, 0xA4 );
+	_TEST64( "6740a4 movs byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xA4 );
+	_TEST64( "666740a4 movs byte ptr [esi],byte ptr [edi]", 0x66, 0x67, 0x40, 0xA4 );
+	// A5 MOVS m16, m16
+	// A5 MOVS m32, m32
+	// REX.W + A5 MOVS m64, m64
+	_TEST32( "67a5 movs dword ptr [si],dword ptr [di]", 0x67, 0xA5 );
+	_TEST32( "6667a5 movs word ptr [si],word ptr [di]", 0x66, 0x67, 0xA5 );
+	_TEST32( "a5 movs dword ptr [esi],dword ptr [edi]", 0xA5 );
+	_TEST64( "48a5 movs qword ptr [rsi],qword ptr [rdi]", 0x48, 0xA5 );
+	_TEST64( "40a5 movs dword ptr [rsi],dword ptr [rdi]", 0x40, 0xA5 );
+	_TEST64( "6740a5 movs dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xA5 );
+	_TEST64( "666740a5 movs word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA5 );
+
+	// MOVQ2DQ
+	// F3 0F D6 MOVQ2DQ xmm,mm
+	_TEST32( "f30fd6d0 movq2dq xmm0,mm2", 0xF3, 0x0F, 0xD6, 0xD0 );
+	_TEST32( "f30fd6d8 movq2dq xmm0,mm3", 0xF3, 0x0F, 0xD6, 0xD8 );
+	_TEST64( "f30fd6d0 movq2dq xmm0,mm2", 0xF3, 0x0F, 0xD6, 0xD0 );
+	_TEST64( "f3480fd6d0 movq2dq xmm0,mm2", 0xF3, 0x48, 0x0F, 0xD6, 0xD0 );
+
+	// MOVQ
+	// 0F 6F /r MOVQ mm, mm/m64 A Valid Valid Move quadword from mm/m64 to mm.
+	_TEST32( "0f6f00 movq mm0,qword ptr [eax]", 0x0F, 0x6F, 0x00 );
+	_TEST64( "0f6f00 movq mm0,qword ptr [rax]",  0x0F, 0x6F, 0x00 );
+	_TEST64( "0f6fd0 movq mm2,mm0",  0x0F, 0x6F, 0xD0 );
+	_TEST64( "480f6f00 movq mm0,qword ptr [rax]", 0x48, 0x0F, 0x6F, 0x00 );
+	// 0F 7F /r MOVQ mm/m64, mm B Valid Valid Move quadword from mm to mm/m64.
+	_TEST32( "0f7f00 movq qword ptr [eax],mm0", 0x0F, 0x7F, 0x00 );
+	_TEST64( "0f7f00 movq qword ptr [rax],mm0",  0x0F, 0x7F, 0x00 );
+	_TEST64( "0f7fd0 movq mm0,mm2",  0x0F, 0x7F, 0xD0 );
+	_TEST64( "480f7f00 movq qword ptr [rax],mm0", 0x48, 0x0F, 0x7F, 0x00 );
+	// F3 0F 7E MOVQ xmm1, xmm2/m64 A Valid Valid Move quadword from xmm2/mem64 to xmm1.
+	_TEST32( "f30f7e00 movq xmm0,qword ptr [eax]", 0xF3, 0x0F, 0x7E, 0x00 );
+	_TEST64( "f30f7e00 movq xmm0,qword ptr [rax]", 0xF3, 0x0F, 0x7E, 0x00 );
+	_TEST64( "f30f7ed0 movq xmm2,xmm0",  0xF3, 0x0F, 0x7E, 0xD0 );
+	_TEST64( "f3480f7e00 movq xmm0,qword ptr [rax]", 0xF3, 0x48, 0x0F, 0x7E, 0x00 );
+	// 66 0F D6 MOVQ xmm2/m64, xmm1 B Valid Valid Move quadword from xmm1 to xmm2/mem64.
+	_TEST32( "660fd600 movq qword ptr [eax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
+	_TEST64( "660fd600 movq qword ptr [rax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
+	_TEST64( "660fd6d0 movq xmm0,xmm2",  0x66, 0x0F, 0xD6, 0xD0 );
+	_TEST64( "66480fd600 movq qword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0xD6, 0x00 );
+
+	// MOVNTQ
+	// 0F E7 /r MOVNTQ m64,mm
+	_TEST32( "0fe700 movntq qword ptr [eax],mm0", 0x0F, 0xE7, 0x00 );
+	_TEST64( "0fe700 movntq qword ptr [rax],mm0",  0x0F, 0xE7, 0x00 );
+	_TEST64( "480fe700 movntq qword ptr [rax],mm0", 0x48, 0x0F, 0xE7, 0x00 );
+
+	// MOVNTPS
+	// 0F 2B /r MOVNTPS m128,xmm
+	_TEST32( "0f2b00 movntps oword ptr [eax],xmm0", 0x0F, 0x2B, 0x00 );
+	_TEST64( "0f2b00 movntps oword ptr [rax],xmm0", 0x0F, 0x2B, 0x00 );
+	_TEST64( "480f2b00 movntps oword ptr [rax],xmm0", 0x48, 0x0F, 0x2B, 0x00 );
+
+	// MOVNTPD
+	// 66 0F 2B /r MOVNTPD m128,xmm
+	_TEST32( "660f2b00 movntpd oword ptr [eax],xmm0", 0x66, 0x0F, 0x2B, 0x00 );
+	_TEST64( "660f2b00 movntpd oword ptr [rax],xmm0", 0x66, 0x0F, 0x2B, 0x00 );
+	_TEST64( "66480f2b00 movntpd oword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0x2B, 0x00 );
+
+	// MOVNTI
+	// 0F C3 /r MOVNTI m32, r32
+	// REX.W + 0F C3 /r MOVNTI m64, r64
+	_TEST32( "0fc300 movnti dword ptr [eax],eax", 0x0F, 0xC3, 0x00 );
+	_TEST32( "660fc300 movnti dword ptr [eax],eax", 0x66, 0x0F, 0xC3, 0x00 );
+	_TEST64( "0fc300 movnti dword ptr [rax],eax", 0x0F, 0xC3, 0x00 );
+	_TEST64( "480fc300 movnti qword ptr [rax],rax", 0x48, 0x0F, 0xC3, 0x00 );
+
+	// MOVNTDQ
+	// 66 0F E7 /r MOVNTDQ m128,xmm
+	_TEST32( "660fe700 movntdq oword ptr [eax],xmm0", 0x66, 0x0F, 0xE7, 0x00 );
+	_TEST64( "660fe700 movntdq oword ptr [rax],xmm0", 0x66, 0x0F, 0xE7, 0x00 );
+	_TEST64( "66480fe700 movntdq oword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0xE7, 0x00 );
+
+	// MOVNTDQA
+	// 66 0F 38 2A /r MOVNTDQA xmm1, m128
+	_TEST32( "660f382a00 movntdqa xmm0,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x2A, 0x00 );
+	_TEST64( "660f382a00 movntdqa xmm0,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x2A, 0x00 );
+	_TEST64( "66480f382a00 movntdqa xmm0,oword ptr [rax]", 0x66, 0x48, 0x0F, 0x38, 0x2A, 0x00 );
+
+	// MOVMSKPS
+	// 0F 50 /r MOVMSKPS reg,xmm
+	_TEST32( "0f50d0 movmskps edx,xmm0", 0x0F, 0x50, 0xD0 );
+	_TEST32( "0f50d8 movmskps ebx,xmm0", 0x0F, 0x50, 0xD8 );
+	_TEST64( "0f50d0 movmskps rdx,xmm0", 0x0F, 0x50, 0xD0 );
+	_TEST64( "480f50d0 movmskps rdx,xmm0", 0x48, 0x0F, 0x50, 0xD0 );
+
+	// MOVMSKPD
+	// 66 0F 50 /r MOVMSKPD reg, xmm
+	_TEST32( "660f50d0 movmskpd edx,xmm0", 0x66, 0x0F, 0x50, 0xD0 );
+	_TEST32( "660f50d8 movmskpd ebx,xmm0", 0x66, 0x0F, 0x50, 0xD8 );
+	_TEST64( "660f50d0 movmskpd rdx,xmm0", 0x66, 0x0F, 0x50, 0xD0 );
+	_TEST64( "66480f50d0 movmskpd rdx,xmm0", 0x66, 0x48, 0x0F, 0x50, 0xD0 );
+
+	// MOVLPS
+	// 0F 12 /r MOVLPS xmm, m64
+	_TEST32( "0f1200 movlps xmm0,qword ptr [eax]", 0x0F, 0x12, 0x00 );
+	_TEST64( "0f1200 movlps xmm0,qword ptr [rax]", 0x0F, 0x12, 0x00 );
+	_TEST64( "480f1200 movlps xmm0,qword ptr [rax]", 0x48, 0x0F, 0x12, 0x00 );
+	// 0F 13 /r MOVLPS m64, xmm
+	_TEST32( "0f1300 movlps qword ptr [eax],xmm0", 0x0F, 0x13, 0x00 );
+	_TEST64( "0f1300 movlps qword ptr [rax],xmm0",  0x0F, 0x13, 0x00 );
+	_TEST64( "480f1300 movlps qword ptr [rax],xmm0", 0x48, 0x0F, 0x13, 0x00 );
+
+	// MOVLPD
+	// 66 0F 12 /r MOVLPD xmm, m64
+	_TEST32( "660f1200 movlpd xmm0,qword ptr [eax]", 0x66, 0x0F, 0x12, 0x00 );
+	_TEST64( "660f1200 movlpd xmm0,qword ptr [rax]", 0x66, 0x0F, 0x12, 0x00 );
+	_TEST64( "66480f1200 movlpd xmm0,qword ptr [rax]", 0x66, 0x48, 0x0F, 0x12, 0x00 );
+	// 66 0F 13 /r MOVLPD m64,xmm
+	_TEST32( "660f1300 movlpd qword ptr [eax],xmm0", 0x66, 0x0F, 0x13, 0x00 );
+	_TEST64( "660f1300 movlpd qword ptr [rax],xmm0", 0x66, 0x0F, 0x13, 0x00 );
+	_TEST64( "66480f1300 movlpd qword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0x13, 0x00 );
+
+	// 0F 16 /r MOVLHPS xmm1, xmm2 A Valid Valid Move two packed singleprecision floating-point values from low quadword of xmm2 to high quadword of xmm1.
+	_TEST32( "0f16d0 movlhps xmm2,xmm0", 0x0F, 0x16, 0xD0 );
+	_TEST32( "0f16d8 movlhps xmm3,xmm0", 0x0F, 0x16, 0xD8 );
+	_TEST64( "0f16d0 movlhps xmm2,xmm0", 0x0F, 0x16, 0xD0 );
+	_TEST64( "480f16d0 movlhps xmm2,xmm0", 0x48, 0x0F, 0x16, 0xD0 );
+
+	// MOVHPS
+	// 0F 16 /r MOVHPS xmm, m64 A Valid Valid Move two packed singleprecision floating-point values from m64 to high quadword of xmm.
+	_TEST32( "0f1608 movhps xmm1,qword ptr [eax]", 0x0F, 0x16, 0x08 );
+	_TEST64( "0f1608 movhps xmm1,qword ptr [rax]", 0x0F, 0x16, 0x08 );
+	_TEST64( "480f1600 movhps xmm0,qword ptr [rax]", 0x48, 0x0F, 0x16, 0x00 );
+	// 0F 17 /r MOVHPS m64, xmm B Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm to m64.
+	_TEST32( "0f1708 movhps qword ptr [eax],xmm1", 0x0F, 0x17, 0x08 );
+	_TEST64( "0f1708 movhps qword ptr [rax],xmm1", 0x0F, 0x17, 0x08 );
+	_TEST64( "480f1700 movhps qword ptr [rax],xmm0", 0x48, 0x0F, 0x17, 0x00 );
+
+	// MOVHPD
+	// 66 0F 16 /r MOVHPD xmm, m64 A Valid Valid Move double-precision floating-point value from m64 to high quadword of xmm.
+	_TEST32( "660f1608 movhpd xmm1,qword ptr [eax]", 0x66, 0x0F, 0x16, 0x08 );
+	_TEST64( "660f1608 movhpd xmm1,qword ptr [rax]", 0x66, 0x0F, 0x16, 0x08 );
+	_TEST64( "66480f1600 movhpd xmm0,qword ptr [rax]", 0x66, 0x48, 0x0F, 0x16, 0x00 );
+	// 66 0F 17 /r MOVHPD m64, xmm B Valid Valid Move double-precision floating-point value from high quadword of xmm to m64.
+	_TEST32( "660f1708 movhpd qword ptr [eax],xmm1", 0x66, 0x0F, 0x17, 0x08 );
+	_TEST64( "660f1708 movhpd qword ptr [rax],xmm1", 0x66, 0x0F, 0x17, 0x08 );
+	_TEST64( "66480f1700 movhpd qword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0x17, 0x00 );
+
 	// MOVHLPS
 	// 0F 12 /r MOVHLPS xmm1, xmm2 A Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm2 to low quadword of xmm1.
-	_TEST32( "0f12d0 movhlps mm2,xmm0", 0x0F, 0x12, 0xD0 );
-	_TEST32( "0f12d8 movhlps mm3,xmm0", 0x0F, 0x12, 0xD8 );
-	_TEST64( "0f12d0 movhlps mm2,xmm0", 0x0F, 0x12, 0xD0 );
-	_TEST64( "480126d0 movhlps mm2,xmm0", 0x48, 0x0F, 0x12, 0xD0 );
+	_TEST32( "0f12d0 movhlps xmm2,xmm0", 0x0F, 0x12, 0xD0 );
+	_TEST32( "0f12d8 movhlps xmm3,xmm0", 0x0F, 0x12, 0xD8 );
+	_TEST64( "0f12d0 movhlps xmm2,xmm0", 0x0F, 0x12, 0xD0 );
+	_TEST64( "480f12d0 movhlps xmm2,xmm0", 0x48, 0x0F, 0x12, 0xD0 );
 
 	// MOVDQ2Q
 	// F2 0F D6 MOVDQ2Q mm, xmm A Valid Valid Move low quadword from xmm to mmx register.
@@ -484,6 +868,10 @@ void test(void) {
 	_TEST64( "cf iretd", 0xCF );
 	_TEST64( "66cf iret", 0x66, 0xCF );
 	_TEST64( "48cf iretq", 0x48, 0xCF );
+
+	// INVPCID
+	_TEST32( "660f388210 invpcid edx,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x82, 0x10 );
+	_TEST64( "660f388210 invpcid rdx,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x82, 0x10 );
 
 	// INVLPG
 	_TEST32( "0f017820 invlpg [eax+00000020h]", 0x0F, 0x01, 0x78, 0x20 );
@@ -1244,14 +1632,14 @@ void test(void) {
 	_TEST32( "660f5b4020 cvtps2dq xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x5B, 0x40, 0x20 );
 
 	// CVTPI2PS
-	_TEST64( "0f2a4020 cvtpi2ps xmm0,dword ptr [rax+0000000000000020h]", 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST64( "0f2a4020 cvtpi2ps xmm0,qword ptr [rax+0000000000000020h]", 0x0F, 0x2A, 0x40, 0x20 );
 	_TEST32( "0f2ac2 cvtpi2ps xmm0,mm2", 0x0F, 0x2A, 0xC2 );
-	_TEST32( "0f2a4020 cvtpi2ps xmm0,dword ptr [eax+00000020h]", 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST32( "0f2a4020 cvtpi2ps xmm0,qword ptr [eax+00000020h]", 0x0F, 0x2A, 0x40, 0x20 );
 
 	// CVTPI2PD
-	_TEST64( "660f2a4020 cvtpi2pd xmm0,dword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST64( "660f2a4020 cvtpi2pd xmm0,qword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x2A, 0x40, 0x20 );
 	_TEST32( "660f2ac2 cvtpi2pd xmm0,mm2", 0x66, 0x0F, 0x2A, 0xC2 );
-	_TEST32( "660f2a4020 cvtpi2pd xmm0,dword ptr [eax+00000020h]", 0x66, 0x0F, 0x2A, 0x40, 0x20 );
+	_TEST32( "660f2a4020 cvtpi2pd xmm0,qword ptr [eax+00000020h]", 0x66, 0x0F, 0x2A, 0x40, 0x20 );
 
 	// CVTPD2PI
 	_TEST64( "660f2d4020 cvtpd2pi mm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x2D, 0x40, 0x20 );
@@ -1664,7 +2052,6 @@ void test(void) {
 	_TEST64( "660f3adf1401ff aeskeygenassist xmm2,oword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3a, 0xDF, 0x14, 0x01, 0xFF );
 
 	// AND
-
 	// 24 ib AND AL, imm8 C Valid Valid AL AND imm8.
 	_TEST32( "2442 and al,42h", 0x24, 0x42 );
 	_TEST32( "24ff and al,0ffh", 0x24, 0xff );

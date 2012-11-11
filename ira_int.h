@@ -360,6 +360,7 @@ struct ira_instruction_desc {
 #define _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(x)				( ( x & 0x00007800 ) >> 11 )
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 			_IRA_GET_BIT(x,15)
 #define _IRA_OPCODE_FLAGS_OPCODE_IS_EXT(x) 				_IRA_GET_BIT(x,16)
+#define _IRA_OPCODE_FLAGS_MODRM_R(x)	 				_IRA_GET_BIT(x,17)
 #define _IRA_OPCODE_FLAGS_OPCODE_NUM(x) 				( ( x & 0x000C0000 ) >> 18 )
 #define _IRA_OPCODE_FLAGS_PRIMARY_OPCODE(x) 			( ( x & 0x00300000 ) >> 20 )
 #define _IRA_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(x)		( x & 0x00800000 )
@@ -373,6 +374,7 @@ struct ira_instruction_desc {
 #define _IRA_OPCODE_FLAGS_EASA_64(x)					( x & 0x20000000 )
 #define _IRA_OPCODE_FLAGS_IS_EASA_RESTRICTION(x)		( x & 0x38000000 )
 #define _IRA_OPCODE_FLAGS_FORCE_64BITS_EOSA(x)			( x & 0x40000000 )
+#define _IRA_OPCODE_FLAGS_MODRM_M(x)	 				_IRA_GET_BIT(x,31)
 
 /* Instruction types. */
 
@@ -558,7 +560,7 @@ struct ira_instruction_desc {
 #define _IRA_RMF_R		0x01
 #define _IRA_RMF_M		0x02
 #define _IRA_RMF_RM		( _IRA_RMF_R | _IRA_RMF_M )
-
+// TODO: Zastanowic sie czy do sterowania flagami nie da ie wykorzystac nowych bitow MOD3 ModNot3 zamiast bezposredniego ich podawania.
 #define _IRA_OPERAND_RM_BASE						0x17000000
 #define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
 
