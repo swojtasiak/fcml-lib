@@ -374,7 +374,17 @@ union ira_instruction_pointer {
 	uint64_t rip;
 };
 
+// Disassembler configuration.
+
+#define _IRA_CF_ENABLE_VAX			0x00000001
+
+struct ira_disassembler_config {
+	uint32_t flags;
+};
+
 struct ira_disassemble_info {
+	// Disassembler configuration.
+	struct ira_disassembler_config config;
 	/* Architecture. */
 	enum ira_operation_mode mode;
 	/* Operand size attribute. */
@@ -550,6 +560,8 @@ struct ira_instruction_prefix {
 	uint8_t prefix_type;
 	/* 1 if prefix can be treated as mandatory one. */
 	uint8_t mandatory_prefix;
+	/* Place for additional bytes of VEX prefix. */
+	uint8_t vex_bytes[2];
 };
 
 struct ira_instruction_condition {

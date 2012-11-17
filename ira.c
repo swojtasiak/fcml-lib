@@ -183,6 +183,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     // Prepare disassemble context.
     struct ira_diss_context context = {0};
     context.stream = &stream;
+    context.config = &(info->config);
     context.mode = info->mode;
     context.address_size_attribute = info->address_size_attribute;
     context.operand_size_attribute = info->operand_size_attribute;
@@ -438,23 +439,30 @@ int _ira_interpret_prefixes( struct ira_diss_context *context ) {
 void _ira_identify_prefixes( struct ira_diss_context *context ) {
     struct ira_memory_stream *stream = context->stream;
     int result = 0;
-    enum ira_prefix_types prefix_type;
     int prefix_index = 0;
+    int prefix_size;
+    int vex_prefix_size = 0;
+    int vex_illegal_prefixes = 0;
+    enum ira_prefix_types prefix_type;
     uint8_t mandatory_prefix;
     do {
         prefix_type = 0;
         mandatory_prefix = 0;
+        // Almost all prefixes are one byte length, so it's a reasonable default here.
+        prefix_size = 1;
         uint8_t prefix = _ira_stream_peek(stream, &result);
         if( result ) {
             struct ira_instruction_prefix *prefix_desc = &(context->decoding_context.prefixes[prefix_index]);
             switch(prefix) {
                 case 0xF0:
                     prefix_type = IRA_GROUP_1;
+                    vex_illegal_prefixes = _IRA_TRUE;
                     break;
                 case 0xF2:
                 case 0xF3:
                     mandatory_prefix = 1;
                     prefix_type = IRA_GROUP_1;
+                    vex_illegal_prefixes = _IRA_TRUE;
                     break;
                 case 0x2E:
                 case 0x36:
@@ -468,10 +476,22 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
                 case 0x66:
                     mandatory_prefix = 1;
                     prefix_type = IRA_GROUP_3;
+                    vex_illegal_prefixes = _IRA_TRUE;
                     break;
                 case 0x67:
                     prefix_type = IRA_GROUP_4;
                     break;
+                // VEX prefixes.
+                case 0xC5:
+                	vex_prefix_size = 2;
+                	prefix_size += 1;
+					prefix_type = IRA_VEX;
+					break;
+                case 0xC4:
+                	vex_prefix_size = 3;
+                	prefix_size += 2;
+                	prefix_type = IRA_VEX;
+					break;
                 default:
                 	// REX prefix is the last one, so we have to break this loop after finding one.
                     if( context->mode == IRA_MOD_64BIT && prefix >= 0x40 && prefix <= 0x4F ) {
@@ -480,16 +500,54 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
                     }
                 break;
             }
+
+            // Handle VEX prefixes.
+            if( prefix_type == IRA_VEX && !vex_illegal_prefixes ) {
+            	if( context->config->flags & _IRA_CF_ENABLE_VAX ) {
+
+            		uint32_t stream_pos = stream->offset;
+
+            		// Skip to the second byte of VEX prefix.
+					_ira_stream_seek(stream, 1, IRA_CURRENT);
+
+					if( context->mode == IRA_MOD_32BIT ) {
+						// Check if it is really a VEX prefix.
+						uint8_t second_byte = _ira_stream_peek(stream, &result);
+						// VEX.R and VEX.X has to be set to 11 in 32bit mode.
+						if( !result || ( second_byte & 0xC0 ) != 0xC0 ) {
+							prefix_type = 0;
+						}
+					}
+
+					// Copy rest of the VEX prefixes.
+					if( prefix_type ) {
+						int nbytes = _ira_stream_read_bytes( stream, &(prefix_desc->vex_bytes), vex_prefix_size );
+						if( nbytes != vex_prefix_size ) {
+							// Stream is incomplete, so we can not treat it as a VEX.
+							prefix_type = 0;
+						}
+					}
+
+					_ira_stream_seek(stream, stream_pos, IRA_START);
+
+				} else {
+					// If 0xC5 and 0xC4 can not be treated as a VEX prefix, it
+					// should be treated just as instruction opcode.
+					prefix_type = 0;
+				}
+            }
+
             if(prefix_type) {
                 prefix_desc->prefix = prefix;
                 prefix_desc->prefix_type = prefix_type;
                 prefix_desc->mandatory_prefix = mandatory_prefix;
-                _ira_stream_seek(stream, 1, IRA_CURRENT);
+                _ira_stream_seek(stream, prefix_size, IRA_CURRENT);
                 prefix_index++;
             }
+
         }
         // Break loop if REX prefix is already found.
-    } while(prefix_type && prefix_type != IRA_REX);
+    } while(prefix_type && prefix_type != IRA_REX );
 
     context->decoding_context.instruction_prefix_count = prefix_index;
 
@@ -509,7 +567,6 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
              }
         }
     }
-
 }
 
 int _ira_disassemble_default( struct ira_diss_context *context, struct ira_disassemble_result *result ) {

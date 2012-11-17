@@ -91,7 +91,8 @@ enum ira_prefix_types {
     IRA_GROUP_2,
     IRA_GROUP_3,
     IRA_GROUP_4,
-    IRA_REX
+    IRA_REX,
+    IRA_VEX
 };
 
 struct ira_decoding_context {
@@ -120,6 +121,8 @@ struct ira_decoding_context {
 };
 
 struct ira_diss_context {
+	// Disassembler configuration.
+	struct ira_disassembler_config *config;
 	// Architecture.
     enum ira_operation_mode mode;
     // Operand size attribute.
