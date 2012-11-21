@@ -35,6 +35,8 @@ int main()
 
 void _test_vax(void);
 
+#include "ira_int.h"
+
 //102
 void test(void) {
 

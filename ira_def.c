@@ -1604,26 +1604,26 @@ struct ira_opcode_desc _ira_opcode_desc_MOV[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_MOV_CR[] = {
 	// 0F 20/r MOV r32, CR0–CR7 A N.E. Valid Move control register to r32
-	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x20, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | IRA_WRITE, _IRA_OPERAND_R( IRA_REG_CR, _IRA_OS_DWORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x20, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_OPERAND_R( IRA_REG_CR, _IRA_OS_DWORD ), _IRA_NA, _IRA_NA },
 	// 0F 20/r MOV r64, CR0–CR7 A Valid N.E. Move extended control register to r64.
 	// REX.R + 0F 20 /0 MOV r64, CR8 A Valid N.E. Move extended CR8 to r64.1
-	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x20, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | IRA_WRITE, _IRA_OPERAND_R( IRA_REG_CR, _IRA_OS_QWORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x20, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_OPERAND_R( IRA_REG_CR, _IRA_OS_QWORD ), _IRA_NA, _IRA_NA },
 	// 0F 22 /r MOV CR0–CR7, r32 A N.E. Valid Move r32 to control register
-	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x22, 0x00 }, _IRA_OPERAND_R( IRA_REG_CR, _IRA_OS_DWORD ) | IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x22, 0x00 }, _IRA_OPERAND_R( IRA_REG_CR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
 	// 0F 22 /r MOV CR0–CR7, r64 A Valid N.E. Move r64 to extended control register.
 	// REX.R + 0F 22 /0 MOV CR8, r64 A Valid N.E. Move r64 to extended CR8.1
-	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x22, 0x00 }, _IRA_OPERAND_R( IRA_REG_CR, _IRA_OS_QWORD ) | IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x22, 0x00 }, _IRA_OPERAND_R( IRA_REG_CR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOV_DR[] = {
 	// 0F 21/r MOV r32, DR0–DR7 A N.E. Valid Move debug register to r32
-	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x21, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | IRA_WRITE, _IRA_OPERAND_R( IRA_REG_DR, _IRA_OS_DWORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x21, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_OPERAND_R( IRA_REG_DR, _IRA_OS_DWORD ), _IRA_NA, _IRA_NA },
 	// 0F 21/r MOV r64, DR0–DR7 A Valid N.E. Move extended debug register to r64.
-	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x21, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | IRA_WRITE, _IRA_OPERAND_R( IRA_REG_DR, _IRA_OS_QWORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x21, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_OPERAND_R( IRA_REG_DR, _IRA_OS_QWORD ), _IRA_NA, _IRA_NA },
 	// 0F 23 /r MOV DR0–DR7, r32 A N.E. Valid Move r32 to debug register
-	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x23, 0x00 }, _IRA_OPERAND_R( IRA_REG_DR, _IRA_OS_DWORD ) | IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00588000, { 0x0F, 0x23, 0x00 }, _IRA_OPERAND_R( IRA_REG_DR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
 	// 0F 23 /r MOV DR0–DR7, r64 A Valid N.E. Move r64 to extended debug register.
-	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x23, 0x00 }, _IRA_OPERAND_R( IRA_REG_DR, _IRA_OS_QWORD ) | IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00988000, { 0x0F, 0x23, 0x00 }, _IRA_OPERAND_R( IRA_REG_DR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVAPD[] = {
@@ -1703,14 +1703,14 @@ struct ira_opcode_desc _ira_opcode_desc_MOVHPD[] = {
 	// 66 0F 16 /r MOVHPD xmm, m64 A Valid Valid Move double-precision floating-point value from m64 to high quadword of xmm.
 	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x16, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 	// 66 0F 17 /r MOVHPD m64, xmm B Valid Valid Move double-precision floating-point value from high quadword of xmm to m64.
-	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x17, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x17, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVHPS[] = {
 	// 0F 16 /r MOVHPS xmm, m64 A Valid Valid Move two packed singleprecision floating-point values from m64 to high quadword of xmm.
 	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x16, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 	// 0F 17 /r MOVHPS m64, xmm B Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm to m64.
-	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x17, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x17, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVLHPS[] = {
@@ -1722,14 +1722,14 @@ struct ira_opcode_desc _ira_opcode_desc_MOVLPD[] = {
 	// 66 0F 12 /r MOVLPD xmm, m64 A Valid Valid Move double-precision floating-point value from m64 to low quadword of xmm register.
 	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 	// 66 0F 13 /r MOVLPD m64, xmm B Valid Valid Move double-precision floating-point nvalue from low quadword of xmm register to m64.
-	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x13, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x80D88000, { 0x0F, 0x13, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVLPS[] = {
 	// 0F 12 /r MOVLPS xmm, m64 A Valid Valid Move two packed singleprecision floating-point values from m64 to low quadword of xmm.
 	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_64_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
 	// 0F 13 /r MOVLPS m64, xmm B Valid Valid Move two packed singleprecision floating-point values from low quadword of xmm to m64.
-	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x13, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0x13, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVMSKPD[] = {

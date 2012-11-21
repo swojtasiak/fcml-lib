@@ -610,7 +610,7 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_M( memory_operand_size )		( _IRA_OPERAND_M_BASE | memory_operand_size )
 
 #define _IRA_OPERAND_R_BASE							0x19000000
-#define _IRA_OPERAND_R( reg_type, register_operand_size )	( _IRA_OPERAND_R_BASE | register_operand_size << 4 | reg_type )
+#define _IRA_OPERAND_R( reg_type, register_operand_size )	( _IRA_OPERAND_R_BASE | ( register_operand_size << 4 ) | reg_type )
 
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE	0x1A000000
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
