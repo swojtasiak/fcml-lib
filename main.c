@@ -18,7 +18,7 @@ void test();
 
 #include "ira_int.h"
 
-void test_code( int is32, uint8_t code[], int size, char *mnemonic );
+void test_code( int isVEX, int is32, uint8_t code[], int size, char *mnemonic );
 
 int main()
 {
@@ -30,8 +30,10 @@ int main()
 }
 
 
-#define _TEST32(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 1, code, sizeof(code), x ); }
-#define _TEST64(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, code, sizeof(code), x ); }
+#define _TEST32(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, 1, code, sizeof(code), x ); }
+#define _TEST64(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, 0, code, sizeof(code), x ); }
+#define _TEST32_VEX(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 1, 1, code, sizeof(code), x ); }
+#define _TEST64_VEX(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 1, 0, code, sizeof(code), x ); }
 
 void _test_vax(void);
 
@@ -40,7 +42,9 @@ void _test_vax(void);
 //102
 void test(void) {
 
-	_TEST32( "0f21d0 mov eax,dr2", 0x0F, 0x21, 0xD0 );
+
+	// VEX.NDS.128.66.0F 58 /r VADDPD xmm1,xmm2, xmm3/m128 V/V AVX Add packed double-precision floating-point values from xmm3/mem to xmm2 and stores result in xmm1.
+	_TEST32_VEX( "660f581401 addpd xmm2,oword ptr [ecx+eax]", 0xC5, 0xF9, 0x58, 0x14, 0x01 );
 
 	_test_vax();
 
@@ -2325,7 +2329,7 @@ void _test_vax(void) {
 */
 }
 
-void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
+void test_code( int isVEX, int is32, uint8_t code[], int size, char *mnemonic ) {
 
 	struct ira_disassemble_info info;
 	info.address = code;
@@ -2333,6 +2337,10 @@ void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 	info.address_size_attribute = 0;
 	info.operand_size_attribute = 0;
 	info.mode = is32 ? IRA_MOD_32BIT : IRA_MOD_64BIT;
+	info.config.flags = 0;
+	if( isVEX ) {
+		info.config.flags |= _IRA_CF_ENABLE_VAX;
+	}
 
 	if( is32 ) {
 		info.instruction_pointer.eip = 0x00401000;

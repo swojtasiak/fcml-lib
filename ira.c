@@ -214,11 +214,8 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     uint8_t *virtual_opcode_bytes = NULL;
 
     // Handle escape opcode encoded by VEX prefix.
-    if( context.config->flags & _IRA_CF_ENABLE_VAX ) {
-    	struct ira_instruction_prefix* vex_prefix = _ira_diss_context_get_prefix_by_type( &context, IRA_VEX );
-    	if( vex_prefix != NULL ) {
-    		virtual_opcode_bytes = _ira_avx_decode_escape_opcode_bytes(vex_prefix, &virtual_opcode_bytes_count );
-    	}
+    if( context.config->flags & _IRA_CF_ENABLE_VAX && decoding_context->prefixes_fields.is_vex ) {
+		virtual_opcode_bytes = _ira_avx_decode_escape_opcode_bytes(decoding_context, &virtual_opcode_bytes_count );
     }
 
     int virtual_opcode_index = 0;
@@ -572,21 +569,25 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 					}
 
 					// Decodes VEX fields.
-					switch( prefix_desc->prefix ) {
+					switch( prefix ) {
 					case 0xC4:
 						prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
 						prefixes_fields->x = _IRA_VEX_X(prefix_desc->vex_bytes[0]);
-						prefixes_fields->b = _IRA_VEX_B(prefix_desc->vex_bytes[0]);
-						prefixes_fields->mmmm = _IRA_VEX_MMMM(prefix_desc->vex_bytes[0]);
+						prefixes_fields->b = ( context->mode == IRA_MOD_64BIT ) ? _IRA_VEX_B(prefix_desc->vex_bytes[0]) : 0;
+						// In 32-bit modes, VEX.W must be set to "0" otherwise the AVX form will #UD.
 						prefixes_fields->w = _IRA_VEX_W(prefix_desc->vex_bytes[1]);
-						prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[1]);
+						if( prefixes_fields->w != 0 ) {
+							prefix_type = 0;
+						}
 						prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[1]);
 						prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[1]);
+						prefixes_fields->mmmm = _IRA_VEX_MMMM(prefix_desc->vex_bytes[0]);
+						prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[1]);
 						break;
 					case 0xC5:
 						prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
-						prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[0]);
 						prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[0]);
+						prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[0]);
 						prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[0]);
 						break;
 					}
@@ -1703,6 +1704,7 @@ int _ira_opcode_decoder_VEX_vvvv( struct ira_diss_context *context, struct ira_i
 	operand->operand_type = IRA_REGISTER;
 	operand->reg.reg_size = ( prefixes_fields->l ) ? _IRA_OS_YMMWORD : _IRA_OS_XMMWORD;
 	operand->reg.reg_type = IRA_REG_SIMD;
+	operand->reg.reg = prefixes_fields->vvvv;
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }

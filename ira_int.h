@@ -360,13 +360,14 @@ struct ira_instruction_desc {
 /* REX decoding */
 
 #define _IRA_VEX_W(x)				_IRA_GET_BIT(x, 7)
-#define _IRA_VEX_R(x)				_IRA_GET_BIT(x, 7)
-#define _IRA_VEX_X(x)				_IRA_GET_BIT(x, 6)
-#define _IRA_VEX_B(x)				_IRA_GET_BIT(x, 5)
+// R,X and B are stored in 1's complement form.
+#define _IRA_VEX_R(x)				!_IRA_GET_BIT(x, 7)
+#define _IRA_VEX_X(x)				!_IRA_GET_BIT(x, 6)
+#define _IRA_VEX_B(x)				!_IRA_GET_BIT(x, 5)
 #define _IRA_VEX_L(x)				_IRA_GET_BIT(x, 2)
-#define _IRA_VEX_MMMM(x)			( x && 0x1F )
-#define _IRA_VEX_VVVV(x)			( ( x && 0x78 ) >> 3 )
-#define _IRA_VEX_PP(x)				( x && 0x03 )
+#define _IRA_VEX_MMMM(x)			( x & 0x1F )
+#define _IRA_VEX_VVVV(x)			(~( ( x & 0x78 ) >> 3 ) & 0x00F)
+#define _IRA_VEX_PP(x)				( x & 0x03 )
 
 /* Prefixes flags. */
 
@@ -613,6 +614,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_RM_XMM_32_W	( _IRA_OPERAND_MODRM_RM_XMM_32 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R_XMM		_IRA_OPERAND_R(IRA_REG_SIMD, _IRA_OS_XMMWORD )
 #define _IRA_OPERAND_MODRM_R_XMM_W		( _IRA_OPERAND_MODRM_R_XMM | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_RM_SIMD		_IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_OS_EOSA, _IRA_OS_EOSA, _IRA_RMF_RM )
+#define _IRA_OPERAND_MODRM_RM_SIMD_W	( _IRA_OPERAND_MODRM_RM_SIMD | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R_SIMD		_IRA_OPERAND_R(IRA_REG_SIMD, _IRA_OS_EOSA )
 #define _IRA_OPERAND_MODRM_R_SIMD_W		( _IRA_OPERAND_MODRM_R_SIMD | _IRA_WRITE )
 
