@@ -518,24 +518,6 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_R_64_W		( _IRA_OPERAND_MODRM_R_64 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R		_IRA_MODRM(_IRA_R)
 #define _IRA_OPERAND_MODRM_R_W		( _IRA_OPERAND_MODRM_R | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_RM_MMX		_IRA_MODRM(_IRA_RM_MMX)
-#define _IRA_OPERAND_MODRM_RM_MMX_W		( _IRA_OPERAND_MODRM_RM_MMX | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_R_MMX		_IRA_MODRM(_IRA_R_MMX)
-#define _IRA_OPERAND_MODRM_R_MMX_W		( _IRA_OPERAND_MODRM_R_MMX | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_RM_XMM_128	_IRA_MODRM(_IRA_RM_XMM_128)
-#define _IRA_OPERAND_MODRM_RM_XMM_128_W	( _IRA_OPERAND_MODRM_RM_XMM_128 | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_R_XMM_128	_IRA_MODRM(_IRA_R_XMM_128)
-#define _IRA_OPERAND_MODRM_R_XMM_128_W	( _IRA_OPERAND_MODRM_R_XMM_128 | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_R_XMM_L		_IRA_MODRM(_IRA_R_XMM_L)
-#define _IRA_OPERAND_MODRM_R_XMM_L_W	( _IRA_OPERAND_MODRM_R_XMM_L | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_RM_XMM_64	_IRA_MODRM(_IRA_RM_XMM_64)
-#define _IRA_OPERAND_MODRM_RM_XMM_64_W	( _IRA_OPERAND_MODRM_RM_XMM_64 | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_R_XMM_64		_IRA_MODRM(_IRA_R_XMM_64)
-#define _IRA_OPERAND_MODRM_R_XMM_64_W	( _IRA_OPERAND_MODRM_R_XMM_64 | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_RM_XMM_32	_IRA_MODRM(_IRA_RM_XMM_32)
-#define _IRA_OPERAND_MODRM_RM_XMM_32_W	( _IRA_OPERAND_MODRM_RM_XMM_32 | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_R_XMM_32		_IRA_MODRM(_IRA_R_XMM_32)
-#define _IRA_OPERAND_MODRM_R_XMM_32_W	( _IRA_OPERAND_MODRM_R_XMM_32 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_MM_OSA		_IRA_MODRM(_IRA_OSA_MM)
 #define _IRA_OPERAND_MODRM_M_8			_IRA_MODRM(_IRA_M_8)
 #define _IRA_OPERAND_MODRM_M_8_W		(_IRA_OPERAND_MODRM_M_8 | _IRA_WRITE)
@@ -604,18 +586,35 @@ struct ira_instruction_desc {
 // TODO: Zastanowic sie czy do sterowania flagami nie da ie wykorzystac nowych bitow MOD3 ModNot3 zamiast bezposredniego ich podawania.
 #define _IRA_OPERAND_RM_BASE						0x17000000
 #define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
+#define _IRA_OPERAND_RM_W(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags) | _IRA_WRITE )
 
 // TODO: do usuniecia, wytarczy _IRA_OPERAND_RM z flaga: _IRA_RMF_M
 #define _IRA_OPERAND_M_BASE							0x18000000
 #define _IRA_OPERAND_M( memory_operand_size )		( _IRA_OPERAND_M_BASE | memory_operand_size )
 
-#define _IRA_OPERAND_R_BASE							0x19000000
+#define _IRA_OPERAND_R_BASE									0x19000000
 #define _IRA_OPERAND_R( reg_type, register_operand_size )	( _IRA_OPERAND_R_BASE | ( register_operand_size << 4 ) | reg_type )
 
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE	0x1A000000
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
 
 #define _IRA_VEX_VVVV_REG							0x1B000000
+
+// Shorthands
+#define _IRA_OPERAND_MODRM_RM_MMX		_IRA_OPERAND_RM(IRA_REG_MMX, _IRA_EOS_MMWORD, _IRA_EOS_MMWORD, _IRA_RMF_RM )
+#define _IRA_OPERAND_MODRM_RM_MMX_W		( _IRA_OPERAND_MODRM_RM_MMX | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_R_MMX		_IRA_OPERAND_R(IRA_REG_MMX, _IRA_OS_MMWORD )
+#define _IRA_OPERAND_MODRM_R_MMX_W		( _IRA_OPERAND_MODRM_R_MMX | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_RM_XMM_128	_IRA_OPERAND_RM(IRA_REG_XMM, _IRA_EOS_XMMWORD, _IRA_EOS_XMMWORD, _IRA_RMF_RM )
+#define _IRA_OPERAND_MODRM_RM_XMM_128_W	( _IRA_OPERAND_MODRM_RM_XMM_128 | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_RM_XMM_64	_IRA_OPERAND_RM(IRA_REG_XMM, _IRA_EOS_XMMWORD, _IRA_EOS_QWORD, _IRA_RMF_RM )
+#define _IRA_OPERAND_MODRM_RM_XMM_64_W	( _IRA_OPERAND_MODRM_RM_XMM_64 | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_RM_XMM_32	_IRA_OPERAND_RM(IRA_REG_XMM, _IRA_EOS_XMMWORD, _IRA_EOS_DWORD, _IRA_RMF_RM )
+#define _IRA_OPERAND_MODRM_RM_XMM_32_W	( _IRA_OPERAND_MODRM_RM_XMM_32 | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_R_XMM		_IRA_OPERAND_R(IRA_REG_XMM, _IRA_OS_XMMWORD )
+#define _IRA_OPERAND_MODRM_R_XMM_W		( _IRA_OPERAND_MODRM_R_XMM | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_R_SIMD		_IRA_OPERAND_R(IRA_REG_XMM, _IRA_OS_EOSA )
+#define _IRA_OPERAND_MODRM_R_SIMD_W		( _IRA_OPERAND_MODRM_R_SIMD | _IRA_WRITE )
 
 /* Externals. */
 
