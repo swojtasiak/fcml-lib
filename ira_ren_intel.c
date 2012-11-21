@@ -27,6 +27,17 @@ void _ira_operand_formater_register( struct ira_disassemble_result *result, stru
 void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 void _ira_operand_formater_addressing_implicit_reg( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream );
 
+// TODO: Pomyslec nad zrefaktorowaniem.
+int _ira_is_rex_prefix_available(struct ira_disassemble_result *result) {
+	int i;
+	for( i = 0; i < result->prefixes_count; i++ ) {
+		if( result->prefixes[i].prefix_type == IRA_REX ) {
+			return _IRA_TRUE;
+		}
+	}
+	return _IRA_FALSE;
+}
+
 // Utilities.
 
 void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream );
@@ -136,16 +147,18 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 	_ira_format_append_str( stream, "[" );
 
+	int is_rex = _ira_is_rex_prefix_available(result);
+
 	// Append base register.
 	if( mod_rm->base_reg.reg_type != IRA_NO_REG ) {
-		_ira_format_append_reg( stream, &mod_rm->base_reg, result->rex.is_not_null );
+		_ira_format_append_reg( stream, &mod_rm->base_reg, is_rex );
 		first = _IRA_FALSE;
 	}
 
 	// Append index register.
 	if( mod_rm->index_reg.reg_type != IRA_NO_REG ) {
 		_ira_format_append_if_not_first( stream, &first, "+" );
-		_ira_format_append_reg( stream, &mod_rm->index_reg, result->rex.is_not_null );
+		_ira_format_append_reg( stream, &mod_rm->index_reg, is_rex );
 	}
 
 	// Append scale.
@@ -226,7 +239,7 @@ void _ira_operand_formater_addressing_implicit_reg( struct ira_disassemble_resul
 	_ira_format_append_str( stream, "[" );
 
 	// Append register with memory location.
-	_ira_format_append_reg( stream, &(operand->addressing.address_register), result->rex.is_not_null );
+	_ira_format_append_reg( stream, &(operand->addressing.address_register), _ira_is_rex_prefix_available(result) );
 
 	_ira_format_append_str( stream, "]" );
 
@@ -304,7 +317,7 @@ void _ira_operand_formater_immediate( struct ira_disassemble_result *result, str
 }
 
 void _ira_operand_formater_register( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
-	_ira_format_append_reg( stream, &operand->reg, result->rex.is_not_null );
+	_ira_format_append_reg( stream, &operand->reg, _ira_is_rex_prefix_available(result) );
 }
 
 void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream ) {

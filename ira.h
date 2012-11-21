@@ -249,6 +249,10 @@
 
 #define _IRA_PREFIX_LOCK	0xF0
 
+enum ira_prefix_types {
+	IRA_GROUP_1 = 1, IRA_GROUP_2, IRA_GROUP_3, IRA_GROUP_4, IRA_REX, IRA_VEX
+};
+
 /* Size directives */
 
 // todo: wszdzie uzywac tych wielkosci do parametryzacji wilkosci adresacji i rejestrow, zeby nie bylo burdelu ze rozne makra adresujace uzywaja roznych wielkosci.

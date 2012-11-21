@@ -1675,11 +1675,11 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 	}*/
 
 	struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
-	if( context->mode == IRA_MOD_64BIT && prefixes_fields->is_rex ) {
-		if( prefixes_fields->rex_r ) {
-			reg_num |= 0x08;
-		}
+	//if( context->mode == IRA_MOD_64BIT && prefixes_fields->is_rex ) {
+	if( prefixes_fields->r ) {
+		reg_num |= 0x08;
 	}
+//	}
 
 	reg.reg = reg_num;
 
@@ -2020,7 +2020,7 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 			// Copy all needed fields.
 			mod_rm->raw_mod_rm = decoded_mod_rm->raw_mod_rm;
 			mod_rm->raw_sib = decoded_mod_rm->raw_sib;
-			mod_rm->raw_rex = decoded_mod_rm->raw_rex;
+			//mod_rm->raw_rex = decoded_mod_rm->raw_rex;
 			mod_rm->base_reg = decoded_mod_rm->base_reg;
 			mod_rm->index_reg = decoded_mod_rm->index_reg;
 			mod_rm->scale = decoded_mod_rm->scale;
@@ -2057,7 +2057,7 @@ int _ira_modrm_decoder_get_modrm( struct ira_diss_context *context, struct ira_d
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-
+/*
 int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_decoded_mod_rm *decoded_mod_rm ) {
 	int rex_found = decoded_mod_rm->raw_rex.is_not_null;
 	// Check if there is REX register.
@@ -2070,7 +2070,7 @@ int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_dec
 		}
 	}
 	return rex_found;
-}
+}*/
 
 struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size, int reg ) {
 
@@ -2159,11 +2159,13 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, enum ir
 	index = _IRA_SIB_INDEX(sib);
 	scale = _IRA_SIB_SS(sib);
 
-	if( context->mode == IRA_MOD_64BIT && decoded_mod_rm->raw_rex.is_not_null ) {
-		uint8_t rex = decoded_mod_rm->raw_rex.value;
-		base |= ( _IRA_REX_B(rex) << 3 );
-		index |= ( _IRA_REX_X(rex) << 3 );
-	}
+	struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
+
+	//if( context->mode == IRA_MOD_64BIT && decoded_mod_rm->raw_rex.is_not_null ) {
+	//	uint8_t rex = decoded_mod_rm->raw_rex.value;
+		base |= ( prefixes_fields->b << 3 );
+		index |= ( prefixes_fields->x << 3 );
+	//}
 
 	// Decode ModRM.
 	mod = _IRA_MODRM_MOD(mod_rm);
@@ -2223,14 +2225,14 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 
 	struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
 
-	uint8_t rex = 0;
+	//uint8_t rex = 0;
 
 	// Check if there is REX register and get it.
-	if( _ira_modrm_decoder_get_rex(context, decoded_mod_rm) ) {
+	//if( _ira_modrm_decoder_get_rex(context, decoded_mod_rm) ) {
 		//rex = decoded_mod_rm->raw_rex.value;
 		//rm |= ( _IRA_REX_B(rex) << 3 );
-	}
-		rm |= ( ( prefixes_fields->rex_b | prefixes_fields->vex_b ) << 3 );
+///	}
+		rm |= ( prefixes_fields->b << 3 );
 	//rm |= ( ( prefixes_fields->rex_b | prefixes_fields->vex_b ) << 3 );
 
 	if( mod == 3 ) {
@@ -2263,7 +2265,7 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 		//if( decoded_mod_rm->raw_rex.is_not_null ) {
 		//	reg |= ( _IRA_REX_R(rex) << 3 );
 		//}
-		reg |= ( ( prefixes_fields->rex_r | prefixes_fields->vex_r ) << 3 );
+		reg |= ( prefixes_fields->r << 3 );
 		decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, register_operand_size, reg );
 		decoded_mod_rm->decoded_reg = _IRA_TRUE;
 	}
@@ -2323,9 +2325,11 @@ int _ira_modrm_decoder( struct ira_diss_context *context, enum ira_register_type
 			uint8_t reg = _IRA_MODRM_REG_OPCODE(decoded_mod_rm->raw_mod_rm.value);
 
 			// Check if there is REX prefix that can extend register and get it.
-			if( _ira_modrm_decoder_get_rex( context, decoded_mod_rm ) ) {
-				reg |= ( _IRA_REX_R(decoded_mod_rm->raw_rex.value) << 3 );
-			}
+
+			//if( _ira_modrm_decoder_get_rex( context, decoded_mod_rm ) ) {
+			struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
+				reg |= ( prefixes_fields->r << 3 );
+			//}
 
 			decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, register_operand_size, reg );
 
@@ -2361,8 +2365,8 @@ int _ira_get_effective_asa( struct ira_diss_context *context ) {
 int _ira_get_effective_osa( struct ira_diss_context *context, uint32_t opcode_flags ) {
 
 	struct ira_instruction_prefix *prefix;
-	int rex_w = 0, result;
-	uint8_t rex;
+	//int /*rex_w = 0,*/ result;
+	//uint8_t rex;
 
 	uint16_t effective_osa = context->operand_size_attribute;
 
@@ -2395,7 +2399,8 @@ int _ira_get_effective_osa( struct ira_diss_context *context, uint32_t opcode_fl
 			// tablicy prefixow i szukamy jak _ira_diss_context_get_REX_prefix, niby ladniejsze, spojne brak zaleznosci pomiedzy warstwami,
 			// ale z 2 strony mniej wydajne. Do przemyslenia.
 
-			if( prefixes_fields->is_rex && prefixes_fields->rex_w ) {
+			// TODO: Na chwile obecna VEX.W i REX.W traktujemy tak samo.
+			if( /*prefixes_fields->is_rex && */prefixes_fields->w ) {
 				// Prefixes can not override REX.W.
 				effective_osa = _IRA_OSA_64;
 			} else {
@@ -2572,7 +2577,7 @@ uint16_t _ira_util_decode_operand_size( struct ira_diss_context *context, uint16
 		if( operand_size == _IRA_OS_EOSA ) {
 			struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
 			if( prefixes_fields->is_vex ) {
-				operand_size = prefixes_fields->vex_l ? 256 : 128;
+				operand_size = prefixes_fields->l ? 256 : 128;
 			} else {
 				operand_size = context->decoding_context.effective_operand_size_attribute;
 			}

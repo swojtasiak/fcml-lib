@@ -103,10 +103,6 @@ struct ira_decoded_fields {
 
 /* Disassemblation context. */
 
-enum ira_prefix_types {
-	IRA_GROUP_1 = 1, IRA_GROUP_2, IRA_GROUP_3, IRA_GROUP_4, IRA_REX, IRA_VEX
-};
-
 struct ira_decoding_context {
 	// Operand size attribute.
 	uint8_t effective_operand_size_attribute;
