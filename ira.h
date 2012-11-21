@@ -266,6 +266,7 @@ enum ira_prefix_types {
 #define _IRA_OS_TBYTE		80
 #define _IRA_OS_OWORD		128
 #define _IRA_OS_XMMWORD		128
+#define _IRA_OS_YMMWORD		256
 
 /* Data types. */
 #define _IRA_DT_UNKNOWN			0x0000
@@ -342,6 +343,7 @@ enum ira_register_type {
 	IRA_REG_GPR,
 	IRA_REG_MMX,
 	IRA_REG_XMM,
+	IRA_REG_YMM,
 	IRA_REG_FPU,
 	IRA_REG_SEG,
 	IRA_REG_CR,

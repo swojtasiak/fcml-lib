@@ -489,6 +489,7 @@ struct ira_instruction_desc {
 #define _IRA_M_94_108	26
 #define _IRA_M_512B		27
 #define _IRA_M_UNDEF	28
+// TODO: RAczej SIMD a nie XMM, jako ze mamy XMM i YMM.
 #define _IRA_RM_XMM_L	29
 #define _IRA_R_XMM_L	30
 
@@ -613,6 +614,8 @@ struct ira_instruction_desc {
 
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE	0x1A000000
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
+
+#define _IRA_VEX_VVVV_REG							0x1B000000
 
 /* Externals. */
 

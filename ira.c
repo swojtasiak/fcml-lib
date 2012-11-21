@@ -114,6 +114,7 @@ int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_in
 int _ira_opcode_decoder_immediate_relative_dis( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_seg_relative_offset( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
+int _ira_opcode_decoder_VEX_vvvv( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 
 /* Arguments allocators. */
 
@@ -1296,6 +1297,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_seg_relative_offset;
 		operand_decoding->args = _ira_alloc_seg_relative_offset_args( _ira_common_decode_8b_operand_size( ( decoding & 0x0000FF00 ) >> 8 ), decoding & 0x000000FF, &result );
 		break;
+	case _IRA_VEX_VVVV_REG:
+		operand_decoding->decoder = &_ira_opcode_decoder_VEX_vvvv;
+		operand_decoding->args = NULL;
+		break;
 	default:
 		operand_decoding->decoder = NULL;
 		operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;
@@ -1685,6 +1690,19 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 
 	operand_wrapper->operand.operand_type = IRA_REGISTER;
 	operand_wrapper->operand.reg = reg;
+
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int _ira_opcode_decoder_VEX_vvvv( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
+	struct ira_decoded_fields *prefixes_fields = &(decoding_context->prefixes_fields);
+
+	operand->operand_type = IRA_REGISTER;
+	operand->reg.reg_size = ( prefixes_fields->l ) ? _IRA_OS_YMMWORD : _IRA_OS_XMMWORD;
+	operand->reg.reg_type = ( prefixes_fields->l ) ? IRA_REG_YMM : IRA_REG_XMM;
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }
