@@ -1165,43 +1165,43 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			break;
 		case _IRA_RM_MMX:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, _IRA_RMF_RM, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, _IRA_RMF_RM, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
 			break;
 		case _IRA_R_MMX:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_MMX, 0, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, 0, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
 			break;
 		case _IRA_RM_XMM_128:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_RMF_RM, _IRA_OS_OWORD, NULL, _IRA_OS_OWORD, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, _IRA_RMF_RM, _IRA_OS_OWORD, NULL, _IRA_OS_OWORD, NULL, &result );
 			break;
 		case _IRA_R_XMM_128:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, 0, _IRA_OS_OWORD, NULL, _IRA_OS_OWORD, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, 0, _IRA_OS_OWORD, NULL, _IRA_OS_OWORD, NULL, &result );
 			break;
 		case _IRA_RM_XMM_64:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_RMF_RM, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, _IRA_RMF_RM, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
 			break;
 		case _IRA_R_XMM_64:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, 0, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, 0, _IRA_OS_QWORD, NULL, _IRA_OS_QWORD, NULL, &result );
 			break;
 		case _IRA_RM_XMM_32:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_RMF_RM, _IRA_OS_DWORD, NULL, _IRA_OS_DWORD, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, _IRA_RMF_RM, _IRA_OS_DWORD, NULL, _IRA_OS_DWORD, NULL, &result );
 			break;
 		case _IRA_R_XMM_32:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, 0, _IRA_OS_DWORD, NULL, _IRA_OS_DWORD, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, 0, _IRA_OS_DWORD, NULL, _IRA_OS_DWORD, NULL, &result );
 			break;
 		case _IRA_RM_XMM_L:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_RMF_RM, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, _IRA_RMF_RM, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
 			break;
 		case _IRA_R_XMM_L:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, 0, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, 0, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
 			break;
 		case _IRA_OSA_MM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
@@ -1702,7 +1702,7 @@ int _ira_opcode_decoder_VEX_vvvv( struct ira_diss_context *context, struct ira_i
 
 	operand->operand_type = IRA_REGISTER;
 	operand->reg.reg_size = ( prefixes_fields->l ) ? _IRA_OS_YMMWORD : _IRA_OS_XMMWORD;
-	operand->reg.reg_type = ( prefixes_fields->l ) ? IRA_REG_YMM : IRA_REG_XMM;
+	operand->reg.reg_type = IRA_REG_SIMD;
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }
@@ -2092,7 +2092,7 @@ int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_dec
 
 struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size, int reg ) {
 
-	uint16_t reg_size = 0;
+	uint16_t reg_size = operand_size;
 	if( reg_type == IRA_REG_GPR ) {
 		reg_size = _ira_util_decode_operand_size( context, operand_size, NULL );
 	}
@@ -2100,7 +2100,7 @@ struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context
 	struct ira_register result_reg = {0};
 
 	// There are no MMX registers for reg > 7.
-	if( !( reg_type == IRA_REG_MMX && reg > 7 ) ) {
+	if( !( reg_type == IRA_REG_SIMD && reg_size == _IRA_OS_MMWORD && reg > 7 ) ) {
 		result_reg.reg = reg;
 		result_reg.reg_type = reg_type;
 		result_reg.reg_size = reg_size;

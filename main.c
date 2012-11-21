@@ -40,6 +40,8 @@ void _test_vax(void);
 //102
 void test(void) {
 
+	_TEST32( "0f21d0 mov eax,dr2", 0x0F, 0x21, 0xD0 );
+
 	_test_vax();
 
 	// OR

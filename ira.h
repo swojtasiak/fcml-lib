@@ -341,9 +341,7 @@ enum ira_operand_type {
 enum ira_register_type {
 	IRA_NO_REG = 0,
 	IRA_REG_GPR,
-	IRA_REG_MMX,
-	IRA_REG_XMM,
-	IRA_REG_YMM,
+	IRA_REG_SIMD,
 	IRA_REG_FPU,
 	IRA_REG_SEG,
 	IRA_REG_CR,
