@@ -33,8 +33,12 @@ int main()
 #define _TEST32(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 1, code, sizeof(code), x ); }
 #define _TEST64(x,...) { uint8_t code[] = {__VA_ARGS__}; test_code( 0, code, sizeof(code), x ); }
 
+void _test_vax(void);
+
 //102
 void test(void) {
+
+	_test_vax();
 
 	// OR
 	// 0C ib OR AL, imm8 I Valid Valid AL OR imm8.
@@ -2295,6 +2299,27 @@ void test(void) {
 
 }
 
+void _test_vax(void) {
+/*
+	uint8_t code[] = {0xC4, 0xC4, 0x00};
+
+	struct ira_disassemble_info info;
+	info.address = code;
+	info.size = sizeof(code);
+	info.address_size_attribute = 0;
+	info.operand_size_attribute = 0;
+	info.config.flags = 0;
+	info.config.flags |= _IRA_CF_ENABLE_VAX;
+	info.mode = IRA_MOD_32BIT;
+
+	info.instruction_pointer.eip = 0x00401000;
+
+	struct ira_disassemble_result result;
+
+	// Disassemble.
+	ira_disassemble( &info, &result );
+*/
+}
 
 void test_code( int is32, uint8_t code[], int size, char *mnemonic ) {
 

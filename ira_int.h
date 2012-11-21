@@ -24,38 +24,38 @@
 
 // TODO: Pytanie czy to faktycznie jest potrzebne? Wyaje sie troche nadmiarowe. Patrz: common and operand size encoding.
 /*enum SizeAttributeType {
-	IRA_SAT_ASA,
-	IRA_SAT_OSA,
-	IRA_SAT_UNDEFINED
-};*/
+ IRA_SAT_ASA,
+ IRA_SAT_OSA,
+ IRA_SAT_UNDEFINED
+ };*/
 
 /* Structures used to store information about memory. */
 
 struct ira_memory_stream {
-    void *base_address; /* Base address of memory. */
-    uint32_t offset; /* Offset. */
-    uint32_t size; /* Size. */
+	void *base_address; /* Base address of memory. */
+	uint32_t offset; /* Offset. */
+	uint32_t size; /* Size. */
 };
 
 /* Methods used for streaming. */
 
 enum ira_seek_type {
-    IRA_START = 0,
-    IRA_END,
-    IRA_CURRENT
+	IRA_START = 0, IRA_END, IRA_CURRENT
 };
 
-void _ira_stream_seek( struct ira_memory_stream *stream, uint32_t offset, enum ira_seek_type type );
+void _ira_stream_seek(struct ira_memory_stream *stream, uint32_t offset,
+		enum ira_seek_type type);
 
-uint8_t _ira_stream_read( struct ira_memory_stream *stream, int *result );
+uint8_t _ira_stream_read(struct ira_memory_stream *stream, int *result);
 
-uint8_t _ira_stream_peek( struct ira_memory_stream *stream, int *result );
+uint8_t _ira_stream_peek(struct ira_memory_stream *stream, int *result);
 
 /* Gets size of the data to read. */
-uint32_t _ira_stream_size( struct ira_memory_stream *stream );
+uint32_t _ira_stream_size(struct ira_memory_stream *stream);
 
 /* Reads specified number of bytes from stream and stores them in given buffer. */
-int _ira_stream_read_bytes( struct ira_memory_stream *stream, void *buffer , int size);
+int _ira_stream_read_bytes(struct ira_memory_stream *stream, void *buffer,
+		int size);
 
 /* ModRM decoding. */
 
@@ -69,7 +69,7 @@ struct ira_decoded_mod_rm {
 	// SIB byte.
 	n_byte raw_sib;
 	// REX prefix.
-	n_byte raw_rex;
+	// n_byte raw_rex;
 	// Base register.
 	struct ira_register base_reg;
 	// Index register.
@@ -84,15 +84,27 @@ struct ira_decoded_mod_rm {
 	struct ira_register operand_reg;
 };
 
+// Holds decoded fields from VEX and REX prefixes. Used only to optimize access to VEX/REX
+// prefix fields by avoiding iteration through prefixes array any time when VEX/REX
+// interpretation is needed.
+struct ira_decoded_fields {
+	uint8_t is_rex;
+	uint8_t is_vex;
+	uint8_t vex_prefix;
+	uint8_t r;
+	uint8_t x;
+	uint8_t b;
+	uint8_t w;
+	uint8_t l;
+	uint8_t mmmm;
+	uint8_t vvvv;
+	uint8_t pp;
+};
+
 /* Disassemblation context. */
 
 enum ira_prefix_types {
-    IRA_GROUP_1 = 1,
-    IRA_GROUP_2,
-    IRA_GROUP_3,
-    IRA_GROUP_4,
-    IRA_REX,
-    IRA_VEX
+	IRA_GROUP_1 = 1, IRA_GROUP_2, IRA_GROUP_3, IRA_GROUP_4, IRA_REX, IRA_VEX
 };
 
 struct ira_decoding_context {
@@ -114,6 +126,8 @@ struct ira_decoding_context {
 	uint8_t primary_opcode_index;
 	// Number of prefixes decoded for instruction.
 	uint8_t instruction_prefix_count;
+	// Decoded prefixes fields.
+	struct ira_decoded_fields prefixes_fields;
 	// Decoded ModRM.
 	struct ira_decoded_mod_rm mod_rm;
 	// Instruction size. This value is only available during post processing.
@@ -124,24 +138,26 @@ struct ira_diss_context {
 	// Disassembler configuration.
 	struct ira_disassembler_config *config;
 	// Architecture.
-    enum ira_operation_mode mode;
-    // Operand size attribute.
-    uint8_t operand_size_attribute;
-    // Address size attribute.
-    uint8_t address_size_attribute;
-    // Context that is shared by methods taking part in the decoding process.
-    struct ira_decoding_context decoding_context;
-    // Stream.
-    struct ira_memory_stream *stream;
-    // Instruction pointer.
-    union ira_instruction_pointer instruction_pointer;
+	enum ira_operation_mode mode;
+	// Operand size attribute.
+	uint8_t operand_size_attribute;
+	// Address size attribute.
+	uint8_t address_size_attribute;
+	// Context that is shared by methods taking part in the decoding process.
+	struct ira_decoding_context decoding_context;
+	// Stream.
+	struct ira_memory_stream *stream;
+	// Instruction pointer.
+	union ira_instruction_pointer instruction_pointer;
 };
 
 /* Returns 1 is there is given prefix found for given instruction. */
-int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix );
+int _ira_diss_context_is_prefix_available(struct ira_diss_context *context,
+		uint8_t prefix);
 
 /* Gets REX prefix. */
-uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int *found );
+uint8_t _ira_diss_context_get_REX_prefix(struct ira_diss_context *context,
+		int *found);
 
 /* Decoding arguments. */
 
@@ -195,7 +211,7 @@ struct ira_explicit_immediate_type_args {
 	union ira_immediate_data_value immediate_data;
 };
 
-typedef uint16_t (*ira_operand_size_provider)( struct ira_diss_context *context );
+typedef uint16_t (*ira_operand_size_provider)(struct ira_diss_context *context);
 
 /* Structure that can be used to pass register type and its size to operand decoding function. */
 struct ira_modrm_decoding_args {
@@ -230,7 +246,10 @@ struct ira_diss_tree_opcode {
 
 /* Operand wrapper. */
 
-typedef int (*ira_instruction_operand_handler)( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] );
+typedef int (*ira_instruction_operand_handler)(
+		struct ira_diss_context *context,
+		struct ira_instruction_operand *operand,
+		struct ira_instruction_operand *istruction_operands[4]);
 
 struct ira_instruction_operand_wrapper {
 	// Instruction operand.
@@ -240,10 +259,13 @@ struct ira_instruction_operand_wrapper {
 };
 
 /* Decoders responsible for instruction disassemblation. */
-typedef int (*ira_instruction_decoder)( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
+typedef int (*ira_instruction_decoder)(struct ira_diss_context *context,
+		struct ira_diss_tree_instruction_decoding *instruction,
+		struct ira_disassemble_result *result);
 
 /* Decoders responsible for operand disassemblation. */
-typedef int (*ira_operand_decoder)( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand, void *args );
+typedef int (*ira_operand_decoder)(struct ira_diss_context *context,
+		struct ira_instruction_operand_wrapper *operand, void *args);
 
 struct ira_operand_decoding {
 	// Operand access mode.
@@ -276,6 +298,10 @@ struct ira_diss_tree_instruction_details {
 
 extern struct ira_diss_tree_opcode* _ira_disassemblation_tree[256];
 
+struct ira_instruction_opcode_decoder {
+
+};
+
 /* Structures used to describe instructions. */
 
 struct ira_opcode_desc {
@@ -294,8 +320,8 @@ struct ira_instruction_desc {
 	char *mnemonic;
 	// tODO: Dodac na koncu.
 	/*// Instruction group.
-	uint16_t instruction_group;
-	*/
+	 uint16_t instruction_group;
+	 */
 	// Type of the instruction.
 	uint8_t instruction_type;
 	// Number of opcodes' descriptions.
@@ -335,10 +361,24 @@ struct ira_instruction_desc {
 #define _IRA_REX_X(x)				_IRA_GET_BIT(x, 1)
 #define _IRA_REX_B(x)				_IRA_GET_BIT(x, 0)
 
+/* REX decoding */
+
+#define _IRA_VEX_W(x)				_IRA_GET_BIT(x, 7)
+#define _IRA_VEX_R(x)				_IRA_GET_BIT(x, 7)
+#define _IRA_VEX_X(x)				_IRA_GET_BIT(x, 6)
+#define _IRA_VEX_B(x)				_IRA_GET_BIT(x, 5)
+#define _IRA_VEX_L(x)				_IRA_GET_BIT(x, 2)
+#define _IRA_VEX_MMMM(x)			( x && 0x1F )
+#define _IRA_VEX_VVVV(x)			( ( x && 0x78 ) >> 3 )
+#define _IRA_VEX_PP(x)				( x && 0x03 )
+
 /* Prefixes flags. */
 
-// TODO: nadmiarowy! zobacz EOSA restrictions! wywalic, tylko gmatwa
+// TODO: nadmiarowy! zobacz EOSA restrictions! wywalic, tylko gmatwa (ale czy aby napewno, czasami REX.W podownie jak VEX.W mo¿e spelniac inna role niz tylko zmiaa EOSA.) narazie zostawic, sprawzic po zakonczeniu implementacji disassemlera.
 #define _IRA_PREFIX_REX_W_1(x)				_IRA_GET_BIT(x,03)
+#define _IRA_PREFIX_VEX_W_1(x)				_IRA_GET_BIT(x,04)
+#define _IRA_PREFIX_VEX_L_1(x)				_IRA_GET_BIT(x,05)
+#define _IRA_PREFIX_VEX_LEG(x)				_IRA_GET_BIT(x,06)
 #define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
 #define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)
@@ -397,7 +437,6 @@ struct ira_instruction_desc {
 
 #define _IRA_NA	0x00000000
 
-
 // todo: zmienic to na jedno parametryzowane makro, ktore jako parametr przyjmie wielkosc wartosci natychmiastowej.
 #define _IRA_OPERAND_IB						0x01000000
 // imm8 sign extended to effective operand size attribute.
@@ -411,7 +450,6 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_IO_EOSA				0x08000000
 // Immediate value with size calculated using EOSA.
 #define _IRA_OPERAND_IMM_EOSA				0x09000000
-
 
 // todo: wywalic to, mamy explicit register, tylko komplikutje model opisu trybow adreowania.
 #define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A000000
@@ -455,6 +493,8 @@ struct ira_instruction_desc {
 #define _IRA_M_94_108	26
 #define _IRA_M_512B		27
 #define _IRA_M_UNDEF	28
+#define _IRA_RM_XMM_L	29
+#define _IRA_R_XMM_L	30
 
 /* ModRM based operands. */
 
@@ -489,6 +529,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_RM_XMM_128_W	( _IRA_OPERAND_MODRM_RM_XMM_128 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R_XMM_128	_IRA_MODRM(_IRA_R_XMM_128)
 #define _IRA_OPERAND_MODRM_R_XMM_128_W	( _IRA_OPERAND_MODRM_R_XMM_128 | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_R_XMM_L		_IRA_MODRM(_IRA_R_XMM_L)
+#define _IRA_OPERAND_MODRM_R_XMM_L_W	( _IRA_OPERAND_MODRM_R_XMM_L | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_RM_XMM_64	_IRA_MODRM(_IRA_RM_XMM_64)
 #define _IRA_OPERAND_MODRM_RM_XMM_64_W	( _IRA_OPERAND_MODRM_RM_XMM_64 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R_XMM_64		_IRA_MODRM(_IRA_R_XMM_64)
@@ -518,7 +560,6 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_M_512B_W	(_IRA_OPERAND_MODRM_M_512B | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_UNDEF		_IRA_MODRM(_IRA_M_UNDEF)
 #define _IRA_OPERAND_MODRM_M_UNDEF_W	(_IRA_OPERAND_MODRM_M_UNDEF | _IRA_WRITE)
-
 
 // todo: nie implicit tylko explicit
 // todo: dodac kodowanie wilkosci rejestru na podstawie encoded operand size.

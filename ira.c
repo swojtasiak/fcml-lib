@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "ira_int.h"
+#include "ira_avx.h"
 #include "ira.h"
 #include "common.h"
 
@@ -61,6 +62,7 @@ int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uin
 
 /* Gets prefix if it's available. */
 struct ira_instruction_prefix* _ira_diss_context_get_prefix_if_available( struct ira_diss_context *context, uint8_t prefix );
+struct ira_instruction_prefix* _ira_diss_context_get_prefix_by_type( struct ira_diss_context *context, uint8_t prefix_type );
 
 /* Gets REX prefix. */
 uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int *found );
@@ -197,19 +199,46 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
 
     // Found instruction.
     struct ira_diss_tree_instruction_decoding *instruction = NULL;
+
     // Current opcode table used to find instruction description.
     struct ira_diss_tree_opcode** opcodes = _ira_disassemblation_tree;
 
     struct ira_decoding_context *decoding_context = &(context.decoding_context);
 
+    // TODO: Zamineic to w przyszlosci na jakis aobstrackyjny iterator, ktory bedzie iteowal po opcode zwracanych albo ze streama albo
+    // z prefixow. Opcode z prefixow powinny byc virtualne i nie powinny znalezc sie docelowo w decoding_context->opcodes[].
+    // Check if there is VEX prefix available.
+
+    uint8_t virtual_opcode_bytes_count = 0;
+    uint8_t *virtual_opcode_bytes = NULL;
+
+    // Handle escape opcode encoded by VEX prefix.
+    if( context.config->flags & _IRA_CF_ENABLE_VAX ) {
+    	struct ira_instruction_prefix* vex_prefix = _ira_diss_context_get_prefix_by_type( &context, IRA_VEX );
+    	if( vex_prefix != NULL ) {
+    		virtual_opcode_bytes = _ira_avx_decode_escape_opcode_bytes(vex_prefix, &virtual_opcode_bytes_count );
+    	}
+    }
+
+    int virtual_opcode_index = 0;
     int opcode_num = 0;
     int opcode_length = 0;
     while( opcodes != NULL ) {
-    	// Get next potential opcode byte from stream.
-    	int result;
-    	uint8_t opcode_byte =_ira_stream_peek( context.stream, &result );
-    	if( result == 0 ) {
-    		break;
+
+    	int is_virtual_opcode = _IRA_FALSE;
+
+    	uint8_t opcode_byte;
+    	if( virtual_opcode_bytes_count > 0 ) {
+    		is_virtual_opcode = _IRA_TRUE;
+    		opcode_byte = virtual_opcode_bytes[virtual_opcode_index++];
+    		virtual_opcode_bytes_count--;
+    	} else {
+			// Get next potential opcode byte from stream.
+			int result;
+			opcode_byte =_ira_stream_peek( context.stream, &result );
+			if( result == 0 ) {
+				break;
+			}
     	}
 
     	// This length is used to restore stream position in some cases.
@@ -221,13 +250,19 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     		// Last found instruction.
     		instruction = opcode->instructions;
     		opcodes = opcode->opcodes;
-    		// Store this opcode byte.
-    		decoding_context->opcodes[opcode_num++] = opcode_byte;
-    		// Go to next opcode byte.
-    		_ira_stream_seek( context.stream, 1, IRA_CURRENT );
+    		if( !is_virtual_opcode ) {
+				// Store this opcode byte.
+				decoding_context->opcodes[opcode_num++] = opcode_byte;
+				// Go to next opcode byte.
+				_ira_stream_seek( context.stream, 1, IRA_CURRENT );
+    		}
     	} else {
     		break;
     	}
+    }
+
+    if( virtual_opcode_bytes != NULL ) {
+    	_ira_avx_free_escape_opcode_bytes(virtual_opcode_bytes);
     }
 
     int default_diss = 1;
@@ -438,6 +473,7 @@ int _ira_interpret_prefixes( struct ira_diss_context *context ) {
 
 void _ira_identify_prefixes( struct ira_diss_context *context ) {
     struct ira_memory_stream *stream = context->stream;
+    struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
     int result = 0;
     int prefix_index = 0;
     int prefix_size;
@@ -483,13 +519,11 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
                     break;
                 // VEX prefixes.
                 case 0xC5:
-                	vex_prefix_size = 2;
-                	prefix_size += 1;
+                	vex_prefix_size = 1;
 					prefix_type = IRA_VEX;
 					break;
                 case 0xC4:
-                	vex_prefix_size = 3;
-                	prefix_size += 2;
+                	vex_prefix_size = 2;
                 	prefix_type = IRA_VEX;
 					break;
                 default:
@@ -497,13 +531,21 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
                     if( context->mode == IRA_MOD_64BIT && prefix >= 0x40 && prefix <= 0x4F ) {
                         // REX prefix found.
                         prefix_type = IRA_REX;
+                        // Decode fields.
+                        prefixes_fields->is_rex = _IRA_TRUE;
+                        prefixes_fields->w = _IRA_REX_W(prefix);
+                        prefixes_fields->r = _IRA_REX_R(prefix);
+                        prefixes_fields->x = _IRA_REX_X(prefix);
+                        prefixes_fields->b = _IRA_REX_B(prefix);
+                        // REX can not be used together with the VEX at the moment.
+                        vex_illegal_prefixes = _IRA_TRUE;
                     }
                 break;
             }
 
             // Handle VEX prefixes.
-            if( prefix_type == IRA_VEX && !vex_illegal_prefixes ) {
-            	if( context->config->flags & _IRA_CF_ENABLE_VAX ) {
+            if( prefix_type == IRA_VEX ) {
+            	if( context->config->flags & _IRA_CF_ENABLE_VAX && !vex_illegal_prefixes ) {
 
             		uint32_t stream_pos = stream->offset;
 
@@ -528,7 +570,32 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 						}
 					}
 
+					// Decodes VEX fields.
+					switch( prefix_desc->prefix ) {
+					case 0xC4:
+						prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
+						prefixes_fields->x = _IRA_VEX_X(prefix_desc->vex_bytes[0]);
+						prefixes_fields->b = _IRA_VEX_B(prefix_desc->vex_bytes[0]);
+						prefixes_fields->mmmm = _IRA_VEX_MMMM(prefix_desc->vex_bytes[0]);
+						prefixes_fields->w = _IRA_VEX_W(prefix_desc->vex_bytes[1]);
+						prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[1]);
+						prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[1]);
+						prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[1]);
+						break;
+					case 0xC5:
+						prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
+						prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[0]);
+						prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[0]);
+						prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[0]);
+						break;
+					}
+
+					prefixes_fields->is_vex = _IRA_TRUE;
+					prefixes_fields->is_rex = _IRA_FALSE;
+
 					_ira_stream_seek(stream, stream_pos, IRA_START);
+
+					prefix_size += vex_prefix_size;
 
 				} else {
 					// If 0xC5 and 0xC4 can not be treated as a VEX prefix, it
@@ -546,13 +613,15 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
             }
 
         }
-        // Break loop if REX prefix is already found.
-    } while(prefix_type && prefix_type != IRA_REX );
+        // Break loop if REX or VEX prefix is already found.
+    } while(prefix_type && prefix_type != IRA_REX && prefix_type != IRA_VEX );
 
     context->decoding_context.instruction_prefix_count = prefix_index;
 
     // Check if prefixes marked as mandatory are really a mandatory ones.
-    if(prefix_index > 0) {
+    // VEX prefix doesn't allow any mandatory prefixes, so following
+    // code has nothing to do if there is VEX.
+    if( prefix_index > 0 && prefix_type != IRA_VEX ) {
         int found_plain_prefix = 0;
         int i;
         for( i = prefix_index; i > 0; i-- ) {
@@ -1125,6 +1194,14 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
 			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, 0, _IRA_OS_DWORD, NULL, _IRA_OS_DWORD, NULL, &result );
 			break;
+		case _IRA_RM_XMM_L:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, _IRA_RMF_RM, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			break;
+		case _IRA_R_XMM_L:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_XMM, 0, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			break;
 		case _IRA_OSA_MM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_mm_operand_size_provider, 0, &result );
@@ -1256,6 +1333,20 @@ uint8_t _ira_diss_context_get_REX_prefix( struct ira_diss_context *context, int 
 		}
 	}
 	return rex;
+}
+
+struct ira_instruction_prefix* _ira_diss_context_get_prefix_by_type( struct ira_diss_context *context, uint8_t prefix_type ) {
+	struct ira_instruction_prefix* prefix = NULL;
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	int prefix_count = decoding_context->instruction_prefix_count;
+	int i;
+	for( i = 0; i < prefix_count; i++ ) {
+		if( decoding_context->prefixes[i].prefix_type == prefix_type ) {
+			prefix = &(decoding_context->prefixes[i]);
+			break;
+		}
+	}
+	return prefix;
 }
 
 struct ira_instruction_prefix* _ira_diss_context_get_prefix_if_available( struct ira_diss_context *context, uint8_t prefix_value ) {
@@ -1437,9 +1528,6 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 		}
 	}
 
-	// Store REX in result if exists.
-	result->rex = context->decoding_context.mod_rm.raw_rex;
-
 	result->code = RC_OK;
 
 	// Instruction size can be calculated here, and used during post processing phase.
@@ -1578,10 +1666,17 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 	uint8_t reg_num = _ira_get_opcode_byte_field( primary_opcode_byte, _IRA_REG_FIELD_POS, _IRA_REG_FIELD_SIZE );
 
 	// TODO: Get it out of here...it should be in some utility function.
-	int rex_found;
+	/*int rex_found;
 	uint8_t rex = _ira_diss_context_get_REX_prefix( context, &rex_found );
 	if( context->mode == IRA_MOD_64BIT && rex_found ) {
 		if( _IRA_REX_R( rex ) ) {
+			reg_num |= 0x08;
+		}
+	}*/
+
+	struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
+	if( context->mode == IRA_MOD_64BIT && prefixes_fields->is_rex ) {
+		if( prefixes_fields->rex_r ) {
 			reg_num |= 0x08;
 		}
 	}
@@ -2126,13 +2221,17 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 	mod = _IRA_MODRM_MOD(mod_rm);
 	rm = _IRA_MODRM_RM(mod_rm);
 
+	struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
+
 	uint8_t rex = 0;
 
 	// Check if there is REX register and get it.
 	if( _ira_modrm_decoder_get_rex(context, decoded_mod_rm) ) {
-		rex = decoded_mod_rm->raw_rex.value;
-		rm |= ( _IRA_REX_B(rex) << 3 );
+		//rex = decoded_mod_rm->raw_rex.value;
+		//rm |= ( _IRA_REX_B(rex) << 3 );
 	}
+		rm |= ( ( prefixes_fields->rex_b | prefixes_fields->vex_b ) << 3 );
+	//rm |= ( ( prefixes_fields->rex_b | prefixes_fields->vex_b ) << 3 );
 
 	if( mod == 3 ) {
 		// Registers.
@@ -2161,9 +2260,10 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, e
 	// Decodes register if something needs it.
 	if ( flags & _IRA_MOD_RM_FLAGS_DECODE_REG ) {
 		uint8_t reg = _IRA_MODRM_REG_OPCODE(mod_rm);
-		if( decoded_mod_rm->raw_rex.is_not_null ) {
-			reg |= ( _IRA_REX_R(rex) << 3 );
-		}
+		//if( decoded_mod_rm->raw_rex.is_not_null ) {
+		//	reg |= ( _IRA_REX_R(rex) << 3 );
+		//}
+		reg |= ( ( prefixes_fields->rex_r | prefixes_fields->vex_r ) << 3 );
 		decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, reg_type, register_operand_size, reg );
 		decoded_mod_rm->decoded_reg = _IRA_TRUE;
 	}
@@ -2281,13 +2381,21 @@ int _ira_get_effective_osa( struct ira_diss_context *context, uint32_t opcode_fl
 		if( _IRA_OPCODE_FLAGS_FORCE_64BITS_EOSA( opcode_flags ) ) {
 			effective_osa = _IRA_OSA_64;
 		} else {
+
+			struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
+
 			// 0 = Operand Size determined by CS.D, 1 = 64 Bit Operand Size.
-			rex = _ira_diss_context_get_REX_prefix( context, &result );
-			if( result ) {
-				// REX prefix is available, so get W bit.
-				rex_w = _IRA_REX_W( rex );
-			}
-			if( rex_w ) {
+			//rex = _ira_diss_context_get_REX_prefix( context, &result );
+			//if( result ) {
+			//	// REX prefix is available, so get W bit.
+			//	rex_w = _IRA_REX_W( rex );
+			//}
+
+			// TODO: Do zastanowienia, czy faktycznie chcemy miec taki lookup, czy moze za kazdym razem jedzimy po
+			// tablicy prefixow i szukamy jak _ira_diss_context_get_REX_prefix, niby ladniejsze, spojne brak zaleznosci pomiedzy warstwami,
+			// ale z 2 strony mniej wydajne. Do przemyslenia.
+
+			if( prefixes_fields->is_rex && prefixes_fields->rex_w ) {
 				// Prefixes can not override REX.W.
 				effective_osa = _IRA_OSA_64;
 			} else {
@@ -2460,8 +2568,14 @@ uint16_t _ira_util_decode_operand_size( struct ira_diss_context *context, uint16
 	if( provider != NULL ) {
 		operand_size = provider(context);
 	} else {
+		// TODO: Juz nie tylko EOSa ale takze VEX.L, zmienic nazwe parametru moze na jakies auto? nie wiem, do przemyslenia.
 		if( operand_size == _IRA_OS_EOSA ) {
-			operand_size = context->decoding_context.effective_operand_size_attribute;
+			struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
+			if( prefixes_fields->is_vex ) {
+				operand_size = prefixes_fields->vex_l ? 256 : 128;
+			} else {
+				operand_size = context->decoding_context.effective_operand_size_attribute;
+			}
 		} else if( operand_size == _IRA_OS_EASA ) {
 			operand_size = context->decoding_context.effective_address_size_attribute;
 		}

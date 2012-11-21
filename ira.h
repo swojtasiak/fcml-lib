@@ -593,8 +593,6 @@ struct ira_disassemble_result {
 	uint8_t opcodes_count;
 	// Primary opcode byte.
 	uint8_t primary_opcode_index;
-	// REX prefix.
-	n_byte rex;
 	// Instruction size in bytes.
 	uint8_t instruction_size;
 	// Instruction size is limited to 15 bytes.
