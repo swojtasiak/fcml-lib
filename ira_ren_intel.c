@@ -324,6 +324,7 @@ void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stre
 
 	struct _ira_integer size_directive_int;
 
+	// TODO: Rozpoznawac instrukcje SIMD i inne kodowanie ielkosci danych zastosowac XMMWORD itd.
 	switch( size_directive ) {
 	case 0:
 		break;
@@ -347,6 +348,9 @@ void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stre
 		break;
 	case 128:
 		_ira_format_append_str( stream, "oword ptr " );
+		break;
+	case 256:
+		_ira_format_append_str( stream, "ymmword ptr " );
 		break;
 	default:
 		size_directive_int.is_signed = 0;

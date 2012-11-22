@@ -148,12 +148,10 @@ struct ira_diss_context {
 };
 
 /* Returns 1 is there is given prefix found for given instruction. */
-int _ira_diss_context_is_prefix_available(struct ira_diss_context *context,
-		uint8_t prefix);
+int _ira_diss_context_is_prefix_available(struct ira_diss_context *context, uint8_t prefix, uint8_t mandatory );
 
 /* Gets REX prefix. */
-uint8_t _ira_diss_context_get_REX_prefix(struct ira_diss_context *context,
-		int *found);
+uint8_t _ira_diss_context_get_REX_prefix(struct ira_diss_context *context, int *found);
 
 /* Decoding arguments. */
 
@@ -376,6 +374,7 @@ struct ira_instruction_desc {
 #define _IRA_PREFIX_VEX_W_1(x)				_IRA_GET_BIT(x,04)
 #define _IRA_PREFIX_VEX_L_1(x)				_IRA_GET_BIT(x,05)
 #define _IRA_PREFIX_VEX_LEG(x)				_IRA_GET_BIT(x,06)
+#define _IRA_PREFIX_VEX_REQ(x)				_IRA_GET_BIT(x,07)
 #define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
 #define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)
@@ -614,7 +613,7 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_RM_XMM_32_W	( _IRA_OPERAND_MODRM_RM_XMM_32 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R_XMM		_IRA_OPERAND_R(IRA_REG_SIMD, _IRA_OS_XMMWORD )
 #define _IRA_OPERAND_MODRM_R_XMM_W		( _IRA_OPERAND_MODRM_R_XMM | _IRA_WRITE )
-#define _IRA_OPERAND_MODRM_RM_SIMD		_IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_OS_EOSA, _IRA_OS_EOSA, _IRA_RMF_RM )
+#define _IRA_OPERAND_MODRM_RM_SIMD		_IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_EOSA, _IRA_EOS_EOSA, _IRA_RMF_RM )
 #define _IRA_OPERAND_MODRM_RM_SIMD_W	( _IRA_OPERAND_MODRM_RM_SIMD | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_R_SIMD		_IRA_OPERAND_R(IRA_REG_SIMD, _IRA_OS_EOSA )
 #define _IRA_OPERAND_MODRM_R_SIMD_W		( _IRA_OPERAND_MODRM_R_SIMD | _IRA_WRITE )

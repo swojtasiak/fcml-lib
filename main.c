@@ -44,7 +44,8 @@ void test(void) {
 
 
 	// VEX.NDS.128.66.0F 58 /r VADDPD xmm1,xmm2, xmm3/m128 V/V AVX Add packed double-precision floating-point values from xmm3/mem to xmm2 and stores result in xmm1.
-	_TEST32_VEX( "660f581401 addpd xmm2,oword ptr [ecx+eax]", 0xC5, 0xF9, 0x58, 0x14, 0x01 );
+	_TEST32_VEX( "c5f9581401 vaddpd xmm2,xmm0,oword ptr [ecx+eax]", 0xC5, 0xF9, 0x58, 0x14, 0x01 );
+	_TEST32_VEX( "c5fd581401 vaddpd ymm2,ymm0,ymmword ptr [ecx+eax]", 0xC5, 0xFD, 0x58, 0x14, 0x01 );
 
 	_test_vax();
 

@@ -57,9 +57,6 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 /* Factory method that returns operand decoder for given type. */
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type );
 
-/* Returns 1 is there is given prefix found for given instruction. */
-int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix );
-
 /* Gets prefix if it's available. */
 struct ira_instruction_prefix* _ira_diss_context_get_prefix_if_available( struct ira_diss_context *context, uint8_t prefix );
 struct ira_instruction_prefix* _ira_diss_context_get_prefix_by_type( struct ira_diss_context *context, uint8_t prefix_type );
@@ -324,7 +321,11 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 
 	struct ira_diss_tree_instruction_decoding *current = instruction;
 
+	struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
+
 	do {
+
+		// TODO: Moze zastanowic sie nad maskami, geenrowac jakas maske i porownywac z flagami? DO przemyslenia.
 
 		uint32_t opcode_flags = current->opcode_flags;
 
@@ -337,6 +338,19 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		}
 
 		// Check prefixes.
+
+		// VEX required.
+		if( _IRA_PREFIX_VEX_REQ( current->allowed_prefixes ) && !prefixes_fields->is_vex  ) {
+			// VEX prefix is required.
+			continue;
+		}
+
+		if( !_IRA_PREFIX_VEX_REQ( current->allowed_prefixes ) && !_IRA_PREFIX_VEX_LEG( current->allowed_prefixes ) && prefixes_fields->is_vex ) {
+			// VEX prefix is not allowed!
+			continue;
+		}
+
+		// REX.
 		int prefixes_ok = 0;
 		if( _IRA_PREFIX_REX_W_1( current->allowed_prefixes ) ) {
 			int rex_found = 0;
@@ -347,11 +361,11 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		}
 
 		if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
-			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0x66);
+			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0x66, _IRA_TRUE);
 		} else if( _IRA_PREFIX_MANDATORY_F2( current->allowed_prefixes ) ) {
-			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF2);
+			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF2, _IRA_TRUE);
 		} else if( _IRA_PREFIX_MANDATORY_F3( current->allowed_prefixes ) ) {
-			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF3);
+			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF3, _IRA_TRUE);
 		} else {
 			prefixes_ok = 1;
 		}
@@ -1369,8 +1383,22 @@ struct ira_instruction_prefix* _ira_diss_context_get_prefix_if_available( struct
 	return prefix;
 }
 
-int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix ) {
-	return _ira_diss_context_get_prefix_if_available( context, prefix ) != NULL;
+int _ira_diss_context_is_prefix_available( struct ira_diss_context *context, uint8_t prefix, uint8_t mandatory ) {
+	struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
+	// Handle VEX mandatory prefixes.
+	if( mandatory && prefixes_fields->is_vex && prefixes_fields->pp ) {
+		if( prefixes_fields->pp == 0x01 && prefix == 0x66 ) {
+			return _IRA_TRUE;
+		}
+		if( prefixes_fields->pp == 0x02 && prefix == 0xF3 ) {
+			return _IRA_TRUE;
+		}
+		if( prefixes_fields->pp == 0x03 && prefix == 0xF2 ) {
+			return _IRA_TRUE;
+		}
+	}
+	struct ira_instruction_prefix *instruction_prefix = _ira_diss_context_get_prefix_if_available( context, prefix );
+	return mandatory ? ( instruction_prefix != NULL && instruction_prefix->mandatory_prefix ) : ( instruction_prefix != NULL );
 }
 
 /* Streaming. */
@@ -1620,7 +1648,7 @@ int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, str
 		reg.reg_size = _ira_determine_gpr_size( context, reg_type_args->size_attribute_type );
 	}
 	*/
-	if( reg.reg_type == IRA_REG_GPR ) {
+	if( reg.reg_type == IRA_REG_GPR || reg.reg_type == IRA_REG_SIMD ) {
 		// A general purpose register, we should calculate it's size basing on EOSA.
 		reg.reg_size = _ira_util_decode_operand_size( context, reg_type_args->reg.reg_size, NULL );
 	}
@@ -1658,7 +1686,7 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 		reg.reg_size = _ira_determine_gpr_size( context, IRA_SAT_OSA );
 	}
 	*/
-	if( reg.reg_type == IRA_REG_GPR  ) {
+	if( reg.reg_type == IRA_REG_GPR || reg.reg_type == IRA_REG_SIMD ) {
 		// A general purpose register, we should calculate its size basing on EOSA.
 		reg.reg_size = _ira_util_decode_operand_size( context, reg.reg_size, NULL );
 	}
@@ -2094,8 +2122,9 @@ int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_dec
 
 struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size, int reg ) {
 
+	// TODO: Mam wrazenie ze ten kod sie gdzies powtarza.
 	uint16_t reg_size = operand_size;
-	if( reg_type == IRA_REG_GPR ) {
+	if( reg_type == IRA_REG_GPR || reg_type == IRA_REG_SIMD ) {
 		reg_size = _ira_util_decode_operand_size( context, operand_size, NULL );
 	}
 
@@ -2367,7 +2396,7 @@ int _ira_get_effective_asa( struct ira_diss_context *context ) {
 	uint16_t effective_asa = context->address_size_attribute;
 
 	// Checks if address size attribute is overridden.
-	if( _ira_diss_context_is_prefix_available(context, 0x67) ) {
+	if( _ira_diss_context_is_prefix_available(context, 0x67, _IRA_FALSE) ) {
 		switch( context->mode ) {
 		case IRA_MOD_16BIT:
 		case IRA_MOD_32BIT:
