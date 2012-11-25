@@ -347,6 +347,11 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			continue;
 		}
 
+		// Check if VVVV is set to 1111 if needed.
+		if( _IRA_PREFIX_VEX_VVVV( current->allowed_prefixes ) && prefixes_fields->vvvv != 0 ) {
+			continue;
+		}
+
 		// VEX
 		if( _IRA_PREFIX_VEX_W_1( current->allowed_prefixes ) && ( !prefixes_fields->is_vex || !prefixes_fields->w ) ) {
 			continue;
@@ -594,11 +599,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 						prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
 						prefixes_fields->x = _IRA_VEX_X(prefix_desc->vex_bytes[0]);
 						prefixes_fields->b = ( context->mode == IRA_MOD_64BIT ) ? _IRA_VEX_B(prefix_desc->vex_bytes[0]) : 0;
-						// In 32-bit modes, VEX.W must be set to "0" otherwise the AVX form will #UD.
 						prefixes_fields->w = _IRA_VEX_W(prefix_desc->vex_bytes[1]);
-						if( prefixes_fields->w != 0 ) {
-							prefix_type = 0;
-						}
 						prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[1]);
 						prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[1]);
 						prefixes_fields->mmmm = _IRA_VEX_MMMM(prefix_desc->vex_bytes[0]);
@@ -612,7 +613,8 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 						break;
 					}
 
-					if( context->mode == IRA_MOD_32BIT && prefixes_fields->vvvv > 7 ) {
+					// In 32-bit modes, VEX.W must be set to "0" otherwise the AVX form will #UD.
+					if( context->mode == IRA_MOD_32BIT && ( prefixes_fields->vvvv > 7 || prefixes_fields->w != 0 ) ) {
 						prefix_type = 0;
 					}
 

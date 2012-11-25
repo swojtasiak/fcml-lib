@@ -370,11 +370,12 @@ struct ira_instruction_desc {
 /* Prefixes flags. */
 
 // TODO: nadmiarowy! zobacz EOSA restrictions! wywalic, tylko gmatwa (ale czy aby napewno, czasami REX.W podownie jak VEX.W mo¿e spelniac inna role niz tylko zmiaa EOSA.) narazie zostawic, sprawzic po zakonczeniu implementacji disassemlera.
-#define _IRA_PREFIX_REX_W_1(x)				_IRA_GET_BIT(x,03)
-#define _IRA_PREFIX_VEX_W_1(x)				_IRA_GET_BIT(x,04)
-#define _IRA_PREFIX_VEX_L_1(x)				_IRA_GET_BIT(x,05)
-#define _IRA_PREFIX_VEX_L_0(x)				_IRA_GET_BIT(x,06)
-#define _IRA_PREFIX_VEX_REQ(x)				_IRA_GET_BIT(x,07)
+#define _IRA_PREFIX_REX_W_1(x)				_IRA_GET_BIT(x,3)
+#define _IRA_PREFIX_VEX_W_1(x)				_IRA_GET_BIT(x,4)
+#define _IRA_PREFIX_VEX_L_1(x)				_IRA_GET_BIT(x,5)
+#define _IRA_PREFIX_VEX_L_0(x)				_IRA_GET_BIT(x,6)
+#define _IRA_PREFIX_VEX_REQ(x)				_IRA_GET_BIT(x,7)
+#define _IRA_PREFIX_VEX_VVVV(x)				_IRA_GET_BIT(x,8)
 #define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
 #define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)
@@ -617,6 +618,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_R_XMM_W		( _IRA_OPERAND_MODRM_R_XMM | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_RM_SIMD		_IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_EOSA, _IRA_EOS_EOSA, _IRA_RMF_RM )
 #define _IRA_OPERAND_MODRM_RM_SIMD_W	( _IRA_OPERAND_MODRM_RM_SIMD | _IRA_WRITE )
+#define _IRA_OPERAND_MODRM_RM_SIMD_128	_IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_EOSA, _IRA_EOS_OWORD, _IRA_RMF_RM )
+#define _IRA_OPERAND_MODRM_RM_SIMD_128_W	( _IRA_OPERAND_MODRM_RM_SIMD_128 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_RM_SIMD_64	_IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_EOSA, _IRA_EOS_QWORD, _IRA_RMF_RM )
 #define _IRA_OPERAND_MODRM_RM_SIMD_64_W	( _IRA_OPERAND_MODRM_RM_SIMD_64 | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_RM_SIMD_32	_IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_EOSA, _IRA_EOS_DWORD, _IRA_RMF_RM )
