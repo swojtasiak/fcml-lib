@@ -43,9 +43,11 @@ void _test_vax(void);
 void test(void) {
 
 
-	// VEX.NDS.128.66.0F 58 /r VADDPD xmm1,xmm2, xmm3/m128 V/V AVX Add packed double-precision floating-point values from xmm3/mem to xmm2 and stores result in xmm1.
-	_TEST32_VEX( "c5f9581401 vaddpd xmm2,xmm0,oword ptr [ecx+eax]", 0xC5, 0xF9, 0x58, 0x14, 0x01 );
-	_TEST32_VEX( "c5fd581401 vaddpd ymm2,ymm0,ymmword ptr [ecx+eax]", 0xC5, 0xFD, 0x58, 0x14, 0x01 );
+
+	// TODO: W tym przypadku powinno zdekodowaæ do FAIL, a wybiera inna instrukcjê poniewa¿ instrukcja ta nie posiada mandatory opcodes.
+	// Trzeba bêdzie jakos obs³ugiwaæ instrukcje ktotre nie wymagaja manadatory opcode, zeby nie byly wybierane, jak
+	// jakis mandatory opcode wystepuje.
+	// _TEST32_VEX( "FAIL", 0xC5, 0xDF, 0x58, 0x14, 0x01 );
 
 	_test_vax();
 
@@ -1704,12 +1706,36 @@ void test(void) {
 	_TEST64( "0f2f4020 comiss xmm0,dword ptr [rax+0000000000000020h]", 0x0F, 0x2F, 0x40, 0x20, 0x50 );
 	_TEST32( "0f2fc2 comiss xmm0,xmm2", 0x0F, 0x2F, 0xC2 );
 	_TEST32( "0f2f4020 comiss xmm0,dword ptr [eax+00000020h]", 0x0F, 0x2F, 0x40, 0x20, 0x50 );
+	// VEX.128.0F 2F /r VCOMISS xmm1, xmm2/m32
+	_TEST32_VEX( "c4e1402f1401 vcomiss xmm2,qword ptr [ecx+eax]", 0xC4, 0xE1, 0x40, 0x2F, 0x14, 0x01 );
+	_TEST64_VEX( "c441082f1401 vcomiss xmm10,qword ptr [r9+rax]", 0xC4, 0x41, 0x08, 0x2F, 0x14, 0x01 );
 
 	// COMISD
 	_TEST64( "660f2fc2 comisd xmm0,xmm2", 0x66, 0x0F, 0x2F, 0xC2, 0x40, 0x20, 0x50 );
 	_TEST64( "660f2f4020 comisd xmm0,qword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x2F, 0x40, 0x20, 0x50 );
 	_TEST32( "660f2fc2 comisd xmm0,xmm2", 0x66, 0x0F, 0x2F, 0xC2 );
 	_TEST32( "660f2f4020 comisd xmm0,qword ptr [eax+00000020h]", 0x66, 0x0F, 0x2F, 0x40, 0x20, 0x50 );
+	// VEX.128.66.0F 2F /r VCOMISD xmm1, xmm2/m64
+	_TEST32_VEX( "c4e1412f1401 vcomisd xmm2,qword ptr [ecx+eax]", 0xC4, 0xE1, 0x41, 0x2F, 0x14, 0x01 );
+	_TEST64_VEX( "c441092f1401 vcomisd xmm10,qword ptr [r9+rax]", 0xC4, 0x41, 0x09, 0x2F, 0x14, 0x01 );
+
+	// CMPPD
+	_TEST32( "660fc21401ff cmppd xmm2,oword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0xC2, 0x14, 0x01, 0xFF );
+	_TEST64( "660fc21401ff cmppd xmm2,oword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0xC2, 0x14, 0x01, 0xFF );
+	// VEX.NDS.128.66.0F C2 /r ib VCMPPD xmm1, xmm2, xmm3/m128, imm8
+	// VEX.NDS.256.66.0F C2 /r ib VCMPPD ymm1, ymm2, ymm3/m256, imm8
+	_TEST64_VEX( "c4410dc2140120 vcmppd ymm10,ymm14,ymmword ptr [r9+rax],20h", 0xC4, 0x41, 0x0D, 0xC2, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c141c2140120 vcmppd xmm2,xmm7,oword ptr [ecx+eax],20h", 0xC4, 0xC1, 0x41, 0xC2, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c169c2140120 vcmppd xmm2,xmm2,oword ptr [ecx+eax],20h", 0xC4, 0xC1, 0x69, 0xC2, 0x14, 0x01, 0x20 );
+
+	// CMPPS
+	_TEST32( "0fc21401ff cmpps xmm2,oword ptr [ecx+eax],0ffh", 0x0F, 0xC2, 0x14, 0x01, 0xFF );
+	_TEST64( "0fc21401ff cmpps xmm2,oword ptr [rcx+rax],0ffh", 0x0F, 0xC2, 0x14, 0x01, 0xFF );
+	// VEX.NDS.128.0F C2 /r ib VCMPPS xmm1, xmm2, xmm3/m128, imm8
+	// VEX.NDS.256.0F C2 /r ib VCMPPS ymm1, ymm2, ymm3/m256, imm8
+	_TEST64_VEX( "c4410cc2140120 vcmpps ymm10,ymm14,ymmword ptr [r9+rax],20h", 0xC4, 0x41, 0x0C, 0xC2, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "c4c108c2140120 vcmpps xmm2,xmm14,oword ptr [r9+rax],20h", 0xC4, 0xC1, 0x08, 0xC2, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c168c2140120 vcmpps xmm2,xmm2,oword ptr [ecx+eax],20h", 0xC4, 0xC1, 0x68, 0xC2, 0x14, 0x01, 0x20 );
 
 	// CMPS
 	// A6
@@ -1736,16 +1762,22 @@ void test(void) {
 	_TEST64( "0fc749ff cmpxchg8b qword ptr [rcx+0ffffffffffffffffh]", 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
 	_TEST32( "0fc749ff cmpxchg8b qword ptr [ecx+0ffffffffh]", 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
 
-	// TODO: Testy dla CMP, CMPPD
+	// TODO: Testy dla CMP,
 
 	// CMPSS
 	// dodac support dla mmword i odkomentowac.
 	_TEST64( "f30fc2402050 cmpss xmm0,dword ptr [rax+0000000000000020h],50h", 0xF3, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
 	_TEST32( "f30fc2402050 cmpss xmm0,dword ptr [eax+00000020h],50h", 0xF3, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+	// VEX.NDS.128.F3.0F C2 /r ib VCMPSS xmm1, xmm2, xmm3/m32, imm8
+	_TEST32_VEX( "c4e142c2140120 vcmpss xmm2,xmm7,dword ptr [ecx+eax],20h", 0xC4, 0xE1, 0x42, 0xC2, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "c4410ac2140120 vcmpss xmm10,xmm14,dword ptr [r9+rax],20h", 0xC4, 0x41, 0x0A, 0xC2, 0x14, 0x01, 0x20 );
 
 	// CMPSD
 	_TEST32( "f20fc2402050 cmpsd xmm0,qword ptr [eax+00000020h],50h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
 	_TEST64( "f20fc2402050 cmpsd xmm0,qword ptr [rax+0000000000000020h],50h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x50 );
+	// VEX.NDS.128.F2.0F C2 /r ib VCMPSD xmm1, xmm2, xmm3/m64, imm8
+	_TEST32_VEX( "c4e143c2140120 vcmpsd xmm2,xmm7,qword ptr [ecx+eax],20h", 0xC4, 0xE1, 0x43, 0xC2, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "c4410bc2140120 vcmpsd xmm10,xmm14,qword ptr [r9+rax],20h", 0xC4, 0x41, 0x0B, 0xC2, 0x14, 0x01, 0x20 );
 
 	// JMP
 	_TEST32( "ebff jmp 00401001h", 0xeb, 0xff );
@@ -2017,8 +2049,25 @@ void test(void) {
 	_TEST64( "4d03648901 add r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x03, 0x64, 0x89, 0x01 );
 
 	// ADDPD
+	// 66 0F 58 /r ADDPD xmm1, xmm2/m128
 	_TEST32( "660f581401 addpd xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x58, 0x14, 0x01 );
 	_TEST64( "660f581401 addpd xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x58, 0x14, 0x01 );
+	// VADDPD
+	// VEX.NDS.128.66.0F 58 /r VADDPD xmm1,xmm2, xmm3/m128
+	// VAX.X
+	_TEST64_VEX( "c4010d581401 vaddpd ymm10,ymm14,ymmword ptr [r9+r8]", 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 );
+	// VAX.R VAX.B (3 byte VAX prefix.)
+	_TEST64_VEX( "c4410d581401 vaddpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x58, 0x14, 0x01 );
+	_TEST64_VEX( "c4c109581401 vaddpd xmm2,xmm14,oword ptr [r9+rax]", 0xC4, 0xC1, 0x09, 0x58, 0x14, 0x01 );
+	_TEST32_VEX( "c4c169581401 vaddpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x58, 0x14, 0x01 );
+	// VAX.mmmm
+	_TEST32_VEX( "c4c16d581401 vaddpd ymm2,ymm2,ymmword ptr [ecx+eax]", 0xC4, 0xC1, 0x6D, 0x58, 0x14, 0x01 );
+	// VAX.L (0)
+	_TEST32_VEX( "c5f9581401 vaddpd xmm2,xmm0,oword ptr [ecx+eax]", 0xC5, 0xF9, 0x58, 0x14, 0x01 );
+	/// VAX.R (2 byte VAX prefix.)
+	_TEST64_VEX( "c55d581401 vaddpd ymm10,ymm4,ymmword ptr [rcx+rax]", 0xC5, 0x5D, 0x58, 0x14, 0x01 );
+	// VAX.vvvv, VAX.L(1), VAX.pp
+	_TEST32_VEX( "c5fd581401 vaddpd ymm2,ymm0,ymmword ptr [ecx+eax]", 0xC5, 0xFD, 0x58, 0x14, 0x01 );
 
 	// ADDPS
 	_TEST32( "0f581401 addps xmm2,oword ptr [ecx+eax]", 0x0F, 0x58, 0x14, 0x01 );
@@ -2027,18 +2076,40 @@ void test(void) {
 	// ADDSD
 	_TEST32( "f20f581401 addsd xmm2,qword ptr [ecx+eax]", 0xF2, 0x0F, 0x58, 0x14, 0x01 );
 	_TEST64( "f20f581401 addsd xmm2,qword ptr [rcx+rax]", 0xF2, 0x0F, 0x58, 0x14, 0x01 );
+	// VADDSD
+	_TEST32_VEX( "c4e153581401 vaddsd xmm2,xmm5,qword ptr [ecx+eax]", 0xC4, 0xE1, 0x53, 0x58, 0x14, 0x01 );
+	_TEST32_VEX( "c5db581401 vaddsd xmm2,xmm4,qword ptr [ecx+eax]", 0xC5, 0xDB, 0x58, 0x14, 0x01 );
+	// TODO: W tym przypadku powinno zdekodowaæ do FAIL, a wybiera inna instrukcjê poniewa¿ instrukcja ta nie posiada mandatory opcodes.
+	// Trzeba bêdzie jakos obs³ugiwaæ instrukcje ktotre nie wymagaja manadatory opcode, zeby nie byly wybierane, jak
+	// jakis mandatory opcode wystepuje.
+	// _TEST32_VEX( "FAIL", 0xC5, 0xDF, 0x58, 0x14, 0x01 );
+
 
 	// ADDSS
 	_TEST32( "f30f581401 addss xmm2,dword ptr [ecx+eax]", 0xF3, 0x0F, 0x58, 0x14, 0x01 );
 	_TEST64( "f30f581401 addss xmm2,dword ptr [rcx+rax]", 0xF3, 0x0F, 0x58, 0x14, 0x01 );
+	// VEX.NDS.128.F3.0F 58 /r VADDSS xmm1,xmm2, xmm3/m32
+	_TEST32_VEX( "c4e152581401 vaddss xmm2,xmm5,dword ptr [ecx+eax]", 0xC4, 0xE1, 0x52, 0x58, 0x14, 0x01 );
+	_TEST32_VEX( "c5da581401 vaddss xmm2,xmm4,dword ptr [ecx+eax]", 0xC5, 0xDA, 0x58, 0x14, 0x01 );
 
 	// ADDSUBPD
 	_TEST32( "660fd01401 addsubpd xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0xD0, 0x14, 0x01 );
 	_TEST64( "660fd01401 addsubpd xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0xD0, 0x14, 0x01 );
+	// VEX.NDS.128.66.0F D0 /r VADDSUBPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F D0 /r VADDSUBPD ymm1, ymm2,ymm3/m256
+	_TEST64_VEX( "c4410dd01401 vaddsubpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0xD0, 0x14, 0x01 );
+	_TEST32_VEX( "c4c141d01401 vaddsubpd xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0xD0, 0x14, 0x01 );
+	_TEST32_VEX( "c4c169d01401 vaddsubpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0xD0, 0x14, 0x01 );
 
 	// ADDSUBPS
 	_TEST32( "f20fd01401 addsubps xmm2,oword ptr [ecx+eax]", 0xf2, 0x0F, 0xD0, 0x14, 0x01 );
 	_TEST64( "f20fd01401 addsubps xmm2,oword ptr [rcx+rax]", 0xf2, 0x0F, 0xD0, 0x14, 0x01 );
+	// VEX.NDS.128.F2.0F D0 /r VADDSUBPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.F2.0F D0 /r VADDSUBPS ymm1, ymm2,ymm3/m256
+	_TEST64_VEX( "c4410fd01401 vaddsubps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0F, 0xD0, 0x14, 0x01 );
+	_TEST64_VEX( "c4c10bd01401 vaddsubps xmm2,xmm14,oword ptr [r9+rax]", 0xC4, 0xC1, 0x0B, 0xD0, 0x14, 0x01 );
+	_TEST32_VEX( "c4c16bd01401 vaddsubps xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x6B, 0xD0, 0x14, 0x01 );
+	_TEST32_VEX( "c5cbd01401 vaddsubps xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xCB, 0xD0, 0x14, 0x01 );
 
 	// AESDEC
 	_TEST32( "660f38de1401 aesdec xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDE, 0x14, 0x01 );
@@ -2133,18 +2204,42 @@ void test(void) {
 	// ANDPD
 	_TEST32( "660f541401 andpd xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x54, 0x14, 0x01 );
 	_TEST64( "660f541401 andpd xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x54, 0x14, 0x01 );
+	// VEX.NDS.128.66.0F 54 /r VANDPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F 54 /r VANDPD ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4410d541401 vandpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x54, 0x14, 0x01 );
+	_TEST32_VEX( "c4c141541401 vandpd xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0x54, 0x14, 0x01 );
+	_TEST32_VEX( "c4c169541401 vandpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x54, 0x14, 0x01 );
+	_TEST32_VEX( "c5c9541401 vandpd xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xC9, 0x54, 0x14, 0x01 );
 
 	// ANDPS
 	_TEST32( "0f541401 andps xmm2,oword ptr [ecx+eax]", 0x0F, 0x54, 0x14, 0x01 );
 	_TEST64( "0f541401 andps xmm2,oword ptr [rcx+rax]", 0x0F, 0x54, 0x14, 0x01 );
+	// VEX.NDS.128.0F 54 /r VANDPS xmm1,xmm2, xmm3/m128
+	// VEX.NDS.256.0F 54 /r VANDPS ymm1, ymm2, ymm3/m256
+	_TEST64_VEX( "c4410c541401 vandps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0C, 0x54, 0x14, 0x01 );
+	_TEST32_VEX( "c4c140541401 vandps xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x40, 0x54, 0x14, 0x01 );
+	_TEST32_VEX( "c4c168541401 vandps xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x68, 0x54, 0x14, 0x01 );
+	_TEST32_VEX( "c5c8541401 vandps xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xC8, 0x54, 0x14, 0x01 );
 
 	// ANDNPD
 	_TEST32( "660f551401 andnpd xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x55, 0x14, 0x01 );
 	_TEST64( "660f551401 andnpd xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x55, 0x14, 0x01 );
+	// VEX.NDS.128.66.0F 55 /r VANDNPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F 55 /r VANDNPD ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4410d551401 vandnpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x55, 0x14, 0x01 );
+	_TEST32_VEX( "c4c141551401 vandnpd xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0x55, 0x14, 0x01 );
+	_TEST32_VEX( "c4c169551401 vandnpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x55, 0x14, 0x01 );
+	_TEST32_VEX( "c5c9551401 vandnpd xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xC9, 0x55, 0x14, 0x01 );
 
 	// ANDNPS
 	_TEST32( "0f551401 andnps xmm2,oword ptr [ecx+eax]", 0x0F, 0x55, 0x14, 0x01 );
 	_TEST64( "0f551401 andnps xmm2,oword ptr [rcx+rax]", 0x0F, 0x55, 0x14, 0x01 );
+	// VEX.NDS.128.0F 55 /r VANDNPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F 55 /r VANDNPS ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4410c551401 vandnps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0C, 0x55, 0x14, 0x01 );
+	_TEST32_VEX( "c4c140551401 vandnps xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x40, 0x55, 0x14, 0x01 );
+	_TEST32_VEX( "c4c168551401 vandnps xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x68, 0x55, 0x14, 0x01 );
+	_TEST32_VEX( "c5c8551401 vandnps xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xC8, 0x55, 0x14, 0x01 );
 
 	// ARPL
 	_TEST32( "631401 arpl word ptr [ecx+eax],dx", 0x63, 0x14, 0x01 );
@@ -2155,20 +2250,49 @@ void test(void) {
 	// BLENDPD
 	_TEST32( "660f3a0d1401ff blendpd xmm2,oword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0x3a, 0x0D, 0x14, 0x01, 0xFF );
 	_TEST64( "660f3a0d1401ff blendpd xmm2,oword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3a, 0x0D, 0x14, 0x01, 0xFF );
+	// VEX.NDS.128.66.0F3A 0D /r ib VBLENDPD xmm1,xmm2,xmm3/m128,imm8
+	// VEX.NDS.256.66.0F3A 0D /r ib VBLENDPD ymm1,ymm2,ymm3/m256,imm8
+	_TEST64_VEX( "c4430d0d140120 vblendpd ymm10,ymm14,ymmword ptr [r9+rax],20h", 0xC4, 0x43, 0x0D, 0x0D, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c3410d140120 vblendpd xmm2,xmm7,oword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x41, 0x0D, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c3690d140120 vblendpd xmm2,xmm2,oword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x69, 0x0D, 0x14, 0x01, 0x20 );
 
 	// BLENDPS
 	_TEST32( "660f3a0c1401ff blendps xmm2,oword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0x3a, 0x0C, 0x14, 0x01, 0xFF );
 	_TEST64( "660f3a0c1401ff blendps xmm2,oword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3a, 0x0C, 0x14, 0x01, 0xFF );
-
-	//0x0F, 0x38, 0x15
+	// VEX.NDS.128.66.0F3A 0C /r ib VBLENDPS xmm1,xmm2,xmm3/m128,imm8
+	// VEX.NDS.256.66.0F3A 0C /r ib VBLENDPS ymm1,ymm2,ymm3/m256,imm8
+	_TEST64_VEX( "c4430d0c140120 vblendps ymm10,ymm14,ymmword ptr [r9+rax],20h", 0xC4, 0x43, 0x0D, 0x0C, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c3410c140120 vblendps xmm2,xmm7,oword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x41, 0x0C, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c3690c140120 vblendps xmm2,xmm2,oword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x69, 0x0C, 0x14, 0x01, 0x20 );
 
 	// BLENDVPD
 	_TEST32( "660f38151401 blendvpd xmm2,oword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01, 0xFF );
 	_TEST64( "660f38151401 blendvpd xmm2,oword ptr [rcx+rax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01, 0xFF );
+	// VEX.NDS.128.66.0F3A 4B /r /is4 VBLENDVPD xmm1, xmm2, xmm3/m128, xmm4
+	// VEX.NDS.256.66.0F3A 4B /r /is4 VBLENDVPD ymm1, ymm2, ymm3/m256, ymm4
+	_TEST64_VEX( "c4430d4b1401 vblendvpd ymm10,ymm14,ymmword ptr [r9+rax],ymm2", 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c3414b1401 vblendvpd xmm2,xmm7,oword ptr [ecx+eax],xmm2", 0xC4, 0xC3, 0x41, 0x4B, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c3694b1401 vblendvpd xmm2,xmm2,oword ptr [ecx+eax],xmm2", 0xC4, 0xC3, 0x69, 0x4B, 0x14, 0x01, 0xA0 );
 
 	// BLENDVPS
 	_TEST32( "660f38141401 blendvps xmm2,oword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x14, 0x14, 0x01, 0xFF );
 	_TEST64( "660f38141401 blendvps xmm2,oword ptr [rcx+rax],xmm0", 0x66, 0x0F, 0x38, 0x14, 0x14, 0x01, 0xFF );
+	// VEX.NDS.128.66.0F3A 4A /r /is4 VBLENDVPS xmm1, xmm2, xmm3/m128, xmm4
+	// VEX.NDS.256.66.0F3A 4A /r /is4 VBLENDVPS ymm1, ymm2, ymm3/m256, ymm4
+	_TEST64_VEX( "c4430d4a1401 vblendvps ymm10,ymm14,ymmword ptr [r9+rax],ymm2", 0xC4, 0x43, 0x0D, 0x4A, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c3414a1401 vblendvps xmm2,xmm7,oword ptr [ecx+eax],xmm2", 0xC4, 0xC3, 0x41, 0x4A, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4c3694a1401 vblendvps xmm2,xmm2,oword ptr [ecx+eax],xmm2", 0xC4, 0xC3, 0x69, 0x4A, 0x14, 0x01, 0xA0 );
+
+	// VBROADCASTSS
+	// VEX.128.66.0F38 18 /r VBROADCASTSS xmm1, m32
+	// VEX.256.66.0F38 18 /r VBROADCASTSS ymm1, m32
+	_TEST32_VEX( "c4e249181401 vbroadcastss xmm2,dword ptr [ecx+eax]", 0xC4, 0xE2, 0x49, 0x18, 0x14, 0x01 );
+	_TEST32_VEX( "c4e24d181401 vbroadcastss ymm2,dword ptr [ecx+eax]", 0xC4, 0xE2, 0x4D, 0x18, 0x14, 0x01 );
+	// VEX.256.66.0F38 19 /r VBROADCASTSD ymm1, m64
+	_TEST32_VEX( "FAIL", 0xC4, 0xE2, 0x49, 0x19, 0x14, 0x01 );
+	_TEST32_VEX( "c4e24d191401 vbroadcastsd ymm2,qword ptr [ecx+eax]", 0xC4, 0xE2, 0x4D, 0x19, 0x14, 0x01 );
+	// VEX.256.66.0F38 1A /r VBROADCASTF128 ymm1, m128
+	_TEST32_VEX( "c4e24d1a1401 vbroadcastf128 ymm2,oword ptr [ecx+eax]", 0xC4, 0xE2, 0x4D, 0x1A, 0x14, 0x01 );
 
 	// BOUND
 	_TEST32( "6230 bound esi,qword ptr [eax]", 0x62, 0x30 );

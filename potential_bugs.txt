@@ -114,3 +114,19 @@ _TEST64( "480f015020 lgdt tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 
 488c10 mov qword ptr [rax],ss
 8c10 mov word ptr [rax],ss
 
+13. 
+
+c4c3094b140120  vblendpd ymm2,ymm14,xmmword ptr [r9+rax],20
+
+Powinno byæ:
+
+14.
+
+00401000 c4e249181401    vbroadcastss ymm2,dword ptr [ecx+eax] ds:002b:76bf3398=8b55ff8b
+00401006 c4e24d181401    vbroadcastss ymm2,dword ptr [ecx+eax]
+
+-->
+
+_TEST32_VEX( "c4e249181401 vbroadcastss xmm2,dword ptr [ecx+eax]", 0xC4, 0xE2, 0x49, 0x18, 0x14, 0x01 );
+_TEST32_VEX( "c4e24d181401 vbroadcastss ymm2,dword ptr [ecx+eax]", 0xC4, 0xE2, 0x4D, 0x18, 0x14, 0x01 );
+

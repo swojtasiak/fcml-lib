@@ -16,3 +16,5 @@ dotaja DS.
 Dodaæ renderowanie rjestrów segmentowych.
 
 Podczas assemblacji dodaæ obs³ugê: CMPSW/CMPSD/CMPSQ
+
+Dodaæ mo¿liwoœæ dodawania warningów podczas disassemblacji, i dodawania kilku do kontekstu.

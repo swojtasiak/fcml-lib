@@ -112,6 +112,7 @@ int _ira_opcode_decoder_immediate_relative_dis( struct ira_diss_context *context
 int _ira_opcode_decoder_seg_relative_offset( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_VEX_vvvv( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
+int _ira_opcode_decoder_VEX_is4( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 
 /* Arguments allocators. */
 
@@ -140,6 +141,7 @@ uint8_t _ira_util_override_segment_reg( struct ira_diss_context *context, uint8_
 /* Post processing handlers. */
 
 int ira_relative_addressing_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] );
+int ira_is4_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] );
 
 /* Decoders' helpers methods. */
 
@@ -345,8 +347,12 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			continue;
 		}
 
-		if( !_IRA_PREFIX_VEX_REQ( current->allowed_prefixes ) && !_IRA_PREFIX_VEX_LEG( current->allowed_prefixes ) && prefixes_fields->is_vex ) {
-			// VEX prefix is not allowed!
+		// VEX
+		if( _IRA_PREFIX_VEX_W_1( current->allowed_prefixes ) && ( !prefixes_fields->is_vex || !prefixes_fields->w ) ) {
+			continue;
+		}
+		if( ( _IRA_PREFIX_VEX_L_1( current->allowed_prefixes ) && ( !prefixes_fields->is_vex || !prefixes_fields->l ) ) ||
+			( _IRA_PREFIX_VEX_L_0( current->allowed_prefixes ) && ( !prefixes_fields->is_vex || prefixes_fields->l ) ) ) {
 			continue;
 		}
 
@@ -606,6 +612,11 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 						break;
 					}
 
+					if( context->mode == IRA_MOD_32BIT && prefixes_fields->vvvv > 7 ) {
+						prefix_type = 0;
+					}
+
+					prefixes_fields->vex_prefix = prefix;
 					prefixes_fields->is_vex = _IRA_TRUE;
 					prefixes_fields->is_rex = _IRA_FALSE;
 
@@ -963,6 +974,8 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 
 	int order = 0;
 
+	// TODO: Sprobowac przeprojektowac to, te kolejnosci sa strasznie zagmatwane.
+
 	// Mandatory prefix.
 	if( _IRA_PREFIX_MANDATORY_66(prefixes) | _IRA_PREFIX_MANDATORY_F2(prefixes) | _IRA_PREFIX_MANDATORY_F3(prefixes) ) {
 		order++;
@@ -973,8 +986,13 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 		order++;
 	}
 
+	if( _IRA_PREFIX_VEX_REQ( prefixes ) ) {
+		order++;
+	}
+
 	// REX prefix.
-	if( _IRA_PREFIX_REX_W_1( prefixes ) ) {
+	if( _IRA_PREFIX_REX_W_1( prefixes ) || _IRA_PREFIX_VEX_W_1( prefixes ) ||
+		_IRA_PREFIX_VEX_L_1( prefixes ) || _IRA_PREFIX_VEX_L_0( prefixes ) ) {
 		order += 2;
 	}
 
@@ -1314,6 +1332,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		break;
 	case _IRA_VEX_VVVV_REG:
 		operand_decoding->decoder = &_ira_opcode_decoder_VEX_vvvv;
+		operand_decoding->args = NULL;
+		break;
+	case _IRA_OPERAND_IS4:
+		operand_decoding->decoder = &_ira_opcode_decoder_VEX_is4;
 		operand_decoding->args = NULL;
 		break;
 	default:
@@ -1719,6 +1741,15 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 
 	operand_wrapper->operand.operand_type = IRA_REGISTER;
 	operand_wrapper->operand.reg = reg;
+
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int _ira_opcode_decoder_VEX_is4( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+
+	// TODO: Refektorowac, przerobic na analize operandow i jezeli jest taka potrzeba w PRE procesingu dekodowac pelny ModRM, zeby mozna bylo
+	// pozniej pobierac dane znajdujace sie za modrm.
+	operand_wrapper->post_processor = &ira_is4_instruction_operand_handler;
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }
@@ -2529,6 +2560,24 @@ int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediat
 }
 
 // Post processor handlers.
+
+int ira_is4_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] ) {
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_decoded_fields *prefixes_fields = &(decoding_context->prefixes_fields);
+
+	int result;
+	uint8_t imm8 = _ira_stream_read( context->stream, &result );
+	if( !result ) {
+		return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
+	} else {
+		operand->operand_type = IRA_REGISTER;
+		operand->reg.reg_size = ( prefixes_fields->l ) ? _IRA_OS_YMMWORD : _IRA_OS_XMMWORD;
+		operand->reg.reg_type = IRA_REG_SIMD;
+		operand->reg.reg = ( ( context->mode == IRA_MOD_32BIT ) ? ( 0x70 & imm8 ) : ( 0xF0 & imm8 ) ) >> 4;
+		return _IRA_INT_ERROR_NO_ERROR;
+	}
+}
 
 int ira_relative_addressing_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] ) {
 
