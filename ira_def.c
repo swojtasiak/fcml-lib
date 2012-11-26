@@ -831,32 +831,52 @@ struct ira_opcode_desc _ira_opcode_desc_DIV[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_DIVPD[] = {
 	// 66 0F 5E /r DIVPD xmm1, xmm2/m128 A Valid Valid Divide packed doubleprecision floating-point values in xmm1 by packed double-precision floatingpoint values xmm2/m128.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F 5E /r VDIVPD xmm1, xmm2, xmm3/m128
+	// VEX.NDS.256.66.0F 5E /r VDIVPD ymm1, ymm2, ymm3/m256
+	{ "vdivpd", 0x1080, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_DIVPS[] = {
 	// 0F 5E /r DIVPS xmm1, xmm2/m128 A Valid Valid Divide packed singleprecision floating-point values in xmm1 by packed single-precision floatingpoint values xmm2/m128.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.0F 5E /r VDIVPS xmm1, xmm2, xmm3/m128
+	// VEX.NDS.256.0F 5E /r VDIVPS ymm1, ymm2, ymm3/m256
+	{ "vdivps", 0x0080, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_DIVSD[] = {
 	// F2 0F 5E /r DIVSD xmm1, xmm2/m64 A Valid Valid Divide low double-precision floating-point value n xmm1 by low double-precision floating-point value in xmm2/mem64.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.F2.0F 5E /r VDIVSD xmm1, xmm2, xmm3/m64
+	{ "vdivsd", 0x20C0, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_64, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_DIVSS[] = {
 	// F3 0F 5E /r DIVSS xmm1, xmm2/m32 A Valid Valid Divide low single-precision floating-point value in xmm1 by low singleprecision floating-point value in xmm2/m32.
-	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.F3.0F 5E /r VDIVSS xmm1, xmm2, xmm3/m32
+	{ "vdivss", 0x40C0, 0x00D88000, { 0x0F, 0x5E, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_32, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_DPPD[] = {
 	// 66 0F 3A 41 /r ib DPPD xmm1, xmm2/m128, imm8 A Valid Valid Selectively multiply packed DP floating-point values from xmm1 with packed DP floating-point values from xmm2, add and selectively store the packed DP floating-point values to xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x41 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x41 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.NDS.128.66.0F3A 41 /r ib VDPPD xmm1,xmm2,xmm3/m128,imm8
+	{ "vdppd", 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x41 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_64, _IRA_OPERAND_IB }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_DPPS[] = {
 	// 66 0F 3A 40 /r ib DPPS xmm1, xmm2/m128, imm8 A Valid Valid Selectively multiply packed SP floating-point values from xmm1 with packed SP floating-point values from xmm2, add and selectively store the packed SP floating-point values or zero values to xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.NDS.128.66.0F3A 40 /r ib VDPPS xmm1,xmm2,xmm3/m128,imm8
+	// VEX.NDS.256.66.0F3A 40 /r ib VDPPS ymm1,ymm2,ymm3/m256,imm8
+	{ "vdpps", 0x1080, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VEXTRACTF128[] = {
+	// VEX.256.66.0F3A 19 /r ib VEXTRACTF128 xmm1/m128,ymm2,imm8
+	{ "vextractf128", 0x11A0, 0x00EC8000, { 0x0F, 0x3A, 0x19 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_SIMD, _IRA_OPERAND_IB, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_EMMS[] = {
@@ -872,8 +892,10 @@ struct ira_opcode_desc _ira_opcode_desc_ENTER[] = {
 };
 
 struct ira_opcode_desc _ira_opcode_desc_EXTRACTPS[] = {
-	// 66 0F 3A 17 /r ib EXTRACTPS reg/m32, xmm2, imm8 A Valid Valid Extract a single-precision floating-point value from xmm2 at the source offset specified by imm8 and store the result to reg or m32. The upper 32 bits of r64 is zeroed if reg is r64.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, _IRA_OPERAND_MODRM_RM_32_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_IB, _IRA_NA }
+	// 66 0F 3A 17 /r ib EXTRACTPS reg/m32, xmm2, imm8 A Valid Valid Extract a single-precision floating-point value from xmm2 at the source offset specified by imm8 and store the result to reg or m32. The upper 32 bits of r64 is zeroed if reg is r64.,
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, _IRA_OPERAND_MODRM_RM_32_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.128.66.0F3A 17 /r ib VEXTRACTPS r/m32, xmm1, imm8
+	{ "vextractps", 0x11C0, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, _IRA_OPERAND_MODRM_RM_32_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_IB, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_F2XM1[] = {
@@ -1306,12 +1328,18 @@ struct ira_opcode_desc _ira_opcode_desc_FYL2XP1[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_HADDPD[] = {
 	// 66 0F 7C /r HADDPD xmm1, xmm2/m128 A Valid Valid Horizontal add packed double-precision floatingpoint values from xmm2/m128 to xmm1.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F 7C /r VHADDPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F 7C /r VHADDPD ymm1,ymm2,ymm3/m256
+	{ "vhaddpd", 0x1080, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_HADDPS[] = {
 	// F2 0F 7C /r HADDPS xmm1, xmm2/m128 A Valid Valid Horizontal add packed single-precision floatingpoint values from xmm2/m128 to xmm1.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.F2.0F 7C /r VHADDPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.F2.0F 7C /r VHADDPS ymm1,ymm2,ymm3/m256
+	{ "vhaddps", 0x2080, 0x00D88000, { 0x0F, 0x7C, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_HLT[] = {
@@ -1321,12 +1349,18 @@ struct ira_opcode_desc _ira_opcode_desc_HLT[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_HSUBPD[] = {
 	// 66 0F 7D /r HSUBPD xmm1, xmm2/m128A Valid Valid Horizontal subtract packed double-precision floating pointvalues from xmm2/m128 to xmm1.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x7D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x7D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F 7D /r VHSUBPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F 7D /r VHSUBPD ymm1,ymm2,ymm3/m256
+	{ "vhsubpd", 0x1080, 0x00D88000, { 0x0F, 0x7D, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_HSUBPS[] = {
 	// F2 0F 7D /r HSUBPS xmm1, xmm2/m128 A Valid Valid Horizontal subtract packedsingle-precision floatingpoint values from xmm2/m128 to xmm1.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x7D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x7D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.F2.0F 7D /r VHSUBPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.F2.0F 7D /r VHSUBPS ymm1,ymm2,ymm3/m256
+	{ "vhsubps", 0x2080, 0x00D88000, { 0x0F, 0x7D, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_IDIV[] = {
@@ -2179,6 +2213,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "dppd", _ira_opcode_desc_DPPD),
 		_IA_INSTRUCTION( "dpps", _ira_opcode_desc_DPPS),
 		_IA_INSTRUCTION( "emms", _ira_opcode_desc_EMMS),
+		_IA_INSTRUCTION( "vextractf128", _ira_opcode_desc_VEXTRACTF128),
 		_IA_INSTRUCTION( "enter", _ira_opcode_desc_ENTER),
 		_IA_INSTRUCTION( "extractps", _ira_opcode_desc_EXTRACTPS),
 		_IA_INSTRUCTION( "f2xm1", _ira_opcode_desc_F2XM1),
