@@ -1448,7 +1448,14 @@ struct ira_opcode_desc _ira_opcode_desc_INS[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_INSERTPS[] = {
 	// 66 0F 3A 21 /r ib INSERTPS xmm1, xmm2/m32, imm8 A Valid Valid Insert a single precision floating-point value selected by imm8 from xmm2/m32 into xmm1 at the specified destination element specified by imm8 and zero out destination elements in xmm1 as indicated in imm8.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x021 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_OPERAND_IB, _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x021 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.NDS.128.66.0F3A 21 /r ib VINSERTPS xmm1,xmm2,xmm3/m32,imm8
+	{ "vinsertps", 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x21 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VINSERTF128[] = {
+	// VEX.NDS.256.66.0F3A 18 /r ib VINSERTF128 ymm1,ymm2,xmm3/m128,imm8
+	{ "vinsertf128", 0x10A0, 0x00EC8000, { 0x0F, 0x3A, 0x18 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_INT[] = {
@@ -1501,7 +1508,15 @@ struct ira_opcode_desc _ira_opcode_desc_LAR[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_LDDQU[] = {
 	// F2 0F F0 /r LDDQU xmm1, mem A Valid Valid Load unaligned data from mem and return double quadword in xmm1.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xF0, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA }
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xF0, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA },
+	// VEX.128.F2.0F F0 /r VLDDQU xmm1, m128
+	// VEX.256.F2.0F F0 /r VLDDQU ymm1, m256
+	{ "vlddqu", 0x2180, 0x80D88000, { 0x0F, 0xF0, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_EOSA, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VLDMXCSR[] = {
+	// VEX.128.0F AE /2 VLDMXCSR m32
+	{ NULL, 0x01C0, 0x80D99000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_DWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_LDMXCSR[] = {
@@ -1614,7 +1629,24 @@ struct ira_opcode_desc _ira_opcode_desc_LTR[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_MASKMOVDQU[] = {
 	// 66 0F F7 /r MASKMOVDQU xmm1, xmm2 A Valid Valid Selectively write bytes from xmm1 to memory location using the byte mask in xmm2. The default memory location is specified by DS:EDI/RDI.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_R( IRA_REG_SIMD, _IRA_OS_OWORD ), _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_OWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_R( IRA_REG_SIMD, _IRA_OS_OWORD ), _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_OWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F F7 /r VMASKMOVDQU xmm1,xmm2
+	{ "vmaskmovdqu", 0x11C0, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_R( IRA_REG_SIMD, _IRA_OS_XMMWORD ), _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_OS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VMASKMOVP[] = {
+	// VEX.NDS.128.66.0F38 2C /r VMASKMOVPS xmm1,xmm2,m128
+	// VEX.NDS.256.66.0F38 2C /r VMASKMOVPS ymm1,ymm2,m256
+	{ "vmaskmovps", 0x1080, 0x00EC8000, { 0x0F, 0x38, 0x2C }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_M_SIMD, _IRA_NA },
+	// VEX.NDS.128.66.0F38 2D /r VMASKMOVPD xmm1,xmm2,m128
+	// VEX.NDS.256.66.0F38 2D /r VMASKMOVPD ymm1,ymm2,m256
+	{ "vmaskmovpd", 0x1080, 0x00EC8000, { 0x0F, 0x38, 0x2D }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_M_SIMD, _IRA_NA },
+	// VEX.NDS.128.66.0F38 2E /r VMASKMOVPS m128,xmm1,xmm2
+	// VEX.NDS.256.66.0F38 2E /r VMASKMOVPS m256,ymm1,ymm2
+	{ "vmaskmovps", 0x1080, 0x00EC8000, { 0x0F, 0x38, 0x2E }, _IRA_OPERAND_MODRM_M_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA },
+	// VEX.NDS.128.66.0F38 2F /r VMASKMOVPD m128,xmm1,xmm2
+	// VEX.NDS.256.66.0F38 2F /r VMASKMOVPD m256,ymm1,ymm2
+	{ "vmaskmovpd", 0x1080, 0x00EC8000, { 0x0F, 0x38, 0x2F }, _IRA_OPERAND_MODRM_M_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MASKMOVQ[] = {
@@ -1624,24 +1656,34 @@ struct ira_opcode_desc _ira_opcode_desc_MASKMOVQ[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_MAXPD[] = {
 	// 66 0F 5F /r MAXPD xmm1, xmm2/m128 A Valid Valid Return the maximum double-precision floatingpoint values between xmm2/m128 and xmm1.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F 5F /r VMAXPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F 5F /r VMAXPD ymm1,ymm2,ymm3/m256
+	{ "vmaxpd", 0x1080, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MAXPS[] = {
 	// 0F 5F /r MAXPS xmm1, xmm2/m128 A Valid Valid Return the maximum singleprecision floating-point values between xmm2/m128 and xmm1.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.0F 5F /r VMAXPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F 5F /r VMAXPS ymm1,ymm2,ymm3/m256
+	{ "vmaxps", 0x0080, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 // TODO: Zastanowic sie na dwiloscia operandu podawanego dla trubow _IRA_OPERAND_MODRM_R_, czy ma ona sens? Najprwdopodobniejnie ma to zadnego znaczenia przynajmniej z punktu widzenia assemblera, no moze tylko dla GPR tu ma.
 
 struct ira_opcode_desc _ira_opcode_desc_MAXSD[] = {
 	// F2 0F 5F /r MAXSD xmm1, xmm2/m64 A Valid Valid Return the maximum scalardouble-precision floatingpoint value between xmm2/mem64 and xmm1.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.F2.0F 5F /r VMAXSD xmm1,xmm2,xmm3/m64
+	{ "vmaxsd", 0x20C0, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MAXSS[] = {
 	// F3 0F 5F /r MAXSS xmm1, xmm2/m32 A Valid Valid Return the maximum scalarsingle-precision floatingpoint value between xmm2/mem32 and xmm1.
-	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.F3.0F 5F /r VMAXSS xmm1, xmm2, xmm3/m32
+	{ "vmaxss", 0x40C0, 0x00D88000, { 0x0F, 0x5F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MFENCE[] = {
@@ -1651,22 +1693,32 @@ struct ira_opcode_desc _ira_opcode_desc_MFENCE[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_MINPD[] = {
 	// 66 0F 5D /r MINPD xmm1, xmm2/m128 A Valid Valid Return the minimum doubleprecision floating-point values between xmm2/m128 and xmm1.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F 5D /r VMINPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F 5D /r VMINPD ymm1,ymm2,ymm3/m256
+	{ "vminpd", 0x1080, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MINPS[] = {
 	// 0F 5D /r MINPS xmm1, xmm2/m128 A Valid Valid Return the minimum singleprecision floating-point values between xmm2/m128 and xmm1.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.0F 5D /r VMINPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F 5D /r VMINPS ymm1,ymm2,ymm3/m256
+	{ "vminps", 0x0080, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MINSD[] = {
 	// F2 0F 5D /r MINSD xmm1, xmm2/m64 A Valid Valid Return the minimum scalar double-precision floatingpoint value between xmm2/mem64 and xmm1.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.F2.0F 5D /r VMINSD xmm1, xmm2, xmm3/m64
+	{ "vminsd", 0x20C0, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MINSS[] = {
 	// F3 0F 5D /r MINSS xmm1, xmm2/m32 A Valid Valid Return the minimum scalar single-precision floatingpoint value between xmm2/mem32 and xmm1.
-	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.F3.0F 5D /r VMINSS xmm1,xmm2,xmm3/m32
+	{ "vminss", 0x40C0, 0x00D88000, { 0x0F, 0x5D, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA }
 };
 
 // TODO: Zastanowic sie nad operandami virtualnymi, czyli takimi ktore wystepuja w instrukcji ale tak naprawde nie sa zapiane w pecyfikacji jako operancdy patrz instrukcja ponizej:
@@ -1762,14 +1814,26 @@ struct ira_opcode_desc _ira_opcode_desc_MOVAPD[] = {
 	// 66 0F 28 /r MOVAPD xmm1, xmm2/m128 A Valid Valid Move packed doubleprecision floating-point values from xmm2/m128 to xmm1.
 	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x28, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
 	// 66 0F 29 /r MOVAPD xmm2/m128, xmm1 B Valid Valid Move packed doubleprecision floating-point values from xmm1 to xmm2/m128.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x29, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x29, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F 28 /r VMOVAPD xmm1,xmm2/m128
+	// VEX.256.66.0F 28 /r VMOVAPD ymm1,ymm2/m256
+	{ "vmovapd", 0x1180, 0x00D88000, { 0x0F, 0x28, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F 29 /r VMOVAPD xmm2/m128,xmm1
+	// VEX.256.66.0F 29 /r VMOVAPD ymm2/m256,ymm1
+	{ "vmovapd", 0x1180, 0x00D88000, { 0x0F, 0x29, 0x00 }, _IRA_OPERAND_MODRM_RM_SIMD_W, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVAPS[] = {
 	// 0F 28 /r MOVAPS xmm1, xmm2/m128 A Valid Valid Move packed singleprecision floating-point values from xmm2/m128 to xmm1.
 	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x28, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
 	// 0F 29 /r MOVAPS xmm2/m128, xmm1 B Valid Valid Move packed singleprecision floating-point values from xmm1 to xmm2/m128.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x29, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x29, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
+	// VEX.128.0F 28 /r VMOVAPS xmm1,xmm2/m128
+	// VEX.256.0F 28 /r VMOVAPS ymm1,ymm2/m256
+	{ "vmovaps", 0x0180, 0x00D88000, { 0x0F, 0x28, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA },
+	// VEX.128.0F 29 /r VMOVAPS xmm2/m128,xmm1
+	// VEX.256.0F 29 /r VMOVAPS ymm2/m256,ymm1
+	{ "vmovaps", 0x0180, 0x00D88000, { 0x0F, 0x29, 0x00 }, _IRA_OPERAND_MODRM_RM_SIMD_W, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVBE[] = {
@@ -2279,6 +2343,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "inc", _ira_opcode_desc_INC ),
 		_IA_INSTRUCTION( "ins", _ira_opcode_desc_INS ),
 		_IA_INSTRUCTION( "insertps", _ira_opcode_desc_INSERTPS ),
+		_IA_INSTRUCTION( "vinsertf128", _ira_opcode_desc_VINSERTF128 ),
 		_IA_INSTRUCTION( "int", _ira_opcode_desc_INT ),
 		_IA_INSTRUCTION( "invd", _ira_opcode_desc_INVD ),
 		_IA_INSTRUCTION( "invlpg", _ira_opcode_desc_INVLPG ),
@@ -2291,6 +2356,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "lar", _ira_opcode_desc_LAR),
 		_IA_INSTRUCTION( "lddqu", _ira_opcode_desc_LDDQU),
 		_IA_INSTRUCTION( "ldmxcsr", _ira_opcode_desc_LDMXCSR),
+		_IA_INSTRUCTION( "vldmxcsr", _ira_opcode_desc_VLDMXCSR),
 		_IA_INSTRUCTION( "lds", _ira_opcode_desc_LDS),
 		_IA_INSTRUCTION( "lea", _ira_opcode_desc_LEA),
 		_IA_INSTRUCTION( "leave", _ira_opcode_desc_LEAVE),
@@ -2303,6 +2369,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "lsl", _ira_opcode_desc_LSL),
 		_IA_INSTRUCTION( "ltr", _ira_opcode_desc_LTR),
 		_IA_INSTRUCTION( "maskmovdqu", _ira_opcode_desc_MASKMOVDQU),
+		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_VMASKMOVP),
 		_IA_INSTRUCTION( "maskmovq", _ira_opcode_desc_MASKMOVQ),
 		_IA_INSTRUCTION( "maxpd", _ira_opcode_desc_MAXPD),
 		_IA_INSTRUCTION( "maxps", _ira_opcode_desc_MAXPS),

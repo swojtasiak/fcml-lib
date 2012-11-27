@@ -407,15 +407,9 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			int modrm_found = 0;
 			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
 			if( modrm_found ) {
-				int rex_found = 0;
-				uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
-				if( rex_found ) {
-					uint8_t ext_reg_opcode = ( ( rex & 0x04 ) << 1 ) | ( _IRA_MODRM_REG_OPCODE( modrm ) );
-					uint8_t expected_ext_reg_opcode = _IRA_OPCODE_FLAGS_OPCODE_REX_EXT(opcode_flags);
-					opcodes_ok = ( ext_reg_opcode == expected_ext_reg_opcode );
-				} else {
-					opcodes_ok = ( modrm_found && _IRA_MODRM_REG_OPCODE( modrm ) == _IRA_OPCODE_FLAGS_OPCODE_EXT(opcode_flags) );
-				}
+				uint8_t ext_reg_opcode = ( ( prefixes_fields->r << 4 ) | ( _IRA_MODRM_REG_OPCODE( modrm ) ) );
+				uint8_t expected_ext_reg_opcode = _IRA_OPCODE_FLAGS_OPCODE_EXT(opcode_flags);
+				opcodes_ok = ( ext_reg_opcode == expected_ext_reg_opcode );
 			}
 		} else {
 			opcodes_ok = 1;
