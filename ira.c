@@ -974,7 +974,7 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 
 	// Mandatory prefix.
 	if( _IRA_PREFIX_MANDATORY_66(prefixes) | _IRA_PREFIX_MANDATORY_F2(prefixes) | _IRA_PREFIX_MANDATORY_F3(prefixes) ) {
-		order++;
+		order += 2;
 	}
 
 	// Opcode extension.

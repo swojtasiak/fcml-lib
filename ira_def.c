@@ -1863,26 +1863,49 @@ struct ira_opcode_desc _ira_opcode_desc_MOVD[] = {
 	// 66 0F 7E /r MOVD r/m32, xmm B Valid Valid Move doubleword from xmm register to r/m32.
 	{ NULL, 0x1001, 0x03D88000, { 0x0F, 0x7E, 0x00 }, _IRA_OPERAND_MODRM_RM_32_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
 	// 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
-	{ "movq", 0x1001, 0x04988000, { 0x0F, 0x7E, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA }
+	{ "movq", 0x1001, 0x04988000, { 0x0F, 0x7E, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F.W0 6E /r VMOVD xmm1,r32/m32
+	{ "vmovd", 0x11C0, 0x03588000, { 0x0F, 0x6E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
+	{ "vmovq", 0x11D0, 0x04988000, { 0x0F, 0x6E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F.W0 7E /r VMOVD r32/m32,xmm1
+	{ "vmovd", 0x11C0, 0x03588000, { 0x0F, 0x7E, 0x00 }, _IRA_OPERAND_MODRM_RM_32_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F.W1 7E /r VMOVQ r64/m64,xmm1
+	{ "vmovq", 0x11D0, 0x04988000, { 0x0F, 0x7E, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVDDUP[] = {
 	//F2 0F 12 /r MOVDDUP xmm1, xmm2/m64 A Valid Valid Move one double-precision floating-point value from the lower 64-bit operand in xmm2/m64 to xmm1 and duplicate.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.128.F2.0F 12 /r VMOVDDUP xmm1,xmm2/m64
+	// VEX.256.F2.0F 12 /r VMOVDDUP ymm1,ymm2/m256
+	{ "vmovddup", 0x2180, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVDQA[] = {
 	// 66 0F 6F /r MOVDQA xmm1, xmm2/m128 A Valid Valid Move aligned double quadword from xmm2/m128 to xmm1.
 	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x6F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
 	// 66 0F 7F /r MOVDQA xmm2/m128, xmm1 B Valid Valid Move aligned double quadword from xmm1 to xmm2/m128.
-	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x7F, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0x7F, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F 6F /r VMOVDQA xmm1,xmm2/m128
+	// VEX.256.66.0F 6F /r VMOVDQA ymm1,ymm2/m256
+	{ "vmovdqa", 0x1180, 0x00D88000, { 0x0F, 0x6F, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F 7F /r VMOVDQA xmm2/m128,xmm1
+	// VEX.256.66.0F 7F /r VMOVDQA ymm2/m256,ymm1
+	{ "vmovdqa", 0x1180, 0x00D88000, { 0x0F, 0x7F, 0x00 }, _IRA_OPERAND_MODRM_RM_SIMD_W, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVDQU[] = {
 	// F3 0F 6F /r MOVDQU xmm1, xmm2/m128 A Valid Valid Move unaligned double quadword from xmm2/m128 to xmm1.
 	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x6F, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
 	// F3 0F 7F /r MOVDQU xmm2/m128, xmm1 B Valid Valid Move unaligned double quadword from xmm1 to xmm2/m128.
-	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x7F, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA }
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x7F, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
+	// VEX.128.F3.0F 6F /r VMOVDQU xmm1,xmm2/m128
+	// VEX.256.F3.0F 6F /r VMOVDQU ymm1,ymm2/m256
+	{ "vmovdqu", 0x4180, 0x00D88000, { 0x0F, 0x6F, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA },
+	// VEX.128.F3.0F 7F /r VMOVDQU xmm2/m128,xmm1
+	// VEX.256.F3.0F 7F /r VMOVDQU ymm2/m256,ymm1
+	{ "vmovdqu", 0x4180, 0x00D88000, { 0x0F, 0x7F, 0x00 }, _IRA_OPERAND_MODRM_RM_SIMD_W, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVDQ2Q[] = {
@@ -1893,6 +1916,8 @@ struct ira_opcode_desc _ira_opcode_desc_MOVDQ2Q[] = {
 struct ira_opcode_desc _ira_opcode_desc_MOVHLPS[] = {
 	// 0F 12 /r MOVHLPS xmm1, xmm2 A Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm2 to low quadword of xmm1.
 	{ NULL, 0x0001, 0x00DA8000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.0F 12 /r VMOVHLPS xmm1, xmm2, xmm3
+	{ "vmovhlps", 0x00C0, 0x00DA8000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_EOSA, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVHPD[] = {
@@ -1981,6 +2006,12 @@ struct ira_opcode_desc _ira_opcode_desc_MOVQ[] = {
 	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x7E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
 	// 66 0F D6 MOVQ xmm2/m64, xmm1 B Valid Valid Move quadword from xmm1 to xmm2/mem64.
 	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xD6, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_64_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA },
+	// VEX.128.F3.0F 7E /r VMOVQ xmm1,xmm2
+	// VEX.128.F3.0F 7E /r VMOVQ xmm1,m64
+	{ "vmovq", 0x41C0, 0x00D88000, { 0x0F, 0x7E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F D6 /r VMOVQ xmm1/m64,xmm2
+	{ "vmovq", 0x41C0, 0x00D88000, { 0x0F, 0xD6, 0x00 }, _IRA_OPERAND_MODRM_RM_XMM_64_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA }
+
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVQ2DQ[] = {

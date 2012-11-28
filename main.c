@@ -42,7 +42,6 @@ void _test_vax(void);
 //102
 void test(void) {
 
-
 	// TODO: W tym przypadku powinno zdekodowaæ do FAIL, a wybiera inna instrukcjê poniewa¿ instrukcja ta nie posiada mandatory opcodes.
 	// Trzeba bêdzie jakos obs³ugiwaæ instrukcje ktotre nie wymagaja manadatory opcode, zeby nie byly wybierane, jak
 	// jakis mandatory opcode wystepuje.
@@ -335,6 +334,13 @@ void test(void) {
 	_TEST64( "660fd600 movq qword ptr [rax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
 	_TEST64( "660fd6d0 movq xmm0,xmm2",  0x66, 0x0F, 0xD6, 0xD0 );
 	_TEST64( "66480fd600 movq qword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0xD6, 0x00 );
+	// VEX.128.F3.0F 7E /r VMOVQ xmm1,xmm2
+	// VEX.128.F3.0F 7E /r VMOVQ xmm1,m64
+	_TEST32_VEX( "c4e17a7e00 vmovq xmm0,qword ptr [eax]", 0xC4, 0xE1, 0x7A, 0x7E, 0x00 );
+	_TEST32_VEX( "c4e17a7ec0 vmovq xmm0,xmm0", 0xC4, 0xE1, 0x7A, 0x7E, 0xC0 );
+	// VEX.128.66.0F D6 /r VMOVQ xmm1/m64,xmm2
+	_TEST32_VEX( "c4e17ad600 vmovq qword ptr [eax],xmm0", 0xC4, 0xE1, 0x7A, 0xD6, 0x00 );
+	_TEST32_VEX( "c4e17ad6c0 vmovq xmm0,xmm0", 0xC4, 0xE1, 0x7A, 0xD6, 0xC0 );
 
 	// MOVNTQ
 	// 0F E7 /r MOVNTQ m64,mm
@@ -440,6 +446,10 @@ void test(void) {
 	_TEST32( "0f12d8 movhlps xmm3,xmm0", 0x0F, 0x12, 0xD8 );
 	_TEST64( "0f12d0 movhlps xmm2,xmm0", 0x0F, 0x12, 0xD0 );
 	_TEST64( "480f12d0 movhlps xmm2,xmm0", 0x48, 0x0F, 0x12, 0xD0 );
+	// VEX.NDS.128.0F 12 /r VMOVHLPS xmm1, xmm2, xmm3
+	_TEST32_VEX( "c4e17812d8 vmovhlps xmm3,xmm0,xmm0", 0xC4, 0xE1, 0x78, 0x12, 0xD8 );
+	_TEST64_VEX( "c4e17812d9 vmovhlps xmm3,xmm0,xmm1", 0xC4, 0xE1, 0x78, 0x12, 0xD9 );
+	_TEST64_VEX( "c4e10012d9 vmovhlps xmm3,xmm15,xmm1", 0xC4, 0xE1, 0x00, 0x12, 0xD9 );
 
 	// MOVDQ2Q
 	// F2 0F D6 MOVDQ2Q mm, xmm A Valid Valid Move low quadword from xmm to mmx register.
@@ -467,12 +477,35 @@ void test(void) {
 	_TEST32( "660f7f10 movdqa oword ptr [eax],xmm2", 0x66, 0x0F, 0x7F, 0x10 );
 	_TEST32( "660f7fd8 movdqa xmm0,xmm3", 0x66, 0x0F, 0x7F, 0xD8 );
 	_TEST64( "660f7f10 movdqa oword ptr [rax],xmm2", 0x66, 0x0F, 0x7F, 0x10 );
+	// VEX.128.66.0F 6F /r VMOVDQA xmm1,xmm2/m128
+	// VEX.256.66.0F 6F /r VMOVDQA ymm1,ymm2/m256
+	_TEST64_VEX( "c4e1796fd8 vmovdqa xmm3,xmm0", 0xC4, 0xE1, 0x79, 0x6F, 0xD8 );
+	_TEST32_VEX( "c4e17d6f00 vmovdqa ymm0,ymmword ptr [eax]", 0xC4, 0xE1, 0x7D, 0x6F, 0x00 );
+	// VEX.128.66.0F 7F /r VMOVDQA xmm2/m128,xmm1
+	// VEX.256.66.0F 7F /r VMOVDQA ymm2/m256,ymm1
+	_TEST32_VEX( "c4e1797fd8 vmovdqa xmm0,xmm3", 0xC4, 0xE1, 0x79, 0x7F, 0xD8 );
+	_TEST64_VEX( "c4e17d7f00 vmovdqa ymmword ptr [rax],ymm0", 0xC4, 0xE1, 0x7D, 0x7F, 0x00 );
 
 	// MOVDDUP
 	// F2 0F 12 /r MOVDDUP xmm1, xmm2/m64 A Valid Valid Move one double-precision floating-point value from the lower 64-bit operand in xmm2/m64 to xmm1 and duplicate.
 	_TEST32( "f20f1210 movddup xmm2,qword ptr [eax]", 0xF2, 0x0F, 0x12, 0x10 );
 	_TEST32( "f20f12d8 movddup xmm3,xmm0", 0xF2, 0x0F, 0x12, 0xD8 );
 	_TEST64( "f20f1210 movddup xmm2,qword ptr [rax]", 0xF2, 0x0F, 0x12, 0x10 );
+	// VEX.128.F2.0F 12 /r VMOVDDUP xmm1,xmm2/m64
+	// VEX.256.F2.0F 12 /r VMOVDDUP ymm1,ymm2/m256
+	_TEST64_VEX( "c4e17b12d8 vmovddup xmm3,xmm0", 0xC4, 0xE1, 0x7B, 0x12, 0xD8 );
+	_TEST32_VEX( "c4e17b1200 vmovddup xmm0,oword ptr [eax]", 0xC4, 0xE1, 0x7B, 0x12, 0x00 );
+	_TEST32_VEX( "c4e17f12d8 vmovddup ymm3,ymm0", 0xC4, 0xE1, 0x7F, 0x12, 0xD8 );
+	_TEST64_VEX( "c4e17f1200 vmovddup ymm0,ymmword ptr [rax]", 0xC4, 0xE1, 0x7F, 0x12, 0x00 );
+	// VEX.128.F3.0F 6F /r VMOVDQU xmm1,xmm2/m128
+	// VEX.256.F3.0F 6F /r VMOVDQU ymm1,ymm2/m256
+	_TEST64_VEX( "c4e17a6fd8 vmovdqu xmm3,xmm0", 0xC4, 0xE1, 0x7A, 0x6F, 0xD8 );
+	_TEST32_VEX( "c4e17e6f00 vmovdqu ymm0,ymmword ptr [eax]", 0xC4, 0xE1, 0x7E, 0x6F, 0x00 );
+	// VEX.128.F3.0F 7F /r VMOVDQU xmm2/m128,xmm1
+	// VEX.256.F3.0F 7F /r VMOVDQU ymm2/m256,ymm1
+	_TEST32_VEX( "c4e17a7fd8 vmovdqu xmm0,xmm3", 0xC4, 0xE1, 0x7A, 0x7F, 0xD8 );
+	_TEST64_VEX( "c4e17e7f00 vmovdqu ymmword ptr [rax],ymm0", 0xC4, 0xE1, 0x7E, 0x7F, 0x00 );
+
 
 	// MOVD
 	// 0F 6E /r MOVD mm,r/m32 A Valid Valid Move doubleword from r/m32 to mm.
@@ -495,6 +528,14 @@ void test(void) {
 	_TEST64( "660f7e10 movd dword ptr [rax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
 	// 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
 	_TEST64( "66480f7e10 movq qword ptr [rax],xmm2", 0x66, 0x48, 0x0F, 0x7E, 0x10 );
+	// VEX.128.66.0F.W0 6E /r VMOVD xmm1,r32/m32
+	_TEST32_VEX( "c4e1796e1401 vmovd xmm2,dword ptr [ecx+eax]", 0xC4, 0xE1, 0x79, 0x6E, 0x14, 0x01 );
+	// VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
+	_TEST64_VEX( "c4e1f96e1401 vmovq xmm2,qword ptr [rcx+rax]", 0xC4, 0xE1, 0xF9, 0x6E, 0x14, 0x01 );
+	// VEX.128.66.0F.W0 7E /r VMOVD r32/m32,xmm1
+	_TEST32_VEX( "c4e1797e1401 vmovd dword ptr [ecx+eax],xmm2", 0xC4, 0xE1, 0x79, 0x7E, 0x14, 0x01 );
+	// VEX.128.66.0F.W1 7E /r VMOVQ r64/m64,xmm1
+	_TEST64_VEX( "c4e1f97e1401 vmovq qword ptr [rcx+rax],xmm2", 0xC4, 0xE1, 0xF9, 0x7E, 0x14, 0x01 );
 
 	// MOV (DR)
 	// 0F 21/r MOV r32, DR0–DR7 A N.E. Valid Move debug register to r32
