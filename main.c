@@ -403,6 +403,11 @@ void test(void) {
 	_TEST32( "0f1300 movlps qword ptr [eax],xmm0", 0x0F, 0x13, 0x00 );
 	_TEST64( "0f1300 movlps qword ptr [rax],xmm0",  0x0F, 0x13, 0x00 );
 	_TEST64( "480f1300 movlps qword ptr [rax],xmm0", 0x48, 0x0F, 0x13, 0x00 );
+	// VEX.NDS.128.0F 12 /r VMOVLPS xmm2, xmm1, m64
+	_TEST32_VEX( "c5f01210 vmovlps xmm2,xmm1,qword ptr [eax]", 0xC5, 0xF0, 0x12, 0x10 );
+	_TEST64_VEX( "c4e1501200 vmovlps xmm0,xmm5,qword ptr [rax]", 0xC4, 0xE1, 0x50, 0x12, 0x00 );
+	// VEX.128.0F 13/r VMOVLPS m64, xmm1
+	_TEST64_VEX( "c4e1781300 vmovlps qword ptr [rax],xmm0", 0xC4, 0xE1, 0x78, 0x13, 0x00 );
 
 	// MOVLPD
 	// 66 0F 12 /r MOVLPD xmm, m64
@@ -413,12 +418,22 @@ void test(void) {
 	_TEST32( "660f1300 movlpd qword ptr [eax],xmm0", 0x66, 0x0F, 0x13, 0x00 );
 	_TEST64( "660f1300 movlpd qword ptr [rax],xmm0", 0x66, 0x0F, 0x13, 0x00 );
 	_TEST64( "66480f1300 movlpd qword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0x13, 0x00 );
+	// VEX.NDS.128.66.0F 12 /r VMOVLPD xmm2,xmm1,m64
+	_TEST32_VEX( "c5f11210 vmovlpd xmm2,xmm1,qword ptr [eax]", 0xC5, 0xF1, 0x12, 0x10 );
+	_TEST64_VEX( "c4e1511200 vmovlpd xmm0,xmm5,qword ptr [rax]", 0xC4, 0xE1, 0x51, 0x12, 0x00 );
+	// VEX.128.66.0F 13 /r VMOVLPD m64,xmm1
+	_TEST64_VEX( "c4e1791300 vmovlpd qword ptr [rax],xmm0", 0xC4, 0xE1, 0x79, 0x13, 0x00 );
 
+	// MOVLHPS
 	// 0F 16 /r MOVLHPS xmm1, xmm2 A Valid Valid Move two packed singleprecision floating-point values from low quadword of xmm2 to high quadword of xmm1.
 	_TEST32( "0f16d0 movlhps xmm2,xmm0", 0x0F, 0x16, 0xD0 );
 	_TEST32( "0f16d8 movlhps xmm3,xmm0", 0x0F, 0x16, 0xD8 );
 	_TEST64( "0f16d0 movlhps xmm2,xmm0", 0x0F, 0x16, 0xD0 );
 	_TEST64( "480f16d0 movlhps xmm2,xmm0", 0x48, 0x0F, 0x16, 0xD0 );
+	// VEX.NDS.128.0F 16 /r VMOVLHPS xmm1,xmm2,xmm3
+	// TODO: WinDBG, sprawdzic.
+	_TEST32_VEX( "c5d016d0 movlhps xmm2,xmm5,xmm0", 0xC5, 0xD0, 0x16, 0xD0 );
+	_TEST64_VEX( "c4e14816c0 movlhps xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x48, 0x16, 0xC0 );
 
 	// MOVHPS
 	// 0F 16 /r MOVHPS xmm, m64 A Valid Valid Move two packed singleprecision floating-point values from m64 to high quadword of xmm.
@@ -429,6 +444,11 @@ void test(void) {
 	_TEST32( "0f1708 movhps qword ptr [eax],xmm1", 0x0F, 0x17, 0x08 );
 	_TEST64( "0f1708 movhps qword ptr [rax],xmm1", 0x0F, 0x17, 0x08 );
 	_TEST64( "480f1700 movhps qword ptr [rax],xmm0", 0x48, 0x0F, 0x17, 0x00 );
+	// VEX.NDS.128.0F 16 /r VMOVHPS xmm2,xmm1,m64
+	_TEST32_VEX( "c5f01610 vmovhps xmm2,xmm1,qword ptr [eax]", 0xC5, 0xF0, 0x16, 0x10 );
+	_TEST64_VEX( "c4e1501600 vmovhps xmm0,xmm5,qword ptr [rax]", 0xC4, 0xE1, 0x50, 0x16, 0x00 );
+	// VEX.128.0F 17 /r VMOVHPS m64,xmm1
+	_TEST64_VEX( "c4e1781700 vmovhps qword ptr [rax],xmm0", 0xC4, 0xE1, 0x78, 0x17, 0x00 );
 
 	// MOVHPD
 	// 66 0F 16 /r MOVHPD xmm, m64 A Valid Valid Move double-precision floating-point value from m64 to high quadword of xmm.
@@ -439,6 +459,11 @@ void test(void) {
 	_TEST32( "660f1708 movhpd qword ptr [eax],xmm1", 0x66, 0x0F, 0x17, 0x08 );
 	_TEST64( "660f1708 movhpd qword ptr [rax],xmm1", 0x66, 0x0F, 0x17, 0x08 );
 	_TEST64( "66480f1700 movhpd qword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0x17, 0x00 );
+	// VEX.NDS.128.66.0F 16 /r VMOVHPD xmm2,xmm1,m64
+	_TEST32_VEX( "c5f11610 vmovhpd xmm2,xmm1,qword ptr [eax]", 0xC5, 0xF1, 0x16, 0x10 );
+	_TEST64_VEX( "c4e1511600 vmovhpd xmm0,xmm5,qword ptr [rax]", 0xC4, 0xE1, 0x51, 0x16, 0x00 );
+	// VEX128.66.0F 17/r VMOVHPD m64, xmm1
+	_TEST64_VEX( "c4e1791700 vmovhpd qword ptr [rax],xmm0", 0xC4, 0xE1, 0x79, 0x17, 0x00 );
 
 	// MOVHLPS
 	// 0F 12 /r MOVHLPS xmm1, xmm2 A Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm2 to low quadword of xmm1.
