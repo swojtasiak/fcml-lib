@@ -285,6 +285,8 @@ struct ira_diss_tree_instruction_decoding {
 	ira_instruction_decoder instruction_decoder;
 	/* Function used to decode instruction operands. */
 	struct ira_operand_decoding operand_decodings[4];
+	/* Instruction decoding order, for information purpose only. */
+	int order;
 };
 
 struct ira_diss_tree_instruction_details {

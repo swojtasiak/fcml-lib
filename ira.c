@@ -951,6 +951,8 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	// Insert it in appropriate order.
 	int order = _ira_get_decoding_order( decoding );
 
+	decoding->order = order;
+
 	struct ira_diss_tree_instruction_decoding **next_decoding_addr = &(inst_desc->instructions);
 
 	while( *next_decoding_addr != NULL && _ira_get_decoding_order( *next_decoding_addr ) >= order ) {
@@ -974,7 +976,7 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 
 	// Mandatory prefix.
 	if( _IRA_PREFIX_MANDATORY_66(prefixes) | _IRA_PREFIX_MANDATORY_F2(prefixes) | _IRA_PREFIX_MANDATORY_F3(prefixes) ) {
-		order += 2;
+		order += 3;
 	}
 
 	// Opcode extension.

@@ -42,6 +42,7 @@ void _test_vax(void);
 //102
 void test(void) {
 
+
 	// TODO: W tym przypadku powinno zdekodowaæ do FAIL, a wybiera inna instrukcjê poniewa¿ instrukcja ta nie posiada mandatory opcodes.
 	// Trzeba bêdzie jakos obs³ugiwaæ instrukcje ktotre nie wymagaja manadatory opcode, zeby nie byly wybierane, jak
 	// jakis mandatory opcode wystepuje.
@@ -159,24 +160,42 @@ void test(void) {
 	_TEST32( "f30f5910 mulss xmm2,dword ptr [eax]", 0xF3, 0x0F, 0x59, 0x10 );
 	_TEST32( "f30f59d8 mulss xmm3,xmm0", 0xF3, 0x0F, 0x59, 0xD8 );
 	_TEST64( "f30f5910 mulss xmm2,dword ptr [rax]", 0xF3, 0x0F, 0x59, 0x10 );
+	// VEX.NDS.128.F3.0F 59 /r VMULSS xmm1,xmm2,xmm3/m32
+	_TEST64_VEX( "c4e16259d8 vmulsd xmm3,xmm3,xmm0", 0xC4, 0xE1, 0x62, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e14259d8 vmulsd xmm3,xmm7,xmm0", 0xC4, 0xE1, 0x42, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e17a5918 vmulsd xmm3,xmm0,dword ptr [eax]", 0xC4, 0xE1, 0x7A, 0x59, 0x18 );
 
 	// MULSD
 	//F2 0F 59 /r MULSD xmm1,xmm2/m64
 	_TEST32( "f20f5910 mulsd xmm2,qword ptr [eax]", 0xF2, 0x0F, 0x59, 0x10 );
 	_TEST32( "f20f59d8 mulsd xmm3,xmm0", 0xF2, 0x0F, 0x59, 0xD8 );
 	_TEST64( "f20f5910 mulsd xmm2,qword ptr [rax]", 0xF2, 0x0F, 0x59, 0x10 );
+	// VEX.NDS.128.F2.0F 59 /r VMULSD xmm1,xmm2,xmm3/m64
+	_TEST64_VEX( "c4e16359d8 vmulsd xmm3,xmm3,xmm0", 0xC4, 0xE1, 0x63, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e14359d8 vmulsd xmm3,xmm7,xmm0", 0xC4, 0xE1, 0x43, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e17b5918 vmulsd xmm3,xmm0,qword ptr [eax]", 0xC4, 0xE1, 0x7B, 0x59, 0x18 );
 
 	// MULPS
 	// 0F 59 /r MULPS xmm1,xmm2/m128
 	_TEST32( "0f5910 mulps xmm2,oword ptr [eax]", 0x0F, 0x59, 0x10 );
 	_TEST32( "0f59d8 mulps xmm3,xmm0", 0x0F, 0x59, 0xD8 );
 	_TEST64( "0f5910 mulps xmm2,oword ptr [rax]", 0x0F, 0x59, 0x10 );
+	// VEX.NDS.128.0F 59 /r VMULPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F 59 /r VMULPS ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4e17859d8 vmulps xmm3,xmm0,xmm0", 0xC4, 0xE1, 0x78, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e17c59d8 vmulps ymm3,ymm0,ymm0", 0xC4, 0xE1, 0x7C, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e1645918 vmulps ymm3,ymm3,ymmword ptr [eax]", 0xC4, 0xE1, 0x64, 0x59, 0x18 );
 
 	// MULPD
 	// 66 0F 59 /r MULPD xmm1,xmm2/m128
 	_TEST32( "660f5910 mulpd xmm2,oword ptr [eax]", 0x66, 0x0F, 0x59, 0x10 );
 	_TEST32( "660f59d8 mulpd xmm3,xmm0", 0x66, 0x0F, 0x59, 0xD8 );
 	_TEST64( "660f5910 mulpd xmm2,oword ptr [rax]", 0x66, 0x0F, 0x59, 0x10 );
+	// VEX.NDS.128.66.0F 59 /r VMULPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F 59 /r VMULPD ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4e17959d8 vmulpd xmm3,xmm0,xmm0", 0xC4, 0xE1, 0x79, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e17d59d8 vmulpd ymm3,ymm0,ymm0", 0xC4, 0xE1, 0x7D, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e1655918 vmulpd ymm3,ymm3,ymmword ptr [eax]", 0xC4, 0xE1, 0x65, 0x59, 0x18 );
 
 	// MUL
 	// F6 /4 MUL r/m8
@@ -201,6 +220,9 @@ void test(void) {
 	_TEST32( "660f3a42d620 mpsadbw xmm2,xmm6,20h", 0x66, 0x0F, 0x3A, 0x42, 0xD6, 0x20 );
 	_TEST64( "660f3a421020 mpsadbw xmm2,oword ptr [rax],20h", 0x66, 0x0F, 0x3A, 0x42, 0x10, 0x20 );
 	_TEST64( "66480f3a421020 mpsadbw xmm2,oword ptr [rax],20h", 0x66, 0x48, 0x0F, 0x3A, 0x42, 0x10, 0x20 );
+	// VEX.NDS.128.66.0F3A 42 /r ib VMPSADBW xmm1,xmm2,xmm3/m128,imm8
+	_TEST32_VEX( "c4e34942140120 vmpsadbw xmm2,xmm6,qword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x49, 0x42, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "c4e34942140120 vmpsadbw xmm2,xmm6,qword ptr [rcx+rax],20h", 0xC4, 0xE3, 0x49, 0x42, 0x14, 0x01, 0x20 );
 
 	// 0F B6 /r MOVZX r16, r/m8
 	// 0F B6 /r MOVZX r32, r/m8
@@ -226,6 +248,16 @@ void test(void) {
 	_TEST32( "0f1110 movups oword ptr [eax],xmm2", 0x0F, 0x11, 0x10 );
 	_TEST32( "0f11d8 movups xmm0,xmm3", 0x0F, 0x11, 0xD8 );
 	_TEST64( "0f1110 movups oword ptr [rax],xmm2", 0x0F, 0x11, 0x10 );
+	// VEX.128.0F 10 /r VMOVUPS xmm1,xmm2/m128
+	// VEX.256.0F 10 /r VMOVUPS ymm1,ymm2/m256
+	_TEST64_VEX( "c4e17810d8 vmovups xmm3,xmm0", 0xC4, 0xE1, 0x78, 0x10, 0xD8 );
+	_TEST32_VEX( "c4e17810d8 vmovups xmm3,xmm0", 0xC4, 0xE1, 0x78, 0x10, 0xD8 );
+	_TEST32_VEX( "c4e1781000 vmovups xmm0,oword ptr [eax]", 0xC4, 0xE1, 0x78, 0x10, 0x00 );
+	// VEX.128.0F 11 /r VMOVUPS xmm2/m128,xmm1
+	// VEX.256.0F 11 /r VMOVUPS ymm2/m256,ymm1
+	_TEST64_VEX( "c4e17811d8 vmovups xmm0,xmm3", 0xC4, 0xE1, 0x78, 0x11, 0xD8 );
+	_TEST32_VEX( "c4e17811d8 vmovups xmm0,xmm3", 0xC4, 0xE1, 0x78, 0x11, 0xD8 );
+	_TEST32_VEX( "c4e1781100 vmovups oword ptr [eax],xmm0", 0xC4, 0xE1, 0x78, 0x11, 0x00 );
 
 	// MOVUPD
 	// 66 0F 10 /r MOVUPD xmm1,xmm2/m128
@@ -236,6 +268,16 @@ void test(void) {
 	_TEST32( "660f1110 movupd oword ptr [eax],xmm2", 0x66, 0x0F, 0x11, 0x10 );
 	_TEST32( "660f11d8 movupd xmm0,xmm3", 0x66, 0x0F, 0x11, 0xD8 );
 	_TEST64( "660f1110 movupd oword ptr [rax],xmm2", 0x66, 0x0F, 0x11, 0x10 );
+	// VEX.128.66.0F 10 /r VMOVUPD xmm1,xmm2/m128
+	// VEX.256.66.0F 10 /r VMOVUPD ymm1,ymm2/m256
+	_TEST64_VEX( "c4e17910d8 vmovupd xmm3,xmm0", 0xC4, 0xE1, 0x79, 0x10, 0xD8 );
+	_TEST32_VEX( "c4e17910d8 vmovupd xmm3,xmm0", 0xC4, 0xE1, 0x79, 0x10, 0xD8 );
+	_TEST32_VEX( "c4e1791000 vmovupd xmm0,oword ptr [eax]", 0xC4, 0xE1, 0x79, 0x10, 0x00 );
+	// VEX.128.66.0F 11 /r VMOVUPD xmm2/m128,xmm1
+	// VEX.256.66.0F 11 /r VMOVUPD ymm2/m256,ymm1
+	_TEST64_VEX( "c4e17911d8 vmovupd xmm0,xmm3", 0xC4, 0xE1, 0x79, 0x11, 0xD8 );
+	_TEST32_VEX( "c4e17911d8 vmovupd xmm0,xmm3", 0xC4, 0xE1, 0x79, 0x11, 0xD8 );
+	_TEST32_VEX( "c4e1791100 vmovupd oword ptr [eax],xmm0", 0xC4, 0xE1, 0x79, 0x11, 0x00 );
 
 	// MOVSX
 	// 0F BE /r MOVSX r16, r/m8
@@ -263,18 +305,36 @@ void test(void) {
 	_TEST32( "f30f1110 movss dword ptr [eax],xmm2", 0xF3, 0x0F, 0x11, 0x10 );
 	_TEST32( "f30f11d8 movss xmm0,xmm3", 0xF3, 0x0F, 0x11, 0xD8 );
 	_TEST64( "f30f1110 movss dword ptr [rax],xmm2", 0xF3, 0x0F, 0x11, 0x10 );
+	// VEX.NDS.128.F3.0F 10 /r VMOVSS xmm1,xmm2,xmm3
+	_TEST32_VEX( "c4e16210c8 vmovss xmm1,xmm3,xmm0", 0xC4, 0xE1, 0x62, 0x10, 0xC8 );
+	_TEST64_VEX( "c4e16210c8 vmovss xmm1,xmm3,xmm0", 0xC4, 0xE1, 0x62, 0x10, 0xC8 );
+	// VEX.NDS.128.F3.0F 11 /r VMOVSS xmm1,xmm2,xmm3
+	_TEST32_VEX( "c4e16211c8 vmovss xmm0,xmm3,xmm1", 0xC4, 0xE1, 0x62, 0x11, 0xC8 );
+	_TEST64_VEX( "c4e16211c8 vmovss xmm0,xmm3,xmm1", 0xC4, 0xE1, 0x62, 0x11, 0xC8 );
+	// VEX.128.F3.0F 10 /r VMOVSS xmm1,m32
+	_TEST32_VEX( "c4e17a1000 vmovss xmm0,dword ptr [eax]", 0xC4, 0xE1, 0x7A, 0x10, 0x00 );
+	// VEX.128.F3.0F 11 /r VMOVSS m32,xmm1
+	_TEST32_VEX( "c4e17a1100 vmovss dword ptr [eax],xmm0", 0xC4, 0xE1, 0x7A, 0x11, 0x00 );
 
 	// MOVSLDUP
 	// F3 0F 12 /r MOVSLDUP xmm1,xmm2/m128
 	_TEST32( "f30f1210 movsldup xmm2,oword ptr [eax]", 0xF3, 0x0F, 0x12, 0x10 );
 	_TEST32( "f30f12d8 movsldup xmm3,xmm0", 0xF3, 0x0F, 0x12, 0xD8 );
 	_TEST64( "f30f1210 movsldup xmm2,oword ptr [rax]", 0xF3, 0x0F, 0x12, 0x10 );
+	// VEX.128.F3.0F 12 /r VMOVSLDUP xmm1,xmm2/m128
+	// VEX.256.F3.0F 12 /r VMOVSLDUP ymm1,ymm2/m256
+	_TEST64_VEX( "c4e17a12d8 vmovsldup xmm3,xmm0", 0xC4, 0xE1, 0x7A, 0x12, 0xD8 );
+	_TEST32_VEX( "c4e17e1200 vmovsldup ymm0,ymmword ptr [eax]", 0xC4, 0xE1, 0x7E, 0x12, 0x00 );
 
 	// MOVSHDUP
 	// F3 0F 16 /r MOVSHDUP xmm1,xmm2/m128
 	_TEST32( "f30f1610 movshdup xmm2,oword ptr [eax]", 0xF3, 0x0F, 0x16, 0x10 );
 	_TEST32( "f30f16d8 movshdup xmm3,xmm0", 0xF3, 0x0F, 0x16, 0xD8 );
 	_TEST64( "f30f1610 movshdup xmm2,oword ptr [rax]", 0xF3, 0x0F, 0x16, 0x10 );
+	// VEX.128.F3.0F 16 /r VMOVSHDUP xmm1,xmm2/m128
+	// VEX.256.F3.0F 16 /r VMOVSHDUP ymm1,ymm2/m256
+	_TEST64_VEX( "c4e17a16d8 vmovshdup xmm3,xmm0", 0xC4, 0xE1, 0x7A, 0x16, 0xD8 );
+	_TEST32_VEX( "c4e17e1600 vmovshdup ymm0,ymmword ptr [eax]", 0xC4, 0xE1, 0x7E, 0x16, 0x00 );
 
 	// MOVSD
 	// F2 0F 10 /r MOVSD xmm1,xmm2/m64
@@ -285,6 +345,19 @@ void test(void) {
 	_TEST32( "f20f1110 movsd qword ptr [eax],xmm2", 0xF2, 0x0F, 0x11, 0x10 );
 	_TEST32( "f20f11d8 movsd xmm0,xmm3", 0xF2, 0x0F, 0x11, 0xD8 );
 	_TEST64( "f20f1110 movsd qword ptr [rax],xmm2", 0xF2, 0x0F, 0x11, 0x10 );
+	// TODO: Sprawdzic, poniewaz instruckje sa identyczne, skad assembler mial by wiedziec
+	// ktora wybrac? Moze jakis blad w dokuemtnacji. Najprawdopodobniej chiodzi o zrodlo i destination,
+	// w pierwzym przypadku R - R/M a w drugim pewnie R/M - R. Tak czy inaczej dziwne...
+	// VEX.NDS.128.F2.0F 10 /r VMOVSD xmm1, xmm2, xmm3
+	_TEST32_VEX( "c4e16310c8 vmovsd xmm1,xmm3,xmm0", 0xC4, 0xE1, 0x63, 0x10, 0xC8 );
+	_TEST64_VEX( "c4e16310c8 vmovsd xmm1,xmm3,xmm0", 0xC4, 0xE1, 0x63, 0x10, 0xC8 );
+	// VEX.NDS.128.F2.0F 11 /r VMOVSD xmm1, xmm2, xmm3
+	_TEST32_VEX( "c4e16311c8 vmovsd xmm0,xmm3,xmm1", 0xC4, 0xE1, 0x63, 0x11, 0xC8 );
+	_TEST64_VEX( "c4e16311c8 vmovsd xmm0,xmm3,xmm1", 0xC4, 0xE1, 0x63, 0x11, 0xC8 );
+	// VEX.128.F2.0F 10 /r VMOVSD xmm1, m64
+	_TEST32_VEX( "c4e17b1000 vmovsd xmm0,qword ptr [eax]", 0xC4, 0xE1, 0x7B, 0x10, 0x00 );
+	// VEX.128.F2.0F 11 /r VMOVSD m64, xmm1
+	_TEST32_VEX( "c4e17b1100 vmovsd qword ptr [eax],xmm0", 0xC4, 0xE1, 0x7B, 0x11, 0x00 );
 
 	// MOVS
 	// A4 MOVS m8, m8
@@ -353,12 +426,17 @@ void test(void) {
 	_TEST32( "0f2b00 movntps oword ptr [eax],xmm0", 0x0F, 0x2B, 0x00 );
 	_TEST64( "0f2b00 movntps oword ptr [rax],xmm0", 0x0F, 0x2B, 0x00 );
 	_TEST64( "480f2b00 movntps oword ptr [rax],xmm0", 0x48, 0x0F, 0x2B, 0x00 );
+	// VEX.128.0F 2B /r VMOVNTPS m128, xmm1
+	_TEST64_VEX( "c4e1782b00 vmovntps oword ptr [rax],xmm0", 0xC4, 0xE1, 0x78, 0x2B, 0x00 );
+	_TEST32_VEX( "c4e1782b00 vmovntps oword ptr [eax],xmm0", 0xC4, 0xE1, 0x78, 0x2B, 0x00 );
 
 	// MOVNTPD
 	// 66 0F 2B /r MOVNTPD m128,xmm
 	_TEST32( "660f2b00 movntpd oword ptr [eax],xmm0", 0x66, 0x0F, 0x2B, 0x00 );
 	_TEST64( "660f2b00 movntpd oword ptr [rax],xmm0", 0x66, 0x0F, 0x2B, 0x00 );
 	_TEST64( "66480f2b00 movntpd oword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0x2B, 0x00 );
+	// VEX.128.66.0F 2B /r VMOVNTPD m128, xmm1
+	_TEST64_VEX( "c4e1792b00 vmovntpd oword ptr [rax],xmm0", 0xC4, 0xE1, 0x79, 0x2B, 0x00 );
 
 	// MOVNTI
 	// 0F C3 /r MOVNTI m32, r32
@@ -373,12 +451,16 @@ void test(void) {
 	_TEST32( "660fe700 movntdq oword ptr [eax],xmm0", 0x66, 0x0F, 0xE7, 0x00 );
 	_TEST64( "660fe700 movntdq oword ptr [rax],xmm0", 0x66, 0x0F, 0xE7, 0x00 );
 	_TEST64( "66480fe700 movntdq oword ptr [rax],xmm0", 0x66, 0x48, 0x0F, 0xE7, 0x00 );
+	// VEX.128.66.0F E7 /r VMOVNTDQ m128,xmm1
+	_TEST64_VEX( "c4e179e700 vmovntdq oword ptr [rax],xmm0", 0xC4, 0xE1, 0x79, 0xE7, 0x00 );
 
 	// MOVNTDQA
 	// 66 0F 38 2A /r MOVNTDQA xmm1, m128
 	_TEST32( "660f382a00 movntdqa xmm0,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x2A, 0x00 );
 	_TEST64( "660f382a00 movntdqa xmm0,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x2A, 0x00 );
 	_TEST64( "66480f382a00 movntdqa xmm0,oword ptr [rax]", 0x66, 0x48, 0x0F, 0x38, 0x2A, 0x00 );
+	// VEX.128.66.0F38 2A /r VMOVNTDQA xmm1,m128
+	_TEST64_VEX( "c4e2792a00 vmovntdqa xmm0,oword ptr [rax]", 0xC4, 0xE2, 0x79, 0x2A, 0x00 );
 
 	// MOVMSKPS
 	// 0F 50 /r MOVMSKPS reg,xmm
@@ -386,6 +468,13 @@ void test(void) {
 	_TEST32( "0f50d8 movmskps ebx,xmm0", 0x0F, 0x50, 0xD8 );
 	_TEST64( "0f50d0 movmskps rdx,xmm0", 0x0F, 0x50, 0xD0 );
 	_TEST64( "480f50d0 movmskps rdx,xmm0", 0x48, 0x0F, 0x50, 0xD0 );
+	// VEX.128.0F 50 /r VMOVMSKPS reg,xmm2
+	// VEX.256.0F 50 /r VMOVMSKPS reg,ymm2
+	_TEST32_VEX( "c4e17850d0 vmovmskps edx,xmm0", 0xC4, 0xE1, 0x78, 0x50, 0xD0 );
+	_TEST32_VEX( "c4e17850d8 vmovmskps ebx,xmm0", 0xC4, 0xE1, 0x78, 0x50, 0xD8 );
+	_TEST64_VEX( "c4e17c50d0 vmovmskps rdx,ymm0", 0xC4, 0xE1, 0x7C, 0x50, 0xD0 );
+	_TEST64_VEX( "c4e17c50d0 vmovmskps rdx,ymm0", 0xC4, 0xE1, 0x7C, 0x50, 0xD0 );
+	_TEST32_VEX( "c4e17c50d8 vmovmskps ebx,ymm0", 0xC4, 0xE1, 0x7C, 0x50, 0xD8 );
 
 	// MOVMSKPD
 	// 66 0F 50 /r MOVMSKPD reg, xmm
@@ -393,6 +482,13 @@ void test(void) {
 	_TEST32( "660f50d8 movmskpd ebx,xmm0", 0x66, 0x0F, 0x50, 0xD8 );
 	_TEST64( "660f50d0 movmskpd rdx,xmm0", 0x66, 0x0F, 0x50, 0xD0 );
 	_TEST64( "66480f50d0 movmskpd rdx,xmm0", 0x66, 0x48, 0x0F, 0x50, 0xD0 );
+	// VEX.128.66.0F 50 /r VMOVMSKPD reg, xmm2
+	// VEX.256.66.0F 50 /r VMOVMSKPD reg, ymm2
+	_TEST32_VEX( "c4e17950d0 vmovmskpd edx,xmm0", 0xC4, 0xE1, 0x79, 0x50, 0xD0 );
+	_TEST32_VEX( "c4e17950d8 vmovmskpd ebx,xmm0", 0xC4, 0xE1, 0x79, 0x50, 0xD8 );
+	_TEST64_VEX( "c4e17d50d0 vmovmskpd rdx,ymm0", 0xC4, 0xE1, 0x7D, 0x50, 0xD0 );
+	_TEST64_VEX( "c4e17d50d0 vmovmskpd rdx,ymm0", 0xC4, 0xE1, 0x7D, 0x50, 0xD0 );
+	_TEST32_VEX( "c4e17d50d8 vmovmskpd ebx,ymm0", 0xC4, 0xE1, 0x7D, 0x50, 0xD8 );
 
 	// MOVLPS
 	// 0F 12 /r MOVLPS xmm, m64
@@ -432,8 +528,8 @@ void test(void) {
 	_TEST64( "480f16d0 movlhps xmm2,xmm0", 0x48, 0x0F, 0x16, 0xD0 );
 	// VEX.NDS.128.0F 16 /r VMOVLHPS xmm1,xmm2,xmm3
 	// TODO: WinDBG, sprawdzic.
-	_TEST32_VEX( "c5d016d0 movlhps xmm2,xmm5,xmm0", 0xC5, 0xD0, 0x16, 0xD0 );
-	_TEST64_VEX( "c4e14816c0 movlhps xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x48, 0x16, 0xC0 );
+	_TEST32_VEX( "c5d016d0 vmovlhps xmm2,xmm5,xmm0", 0xC5, 0xD0, 0x16, 0xD0 );
+	_TEST64_VEX( "c4e14816c0 vmovlhps xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x48, 0x16, 0xC0 );
 
 	// MOVHPS
 	// 0F 16 /r MOVHPS xmm, m64 A Valid Valid Move two packed singleprecision floating-point values from m64 to high quadword of xmm.

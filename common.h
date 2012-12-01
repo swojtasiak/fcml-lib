@@ -38,6 +38,7 @@
 #define _IRA_EOS_TBYTE		10
 #define _IRA_EOS_OWORD		16
 #define _IRA_EOS_XMMWORD	16
+#define _IRA_EOS_YMMWORD	32
 
 /* Methods. */
 
