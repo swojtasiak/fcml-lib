@@ -970,7 +970,7 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 	uint16_t prefixes = decoding->allowed_prefixes;
 	uint32_t opcodes = decoding->opcode_flags;
 
-	int order = 0;
+	int order = 0;//_IRA_OPCODE_FLAGS_OPCODE_NUM(decoding->opcode_flags);
 
 	// TODO: Sprobowac przeprojektowac to, te kolejnosci sa strasznie zagmatwane.
 
