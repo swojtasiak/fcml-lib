@@ -104,6 +104,8 @@ struct ira_decoded_fields {
 /* Disassemblation context. */
 
 struct ira_decoding_context {
+	// Chosen instruction decoding.
+	struct ira_diss_tree_instruction_decoding *instruction;
 	// Operand size attribute.
 	uint8_t effective_operand_size_attribute;
 	// Address size attribute.
@@ -278,7 +280,7 @@ struct ira_diss_tree_instruction_decoding {
 	/* Instruction mnemonic */
 	char *mnemonic;
 	/* Flags that describe prefixes usage. */
-	uint16_t allowed_prefixes;
+	uint16_t prefixes_flags;
 	/* Flags that describe some details of opcodes. */
 	uint32_t opcode_flags;
 	/* Instruction decoder. */
@@ -372,12 +374,13 @@ struct ira_instruction_desc {
 /* Prefixes flags. */
 
 // TODO: nadmiarowy! zobacz EOSA restrictions! wywalic, tylko gmatwa (ale czy aby napewno, czasami REX.W podownie jak VEX.W mo¿e spelniac inna role niz tylko zmiaa EOSA.) narazie zostawic, sprawzic po zakonczeniu implementacji disassemlera.
-#define _IRA_PREFIX_REX_W_1(x)				_IRA_GET_BIT(x,3)
-#define _IRA_PREFIX_VEX_W_1(x)				_IRA_GET_BIT(x,4)
+#define _IRA_PREFIX_W_1(x)					_IRA_GET_BIT(x,3)
+#define _IRA_PREFIX_W_0(x)					_IRA_GET_BIT(x,4)
 #define _IRA_PREFIX_VEX_L_1(x)				_IRA_GET_BIT(x,5)
 #define _IRA_PREFIX_VEX_L_0(x)				_IRA_GET_BIT(x,6)
 #define _IRA_PREFIX_VEX_REQ(x)				_IRA_GET_BIT(x,7)
 #define _IRA_PREFIX_VEX_VVVV(x)				_IRA_GET_BIT(x,8)
+#define _IRA_PREFIX_VEX_L_IGNORE_OS(x)		_IRA_GET_BIT(x,9)
 #define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
 #define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)

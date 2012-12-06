@@ -342,40 +342,34 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		// Check prefixes.
 
 		// VEX required.
-		if( _IRA_PREFIX_VEX_REQ( current->allowed_prefixes ) && !prefixes_fields->is_vex  ) {
+		if( _IRA_PREFIX_VEX_REQ( current->prefixes_flags ) && !prefixes_fields->is_vex  ) {
 			// VEX prefix is required.
 			continue;
 		}
 
 		// Check if VVVV is set to 1111 if needed.
-		if( _IRA_PREFIX_VEX_VVVV( current->allowed_prefixes ) && prefixes_fields->vvvv != 0 ) {
+		if( _IRA_PREFIX_VEX_VVVV( current->prefixes_flags ) && prefixes_fields->vvvv != 0 ) {
 			continue;
 		}
 
-		// VEX
-		if( _IRA_PREFIX_VEX_W_1( current->allowed_prefixes ) && ( !prefixes_fields->is_vex || !prefixes_fields->w ) ) {
-			continue;
-		}
-		if( ( _IRA_PREFIX_VEX_L_1( current->allowed_prefixes ) && ( !prefixes_fields->is_vex || !prefixes_fields->l ) ) ||
-			( _IRA_PREFIX_VEX_L_0( current->allowed_prefixes ) && ( !prefixes_fields->is_vex || prefixes_fields->l ) ) ) {
+		// W field.
+		if( ( _IRA_PREFIX_W_0( current->prefixes_flags ) && prefixes_fields->w ) ||
+			( _IRA_PREFIX_W_1( current->prefixes_flags ) && !prefixes_fields->w ) ) {
 			continue;
 		}
 
-		// REX.
+		// L field.
+		if( ( _IRA_PREFIX_VEX_L_1( current->prefixes_flags ) && ( !prefixes_fields->is_vex || !prefixes_fields->l ) ) ||
+			( _IRA_PREFIX_VEX_L_0( current->prefixes_flags ) && ( !prefixes_fields->is_vex || prefixes_fields->l ) ) ) {
+			continue;
+		}
+
 		int prefixes_ok = 0;
-		if( _IRA_PREFIX_REX_W_1( current->allowed_prefixes ) ) {
-			int rex_found = 0;
-			uint8_t rex = _ira_diss_context_get_REX_prefix(context, &rex_found);
-			if( ! ( rex_found && _IRA_REX_W( rex ) ) ) {
-				continue;
-			}
-		}
-
-		if( _IRA_PREFIX_MANDATORY_66( current->allowed_prefixes ) ) {
+		if( _IRA_PREFIX_MANDATORY_66( current->prefixes_flags ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0x66, _IRA_TRUE);
-		} else if( _IRA_PREFIX_MANDATORY_F2( current->allowed_prefixes ) ) {
+		} else if( _IRA_PREFIX_MANDATORY_F2( current->prefixes_flags ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF2, _IRA_TRUE);
-		} else if( _IRA_PREFIX_MANDATORY_F3( current->allowed_prefixes ) ) {
+		} else if( _IRA_PREFIX_MANDATORY_F3( current->prefixes_flags ) ) {
 			prefixes_ok = _ira_diss_context_is_prefix_available(context, 0xF3, _IRA_TRUE);
 		} else {
 			prefixes_ok = 1;
@@ -431,7 +425,7 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			// This is set temporarily, only to calculate correct EOSA for instruction.
 			if( prefix != NULL ) {
 				mandatory_prefix = prefix->mandatory_prefix;
-				prefix->mandatory_prefix = _IRA_PREFIX_MANDATORY_66( instruction->allowed_prefixes );
+				prefix->mandatory_prefix = _IRA_PREFIX_MANDATORY_66( instruction->prefixes_flags );
 			}
 			int eosa = _ira_get_effective_osa( context, opcode_flags);
 			if( prefix != NULL ) {
@@ -924,7 +918,7 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	}
 
 	// Copy flags.
-	decoding->allowed_prefixes = opcode_desc->allowed_prefixes;
+	decoding->prefixes_flags = opcode_desc->allowed_prefixes;
 	decoding->opcode_flags = opcode_desc->opcode_flags;
 
 	// Choose function used to disassemble instruction.
@@ -967,7 +961,7 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 
 int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding ) {
 
-	uint16_t prefixes = decoding->allowed_prefixes;
+	uint16_t prefixes = decoding->prefixes_flags;
 	uint32_t opcodes = decoding->opcode_flags;
 
 	int order = 0;//_IRA_OPCODE_FLAGS_OPCODE_NUM(decoding->opcode_flags);
@@ -989,7 +983,7 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 	}
 
 	// REX prefix.
-	if( _IRA_PREFIX_REX_W_1( prefixes ) || _IRA_PREFIX_VEX_W_1( prefixes ) ||
+	if( _IRA_PREFIX_W_1( prefixes ) || _IRA_PREFIX_W_0( prefixes ) ||
 		_IRA_PREFIX_VEX_L_1( prefixes ) || _IRA_PREFIX_VEX_L_0( prefixes ) ) {
 		order += 2;
 	}
@@ -1528,7 +1522,7 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 		struct ira_instruction_prefix *prefix = &context->decoding_context.prefixes[i];
 		// Check if 66 prefix is mandatory one. It has to be done here because prefix 66 is always
 		// treated as mandatory one in first phase.
-		if( prefix->prefix == 0x66 && !_IRA_PREFIX_MANDATORY_66( instruction->allowed_prefixes ) ) {
+		if( prefix->prefix == 0x66 && !_IRA_PREFIX_MANDATORY_66( instruction->prefixes_flags ) ) {
 			prefix->mandatory_prefix = 0;
 		}
 		result->prefixes[i] = context->decoding_context.prefixes[i];
@@ -1536,6 +1530,9 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	// Prepare decoding context.
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+
+	// Store chosen instruction inside context.
+	decoding_context->instruction = instruction;
 
 	for( i = 0; i < sizeof( instruction->opcodes ) ; i++ ) {
 		decoding_context->base_opcodes[i] = instruction->opcodes[i];
@@ -2665,14 +2662,14 @@ uint16_t ira_m94_108byte_operand_size_provider( struct ira_diss_context *context
  * \return Decoded size directive size.
  */
 uint16_t _ira_util_decode_operand_size( struct ira_diss_context *context, uint16_t operand_size, ira_operand_size_provider provider ) {
-
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	if( provider != NULL ) {
 		operand_size = provider(context);
 	} else {
 		// TODO: Juz nie tylko EOSa ale takze VEX.L, zmienic nazwe parametru moze na jakies auto? nie wiem, do przemyslenia.
 		if( operand_size == _IRA_OS_EOSA ) {
 			struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
-			if( prefixes_fields->is_vex ) {
+			if( prefixes_fields->is_vex && !_IRA_PREFIX_VEX_L_IGNORE_OS( decoding_context->instruction->prefixes_flags ) ) {
 				operand_size = prefixes_fields->l ? 256 : 128;
 			} else {
 				operand_size = context->decoding_context.effective_operand_size_attribute;

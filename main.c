@@ -42,13 +42,62 @@ void _test_vax(void);
 //102
 void test(void) {
 
-
 	// TODO: W tym przypadku powinno zdekodowaæ do FAIL, a wybiera inna instrukcjê poniewa¿ instrukcja ta nie posiada mandatory opcodes.
 	// Trzeba bêdzie jakos obs³ugiwaæ instrukcje ktotre nie wymagaja manadatory opcode, zeby nie byly wybierane, jak
 	// jakis mandatory opcode wystepuje.
 	// _TEST32_VEX( "FAIL", 0xC5, 0xDF, 0x58, 0x14, 0x01 );
+	//_test_vax();
 
-	_test_vax();
+	// PEXTRW
+	// TODO: WinDBG
+	// 0F C5 /r ib PEXTRW reg,mm,imm8
+	_TEST64( "0fc5c1ff pextrw rax,mm1,0ffh", 0x0F, 0xC5, 0xC1, 0xFF );
+	_TEST32( "0fc5c1ff pextrw eax,mm1,0ffh", 0x0F, 0xC5, 0xC1, 0xFF );
+	// 66 0F C5 /r ib PEXTRW reg,xmm,imm8
+	_TEST64( "660fc5c1ff pextrw rax,xmm1,0ffh", 0x66, 0x0F, 0xC5, 0xC1, 0xFF );
+	_TEST32( "660fc5c1ff pextrw eax,xmm1,0ffh", 0x66, 0x0F, 0xC5, 0xC1, 0xFF );
+	// 66 0F 3A 15 /r ib PEXTRW reg/m16,xmm,imm8
+	_TEST64( "660f3a1500ff pextrw word ptr [rax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x15, 0x00, 0xFF );
+	_TEST64( "660f3a15c1ff pextrw rcx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x15, 0xC1, 0xFF );
+	_TEST32( "660f3a1500ff pextrw word ptr [eax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x15, 0x00, 0xFF );
+	_TEST32( "660f3a15c1ff pextrw ecx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x15, 0xC1, 0xFF );
+	// VEX.128.66.0F.W0 C5 /r ib VPEXTRW reg,xmm1,imm8
+	_TEST64_VEX( "c4e179c5c1ff pextrw rax,xmm1,0ffh", 0xC4, 0xE1, 0x79, 0xC5, 0xC1, 0xFF );
+	_TEST32_VEX( "c4e179c5c1ff pextrw eax,xmm1,0ffh", 0xC4, 0xE1, 0x79, 0xC5, 0xC1, 0xFF );
+	// VEX.128.66.0F3A.W0 15 /r ib VPEXTRW reg/m16,xmm2,imm8
+	_TEST64_VEX( "c4e3791500ff vpextrw word ptr [rax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x15, 0x00, 0xFF );
+	_TEST64_VEX( "c4e37915c1ff vpextrw rcx,xmm0,0ffh", 0xC4,0xE3, 0x79, 0x15, 0xC1, 0xFF );
+	_TEST32_VEX( "c4e3791500ff vpextrw word ptr [eax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x15, 0x00, 0xFF );
+	_TEST32_VEX( "c4e37915c1ff vpextrw ecx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x15, 0xC1, 0xFF );
+
+	// PEXTRB
+	// TODO: WinDBG
+	// 66 0F 3A 14 /r ib PEXTRB reg/m8,xmm2,imm8
+	_TEST64( "660f3a1400ff pextrb byte ptr [rax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x14, 0x00, 0xFF );
+	_TEST64( "660f3a14c1ff pextrb rcx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x14, 0xC1, 0xFF );
+	_TEST32( "660f3a1400ff pextrb byte ptr [eax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x14, 0x00, 0xFF );
+	_TEST32( "660f3a14c1ff pextrb ecx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x14, 0xC1, 0xFF );
+	// 66 0F 3A 16 /r ib PEXTRD r/m32, xmm2, imm8
+	_TEST64( "660f3a1600ff pextrd dword ptr [rax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x16, 0x00, 0xFF );
+	_TEST64( "660f3a16c1ff pextrd rcx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x16, 0xC1, 0xFF );
+	_TEST32( "660f3a1600ff pextrd dword ptr [eax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x16, 0x00, 0xFF );
+	_TEST32( "660f3a16c1ff pextrd ecx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x16, 0xC1, 0xFF );
+	// 66 REX.W 0F 3A 16 /r ib PEXTRQ r/m64, xmm2, imm8
+	_TEST64( "66480f3a1600ff pextrq qword ptr [rax],xmm0,0ffh", 0x66, 0x48, 0x0F, 0x3A, 0x16, 0x00, 0xFF );
+	_TEST64( "66480f3a16c1ff pextrq rcx,xmm0,0ffh", 0x66, 0x48, 0x0F, 0x3A, 0x16, 0xC1, 0xFF );
+	// VEX.128.66.0F3A.W0 14 /r ib VPEXTRB reg/m8, xmm2, imm8
+	_TEST64_VEX( "c4e3791400ff vpextrb byte ptr [rax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x14, 0x00, 0xFF );
+	_TEST64_VEX( "c4e37914c1ff vpextrb rcx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x14, 0xC1, 0xFF );
+	_TEST32_VEX( "c4e3791400ff vpextrb byte ptr [eax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x14, 0x00, 0xFF );
+	_TEST32_VEX( "c4e37914c1ff vpextrb ecx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x14, 0xC1, 0xFF );
+	// VEX.128.66.0F3A.W0 16 /r ib VPEXTRD r32/m32, xmm2, imm8
+	_TEST64_VEX( "c4e3791600ff vpextrd dword ptr [rax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x16, 0x00, 0xFF );
+	_TEST64_VEX( "c4e37916c1ff vpextrd rcx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x16, 0xC1, 0xFF );
+	_TEST32_VEX( "c4e3791600ff vpextrd dword ptr [eax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x16, 0x00, 0xFF );
+	_TEST32_VEX( "c4e37916c1ff vpextrd ecx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x16, 0xC1, 0xFF );
+	// VEX.128.66.0F3A.W1 16 /r ib VPEXTRQ r64/m64, xmm2, imm8
+	_TEST64_VEX( "c4e3f91600ff vpextrq qword ptr [rax],xmm0,0ffh", 0xC4, 0xE3, 0xF9, 0x16, 0x00, 0xFF );
+	_TEST64_VEX( "c4e3f916c1ff vpextrq rcx,xmm0,0ffh", 0xC4, 0xE3, 0xF9, 0x16, 0xC1, 0xFF );
 
 	// PCMPISTRM
 	// 66 0F 3A 62 /r imm8 PCMPISTRM xmm1,xmm2/m128,imm8
