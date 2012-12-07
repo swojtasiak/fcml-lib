@@ -1878,8 +1878,9 @@ struct ira_opcode_desc _ira_opcode_desc_MOVDDUP[] = {
 	//F2 0F 12 /r MOVDDUP xmm1, xmm2/m64 A Valid Valid Move one double-precision floating-point value from the lower 64-bit operand in xmm2/m64 to xmm1 and duplicate.
 	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
 	// VEX.128.F2.0F 12 /r VMOVDDUP xmm1,xmm2/m64
+	{ "vmovddup", 0x21C0, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
 	// VEX.256.F2.0F 12 /r VMOVDDUP ymm1,ymm2/m256
-	{ "vmovddup", 0x2180, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA }
+	{ "vmovddup", 0x21A0, 0x00D88000, { 0x0F, 0x12, 0x00 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MOVDQA[] = {
@@ -2807,7 +2808,41 @@ struct ira_opcode_desc _ira_opcode_desc_PMINUD[] = {
 	{ "vpminud", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x3B }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_PMOVMSKB[] = {
+	// 0F D7 /r1 PMOVMSKB reg, mm
+	{ NULL, 0x0001, 0x40DA8000, { 0x0F, 0xD7, 0x00 }, _IRA_OPERAND_R(IRA_REG_GPR, _IRA_OS_EOSA), _IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_MMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	// 66 0F D7 /r PMOVMSKB reg, xmm
+	{ NULL, 0x1001, 0x40DA8000, { 0x0F, 0xD7, 0x00 }, _IRA_OPERAND_R(IRA_REG_GPR, _IRA_OS_EOSA), _IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F.WIG D7 /r VPMOVMSKB reg, xmm1
+	{ "vpmovmskb", 0x13C0, 0x40DA8000, { 0x0F, 0xD7, 0x22 }, _IRA_OPERAND_MODRM_R_W, _IRA_VEX_VVVV_REG, _IRA_NA, _IRA_NA }
+};
 
+struct ira_opcode_desc _ira_opcode_desc_PMOVSX[] = {
+	// 66 0f 38 20 /r PMOVSXBW xmm1,xmm2/m64
+	{ "pmovsxbw", 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x20 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// 66 0f 38 21 /r PMOVSXBD xmm1,xmm2/m32
+	{ "pmovsxbd", 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x21 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// 66 0f 38 22 /r PMOVSXBQ xmm1,xmm2/m16
+	{ "pmovsxbq", 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x22 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_16, _IRA_NA, _IRA_NA },
+	// 66 0f 38 23 /r PMOVSXWD xmm1,xmm2/m64
+	{ "pmovsxwd", 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x23 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// 66 0f 38 24 /r PMOVSXWQ xmm1,xmm2/m32
+	{ "pmovsxwq", 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x24 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// 66 0f 38 25 /r PMOVSXDQ xmm1,xmm2/m64
+	{ "pmovsxdq", 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x25 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.WIG 20 /r VPMOVSXBW xmm1,xmm2/m64
+	{ "vpmovsxbw", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x20 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.WIG 21 /r VPMOVSXBD xmm1,xmm2/m32
+	{ "vpmovsxbd", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x21 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.WIG 22 /r VPMOVSXBQ xmm1,xmm2/m16
+	{ "vpmovsxbq", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x22 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_16, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.WIG 23 /r VPMOVSXWD xmm1,xmm2/m64
+	{ "vpmovsxwd", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x23 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.WIG 24 /r VPMOVSXWQ xmm1,xmm2/m32
+	{ "vpmovsxwq", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x24 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.WIG 25 /r VPMOVSXDQ xmm1,xmm2/m64
+	{ "vpmovsxdq", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x25 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
 
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -3110,5 +3145,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "pminuw", _ira_opcode_desc_PMINUW),
 		_IA_INSTRUCTION( "pminub", _ira_opcode_desc_PMINUB),
 		_IA_INSTRUCTION( "pminud", _ira_opcode_desc_PMINUD),
+		_IA_INSTRUCTION( "pmovmskb", _ira_opcode_desc_PMOVMSKB),
+		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_PMOVSX),
 		{ NULL, 0, 0, NULL }
 };

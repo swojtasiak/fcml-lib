@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "ira.h"
 #include "ira_ren_intel.h"
@@ -38,6 +39,16 @@ int main()
 void _test_vax(void);
 
 #include "ira_int.h"
+/*
+void __ira_test_xmm1_r_xmm2_rm( char *mnemonic, int n_args, ... ) {
+	va_list ap;
+	va_start(ap, n_args);
+	int i = 0;
+	for(i = 0; i < n_args; i++ ) {
+		uint8_t opcode = va_arg(ap, uint8_t);
+	}
+	va_end(ap);
+}*/
 
 //102
 void test(void) {
@@ -47,6 +58,58 @@ void test(void) {
 	// jakis mandatory opcode wystepuje.
 	// _TEST32_VEX( "FAIL", 0xC5, 0xDF, 0x58, 0x14, 0x01 );
 	//_test_vax();
+
+	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
+
+
+	// PMOVSXBW
+	// 66 0f 38 20 /r PMOVSXBW xmm1,xmm2/m64
+	_TEST64( "660f382000 pmovsxbw xmm0,qword ptr [rax]", 0x66, 0x0F, 0x38, 0x20, 0x00 );
+	_TEST32( "660f3820c1 pmovsxbw xmm0,xmm1", 0x66, 0x0F, 0x38, 0x20, 0xC1 );
+	// 66 0f 38 21 /r PMOVSXBD xmm1,xmm2/m32
+	_TEST64( "660f382100 pmovsxbd xmm0,dword ptr [rax]", 0x66, 0x0F, 0x38, 0x21, 0x00 );
+	_TEST32( "660f3821c1 pmovsxbd xmm0,xmm1", 0x66, 0x0F, 0x38, 0x21, 0xC1 );
+	// 66 0f 38 22 /r PMOVSXBQ xmm1,xmm2/m16
+	_TEST64( "660f382200 pmovsxbq xmm0,word ptr [rax]", 0x66, 0x0F, 0x38, 0x22, 0x00 );
+	_TEST32( "660f3822c1 pmovsxbq xmm0,xmm1", 0x66, 0x0F, 0x38, 0x22, 0xC1 );
+	// 66 0f 38 23 /r PMOVSXWD xmm1,xmm2/m64
+	_TEST64( "660f382300 pmovsxwd xmm0,qword ptr [rax]", 0x66, 0x0F, 0x38, 0x23, 0x00 );
+	_TEST32( "660f3823c1 pmovsxwd xmm0,xmm1", 0x66, 0x0F, 0x38, 0x23, 0xC1 );
+	// 66 0f 38 24 /r PMOVSXWQ xmm1,xmm2/m32
+	_TEST64( "660f382400 pmovsxwq xmm0,dword ptr [rax]", 0x66, 0x0F, 0x38, 0x24, 0x00 );
+	_TEST32( "660f3824c1 pmovsxwq xmm0,xmm1", 0x66, 0x0F, 0x38, 0x24, 0xC1 );
+	// 66 0f 38 25 /r PMOVSXDQ xmm1,xmm2/m64
+	_TEST64( "660f382500 pmovsxdq xmm0,qword ptr [rax]", 0x66, 0x0F, 0x38, 0x25, 0x00 );
+	_TEST32( "660f3825c1 pmovsxdq xmm0,xmm1", 0x66, 0x0F, 0x38, 0x25, 0xC1 );
+	// VEX.128.66.0F38.WIG 20 /r VPMOVSXBW xmm1,xmm2/m64
+	_TEST32_VEX( "c4e2792000 vpmovsxbw xmm0,qword ptr [eax]", 0xC4, 0xE2, 0x79, 0x20, 0x00 );
+	_TEST64_VEX( "c4e27920c1 vpmovsxbw xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x20, 0xC1 );
+	// VEX.128.66.0F38.WIG 21 /r VPMOVSXBD xmm1,xmm2/m32
+	_TEST32_VEX( "c4e2792100 vpmovsxbd xmm0,dword ptr [eax]", 0xC4, 0xE2, 0x79, 0x21, 0x00 );
+	_TEST64_VEX( "c4e27921c1 vpmovsxbd xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x21, 0xC1 );
+	// VEX.128.66.0F38.WIG 22 /r VPMOVSXBQ xmm1,xmm2/m16
+	_TEST32_VEX( "c4e2792200 vpmovsxbq xmm0,word ptr [eax]", 0xC4, 0xE2, 0x79, 0x22, 0x00 );
+	_TEST64_VEX( "c4e27922c1 vpmovsxbq xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x22, 0xC1 );
+	// VEX.128.66.0F38.WIG 23 /r VPMOVSXWD xmm1,xmm2/m64
+	_TEST32_VEX( "c4e2792300 vpmovsxwd xmm0,qword ptr [eax]", 0xC4, 0xE2, 0x79, 0x23, 0x00 );
+	_TEST64_VEX( "c4e27923c1 vpmovsxwd xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x23, 0xC1 );
+	// VEX.128.66.0F38.WIG 24 /r VPMOVSXWQ xmm1,xmm2/m32
+	_TEST32_VEX( "c4e2792400 vpmovsxwq xmm0,dword ptr [eax]", 0xC4, 0xE2, 0x79, 0x24, 0x00 );
+	_TEST64_VEX( "c4e27924c1 vpmovsxwq xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x24, 0xC1 );
+	// VEX.128.66.0F38.WIG 25 /r VPMOVSXDQ xmm1,xmm2/m64
+	_TEST32_VEX( "c4e2792500 vpmovsxdq xmm0,qword ptr [eax]", 0xC4, 0xE2, 0x79, 0x25, 0x00 );
+	_TEST64_VEX( "c4e27925c1 vpmovsxdq xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x25, 0xC1 );
+
+	// PMOVMSKB
+	// 0F D7 /r PMOVMSKB reg,mm
+	_TEST32( "0fd7c1 pmovmskb eax,mm1", 0x0F, 0xD7, 0xC1 );
+	_TEST64( "0fd7c1 pmovmskb rax,mm1", 0x0F, 0xD7, 0xC1 );
+	// 66 0F D7 /r PMOVMSKB reg,xmm
+	_TEST32( "660fd7c1 pmovmskb eax,xmm1", 0x66, 0x0F, 0xD7, 0xC1 );
+	_TEST64( "660fd7c1 pmovmskb rax,xmm1", 0x66, 0x0F, 0xD7, 0xC1 );
+	// VEX.128.66.0F.WIG D7 /r VPMOVMSKB reg,xmm1
+	_TEST32_VEX( "c4e179d7c1 vpmovmskb eax,xmm0", 0xC4, 0xE1, 0x79, 0xD7, 0xC1 );
+	_TEST64_VEX( "c4e179d7c1 vpmovmskb rax,xmm0", 0xC4, 0xE1, 0x79, 0xD7, 0xC1 );
 
 	// PMINUW
 	// 66 0F 38 3A /r PMINUW xmm1,xmm2/m128
@@ -1273,7 +1336,7 @@ void test(void) {
 	// VEX.128.F2.0F 12 /r VMOVDDUP xmm1,xmm2/m64
 	// VEX.256.F2.0F 12 /r VMOVDDUP ymm1,ymm2/m256
 	_TEST64_VEX( "c4e17b12d8 vmovddup xmm3,xmm0", 0xC4, 0xE1, 0x7B, 0x12, 0xD8 );
-	_TEST32_VEX( "c4e17b1200 vmovddup xmm0,oword ptr [eax]", 0xC4, 0xE1, 0x7B, 0x12, 0x00 );
+	_TEST32_VEX( "c4e17b1200 vmovddup xmm0,qword ptr [eax]", 0xC4, 0xE1, 0x7B, 0x12, 0x00 );
 	_TEST32_VEX( "c4e17f12d8 vmovddup ymm3,ymm0", 0xC4, 0xE1, 0x7F, 0x12, 0xD8 );
 	_TEST64_VEX( "c4e17f1200 vmovddup ymm0,ymmword ptr [rax]", 0xC4, 0xE1, 0x7F, 0x12, 0x00 );
 	// VEX.128.F3.0F 6F /r VMOVDQU xmm1,xmm2/m128
