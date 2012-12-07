@@ -2722,6 +2722,93 @@ struct ira_opcode_desc _ira_opcode_desc_PMAXSB[] = {
 	{ "vpmaxsb", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x3C }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_PMAXSD[] = {
+	// 66 0F 38 3D /r PMAXSD xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x3D }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 3D /r VPMAXSD xmm1,xmm2,xmm3/m128
+	{ "vpmaxsd", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x3D }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMAXSW[] = {
+	// 0F EE /r PMAXSW mm1,mm2/m64
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xEE, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F EE /r PMAXSW xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xEE, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG EE /r VPMAXSW xmm1,xmm2,xmm3/m128
+	{ "vpmaxsw", 0x10C0, 0x00D88000, { 0x0F, 0xEE, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMAXUB[] = {
+	// 0F DE /r PMAXUB mm1,mm2/m64
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xDE, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F DE /r PMAXUB xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xDE, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG DE /r VPMAXUB xmm1,xmm2,xmm3/m128
+	{ "vpmaxub", 0x10C0, 0x00D88000, { 0x0F, 0xDE, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMAXUD[] = {
+	// 66 0F 38 3F /r PMAXUD xmm1, xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x3F }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 3F /r VPMAXUD xmm1,xmm2,xmm3/m128
+	{ "vpmaxud", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x3F }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMAXUW[] = {
+	// 66 0F 38 3E /r PMAXUW xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x3E }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 3E/r VPMAXUW xmm1,xmm2,xmm3/m128
+	{ "vpmaxuw", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x3E }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMINSB[] = {
+	// 66 0F 38 38 /r PMINSB xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x38 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 38 /r VPMINSB xmm1,xmm2,xmm3/m128
+	{ "vpminsb", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x38 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMINSD[] = {
+	// 66 0F 38 39 /r PMINSD xmm1, xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x39 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 39 /r VPMINSD xmm1, xmm2, xmm3/m128
+	{ "vpminsd", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x39 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMINSW[] = {
+	// 0F EA /r PMINSW mm1,mm2/m64
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xEA, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F EA /r PMINSW xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xEA, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG EA /r VPMINSW xmm1,xmm2,xmm3/m128
+	{ "vpminsw", 0x10C0, 0x00D88000, { 0x0F, 0xEA, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMINUB[] = {
+	// 0F DA /r PMINUB mm1,mm2/m64
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xDA, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F DA /r PMINUB xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xDA, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG DA /r VPMINUB xmm1,xmm2,xmm3/m128
+	{ "vpminub", 0x10C0, 0x00D88000, { 0x0F, 0xDA, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMINUW[] = {
+	// 66 0F 38 3A /r PMINUW xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x3A }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 3A /r VPMINUW xmm1,xmm2,xmm3/m128
+	{ "vpminuw", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x3A }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMINUD[] = {
+	// 66 0F 38 3B /r PMINUD xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x3B }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 3B /r VPMINUD xmm1,xmm2,xmm3/m128
+	{ "vpminud", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x3B }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+
+
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
 	_IA_INSTRUCTION( "blendpd", _ira_opcode_desc_BLENDPD ),
@@ -3012,5 +3099,16 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "pmaddubsw", _ira_opcode_desc_PMADDUBSW),
 		_IA_INSTRUCTION( "pmaddwd", _ira_opcode_desc_PMADDWD),
 		_IA_INSTRUCTION( "pmaxsb", _ira_opcode_desc_PMAXSB),
+		_IA_INSTRUCTION( "pmaxsd", _ira_opcode_desc_PMAXSD),
+		_IA_INSTRUCTION( "pmaxsw", _ira_opcode_desc_PMAXSW),
+		_IA_INSTRUCTION( "pmaxub", _ira_opcode_desc_PMAXUB),
+		_IA_INSTRUCTION( "pmaxud", _ira_opcode_desc_PMAXUD),
+		_IA_INSTRUCTION( "pmaxuw", _ira_opcode_desc_PMAXUW),
+		_IA_INSTRUCTION( "pminsb", _ira_opcode_desc_PMINSB),
+		_IA_INSTRUCTION( "pminsd", _ira_opcode_desc_PMINSD),
+		_IA_INSTRUCTION( "pminsw", _ira_opcode_desc_PMINSW),
+		_IA_INSTRUCTION( "pminuw", _ira_opcode_desc_PMINUW),
+		_IA_INSTRUCTION( "pminub", _ira_opcode_desc_PMINUB),
+		_IA_INSTRUCTION( "pminud", _ira_opcode_desc_PMINUD),
 		{ NULL, 0, 0, NULL }
 };
