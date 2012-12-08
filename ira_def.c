@@ -2940,16 +2940,142 @@ struct ira_opcode_desc _ira_opcode_desc_POP[] = {
 	// 58+ rw POP r16 O Valid Valid Pop top of stack into r16; increment stack pointer.
 	// 58+ rd POP r32 O N.E. Valid Pop top of stack into r32; increment stack pointer.
 	// 58+ rd POP r64 O Valid N.E. Pop top of stack into r64; increment stack pointer. Cannot encode 32-bit operand size.
+	{ NULL, 0x0001, 0x00440000, { 0x58, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_EOSA), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x01840000, { 0x58, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_WORD ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x06840000, { 0x58, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 1F POP DS NP Invalid Valid Pop top of stack into DS; increment stack pointer.
 	// 07 POP ES NP Invalid Valid Pop top of stack into ES; increment stack pointer.
 	// 17 POP SS NP Invalid Valid Pop top of stack into SS; increment stack pointer.
+	{ NULL, 0x0001, 0x00440000, { 0x1F, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_DS, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x07, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_ES, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x17, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_SS, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F A1 POP FS NP Valid Valid Pop top of stack into FS; increment stack pointer by 16 bits.
 	// 0F A1 POP FS NP N.E. Valid Pop top of stack into FS; increment stack pointer by 32 bits.
 	// 0F A1 POP FS NP Valid N.E. Pop top of stack into FS; increment stack pointer by 64 bits.
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA1, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_FS, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F A9 POP GS NP Valid Valid Pop top of stack into GS; increment stack pointer by 16 bits.
 	// 0F A9 POP GS NP N.E. Valid Pop top of stack into GS; increment stack pointer by 32 bits.
 	// 0F A9 POP GS NP Valid N.E. Pop top of stack into GS; increment stack pointer by 64 bits.
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA9, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_GS, _IRA_OS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
+
+struct ira_opcode_desc _ira_opcode_desc_POPA[] = {
+	// 61 POPA NP Invalid Valid Pop DI, SI, BP, BX, DX, CX, and AX.
+	{ NULL, 0x0001, 0x01440000, { 0x61, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 61 POPAD NP Invalid Valid Pop EDI, ESI, EBP, EBX, EDX, ECX, and EAX.
+	{ "popad", 0x0001, 0x02440000, { 0x61, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_POPCNT[] = {
+	// F3 0F B8 /r POPCNT r16, r/m16 RM Valid Valid POPCNT on r/m16
+	// F3 0F B8 /r POPCNT r32, r/m32 RM Valid Valid POPCNT on r/m32
+	// F3 REX.W 0F B8 /r POPCNT r64, r/m64 RM Valid N.E. POPCNT on r/m64
+	{ NULL, 0x4000, 0x00D88000, { 0x0F, 0xB8, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_POPF[] = {
+	// 9D POPF NP Valid Valid Pop top of stack into lower 16 bits of EFLAGS.
+	{ NULL, 0x0000, 0x01C40000, { 0x9D, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 9D POPFD NP N.E. Valid Pop top of stack into EFLAGS.
+	{ "popfd", 0x0000, 0x02440000, { 0x9D, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W + 9D POPFQ NP Valid N.E. Pop top of stack and zero-extend into RFLAGS.
+	{ "popfq", 0x0000, 0x04840000, { 0x9D, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_POR[] = {
+	// 0F EB /r1 POR mm,mm/m64
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xEB, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F EB /r POR xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xEB, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG EB /r VPOR xmm1,xmm2,xmm3/m128
+	{ "vpor", 0x10C0, 0x00D88000, { 0x0F, 0xEB, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PREFETCHT[] = {
+	// 0F 18 /1 PREFETCHT0 m8 M Valid Valid Move data from m8 closer to the processor using T0 hint.
+	{ "prefetcht0", 0x0001, 0x80D98800, { 0x0F, 0x18, 0x00 }, _IRA_OPERAND_MODRM_M_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 0F 18 /2 PREFETCHT1 m8 M Valid Valid Move data from m8 closer to the processor using T1 hint.
+	{ "prefetcht1", 0x0001, 0x80D99000, { 0x0F, 0x18, 0x00 }, _IRA_OPERAND_MODRM_M_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 0F 18 /3 PREFETCHT2 m8 M Valid Valid Move data from m8 closer to the processor using T2 hint.
+	{ "prefetcht2", 0x0001, 0x80D99800, { 0x0F, 0x18, 0x00 }, _IRA_OPERAND_MODRM_M_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 0F 18 /0 PREFETCHNTA m8 M Valid Valid Move data from m8 closer to the processor using NTA hint.
+	{ "prefetchnta", 0x0001, 0x80D98000, { 0x0F, 0x18, 0x00 }, _IRA_OPERAND_MODRM_M_8, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSADBW[] = {
+	// 0F F6 /r PSADBW mm1,mm2/m64
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xF6, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F F6 /r PSADBW xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xF6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG F6 /r VPSADBW xmm1,xmm2,xmm3/m128
+	{ "vpsadbw", 0x10C0, 0x00D88000, { 0x0F, 0xF6, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSHUFB[] = {
+	// 0F 38 00 /r PSHUFB mm1,mm2/m64
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x38, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F 38 00 /r PSHUFB xmm1,xmm2/m128
+	{ NULL, 0x1000, 0x00EC8000, { 0x0F, 0x38, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 00 /r VPSHUFB xmm1,xmm2,xmm3/m128
+	{ "vpshufb", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSHUFD[] = {
+	// 66 0F 70 /r ib PSHUFD xmm1,xmm2/m128,imm8
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0x70, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.128.66.0F.WIG 70 /r ib VPSHUFD xmm1,xmm2/m128,imm8
+	{ "vpshufd", 0x10C0, 0x00D88000, { 0x0F, 0x70, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSHUFHW[] = {
+	// F3 0F 70 /r ib PSHUFHW xmm1,xmm2/m128,imm8
+	{ NULL, 0x4000, 0x00D88000, { 0x0F, 0x70, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.128.F3.0F.WIG 70 /r ib VPSHUFHW xmm1,xmm2/m128,imm8
+	{ "vpshufhw", 0x40C0, 0x00D88000, { 0x0F, 0x70, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSHUFLW[] = {
+	// F2 0F 70 /r ib PSHUFLW xmm1,xmm2/m128,imm8
+	{ NULL, 0x2000, 0x00D88000, { 0x0F, 0x70, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.128.F2.0F.WIG 70 /r ib VPSHUFLW xmm1,xmm2/m128,imm8
+	{ "vpshuflw", 0x20C0, 0x00D88000, { 0x0F, 0x70, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSHUFW[] = {
+	// 0F 70 /r ib PSHUFW mm1,mm2/m64,imm8
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0x70, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_OPERAND_IB, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSIGN[] = {
+	// 0F 38 08 /r PSIGNB mm1,mm2/m64
+	{ "psignb", 0x0000, 0x00EC8000, { 0x0F, 0x38, 0x08 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 0F 38 09 /r PSIGNW mm1,mm2/m64
+	{ "psignw", 0x0000, 0x00EC8000, { 0x0F, 0x38, 0x09 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 0F 38 0A /r PSIGND mm1,mm2/m64
+	{ "psignd", 0x0000, 0x00EC8000, { 0x0F, 0x38, 0x0A }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F 38 08 /r PSIGNB xmm1,xmm2/m128
+	{ "psignb", 0x1000, 0x00EC8000, { 0x0F, 0x38, 0x08 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// 66 0F 38 09 /r PSIGNW xmm1,xmm2/m128
+	{ "psignw", 0x1000, 0x00EC8000, { 0x0F, 0x38, 0x09 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// 66 0F 38 0A /r PSIGND xmm1,xmm2/m128
+	{ "psignd", 0x1000, 0x00EC8000, { 0x0F, 0x38, 0x0A }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 08 /r VPSIGNB xmm1,xmm2,xmm3/m128
+	{ "vpsignb", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x08 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 09 /r VPSIGNW xmm1,xmm2,xmm3/m128
+	{ "vpsignw", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x09 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 0A /r VPSIGND xmm1,xmm2,xmm3/m128
+	{ "vpsignd", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x0A }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSRLDQ[] = {
+	// 66 0F 73 /3 ib PSRLDQ xmm1, imm8
+	{ NULL, 0x1000, 0x00DB9800, { 0x0F, 0x73, 0x00 }, _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// VEX.NDD.128.66.0F.WIG 73 /3 ib VPSRLDQ xmm1, xmm2, imm8
+	{ "vpsrldq", 0x10C0, 0x00DB9800, { 0x0F, 0x73, 0x00 }, _IRA_VEX_VVVV_REG | _IRA_WRITE, _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_OPERAND_IB, _IRA_NA }
+};
+
+
+
 
 
 /*
@@ -3264,6 +3390,19 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "pmullw", _ira_opcode_desc_PMULLW),
 		_IA_INSTRUCTION( "pmulld", _ira_opcode_desc_PMULLD),
 		_IA_INSTRUCTION( "pop", _ira_opcode_desc_POP),
+		_IA_INSTRUCTION( "popa", _ira_opcode_desc_POPA),
+		_IA_INSTRUCTION( "popcnt", _ira_opcode_desc_POPCNT),
+		_IA_INSTRUCTION( "popf", _ira_opcode_desc_POPF),
+		_IA_INSTRUCTION( "por", _ira_opcode_desc_POR),
+		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_PREFETCHT),
+		_IA_INSTRUCTION( "psadbw", _ira_opcode_desc_PSADBW),
+		_IA_INSTRUCTION( "pshufb", _ira_opcode_desc_PSHUFB),
+		_IA_INSTRUCTION( "pshufd", _ira_opcode_desc_PSHUFD),
+		_IA_INSTRUCTION( "pshufhw", _ira_opcode_desc_PSHUFHW),
+		_IA_INSTRUCTION( "pshuflw", _ira_opcode_desc_PSHUFLW),
+		_IA_INSTRUCTION( "pshufw", _ira_opcode_desc_PSHUFW),
+		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_PSIGN),
+		_IA_INSTRUCTION( "psrldq", _ira_opcode_desc_PSRLDQ),
 		{ NULL, 0, 0, NULL }
 
 

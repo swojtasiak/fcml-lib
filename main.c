@@ -61,8 +61,149 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// PSRLDQ
+	// 66 0F 73 /3 ib PSRLDQ xmm1,imm8
+	_TEST32( "660f73d9ff psrldq xmm1,0ffh", 0x66, 0x0F, 0x73, 0xD9, 0xFF );
+	// VEX.NDD.128.66.0F.WIG 73 /3 ib VPSRLDQ xmm1,xmm2,imm8
+	_TEST32_VEX( "c4e16173d8ff vpsrldq xmm3,xmm0,0ffh", 0xC4, 0xE1, 0x61, 0x73, 0xD8, 0xFF );
+
+	// PSIGN
+	// 0F 38 08 /r PSIGNB mm1,mm2/m64
+	_TEST64( "0f380800 psignb mm0,qword ptr [rax]", 0x0F, 0x38, 0x08, 0x00 );
+	_TEST32( "0f3808c1 psignb mm0,mm1", 0x0F, 0x38, 0x08, 0xC1 );
+	// 0F 38 09 /r PSIGNW mm1,mm2/m64
+	_TEST64( "0f380900 psignw mm0,qword ptr [rax]", 0x0F, 0x38, 0x09, 0x00 );
+	_TEST32( "0f3809c1 psignw mm0,mm1", 0x0F, 0x38, 0x09, 0xC1 );
+	// 0F 38 0A /r PSIGND mm1,mm2/m64
+	_TEST64( "0f380a00 psignd mm0,qword ptr [rax]", 0x0F, 0x38, 0x0A, 0x00 );
+	_TEST32( "0f380ac1 psignd mm0,mm1", 0x0F, 0x38, 0x0A, 0xC1 );
+	// 66 0F 38 08 /r PSIGNB xmm1,xmm2/m128
+	_TEST64( "660f380800 psignb xmm0,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x08, 0x00 );
+	_TEST32( "660f3808c1 psignb xmm0,xmm1", 0x66, 0x0F, 0x38, 0x08, 0xC1 );
+	// 66 0F 38 09 /r PSIGNW xmm1,xmm2/m128
+	_TEST64( "660f380900 psignw xmm0,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x09, 0x00 );
+	_TEST32( "660f3809c1 psignw xmm0,xmm1", 0x66, 0x0F, 0x38, 0x09, 0xC1 );
+	// 66 0F 38 0A /r PSIGND xmm1,xmm2/m128
+	_TEST64( "660f380a00 psignd xmm0,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x0A, 0x00 );
+	_TEST32( "660f380ac1 psignd xmm0,xmm1", 0x66, 0x0F, 0x38, 0x0A, 0xC1 );
+	// VEX.NDS.128.66.0F38.WIG 08 /r VPSIGNB xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e2790800 vpsignb xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE2, 0x79, 0x08, 0x00 );
+	_TEST32_VEX( "c4e27908c1 vpsignb xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x08, 0xC1 );
+	// VEX.NDS.128.66.0F38.WIG 09 /r VPSIGNW xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e2790900 vpsignw xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE2, 0x79, 0x09, 0x00 );
+	_TEST32_VEX( "c4e27909c1 vpsignw xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x09, 0xC1 );
+	// VEX.NDS.128.66.0F38.WIG 0A /r VPSIGND xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e2790a00 vpsignd xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE2, 0x79, 0x0A, 0x00 );
+	_TEST32_VEX( "c4e2790ac1 vpsignd xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x0A, 0xC1 );
+
+	// PSHUFW
+	// 0F 70 /r ib PSHUFW mm1,mm2/m64,imm8
+	_TEST64_VEX( "0f7000ff pshufw mm0,qword ptr [rax],0ffh", 0x0F, 0x70, 0x00, 0xFF );
+	_TEST32_VEX( "0f70c1ff pshufw mm0,mm1,0ffh", 0x0F, 0x70, 0xC1, 0xFF );
+
+	// PSHUFLW
+	// F2 0F 70 /r ib PSHUFLW xmm1,xmm2/m128,imm8
+	_TEST64_VEX( "f20f7000ff pshuflw xmm0,oword ptr [rax],0ffh", 0xF2, 0x0F, 0x70, 0x00, 0xFF );
+	_TEST32_VEX( "f20f70c1ff pshuflw xmm0,xmm1,0ffh", 0xF2, 0x0F, 0x70, 0xC1, 0xFF );
+	// VEX.128.F2.0F.WIG 70 /r ib VPSHUFLW xmm1,xmm2/m128,imm8
+	_TEST64_VEX( "c4e17b7000ff vpshuflw xmm0,oword ptr [rax],0ffh", 0xC4, 0xE1, 0x7B, 0x70, 0x00, 0xFF );
+	_TEST32_VEX( "c4e17b70c1ff vpshuflw xmm0,xmm1,0ffh", 0xC4, 0xE1, 0x7B, 0x70, 0xC1, 0xFF );
+
+	// PSHUFHW
+	// F3 0F 70 /r ib PSHUFHW xmm1,xmm2/m128,imm8
+	_TEST64_VEX( "f30f7000ff pshufhw xmm0,oword ptr [rax],0ffh", 0xF3, 0x0F, 0x70, 0x00, 0xFF );
+	_TEST32_VEX( "f30f70c1ff pshufhw xmm0,xmm1,0ffh", 0xF3, 0x0F, 0x70, 0xC1, 0xFF );
+	// VEX.128.F3.0F.WIG 70 /r ib VPSHUFHW xmm1,xmm2/m128,imm8
+	_TEST64_VEX( "c4e17a7000ff vpshufhw xmm0,oword ptr [rax],0ffh", 0xC4, 0xE1, 0x7A, 0x70, 0x00, 0xFF );
+	_TEST32_VEX( "c4e17a70c1ff vpshufhw xmm0,xmm1,0ffh", 0xC4, 0xE1, 0x7A, 0x70, 0xC1, 0xFF );
+
+	// PSHUFD
+	// 66 0F 70 /r ib PSHUFD xmm1,xmm2/m128,imm8
+	_TEST64_VEX( "660f7000ff pshufd xmm0,oword ptr [rax],0ffh", 0x66, 0x0F, 0x70, 0x00, 0xFF );
+	_TEST32_VEX( "660f70c1ff pshufd xmm0,xmm1,0ffh", 0x66, 0x0F, 0x70, 0xC1, 0xFF );
+	// VEX.128.66.0F.WIG 70 /r ib VPSHUFD xmm1,xmm2/m128,imm8
+	_TEST64_VEX( "c4e1797000ff vpshufd xmm0,oword ptr [rax],0ffh", 0xC4, 0xE1, 0x79, 0x70, 0x00, 0xFF );
+	_TEST32_VEX( "c4e17970c1ff vpshufd xmm0,xmm1,0ffh", 0xC4, 0xE1, 0x79, 0x70, 0xC1, 0xFF );
+
+	// PSHUFB
+	// 0F 38 00 /r PSHUFB mm1, mm2/m64
+	_TEST64( "0f380000 pshufb mm0,qword ptr [rax]", 0x0F, 0x38, 0x00, 0x00 );
+	_TEST32( "0f3800c1 pshufb mm0,mm1", 0x0F, 0x38, 0x00, 0xC1 );
+	// 66 0F 38 00 /r PSHUFB xmm1, xmm2/m128
+	_TEST64( "660f380000 pshufb xmm0,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x00, 0x00 );
+	_TEST32( "660f3800c1 pshufb xmm0,xmm1", 0x66, 0x0F, 0x38, 0x00, 0xC1 );
+	// VEX.NDS.128.66.0F38.WIG 00 /r VPSHUFB xmm1, xmm2, xmm3/m128
+	_TEST64_VEX( "c4e2790000 vpshufb xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE2, 0x79, 0x00, 0x00 );
+	_TEST32_VEX( "c4e27900c1 vpshufb xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x00, 0xC1 );
+
+	// ****
+
+	// PSADBW
+	// 0F F6 /r PSADBW mm1,mm2/m64
+	_TEST64( "0ff600 psadbw mm0,qword ptr [rax]", 0x0F, 0xF6, 0x00 );
+	_TEST32( "0ff6c1 psadbw mm0,mm1", 0x0F, 0xF6, 0xC1 );
+	// 66 0F F6 /r PSADBW xmm1,xmm2/m128
+	_TEST64( "660ff600 psadbw xmm0,oword ptr [rax]", 0x66, 0x0F, 0xF6, 0x00 );
+	_TEST32( "660ff6c1 psadbw xmm0,xmm1", 0x66, 0x0F, 0xF6, 0xC1 );
+	// VEX.NDS.128.66.0F.WIG F6 /r VPSADBW xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e179f600 vpsadbw xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE1, 0x79, 0xF6, 0x00 );
+	_TEST32_VEX( "c4e179f6c1 vpsadbw xmm0,xmm0,xmm1", 0xC4, 0xE1, 0x79, 0xF6, 0xC1 );
+
+	// PREFETCHT
+	// 0F 18 /1 PREFETCHT0 m8 M Valid Valid Move data from m8 closer to the processor using T0 hint.
+	_TEST32( "0f1808 prefetcht0 byte ptr [eax]", 0x0F, 0x18, 0x08 );
+	_TEST64( "0f1808 prefetcht0 byte ptr [rax]", 0x0F, 0x18, 0x08 );
+	// 0F 18 /2 PREFETCHT1 m8 M Valid Valid Move data from m8 closer to the processor using T1 hint.
+	_TEST32( "0f1810 prefetcht1 byte ptr [eax]", 0x0F, 0x18, 0x10 );
+	_TEST64( "0f1810 prefetcht1 byte ptr [rax]", 0x0F, 0x18, 0x10 );
+	// 0F 18 /3 PREFETCHT2 m8 M Valid Valid Move data from m8 closer to the processor using T2 hint.
+	_TEST32( "0f1818 prefetcht2 byte ptr [eax]", 0x0F, 0x18, 0x18 );
+	_TEST64( "0f1818 prefetcht2 byte ptr [rax]", 0x0F, 0x18, 0x18 );
+	// 0F 18 /0 PREFETCHNTA m8 M Valid Valid Move data from m8 closer to the processor using NTA hint.
+	_TEST32( "0f1800 prefetchnta byte ptr [eax]", 0x0F, 0x18, 0x00 );
+	_TEST64( "0f1800 prefetchnta byte ptr [rax]", 0x0F, 0x18, 0x00 );
+
+	// POR
+	// 0F EB /r1 POR mm,mm/m64
+	_TEST64( "0feb00 por mm0,qword ptr [rax]", 0x0F, 0xEB, 0x00 );
+	_TEST32( "0febc1 por mm0,mm1", 0x0F, 0xEB, 0xC1 );
+	// 66 0F EB /r POR xmm1,xmm2/m128
+	_TEST64( "660feb00 por xmm0,oword ptr [rax]", 0x66, 0x0F, 0xEB, 0x00 );
+	_TEST32( "660febc1 por xmm0,xmm1", 0x66, 0x0F, 0xEB, 0xC1 );
+	// VEX.NDS.128.66.0F.WIG EB /r VPOR xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e179eb00 vpor xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE1, 0x79, 0xEB, 0x00 );
+	_TEST32_VEX( "c4e179ebc1 vpor xmm0,xmm0,xmm1", 0xC4, 0xE1, 0x79, 0xEB, 0xC1 );
+
+	// POPF
+	// 9D POPF NP Valid Valid Pop top of stack into lower 16 bits of EFLAGS.
+	_TEST32( "669d popf", 0x66, 0x9D );
+	_TEST64( "669d popf", 0x66, 0x9D );
+	// 9D POPFD NP N.E. Valid Pop top of stack into EFLAGS.
+	_TEST32( "9d popfd", 0x9D );
+	_TEST64( "FAIL", 0x9D );
+	// REX.W + 9D POPFQ NP Valid N.E. Pop top of stack and zero-extend into RFLAGS.
+	_TEST64( "489d popfq", 0x48, 0x9D );
+
+	// POPCNT
+	// F3 0F B8 /r POPCNT r16, r/m16 RM Valid Valid POPCNT on r/m16
+	_TEST32( "66f30fb800 popcnt ax,word ptr [eax]", 0x66, 0xF3, 0x0F, 0xB8, 0x00 );
+	_TEST32( "66f30fb8c0 popcnt ax,ax", 0x66, 0xF3, 0x0F, 0xB8, 0xC0 );
+	// F3 0F B8 /r POPCNT r32, r/m32 RM Valid Valid POPCNT on r/m32
+	_TEST32( "f30fb800 popcnt eax,dword ptr [eax]", 0xF3, 0x0F, 0xB8, 0x00 );
+	// F3 REX.W 0F B8 /r POPCNT r64, r/m64 RM Valid N.E. POPCNT on r/m64
+	_TEST64( "f3480fb800 popcnt rax,qword ptr [rax]", 0xF3, 0x48, 0x0F, 0xB8, 0x00 );
+
+	// POPA
+	// 61 POPA NP Invalid Valid Pop DI, SI, BP, BX, DX, CX, and AX.
+	_TEST32( "61 popad", 0x61 );
+	_TEST64( "FAIL", 0x61 );
+	// 61 POPAD NP Invalid Valid Pop EDI, ESI, EBP, EBX, EDX, ECX, and EAX.
+	_TEST32( "6661 popa", 0x66, 0x61 );
+
+	// POP
 	// 8F /0 POP r/m16 M Valid Valid Pop top of stack into m16; increment stack pointer.
 	// 8F /0 POP r/m32 M N.E. Valid Pop top of stack into m32; increment stack pointer.
+	// 8F /0 POP r/m64 M Valid N.E. Pop top of stack into m64; increment stack pointer. Cannot encode 32-bit operand size.
 	// 32 BIT.
 	_TEST32( "8f00 pop dword ptr [eax]", 0x8F, 0x00 );
 	_TEST32( "8fc1 pop ecx", 0x8F, 0xC1 );
@@ -83,19 +224,32 @@ void test(void) {
 	_TEST64( "66678fc1 pop cx", 0x66, 0x67, 0x8F, 0xC1 );
 	_TEST64( "488f00 pop qword ptr [rax]", 0x48, 0x8F, 0x00 );
 	_TEST64( "488fc1 pop rcx", 0x48, 0x8F, 0xC1 );
-	// 8F /0 POP r/m64 M Valid N.E. Pop top of stack into m64; increment stack pointer. Cannot encode 32-bit operand size.
 	// 58+ rw POP r16 O Valid Valid Pop top of stack into r16; increment stack pointer.
 	// 58+ rd POP r32 O N.E. Valid Pop top of stack into r32; increment stack pointer.
 	// 58+ rd POP r64 O Valid N.E. Pop top of stack into r64; increment stack pointer. Cannot encode 32-bit operand size.
+	_TEST32( "58 pop eax", 0x58 );
+	_TEST32( "6658 pop ax", 0x66, 0x58 );
+	_TEST32( "6758 pop eax", 0x67, 0x58 );
+	_TEST64( "58 pop rax", 0x58 );
+	_TEST64( "6658 pop ax", 0x66, 0x58 );
+	_TEST64( "6758 pop rax", 0x67, 0x58 );
+	_TEST64( "4858 pop rax", 0x48, 0x58 );
 	// 1F POP DS NP Invalid Valid Pop top of stack into DS; increment stack pointer.
 	// 07 POP ES NP Invalid Valid Pop top of stack into ES; increment stack pointer.
 	// 17 POP SS NP Invalid Valid Pop top of stack into SS; increment stack pointer.
+	_TEST32( "1f pop ds", 0x1F );
+	_TEST32( "07 pop es", 0x07 );
+	_TEST32( "17 pop ss", 0x17 );
 	// 0F A1 POP FS NP Valid Valid Pop top of stack into FS; increment stack pointer by 16 bits.
 	// 0F A1 POP FS NP N.E. Valid Pop top of stack into FS; increment stack pointer by 32 bits.
 	// 0F A1 POP FS NP Valid N.E. Pop top of stack into FS; increment stack pointer by 64 bits.
+	_TEST32( "0fa1 pop fs", 0x0F, 0xA1 );
+	_TEST64( "0fa1 pop fs", 0x0F, 0xA1 );
 	// 0F A9 POP GS NP Valid Valid Pop top of stack into GS; increment stack pointer by 16 bits.
 	// 0F A9 POP GS NP N.E. Valid Pop top of stack into GS; increment stack pointer by 32 bits.
 	// 0F A9 POP GS NP Valid N.E. Pop top of stack into GS; increment stack pointer by 64 bits.
+	_TEST32( "0fa9 pop gs", 0x0F, 0xA9 );
+	_TEST64( "0fa9 pop gs", 0x0F, 0xA9 );
 
 	// PMULUDQ
 	// 0F F4 /r1 PMULUDQ mm1,mm2/m64
