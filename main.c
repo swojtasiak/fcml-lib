@@ -61,6 +61,72 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// 8F /0 POP r/m16 M Valid Valid Pop top of stack into m16; increment stack pointer.
+	// 8F /0 POP r/m32 M N.E. Valid Pop top of stack into m32; increment stack pointer.
+	// 32 BIT.
+	_TEST32( "8f00 pop dword ptr [eax]", 0x8F, 0x00 );
+	_TEST32( "8fc1 pop ecx", 0x8F, 0xC1 );
+	_TEST32( "668f00 pop word ptr [eax]", 0x66, 0x8F, 0x00 );
+	_TEST32( "668fc1 pop cx", 0x66, 0x8F, 0xC1 );
+	_TEST32( "678f00 pop dword ptr [bx+si]", 0x67, 0x8F, 0x00 );
+	_TEST32( "678fc1 pop ecx", 0x67, 0x8F, 0xC1 );
+	_TEST32( "66678f00 pop word ptr [bx+si]", 0x66, 0x67, 0x8F, 0x00 );
+	_TEST32( "66678fc1 pop cx", 0x66, 0x67, 0x8F, 0xC1 );
+	// 64 BIT.
+	_TEST64( "8f00 pop qword ptr [rax]", 0x8F, 0x00 );
+	_TEST64( "8fc1 pop rcx", 0x8F, 0xC1 );
+	_TEST64( "668f00 pop word ptr [rax]", 0x66, 0x8F, 0x00 );
+	_TEST64( "668fc1 pop cx", 0x66, 0x8F, 0xC1 );
+	_TEST64( "678f00 pop qword ptr [eax]", 0x67, 0x8F, 0x00 );
+	_TEST64( "678fc1 pop rcx", 0x67, 0x8F, 0xC1 );
+	_TEST64( "66678f00 pop word ptr [eax]", 0x66, 0x67, 0x8F, 0x00 );
+	_TEST64( "66678fc1 pop cx", 0x66, 0x67, 0x8F, 0xC1 );
+	_TEST64( "488f00 pop qword ptr [rax]", 0x48, 0x8F, 0x00 );
+	_TEST64( "488fc1 pop rcx", 0x48, 0x8F, 0xC1 );
+	// 8F /0 POP r/m64 M Valid N.E. Pop top of stack into m64; increment stack pointer. Cannot encode 32-bit operand size.
+	// 58+ rw POP r16 O Valid Valid Pop top of stack into r16; increment stack pointer.
+	// 58+ rd POP r32 O N.E. Valid Pop top of stack into r32; increment stack pointer.
+	// 58+ rd POP r64 O Valid N.E. Pop top of stack into r64; increment stack pointer. Cannot encode 32-bit operand size.
+	// 1F POP DS NP Invalid Valid Pop top of stack into DS; increment stack pointer.
+	// 07 POP ES NP Invalid Valid Pop top of stack into ES; increment stack pointer.
+	// 17 POP SS NP Invalid Valid Pop top of stack into SS; increment stack pointer.
+	// 0F A1 POP FS NP Valid Valid Pop top of stack into FS; increment stack pointer by 16 bits.
+	// 0F A1 POP FS NP N.E. Valid Pop top of stack into FS; increment stack pointer by 32 bits.
+	// 0F A1 POP FS NP Valid N.E. Pop top of stack into FS; increment stack pointer by 64 bits.
+	// 0F A9 POP GS NP Valid Valid Pop top of stack into GS; increment stack pointer by 16 bits.
+	// 0F A9 POP GS NP N.E. Valid Pop top of stack into GS; increment stack pointer by 32 bits.
+	// 0F A9 POP GS NP Valid N.E. Pop top of stack into GS; increment stack pointer by 64 bits.
+
+	// PMULUDQ
+	// 0F F4 /r1 PMULUDQ mm1,mm2/m64
+	_TEST64( "0ff400 pmuludq mm0,qword ptr [rax]", 0x0F, 0xF4, 0x00 );
+	_TEST32( "0ff4c1 pmuludq mm0,mm1", 0x0F, 0xF4, 0xC1 );
+	// 66 0F F4 /r PMULUDQ xmm1,xmm2/m128
+	_TEST64( "660ff400 pmuludq xmm0,oword ptr [rax]", 0x66, 0x0F, 0xF4, 0x00 );
+	_TEST32( "660ff4c1 pmuludq xmm0,xmm1", 0x66, 0x0F, 0xF4, 0xC1 );
+	// VEX.NDS.128.66.0F.WIG F4 /r VPMULUDQ xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e179f400 vpmuludq xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE1, 0x79, 0xF4, 0x00 );
+	_TEST32_VEX( "c4e179f4c1 vpmuludq xmm0,xmm0,xmm1", 0xC4, 0xE1, 0x79, 0xF4, 0xC1 );
+
+	// PMULLW
+	// 0F D5 /r PMULLW mm,mm/m64
+	_TEST64( "0fd500 pmullw mm0,qword ptr [rax]", 0x0F, 0xD5, 0x00 );
+	_TEST32( "0fd5c1 pmullw mm0,mm1", 0x0F, 0xD5, 0xC1 );
+	// 66 0F D5 /r PMULLW xmm1,xmm2/m128
+	_TEST64( "660fd500 pmullw xmm0,oword ptr [rax]", 0x66, 0x0F, 0xD5, 0x00 );
+	_TEST32( "660fd5c1 pmullw xmm0,xmm1", 0x66, 0x0F, 0xD5, 0xC1 );
+	// VEX.NDS.128.66.0F.WIG D5 /r VPMULLW xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e179d500 vpmullw xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE1, 0x79, 0xD5, 0x00 );
+	_TEST32_VEX( "c4e179d5c1 vpmullw xmm0,xmm0,xmm1", 0xC4, 0xE1, 0x79, 0xD5, 0xC1 );
+
+	// PMULLD
+	// 66 0F 38 40 /r PMULLD xmm1,xmm2/m128
+	_TEST64( "660f384000 pmulld xmm0,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x40, 0x00 );
+	_TEST32( "660f3840c1 pmulld xmm0,xmm1", 0x66, 0x0F, 0x38, 0x40, 0xC1 );
+	// VEX.NDS.128.66.0F38.WIG 40 /r VPMULLD xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e2794000 vpmulld xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE2, 0x79, 0x40, 0x00 );
+	_TEST32_VEX( "c4e27940c1 vpmulld xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x40, 0xC1 );
+
 	// PMULHW
 	// 0F E5 /r PMULHW mm,mm/m64
 	_TEST64( "0fe500 pmulhw mm0,qword ptr [rax]", 0x0F, 0xE5, 0x00 );

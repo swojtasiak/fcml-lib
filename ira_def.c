@@ -2871,7 +2871,6 @@ struct ira_opcode_desc _ira_opcode_desc_PMOVZX[] = {
 	{ "vpmovzxdq", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x35 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
 };
 
-
 struct ira_opcode_desc _ira_opcode_desc_PMULDQ[] = {
 	// 66 0F 38 28 /r PMULDQ xmm1,xmm2/m128
 	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x28 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
@@ -2905,6 +2904,53 @@ struct ira_opcode_desc _ira_opcode_desc_PMULHW[] = {
 	// VEX.NDS.128.66.0F.WIG E5 /r VPMULHW xmm1,xmm2,xmm3/m128
 	{ "vpmulhw", 0x10C0, 0x00D88000, { 0x0F, 0xE5, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
 };
+
+struct ira_opcode_desc _ira_opcode_desc_PMULUDQ[] = {
+	// 0F F4 /r1 PMULUDQ mm1,mm2/m64
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xF4, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F F4 /r PMULUDQ xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xF4, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG F4 /r VPMULUDQ xmm1,xmm2,xmm3/m128
+	{ "vpmuludq", 0x10C0, 0x00D88000, { 0x0F, 0xF4, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMULLW[] = {
+	// 0F D5 /r PMULLW mm,mm/m64
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xD5, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F D5 /r PMULLW xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00D88000, { 0x0F, 0xD5, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG D5 /r VPMULLW xmm1,xmm2,xmm3/m128
+	{ "vpmullw", 0x10C0, 0x00D88000, { 0x0F, 0xD5, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMULLD[] = {
+	// 66 0F 38 40 /r PMULLD xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x40 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG 40 /r VPMULLD xmm1,xmm2,xmm3/m128
+	{ "vpmulld", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x40 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_128, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_POP[] = {
+	// 8F /0 POP r/m16 M Valid Valid Pop top of stack into m16; increment stack pointer.
+	// 8F /0 POP r/m32 M N.E. Valid Pop top of stack into m32; increment stack pointer.
+	// 8F /0 POP r/m64 M Valid N.E. Pop top of stack into m64; increment stack pointer. Cannot encode 32-bit operand size.
+	{ NULL, 0x0001, 0x00458000, { 0x8F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x01858000, { 0x8F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x06858000, { 0x8F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// 58+ rw POP r16 O Valid Valid Pop top of stack into r16; increment stack pointer.
+	// 58+ rd POP r32 O N.E. Valid Pop top of stack into r32; increment stack pointer.
+	// 58+ rd POP r64 O Valid N.E. Pop top of stack into r64; increment stack pointer. Cannot encode 32-bit operand size.
+	// 1F POP DS NP Invalid Valid Pop top of stack into DS; increment stack pointer.
+	// 07 POP ES NP Invalid Valid Pop top of stack into ES; increment stack pointer.
+	// 17 POP SS NP Invalid Valid Pop top of stack into SS; increment stack pointer.
+	// 0F A1 POP FS NP Valid Valid Pop top of stack into FS; increment stack pointer by 16 bits.
+	// 0F A1 POP FS NP N.E. Valid Pop top of stack into FS; increment stack pointer by 32 bits.
+	// 0F A1 POP FS NP Valid N.E. Pop top of stack into FS; increment stack pointer by 64 bits.
+	// 0F A9 POP GS NP Valid Valid Pop top of stack into GS; increment stack pointer by 16 bits.
+	// 0F A9 POP GS NP N.E. Valid Pop top of stack into GS; increment stack pointer by 32 bits.
+	// 0F A9 POP GS NP Valid N.E. Pop top of stack into GS; increment stack pointer by 64 bits.
+};
+
 
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -3214,6 +3260,10 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "pmulhrsw", _ira_opcode_desc_PMULHRSW),
 		_IA_INSTRUCTION( "pmulhuw", _ira_opcode_desc_PMULHUW),
 		_IA_INSTRUCTION( "pmulhw", _ira_opcode_desc_PMULHW),
+		_IA_INSTRUCTION( "pmuludq", _ira_opcode_desc_PMULUDQ),
+		_IA_INSTRUCTION( "pmullw", _ira_opcode_desc_PMULLW),
+		_IA_INSTRUCTION( "pmulld", _ira_opcode_desc_PMULLD),
+		_IA_INSTRUCTION( "pop", _ira_opcode_desc_POP),
 		{ NULL, 0, 0, NULL }
 
 
