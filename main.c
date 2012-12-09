@@ -61,6 +61,62 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// 0F 01 F9 RDTSCP
+	_TEST32( "0f01f9 rdtscp", 0x0f, 0x01, 0xf9 );
+	_TEST64( "0f01f9 rdtscp", 0x0f, 0x01, 0xf9 );
+
+	// 0F 31 RDTSC
+	_TEST32( "0f31 rdtsc", 0x0F, 0x31 );
+	_TEST64( "0f31 rdtsc", 0x0F, 0x31 );
+
+	// 0F C7 /6 RDRAND r16
+	_TEST32( "660fc7f0 rdrand ax", 0x66, 0x0F, 0xC7, 0xF0 );
+	_TEST64( "660fc7f0 rdrand ax", 0x66, 0x0F, 0xC7, 0xF0 );
+	// 0F C7 /6 RDRAND r32
+	_TEST32( "0fc7f0 rdrand eax", 0x0F, 0xC7, 0xF0 );
+	_TEST64( "0fc7f0 rdrand eax", 0x0F, 0xC7, 0xF0 );
+	// REX.W + 0F C7 /6 RDRAND r64
+	_TEST64( "480fc7f0 rdrand rax", 0x48, 0x0F, 0xC7, 0xF0 );
+
+	// 0F 33 RDPMC
+	_TEST32( "0f33 rdpmc", 0x0F, 0x33 );
+	_TEST64( "0f33 rdpmc", 0x0F, 0x33 );
+
+	// 0F 32 RDMSR
+	_TEST32( "0f32 rdmsr", 0x0F, 0x32 );
+	_TEST64( "0f32 rdmsr", 0x0F, 0x32 );
+
+	// F3 0F AE /0 RDFSBASE r32
+	// REX.W + F3 0F AE /0 RDFSBASE r64
+	_TEST32( "FAIL", 0x66, 0xF3, 0x0F, 0xAE, 0xC0 );
+	_TEST64( "f30faec0 rdfsbase eax", 0xF3, 0x0F, 0xAE, 0xC0 );
+	_TEST64( "66f30faec0 rdfsbase eax", 0x66, 0xF3, 0x0F, 0xAE, 0xC0 );
+	_TEST64( "f3480faec0 rdfsbase rax", 0xF3, 0x48, 0x0F, 0xAE, 0xC0 );
+	// F3 0F AE /1 RDGSBASE r32
+	// REX.W + F3 0F AE /1 RDGSBASE r64
+	_TEST32( "FAIL", 0xF3, 0x0F, 0xAE, 0xC8 );
+	_TEST64( "f30faec8 rdgsbase eax", 0xF3, 0x0F, 0xAE, 0xC8 );
+	_TEST64( "66f30faec8 rdgsbase eax", 0x66, 0xF3, 0x0F, 0xAE, 0xC8 );
+	_TEST64( "f3480faec8 rdgsbase rax", 0xF3, 0x48, 0x0F, 0xAE, 0xC8 );
+
+	// F3 0F 53 /r RCPSS xmm1,xmm2/m32
+	_TEST32( "f30f5310 rcpss xmm2,dword ptr [eax]", 0xF3, 0x0F, 0x53, 0x10 );
+	_TEST32( "f30f53d8 rcpss xmm3,xmm0", 0xF3, 0x0F, 0x53, 0xD8 );
+	_TEST64( "f30f5310 rcpss xmm2,dword ptr [rax]", 0xF3, 0x0F, 0x53, 0x10 );
+	// VEX.NDS.LIG.F3.0F.WIG 53 /r VRCPSS xmm1,xmm2,xmm3/m32
+	_TEST64_VEX( "c4e16253d8 vrcpss xmm3,xmm3,xmm0", 0xC4, 0xE1, 0x62, 0x53, 0xD8 );
+	_TEST32_VEX( "c4e14253d8 vrcpss xmm3,xmm7,xmm0", 0xC4, 0xE1, 0x42, 0x53, 0xD8 );
+	_TEST32_VEX( "c4e17a5318 vrcpss xmm3,xmm0,dword ptr [eax]", 0xC4, 0xE1, 0x7A, 0x53, 0x18 );
+
+	// RCPPS
+	// 0F 53 /r RCPPS xmm1,xmm2/m128
+	_TEST64( "0f5300 rcpps xmm0,oword ptr [rax]", 0x0F, 0x53, 0x00 );
+	_TEST32( "0f53c1 rcpps xmm0,xmm1", 0x0F, 0x53, 0xC1 );
+	// VEX.128.0F.WIG 53 /r VRCPPS xmm1, xmm2/m128
+	// VEX.256.0F.WIG 53 /r VRCPPS ymm1, ymm2/m256
+	_TEST32_VEX( "c4e1785310 vrcpps xmm2,oword ptr [eax]", 0xC4, 0xE1, 0x78, 0x53, 0x10 );
+	_TEST64_VEX( "c4e17c5310 vrcpps ymm2,ymmword ptr [rax]", 0xC4, 0xE1, 0x7C, 0x53, 0x10 );
+
 	// D0 /2 RCL r/m8, 1
 	// REX + D0 /2 RCL r/m8, 1
 	_TEST32( "d010 rcl byte ptr [eax],01h", 0xD0, 0x10 );

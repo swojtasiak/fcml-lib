@@ -3385,26 +3385,59 @@ struct ira_opcode_desc _ira_opcode_desc_ROR[] = {
 	{ NULL, 0x0000, 0x00C58800, { 0xC1, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
 };
 
+// XMMWORD
+struct ira_opcode_desc _ira_opcode_desc_RCPPS[] = {
+	// 0F 53 /r RCPPS xmm1,xmm2/m128
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0x53, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.128.0F.WIG 53 /r VRCPPS xmm1,xmm2/m128
+	// VEX.256.0F.WIG 53 /r VRCPPS ymm1,ymm2/m256
+	{ "vrcpps", 0x0181, 0x00D88000, { 0x0F, 0x53, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA }
+};
 
+struct ira_opcode_desc _ira_opcode_desc_RCPSS[] = {
+	// F3 0F 53 /r RCPSS xmm1,xmm2/m32
+	{ NULL, 0x4000, 0x00D88000, { 0x0F, 0x53, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.NDS.LIG.F3.0F.WIG 53 /r VRCPSS xmm1,xmm2,xmm3/m32
+	{ "vrcpss", 0x40C0, 0x00D88000, { 0x0F, 0x53, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_32, _IRA_NA }
+};
 
+struct ira_opcode_desc _ira_opcode_desc_RDFSBASE[] = {
+	// F3 0F AE /0 RDFSBASE r32
+	// REX.W + F3 0F AE /0 RDFSBASE r64
+	{ NULL, 0x4000, 0x039B8000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x4000, 0x049B8000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_NA, _IRA_NA, _IRA_NA },
+	// F3 0F AE /1 RDGSBASE r32
+	// REX.W + F3 0F AE /1 RDGSBASE r64
+	{ "rdgsbase", 0x4000, 0x039B8800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_NA, _IRA_NA, _IRA_NA },
+	{ "rdgsbase", 0x4000, 0x049B8800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_NA, _IRA_NA, _IRA_NA }
+};
 
+struct ira_opcode_desc _ira_opcode_desc_RDRAND[] = {
+	// 0F C7 /6 RDRAND r16
+	// 0F C7 /6 RDRAND r32
+	// REX.W + 0F C7 /6 RDRAND r64
+	{ NULL, 0x0000, 0x00DBB000, { 0x0F, 0xC7, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_NA, _IRA_NA, _IRA_NA },
+};
 
+struct ira_opcode_desc _ira_opcode_desc_RDTSCP[] = {
+	// 0F 01 F9 RDTSCP
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xF9 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
 
+struct ira_opcode_desc _ira_opcode_desc_RDTSC[] = {
+	// 0F 31 RDTSC
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x31, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
 
+struct ira_opcode_desc _ira_opcode_desc_RDPMC[] = {
+	// 0F 33 RDPMC
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x33, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+struct ira_opcode_desc _ira_opcode_desc_RDMSR[] = {
+	// 0F 32 RDMSR
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x32, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
 
 
 
@@ -3749,7 +3782,13 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "rcr", _ira_opcode_desc_RCR),
 		_IA_INSTRUCTION( "rol", _ira_opcode_desc_ROL),
 		_IA_INSTRUCTION( "ror", _ira_opcode_desc_ROR),
+		_IA_INSTRUCTION( "rcpps", _ira_opcode_desc_RCPPS),
+		_IA_INSTRUCTION( "rcpss", _ira_opcode_desc_RCPSS),
+		_IA_INSTRUCTION( "rdfsbase", _ira_opcode_desc_RDFSBASE),
+		_IA_INSTRUCTION( "rdrand", _ira_opcode_desc_RDRAND),
+		_IA_INSTRUCTION( "rdtscp", _ira_opcode_desc_RDTSCP),
+		_IA_INSTRUCTION( "rdtsc", _ira_opcode_desc_RDTSC),
+		_IA_INSTRUCTION( "rdpmc", _ira_opcode_desc_RDPMC),
+		_IA_INSTRUCTION( "rdmsr", _ira_opcode_desc_RDMSR),
 		{ NULL, 0, 0, NULL }
-
-
 };
