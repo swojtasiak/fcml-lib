@@ -61,6 +61,77 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// 9E SAHF
+	_TEST32( "9e sahf", 0x9E );
+	_TEST64( "9e sahf", 0x9E );
+
+	// F3 0F 52 /r RSQRTSS xmm1,xmm2/m32
+	_TEST64( "f30f5200 rsqrtss xmm0,dword ptr [rax]", 0xF3, 0x0F, 0x52, 0x00 );
+	_TEST32( "f30f52c1 rsqrtss xmm0,xmm1", 0xF3, 0x0F, 0x52, 0xC1 );
+	// VEX.NDS.LIG.F3.0F.WIG 52 /r VRSQRTSS xmm1,xmm2,xmm3/m32
+	_TEST64_VEX( "c4e14a5200 vrsqrtss xmm0,xmm6,dword ptr [rax]", 0xC4, 0xE1, 0x4A, 0x52, 0x00 );
+	_TEST32_VEX( "c4e14a52d8 vrsqrtss xmm3,xmm6,xmm0", 0xC4, 0xE1, 0x4A, 0x52, 0xD8 );
+
+	// 0F 52 /r RSQRTPS xmm1,xmm2/m128
+	_TEST64_VEX( "0f5200 rsqrtps xmm0,oword ptr [rax]", 0x0F, 0x52, 0x00 );
+	_TEST32_VEX( "0f52c1 rsqrtps xmm0,xmm1", 0x0F, 0x52, 0xC1 );
+	// VEX.128.0F.WIG 52 /r VRSQRTPS xmm1,xmm2/m128
+	// VEX.256.0F.WIG 52 /r VRSQRTPS ymm1,ymm2/m256
+	_TEST64_VEX( "c4e17852d8 vrsqrtps xmm3,xmm0", 0xC4, 0xE1, 0x78, 0x52, 0xD8 );
+	_TEST32_VEX( "c4e17852d8 vrsqrtps xmm3,xmm0", 0xC4, 0xE1, 0x78, 0x52, 0xD8 );
+	_TEST32_VEX( "c4e17c5200 vrsqrtps ymm0,ymmword ptr [eax]", 0xC4, 0xE1, 0x7C, 0x52, 0x00 );
+
+	// 0F AA RSM NP Invalid Valid Resume operation of interrupted program.
+	_TEST32( "0faa rsm", 0x0F, 0xAA );
+	_TEST64( "FAIL", 0x0F, 0xAA );
+
+	// 66 0F 3A 0A /r ib ROUNDSS xmm1,xmm2/m32,imm8
+	_TEST64_VEX( "660f3a0a00ff roundss xmm0,dword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x0A, 0x00, 0xFF );
+	_TEST32_VEX( "660f3a0ac1ff roundss xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x0A, 0xC1, 0xFF );
+	// VEX.NDS.LIG.66.0F3A.WIG 0A ib VROUNDSS xmm1,xmm2,xmm3/m32,imm8
+	_TEST64_VEX( "c4e3790ad8ff vroundss xmm3,xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x0A, 0xD8, 0xFF );
+	_TEST32_VEX( "c4e3490ad8ff vroundss xmm3,xmm6,xmm0,0ffh", 0xC4, 0xE3, 0x49, 0x0A, 0xD8, 0xFF );
+
+	// 66 0F 3A 0B /r ib ROUNDSD xmm1,xmm2/m64,imm8
+	_TEST64_VEX( "660f3a0b00ff roundsd xmm0,qword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x0B, 0x00, 0xFF );
+	_TEST32_VEX( "660f3a0bc1ff roundsd xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x0B, 0xC1, 0xFF );
+	// VEX.NDS.LIG.66.0F3A.WIG 0B /r ib VROUNDSD xmm1,xmm2,xmm3/m64,imm8
+	_TEST64_VEX( "c4e3790bd8ff vroundsd xmm3,xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x0B, 0xD8, 0xFF );
+	_TEST32_VEX( "c4e3610bd8ff vroundsd xmm3,xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x61, 0x0B, 0xD8, 0xFF );
+
+	// 66 0F 3A 08 /r ib ROUNDPS xmm1,xmm2/m128,imm8
+	_TEST64_VEX( "660f3a0800ff roundps xmm0,oword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x08, 0x00, 0xFF );
+	_TEST32_VEX( "660f3a08c1ff roundps xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x08, 0xC1, 0xFF );
+	// VEX.128.66.0F3A.WIG 08 /r ib VROUNDPS xmm1,xmm2/m128,imm8
+	// VEX.256.66.0F3A.WIG 08 /r ib VROUNDPS ymm1,ymm2/m256,imm8
+	_TEST64_VEX( "c4e37908d8ff vroundps xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x08, 0xD8, 0xFF );
+	_TEST32_VEX( "c4e37908d8ff vroundps xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x08, 0xD8, 0xFF );
+	_TEST32_VEX( "c4e37d0800ff vroundps ymm0,ymmword ptr [eax],0ffh", 0xC4, 0xE3, 0x7D, 0x08, 0x00, 0xFF );
+
+	// ROUNDPD
+	// 66 0F 3A 09 /r ib ROUNDPD xmm1,xmm2/m128,imm8
+	_TEST64_VEX( "660f3a0900ff roundpd xmm0,oword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x09, 0x00, 0xFF );
+	_TEST32_VEX( "660f3a09c1ff roundpd xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x09, 0xC1, 0xFF );
+	// VEX.128.66.0F3A.WIG 09 /r ib VROUNDPD xmm1,xmm2/m128,imm8
+	// VEX.256.66.0F3A.WIG 09 /r ib VROUNDPD ymm1,ymm2/m256,imm8
+	_TEST64_VEX( "c4e37909d8ff vroundpd xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x09, 0xD8, 0xFF );
+	_TEST32_VEX( "c4e37909d8ff vroundpd xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x09, 0xD8, 0xFF );
+	_TEST32_VEX( "c4e37d0900ff vroundpd ymm0,ymmword ptr [eax],0ffh", 0xC4, 0xE3, 0x7D, 0x09, 0x00, 0xFF );
+
+	// C3 RET
+	// CB RET
+	_TEST32( "c3 ret", 0xC3 );
+	_TEST64( "c3 ret", 0xC3 );
+	_TEST32( "cb retf", 0xCB );
+	_TEST64( "cb retf", 0xCB );
+	// C2 iw RET imm16
+	// CA iw RET imm16
+	_TEST32( "c2ffff ret 0ffffh", 0xC2, 0xFF, 0xFF );
+	_TEST64( "c2ffff ret 0ffffh", 0xC2, 0xFF, 0xFF );
+	_TEST32( "caffff retf 0ffffh", 0xCA, 0xFF, 0xFF );
+	_TEST64( "caffff retf 0ffffh", 0xCA, 0xFF, 0xFF );
+
+
 	// 0F 01 F9 RDTSCP
 	_TEST32( "0f01f9 rdtscp", 0x0f, 0x01, 0xf9 );
 	_TEST64( "0f01f9 rdtscp", 0x0f, 0x01, 0xf9 );
