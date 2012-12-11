@@ -373,7 +373,6 @@ struct ira_instruction_desc {
 
 /* Prefixes flags. */
 
-// TODO: nadmiarowy! zobacz EOSA restrictions! wywalic, tylko gmatwa (ale czy aby napewno, czasami REX.W podownie jak VEX.W mo¿e spelniac inna role niz tylko zmiaa EOSA.) narazie zostawic, sprawzic po zakonczeniu implementacji disassemlera.
 #define _IRA_PREFIX_W_1(x)					_IRA_GET_BIT(x,3)
 #define _IRA_PREFIX_W_0(x)					_IRA_GET_BIT(x,4)
 #define _IRA_PREFIX_VEX_L_1(x)				_IRA_GET_BIT(x,5)
@@ -397,6 +396,8 @@ struct ira_instruction_desc {
 
 #define _IRA_REG_FIELD_NUMBER_OF_REGISTERS				8
 #define _IRA_REG_FIELD_NUMBER_OF_CONDITIONS				16
+
+//#define _IRA_ENCODE_OPCODE_FLAGS_OPCODE_EXT( opcode_flags, ext )	( x | ( ext << 11 ) )
 
 #define _IRA_OPCODE_FLAGS_OPCODE_FIELD_REG(x)			( x & 0x00000001 )
 #define _IRA_OPCODE_FLAGS_OPCODE_FIELD_TTTN(x)			( x & 0x00000040 )

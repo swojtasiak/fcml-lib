@@ -61,6 +61,187 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// SFENCE
+	// 0F AE /7 SFENCE
+	_TEST32( "0faef8 sfence", 0x0f, 0xae, 0xf8 );
+
+	// 0F 97 SETA r/m8 M Valid Valid Set byte if above (CF=0 and ZF=0).
+	// REX + 0F 97 SETA r/m8*
+	_TEST32( "0f9700 setnbe byte ptr [eax]", 0x0F, 0x97, 0x00 );
+	_TEST32( "0f97c0 setnbe al", 0x0F, 0x97, 0xC0 );
+	_TEST64( "400f97c0 setnbe al", 0x40, 0x0F, 0x97, 0xC0 );
+
+	// AE SCAS m8 NP Valid Valid Compare AL with byte at ES:(E)DI or RDI, then set status flags.
+	_TEST32( "ae scas byte ptr [edi]", 0xAE );
+	// AF SCAS m16 NP Valid Valid Compare AX with word at ES:(E)DI or RDI, then set status flags.
+	// AF SCAS m32 NP Valid Valid Compare EAX with doubleword at ES(E)DI or RDI then set status flags.
+	// REX.W + AF SCAS m64 NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
+	_TEST32( "af scas dword ptr [edi]", 0xAF );
+	_TEST32( "66af scas word ptr [edi]", 0x66, 0xAF );
+	_TEST64( "48af scas qword ptr [rdi]", 0x48, 0xAF );
+	// AE SCASB NP Valid Valid Compare AL with byte at ES:(E)DI or RDI then set status flags.
+	// AF SCASW NP Valid Valid Compare AX with word at ES:(E)DI or RDI then set status flags.
+	// AF SCASD NP Valid Valid Compare EAX with doubleword at ES:(E)DI or RDI then set status flags.
+	// REX.W + AF SCASQ NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
+
+	// SBB
+	_TEST32( "801501020304ff adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
+	// 1C ib SBB AL,imm8
+	_TEST32( "1c42 sbb al,42h", 0x1C, 0x42 );
+	// 1D iw SBB AX,imm16
+	// 1D id SBB EAX,imm32
+	_TEST32( "661d4280 sbb ax,8042h", 0x66, 0x1D, 0x42, 0x80 );
+	_TEST32( "1d21658042 sbb eax,42806521h", 0x1D, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "66401d2165 sbb ax,6521h", 0x66, 0x40, 0x1D, 0x21, 0x65, 0x80, 0x42 );
+	// REX.W + 1D id SBB RAX,imm32X.
+	_TEST64( "481d21658042 sbb rax,0000000042806521h", 0x48, 0x1D, 0x21, 0x65, 0x80, 0x42 );
+	// 80 /3 ib SBB r/m8,imm8
+	// REX + 80 /3 ib SBB r/m8,imm8
+	_TEST32( "8018ff sbb byte ptr [eax],0ffh", 0x80, 0x18, 0xff );
+	_TEST32( "80d8ff sbb al,0ffh", 0x80, 0xD8, 0xff );
+	_TEST64( "488018ff sbb byte ptr [rax],0ffh", 0x48, 0x80, 0x18, 0xff );
+	// 81 /3 iw SBB r/m16,imm16
+	// 81 /3 id SBB r/m32,imm32
+	_TEST32( "81dd01020304 sbb ebp,04030201h", 0x81, 0xDD, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "6681dd0102 sbb bp,0201h", 0x66, 0x81, 0xDD, 0x01, 0x02 );
+	_TEST64( "67664081dd0102 sbb bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xDD, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
+	// REX.W + 81 /3 id SBB r/m64,imm32
+	_TEST64( "4881dd01020304 sbb rbp,0000000004030201h", 0x48, 0x81, 0xDD, 0x01, 0x02, 0x03, 0x04 );
+	// 83 /3 ib SBB r/m16,imm8
+	// 83 /3 ib SBB r/m32,imm8
+	_TEST32( "8318ff sbb dword ptr [eax],0ffffffffh", 0x83, 0x18, 0xFF );
+	_TEST32( "668318ff sbb word ptr [eax],0ffffh", 0x66, 0x83, 0x18, 0xFF );
+	_TEST32( "83d8ff sbb eax,0ffffffffh", 0x83, 0xD8, 0xFF );
+	// REX.W + 83 /3 ib SBB r/m64,imm8
+	_TEST64( "48839f0102030405 sbb qword ptr [rdi+0000000004030201h],0000000000000005h", 0x48, 0x83, 0x9F, 0x01, 0x02, 0x03, 0x4, 0x05 );
+	_TEST64( "48839f01020304ff sbb qword ptr [rdi+0000000004030201h],0ffffffffffffffffh", 0x48, 0x83, 0x9F, 0x01, 0x02, 0x03, 0x4, 0xff );
+	// 18 /r SBB r/m8,r8
+	// REX + 18 /r SBB r/m8,r8
+	_TEST32( "18a501020304 sbb byte ptr [ebp+04030201h],ah", 0x18, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4818a501020304 sbb byte ptr [rbp+0000000004030201h],spl", 0x48, 0x18, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "481864a501 sbb byte ptr [rbp+0000000000000001h],spl", 0x48, 0x18, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	// 19 /r SBB r/m16,r16
+	// 19 /r SBB r/m32,r32
+	// REX.W + 19 /r SBB r/m64,r64
+	_TEST32( "19a501020304 sbb dword ptr [ebp+04030201h],esp", 0x19, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "676619a50102 sbb word ptr [di+0201h],sp", 0x67, 0x66, 0x19, 0xa5, 0x01, 0x02 );
+	_TEST32( "6719a50102 sbb dword ptr [di+0201h],esp", 0x67, 0x19, 0xa5, 0x01, 0x02 );
+	_TEST64( "4d19648901 sbb qword ptr [r9+rcx*4+0000000000000001h],r12", 0x4D, 0x19, 0x64, 0x89, 0x01 );
+	// 1A /r SBB r8,r/m8
+	// REX + 1A /r SBB r8,r/m8
+	_TEST32( "1aa501020304 sbb ah,byte ptr [ebp+04030201h]", 0x1A, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "481aa501020304 sbb spl,byte ptr [rbp+0000000004030201h]", 0x48, 0x1A, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "481a64a501 sbb spl,byte ptr [rbp+0000000000000001h]", 0x48, 0x1A, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	// 1B /r SBB r16,r/m16
+	// 1B /r SBB r32,r/m32
+	// REX.W + 1B /r SBB r64,r/m64
+	_TEST32( "1ba501020304 sbb esp,dword ptr [ebp+04030201h]", 0x1B, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "67661ba50102 sbb sp,word ptr [di+0201h]", 0x67, 0x66, 0x1B, 0xa5, 0x01, 0x02 );
+	_TEST32( "671ba50102 sbb esp,dword ptr [di+0201h]", 0x67, 0x1B, 0xa5, 0x01, 0x02 );
+	_TEST64( "4d1b648901 sbb r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x1B, 0x64, 0x89, 0x01 );
+
+	// D0 /7 SAR r/m8, 1 M1 Valid Valid Signed divide* r/m8 by 2, once.
+	// REX + D0 /7 SAR r/m8**, 1 M1 Valid N.E. Signed divide* r/m8 by 2, once.
+	_TEST32( "d038 sar byte ptr [eax],01h", 0xD0, 0x38 );
+	_TEST32( "d0f8 sar al,01h", 0xD0, 0xF8 );
+	_TEST64( "48d0f8 sar al,01h", 0x48, 0xD0, 0xF8 );
+	// D2 /7 SAR r/m8, CL MC Valid Valid Signed divide* r/m8 by 2, CL times.
+	// REX + D2 /7 SAR r/m8**, CL MC Valid N.E. Signed divide* r/m8 by 2, CL times.
+	_TEST32( "d238 sar byte ptr [eax],cl", 0xD2, 0x38 );
+	_TEST32( "d2f8 sar al,cl", 0xD2, 0xF8 );
+	_TEST64( "48d2f8 sar al,cl", 0x48, 0xD2, 0xF8 );
+	// C0 /7 ib SAR r/m8, imm8 MI Valid Valid Signed divide* r/m8 by 2, imm8 time.
+	// REX + C0 /7 ib SAR r/m8**, imm8 MI Valid N.E. Signed divide* r/m8 by 2, imm8 times.
+	_TEST32( "c038ff sar byte ptr [eax],0ffh", 0xC0, 0x38, 0xFF );
+	_TEST32( "c0f8ff sar al,0ffh", 0xC0, 0xF8, 0xFF );
+	_TEST64( "48c0f8ff sar al,0ffh", 0x48, 0xC0, 0xF8, 0xFF );
+	// D1 /7 SAR r/m16,1 M1 Valid Valid Signed divide* r/m16 by 2, once.
+	// D1 /7 SAR r/m32, 1 M1 Valid Valid Signed divide* r/m32 by 2, once.
+	// REX.W + D1 /7 SAR r/m64, 1 M1 Valid N.E. Signed divide* r/m64 by 2, once.
+	_TEST32( "d138 sar dword ptr [eax],01h", 0xD1, 0x38 );
+	_TEST32( "d1f8 sar eax,01h", 0xD1, 0xF8 );
+	_TEST64( "48d1f8 sar rax,01h", 0x48, 0xD1, 0xF8 );
+	// D3 /7 SAR r/m16, CL MC Valid Valid Signed divide* r/m16 by 2, CL times.
+	// D3 /7 SAR r/m32, CL MC Valid Valid Signed divide* r/m32 by 2, CL times.
+	// REX.W + D3 /7 SAR r/m64, CL MC Valid N.E. Signed divide* r/m64 by 2, CL times.
+	_TEST32( "d338 sar dword ptr [eax],cl", 0xD3, 0x38 );
+	_TEST32( "d3f8 sar eax,cl", 0xD3, 0xF8 );
+	_TEST64( "48d3f8 sar rax,cl", 0x48, 0xD3, 0xF8 );
+	// C1 /7 ib SAR r/m16, imm8 MI Valid Valid Signed divide* r/m16 by 2, imm8 times.
+	// C1 /7 ib SAR r/m32, imm8 MI Valid Valid Signed divide* r/m32 by 2, imm8 times.
+	// REX.W + C1 /7 ib SAR r/m64, imm8 MI Valid N.E. Signed divide* r/m64 by 2, imm8 times
+	_TEST32( "c138ff sar dword ptr [eax],0ffh", 0xC1, 0x38, 0xff );
+	_TEST32( "c1f8ff sar eax,0ffh", 0xC1, 0xF8, 0xff );
+	_TEST64( "48c1f8ff sar rax,0ffh", 0x48, 0xC1, 0xF8, 0xff );
+
+	// D0 /4 SHL r/m8, 1 M1 Valid Valid Multiply r/m8 by 2, once.
+	// REX + D0 /4 SHL r/m8**, 1 M1 Valid N.E. Multiply r/m8 by 2, once.
+	_TEST32( "d020 shl byte ptr [eax],01h", 0xD0, 0x20 );
+	_TEST32( "d0e0 shl al,01h", 0xD0, 0xE0 );
+	_TEST64( "48d0e0 shl al,01h", 0x48, 0xD0, 0xE0 );
+	// D2 /4 SHL r/m8, CL MC Valid Valid Multiply r/m8 by 2, CL times.
+	// REX + D2 /4 SHL r/m8**, CL MC Valid N.E. Multiply r/m8 by 2, CL times.
+	_TEST32( "d220 shl byte ptr [eax],cl", 0xD2, 0x20 );
+	_TEST32( "d2e0 shl al,cl", 0xD2, 0xE0 );
+	_TEST64( "48d2e0 shl al,cl", 0x48, 0xD2, 0xE0 );
+	// C0 /4 ib SHL r/m8, imm8 MI Valid Valid Multiply r/m8 by 2, imm8 times.
+	// REX + C0 /4 ib SHL r/m8**, imm8 MI Valid N.E. Multiply r/m8 by 2, imm8 times.
+	_TEST32( "c020ff shl byte ptr [eax],0ffh", 0xC0, 0x20, 0xFF );
+	_TEST32( "c0e0ff shl al,0ffh", 0xC0, 0xE0, 0xFF );
+	_TEST64( "48c0e0ff shl al,0ffh", 0x48, 0xC0, 0xE0, 0xFF );
+	// D1 /4 SHL r/m16,1 M1 Valid Valid Multiply r/m16 by 2, once.
+	// D1 /4 SHL r/m32,1 M1 Valid Valid Multiply r/m32 by 2, once.
+	// REX.W + D1 /4 SHL r/m64,1 M1 Valid N.E. Multiply r/m64 by 2, once.
+	_TEST32( "d120 shl dword ptr [eax],01h", 0xD1, 0x20 );
+	_TEST32( "d1e0 shl eax,01h", 0xD1, 0xE0 );
+	_TEST64( "48d1e0 shl rax,01h", 0x48, 0xD1, 0xE0 );
+	// D3 /4 SHL r/m16, CL MC Valid Valid Multiply r/m16 by 2, CL times.
+	// D3 /4 SHL r/m32, CL MC Valid Valid Multiply r/m32 by 2, CL times.
+	// REX.W + D3 /4 SHL r/m64, CL MC Valid N.E. Multiply r/m64 by 2, CL times.
+	_TEST32( "d320 shl dword ptr [eax],cl", 0xD3, 0x20 );
+	_TEST32( "d3e0 shl eax,cl", 0xD3, 0xE0 );
+	_TEST64( "48d3e0 shl rax,cl", 0x48, 0xD3, 0xE0 );
+	// C1 /4 ib SHL r/m16, imm8 MI Valid Valid Multiply r/m16 by 2, imm8 times.
+	// C1 /4 ib SHL r/m32, imm8 MI Valid Valid Multiply r/m32 by 2, imm8 times.
+	// REX.W + C1 /4 ib SHL r/m64, imm8 MI Valid N.E. Multiply r/m64 by 2, imm8 times.
+	_TEST32( "c120ff shl dword ptr [eax],0ffh", 0xC1, 0x20, 0xff );
+	_TEST32( "c1e0ff shl eax,0ffh", 0xC1, 0xE0, 0xff );
+	_TEST64( "48c1e0ff shl rax,0ffh", 0x48, 0xC1, 0xE0, 0xff );
+
+	// D0 /5 SHR r/m8,1 M1 Valid Valid Unsigned divide r/m8 by 2, once.
+	// REX + D0 /5 SHR r/m8**, 1 M1 Valid N.E. Unsigned divide r/m8 by 2, once.
+	_TEST32( "d028 shr byte ptr [eax],01h", 0xD0, 0x28 );
+	_TEST32( "d0e8 shr al,01h", 0xD0, 0xE8 );
+	_TEST64( "48d0e8 shr al,01h", 0x48, 0xD0, 0xE8 );
+	// D2 /5 SHR r/m8, CL MC Valid Valid Unsigned divide r/m8 by 2, CL times.
+	// REX + D2 /5 SHR r/m8**, CL MC Valid N.E. Unsigned divide r/m8 by 2, CL times.
+	_TEST32( "d228 shr byte ptr [eax],cl", 0xD2, 0x28 );
+	_TEST32( "d2e8 shr al,cl", 0xD2, 0xE8 );
+	_TEST64( "48d2e8 shr al,cl", 0x48, 0xD2, 0xE8 );
+	// C0 /5 ib SHR r/m8, imm8 MI Valid Valid Unsigned divide r/m8 by 2, imm8 times.
+	// REX + C0 /5 ib SHR r/m8**, imm8 MI Valid N.E. Unsigned divide r/m8 by 2, imm8 times.
+	_TEST32( "c028ff shr byte ptr [eax],0ffh", 0xC0, 0x28, 0xFF );
+	_TEST32( "c0e8ff shr al,0ffh", 0xC0, 0xE8, 0xFF );
+	_TEST64( "48c0e8ff shr al,0ffh", 0x48, 0xC0, 0xE8, 0xFF );
+	// D1 /5 SHR r/m16, 1 M1 Valid Valid Unsigned divide r/m16 by 2, once.
+	// D1 /5 SHR r/m32, 1 M1 Valid Valid Unsigned divide r/m32 by 2, once.
+	// REX.W + D1 /5 SHR r/m64, 1 M1 Valid N.E. Unsigned divide r/m64 by 2, once.
+	_TEST32( "d128 shr dword ptr [eax],01h", 0xD1, 0x28 );
+	_TEST32( "d1e8 shr eax,01h", 0xD1, 0xE8 );
+	_TEST64( "48d1e8 shr rax,01h", 0x48, 0xD1, 0xE8 );
+	// D3 /5 SHR r/m16, CL MC Valid Valid Unsigned divide r/m16 by 2, CL times
+	// D3 /5 SHR r/m32, CL MC Valid Valid Unsigned divide r/m32 by 2, CL times.
+	// REX.W + D3 /5 SHR r/m64, CL MC Valid N.E. Unsigned divide r/m64 by 2, CL times.
+	_TEST32( "d328 shr dword ptr [eax],cl", 0xD3, 0x28 );
+	_TEST32( "d3e8 shr eax,cl", 0xD3, 0xE8 );
+	_TEST64( "48d3e8 shr rax,cl", 0x48, 0xD3, 0xE8 );
+	// C1 /5 ib SHR r/m16, imm8 MI Valid Valid Unsigned divide r/m16 by 2, imm8 times.
+	// C1 /5 ib SHR r/m32, imm8 MI Valid Valid Unsigned divide r/m32 by 2, imm8 times.
+	// REX.W + C1 /5 ib SHR r/m64, imm8 MI Valid N.E. Unsigned divide r/m64 by 2, imm8 times.
+	_TEST32( "c128ff shr dword ptr [eax],0ffh", 0xC1, 0x28, 0xff );
+	_TEST32( "c1e8ff shr eax,0ffh", 0xC1, 0xE8, 0xff );
+	_TEST64( "48c1e8ff shr rax,0ffh", 0x48, 0xC1, 0xE8, 0xff );
+
 	// 9E SAHF
 	_TEST32( "9e sahf", 0x9E );
 	_TEST64( "9e sahf", 0x9E );

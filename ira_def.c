@@ -30,6 +30,13 @@ struct ira_opcode_desc _ira_opcode_desc_AAS[] = {
 	{ NULL, 0x0001, 0x00440000, { 0x3F, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+
+/*#define _INSTRUCTION_TEMPLATE_BINARY_ARITHMETIC_1( mnemonic, base_opcode, opcode_ext ) { \
+		_IRA_ENCODE_OPCODE_FLAGS_OPCODE_EXT
+	// base_opcode + 4 ib mnemonic AL,imm8
+	{ NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+};*/
+
 struct ira_opcode_desc _ira_opcode_desc_ADC[] = {
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
 	{ NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -3507,9 +3514,160 @@ struct ira_opcode_desc _ira_opcode_desc_SAHF[] = {
 	{ NULL, 0x0000, 0x00C40000, { 0x9E, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+// TODO: Zaimplementowac na cele assemblera dopiero. Jako ze tak samo sie koduje jak SHL.
+// D0 /4 SAL r/m8, 1 M1 Valid Valid Multiply r/m8 by 2, once.
+// REX + D0 /4 SAL r/m8**, 1 M1 Valid N.E. Multiply r/m8 by 2, once.
+// D2 /4 SAL r/m8, CL MC Valid Valid Multiply r/m8 by 2, CL times.
+// REX + D2 /4 SAL r/m8**, CL MC Valid N.E. Multiply r/m8 by 2, CL times.
+// C0 /4 ib SAL r/m8, imm8 MI Valid Valid Multiply r/m8 by 2, imm8 times.
+// REX + C0 /4 ib SAL r/m8**, imm8 MI Valid N.E. Multiply r/m8 by 2, imm8 times.
+// D1 /4 SAL r/m16, 1 M1 Valid Valid Multiply r/m16 by 2, once.
+// D1 /4 SAL r/m32, 1 M1 Valid Valid Multiply r/m32 by 2, once.
+// REX.W + D1 /4 SAL r/m64, 1 M1 Valid N.E. Multiply r/m64 by 2, once.
+// D3 /4 SAL r/m16, CL MC Valid Valid Multiply r/m16 by 2, CL times.
+// D3 /4 SAL r/m32, CL MC Valid Valid Multiply r/m32 by 2, CL times.
+// REX.W + D3 /4 SAL r/m64, CL MC Valid N.E. Multiply r/m64 by 2, CL times.
+// C1 /4 ib SAL r/m16, imm8 MI Valid Valid Multiply r/m16 by 2, imm8 times.
+// C1 /4 ib SAL r/m32, imm8 MI Valid Valid Multiply r/m32 by 2, imm8 times.
+// REX.W + C1 /4 ib SAL r/m64, imm8 MI Valid N.E. Multiply r/m64 by 2, imm8 times.
+
+struct ira_opcode_desc _ira_opcode_desc_SAR[] = {
+	// D0 /7 SAR r/m8, 1
+	// REX + D0 /7 SAR r/m8
+	{ NULL, 0x0000, 0x00C5B800, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
+	// D2 /7 SAR r/m8, CL MC Valid Valid Signed divide* r/m8 by 2, CL times.
+	// REX + D2 /7 SAR r/m8**, CL MC Valid N.E. Signed divide* r/m8 by 2, CL times.
+	{ NULL, 0x0000, 0x00C5B800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
+	// C0 /7 ib SAR r/m8, imm8 MI Valid Valid Signed divide* r/m8 by 2, imm8 time.
+	// REX + C0 /7 ib SAR r/m8**, imm8 MI Valid N.E. Signed divide* r/m8 by 2, imm8 times.
+	{ NULL, 0x0000, 0x00C5B800, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// D1 /7 SAR r/m16,1 M1 Valid Valid Signed divide* r/m16 by 2, once.
+	// D1 /7 SAR r/m32, 1 M1 Valid Valid Signed divide* r/m32 by 2, once.
+	// REX.W + D1 /7 SAR r/m64, 1 M1 Valid N.E. Signed divide* r/m64 by 2, once.
+	{ NULL, 0x0000, 0x00C5B800, { 0xD1, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
+	// D3 /7 SAR r/m16, CL MC Valid Valid Signed divide* r/m16 by 2, CL times.
+	// D3 /7 SAR r/m32, CL MC Valid Valid Signed divide* r/m32 by 2, CL times.
+	// REX.W + D3 /7 SAR r/m64, CL MC Valid N.E. Signed divide* r/m64 by 2, CL times.
+	{ NULL, 0x0000, 0x00C5B800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
+	// C1 /7 ib SAR r/m16, imm8 MI Valid Valid Signed divide* r/m16 by 2, imm8 times.
+	// C1 /7 ib SAR r/m32, imm8 MI Valid Valid Signed divide* r/m32 by 2, imm8 times.
+	// REX.W + C1 /7 ib SAR r/m64, imm8 MI Valid N.E. Signed divide* r/m64 by 2, imm8 times
+	{ NULL, 0x0000, 0x00C5B800, { 0xC1, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SHL[] = {
+	// D0 /4 SHL r/m8,1
+	// REX + D0 /4 SHL r/m8,1
+	{ NULL, 0x0000, 0x00C5A000, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
+	// D2 /4 SHL r/m8,CL
+	// REX + D2 /4 SHL r/m8,CL
+	{ NULL, 0x0000, 0x00C5A000, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
+	// C0 /4 ib SHL r/m8,imm8
+	// REX + C0 /4 ib SHL r/m8,imm8
+	{ NULL, 0x0000, 0x00C5A000, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// D1 /4 SHL r/m16,1
+	// D1 /4 SHL r/m32,1
+	// REX.W + D1 /4 SHL r/m64,1
+	{ NULL, 0x0000, 0x00C5A000, { 0xD1, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
+	// D3 /4 SHL r/m16,CL
+	// D3 /4 SHL r/m32,CL
+	// REX.W + D3 /4 SHL r/m64,CL
+	{ NULL, 0x0000, 0x00C5A000, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
+	// C1 /4 ib SHL r/m16,imm8
+	// C1 /4 ib SHL r/m32,imm8
+	// REX.W + C1 /4 ib SHL r/m64,imm8
+	{ NULL, 0x0000, 0x00C5A000, { 0xC1, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SHR[] = {
+	// D0 /5 SHR r/m8,1
+	// REX + D0 /5 SHR r/m8,1
+	{ NULL, 0x0000, 0x00C5A800, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
+	// D2 /5 SHR r/m8,CL
+	// REX + D2 /5 SHR r/m8,CL
+	{ NULL, 0x0000, 0x00C5A800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
+	// C0 /5 ib SHR r/m8,imm8
+	// REX + C0 /5 ib SHR r/m8,imm8
+	{ NULL, 0x0000, 0x00C5A800, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// D1 /5 SHR r/m16,1
+	// D1 /5 SHR r/m32,1
+	// REX.W + D1 /5 SHR r/m64,1
+	{ NULL, 0x0000, 0x00C5A800, { 0xD1, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
+	// D3 /5 SHR r/m16,CL
+	// D3 /5 SHR r/m32,CL
+	// REX.W + D3 /5 SHR r/m64,CL
+	{ NULL, 0x0000, 0x00C5A800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA, _IRA_NA },
+	// C1 /5 ib SHR r/m16,imm8
+	// C1 /5 ib SHR r/m32,imm8
+	// REX.W + C1 /5 ib SHR r/m64,imm8
+	{ NULL, 0x0000, 0x00C5A800, { 0xC1, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SBB[] = {
+	// 1C ib SBB AL,imm8
+	{ NULL, 0x0001, 0x00C40000, { 0x1C, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 1D iw SBB AX,imm16
+	// 1D id SBB EAX,imm32
+	{ NULL, 0x0001, 0x00C40000, { 0x1D, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 1D id SBB RAX,imm32
+	{ NULL, 0x0009, 0x00840000, { 0x1D, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 80 /3 ib SBB r/m8,imm8
+	// REX + 80 /3 ib SBB r/m8,imm8
+	{ NULL, 0x0001, 0x00C59800, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 81 /3 iw SBB r/m16,imm16
+	// 81 /3 id SBB r/m32,imm32
+	{ NULL, 0x0001, 0x00C59800, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 81 /3 id SBB r/m64,imm32
+	{ NULL, 0x0009, 0x00859800, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 83 /3 ib SBB r/m16,imm8
+	// 83 /3 ib SBB r/m32,imm8
+	{ NULL, 0x0001, 0x00C59800, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 83 /3 ib SBB r/m64,imm8
+	{ NULL, 0x0009, 0x00859800, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 18 /r SBB r/m8,r8
+	// REX + 18 /r SBB r/m8,r8
+	{ NULL, 0x0001, 0x00C48000, { 0x18, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 19 /r SBB r/m16,r16
+	// 19 /r SBB r/m32,r32
+	// REX.W + 19 /r SBB r/m64,r64
+	{ NULL, 0x0001, 0x00C48000, { 0x19, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
+	// 1A /r SBB r8,r/m8
+	// REX + 1A /r SBB r8,r/m8
+	{ NULL, 0x0001, 0x00C48000, { 0x1A, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
+	// 1B /r SBB r16,r/m16
+	// 1B /r SBB r32,r/m32
+	// REX.W + 1B /r SBB r64,r/m64
+	{ NULL, 0x0001, 0x00C48000, { 0x1B, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SCAS[] = {
+	// AE SCAS m8 NP Valid Valid Compare AL with byte at ES:(E)DI or RDI, then set status flags.*
+	{ NULL, 0x0001, 0x00C40000, { 0xAE, 0x00, 0x00 },
+				_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+				_IRA_NA, _IRA_NA, _IRA_NA},
+	// AF SCAS m16 NP Valid Valid Compare AX with word at ES:(E)DI or RDI, then set status flags.*
+	// AF SCAS m32 NP Valid Valid Compare EAX with doubleword at ES(E)DI or RDI then set status flags.*
+	// REX.W + AF SCAS m64 NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
+	{ NULL, 0x0001, 0x00C40000, { 0xAF, 0x00, 0x00 },
+				_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+				_IRA_NA, _IRA_NA, _IRA_NA }
+	// TODO: Assembler.
+	// AE SCASB NP Valid Valid Compare AL with byte at ES:(E)DI or RDI then set status flags.*
+	// AF SCASW NP Valid Valid Compare AX with word at ES:(E)DI or RDI then set status flags.*
+	// AF SCASD NP Valid Valid Compare EAX with doubleword at ES:(E)DI or RDI then set status flags.*
+	// REX.W + AF SCASQ NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
+};
 
 
+struct ira_opcode_desc _ira_opcode_desc_SETcc[] = {
+	// 0F 97 SETA r/m8 M Valid Valid Set byte if above (CF=0 and ZF=0).
+	// REX + 0F 97 SETA r/m8*
+	{ NULL, 0x0001, 0x00D80040, { 0x0F, 0x97, 0x00 }, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA, _IRA_NA }
+};
 
+struct ira_opcode_desc _ira_opcode_desc_SFENCE[] = {
+	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0xAE, 0xF8 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
 
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -3869,5 +4027,12 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "rsqrtps", _ira_opcode_desc_RSQRTPS),
 		_IA_INSTRUCTION( "rsqrtss", _ira_opcode_desc_RSQRTSS),
 		_IA_INSTRUCTION( "sahf", _ira_opcode_desc_SAHF),
+		_IA_INSTRUCTION( "sar", _ira_opcode_desc_SAR),
+		_IA_INSTRUCTION( "shl", _ira_opcode_desc_SHL),
+		_IA_INSTRUCTION( "shr", _ira_opcode_desc_SHR),
+		_IA_INSTRUCTION( "sbb", _ira_opcode_desc_SBB),
+		_IA_INSTRUCTION( "scas", _ira_opcode_desc_SCAS),
+		_IA_INSTRUCTION( "set", _ira_opcode_desc_SETcc),
+		_IA_INSTRUCTION( "sfence", _ira_opcode_desc_SFENCE),
 		{ NULL, 0, 0, NULL }
 };
