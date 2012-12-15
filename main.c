@@ -61,6 +61,140 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// STMXCSR
+	// 0F AE /3 STMXCSR m32 M V/V SSE Store contents of MXCSR register to m32.
+	_TEST32( "0fae5820 stmxcsr dword ptr [eax+00000020h]", 0x0F, 0xAE, 0x58, 0x20 );
+	_TEST64( "0fae5820 stmxcsr dword ptr [rax+0000000000000020h]", 0x0F, 0xAE, 0x58, 0x20 );
+	// VEX.LZ.0F.WIG AE /3 VSTMXCSR m32 M V/V AVX Store contents of MXCSR register to m32.
+	_TEST64_VEX( "c4c178ae18 vstmxcsr dword ptr [r8]", 0xC4, 0xC1, 0x78, 0xAE, 0x18 );
+	_TEST32_VEX( "c4e178ae18 vstmxcsr dword ptr [eax]", 0xC4, 0xE1, 0x78, 0xAE, 0x18 );
+	_TEST32_VEX( "c5f8ae18 vstmxcsr dword ptr [eax]", 0xC5, 0xF8, 0xAE, 0x18 );
+
+	// STI
+	// FB STI NP Valid Valid Set interrupt flag; external, maskable interrupts enabled at the end of the next instruction.
+	_TEST32( "fb sti", 0xFB );
+	_TEST64( "fb sti", 0xFB );
+
+	// STD
+	// FD STD NP Valid Valid Set DF flag.
+	_TEST32( "fd std", 0xFD );
+	_TEST64( "fd std", 0xFD );
+
+	// STC
+	// F9 STC NP Valid Valid Set CF flag.
+	_TEST32( "f9 stc", 0xF9 );
+	_TEST64( "f9 stc", 0xF9 );
+
+	// SQRTSS
+	// F3 0F 51 /r SQRTSS xmm1,xmm2/m32
+	_TEST32( "f30f511401 sqrtss xmm2,dword ptr [ecx+eax]", 0xF3, 0x0F, 0x51, 0x14, 0x01 );
+	_TEST64( "f30f511401 sqrtss xmm2,dword ptr [rcx+rax]", 0xF3, 0x0F, 0x51, 0x14, 0x01 );
+	_TEST64( "f30f51c0 sqrtss xmm0,xmm0", 0xF3, 0x0F, 0x51, 0xC0 );
+	// VEX.NDS.LIG.F3.0F.WIG 51 VSQRTSS xmm1, xmm2, xmm3/m32
+	_TEST32_VEX( "c4e152511401 vsqrtss xmm2,xmm5,dword ptr [ecx+eax]", 0xC4, 0xE1, 0x52, 0x51, 0x14, 0x01 );
+	_TEST32_VEX( "c5da511401 vsqrtss xmm2,xmm4,dword ptr [ecx+eax]", 0xC5, 0xDA, 0x51, 0x14, 0x01 );
+
+	// SQRTSD
+	// F2 0F 51 /r SQRTSD xmm1,xmm2/m64
+	_TEST32( "f20f511401 sqrtsd xmm2,qword ptr [ecx+eax]", 0xF2, 0x0F, 0x51, 0x14, 0x01 );
+	_TEST64( "f20f511401 sqrtsd xmm2,qword ptr [rcx+rax]", 0xF2, 0x0F, 0x51, 0x14, 0x01 );
+	// VEX.NDS.LIG.F2.0F.WIG 51 /r VSQRTSD xmm1,xmm2,xmm3/m64
+	_TEST32_VEX( "c4e153511401 vsqrtsd xmm2,xmm5,qword ptr [ecx+eax]", 0xC4, 0xE1, 0x53, 0x51, 0x14, 0x01 );
+	_TEST32_VEX( "c5db511401 vsqrtsd xmm2,xmm4,qword ptr [ecx+eax]", 0xC5, 0xDB, 0x51, 0x14, 0x01 );
+
+	// SQRTPS
+	// 0F 51 /r SQRTPS xmm1,xmm2/m128
+	_TEST64_VEX( "0f5100 sqrtps xmm0,oword ptr [rax]", 0x0F, 0x51, 0x00 );
+	_TEST32_VEX( "0f51c1 sqrtps xmm0,xmm1", 0x0F, 0x51, 0xC1 );
+	// VEX.128.0F.WIG 51 /r VSQRTPS xmm1,xmm2/m128
+	// VEX.256.0F.WIG 51 /r VSQRTPS ymm1,ymm2/m256
+	_TEST64_VEX( "c4e17851d8 vsqrtps xmm3,xmm0", 0xC4, 0xE1, 0x78, 0x51, 0xD8 );
+	_TEST32_VEX( "c4e17851d8 vsqrtps xmm3,xmm0", 0xC4, 0xE1, 0x78, 0x51, 0xD8 );
+	_TEST32_VEX( "c4e17c5100 vsqrtps ymm0,ymmword ptr [eax]", 0xC4, 0xE1, 0x7C, 0x51, 0x00 );
+
+	// SQRTPD
+	// 66 0F 51 /r SQRTPD xmm1,xmm2/m128 RM V/V SSE2 Computes square roots of the packed doubleprecision floating-point values in xmm2/m128 and stores the results in xmm1.
+	_TEST64_VEX( "660f5100 sqrtpd xmm0,oword ptr [rax]", 0x66, 0x0F, 0x51, 0x00 );
+	_TEST32_VEX( "660f51c1 sqrtpd xmm0,xmm1", 0x66, 0x0F, 0x51, 0xC1 );
+	// VEX.128.66.0F.WIG 51 /r VSQRTPD xmm1,xmm2/m128 RM V/V AVX Computes Square Roots of the packed doubleprecision floating-point values in xmm2/m128 and stores the result in xmm1.
+	// VEX.256.66.0F.WIG 51 /r VSQRTPD ymm1,ymm2/m256 RM V/V AVX Computes Square Roots of the packed doubleprecision floating-point values in ymm2/m256 and stores the result in ymm1.
+	_TEST64_VEX( "c4e17951d8 vsqrtpd xmm3,xmm0", 0xC4, 0xE1, 0x79, 0x51, 0xD8 );
+	_TEST32_VEX( "c4e17951d8 vsqrtpd xmm3,xmm0", 0xC4, 0xE1, 0x79, 0x51, 0xD8 );
+	_TEST32_VEX( "c4e17d5100 vsqrtpd ymm0,ymmword ptr [eax]", 0xC4, 0xE1, 0x7D, 0x51, 0x00 );
+
+	// 0F 01 /4 SMSW r/m16 M Valid Valid Store machine status word to r/m16.
+	// 0F 01 /4 SMSW r32/m16 M Valid Valid Store machine status word in low-order 16 bits of r32/m16; high-order 16 bits of r32 are undefined.
+	// REX.W + 0F 01 /4 SMSW r64/m16 M Valid Valid Store machine status word in low-order 16 bits of r64/m16; high-order 16 bits of r32 are undefined.
+	_TEST32( "0f0120 smsw word ptr [eax]", 0x0f, 0x01, 0x20 );
+	_TEST32( "0f01e0 smsw eax", 0x0f, 0x01, 0xE0 );
+	_TEST32( "660f0120 smsw word ptr [eax]", 0x66, 0x0f, 0x01, 0x20 );
+	_TEST32( "660f01e0 smsw ax", 0x66, 0x0f, 0x01, 0xE0 );
+	_TEST64( "480f0120 smsw word ptr [rax]", 0x48, 0x0f, 0x01, 0x20 );
+	_TEST64( "480f01e0 smsw rax", 0x48, 0x0f, 0x01, 0xE0 );
+
+	// SLDT
+	// 0F 00 /0 SLDT r/m16 M Valid Valid Stores segment selector from LDTR in r/m16.
+	_TEST32( "0f0000 sldt word ptr [eax]", 0x0f, 0x00, 0x00 );
+	_TEST64( "0f00c0 sldt ax", 0x0f, 0x00, 0xC0 );
+	// REX.W + 0F 00 /0 SLDT r64/m16 M Valid Valid Stores segment selector from LDTR in r64/m16.
+	_TEST64( "480f00c0 sldt rax", 0x48, 0x0f, 0x00, 0xC0 );
+	_TEST64( "480f0000 sldt word ptr [rax]", 0x48, 0x0f, 0x00, 0x00 );
+
+	// SIDT
+	// 0F 01 /1 SIDT m M Valid Valid Store IDTR to m.
+	_TEST32( "0f0108 sidt [eax]", 0x0f, 0x01, 0x08 );
+	_TEST64( "0f0108 sidt [rax]", 0x0f, 0x01, 0x08 );
+
+	// SHUFPS
+	// 0F C6 /r ib SHUFPS xmm1, xmm2/m128, imm8 RMI V/V SSE Shuffle packed single-precision floating-point values selected by imm8 from xmm1 and xmm1/m128 to xmm1.
+	_TEST32( "0fc61401ff shufps xmm2,oword ptr [ecx+eax],0ffh", 0x0F, 0xC6, 0x14, 0x01, 0xFF );
+	_TEST64( "0fc61401ff shufps xmm2,oword ptr [rcx+rax],0ffh", 0x0F, 0xC6, 0x14, 0x01, 0xFF );
+	// VEX.NDS.128.0F.WIG C6 /r ib VSHUFPS xmm1, xmm2, xmm3/m128, imm8 RVMI V/V AVX Shuffle Packed single-precision floating-point values selected by imm8 from xmm2 and xmm3/mem.
+	// VEX.NDS.256.0F.WIG C6 /r ib VSHUFPS ymm1, ymm2, ymm3/m256, imm8 RVMI V/V AVX Shuffle Packed single-precision floating-point values selected by imm8 from ymm2 and ymm3/mem.
+	_TEST32_VEX( "c4e148c6140120 vshufps xmm2,xmm6,oword ptr [ecx+eax],20h", 0xC4, 0xE1, 0x48, 0xC6, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "c4e148c6140120 vshufps xmm2,xmm6,oword ptr [rcx+rax],20h", 0xC4, 0xE1, 0x48, 0xC6, 0x14, 0x01, 0x20 );
+
+	// SHUFPD
+	// 66 0F C6 /r ib SHUFPD xmm1,xmm2/m128,imm8
+	_TEST32( "660fc61401ff shufpd xmm2,oword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0xC6, 0x14, 0x01, 0xFF );
+	_TEST64( "660fc61401ff shufpd xmm2,oword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0xC6, 0x14, 0x01, 0xFF );
+	// VEX.NDS.128.66.0F.WIG C6 /r ib VSHUFPD xmm1,xmm2,xmm3/m128,imm8
+	// VEX.NDS.256.66.0F.WIG C6 /r ib VSHUFPD ymm1,ymm2,ymm3/m256,imm8
+	_TEST32_VEX( "c4e149c6140120 vshufpd xmm2,xmm6,oword ptr [ecx+eax],20h", 0xC4, 0xE1, 0x49, 0xC6, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "c4e149c6140120 vshufpd xmm2,xmm6,oword ptr [rcx+rax],20h", 0xC4, 0xE1, 0x49, 0xC6, 0x14, 0x01, 0x20 );
+
+	// 0F AC SHRD r/m16, r16, imm8 MRI Valid Valid Shift r/m16 to right imm8 places while shifting bits from r16 in from the left.
+	// 0F AC SHRD r/m32, r32, imm8 MRI Valid Valid Shift r/m32 to right imm8 places while shifting bits from r32 in from the left.
+	// REX.W + 0F AC SHRD r/m64, r64, imm8 MRI Valid N.E. Shift r/m64 to right imm8 places while shifting bits from r64 in from the left.
+	_TEST32( "0fac00ff shrd dword ptr [eax],eax,0ffh", 0x0f, 0xAC, 0x00, 0xFF );
+	_TEST32( "660fac00ff shrd word ptr [eax],ax,0ffh", 0x66, 0x0f, 0xAC, 0x00, 0xFF );
+	_TEST64( "480fac00ff shrd qword ptr [rax],rax,0ffh", 0x48, 0x0f, 0xAC, 0x00, 0xFF );
+	// 0F AD SHRD r/m16, r16, CL MRC Valid Valid Shift r/m16 to right CL places while shifting bits from r16 in from the left.
+	// 0F AD SHRD r/m32, r32, CL MRC Valid Valid Shift r/m32 to right CL places while shifting bits from r32 in from the left.
+	// REX.W + 0F AD SHRD r/m64, r64, CL MRC Valid N.E. Shift r/m64 to right CL places while shifting bits from r64 in from the left.
+	_TEST32( "0fad00 shrd dword ptr [eax],eax,cl", 0x0f, 0xAD, 0x00 );
+	_TEST32( "660fad00 shrd word ptr [eax],ax,cl", 0x66, 0x0f, 0xAD, 0x00 );
+	_TEST64( "480fad00 shrd qword ptr [rax],rax,cl", 0x48, 0x0f, 0xAD, 0x00 );
+
+	// SHLD
+	// 0F A4 SHLD r/m16,r16,imm8
+	// 0F A4 SHLD r/m32,r32,imm8
+	// REX.W + 0F A4 SHLD r/m64,r64,imm8
+	_TEST32( "0fa400ff shld dword ptr [eax],eax,0ffh", 0x0f, 0xA4, 0x00, 0xFF );
+	_TEST32( "660fa400ff shld word ptr [eax],ax,0ffh", 0x66, 0x0f, 0xA4, 0x00, 0xFF );
+	_TEST64( "480fa400ff shld qword ptr [rax],rax,0ffh", 0x48, 0x0f, 0xA4, 0x00, 0xFF );
+	// 0F A5 SHLD r/m16,r16,CL
+	// 0F A5 SHLD r/m32,r32,CL
+	// REX.W + 0F A5 SHLD r/m64,r64,CL
+	_TEST32( "0fa500 shld dword ptr [eax],eax,cl", 0x0f, 0xA5, 0x00 );
+	_TEST32( "660fa500 shld word ptr [eax],ax,cl", 0x66, 0x0f, 0xA5, 0x00 );
+	_TEST64( "480fa500 shld qword ptr [rax],rax,cl", 0x48, 0x0f, 0xA5, 0x00 );
+
+	// SGDT
+	// 0F 01 /0 SGDT m
+	_TEST32( "0f0100 sgdt [eax]", 0x0f, 0x01, 0x00 );
+	_TEST64( "0f0100 sgdt [rax]", 0x0f, 0x01, 0x00 );
+
 	// SFENCE
 	// 0F AE /7 SFENCE
 	_TEST32( "0faef8 sfence", 0x0f, 0xae, 0xf8 );

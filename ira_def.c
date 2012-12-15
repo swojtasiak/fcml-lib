@@ -3669,6 +3669,120 @@ struct ira_opcode_desc _ira_opcode_desc_SFENCE[] = {
 	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0xAE, 0xF8 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_SGDT[] = {
+	// 0F 01 /0 SGDT m
+	{ NULL, 0x0000, 0x00D98000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SHLD[] = {
+	// 0F A4 SHLD r/m16,r16,imm8 MRI Valid Valid Shift r/m16 to left imm8 places while shifting bits from r16 in from the right.
+	// 0F A4 SHLD r/m32,r32,imm8 MRI Valid Valid Shift r/m32 to left imm8 places while shifting bits from r32 in from the right.
+	// REX.W + 0F A4 SHLD r/m64,r64, imm8 MRI Valid N.E. Shift r/m64 to left imm8 places while shifting bits from r64 in from the right.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xA4, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,_IRA_OPERAND_IB, _IRA_NA },
+	// 0F A5 SHLD r/m16,r16,CL MRC Valid Valid Shift r/m16 to left CL places while shifting bits from r16 in from the right.
+	// 0F A5 SHLD r/m32,r32,CL MRC Valid Valid Shift r/m32 to left CL places while shifting bits from r32 in from the right.
+	// REX.W + 0F A5 SHLD r/m64,r64,CL MRC Valid N.E. Shift r/m64 to left CL places while shifting bits from r64 in from the right.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xA5, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SHRD[] = {
+	// 0F AC SHRD r/m16, r16, imm8 MRI Valid Valid Shift r/m16 to right imm8 places while shifting bits from r16 in from the left.
+	// 0F AC SHRD r/m32, r32, imm8 MRI Valid Valid Shift r/m32 to right imm8 places while shifting bits from r32 in from the left.
+	// REX.W + 0F AC SHRD r/m64, r64, imm8 MRI Valid N.E. Shift r/m64 to right imm8 places while shifting bits from r64 in from the left.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xAC, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,_IRA_OPERAND_IB, _IRA_NA },
+	// 0F AD SHRD r/m16, r16, CL MRC Valid Valid Shift r/m16 to right CL places while shifting bits from r16 in from the left.
+	// 0F AD SHRD r/m32, r32, CL MRC Valid Valid Shift r/m32 to right CL places while shifting bits from r32 in from the left.
+	// REX.W + 0F AD SHRD r/m64, r64, CL MRC Valid N.E. Shift r/m64 to right CL places while shifting bits from r64 in from the left.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xAD, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SHUFPD[] = {
+	// 66 0F C6 /r ib SHUFPD xmm1, xmm2/m128, imm8 RMI V/V SSE2 Shuffle packed double-precision floatingpoint values selected by imm8 from xmm1 and xmm2/m128 to xmm1.
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0xC6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG C6 /r ib VSHUFPD xmm1, xmm2, xmm3/m128, imm8 RVMI V/V AVX Shuffle Packed double-precision floatingpoint values selected by imm8 from xmm2 and xmm3/mem.
+	// VEX.NDS.256.66.0F.WIG C6 /r ib VSHUFPD ymm1, ymm2, ymm3/m256, imm8 RVMI V/V AVX Shuffle Packed double-precision floatingpoint values selected by imm8 from ymm2 and ymm3/mem.
+	{ "vshufpd", 0x1080, 0x00D88000, { 0x0F, 0xC6, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SHUFPS[] = {
+	// 0F C6 /r ib SHUFPS xmm1, xmm2/m128, imm8 RMI V/V SSE Shuffle packed single-precision floating-point values selected by imm8 from xmm1 and xmm1/m128 to xmm1.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xC6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.NDS.128.0F.WIG C6 /r ib VSHUFPS xmm1, xmm2, xmm3/m128, imm8 RVMI V/V AVX Shuffle Packed single-precision floating-point values selected by imm8 from xmm2 and xmm3/mem.
+	// VEX.NDS.256.0F.WIG C6 /r ib VSHUFPS ymm1, ymm2, ymm3/m256, imm8 RVMI V/V AVX Shuffle Packed single-precision floating-point values selected by imm8 from ymm2 and ymm3/mem.
+	{ "vshufps", 0x0080, 0x00D88000, { 0x0F, 0xC6, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SIDT[] = {
+	// 0F 01 /1 SIDT m M Valid Valid Store IDTR to m.
+	{ NULL, 0x0000, 0x00D98800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SLDT[] = {
+	// 0F 00 /0 SLDT r/m16 M Valid Valid Stores segment selector from LDTR in r/m16.
+	{ NULL, 0x0010, 0x03D98000, { 0x0F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W + 0F 00 /0 SLDT r64/m16 M Valid Valid Stores segment selector from LDTR in r64/m16.
+	{ NULL, 0x0008, 0x04998000, { 0x0F, 0x00, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_WORD, _IRA_RMF_RM ) | _IRA_WRITE, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SMSW[] = {
+	// 0F 01 /4 SMSW r/m16 M Valid Valid Store machine status word to r/m16.
+	// 0F 01 /4 SMSW r32/m16 M Valid Valid Store machine status word in low-order 16 bits of r32/m16; high-order 16 bits of r32 are undefined.
+	// REX.W + 0F 01 /4 SMSW r64/m16 M Valid Valid Store machine status word in low-order 16 bits of r64/m16; high-order 16 bits of r32 are undefined.
+	{ NULL, 0x0000, 0x00D9A000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_WORD, _IRA_RMF_RM ) | _IRA_WRITE, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SQRTPD[] = {
+	// 66 0F 51 /r SQRTPD xmm1,xmm2/m128
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0x51, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F.WIG 51 /r VSQRTPD xmm1,xmm2/m128
+	// VEX.256.66.0F.WIG 51 /r VSQRTPD ymm1,ymm2/m256
+	{ "vsqrtpd", 0x1180, 0x00D88000, { 0x0F, 0x51, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SQRTPS[] = {
+	// 0F 51 /r SQRTPS xmm1,xmm2/m128 RM V/V SSE Computes square roots of the packed singleprecision floating-point values in xmm2/m128 and stores the results in xmm1.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0x51, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.128.0F.WIG 51 /r VSQRTPS xmm1,xmm2/m128 RM V/V AVX Computes Square Roots of the packed singleprecision floating-point values in xmm2/m128 and stores the result in xmm1.
+	// VEX.256.0F.WIG 51 /r VSQRTPS ymm1,ymm2/m256 RM V/V AVX Computes Square Roots of the packed singleprecision floating-point values in ymm2/m256 and stores the result in ymm1.
+	{ "vsqrtps", 0x0180, 0x00D88000, { 0x0F, 0x51, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SQRTSD[] = {
+	// F2 0F 51 /r SQRTSD xmm1,xmm2/m64 RM V/V SSE2 Computes square root of the low doubleprecision floating-point value in xmm2/m64 and stores the results in xmm1.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x51, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.NDS.LIG.F2.0F.WIG 51 /r VSQRTSD xmm1,xmm2,xmm3/m64 RVM V/V AVX Computes square root of the low doubleprecision floating point value in xmm3/m64 and stores the results in xmm2. Also, upper double precision floating-point value (bits[127:64]) from xmm2 is copied to xmm1[127:64].
+	{ "vsqrtsd", 0x20C0, 0x00D88000, { 0x0F, 0x51, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_64, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SQRTSS[] = {
+	// F3 0F 51 /r SQRTSS xmm1, xmm2/m32 RM V/V SSE Computes square root of the low singleprecision floating-point value in xmm2/m32 and stores the results in xmm1.
+	{ NULL, 0x4000, 0x00D88000, { 0x0F, 0x51, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.NDS.LIG.F3.0F.WIG 51 VSQRTSS xmm1, xmm2, xmm3/m32 RVM V/V AVX Computes square root of the low singleprecision floating-point value in xmm3/m32 and stores the results in xmm1. Also, upper single precision floating-point values (bits[127:32]) from xmm2 are copied to xmm1[127:32].
+	{ "vsqrtss", 0x40C0, 0x00D88000, { 0x0F, 0x51, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_32, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_STC[] = {
+	// F9 STC NP Valid Valid Set CF flag.
+	{ NULL, 0x0000, 0x00C40000, { 0xF9, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_STD[] = {
+	// FD STD NP Valid Valid Set DF flag.
+	{ NULL, 0x0000, 0x00C40000, { 0xFD, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_STI[] = {
+	// FB STI NP Valid Valid Set interrupt flag; external, maskable interrupts enabled at the end of the next instruction.
+	{ NULL, 0x0000, 0x00C40000, { 0xFB, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_STMXCSR[] = {
+	// 0F AE /3 STMXCSR m32 M V/V SSE Store contents of MXCSR register to m32.
+	{ NULL, 0x0000, 0x80D99800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
+	// VEX.LZ.0F.WIG AE /3 VSTMXCSR m32 M V/V AVX Store contents of MXCSR register to m32.
+	{ "vstmxcsr", 0x01C0, 0x80D99800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
 	_IA_INSTRUCTION( "blendpd", _ira_opcode_desc_BLENDPD ),
@@ -4034,5 +4148,21 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "scas", _ira_opcode_desc_SCAS),
 		_IA_INSTRUCTION( "set", _ira_opcode_desc_SETcc),
 		_IA_INSTRUCTION( "sfence", _ira_opcode_desc_SFENCE),
+		_IA_INSTRUCTION( "sgdt", _ira_opcode_desc_SGDT),
+		_IA_INSTRUCTION( "shld", _ira_opcode_desc_SHLD),
+		_IA_INSTRUCTION( "shrd", _ira_opcode_desc_SHRD),
+		_IA_INSTRUCTION( "shufpd", _ira_opcode_desc_SHUFPD),
+		_IA_INSTRUCTION( "shufps", _ira_opcode_desc_SHUFPS),
+		_IA_INSTRUCTION( "sidt", _ira_opcode_desc_SIDT),
+		_IA_INSTRUCTION( "sldt", _ira_opcode_desc_SLDT),
+		_IA_INSTRUCTION( "smsw", _ira_opcode_desc_SMSW),
+		_IA_INSTRUCTION( "sqrtpd", _ira_opcode_desc_SQRTPD),
+		_IA_INSTRUCTION( "sqrtps", _ira_opcode_desc_SQRTPS),
+		_IA_INSTRUCTION( "sqrtsd", _ira_opcode_desc_SQRTSD),
+		_IA_INSTRUCTION( "sqrtss", _ira_opcode_desc_SQRTSS),
+		_IA_INSTRUCTION( "stc", _ira_opcode_desc_STC),
+		_IA_INSTRUCTION( "std", _ira_opcode_desc_STD),
+		_IA_INSTRUCTION( "sti", _ira_opcode_desc_STI),
+		_IA_INSTRUCTION( "stmxcsr", _ira_opcode_desc_STMXCSR),
 		{ NULL, 0, 0, NULL }
 };
