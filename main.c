@@ -61,6 +61,254 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// XSETBV
+	// 0F 01 D1 XSETBV NP Valid Valid Write the value in EDX:EAX to the XCR specified by ECX.
+	_TEST64( "0f01d1 xsetbv", 0x0F, 0x01, 0xD1 );
+	_TEST32( "0f01d1 xsetbv", 0x0F, 0x01, 0xD1 );
+
+	// XSAVEOPT
+	// 0F AE /6 XSAVEOPT mem M V/V XSAVEOPT Save processor extended states specified in EDX:EAX to memory, optimizing the state save operation if possible.
+	// REX.W + 0F AE /6 XSAVEOPT64 mem M V/V XSAVEOPT Save processor extended states specified in EDX:EAX to memory, optimizing the state save operation if possible.
+	_TEST64( "0fae30 xsaveopt [rax]", 0x0F, 0xAE, 0x30 );
+	_TEST32( "0fae30 xsaveopt [eax]", 0x0F, 0xAE, 0x30 );
+	_TEST64( "660fae30 xsaveopt [rax]", 0x66, 0x0F, 0xAE, 0x30 );
+	_TEST32( "660fae30 xsaveopt [eax]", 0x66, 0x0F, 0xAE, 0x30 );
+	_TEST64( "480fae30 xsaveopt64 [rax]", 0x48, 0x0F, 0xAE, 0x30 );
+
+	// XSAVE
+	// 0F AE /4 XSAVE mem M Valid Valid Save processor extended states to memory. The states are specified by EDX:EAX
+	// REX.W+ 0F AE /4 XSAVE64 mem M Valid N.E. Save processor extended states to memory. The states are specified by EDX:EAX
+	_TEST64( "0fae20 xsave 512byte ptr [rax]", 0x0F, 0xAE, 0x20 );
+	_TEST32( "0fae20 xsave 512byte ptr [eax]", 0x0F, 0xAE, 0x20 );
+	_TEST64( "660fae20 xsave 512byte ptr [rax]", 0x66, 0x0F, 0xAE, 0x20 );
+	_TEST32( "660fae20 xsave 512byte ptr [eax]", 0x66, 0x0F, 0xAE, 0x20 );
+	_TEST64( "480fae20 xsave64 512byte ptr [rax]", 0x48, 0x0F, 0xAE, 0x20 );
+
+	// FXRSTOR
+	// 0F AE /5 XRSTOR mem M Valid Valid Restore processor extended states from memory. The states are specified by EDX:EAX
+	// REX.W+ 0F AE /5 XRSTOR64 mem M Valid N.E. Restore processor extended states from memory. The states are specified by EDX:EAX
+	_TEST64( "0fae28 xrstor 512byte ptr [rax]", 0x0F, 0xAE, 0x28 );
+	_TEST32( "0fae28 xrstor 512byte ptr [eax]", 0x0F, 0xAE, 0x28 );
+	_TEST64( "660fae28 xrstor 512byte ptr [rax]", 0x66, 0x0F, 0xAE, 0x28 );
+	_TEST32( "660fae28 xrstor 512byte ptr [eax]", 0x66, 0x0F, 0xAE, 0x28 );
+	_TEST64( "480fae28 xrstor64 512byte ptr [rax]", 0x48, 0x0F, 0xAE, 0x28 );
+
+	// XORPS
+	// 0F 57 /r XORPS xmm1,xmm2/m128
+	_TEST64( "0f574020 xorps xmm0,oword ptr [rax+0000000000000020h]", 0x0F, 0x57, 0x40, 0x20 );
+	_TEST32( "0f574020 xorps xmm0,oword ptr [eax+00000020h]", 0x0F, 0x57, 0x40, 0x20 );
+	// VEX.NDS.128.0F.WIG 57 /r VXORPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F.WIG 57 /r VXORPS ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4410c571401 vxorps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0C, 0x57, 0x14, 0x01 );
+	_TEST32_VEX( "c4c140571401 vxorps xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x40, 0x57, 0x14, 0x01 );
+	_TEST32_VEX( "c4c168571401 vxorps xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x68, 0x57, 0x14, 0x01 );
+
+	// XORPD
+	// 66 0F 57 /r XORPD xmm1,xmm2/m128
+	_TEST64( "660f574020 xorpd xmm0,oword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x57, 0x40, 0x20 );
+	_TEST32( "660f574020 xorpd xmm0,oword ptr [eax+00000020h]", 0x66, 0x0F, 0x57, 0x40, 0x20 );
+	// VEX.NDS.128.66.0F.WIG 57 /r VXORPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F.WIG 57 /r VXORPD ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4410d571401 vxorpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x57, 0x14, 0x01 );
+	_TEST32_VEX( "c4c141571401 vxorpd xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0x57, 0x14, 0x01 );
+	_TEST32_VEX( "c4c169571401 vxorpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x57, 0x14, 0x01 );
+
+	// 34 ib XOR AL, imm8 I Valid Valid AL XOR imm8.
+	_TEST32( "34ff xor al,0ffh", 0x34, 0xff );
+	// 35 iw XOR AX, imm16 I Valid Valid AX XOR imm16.
+	// 35 id XOR EAX, imm32 I Valid Valid EAX XOR imm32.
+	_TEST32( "6635ff11 xor ax,11ffh", 0x66, 0x35, 0xff, 0x11 );
+	// REX.W + 35 id XOR RAX, imm32 I Valid N.E. RAX XOR imm32 (sign-extended).
+	_TEST64( "4835ff117722 xor rax,00000000227711ffh", 0x48, 0x35, 0xff, 0x11, 0x77, 0x22 );
+	// 80 /6 ib XOR r/m8, imm8 MI Valid Valid r/m8 XOR imm8.
+	_TEST32( "803011 xor byte ptr [eax],11h", 0x80, 0x30, 0x11 );
+	// REX + 80 /6 ib XOR r/m8*, imm8 MI Valid N.E. r/m8 XOR imm8.
+	_TEST64( "48803030 xor byte ptr [rax],30h", 0x48, 0x80, 0x30, 0x30, 0xff  );
+	// 81 /6 iw XOR r/m16, imm16 MI Valid Valid r/m16 XOR imm16.
+	// 81 /6 id XOR r/m32, imm32 MI Valid Valid r/m32 XOR imm32.
+	// REX.W + 81 /6 id XOR r/m64, imm32 MI Valid N.E. r/m64 XOR imm32 (sign-extended).
+	_TEST64( "40813030ffff22 xor dword ptr [rax],22ffff30h", 0x40, 0x81, 0x30, 0x30, 0xff, 0xff, 0x22  );
+	_TEST64( "48813030ffffff xor qword ptr [rax],0ffffffffffffff30h", 0x48, 0x81, 0x30, 0x30, 0xff, 0xff, 0xff  );
+	// 83 /6 ib XOR r/m16, imm8 MI Valid Valid r/m16 XOR imm8 (sign-extended).
+	// 83 /6 ib XOR r/m32, imm8 MI Valid Valid r/m32 XOR imm8 (sign-extended).
+	// REX.W + 83 /6 ib XOR r/m64, imm8 MI Valid N.E. r/m64 XOR imm8 (sign-extended).
+	_TEST64( "833030 xor dword ptr [rax],00000030h", 0x83, 0x30, 0x30  );
+	_TEST64( "66833030 xor word ptr [rax],0030h", 0x66, 0x83, 0x30, 0x30  );
+	_TEST64( "48833030 xor qword ptr [rax],0000000000000030h", 0x48, 0x83, 0x30, 0x30  );
+	// 30 /r XOR r/m8, r8 MR Valid Valid r/m8 XOR r8.
+	// REX + 30 /r XOR r/m8*, r8* MR Valid N.E. r/m8 XOR r8.
+	_TEST64( "3030 xor byte ptr [rax],dh", 0x30, 0x30 );
+	_TEST64( "483030 xor byte ptr [rax],sil", 0x48, 0x30, 0x30  );
+	// 31 /r XOR r/m16, r16 MR Valid Valid r/m16 XOR r16.
+	// 31 /r XOR r/m32, r32 MR Valid Valid r/m32 XOR r32.
+	// REX.W + 31 /r XOR r/m64, r64 MR Valid N.E. r/m64 XOR r64.
+	_TEST64( "3130 xor dword ptr [rax],esi", 0x31, 0x30  );
+	_TEST64( "663130 xor word ptr [rax],si", 0x66, 0x31, 0x30 );
+	_TEST64( "483130 xor qword ptr [rax],rsi", 0x48, 0x31, 0x30  );
+	// 32 /r XOR r8, r/m8 RM Valid Valid r8 XOR r/m8.
+	// REX + 32 /r XOR r8*, r/m8* RM Valid N.E. r8 XOR r/m8.
+	_TEST64( "3230 xor dh,byte ptr [rax]", 0x32, 0x30  );
+	_TEST64( "663230 xor dh,byte ptr [rax]", 0x66, 0x32, 0x30 );
+	_TEST64( "483230 xor sil,byte ptr [rax]", 0x48, 0x32, 0x30  );
+	// 33 /r XOR r16, r/m16 RM Valid Valid r16 XOR r/m16.
+	// 33 /r XOR r32, r/m32 RM Valid Valid r32 XOR r/m32.
+	// REX.W + 33 /r XOR r64, r/m64 RM Valid N.E. r64 XOR r/m64.
+	_TEST64( "3330 xor esi,dword ptr [rax]", 0x33, 0x30  );
+	_TEST64( "663330 xor si,word ptr [rax]", 0x66, 0x33, 0x30 );
+	_TEST64( "483330 xor rsi,qword ptr [rax]", 0x48, 0x33, 0x30  );
+
+	// XLAT
+	// D7 XLAT m8 NP Valid Valid Set AL to memory byte DS:[(E)BX + unsigned AL].
+	// D7 XLATB NP Valid Valid Set AL to memory byte DS:[(E)BX + unsigned AL].
+	// REX.W + D7 XLATB NP Valid N.E. Set AL to memory byte [RBX + unsigned AL].
+	_TEST32( "d7 xlat byte ptr [ebx]", 0xD7 );
+	_TEST32( "67d7 xlat byte ptr [bx]", 0x67, 0xD7 );
+
+	// XGETBV
+	// 0F 01 D0 XGETBV NP Valid Valid Reads an XCR specified by ECX into EDX:EAX.
+	_TEST32( "0f01d0 xgetbv", 0x0F, 0x01, 0xD0 );
+	_TEST64( "0f01d0 xgetbv", 0x0F, 0x01, 0xD0 );
+
+	// 90+rw XCHG AX, r16 O Valid Valid Exchange r16 with AX.
+	// 90+rw XCHG r16, AX O Valid Valid Exchange AX with r16.
+	// 90+rd XCHG EAX, r32 O Valid Valid Exchange r32 with EAX.
+	// 90+rd XCHG r32, EAX O Valid Valid Exchange EAX with r32.
+	// REX.W + 90+rd XCHG RAX, r64 O Valid N.E. Exchange r64 with RAX.
+	// REX.W + 90+rd XCHG r64, RAX O Valid N.E. Exchange RAX with r64.
+	_TEST32( "91 xchg eax,ecx", 0x91 );
+	_TEST64( "91 xchg eax,ecx", 0x91 );
+	_TEST64( "6691 xchg ax,cx", 0x66, 0x91 );
+	_TEST64( "4891 xchg rax,rcx", 0x48, 0x91 );
+	// 86 /r XCHG r/m8, r8 MR Valid Valid Exchange r8 (byte register) with byte from r/m8.
+	// REX + 86 /r XCHG r/m8*, r8* MR Valid N.E. Exchange r8 (byte register) with byte from r/m8.
+	// 86 /r XCHG r8, r/m8 RM Valid Valid Exchange byte from r/m8 with r8 (byte register).
+	// REX + 86 /r XCHG r8*, r/m8* RM Valid N.E. Exchange byte from r/m8 with r8 (byte register).
+	_TEST32( "8600 xchg byte ptr [eax],al", 0x86, 0x00 );
+	_TEST32( "86c0 xchg al,al", 0x86, 0xC0 );
+	// 87 /r XCHG r/m16, r16 MR Valid Valid Exchange r16 with word from r/m16.
+	// 87 /r XCHG r16, r/m16 RM Valid Valid Exchange word from r/m16 with r16.
+	// 87 /r XCHG r/m32, r32 MR Valid Valid Exchange r32 with doubleword from r/m32.
+	// 87 /r XCHG r32, r/m32 RM Valid Valid Exchange doubleword from r/m32 with r32.
+	// REX.W + 87 /r XCHG r/m64, r64 MR Valid N.E. Exchange r64 with quadword from r/m64.
+	// REX.W + 87 /r XCHG r64, r/m64 RM Valid N.E. Exchange quadword from r/m64 with r64.
+	_TEST32( "8700 xchg dword ptr [eax],eax", 0x87, 0x00 );
+	_TEST32( "87c0 xchg eax,eax", 0x87, 0xC0 );
+	_TEST32( "6687c0 xchg ax,ax", 0x66, 0x87, 0xC0 );
+	_TEST64( "4887c0 xchg rax,rax", 0x48, 0x87, 0xC0 );
+
+	// XADD
+	// 0F C0 /r XADD r/m8,r8 MR Valid Valid Exchange r8 and r/m8; load sum into r/m8.
+	// REX + 0F C0 /r XADD r/m8*,r8* MR Valid N.E. Exchange r8 and r/m8; load sum into r/m8.
+	_TEST64( "480fc010 xadd byte ptr [rax],dl", 0x48, 0x0F, 0xC0, 0x10 );
+	_TEST32( "0fc010 xadd byte ptr [eax],dl", 0x0F, 0xC0, 0x10 );
+	// 0F C1 /r XADD r/m16,r16 MR Valid Valid Exchange r16 and r/m16; load sum into r/m16.
+	// 0F C1 /r XADD r/m32,r32 MR Valid Valid Exchange r32 and r/m32; load sum into r/m32.
+	// REX.W + 0F C1 /r XADD r/m64,r64 MR Valid N.E. Exchange r64 and r/m64; load sum into r/m64.
+	_TEST64( "480fc110 xadd qword ptr [rax],rdx", 0x48, 0x0F, 0xC1, 0x10 );
+	_TEST32( "0fc110 xadd dword ptr [eax],edx", 0x0F, 0xC1, 0x10 );
+	_TEST32( "660fc110 xadd word ptr [eax],dx", 0x66, 0x0F, 0xC1, 0x10 );
+
+	// WRMSR
+	// 0F 30 WRMSR NP Valid Valid Write the value in EDX:EAX to MSR specified by ECX.
+	_TEST32_VEX( "0f30 wrmsr", 0x0F, 0x30 );
+	_TEST64_VEX( "0f30 wrmsr", 0x0F, 0x30 );
+
+	// WRFSBASE
+	// F3 0F AE /2 WRFSBASE r32 M V/I FSGSBASE Load the FS base address with the 32-bit value in the source register.
+	// REX.W + F3 0F AE /2 WRFSBASE r64 M V/I FSGSBASE Load the FS base address with the 64-bit value in the source register.
+	_TEST64_VEX( "f30faed0 wrfsbase eax", 0xF3, 0x0F, 0xAE, 0xD0 );
+	_TEST64_VEX( "66f30faed0 wrfsbase eax", 0x66, 0xF3, 0x0F, 0xAE, 0xD0 );
+	_TEST64_VEX( "f3480faed0 wrfsbase rax", 0xF3, 0x48, 0x0F, 0xAE, 0xD0 );
+	// F3 0F AE /3 WRGSBASE r32 M V/I FSGSBASE Load the GS base address with the 32-bit value in the source register.
+	// REX.W + F3 0F AE /3 WRGSBASE r64 M V/I FSGSBASE Load the GS base address with the 64-bit value in the source register.
+	_TEST64_VEX( "f30faed8 fsgsbase eax", 0xF3, 0x0F, 0xAE, 0xD8 );
+	_TEST64_VEX( "66f30faed8 fsgsbase eax", 0x66, 0xF3, 0x0F, 0xAE, 0xD8 );
+	_TEST64_VEX( "f3480faed8 fsgsbase rax", 0xF3, 0x48, 0x0F, 0xAE, 0xD8 );
+
+	// WBINVD
+	// 0F 09 WBINVD NP Valid Valid Write back and flush Internal caches; initiate writing-back and flushing of external caches.
+	_TEST64_VEX( "0f09 wbinvd", 0x0F, 0x09 );
+	_TEST32_VEX( "0f09 wbinvd", 0x0F, 0x09 );
+
+	// WAIT
+	// 9B WAIT NP Valid Valid Check pending unmasked floating-point exceptions.
+	// 9B FWAIT NP Valid Valid Check pending unmasked floating-point exceptions.
+	_TEST64_VEX( "9b wait", 0x9B );
+	_TEST32_VEX( "9b wait", 0x9B );
+
+	// VZEROUPPER
+	// VEX.128.0F.WIG 77 VZEROUPPER NP V/V AVX Zero upper 128 bits of all YMM registers.
+	_TEST64_VEX( "c4e17877 vzeroupper", 0xC4, 0xE1, 0x78, 0x77 );
+	_TEST32_VEX( "c4e17877 vzeroupper", 0xC4, 0xE1, 0x78, 0x77 );
+
+	// VZEROALL
+	// VEX.256.0F.WIG 77 VZEROALL NP V/V AVX Zero all YMM registers.
+	_TEST64_VEX( "c4e17c77 vzeroall", 0xC4, 0xE1, 0x7C, 0x77 );
+	_TEST32_VEX( "c4e17c77 vzeroall", 0xC4, 0xE1, 0x7C, 0x77 );
+
+	// VEX.128.66.0F38.W0 0E /r VTESTPS xmm1,xmm2/m128 RM V/V AVX Set ZF and CF depending on sign bit AND and ANDN of packed single-precision floatingpoint sources.
+	// VEX.256.66.0F38.W0 0E /r VTESTPS ymm1,ymm2/m256 RM V/V AVX Set ZF and CF depending on sign bit AND and ANDN of packed single-precision floatingpoint sources.
+	_TEST64_VEX( "c4e2790ec8 vtestps xmm1,xmm0", 0xC4, 0xE2, 0x79, 0x0E, 0xC8 );
+	_TEST32_VEX( "c4e2790ec8 vtestps xmm1,xmm0", 0xC4, 0xE2, 0x79, 0x0E, 0xC8 );
+	_TEST32_VEX( "c4e2790e00 vtestps xmm0,oword ptr [eax]", 0xC4, 0xE2, 0x79, 0x0E, 0x00 );
+	_TEST32_VEX( "c4e27d0e00 vtestps ymm0,ymmword ptr [eax]", 0xC4, 0xE2, 0x7D, 0x0E, 0x00 );
+	// VEX.128.66.0F38.W0 0F /r VTESTPD xmm1,xmm2/m128 RM V/V AVX Set ZF and CF depending on sign bit AND and ANDN of packed double-precision floatingpoint sources.
+	// VEX.256.66.0F38.W0 0F /r VTESTPD ymm1,ymm2/m256 RM V/V AVX Set ZF and CF depending on sign bit AND and ANDN of packed double-precision floatingpoint sources.
+	_TEST64_VEX( "c4e2790fc0 vtestpd xmm0,xmm0", 0xC4, 0xE2, 0x79, 0x0f, 0xC0 );
+	_TEST32_VEX( "c4e2790fc0 vtestpd xmm0,xmm0", 0xC4, 0xE2, 0x79, 0x0f, 0xC0 );
+	_TEST32_VEX( "c4e2790f00 vtestpd xmm0,oword ptr [eax]", 0xC4, 0xE2, 0x79, 0x0F, 0x00 );
+	_TEST32_VEX( "c4e27d0f00 vtestpd ymm0,ymmword ptr [eax]", 0xC4, 0xE2, 0x7D, 0x0F, 0x00 );
+
+	// VPERM2F128
+	// VEX.NDS.256.66.0F3A.W0 06 /r ib VPERM2F128 ymm1,ymm2,ymm3/m256,imm8 RVMI V/V AVX Permute 128-bit floating-point fields in ymm2 and ymm3/mem using controls from imm8 and store result in ymm1.
+	_TEST32_VEX( "c4e34d0600ff vperm2f128 ymm0,ymm6,ymmword ptr [eax],0ffh", 0xC4, 0xE3, 0x4D, 0x06, 0x00, 0xFF );
+	_TEST32_VEX( "c4e34d06c0ff vperm2f128 ymm0,ymm6,ymm0,0ffh", 0xC4, 0xE3, 0x4D, 0x06, 0xC0, 0xFF );
+	_TEST64_VEX( "c4e34d0600ff vperm2f128 ymm0,ymm6,ymmword ptr [rax],0ffh", 0xC4, 0xE3, 0x4D, 0x06, 0x00, 0xFF );
+
+	// VPERMILPS
+	// VEX.NDS.128.66.0F38.W0 0C /r VPERMILPS xmm1,xmm2,xmm3/m128 RVM V/V AVX Permute single-precision floating-point values in xmm2 using controls from xmm3/mem and store result in xmm1.
+	// VEX.NDS.256.66.0F38.W0 0C /r VPERMILPS ymm1,ymm2,ymm3/m256 RVM V/V AVX Permute single-precision floating-point values in ymm2 using controls from ymm3/mem and store result in ymm1.
+	_TEST32_VEX( "c4e2490c00 vpermilps xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE2, 0x49, 0x0C, 0x00 );
+	_TEST32_VEX( "c4e2490cc0 vpermilps xmm0,xmm6,xmm0", 0xC4, 0xE2, 0x49, 0x0C, 0xC0 );
+	_TEST64_VEX( "c4e24d0c00 vpermilps ymm0,ymm6,ymmword ptr [rax]", 0xC4, 0xE2, 0x4D, 0x0C, 0x00 );
+	// VEX.128.66.0F3A.W0 04 /r ib VPERMILPS xmm1,xmm2/m128,imm8 RMI V/V AVX Permute single-precision floating-point values in xmm2/mem using controls from imm8 and store result in xmm1.
+	// VEX.256.66.0F3A.W0 04 /r ib VPERMILPS ymm1,ymm2/m256,imm8 RMI V/V AVX Permute single-precision floating-point values in ymm2/mem using controls from imm8 and store result in ymm1.
+	_TEST32_VEX( "c4e3490400ff vpermilps xmm0,oword ptr [eax],0ffh", 0xC4, 0xE3, 0x49, 0x04, 0x00, 0xFF );
+	_TEST32_VEX( "c4e34904c0ff vpermilps xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x49, 0x04, 0xC0, 0xFF );
+	_TEST64_VEX( "c4e34d0400ff vpermilps ymm0,ymmword ptr [rax],0ffh", 0xC4, 0xE3, 0x4D, 0x04, 0x00, 0xFF );
+
+	// VPERMILPD
+	// VEX.NDS.128.66.0F38.W0 0D /r VPERMILPD xmm1,xmm2,xmm3/m128 RVM V/V AVX Permute double-precision floating-point values in xmm2 using controls from xmm3/mem and store result in xmm1.
+	// VEX.NDS.256.66.0F38.W0 0D /r VPERMILPD ymm1,ymm2,ymm3/m256 RVM V/V AVX Permute double-precision floating-point values in ymm2 using controls from ymm3/mem and store result in ymm1.
+	_TEST32_VEX( "c4e2490d00 vpermilpd xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE2, 0x49, 0x0D, 0x00 );
+	_TEST32_VEX( "c4e2490dc0 vpermilpd xmm0,xmm6,xmm0", 0xC4, 0xE2, 0x49, 0x0D, 0xC0 );
+	_TEST64_VEX( "c4e24d0d00 vpermilpd ymm0,ymm6,ymmword ptr [rax]", 0xC4, 0xE2, 0x4D, 0x0D, 0x00 );
+	// VEX.128.66.0F3A.W0 05 /r ib VPERMILPD xmm1,xmm2/m128,imm8 RMI V/V AVX Permute double-precision floating-point values in xmm2/mem using controls from imm8.
+	// VEX.256.66.0F3A.W0 05 /r ib VPERMILPD ymm1,ymm2/m256,imm8 RMI V/V AVX Permute double-precision floating-point values in ymm2/mem using controls from imm8.
+	_TEST32_VEX( "c4e3490500ff vpermilpd xmm0,oword ptr [eax],0ffh", 0xC4, 0xE3, 0x49, 0x05, 0x00, 0xFF );
+	_TEST32_VEX( "c4e34905c0ff vpermilpd xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x49, 0x05, 0xC0, 0xFF );
+	_TEST64_VEX( "c4e34d0500ff vpermilpd ymm0,ymmword ptr [rax],0ffh", 0xC4, 0xE3, 0x4D, 0x05, 0x00, 0xFF );
+
+	// VERR
+	// 0F 00 /4 VERR r/m16 M Valid Valid Set ZF=1 if segment specified with r/m16 can be read.
+	_TEST32( "0f0020 verr word ptr [eax]", 0x0F, 0x00, 0x20 );
+	_TEST32( "0f00e0 verr ax", 0x0F, 0x00, 0xE0 );
+	_TEST32( "660f00e0 verr ax", 0x66, 0x0F, 0x00, 0xE0 );
+	_TEST64( "0f0020 verr word ptr [rax]", 0x0F, 0x00, 0x20 );
+	// 0F 00 /5 VERW r/m16 M Valid Valid Set ZF=1 if segment specified with r/m16 can be written.
+	_TEST32( "0f0028 verw word ptr [eax]", 0x0F, 0x00, 0x28 );
+	_TEST32( "0f00e8 verw ax", 0x0F, 0x00, 0xE8 );
+	_TEST32( "660f00e8 verw ax", 0x66, 0x0F, 0x00, 0xE8 );
+	_TEST64( "0f0028 verw word ptr [rax]", 0x0F, 0x00, 0x28 );
+
+	// VCVTPS2PH
+	// VEX.128.66.0F3A.W0.1D /r VCVTPS2PH xmm1/m64,xmm2,imm8 ib MR V/V F16C Convert four packed single-precision floating-point value in xmm2 to packed halfprecision (16-bit) floating-point value in xmm1/mem. Imm8 provides rounding controls.
+	_TEST32_VEX( "c4e3791d00ff vcvtps2ph qword ptr [eax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x1D, 0x00, 0xFF );
+	_TEST32_VEX( "c4e3791dc0ff vcvtps2ph xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x1D, 0xC0, 0xFF );
+	// VEX.256.66.0F3A.W0 1D /r VCVTPS2PH xmm1/m128,ymm2,imm8 ib MR V/V F16C Convert eight packed single-precision floating-point value in ymm2 to packed half-precision (16-bit) floating-point value in xmm1/mem. Imm8 provides rounding controls.
+	_TEST32_VEX( "c4e37d1d00ff vcvtps2ph oword ptr [eax],xmm0,0ffh", 0xC4, 0xE3, 0x7D, 0x1D, 0x00, 0xFF );
+	_TEST64_VEX( "c4e37d1dc0ff vcvtps2ph xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x7D, 0x1D, 0xC0, 0xFF );
+
 	// VEX.128.66.0F38.W0 13 /r VCVTPH2PS xmm1,xmm2/m64 RM V/V F16C Convert four packed half precision (16-bit) floating-point values in xmm2/m64 to packed single-precision floating-point value in xmm1.
 	_TEST32_VEX( "c4e2791300 vcvtph2ps xmm0,qword ptr [eax]", 0xC4, 0xE2, 0x79, 0x13, 0x00 );
 	_TEST32_VEX( "c4e27913c0 vcvtph2ps xmm0,xmm0", 0xC4, 0xE2, 0x79, 0x13, 0xC0 );
@@ -77,6 +325,7 @@ void test(void) {
 	_TEST32_VEX( "c4e1491500 vunpckhpd xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE1, 0x49, 0x15, 0x00 );
 	_TEST32_VEX( "c4e14915c0 vunpckhpd xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x49, 0x15, 0xC0 );
 	_TEST64_VEX( "c4e1491500 vunpckhpd xmm0,xmm6,oword ptr [rax]", 0xC4, 0xE1, 0x49, 0x15, 0x00 );
+	_TEST64_VEX( "c4e14d1500 vunpckhpd ymm0,ymm6,ymmword ptr [rax]", 0xC4, 0xE1, 0x4D, 0x15, 0x00 );
 
 	// UNPCKHPS
 	// 0F 15 /r UNPCKHPS xmm1,xmm2/m128

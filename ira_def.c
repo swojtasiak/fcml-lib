@@ -3974,15 +3974,225 @@ struct ira_opcode_desc _ira_opcode_desc_UNPCKLPS[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_VCVTPH2PS[] = {
 	// VEX.128.66.0F38.W0 13 /r VCVTPH2PS xmm1,xmm2/m64 RM V/V F16C Convert four packed half precision (16-bit) floating-point values in xmm2/m64 to packed single-precision floating-point value in xmm1.
-	{ NULL, 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x13 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	{ NULL, 0x11D0, 0x00EC8000, { 0x0F, 0x38, 0x13 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
 	// VEX.256.66.0F38.W0 13 /r VCVTPH2PS ymm1,xmm2/m128 RM V/V F16C Convert eight packed half precision (16-bit) floating-point values in xmm2/m128 to packed single-precision floating-point value in ymm1.
-	{ NULL, 0x11A0, 0x00EC8000, { 0x0F, 0x38, 0x13 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x11B0, 0x00EC8000, { 0x0F, 0x38, 0x13 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_VCVTPS2PH[] = {
+	// VEX.128.66.0F3A.W0.1D /r VCVTPS2PH xmm1/m64,xmm2,imm8 ib MR V/V F16C Convert four packed single-precision floating-point value in xmm2 to packed halfprecision (16-bit) floating-point value in xmm1/mem. Imm8 provides rounding controls.
+	{ NULL, 0x11D0, 0x00EC8000, { 0x0F, 0x3A, 0x1D }, _IRA_OPERAND_MODRM_RM_XMM_64_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.256.66.0F3A.W0 1D /r VCVTPS2PH xmm1/m128,ymm2,imm8 ib MR V/V F16C Convert eight packed single-precision floating-point value in ymm2 to packed half-precision (16-bit) floating-point value in xmm1/mem. Imm8 provides rounding controls.
+	{ NULL, 0x11B0, 0x00EC8000, { 0x0F, 0x3A, 0x1D }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_IB, _IRA_NA }
+};
 
-// VEX.256.66.0F3A.W0 1D /r VCVTPS2PH xmm1/m128,ymm2,imm8 ib MR V/V F16C Convert eight packed single-precision floating-point value in ymm2 to packed half-precision (16-bit) floating-point value in xmm1/mem. Imm8 provides rounding controls.
-// VEX.128.66.0F3A.W0.1D /r VCVTPS2PH xmm1/m64,xmm2,imm8 ib MR V/V F16C Convert four packed single-precision floating-point value in xmm2 to packed halfprecision (16-bit) floating-point value in xmm1/mem. Imm8 provides rounding controls.
+struct ira_opcode_desc _ira_opcode_desc_VERR[] = {
+	// 0F 00 /4 VERR r/m16 M Valid Valid Set ZF=1 if segment specified with r/m16 can be read.
+	{ NULL, 0x0000, 0x00D9A000, { 0x0F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
 
+struct ira_opcode_desc _ira_opcode_desc_VERW[] = {
+	// 0F 00 /5 VERW r/m16 M Valid Valid Set ZF=1 if segment specified with r/m16 can be written.
+	{ NULL, 0x0000, 0x00D9A800, { 0x0F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPERMILPD[] = {
+	// VEX.NDS.128.66.0F38.W0 0D /r VPERMILPD xmm1,xmm2,xmm3/m128 RVM V/V AVX Permute double-precision floating-point values in xmm2 using controls from xmm3/mem and store result in xmm1.
+	// VEX.NDS.256.66.0F38.W0 0D /r VPERMILPD ymm1,ymm2,ymm3/m256 RVM V/V AVX Permute double-precision floating-point values in ymm2 using controls from ymm3/mem and store result in ymm1.
+	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x38, 0x0D }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA },
+	// VEX.128.66.0F3A.W0 05 /r ib VPERMILPD xmm1,xmm2/m128,imm8 RMI V/V AVX Permute double-precision floating-point values in xmm2/mem using controls from imm8.
+	// VEX.256.66.0F3A.W0 05 /r ib VPERMILPD ymm1,ymm2/m256,imm8 RMI V/V AVX Permute double-precision floating-point values in ymm2/mem using controls from imm8.
+	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x3A, 0x05 },  _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPERMILPS[] = {
+	// VEX.NDS.128.66.0F38.W0 0C /r VPERMILPS xmm1,xmm2,xmm3/m128 RVM V/V AVX Permute single-precision floating-point values in xmm2 using controls from xmm3/mem and store result in xmm1.
+	// VEX.NDS.256.66.0F38.W0 0C /r VPERMILPS ymm1,ymm2,ymm3/m256 RVM V/V AVX Permute single-precision floating-point values in ymm2 using controls from ymm3/mem and store result in ymm1.
+	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x38, 0x0C }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA },
+	// VEX.128.66.0F3A.W0 04 /r ib VPERMILPS xmm1,xmm2/m128,imm8 RMI V/V AVX Permute single-precision floating-point values in xmm2/mem using controls from imm8 and store result in xmm1.
+	// VEX.256.66.0F3A.W0 04 /r ib VPERMILPS ymm1,ymm2/m256,imm8 RMI V/V AVX Permute single-precision floating-point values in ymm2/mem using controls from imm8 and store result in ymm1.
+	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x3A, 0x04 },  _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPERM2F128[] = {
+	// VEX.NDS.256.66.0F3A.W0 06 /r ib VPERM2F128 ymm1,ymm2,ymm3/m256,imm8 RVMI V/V AVX Permute 128-bit floating-point fields in ymm2 and ymm3/mem using controls from imm8 and store result in ymm1.
+	{ NULL, 0x10B0, 0x00EC8000, { 0x0F, 0x3A, 0x06 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VTESTPS[] = {
+	// VEX.128.66.0F38.W0 0E /r VTESTPS xmm1,xmm2/m128 RM V/V AVX Set ZF and CF depending on sign bit AND and ANDN of packed single-precision floatingpoint sources.
+	// VEX.256.66.0F38.W0 0E /r VTESTPS ymm1,ymm2/m256 RM V/V AVX Set ZF and CF depending on sign bit AND and ANDN of packed single-precision floatingpoint sources.
+	{ NULL, 0x1190, 0x00EC8000, { 0x0F, 0x38, 0x0E }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.W0 0F /r VTESTPD xmm1,xmm2/m128 RM V/V AVX Set ZF and CF depending on sign bit AND and ANDN of packed double-precision floatingpoint sources.
+	// VEX.256.66.0F38.W0 0F /r VTESTPD ymm1,ymm2/m256 RM V/V AVX Set ZF and CF depending on sign bit AND and ANDN of packed double-precision floatingpoint sources.
+	{ "vtestpd", 0x1190, 0x00EC8000, { 0x0F, 0x38, 0x0F }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VZEROALL[] = {
+	// VEX.256.0F.WIG 77 VZEROALL NP V/V AVX Zero all YMM registers.
+	{ NULL, 0x01A0, 0x00D80000, { 0x0F, 0x77, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VZEROUPPER[] = {
+	// VEX.128.0F.WIG 77 VZEROUPPER NP V/V AVX Zero upper 128 bits of all YMM registers.
+	{ NULL, 0x01C0, 0x00D80000, { 0x0F, 0x77, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_WAIT[] = {
+	// 9B WAIT NP Valid Valid Check pending unmasked floating-point exceptions.
+	// 9B FWAIT NP Valid Valid Check pending unmasked floating-point exceptions.
+	{ NULL, 0x0000, 0x00C40000, { 0x9B, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_WBINVD[] = {
+	// 0F 09 WBINVD NP Valid Valid Write back and flush Internal caches; initiate writing-back and flushing of external caches.
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x09, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_WRFSBASE[] = {
+	// F3 0F AE /2 WRFSBASE r32 M V/I FSGSBASE Load the FS base address with the 32-bit value in the source register.
+	{ NULL, 0x4010, 0x03DB9000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA },
+	// REX.W + F3 0F AE /2 WRFSBASE r64 M V/I FSGSBASE Load the FS base address with the 64-bit value in the source register.
+	{ NULL, 0x4008, 0x049B9000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA },
+	// F3 0F AE /3 WRGSBASE r32 M V/I FSGSBASE Load the GS base address with the 32-bit value in the source register.
+	{ "fsgsbase", 0x4010, 0x03DB9800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA },
+	// REX.W + F3 0F AE /3 WRGSBASE r64 M V/I FSGSBASE Load the GS base address with the 64-bit value in the source register.
+	{ "fsgsbase", 0x4008, 0x049B9800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_WRMSR[] = {
+	// 0F 30 WRMSR NP Valid Valid Write the value in EDX:EAX to MSR specified by ECX.
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x30, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XADD[] = {
+	// 0F C0 /r XADD r/m8,r8 MR Valid Valid Exchange r8 and r/m8; load sum into r/m8.
+	// REX + 0F C0 /r XADD r/m8*,r8* MR Valid N.E. Exchange r8 and r/m8; load sum into r/m8.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xC0, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 0F C1 /r XADD r/m16,r16 MR Valid Valid Exchange r16 and r/m16; load sum into r/m16.
+	// 0F C1 /r XADD r/m32,r32 MR Valid Valid Exchange r32 and r/m32; load sum into r/m32.
+	// REX.W + 0F C1 /r XADD r/m64,r64 MR Valid N.E. Exchange r64 and r/m64; load sum into r/m64.
+	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xC1, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XCHG[] = {
+	// 90+rw XCHG AX, r16 O Valid Valid Exchange r16 with AX.
+	// 90+rw XCHG r16, AX O Valid Valid Exchange AX with r16.
+	// 90+rd XCHG EAX, r32 O Valid Valid Exchange r32 with EAX.
+	// 90+rd XCHG r32, EAX O Valid Valid Exchange EAX with r32.
+	// REX.W + 90+rd XCHG RAX, r64 O Valid N.E. Exchange r64 with RAX.
+	// REX.W + 90+rd XCHG r64, RAX O Valid N.E. Exchange RAX with r64.
+	{ NULL, 0x0000, 0x00C40001, { 0x90, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, _IRA_OS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_EOSA) | _IRA_WRITE, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C40001, { 0x90, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, _IRA_OS_EOSA) | _IRA_WRITE, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, _IRA_OS_EOSA ) | _IRA_WRITE, _IRA_NA, _IRA_NA },
+	// 86 /r XCHG r/m8, r8 MR Valid Valid Exchange r8 (byte register) with byte from r/m8.
+	// REX + 86 /r XCHG r/m8*, r8* MR Valid N.E. Exchange r8 (byte register) with byte from r/m8.
+	// 86 /r XCHG r8, r/m8 RM Valid Valid Exchange byte from r/m8 with r8 (byte register).
+	// REX + 86 /r XCHG r8*, r/m8* RM Valid N.E. Exchange byte from r/m8 with r8 (byte register).
+	{ NULL, 0x0000, 0x00C48000, { 0x86, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8_W, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C48000, { 0x86, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA },
+	// 87 /r XCHG r/m16, r16 MR Valid Valid Exchange r16 with word from r/m16.
+	// 87 /r XCHG r16, r/m16 RM Valid Valid Exchange word from r/m16 with r16.
+	// 87 /r XCHG r/m32, r32 MR Valid Valid Exchange r32 with doubleword from r/m32.
+	// 87 /r XCHG r32, r/m32 RM Valid Valid Exchange doubleword from r/m32 with r32.
+	// REX.W + 87 /r XCHG r/m64, r64 MR Valid N.E. Exchange r64 with quadword from r/m64.
+	// REX.W + 87 /r XCHG r64, r/m64 RM Valid N.E. Exchange quadword from r/m64 with r64.
+	{ NULL, 0x0000, 0x00C48000, { 0x87, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R_W, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C48000, { 0x87, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XGETBV[] = {
+	// 0F 01 D0 XGETBV NP Valid Valid Reads an XCR specified by ECX into EDX:EAX.
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD0 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XLAT[] = {
+	// D7 XLAT m8 NP Valid Valid Set AL to memory byte DS:[(E)BX + unsigned AL].
+	{ NULL, 0x0000, 0x00C40000, { 0xD7, 0x00, 0x00 },
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_BX, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_NA, _IRA_NA, _IRA_NA },
+	// D7 XLATB NP Valid Valid Set AL to memory byte DS:[(E)BX + unsigned AL].
+	// REX.W + D7 XLATB NP Valid N.E. Set AL to memory byte [RBX + unsigned AL].
+	// TODO: Assembler.
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XOR[] = {
+	// 34 ib XOR AL, imm8 I Valid Valid AL XOR imm8.
+	{ NULL, 0x0001, 0x00C40000, { 0x34, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 35 iw XOR AX, imm16 I Valid Valid AX XOR imm16.
+	// 35 id XOR EAX, imm32 I Valid Valid EAX XOR imm32.
+	{ NULL, 0x0001, 0x03C40000, { 0x35, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 35 id XOR RAX, imm32 I Valid N.E. RAX XOR imm32 (sign-extended).
+	{ NULL, 0x0001, 0x04840000, { 0x35, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 80 /6 ib XOR r/m8, imm8 MI Valid Valid r/m8 XOR imm8.
+	// REX + 80 /6 ib XOR r/m8*, imm8 MI Valid N.E. r/m8 XOR imm8.
+	{ NULL, 0x0001, 0x00C5B000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 81 /6 iw XOR r/m16, imm16 MI Valid Valid r/m16 XOR imm16.
+	// 81 /6 id XOR r/m32, imm32 MI Valid Valid r/m32 XOR imm32.
+	{ NULL, 0x0001, 0x03C5B000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 81 /6 id XOR r/m64, imm32 MI Valid N.E. r/m64 XOR imm32 (sign-extended).
+	{ NULL, 0x0001, 0x0485B000, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 83 /6 ib XOR r/m16, imm8 MI Valid Valid r/m16 XOR imm8 (sign-extended).
+	// 83 /6 ib XOR r/m32, imm8 MI Valid Valid r/m32 XOR imm8 (sign-extended).
+	{ NULL, 0x0001, 0x03C5B000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 83 /6 ib XOR r/m64, imm8 MI Valid N.E. r/m64 XOR imm8 (sign-extended).
+	{ NULL, 0x0001, 0x0485B000, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 30 /r XOR r/m8, r8 MR Valid Valid r/m8 XOR r8.
+	// REX + 30 /r XOR r/m8*, r8* MR Valid N.E. r/m8 XOR r8.
+	{ NULL, 0x0001, 0x00C48000, { 0x30, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 31 /r XOR r/m16, r16 MR Valid Valid r/m16 XOR r16.
+	// 31 /r XOR r/m32, r32 MR Valid Valid r/m32 XOR r32.
+	// REX.W + 31 /r XOR r/m64, r64 MR Valid N.E. r/m64 XOR r64.
+	{ NULL, 0x0001, 0x00C48000, { 0x31, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
+	// 32 /r XOR r8, r/m8 RM Valid Valid r8 XOR r/m8.
+	// REX + 32 /r XOR r8*, r/m8* RM Valid N.E. r8 XOR r/m8.
+	{ NULL, 0x0001, 0x00C48000, { 0x32, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
+	// 33 /r XOR r16, r/m16 RM Valid Valid r16 XOR r/m16.
+	// 33 /r XOR r32, r/m32 RM Valid Valid r32 XOR r/m32.
+	// REX.W + 33 /r XOR r64, r/m64 RM Valid N.E. r64 XOR r/m64.
+	{ NULL, 0x0001, 0x00C48000, { 0x33, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XORPD[] = {
+	// 66 0F 57 /r XORPD xmm1,xmm2/m128 RM V/V SSE2 Bitwise exclusive-OR of xmm2/m128 and xmm1.
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0x57, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG 57 /r VXORPD xmm1,xmm2,xmm3/m128 RVM V/V AVX Return the bitwise logical XOR of packed double-precision floating-point values in xmm2 and xmm3/mem.
+	// VEX.NDS.256.66.0F.WIG 57 /r VXORPD ymm1,ymm2,ymm3/m256 RVM V/V AVX Return the bitwise logical XOR of packed double-precision floating-point values in ymm2 and ymm3/mem.
+	{ "vxorpd", 0x1080, 0x00D88000, { 0x0F, 0x57, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XORPS[] = {
+	// 0F 57 /r XORPS xmm1,xmm2/m128 RM V/V SSE Bitwise exclusive-OR of xmm2/m128 and xmm1.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0x57, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.0F.WIG 57 /r VXORPS xmm1,xmm2,xmm3/m128 RVM V/V AVX Return the bitwise logical XOR of packed single-precision floating-point values in xmm2 and xmm3/mem.
+	// VEX.NDS.256.0F.WIG 57 /r VXORPS ymm1,ymm2,ymm3/m256 RVM V/V AVX Return the bitwise logical XOR of packed single-precision floating-point values in ymm2 and ymm3/mem.
+	{ "vxorps", 0x0080, 0x00D88000, { 0x0F, 0x57, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XRSTOR[] = {
+	// 0F AE /5 XRSTOR mem M Valid Valid Restore processor extended states from memory. The states are specified by EDX:EAX
+	{ NULL, 0x0010, 0x03D9A800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W+ 0F AE /5 XRSTOR64 mem M Valid N.E. Restore processor extended states from memory. The states are specified by EDX:EAX
+	{ "xrstor64", 0x0008, 0x0499A800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XSAVE[] = {
+	// 0F AE /4 XSAVE mem M Valid Valid Save processor extended states to memory. The states are specified by EDX:EAX
+	{ NULL, 0x0010, 0x03D9A000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W+ 0F AE /4 XSAVE64 mem M Valid N.E. Save processor extended states to memory. The states are specified by EDX:EAX
+	{ "xsave64", 0x0008, 0x0499A000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_512B, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XSAVEOPT[] = {
+	// 0F AE /6 XSAVEOPT mem M V/V XSAVEOPT Save processor extended states specified in EDX:EAX to memory, optimizing the state save operation if possible.
+	{ NULL, 0x0010, 0x03D9B000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF_W, _IRA_NA, _IRA_NA, _IRA_NA },
+	// REX.W + 0F AE /6 XSAVEOPT64 mem M V/V XSAVEOPT Save processor extended states specified in EDX:EAX to memory, optimizing the state save operation if possible.
+	{ "xsaveopt64", 0x0008, 0x0499B000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF_W, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_XSETBV[] = {
+	// 0F 01 D1 XSETBV NP Valid Valid Write the value in EDX:EAX to the XCR specified by ECX.
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD1 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
 
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -4385,5 +4595,29 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "unpcklpd", _ira_opcode_desc_UNPCKLPD),
 		_IA_INSTRUCTION( "unpcklps", _ira_opcode_desc_UNPCKLPS),
 		_IA_INSTRUCTION( "vcvtph2ps", _ira_opcode_desc_VCVTPH2PS),
+		_IA_INSTRUCTION( "vcvtps2ph", _ira_opcode_desc_VCVTPS2PH),
+		_IA_INSTRUCTION( "verr", _ira_opcode_desc_VERR),
+		_IA_INSTRUCTION( "verw", _ira_opcode_desc_VERW),
+		_IA_INSTRUCTION( "vpermilpd", _ira_opcode_desc_VPERMILPD),
+		_IA_INSTRUCTION( "vpermilps", _ira_opcode_desc_VPERMILPS),
+		_IA_INSTRUCTION( "vperm2f128", _ira_opcode_desc_VPERM2F128),
+		_IA_INSTRUCTION( "vtestps", _ira_opcode_desc_VTESTPS),
+		_IA_INSTRUCTION( "vzeroall", _ira_opcode_desc_VZEROALL),
+		_IA_INSTRUCTION( "vzeroupper", _ira_opcode_desc_VZEROUPPER),
+		_IA_INSTRUCTION( "wait", _ira_opcode_desc_WAIT),
+		_IA_INSTRUCTION( "wbinvd", _ira_opcode_desc_WBINVD),
+		_IA_INSTRUCTION( "wrfsbase", _ira_opcode_desc_WRFSBASE),
+		_IA_INSTRUCTION( "wrmsr", _ira_opcode_desc_WRMSR),
+		_IA_INSTRUCTION( "xadd", _ira_opcode_desc_XADD),
+		_IA_INSTRUCTION( "xchg", _ira_opcode_desc_XCHG),
+		_IA_INSTRUCTION( "xgetbv", _ira_opcode_desc_XGETBV),
+		_IA_INSTRUCTION( "xlat", _ira_opcode_desc_XLAT),
+		_IA_INSTRUCTION( "xor", _ira_opcode_desc_XOR),
+		_IA_INSTRUCTION( "xorpd", _ira_opcode_desc_XORPD),
+		_IA_INSTRUCTION( "xorps", _ira_opcode_desc_XORPS),
+		_IA_INSTRUCTION( "xrstor", _ira_opcode_desc_XRSTOR),
+		_IA_INSTRUCTION( "xsave", _ira_opcode_desc_XSAVE),
+		_IA_INSTRUCTION( "xsaveopt", _ira_opcode_desc_XSAVEOPT),
+		_IA_INSTRUCTION( "xsetbv", _ira_opcode_desc_XSETBV),
 		{ NULL, 0, 0, NULL }
 };
