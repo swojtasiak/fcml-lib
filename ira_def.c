@@ -3714,7 +3714,7 @@ struct ira_opcode_desc _ira_opcode_desc_SHUFPS[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_SIDT[] = {
 	// 0F 01 /1 SIDT m M Valid Valid Store IDTR to m.
-	{ NULL, 0x0000, 0x00D98800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0000, 0x80D98800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_SLDT[] = {
@@ -3782,6 +3782,207 @@ struct ira_opcode_desc _ira_opcode_desc_STMXCSR[] = {
 	// VEX.LZ.0F.WIG AE /3 VSTMXCSR m32 M V/V AVX Store contents of MXCSR register to m32.
 	{ "vstmxcsr", 0x01C0, 0x80D99800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA }
 };
+
+struct ira_opcode_desc _ira_opcode_desc_STOS[] = {
+	// AA STOS m8 NA Valid Valid For legacy mode, store AL at address ES:(E)DI; For 64-bit mode store AL at address RDI or EDI.
+	{ NULL, 0x0001, 0x00C40000, { 0xAA, 0x00, 0x00 },
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_NA, _IRA_NA },
+	// AB STOS m16 NA Valid Valid For legacy mode, store AX at address ES:(E)DI; For 64-bit mode store AX at address RDI or EDI.
+	// AB STOS m32 NA Valid Valid For legacy mode, store EAX at address ES:(E)DI; For 64-bit mode store EAX at address RDI or EDI.
+	// REX.W + AB STOS m64 NA Valid N.E. Store RAX at address RDI or EDI.
+	{ NULL, 0x0001, 0x00C40000, { 0xAB, 0x00, 0x00 },
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
+			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
+			_IRA_NA, _IRA_NA }
+	// AA STOSB NA Valid Valid For legacy mode, store AL at address ES:(E)DI; For 64-bit mode store AL at address RDI or EDI.
+	// AB STOSW NA Valid Valid For legacy mode, store AX at address ES:(E)DI; For 64-bit mode store AX at address RDI or EDI.
+	// AB STOSD NA Valid Valid For legacy mode, store EAX at address ES:(E)DI; For 64-bit mode store EAX at address RDI or EDI.
+	// REX.W + AB STOSQ NA Valid N.E. Store RAX at address RDI or EDI.
+};
+
+struct ira_opcode_desc _ira_opcode_desc_STR[] = {
+	// 0F 00 /1 STR r/m16 M Valid Valid Stores segment selector from TR in r/m16.
+	{ NULL, 0x0000, 0x00D98800, { 0x0F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16_W, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SUB[] = {
+	// 2C ib SUB AL, imm8 I Valid Valid Subtract imm8 from AL.
+	{ NULL, 0x0001, 0x00C40000, { 0x2C, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 2D iw SUB AX, imm16 I Valid Valid Subtract imm16 from AX.
+	// 2D id SUB EAX, imm32 I Valid Valid Subtract imm32 from EAX.
+	{ NULL, 0x0001, 0x00C40000, { 0x2D, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 2D id SUB RAX, imm32 I Valid N.E. Subtract imm32 sign-extended to 64-bits from RAX.
+	{ NULL, 0x0009, 0x00840000, { 0x2D, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 80 /5 ib SUB r/m8, imm8 MI Valid Valid Subtract imm8 from r/m8.
+	// REX + 80 /5 ib SUB r/m8*, imm8 MI Valid N.E. Subtract imm8 from r/m8.
+	{ NULL, 0x0001, 0x00C5A800, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// 81 /5 iw SUB r/m16, imm16 MI Valid Valid Subtract imm16 from r/m16.
+	// 81 /5 id SUB r/m32, imm32 MI Valid Valid Subtract imm32 from r/m32.
+	{ NULL, 0x0001, 0x00C5A800, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 81 /5 id SUB r/m64, imm32 MI Valid N.E. Subtract imm32 sign-extended to 64-bits from r/m64.
+	{ NULL, 0x0009, 0x0085A800, { 0x81, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 83 /5 ib SUB r/m16, imm8 MI Valid Valid Subtract sign-extended imm8 from r/m16.
+	// 83 /5 ib SUB r/m32, imm8 MI Valid Valid Subtract sign-extended imm8 from r/m32.
+	{ NULL, 0x0001, 0x00C5A800, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + 83 /5 ib SUB r/m64, imm8 MI Valid N.E. Subtract sign-extended imm8 from r/m64.
+	{ NULL, 0x0009, 0x0085A800, { 0x83, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IB_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 28 /r SUB r/m8, r8 MR Valid Valid Subtract r8 from r/m8.
+	// REX + 28 /r SUB r/m8*, r8* MR Valid N.E. Subtract r8 from r/m8.
+	{ NULL, 0x0001, 0x00C48000, { 0x28, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 29 /r SUB r/m16, r16 MR Valid Valid Subtract r16 from r/m16.
+	// 29 /r SUB r/m32, r32 MR Valid Valid Subtract r32 from r/m32.
+	// REX.W + 29 /r SUB r/m64, r32 MR Valid N.E. Subtract r64 from r/m64.
+	{ NULL, 0x0001, 0x00C48000, { 0x29, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA },
+	// 2A /r SUB r8, r/m8 RM Valid Valid Subtract r/m8 from r8.
+	// REX + 2A /r SUB r8*, r/m8* RM Valid N.E. Subtract r/m8 from r8.
+	{ NULL, 0x0001, 0x00C48000, { 0x2A, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_8_W, _IRA_OPERAND_MODRM_RM_8, _IRA_NA, _IRA_NA },
+	// 2B /r SUB r16, r/m16 RM Valid Valid Subtract r/m16 from r16.
+	// 2B /r SUB r32, r/m32 RM Valid Valid Subtract r/m32 from r32.
+	// REX.W + 2B /r SUB r64, r/m64 RM Valid N.E. Subtract r/m64 from r64.
+	{ NULL, 0x0001, 0x00C48000, { 0x2B, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SUBPD[] = {
+	// 66 0F 5C /r SUBPD xmm1,xmm2/m128 RM V/V SSE2 Subtract packed double-precision floatingpoint values in xmm2/m128 from xmm1.
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG 5C /r VSUBPD xmm1,xmm2,xmm3/m128 RVM V/V AVX Subtract packed double-precision floatingpoint values in xmm3/mem from xmm2 and stores result in xmm1.
+	// VEX.NDS.256.66.0F.WIG 5C /r VSUBPD ymm1,ymm2,ymm3/m256 RVM V/V AVX Subtract packed double-precision floatingpoint values in ymm3/mem from ymm2 and stores result in ymm1.	_TEST32_VEX( "c4e149c6140120 vshufpd xmm2,xmm6,oword ptr [ecx+eax],20h", 0xC4, 0xE1, 0x49, 0xC6, 0x14, 0x01, 0x20 );
+	{ "vsubpd", 0x1080, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SUBPS[] = {
+	// 0F 5C /r SUBPS xmm1,xmm2/m128 RM V/V SSE Subtract packed single-precision floating-point values in xmm2/mem from xmm1.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.0F.WIG 5C /r VSUBPS xmm1,xmm2,xmm3/m128 RVM V/V AVX Subtract packed single-precision floating-point values in xmm3/mem from xmm2 and stores result in xmm1.
+	// VEX.NDS.256.0F.WIG 5C /r VSUBPS ymm1,ymm2,ymm3/m256 RVM V/V AVX Subtract packed single-precision floating-point values in ymm3/mem from ymm2 and stores result in ymm1.
+	{ "vsubps", 0x0080, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SUBSD[] = {
+	// F2 0F 5C /r SUBSD xmm1,xmm2/m64 RM V/V SSE2 Subtracts the low double-precision floatingpoint values in xmm2/mem64 from xmm1.
+	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.NDS.LIG.F2.0F.WIG 5C /r VSUBSD xmm1,xmm2,xmm3/m64 RVM V/V AVX Subtract the low double-precision floatingpoint value in xmm3/mem from xmm2 and store the result in xmm1.
+	{ "vsubsd", 0x20C0, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_64, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SWAPGS[] = {
+	// 0F 01 F8 SWAPGS NP Valid Invalid Exchanges the current GS base register value with the value contained in MSR address C0000102H.
+	{ NULL, 0x0000, 0x00AC0000, { 0x0F, 0x01, 0xF8 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SYSCALL[] = {
+	// 0F 05 SYSCALL NP Valid Invalid Fast call to privilege level 0 system procedures.
+	{ NULL, 0x0000, 0x00980000, { 0x0F, 0x05, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SYSENTER[] = {
+	// 0F 34 SYSENTER NP Valid Valid Fast call to privilege level 0 system procedures.
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x34, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SYSEXIT[] = {
+	// 0F 35 SYSEXIT NP Valid Valid Fast return to privilege level 3 user code.
+	// REX.W + 0F 35 SYSEXIT NP Valid Valid Fast return to 64-bit mode privilege level 3 user code.
+	// TODO: Rozdzielic przy assemblerze, patrz opis. Zastoowac mnemonke sysexit64
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x35, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SYSRET[] = {
+	// 0F 07 SYSRET NP Valid Invalid Return to compatibility mode from fast system call
+	// REX.W + 0F 07 SYSRET NP Valid Invalid Return to 64-bit mode from fast system call
+	// TODO: Rozdzielic przy assemblerze, patrz opis. Zastoowac mnemonke sysret64
+	{ NULL, 0x0000, 0x00980000, { 0x0F, 0x07, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_TEST[] = {
+	// A8 ib TEST AL, imm8 I Valid Valid AND imm8 with AL; set SF, ZF, PF according to result.
+	{ NULL, 0x0001, 0x00C40000, { 0xA8, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// A9 iw TEST AX, imm16 I Valid Valid AND imm16 with AX; set SF, ZF, PF according to result.
+	// A9 id TEST EAX, imm32 I Valid Valid AND imm32 with EAX; set SF, ZF, PF according to result.
+	{ NULL, 0x0001, 0x00C40000, { 0xA9, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + A9 id TEST RAX, imm32 I Valid N.E. AND imm32 sign-extended to 64-bits with RAX; set SF, ZF, PF according to result.
+	{ NULL, 0x0009, 0x00840000, { 0xA9, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_OSA_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// F6 /0 ib TEST r/m8, imm8 MI Valid Valid AND imm8 with r/m8; set SF, ZF, PF according to result.
+	// REX + F6 /0 ib TEST r/m8*, imm8 MI Valid N.E. AND imm8 with r/m8; set SF, ZF, PF according to result.
+	{ NULL, 0x0001, 0x00C58000, { 0xF6, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	// F7 /0 iw TEST r/m16, imm16 MI Valid Valid AND imm16 with r/m16; set SF, ZF, PF according to result.
+	// F7 /0 id TEST r/m32, imm32 MI Valid Valid AND imm32 with r/m32; set SF, ZF, PF according to result.
+	{ NULL, 0x0001, 0x00C58000, { 0xF7, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	// REX.W + F7 /0 id TEST r/m64, imm32 MI Valid N.E. AND imm32 sign-extended to 64-bits with r/m64; set SF, ZF, PF according to result.
+	{ NULL, 0x0009, 0x00858000, { 0xF7, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	// 84 /r TEST r/m8, r8 MR Valid Valid AND r8 with r/m8; set SF, ZF, PF according to result.
+	// REX + 84 /r TEST r/m8*, r8* MR Valid N.E. AND r8 with r/m8; set SF, ZF, PF according to result.
+	{ NULL, 0x0001, 0x00C48000, { 0x84, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_MODRM_R_8, _IRA_NA, _IRA_NA },
+	// 85 /r TEST r/m16, r16 MR Valid Valid AND r16 with r/m16; set SF, ZF, PF according to result.
+	// 85 /r TEST r/m32, r32 MR Valid Valid AND r32 with r/m32; set SF, ZF, PF according to result.
+	// REX.W + 85 /r TEST r/m64, r64 MR Valid N.E. AND r64 with r/m64; set SF, ZF, PF according to result.
+	{ NULL, 0x0001, 0x00C48000, { 0x85, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_UCOMISD[] = {
+	// 66 0F 2E /r UCOMISD xmm1,xmm2/m64 RM V/V SSE2 Compares (unordered) the low doubleprecision floating-point values in xmm1 and xmm2/m64 and set the EFLAGS accordingly.
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0x2E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.LIG.66.0F.WIG 2E /r VUCOMISD xmm1,xmm2/m64 RM V/V AVX Compare low double precision floating-point values in xmm1 and xmm2/mem64 and set the EFLAGS flags accordingly.
+	{ "vucomisd", 0x11C0, 0x00D88000, { 0x0F, 0x2E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_UCOMISS[] = {
+	// 0F 2E /r UCOMISS xmm1,xmm2/m32 RM V/V SSE Compare lower single-precision floating-point value in xmm1 register with lower singleprecision floating-point value in xmm2/mem and set the status flags accordingly.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0x2E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.LIG.0F.WIG 2E /r VUCOMISS xmm1,xmm2/m32 RM V/V AVX Compare low single precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
+	{ "vucomiss", 0x01C0, 0x00D88000, { 0x0F, 0x2E, 0x00 }, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_UD2[] = {
+	// 0F 0B UD2 NP Valid Valid Raise invalid opcode exception.
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x0B, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_UNPCKHPD[] = {
+	// 66 0F 15 /r UNPCKHPD xmm1,xmm2/m128 RM V/V SSE2 Unpacks and Interleaves double-precision floating-point values from high quadwords of xmm1 and xmm2/m128.
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0x15, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG 15 /r VUNPCKHPD xmm1,xmm2,xmm3/m128 RVM V/V AVX Unpacks and Interleaves double precision floating-point values from high quadwords of xmm2 and xmm3/m128.
+	// VEX.NDS.256.66.0F.WIG 15 /r VUNPCKHPD ymm1,ymm2,ymm3/m256 RVM V/V AVX Unpacks and Interleaves double precision floating-point values from high quadwords of ymm2 and ymm3/m256.
+	{ "vunpckhpd", 0x1080, 0x00D88000, { 0x0F, 0x15, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_UNPCKHPS[] = {
+	// 0F 15 /r UNPCKHPS xmm1, xmm2/m128 RM V/V SSE Unpacks and Interleaves single-precision floating-point values from high quadwords of xmm1 and xmm2/mem into xmm1.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0x15, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.0F.WIG 15 /r VUNPCKHPS xmm1,xmm2, xmm3/m128 RVM V/V AVX Unpacks and Interleaves single-precision floating-point values from high quadwords of xmm2 and xmm3/m128.
+	// VEX.NDS.256.0F.WIG 15 /r VUNPCKHPS ymm1,ymm2,ymm3/m256 RVM V/V AVX Unpacks and Interleaves single-precision floating-point values from high quadwords of ymm2 and ymm3/m256.
+	{ "vunpckhps", 0x0080, 0x00D88000, { 0x0F, 0x15, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_UNPCKLPD[] = {
+	// 66 0F 14 /r UNPCKLPD xmm1, xmm2/m128 RM V/V SSE2 Unpacks and Interleaves double-precision floating-point values from low quadwords of xmm1 and xmm2/m128.
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0x14, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG 14 /r VUNPCKLPD xmm1,xmm2, xmm3/m128 RVM V/V AVX Unpacks and Interleaves double precision floating-point values low high quadwords of xmm2 and xmm3/m128.
+	// VEX.NDS.256.66.0F.WIG 14 /r VUNPCKLPD ymm1,ymm2, ymm3/m256 RVM V/V AVX Unpacks and Interleaves double precision floating-point values low high quadwords of ymm2 and ymm3/m256.
+	{ "vunpcklpd", 0x1080, 0x00D88000, { 0x0F, 0x14, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_UNPCKLPS[] = {
+	// 0F 14 /r UNPCKLPS xmm1, xmm2/m128 RM V/V SSE Unpacks and Interleaves single-precision floating-point values from low quadwords of xmm1 and xmm2/mem into xmm1.
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0x14, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.0F.WIG 14 /r VUNPCKLPS xmm1,xmm2, xmm3/m128 RVM V/V AVX Unpacks and Interleaves single-precision floating-point values from low quadwords of xmm2 and xmm3/m128.
+	// VEX.NDS.256.0F.WIG 14 /r VUNPCKLPS ymm1,ymm2,ymm3/m256 RVM V/V AVX Unpacks and Interleaves single-precision floating-point values from low quadwords of ymm2 and ymm3/m256.
+	{ "vunpcklps", 0x0080, 0x00D88000, { 0x0F, 0x14, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VCVTPH2PS[] = {
+	// VEX.128.66.0F38.W0 13 /r VCVTPH2PS xmm1,xmm2/m64 RM V/V F16C Convert four packed half precision (16-bit) floating-point values in xmm2/m64 to packed single-precision floating-point value in xmm1.
+	{ NULL, 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x13 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA },
+	// VEX.256.66.0F38.W0 13 /r VCVTPH2PS ymm1,xmm2/m128 RM V/V F16C Convert eight packed half precision (16-bit) floating-point values in xmm2/m128 to packed single-precision floating-point value in ymm1.
+	{ NULL, 0x11A0, 0x00EC8000, { 0x0F, 0x38, 0x13 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+
+// VEX.256.66.0F3A.W0 1D /r VCVTPS2PH xmm1/m128,ymm2,imm8 ib MR V/V F16C Convert eight packed single-precision floating-point value in ymm2 to packed half-precision (16-bit) floating-point value in xmm1/mem. Imm8 provides rounding controls.
+// VEX.128.66.0F3A.W0.1D /r VCVTPS2PH xmm1/m64,xmm2,imm8 ib MR V/V F16C Convert four packed single-precision floating-point value in xmm2 to packed halfprecision (16-bit) floating-point value in xmm1/mem. Imm8 provides rounding controls.
+
 
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -4164,5 +4365,25 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "std", _ira_opcode_desc_STD),
 		_IA_INSTRUCTION( "sti", _ira_opcode_desc_STI),
 		_IA_INSTRUCTION( "stmxcsr", _ira_opcode_desc_STMXCSR),
+		_IA_INSTRUCTION( "stos", _ira_opcode_desc_STOS),
+		_IA_INSTRUCTION( "str", _ira_opcode_desc_STR),
+		_IA_INSTRUCTION( "sub", _ira_opcode_desc_SUB),
+		_IA_INSTRUCTION( "subpd", _ira_opcode_desc_SUBPD),
+		_IA_INSTRUCTION( "subps", _ira_opcode_desc_SUBPS),
+		_IA_INSTRUCTION( "subsd", _ira_opcode_desc_SUBSD),
+		_IA_INSTRUCTION( "swapgs", _ira_opcode_desc_SWAPGS),
+		_IA_INSTRUCTION( "syscall", _ira_opcode_desc_SYSCALL),
+		_IA_INSTRUCTION( "sysenter", _ira_opcode_desc_SYSENTER),
+		_IA_INSTRUCTION( "sysexit", _ira_opcode_desc_SYSEXIT),
+		_IA_INSTRUCTION( "sysret", _ira_opcode_desc_SYSRET),
+		_IA_INSTRUCTION( "test", _ira_opcode_desc_TEST),
+		_IA_INSTRUCTION( "ucomisd", _ira_opcode_desc_UCOMISD),
+		_IA_INSTRUCTION( "ucomiss", _ira_opcode_desc_UCOMISS),
+		_IA_INSTRUCTION( "ud2", _ira_opcode_desc_UD2),
+		_IA_INSTRUCTION( "unpckhpd", _ira_opcode_desc_UNPCKHPD),
+		_IA_INSTRUCTION( "unpckhps", _ira_opcode_desc_UNPCKHPS),
+		_IA_INSTRUCTION( "unpcklpd", _ira_opcode_desc_UNPCKLPD),
+		_IA_INSTRUCTION( "unpcklps", _ira_opcode_desc_UNPCKLPS),
+		_IA_INSTRUCTION( "vcvtph2ps", _ira_opcode_desc_VCVTPH2PS),
 		{ NULL, 0, 0, NULL }
 };

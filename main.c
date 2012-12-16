@@ -61,6 +61,269 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// VEX.128.66.0F38.W0 13 /r VCVTPH2PS xmm1,xmm2/m64 RM V/V F16C Convert four packed half precision (16-bit) floating-point values in xmm2/m64 to packed single-precision floating-point value in xmm1.
+	_TEST32_VEX( "c4e2791300 vcvtph2ps xmm0,qword ptr [eax]", 0xC4, 0xE2, 0x79, 0x13, 0x00 );
+	_TEST32_VEX( "c4e27913c0 vcvtph2ps xmm0,xmm0", 0xC4, 0xE2, 0x79, 0x13, 0xC0 );
+	// VEX.256.66.0F38.W0 13 /r VCVTPH2PS ymm1,xmm2/m128 RM V/V F16C Convert eight packed half precision (16-bit) floating-point values in xmm2/m128 to packed single-precision floating-point value in ymm1.
+	_TEST32_VEX( "c4e27d1300 vcvtph2ps xmm0,oword ptr [eax]", 0xC4, 0xE2, 0x7D, 0x13, 0x00 );
+	_TEST64_VEX( "c4e27d13c0 vcvtph2ps xmm0,xmm0", 0xC4, 0xE2, 0x7D, 0x13, 0xC0 );
+
+	// 66 0F 15 /r UNPCKHPD xmm1,xmm2/m128
+	_TEST32( "660f1500 unpckhpd xmm0,oword ptr [eax]", 0x66, 0x0F, 0x15, 0x00 );
+	_TEST32( "660f15c0 unpckhpd xmm0,xmm0",  0x66, 0x0F, 0x15, 0xC0 );
+	_TEST64( "660f1500 unpckhpd xmm0,oword ptr [rax]", 0x66, 0x0F, 0x15, 0x00 );
+	// VEX.NDS.128.66.0F.WIG 15 /r VUNPCKHPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F.WIG 15 /r VUNPCKHPD ymm1,ymm2,ymm3/m256
+	_TEST32_VEX( "c4e1491500 vunpckhpd xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE1, 0x49, 0x15, 0x00 );
+	_TEST32_VEX( "c4e14915c0 vunpckhpd xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x49, 0x15, 0xC0 );
+	_TEST64_VEX( "c4e1491500 vunpckhpd xmm0,xmm6,oword ptr [rax]", 0xC4, 0xE1, 0x49, 0x15, 0x00 );
+
+	// UNPCKHPS
+	// 0F 15 /r UNPCKHPS xmm1,xmm2/m128
+	_TEST32( "0f1500 unpckhps xmm0,oword ptr [eax]", 0x0F, 0x15, 0x00 );
+	_TEST32( "0f15c0 unpckhps xmm0,xmm0", 0x0F, 0x15, 0xC0 );
+	_TEST64( "0f1500 unpckhps xmm0,oword ptr [rax]", 0x0F, 0x15, 0x00 );
+	// VEX.NDS.128.0F.WIG 15 /r VUNPCKHPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F.WIG 15 /r VUNPCKHPS ymm1,ymm2,ymm3/m256
+	_TEST32_VEX( "c4e1481500 vunpckhps xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE1, 0x48, 0x15, 0x00 );
+	_TEST32_VEX( "c4e14815c0 vunpckhps xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x48, 0x15, 0xC0 );
+	_TEST64_VEX( "c4e1481500 vunpckhps xmm0,xmm6,oword ptr [rax]", 0xC4, 0xE1, 0x48, 0x15, 0x00 );
+
+	// 66 0F 14 /r UNPCKLPD xmm1,xmm2/m128
+	_TEST32( "660f1400 unpcklpd xmm0,oword ptr [eax]", 0x66, 0x0F, 0x14, 0x00 );
+	_TEST32( "660f14c0 unpcklpd xmm0,xmm0",  0x66, 0x0F, 0x14, 0xC0 );
+	_TEST64( "660f1400 unpcklpd xmm0,oword ptr [rax]", 0x66, 0x0F, 0x14, 0x00 );
+	// VEX.NDS.128.66.0F.WIG 14 /r VUNPCKLPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F.WIG 14 /r VUNPCKLPD ymm1,ymm2,ymm3/m256
+	_TEST32_VEX( "c4e1491400 vunpcklpd xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE1, 0x49, 0x14, 0x00 );
+	_TEST32_VEX( "c4e14914c0 vunpcklpd xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x49, 0x14, 0xC0 );
+	_TEST64_VEX( "c4e1491400 vunpcklpd xmm0,xmm6,oword ptr [rax]", 0xC4, 0xE1, 0x49, 0x14, 0x00 );
+
+	// UNPCKLPS
+	// 0F 14 /r UNPCKLPS xmm1,xmm2/m128
+	_TEST32( "0f1400 unpcklps xmm0,oword ptr [eax]", 0x0F, 0x14, 0x00 );
+	_TEST32( "0f14c0 unpcklps xmm0,xmm0", 0x0F, 0x14, 0xC0 );
+	_TEST64( "0f1400 unpcklps xmm0,oword ptr [rax]", 0x0F, 0x14, 0x00 );
+	// VEX.NDS.128.0F.WIG 14 /r VUNPCKLPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F.WIG 14 /r VUNPCKLPS ymm1,ymm2,ymm3/m256
+	_TEST32_VEX( "c4e1481400 vunpcklps xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE1, 0x48, 0x14, 0x00 );
+	_TEST32_VEX( "c4e14814c0 vunpcklps xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x48, 0x14, 0xC0 );
+	_TEST64_VEX( "c4e1481400 vunpcklps xmm0,xmm6,oword ptr [rax]", 0xC4, 0xE1, 0x48, 0x14, 0x00 );
+
+	// UD2
+	// 0F 0B UD2 NP Valid Valid Raise invalid opcode exception.
+	_TEST32( "0f0b ud2", 0x0F, 0x0B );
+	_TEST64( "0f0b ud2", 0x0F, 0x0B );
+
+	// UCOMISS
+	// 0F 2E /r UCOMISS xmm1,xmm2/m32 RM V/V SSE Compare lower single-precision floating-point value in xmm1 register with lower singleprecision floating-point value in xmm2/mem and set the status flags accordingly.
+	_TEST32( "0f2e1401 ucomiss xmm2,dword ptr [ecx+eax]", 0x0F, 0x2E, 0x14, 0x01 );
+	_TEST64( "0f2e1401 ucomiss xmm2,dword ptr [rcx+rax]", 0x0F, 0x2E, 0x14, 0x01 );
+	_TEST64( "0f2ec0 ucomiss xmm0,xmm0", 0x0F, 0x2E, 0xC0 );
+	// VEX.LIG.0F.WIG 2E /r VUCOMISS xmm1,xmm2/m32 RM V/V AVX Compare low single precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
+	_TEST32_VEX( "c4e1782e00 vucomiss xmm0,dword ptr [eax]", 0xC4, 0xE1, 0x78, 0x2E, 0x00 );
+	_TEST64_VEX( "c4e1782ec1 vucomiss xmm0,xmm1", 0xC4, 0xE1, 0x78, 0x2E, 0xC1 );
+
+	// UCOMISD
+	// 66 0F 2E /r UCOMISD xmm1,xmm2/m64 RM V/V SSE2 Compares (unordered) the low doubleprecision floating-point values in xmm1 and xmm2/m64 and set the EFLAGS accordingly.
+	_TEST32( "660f2e1401 ucomisd xmm2,qword ptr [ecx+eax]", 0x66, 0x0F, 0x2E, 0x14, 0x01 );
+	_TEST64( "660f2e1401 ucomisd xmm2,qword ptr [rcx+rax]", 0x66, 0x0F, 0x2E, 0x14, 0x01 );
+	_TEST64( "660f2ec0 ucomisd xmm0,xmm0", 0x66, 0x0F, 0x2E, 0xC0 );
+	// VEX.LIG.66.0F.WIG 2E /r VUCOMISD xmm1,xmm2/m64 RM V/V AVX Compare low double precision floating-point values in xmm1 and xmm2/mem64 and set the EFLAGS flags accordingly.
+	_TEST32_VEX( "c4e1792e00 vucomisd xmm0,qword ptr [eax]", 0xC4, 0xE1, 0x79, 0x2E, 0x00 );
+	_TEST64_VEX( "c4e1792ec1 vucomisd xmm0,xmm1", 0xC4, 0xE1, 0x79, 0x2E, 0xC1 );
+
+	// VEX.128.66.0F38.WIG 20 /r VPMOVSXBW xmm1,xmm2/m64
+	_TEST32_VEX( "c4e2792000 vpmovsxbw xmm0,qword ptr [eax]", 0xC4, 0xE2, 0x79, 0x20, 0x00 );
+	_TEST64_VEX( "c4e27920c1 vpmovsxbw xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x20, 0xC1 );
+	// VEX.128.66.0F38.WIG 21 /r VPMOVSXBD xmm1,xmm2/m32
+	_TEST32_VEX( "c4e2792100 vpmovsxbd xmm0,dword ptr [eax]", 0xC4, 0xE2, 0x79, 0x21, 0x00 );
+	_TEST64_VEX( "c4e27921c1 vpmovsxbd xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x21, 0xC1 );
+
+	// TEST
+	// A8 ib TEST AL, imm8 I Valid Valid AND imm8 with AL; set SF, ZF, PF according to result.
+	_TEST32( "a820 test al,20h", 0xA8, 0x20 );
+	_TEST64( "a820 test al,20h", 0xA8, 0x20 );
+	// A9 iw TEST AX, imm16 I Valid Valid AND imm16 with AX; set SF, ZF, PF according to result.
+	// A9 id TEST EAX, imm32 I Valid Valid AND imm32 with EAX; set SF, ZF, PF according to result.
+	_TEST32( "a920401000 test eax,00104020h", 0xA9, 0x20, 0x40, 0x10, 0x00 );
+	_TEST32( "66a92000 test ax,0020h", 0x66, 0xA9, 0x20, 0x00 );
+	// REX.W + A9 id TEST RAX, imm32 I Valid N.E. AND imm32 sign-extended to 64-bits with RAX; set SF, ZF, PF according to result.
+	_TEST64( "48a9204010ff test rax,0ffffffffff104020h", 0x48, 0xA9, 0x20, 0x40, 0x10, 0xFF );
+	// F6 /0 ib TEST r/m8, imm8 MI Valid Valid AND imm8 with r/m8; set SF, ZF, PF according to result.
+	// REX + F6 /0 ib TEST r/m8*, imm8 MI Valid N.E. AND imm8 with r/m8; set SF, ZF, PF according to result.
+	_TEST32( "f600ff test byte ptr [eax],0ffh", 0xF6, 0x00, 0xFF );
+	_TEST64( "48f600ff test byte ptr [rax],0ffh", 0x48, 0xF6, 0x00, 0xFF );
+	// F7 /0 iw TEST r/m16, imm16 MI Valid Valid AND imm16 with r/m16; set SF, ZF, PF according to result.
+	// F7 /0 id TEST r/m32, imm32 MI Valid Valid AND imm32 with r/m32; set SF, ZF, PF according to result.
+	_TEST32( "f700401000ff test dword ptr [eax],0ff001040h", 0xF7, 0x00, 0x40, 0x10, 0x00, 0xFF );
+	_TEST32( "66f70000ff test word ptr [eax],0ff00h", 0x66, 0xF7, 0x00, 0x00, 0xff );
+	// REX.W + F7 /0 id TEST r/m64, imm32 MI Valid N.E. AND imm32 sign-extended to 64-bits with r/m64; set SF, ZF, PF according to result.
+	_TEST64( "48f7004010ff11 test qword ptr [rax],0000000011ff1040h", 0x48, 0xF7, 0x00, 0x40, 0x10, 0xFF, 0x11 );
+	// 84 /r TEST r/m8, r8 MR Valid Valid AND r8 with r/m8; set SF, ZF, PF according to result.
+	// REX + 84 /r TEST r/m8*, r8* MR Valid N.E. AND r8 with r/m8; set SF, ZF, PF according to result.
+	_TEST32( "8400 test byte ptr [eax],al", 0x84, 0x00 );
+	_TEST64( "488400 test byte ptr [rax],al", 0x48, 0x84, 0x00 );
+	// 85 /r TEST r/m16, r16 MR Valid Valid AND r16 with r/m16; set SF, ZF, PF according to result.
+	// 85 /r TEST r/m32, r32 MR Valid Valid AND r32 with r/m32; set SF, ZF, PF according to result.
+	// REX.W + 85 /r TEST r/m64, r64 MR Valid N.E. AND r64 with r/m64; set SF, ZF, PF according to result.
+	_TEST32( "668500 test word ptr [eax],ax", 0x66, 0x85, 0x00 );
+	_TEST64( "488500 test qword ptr [rax],rax", 0x48, 0x85, 0x00 );
+
+	// SYSRET
+	// 0F 07 SYSRET NP Valid Invalid Return to compatibility mode from fast system call
+	// REX.W + 0F 07 SYSRET NP Valid Invalid Return to 64-bit mode from fast system call
+	_TEST32( "FAIL", 0x0F, 0x07 );
+	_TEST64( "0f07 sysret", 0x0F, 0x07 );
+	_TEST64( "480f07 sysret", 0x48, 0x0F, 0x07 );
+
+	// SYSEXIT
+	// 0F 35 SYSEXIT NP Valid Valid Fast return to privilege level 3 user code.
+	// REX.W + 0F 35 SYSEXIT NP Valid Valid Fast return to 64-bit mode privilege level 3 user code.
+	_TEST32( "0f35 sysexit", 0x0F, 0x35 );
+	_TEST64( "0f35 sysexit", 0x0F, 0x35 );
+	_TEST64( "480f35 sysexit", 0x48, 0x0F, 0x35 );
+
+	// SYSENTER
+	// 0F 34 SYSENTER NP Valid Valid Fast call to privilege level 0 system procedures.
+	_TEST64( "0f34 sysenter", 0x0F, 0x34 );
+	_TEST32( "0f34 sysenter", 0x0F, 0x34 );
+
+	// SYSCALL
+	// 0F 05 SYSCALL NP Valid Invalid Fast call to privilege level 0 system procedures.
+	_TEST64( "0f05 syscall", 0x0F, 0x05 );
+	_TEST32( "FAIL", 0x0F, 0x05 );
+
+	// SWAPGS
+	// 0F 01 F8 SWAPGS NP Valid Invalid Exchanges the current GS base register value with the value contained in MSR address C0000102H.
+	_TEST64( "0f01f8 swapgs", 0x0F, 0x01, 0xF8 );
+	_TEST32( "FAIL", 0x0F, 0x01, 0xF8 );
+
+	// SUBSD
+	// F2 0F 5C /r SUBSD xmm1,xmm2/m64 RM V/V SSE2 Subtracts the low double-precision floatingpoint values in xmm2/mem64 from xmm1.
+	_TEST32( "f20f5c1401 subsd xmm2,qword ptr [ecx+eax]", 0xF2, 0x0F, 0x5C, 0x14, 0x01 );
+	_TEST64( "f20f5c1401 subsd xmm2,qword ptr [rcx+rax]", 0xF2, 0x0F, 0x5C, 0x14, 0x01 );
+	// VEX.NDS.LIG.F2.0F.WIG 5C /r VSUBSD xmm1,xmm2,xmm3/m64 RVM V/V AVX Subtract the low double-precision floatingpoint value in xmm3/mem from xmm2 and store the result in xmm1.
+	_TEST32_VEX( "c4e1535c1401 vsubsd xmm2,xmm5,qword ptr [ecx+eax]", 0xC4, 0xE1, 0x53, 0x5C, 0x14, 0x01 );
+	_TEST32_VEX( "c5db5c1401 vsubsd xmm2,xmm4,qword ptr [ecx+eax]", 0xC5, 0xDB, 0x5C, 0x14, 0x01 );
+
+	// SUBPS
+	// 0F 5C /r SUBPS xmm1 xmm2/m128
+	_TEST32( "0f5c00 subps xmm0,oword ptr [eax]", 0x0F, 0x5C, 0x00 );
+	_TEST32( "0f5cc0 subps xmm0,xmm0", 0x0F, 0x5C, 0xC0 );
+	_TEST64( "0f5c00 subps xmm0,oword ptr [rax]", 0x0F, 0x5C, 0x00 );
+	// VEX.NDS.128.0F.WIG 5C /r VSUBPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F.WIG 5C /r VSUBPS ymm1,ymm2,ymm3/m256
+	_TEST32_VEX( "c4e1485c00 vsubps xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE1, 0x48, 0x5C, 0x00 );
+	_TEST32_VEX( "c4e1485cc0 vsubps xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x48, 0x5C, 0xC0 );
+	_TEST64_VEX( "c4e1485c00 vsubps xmm0,xmm6,oword ptr [rax]", 0xC4, 0xE1, 0x48, 0x5C, 0x00 );
+
+	// SUBPD
+	// 66 0F 5C /r SUBPD xmm1,xmm2/m128
+	_TEST32( "660f5c00 subpd xmm0,oword ptr [eax]", 0x66, 0x0F, 0x5C, 0x00 );
+	_TEST32( "660f5cc0 subpd xmm0,xmm0", 0x66, 0x0F, 0x5C, 0xC0 );
+	_TEST64( "660f5c00 subpd xmm0,oword ptr [rax]", 0x66, 0x0F, 0x5C, 0x00 );
+	// VEX.NDS.128.66.0F.WIG 5C /r VSUBPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F.WIG 5C /r VSUBPD ymm1,ymm2,ymm3/m256
+	_TEST32_VEX( "c4e1495c00 vsubpd xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE1, 0x49, 0x5C, 0x00 );
+	_TEST32_VEX( "c4e1495cc0 vsubpd xmm0,xmm6,xmm0", 0xC4, 0xE1, 0x49, 0x5C, 0xC0 );
+	_TEST64_VEX( "c4e1495c00 vsubpd xmm0,xmm6,oword ptr [rax]", 0xC4, 0xE1, 0x49, 0x5C, 0x00 );
+
+	// SUB
+	// 2C ib SUB AL, imm8 I Valid Valid Subtract imm8 from AL.
+	_TEST32( "2c42 sub al,42h", 0x2C, 0x42 );
+	_TEST32( "2cff sub al,0ffh", 0x2C, 0xff );
+	_TEST64( "2c42 sub al,42h", 0x2C, 0x42 );
+	_TEST64( "2c00 sub al,00h", 0x2C, 0x00 );
+	_TEST64( "2cff sub al,0ffh", 0x2C, 0xff );
+	// 2D iw SUB AX, imm16 I Valid Valid Subtract imm16 from AX.
+	// 2D id SUB EAX, imm32 I Valid Valid Subtract imm32 from EAX.
+	_TEST32( "662d4280 sub ax,8042h", 0x66, 0x2D, 0x42, 0x80 );
+	_TEST32( "2d21658042 sub eax,42806521h", 0x2D, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "402d21658042 sub eax,42806521h", 0x40, 0x2D, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "66402d2165 sub ax,6521h", 0x66, 0x40, 0x2D, 0x21, 0x65, 0x80, 0x42 );
+	// REX.W + 2D id SUB RAX, imm32 I Valid N.E. Subtract imm32 sign-extended to 64-bits from RAX.
+	_TEST64( "482d21658042 sub rax,0000000042806521h", 0x48, 0x2D, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "66482d21658042 sub rax,0000000042806521h", 0x66, 0x48, 0x2D, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "6766482d21658042 sub rax,0000000042806521h", 0x67, 0x66, 0x48, 0x2D, 0x21, 0x65, 0x80, 0x42 );
+	_TEST64( "6766482dffffffff sub rax,0ffffffffffffffffh", 0x67, 0x66, 0x48, 0x2D, 0xff, 0xff, 0xff, 0xff );
+	// 80 /5 ib SUB r/m8, imm8 MI Valid Valid Subtract imm8 from r/m8.
+	// REX + 80 /5 ib SUB r/m8*, imm8 MI Valid N.E. Subtract imm8 from r/m8.
+	_TEST32( "802d01020304ff sub byte ptr [04030201h],0ffh", 0x80, 0x2D, 0x01, 0x02, 0x03, 0x04, 0xff );
+	_TEST32( "80ae01020304ff sub byte ptr [esi+04030201h],0ffh", 0x80, 0xAE, 0x01, 0x02, 0x03, 0x04, 0xff, 0x00, 0x00 );
+	_TEST32( "806c010203 sub byte ptr [ecx+eax+00000002h],03h", 0x80, 0x6C, 0x01, 0x02, 0x03 );
+	// 81 /5 iw SUB r/m16, imm16 MI Valid Valid Subtract imm16 from r/m16.
+	// 81 /5 id SUB r/m32, imm32 MI Valid Valid Subtract imm32 from r/m32.
+	_TEST32( "81ed01020304 sub ebp,04030201h", 0x81, 0xED, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "6681ed0102 sub bp,0201h", 0x66, 0x81, 0xED, 0x01, 0x02 );
+	_TEST64( "67664081ed0102 sub bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xED, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
+	// REX.W + 81 /5 id SUB r/m64, imm32 MI Valid N.E. Subtract imm32 sign-extended to 64-bits from r/m64.
+	_TEST64( "4881ed01020304 sub rbp,0000000004030201h", 0x48, 0x81, 0xed, 0x01, 0x02, 0x03, 0x04 );
+	_TEST64( "4881edffffffff sub rbp,0ffffffffffffffffh", 0x48, 0x81, 0xed, 0xff, 0xff, 0xff, 0xff );
+	_TEST64( "674881edffffffff sub rbp,0ffffffffffffffffh", 0x67, 0x48, 0x81, 0xed, 0xff, 0xff, 0xff, 0xff );
+	_TEST64( "664881edffffffff sub rbp,0ffffffffffffffffh", 0x66, 0x48, 0x81, 0xed, 0xff, 0xff, 0xff, 0xff );
+	// 83 /5 ib SUB r/m16, imm8 MI Valid Valid Subtract sign-extended imm8 from r/m16.
+	// 83 /5 ib SUB r/m32, imm8 MI Valid Valid Subtract sign-extended imm8 from r/m32.
+	_TEST32( "832e01 sub dword ptr [esi],00000001h", 0x83, 0x2E, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "66832e01 sub word ptr [esi],0001h", 0x66, 0x83, 0x2E, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32( "67832e010203 sub dword ptr [0201h],00000003h", 0x67, 0x83, 0x2E, 0x01, 0x02, 0x03 );
+	// REX.W + 83 /5 ib SUB r/m64, imm8 MI Valid N.E. Subtract sign-extended imm8 from r/m64.
+	_TEST64( "4883af0102030405 sub qword ptr [rdi+0000000004030201h],0000000000000005h", 0x48, 0x83, 0xAF, 0x01, 0x02, 0x03, 0x4, 0x05 );
+	_TEST64( "4883af01020304ff sub qword ptr [rdi+0000000004030201h],0ffffffffffffffffh", 0x48, 0x83, 0xAF, 0x01, 0x02, 0x03, 0x4, 0xff );
+	// 28 /r SUB r/m8, r8 MR Valid Valid Subtract r8 from r/m8.
+	// REX + 28 /r SUB r/m8*, r8* MR Valid N.E. Subtract r8 from r/m8.
+	_TEST32( "28a501020304 sub byte ptr [ebp+04030201h],ah", 0x28, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "4828a501020304 sub byte ptr [rbp+0000000004030201h],spl", 0x48, 0x28, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "482864a501 sub byte ptr [rbp+0000000000000001h],spl", 0x48, 0x28, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	// 29 /r SUB r/m16, r16 MR Valid Valid Subtract r16 from r/m16.
+	// 29 /r SUB r/m32, r32 MR Valid Valid Subtract r32 from r/m32.
+	// REX.W + 29 /r SUB r/m64, r32 MR Valid N.E. Subtract r64 from r/m64.
+	_TEST32( "29a501020304 sub dword ptr [ebp+04030201h],esp", 0x29, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "676629a50102 sub word ptr [di+0201h],sp", 0x67, 0x66, 0x29, 0xa5, 0x01, 0x02 );
+	_TEST32( "6729a50102 sub dword ptr [di+0201h],esp", 0x67, 0x29, 0xa5, 0x01, 0x02 );
+	_TEST64( "4d29648901 sub qword ptr [r9+rcx*4+0000000000000001h],r12", 0x4D, 0x29, 0x64, 0x89, 0x01 );
+	// 2A /r SUB r8, r/m8 RM Valid Valid Subtract r/m8 from r8.
+	// REX + 2A /r SUB r8*, r/m8* RM Valid N.E. Subtract r/m8 from r8.
+	_TEST32( "2aa501020304 sub ah,byte ptr [ebp+04030201h]", 0x2A, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "482aa501020304 sub spl,byte ptr [rbp+0000000004030201h]", 0x48, 0x2A, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST64( "482a64a501 sub spl,byte ptr [rbp+0000000000000001h]", 0x48, 0x2A, 0x64, 0xa5, 0x01, 0x02, 0x03, 04 );
+	// 2B /r SUB r16, r/m16 RM Valid Valid Subtract r/m16 from r16.
+	// 2B /r SUB r32, r/m32 RM Valid Valid Subtract r/m32 from r32.
+	// REX.W + 2B /r SUB r64, r/m64 RM Valid N.E. Subtract r/m64 from r64.
+	_TEST32( "2ba501020304 sub esp,dword ptr [ebp+04030201h]", 0x2b, 0xa5, 0x01, 0x02, 0x03, 04 );
+	_TEST32( "67662ba50102 sub sp,word ptr [di+0201h]", 0x67, 0x66, 0x2b, 0xa5, 0x01, 0x02 );
+	_TEST32( "672ba50102 sub esp,dword ptr [di+0201h]", 0x67, 0x2b, 0xa5, 0x01, 0x02 );
+	_TEST64( "4d2b648901 sub r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x2b, 0x64, 0x89, 0x01 );
+
+	// STR
+	// 0F 00 /1 STR r/m16 M Valid Valid Stores segment selector from TR in r/m16.
+	_TEST32( "0f0008 str word ptr [eax]",  0x0F, 0x00, 0x08 );
+	_TEST64( "0f0008 str word ptr [rax]", 0x0F, 0x00, 0x08 );
+
+	// STOS
+	// AA STOS m8 NA Valid Valid For legacy mode, store AL at address ES:(E)DI; For 64-bit mode store AL at address RDI or EDI.
+	_TEST32( "67aa stos byte ptr [si],byte ptr [di]", 0x67, 0xAA );
+	_TEST32( "6667aa stos byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xAA );
+	_TEST32( "aa stos byte ptr [esi],byte ptr [edi]", 0xAA );
+	_TEST64( "48aa stos byte ptr [rsi],byte ptr [rdi]", 0x48, 0xAA );
+	_TEST64( "40aa stos byte ptr [rsi],byte ptr [rdi]", 0x40, 0xAA );
+	_TEST64( "6740aa stos byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xAA );
+	_TEST64( "666740aa stos byte ptr [esi],byte ptr [edi]", 0x66, 0x67, 0x40, 0xAA );
+	// AB STOS m16 NA Valid Valid For legacy mode, store AX at address ES:(E)DI; For 64-bit mode store AX at address RDI or EDI.
+	// AB STOS m32 NA Valid Valid For legacy mode, store EAX at address ES:(E)DI; For 64-bit mode store EAX at address RDI or EDI.
+	// REX.W + AB STOS m64 NA Valid N.E. Store RAX at address RDI or EDI.
+	_TEST32( "67ab stos dword ptr [si],dword ptr [di]", 0x67, 0xAB );
+	_TEST32( "6667ab stos word ptr [si],word ptr [di]", 0x66, 0x67, 0xAB );
+	_TEST32( "ab stos dword ptr [esi],dword ptr [edi]", 0xAB );
+	_TEST64( "48ab stos qword ptr [rsi],qword ptr [rdi]", 0x48, 0xAB );
+	_TEST64( "40ab stos dword ptr [rsi],dword ptr [rdi]", 0x40, 0xAB );
+	_TEST64( "6740ab stos dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xAB );
+	_TEST64( "666740ab stos word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xAB );
+	// AA STOSB NA Valid Valid For legacy mode, store AL at address ES:(E)DI; For 64-bit mode store AL at address RDI or EDI.
+	// AB STOSW NA Valid Valid For legacy mode, store AX at address ES:(E)DI; For 64-bit mode store AX at address RDI or EDI.
+	// AB STOSD NA Valid Valid For legacy mode, store EAX at address ES:(E)DI; For 64-bit mode store EAX at address RDI or EDI.
+	// REX.W + AB STOSQ NA Valid N.E. Store RAX at address RDI or EDI.
+
 	// STMXCSR
 	// 0F AE /3 STMXCSR m32 M V/V SSE Store contents of MXCSR register to m32.
 	_TEST32( "0fae5820 stmxcsr dword ptr [eax+00000020h]", 0x0F, 0xAE, 0x58, 0x20 );
