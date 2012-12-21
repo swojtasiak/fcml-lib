@@ -4194,6 +4194,120 @@ struct ira_opcode_desc _ira_opcode_desc_XSETBV[] = {
 	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD1 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
+/****************
+ * AMD 3D Now!
+ ****************/
+
+struct ira_opcode_desc _ira_opcode_desc_FEMMS[] = {
+	// FEMMS 0F 0Eh Faster Enter/Exit of the MMX or floating-point state
+	{ NULL, 0x0000, 0x00D80000, { 0x0F, 0x0E, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PAVGUSB[] = {
+	// PAVGUSB mmreg1, mmreg2/mem64 0F 0Fh / BFh Average of unsigned packed 8-bit values
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xBF }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+struct ira_opcode_desc _ira_opcode_desc_PF2ID[] = {
+	// PF2ID mmreg1, mmreg2/mem64 0Fh 0Fh / 1Dh Converts packed floating-point operand to packed 32-bit integer
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x1D }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFACC[] = {
+	// PFACC mmreg1, mmreg2/mem64 0Fh 0Fh / AEh Floating-point accumulate
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xAE }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFADD[] = {
+	// PFADD mmreg1, mmreg2/mem64 0Fh 0Fh / 9Eh Packed, floating-point addition
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x9E }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFCMPEQ[] = {
+	// PFCMPEQ mmreg1, mmreg2/mem64 0Fh 0Fh / B0h Packed floating-point comparison, equal to
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xB0 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFCMPGE[] = {
+	// PFCMPGE mmreg1, mmreg2/mem64 0Fh 0Fh / 90h Packed floating-point comparison, greater than or equal to
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x90 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFCMPGT[] = {
+	// PFCMPGT mmreg1, mmreg2/mem64 0Fh 0Fh / A0h Packed floating-point comparison, greater than
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xA0 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFMAX[] = {
+	// PFMAX mmreg1, mmreg2/mem64 0Fh 0Fh / A4h Packed floating-point maximum
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xA4 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFMIN[] = {
+	// PFMIN mmreg1, mmreg2/mem64 0Fh 0Fh / 94h Packed floating-point minimum
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x94 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFMUL[] = {
+	// PFMUL mmreg1, mmreg2/mem64 0Fh 0Fh / B4h Packed floating-point multiplication
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xB4 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFRCP[] = {
+	// PFRCP mmreg1, mmreg2/mem64 0Fh 0Fh / 96h Floating-point reciprocal approximation
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x96 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFRCPIT1[] = {
+	// PFRCPIT1 mmreg1, mmreg2/mem64 0Fh 0Fh / A6h Packed floating-point reciprocal, first iteration step
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xA6 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFRCPIT2[] = {
+	// PFRCPIT2 mmreg1, mmreg2/mem64 0Fh 0Fh / B6h Packed floating-point reciprocal/reciprocal square root, second iteration step
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xB6 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFRSQIT1[] = {
+	// PFRSQIT1 mmreg1, mmreg2/mem64 0Fh 0Fh / A7h Packed floating-point reciprocal square root, first iteration step
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xA7 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFRSQRT[] = {
+	// PFRSQRT mmreg1, mmreg2/mem64 0Fh 0Fh / 97h Floating-point reciprocal square root approximation
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x97 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFSUB[] = {
+	// PFSUB mmreg1, mmreg2/mem64 0Fh 0Fh / 9Ah Packed floating-point subtraction
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x9A }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFSUBR[] = {
+	// PFSUBR mmreg1, mmreg2/mem64 0Fh 0Fh / AAh Packed floating-point reverse subtraction
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xAA }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PI2FD[] = {
+	// PI2FD mmreg1, mmreg2/mem64 0Fh 0Fh / 0Dh Packed 32-bit integer to floating-point conversion
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x0D }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PMULHRW[] = {
+	// PMULHRW mmreg1, mmreg2/mem64 0F 0Fh/B7h Multiply signed packed 16-bit values with rounding and store the high 16 bits.
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xB7 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PREFETCH[] = {
+	// PREFETCH mem8 0F 0Dh Prefetch processor cache line into L1 data cache (Dcache)
+	{ NULL, 0x0000, 0x80D98000, { 0x0F, 0x0D, 0x00 }, _IRA_OPERAND_MODRM_M_8, _IRA_NA, _IRA_NA, _IRA_NA },
+	// PREFETCHW mem8 0F 0Dh Prefetch processor cache line into L1 data cache (Dcache)
+	{ "prefetchw", 0x0000, 0x80D98800, { 0x0F, 0x0D, 0x00 }, _IRA_OPERAND_MODRM_M_8, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+
+
+
+
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
 	_IA_INSTRUCTION( "blendpd", _ira_opcode_desc_BLENDPD ),
@@ -4619,5 +4733,27 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "xsave", _ira_opcode_desc_XSAVE),
 		_IA_INSTRUCTION( "xsaveopt", _ira_opcode_desc_XSAVEOPT),
 		_IA_INSTRUCTION( "xsetbv", _ira_opcode_desc_XSETBV),
+		// AMD 3D Now!
+		_IA_INSTRUCTION( "femms", _ira_opcode_desc_FEMMS),
+		_IA_INSTRUCTION( "pavgusb", _ira_opcode_desc_PAVGUSB),
+		_IA_INSTRUCTION( "pf2id", _ira_opcode_desc_PF2ID),
+		_IA_INSTRUCTION( "pfacc", _ira_opcode_desc_PFACC),
+		_IA_INSTRUCTION( "pfadd", _ira_opcode_desc_PFADD),
+		_IA_INSTRUCTION( "pfcmpeq", _ira_opcode_desc_PFCMPEQ),
+		_IA_INSTRUCTION( "pfcmpge", _ira_opcode_desc_PFCMPGE),
+		_IA_INSTRUCTION( "pfcmpgt", _ira_opcode_desc_PFCMPGT),
+		_IA_INSTRUCTION( "pfmax", _ira_opcode_desc_PFMAX),
+		_IA_INSTRUCTION( "pfmin", _ira_opcode_desc_PFMIN),
+		_IA_INSTRUCTION( "pfmul", _ira_opcode_desc_PFMUL),
+		_IA_INSTRUCTION( "pfrcp", _ira_opcode_desc_PFRCP),
+		_IA_INSTRUCTION( "pfrcpit1", _ira_opcode_desc_PFRCPIT1),
+		_IA_INSTRUCTION( "pfrcpit2", _ira_opcode_desc_PFRCPIT2),
+		_IA_INSTRUCTION( "pfrsqit1", _ira_opcode_desc_PFRSQIT1),
+		_IA_INSTRUCTION( "pfrsqrt", _ira_opcode_desc_PFRSQRT),
+		_IA_INSTRUCTION( "pfsub", _ira_opcode_desc_PFSUB),
+		_IA_INSTRUCTION( "pfsubr", _ira_opcode_desc_PFSUBR),
+		_IA_INSTRUCTION( "pi2fd", _ira_opcode_desc_PI2FD),
+		_IA_INSTRUCTION( "pmulhrw", _ira_opcode_desc_PMULHRW),
+		_IA_INSTRUCTION( "prefetch", _ira_opcode_desc_PREFETCH),
 		{ NULL, 0, 0, NULL }
 };

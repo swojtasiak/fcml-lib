@@ -61,6 +61,110 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// PREFETCH
+	// PREFETCH(W) mem8 0F 0Dh Prefetch processor cache line into L1 data cache (Dcache)
+	_TEST32( "0f0d00 prefetch byte ptr [eax]", 0x0F, 0x0D, 0x00 );
+	_TEST64( "0f0d08 prefetchw byte ptr [rax]", 0x0F, 0x0D, 0x08 );
+
+	// PMULHRW
+	// PMULHRW mmreg1, mmreg2/mem64 0F 0Fh/B7h Multiply signed packed 16-bit values with rounding and store the high 16 bits.
+	_TEST32( "0f0fb700 pmulhrw mm0,qword ptr [eax]", 0x0F, 0x0F, 0xB7, 0x00 );
+	_TEST64( "0f0fb7c1 pmulhrw mm0,mm1", 0x0F, 0x0F, 0xB7, 0xC1 );
+
+	// PI2FD
+	// PI2FD mmreg1, mmreg2/mem64 0Fh 0Fh / 0Dh Packed 32-bit integer to floating-point conversion
+	_TEST32( "0f0f0d00 pi2fd mm0,qword ptr [eax]", 0x0F, 0x0F, 0x0D, 0x00 );
+	_TEST64( "0f0f0dc1 pi2fd mm0,mm1", 0x0F, 0x0F, 0x0D, 0xC1 );
+
+	// PFSUBR
+	// PFSUBR mmreg1, mmreg2/mem64 0Fh 0Fh / AAh Packed floating-point reverse subtraction
+	_TEST32( "0f0faa00 pfsubr mm0,qword ptr [eax]", 0x0F, 0x0F, 0xAA, 0x00 );
+	_TEST64( "0f0faac1 pfsubr mm0,mm1", 0x0F, 0x0F, 0xAA, 0xC1 );
+
+	// PFSUB
+	// PFSUB mmreg1, mmreg2/mem64 0Fh 0Fh / 9Ah Packed floating-point subtraction
+	_TEST32( "0f0f9a00 pfsub mm0,qword ptr [eax]", 0x0F, 0x0F, 0x9A, 0x00 );
+	_TEST64( "0f0f9ac1 pfsub mm0,mm1", 0x0F, 0x0F, 0x9A, 0xC1 );
+
+	// PFRSQRT
+	// PFRSQRT mmreg1, mmreg2/mem64 0Fh 0Fh / 97h Floating-point reciprocal square root approximation
+	_TEST32( "0f0f9700 pfrsqrt mm0,qword ptr [eax]", 0x0F, 0x0F, 0x97, 0x00 );
+	_TEST64( "0f0f97c1 pfrsqrt mm0,mm1", 0x0F, 0x0F, 0x97, 0xC1 );
+
+	// PFRSQIT1
+	// PFRSQIT1 mmreg1, mmreg2/mem64 0Fh 0Fh / A7h Packed floating-point reciprocal square root, first iteration step
+	_TEST32( "0f0fa700 pfrsqit1 mm0,qword ptr [eax]", 0x0F, 0x0F, 0xA7, 0x00 );
+	_TEST64( "0f0fa7c1 pfrsqit1 mm0,mm1", 0x0F, 0x0F, 0xA7, 0xC1 );
+
+	// PFRCPIT2
+	// PFRCPIT2 mmreg1, mmreg2/mem64 0Fh 0Fh / B6h Packed floating-point reciprocal/reciprocal square root, second iteration step
+	_TEST32( "0f0fb600 pfrcpit2 mm0,qword ptr [eax]", 0x0F, 0x0F, 0xB6, 0x00 );
+	_TEST64( "0f0fb6c1 pfrcpit2 mm0,mm1", 0x0F, 0x0F, 0xB6, 0xC1 );
+
+	// PFRCPIT1
+	// PFRCPIT1 mmreg1, mmreg2/mem64 0Fh 0Fh / A6h Packed floating-point reciprocal, first iteration step
+	_TEST32( "0f0fa600 pfrcpit1 mm0,qword ptr [eax]", 0x0F, 0x0F, 0xA6, 0x00 );
+	_TEST64( "0f0fa6c1 pfrcpit1 mm0,mm1", 0x0F, 0x0F, 0xA6, 0xC1 );
+
+	// PFRCP
+	// PFRCP mmreg1, mmreg2/mem64 0Fh 0Fh / 96h Floating-point reciprocal approximation
+	_TEST32( "0f0f9600 pfrcp mm0,qword ptr [eax]", 0x0F, 0x0F, 0x96, 0x00 );
+	_TEST64( "0f0f96c1 pfrcp mm0,mm1", 0x0F, 0x0F, 0x96, 0xC1 );
+
+	// PFMUL
+	// PFMUL mmreg1, mmreg2/mem64 0Fh 0Fh / B4h Packed floating-point multiplication
+	_TEST32( "0f0fb400 pfmul mm0,qword ptr [eax]", 0x0F, 0x0F, 0xB4, 0x00 );
+	_TEST64( "0f0fb4c1 pfmul mm0,mm1", 0x0F, 0x0F, 0xB4, 0xC1 );
+
+	// PFMIN
+	// PFMIN mmreg1, mmreg2/mem64 0Fh 0Fh / 94h Packed floating-point minimum
+	_TEST32( "0f0f9400 pfmin mm0,qword ptr [eax]", 0x0F, 0x0F, 0x94, 0x00 );
+	_TEST64( "0f0f94c1 pfmin mm0,mm1", 0x0F, 0x0F, 0x94, 0xC1 );
+
+	// PFMAX
+	// PFMAX mmreg1, mmreg2/mem64 0Fh 0Fh / A4h Packed floating-point maximum
+	_TEST32( "0f0fa400 pfmax mm0,qword ptr [eax]", 0x0F, 0x0F, 0xA4, 0x00 );
+	_TEST64( "0f0fa4c1 pfmax mm0,mm1", 0x0F, 0x0F, 0xA4, 0xC1 );
+
+	// PFCMPGT
+	// PFCMPGT mmreg1, mmreg2/mem64 0Fh 0Fh / A0h Packed floating-point comparison, greater than
+	_TEST32( "0f0fa000 pfcmpgt mm0,qword ptr [eax]", 0x0F, 0x0F, 0xA0, 0x00 );
+	_TEST64( "0f0fa0c1 pfcmpgt mm0,mm1", 0x0F, 0x0F, 0xA0, 0xC1 );
+
+	// PFCMPGE
+	// PFCMPGE mmreg1, mmreg2/mem64 0Fh 0Fh / 90h Packed floating-point comparison, greater than or equal to
+	_TEST32( "0f0f9000 pfcmpge mm0,qword ptr [eax]", 0x0F, 0x0F, 0x90, 0x00 );
+	_TEST64( "0f0f90c1 pfcmpge mm0,mm1", 0x0F, 0x0F, 0x90, 0xC1 );
+
+	// PFCMPEQ
+	// PFCMPEQ mmreg1, mmreg2/mem64 0Fh 0Fh / B0h Packed floating-point comparison, equal to
+	_TEST32( "0f0fb000 pfcmpeq mm0,qword ptr [eax]", 0x0F, 0x0F, 0xB0, 0x00 );
+	_TEST64( "0f0fb0c1 pfcmpeq mm0,mm1", 0x0F, 0x0F, 0xB0, 0xC1 );
+
+	// PFADD
+	// PFADD mmreg1, mmreg2/mem64 0Fh 0Fh / 9Eh Packed, floating-point addition
+	_TEST32( "0f0f9e00 pfadd mm0,qword ptr [eax]", 0x0F, 0x0F, 0x9E, 0x00 );
+	_TEST64( "0f0f9ec1 pfadd mm0,mm1", 0x0F, 0x0F, 0x9E, 0xC1 );
+
+	// PFACC
+	// PFACC mmreg1, mmreg2/mem64 0Fh 0Fh / AEh Floating-point accumulate
+	_TEST32( "0f0fae00 pfacc mm0,qword ptr [eax]", 0x0F, 0x0F, 0xAE, 0x00 );
+	_TEST64( "0f0faec1 pfacc mm0,mm1", 0x0F, 0x0F, 0xAE, 0xC1 );
+
+	// PF2ID
+	// PF2ID mmreg1, mmreg2/mem64 0Fh 0Fh / 1Dh Converts packed floating-point operand to packed 32-bit integer
+	_TEST32( "0f0f1d00 pf2id mm0,qword ptr [eax]", 0x0F, 0x0F, 0x1D, 0x00 );
+	_TEST64( "0f0f1dc1 pf2id mm0,mm1", 0x0F, 0x0F, 0x1D, 0xC1 );
+
+	// PAVGUSB
+	// PAVGUSB mmreg1, mmreg2/mem64 0F 0Fh / BFh Average of unsigned packed 8-bit values
+	_TEST32( "0f0fbf00 pavgusb mm0,qword ptr [eax]", 0x0F, 0x0F, 0xBF, 0x00 );
+	_TEST64( "0f0fbfc1 pavgusb mm0,mm1", 0x0F, 0x0F, 0xBF, 0xC1 );
+
+	// FEMMS
+	_TEST64( "0f0e femms", 0x0F, 0x0E );
+	_TEST32( "0f0e femms", 0x0F, 0x0E );
+
 	// XSETBV
 	// 0F 01 D1 XSETBV NP Valid Valid Write the value in EDX:EAX to the XCR specified by ECX.
 	_TEST64( "0f01d1 xsetbv", 0x0F, 0x01, 0xD1 );
