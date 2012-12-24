@@ -2179,7 +2179,10 @@ struct ira_opcode_desc _ira_opcode_desc_MPSADBW[] = {
 	// 66 0F 3A 42 /r ib MPSADBW xmm1, xmm2/m128, imm8 A Valid Valid Sums absolute 8-bit integer difference of adjacent groups of 4 byte integers in xmm1 and xmm2/m128 and writes the results in xmm1. Starting offsets within xmm1 and xmm2/m128 are determined by imm8.
 	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x42 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
 	// VEX.NDS.128.66.0F3A 42 /r ib VMPSADBW xmm1,xmm2,xmm3/m128,imm8
-	{ "vmpsadbw", 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x42 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD_64, _IRA_OPERAND_IB }
+	{ "vmpsadbw", 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x42 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB },
+	// AVX2
+	// VEX.NDS.256.66.0F3A.WIG 42 /r ib VMPSADBW ymm1,ymm2,ymm3/m256,imm8
+	{ "vmpsadbw", 0x10A0, 0x00EC8000, { 0x0F, 0x3A, 0x42 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_OPERAND_IB }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MUL[] = {
@@ -2361,8 +2364,17 @@ struct ira_opcode_desc _ira_opcode_desc_PABS[] = {
 	// VEX.128.66.0F38 1D /r VPABSW xmm1,xmm2/m128
 	{ "vpabsw", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x1D }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
 	// VEX.128.66.0F38 1E /r VPABSD xmm1,xmm2/m128
-	{ "vpabsd", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x1E }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ "vpabsd", 0x11C0, 0x00EC8000, { 0x0F, 0x38, 0x1E }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// AVX2
+	// VEX.256.66.0F38.WIG 1C /r VPABSB ymm1, ymm2/m256
+	{ "vpabsb", 0x11A0, 0x00EC8000, { 0x0F, 0x38, 0x1C }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA, _IRA_NA },
+	// VEX.256.66.0F38.WIG 1D /r VPABSW ymm1, ymm2/m256
+	{ "vpabsw", 0x11A0, 0x00EC8000, { 0x0F, 0x38, 0x1D }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA, _IRA_NA },
+	// VEX.256.66.0F38.WIG 1E /r VPABSD ymm1, ymm2/m256
+	{ "vpabsd", 0x11A0, 0x00EC8000, { 0x0F, 0x38, 0x1E }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA, _IRA_NA }
 };
+
+
 
 struct ira_opcode_desc _ira_opcode_desc_PACKSS[] = {
 	// 0F 63 /r1 PACKSSWB mm1,mm2/m64
@@ -2377,13 +2389,21 @@ struct ira_opcode_desc _ira_opcode_desc_PACKSS[] = {
 	{ "vpacksswb", 0x10C0, 0x00D88000, { 0x0F, 0x63, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA },
 	// VEX.NDS.128.66.0F.WIG 6B /r VPACKSSDW xmm1,xmm2,xmm3/m128
 	{ "vpackssdw", 0x10C0, 0x00D88000, { 0x0F, 0x6B, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA },
+	// AVX2
+	// VEX.NDS.256.66.0F.WIG 63 /r VPACKSSWB ymm1,ymm2,ymm3/m256
+	{ "vpacksswb", 0x10A0, 0x00D88000, { 0x0F, 0x63, 0x00 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA },
+	// VEX.NDS.256.66.0F.WIG 6B /r VPACKSSDW ymm1,ymm2,ymm3/m256
+	{ "vpackssdw", 0x10A0, 0x00D88000, { 0x0F, 0x6B, 0x00 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA }
+
 };
 
 struct ira_opcode_desc _ira_opcode_desc_PACKUSD[] = {
 	// 66 0F 38 2B /r PACKUSDW xmm1,xmm2/m128
 	{ "packusdw", 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x2B }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
 	// VEX.NDS.128.66.0F38.WIG 2B /r VPACKUSDW xmm1,xmm2,xmm3/m128
-	{ "vpackusdw", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x2B }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA }
+	{ "vpackusdw", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x2B }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA },
+	// VEX.NDS.256.66.0F38.WIG 2B /r VPACKUSDW ymm1,ymm2,ymm3/m256
+	{ "vpackusdw", 0x10A0, 0x00EC8000, { 0x0F, 0x38, 0x2B }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_PACKUSW[] = {

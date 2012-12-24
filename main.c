@@ -660,6 +660,7 @@ void test(void) {
 	_TEST32( "676629a50102 sub word ptr [di+0201h],sp", 0x67, 0x66, 0x29, 0xa5, 0x01, 0x02 );
 	_TEST32( "6729a50102 sub dword ptr [di+0201h],esp", 0x67, 0x29, 0xa5, 0x01, 0x02 );
 	_TEST64( "4d29648901 sub qword ptr [r9+rcx*4+0000000000000001h],r12", 0x4D, 0x29, 0x64, 0x89, 0x01 );
+	_TEST64( "29648101 sub dword ptr [rcx+rax*4+0000000000000001h],esp", 0x29, 0x64, 0x81, 0x01 );
 	// 2A /r SUB r8, r/m8 RM Valid Valid Subtract r/m8 from r8.
 	// REX + 2A /r SUB r8*, r/m8* RM Valid N.E. Subtract r/m8 from r8.
 	_TEST32( "2aa501020304 sub ah,byte ptr [ebp+04030201h]", 0x2A, 0xa5, 0x01, 0x02, 0x03, 04 );
@@ -2487,6 +2488,9 @@ void test(void) {
 	// VEX.NDS.128.66.0F38.WIG 2B /r VPACKUSDW xmm1,xmm2,xmm3/m128
 	_TEST64_VEX( "c4e2612b00 vpackusdw xmm0,xmm3,oword ptr [rax]", 0xC4, 0xE2, 0x61, 0x2B, 0x00 );
 	_TEST32_VEX( "c4e2612bc1 vpackusdw xmm0,xmm3,xmm1", 0xC4, 0xE2, 0x61, 0x2B, 0xC1 );
+	// VEX.NDS.256.66.0F38.WIG 2B /r VPACKUSDW ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4e2652b00 vpackusdw ymm0,ymm3,ymmword ptr [rax]", 0xC4, 0xE2, 0x65, 0x2B, 0x00 );
+	_TEST32_VEX( "c4e2652bc1 vpackusdw ymm0,ymm3,ymm1", 0xC4, 0xE2, 0x65, 0x2B, 0xC1 );
 
 	// PACKSS
 	// 0F 63 /r1 PACKSSWB mm1, mm2/m64
@@ -2507,6 +2511,12 @@ void test(void) {
 	_TEST32_VEX( "c4e16163c1 vpacksswb xmm0,xmm3,xmm1", 0xC4, 0xE1, 0x61, 0x63, 0xC1 );
 	_TEST64_VEX( "c4e1616b00 vpackssdw xmm0,xmm3,oword ptr [rax]", 0xC4, 0xE1, 0x61, 0x6b, 0x00 );
 	_TEST32_VEX( "c4e1616bc1 vpackssdw xmm0,xmm3,xmm1", 0xC4, 0xE1, 0x61, 0x6b, 0xC1 );
+	// VEX.NDS.256.66.0F.WIG 63 /r VPACKSSWB ymm1,ymm2,ymm3/m256
+	// VEX.NDS.256.66.0F.WIG 6B /r VPACKSSDW ymm1,ymm2,ymm3/m256
+	_TEST64_VEX( "c4e1656300 vpacksswb ymm0,ymm3,ymmword ptr [rax]", 0xC4, 0xE1, 0x65, 0x63, 0x00 );
+	_TEST32_VEX( "c4e16563c1 vpacksswb ymm0,ymm3,ymm1", 0xC4, 0xE1, 0x65, 0x63, 0xC1 );
+	_TEST64_VEX( "c4e1656b00 vpackssdw ymm0,ymm3,ymmword ptr [rax]", 0xC4, 0xE1, 0x65, 0x6b, 0x00 );
+	_TEST32_VEX( "c4e1656bc1 vpackssdw ymm0,ymm3,ymm1", 0xC4, 0xE1, 0x65, 0x6b, 0xC1 );
 
 	// PABS
 	// 0F 38 1C /r1 PABSB mm1,mm2/m64
@@ -2536,6 +2546,15 @@ void test(void) {
 	_TEST32_VEX( "c4e2791dc1 vpabsw xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x1D, 0xC1 );
 	_TEST64_VEX( "c4e2791e00 vpabsd xmm0,oword ptr [rax]", 0xC4, 0xE2, 0x79, 0x1E, 0x00 );
 	_TEST32_VEX( "c4e2791ec1 vpabsd xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x1E, 0xC1 );
+	// VEX.256.66.0F38.WIG 1C /r VPABSB ymm1, ymm2/m256
+	// VEX.256.66.0F38.WIG 1D /r VPABSW ymm1, ymm2/m256
+	// VEX.256.66.0F38.WIG 1E /r VPABSD ymm1, ymm2/m256
+	_TEST64_VEX( "c4e27d1c00 vpabsb ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x1C, 0x00 );
+	_TEST32_VEX( "c4e27d1cc1 vpabsb ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x1C, 0xC1 );
+	_TEST64_VEX( "c4e27d1d00 vpabsw ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x1D, 0x00 );
+	_TEST32_VEX( "c4e27d1dc1 vpabsw ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x1D, 0xC1 );
+	_TEST64_VEX( "c4e27d1e00 vpabsd ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x1E, 0x00 );
+	_TEST32_VEX( "c4e27d1ec1 vpabsd ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x1E, 0xC1 );
 
 	// OUTS
 	// 6E OUTS DX, m8 NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
@@ -2759,8 +2778,12 @@ void test(void) {
 	_TEST64( "660f3a421020 mpsadbw xmm2,oword ptr [rax],20h", 0x66, 0x0F, 0x3A, 0x42, 0x10, 0x20 );
 	_TEST64( "66480f3a421020 mpsadbw xmm2,oword ptr [rax],20h", 0x66, 0x48, 0x0F, 0x3A, 0x42, 0x10, 0x20 );
 	// VEX.NDS.128.66.0F3A 42 /r ib VMPSADBW xmm1,xmm2,xmm3/m128,imm8
-	_TEST32_VEX( "c4e34942140120 vmpsadbw xmm2,xmm6,qword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x49, 0x42, 0x14, 0x01, 0x20 );
-	_TEST64_VEX( "c4e34942140120 vmpsadbw xmm2,xmm6,qword ptr [rcx+rax],20h", 0xC4, 0xE3, 0x49, 0x42, 0x14, 0x01, 0x20 );
+	_TEST32_VEX( "c4e34942140120 vmpsadbw xmm2,xmm6,oword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x49, 0x42, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "c4e34942140120 vmpsadbw xmm2,xmm6,oword ptr [rcx+rax],20h", 0xC4, 0xE3, 0x49, 0x42, 0x14, 0x01, 0x20 );
+	// VEX.NDS.256.66.0F3A.WIG 42 /r ib VMPSADBW ymm1,ymm2,ymm3/m256,imm8
+	_TEST32_VEX( "c4e34d42140120 vmpsadbw ymm2,ymm6,ymmword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x4D, 0x42, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "c4e34d42140120 vmpsadbw ymm2,ymm6,ymmword ptr [rcx+rax],20h", 0xC4, 0xE3, 0x4D, 0x42, 0x14, 0x01, 0x20 );
+
 
 	// 0F B6 /r MOVZX r16, r/m8
 	// 0F B6 /r MOVZX r32, r/m8
