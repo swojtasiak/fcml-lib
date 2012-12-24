@@ -61,6 +61,31 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// PF2IW
+	// PF2IW mmreg1, mmreg2/mem64 0Fh 0Fh / 1Ch Packed floating-point to integer word conversion with PF2IW sign extend
+	_TEST32( "0f0fc100 pf2iw mm0,qword ptr [eax]", 0x0F, 0x0F, 0xC1, 0x00 );
+	_TEST64( "0f0fc1c1 pf2iw mm0,mm1", 0x0F, 0x0F, 0xC1, 0xC1 );
+
+	// PFNACC
+	// PFNACC mmreg1, mmreg2/mem64 0Fh 0Fh / 8Ah Packed floating-point negative accumulate
+	_TEST32( "0f0f8a00 pfnacc mm0,qword ptr [eax]", 0x0F, 0x0F, 0x8A, 0x00 );
+	_TEST64( "0f0f8ac1 pfnacc mm0,mm1", 0x0F, 0x0F, 0x8A, 0xC1 );
+
+	// PFPNACC
+	// PFPNACC mmreg1, mmreg2/mem64 0Fh 0Fh / 8Eh Packed floating-point mixed positive-negative accumulate
+	_TEST32( "0f0f8e00 pfpnacc mm0,qword ptr [eax]", 0x0F, 0x0F, 0x8E, 0x00 );
+	_TEST64( "0f0f8ec1 pfpnacc mm0,mm1", 0x0F, 0x0F, 0x8E, 0xC1 );
+
+	// PI2FW
+	// PI2FW mmreg1, mmreg2/mem64 0Fh 0Fh / 0Ch Packed 16-bit integer to floating-point conversion
+	_TEST32( "0f0f0c00 pi2fw mm0,qword ptr [eax]", 0x0F, 0x0F, 0x0C, 0x00 );
+	_TEST64( "0f0f0cc1 pi2fw mm0,mm1", 0x0F, 0x0F, 0x0C, 0xC1 );
+
+	// PSWAPD
+	// PSWAPD mmreg1, mmreg2/mem64 0Fh 0Fh / BBh Packed swap doubleword
+	_TEST32( "0f0fbb00 pswapd mm0,qword ptr [eax]", 0x0F, 0x0F, 0xBB, 0x00 );
+	_TEST64( "0f0fbbc1 pswapd mm0,mm1", 0x0F, 0x0F, 0xBB, 0xC1 );
+
 	// PREFETCH
 	// PREFETCH(W) mem8 0F 0Dh Prefetch processor cache line into L1 data cache (Dcache)
 	_TEST32( "0f0d00 prefetch byte ptr [eax]", 0x0F, 0x0D, 0x00 );

@@ -4304,8 +4304,32 @@ struct ira_opcode_desc _ira_opcode_desc_PREFETCH[] = {
 	{ "prefetchw", 0x0000, 0x80D98800, { 0x0F, 0x0D, 0x00 }, _IRA_OPERAND_MODRM_M_8, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+// Extensions to the 3DNow!
 
+struct ira_opcode_desc _ira_opcode_desc_PF2IW[] = {
+	// PF2IW mmreg1, mmreg2/mem64 0Fh 0Fh / 1Ch Packed floating-point to integer word conversion with PF2IW sign extend
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xC1 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
 
+struct ira_opcode_desc _ira_opcode_desc_PFNACC[] = {
+	// PFNACC mmreg1, mmreg2/mem64 0Fh 0Fh / 8Ah Packed floating-point negative accumulate
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x8A }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PFPNACC[] = {
+	// PFPNACC mmreg1, mmreg2/mem64 0Fh 0Fh / 8Eh Packed floating-point mixed positive-negative accumulate
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x8E }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PI2FW[] = {
+	// PI2FW mmreg1, mmreg2/mem64 0Fh 0Fh / 0Ch Packed 16-bit integer to floating-point conversion
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0x0C }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PSWAPD[] = {
+	// PSWAPD mmreg1, mmreg2/mem64 0Fh 0Fh / BBh Packed swap doubleword
+	{ NULL, 0x0000, 0x00EC8000, { 0x0F, 0x0F, 0xBB }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA }
+};
 
 
 /*
@@ -4755,5 +4779,11 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "pi2fd", _ira_opcode_desc_PI2FD),
 		_IA_INSTRUCTION( "pmulhrw", _ira_opcode_desc_PMULHRW),
 		_IA_INSTRUCTION( "prefetch", _ira_opcode_desc_PREFETCH),
+		// Extensions to the 3DNow!
+		_IA_INSTRUCTION( "pf2iw", _ira_opcode_desc_PF2IW),
+		_IA_INSTRUCTION( "pfnacc", _ira_opcode_desc_PFNACC),
+		_IA_INSTRUCTION( "pfpnacc", _ira_opcode_desc_PFPNACC),
+		_IA_INSTRUCTION( "pi2fw", _ira_opcode_desc_PI2FW),
+		_IA_INSTRUCTION( "pswapd", _ira_opcode_desc_PSWAPD),
 		{ NULL, 0, 0, NULL }
 };
