@@ -498,6 +498,7 @@ struct ira_instruction_desc {
 // TODO: RAczej SIMD a nie XMM, jako ze mamy XMM i YMM.
 #define _IRA_RM_XMM_L	29
 #define _IRA_R_XMM_L	30
+#define _IRA_M_256		31
 
 /* ModRM based operands. */
 
@@ -537,6 +538,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_M_80_W		(_IRA_OPERAND_MODRM_M_80 | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_128		_IRA_MODRM(_IRA_M_128)
 #define _IRA_OPERAND_MODRM_M_128_W		(_IRA_OPERAND_MODRM_M_128 | _IRA_WRITE)
+#define _IRA_OPERAND_MODRM_M_256		_IRA_MODRM(_IRA_M_256)
+#define _IRA_OPERAND_MODRM_M_256_W		(_IRA_OPERAND_MODRM_M_256 | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_14_28		_IRA_MODRM(_IRA_M_14_28)
 #define _IRA_OPERAND_MODRM_M_14_28_W	(_IRA_OPERAND_MODRM_M_14_28 | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_94_108		_IRA_MODRM(_IRA_M_94_108)

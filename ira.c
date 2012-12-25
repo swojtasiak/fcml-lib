@@ -1256,6 +1256,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 			operand_decoding->args = _ira_alloc_modm_decoding_args( NULL, _IRA_OS_OWORD, &result );
 			break;
+		case _IRA_M_256:
+			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
+			operand_decoding->args = _ira_alloc_modm_decoding_args( NULL, _IRA_OS_YMMWORD, &result );
+			break;
 		case _IRA_M_14_28:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 			operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_m14_28byte_operand_size_provider, 0, &result );
