@@ -601,8 +601,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 						break;
 					}
 
-					// In 32-bit modes, VEX.W must be set to "0" otherwise the AVX form will #UD.
-					if( context->mode == IRA_MOD_32BIT && ( prefixes_fields->vvvv > 7 || prefixes_fields->w != 0 ) ) {
+					if( context->mode == IRA_MOD_32BIT && prefixes_fields->vvvv > 7 ) {
 						prefix_type = 0;
 					}
 

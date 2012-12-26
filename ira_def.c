@@ -310,6 +310,21 @@ struct ira_opcode_desc _ira_opcode_desc_VBROADCASTSS[] = {
 	{ "vbroadcastsd", 0x11A0, 0x00EE8000, { 0x0F, 0x38, 0x19 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_VPBROADCAST[] = {
+	// VEX.128.66.0F38.W0 78 /r VPBROADCASTB xmm1,xmm2/m8
+	// VEX.256.66.0F38.W0 78 /r VPBROADCASTB ymm1,xmm2/m8
+	{ "vpbroadcastb", 0x1190, 0x00EC8000, { 0x0F, 0x38, 0x78 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD_8, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.W0 79 /r VPBROADCASTW xmm1,xmm2/m16
+	// VEX.256.66.0F38.W0 79 /r VPBROADCASTW ymm1,xmm2/m16
+	{ "vpbroadcastw", 0x1190, 0x00EC8000, { 0x0F, 0x38, 0x79 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD_16, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.W0 58 /r VPBROADCASTD xmm1,xmm2/m32
+	// VEX.256.66.0F38.W0 58 /r VPBROADCASTD ymm1,xmm2/m32
+	{ "vpbroadcastd", 0x1190, 0x00EC8000, { 0x0F, 0x38, 0x58 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD_32, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.W0 59 /r VPBROADCASTQ xmm1,xmm2/m64
+	// VEX.256.66.0F38.W0 59 /r VPBROADCASTQ ymm1,xmm2/m64
+	{ "vpbroadcastq", 0x1190, 0x00EC8000, { 0x0F, 0x38, 0x59 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD_64, _IRA_NA, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_BOUND[] = {
 	// 62 /r BOUND r16, m16&16 A Invalid Valid Check if r16 (array index) is within bounds specified by m16&16.
 	// 62 /r BOUND r32, m32&32 A Invalid Valid Check if r32 (array index) is within bounds specified by m16&16.
@@ -1663,6 +1678,21 @@ struct ira_opcode_desc _ira_opcode_desc_VMASKMOVP[] = {
 	{ "vmaskmovpd", 0x1080, 0x00EC8000, { 0x0F, 0x38, 0x2F }, _IRA_OPERAND_MODRM_M_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_VPMASKMOVD[] = {
+	// VEX.NDS.128.66.0F38.W0 8C /r VPMASKMOVD xmm1,xmm2,m128
+	// VEX.NDS.256.66.0F38.W0 8C /r VPMASKMOVD ymm1,ymm2,m256
+	{ "vpmaskmovd", 0x1090, 0x80EC8000, { 0x0F, 0x38, 0x8C }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_M_SIMD, _IRA_NA },
+	// VEX.NDS.128.66.0F38.W1 8C /r VPMASKMOVQ xmm1,xmm2,m128
+	// VEX.NDS.256.66.0F38.W1 8C /r VPMASKMOVQ ymm1,ymm2,m256
+	{ "vpmaskmovq", 0x1088, 0x80EC8000, { 0x0F, 0x38, 0x8C }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_M_SIMD, _IRA_NA },
+	// VEX.NDS.128.66.0F38.W0 8E /r VPMASKMOVD m128,xmm1,xmm2
+	// VEX.NDS.256.66.0F38.W0 8E /r VPMASKMOVD m256,ymm1,ymm2
+	{ "vpmaskmovd", 0x1090, 0x80EC8000, { 0x0F, 0x38, 0x8E }, _IRA_OPERAND_MODRM_M_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA },
+	// VEX.NDS.128.66.0F38.W1 8E /r VPMASKMOVQ m128,xmm1,xmm2
+	// VEX.NDS.256.66.0F38.W1 8E /r VPMASKMOVQ m256,ymm1,ymm2
+	{ "vpmaskmovq", 0x1088, 0x80EC8000, { 0x0F, 0x38, 0x8E }, _IRA_OPERAND_MODRM_M_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_R_SIMD, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_MASKMOVQ[] = {
 	// 0F F7 /r MASKMOVQ mm1, mm2 A Valid Valid Selectively write bytes from mm1 to memory location using the byte mask in mm2. The default memory location is specified by DS:EDI/RDI.
 	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, _IRA_OPERAND_R( IRA_REG_SIMD, _IRA_OS_MMWORD ), _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_OS_MMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
@@ -2564,6 +2594,12 @@ struct ira_opcode_desc _ira_opcode_desc_PBLENDW[] = {
 	{ "vpblendw", 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x0E }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB },
 	// VEX.NDS.256.66.0F3A.WIG 0E /r ib VPBLENDW ymm1,ymm2,ymm3/m256,imm8
 	{ "vpblendw", 0x10A0, 0x00EC8000, { 0x0F, 0x3A, 0x0E }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPBLENDD[] = {
+	// VEX.NDS.128.66.0F3A.W0 02 /r ib VPBLENDD xmm1,xmm2,xmm3/m128,imm8
+	// VEX.NDS.256.66.0F3A.W0 02 /r ib VPBLENDD ymm1,ymm2,ymm3/m256,imm8
+	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x3A, 0x02 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IB }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_PCLMULQDQ[] = {
@@ -3499,11 +3535,6 @@ struct ira_opcode_desc _ira_opcode_desc_PUNPCKL[] = {
 	{ "vpunpcklqdq", 0x10A0, 0x00D88000, { 0x0F, 0x6C, 0x00 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA }
 };
 
-
-
-
-
-
 struct ira_opcode_desc _ira_opcode_desc_PUNPCKH[] = {
 	// 0F 68 /r PUNPCKHBW mm,mm/m64
 	{ "punpckhbw", 0x0000, 0x00D88000, { 0x0F, 0x68, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
@@ -4315,9 +4346,68 @@ struct ira_opcode_desc _ira_opcode_desc_VPERMILPS[] = {
 	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x3A, 0x04 },  _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IB, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_VPSLLVD[] = {
+	// VEX.NDS.128.66.0F38.W0 47 /r VPSLLVD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F38.W0 47 /r VPSLLVD ymm1,ymm2,ymm3/m256
+	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x38, 0x47 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA },
+	// VEX.NDS.128.66.0F38.W1 47 /r VPSLLVQ xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F38.W1 47 /r VPSLLVQ ymm1,ymm2,ymm3/m256
+	{ "vpsllvq", 0x1088, 0x00EC8000, { 0x0F, 0x38, 0x47 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPSRLVD[] = {
+	// VEX.NDS.128.66.0F38.W0 45 /r VPSRLVD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F38.W0 45 /r VPSRLVD ymm1,ymm2,ymm3/m256
+	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x38, 0x45 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA },
+	// VEX.NDS.128.66.0F38.W1 45 /r VPSRLVQ xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F38.W1 45 /r VPSRLVQ ymm1,ymm2,ymm3/m256
+	{ "vpsrlvq", 0x1088, 0x00EC8000, { 0x0F, 0x38, 0x45 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPSRAVD[] = {
+	// VEX.NDS.128.66.0F38.W0 46 /r VPSRAVD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F38.W0 46 /r VPSRAVD ymm1,ymm2,ymm3/m256
+	{ NULL, 0x1090, 0x00EC8000, { 0x0F, 0x38, 0x46 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPERMD[] = {
+	// VEX.NDS.256.66.0F38.W0 36 /r VPERMD ymm1,ymm2,ymm3/m256
+	{ NULL, 0x10B0, 0x00EC8000, { 0x0F, 0x38, 0x36 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPERMPD[] = {
+	// VEX.256.66.0F3A.W1 01 /r ib VPERMPD ymm1,ymm2/m256,imm8
+	{ NULL, 0x11A8, 0x00EC8000, { 0x0F, 0x3A, 0x01 },  _IRA_OPERAND_MODRM_R_YMM_W, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPERMQ[] = {
+	// VEX.256.66.0F3A.W1 00 /r ib VPERMQ ymm1,ymm2/m256,imm8
+	{ NULL, 0x11A8, 0x00EC8000, { 0x0F, 0x3A, 0x00 },  _IRA_OPERAND_MODRM_R_YMM_W, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPERMPS[] = {
+	// VEX.NDS.256.66.0F38.W0 16 /r VPERMPS ymm1,ymm2,ymm3/m256
+	{ NULL, 0x10B0, 0x00EC8000, { 0x0F, 0x38, 0x16 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_VPERM2F128[] = {
 	// VEX.NDS.256.66.0F3A.W0 06 /r ib VPERM2F128 ymm1,ymm2,ymm3/m256,imm8 RVMI V/V AVX Permute 128-bit floating-point fields in ymm2 and ymm3/mem using controls from imm8 and store result in ymm1.
 	{ NULL, 0x10B0, 0x00EC8000, { 0x0F, 0x3A, 0x06 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPERM2I128[] = {
+	// VEX.NDS.256.66.0F3A.W0 46 /r ib VPERM2I128 ymm1,ymm2,ymm3/m256,imm8
+	{ NULL, 0x10B0, 0x00EC8000, { 0x0F, 0x3A, 0x46 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VEXTRACTI128[] = {
+	// VEX.256.66.0F3A.W0 39 /r ib VEXTRACTI128 xmm1/m128,ymm2,imm8
+	{ NULL, 0x11B0, 0x00EC8000, { 0x0F, 0x3A, 0x39 }, _IRA_OPERAND_MODRM_RM_XMM_128_W, _IRA_OPERAND_MODRM_R_YMM, _IRA_OPERAND_IB, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VINSERTI128[] = {
+	// VEX.NDS.256.66.0F3A.W0 38 /r ib VINSERTI128 ymm1,ymm2,xmm3/m128,imm8
+	{ NULL, 0x10B0, 0x00EC8000, { 0x0F, 0x3A, 0x38 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_OPERAND_IB }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_VTESTPS[] = {
@@ -4670,6 +4760,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "blendvpd", _ira_opcode_desc_BLENDVPD),
 		_IA_INSTRUCTION( "blendvps", _ira_opcode_desc_BLENDVPS),
 		_IA_INSTRUCTION( "vbroadcastss", _ira_opcode_desc_VBROADCASTSS),
+		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_VPBROADCAST),
 		_IA_INSTRUCTION( "bound", _ira_opcode_desc_BOUND),
 		_IA_INSTRUCTION( "bsf", _ira_opcode_desc_BSF),
 		_IA_INSTRUCTION( "bsr", _ira_opcode_desc_BSR),
@@ -4826,6 +4917,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "ltr", _ira_opcode_desc_LTR),
 		_IA_INSTRUCTION( "maskmovdqu", _ira_opcode_desc_MASKMOVDQU),
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_VMASKMOVP),
+		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_VPMASKMOVD),
 		_IA_INSTRUCTION( "maskmovq", _ira_opcode_desc_MASKMOVQ),
 		_IA_INSTRUCTION( "maxpd", _ira_opcode_desc_MAXPD),
 		_IA_INSTRUCTION( "maxps", _ira_opcode_desc_MAXPS),
@@ -4902,6 +4994,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_PAVG),
 		_IA_INSTRUCTION( "pblendvb", _ira_opcode_desc_PBLENDVB),
 		_IA_INSTRUCTION( "pblendw", _ira_opcode_desc_PBLENDW),
+		_IA_INSTRUCTION( "vpblendd", _ira_opcode_desc_VPBLENDD),
 		_IA_INSTRUCTION( "pclmulqdq", _ira_opcode_desc_PCLMULQDQ),
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_PCMPEQ),
 		_IA_INSTRUCTION( "pcmpeqq", _ira_opcode_desc_PCMPEQQ),
@@ -5043,6 +5136,16 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "vpermilpd", _ira_opcode_desc_VPERMILPD),
 		_IA_INSTRUCTION( "vpermilps", _ira_opcode_desc_VPERMILPS),
 		_IA_INSTRUCTION( "vperm2f128", _ira_opcode_desc_VPERM2F128),
+		_IA_INSTRUCTION( "vperm2i128", _ira_opcode_desc_VPERM2I128),
+		_IA_INSTRUCTION( "vextracti128", _ira_opcode_desc_VEXTRACTI128),
+		_IA_INSTRUCTION( "vinserti128", _ira_opcode_desc_VINSERTI128),
+		_IA_INSTRUCTION( "vpsravd", _ira_opcode_desc_VPSRAVD),
+		_IA_INSTRUCTION( "vpermd", _ira_opcode_desc_VPERMD),
+		_IA_INSTRUCTION( "vpsllvd", _ira_opcode_desc_VPSLLVD),
+		_IA_INSTRUCTION( "vpsrlvd", _ira_opcode_desc_VPSRLVD),
+		_IA_INSTRUCTION( "vpermpd", _ira_opcode_desc_VPERMPD),
+		_IA_INSTRUCTION( "vpermq", _ira_opcode_desc_VPERMQ),
+		_IA_INSTRUCTION( "vpermps", _ira_opcode_desc_VPERMPS),
 		_IA_INSTRUCTION( "vtestps", _ira_opcode_desc_VTESTPS),
 		_IA_INSTRUCTION( "vzeroall", _ira_opcode_desc_VZEROALL),
 		_IA_INSTRUCTION( "vzeroupper", _ira_opcode_desc_VZEROUPPER),
