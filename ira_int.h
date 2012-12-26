@@ -231,6 +231,10 @@ struct ira_modm_decoding_args {
 	ira_operand_size_provider operand_size_provider;
 	// Explicit addressing size.
 	uint16_t operand_size;
+	// VSIB used.
+	uint8_t is_vsib;
+	// Encoded vector index register.
+	uint8_t vir;
 };
 
 /* Disassemblation tree. */
@@ -610,6 +614,19 @@ struct ira_instruction_desc {
 #define _IRA_VEX_VVVV_REG							0x1B000000
 
 #define _IRA_OPERAND_IS4							0x1C000000
+
+// VSIB operand decoding.
+
+// Vector index register.
+#define _IRA_VSIB_XMM	0x01
+#define _IRA_VSIB_YMM	0x02
+
+// Index value size.
+#define _IRA_VSIB_IS_32	0x01
+#define _IRA_VSIB_IS_64	0x02
+
+#define _IRA_OPERAND_VSIB_BASE							0x1D000000
+#define _IRA_OPERAND_VSIB( vector_index_register, index_value_size )		( _IRA_OPERAND_VSIB_BASE | vector_index_register << 2 | index_value_size )
 
 // Shorthands
 #define _IRA_OPERAND_MODRM_RM_MMX		_IRA_OPERAND_RM(IRA_REG_SIMD, _IRA_EOS_MMWORD, _IRA_EOS_MMWORD, _IRA_RMF_RM )

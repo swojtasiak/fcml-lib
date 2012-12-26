@@ -53,6 +53,8 @@ void __ira_test_xmm1_r_xmm2_rm( char *mnemonic, int n_args, ... ) {
 //102
 void test(void) {
 
+
+
 	// TODO: W tym przypadku powinno zdekodowaæ do FAIL, a wybiera inna instrukcjê poniewa¿ instrukcja ta nie posiada mandatory opcodes.
 	// Trzeba bêdzie jakos obs³ugiwaæ instrukcje ktotre nie wymagaja manadatory opcode, zeby nie byly wybierane, jak
 	// jakis mandatory opcode wystepuje.
@@ -419,12 +421,45 @@ void test(void) {
 	_TEST32_VEX( "c4e2cd4500 vpsrlvq ymm0,ymm6,ymmword ptr [eax]", 0xC4, 0xE2, 0xCD, 0x45, 0x00 );
 	_TEST32_VEX( "c4e2cd45c0 vpsrlvq ymm0,ymm6,ymm0", 0xC4, 0xE2, 0xCD, 0x45, 0xC0 );
 
+	// VGATHERDPD
 	// VEX.DDS.128.66.0F38.W1 92 /r VGATHERDPD xmm1, vm32x, xmm2
-	_TEST32_VEX( "c4e2c94500 vpsrlvq xmm0,xmm6,oword ptr [eax]", 0xC4, 0xE2, 0xF9, 0x92, 0x00 );
-
-	// VEX.DDS.128.66.0F38.W1 93 /r VGATHERQPD xmm1, vm64x, xmm2
 	// VEX.DDS.256.66.0F38.W1 92 /r VGATHERDPD ymm1, vm32x, ymm2
+	_TEST32_VEX( "c4e2f9920428 vgatherdpd xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x92, 0x04, 0x28 );
+	_TEST32_VEX( "c4e2fd920428 vgatherdpd ymm0,dword ptr [eax+xmm5],ymm0", 0xC4, 0xE2, 0xFD, 0x92, 0x04, 0x28 );
+	// VEX.DDS.128.66.0F38.W1 93 /r VGATHERQPD xmm1, vm64x, xmm2
 	// VEX.DDS.256.66.0F38.W1 93 /r VGATHERQPD ymm1, vm64y, ymm2
+	_TEST32_VEX( "c4e2f9930428 vgatherqpd xmm0,qword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x93, 0x04, 0x28 );
+	_TEST32_VEX( "c4e2fd930428 vgatherqpd ymm0,qword ptr [eax+ymm5],ymm0", 0xC4, 0xE2, 0xFD, 0x93, 0x04, 0x28 );
+
+	// VGATHERDPS
+	// VEX.DDS.128.66.0F38.W0 92 /r VGATHERDPS xmm1,vm32x,xmm2
+	// VEX.DDS.256.66.0F38.W0 92 /r VGATHERDPS ymm1,vm32y,ymm2
+	_TEST32_VEX( "c4e279920428 vgatherdps xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0x79, 0x92, 0x04, 0x28 );
+	_TEST32_VEX( "c4e27d920428 vgatherdps ymm0,dword ptr [eax+ymm5],ymm0", 0xC4, 0xE2, 0x7D, 0x92, 0x04, 0x28 );
+	// VEX.DDS.128.66.0F38.W0 93 /r VGATHERQPS xmm1,vm64x,xmm2
+	// VEX.DDS.256.66.0F38.W0 93 /r VGATHERQPS xmm1,vm64y,xmm2
+	_TEST32_VEX( "c4e279930428 vgatherqps xmm0,qword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0x79, 0x93, 0x04, 0x28 );
+	_TEST32_VEX( "c4e27d930428 vgatherqps ymm0,qword ptr [eax+ymm5],ymm0", 0xC4, 0xE2, 0x7D, 0x93, 0x04, 0x28 );
+
+	// VPGATHERDD
+	// VEX.DDS.128.66.0F38.W0 90 /r VPGATHERDD xmm1,vm32x,xmm2
+	// VEX.DDS.256.66.0F38.W0 90 /r VPGATHERDD ymm1,vm32y,ymm2
+	_TEST32_VEX( "c4e279900428 vpgatherdd xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0x79, 0x90, 0x04, 0x28 );
+	_TEST32_VEX( "c4e27d900428 vpgatherdd ymm0,dword ptr [eax+ymm5],ymm0", 0xC4, 0xE2, 0x7D, 0x90, 0x04, 0x28 );
+	// VEX.DDS.128.66.0F38.W0 91 /r VPGATHERQD xmm1,vm64x,xmm2
+	// VEX.DDS.256.66.0F38.W0 91 /r VPGATHERQD xmm1,vm64y,xmm2
+	_TEST32_VEX( "c4e279910428 vpgatherqd xmm0,qword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0x79, 0x91, 0x04, 0x28 );
+	_TEST32_VEX( "c4e27d910428 vpgatherqd ymm0,qword ptr [eax+ymm5],ymm0", 0xC4, 0xE2, 0x7D, 0x91, 0x04, 0x28 );
+
+	// VPGATHERDQ
+	// VEX.DDS.128.66.0F38.W1 90 /r VPGATHERDQ xmm1,vm32x,xmm2
+	// VEX.DDS.256.66.0F38.W1 90 /r VPGATHERDQ ymm1,vm32x,ymm2
+	_TEST32_VEX( "c4e2f9900428 vpgatherdq xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x90, 0x04, 0x28 );
+	_TEST32_VEX( "c4e2fd900428 vpgatherdq ymm0,dword ptr [eax+xmm5],ymm0", 0xC4, 0xE2, 0xFD, 0x90, 0x04, 0x28 );
+	// VEX.DDS.128.66.0F38.W1 91 /r VPGATHERQQ xmm1,vm64x,xmm2
+	// VEX.DDS.256.66.0F38.W1 91 /r VPGATHERQQ ymm1,vm64y,ymm2
+	_TEST32_VEX( "c4e2f9910428 vpgatherqq xmm0,qword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x91, 0x04, 0x28 );
+	_TEST32_VEX( "c4e2fd910428 vpgatherqq ymm0,qword ptr [eax+ymm5],ymm0", 0xC4, 0xE2, 0xFD, 0x91, 0x04, 0x28 );
 
 	// VPERMD
 	// VEX.NDS.256.66.0F38.W0 36 /r VPERMD ymm1,ymm2,ymm3/m256
