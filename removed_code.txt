@@ -17,3 +17,30 @@ int64_t _ira_get_immediate_as_64bit_signed_integer( struct ira_immediate_data *i
 	}
 	return immediate;
 }
+
+
+#define _IRA_IT_FMA_PD(id,mnemonic,opcode) \
+struct ira_opcode_desc _ira_opcode_desc_##id[] = { \
+	/* VEX.DDS.128.66.0F38.W1 opcode /r mnemonic xmm0,xmm1,xmm2/m128 */ \
+	/* VEX.DDS.256.66.0F38.W1 opcode /r mnemonic ymm0,ymm1,ymm2/m256 */ \
+	{ _IRA_DM_STRING(mnemonic##132pd), 0x1088, 0x00EC8000, { 0x0F, 0x38, 0x90 + opcode }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }, \
+	/* VEX.DDS.128.66.0F38.W1 opcode /r mnemonic xmm0,xmm1,xmm2/m128 */ \
+	/* VEX.DDS.256.66.0F38.W1 opcode /r mnemonic ymm0,ymm1,ymm2/m256 */ \
+	{ _IRA_DM_STRING(mnemonic##213pd), 0x1088, 0x00EC8000, { 0x0F, 0x38, 0xA0 + opcode }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }, \
+	/* VEX.DDS.128.66.0F38.W1 opcode /r mnemonic xmm0,xmm1,xmm2/m128 */ \
+	/* VEX.DDS.256.66.0F38.W1 opcode /r mnemonic ymm0,ymm1,ymm2/m256 */ \
+	{ _IRA_DM_STRING(mnemonic##231pd), 0x1088, 0x00EC8000, { 0x0F, 0x38, 0xB0 + opcode }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }, \
+}
+
+#define _IRA_IT_FMA_PS(id,mnemonic,opcode) \
+struct ira_opcode_desc _ira_opcode_desc_##id[] = { \
+	/* VEX.DDS.128.66.0F38.W0 opcode /r mnemonic xmm0,xmm1,xmm2/m128 */ \
+	/* VEX.DDS.256.66.0F38.W0 opcode /r mnemonic ymm0,ymm1,ymm2/m256 */ \
+	{ _IRA_DM_STRING(mnemonic##132ps), 0x1090, 0x00EC8000, { 0x0F, 0x38, 0x90 + opcode }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }, \
+	/* VEX.DDS.128.66.0F38.W0 opcode /r mnemonic xmm0,xmm1,xmm2/m128 */ \
+	/* VEX.DDS.256.66.0F38.W0 opcode /r mnemonic ymm0,ymm1,ymm2/m256 */ \
+	{ _IRA_DM_STRING(mnemonic##213ps), 0x1090, 0x00EC8000, { 0x0F, 0x38, 0xA0 + opcode }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }, \
+	/* VEX.DDS.128.66.0F38.W0 opcode /r mnemonic xmm0,xmm1,xmm2/m128 */ \
+	/* VEX.DDS.256.66.0F38.W0 opcode /r mnemonic ymm0,ymm1,ymm2/m256 */ \
+	{ _IRA_DM_STRING(mnemonic##231ps), 0x1090, 0x00EC8000, { 0x0F, 0x38, 0xB0 + opcode }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }, \
+}
