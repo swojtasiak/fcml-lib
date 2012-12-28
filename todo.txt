@@ -25,3 +25,7 @@ Sprawdzic i uzupelnic VVVV unued.
 
 Zrezygnowac z opcode flags [przynajmniej z R/M na rzecz wstepnej analizy operandow instrukcji, a nastepnie wykorzystaniu tej informacji przy wyboerze isntrukcji. Informacja z opcode flags jest porpostu nadmiarowa, mozna to wyliczyc analizujac operandy.
 Kazdy operand musial by posiadac mozliwosc odawania jakiegos filtr flag czy cos w tym rodzaju.
+
+Any VEX-encoded GPR instruction with a 66H, F2H, or F3H prefix preceding VEX will #UD.
+Any VEX-encoded GPR instruction with a REX prefix proceeding VEX will #UD.
+VEX-encoded GPR instructions are not supported in real and virtual 8086 modes.

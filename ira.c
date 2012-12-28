@@ -128,6 +128,7 @@ void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, uint8_t reg, ui
 void *_ira_alloc_immediate_type_args( enum ira_immediate_data_type immediate_type, int *result );
 void *_ira_alloc_explicit_immediate_type_args( enum ira_immediate_data_type immediate_type, union ira_immediate_data_value immediate_data, int *result );
 void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, uint8_t flags, uint16_t memory_operand_size, ira_operand_size_provider memory_operand_size_provider, uint16_t register_operand_size, ira_operand_size_provider register_operand_size_provider, int *result );
+void *_ira_alloc_vvvv_decoding_args( enum ira_register_type reg_type, uint16_t reg_size, ira_operand_size_provider operand_size_provider, int *result );
 void *_ira_alloc_modm_decoding_args( ira_operand_size_provider size_directive_provider, uint16_t address_size, int *result );
 void *_ira_alloc_modm_vsib_decoding_args( uint8_t vir, uint8_t ivs, int *result );
 void *_ira_alloc_reg_addressing_args( int reg, uint8_t encoded_operand_size, uint8_t encoded_segment_register, int *result );
@@ -1052,6 +1053,17 @@ void *_ira_alloc_explicit_immediate_type_args( enum ira_immediate_data_type imme
 	return args;
 }
 
+void *_ira_alloc_vvvv_decoding_args( enum ira_register_type reg_type, uint16_t reg_size, ira_operand_size_provider operand_size_provider, int *result ) {
+	struct ira_register_decoding_args *args = (struct ira_register_decoding_args*)malloc( sizeof( struct ira_register_decoding_args ) );
+	if( args != NULL ) {
+		args->reg_type = reg_type;
+		args->reg_size = reg_size;
+		args->reg_operand_size_provider = operand_size_provider;
+	}
+	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
+	return args;
+}
+
 void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, uint8_t flags, uint16_t memory_operand_size, ira_operand_size_provider memory_operand_size_provider, uint16_t register_operand_size, ira_operand_size_provider register_operand_size_provider, int *result ) {
 	struct ira_modrm_decoding_args *args = (struct ira_modrm_decoding_args*)malloc( sizeof( struct ira_modrm_decoding_args ) );
 	if( args != NULL ) {
@@ -1339,6 +1351,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
 		operand_decoding->args = _ira_alloc_modrm_decoding_args( decoding & 0x0000000F, 0, (decoding & 0x000FFFF0) >> 4, NULL, (decoding & 0x000FFFF0) >> 4, NULL, &result );
 		break;
+	case _IRA_VEX_VVVV_REG_BASE:
+		operand_decoding->decoder = &_ira_opcode_decoder_VEX_vvvv;
+		operand_decoding->args = _ira_alloc_vvvv_decoding_args( decoding & 0x0000000F, (decoding & 0x000FFFF0) >> 4, NULL, &result );
+		break;
 	case _IRA_EXPLICIT_OPERAND_IB_BASE:
 	{
 		// TODO: Przerobic to, brzydko wyglada przekazywanie tej unii.
@@ -1351,10 +1367,6 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	case _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_seg_relative_offset;
 		operand_decoding->args = _ira_alloc_seg_relative_offset_args( _ira_common_decode_8b_operand_size( ( decoding & 0x0000FF00 ) >> 8 ), decoding & 0x000000FF, &result );
-		break;
-	case _IRA_VEX_VVVV_REG:
-		operand_decoding->decoder = &_ira_opcode_decoder_VEX_vvvv;
-		operand_decoding->args = NULL;
 		break;
 	case _IRA_OPERAND_IS4:
 		operand_decoding->decoder = &_ira_opcode_decoder_VEX_is4;
@@ -1781,13 +1793,16 @@ int _ira_opcode_decoder_VEX_is4( struct ira_diss_context *context, struct ira_in
 
 int _ira_opcode_decoder_VEX_vvvv( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 
+	struct ira_register_decoding_args *decoding_args = (struct ira_register_decoding_args *)args;
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
 	struct ira_decoded_fields *prefixes_fields = &(decoding_context->prefixes_fields);
 
+	uint16_t size = _ira_util_decode_operand_size( context, decoding_args->reg_size, decoding_args->reg_operand_size_provider );
+
 	operand->operand_type = IRA_REGISTER;
-	operand->reg.reg_size = ( prefixes_fields->l ) ? _IRA_OS_YMMWORD : _IRA_OS_XMMWORD;
-	operand->reg.reg_type = IRA_REG_SIMD;
+	operand->reg.reg_size = size;
+	operand->reg.reg_type = decoding_args->reg_type;
 	operand->reg.reg = prefixes_fields->vvvv;
 
 	return _IRA_INT_ERROR_NO_ERROR;

@@ -209,6 +209,15 @@ struct ira_explicit_immediate_type_args {
 
 typedef uint16_t (*ira_operand_size_provider)(struct ira_diss_context *context);
 
+struct ira_register_decoding_args {
+	// Register type.
+	enum ira_register_type reg_type;
+	// Register size.
+	uint16_t reg_size;
+	// Register size provider.
+	ira_operand_size_provider reg_operand_size_provider;
+};
+
 /* Structure that can be used to pass register type and its size to operand decoding function. */
 struct ira_modrm_decoding_args {
 	// Register type.
@@ -611,7 +620,8 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE	0x1A000000
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
 
-#define _IRA_VEX_VVVV_REG							0x1B000000
+#define _IRA_VEX_VVVV_REG_BASE									0x1B000000
+#define _IRA_VEX_VVVV_REG( reg_type, register_operand_size )	( _IRA_VEX_VVVV_REG_BASE | ( register_operand_size << 4 ) | reg_type )
 
 #define _IRA_OPERAND_IS4							0x1C000000
 
@@ -665,6 +675,10 @@ struct ira_instruction_desc {
 #define _IRA_OPERAND_MODRM_R_SIMD_W		( _IRA_OPERAND_MODRM_R_SIMD | _IRA_WRITE )
 #define _IRA_OPERAND_MODRM_M_SIMD		_IRA_OPERAND_RM(IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_EOSA, _IRA_RMF_M )
 #define _IRA_OPERAND_MODRM_M_SIMD_W		( _IRA_OPERAND_MODRM_M_SIMD | _IRA_WRITE )
+
+// Shorthands for VVVV addressing.
+
+#define _IRA_VEX_VVVV_SIMD_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, _IRA_OS_EOSA )
 
 /* Externals. */
 
