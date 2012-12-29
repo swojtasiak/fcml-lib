@@ -64,6 +64,37 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+
+	// 66 0F 38 F6 /r ADCX r32, r/m32
+	// REX.W + 66 0F 38 F6 /r ADCX r64,r/m64
+	_TEST32( "660f38f600 adcx eax,dword ptr [eax]", 0x66, 0x0F, 0x38, 0xF6, 0x00 );
+	_TEST64( "660f38f600 adcx eax,dword ptr [rax]", 0x66, 0x0F, 0x38, 0xF6, 0x00 );
+	_TEST64( "66480f38f600 adcx rax,qword ptr [rax]", 0x66, 0x48, 0x0F, 0x38, 0xF6, 0x00 );
+
+	// F3 0F 38 F6 /r ADOX r32, r/m32
+	// REX.w + F3 0F 38 F6 /r ADOX r64, r/m64
+	_TEST32( "f30f38f600 adox eax,dword ptr [eax]", 0xF3, 0x0F, 0x38, 0xF6, 0x00 );
+	_TEST64( "f30f38f600 adox eax,dword ptr [rax]", 0xF3, 0x0F, 0x38, 0xF6, 0x00 );
+	_TEST64( "f3480f38f600 adox rax,qword ptr [rax]", 0xF3, 0x48, 0x0F, 0x38, 0xF6, 0x00 );
+
+	// RDSEED
+	// 0F C7 /7 RDSEED r16
+	_TEST32( "660fc7f8 rdseed ax", 0x66, 0x0F, 0xC7, 0xF8 );
+	_TEST64( "660fc7f8 rdseed ax", 0x66, 0x0F, 0xC7, 0xF8 );
+	// 0F C7 /7 RDSEED r32
+	_TEST32( "0fc7f8 rdseed eax", 0x0F, 0xC7, 0xF8 );
+	_TEST64( "0fc7f8 rdseed eax", 0x0F, 0xC7, 0xF8 );
+	// REX.W + 0F C7 /7 RDSEED r64
+	_TEST64( "480fc7f8 rdseed rax", 0x48, 0x0F, 0xC7, 0xF8 );
+
+	// 0F 01 CA CLAC
+	_TEST32( "0f01ca clac", 0x0F, 0x01, 0xCA );
+	_TEST64( "0f01ca clac", 0x0F, 0x01, 0xCA );
+
+	// 0F 01 CB STAC
+	_TEST32( "0f01cb stac", 0x0F, 0x01, 0xCB );
+	_TEST64( "0f01cb stac", 0x0F, 0x01, 0xCB );
+
 	// HLE
 
 	// C6 F8 ib XABORT imm8

@@ -5096,6 +5096,7 @@ struct ira_opcode_desc _ira_opcode_desc_TZCNT[] = {
 
 /* END OF VEX-GPR */
 
+/* HLE */
 
 // TODO: Zaimplmentowac jak wrocimy do prefixow, lock rpne itd.
 // F2 XACQUIRE
@@ -5122,11 +5123,41 @@ struct ira_opcode_desc _ira_opcode_desc_XTEST[] = {
 	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD6 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
-/* HLE */
-
-
-
 /* END OF HLE */
+
+struct ira_opcode_desc _ira_opcode_desc_ADCX[] = {
+	// 66 0F 38 F6 /r ADCX r32, r/m32
+	{ NULL, 0x1010, 0x00EC8000, { 0x0F, 0x38, 0xF6 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// REX.W + 66 0F 38 F6 /r ADCX r64, r/m64
+	{ NULL, 0x1008, 0x00EC8000, { 0x0F, 0x38, 0xF6 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_ADOX[] = {
+	// F3 0F 38 F6 /r ADOX r32, r/m32
+	{ NULL, 0x4010, 0x00EC8000, { 0x0F, 0x38, 0xF6 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// REX.w + F3 0F 38 F6 /r ADOX r64, r/m64
+	{ NULL, 0x4008, 0x00EC8000, { 0x0F, 0x38, 0xF6 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_RDSEED[] = {
+	// 0F C7 /7 RDSEED r16
+	// 0F C7 /7 RDSEED r32
+	// REX.W + 0F C7 /7 RDSEED r64
+	{ NULL, 0x0000, 0x00DBB800, { 0x0F, 0xC7, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_EOSA, _IRA_EOS_UNDEFINED, _IRA_RMF_R ) | _IRA_WRITE, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_CLAC[] = {
+	// 0F 01 CA CLAC
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xCA }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_STAC[] = {
+	// 0F 01 CB STAC
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xCB }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+
+
 
 /*
 struct ira_instruction_desc _ira_instructions_desc[] = {
@@ -5643,5 +5674,11 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "xbegin", _ira_opcode_desc_XBEGIN ),
 		_IA_INSTRUCTION( "xend", _ira_opcode_desc_XEND ),
 		_IA_INSTRUCTION( "xtest", _ira_opcode_desc_XTEST ),
+		// END OF HLE.
+		_IA_INSTRUCTION( "adcx", _ira_opcode_desc_ADCX ),
+		_IA_INSTRUCTION( "adox", _ira_opcode_desc_ADOX ),
+		_IA_INSTRUCTION( "rdseed", _ira_opcode_desc_RDSEED ),
+		_IA_INSTRUCTION( "clac", _ira_opcode_desc_CLAC ),
+		_IA_INSTRUCTION( "stac", _ira_opcode_desc_STAC ),
 		{ NULL, 0, 0, NULL }
 };
