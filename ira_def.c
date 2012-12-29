@@ -994,6 +994,18 @@ struct ira_opcode_desc _ira_opcode_desc_FCMOV[] = {
 	{ "fcmovnu", 0x0001, 0x00D80001, { 0xDB, 0xD8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA }
 };
 
+// TODO:
+
+// D8 /2 FCOM m32fp
+// DC /2 FCOM m64fp
+// D8 D0+i FCOM ST(i)
+// D8 D1 FCOM
+// D8 /3 FCOMP m32fp
+// DC /3 FCOMP m64fp
+// D8 D8+i FCOMP ST(i)
+// D8 D9 FCOMP
+// DE D9 FCOMPP
+
 struct ira_opcode_desc _ira_opcode_desc_FCOM[] = {
 	// DB F0+i FCOMI ST, ST(i) Valid Valid Compare ST(0) with ST(i) and set status flags accordingly.
 	{ "fcomi", 0x0001, 0x00D80001, { 0xDB, 0xF0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, _IRA_OS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, 0 ), _IRA_NA, _IRA_NA },
@@ -4833,7 +4845,6 @@ struct ira_opcode_desc _ira_opcode_desc_VFMADDSUBPS[] = {
 
 struct ira_opcode_desc _ira_opcode_desc_VFMSUBADDPD[] = {
 	// VEX.DDS.128.66.0F38.W1 97 /r VFMSUBADD132PD xmm0,xmm1,xmm2/m128
-	// VEX.DDS.256.66.0F38.W1 97 /r VFMSUBADD132PD ymm0,ymm1,ymm2/m256
 	{ "vfmsubadd132pd", 0x1088, 0x00EC8000, { 0x0F, 0x38, 0x97 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA },
 	// VEX.DDS.128.66.0F38.W1 A7 /r VFMSUBADD213PD xmm0,xmm1,xmm2/m128
 	// VEX.DDS.256.66.0F38.W1 A7 /r VFMSUBADD213PD ymm0,ymm1,ymm2/m256
