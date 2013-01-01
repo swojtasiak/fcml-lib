@@ -64,6 +64,49 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// PADDQ
+	// 0F D4 /r1 PADDQ mm1,mm2/m64
+	_TEST64( "0fd400 paddq mm0,qword ptr [rax]", 0x0F, 0xD4, 0x00 );
+	_TEST32( "0fd4c1 paddq mm0,mm1", 0x0F, 0xD4, 0xC1 );
+	// 66 0F D4 /r PADDQ xmm1,xmm2/m128
+	_TEST64( "660fd400 paddq xmm0,oword ptr [rax]", 0x66, 0x0F, 0xD4, 0x00 );
+	_TEST32( "660fd4c1 paddq xmm0,xmm1", 0x66, 0x0F, 0xD4, 0xC1 );
+	// VEX.NDS.128.66.0F.WIG D4 /r VPADDQ xmm1,xmm2,xmm3/m128
+	_TEST64_VEX( "c4e179d400 vpaddq xmm0,xmm0,oword ptr [rax]", 0xC4, 0xE1, 0x79, 0xD4, 0x00 );
+	_TEST32_VEX( "c4e179d4c1 vpaddq xmm0,xmm0,xmm1", 0xC4, 0xE1, 0x79, 0xD4, 0xC1 );
+
+	// MOVNTSD
+	// MOVNTSD mem64, xmm F2 0F 2B /r
+	_TEST32( "f20f2b00 movntsd qword ptr [eax],xmm0", 0xF2, 0x0F, 0x2B, 0x00 );
+	_TEST64( "f20f2b00 movntsd qword ptr [rax],xmm0", 0xF2, 0x0F, 0x2B, 0x00 );
+	_TEST32( "FAIL", 0xF2, 0x0F, 0x2B, 0xC0 );
+
+	// MOVNTSS
+	// MOVNTSS mem32, xmm F3 0F 2B /r
+	_TEST32( "f30f2b00 movntss dword ptr [eax],xmm0", 0xF3, 0x0F, 0x2B, 0x00 );
+	_TEST64( "f30f2b00 movntss dword ptr [rax],xmm0", 0xF3, 0x0F, 0x2B, 0x00 );
+	_TEST32( "FAIL", 0xF3, 0x0F, 0x2B, 0xC0 );
+
+	// INSERTQ
+	// INSERTQ xmm1, xmm2, imm8, imm8 F2 0F 78 /r ib ib
+	_TEST32( "f20f78da0102 insertq xmm3,xmm2,01h,02h", 0xF2, 0x0F, 0x78, 0xDA, 0x01, 0x02 );
+	_TEST64( "f20f78da0102 insertq xmm3,xmm2,01h,02h", 0xF2, 0x0F, 0x78, 0xDA, 0x01, 0x02 );
+	// INSERTQ xmm1, xmm2 F2 0F 79 /r
+	_TEST32( "f20f79da insertq xmm3,xmm2", 0xF2, 0x0F, 0x79, 0xDA );
+	_TEST64( "f20f79da insertq xmm3,xmm2", 0xF2, 0x0F, 0x79, 0xDA );
+
+	// EXTRQ
+	// EXTRQ xmm1,imm8,imm8 66 0F 78 /0 ib ib
+	_TEST32( "660f78c10102 extrq xmm1,01h,02h", 0x66, 0x0F, 0x78, 0xC1, 0x01, 0x02 );
+	_TEST32( "660f78c20102 extrq xmm2,01h,02h", 0x66, 0x0F, 0x78, 0xC2, 0x01, 0x02 );
+	_TEST64( "660f78c10102 extrq xmm1,01h,02h", 0x66, 0x0F, 0x78, 0xC1, 0x01, 0x02 );
+	_TEST64( "660f78c20102 extrq xmm2,01h,02h", 0x66, 0x0F, 0x78, 0xC2, 0x01, 0x02 );
+	// EXTRQ xmm1,xmm2 66 0F 79 /r
+	_TEST32( "660f79c5 extrq xmm0,xmm5", 0x66, 0x0F, 0x79, 0xC5 );
+	_TEST32( "660f79e1 extrq xmm4,xmm1", 0x66, 0x0F, 0x79, 0xE1 );
+	_TEST64( "660f79c5 extrq xmm0,xmm5", 0x66, 0x0F, 0x79, 0xC5 );
+	_TEST64( "660f79e1 extrq xmm4,xmm1", 0x66, 0x0F, 0x79, 0xE1 );
+
 	// VMSAVE
 	// VMSAVE rAX 0F 01 DB Save additional guest state to VMCB.
 	_TEST32_VEX( "0f01db vmsave eax", 0x0F, 0x01, 0xDB );
@@ -1301,6 +1344,14 @@ void test(void) {
 	// 0F 01 F8 SWAPGS NP Valid Invalid Exchanges the current GS base register value with the value contained in MSR address C0000102H.
 	_TEST64( "0f01f8 swapgs", 0x0F, 0x01, 0xF8 );
 	_TEST32( "FAIL", 0x0F, 0x01, 0xF8 );
+
+	// SUBSS
+	// F3 0F 5C /r SUBSS xmm1,xmm2/m32
+	_TEST32( "f30f5c1401 subss xmm2,dword ptr [ecx+eax]", 0xF3, 0x0F, 0x5C, 0x14, 0x01 );
+	_TEST64( "f30f5c1401 subss xmm2,dword ptr [rcx+rax]", 0xF3, 0x0F, 0x5C, 0x14, 0x01 );
+	// VEX.NDS.LIG.F3.0F.WIG 5C /r VSUBSS xmm1,xmm2,xmm3/m32
+	_TEST32_VEX( "c4e1525c1401 vsubss xmm2,xmm5,dword ptr [ecx+eax]", 0xC4, 0xE1, 0x52, 0x5C, 0x14, 0x01 );
+	_TEST32_VEX( "c5da5c1401 vsubss xmm2,xmm4,dword ptr [ecx+eax]", 0xC5, 0xDA, 0x5C, 0x14, 0x01 );
 
 	// SUBSD
 	// F2 0F 5C /r SUBSD xmm1,xmm2/m64 RM V/V SSE2 Subtracts the low double-precision floatingpoint values in xmm2/mem64 from xmm1.
@@ -3810,9 +3861,9 @@ void test(void) {
 	_TEST32( "f30f59d8 mulss xmm3,xmm0", 0xF3, 0x0F, 0x59, 0xD8 );
 	_TEST64( "f30f5910 mulss xmm2,dword ptr [rax]", 0xF3, 0x0F, 0x59, 0x10 );
 	// VEX.NDS.128.F3.0F 59 /r VMULSS xmm1,xmm2,xmm3/m32
-	_TEST64_VEX( "c4e16259d8 vmulsd xmm3,xmm3,xmm0", 0xC4, 0xE1, 0x62, 0x59, 0xD8 );
-	_TEST32_VEX( "c4e14259d8 vmulsd xmm3,xmm7,xmm0", 0xC4, 0xE1, 0x42, 0x59, 0xD8 );
-	_TEST32_VEX( "c4e17a5918 vmulsd xmm3,xmm0,dword ptr [eax]", 0xC4, 0xE1, 0x7A, 0x59, 0x18 );
+	_TEST64_VEX( "c4e16259d8 vmulss xmm3,xmm3,xmm0", 0xC4, 0xE1, 0x62, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e14259d8 vmulss xmm3,xmm7,xmm0", 0xC4, 0xE1, 0x42, 0x59, 0xD8 );
+	_TEST32_VEX( "c4e17a5918 vmulss xmm3,xmm0,dword ptr [eax]", 0xC4, 0xE1, 0x7A, 0x59, 0x18 );
 
 	// MULSD
 	//F2 0F 59 /r MULSD xmm1,xmm2/m64

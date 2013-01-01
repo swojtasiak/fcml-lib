@@ -946,6 +946,13 @@ struct ira_opcode_desc _ira_opcode_desc_EXTRACTPS[] = {
 	{ "vextractps", 0x11C0, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, _IRA_OPERAND_MODRM_RM_32_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_IB, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_EXTRQ[] = {
+	// EXTRQ xmm1,imm8,imm8 66 0F 78 /0 ib ib
+	{ NULL, 0x1000, 0x00DB8000, { 0x0F, 0x78, 0x00 }, _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_OPERAND_IB, _IRA_OPERAND_IB, _IRA_NA },
+	// EXTRQ xmm1,xmm2 66 0F 79 /r
+	{ NULL, 0x1000, 0x00DA8000, { 0x0F, 0x79, 0x00 }, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_F2XM1[] = {
 	// D9 F0 F2XM1 Valid Valid Replace ST(0) with (2ST(0) – 1).
 	{ NULL, 0x0001, 0x00D80000, { 0xD9, 0xF0, 0x17 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
@@ -1511,6 +1518,13 @@ struct ira_opcode_desc _ira_opcode_desc_INSERTPS[] = {
 	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x021 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_OPERAND_IB, _IRA_NA },
 	// VEX.NDS.128.66.0F3A 21 /r ib VINSERTPS xmm1,xmm2,xmm3/m32,imm8
 	{ "vinsertps", 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x21 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_OPERAND_IB }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_INSERTQ[] = {
+	// INSERTQ xmm1, xmm2, imm8, imm8 F2 0F 78 /r ib ib
+	{ NULL, 0x2000, 0x00DA8000, { 0x0F, 0x78, 0x00 }, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_OPERAND_IB, _IRA_OPERAND_IB },
+	// INSERTQ xmm1, xmm2 F2 0F 79 /r
+	{ NULL, 0x2000, 0x00DA8000, { 0x0F, 0x79, 0x00 }, _IRA_OPERAND_MODRM_R_XMM, _IRA_OPERAND_RM( IRA_REG_SIMD, _IRA_EOS_XMMWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_VINSERTF128[] = {
@@ -2136,6 +2150,16 @@ struct ira_opcode_desc _ira_opcode_desc_MOVNTPS[] = {
 	{ "vmovntps", 0x01C0, 0x80D88000, { 0x0F, 0x2B, 0x00 }, _IRA_OPERAND_MODRM_M_128_W, _IRA_OPERAND_MODRM_R_XMM, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_MOVNTSD[] = {
+	// MOVNTSD mem64, xmm F2 0F 2B /r
+	{ NULL, 0x2000, 0x80D88000, { 0x0F, 0x2B, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM , _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_MOVNTSS[] = {
+	// MOVNTSS mem32, xmm F3 0F 2B /r
+	{ NULL, 0x4000, 0x80D88000, { 0x0F, 0x2B, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_DWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_XMM , _IRA_NA, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_MOVNTQ[] = {
 	// 0F E7 /r MOVNTQ m64, mm A Valid Valid Move quadword from mm to m64 using non-temporal hint.
 	{ NULL, 0x0001, 0x80D88000, { 0x0F, 0xE7, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_QWORD, _IRA_RMF_M ) | _IRA_WRITE, _IRA_OPERAND_MODRM_R_MMX , _IRA_NA, _IRA_NA },
@@ -2324,7 +2348,7 @@ struct ira_opcode_desc _ira_opcode_desc_MULSS[] = {
 	// F3 0F 59 /r MULSS xmm1, xmm2/m32 A Valid Valid Multiply the low singleprecision floating-point value in xmm2/mem by the low single-precision floating-point value in xmm1.
 	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x59, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
 	// VEX.NDS.128.F3.0F 59 /r VMULSS xmm1,xmm2,xmm3/m32
-	{ "vmulsd", 0x40C0, 0x00D88000, { 0x0F, 0x59, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD_32, _IRA_NA }
+	{ "vmulss", 0x40C0, 0x00D88000, { 0x0F, 0x59, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD_32, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_MWAIT[] = {
@@ -2582,6 +2606,15 @@ struct ira_opcode_desc _ira_opcode_desc_PADDUS[] = {
 	{ "vpaddusb", 0x10A0, 0x00D88000, { 0x0F, 0xDC, 0x00 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA },
 	// VEX.NDS.256.66.0F.WIG DD /r VPADDUSW ymm1,ymm2,ymm3/m256
 	{ "vpaddusw", 0x10A0, 0x00D88000, { 0x0F, 0xDD, 0x00 }, _IRA_OPERAND_MODRM_R_YMM_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_YMM_256, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_PADDQ[] = {
+	// 0F D4 /r1 PADDQ mm1,mm2/m64
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xD4, 0x00 }, _IRA_OPERAND_MODRM_R_MMX_W, _IRA_OPERAND_MODRM_RM_MMX, _IRA_NA, _IRA_NA },
+	// 66 0F D4 /r PADDQ xmm1,xmm2/m128
+	{ NULL, 0x1000, 0x00D88000, { 0x0F, 0xD4, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F.WIG D4 /r VPADDQ xmm1,xmm2,xmm3/m128
+	{ "vpaddq", 0x10C0, 0x00D88000, { 0x0F, 0xD4, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_PALIGNR[] = {
@@ -4285,6 +4318,13 @@ struct ira_opcode_desc _ira_opcode_desc_SUBSD[] = {
 	{ "vsubsd", 0x20C0, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD_64, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_SUBSS[] = {
+	// F3 0F 5C /r SUBSS xmm1,xmm2/m32
+	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA },
+	// VEX.NDS.LIG.F3.0F.WIG 5C /r VSUBSS xmm1,xmm2,xmm3/m32
+	{ "vsubss", 0x40C0, 0x00D88000, { 0x0F, 0x5C, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD_32, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_SWAPGS[] = {
 	// 0F 01 F8 SWAPGS NP Valid Invalid Exchanges the current GS base register value with the value contained in MSR address C0000102H.
 	{ NULL, 0x0000, 0x00AC0000, { 0x0F, 0x01, 0xF8 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
@@ -5437,6 +5477,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "vextractf128", _ira_opcode_desc_VEXTRACTF128),
 		_IA_INSTRUCTION( "enter", _ira_opcode_desc_ENTER),
 		_IA_INSTRUCTION( "extractps", _ira_opcode_desc_EXTRACTPS),
+		_IA_INSTRUCTION( "extrq", _ira_opcode_desc_EXTRQ),
 		_IA_INSTRUCTION( "f2xm1", _ira_opcode_desc_F2XM1),
 		_IA_INSTRUCTION( "fabs", _ira_opcode_desc_FABS),
 		_IA_INSTRUCTION( "fadd", _ira_opcode_desc_FADD),
@@ -5500,6 +5541,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "inc", _ira_opcode_desc_INC ),
 		_IA_INSTRUCTION( "ins", _ira_opcode_desc_INS ),
 		_IA_INSTRUCTION( "insertps", _ira_opcode_desc_INSERTPS ),
+		_IA_INSTRUCTION( "insertq", _ira_opcode_desc_INSERTQ ),
 		_IA_INSTRUCTION( "vinsertf128", _ira_opcode_desc_VINSERTF128 ),
 		_IA_INSTRUCTION( "int", _ira_opcode_desc_INT ),
 		_IA_INSTRUCTION( "invd", _ira_opcode_desc_INVD ),
@@ -5567,6 +5609,8 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "movnti", _ira_opcode_desc_MOVNTI),
 		_IA_INSTRUCTION( "movntpd", _ira_opcode_desc_MOVNTPD),
 		_IA_INSTRUCTION( "movntps", _ira_opcode_desc_MOVNTPS),
+		_IA_INSTRUCTION( "movntsd", _ira_opcode_desc_MOVNTSD),
+		_IA_INSTRUCTION( "movntss", _ira_opcode_desc_MOVNTSS),
 		_IA_INSTRUCTION( "movntq", _ira_opcode_desc_MOVNTQ),
 		_IA_INSTRUCTION( "movq", _ira_opcode_desc_MOVQ),
 		_IA_INSTRUCTION( "movq2dq", _ira_opcode_desc_MOVQ2DQ),
@@ -5601,6 +5645,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_PADD),
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_PADDS),
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_PADDUS),
+		_IA_INSTRUCTION( "paddq", _ira_opcode_desc_PADDQ),
 		_IA_INSTRUCTION( "palignr", _ira_opcode_desc_PALIGNR),
 		_IA_INSTRUCTION( "pand", _ira_opcode_desc_PAND),
 		_IA_INSTRUCTION( "pandn", _ira_opcode_desc_PANDN),
@@ -5734,6 +5779,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "subpd", _ira_opcode_desc_SUBPD),
 		_IA_INSTRUCTION( "subps", _ira_opcode_desc_SUBPS),
 		_IA_INSTRUCTION( "subsd", _ira_opcode_desc_SUBSD),
+		_IA_INSTRUCTION( "subss", _ira_opcode_desc_SUBSS),
 		_IA_INSTRUCTION( "swapgs", _ira_opcode_desc_SWAPGS),
 		_IA_INSTRUCTION( "syscall", _ira_opcode_desc_SYSCALL),
 		_IA_INSTRUCTION( "sysenter", _ira_opcode_desc_SYSENTER),
