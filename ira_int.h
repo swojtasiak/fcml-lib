@@ -89,6 +89,7 @@ struct ira_decoded_mod_rm {
 // interpretation is needed.
 struct ira_decoded_fields {
 	uint8_t is_rex;
+	uint8_t is_xop;
 	uint8_t is_vex;
 	uint8_t vex_prefix;
 	uint8_t r;
@@ -393,6 +394,7 @@ struct ira_instruction_desc {
 #define _IRA_PREFIX_VEX_REQ(x)				_IRA_GET_BIT(x,7)
 #define _IRA_PREFIX_VEX_VVVV(x)				_IRA_GET_BIT(x,8)
 #define _IRA_PREFIX_VEX_L_IGNORE_OS(x)		_IRA_GET_BIT(x,9)
+#define _IRA_PREFIX_XOP_REQ(x)				_IRA_GET_BIT(x,10)
 #define _IRA_PREFIX_MANDATORY_66(x) 		_IRA_GET_BIT(x,12)
 #define _IRA_PREFIX_MANDATORY_F2(x) 		_IRA_GET_BIT(x,13)
 #define _IRA_PREFIX_MANDATORY_F3(x) 		_IRA_GET_BIT(x,14)
@@ -679,6 +681,8 @@ struct ira_instruction_desc {
 // Shorthands for VVVV addressing.
 
 #define _IRA_VEX_VVVV_SIMD_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, _IRA_OS_EOSA )
+#define _IRA_VEX_VVVV_XMM_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, _IRA_OS_XMMWORD )
+#define _IRA_VEX_VVVV_YMM_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, _IRA_OS_YMMWORD )
 
 /* Externals. */
 

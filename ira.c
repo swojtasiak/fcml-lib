@@ -357,6 +357,12 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 			continue;
 		}
 
+		// XOP required.
+		if( _IRA_PREFIX_XOP_REQ( current->prefixes_flags ) && !prefixes_fields->is_xop ) {
+			// VEX prefix is required.
+			continue;
+		}
+
 		// Check if VVVV is set to 1111 if needed.
 		if( _IRA_PREFIX_VEX_VVVV( current->prefixes_flags ) && prefixes_fields->vvvv != 0 ) {
 			continue;
@@ -538,11 +544,12 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
                 case 0x67:
                     prefix_type = IRA_GROUP_4;
                     break;
-                // VEX prefixes.
+                // VEX/XOP prefixes.
                 case 0xC5:
                 	vex_prefix_size = 1;
 					prefix_type = IRA_VEX;
 					break;
+                case 0x8F:
                 case 0xC4:
                 	vex_prefix_size = 2;
                 	prefix_type = IRA_VEX;
@@ -593,6 +600,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 
 					// Decodes VEX fields.
 					switch( prefix ) {
+					case 0x8F:
 					case 0xC4:
 						prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
 						prefixes_fields->x = _IRA_VEX_X(prefix_desc->vex_bytes[0]);
@@ -615,7 +623,11 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 						prefix_type = 0;
 					}
 
+					// TODO: Tymczasowo, dopoki ni pojdzie refaktor.
 					prefixes_fields->vex_prefix = prefix;
+					if( prefix == 0x8F ) {
+						prefixes_fields->is_xop = _IRA_TRUE;
+					}
 					prefixes_fields->is_vex = _IRA_TRUE;
 					prefixes_fields->is_rex = _IRA_FALSE;
 
@@ -987,7 +999,7 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 		order++;
 	}
 
-	if( _IRA_PREFIX_VEX_REQ( prefixes ) ) {
+	if( _IRA_PREFIX_VEX_REQ( prefixes ) || _IRA_PREFIX_XOP_REQ( prefixes ) ) {
 		order++;
 	}
 

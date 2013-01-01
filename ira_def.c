@@ -157,33 +157,45 @@ struct ira_opcode_desc _ira_opcode_desc_ADDSUBPS[] = {
 };
 
 struct ira_opcode_desc _ira_opcode_desc_AESDEC[] = {
-	// 66 0F 38 DE /r AESDEC xmm1,xmm2/m128 A Valid Valid Perform one round of an AES decryption flow, using the Equivalent Inverse Cipher, operating on a 128-bit data (state) from xmm1 with a 128-bit round key from xmm2/m128.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDE }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	// 66 0F 38 DE /r AESDEC xmm1,xmm2/m128
+	{ NULL, 0x1000, 0x00EC8000, { 0x0F, 0x38, 0xDE }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG DE /r VAESDEC xmm1,xmm2,xmm3/m128
+	{ "vaesdec", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0xDE }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_AESDECLAST[] = {
-	// 66 0F 38 DF /r AESDECLAST xmm1,xmm2/m128 A Valid Valid Perform the last round of an AES decryption flow, using the Equivalent Inverse Cipher, operating on a 128-bit data (state) from xmm1 with a 128-bit round key from xmm2/m128.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDF }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	// 66 0F 38 DF /r AESDECLAST xmm1,xmm2/m128
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDF }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG DF /r VAESDECLAST xmm1,xmm2,xmm3/m128
+	{ "vaesdeclast", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0xDF }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_AESENC[] = {
 	// 66 0F 38 DC /r AESENC xmm1, xmm2/m128 A Valid Valid Perform one round of an AES encryption flow, operating on a 128-bit data (state) from xmm1 with a 128-bit round key from xmm2/m128.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDC }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDC }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG DC /r VAESENC xmm1, xmm2, xmm3/m128
+	{ "vaesenc", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0xDC }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_AESENCLAST[] = {
 	//66 0F 38 DD /r AESENCLAST xmm1, xmm2/m128 A Valid Valid Perform the last round of an AES encryption flow, operating on a 128-bit data (state) from xmm1 with a 128-bit round key from xmm2/m128.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDD }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDD }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.NDS.128.66.0F38.WIG DD /r VAESENCLAST xmm1,xmm2,xmm3/m128
+	{ "vaesenclast", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0xDD }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_AESIMC[] = {
 	// 66 0F 38 DB /r AESIMC xmm1, xmm2/m128 A Valid Valid Perform the InvMixColumn transformation on a 128-bit round key from xmm2/m128 and store the result in xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDB }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0xDB }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA },
+	// VEX.128.66.0F38.WIG DB /r VAESIMC xmm1, xmm2/m128
+	{ "vaesimc", 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0xDB }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_AESKEYGENASSIST[] = {
 	// 66 0F 3A DF /r ib AESKEYGENASSIST xmm1, xmm2/m128, imm8 A Valid Valid Assist in AES round key generation using an 8 bits Round Constant (RCON) specified in the immediate byte, operating on 128 bits of data specified in xmm2/m128 and stores the result in xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0xDF }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
+	{ NULL, 0x1000, 0x00EC8000, { 0x0F, 0x3A, 0xDF }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA },
+	// VEX.128.66.0F3A.WIG DF /r ib VAESKEYGENASSIST xmm1,xmm2/m128,imm8
+	{ "vaeskeygenassist", 0x11C0, 0x00EC8000, { 0x0F, 0x3A, 0xDF }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_AND[] = {
@@ -442,6 +454,11 @@ struct ira_opcode_desc _ira_opcode_desc_CLI[] = {
 	{ NULL, 0x0001, 0x00C40000, { 0xFA, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_CLGI[] = {
+	// CLGI 0F 01 DD Clears the global interrupt flag (GIF).
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDD }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_CLTS[] = {
 	// 0F 06 CLTS A Valid Valid Clears TS flag in CR0.
 	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0x06, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
@@ -452,7 +469,7 @@ struct ira_opcode_desc _ira_opcode_desc_CMC[] = {
 	{ NULL, 0x0001, 0x00C40000, { 0xF5, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
-struct ira_opcode_desc _ira_opcode_desc_CMOVA[] = {
+struct ira_opcode_desc _ira_opcode_desc_CMOV[] = {
 	// 0F 4X /r CMOVA r16, r/m16 A Valid Valid Move if above (CF=0 and ZF=0).
 	// 0F 4X /r CMOVA r32, r/m32 A Valid Valid Move if above (CF=0 and ZF=0).
 	// REX.W + 0F 4X /r CMOVA r64, r/m64 A Valid N.E. Move if above (CF=0 and ZF=0).
@@ -566,6 +583,9 @@ struct ira_opcode_desc _ira_opcode_desc_CMPS[] = {
 			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_SI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ),
 			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, _IRA_EOS_EOSA,_IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
 			_IRA_NA, _IRA_NA }
+	// CMPSB
+	// CMPSW
+	// CMPSQ
 };
 
 // TODO Jak bedzie czas doimplementowac Pseudo-Op patrz: dokumentacja VAX.
@@ -1517,6 +1537,11 @@ struct ira_opcode_desc _ira_opcode_desc_INVLPG[] = {
 	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_MODRM_M_UNDEF, _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
+struct ira_opcode_desc _ira_opcode_desc_INVLPGA[] = {
+	// INVLPGA rAX, ECX 0F 01 DF
+	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0x01, 0xDF }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, _IRA_OS_EASA ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_ECX, _IRA_OS_DWORD ), _IRA_NA, _IRA_NA },
+};
+
 struct ira_opcode_desc _ira_opcode_desc_INVPCID[] = {
 	// 66 0F 38 82 /r INVPCID r32, m128 RM NE/V INVPCID Invalidates entries in the TLBs and paging-structure caches based on invalidation type in r32 and descriptor in m128.
 	{ NULL, 0x1001, 0x806C8000, { 0x0F, 0x38, 0x82 }, _IRA_OPERAND_MODRM_R_32, _IRA_OPERAND_RM( IRA_NO_REG, _IRA_EOS_UNDEFINED, _IRA_EOS_OWORD, _IRA_RMF_M ), _IRA_NA, _IRA_NA },
@@ -1606,6 +1631,13 @@ struct ira_opcode_desc _ira_opcode_desc_LFENCE[] = {
 	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0xAE, 0xE8 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_LLWPCB[] = {
+	// LLWPCB reg32 8F RXB.09 0.1111.0.00 12 /0
+	{ NULL, 0x0450, 0x00DB8000, { 0x09, 0x12, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// LLWPCB reg64 8F RXB.09 1.1111.0.00 12 /0
+	{ NULL, 0x0448, 0x00DB8000, { 0x09, 0x12, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_LGDT[] = {
 	// 0F 01 /2 LGDT m16&32 A N.E. Valid Load m into GDTR.
 	{ NULL, 0x0001, 0x03D99000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_DWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA },
@@ -1652,6 +1684,26 @@ struct ira_opcode_desc _ira_opcode_desc_LOOP[] = {
 	{ "loope", 0x0001, 0x00C40000, { 0xE1, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA },
 	// E0 cb LOOPNE rel8 A Valid Valid Decrement count; jump short if count 0 and ZF = 0.
 	{ "loopne", 0x0001, 0x00C40000, { 0xE0, 0x00, 0x00 }, _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8, _IRA_NA, _IRA_NA, _IRA_NA }
+	// TODO: Alternatywne dla assemblera.
+	// LOOP rel8off E2 cb Decrement rCX, then jump short if rCX is not 0.
+	// LOOPE rel8off E1 cb Decrement rCX, then jump short if rCX is not 0 and ZF is 1.
+	// LOOPNE rel8off E0 cb Decrement rCX, then Jump short if rCX is not 0 and ZF is 0.
+	// LOOPNZ rel8off E0 cb Decrement rCX, then Jump short if rCX is not 0 and ZF is 0.
+	// LOOPZ rel8off E1 cb Decrement rCX, then Jump short if rCX is not 0 and ZF is 1.
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LWPINS[] = {
+	// LWPINS reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /0 /imm32
+	{ NULL, 0x0450, 0x00D98000, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_OPERAND_ID, _IRA_NA },
+	// LWPINS reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /0 /imm32
+	{ NULL, 0x0448, 0x00D98000, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_OPERAND_ID, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_LWPVAL[] = {
+	// LWPVAL reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /1 /imm32
+	{ NULL, 0x0450, 0x00D98800, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_OPERAND_ID, _IRA_NA },
+	// LWPVAL reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /1 /imm32
+	{ NULL, 0x0448, 0x00D98800, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_OPERAND_ID, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_LSL[] = {
@@ -4001,7 +4053,6 @@ struct ira_opcode_desc _ira_opcode_desc_SCAS[] = {
 	// REX.W + AF SCASQ NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
 };
 
-
 struct ira_opcode_desc _ira_opcode_desc_SETcc[] = {
 	// 0F 97 SETA r/m8 M Valid Valid Set byte if above (CF=0 and ZF=0).
 	// REX + 0F 97 SETA r/m8*
@@ -4037,6 +4088,18 @@ struct ira_opcode_desc _ira_opcode_desc_SHRD[] = {
 	// 0F AD SHRD r/m32, r32, CL MRC Valid Valid Shift r/m32 to right CL places while shifting bits from r32 in from the left.
 	// REX.W + 0F AD SHRD r/m64, r64, CL MRC Valid N.E. Shift r/m64 to right CL places while shifting bits from r64 in from the left.
 	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xAD, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, _IRA_OS_BYTE ), _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SKINIT[] = {
+	// SKINIT EAX 0F 01 DE Secure initialization and jump, with attestation.
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDE }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, _IRA_OS_DWORD ), _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
+struct ira_opcode_desc _ira_opcode_desc_SLWPCB[] = {
+	// SLWPCB reg32 8F RXB.09 0.1111.0.00 12 /1
+	{ NULL, 0x0450, 0x00DB8800, { 0x09, 0x12, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA, _IRA_NA },
+	// SLWPCB reg64 8F RXB.09 1.1111.0.00 12 /1
+	{ NULL, 0x0448, 0x00DB8800, { 0x09, 0x12, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_SHUFPD[] = {
@@ -4114,6 +4177,11 @@ struct ira_opcode_desc _ira_opcode_desc_STD[] = {
 	{ NULL, 0x0000, 0x00C40000, { 0xFD, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_STGI[] = {
+	// STGI 0F 01 DC Sets the global interrupt flag (GIF).
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDC }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
+};
+
 struct ira_opcode_desc _ira_opcode_desc_STI[] = {
 	// FB STI NP Valid Valid Set interrupt flag; external, maskable interrupts enabled at the end of the next instruction.
 	{ NULL, 0x0000, 0x00C40000, { 0xFB, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
@@ -4185,6 +4253,13 @@ struct ira_opcode_desc _ira_opcode_desc_SUB[] = {
 	// 2B /r SUB r32, r/m32 RM Valid Valid Subtract r/m32 from r32.
 	// REX.W + 2B /r SUB r64, r/m64 RM Valid N.E. Subtract r/m64 from r64.
 	{ NULL, 0x0001, 0x00C48000, { 0x2B, 0x00, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_T1MSKC[] = {
+	// T1MSKC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /7
+	{ NULL, 0x0450, 0x00D9B800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// T1MSKC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /7
+	{ NULL, 0x0448, 0x00D9B800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_SUBPD[] = {
@@ -4337,6 +4412,26 @@ struct ira_opcode_desc _ira_opcode_desc_VERR[] = {
 struct ira_opcode_desc _ira_opcode_desc_VERW[] = {
 	// 0F 00 /5 VERW r/m16 M Valid Valid Set ZF=1 if segment specified with r/m16 can be written.
 	{ NULL, 0x0000, 0x00D9A800, { 0x0F, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VMLOAD[] = {
+	// VMLOAD rAX 0F 01 DA Load additional state from VMCB.
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDA }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, _IRA_OS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VMMCALL[] = {
+	// VMMCALL 0F 01 D9 Explicit communication with the VMM.
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD9 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VMRUN[] = {
+	// VMRUN rAX 0F 01 D8 Performs a world-switch to guest.
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD8 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, _IRA_OS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VMSAVE[] = {
+	// VMSAVE rAX 0F 01 DB Save additional guest state to VMCB.
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDB }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, _IRA_OS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_VPERMILPD[] = {
@@ -4499,9 +4594,9 @@ struct ira_opcode_desc _ira_opcode_desc_WRFSBASE[] = {
 	// REX.W + F3 0F AE /2 WRFSBASE r64 M V/I FSGSBASE Load the FS base address with the 64-bit value in the source register.
 	{ NULL, 0x4008, 0x049B9000, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA },
 	// F3 0F AE /3 WRGSBASE r32 M V/I FSGSBASE Load the GS base address with the 32-bit value in the source register.
-	{ "fsgsbase", 0x4010, 0x03DB9800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA },
+	{ "wrgsbase", 0x4010, 0x03DB9800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_DWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA },
 	// REX.W + F3 0F AE /3 WRGSBASE r64 M V/I FSGSBASE Load the GS base address with the 64-bit value in the source register.
-	{ "fsgsbase", 0x4008, 0x049B9800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA }
+	{ "wrgsbase", 0x4008, 0x049B9800, { 0x0F, 0xAE, 0x00 }, _IRA_OPERAND_RM( IRA_REG_GPR, _IRA_EOS_QWORD, _IRA_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA , _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_WRMSR[] = {
@@ -5007,6 +5102,10 @@ struct ira_opcode_desc _ira_opcode_desc_ANDN[] = {
 	{ NULL, 0x02C8, 0x00EC8000, { 0x0F, 0x38, 0xF2 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
 };
 
+// TODO: BEXTR taki opcoe jest w AMD, moe dodac w assemblerze jako synonim.
+// BEXTR reg32, reg/mem32, reg32 C4 RXB.02 0.cntl.0.00 F7 /r
+// BEXTR reg64, reg/mem64, reg64 C4 RXB.02 1.cntl.0.00 F7 /r
+
 struct ira_opcode_desc _ira_opcode_desc_BEXR[] = {
 	// VEX.NDS1.LZ.0F38.W0 F7 /r BEXR r32a, r/m32, r32b
 	{ NULL, 0x02D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_NA },
@@ -5014,11 +5113,67 @@ struct ira_opcode_desc _ira_opcode_desc_BEXR[] = {
 	{ NULL, 0x02C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_NA }
 };
 
+struct ira_opcode_desc _ira_opcode_desc_BEXTR[] = {
+	// BEXTR reg32, reg/mem32, imm32 8F RXB.0A 0.1111.0.00 10 /r /id
+	{ NULL, 0x0550, 0x00D88000, { 0x0A, 0x10, 0x00 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_OPERAND_ID, _IRA_NA },
+	// BEXTR reg64, reg/mem64, imm32 8F RXB.0A 1.1111.0.00 10 /r /id
+	{ NULL, 0x0548, 0x00D88000, { 0x0A, 0x10, 0x00 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_OPERAND_ID, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLCFILL[] = {
+	// BLCFILL reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /1
+	{ NULL, 0x0450, 0x00D88000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// BLCFILL reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /1
+	{ NULL, 0x0448, 0x00D88000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLCI[] = {
+	// BLCI reg32, reg/mem32 8F RXB.09 0.dest.0.00 02 /6
+	{ NULL, 0x0450, 0x00D9B000, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// BLCI reg64, reg/mem64 8F RXB.09 1.dest.0.00 02 /6
+	{ NULL, 0x0448, 0x00D9B000, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLCIC[] = {
+	// BLCIC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /5
+	{ NULL, 0x0450, 0x00D9A800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// BLCIC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /5
+	{ NULL, 0x0448, 0x00D9A800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLCMSK[] = {
+	// BLCMSK reg32, reg/mem32 8F RXB.09 0.dest.0.00 02 /1
+	{ NULL, 0x0450, 0x00D98800, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// BLCMSK reg64, reg/mem64 8F RXB.09 1.dest.0.00 02 /1
+	{ NULL, 0x0448, 0x00D98800, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLCS[] = {
+	// BLCS reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /3
+	{ NULL, 0x0450, 0x00D99800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// BLCS reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /3
+	{ NULL, 0x0448, 0x00D99800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLSFILL[] = {
+	// BLSFILL reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /2
+	{ NULL, 0x0450, 0x00D99000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// BLSFILL reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /2
+	{ NULL, 0x0448, 0x00D99000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
 struct ira_opcode_desc _ira_opcode_desc_BLSI[] = {
 	// VEX.NDD.LZ.0F38.W0 F3 /3 BLSI r32, r/m32
 	{ NULL, 0x02D0, 0x00ED9800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// VEX.NDD.LZ.0F38.W1 F3 /3 BLSI r64, r/m64
 	{ NULL, 0x02C8, 0x00ED9800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_BLSIC[] = {
+	// BLSIC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /6
+	{ NULL, 0x0450, 0x00D9B000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// BLSIC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /6
+	{ NULL, 0x0448, 0x00D9B000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct ira_opcode_desc _ira_opcode_desc_BLSMSK[] = {
@@ -5103,6 +5258,13 @@ struct ira_opcode_desc _ira_opcode_desc_TZCNT[] = {
 	// F3 0F BC /r TZCNT r32, r/m32
 	// REX.W + F3 0F BC /r TZCNT r64, r/m64
 	{ NULL, 0x4000, 0x00D88000, { 0x0F, 0xBC, 0x00 }, _IRA_OPERAND_MODRM_R_W, _IRA_OPERAND_MODRM_RM, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_TZMSK[] = {
+	// TZMSK reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /4
+	{ NULL, 0x0450, 0x00D9A000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	// TZMSK reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /4
+	{ NULL, 0x0448, 0x00D9A000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 /* END OF VEX-GPR */
@@ -5222,9 +5384,10 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "cld", _ira_opcode_desc_CLD),
 		_IA_INSTRUCTION( "clflush", _ira_opcode_desc_CLFLUSH),
 		_IA_INSTRUCTION( "cli", _ira_opcode_desc_CLI),
+		_IA_INSTRUCTION( "clgi", _ira_opcode_desc_CLGI),
 		_IA_INSTRUCTION( "clts", _ira_opcode_desc_CLTS),
 		_IA_INSTRUCTION( "cmc", _ira_opcode_desc_CMC),
-		_IA_INSTRUCTION( "cmov", _ira_opcode_desc_CMOVA),
+		_IA_INSTRUCTION( "cmov", _ira_opcode_desc_CMOV),
 		_IA_INSTRUCTION( "cmp", _ira_opcode_desc_CMP),
 		_IA_INSTRUCTION( "cmppd", _ira_opcode_desc_CMPPD),
 		_IA_INSTRUCTION( "cmpps", _ira_opcode_desc_CMPPS),
@@ -5341,6 +5504,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "int", _ira_opcode_desc_INT ),
 		_IA_INSTRUCTION( "invd", _ira_opcode_desc_INVD ),
 		_IA_INSTRUCTION( "invlpg", _ira_opcode_desc_INVLPG ),
+		_IA_INSTRUCTION( "invlpga", _ira_opcode_desc_INVLPGA ),
 		_IA_INSTRUCTION( "invpcid", _ira_opcode_desc_INVPCID ),
 		_IA_INSTRUCTION( "iret", _ira_opcode_desc_IRET ),
 		_IA_INSTRUCTION( "jcxz", _ira_opcode_desc_JCXZ),
@@ -5355,11 +5519,14 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "lea", _ira_opcode_desc_LEA),
 		_IA_INSTRUCTION( "leave", _ira_opcode_desc_LEAVE),
 		_IA_INSTRUCTION( "lfence", _ira_opcode_desc_LFENCE),
+		_IA_INSTRUCTION( "llwpcb", _ira_opcode_desc_LLWPCB),
 		_IA_INSTRUCTION( "lgdt", _ira_opcode_desc_LGDT),
 		_IA_INSTRUCTION( "lldt", _ira_opcode_desc_LLDT),
 		_IA_INSTRUCTION( "lmsw", _ira_opcode_desc_LMSW),
 		_IA_INSTRUCTION( "lods", _ira_opcode_desc_LODS),
 		_IA_INSTRUCTION( "loop", _ira_opcode_desc_LOOP),
+		_IA_INSTRUCTION( "lwpins", _ira_opcode_desc_LWPINS),
+		_IA_INSTRUCTION( "lwpval", _ira_opcode_desc_LWPVAL),
 		_IA_INSTRUCTION( "lsl", _ira_opcode_desc_LSL),
 		_IA_INSTRUCTION( "ltr", _ira_opcode_desc_LTR),
 		_IA_INSTRUCTION( "maskmovdqu", _ira_opcode_desc_MASKMOVDQU),
@@ -5544,6 +5711,8 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "sgdt", _ira_opcode_desc_SGDT),
 		_IA_INSTRUCTION( "shld", _ira_opcode_desc_SHLD),
 		_IA_INSTRUCTION( "shrd", _ira_opcode_desc_SHRD),
+		_IA_INSTRUCTION( "skinit", _ira_opcode_desc_SKINIT),
+		_IA_INSTRUCTION( "slwpcb", _ira_opcode_desc_SLWPCB),
 		_IA_INSTRUCTION( "shufpd", _ira_opcode_desc_SHUFPD),
 		_IA_INSTRUCTION( "shufps", _ira_opcode_desc_SHUFPS),
 		_IA_INSTRUCTION( "sidt", _ira_opcode_desc_SIDT),
@@ -5555,11 +5724,13 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "sqrtss", _ira_opcode_desc_SQRTSS),
 		_IA_INSTRUCTION( "stc", _ira_opcode_desc_STC),
 		_IA_INSTRUCTION( "std", _ira_opcode_desc_STD),
+		_IA_INSTRUCTION( "stgi", _ira_opcode_desc_STGI),
 		_IA_INSTRUCTION( "sti", _ira_opcode_desc_STI),
 		_IA_INSTRUCTION( "stmxcsr", _ira_opcode_desc_STMXCSR),
 		_IA_INSTRUCTION( "stos", _ira_opcode_desc_STOS),
 		_IA_INSTRUCTION( "str", _ira_opcode_desc_STR),
 		_IA_INSTRUCTION( "sub", _ira_opcode_desc_SUB),
+		_IA_INSTRUCTION( "t1mskc", _ira_opcode_desc_T1MSKC),
 		_IA_INSTRUCTION( "subpd", _ira_opcode_desc_SUBPD),
 		_IA_INSTRUCTION( "subps", _ira_opcode_desc_SUBPS),
 		_IA_INSTRUCTION( "subsd", _ira_opcode_desc_SUBSD),
@@ -5580,6 +5751,10 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "vcvtps2ph", _ira_opcode_desc_VCVTPS2PH),
 		_IA_INSTRUCTION( "verr", _ira_opcode_desc_VERR),
 		_IA_INSTRUCTION( "verw", _ira_opcode_desc_VERW),
+		_IA_INSTRUCTION( "vmload", _ira_opcode_desc_VMLOAD),
+		_IA_INSTRUCTION( "vmmcall", _ira_opcode_desc_VMMCALL),
+		_IA_INSTRUCTION( "vmrun", _ira_opcode_desc_VMRUN),
+		_IA_INSTRUCTION( "vmsave", _ira_opcode_desc_VMSAVE),
 		_IA_INSTRUCTION( "vpermilpd", _ira_opcode_desc_VPERMILPD),
 		_IA_INSTRUCTION( "vpermilps", _ira_opcode_desc_VPERMILPS),
 		_IA_INSTRUCTION( "vperm2f128", _ira_opcode_desc_VPERM2F128),
@@ -5664,7 +5839,16 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_VFNMSUBPS ),
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_VFNMSUBSD ),
 		_IA_INSTRUCTION( _IRA_EMPTY_MNEMONIC, _ira_opcode_desc_VFNMSUBSS ),
-		// VEX-Encoded GPR instructions.
+		// XOP
+		_IA_INSTRUCTION( "bextr", _ira_opcode_desc_BEXTR ),
+		_IA_INSTRUCTION( "blcfill", _ira_opcode_desc_BLCFILL ),
+		_IA_INSTRUCTION( "blci", _ira_opcode_desc_BLCI ),
+		_IA_INSTRUCTION( "blcic", _ira_opcode_desc_BLCIC ),
+		_IA_INSTRUCTION( "blcmsk", _ira_opcode_desc_BLCMSK ),
+		_IA_INSTRUCTION( "blcs", _ira_opcode_desc_BLCS ),
+		_IA_INSTRUCTION( "blsfill", _ira_opcode_desc_BLSFILL ),
+		_IA_INSTRUCTION( "blsic", _ira_opcode_desc_BLSIC ),
+		// VEX/XOP-Encoded GPR instructions.
 		_IA_INSTRUCTION( "andn", _ira_opcode_desc_ANDN ),
 		_IA_INSTRUCTION( "bexr", _ira_opcode_desc_BEXR ),
 		_IA_INSTRUCTION( "blsi", _ira_opcode_desc_BLSI ),
@@ -5680,6 +5864,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "shrx", _ira_opcode_desc_SHRX ),
 		_IA_INSTRUCTION( "sarx", _ira_opcode_desc_SARX ),
 		_IA_INSTRUCTION( "tzcnt", _ira_opcode_desc_TZCNT ),
+		_IA_INSTRUCTION( "tzmsk", _ira_opcode_desc_TZMSK ),
 		// HLE
 		_IA_INSTRUCTION( "xabort", _ira_opcode_desc_XABORT ),
 		_IA_INSTRUCTION( "xbegin", _ira_opcode_desc_XBEGIN ),

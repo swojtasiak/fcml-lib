@@ -64,13 +64,170 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// VMSAVE
+	// VMSAVE rAX 0F 01 DB Save additional guest state to VMCB.
+	_TEST32_VEX( "0f01db vmsave eax", 0x0F, 0x01, 0xDB );
+	_TEST32_VEX( "670f01db vmsave ax", 0x67, 0x0F, 0x01, 0xDB );
+	_TEST64_VEX( "0f01db vmsave rax", 0x0F, 0x01, 0xDB );
+	_TEST64_VEX( "670f01db vmsave eax", 0x67, 0x0F, 0x01, 0xDB );
 
+	// VMRUN
+	// VMRUN rAX 0F 01 D8 Performs a world-switch to guest.
+	_TEST32_VEX( "0f01d8 vmrun eax", 0x0F, 0x01, 0xD8 );
+	_TEST32_VEX( "670f01d8 vmrun ax", 0x67, 0x0F, 0x01, 0xD8 );
+	_TEST64_VEX( "0f01d8 vmrun rax", 0x0F, 0x01, 0xD8 );
+	_TEST64_VEX( "670f01d8 vmrun eax", 0x67, 0x0F, 0x01, 0xD8 );
+
+	// VMMCALL
+	// VMMCALL 0F 01 D9 Explicit communication with the VMM.
+	_TEST32_VEX( "0f01d9 vmmcall", 0x0F, 0x01, 0xD9 );
+	_TEST64_VEX( "0f01d9 vmmcall", 0x0F, 0x01, 0xD9 );
+
+	// VMLOAD
+	// VMLOAD rAX 0F 01 DA Load additional state from VMCB.
+	_TEST32_VEX( "0f01da vmload eax", 0x0F, 0x01, 0xDA );
+	_TEST32_VEX( "670f01da vmload ax", 0x67, 0x0F, 0x01, 0xDA );
+	_TEST64_VEX( "0f01da vmload rax", 0x0F, 0x01, 0xDA );
+	_TEST64_VEX( "670f01da vmload eax", 0x67, 0x0F, 0x01, 0xDA );
+
+	// STGI
+	// STGI 0F 01 DC Sets the global interrupt flag (GIF)
+	_TEST32_VEX( "0f01dc stgi", 0x0F, 0x01, 0xDC );
+	_TEST64_VEX( "0f01dc stgi", 0x0F, 0x01, 0xDC );
+
+	// SKINIT
+	// SKINIT EAX 0F 01 DE Secure initialization and jump, with attestation.
+	_TEST32_VEX( "0f01de skinit eax", 0x0F, 0x01, 0xDE );
+	_TEST64_VEX( "0f01de skinit eax", 0x0F, 0x01, 0xDE );
+
+	// INVLPGA
+	// INVLPGA rAX, ECX 0F 01 DF
+	_TEST32_VEX( "0f01df invlpga eax,ecx", 0x0F, 0x01, 0xDF );
+	_TEST32_VEX( "670f01df invlpga ax,ecx", 0x67, 0x0F, 0x01, 0xDF );
+	_TEST64_VEX( "0f01df invlpga rax,ecx", 0x0F, 0x01, 0xDF );
+	_TEST64_VEX( "670f01df invlpga eax,ecx", 0x67, 0x0F, 0x01, 0xDF );
+
+	// CLGI
+	// CLGI 0F 01 DD Clears the global interrupt flag (GIF).
+	_TEST32_VEX( "0f01dd clgi", 0x0F, 0x01, 0xDD );
+	_TEST32_VEX( "0f01dd clgi", 0x0F, 0x01, 0xDD );
+
+	// TZMSK
+	// TZMSK reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /4
+	_TEST32_VEX( "8fe9600120 tzmsk ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x01, 0x20 );
+	_TEST32_VEX( "8fe96001e0 tzmsk ebx,eax", 0x8F, 0xE9, 0x60, 0x01, 0xE0 );
+	// TZMSK reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /4
+	_TEST32_VEX( "8fe9e00120 tzmsk rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x01, 0x20 );
+	_TEST32_VEX( "8fe9e001e0 tzmsk rbx,rax", 0x8F, 0xE9, 0xE0, 0x01, 0xE0 );
+
+	// T1MSKC
+	// T1MSKC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /7
+	_TEST32_VEX( "8fe9600138 t1mskc ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x01, 0x38 );
+	_TEST32_VEX( "8fe96001f8 t1mskc ebx,eax", 0x8F, 0xE9, 0x60, 0x01, 0xF8 );
+	// T1MSKC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /7
+	_TEST32_VEX( "8fe9e00138 t1mskc rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x01, 0x38 );
+	_TEST32_VEX( "8fe9e001f8 t1mskc rbx,rax", 0x8F, 0xE9, 0xE0, 0x01, 0xF8 );
+
+	// SLWPCB
+	// SLWPCB reg32 8F RXB.09 0.1111.0.00 12 /1
+	_TEST32_VEX( "8fe96012c8 slwpcb eax", 0x8F, 0xE9, 0x60, 0x12, 0xC8 );
+	// SLWPCB reg64 8F RXB.09 1.1111.0.00 12 /1
+	_TEST32_VEX( "8fe96012c8 slwpcb eax", 0x8F, 0xE9, 0x60, 0x12, 0xC8 );
+
+	// LWPVAL
+	// LWPVAL reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /1 /imm32
+	_TEST32_VEX( "8fea60120800112233 lwpval ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
+	_TEST32_VEX( "8fea6012c800112233 lwpval ebx,eax,33221100h", 0x8F, 0xEA, 0x60, 0x12, 0xC8, 0x00, 0x11, 0x22, 0x33 );
+	// LWPVAL reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /1 /imm32
+	_TEST32_VEX( "8feae0120800112233 lwpval rbx,qword ptr [eax],33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
+	_TEST32_VEX( "8feae012c800112233 lwpval rbx,rax,33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0xC8, 0x00, 0x11, 0x22, 0x33 );
+
+	// LWPINS
+	// LWPINS reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /0 /imm32
+	_TEST32_VEX( "8fea60120000112233 lwpins ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
+	_TEST32_VEX( "8fea6012c000112233 lwpins ebx,eax,33221100h", 0x8F, 0xEA, 0x60, 0x12, 0xC0, 0x00, 0x11, 0x22, 0x33 );
+	// LWPINS reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /0 /imm32
+	_TEST32_VEX( "8feae0120000112233 lwpins rbx,qword ptr [eax],33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
+	_TEST32_VEX( "8feae012c000112233 lwpins rbx,rax,33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0xC0, 0x00, 0x11, 0x22, 0x33 );
+
+	// LLWPCB
+	// LLWPCB reg32 8F RXB.09 0.1111.0.00 12 /0
+	_TEST32_VEX( "8fe96012c0 llwpcb eax", 0x8F, 0xE9, 0x60, 0x12, 0xC0 );
+	// LLWPCB reg64 8F RXB.09 1.1111.0.00 12 /0
+	_TEST32_VEX( "8fe9e012c0 llwpcb rax", 0x8F, 0xE9, 0xE0, 0x12, 0xC0 );
+
+	// BLSIC
+	// BLSIC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /6
+	_TEST32_VEX( "8fe9600130 blsic ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x01, 0x30 );
+	_TEST32_VEX( "8fe96001f0 blsic ebx,eax", 0x8F, 0xE9, 0x60, 0x01, 0xF0 );
+	// BLSIC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /6
+	_TEST32_VEX( "8fe9e00130 blsic rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x01, 0x30 );
+	_TEST32_VEX( "8fe9e001f0 blsic rbx,rax", 0x8F, 0xE9, 0xE0, 0x01, 0xF0 );
+
+	// BLSFILL
+	// BLSFILL reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /2
+	_TEST32_VEX( "8fe9600110 blsfill ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x01, 0x10 );
+	_TEST32_VEX( "8fe96001d0 blsfill ebx,eax", 0x8F, 0xE9, 0x60, 0x01, 0xD0 );
+	// BLSFILL reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /2
+	_TEST32_VEX( "8fe9e00110 blsfill rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x01, 0x10 );
+	_TEST32_VEX( "8fe9e001d0 blsfill rbx,rax", 0x8F, 0xE9, 0xE0, 0x01, 0xD0 );
+
+	// BLCS
+	// BLCS reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /3
+	_TEST32_VEX( "8fe9600118 blcs ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x01, 0x18 );
+	_TEST32_VEX( "8fe96001d8 blcs ebx,eax", 0x8F, 0xE9, 0x60, 0x01, 0xD8 );
+	// BLCS reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /3
+	_TEST32_VEX( "8fe9e00118 blcs rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x01, 0x18 );
+	_TEST32_VEX( "8fe9e001d8 blcs rbx,rax", 0x8F, 0xE9, 0xE0, 0x01, 0xD8 );
+
+	// BLCMSK
+	// BLCMSK reg32, reg/mem32 8F RXB.09 0.dest.0.00 02 /1
+	_TEST32_VEX( "8fe9600208 blcmsk ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x02, 0x08 );
+	_TEST32_VEX( "8fe96002c8 blcmsk ebx,eax", 0x8F, 0xE9, 0x60, 0x02, 0xC8 );
+	// BLCMSK reg64, reg/mem64 8F RXB.09 1.dest.0.00 02 /1
+	_TEST32_VEX( "8fe9e00208 blcmsk rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x02, 0x08 );
+	_TEST32_VEX( "8fe9e002c8 blcmsk rbx,rax", 0x8F, 0xE9, 0xE0, 0x02, 0xC8 );
+
+	// BLCIC
+	// BLCIC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /5
+	_TEST32_VEX( "8fe9600128 blcic ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x01, 0x28 );
+	_TEST32_VEX( "8fe96001e8 blcic ebx,eax", 0x8F, 0xE9, 0x60, 0x01, 0xE8 );
+	// BLCIC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /5
+	_TEST32_VEX( "8fe9e00128 blcic rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x01, 0x28 );
+	_TEST32_VEX( "8fe9e001e8 blcic rbx,rax", 0x8F, 0xE9, 0xE0, 0x01, 0xE8 );
+
+	// BLCI
+	// BLCI reg32, reg/mem32 8F RXB.09 0.dest.0.00 02 /6
+	_TEST32_VEX( "8fe9600230 blci ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x02, 0x30 );
+	_TEST32_VEX( "8fe96002f0 blci ebx,eax", 0x8F, 0xE9, 0x60, 0x02, 0xF0 );
+	// BLCI reg64, reg/mem64 8F RXB.09 1.dest.0.00 02 /6
+	_TEST32_VEX( "8fe9e00230 blci rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x02, 0x30 );
+	_TEST32_VEX( "8fe9e002f0 blci rbx,rax", 0x8F, 0xE9, 0xE0, 0x02, 0xF0 );
+
+	// BEXTR
+	// BEXTR reg32, reg/mem32, imm32 8F RXB.0A 0.1111.0.00 10 /r /id
+	_TEST32_VEX( "8fea78100001020304 bextr eax,dword ptr [eax],04030201h", 0x8F, 0xEA, 0x78, 0x10, 0x00, 0x01, 0x02, 0x03, 0x04 );
+	_TEST32_VEX( "8fea7810c001020304 bextr eax,eax,04030201h", 0x8F, 0xEA, 0x78, 0x10, 0xC0, 0x01, 0x02, 0x03, 0x04 );
+	// BEXTR reg64, reg/mem64, imm32 8F RXB.0A 1.1111.0.00 10 /r /id
+	_TEST64_VEX( "8feaf8100001020304 bextr rax,qword ptr [rax],04030201h", 0x8F, 0xEA, 0xF8, 0x10, 0x00, 0x01, 0x02, 0x03, 0x04 );
+	_TEST64_VEX( "8feaf810c001020304 bextr rax,rax,04030201h", 0x8F, 0xEA, 0xF8, 0x10, 0xC0, 0x01, 0x02, 0x03, 0x04 );
+
+	// BLCFILL
+	// BLCFILL reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /1
+	_TEST32_VEX( "8fe9600108 blcfill ebx,dword ptr [eax]", 0x8F, 0xE9, 0x60, 0x01, 0x08 );
+	_TEST32_VEX( "8fe96001c8 blcfill ebx,eax", 0x8F, 0xE9, 0x60, 0x01, 0xC8 );
+	// BLCFILL reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /1
+	_TEST32_VEX( "8fe9e00108 blcfill rbx,qword ptr [eax]", 0x8F, 0xE9, 0xE0, 0x01, 0x08 );
+	_TEST32_VEX( "8fe9e001c8 blcfill rbx,rax", 0x8F, 0xE9, 0xE0, 0x01, 0xC8 );
+
+	// ADCX
 	// 66 0F 38 F6 /r ADCX r32, r/m32
 	// REX.W + 66 0F 38 F6 /r ADCX r64,r/m64
 	_TEST32( "660f38f600 adcx eax,dword ptr [eax]", 0x66, 0x0F, 0x38, 0xF6, 0x00 );
 	_TEST64( "660f38f600 adcx eax,dword ptr [rax]", 0x66, 0x0F, 0x38, 0xF6, 0x00 );
 	_TEST64( "66480f38f600 adcx rax,qword ptr [rax]", 0x66, 0x48, 0x0F, 0x38, 0xF6, 0x00 );
 
+	// ADOX
 	// F3 0F 38 F6 /r ADOX r32, r/m32
 	// REX.w + F3 0F 38 F6 /r ADOX r64, r/m64
 	_TEST32( "f30f38f600 adox eax,dword ptr [eax]", 0xF3, 0x0F, 0x38, 0xF6, 0x00 );
@@ -799,9 +956,9 @@ void test(void) {
 	_TEST64_VEX( "f3480faed0 wrfsbase rax", 0xF3, 0x48, 0x0F, 0xAE, 0xD0 );
 	// F3 0F AE /3 WRGSBASE r32 M V/I FSGSBASE Load the GS base address with the 32-bit value in the source register.
 	// REX.W + F3 0F AE /3 WRGSBASE r64 M V/I FSGSBASE Load the GS base address with the 64-bit value in the source register.
-	_TEST64_VEX( "f30faed8 fsgsbase eax", 0xF3, 0x0F, 0xAE, 0xD8 );
-	_TEST64_VEX( "66f30faed8 fsgsbase eax", 0x66, 0xF3, 0x0F, 0xAE, 0xD8 );
-	_TEST64_VEX( "f3480faed8 fsgsbase rax", 0xF3, 0x48, 0x0F, 0xAE, 0xD8 );
+	_TEST64_VEX( "f30faed8 wrgsbase eax", 0xF3, 0x0F, 0xAE, 0xD8 );
+	_TEST64_VEX( "66f30faed8 wrgsbase eax", 0x66, 0xF3, 0x0F, 0xAE, 0xD8 );
+	_TEST64_VEX( "f3480faed8 wrgsbase rax", 0xF3, 0x48, 0x0F, 0xAE, 0xD8 );
 
 	// WBINVD
 	// 0F 09 WBINVD NP Valid Valid Write back and flush Internal caches; initiate writing-back and flushing of external caches.
@@ -5998,26 +6155,49 @@ void test(void) {
 	// AESDEC
 	_TEST32( "660f38de1401 aesdec xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDE, 0x14, 0x01 );
 	_TEST64( "660f38de1401 aesdec xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDE, 0x14, 0x01 );
+	// VEX.NDS.128.66.0F38.WIG DE /r VAESDEC xmm1,xmm2,xmm3/m128
+	_TEST32_VEX( "c4e261de00 vaesdec xmm0,xmm3,oword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDE, 0x00 );
+	_TEST32_VEX( "c4e261dec0 vaesdec xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDE, 0xC0 );
+	_TEST64_VEX( "c4e261de00 vaesdec xmm0,xmm3,oword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDE, 0x00 );
 
 	// AESDECLAST
 	_TEST32( "660f38df1401 aesdeclast xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDF, 0x14, 0x01 );
 	_TEST64( "660f38df1401 aesdeclast xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDF, 0x14, 0x01 );
+	// VEX.NDS.128.66.0F38.WIG DF /r VAESDECLAST xmm1,xmm2,xmm3/m128
+	_TEST32_VEX( "c4e261df00 vaesdeclast xmm0,xmm3,oword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDF, 0x00 );
+	_TEST32_VEX( "c4e261dfc0 vaesdeclast xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDF, 0xC0 );
+	_TEST64_VEX( "c4e261df00 vaesdeclast xmm0,xmm3,oword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDF, 0x00 );
 
 	// AESENC
 	_TEST32( "660f38dc1401 aesenc xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDC, 0x14, 0x01 );
 	_TEST64( "660f38dc1401 aesenc xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDC, 0x14, 0x01 );
+	// VEX.NDS.128.66.0F38.WIG DC /r VAESENC xmm1, xmm2, xmm3/m128
+	_TEST32_VEX( "c4e261dc00 vaesenc xmm0,xmm3,oword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDC, 0x00 );
+	_TEST32_VEX( "c4e261dcc0 vaesenc xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDC, 0xC0 );
+	_TEST64_VEX( "c4e261dc00 vaesenc xmm0,xmm3,oword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDC, 0x00 );
 
 	// AESENCLAST
 	_TEST32( "660f38dd1401 aesenclast xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDD, 0x14, 0x01 );
 	_TEST64( "660f38dd1401 aesenclast xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDD, 0x14, 0x01 );
+	// VEX.NDS.128.66.0F38.WIG DD /r VAESENCLAST xmm1,xmm2,xmm3/m128
+	_TEST32_VEX( "c4e261dd00 vaesenclast xmm0,xmm3,oword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDD, 0x00 );
+	_TEST32_VEX( "c4e261ddc0 vaesenclast xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDD, 0xC0 );
+	_TEST64_VEX( "c4e261dd00 vaesenclast xmm0,xmm3,oword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDD, 0x00 );
 
 	// AESIMC
 	_TEST32( "660f38db1401 aesimc xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDB, 0x14, 0x01 );
 	_TEST64( "660f38db1401 aesimc xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDB, 0x14, 0x01 );
+	// VEX.128.66.0F38.WIG DB /r VAESIMC xmm1, xmm2/m128
+	_TEST32_VEX( "c4e261db00 vaesimc xmm0,xmm3,oword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDB, 0x00 );
+	_TEST32_VEX( "c4e261dbc0 vaesimc xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDB, 0xC0 );
+	_TEST64_VEX( "c4e261db00 vaesimc xmm0,xmm3,oword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDB, 0x00 );
 
 	// AESKEYGENASSIST
 	_TEST32( "660f3adf1401ff aeskeygenassist xmm2,oword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0x3a, 0xDF, 0x14, 0x01, 0xFF );
 	_TEST64( "660f3adf1401ff aeskeygenassist xmm2,oword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3a, 0xDF, 0x14, 0x01, 0xFF );
+	// VEX.128.66.0F3A.WIG DF /r ib VAESKEYGENASSIST xmm1,xmm2/m128,imm8
+	_TEST32_VEX( "c4e379df00ff vaeskeygenassist xmm0,oword ptr [eax],0ffh", 0xC4, 0xE3, 0x79, 0xDF, 0x00, 0xFF );
+	_TEST32_VEX( "c4e379dfc0ff vaeskeygenassist xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0xDF, 0xC0, 0xFF );
 
 	// AND
 	// 24 ib AND AL, imm8 C Valid Valid AL AND imm8.

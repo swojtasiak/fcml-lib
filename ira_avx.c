@@ -21,6 +21,9 @@ uint8_t *_ira_avx_decode_escape_opcode_bytes( struct ira_decoding_context *decod
 		int index = prefixes_fields->mmmm - 1;
 		escape = _ira_escape_opcode_table[index];
 		*number_of_opcode_bytes = _ira_escape_size_table[index];
+	} else if( prefixes_fields->vex_prefix == 0x8F ) {
+		escape = &(prefixes_fields->mmmm);
+		*number_of_opcode_bytes = 1;
 	} else {
 		escape = _ira_escape_0f;
 		*number_of_opcode_bytes = 1;
