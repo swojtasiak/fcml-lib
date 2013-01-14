@@ -5473,7 +5473,49 @@ struct ira_opcode_desc _ira_opcode_desc_STAC[] = {
 	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xCB }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
+// XOP
 
+struct ira_opcode_desc _ira_opcode_desc_VFRCZPD[] = {
+	// VFRCZPD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 81 /r
+	// VFRCZPD ymm1, ymm2/mem256 8F RXB.01001 0.1111.1.00 81 /r
+	{ NULL, 0x0510, 0x00D88000, { 0x09, 0x81, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VFRCZPS[] = {
+	// VFRCZPS xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 80 /r
+	// VFRCZPS ymm1, ymm2/mem256 8F RXB.01001 0.1111.1.00 80 /r
+	{ NULL, 0x0510, 0x00D88000, { 0x09, 0x80, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VFRCZSD[] = {
+	// VFRCZSD xmm1,xmm2/mem64 8F RXB.01001 0.1111.0.00 83 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0x83, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_64, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VFRCZSS[] = {
+	// VFRCZSS xmm1, xmm2/mem32 8F RXB.01001 0.1111.0.00 82 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0x82, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_32, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPCMOV[] = {
+	// VPCMOV xmm1, xmm2, xmm3/mem128, xmm4 8F RXB.01000 0.src.0.00 A2 /r ib
+	// VPCMOV ymm1, ymm2, ymm3/mem256, ymm4 8F RXB.01000 0.src.1.00 A2 /r ib
+	{ NULL, 0x0490, 0x00D88000, { 0x08, 0xA2, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IS4 },
+	// VPCMOV xmm1, xmm2, xmm3, xmm4/mem128 8F RXB.01000 1.src.0.00 A2 /r ib
+	// VPCMOV ymm1, ymm2, ymm3, ymm4/mem256 8F RXB.01000 1.src.1.00 A2 /r ib
+	{ NULL, 0x0488, 0x00D88000, { 0x08, 0xA2, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_IS4, _IRA_OPERAND_MODRM_RM_SIMD }
+};
+struct ira_opcode_desc _ira_opcode_desc_VPCOMB[] = {
+	// VPCOMB xmm1, xmm2, xmm3mem128, imm8 8F RXB.01000 0.src.0.00 CC /r ib
+	// TODO: virtualne operandy sluzace tylko do indetyfikacji, a nie sa renderowane.
+	{ "vpcomltb", 0x0450, 0x00D88000, { 0x08, 0xCC, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_EXPLICIT_OPERAND_IB(0x00) }
+	//{ NULL, 0x0450, 0x00D88000, { 0x08, 0xCC, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB }
+};
+
+//
+
+//
+// VPCOMD xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CE /r ib
 
 
 /*
@@ -6026,5 +6068,12 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "rdseed", _ira_opcode_desc_RDSEED ),
 		_IA_INSTRUCTION( "clac", _ira_opcode_desc_CLAC ),
 		_IA_INSTRUCTION( "stac", _ira_opcode_desc_STAC ),
+		// XOP
+		_IA_INSTRUCTION( "vfrczpd", _ira_opcode_desc_VFRCZPD ),
+		_IA_INSTRUCTION( "vfrczps", _ira_opcode_desc_VFRCZPS ),
+		_IA_INSTRUCTION( "vfrczsd", _ira_opcode_desc_VFRCZSD ),
+		_IA_INSTRUCTION( "vfrczss", _ira_opcode_desc_VFRCZSS ),
+		_IA_INSTRUCTION( "vpcmov", _ira_opcode_desc_VPCMOV ),
+		_IA_INSTRUCTION( "vpcomb", _ira_opcode_desc_VPCOMB ),
 		{ NULL, 0, 0, NULL }
 };

@@ -64,6 +64,56 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// VPCOMB
+	// VPCOMB xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CC /r ib
+//	_TEST32_VEX( "8fe850a21401 vpcmov xmm2,xmm5,oword ptr [rcx+rax],xmm2", 0x8F, 0xE8, 0x50, 0xCC, 0x14, 0x01, 0x00 );
+//	_TEST32_VEX( "8fe854a21401 vpcmov ymm2,ymm5,ymmword ptr [rcx+rax],ymm2", 0x8F, 0xE8, 0x54, 0xCC, 0x14, 0x01, 0x20 );
+//	_TEST64_VEX( "8fe854a2c0 vpcmov ymm0,ymm5,ymm0,ymm2", 0x8F, 0xE8, 0x54, 0xCC, 0xC0, 0x20 );
+
+	// VPCMOV
+	// VPCMOV xmm1, xmm2, xmm3/mem128, xmm4 8F RXB.01000 0.src.0.00 A2 /r ib
+	// VPCMOV ymm1, ymm2, ymm3/mem256, ymm4 8F RXB.01000 0.src.1.00 A2 /r ib
+	_TEST64_VEX( "8fe850a21401 vpcmov xmm2,xmm5,oword ptr [rcx+rax],xmm2", 0x8F, 0xE8, 0x50, 0xA2, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "8fe854a21401 vpcmov ymm2,ymm5,ymmword ptr [rcx+rax],ymm2", 0x8F, 0xE8, 0x54, 0xA2, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "8fe854a2c0 vpcmov ymm0,ymm5,ymm0,ymm2", 0x8F, 0xE8, 0x54, 0xA2, 0xC0, 0x20 );
+	// VPCMOV xmm1, xmm2, xmm3, xmm4/mem128 8F RXB.01000 1.src.0.00 A2 /r ib
+	// VPCMOV ymm1, ymm2, ymm3, ymm4/mem256 8F RXB.01000 1.src.1.00 A2 /r ib
+	_TEST64_VEX( "8fe8d0a21401 vpcmov xmm2,xmm5,xmm2,oword ptr [rcx+rax]", 0x8F, 0xE8, 0xD0, 0xA2, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "8fe8d4a21401 vpcmov ymm2,ymm5,ymm2,ymmword ptr [rcx+rax]", 0x8F, 0xE8, 0xD4, 0xA2, 0x14, 0x01, 0x20 );
+	_TEST64_VEX( "8fe8d4a2c0 vpcmov ymm0,ymm5,ymm2,ymm0", 0x8F, 0xE8, 0xD4, 0xA2, 0xC0, 0x20 );
+
+	// VFRCZSD xmm1,xmm2/mem64 8F RXB.01001 0.1111.0.00 83 /r
+	_TEST32_VEX( "8fe9788300 vfrczsd xmm0,qword ptr [eax]", 0x8F, 0xE9, 0x78, 0x83, 0x00 );
+	_TEST32_VEX( "8fe97883c1 vfrczsd xmm0,xmm1", 0x8F, 0xE9, 0x78, 0x83, 0xC1 );
+	_TEST64_VEX( "8fe9788300 vfrczsd xmm0,qword ptr [rax]", 0x8F, 0xE9, 0x78, 0x83, 0x00 );
+	_TEST64_VEX( "8fe97883c1 vfrczsd xmm0,xmm1", 0x8F, 0xE9, 0x78, 0x83, 0xC1 );
+
+	// VFRCZSS xmm1, xmm2/mem32 8F RXB.01001 0.1111.0.00 82 /r
+	_TEST32_VEX( "8fe9788200 vfrczss xmm0,dword ptr [eax]", 0x8F, 0xE9, 0x78, 0x82, 0x00 );
+	_TEST32_VEX( "8fe97882c1 vfrczss xmm0,xmm1", 0x8F, 0xE9, 0x78, 0x82, 0xC1 );
+	_TEST64_VEX( "8fe9788200 vfrczss xmm0,dword ptr [rax]", 0x8F, 0xE9, 0x78, 0x82, 0x00 );
+	_TEST64_VEX( "8fe97882c1 vfrczss xmm0,xmm1", 0x8F, 0xE9, 0x78, 0x82, 0xC1 );
+
+	// VFRCZPS
+	// VFRCZPS xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 80 /r
+	// VFRCZPS ymm1, ymm2/mem256 8F RXB.01001 0.1111.1.00 80 /r
+	_TEST32_VEX( "8fe9788000 vfrczps xmm0,oword ptr [eax]", 0x8F, 0xE9, 0x78, 0x80, 0x00 );
+	_TEST32_VEX( "8fe97880c1 vfrczps xmm0,xmm1", 0x8F, 0xE9, 0x78, 0x80, 0xC1 );
+	_TEST32_VEX( "8fe97c8000 vfrczps ymm0,ymmword ptr [eax]", 0x8F, 0xE9, 0x7C, 0x80, 0x00 );
+	_TEST32_VEX( "8fe97c80c1 vfrczps ymm0,ymm1", 0x8F, 0xE9, 0x7C, 0x80, 0xC1 );
+	_TEST64_VEX( "8fe9788000 vfrczps xmm0,oword ptr [rax]", 0x8F, 0xE9, 0x78, 0x80, 0x00 );
+	_TEST64_VEX( "8fe97c8000 vfrczps ymm0,ymmword ptr [rax]", 0x8F, 0xE9, 0x7C, 0x80, 0x00 );
+
+	// VFRCZPD
+	// VFRCZPD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 81 /r
+	// VFRCZPD ymm1, ymm2/mem256 8F RXB.01001 0.1111.1.00 81 /r
+	_TEST32_VEX( "8fe9788100 vfrczpd xmm0,oword ptr [eax]", 0x8F, 0xE9, 0x78, 0x81, 0x00 );
+	_TEST32_VEX( "8fe97881c1 vfrczpd xmm0,xmm1", 0x8F, 0xE9, 0x78, 0x81, 0xC1 );
+	_TEST32_VEX( "8fe97c8100 vfrczpd ymm0,ymmword ptr [eax]", 0x8F, 0xE9, 0x7C, 0x81, 0x00 );
+	_TEST32_VEX( "8fe97c81c1 vfrczpd ymm0,ymm1", 0x8F, 0xE9, 0x7C, 0x81, 0xC1 );
+	_TEST64_VEX( "8fe9788100 vfrczpd xmm0,oword ptr [rax]", 0x8F, 0xE9, 0x78, 0x81, 0x00 );
+	_TEST64_VEX( "8fe97c8100 vfrczpd ymm0,ymmword ptr [rax]", 0x8F, 0xE9, 0x7C, 0x81, 0x00 );
+
 	// PADDQ
 	// 0F D4 /r1 PADDQ mm1,mm2/m64
 	_TEST64( "0fd400 paddq mm0,qword ptr [rax]", 0x0F, 0xD4, 0x00 );
