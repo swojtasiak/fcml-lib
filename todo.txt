@@ -29,3 +29,11 @@ Kazdy operand musial by posiadac mozliwosc odawania jakiegos filtr flag czy cos 
 Any VEX-encoded GPR instruction with a 66H, F2H, or F3H prefix preceding VEX will #UD.
 Any VEX-encoded GPR instruction with a REX prefix proceeding VEX will #UD.
 VEX-encoded GPR instructions are not supported in real and virtual 8086 modes.
+
+
+
+Regu³y:
+1. Jeden immediate value mo¿e byæ wykorzystany do zdekodowania kilku operandów. Czyli, jeden operand dekoder przyk³¹dowo mo¿e zdekodowaæ 2 operandy, gryzie sie to troche z naszym zlozeniem, ze jeden operand do jednego dekodera.
+2. Instrukcje moga miec do 5 operandow (Moze zrezygnowaæ ze sztywnego okreslania maksymalnej liczby operandow, tylko zastosowac jakœæ liste)
+3. 
+

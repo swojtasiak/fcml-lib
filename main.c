@@ -64,11 +64,32 @@ void test(void) {
 
 	//__ira_test_xmm1_r_xmm2_rm( "pmovsxbw", 0x66, 0x0F, 0x38, 0x20 );
 
+	// VPCOMUB xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 EC /r ib
+	_TEST32_VEX( "8fe850ec140100 vpcomub xmm2,xmm5,oword ptr [ecx+eax],00h", 0x8F, 0xE8, 0x50, 0xEC, 0x14, 0x01, 0x00 );
+	_TEST64_VEX( "8fe850ecc020 vpcomub xmm0,xmm5,xmm0,20h", 0x8F, 0xE8, 0x50, 0xEC, 0xC0, 0x20 );
+	// VPCOMUD xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 EE /r ib
+	_TEST32_VEX( "8fe850ee140100 vpcomud xmm2,xmm5,oword ptr [ecx+eax],00h", 0x8F, 0xE8, 0x50, 0xEE, 0x14, 0x01, 0x00 );
+	_TEST64_VEX( "8fe850eec020 vpcomud xmm0,xmm5,xmm0,20h", 0x8F, 0xE8, 0x50, 0xEE, 0xC0, 0x20 );
+	// VPCOMUQ xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 EF /r ib
+	_TEST32_VEX( "8fe850ef140100 vpcomuq xmm2,xmm5,oword ptr [ecx+eax],00h", 0x8F, 0xE8, 0x50, 0xEF, 0x14, 0x01, 0x00 );
+	_TEST64_VEX( "8fe850efc020 vpcomuq xmm0,xmm5,xmm0,20h", 0x8F, 0xE8, 0x50, 0xEF, 0xC0, 0x20 );
+	// VPCOMUW xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 ED /r ib
+	_TEST32_VEX( "8fe850ed140100 vpcomuw xmm2,xmm5,oword ptr [ecx+eax],00h", 0x8F, 0xE8, 0x50, 0xED, 0x14, 0x01, 0x00 );
+	_TEST64_VEX( "8fe850edc020 vpcomuw xmm0,xmm5,xmm0,20h", 0x8F, 0xE8, 0x50, 0xED, 0xC0, 0x20 );
+
 	// VPCOMB
 	// VPCOMB xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CC /r ib
-//	_TEST32_VEX( "8fe850a21401 vpcmov xmm2,xmm5,oword ptr [rcx+rax],xmm2", 0x8F, 0xE8, 0x50, 0xCC, 0x14, 0x01, 0x00 );
-//	_TEST32_VEX( "8fe854a21401 vpcmov ymm2,ymm5,ymmword ptr [rcx+rax],ymm2", 0x8F, 0xE8, 0x54, 0xCC, 0x14, 0x01, 0x20 );
-//	_TEST64_VEX( "8fe854a2c0 vpcmov ymm0,ymm5,ymm0,ymm2", 0x8F, 0xE8, 0x54, 0xCC, 0xC0, 0x20 );
+	_TEST32_VEX( "8fe850cc140100 vpcomb xmm2,xmm5,oword ptr [ecx+eax],00h", 0x8F, 0xE8, 0x50, 0xCC, 0x14, 0x01, 0x00 );
+	_TEST64_VEX( "8fe850ccc020 vpcomb xmm0,xmm5,xmm0,20h", 0x8F, 0xE8, 0x50, 0xCC, 0xC0, 0x20 );
+	// VPCOMW xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CD /r ib
+	_TEST32_VEX( "8fe850cd140100 vpcomw xmm2,xmm5,oword ptr [ecx+eax],00h", 0x8F, 0xE8, 0x50, 0xCD, 0x14, 0x01, 0x00 );
+	_TEST64_VEX( "8fe850cdc020 vpcomw xmm0,xmm5,xmm0,20h", 0x8F, 0xE8, 0x50, 0xCD, 0xC0, 0x20 );
+	// VPCOMD xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CE /r ib
+	_TEST32_VEX( "8fe850ce140100 vpcomd xmm2,xmm5,oword ptr [ecx+eax],00h", 0x8F, 0xE8, 0x50, 0xCE, 0x14, 0x01, 0x00 );
+	_TEST64_VEX( "8fe850cec020 vpcomd xmm0,xmm5,xmm0,20h", 0x8F, 0xE8, 0x50, 0xCE, 0xC0, 0x20 );
+	// VPCOMQ xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CF /r ib
+	_TEST32_VEX( "8fe850cf140100 vpcomq xmm2,xmm5,oword ptr [ecx+eax],00h", 0x8F, 0xE8, 0x50, 0xCF, 0x14, 0x01, 0x00 );
+	_TEST64_VEX( "8fe850cfc020 vpcomq xmm0,xmm5,xmm0,20h", 0x8F, 0xE8, 0x50, 0xCF, 0xC0, 0x20 );
 
 	// VPCMOV
 	// VPCMOV xmm1, xmm2, xmm3/mem128, xmm4 8F RXB.01000 0.src.0.00 A2 /r ib

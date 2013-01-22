@@ -5505,17 +5505,134 @@ struct ira_opcode_desc _ira_opcode_desc_VPCMOV[] = {
 	// VPCMOV ymm1, ymm2, ymm3, ymm4/mem256 8F RXB.01000 1.src.1.00 A2 /r ib
 	{ NULL, 0x0488, 0x00D88000, { 0x08, 0xA2, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_IS4, _IRA_OPERAND_MODRM_RM_SIMD }
 };
-struct ira_opcode_desc _ira_opcode_desc_VPCOMB[] = {
-	// VPCOMB xmm1, xmm2, xmm3mem128, imm8 8F RXB.01000 0.src.0.00 CC /r ib
+
+struct ira_opcode_desc _ira_opcode_desc_VPCOM[] = {
+	// VPCOMB xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CC /r ib
+	{ "vpcomb", 0x0450, 0x00D88000, { 0x08, 0xCC, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB },
+	// VPCOMW xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CD /r ib
+	{ "vpcomw", 0x0450, 0x00D88000, { 0x08, 0xCD, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB },
+	// VPCOMD xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CE /r ib
+	{ "vpcomd", 0x0450, 0x00D88000, { 0x08, 0xCE, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB },
+	// VPCOMQ xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CF /r ib
+	{ "vpcomq", 0x0450, 0x00D88000, { 0x08, 0xCF, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB }
 	// TODO: virtualne operandy sluzace tylko do indetyfikacji, a nie sa renderowane.
-	{ "vpcomltb", 0x0450, 0x00D88000, { 0x08, 0xCC, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_EXPLICIT_OPERAND_IB(0x00) }
-	//{ NULL, 0x0450, 0x00D88000, { 0x08, 0xCC, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB }
+	// TODO: Obsluzyc mnemoniki warunkowe na podstawie imm8.
+	// imm8[2:0] Comparison Mnemonic
+	// 000 Less Than VPCOMLTB
+	// 001 Less Than or Equal VPCOMLEB
+	// 010 Greater Than VPCOMGTB
+	// 011 Greater Than or Equal VPCOMGEB
+	// 100 Equal VPCOMEQB
+	// 101 Not Equal VPCOMNEQB
+	// 110 False VPCOMFALSEB
+	// 111 True VPCOMTRUEB
+	// TODO: Ponizsze wariacje takze.
 };
 
-//
 
-//
-// VPCOMD xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 CE /r ib
+struct ira_opcode_desc _ira_opcode_desc_VPCOMU[] = {
+	// VPCOMUB xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 EC /r ib
+	{ "vpcomub", 0x0450, 0x00D88000, { 0x08, 0xEC, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB },
+	// VPCOMUW xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 ED /r ib
+	{ "vpcomuw", 0x0450, 0x00D88000, { 0x08, 0xED, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB },
+	// VPCOMUD xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 EE /r ib
+	{ "vpcomud", 0x0450, 0x00D88000, { 0x08, 0xEE, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB },
+	// VPCOMUQ xmm1, xmm2, xmm3/mem128, imm8 8F RXB.01000 0.src.0.00 EF /r ib
+	{ "vpcomuq", 0x0450, 0x00D88000, { 0x08, 0xEF, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_XMM_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IB }
+	// TODO: Obsluzyc mnemoniki warunkowe na podstawie imm8.
+	// imm8[2:0] Comparison Mnemonic
+	// 000 Less Than VPCOMLTB
+	// 001 Less Than or Equal VPCOMLEB
+	// 010 Greater Than VPCOMGTB
+	// 011 Greater Than or Equal VPCOMGEB
+	// 100 Equal VPCOMEQB
+	// 101 Not Equal VPCOMNEQB
+	// 110 False VPCOMFALSEB
+	// 111 True VPCOMTRUEB
+};
+
+// TODO: VPERMIL2PD,VPERMIL2PS
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDBD[] = {
+	// VPHADDBD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 C2 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xC2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDBW[] = {
+	// VPHADDBW xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 C1 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xC1, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDBQ[] = {
+	// VPHADDBQ xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 C3 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xC3, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDDQ[] = {
+	// VPHADDDQ xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 CB /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xCB, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDUBD[] = {
+	// VPHADDUBD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 D2 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xD2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDUBQ[] = {
+	// VPHADDUBQ xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 D3 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xD3, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDUBWD[] = {
+	// VPHADDUBWD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 D1 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xD1, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDUDQ[] = {
+	// VPHADDUDQ xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 DB /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xDB, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDUWD[] = {
+	// VPHADDUWD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 D6 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xD6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDUWQ[] = {
+	// VPHADDUWQ xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 D7 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xD7, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDWD[] = {
+	// VPHADDWD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 C6 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xC6, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHADDWQ[] = {
+	// VPHADDWQ xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 C7 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xC7, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHSUBBW[] = {
+	// VPHSUBBW xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 E1 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xE1, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHSUBDQ[] = {
+	// VPHSUBDQ xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 E3 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xE3, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+struct ira_opcode_desc _ira_opcode_desc_VPHSUBWD[] = {
+	// VPHSUBWD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 E2 /r
+	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xE2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
+};
+
+
+
+
+
+
 
 
 /*
@@ -6074,6 +6191,22 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "vfrczsd", _ira_opcode_desc_VFRCZSD ),
 		_IA_INSTRUCTION( "vfrczss", _ira_opcode_desc_VFRCZSS ),
 		_IA_INSTRUCTION( "vpcmov", _ira_opcode_desc_VPCMOV ),
-		_IA_INSTRUCTION( "vpcomb", _ira_opcode_desc_VPCOMB ),
+		_IA_INSTRUCTION( "vpcomb", _ira_opcode_desc_VPCOM ),
+		_IA_INSTRUCTION( "vpcomu", _ira_opcode_desc_VPCOMU ),
+		_IA_INSTRUCTION( "vphaddbd", _ira_opcode_desc_VPHADDBD ),
+		_IA_INSTRUCTION( "vphaddbw", _ira_opcode_desc_VPHADDBW ),
+		_IA_INSTRUCTION( "vphaddbq", _ira_opcode_desc_VPHADDBQ ),
+		_IA_INSTRUCTION( "vphadddq", _ira_opcode_desc_VPHADDDQ ),
+		_IA_INSTRUCTION( "vphaddubd", _ira_opcode_desc_VPHADDUBD ),
+		_IA_INSTRUCTION( "vphaddubq", _ira_opcode_desc_VPHADDUBQ ),
+		_IA_INSTRUCTION( "vphaddubwd", _ira_opcode_desc_VPHADDUBWD ),
+		_IA_INSTRUCTION( "vphaddudq", _ira_opcode_desc_VPHADDUDQ ),
+		_IA_INSTRUCTION( "vphadduwd", _ira_opcode_desc_VPHADDUWD ),
+		_IA_INSTRUCTION( "vphadduwq", _ira_opcode_desc_VPHADDUWQ ),
+		_IA_INSTRUCTION( "vphaddwd", _ira_opcode_desc_VPHADDWD ),
+		_IA_INSTRUCTION( "vphaddwq", _ira_opcode_desc_VPHADDWQ ),
+		_IA_INSTRUCTION( "vphsubbw", _ira_opcode_desc_VPHSUBBW ),
+		_IA_INSTRUCTION( "vphsubdq", _ira_opcode_desc_VPHSUBDQ ),
+		_IA_INSTRUCTION( "vphsubdq", _ira_opcode_desc_VPHSUBDQ ),
 		{ NULL, 0, 0, NULL }
 };
