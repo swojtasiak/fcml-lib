@@ -5628,7 +5628,10 @@ struct ira_opcode_desc _ira_opcode_desc_VPHSUBWD[] = {
 	{ NULL, 0x0550, 0x00D88000, { 0x09, 0xE2, 0x00 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_NA, _IRA_NA }
 };
 
-
+struct ira_opcode_desc _ira_opcode_desc_VPMACSDD[] = {
+	// VPMACSDD xmm1, xmm2, xmm3/mem128, xmm4 8F RXB.01000 0.src.0.00 9E /r ib
+	{ NULL, 0x0450, 0x00D88000, { 0x08, 0x9E, 0x00 }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_OPERAND_IS4 }
+};
 
 
 
@@ -6208,5 +6211,7 @@ struct ira_instruction_desc _ira_instructions_desc[] = {
 		_IA_INSTRUCTION( "vphsubbw", _ira_opcode_desc_VPHSUBBW ),
 		_IA_INSTRUCTION( "vphsubdq", _ira_opcode_desc_VPHSUBDQ ),
 		_IA_INSTRUCTION( "vphsubdq", _ira_opcode_desc_VPHSUBDQ ),
+		_IA_INSTRUCTION( "vphsubwd", _ira_opcode_desc_VPHSUBWD ),
+		_IA_INSTRUCTION( "vpmacsdd", _ira_opcode_desc_VPMACSDD ),
 		{ NULL, 0, 0, NULL }
 };
