@@ -1636,7 +1636,8 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	result->code = RC_OK;
 
 	// Instruction size can be calculated here, and used during post processing phase.
-	// This value can be used for instance to calculate relative addresses.
+	// This value can be used for instance to calculate relative addresses. Post processors
+	// can also modify this value, so it's very important to take into account their order.
 	context->decoding_context.instruction_size = context->stream->offset;
 
 	// Array with all operands. It can be used by post processing handlers.
@@ -2663,6 +2664,9 @@ int ira_is4_instruction_operand_handler( struct ira_diss_context *context, struc
 		operand->reg.reg_size = ( prefixes_fields->l ) ? _IRA_OS_YMMWORD : _IRA_OS_XMMWORD;
 		operand->reg.reg_type = IRA_REG_SIMD;
 		operand->reg.reg = ( ( context->mode == IRA_MOD_32BIT ) ? ( 0x70 & imm8 ) : ( 0xF0 & imm8 ) ) >> 4;
+
+		decoding_context->instruction_size++;
+
 		return _IRA_INT_ERROR_NO_ERROR;
 	}
 }

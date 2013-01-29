@@ -35,5 +35,7 @@ VEX-encoded GPR instructions are not supported in real and virtual 8086 modes.
 Regu³y:
 1. Jeden immediate value mo¿e byæ wykorzystany do zdekodowania kilku operandów. Czyli, jeden operand dekoder przyk³¹dowo mo¿e zdekodowaæ 2 operandy, gryzie sie to troche z naszym zlozeniem, ze jeden operand do jednego dekodera.
 2. Instrukcje moga miec do 5 operandow (Moze zrezygnowaæ ze sztywnego okreslania maksymalnej liczby operandow, tylko zastosowac jakœæ liste)
-3. 
+3. Zastanowic sie nad mozliwoscia zaznaczenia, ¿e wybrana instrukcja nie moze posiadac danych prefixow. A moze domyslnie intrucje SIMD ni zpozwalaja na zadne manadatory,  chyba ze te ktorych wymagaja. Pewnie tak jest.
+4. Oeprandy moga wyznaczac warosi warunkow dla instrukcji warunkowych.
+
 
