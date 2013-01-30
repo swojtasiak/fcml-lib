@@ -1870,7 +1870,14 @@ struct ira_opcode_desc _ira_opcode_desc_MOV[] = {
 	// 8C /r MOV r/m16,Sreg** A Valid Valid Move segment register to r/m16.
 	{ NULL, 0x0001, 0x03C48000, { 0x8C, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_16_W, _IRA_OPERAND_R( IRA_REG_SEG, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
 	// REX.W + 8C /r MOV r/m64,Sreg** A Valid Valid Move zero extended 16-bit segment register to r/m64.
+
+	// TODO: Assembler hint: The processor will execute this instruction correctly, but it will usually require an extra clock. With most assemblers, using the instruction form MOV DS, EAX will avoid this unneeded 66H prefix.
+
 	{ NULL, 0x0001, 0x04848000, { 0x8C, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_64_W, _IRA_OPERAND_R( IRA_REG_SEG, _IRA_OS_WORD ), _IRA_NA, _IRA_NA },
+	// 8E /r MOV Sreg,r/m16** RM Valid Valid Move r/m16 to segment register.
+	{ NULL, 0x0001, 0x03C48000, { 0x8E, 0x00, 0x00 }, _IRA_OPERAND_R( IRA_REG_SEG, _IRA_OS_WORD ), _IRA_OPERAND_MODRM_RM_16_W, _IRA_NA, _IRA_NA },
+	// REX.W + 8E /r MOV Sreg,r/m64** RM Valid Valid Move lower 16 bits of r/m64 to segment register.
+	{ NULL, 0x0001, 0x04848000, { 0x8E, 0x00, 0x00 }, _IRA_OPERAND_R( IRA_REG_SEG, _IRA_OS_WORD ), _IRA_OPERAND_MODRM_RM_64_W, _IRA_NA, _IRA_NA },
 	// A0 MOV AL,moffs8* C Valid Valid Move byte at (seg:offset) to AL.
 	// REX.W + A0 MOV AL,moffs8* C Valid N.E. Move byte at (offset) to AL.
 	{ NULL, 0x0001, 0x00C40000, { 0xA0, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_BYTE ), _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( _IRA_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_NA, _IRA_NA },

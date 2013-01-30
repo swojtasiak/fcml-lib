@@ -62,7 +62,6 @@ void test(void) {
 	// _TEST32_VEX( "FAIL", 0xC5, 0xDF, 0x58, 0x14, 0x01 );
 	//_test_vax();
 
-
 	// VPSHAW
 	// VPSHAW xmm1, xmm2/mem128, xmm3 8F RXB.01001 0.src.0.00 99 /r
 	_TEST32_VEX( "8fe950991401 vpshaw xmm2,oword ptr [ecx+eax],xmm5", 0x8F, 0xE9, 0x50, 0x99, 0x14, 0x01 );
@@ -4955,6 +4954,10 @@ void test(void) {
 	_TEST64( "8c10 mov word ptr [rax],ss", 0x8C, 0x10 );
 	// REX.W + 8C /r MOV r/m64,Sreg** A Valid Valid Move zero extended 16-bit segment register to r/m64.
 	_TEST64( "488c10 mov qword ptr [rax],ss", 0x48, 0x8C, 0x10 );
+	// 8E /r MOV Sreg,r/m16** RM Valid Valid Move r/m16 to segment register.
+	_TEST32_VEX( "8edb mov ds,bx", 0x8E, 0xDB );
+	// REX.W + 8E /r MOV Sreg,r/m64** RM Valid Valid Move lower 16 bits of r/m64 to segment register.
+	_TEST64_VEX( "488edb mov ds,rbx", 0x48, 0x8E, 0xDB );
 	// A0 MOV AL,moffs8* C Valid Valid Move byte at (seg:offset) to AL.
 	// REX.W + A0 MOV AL,moffs8* C Valid N.E. Move byte at (offset) to AL.
 	_TEST32( "a010203040 mov al,byte ptr [40302010h]", 0xA0, 0x10, 0x20, 0x30, 0x40 );
