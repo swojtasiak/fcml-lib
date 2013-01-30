@@ -29,13 +29,6 @@ struct ira_opcode_desc _ira_opcode_desc_AAS[] = {
 	{ NULL, 0x0001, 0x00440000, { 0x3F, 0x00, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
-
-/*#define _INSTRUCTION_TEMPLATE_BINARY_ARITHMETIC_1( mnemonic, base_opcode, opcode_ext ) { \
-		_IRA_ENCODE_OPCODE_FLAGS_OPCODE_EXT
-	// base_opcode + 4 ib mnemonic AL,imm8
-	{ NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
-};*/
-
 struct ira_opcode_desc _ira_opcode_desc_ADC[] = {
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
 	{ NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -992,7 +985,7 @@ struct ira_opcode_desc _ira_opcode_desc_FCHS[] = {
 struct ira_opcode_desc _ira_opcode_desc_FCLEX[] = {
 	// 9B DB E2 FCLEX Valid Valid Clear floating-point exception flags after checking for pending unmasked floatingpoint exceptions.
 	{ NULL, 0x0001, 0x00EC0000, { 0x9B, 0xDB, 0xE2 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA },
-	// DB E2 FNCLEX* Valid Valid Clear floating-point exception flags without checking for pending unmasked floating-point exceptions.
+	// DB E2 * Valid Valid Clear floating-point exception flags without checking for pending unmasked floating-point exceptions.
 	{ "fnclex", 0x0001, 0x00D80000, { 0xDB, 0xE2, 0x00 }, _IRA_NA, _IRA_NA, _IRA_NA, _IRA_NA }
 };
 

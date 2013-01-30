@@ -44,3 +44,17 @@ struct ira_opcode_desc _ira_opcode_desc_##id[] = { \
 	/* VEX.DDS.256.66.0F38.W0 opcode /r mnemonic ymm0,ymm1,ymm2/m256 */ \
 	{ _IRA_DM_STRING(mnemonic##231ps), 0x1090, 0x00EC8000, { 0x0F, 0x38, 0xB0 + opcode }, _IRA_OPERAND_MODRM_R_SIMD_W, _IRA_VEX_VVVV_REG, _IRA_OPERAND_MODRM_RM_SIMD, _IRA_NA }, \
 }
+
+
+
+
+
+
+
+/*#define _INSTRUCTION_TEMPLATE_BINARY_ARITHMETIC_1( mnemonic, base_opcode, opcode_ext ) { \
+		_IRA_ENCODE_OPCODE_FLAGS_OPCODE_EXT
+	// base_opcode + 4 ib mnemonic AL,imm8
+	{ NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, _IRA_OPERAND_REG_ACCUMULATOR_8, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+};*/
+
+
