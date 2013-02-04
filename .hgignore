@@ -11,3 +11,7 @@ syntax: regexp
 ^\.settings$
 syntax: regexp
 ^ira\.depend$
+syntax: regexp
+^Debug$
+syntax: regexp
+^Release$

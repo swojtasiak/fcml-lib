@@ -29,34 +29,6 @@
  IRA_SAT_UNDEFINED
  };*/
 
-/* Structures used to store information about memory. */
-
-struct ira_memory_stream {
-	void *base_address; /* Base address of memory. */
-	uint32_t offset; /* Offset. */
-	uint32_t size; /* Size. */
-};
-
-/* Methods used for streaming. */
-
-enum ira_seek_type {
-	IRA_START = 0, IRA_END, IRA_CURRENT
-};
-
-void _ira_stream_seek(struct ira_memory_stream *stream, uint32_t offset,
-		enum ira_seek_type type);
-
-uint8_t _ira_stream_read(struct ira_memory_stream *stream, int *result);
-
-uint8_t _ira_stream_peek(struct ira_memory_stream *stream, int *result);
-
-/* Gets size of the data to read. */
-uint32_t _ira_stream_size(struct ira_memory_stream *stream);
-
-/* Reads specified number of bytes from stream and stores them in given buffer. */
-int _ira_stream_read_bytes(struct ira_memory_stream *stream, void *buffer,
-		int size);
-
 /* ModRM decoding. */
 
 struct ira_decoded_mod_rm {
