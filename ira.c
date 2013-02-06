@@ -10,7 +10,7 @@
 
 #include <assert.h>
 
-#include "fcml_streaming.h"
+#include "fcml_stream.h"
 
 // TODO: Jednak dzielimy na pliki
 
@@ -189,7 +189,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     }
 
     // Prepare stream.
-    struct ira_memory_stream stream;
+    fcml_st_memory_stream stream;
     stream.base_address = info->address;
     stream.size = info->size;
     stream.offset = 0;
@@ -243,9 +243,9 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     		virtual_opcode_bytes_count--;
     	} else {
 			// Get next potential opcode byte from stream.
-			int result;
-			opcode_byte =_ira_stream_peek( context.stream, &result );
-			if( result == 0 ) {
+    	    fcml_bool result;
+			opcode_byte = fcml_fn_stream_peek( context.stream, &result );
+			if( !result ) {
 				break;
 			}
     	}
@@ -263,7 +263,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
 				// Store this opcode byte.
 				decoding_context->opcodes[opcode_num++] = opcode_byte;
 				// Go to next opcode byte.
-				_ira_stream_seek( context.stream, 1, IRA_CURRENT );
+				fcml_fn_stream_seek( context.stream, 1, IRA_CURRENT );
     		}
     	} else {
     		break;
@@ -295,7 +295,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
 
     if( default_diss ) {
     	// Instruction wasn't found, so restore stream and start default disassemblation process.
-    	_ira_stream_seek( context.stream, opcode_length * -1, IRA_CURRENT );
+    	fcml_fn_stream_seek( context.stream, opcode_length * -1, IRA_CURRENT );
     	if( _ira_disassemble_default( &context, result ) == _IRA_INT_ERROR_CODE_UNEXPECTED_EOS ) {
     		result->code = RC_ERROR_INSTRUCTION_INCOMPLETE;
     		return;
@@ -399,15 +399,15 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 
 		// Check addressing mode for ModRM opcodes.
 		if( _IRA_OPCODE_FLAGS_MODRM_M( opcode_flags ) ) {
-			int modrm_found = 0;
-			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
+		    fcml_bool modrm_found = FCML_FALSE;
+			uint8_t modrm = fcml_fn_stream_peek(context->stream, &modrm_found );
 			if( !modrm_found || _IRA_MODRM_MOD( modrm ) == 3 ) {
 				continue;
 			}
 		}
 		if( _IRA_OPCODE_FLAGS_MODRM_R( opcode_flags ) ) {
-			int modrm_found = 0;
-			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
+		    fcml_bool modrm_found = FCML_FALSE;
+			uint8_t modrm = fcml_fn_stream_peek(context->stream, &modrm_found );
 			if( !modrm_found || _IRA_MODRM_MOD( modrm ) != 3 ) {
 				continue;
 			}
@@ -416,8 +416,8 @@ struct ira_diss_tree_instruction_decoding* _ira_choose_instruction( struct ira_d
 		// Check opcode extension.
 		int opcodes_ok = 0;
 		if( _IRA_OPCODE_FLAGS_OPCODE_IS_EXT( opcode_flags ) ) {
-			int modrm_found = 0;
-			uint8_t modrm = _ira_stream_peek(context->stream, &modrm_found );
+		    fcml_bool modrm_found = FCML_FALSE;
+			uint8_t modrm = fcml_fn_stream_peek(context->stream, &modrm_found );
 			if( modrm_found ) {
 				uint8_t ext_reg_opcode = ( ( prefixes_fields->r << 4 ) | ( _IRA_MODRM_REG_OPCODE( modrm ) ) );
 				uint8_t expected_ext_reg_opcode = _IRA_OPCODE_FLAGS_OPCODE_EXT(opcode_flags);
@@ -501,9 +501,9 @@ int _ira_interpret_prefixes( struct ira_diss_context *context ) {
 }
 
 void _ira_identify_prefixes( struct ira_diss_context *context ) {
-    struct ira_memory_stream *stream = context->stream;
+    fcml_st_memory_stream *stream = context->stream;
     struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
-    int result = 0;
+    fcml_bool result = FCML_FALSE;
     int prefix_index = 0;
     int prefix_size;
     int vex_prefix_size = 0;
@@ -515,7 +515,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
         mandatory_prefix = 0;
         // Almost all prefixes are one byte length, so it's a reasonable default here.
         prefix_size = 1;
-        uint8_t prefix = _ira_stream_peek(stream, &result);
+        uint8_t prefix = fcml_fn_stream_peek(stream, &result);
         if( result ) {
             struct ira_instruction_prefix *prefix_desc = &(context->decoding_context.prefixes[prefix_index]);
             switch(prefix) {
@@ -580,11 +580,11 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
             		uint32_t stream_pos = stream->offset;
 
             		// Skip to the second byte of VEX prefix.
-					_ira_stream_seek(stream, 1, IRA_CURRENT);
+					fcml_fn_stream_seek(stream, 1, IRA_CURRENT);
 
 					if( context->mode == IRA_MOD_32BIT ) {
 						// Check if it is really a VEX prefix.
-						uint8_t second_byte = _ira_stream_peek(stream, &result);
+						uint8_t second_byte = fcml_fn_stream_peek(stream, &result);
 						// VEX.R and VEX.X has to be set to 11 in 32bit mode.
 						if( !result || ( second_byte & 0xC0 ) != 0xC0 ) {
 							prefix_type = 0;
@@ -593,7 +593,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 
 					// Copy rest of the VEX prefixes.
 					if( prefix_type ) {
-						int nbytes = _ira_stream_read_bytes( stream, &(prefix_desc->vex_bytes), vex_prefix_size );
+						int nbytes = fcml_fn_stream_read_bytes( stream, &(prefix_desc->vex_bytes), vex_prefix_size );
 						if( nbytes != vex_prefix_size ) {
 							// Stream is incomplete, so we can not treat it as a VEX.
 							prefix_type = 0;
@@ -633,7 +633,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 					prefixes_fields->is_vex = _IRA_TRUE;
 					prefixes_fields->is_rex = _IRA_FALSE;
 
-					_ira_stream_seek(stream, stream_pos, IRA_START);
+					fcml_fn_stream_seek(stream, stream_pos, IRA_START);
 
 					prefix_size += vex_prefix_size;
 
@@ -648,7 +648,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
                 prefix_desc->prefix = prefix;
                 prefix_desc->prefix_type = prefix_type;
                 prefix_desc->mandatory_prefix = mandatory_prefix;
-                _ira_stream_seek(stream, prefix_size, IRA_CURRENT);
+                fcml_fn_stream_seek(stream, prefix_size, IRA_CURRENT);
                 prefix_index++;
             }
 
@@ -1747,20 +1747,20 @@ int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ir
 	addressing->addressing_type = IRA_FAR_POINTER;
 
 	// Decoding offset.
-	int result = 0;
+	fcml_bool result = FCML_FALSE;
 
 	switch( decoding_context->effective_operand_size_attribute ) {
 	case 16:
 		addressing->address_size = IRA_ADDRESS_16;
-		addressing->address_value.address_16 = _ira_stream_read_word( context->stream, &result );
+		addressing->address_value.address_16 = fcml_fn_stream_read_word( context->stream, &result );
 		break;
 	case 32:
 		addressing->address_size = IRA_ADDRESS_32;
-		addressing->address_value.address_32 = _ira_stream_read_dword( context->stream, &result );
+		addressing->address_value.address_32 = fcml_fn_stream_read_dword( context->stream, &result );
 		break;
 	case 64:
 		addressing->address_size = IRA_ADDRESS_64;
-		addressing->address_value.address_64 = _ira_stream_read_qword( context->stream, &result );
+		addressing->address_value.address_64 = fcml_fn_stream_read_qword( context->stream, &result );
 		break;
 	}
 
@@ -1774,7 +1774,7 @@ int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ir
 	// This register cannot be overridden.
 	segment_selector->segment_register = _IRA_REG_CS;
 
-	segment_selector->segment_register_value = _ira_stream_read_word( context->stream, &result );
+	segment_selector->segment_register_value = fcml_fn_stream_read_word( context->stream, &result );
 	if( !result ) {
 		return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 	}
@@ -2109,8 +2109,8 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 int _ira_modrm_decoder_get_modrm( struct ira_diss_context *context, struct ira_decoded_mod_rm *decoded_mod_rm ) {
 	// Get ModRM byte if it has not been got yet.
 	if( !decoded_mod_rm->raw_mod_rm.is_not_null ) {
-		int result;
-		uint8_t mod_rm = _ira_stream_read( context->stream, &result );
+	    fcml_bool result;
+		uint8_t mod_rm = fcml_fn_stream_read( context->stream, &result );
 		if( result ) {
 			decoded_mod_rm->raw_mod_rm.value = mod_rm;
 			decoded_mod_rm->raw_mod_rm.is_not_null = _IRA_TRUE;
@@ -2172,8 +2172,9 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, struct 
 	uint8_t mod_rm = context->decoding_context.mod_rm.raw_mod_rm.value;
 
 	// Get SIB.
-	uint8_t sib = _ira_stream_read( context->stream, &result );
-	if( result ) {
+	fcml_bool sib_found = FCML_FALSE;
+	uint8_t sib = fcml_fn_stream_read( context->stream, &sib_found );
+	if( sib_found ) {
 		decoded_mod_rm->raw_sib.value = sib;
 		decoded_mod_rm->raw_sib.is_not_null = _IRA_TRUE;
 	} else {
@@ -2499,24 +2500,24 @@ int _ira_get_effective_osa( struct ira_diss_context *context, uint32_t opcode_fl
 }
 
 int _ira_decode_displacement( struct ira_diss_context *context, struct ira_displacement *displacement, int size, int extension_size ) {
-	int result = 0;
+    fcml_bool result = FCML_FALSE;
 	switch(size) {
 	case 8:
-		displacement->displacement.displacement_8 = _ira_stream_read( context->stream, &result );
+		displacement->displacement.displacement_8 = fcml_fn_stream_read( context->stream, &result );
 		if( !result ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		displacement->displacement_type = IRA_DISPLACEMENT_8;
 		break;
 	case 16:
-		displacement->displacement.displacement_16 = _ira_stream_read_word( context->stream, &result );
+		displacement->displacement.displacement_16 = fcml_fn_stream_read_word( context->stream, &result );
 		if( !result ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		displacement->displacement_type = IRA_DISPLACEMENT_16;
 		break;
 	case 32:
-		displacement->displacement.displacement_32 = _ira_stream_read_dword( context->stream, &result );
+		displacement->displacement.displacement_32 = fcml_fn_stream_read_dword( context->stream, &result );
 		if( !result ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
@@ -2531,26 +2532,26 @@ int _ira_decode_displacement( struct ira_diss_context *context, struct ira_displ
 
 // TODO: Check byte order here!
 int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediate_data *data, int size ) {
-	int result = 0;
+    fcml_bool result = FCML_FALSE;
 	switch(size) {
 	case 8:
-		data->immediate_data.immediate_8 =_ira_stream_read( context->stream, &result );
+		data->immediate_data.immediate_8 =fcml_fn_stream_read( context->stream, &result );
 		if( !result ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
 	case 16:
-		if( _ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_16), sizeof(uint16_t) ) < sizeof(uint16_t) ) {
+		if( fcml_fn_stream_read_bytes( context->stream, &(data->immediate_data.immediate_16), sizeof(uint16_t) ) < sizeof(uint16_t) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
 	case 32:
-		if( _ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_32), sizeof(uint32_t) ) < sizeof(uint32_t) ) {
+		if( fcml_fn_stream_read_bytes( context->stream, &(data->immediate_data.immediate_32), sizeof(uint32_t) ) < sizeof(uint32_t) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
 	case 64:
-		if( _ira_stream_read_bytes( context->stream, &(data->immediate_data.immediate_64), sizeof(uint64_t) ) < sizeof(uint64_t) ) {
+		if( fcml_fn_stream_read_bytes( context->stream, &(data->immediate_data.immediate_64), sizeof(uint64_t) ) < sizeof(uint64_t) ) {
 			return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 		}
 		break;
@@ -2568,8 +2569,8 @@ int ira_is4_instruction_operand_handler( struct ira_diss_context *context, struc
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	struct ira_decoded_fields *prefixes_fields = &(decoding_context->prefixes_fields);
 
-	int result;
-	uint8_t imm8 = _ira_stream_read( context->stream, &result );
+	fcml_bool result;
+	uint8_t imm8 = fcml_fn_stream_read( context->stream, &result );
 	if( !result ) {
 		return _IRA_INT_ERROR_CODE_UNEXPECTED_EOS;
 	} else {

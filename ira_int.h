@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include "ira.h"
 
+#include "fcml_stream.h"
+
 #define _IRA_TRUE 1
 #define _IRA_FALSE 0
 
@@ -117,7 +119,7 @@ struct ira_diss_context {
 	// Context that is shared by methods taking part in the decoding process.
 	struct ira_decoding_context decoding_context;
 	// Stream.
-	struct ira_memory_stream *stream;
+	fcml_st_memory_stream *stream;
 	// Instruction pointer.
 	union ira_instruction_pointer instruction_pointer;
 };
