@@ -5,3 +5,5 @@ syntax: regexp
 ^\.cproject$
 syntax: regexp
 ^\.settings$
+syntax: regexp
+^\.project$
