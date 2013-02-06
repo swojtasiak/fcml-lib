@@ -1,17 +1,7 @@
 
 syntax: regexp
-^\.cproject$
-syntax: regexp
-^\.project$
-syntax: regexp
-^\.svnignore$
-syntax: regexp
-^ira\.cbp$
-syntax: regexp
-^\.settings$
-syntax: regexp
-^ira\.depend$
-syntax: regexp
 ^Debug$
 syntax: regexp
-^Release$
+^\.cproject$
+syntax: regexp
+^\.settings$
