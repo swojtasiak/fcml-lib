@@ -83,41 +83,46 @@ int fcml_fn_stream_write_bytes( fcml_st_memory_stream *stream, void *buffer , in
 
 uint16_t fcml_fn_stream_read_word( fcml_st_memory_stream *stream, fcml_bool *result ) {
     uint16_t value = 0;
-    *result = stream->size - stream->offset >= sizeof(uint16_t);
-    if( *result ) {
+    if( stream->size - stream->offset >= sizeof(uint16_t) ) {
         int offset = stream->offset;
         value |= ((uint8_t*)stream->base_address)[offset];
         value |= ((uint8_t*)stream->base_address)[offset + 1] << 8;
         stream->offset += sizeof(uint16_t);
+        *result = FCML_TRUE;
+    } else {
+        *result = FCML_FALSE;
     }
     return value;
 }
 
 uint32_t fcml_fn_stream_read_dword( fcml_st_memory_stream *stream, fcml_bool *result ) {
     uint32_t value = 0;
-    *result = stream->size - stream->offset >= sizeof(uint32_t);
-    if( *result ) {
+    if( stream->size - stream->offset >= sizeof(uint32_t) ) {
         int offset = stream->offset;
         value |= ((uint8_t*)stream->base_address)[offset];
         value |= ((uint8_t*)stream->base_address)[offset + 1] << 8;
         value |= ((uint8_t*)stream->base_address)[offset + 2] << 16;
         value |= ((uint8_t*)stream->base_address)[offset + 3] << 24;
         stream->offset += sizeof(uint32_t);
+        *result = FCML_TRUE;
+    } else {
+        *result = FCML_FALSE;
     }
     return value;
 }
 
 uint64_t fcml_fn_stream_read_qword( fcml_st_memory_stream *stream, fcml_bool *result ) {
-    // TODO: test it!
     uint64_t value = 0;
-    *result = stream->size - stream->offset >= sizeof(uint64_t);
-    if( *result ) {
+    if( stream->size - stream->offset >= sizeof(uint64_t) ) {
         int i;
         int offset = stream->offset;
         for( i = 0; i < sizeof(uint64_t); i++ ) {
-            value |= ((uint8_t*)stream->base_address)[offset + i] << ( i << 3 );
+            value |= ((uint64_t)((uint8_t*)stream->base_address)[offset + i]) << ( i << 3 );
         }
         stream->offset += sizeof(uint64_t);
+        *result = FCML_TRUE;
+    } else {
+        *result = FCML_FALSE;
     }
     return value;
 }
@@ -130,6 +135,7 @@ fcml_bool fcml_fn_stream_write_word( fcml_st_memory_stream *stream, uint16_t dat
        buffer[offset] = data & 0x00FF;
        buffer[offset + 1] = data >> 8;
        stream->offset += sizeof(uint16_t);
+       result = FCML_TRUE;
     }
     return result;
 }
@@ -143,6 +149,7 @@ fcml_bool fcml_fn_stream_write_dword( fcml_st_memory_stream *stream, uint32_t da
         ((uint8_t*)stream->base_address)[offset + 2] = data >> 16;
         ((uint8_t*)stream->base_address)[offset + 3] = data >> 24;
         stream->offset += sizeof(uint32_t);
+        result = FCML_TRUE;
     }
     return result;
 }
