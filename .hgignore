@@ -1,9 +1,19 @@
 
 syntax: regexp
-^Debug$
-syntax: regexp
 ^\.cproject$
+syntax: regexp
+^\.project$
+syntax: regexp
+^\.svnignore$
+syntax: regexp
+^ira\.cbp$
 syntax: regexp
 ^\.settings$
 syntax: regexp
-^\.project$
+^ira\.depend$
+syntax: regexp
+^Debug$
+syntax: regexp
+^Release$
+syntax: regexp
+^\.cproject_old$
