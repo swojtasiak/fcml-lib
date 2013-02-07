@@ -16,8 +16,8 @@
 
 typedef struct fcml_st_memory_stream {
     void *base_address; /* Base address of memory. */
-    uint32_t offset; /* Offset. */
-    uint32_t size; /* Size. */
+    int32_t offset; /* Offset. */
+    int32_t size; /* Size. */
 } fcml_st_memory_stream;
 
 typedef uint32_t fcml_stream_pointer;
@@ -28,11 +28,11 @@ enum ira_seek_type {
     IRA_START = 0, IRA_END, IRA_CURRENT
 };
 
-void fcml_fn_stream_seek( fcml_st_memory_stream *stream, uint32_t offset, enum ira_seek_type type );
+void fcml_fn_stream_seek( fcml_st_memory_stream *stream, int32_t offset, enum ira_seek_type type );
 uint8_t fcml_fn_stream_read( fcml_st_memory_stream *stream, fcml_bool *result );
 fcml_bool fcml_fn_stream_write( fcml_st_memory_stream *stream, uint8_t data );
 uint8_t fcml_fn_stream_peek( fcml_st_memory_stream *stream, fcml_bool *result );
-uint32_t fcml_fn_stream_size( fcml_st_memory_stream *stream );
+int32_t fcml_fn_stream_size( fcml_st_memory_stream *stream );
 int fcml_fn_stream_read_bytes( fcml_st_memory_stream *stream, void *buffer , int size);
 int fcml_fn_stream_write_bytes( fcml_st_memory_stream *stream, void *buffer , int size);
 uint16_t fcml_fn_stream_read_word( fcml_st_memory_stream *stream, fcml_bool *result );

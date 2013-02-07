@@ -8,9 +8,8 @@
 #include <stdlib.h>
 
 #include "fcml_stream.h"
-#include "stdbool.h"
 
-void fcml_fn_stream_seek( fcml_st_memory_stream *stream, uint32_t offset, enum ira_seek_type type ) {
+void fcml_fn_stream_seek( fcml_st_memory_stream *stream, int32_t offset, enum ira_seek_type type ) {
     switch(type) {
         case IRA_START:
             stream->offset = offset;
@@ -19,8 +18,14 @@ void fcml_fn_stream_seek( fcml_st_memory_stream *stream, uint32_t offset, enum i
             stream->offset += offset;
         break;
         case IRA_END:
-            stream->offset = (stream->size - offset);
+            stream->offset = (stream->size + offset);
         break;
+    }
+    if( stream->offset < 0 ) {
+        stream->offset = 0;
+    }
+    if( stream->offset > stream->size ) {
+        stream->offset = stream->size;
     }
 }
 
@@ -51,7 +56,7 @@ uint8_t fcml_fn_stream_peek( fcml_st_memory_stream *stream, fcml_bool *result ) 
     return 0;
 }
 
-uint32_t fcml_fn_stream_size( fcml_st_memory_stream *stream ) {
+int32_t fcml_fn_stream_size( fcml_st_memory_stream *stream ) {
     return stream->size - stream->offset;
 }
 
@@ -164,6 +169,7 @@ fcml_bool fcml_fn_stream_write_qword( fcml_st_memory_stream *stream, uint64_t da
            buffer[offset + i] = data >> ( i << 3 );
        }
        stream->offset += sizeof(uint64_t);
+       result = FCML_TRUE;
    }
    return result;
 }
