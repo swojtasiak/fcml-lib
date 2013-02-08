@@ -17,3 +17,5 @@ syntax: regexp
 ^Release$
 syntax: regexp
 ^\.cproject_old$
+syntax: regexp
+^\.project_old$
