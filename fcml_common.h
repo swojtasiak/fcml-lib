@@ -29,6 +29,10 @@ typedef struct fcml_st_register {
     uint8_t reg;
 } fcml_st_register;
 
+/*********************************
+ * Operands.
+ *********************************/
+
 typedef struct fcml_st_immediate {
     uint8_t imm_size;
     union {
@@ -84,11 +88,30 @@ typedef enum fcml_en_operand_type {
 
 typedef struct fcml_st_operand {
     fcml_en_operand_type type;
-    fcml_st_immediate immediate;
-    fcml_st_far_pointer far_pointer;
-    fcml_st_effective_address effective_address;
-    fcml_st_offset offset;
-    fcml_st_register reg;
+    union {
+        fcml_st_immediate immediate;
+        fcml_st_far_pointer far_pointer;
+        fcml_st_effective_address effective_address;
+        fcml_st_offset offset;
+        fcml_st_register reg;
+    };
 } fcml_st_operand;
+
+/*********************************
+ * Instruction definition.
+ *********************************/
+
+typedef enum fcml_en_explicit_prefixes {
+    FCML_PREFIX_LOCK,
+    FCML_PREFIX_WAIT,
+    FCML_PREFIX_REPNE,
+    FCML_PREFIX_REPE
+} fcml_en_explicit_prefixes;
+
+typedef struct fcml_st_instruction {
+    fcml_en_explicit_prefixes prefixes;
+    char *mnemonic;
+    fcml_st_operand operands[5];
+};
 
 #endif /* FCML_INT_COMMON_H_ */
