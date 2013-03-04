@@ -8,10 +8,178 @@
 #ifndef FCML_INT_COMMON_H_
 #define FCML_INT_COMMON_H_
 
-#define FCML_DS_8    8
-#define FCML_DS_16   16
-#define FCML_DS_32   32
-#define FCML_DS_64   64
+#include "fcml_types.h"
+
+// Register numbers.
+
+#define FCML_REG_AL		0
+#define FCML_REG_AX		0
+#define FCML_REG_EAX	0
+#define FCML_REG_RAX	0
+#define FCML_REG_MM0	0
+#define FCML_REG_XMM0	0
+#define FCML_REG_YMM0	0
+#define FCML_REG_ES		0
+
+#define FCML_REG_CL		1
+#define FCML_REG_CX		1
+#define FCML_REG_ECX	1
+#define FCML_REG_RCX	1
+#define FCML_REG_MM1	1
+#define FCML_REG_XMM1	1
+#define FCML_REG_YMM1	1
+#define FCML_REG_CS		1
+
+#define FCML_REG_DL		2
+#define FCML_REG_DX		2
+#define FCML_REG_EDX	2
+#define FCML_REG_RDX	2
+#define FCML_REG_MM2	2
+#define FCML_REG_XMM2	2
+#define FCML_REG_YMM2	2
+#define FCML_REG_SS		2
+
+#define FCML_REG_BL		3
+#define FCML_REG_BX		3
+#define FCML_REG_EBX	3
+#define FCML_REG_RBX	3
+#define FCML_REG_MM3	3
+#define FCML_REG_XMM3	3
+#define FCML_REG_YMM3	3
+#define FCML_REG_DS		3
+
+#define FCML_REG_AH		4
+#define FCML_REG_SP		4
+#define FCML_REG_SPL	4
+#define FCML_REG_ESP	4
+#define FCML_REG_RSP	4
+#define FCML_REG_MM4	4
+#define FCML_REG_XMM4	4
+#define FCML_REG_YMM4	4
+#define FCML_REG_FS		4
+
+#define FCML_REG_CH		5
+#define FCML_REG_BP		5
+#define FCML_REG_BPL	5
+#define FCML_REG_EBP	5
+#define FCML_REG_RBP	5
+#define FCML_REG_MM5	5
+#define FCML_REG_XMM5	5
+#define FCML_REG_YMM5	5
+#define FCML_REG_GS		5
+
+#define FCML_REG_DH		6
+#define FCML_REG_SI		6
+#define FCML_REG_SIL	6
+#define FCML_REG_ESI	6
+#define FCML_REG_RSI	6
+#define FCML_REG_MM6	6
+#define FCML_REG_XMM6	6
+#define FCML_REG_YMM6	6
+
+#define FCML_REG_BH		7
+#define FCML_REG_DI		7
+#define FCML_REG_DIL	7
+#define FCML_REG_EDI	7
+#define FCML_REG_RDI	7
+#define FCML_REG_MM7	7
+#define FCML_REG_XMM7	7
+#define FCML_REG_YMM7	7
+
+#define FCML_REG_R8L	8
+#define FCML_REG_R8W	8
+#define FCML_REG_R8D	8
+#define FCML_REG_R8		8
+#define FCML_REG_XMM8	8
+#define FCML_REG_YMM8	8
+
+#define FCML_REG_R9L	9
+#define FCML_REG_R9W	9
+#define FCML_REG_R9D	9
+#define FCML_REG_R9		9
+#define FCML_REG_XMM9	9
+#define FCML_REG_YMM9	9
+
+#define FCML_REG_R10L	10
+#define FCML_REG_R10W	10
+#define FCML_REG_R10D	10
+#define FCML_REG_R10	10
+#define FCML_REG_XMM10	10
+#define FCML_REG_YMM10	10
+
+#define FCML_REG_R11L	11
+#define FCML_REG_R11W	11
+#define FCML_REG_R11D	11
+#define FCML_REG_R11	11
+#define FCML_REG_XMM11	11
+#define FCML_REG_YMM11	11
+
+#define FCML_REG_R12L	12
+#define FCML_REG_R12W	12
+#define FCML_REG_R12D	12
+#define FCML_REG_R12	12
+#define FCML_REG_XMM12	12
+#define FCML_REG_YMM12	12
+
+#define FCML_REG_R13L	13
+#define FCML_REG_R13W	13
+#define FCML_REG_R13D	13
+#define FCML_REG_R13	13
+#define FCML_REG_XMM13	13
+#define FCML_REG_YMM13	13
+
+#define FCML_REG_R14L	14
+#define FCML_REG_R14W	14
+#define FCML_REG_R14D	14
+#define FCML_REG_R14	14
+#define FCML_REG_XMM14	14
+#define FCML_REG_YMM14	14
+
+#define FCML_REG_R15L	15
+#define FCML_REG_R15W	15
+#define FCML_REG_R15D	15
+#define FCML_REG_R15	15
+#define FCML_REG_XMM15	15
+#define FCML_REG_YMM15	15
+
+/* FPU registers */
+
+#define FCML_REG_ST0	0
+#define FCML_REG_ST1	1
+#define FCML_REG_ST2	2
+#define FCML_REG_ST3	3
+#define FCML_REG_ST4	4
+#define FCML_REG_ST5	5
+#define FCML_REG_ST6	6
+#define FCML_REG_ST7	7
+
+/* Control registers. */
+
+#define FCML_REG_CR0	0
+#define FCML_REG_CR2	2
+#define FCML_REG_CR3	3
+#define FCML_REG_CR4	4
+#define FCML_REG_CR8	8
+
+/* Debug register. */
+
+#define FCML_REG_DR0	0
+#define FCML_REG_DR1	1
+#define FCML_REG_DR2	2
+#define FCML_REG_DR3	3
+#define FCML_REG_DR4	4
+#define FCML_REG_DR5	5
+#define FCML_REG_DR6	6
+#define FCML_REG_DR7	7
+
+/* Constants used to describe data size. */
+
+#define FCML_DS_UNDEF   0
+#define FCML_DS_8    	8
+#define FCML_DS_16   	16
+#define FCML_DS_32   	32
+#define FCML_DS_64   	64
+#define FCML_DS_128  	128
 
 typedef enum fcml_en_register {
     FCML_REG_NONE = 0,
@@ -25,8 +193,10 @@ typedef enum fcml_en_register {
 
 typedef struct fcml_st_register {
     fcml_en_register type;
-    uint8_t size;
-    uint8_t reg;
+    fcml_data_size size;
+    fcml_uint8_t reg;
+    // In case of SPL,BPL,SIL,DIL GPR registers has to be set to true.
+    fcml_bool x64_exp;
 } fcml_st_register;
 
 /*********************************
@@ -34,7 +204,7 @@ typedef struct fcml_st_register {
  *********************************/
 
 typedef struct fcml_st_immediate {
-    uint8_t imm_size;
+	fcml_data_size imm_size;
     union {
         uint8_t imm8;
         uint16_t imm16;
@@ -45,7 +215,7 @@ typedef struct fcml_st_immediate {
 
 typedef struct fcml_st_far_pointer {
     uint16_t segment;
-    uint8_t offset_size;
+    fcml_data_size offset_size;
     union {
         uint16_t offset16;
         uint32_t offset32;
@@ -54,7 +224,7 @@ typedef struct fcml_st_far_pointer {
 
 typedef struct fcml_st_displacement {
     uint8_t size;
-    uint8_t sign_extension;
+    fcml_data_size sign_extension;
     union {
         uint8_t dis8;
         uint8_t dis16;
@@ -70,7 +240,7 @@ typedef struct fcml_st_effective_address {
 } fcml_st_effective_address;
 
 typedef struct fcml_st_offset {
-    uint8_t size;
+	fcml_data_size size;
     union {
         uint16_t off16;
         uint32_t off32;
@@ -112,6 +282,6 @@ typedef struct fcml_st_instruction {
     fcml_en_explicit_prefixes prefixes;
     char *mnemonic;
     fcml_st_operand operands[5];
-};
+} fcml_st_instruction;
 
 #endif /* FCML_INT_COMMON_H_ */

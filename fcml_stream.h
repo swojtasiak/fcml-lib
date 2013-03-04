@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#include "fcml.h"
+#include "fcml_types.h"
 
 /* Structures used to store information about memory. */
 

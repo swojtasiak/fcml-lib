@@ -151,6 +151,7 @@ void _ira_format_append_reg( struct _ira_format_stream *stream, struct ira_regis
 			break;
 		}
 		if( is_rex ) {
+			// TODO: a vex i xop?
 			if( reg->reg_type == IRA_REG_GPR ) {
 				_ira_format_append_str( stream, _ira_reg_gpr_symbol_table_rex[rs][reg->reg] );
 			} else {
