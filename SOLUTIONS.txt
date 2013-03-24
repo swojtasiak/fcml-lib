@@ -1,0 +1,1 @@
+Mozna umiescic kod bleu krytycz\nego w error contenerze, obok bledow opisowych

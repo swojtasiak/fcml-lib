@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "fcml_env.h"
 
@@ -33,8 +34,21 @@ void *fcml_fn_env_memory_alloc( uint32_t size ) {
     return fcml_gl_fp_memory_alloc(size);
 }
 
-void fcml_fn_env_memory_free( void *address ) {
-    fcml_gl_fp_memory_free(address);
+void fcml_fn_env_memory_free( void *ptr ) {
+    fcml_gl_fp_memory_free(ptr);
+}
+
+fcml_string fcml_fn_env_memory_strdup( fcml_string str ) {
+	uint32_t size = strlen( str ) + 1;
+	fcml_string new_str = fcml_fn_env_memory_alloc( size );
+	if( new_str ) {
+		memcpy( new_str, str, size );
+	}
+	return new_str;
+}
+
+void fcml_fn_env_memory_strfree( fcml_string str ) {
+	fcml_fn_env_memory_free( str );
 }
 
 

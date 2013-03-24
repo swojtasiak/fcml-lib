@@ -8,6 +8,7 @@
 #ifndef FCML_TYPES_H_
 #define FCML_TYPES_H_
 
+#include <stddef.h>
 #include <stdint.h>
 
 typedef uint8_t fcml_bool;
@@ -21,11 +22,21 @@ typedef int64_t fcml_int64_t;
 typedef uint64_t fcml_uint64_t;
 
 typedef char fcml_char;
+typedef char* fcml_string;
 typedef float fcml_float;
-
 typedef uint8_t fcml_data_size;
+typedef void* fcml_ptr;
 
 #define FCML_TRUE   1
 #define FCML_FALSE   0
+
+/*Signed integers.*/
+#define FCML_INT32_MAX	INT32_MAX
+#define FCML_INT32_MIN	INT32_MIN
+
+/*Unsigned integers.*/
+#define FCML_UINT8_MAX	UINT8_MAX
+#define FCML_UINT16_MAX	UINT16_MAX
+#define FCML_UINT32_MAX	UINT32_MAX
 
 #endif /* FCML_TYPES_H_ */

@@ -10,6 +10,8 @@
 
 #include "fcml_types.h"
 
+#define FCML_OPERANDS_COUNT	5
+
 // Register numbers.
 
 #define FCML_REG_AL		0
@@ -19,7 +21,6 @@
 #define FCML_REG_MM0	0
 #define FCML_REG_XMM0	0
 #define FCML_REG_YMM0	0
-#define FCML_REG_ES		0
 
 #define FCML_REG_CL		1
 #define FCML_REG_CX		1
@@ -28,7 +29,6 @@
 #define FCML_REG_MM1	1
 #define FCML_REG_XMM1	1
 #define FCML_REG_YMM1	1
-#define FCML_REG_CS		1
 
 #define FCML_REG_DL		2
 #define FCML_REG_DX		2
@@ -37,7 +37,6 @@
 #define FCML_REG_MM2	2
 #define FCML_REG_XMM2	2
 #define FCML_REG_YMM2	2
-#define FCML_REG_SS		2
 
 #define FCML_REG_BL		3
 #define FCML_REG_BX		3
@@ -46,7 +45,6 @@
 #define FCML_REG_MM3	3
 #define FCML_REG_XMM3	3
 #define FCML_REG_YMM3	3
-#define FCML_REG_DS		3
 
 #define FCML_REG_AH		4
 #define FCML_REG_SP		4
@@ -56,7 +54,6 @@
 #define FCML_REG_MM4	4
 #define FCML_REG_XMM4	4
 #define FCML_REG_YMM4	4
-#define FCML_REG_FS		4
 
 #define FCML_REG_CH		5
 #define FCML_REG_BP		5
@@ -66,7 +63,6 @@
 #define FCML_REG_MM5	5
 #define FCML_REG_XMM5	5
 #define FCML_REG_YMM5	5
-#define FCML_REG_GS		5
 
 #define FCML_REG_DH		6
 #define FCML_REG_SI		6
@@ -142,6 +138,15 @@
 #define FCML_REG_XMM15	15
 #define FCML_REG_YMM15	15
 
+/* Segment registers. */
+
+#define FCML_REG_ES		0
+#define FCML_REG_CS		1
+#define FCML_REG_SS		2
+#define FCML_REG_DS		3
+#define FCML_REG_FS		4
+#define FCML_REG_GS		5
+
 /* FPU registers */
 
 #define FCML_REG_ST0	0
@@ -181,8 +186,20 @@
 #define FCML_DS_64   	64
 #define FCML_DS_128  	128
 
+/* Size operators. */
+
+#define FCML_OS_UNDEFINED	0
+#define FCML_OS_BYTE		8
+#define FCML_OS_WORD		16
+#define FCML_OS_DWORD		32
+#define FCML_OS_FWORD		48
+#define FCML_OS_QWORD		64
+#define FCML_OS_TBYTE		80
+#define FCML_OS_OWORD		128
+#define FCML_OS_YWORD		256
+
 typedef enum fcml_en_register {
-    FCML_REG_NONE = 0,
+    FCML_REG_UNDEFINED = 0,
     FCML_REG_GPR,
     FCML_REG_SIMD,
     FCML_REG_FPU,
@@ -209,16 +226,15 @@ typedef struct fcml_st_immediate {
         uint8_t imm8;
         uint16_t imm16;
         uint32_t imm32;
-        uint64_t imm64;
     };
 } fcml_st_immediate;
 
 typedef struct fcml_st_far_pointer {
-    uint16_t segment;
+    fcml_uint16_t segment;
     fcml_data_size offset_size;
     union {
-        uint16_t offset16;
-        uint32_t offset32;
+        fcml_uint16_t offset16;
+        fcml_uint32_t offset32;
     };
 } fcml_st_far_pointer;
 
@@ -233,12 +249,15 @@ typedef struct fcml_st_displacement {
 } fcml_st_displacement;
 
 typedef struct fcml_st_effective_address {
+	fcml_uint16_t size_operator;
+	fcml_st_register segment_selector;
     fcml_st_register base;
     fcml_st_register index;
     uint8_t scale_factor;
     fcml_st_displacement displacement;
 } fcml_st_effective_address;
 
+// TODO: nie mam pojecia dla jakiego trybu adresowania to zostawilem, jak sobie przypome dodac przyklad trybu.
 typedef struct fcml_st_offset {
 	fcml_data_size size;
     union {
@@ -280,8 +299,9 @@ typedef enum fcml_en_explicit_prefixes {
 
 typedef struct fcml_st_instruction {
     fcml_en_explicit_prefixes prefixes;
-    char *mnemonic;
-    fcml_st_operand operands[5];
+    fcml_char *mnemonic;
+    fcml_st_operand operands[FCML_OPERANDS_COUNT];
+    int operands_count;
 } fcml_st_instruction;
 
 #endif /* FCML_INT_COMMON_H_ */
