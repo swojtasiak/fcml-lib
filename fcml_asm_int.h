@@ -19,16 +19,6 @@ typedef struct fcml_st_asm_instruction_encoding {
 	uint16_t prefixes_flags;
 	/* Flags that describe some details of opcodes. */
 	uint32_t opcode_flags;
-} fcml_st_asm_tree_instruction_encoding;
-
-struct fcml_st_asm_instructions_bucket {
-
-};
-
-struct fcml_st_asm_instructions_map {
-
-};
-
-
+} fcml_st_asm_instruction_encoding;
 
 #endif /* FCML_ASM_INT_H_ */

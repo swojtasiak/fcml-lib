@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "fcml_def.h"
 #include "ira_int.h"
 #include "ira_avx.h"
 #include "ira.h"
@@ -17,7 +18,7 @@
 #define _IRA_OPCODE_TABLE_SIZE	256
 
 /* Callback used during disassemblation tree generation. */
-typedef int ( *fp_ira_opcode_callback )( struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc, uint8_t opcode[3] );
+typedef int ( *fp_ira_opcode_callback )( struct fcml_st_def_instruction_description *instruction_desc, struct fcml_st_def_addr_mode_desc *opcode_desc, uint8_t opcode[3] );
 
 struct ira_diss_tree_opcode* _ira_disassemblation_tree[_IRA_OPCODE_TABLE_SIZE] = {NULL};
 
@@ -25,10 +26,10 @@ struct ira_diss_tree_opcode* _ira_disassemblation_tree[_IRA_OPCODE_TABLE_SIZE] =
 void _ira_prepare_disassemble_info( struct ira_disassemble_info *info, struct ira_disassemble_result *result );
 
 /* Adds new instructions to disassemblation tree. */
-int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_desc );
+int _ira_update_disassemblation_tree( struct fcml_st_def_instruction_description *instruction_desc );
 
 /* Add instruction decoding to disassemblation tree. */
-int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc );
+int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct fcml_st_def_instruction_description *instruction_desc, struct fcml_st_def_addr_mode_desc *opcode_desc );
 
 void _ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblation_tree );
 
@@ -482,7 +483,7 @@ enum ira_result_code ira_init(void) {
 	// Clear disassemblation tree.
 	memset( _ira_disassemblation_tree, 0, sizeof( _ira_disassemblation_tree ) );
 	// Builds disassemblation tree basing on predefined instruction set.
-	return _ira_map_internall_error_code( _ira_update_disassemblation_tree( _ira_instructions_desc ) );
+	return _ira_map_internall_error_code( _ira_update_disassemblation_tree( fcml_ext_instructions_def ) );
 }
 
 void ira_deinit(void) {
@@ -788,7 +789,7 @@ uint8_t _ira_get_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, i
 }
 
 /* Function used to calculate all instruction opcode bytes using recursion. */
-int _ira_handle_next_opcode_byte( struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc, uint8_t opcode_bytes[3], fp_ira_opcode_callback callback, int opcode_bytes_count, int opcode_byte_num, int primary_opcode_byte_num ) {
+int _ira_handle_next_opcode_byte( struct fcml_st_def_instruction_description *instruction_desc, struct fcml_st_def_addr_mode_desc *opcode_desc, uint8_t opcode_bytes[3], fp_ira_opcode_callback callback, int opcode_bytes_count, int opcode_byte_num, int primary_opcode_byte_num ) {
 
 	// Get next opcode byte from instruction.
 	if( opcode_byte_num == opcode_bytes_count ) {
@@ -838,7 +839,7 @@ int _ira_handle_next_opcode_byte( struct ira_instruction_desc *instruction_desc,
 	return _ira_handle_next_opcode_byte( instruction_desc, opcode_desc, opcode_bytes, callback, opcode_bytes_count, opcode_byte_num + 1, primary_opcode_byte_num );
 }
 
-int _ira_iterate_through_all_opcodes( struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc, fp_ira_opcode_callback callback ) {
+int _ira_iterate_through_all_opcodes( struct fcml_st_def_instruction_description *instruction_desc, struct fcml_st_def_addr_mode_desc *opcode_desc, fp_ira_opcode_callback callback ) {
 
 	// Number of opcode bytes.
 	int opcode_bytes_count = _IRA_OPCODE_FLAGS_OPCODE_NUM( opcode_desc->opcode_flags );
@@ -854,7 +855,7 @@ int _ira_iterate_through_all_opcodes( struct ira_instruction_desc *instruction_d
 	return _ira_handle_next_opcode_byte( instruction_desc, opcode_desc, opcode_bytes, callback, opcode_bytes_count, 0, primary_opcode_byte_num );
 }
 
-int _ira_default_opcode_callback( struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc, uint8_t opcode_bytes[3] ) {
+int _ira_default_opcode_callback( struct fcml_st_def_instruction_description *instruction_desc, struct fcml_st_def_addr_mode_desc *opcode_desc, uint8_t opcode_bytes[3] ) {
 
 	struct ira_diss_tree_opcode** current_diss_tree_opcode = _ira_disassemblation_tree;
 	struct ira_diss_tree_opcode* inst_desc = NULL;
@@ -893,17 +894,17 @@ int _ira_default_opcode_callback( struct ira_instruction_desc *instruction_desc,
 	return error;
 }
 
-int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_desc_src ) {
+int _ira_update_disassemblation_tree( struct fcml_st_def_instruction_description *instruction_desc_src ) {
 
 	// Get instruction description.
 	int instruction_index = 0;
 	while( instruction_desc_src[instruction_index].mnemonic != NULL ) {
-		struct ira_instruction_desc *instruction_desc = &instruction_desc_src[instruction_index++];
+		struct fcml_st_def_instruction_description *instruction_desc = &instruction_desc_src[instruction_index++];
 
 		// Get description of the specific instruction form.
 		int opcode_index = 0;
 		for( opcode_index = 0; opcode_index < instruction_desc->opcode_desc_count; opcode_index++ ) {
-			struct ira_opcode_desc *opcode_desc = &(instruction_desc->opcodes[opcode_index]);
+			struct fcml_st_def_addr_mode_desc *opcode_desc = &(instruction_desc->addr_modes[opcode_index]);
 
 			// Iterate through all opcode combination for this instruction form.
 			int error = _ira_iterate_through_all_opcodes( instruction_desc, opcode_desc, &_ira_default_opcode_callback );
@@ -916,7 +917,7 @@ int _ira_update_disassemblation_tree( struct ira_instruction_desc *instruction_d
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct ira_instruction_desc *instruction_desc, struct ira_opcode_desc *opcode_desc ) {
+int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struct fcml_st_def_instruction_description *instruction_desc, struct fcml_st_def_addr_mode_desc *opcode_desc ) {
 
 	int result = _IRA_INT_ERROR_NO_ERROR;
 

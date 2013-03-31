@@ -11,10 +11,6 @@
 #include "fcml_common.h"
 #include "fcml_asm_int.h"
 
-typedef struct fcml_st_asm_instruction {
-
-} fcml_st_asm_instruction;
-
 void fcml_fn_asm_init();
 void fcml_fn_asm_free();
 

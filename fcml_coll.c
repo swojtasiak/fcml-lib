@@ -226,7 +226,6 @@ void fcml_fn_coll_map_put( fcml_coll_map *map_int, fcml_ptr key, fcml_ptr value,
 	*error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_st_coll_map_descriptor *descriptor = &(map->descriptor);
-
 	fcml_uint32_t hash = descriptor->hash_function( key );
 	fcml_uint32_t index = map->hash_mask & hash;
 
@@ -266,7 +265,6 @@ void fcml_fn_coll_map_put( fcml_coll_map *map_int, fcml_ptr key, fcml_ptr value,
 	newEntry->key = key;
 	newEntry->value = value;
 	newEntry->hash = hash;
-
 	newEntry->next = map->map_entries[index];
 	map->map_entries[index] = newEntry;
 	map->size++;
