@@ -15,17 +15,6 @@
 
 /* Constants used to encode operand size on one byte. Used only in instruction descriptions. */
 
-// Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute.
-#define FCML_EOS_EOSA		0xFF
-#define FCML_EOS_EASA		0xFE
-#define FCML_EOS_L			0xFD
-
-// Oprand sizes that cannot be simply written as number of bytes.
-#define FCML_EOS_14_28		0xFC
-#define FCML_EOS_94_108		0xFB
-#define FCML_EOS_512B		0xFA
-#define FCML_EOS_UNDEF		0xF9
-
 // Take into account that every size is given in a number of bytes.
 #define FCML_EOS_UNDEFINED	0
 #define FCML_EOS_BYTE		1
@@ -36,6 +25,17 @@
 #define FCML_EOS_TBYTE		10
 #define FCML_EOS_OWORD		16
 #define FCML_EOS_YWORD		32
+
+// Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute.
+#define FCML_EOS_EOSA		0xFF
+#define FCML_EOS_EASA		0xFE
+#define FCML_EOS_VEX_L		0xFD
+
+// Oprand sizes that cannot be simply written as number of bytes.
+#define FCML_EOS_512B		FCML_EOS_UNDEFINED
+#define FCML_EOS_14_28		0xFC
+#define FCML_EOS_94_108		0xFB
+#define FCML_EOS_32_64		0xFA
 
 /* Structures used to describe instructions with they all allowed addressing modes. */
 typedef struct fcml_st_def_addr_mode_desc {
@@ -142,10 +142,6 @@ typedef struct fcml_st_def_instruction_description {
 #define _IRA_M_94_108	26
 #define _IRA_M_512B		27
 #define _IRA_M_UNDEF	28
-// TODO: RAczej SIMD a nie XMM, jako ze mamy XMM i YMM.
-#define _IRA_RM_XMM_L	29
-#define _IRA_R_XMM_L	30
-#define _IRA_M_256		31
 
 /* ModRM based operands. */
 
@@ -348,6 +344,8 @@ extern struct fcml_st_def_instruction_description fcml_ext_instructions_def[];
  * \return Decoded operand size.
  */
 uint16_t _ira_common_decode_8b_operand_size( uint8_t encoded_operand_size );
+
+uint16_t fcml_fn_def_decode_operand_size( uint8_t encoded_operand_size, uint8_t effective_operand_size_attribute, uint8_t effective_address_size_attribute, fcml_bool l_prefix );
 
 
 #endif /* IRA_DEF_H_ */

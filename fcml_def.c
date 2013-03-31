@@ -6385,7 +6385,7 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 };
 
 // Description in common.h
-uint16_t _ira_common_decode_8b_operand_size( uint8_t encoded_operand_size ) {
+uint16_t _ira_common_decode_8b_operand_size( uint8_t encoded_operand_size  ) {
 
 	if( encoded_operand_size == FCML_EOS_EASA ) {
 		return FCML_OS_EASA;
