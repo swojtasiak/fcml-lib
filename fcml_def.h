@@ -10,13 +10,11 @@
 
 #include "fcml_types.h"
 
-#define FCML_OS_EOSA		0xFFFF
-#define FCML_OS_EASA		0xFFFE
-
 /* Constants used to encode operand size on one byte. Used only in instruction descriptions. */
 
 // Take into account that every size is given in a number of bytes.
 #define FCML_EOS_UNDEFINED	0
+#define FCML_EOS_512B		FCML_EOS_UNDEFINED
 #define FCML_EOS_BYTE		1
 #define FCML_EOS_WORD		2
 #define FCML_EOS_DWORD		4
@@ -26,16 +24,22 @@
 #define FCML_EOS_OWORD		16
 #define FCML_EOS_YWORD		32
 
+// Dynamic encoded operand sizes calculated at runtime.
+
 // Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute.
 #define FCML_EOS_EOSA		0xFF
 #define FCML_EOS_EASA		0xFE
+
+// Operand size calculated on VEX.L field.
 #define FCML_EOS_VEX_L		0xFD
 
 // Oprand sizes that cannot be simply written as number of bytes.
-#define FCML_EOS_512B		FCML_EOS_UNDEFINED
 #define FCML_EOS_14_28		0xFC
 #define FCML_EOS_94_108		0xFB
 #define FCML_EOS_32_64		0xFA
+
+// True if encoded operand size is a dynamic one.
+#define FCML_IS_EOS_DYNAMIC(x)	( ( x & 0x80 ) != 0 )
 
 /* Structures used to describe instructions with they all allowed addressing modes. */
 typedef struct fcml_st_def_addr_mode_desc {
@@ -262,7 +266,7 @@ typedef struct fcml_st_def_instruction_description {
 #define _IRA_OPERAND_MODRM_M_128_W		(_IRA_OPERAND_MODRM_M_128 | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_256		_IRA_OPERAND_RM(IRA_NO_REG, FCML_EOS_UNDEFINED, FCML_EOS_YWORD, _IRA_RMF_M )
 #define _IRA_OPERAND_MODRM_M_256_W		(_IRA_OPERAND_MODRM_M_256 | _IRA_WRITE)
-#define _IRA_OPERAND_MODRM_M_14_28		_IRA_MODRM(_IRA_M_14_28)
+#define _IRA_OPERAND_MODRM_M_14_28		_IRA_OPERAND_RM(IRA_NO_REG, FCML_EOS_UNDEFINED, FCML_EOS_14_28, _IRA_RMF_M )
 #define _IRA_OPERAND_MODRM_M_14_28_W	(_IRA_OPERAND_MODRM_M_14_28 | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_94_108		_IRA_MODRM(_IRA_M_94_108)
 #define _IRA_OPERAND_MODRM_M_94_108_W	(_IRA_OPERAND_MODRM_M_94_108 | _IRA_WRITE)

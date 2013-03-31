@@ -79,6 +79,17 @@ void _ira_opcode_fields_decoder_IA( struct ira_diss_context *context, struct ira
 
 int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_diss_tree_instruction_decoding *instruction, struct ira_disassemble_result *result );
 
+/* Operand size decoding. */
+
+struct fcml_ist_decoded_operand_size {
+	// Explicit operand size.
+	uint16_t operand_size;
+	// Operand size provider.
+	ira_operand_size_provider operand_size_provider;
+};
+
+struct fcml_ist_decoded_operand_size fcml_ifn_decode_operand_size( fcml_uint8_t encoded_operand_size );
+
 /* ModRM decoding */
 
 /* Register configurations used for 16 bit addressing form decoding */
@@ -138,10 +149,13 @@ void *_ira_alloc_seg_relative_offset_args( uint16_t offset_size, uint8_t encoded
 
 // Size directive providers for memory based addressing decoders.
 
-uint16_t ira_far_indirect_pointer_operand_size_provider( struct ira_diss_context *context );
-uint16_t ira_mm_operand_size_provider( struct ira_diss_context *context );
-uint16_t ira_m14_28byte_operand_size_provider( struct ira_diss_context *context );
-uint16_t ira_m94_108byte_operand_size_provider( struct ira_diss_context *context );
+fcml_uint16_t ira_far_indirect_pointer_operand_size_provider( struct ira_diss_context *context );
+fcml_uint16_t ira_mm_operand_size_provider( struct ira_diss_context *context );
+fcml_uint16_t ira_m14_28byte_operand_size_provider( struct ira_diss_context *context );
+fcml_uint16_t ira_m94_108byte_operand_size_provider( struct ira_diss_context *context );
+fcml_uint16_t ira_easa_operand_size_provider( struct ira_diss_context *context );
+fcml_uint16_t ira_eosa_operand_size_provider( struct ira_diss_context *context );
+fcml_uint16_t ira_vexl_operand_size_provider( struct ira_diss_context *context );
 
 /* Utilities */
 
@@ -1336,10 +1350,14 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_explicit_register_addressing;
 		operand_decoding->args = _ira_alloc_reg_addressing_args( ( decoding & 0x00FF0000 ) >> 16 /*Register number*/, ( decoding & 0x0000FF00 ) >> 8 /*Operand size*/, ( decoding & 0x000000FF ) /* Segment register */, &result );
 		break;
-	case _IRA_OPERAND_RM_BASE:
+	case _IRA_OPERAND_RM_BASE: {
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( ( decoding & 0x000000F0 ) >> 4, decoding & 0x0000000F,_ira_common_decode_8b_operand_size( ( decoding & 0x00FF0000 ) >> 16 ), NULL, _ira_common_decode_8b_operand_size( ( decoding & 0x0000FF00 ) >> 8 ), NULL, &result );
+		// Encodes operands sizes.
+		struct fcml_ist_decoded_operand_size memory_operand_size = fcml_ifn_decode_operand_size( ( decoding & 0x00FF0000 ) >> 16 );
+		struct fcml_ist_decoded_operand_size register_operand_size = fcml_ifn_decode_operand_size( ( decoding & 0x0000FF00 ) >> 8 );
+		operand_decoding->args = _ira_alloc_modrm_decoding_args( ( decoding & 0x000000F0 ) >> 4, decoding & 0x0000000F,memory_operand_size.operand_size, memory_operand_size.operand_size_provider, register_operand_size.operand_size, register_operand_size.operand_size_provider, &result );
 		break;
+	}
 	case _IRA_OPERAND_M_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 		operand_decoding->args = _ira_alloc_modm_decoding_args( NULL,  decoding & 0x0000FFFF, &result );
@@ -2626,29 +2644,70 @@ int ira_relative_addressing_instruction_operand_handler( struct ira_diss_context
  * Size directive providers for memory based addressing decoders.
  */
 
-uint16_t ira_far_indirect_pointer_operand_size_provider( struct ira_diss_context *context ) {
+fcml_uint16_t ira_far_indirect_pointer_operand_size_provider( struct ira_diss_context *context ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	return decoding_context->effective_operand_size_attribute + 16;
 }
 
-uint16_t ira_mm_operand_size_provider( struct ira_diss_context *context ) {
+fcml_uint16_t ira_mm_operand_size_provider( struct ira_diss_context *context ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	return decoding_context->effective_operand_size_attribute * 2;
 }
 
-uint16_t ira_m14_28byte_operand_size_provider( struct ira_diss_context *context ) {
+fcml_uint16_t ira_m14_28byte_operand_size_provider( struct ira_diss_context *context ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	return ( decoding_context->effective_operand_size_attribute == _IRA_OSA_16 ) ? ( 14 * 8 ) : ( 28 * 8 );
 }
 
-uint16_t ira_m94_108byte_operand_size_provider( struct ira_diss_context *context ) {
+fcml_uint16_t ira_m94_108byte_operand_size_provider( struct ira_diss_context *context ) {
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	return ( decoding_context->effective_operand_size_attribute == _IRA_OSA_16 ) ? ( 94 * 8 ) : ( 108 * 8 );
+}
+
+fcml_uint16_t ira_easa_operand_size_provider( struct ira_diss_context *context ) {
+	return context->decoding_context.effective_address_size_attribute;
+}
+
+fcml_uint16_t ira_eosa_operand_size_provider( struct ira_diss_context *context ) {
+	return context->decoding_context.effective_operand_size_attribute;
+}
+
+fcml_uint16_t ira_vexl_operand_size_provider( struct ira_diss_context *context ) {
+	return context->decoding_context.prefixes_fields.l ? 256 : 128;
 }
 
 /*
  * Utility functions.
  */
+
+struct fcml_ist_decoded_operand_size fcml_ifn_decode_operand_size( fcml_uint8_t encoded_operand_size ) {
+	struct fcml_ist_decoded_operand_size operand_size = {0, NULL};
+	if( FCML_IS_EOS_DYNAMIC( encoded_operand_size ) ) {
+		switch( encoded_operand_size ) {
+		case FCML_EOS_EOSA:
+			operand_size.operand_size_provider = ira_eosa_operand_size_provider;
+			break;
+		case FCML_EOS_EASA:
+			operand_size.operand_size_provider = ira_easa_operand_size_provider;
+			break;
+		case FCML_EOS_VEX_L:
+			operand_size.operand_size_provider = ira_vexl_operand_size_provider;
+			break;
+		case FCML_EOS_14_28:
+			operand_size.operand_size_provider = ira_m14_28byte_operand_size_provider;
+			break;
+		case FCML_EOS_94_108:
+			operand_size.operand_size_provider = ira_m94_108byte_operand_size_provider;
+			break;
+		case FCML_EOS_32_64:
+			operand_size.operand_size_provider = ira_mm_operand_size_provider;
+			break;
+		}
+	} else {
+		operand_size.operand_size = encoded_operand_size * 8;
+	}
+	return operand_size;
+}
 
 //! Decoding given size directive using provided disassembling context.
 /*!
