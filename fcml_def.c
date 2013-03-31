@@ -30,12 +30,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_AAS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ADC[] = {
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
-	{ NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x14, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 15 iw ADC AX, imm16 C Valid Valid Add with carry imm16 to AX.
 	// 15 id ADC EAX, imm32 C Valid Valid Add with carry imm32 to EAX.
-	{ NULL, 0x0001, 0x00C40000, { 0x15, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x15, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 15 id ADC RAX, imm32 C Valid N.E. Add with carry imm32 sign extended to 64-bits to RAX.
-	{ NULL, 0x0009, 0x00840000, { 0x15, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00840000, { 0x15, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /2 ib ADC r/m8, imm8 B Valid Valid Add with carry imm8 to r/m8.
 	// REX + 80 /2 ib ADC r/m8*, imm8 B Valid N.E. Add with carry imm8 to r/m8.
 	{ NULL, 0x0001, 0x00C59000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -67,12 +67,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ADC[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ADD[] = {
 	// 04 ib ADD AL, imm8 C Valid Valid Add imm8 to AL..
-	{ NULL, 0x0001, 0x00C40000, { 0x04, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x04, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 05 iw ADD AX, imm16 C Valid Valid Add imm16 to AX.
 	// 05 id ADD EAX, imm32 C Valid Valid Add imm32 to EAX.
-	{ NULL, 0x0001, 0x00C40000, { 0x05, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x05, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 05 id ADD RAX, imm32 C Valid N.E. Add imm32 sign-extended to 64-bits to RAX.
-	{ NULL, 0x0009, 0x00840000, { 0x05, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00840000, { 0x05, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /0 ib ADD r/m8, imm8 B Valid Valid Add imm8 to r/m8.
 	// REX + 80 /0 ib ADD r/m8*, imm8 B Valid N.E. Add sign-extended imm8 to r/m64.
 	{ NULL, 0x0001, 0x00C58000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -192,12 +192,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_AESKEYGENASSIST[] 
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_AND[] = {
 	// 24 ib AND AL, imm8 C Valid Valid AL AND imm8.
-	{ NULL, 0x0001, 0x00C40000, { 0x24, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x24, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 25 iw AND AX, imm16 C Valid Valid AX AND imm16.
 	// 25 id AND EAX, imm32 C Valid Valid EAX AND imm32.
-	{ NULL, 0x0001, 0x03C40000, { 0x25, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03C40000, { 0x25, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 25 id AND RAX, imm32 C Valid N.E. RAX AND imm32 signextended to 64-bits.
-	{ NULL, 0x0001, 0x04840000, { 0x25, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x04840000, { 0x25, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /4 ib AND r/m8, imm8 MR Valid Valid r/m8 AND imm8.
 	// REX + 80 /4 ib AND r/m8*, imm8 MR Valid N.E. r/m8 AND imm8.
 	{ NULL, 0x0001, 0x00C5A000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -282,7 +282,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLENDPS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLENDVPD[] = {
 	// 66 0F 38 15 /r BLENDVPD xmm1, xmm2/m128 , <XMM0> A Valid Valid Select packed DP FP values from xmm1 and xmm2 from mask specified in XMM0 and store the values in xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x15 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_EXPLICIT_REG( IRA_REG_SIMD, _IRA_REG_XMM0, FCML_EOS_OWORD ), _IRA_NA },
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x15 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SIMD, _IRA_REG_XMM0, FCML_EOS_OWORD ), _IRA_NA },
 	// VEX.NDS.128.66.0F3A 4B /r /is4 VBLENDVPD xmm1, xmm2, xmm3/m128, xmm4
 	// VEX.NDS.256.66.0F3A 4B /r /is4 VBLENDVPD ymm1, ymm2, ymm3/m256, ymm4
 	{ "vblendvpd", 0x1080, 0x00EC8000, { 0x0F, 0x3A, 0x4B }, _IRA_OPERAND_MODRM_R_SIMD_L_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD_L, _IRA_OPERAND_IS4 }
@@ -290,7 +290,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLENDVPD[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLENDVPS[] = {
 	// 66 0F 38 14 /r BLENDVPS xmm1, xmm2/m128, <XMM0> A Valid Valid Select packed single precision floating-point values from xmm1 and xmm2/m128 from mask specified in XMM0 and store the values into xmm1.
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x14 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_EXPLICIT_REG( IRA_REG_SIMD, _IRA_REG_XMM0, FCML_EOS_OWORD ), _IRA_NA },
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x14 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SIMD, _IRA_REG_XMM0, FCML_EOS_OWORD ), _IRA_NA },
 	// VEX.NDS.128.66.0F3A 4A /r /is4 VBLENDVPS xmm1, xmm2, xmm3/m128, xmm4
 	// VEX.NDS.256.66.0F3A 4A /r /is4 VBLENDVPS ymm1, ymm2, ymm3/m256, ymm4
 	{ "vblendvps", 0x1080, 0x00EC8000, { 0x0F, 0x3A, 0x4A }, _IRA_OPERAND_MODRM_R_SIMD_L_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_SIMD_L, _IRA_OPERAND_IS4 }
@@ -506,12 +506,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_JMP[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMP[] = {
 	// 3C ib CMP AL, imm8 D Valid Valid Compare imm8 with AL.
-	{ NULL, 0x0001, 0x00C40000, { 0x3C, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x3C, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 3D iw CMP AX, imm16 D Valid Valid Compare imm16 with AX.
 	// 3D id CMP EAX, imm32 D Valid Valid Compare imm32 with EAX.
-	{ NULL, 0x0001, 0x00C40000, { 0x3D, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x3D, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 3D id CMP RAX, imm32 D Valid N.E. Compare imm32 sign extended to 64-bits with RAX.
-	{ NULL, 0x0009, 0x00840000, { 0x3D, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00840000, { 0x3D, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /7 ib CMP r/m8, imm8 C Valid Valid Compare imm8 with r/m8.
 	// REX + 80 /7 ib CMP r/m8*, imm8 C Valid N.E. Compare imm8 with r/m8.
 	{ NULL, 0x0001, 0x00C5B800, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -856,11 +856,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_DEC[] = {
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_DIV[] = {
 	// F6 /6 DIV r/m8 A Valid Valid Unsigned divide AX by r/m8,with result stored in AL Quotient, AH Remainder.
 	// REX + F6 /6 DIV r/m8* A Valid N.E. Unsigned divide AX by r/m8, with result stored in AL Quotient, AH Remainder.
-	{ NULL, 0x0001, 0x00C5B000, { 0xF6, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, FCML_EOS_WORD ), _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C5B000, { 0xF6, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, FCML_EOS_WORD ), _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA },
 	// F7 /6 DIV r/m16 A Valid Valid Unsigned divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
 	// F7 /6 DIV r/m32 A Valid Valid Unsigned divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
 	// REX.W + F7 /6 DIV r/m64 A Valid N.E. Unsigned divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
-	{ NULL, 0x0001, 0x00C5B000, { 0xF7, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ), _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00C5B000, { 0xF7, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ), _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_DIVPD[] = {
@@ -955,11 +955,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FADD[] = {
 	// DC /0 FADD m64fp Valid Valid Add m64fp to ST(0) and store result in ST(0).
 	{ NULL, 0x0001, 0x00C58000, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
 	// D8 C0+i FADD ST(0), ST(i) Valid Valid Add ST(0) to ST(i) and store result in ST(0).
-	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xC0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xC0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DC C0+i FADD ST(i), ST(0) Valid Valid Add ST(i) to ST(0) and store result in ST(i).
-	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xC0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xC0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DE C0+i FADDP ST(i), ST(0) Valid Valid Add ST(0) to ST(i), store result in ST(i), and pop the register stack.
-	{ "faddp", 0x0001, 0x00D80001, { 0xDE, 0xC0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "faddp", 0x0001, 0x00D80001, { 0xDE, 0xC0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA /0 FIADD m32int Valid Valid Add m32int to ST(0) and store result in ST(0).
 	{ "fiadd", 0x0001, 0x00C58000, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DE /0 FIADD m16int Valid Valid Add m16int to ST(0) and store result in ST(0).
@@ -990,21 +990,21 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FCLEX[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FCMOV[] = {
 	// DA C0+i FCMOVB ST(0), ST(i) Valid Valid Move if below (CF=1).
-	{ "fcmovb", 0x0001, 0x00D80001, { 0xDA, 0xC0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcmovb", 0x0001, 0x00D80001, { 0xDA, 0xC0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA C8+i FCMOVE ST(0), ST(i) Valid Valid Move if equal (ZF=1).
-	{ "fcmove", 0x0001, 0x00D80001, { 0xDA, 0xC8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcmove", 0x0001, 0x00D80001, { 0xDA, 0xC8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA D0+i FCMOVBE ST(0), ST(i) Valid Valid Move if below or equal (CF=1 or ZF=1).
-	{ "fcmovbe", 0x0001, 0x00D80001, { 0xDA, 0xD0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcmovbe", 0x0001, 0x00D80001, { 0xDA, 0xD0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA D8+i FCMOVU ST(0), ST(i) Valid Valid Move if unordered (PF=1).
-	{ "fcmovu", 0x0001, 0x00D80001, { 0xDA, 0xD8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcmovu", 0x0001, 0x00D80001, { 0xDA, 0xD8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DB C0+i FCMOVNB ST(0), ST(i) Valid Valid Move if not below (CF=0).
-	{ "fcmovnb", 0x0001, 0x00D80001, { 0xDB, 0xC0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcmovnb", 0x0001, 0x00D80001, { 0xDB, 0xC0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DB C8+i FCMOVNE ST(0), ST(i) Valid Valid Move if not equal (ZF=0).
-	{ "fcmovne", 0x0001, 0x00D80001, { 0xDB, 0xC8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcmovne", 0x0001, 0x00D80001, { 0xDB, 0xC8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DB D0+i FCMOVNBE ST(0), ST(i) Valid Valid Move if not below or equal (CF=0 and ZF=0).
-	{ "fcmovnbe", 0x0001, 0x00D80001, { 0xDB, 0xD0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcmovnbe", 0x0001, 0x00D80001, { 0xDB, 0xD0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DB D8+i FCMOVNU ST(0), ST(i) Valid Valid Move if not unordered (PF=0).
-	{ "fcmovnu", 0x0001, 0x00D80001, { 0xDB, 0xD8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA }
+	{ "fcmovnu", 0x0001, 0x00D80001, { 0xDB, 0xD8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FCOM[] = {
@@ -1029,13 +1029,13 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FCOM[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FCOMI[] = {
 	// DB F0+i FCOMI ST, ST(i) Valid Valid Compare ST(0) with ST(i) and set status flags accordingly.
-	{ "fcomi", 0x0001, 0x00D80001, { 0xDB, 0xF0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcomi", 0x0001, 0x00D80001, { 0xDB, 0xF0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DF F0+i FCOMIP ST, ST(i) Valid Valid Compare ST(0) with ST(i), set status flags accordingly, and pop register stack.
-	{ "fcomip", 0x0001, 0x00D80001, { 0xDF, 0xF0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fcomip", 0x0001, 0x00D80001, { 0xDF, 0xF0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DB E8+i FUCOMI ST, ST(i) Valid Valid Compare ST(0) with ST(i), check for ordered values, and set status flags accordingly.
-	{ "fucomi", 0x0001, 0x00D80001, { 0xDB, 0xE8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fucomi", 0x0001, 0x00D80001, { 0xDB, 0xE8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DF E8+i FUCOMIP ST, ST(i) Valid Valid Compare ST(0) with ST(i), check for ordered values, set status flags accordingly, and pop register stack.
-	{ "fucomip", 0x0001, 0x00D80001, { 0xDF, 0xE8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA }
+	{ "fucomip", 0x0001, 0x00D80001, { 0xDF, 0xE8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FCOS[] = {
@@ -1054,11 +1054,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FDIV[] = {
 	// DC /6 FDIV m64fp Valid Valid Divide ST(0) by m64fp and store result in ST(0).
 	{ NULL, 0x0001, 0x00C5B000, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
 	// D8 F0+i FDIV ST(0), ST(i) Valid Valid Divide ST(0) by ST(i) and store result in ST(0).
-	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xF0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xF0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DC F8+i FDIV ST(i), ST(0) Valid Valid Divide ST(i) by ST(0) and store result in ST(i).
-	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xF8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xF8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DE F8+i FDIVP ST(i), ST(0) Valid Valid Divide ST(i) by ST(0), store result in ST(i), and pop the register stack.
-	{ "fdivp", 0x0001, 0x00D80001, { 0xDE, 0xF8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fdivp", 0x0001, 0x00D80001, { 0xDE, 0xF8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA /6 FIDIV m32int Valid Valid Divide ST(0) by m32int and store result in ST(0).
 	{ "fidiv", 0x0001, 0x00C5B000, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DE /6 FIDIV m16int Valid Valid Divide ST(0) by m64int and store result in ST(0).
@@ -1071,11 +1071,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FDIVR[] = {
 	// DC /7 FDIVR m64fp Valid Valid Divide m64fp by ST(0) and store result in ST(0).
 	{ NULL, 0x0001, 0x00C5B800, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
 	// D8 F8+i FDIVR ST(0), ST(i) Valid Valid Divide ST(i) by ST(0) and store result in ST(0).
-	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xF8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xF8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DC F0+i FDIVR ST(i), ST(0) Valid Valid Divide ST(0) by ST(i) and store result in ST(i).
-	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xF0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xF0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DE F0+i FDIVRP ST(i), ST(0) Valid Valid Divide ST(0) by ST(i), store result in ST(i), and pop the register stack.
-	{ "fdivrp", 0x0001, 0x00D80001, { 0xDE, 0xF0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fdivrp", 0x0001, 0x00D80001, { 0xDE, 0xF0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA /7 FIDIVR m32int Valid Valid Divide m32int by ST(0) and store result in ST(0).
 	{ "fidivr", 0x0001, 0x00C5B800, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DE /7 FIDIVR m16int Valid Valid Divide m16int by ST(0) and store result in ST(0).
@@ -1185,11 +1185,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FMUL[] = {
 	// DC /1 FMUL m64fp Valid Valid Multiply ST(0) by m64fp and store result in ST(0).
 	{ NULL, 0x0001, 0x00C58800, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
 	// D8 C8+i FMUL ST(0), ST(i) Valid Valid Multiply ST(0) by ST(i) and store result in ST(0).
-	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xC8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xC8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DC C8+i FMUL ST(i), ST(0) Valid Valid Multiply ST(i) by ST(0) and store result in ST(i).
-	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DE C8+i FMULP ST(i), ST(0) Valid Valid Multiply ST(i) by ST(0), store result in ST(i), and pop the register stack.
-	{ "fmulp", 0x0001, 0x00D80001, { 0xDE, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fmulp", 0x0001, 0x00D80001, { 0xDE, 0xC8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA /1 FIMUL m32int Valid Valid Multiply ST(0) by m32int and store result in ST(0).
 	{ "fimul", 0x0001, 0x00C58800, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DE /1 FIMUL m16int Valid Valid Multiply ST(0) by m16int and store result in ST(0).
@@ -1293,11 +1293,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FSTSW[] = {
 	// 9B DD /7 FSTSW m2byte Valid Valid Store FPU status word at m2byte after checking for pending unmasked floatingpoint exceptions.
 	{ NULL, 0x0001, 0x00D9B800, { 0x9B, 0xDD, 0x00 }, _IRA_OPERAND_MODRM_M_16_W, _IRA_NA, _IRA_NA, _IRA_NA },
 	// 9B DF E0 FSTSW AX Valid Valid Store FPU status word in AX register after checking for pending unmasked floatingpoint exceptions.
-	{ NULL, 0x0001, 0x00EC0000, { 0x9B, 0xDF, 0xE0 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00EC0000, { 0x9B, 0xDF, 0xE0 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// DD /7 FNSTSW* m2byte Valid Valid Store FPU status word at m2byte without checking for pending unmasked floatingpoint exceptions.
 	{ "fnstsw", 0x0001, 0x00C5B800, { 0xDD, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_16_W, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DF E0 FNSTSW* AX Valid Valid Store FPU status word in AX register without checking for pending unmasked floatingpoint exceptions.
-	{ "fnstsw", 0x0001, 0x00D80000, { 0xDF, 0xE0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ "fnstsw", 0x0001, 0x00D80000, { 0xDF, 0xE0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FSUB[] = {
@@ -1306,11 +1306,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FSUB[] = {
 	// DC /4 FSUB m64fp Valid Valid Subtract m64fp from ST(0) and store result in ST(0).
 	{ NULL, 0x0001, 0x00C5A000, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
 	// D8 E0+i FSUB ST(0), ST(i) Valid Valid Subtract ST(i) from ST(0) and store result in ST(0).
-	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xE0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xE0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DC E8+i FSUB ST(i), ST(0) Valid Valid Subtract ST(0) from ST(i) and store result in ST(i).
-	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xE8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xE8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DE E8+i FSUBP ST(i), ST(0) Valid Valid Subtract ST(0) from ST(i), store result in ST(i), and pop register stack.
-	{ "fsubp", 0x0001, 0x00D80001, { 0xDE, 0xE8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fsubp", 0x0001, 0x00D80001, { 0xDE, 0xE8, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA /4 FISUB m32int Valid Valid Subtract m32int from ST(0) and store result in ST(0).
 	{ "fisub", 0x0001, 0x00C5A000, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DE /4 FISUB m16int Valid Valid Subtract m16int from ST(0) and store result in ST(0).
@@ -1323,11 +1323,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FSUBR[] = {
 	// DC /5 FSUBR m64fp Valid Valid Subtract ST(0) from m64fp and store result in ST(0).
 	{ NULL, 0x0001, 0x00C5A800, { 0xDC, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_64, _IRA_NA, _IRA_NA, _IRA_NA },
 	// D8 E8+i FSUBR ST(0), ST(i) Valid Valid Subtract ST(0) from ST(i) and store result in ST(0).
-	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xE8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xD8, 0xE8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DC E0+i FSUBR ST(i), ST(0) Valid Valid Subtract ST(i) from ST(0) and store result in ST(i).
-	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xE0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80001, { 0xDC, 0xE0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DE E0+i FSUBRP ST(i), ST(0) Valid Valid Subtract ST(i) from ST(0), store result in ST(i), and pop register stack.
-	{ "fsubrp", 0x0001, 0x00D80001, { 0xDE, 0xE0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), _IRA_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
+	{ "fsubrp", 0x0001, 0x00D80001, { 0xDE, 0xE0, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_FPU, _IRA_REG_ST0, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA },
 	// DA /5 FISUBR m32int Valid Valid Subtract ST(0) from m32int and store result in ST(0).
 	{ "fisubr", 0x0001, 0x00C5A800, { 0xDA, 0x00, 0x00 }, _IRA_OPERAND_MODRM_M_32, _IRA_NA, _IRA_NA, _IRA_NA },
 	// DE /5 FISUBR m16int Valid Valid Subtract ST(0) from m16int and store result in ST(0).
@@ -1427,11 +1427,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_HSUBPS[] = {
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_IDIV[] = {
 	// F6 /7 IDIV r/m8 A Valid Valid Signed divide AX by r/m8,with result stored in: AL Quotient, AH Remainder.
 	// REX + F6 /7 IDIV r/m8* A Valid N.E. Signed divide AX by r/m8, with result stored in AL Quotient, AH Remainder.
-	{ NULL, 0x0001, 0x00C5B800, { 0xF6, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, FCML_EOS_WORD ), _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C5B800, { 0xF6, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AX, FCML_EOS_WORD ), _IRA_OPERAND_MODRM_RM_8_W, _IRA_NA, _IRA_NA },
 	// F7 /7 IDIV r/m16 A Valid Valid Signed divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
 	// F7 /7 IDIV r/m32 A Valid Valid Signed divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
 	// REX.W + F7 /7 IDIV r/m64 A Valid N.E. Signed divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
-	{ NULL, 0x0001, 0x00C5B800, { 0xF7, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ), _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00C5B800, { 0xF7, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ), _IRA_OPERAND_MODRM_RM_W, _IRA_NA, _IRA_NA }
 };
 
 // ***********************************
@@ -1462,17 +1462,17 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_IMUL[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_IN[] = {
 	// E4 ib IN AL, imm8 A Valid Valid Input byte from imm8 I/O port address into AL.
-	{ NULL, 0x0001, 0x07C40000, { 0xE4, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x07C40000, { 0xE4, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// E5 ib IN AX, imm8 A Valid Valid Input word from imm8 I/O port address into AX.
-	{ NULL, 0x0001, 0x01C40000, { 0xE5, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_WORD), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x01C40000, { 0xE5, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_WORD), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// E5 ib IN EAX, imm8 A Valid Valid Input dword from imm8 I/O port address into EAX.
-	{ NULL, 0x0001, 0x06C40000, { 0xE5, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_DWORD), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x06C40000, { 0xE5, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_DWORD), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// EC IN AL,DX B Valid Valid Input byte from I/O port in DX into AL.
-	{ NULL, 0x0001, 0x07C40000, { 0xEC, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x07C40000, { 0xEC, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
 	// ED IN AX,DX B Valid Valid Input word from I/O port in DX into AX.
-	{ NULL, 0x0001, 0x01C40000, { 0xED, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_WORD ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x01C40000, { 0xED, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_WORD ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
 	// ED IN EAX,DX B Valid Valid Input doubleword from I/O port in DX into EAX.
-	{ NULL, 0x0001, 0x06C40000, { 0xED, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_DWORD ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x06C40000, { 0xED, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_DWORD ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INC[] = {
@@ -1492,15 +1492,15 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INS[] = {
 	// 6C INS m8, DX A Valid Valid Input byte from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.*
 	{ NULL, 0x0001, 0x07C40000, { 0x6C, 0x00, 0x00 },
 			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, FCML_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
-			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
+			FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
 	// 6D INS m16, DX A Valid Valid Input word from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
 	{ NULL, 0x0001, 0x01C40000, { 0x6D, 0x00, 0x00 },
 			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, FCML_EOS_WORD, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
-			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
+			FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
 	// 6D INS m32, DX A Valid Valid Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
 	{ NULL, 0x0001, 0x06C40000, { 0x6D, 0x00, 0x00 },
 			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, FCML_EOS_DWORD, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ),
-			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA }
+			FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_NA, _IRA_NA }
 	// TODO: W przypadku assemblera trzeba to bedzie obsluzyc.
 	// 6C INSB A Valid Valid Input byte from I/O port specified in DX into memory location specified with ES:(E)DI or RDI.1
 	// 6D INSW A Valid Valid Input word from I/O portspecified in DX into memory location specified in ES:(E)DI or RDI.1
@@ -1547,7 +1547,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INVLPG[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INVLPGA[] = {
 	// INVLPGA rAX, ECX 0F 01 DF
-	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0x01, 0xDF }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EASA ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_ECX, FCML_EOS_DWORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00EC0000, { 0x0F, 0x01, 0xDF }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EASA ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_ECX, FCML_EOS_DWORD ), _IRA_NA, _IRA_NA },
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INVPCID[] = {
@@ -1648,13 +1648,13 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LLWPCB[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LGDT[] = {
 	// 0F 01 /2 LGDT m16&32 A N.E. Valid Load m into GDTR.
-	{ NULL, 0x0001, 0x03D99000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_DWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03D99000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, FCML_EOS_UNDEFINED, (FCML_EOS_WORD + FCML_EOS_DWORD), _IRA_RMF_M ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F 01 /2 LGDT m16&64 A Valid N.E. Load m into GDTR.
-	{ NULL, 0x0001, 0x04999000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_QWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x04999000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, FCML_EOS_UNDEFINED, (FCML_EOS_WORD + FCML_EOS_QWORD), _IRA_RMF_M ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F 01 /3 LIDT m16&32 A N.E. Valid Load m into IDTR.
-	{ "lidt", 0x0001, 0x04999800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_DWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ "lidt", 0x0001, 0x04999800, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, FCML_EOS_UNDEFINED, (FCML_EOS_WORD + FCML_EOS_DWORD), _IRA_RMF_M ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F 01 /3 LIDT m16&64 A Valid N.E. Load m into IDTR.
-	{ "lidt", 0x0001, 0x04980000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_M( ( _IRA_OS_WORD + _IRA_OS_QWORD ) ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ "lidt", 0x0001, 0x04980000, { 0x0F, 0x01, 0x00 }, _IRA_OPERAND_RM( IRA_NO_REG, FCML_EOS_UNDEFINED, (FCML_EOS_WORD + FCML_EOS_QWORD), _IRA_RMF_M ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LLDT[] = {
@@ -1702,16 +1702,16 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LOOP[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LWPINS[] = {
 	// LWPINS reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /0 /imm32
-	{ NULL, 0x0450, 0x00D98000, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_OPERAND_ID, _IRA_NA },
+	{ NULL, 0x0450, 0x00D98000, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_OPERAND_ID, _IRA_NA },
 	// LWPINS reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /0 /imm32
-	{ NULL, 0x0448, 0x00D98000, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_OPERAND_ID, _IRA_NA }
+	{ NULL, 0x0448, 0x00D98000, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_OPERAND_ID, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LWPVAL[] = {
 	// LWPVAL reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /1 /imm32
-	{ NULL, 0x0450, 0x00D98800, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_OPERAND_ID, _IRA_NA },
+	{ NULL, 0x0450, 0x00D98800, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_OPERAND_ID, _IRA_NA },
 	// LWPVAL reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /1 /imm32
-	{ NULL, 0x0448, 0x00D98800, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_OPERAND_ID, _IRA_NA }
+	{ NULL, 0x0448, 0x00D98800, { 0x0A, 0x12, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_OPERAND_ID, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LSL[] = {
@@ -1840,12 +1840,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MINSS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MONITOR[] = {
 	// 0F 01 C8 MONITOR A Valid Valid Sets up a linear address range to be monitored by hardware and activates the monitor. The address range should be a write-back memory caching type. The address is DS:EAX
-	{ NULL, 0x0001, 0x006C0000, { 0x0F, 0x01, 0xC8 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_DWORD ),
-		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_ECX, FCML_EOS_DWORD ),
-		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EDX, FCML_EOS_DWORD ), _IRA_NA },
-	{ NULL, 0x0001, 0x00AC0000, { 0x0F, 0x01, 0xC8 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RAX, FCML_EOS_QWORD ),
-		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RCX, FCML_EOS_QWORD ),
-		_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RDX, FCML_EOS_QWORD ), _IRA_NA }
+	{ NULL, 0x0001, 0x006C0000, { 0x0F, 0x01, 0xC8 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_DWORD ),
+		FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_ECX, FCML_EOS_DWORD ),
+		FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EDX, FCML_EOS_DWORD ), _IRA_NA },
+	{ NULL, 0x0001, 0x00AC0000, { 0x0F, 0x01, 0xC8 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RAX, FCML_EOS_QWORD ),
+		FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RCX, FCML_EOS_QWORD ),
+		FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_RDX, FCML_EOS_QWORD ), _IRA_NA }
 	// TODO: Przy assemblacji pameitac zeby pozwolic na assemblacje samej mnemoniki!, byc moze idea virtualnych opcod rozwiaze problem
 };
 
@@ -1879,18 +1879,18 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOV[] = {
 	{ NULL, 0x0001, 0x04848000, { 0x8E, 0x00, 0x00 }, _IRA_OPERAND_R( IRA_REG_SEG, FCML_EOS_WORD ), _IRA_OPERAND_MODRM_RM_64_W, _IRA_NA, _IRA_NA },
 	// A0 MOV AL,moffs8* C Valid Valid Move byte at (seg:offset) to AL.
 	// REX.W + A0 MOV AL,moffs8* C Valid N.E. Move byte at (offset) to AL.
-	{ NULL, 0x0001, 0x00C40000, { 0xA0, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( FCML_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0xA0, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( FCML_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_NA, _IRA_NA },
 	// A1 MOV AX,moffs16* C Valid Valid Move word at (seg:offset) to AX.
 	// A1 MOV EAX,moffs32* C Valid Valid Move doubleword at (seg:offset) to EAX.
 	// REX.W + A1 MOV RAX,moffs64* C Valid N.E. Move quadword at (offset) to RAX.
-	{ NULL, 0x0001, 0x00C40000, { 0xA1, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_EOSA ), _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( FCML_EOS_EOSA, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0xA1, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_EOSA ), _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( FCML_EOS_EOSA, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_NA, _IRA_NA },
 	// A2 MOV moffs8,AL D Valid Valid Move AL to (seg:offset).
 	// REX.W + A2 MOV moffs8***,AL D Valid N.E. Move AL to (offset).
-	{ NULL, 0x0001, 0x00C40000, { 0xA2, 0x00, 0x00 }, _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( FCML_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0xA2, 0x00, 0x00 }, _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( FCML_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// A3 MOV moffs16*,AX D Valid Valid Move AX to (seg:offset).
 	// A3 MOV moffs32*,EAX D Valid Valid Move EAX to (seg:offset).
 	// REX.W + A3 MOV moffs64*,RAX D Valid N.E. Move RAX to (offset).
-	{ NULL, 0x0001, 0x00C40000, { 0xA3, 0x00, 0x00 }, _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( FCML_EOS_EOSA, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_EOSA ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0xA3, 0x00, 0x00 }, _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( FCML_EOS_EOSA, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_DS, _IRA_SEG_ALLOW_OVERRIDE ) ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_EOSA ), _IRA_NA, _IRA_NA },
 	// B0+ rb MOV r8, imm8 E Valid Valid Move imm8 to r8.
 	// REX + B0+ rb MOV r8***, imm8 E Valid N.E. Move imm8 to r8.
 	{ NULL, 0x0001, 0x00C40001, { 0xB0, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, FCML_EOS_BYTE ) | _IRA_WRITE, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -2387,12 +2387,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_NOT[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_OR[] = {
 	// 0C ib OR AL, imm8 I Valid Valid AL OR imm8.
-	{ NULL, 0x0001, 0x00C40000, { 0x0C, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x0C, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 0D iw OR AX, imm16 I Valid Valid AX OR imm16.
 	// 0D id OR EAX, imm32 I Valid Valid EAX OR imm32.
-	{ NULL, 0x0001, 0x03C40000, { 0x0D, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03C40000, { 0x0D, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 0D id OR RAX, imm32 I Valid N.E. RAX OR imm32 (sign-extended).
-	{ NULL, 0x0001, 0x04840000, { 0x0D, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x04840000, { 0x0D, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /1 ib OR r/m8, imm8 MI Valid Valid r/m8 OR imm8.
 	// REX + 80 /1 ib OR r/m8*, imm8 MI Valid N.E. r/m8 OR imm8.
 	{ NULL, 0x0001, 0x00C58800, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -2440,32 +2440,32 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ORPS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_OUT[] = {
 	// E6 ib OUT imm8, AL I Valid Valid Output byte in AL to I/O port address imm8.
-	{ NULL, 0x0001, 0x07C40000, { 0xE6, 0x00, 0x00 }, _IRA_OPERAND_IB, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x07C40000, { 0xE6, 0x00, 0x00 }, _IRA_OPERAND_IB, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// E7 ib OUT imm8, AX I Valid Valid Output word in AX to I/O port address imm8.
-	{ NULL, 0x0001, 0x01C40000, { 0xE7, 0x00, 0x00 }, _IRA_OPERAND_IB, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_WORD), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x01C40000, { 0xE7, 0x00, 0x00 }, _IRA_OPERAND_IB, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_WORD), _IRA_NA, _IRA_NA },
 	// E7 ib OUT imm8, EAX I Valid Valid Output doubleword in EAX to I/O port address imm8.
-	{ NULL, 0x0001, 0x06C40000, { 0xE7, 0x00, 0x00 }, _IRA_OPERAND_IB, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_DWORD), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x06C40000, { 0xE7, 0x00, 0x00 }, _IRA_OPERAND_IB, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_DWORD), _IRA_NA, _IRA_NA },
 	// EE OUT DX, AL NP Valid Valid Output byte in AL to I/O port address in DX.
-	{ NULL, 0x0001, 0x07C40000, { 0xEE, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x07C40000, { 0xEE, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// EF OUT DX, AX NP Valid Valid Output word in AX to I/O port address in DX.
-	{ NULL, 0x0001, 0x01C40000, { 0xEF, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x01C40000, { 0xEF, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_WORD ), _IRA_NA, _IRA_NA },
 	// EF OUT DX, EAX NP Valid Valid Output doubleword in EAX to I/O port address in DX.
-	{ NULL, 0x0001, 0x06C40000, { 0xEF, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_DWORD ), _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x06C40000, { 0xEF, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ), FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_AL, FCML_EOS_DWORD ), _IRA_NA, _IRA_NA }
 };
 
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_OUTS[] = {
 	// 6E OUTS DX, m8 NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
 	{ NULL, 0x0001, 0x07C40000, { 0x6E, 0x00, 0x00 },
-			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ),
+			FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ),
 			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, FCML_EOS_BYTE, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ), _IRA_NA, _IRA_NA },
 	// 6F OUTS DX, m16 NP Valid Valid Output word from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
 	{ NULL, 0x0001, 0x01C40000, { 0x6F, 0x00, 0x00 },
-			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ),
+			FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ),
 			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, FCML_EOS_WORD, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ), _IRA_NA, _IRA_NA },
 	// 6F OUTS DX, m32 NP Valid Valid Output doubleword from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
 	{ NULL, 0x0001, 0x06C40000, { 0x6F, 0x00, 0x00 },
-			_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ),
+			FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_DX, FCML_EOS_WORD ),
 			_IRA_EXPLICIT_GPS_REG_ADDRESSING( _IRA_REG_DI, FCML_EOS_DWORD, _IRA_SEG_ENCODE_REGISTER( _IRA_REG_ES, _IRA_SEG_DENY_OVERRIDE ) ), _IRA_NA, _IRA_NA }
 	// TODO: W przypadku assemblera trzeba to bedzie obsluzyc.
 	// 6E OUTSB NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
@@ -2677,7 +2677,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PAVG[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PBLENDVB[] = {
 	// 66 0F 38 10 /r PBLENDVB xmm1,xmm2/m128,<XMM0>
-	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x10 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_EXPLICIT_REG( IRA_REG_SIMD, _IRA_REG_XMM0, FCML_EOS_OWORD ), _IRA_NA },
+	{ NULL, 0x1001, 0x00EC8000, { 0x0F, 0x38, 0x10 }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_OPERAND_MODRM_RM_XMM_128, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SIMD, _IRA_REG_XMM0, FCML_EOS_OWORD ), _IRA_NA },
 	// VEX.NDS.128.66.0F3A 4C /r /is4 VPBLENDVB xmm1,xmm2,xmm3/m128,xmm4
 	{ "vpblendvb", 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x4C }, _IRA_OPERAND_MODRM_R_XMM_W, _IRA_VEX_VVVV_SIMD_REG, _IRA_OPERAND_MODRM_RM_XMM_128, _IRA_OPERAND_IS4 },
 	// VEX.NDS.256.66.0F3A.W0 4C /r /is4 VPBLENDVB ymm1,ymm2,ymm3/m256,ymm4
@@ -3070,9 +3070,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PMOVMSKB[] = {
 	// 66 0F D7 /r PMOVMSKB reg, xmm
 	{ NULL, 0x1001, 0x40DA8000, { 0x0F, 0xD7, 0x00 }, _IRA_OPERAND_R(IRA_REG_GPR, FCML_EOS_EOSA), _IRA_OPERAND_RM(IRA_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, _IRA_RMF_R ), _IRA_NA, _IRA_NA },
 	// VEX.128.66.0F.WIG D7 /r VPMOVMSKB reg,xmm1
-	{ "vpmovmskb", 0x13C0, 0x40DA8000, { 0x0F, 0xD7, 0x22 }, _IRA_OPERAND_MODRM_R_W, _IRA_VEX_VVVV_REG( IRA_REG_SIMD, _IRA_OS_XMMWORD ), _IRA_NA, _IRA_NA },
+	{ "vpmovmskb", 0x13C0, 0x40DA8000, { 0x0F, 0xD7, 0x22 }, _IRA_OPERAND_MODRM_R_W, _IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_EOS_OWORD ), _IRA_NA, _IRA_NA },
 	// VEX.256.66.0F.WIG D7 /r VPMOVMSKB reg,ymm1
-	{ "vpmovmskb", 0x13A0, 0x40DA8000, { 0x0F, 0xD7, 0x22 }, _IRA_OPERAND_MODRM_R_W, _IRA_VEX_VVVV_REG( IRA_REG_SIMD, _IRA_OS_YMMWORD ), _IRA_NA, _IRA_NA }
+	{ "vpmovmskb", 0x13A0, 0x40DA8000, { 0x0F, 0xD7, 0x22 }, _IRA_OPERAND_MODRM_R_W, _IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_EOS_YWORD ), _IRA_NA, _IRA_NA }
 
 };
 
@@ -3234,17 +3234,17 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_POP[] = {
 	// 1F POP DS NP Invalid Valid Pop top of stack into DS; increment stack pointer.
 	// 07 POP ES NP Invalid Valid Pop top of stack into ES; increment stack pointer.
 	// 17 POP SS NP Invalid Valid Pop top of stack into SS; increment stack pointer.
-	{ NULL, 0x0001, 0x00440000, { 0x1F, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_DS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
-	{ NULL, 0x0001, 0x00440000, { 0x07, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_ES, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
-	{ NULL, 0x0001, 0x00440000, { 0x17, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_SS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x1F, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_DS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x07, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_ES, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x17, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_SS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F A1 POP FS NP Valid Valid Pop top of stack into FS; increment stack pointer by 16 bits.
 	// 0F A1 POP FS NP N.E. Valid Pop top of stack into FS; increment stack pointer by 32 bits.
 	// 0F A1 POP FS NP Valid N.E. Pop top of stack into FS; increment stack pointer by 64 bits.
-	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA1, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_FS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA1, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_FS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F A9 POP GS NP Valid Valid Pop top of stack into GS; increment stack pointer by 16 bits.
 	// 0F A9 POP GS NP N.E. Valid Pop top of stack into GS; increment stack pointer by 32 bits.
 	// 0F A9 POP GS NP Valid N.E. Pop top of stack into GS; increment stack pointer by 64 bits.
-	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA9, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_GS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA9, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_GS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_POPA[] = {
@@ -3688,14 +3688,14 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PUSH[] = {
 	// 06 PUSH ES NP Invalid Valid Push ES.
 	// 16 PUSH SS NP Invalid Valid Push SS.
 	// 0E PUSH CS NP Invalid Valid Push CS.
-	{ NULL, 0x0001, 0x00440000, { 0x1E, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_DS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
-	{ NULL, 0x0001, 0x00440000, { 0x06, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_ES, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
-	{ NULL, 0x0001, 0x00440000, { 0x16, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_SS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
-	{ NULL, 0x0001, 0x00440000, { 0x0E, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_CS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x1E, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_DS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x06, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_ES, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x16, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_SS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00440000, { 0x0E, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_CS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F A0 PUSH FS NP Valid Valid Push FS.
-	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA0, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_FS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA0, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_FS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA },
 	// 0F A8 PUSH GS NP Valid Valid Push GS.
-	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA8, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_GS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0001, 0x00D80000, { 0x0F, 0xA8, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_SEG, _IRA_REG_GS, FCML_EOS_UNDEFINED ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PUSHA[] = {
@@ -3731,7 +3731,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_RCL[] = {
 	{ NULL, 0x0000, 0x00C59000, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
 	// D2 /2 RCL r/m8, CL
 	// REX + D2 /2 RCL r/m8, CL
-	{ NULL, 0x0000, 0x00C59000, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C59000, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C0 /2 ib RCL r/m8, imm8
 	// REX + C0 /2 ib RCL r/m8, imm8
 	{ NULL, 0x0000, 0x00C59000, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -3742,7 +3742,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_RCL[] = {
 	// D3 /2 RCL r/m16, CL
 	// D3 /2 RCL r/m32, CL
 	// REX.W + D3 /2 RCL r/m64, CL
-	{ NULL, 0x0000, 0x00C59000, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C59000, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C1 /2 ib RCL r/m16, imm8
 	// C1 /2 ib RCL r/m32, imm8
 	// REX.W + C1 /2 ib RCL r/m64, imm8
@@ -3755,7 +3755,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_RCR[] = {
 	{ NULL, 0x0000, 0x00C59800, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
 	// D2 /3 RCR r/m8, CL
 	// REX + D2 /3 RCR r/m8, CL
-	{ NULL, 0x0000, 0x00C59800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C59800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C0 /3 ib RCR r/m8, imm8
 	// REX + C0 /3 ib RCR r/m8, imm8
 	{ NULL, 0x0000, 0x00C59800, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -3766,7 +3766,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_RCR[] = {
 	// D3 /3 RCR r/m16, CL
 	// D3 /3 RCR r/m32, CL
 	// REX.W + D3 /3 RCR r/m64, CL
-	{ NULL, 0x0000, 0x00C59800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C59800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C1 /3 ib RCR r/m16, imm8
 	// C1 /3 ib RCR r/m32, imm8
 	// REX.W + C1 /3 ib RCR r/m64, imm8
@@ -3779,7 +3779,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ROL[] = {
 	{ NULL, 0x0000, 0x00C58000, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
 	// D2 /0 ROL r/m8, CL
 	// REX + D2 /0 ROL r/m8, CL
-	{ NULL, 0x0000, 0x00C58000, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C58000, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C0 /0 ib ROL r/m8, imm8
 	// REX + C0 /0 ib ROL r/m8, imm8
 	{ NULL, 0x0000, 0x00C58000, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -3790,7 +3790,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ROL[] = {
 	// D3 /0 ROL r/m16, CL
 	// D3 /0 ROL r/m32, CL
 	// REX.W + D3 /0 ROL r/m64, CL
-	{ NULL, 0x0000, 0x00C58000, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C58000, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C1 /0 ib ROL r/m16, imm8
 	// C1 /0 ib ROL r/m32, imm8
 	// C1 /0 ib ROL r/m64, imm8
@@ -3803,7 +3803,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ROR[] = {
 	{ NULL, 0x0000, 0x00C58800, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
 	// D2 /1 ROR r/m8, CL
 	// REX + D2 /1 ROR r/m8, CL
-	{ NULL, 0x0000, 0x00C58800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C58800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C0 /1 ib ROR r/m8, imm8
 	// REX + C0 /1 ib ROR r/m8, imm8
 	{ NULL, 0x0000, 0x00C58800, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -3814,7 +3814,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ROR[] = {
 	// D3 /1 ROR r/m16, CL
 	// D3 /1 ROR r/m32, CL
 	// REX.W + D3 /1 ROR r/m64, CL
-	{ NULL, 0x0000, 0x00C58800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C58800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C1 /1 ib ROR r/m16, imm8
 	// C1 /1 ib ROR r/m32, imm8
 	// REX.W + C1 /1 ib ROR r/m64, imm8
@@ -3966,7 +3966,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SAR[] = {
 	{ NULL, 0x0000, 0x00C5B800, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
 	// D2 /7 SAR r/m8, CL MC Valid Valid Signed divide* r/m8 by 2, CL times.
 	// REX + D2 /7 SAR r/m8**, CL MC Valid N.E. Signed divide* r/m8 by 2, CL times.
-	{ NULL, 0x0000, 0x00C5B800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C5B800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C0 /7 ib SAR r/m8, imm8 MI Valid Valid Signed divide* r/m8 by 2, imm8 time.
 	// REX + C0 /7 ib SAR r/m8**, imm8 MI Valid N.E. Signed divide* r/m8 by 2, imm8 times.
 	{ NULL, 0x0000, 0x00C5B800, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -3977,7 +3977,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SAR[] = {
 	// D3 /7 SAR r/m16, CL MC Valid Valid Signed divide* r/m16 by 2, CL times.
 	// D3 /7 SAR r/m32, CL MC Valid Valid Signed divide* r/m32 by 2, CL times.
 	// REX.W + D3 /7 SAR r/m64, CL MC Valid N.E. Signed divide* r/m64 by 2, CL times.
-	{ NULL, 0x0000, 0x00C5B800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C5B800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C1 /7 ib SAR r/m16, imm8 MI Valid Valid Signed divide* r/m16 by 2, imm8 times.
 	// C1 /7 ib SAR r/m32, imm8 MI Valid Valid Signed divide* r/m32 by 2, imm8 times.
 	// REX.W + C1 /7 ib SAR r/m64, imm8 MI Valid N.E. Signed divide* r/m64 by 2, imm8 times
@@ -3990,7 +3990,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHL[] = {
 	{ NULL, 0x0000, 0x00C5A000, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
 	// D2 /4 SHL r/m8,CL
 	// REX + D2 /4 SHL r/m8,CL
-	{ NULL, 0x0000, 0x00C5A000, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C5A000, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C0 /4 ib SHL r/m8,imm8
 	// REX + C0 /4 ib SHL r/m8,imm8
 	{ NULL, 0x0000, 0x00C5A000, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -4001,7 +4001,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHL[] = {
 	// D3 /4 SHL r/m16,CL
 	// D3 /4 SHL r/m32,CL
 	// REX.W + D3 /4 SHL r/m64,CL
-	{ NULL, 0x0000, 0x00C5A000, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C5A000, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C1 /4 ib SHL r/m16,imm8
 	// C1 /4 ib SHL r/m32,imm8
 	// REX.W + C1 /4 ib SHL r/m64,imm8
@@ -4014,7 +4014,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHR[] = {
 	{ NULL, 0x0000, 0x00C5A800, { 0xD0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_OPERAND_IB(1), _IRA_NA, _IRA_NA },
 	// D2 /5 SHR r/m8,CL
 	// REX + D2 /5 SHR r/m8,CL
-	{ NULL, 0x0000, 0x00C5A800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C5A800, { 0xD2, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C0 /5 ib SHR r/m8,imm8
 	// REX + C0 /5 ib SHR r/m8,imm8
 	{ NULL, 0x0000, 0x00C5A800, { 0xC0, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -4025,7 +4025,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHR[] = {
 	// D3 /5 SHR r/m16,CL
 	// D3 /5 SHR r/m32,CL
 	// REX.W + D3 /5 SHR r/m64,CL
-	{ NULL, 0x0000, 0x00C5A800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C5A800, { 0xD3, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_W, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA, _IRA_NA },
 	// C1 /5 ib SHR r/m16,imm8
 	// C1 /5 ib SHR r/m32,imm8
 	// REX.W + C1 /5 ib SHR r/m64,imm8
@@ -4034,12 +4034,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHR[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SBB[] = {
 	// 1C ib SBB AL,imm8
-	{ NULL, 0x0001, 0x00C40000, { 0x1C, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x1C, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 1D iw SBB AX,imm16
 	// 1D id SBB EAX,imm32
-	{ NULL, 0x0001, 0x00C40000, { 0x1D, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x1D, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 1D id SBB RAX,imm32
-	{ NULL, 0x0009, 0x00840000, { 0x1D, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00840000, { 0x1D, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /3 ib SBB r/m8,imm8
 	// REX + 80 /3 ib SBB r/m8,imm8
 	{ NULL, 0x0001, 0x00C59800, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -4110,7 +4110,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHLD[] = {
 	// 0F A5 SHLD r/m16,r16,CL MRC Valid Valid Shift r/m16 to left CL places while shifting bits from r16 in from the right.
 	// 0F A5 SHLD r/m32,r32,CL MRC Valid Valid Shift r/m32 to left CL places while shifting bits from r32 in from the right.
 	// REX.W + 0F A5 SHLD r/m64,r64,CL MRC Valid N.E. Shift r/m64 to left CL places while shifting bits from r64 in from the right.
-	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xA5, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA }
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xA5, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHRD[] = {
@@ -4121,12 +4121,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHRD[] = {
 	// 0F AD SHRD r/m16, r16, CL MRC Valid Valid Shift r/m16 to right CL places while shifting bits from r16 in from the left.
 	// 0F AD SHRD r/m32, r32, CL MRC Valid Valid Shift r/m32 to right CL places while shifting bits from r32 in from the left.
 	// REX.W + 0F AD SHRD r/m64, r64, CL MRC Valid N.E. Shift r/m64 to right CL places while shifting bits from r64 in from the left.
-	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xAD, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,_IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA }
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xAD, 0x00 }, _IRA_OPERAND_MODRM_RM_W, _IRA_OPERAND_MODRM_R,FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_CL, FCML_EOS_BYTE ), _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SKINIT[] = {
 	// SKINIT EAX 0F 01 DE Secure initialization and jump, with attestation.
-	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDE }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_DWORD ), _IRA_NA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDE }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_DWORD ), _IRA_NA, _IRA_NA, _IRA_NA },
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SLWPCB[] = {
@@ -4254,12 +4254,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_STR[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SUB[] = {
 	// 2C ib SUB AL, imm8 I Valid Valid Subtract imm8 from AL.
-	{ NULL, 0x0001, 0x00C40000, { 0x2C, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x2C, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 2D iw SUB AX, imm16 I Valid Valid Subtract imm16 from AX.
 	// 2D id SUB EAX, imm32 I Valid Valid Subtract imm32 from EAX.
-	{ NULL, 0x0001, 0x00C40000, { 0x2D, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x2D, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 2D id SUB RAX, imm32 I Valid N.E. Subtract imm32 sign-extended to 64-bits from RAX.
-	{ NULL, 0x0009, 0x00840000, { 0x2D, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00840000, { 0x2D, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /5 ib SUB r/m8, imm8 MI Valid Valid Subtract imm8 from r/m8.
 	// REX + 80 /5 ib SUB r/m8*, imm8 MI Valid N.E. Subtract imm8 from r/m8.
 	{ NULL, 0x0001, 0x00C5A800, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -4291,9 +4291,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SUB[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_T1MSKC[] = {
 	// T1MSKC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /7
-	{ NULL, 0x0450, 0x00D9B800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D9B800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// T1MSKC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /7
-	{ NULL, 0x0448, 0x00D9B800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D9B800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SUBPD[] = {
@@ -4357,12 +4357,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SYSRET[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_TEST[] = {
 	// A8 ib TEST AL, imm8 I Valid Valid AND imm8 with AL; set SF, ZF, PF according to result.
-	{ NULL, 0x0001, 0x00C40000, { 0xA8, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0xA8, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// A9 iw TEST AX, imm16 I Valid Valid AND imm16 with AX; set SF, ZF, PF according to result.
 	// A9 id TEST EAX, imm32 I Valid Valid AND imm32 with EAX; set SF, ZF, PF according to result.
-	{ NULL, 0x0001, 0x00C40000, { 0xA9, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0xA9, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + A9 id TEST RAX, imm32 I Valid N.E. AND imm32 sign-extended to 64-bits with RAX; set SF, ZF, PF according to result.
-	{ NULL, 0x0009, 0x00840000, { 0xA9, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0009, 0x00840000, { 0xA9, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// F6 /0 ib TEST r/m8, imm8 MI Valid Valid AND imm8 with r/m8; set SF, ZF, PF according to result.
 	// REX + F6 /0 ib TEST r/m8*, imm8 MI Valid N.E. AND imm8 with r/m8; set SF, ZF, PF according to result.
 	{ NULL, 0x0001, 0x00C58000, { 0xF6, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -4457,7 +4457,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VERW[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMLOAD[] = {
 	// VMLOAD rAX 0F 01 DA Load additional state from VMCB.
-	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDA }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDA }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMMCALL[] = {
@@ -4467,12 +4467,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMMCALL[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMRUN[] = {
 	// VMRUN rAX 0F 01 D8 Performs a world-switch to guest.
-	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD8 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD8 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMSAVE[] = {
 	// VMSAVE rAX 0F 01 DB Save additional guest state to VMCB.
-	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDB }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xDB }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EASA ), _IRA_NA, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VPERMILPD[] = {
@@ -4662,8 +4662,8 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_XCHG[] = {
 	// 90+rd XCHG r32, EAX O Valid Valid Exchange EAX with r32.
 	// REX.W + 90+rd XCHG RAX, r64 O Valid N.E. Exchange r64 with RAX.
 	// REX.W + 90+rd XCHG r64, RAX O Valid N.E. Exchange RAX with r64.
-	{ NULL, 0x0000, 0x00C40001, { 0x90, 0x00, 0x00 }, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, FCML_EOS_EOSA) | _IRA_WRITE, _IRA_NA, _IRA_NA },
-	{ NULL, 0x0000, 0x00C40001, { 0x90, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, FCML_EOS_EOSA) | _IRA_WRITE, _IRA_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C40001, { 0x90, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, FCML_EOS_EOSA) | _IRA_WRITE, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0000, 0x00C40001, { 0x90, 0x00, 0x00 }, _IRA_OPERAND_OPCODE_REG( IRA_REG_GPR, FCML_EOS_EOSA) | _IRA_WRITE, FCML_OPERAND_EXPLICIT_REG( IRA_REG_GPR, _IRA_REG_EAX, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_NA, _IRA_NA },
 	// 86 /r XCHG r/m8, r8 MR Valid Valid Exchange r8 (byte register) with byte from r/m8.
 	// REX + 86 /r XCHG r/m8*, r8* MR Valid N.E. Exchange r8 (byte register) with byte from r/m8.
 	// 86 /r XCHG r8, r/m8 RM Valid Valid Exchange byte from r/m8 with r8 (byte register).
@@ -4697,12 +4697,12 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_XLAT[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_XOR[] = {
 	// 34 ib XOR AL, imm8 I Valid Valid AL XOR imm8.
-	{ NULL, 0x0001, 0x00C40000, { 0x34, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x00C40000, { 0x34, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
 	// 35 iw XOR AX, imm16 I Valid Valid AX XOR imm16.
 	// 35 id XOR EAX, imm32 I Valid Valid EAX XOR imm32.
-	{ NULL, 0x0001, 0x03C40000, { 0x35, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x03C40000, { 0x35, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_IMM_EOSA, _IRA_NA, _IRA_NA },
 	// REX.W + 35 id XOR RAX, imm32 I Valid N.E. RAX XOR imm32 (sign-extended).
-	{ NULL, 0x0001, 0x04840000, { 0x35, 0x00, 0x00 }, _IRA_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0001, 0x04840000, { 0x35, 0x00, 0x00 }, FCML_OPERAND_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | _IRA_WRITE, _IRA_OPERAND_ID_EX_EOSA, _IRA_NA, _IRA_NA },
 	// 80 /6 ib XOR r/m8, imm8 MI Valid Valid r/m8 XOR imm8.
 	// REX + 80 /6 ib XOR r/m8*, imm8 MI Valid N.E. r/m8 XOR imm8.
 	{ NULL, 0x0001, 0x00C5B000, { 0x80, 0x00, 0x00 }, _IRA_OPERAND_MODRM_RM_8_W, _IRA_OPERAND_IB, _IRA_NA, _IRA_NA },
@@ -5242,9 +5242,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VFNMSUBSS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ANDN[] = {
 	// VEX.NDS.LZ.0F38.W0 F2 /r ANDN r32a, r32b, r/m32
-	{ NULL, 0x02D0, 0x00EC8000, { 0x0F, 0x38, 0xF2 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_OPERAND_MODRM_RM_32, _IRA_NA },
+	{ NULL, 0x02D0, 0x00EC8000, { 0x0F, 0x38, 0xF2 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_OPERAND_MODRM_RM_32, _IRA_NA },
 	// VEX.NDS.LZ.0F38.W1 F2 /r ANDN r64a, r64b, r/m64
-	{ NULL, 0x02C8, 0x00EC8000, { 0x0F, 0x38, 0xF2 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
+	{ NULL, 0x02C8, 0x00EC8000, { 0x0F, 0x38, 0xF2 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
 };
 
 // TODO: BEXTR taki opcoe jest w AMD, moe dodac w assemblerze jako synonim.
@@ -5253,9 +5253,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ANDN[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BEXR[] = {
 	// VEX.NDS1.LZ.0F38.W0 F7 /r BEXR r32a, r/m32, r32b
-	{ NULL, 0x02D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_NA },
+	{ NULL, 0x02D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_NA },
 	// VEX.NDS1.LZ.0F38.W1 F7 /r BEXR r64a, r/m64, r64b
-	{ NULL, 0x02C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_NA }
+	{ NULL, 0x02C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BEXTR[] = {
@@ -5267,79 +5267,79 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BEXTR[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLCFILL[] = {
 	// BLCFILL reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /1
-	{ NULL, 0x0450, 0x00D88000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D88000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// BLCFILL reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /1
-	{ NULL, 0x0448, 0x00D88000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D88000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLCI[] = {
 	// BLCI reg32, reg/mem32 8F RXB.09 0.dest.0.00 02 /6
-	{ NULL, 0x0450, 0x00D9B000, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D9B000, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// BLCI reg64, reg/mem64 8F RXB.09 1.dest.0.00 02 /6
-	{ NULL, 0x0448, 0x00D9B000, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D9B000, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLCIC[] = {
 	// BLCIC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /5
-	{ NULL, 0x0450, 0x00D9A800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D9A800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// BLCIC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /5
-	{ NULL, 0x0448, 0x00D9A800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D9A800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLCMSK[] = {
 	// BLCMSK reg32, reg/mem32 8F RXB.09 0.dest.0.00 02 /1
-	{ NULL, 0x0450, 0x00D98800, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D98800, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// BLCMSK reg64, reg/mem64 8F RXB.09 1.dest.0.00 02 /1
-	{ NULL, 0x0448, 0x00D98800, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D98800, { 0x09, 0x02, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLCS[] = {
 	// BLCS reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /3
-	{ NULL, 0x0450, 0x00D99800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D99800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// BLCS reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /3
-	{ NULL, 0x0448, 0x00D99800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D99800, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLSFILL[] = {
 	// BLSFILL reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /2
-	{ NULL, 0x0450, 0x00D99000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D99000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// BLSFILL reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /2
-	{ NULL, 0x0448, 0x00D99000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D99000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLSI[] = {
 	// VEX.NDD.LZ.0F38.W0 F3 /3 BLSI r32, r/m32
-	{ NULL, 0x02D0, 0x00ED9800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x02D0, 0x00ED9800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// VEX.NDD.LZ.0F38.W1 F3 /3 BLSI r64, r/m64
-	{ NULL, 0x02C8, 0x00ED9800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x02C8, 0x00ED9800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLSIC[] = {
 	// BLSIC reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /6
-	{ NULL, 0x0450, 0x00D9B000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D9B000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// BLSIC reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /6
-	{ NULL, 0x0448, 0x00D9B000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D9B000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLSMSK[] = {
 	// VEX.NDD.LZ.0F38.W0 F3 /2 BLSMSK r32, r/m32
-	{ NULL, 0x02D0, 0x00ED9000, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x02D0, 0x00ED9000, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// VEX.NDD.LZ.0F38.W1 F3 /2 BLSMSK r64, r/m64
-	{ NULL, 0x02C8, 0x00ED9000, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x02C8, 0x00ED9000, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLSR[] = {
 	// VEX.NDD.LZ.0F38.W0 F3 /1 BLSR r32, r/m32
-	{ NULL, 0x02D0, 0x00ED8800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x02D0, 0x00ED8800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// VEX.NDD.LZ.0F38.W1 F3 /1 BLSR r64, r/m64
-	{ NULL, 0x02C8, 0x00ED8800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x02C8, 0x00ED8800, { 0x0F, 0x38, 0xF3 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BZHI[] = {
 	// VEX.NDS1.LZ.0F38.W0 F5 /r BZHI r32a, r/m32, r32b
-	{ NULL, 0x02D0, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_NA },
+	{ NULL, 0x02D0, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_NA },
 	// VEX.NDS1.LZ.0F38.W1 F5 /r BZHI r64a, r/m64, r64b
-	{ NULL, 0x02C8, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_NA }
+	{ NULL, 0x02C8, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LZCNT[] = {
@@ -5351,23 +5351,23 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LZCNT[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MULX[] = {
 	// VEX.NDD.LZ.F2.0F38.W0 F6 /r MULX r32a, r32b, r/m32
-	{ NULL, 0x22D0, 0x00EC8000, { 0x0F, 0x38, 0xF6 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_OPERAND_MODRM_RM_32, _IRA_NA },
+	{ NULL, 0x22D0, 0x00EC8000, { 0x0F, 0x38, 0xF6 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_OPERAND_MODRM_RM_32, _IRA_NA },
 	// VEX.NDD.LZ.F2.0F38.W1 F6 /r MULX r64a, r64b, r/m64
-	{ NULL, 0x22C8, 0x00EC8000, { 0x0F, 0x38, 0xF6 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
+	{ NULL, 0x22C8, 0x00EC8000, { 0x0F, 0x38, 0xF6 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PDEP[] = {
 	// VEX.NDS.LZ.F2.0F38.W0 F5 /r PDEP r32a, r32b, r/m32
-	{ NULL, 0x22D0, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_OPERAND_MODRM_RM_32, _IRA_NA },
+	{ NULL, 0x22D0, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_OPERAND_MODRM_RM_32, _IRA_NA },
 	// VEX.NDS.LZ.F2.0F38.W1 F5 /r PDEP r64a, r64b, r/m64
-	{ NULL, 0x22C8, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
+	{ NULL, 0x22C8, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PEXT[] = {
 	// VEX.NDS.LZ.F3.0F38.W0 F5 /r PEXT r32a, r32b, r/m32
-	{ NULL, 0x42D0, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_OPERAND_MODRM_RM_32, _IRA_NA },
+	{ NULL, 0x42D0, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_OPERAND_MODRM_RM_32, _IRA_NA },
 	// VEX.NDS.LZ.F3.0F38.W1 F5 /r PEXT r64a, r64b, r/m64
-	{ NULL, 0x42C8, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
+	{ NULL, 0x42C8, 0x00EC8000, { 0x0F, 0x38, 0xF5 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_OPERAND_MODRM_RM_64, _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_RORX[] = {
@@ -5379,23 +5379,23 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_RORX[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHLX[] = {
 	// VEX.NDS1.LZ.66.0F38.W0 F7 /r SHLX r32a, r/m32, r32b
-	{ NULL, 0x12D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_NA },
+	{ NULL, 0x12D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_NA },
 	// VEX.NDS1.LZ.66.0F38.W1 F7 /r SHLX r64a, r/m64, r64b
-	{ NULL, 0x12C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_NA }
+	{ NULL, 0x12C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHRX[] = {
 	// VEX.NDS1.LZ.F2.0F38.W0 F7 /r SHRX r32a, r/m32, r32b
-	{ NULL, 0x22D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_NA },
+	{ NULL, 0x22D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_NA },
 	// VEX.NDS1.LZ.F2.0F38.W1 F7 /r SHRX r64a, r/m64, r64b
-	{ NULL, 0x22C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_NA }
+	{ NULL, 0x22C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SARX[] = {
 	// VEX.NDS1.LZ.F3.0F38.W0 F7 /r SARX r32a, r/m32, r32b
-	{ NULL, 0x42D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ), _IRA_NA },
+	{ NULL, 0x42D0, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_32_W, _IRA_OPERAND_MODRM_RM_32, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ), _IRA_NA },
 	// VEX.NDS1.LZ.F3.0F38.W1 F7 /r SARX r64a, r/m64, r64b
-	{ NULL, 0x42C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ), _IRA_NA }
+	{ NULL, 0x42C8, 0x00EC8000, { 0x0F, 0x38, 0xF7 }, _IRA_OPERAND_MODRM_R_64_W, _IRA_OPERAND_MODRM_RM_64, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ), _IRA_NA }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_TZCNT[] = {
@@ -5407,9 +5407,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_TZCNT[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_TZMSK[] = {
 	// TZMSK reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /4
-	{ NULL, 0x0450, 0x00D9A000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
+	{ NULL, 0x0450, 0x00D9A000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_DWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_32, _IRA_NA, _IRA_NA },
 	// TZMSK reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /4
-	{ NULL, 0x0448, 0x00D9A000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, _IRA_OS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
+	{ NULL, 0x0448, 0x00D9A000, { 0x09, 0x01, 0x00 }, _IRA_VEX_VVVV_REG( IRA_REG_GPR, FCML_EOS_QWORD ) | _IRA_WRITE, _IRA_OPERAND_MODRM_RM_64, _IRA_NA, _IRA_NA }
 };
 
 /* END OF VEX-GPR */

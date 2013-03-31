@@ -40,4 +40,11 @@ struct ira_reg_type_args {
 	struct ira_register reg;
 };
 
+/* Structure that can be used to pass immediate value type/size to operand decoding function. */
+struct ira_immediate_type_args {
+	// Immediate value type.
+	struct fcml_st_diss_decoded_operand_size imm_size;
+	struct fcml_st_diss_decoded_operand_size imm_ex_size;
+};
+
 #endif /* FCML_DISS_INT_H_ */

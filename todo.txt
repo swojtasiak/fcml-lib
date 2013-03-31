@@ -39,3 +39,12 @@ Regu³y:
 4. Oeprandy moga wyznaczac warosi warunkow dla instrukcji warunkowych.
 
 
+
+// Zpomniame toodo:
+
+// TODO: Zastanowic sie czy do sterowania flagami nie da ie wykorzystac nowych bitow MOD3 ModNot3 zamiast bezposredniego ich podawania.
+#define _IRA_OPERAND_RM_BASE						0x17000000
+#define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
+#define _IRA_OPERAND_RM_W(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags) | _IRA_WRITE )
+
+

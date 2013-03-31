@@ -92,7 +92,7 @@ typedef struct fcml_st_def_instruction_description {
 // Destination operand (Writes).
 #define _IRA_WRITE	0x80000000
 
-#define _IRA_NA	0x00000000
+#define _IRA_NA		0x00000000
 
 // todo: zmienic to na jedno parametryzowane makro, ktore jako parametr przyjmie wielkosc wartosci natychmiastowej.
 #define _IRA_OPERAND_IB						0x01000000
@@ -108,58 +108,20 @@ typedef struct fcml_st_def_instruction_description {
 // Immediate value with size calculated using EOSA.
 #define _IRA_OPERAND_IMM_EOSA				0x09000000
 
-// Base for ModRM based operands.
-#define _IRA_MODRM_BASE 					0x0C000000
+#define FCML_OPERAND_IMM_BASE				0x0A000000
+#define FCML_OPERAND_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OPERAND_IMM_BASE | encoded_imm_size << 8 | encoded_ex_imm_size )
 
-/* Operands for ModRM encoding. */
 
-#define _IRA_RM_8		0
-#define _IRA_R_8		1
-#define _IRA_RM_16		2
-#define _IRA_R_16		3
-#define _IRA_RM_32		4
-#define _IRA_R_32		5
-#define _IRA_RM_64		6
-#define _IRA_R_64		7
-#define _IRA_RM			8
-#define _IRA_R			9
-#define _IRA_RM_MMX		10
-#define _IRA_R_MMX		11
-#define _IRA_RM_XMM_128	12
-#define _IRA_R_XMM_128	13
-#define _IRA_RM_XMM_64	14
-#define _IRA_R_XMM_64	15
-#define _IRA_RM_XMM_32	16
-#define _IRA_R_XMM_32	17
-// m16&16, m32&32.
-#define _IRA_OSA_MM		18
-// m8-m128
-#define _IRA_M_8		19
-#define _IRA_M_16		20
-#define _IRA_M_32		21
-#define _IRA_M_64		22
-#define _IRA_M_80		23
-#define _IRA_M_128		24
-#define _IRA_M_14_28	25
-#define _IRA_M_94_108	26
-#define _IRA_M_512B		27
-#define _IRA_M_UNDEF	28
-
-/* ModRM based operands. */
-
-#define _IRA_MODRM(x) ( _IRA_MODRM_BASE + x )
-
-#define _IRA_EXPLICIT_REG_BASE									0x0F000000
-#define _IRA_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( _IRA_EXPLICIT_REG_BASE | reg_type << 12 | reg_num << 8 | encoded_reg_size )
+// Register explicitly set.
+#define FCML_OPERAND_EXPLICIT_REG_BASE				0x0F000000
+#define FCML_OPERAND_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( _IRA_EXPLICIT_REG_BASE | reg_type << 12 | reg_num << 8 | encoded_reg_size )
 
 // Register field in opcode byte.
-#define _IRA_OPERAND_OPCODE_REG_BASE							0x10000000
+#define _IRA_OPERAND_OPCODE_REG_BASE				0x10000000
 #define _IRA_OPERAND_OPCODE_REG(reg_type, encoded_reg_size)		( _IRA_OPERAND_OPCODE_REG_BASE | reg_type << 8 | encoded_reg_size )
 
 // Relative addressing.
 #define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x11000000
-
-// rel8
 #define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		0x12000000
 
 // Far pointers.
@@ -177,32 +139,39 @@ typedef struct fcml_st_def_instruction_description {
 #define _IRA_EXPLICIT_OPERAND_IB(value)				( _IRA_EXPLICIT_OPERAND_IB_BASE | value )
 
 // todo: Mozna sie zastanowic nad dodaniem flag M, R zeby mona bylo wybierac tryb adreacji rm/r/m
+
+/********************************/
+/*      ModR/M encoding.        */
+/********************************/
+
 // Allows to encode all common ModR/M based addressing modes using only one macro.
 
 #define _IRA_RMF_R		0x01
 #define _IRA_RMF_M		0x02
 #define _IRA_RMF_RM		( _IRA_RMF_R | _IRA_RMF_M )
-// TODO: Zastanowic sie czy do sterowania flagami nie da ie wykorzystac nowych bitow MOD3 ModNot3 zamiast bezposredniego ich podawania.
+
 #define _IRA_OPERAND_RM_BASE						0x17000000
 #define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
 #define _IRA_OPERAND_RM_W(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags) | _IRA_WRITE )
 
-// TODO: do usuniecia, wytarczy _IRA_OPERAND_RM z flaga: _IRA_RMF_M
-#define _IRA_OPERAND_M_BASE							0x18000000
-#define _IRA_OPERAND_M( memory_operand_size )		( _IRA_OPERAND_M_BASE | memory_operand_size )
-
-#define _IRA_OPERAND_R_BASE											0x19000000
+#define _IRA_OPERAND_R_BASE							0x19000000
 #define _IRA_OPERAND_R( reg_type, encoded_register_operand_size )	( _IRA_OPERAND_R_BASE | ( encoded_register_operand_size << 4 ) | reg_type )
 
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE	0x1A000000
 #define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
 
-#define _IRA_VEX_VVVV_REG_BASE									0x1B000000
-#define _IRA_VEX_VVVV_REG( reg_type, register_operand_size )	( _IRA_VEX_VVVV_REG_BASE | ( register_operand_size << 4 ) | reg_type )
+/******************************/
+/* XOP/VEX specific encoding. */
+/******************************/
+
+#define _IRA_VEX_VVVV_REG_BASE						0x1B000000
+#define _IRA_VEX_VVVV_REG( reg_type, encoded_register_size )	( _IRA_VEX_VVVV_REG_BASE | ( encoded_register_size << 4 ) | reg_type )
 
 #define _IRA_OPERAND_IS4							0x1C000000
 
-// VSIB operand decoding.
+/**************************/
+/* VSIB operand decoding. */
+/**************************/
 
 // Vector index register.
 #define _IRA_VSIB_XMM	0x01
@@ -212,8 +181,18 @@ typedef struct fcml_st_def_instruction_description {
 #define _IRA_VSIB_IS_32	0x01
 #define _IRA_VSIB_IS_64	0x02
 
-#define _IRA_OPERAND_VSIB_BASE						0x1D000000
+#define _IRA_OPERAND_VSIB_BASE												0x1D000000
 #define _IRA_OPERAND_VSIB( vector_index_register, index_value_size )		( _IRA_OPERAND_VSIB_BASE | vector_index_register << 2 | index_value_size )
+
+/*******************************/
+/* Segment registers encoding. */
+/*******************************/
+
+#define _IRA_SEG_ALLOW_OVERRIDE								0x80
+#define _IRA_SEG_DENY_OVERRIDE								0x00
+#define _IRA_SEG_ENCODE_REGISTER( reg_num, override )		( reg_num | override )
+#define _IRA_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded )		( _IRA_SEG_ALLOW_OVERRIDE & encoded )
+#define _IRA_SEG_DECODE_REGISTER( encoded )					( encoded & ~_IRA_SEG_ALLOW_OVERRIDE )
 
 // Shorthands
 
@@ -321,17 +300,9 @@ typedef struct fcml_st_def_instruction_description {
 
 // Shorthands for VVVV addressing.
 
-#define _IRA_VEX_VVVV_SIMD_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_OS_EOSA )
-#define _IRA_VEX_VVVV_XMM_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, _IRA_OS_XMMWORD )
-#define _IRA_VEX_VVVV_YMM_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, _IRA_OS_YMMWORD )
-
-/* Segment registers encoding. */
-
-#define _IRA_SEG_ALLOW_OVERRIDE		0x80
-#define _IRA_SEG_DENY_OVERRIDE		0x00
-#define _IRA_SEG_ENCODE_REGISTER( reg_num, override )		( reg_num | override )
-#define _IRA_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded )		( _IRA_SEG_ALLOW_OVERRIDE & encoded )
-#define _IRA_SEG_DECODE_REGISTER( encoded )					( encoded & ~_IRA_SEG_ALLOW_OVERRIDE )
+#define _IRA_VEX_VVVV_SIMD_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_EOS_L )
+#define _IRA_VEX_VVVV_XMM_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_EOS_OWORD )
+#define _IRA_VEX_VVVV_YMM_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_EOS_YWORD )
 
 /* Externals. */
 

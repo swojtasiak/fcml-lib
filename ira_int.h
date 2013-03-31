@@ -158,12 +158,6 @@ struct ira_seg_relative_offset_args {
 	uint8_t encoded_segment_selector;
 };
 
-/* Structure that can be used to pass immediate value type/size to operand decoding function. */
-struct ira_immediate_type_args {
-	// Immediate value type.
-	enum ira_immediate_data_type immediate_data_type;
-};
-
 /* Structure that can be used to pass explicit immediate value to operand decoding function. */
 struct ira_explicit_immediate_type_args {
 	// Immediate value type.
@@ -173,15 +167,6 @@ struct ira_explicit_immediate_type_args {
 };
 
 typedef uint16_t (*ira_operand_size_provider)(struct ira_diss_context *context);
-
-struct ira_register_decoding_args {
-	// Register type.
-	enum ira_register_type reg_type;
-	// Register size.
-	uint16_t reg_size;
-	// Register size provider.
-	ira_operand_size_provider reg_operand_size_provider;
-};
 
 /* Structure used to decode  */
 struct ira_modm_decoding_args {
