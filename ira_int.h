@@ -142,16 +142,6 @@ struct ira_reg_addressing_arg {
 	uint8_t encoded_segment_selector;
 };
 
-/* Structure that can be used to pass register type to operand decoding function. */
-struct ira_reg_type_args {
-	// Attribute used to calculate register size, if calculation is needed.
-	// TODO: Dlaczego camel casE?
-	// TODO: Zmineic na _IRA_OSktory umozliwia zakodowanie konkretnej wielkosci jak i EOSA/EASA.
-	// enum SizeAttributeType size_attribute_type;
-	// Register details.
-	struct ira_register reg;
-};
-
 /* Structure that can be used to pass condition type to operand decoding function. */
 struct ira_condition_type_args {
 	// Condition type.

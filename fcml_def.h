@@ -9,6 +9,8 @@
 #define IRA_DEF_H_
 
 #include "fcml_types.h"
+#include "fcml_common.h"
+
 #define FCML_OS_EOSA		0xFFFF
 #define FCML_OS_EASA		0xFFFE
 
@@ -106,12 +108,6 @@ typedef struct fcml_st_def_instruction_description {
 // Immediate value with size calculated using EOSA.
 #define _IRA_OPERAND_IMM_EOSA				0x09000000
 
-// todo: wywalic to, mamy explicit register, tylko komplikutje model opisu trybow adreowania.
-#define _IRA_OPERAND_REG_ACCUMULATOR_8		0x0A000000
-#define _IRA_OPERAND_REG_ACCUMULATOR_OSA	0x0B000000
-#define _IRA_OPERAND_REG_ACCUMULATOR_8_W	( _IRA_OPERAND_REG_ACCUMULATOR_8   | _IRA_WRITE )
-#define _IRA_OPERAND_REG_ACCUMULATOR_OSA_W	( _IRA_OPERAND_REG_ACCUMULATOR_OSA | _IRA_WRITE )
-
 // Base for ModRM based operands.
 #define _IRA_MODRM_BASE 					0x0C000000
 
@@ -153,25 +149,12 @@ typedef struct fcml_st_def_instruction_description {
 
 #define _IRA_MODRM(x) ( _IRA_MODRM_BASE + x )
 
-// todo: czy to nie ejst nadmiarowe? sprobowal przepisac na parametryzowane makra.
-
-
-// todo: nie implicit tylko explicit
-// todo: dodac kodowanie wilkosci rejestru na podstawie encoded operand size.
-// Implicit registers with size determined by operand-size-attribute.
-#define _IRA_EXPLICIT_REG_BASE_OSA						0x0D000000
-#define _IRA_EXPLICIT_REG_OSA(reg_type,reg_num)			( _IRA_EXPLICIT_REG_BASE_OSA | reg_type << 4 | reg_num )
-
-// Implicit registers with size determined by address-size-attribute.
-#define _IRA_EXPLICIT_REG_BASE_ASA						0x0E000000
-#define _IRA_EXPLICIT_REG_ASA(reg_type,reg_num)			( _IRA_EXPLICIT_REG_BASE_ASA | reg_type << 4 | reg_num )
-
-#define _IRA_EXPLICIT_REG_BASE							0x0F000000
-#define _IRA_EXPLICIT_REG(reg_type, reg_num, reg_size)	( _IRA_EXPLICIT_REG_BASE | reg_type << 20 | reg_num << 16 | reg_size )
+#define _IRA_EXPLICIT_REG_BASE									0x0F000000
+#define _IRA_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( _IRA_EXPLICIT_REG_BASE | reg_type << 12 | reg_num << 8 | encoded_reg_size )
 
 // Register field in opcode byte.
-#define _IRA_OPERAND_OPCODE_REG_BASE					0x10000000
-#define _IRA_OPERAND_OPCODE_REG(reg_type, reg_size)	( _IRA_OPERAND_OPCODE_REG_BASE | reg_type << 16 | reg_size)
+#define _IRA_OPERAND_OPCODE_REG_BASE							0x10000000
+#define _IRA_OPERAND_OPCODE_REG(reg_type, encoded_reg_size)		( _IRA_OPERAND_OPCODE_REG_BASE | reg_type << 8 | encoded_reg_size )
 
 // Relative addressing.
 #define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x11000000

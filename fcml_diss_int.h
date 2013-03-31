@@ -32,4 +32,12 @@ struct ira_modrm_decoding_args {
 	uint8_t flags;
 };
 
+/* Structure that can be used to pass register type to operand decoding function. */
+struct ira_reg_type_args {
+	// Operand size details used to calculate its size at runtime.
+	struct fcml_st_diss_decoded_operand_size operand_size;
+	// Register itself.
+	struct ira_register reg;
+};
+
 #endif /* FCML_DISS_INT_H_ */

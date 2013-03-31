@@ -115,7 +115,7 @@ int _ira_modrm_decoder( struct ira_diss_context *context, struct ira_modrm_decod
 
 /* Opcode decoders. */
 
-int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
+int _ira_opcode_decoder_explicit_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_explicit_register_addressing( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
@@ -132,7 +132,7 @@ int _ira_opcode_decoder_VEX_is4( struct ira_diss_context *context, struct ira_in
 
 /* Arguments allocators. */
 
-void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, uint8_t reg, uint16_t reg_size, int *result );
+void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, uint8_t reg, fcml_uint8_t encoded_register_size, int *result );
 void *_ira_alloc_immediate_type_args( enum ira_immediate_data_type immediate_type, int *result );
 void *_ira_alloc_explicit_immediate_type_args( enum ira_immediate_data_type immediate_type, union ira_immediate_data_value immediate_data, int *result );
 void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, uint8_t flags, uint16_t memory_operand_size, ira_operand_size_provider memory_operand_size_provider, uint16_t register_operand_size, ira_operand_size_provider register_operand_size_provider, int *result );
@@ -1025,12 +1025,14 @@ int _ira_get_decoding_order( struct ira_diss_tree_instruction_decoding* decoding
 	return order;
 }
 
-void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, uint8_t reg, uint16_t reg_size, int *result ) {
+void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, uint8_t reg, fcml_uint8_t encoded_register_size, int *result ) {
 	struct ira_reg_type_args *args = (struct ira_reg_type_args*)malloc( sizeof( struct ira_reg_type_args ) );
 	if( args != NULL ) {
 		args->reg.reg_type = reg_type;
-		args->reg.reg_size = reg_size;
 		args->reg.reg = reg;
+		// Calculated at runtime.
+		args->reg.reg_size = FCML_OS_UNDEFINED;
+		args->operand_size = fcml_ifn_decode_operand_size( encoded_register_size );
 	}
 	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
 	return args;
@@ -1143,14 +1145,6 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	operand_decoding->args = NULL;
 
 	switch( decoder_type ) {
-	case _IRA_OPERAND_REG_ACCUMULATOR_8:
-		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_BYTE, &result );
-		break;
-	case _IRA_OPERAND_REG_ACCUMULATOR_OSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( IRA_REG_GPR, _IRA_REG_AL, FCML_OS_EOSA, &result ); // EOSA.
-		break;
 	case _IRA_OPERAND_IB:
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
 		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_8, &result );
@@ -1325,23 +1319,14 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			break;
 		}
 		break;
-		// TODO: Nie ma potrzeby tworzyc trzech odrebnych trybow adresowania EOASA i EOSA moga byc dekodowane za pomoca FCML_OS_EASA i FCML_OS_EOSA
-	case _IRA_EXPLICIT_REG_BASE_OSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x000000F0 ) >> 4, ( decoding & 0x0000000F ), FCML_OS_EOSA, &result );
+	case _IRA_EXPLICIT_REG_BASE: {
+		operand_decoding->decoder = &_ira_opcode_decoder_explicit_register;
+		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x0000F000 ) >> 12, ( decoding & 0x00000F00 ) >> 8, decoding & 0x000000FF, &result );
 		break;
-	case _IRA_EXPLICIT_REG_BASE_ASA:
-		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x000000F0 ) >> 4, ( decoding & 0x0000000F ), FCML_OS_EASA, &result );
-		break;
-	case _IRA_EXPLICIT_REG_BASE:
-		//TODO: Change to explicit!
-		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x00F00000 ) >> 20, ( decoding & 0x000F0000 ) >> 16, ( decoding & 0x0000FFFF ), &result );
-		break;
+	}
 	case _IRA_OPERAND_OPCODE_REG_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_opcode_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x00FF0000 ) >> 16, 0 /*From opcode.*/, ( decoding & 0x0000FFFF ), &result );
+		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x0000FF00 ) >> 8, 0 /*From opcode.*/, decoding & 0x000000FF, &result );
 		break;
 	case _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_explicit_register_addressing;
@@ -1628,19 +1613,10 @@ int _ira_opcode_decoder_explicit_register_addressing( struct ira_diss_context *c
 }
 
 /* Decodes accumulator register. */
-int _ira_opcode_decoder_implicit_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+int _ira_opcode_decoder_explicit_register( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 	struct ira_reg_type_args *reg_type_args = (struct ira_reg_type_args*)args;
 	struct ira_register reg = reg_type_args->reg;
-	/*
-	if( reg.reg_type == IRA_REG_GPR && reg.reg_size == _IRA_GPRS_UNDEFINED ) {
-		// A general purpose register, we should calculate it's size basing on EOSA.
-		reg.reg_size = _ira_determine_gpr_size( context, reg_type_args->size_attribute_type );
-	}
-	*/
-	if( reg.reg_type == IRA_REG_GPR || reg.reg_type == IRA_REG_SIMD ) {
-		// A general purpose register, we should calculate it's size basing on EOSA.
-		reg.reg_size = _ira_util_decode_operand_size( context, reg_type_args->reg.reg_size, NULL );
-	}
+	reg.reg_size = fcml_ifn_calculate_operand_size( context, &(reg_type_args->operand_size) );
 	operand_wrapper->operand.operand_type = IRA_REGISTER;
 	operand_wrapper->operand.reg = reg;
 	return _IRA_INT_ERROR_NO_ERROR;
@@ -1670,15 +1646,7 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 	struct ira_reg_type_args *reg_type_args = (struct ira_reg_type_args*)args;
 	struct ira_register reg = reg_type_args->reg;
 
-	/*if( reg.reg_type == IRA_REG_GPR && reg.reg_size == _IRA_GPRS_UNDEFINED ) {
-		// A general purpose register, we should calculate its size basing on EOSA.
-		reg.reg_size = _ira_determine_gpr_size( context, IRA_SAT_OSA );
-	}
-	*/
-	if( reg.reg_type == IRA_REG_GPR || reg.reg_type == IRA_REG_SIMD ) {
-		// A general purpose register, we should calculate its size basing on EOSA.
-		reg.reg_size = _ira_util_decode_operand_size( context, reg.reg_size, NULL );
-	}
+	reg.reg_size = fcml_ifn_calculate_operand_size( context, &(reg_type_args->operand_size) );
 
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 
