@@ -7,7 +7,6 @@
 #include "ira_int.h"
 #include "ira_avx.h"
 #include "ira.h"
-#include "common.h"
 
 #include <assert.h>
 
@@ -1041,7 +1040,7 @@ void *_ira_alloc_reg_addressing_args( int reg, uint8_t encoded_operand_size, uin
 	if( args != NULL ) {
 		args->reg.reg_type = IRA_REG_GPR;
 		args->reg.reg = reg;
-		args->reg.reg_size = _IRA_OS_EASA;
+		args->reg.reg_size = FCML_OS_EASA;
 		args->encoded_operand_size = encoded_operand_size;
 		args->encoded_segment_selector = encoded_segment_register;
 	}
@@ -1139,7 +1138,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		break;
 	case _IRA_OPERAND_REG_ACCUMULATOR_OSA:
 		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( IRA_REG_GPR, _IRA_REG_AL, _IRA_OS_EOSA, &result ); // EOSA.
+		operand_decoding->args = _ira_alloc_reg_type_args( IRA_REG_GPR, _IRA_REG_AL, FCML_OS_EOSA, &result ); // EOSA.
 		break;
 	case _IRA_OPERAND_IB:
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
@@ -1215,7 +1214,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			break;
 		case _IRA_RM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_RMF_RM, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, _IRA_RMF_RM, FCML_OS_EOSA, NULL, FCML_OS_EOSA, NULL, &result );
 			break;
 		case _IRA_R_8:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
@@ -1235,7 +1234,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			break;
 		case _IRA_R:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, 0, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_GPR, 0, FCML_OS_EOSA, NULL, FCML_OS_EOSA, NULL, &result );
 			break;
 		case _IRA_RM_MMX:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
@@ -1271,11 +1270,11 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			break;
 		case _IRA_RM_XMM_L:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, _IRA_RMF_RM, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, _IRA_RMF_RM, FCML_OS_EOSA, NULL, FCML_OS_EOSA, NULL, &result );
 			break;
 		case _IRA_R_XMM_L:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, 0, _IRA_OS_EOSA, NULL, _IRA_OS_EOSA, NULL, &result );
+			operand_decoding->args = _ira_alloc_modrm_decoding_args( IRA_REG_SIMD, 0, FCML_OS_EOSA, NULL, FCML_OS_EOSA, NULL, &result );
 			break;
 		case _IRA_OSA_MM:
 			operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
@@ -1327,14 +1326,14 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 			break;
 		}
 		break;
-		// TODO: Nie ma potrzeby tworzyc trzech odrebnych trybow adresowania EOASA i EOSA moga byc dekodowane za pomoca _IRA_OS_EASA i _IRA_OS_EOSA
+		// TODO: Nie ma potrzeby tworzyc trzech odrebnych trybow adresowania EOASA i EOSA moga byc dekodowane za pomoca FCML_OS_EASA i FCML_OS_EOSA
 	case _IRA_EXPLICIT_REG_BASE_OSA:
 		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x000000F0 ) >> 4, ( decoding & 0x0000000F ), _IRA_OS_EOSA, &result );
+		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x000000F0 ) >> 4, ( decoding & 0x0000000F ), FCML_OS_EOSA, &result );
 		break;
 	case _IRA_EXPLICIT_REG_BASE_ASA:
 		operand_decoding->decoder = &_ira_opcode_decoder_implicit_register;
-		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x000000F0 ) >> 4, ( decoding & 0x0000000F ), _IRA_OS_EASA, &result );
+		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x000000F0 ) >> 4, ( decoding & 0x0000000F ), FCML_OS_EASA, &result );
 		break;
 	case _IRA_EXPLICIT_REG_BASE:
 		//TODO: Change to explicit!
@@ -1397,7 +1396,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type ) {
 	switch( instruction_type ) {
-	case _IRA_IT_IA:
+	case FCML_IT_IA:
 		// Currently only IA decoder is supported.
 		return &_ira_instruction_decoder_IA;
 	}
@@ -1940,7 +1939,7 @@ int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_in
 	struct ira_modrm_decoder_args md_args;
 	md_args.flags = _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING;
 	md_args.reg_type = IRA_REG_GPR;
-	md_args.register_operand_size = _IRA_OS_EOSA;
+	md_args.register_operand_size = FCML_OS_EOSA;
 	md_args.is_vsib = register_type_size_args->is_vsib;
 	md_args.index_register_size = register_type_size_args->vir == _IRA_VSIB_XMM ? _IRA_OS_XMMWORD : _IRA_OS_YMMWORD;
 
@@ -2679,14 +2678,14 @@ uint16_t _ira_util_decode_operand_size( struct ira_diss_context *context, uint16
 		operand_size = provider(context);
 	} else {
 		// TODO: Juz nie tylko EOSa ale takze VEX.L, zmienic nazwe parametru moze na jakies auto? nie wiem, do przemyslenia.
-		if( operand_size == _IRA_OS_EOSA ) {
+		if( operand_size == FCML_OS_EOSA ) {
 			struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
 			if( prefixes_fields->is_vex && !_IRA_PREFIX_VEX_L_IGNORE_OS( decoding_context->instruction->prefixes_flags ) ) {
 				operand_size = prefixes_fields->l ? 256 : 128;
 			} else {
 				operand_size = context->decoding_context.effective_operand_size_attribute;
 			}
-		} else if( operand_size == _IRA_OS_EASA ) {
+		} else if( operand_size == FCML_OS_EASA ) {
 			operand_size = context->decoding_context.effective_address_size_attribute;
 		}
 	}
