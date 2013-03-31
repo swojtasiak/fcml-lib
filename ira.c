@@ -1995,6 +1995,7 @@ int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_i
 	md_args.reg_type = register_type_size_args->reg_type;
 	md_args.register_operand_size = register_type_size_args->register_operand_size;
 	md_args.flags = _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING;
+	md_args.is_vsib = FCML_FALSE;
 
 	int result = _ira_modrm_decoder( context, &md_args );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
