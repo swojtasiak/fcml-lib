@@ -5,6 +5,7 @@
 
 #include "fcml_def.h"
 #include "ira_int.h"
+#include "fcml_diss_int.h"
 #include "ira_avx.h"
 #include "ira.h"
 
@@ -81,14 +82,8 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 /* Operand size decoding. */
 
-struct fcml_ist_decoded_operand_size {
-	// Explicit operand size.
-	uint16_t operand_size;
-	// Operand size provider.
-	ira_operand_size_provider operand_size_provider;
-};
-
-struct fcml_ist_decoded_operand_size fcml_ifn_decode_operand_size( fcml_uint8_t encoded_operand_size );
+struct fcml_st_diss_decoded_operand_size fcml_ifn_decode_operand_size( fcml_uint8_t encoded_operand_size );
+fcml_uint16_t fcml_ifn_calculate_operand_size( struct ira_diss_context *context, fcml_st_diss_decoded_operand_size *operand_size );
 
 /* ModRM decoding */
 
@@ -110,7 +105,7 @@ struct ira_register _ira_addressing_form_reg_array_16[8][2] = {
 
 struct ira_modrm_decoder_args {
 	enum ira_register_type reg_type;
-	uint16_t register_operand_size;
+	fcml_st_diss_decoded_operand_size register_operand_size;
 	uint8_t flags;
 	uint8_t is_vsib;
 	uint16_t index_register_size;
@@ -747,6 +742,7 @@ void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira
     	break;
     default:
     	result->code = RC_ERROR_ILLEGAL_ADDRESS_SIZE_ATTRIBUTE;
+    	break;
     }
 
     // Check if operand size attribute is correct.
@@ -757,6 +753,7 @@ void _ira_prepare_disassemble_info(struct ira_disassemble_info *info, struct ira
 		break;
 	default:
 		result->code = RC_ERROR_ILLEGAL_OPERAND_SIZE_ATTRIBUTE;
+		break;
 	}
 }
 
@@ -1096,10 +1093,10 @@ void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, uint8_t f
 	struct ira_modrm_decoding_args *args = (struct ira_modrm_decoding_args*)malloc( sizeof( struct ira_modrm_decoding_args ) );
 	if( args != NULL ) {
 		args->reg_type = reg_type;
-		args->memory_operand_size_provider = memory_operand_size_provider;
-		args->memory_operand_size = memory_operand_size;
-		args->register_operand_size_provider = register_operand_size_provider;
-		args->register_operand_size = register_operand_size;
+		args->memory_operand_size.operand_size_provider = memory_operand_size_provider;
+		args->memory_operand_size.operand_size = memory_operand_size;
+		args->register_operand_size.operand_size_provider = register_operand_size_provider;
+		args->register_operand_size.operand_size = register_operand_size;
 		args->flags = flags;
 	}
 	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
@@ -1353,9 +1350,9 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	case _IRA_OPERAND_RM_BASE: {
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
 		// Encodes operands sizes.
-		struct fcml_ist_decoded_operand_size memory_operand_size = fcml_ifn_decode_operand_size( ( decoding & 0x00FF0000 ) >> 16 );
-		struct fcml_ist_decoded_operand_size register_operand_size = fcml_ifn_decode_operand_size( ( decoding & 0x0000FF00 ) >> 8 );
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( ( decoding & 0x000000F0 ) >> 4, decoding & 0x0000000F,memory_operand_size.operand_size, memory_operand_size.operand_size_provider, register_operand_size.operand_size, register_operand_size.operand_size_provider, &result );
+		struct fcml_st_diss_decoded_operand_size memory_operand_size = fcml_ifn_decode_operand_size( ( decoding & 0x00FF0000 ) >> 16 );
+		struct fcml_st_diss_decoded_operand_size register_operand_size = fcml_ifn_decode_operand_size( ( decoding & 0x0000FF00 ) >> 8 );
+		operand_decoding->args = _ira_alloc_modrm_decoding_args( ( decoding & 0x000000F0 ) >> 4, decoding & 0x0000000F, memory_operand_size.operand_size, memory_operand_size.operand_size_provider, register_operand_size.operand_size, register_operand_size.operand_size_provider, &result );
 		break;
 	}
 	case _IRA_OPERAND_M_BASE:
@@ -1369,7 +1366,8 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	case _IRA_OPERAND_R_BASE:
 		// TODO: probowac dostosowac do tego tyou adreowania _ira_opcode_decoder_modrm_rm lub dodac dedykowana strukture z argumentami, ta jet nadmiarowa!
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
-		operand_decoding->args = _ira_alloc_modrm_decoding_args( decoding & 0x0000000F, 0, (decoding & 0x000FFFF0) >> 4, NULL, (decoding & 0x000FFFF0) >> 4, NULL, &result );
+		struct fcml_st_diss_decoded_operand_size register_operand_size = fcml_ifn_decode_operand_size( (decoding & 0x00000FF0) >> 4 );
+		operand_decoding->args = _ira_alloc_modrm_decoding_args( decoding & 0x0000000F, 0, _IRA_OS_UNDEFINED, NULL, register_operand_size.operand_size, register_operand_size.operand_size_provider, &result );
 		break;
 	case _IRA_VEX_VVVV_REG_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_VEX_vvvv;
@@ -1945,7 +1943,8 @@ int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_in
 	struct ira_modrm_decoder_args md_args;
 	md_args.flags = _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING;
 	md_args.reg_type = IRA_REG_GPR;
-	md_args.register_operand_size = FCML_OS_EOSA;
+	md_args.register_operand_size.operand_size = _IRA_OS_UNDEFINED;
+	md_args.register_operand_size.operand_size_provider = ira_eosa_operand_size_provider;
 	md_args.is_vsib = register_type_size_args->is_vsib;
 	md_args.index_register_size = register_type_size_args->vir == _IRA_VSIB_XMM ? _IRA_OS_XMMWORD : _IRA_OS_YMMWORD;
 
@@ -1987,18 +1986,14 @@ int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_i
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
 	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
 
-	// Calculating operand sizes for addressing and registers.
-	uint16_t memory_operand_size = _ira_util_decode_operand_size( context, register_type_size_args->memory_operand_size, register_type_size_args->memory_operand_size_provider );
-	uint16_t register_operand_size = _ira_util_decode_operand_size( context, register_type_size_args->register_operand_size, register_type_size_args->register_operand_size_provider );
-
-	operand->operand_size = memory_operand_size;
+	operand->operand_size = fcml_ifn_calculate_operand_size( context, &(register_type_size_args->memory_operand_size) );
 
 	// Decode ModR/M.
 
 	struct ira_modrm_decoder_args md_args;
 	md_args.flags = _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING;
 	md_args.reg_type = register_type_size_args->reg_type;
-	md_args.register_operand_size = register_operand_size;
+	md_args.register_operand_size = register_type_size_args->register_operand_size;
 	md_args.flags = _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING;
 
 	int result = _ira_modrm_decoder( context, &md_args );
@@ -2038,7 +2033,7 @@ int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_in
 	struct ira_modrm_decoder_args md_args;
 	md_args.flags = _IRA_MOD_RM_FLAGS_DECODE_REG;
 	md_args.reg_type = register_type_size_args->reg_type;
-	md_args.register_operand_size = register_type_size_args->memory_operand_size;
+	md_args.register_operand_size = register_type_size_args->register_operand_size;
 
 	int result = _ira_modrm_decoder( context, &md_args );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
@@ -2142,13 +2137,15 @@ int _ira_modrm_decoder_get_rex( struct ira_diss_context *context, struct ira_dec
 	return rex_found;
 }*/
 
-struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, int operand_size, int reg ) {
+struct ira_register _ira_modrm_decode_register( struct ira_diss_context *context, enum ira_register_type reg_type, fcml_st_diss_decoded_operand_size register_operand_size, int reg ) {
 
 	// TODO: Mam wrazenie ze ten kod sie gdzies powtarza.
-	uint16_t reg_size = operand_size;
+	/*uint16_t reg_size = operand_size;
 	if( reg_type == IRA_REG_GPR || reg_type == IRA_REG_SIMD ) {
 		reg_size = _ira_util_decode_operand_size( context, operand_size, NULL );
-	}
+	}*/
+
+	fcml_uint16_t reg_size = fcml_ifn_calculate_operand_size( context, &register_operand_size );
 
 	struct ira_register result_reg = {0};
 
@@ -2680,8 +2677,20 @@ fcml_uint16_t ira_vexl_operand_size_provider( struct ira_diss_context *context )
  * Utility functions.
  */
 
-struct fcml_ist_decoded_operand_size fcml_ifn_decode_operand_size( fcml_uint8_t encoded_operand_size ) {
-	struct fcml_ist_decoded_operand_size operand_size = {0, NULL};
+fcml_uint16_t fcml_ifn_calculate_operand_size( struct ira_diss_context *context, fcml_st_diss_decoded_operand_size *operand_size ) {
+	fcml_uint16_t size = _IRA_OS_UNDEFINED;
+	if( operand_size ) {
+		if( operand_size->operand_size_provider ) {
+			size = operand_size->operand_size_provider( context );
+		} else {
+			size = operand_size->operand_size;
+		}
+	}
+	return size;
+}
+
+struct fcml_st_diss_decoded_operand_size fcml_ifn_decode_operand_size( fcml_uint8_t encoded_operand_size ) {
+	struct fcml_st_diss_decoded_operand_size operand_size = {0, NULL};
 	if( FCML_IS_EOS_DYNAMIC( encoded_operand_size ) ) {
 		switch( encoded_operand_size ) {
 		case FCML_EOS_EOSA:
@@ -2690,7 +2699,7 @@ struct fcml_ist_decoded_operand_size fcml_ifn_decode_operand_size( fcml_uint8_t 
 		case FCML_EOS_EASA:
 			operand_size.operand_size_provider = ira_easa_operand_size_provider;
 			break;
-		case FCML_EOS_VEX_L:
+		case FCML_EOS_L:
 			operand_size.operand_size_provider = ira_vexl_operand_size_provider;
 			break;
 		case FCML_EOS_14_28:

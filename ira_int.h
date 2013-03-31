@@ -193,22 +193,6 @@ struct ira_register_decoding_args {
 	ira_operand_size_provider reg_operand_size_provider;
 };
 
-/* Structure that can be used to pass register type and its size to operand decoding function. */
-struct ira_modrm_decoding_args {
-	// Register type.
-	enum ira_register_type reg_type;
-	// Allows to dynamically calculate memory operand size.
-	ira_operand_size_provider memory_operand_size_provider;
-	// Memory operand size.
-	uint16_t memory_operand_size;
-	// Allows to dynamically calculate register operand size.
-	ira_operand_size_provider register_operand_size_provider;
-	// Register operand size.
-	uint16_t register_operand_size;
-	// Flags.
-	uint8_t flags;
-};
-
 /* Structure used to decode  */
 struct ira_modm_decoding_args {
 	// Size directive provider.
