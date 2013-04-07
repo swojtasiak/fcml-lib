@@ -1146,7 +1146,7 @@ void *_ira_alloc_modm_vsib_decoding_args( uint8_t vir, uint8_t ivs, int *result 
 	struct ira_modm_decoding_args *args = (struct ira_modm_decoding_args*)malloc( sizeof( struct ira_modm_decoding_args ) );
 	if( args != NULL ) {
 		args->operand_size_provider = NULL;
-		args->operand_size = ( ivs == _IRA_VSIB_IS_32 ) ? _IRA_OS_DWORD : _IRA_OS_QWORD;
+		args->operand_size = ( ivs == FCML_VSIB_IS_32 ) ? _IRA_OS_DWORD : _IRA_OS_QWORD;
 		args->is_vsib = _IRA_TRUE;
 		args->vir = vir;
 	}
@@ -1159,17 +1159,17 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	int result = _IRA_INT_ERROR_NO_ERROR;
 
 	// Store access mode for this operand decoding.
-	operand_decoding->access_mode = ( decoding & _IRA_WRITE ) ? IRA_WRITE : IRA_READ;
+	operand_decoding->access_mode = ( decoding & FCML_OA_W ) ? IRA_WRITE : IRA_READ;
 
 	// Clear access mode.
-	decoding &= ~_IRA_WRITE;
+	decoding &= ~FCML_OA_W;
 
 	uint32_t decoder_type = decoding & 0xFF000000;
 
 	operand_decoding->args = NULL;
 
 	switch( decoder_type ) {
-	case FCML_OPERAND_IMM_BASE:
+	case FCML_OP_IMM_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_new_immediate;
 		operand_decoding->args = _ira_alloc_new_immediate_type_args( ( decoding & 0x0000FF00) >> 8, decoding & 0x000000FF, &result );
 		break;
@@ -1182,31 +1182,31 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		// Displacement size is described using immediate type arguments.
 		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_8, &result );
 		break;*/
-	case FCML_OPERAND_IMMEDIATE_DIS_RELATIVE_BASE:
+	case FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE:
 		operand_decoding->decoder = &fcml_ifn_opdec_immediate_relative_dis;
 		operand_decoding->args = fcml_ifn_alloc_immediate_relative_dis_type_args( decoding & 0x000000FF, &result );
 		break;
-	case _IRA_OPERAND_FAR_POINTER:
+	case FCML_OP_FAR_POINTER:
 		operand_decoding->decoder = &_ira_opcode_decoder_far_pointer;
 		break;
-	case _IRA_OPERAND_FAR_POINTER_INDIRECT:
+	case FCML_OP_FAR_POINTER_INDIRECT:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 		operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_far_indirect_pointer_operand_size_provider, 0, &result );
 		break;
-	case FCML_OPERAND_EXPLICIT_REG_BASE: {
+	case FCML_OP_EXPLICIT_REG_BASE: {
 		operand_decoding->decoder = &_ira_opcode_decoder_explicit_register;
 		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x0000F000 ) >> 12, ( decoding & 0x00000F00 ) >> 8, decoding & 0x000000FF, &result );
 		break;
 	}
-	case _IRA_OPERAND_OPCODE_REG_BASE:
+	case FCML_OP_OPCODE_REG_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_opcode_register;
 		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x0000FF00 ) >> 8, 0 /*From opcode.*/, decoding & 0x000000FF, &result );
 		break;
-	case _IRA_EXPLICIT_GPS_REG_ADDRESSING_BASE:
+	case FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_explicit_register_addressing;
 		operand_decoding->args = _ira_alloc_reg_addressing_args( ( decoding & 0x00FF0000 ) >> 16 /*Register number*/, ( decoding & 0x0000FF00 ) >> 8 /*Operand size*/, ( decoding & 0x000000FF ) /* Segment register */, &result );
 		break;
-	case _IRA_OPERAND_RM_BASE: {
+	case FCML_OP_RM_BASE: {
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_rm;
 		// Encodes operands sizes.
 		struct fcml_st_diss_decoded_operand_size memory_operand_size = fcml_ifn_decode_operand_size( ( decoding & 0x00FF0000 ) >> 16 );
@@ -1214,21 +1214,21 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->args = _ira_alloc_modrm_decoding_args( ( decoding & 0x000000F0 ) >> 4, decoding & 0x0000000F, memory_operand_size.operand_size, memory_operand_size.operand_size_provider, register_operand_size.operand_size, register_operand_size.operand_size_provider, &result );
 		break;
 	}
-	case _IRA_OPERAND_VSIB_BASE:
+	case FCML_OP_VSIB_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 		operand_decoding->args = _ira_alloc_modm_vsib_decoding_args( ( decoding >> 2 ), decoding & 0x03, &result );
 		break;
-	case _IRA_OPERAND_R_BASE:
+	case FCML_OP_R_BASE:
 		// TODO: probowac dostosowac do tego tyou adreowania _ira_opcode_decoder_modrm_rm lub dodac dedykowana strukture z argumentami, ta jet nadmiarowa!
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_r;
 		struct fcml_st_diss_decoded_operand_size register_operand_size = fcml_ifn_decode_operand_size( (decoding & 0x00000FF0) >> 4 );
 		operand_decoding->args = _ira_alloc_modrm_decoding_args( decoding & 0x0000000F, 0, _IRA_OS_UNDEFINED, NULL, register_operand_size.operand_size, register_operand_size.operand_size_provider, &result );
 		break;
-	case _IRA_VEX_VVVV_REG_BASE:
+	case FCML_OP_VEX_VVVV_REG_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_VEX_vvvv;
 		operand_decoding->args = _ira_alloc_vvvv_decoding_args( decoding & 0x0000000F, (decoding & 0x00000FF0) >> 4, &result );
 		break;
-	case _IRA_EXPLICIT_OPERAND_IB_BASE:
+	case FCML_OP_EXPLICIT_IB_BASE:
 	{
 		// TODO: Przerobic to, brzydko wyglada przekazywanie tej unii.
 		union ira_immediate_data_value immediate_data;
@@ -1237,11 +1237,11 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->args = _ira_alloc_explicit_immediate_type_args( IRA_IMMEDIATE_8, immediate_data, &result );
 		break;
 	}
-	case _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE:
+	case FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_seg_relative_offset;
 		operand_decoding->args = _ira_alloc_seg_relative_offset_args( _ira_common_decode_8b_operand_size( ( decoding & 0x0000FF00 ) >> 8 ), decoding & 0x000000FF, &result );
 		break;
-	case _IRA_OPERAND_IS4:
+	case FCML_OP_OPERAND_IS4:
 		operand_decoding->decoder = &_ira_opcode_decoder_VEX_is4;
 		operand_decoding->args = NULL;
 		break;
@@ -1861,7 +1861,7 @@ int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_in
 	md_args.register_operand_size.operand_size = _IRA_OS_UNDEFINED;
 	md_args.register_operand_size.operand_size_provider = ira_eosa_operand_size_provider;
 	md_args.is_vsib = register_type_size_args->is_vsib;
-	md_args.index_register_size = register_type_size_args->vir == _IRA_VSIB_XMM ? _IRA_OS_XMMWORD : _IRA_OS_YMMWORD;
+	md_args.index_register_size = register_type_size_args->vir == FCML_VSIB_XMM ? _IRA_OS_XMMWORD : _IRA_OS_YMMWORD;
 
 	int result = _ira_modrm_decoder( context, &md_args );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
@@ -2665,9 +2665,9 @@ uint16_t _ira_util_decode_operand_size( struct ira_diss_context *context, uint16
 	return operand_size;
 }
 
-//! Decoding segment register encoded by _IRA_SEG_ENCODE_REGISTER macro.
+//! Decoding segment register encoded by FCML_SEG_ENCODE_REGISTER macro.
 /*!
- * \brief Decoding segment register encoded by _IRA_SEG_ENCODE_REGISTER macro and fills segment selector structure given in arguments.
+ * \brief Decoding segment register encoded by FCML_SEG_ENCODE_REGISTER macro and fills segment selector structure given in arguments.
  *
  * \param context Disassembling context.
  * \param segment_selector Segment selector structure to fill.
@@ -2676,12 +2676,12 @@ uint16_t _ira_util_decode_operand_size( struct ira_diss_context *context, uint16
  */
 void _ira_decode_segment_register( struct ira_diss_context *context, struct ira_segment_selector *segment_selector, uint8_t encoded_segment_register ) {
 
-	uint8_t reg = _IRA_SEG_DECODE_REGISTER(encoded_segment_register);
+	uint8_t reg = FCML_SEG_DECODE_REGISTER(encoded_segment_register);
 
 	// TODO: Check instruction type to verify if segment register really can be overridden.
 
 	// Checks if segment can be overridden.
-	if( _IRA_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded_segment_register ) ) {
+	if( FCML_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded_segment_register ) ) {
 		// Register can be overridden, so check if there is appropriate prefix.
 		reg = _ira_util_override_segment_reg( context, reg );
 	}
