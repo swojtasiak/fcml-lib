@@ -43,8 +43,21 @@ struct ira_reg_type_args {
 /* Structure that can be used to pass immediate value type/size to operand decoding function. */
 struct ira_immediate_type_args {
 	// Immediate value type.
-	struct fcml_st_diss_decoded_operand_size imm_size;
-	struct fcml_st_diss_decoded_operand_size imm_ex_size;
+	enum ira_immediate_data_type immediate_data_type;
+};
+
+/* Structure that can be used to pass immediate value type/size to operand decoding function. */
+struct ira_new_immediate_type_args {
+	// Immediate value type.
+	struct fcml_st_diss_decoded_operand_size immediate_data_type;
+	// Immediate extension value type.
+	struct fcml_st_diss_decoded_operand_size immediate_data_type_ex;
+};
+
+/* Relative displacement encoded in immediate data. */
+struct ira_immediate_relative_dis_type_args {
+	// Immediate value type.
+	fcml_uint8_t encoded_rel_imm_size;
 };
 
 #endif /* FCML_DISS_INT_H_ */

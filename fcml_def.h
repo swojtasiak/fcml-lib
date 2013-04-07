@@ -84,6 +84,7 @@ typedef struct fcml_st_def_instruction_description {
 
 /* Instruction types. */
 
+// Intel IA.
 #define FCML_IT_IA			0x00
 
 // Source operand (Reads).
@@ -94,35 +95,21 @@ typedef struct fcml_st_def_instruction_description {
 
 #define _IRA_NA		0x00000000
 
-// todo: zmienic to na jedno parametryzowane makro, ktore jako parametr przyjmie wielkosc wartosci natychmiastowej.
-#define _IRA_OPERAND_IB						0x01000000
-// imm8 sign extended to effective operand size attribute.
-#define _IRA_OPERAND_IB_EX_EOSA				0x02000000
-#define _IRA_OPERAND_IW						0x03000000
-#define _IRA_OPERAND_IW_EX_EOSA				0x04000000
-#define _IRA_OPERAND_ID						0x05000000
-// imm32 sign extended to effective operand size attribute.
-#define _IRA_OPERAND_ID_EX_EOSA				0x06000000
-#define _IRA_OPERAND_IO						0x07000000
-#define _IRA_OPERAND_IO_EOSA				0x08000000
-// Immediate value with size calculated using EOSA.
-#define _IRA_OPERAND_IMM_EOSA				0x09000000
-
-#define FCML_OPERAND_IMM_BASE				0x0A000000
+// Immediate data.
+#define FCML_OPERAND_IMM_BASE						0x0A000000
 #define FCML_OPERAND_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OPERAND_IMM_BASE | encoded_imm_size << 8 | encoded_ex_imm_size )
-
 
 // Register explicitly set.
 #define FCML_OPERAND_EXPLICIT_REG_BASE				0x0F000000
-#define FCML_OPERAND_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( _IRA_EXPLICIT_REG_BASE | reg_type << 12 | reg_num << 8 | encoded_reg_size )
+#define FCML_OPERAND_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( FCML_OPERAND_EXPLICIT_REG_BASE | reg_type << 12 | reg_num << 8 | encoded_reg_size )
 
 // Register field in opcode byte.
 #define _IRA_OPERAND_OPCODE_REG_BASE				0x10000000
 #define _IRA_OPERAND_OPCODE_REG(reg_type, encoded_reg_size)		( _IRA_OPERAND_OPCODE_REG_BASE | reg_type << 8 | encoded_reg_size )
 
 // Relative addressing.
-#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	0x11000000
-#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		0x12000000
+#define FCML_OPERAND_IMMEDIATE_DIS_RELATIVE_BASE	0x02000000
+#define FCML_OPERAND_IMMEDIATE_DIS_RELATIVE( encoded_imm_size )	( FCML_OPERAND_IMMEDIATE_DIS_RELATIVE_BASE | encoded_imm_size )
 
 // Far pointers.
 #define _IRA_OPERAND_FAR_POINTER					0x13000000
@@ -138,7 +125,9 @@ typedef struct fcml_st_def_instruction_description {
 #define _IRA_EXPLICIT_OPERAND_IB_BASE				0x16000000
 #define _IRA_EXPLICIT_OPERAND_IB(value)				( _IRA_EXPLICIT_OPERAND_IB_BASE | value )
 
-// todo: Mozna sie zastanowic nad dodaniem flag M, R zeby mona bylo wybierac tryb adreacji rm/r/m
+// Segment relative addressing.
+#define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE	0x1A000000
+#define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
 
 /********************************/
 /*      ModR/M encoding.        */
@@ -156,9 +145,6 @@ typedef struct fcml_st_def_instruction_description {
 
 #define _IRA_OPERAND_R_BASE							0x19000000
 #define _IRA_OPERAND_R( reg_type, encoded_register_operand_size )	( _IRA_OPERAND_R_BASE | ( encoded_register_operand_size << 4 ) | reg_type )
-
-#define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE	0x1A000000
-#define _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( _IRA_OPERAND_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
 
 /******************************/
 /* XOP/VEX specific encoding. */
@@ -181,7 +167,7 @@ typedef struct fcml_st_def_instruction_description {
 #define _IRA_VSIB_IS_32	0x01
 #define _IRA_VSIB_IS_64	0x02
 
-#define _IRA_OPERAND_VSIB_BASE												0x1D000000
+#define _IRA_OPERAND_VSIB_BASE						0x1D000000
 #define _IRA_OPERAND_VSIB( vector_index_register, index_value_size )		( _IRA_OPERAND_VSIB_BASE | vector_index_register << 2 | index_value_size )
 
 /*******************************/
@@ -238,7 +224,6 @@ typedef struct fcml_st_def_instruction_description {
 #define _IRA_OPERAND_MODRM_M_512B_W			(_IRA_OPERAND_MODRM_M_512B | _IRA_WRITE)
 #define _IRA_OPERAND_MODRM_M_UNDEF			_IRA_OPERAND_RM(IRA_NO_REG, FCML_EOS_UNDEFINED, FCML_EOS_UNDEFINED, _IRA_RMF_M )
 #define _IRA_OPERAND_MODRM_M_UNDEF_W		(_IRA_OPERAND_MODRM_M_UNDEF | _IRA_WRITE)
-
 
 #define _IRA_OPERAND_MODRM_MM_OSA			_IRA_OPERAND_RM(IRA_NO_REG, FCML_EOS_UNDEFINED, FCML_EOS_32_64, _IRA_RMF_M )
 #define _IRA_OPERAND_MODRM_RM_MMX			_IRA_OPERAND_RM(IRA_REG_SIMD, FCML_EOS_QWORD, FCML_EOS_QWORD, _IRA_RMF_RM )
@@ -298,11 +283,26 @@ typedef struct fcml_st_def_instruction_description {
 #define _IRA_OPERAND_MODRM_M_SIMD_E			_IRA_OPERAND_RM(IRA_NO_REG, FCML_EOS_UNDEFINED, FCML_EOS_EOSA, _IRA_RMF_M )
 #define _IRA_OPERAND_MODRM_M_SIMD_E_W		( _IRA_OPERAND_MODRM_M_SIMD | _IRA_WRITE )
 
+// Shorthands for relative addressing.
+
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA	FCML_OPERAND_IMMEDIATE_DIS_RELATIVE( FCML_EOS_UNDEFINED )
+#define _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8		FCML_OPERAND_IMMEDIATE_DIS_RELATIVE( FCML_EOS_BYTE )
+
 // Shorthands for VVVV addressing.
 
 #define _IRA_VEX_VVVV_SIMD_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_EOS_L )
 #define _IRA_VEX_VVVV_XMM_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_EOS_OWORD )
 #define _IRA_VEX_VVVV_YMM_REG		_IRA_VEX_VVVV_REG( IRA_REG_SIMD, FCML_EOS_YWORD )
+
+// Shorthands for IMM.
+
+#define _IRA_OPERAND_IB						FCML_OPERAND_IMM( FCML_EOS_BYTE, FCML_EOS_UNDEFINED )
+#define _IRA_OPERAND_IB_EX_EOSA				FCML_OPERAND_IMM( FCML_EOS_BYTE, FCML_EOS_EOSA )
+#define _IRA_OPERAND_IW						FCML_OPERAND_IMM( FCML_EOS_WORD, FCML_EOS_UNDEFINED )
+#define _IRA_OPERAND_IW_EX_EOSA				FCML_OPERAND_IMM( FCML_EOS_WORD, FCML_EOS_EOSA )
+#define _IRA_OPERAND_ID						FCML_OPERAND_IMM( FCML_EOS_DWORD, FCML_EOS_UNDEFINED )
+#define _IRA_OPERAND_ID_EX_EOSA				FCML_OPERAND_IMM( FCML_EOS_DWORD, FCML_EOS_EOSA )
+#define _IRA_OPERAND_IMM_EOSA				FCML_OPERAND_IMM( FCML_EOS_EOSA, FCML_EOS_UNDEFINED )
 
 /* Externals. */
 

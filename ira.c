@@ -121,10 +121,12 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_explicit_immediate( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_immediate_extends_eosa( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
+int _ira_opcode_decoder_new_immediate( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_immediate_relative_dis( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
+int fcml_ifn_opdec_immediate_relative_dis( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_seg_relative_offset( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
 int _ira_opcode_decoder_VEX_vvvv( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args );
@@ -133,7 +135,9 @@ int _ira_opcode_decoder_VEX_is4( struct ira_diss_context *context, struct ira_in
 /* Arguments allocators. */
 
 void *_ira_alloc_reg_type_args( enum ira_register_type reg_type, uint8_t reg, fcml_uint8_t encoded_register_size, int *result );
-void *_ira_alloc_immediate_type_args( fcml_uint8_t encoded_imm_size, fcml_uint8_t encoded_imm_ex_size, int *result );
+void *_ira_alloc_immediate_type_args( enum ira_immediate_data_type immediate_type, int *result );
+void *_ira_alloc_new_immediate_type_args( fcml_uint8_t encoded_imm_size, fcml_uint8_t encoded_imm_size_ex, int *result );
+void *fcml_ifn_alloc_immediate_relative_dis_type_args( fcml_uint8_t rel_imm_size, int *result );
 void *_ira_alloc_explicit_immediate_type_args( enum ira_immediate_data_type immediate_type, union ira_immediate_data_value immediate_data, int *result );
 void *_ira_alloc_modrm_decoding_args( enum ira_register_type reg_type, uint8_t flags, uint16_t memory_operand_size, ira_operand_size_provider memory_operand_size_provider, uint16_t register_operand_size, ira_operand_size_provider register_operand_size_provider, int *result );
 void *_ira_alloc_vvvv_decoding_args( enum ira_register_type reg_type, fcml_uint8_t encoded_register_size, int *result );
@@ -1061,11 +1065,29 @@ void *_ira_alloc_reg_addressing_args( int reg, uint8_t encoded_operand_size, uin
 	return args;
 }
 
-void *_ira_alloc_immediate_type_args( fcml_uint8_t encoded_imm_size, fcml_uint8_t encoded_imm_ex_size, int *result ) {
+void *_ira_alloc_immediate_type_args( enum ira_immediate_data_type immediate_type, int *result ) {
 	struct ira_immediate_type_args *args = (struct ira_immediate_type_args*)malloc( sizeof( struct ira_immediate_type_args ) );
 	if( args != NULL ) {
-		args->imm_size = fcml_ifn_decode_operand_size(encoded_imm_size);
-		args->imm_ex_size = fcml_ifn_decode_operand_size(encoded_imm_ex_size);
+		args->immediate_data_type = immediate_type;
+	}
+	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
+	return args;
+}
+
+void *_ira_alloc_new_immediate_type_args( fcml_uint8_t encoded_imm_size, fcml_uint8_t encoded_imm_size_ex, int *result ) {
+	struct ira_new_immediate_type_args *args = (struct ira_new_immediate_type_args*)malloc( sizeof( struct ira_new_immediate_type_args ) );
+	if( args != NULL ) {
+		args->immediate_data_type = fcml_ifn_decode_operand_size( encoded_imm_size );
+		args->immediate_data_type_ex = fcml_ifn_decode_operand_size( encoded_imm_size_ex );
+	}
+	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
+	return args;
+}
+
+void *fcml_ifn_alloc_immediate_relative_dis_type_args( fcml_uint8_t encoded_rel_imm_size, int *result ) {
+	struct ira_immediate_relative_dis_type_args *args = (struct ira_immediate_relative_dis_type_args*)malloc( sizeof( struct ira_immediate_relative_dis_type_args ) );
+	if( args != NULL ) {
+		args->encoded_rel_imm_size = encoded_rel_imm_size;
 	}
 	*result = ( args == NULL ) ? _IRA_INT_ERROR_OUT_OF_MEMORY : _IRA_INT_ERROR_NO_ERROR;
 	return args;
@@ -1147,45 +1169,11 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	operand_decoding->args = NULL;
 
 	switch( decoder_type ) {
-	case _IRA_OPERAND_IB:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_8, &result );
-		break;
-	case _IRA_OPERAND_IB_EX_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_8, &result );
-		break;
-	case _IRA_OPERAND_IW:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_16, &result );
-		break;
-	case _IRA_OPERAND_IW_EX_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_16, &result );
-		break;
-	case _IRA_OPERAND_ID:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_32, &result );
-		break;
-	case _IRA_OPERAND_ID_EX_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_32, &result );
-		break;
-	case _IRA_OPERAND_IMM_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
-		operand_decoding->args = _ira_alloc_immediate_type_args( 0, &result ); // EOSA.
-		break;
-	case _IRA_OPERAND_IO:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate;
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_64, &result );
-		break;
-	case _IRA_OPERAND_IO_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_extends_eosa;
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_64, &result );
-		break;
 	case FCML_OPERAND_IMM_BASE:
+		operand_decoding->decoder = &_ira_opcode_decoder_new_immediate;
+		operand_decoding->args = _ira_alloc_new_immediate_type_args( ( decoding & 0x0000FF00) >> 8, decoding & 0x000000FF, &result );
 		break;
-	case _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA:
+	/*case _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA:
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate_relative_dis;
 		operand_decoding->args = NULL; // Use EOSA to calculate displacement size.
 		break;
@@ -1193,6 +1181,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_immediate_relative_dis;
 		// Displacement size is described using immediate type arguments.
 		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_8, &result );
+		break;*/
+	case FCML_OPERAND_IMMEDIATE_DIS_RELATIVE_BASE:
+		operand_decoding->decoder = &fcml_ifn_opdec_immediate_relative_dis;
+		operand_decoding->args = fcml_ifn_alloc_immediate_relative_dis_type_args( decoding & 0x000000FF, &result );
 		break;
 	case _IRA_OPERAND_FAR_POINTER:
 		operand_decoding->decoder = &_ira_opcode_decoder_far_pointer;
@@ -1256,6 +1248,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	default:
 		operand_decoding->decoder = NULL;
 		operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;
+		break;
 	}
 
 	return result;
@@ -1632,6 +1625,63 @@ int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ir
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
+int fcml_ifn_opdec_immediate_relative_dis( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
+
+	struct ira_immediate_relative_dis_type_args *immediate_type_args = (struct ira_immediate_relative_dis_type_args*)args;
+
+	fcml_uint8_t encoded_size = immediate_type_args->encoded_rel_imm_size;
+
+	if( FCML_IS_EOS_DYNAMIC( encoded_size ) ) {
+		// Dynamic imm calculation is not available here.
+		return _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED;
+	}
+
+	struct ira_immediate_data imm_data;
+
+	if( encoded_size != FCML_EOS_UNDEFINED ) {
+		// Displacement size given in arguments.
+		imm_data.immediate_data_type = immediate_type_args->encoded_rel_imm_size * 8;
+	} else {
+		// Calculate size of immediate value that should be used to calculate relative address.
+
+		// 16 bit relative addressing is not available in 64 bit mode.
+		if( decoding_context->effective_operand_size_attribute == _IRA_OSA_16 && context->mode == IRA_MOD_64BIT ) {
+			return _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED;
+		}
+
+		imm_data.immediate_data_type = IRA_IMMEDIATE_32;
+
+		// For 32 and 64 bit addressing, 32 bit immediate value should be used.
+		// Only for 16 bit addressing value differs and is equal to 16.
+		if( context->decoding_context.effective_operand_size_attribute == 16 ) {
+			imm_data.immediate_data_type = IRA_IMMEDIATE_16;
+		}
+	}
+
+	// Read immediate value used then to calculate relative address.
+	int result = _ira_decode_immediate( context, &imm_data, imm_data.immediate_data_type );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+
+	// Postprocessor uses it to calculate relative address.
+	operand->immediate = imm_data;
+
+	// Set extension size. It's not used in next phases, it's for informational purpose only.
+	// Currently only renderers make good use of it.
+	operand->immediate.extension_size = context->decoding_context.effective_operand_size_attribute;
+
+	// This handler is responsible for calculating address in post processing phase when
+	// instruction size is already available.
+	operand_wrapper->post_processor = &ira_relative_addressing_instruction_operand_handler;
+
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
 int _ira_opcode_decoder_immediate_relative_dis( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
@@ -1728,6 +1778,25 @@ int _ira_opcode_decoder_seg_relative_offset( struct ira_diss_context *context, s
 	_ira_decode_segment_register( context, &(addressing->segment_selector), offset_args->encoded_segment_selector );
 
 	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+/* Decodes immediate value and extends it to the effective operand size. */
+int _ira_opcode_decoder_new_immediate( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
+
+	struct ira_new_immediate_type_args *immediate_type_args = (struct ira_new_immediate_type_args*)args;
+
+	int size = fcml_ifn_calculate_operand_size( context, &(immediate_type_args->immediate_data_type) );
+	int size_ex = fcml_ifn_calculate_operand_size( context, &(immediate_type_args->immediate_data_type_ex) );
+
+	struct ira_instruction_operand *operand = &(operand_wrapper->operand);
+	int result = _ira_decode_immediate( context, &(operand->immediate), size );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+
+	operand->operand_type = IRA_IMMEDIATE_DATA;
+	operand->immediate.extension_size = size_ex;
+	return result;
 }
 
 /* Decodes immediate value and extends it to the effective operand size. */
@@ -2525,7 +2594,7 @@ fcml_uint16_t ira_vexl_operand_size_provider( struct ira_diss_context *context )
  */
 
 fcml_uint16_t fcml_ifn_calculate_operand_size( struct ira_diss_context *context, fcml_st_diss_decoded_operand_size *operand_size ) {
-	fcml_uint16_t size = _IRA_OS_UNDEFINED;
+	fcml_uint16_t size = FCML_OS_UNDEFINED;
 	if( operand_size ) {
 		if( operand_size->operand_size_provider ) {
 			size = operand_size->operand_size_provider( context );
