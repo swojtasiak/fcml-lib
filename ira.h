@@ -473,7 +473,7 @@ enum ira_access_mode {
 	IRA_ACCESS_MODE_UNDEFINED,
 	IRA_READ,
 	IRA_WRITE,
-	IRA_READ_RITE
+	IRA_READ_WRITE
 };
 
 struct ira_mod_rm_addressing {

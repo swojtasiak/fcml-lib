@@ -188,6 +188,34 @@ int _ira_decode_immediate( struct ira_diss_context *context, struct ira_immediat
 /* Decodes displacement */
 int _ira_decode_displacement( struct ira_diss_context *context, struct ira_displacement *displacement, int size, int extension_size );
 
+// TODO: Zrezygnowalismy z tych stalych na rzecz przypisywania size providerow na etapie budowania drzewa disassembleacji.
+
+#define FCML_OS_EOSA		0xFFFF
+#define FCML_OS_EASA		0xFFFE
+
+//! Decoding given encoded operand size.
+/*!
+ * \brief Decodes given operand size using provided EOSA. Some functions have operand size described on 8 bits using
+ * IRA_EOS_ constants. This form of operand size description notation is used to allow encoding more than 128
+ * bits operand sizes using only one byte.
+ *
+ * \param encoded_operand_size Size directive to decode.
+ * \return Decoded operand size.
+ */
+// Description in common.h
+uint16_t _ira_common_decode_8b_operand_size( uint8_t encoded_operand_size  ) {
+
+	if( encoded_operand_size == FCML_EOS_EASA ) {
+		return FCML_OS_EASA;
+	}
+
+	if( encoded_operand_size == FCML_EOS_EOSA ) {
+		return FCML_OS_EOSA;
+	}
+
+	return encoded_operand_size * 8;
+}
+
 /* End of opcode decoders. */
 
 void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_result *result ) {
@@ -1159,10 +1187,18 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	int result = _IRA_INT_ERROR_NO_ERROR;
 
 	// Store access mode for this operand decoding.
-	operand_decoding->access_mode = ( decoding & FCML_OA_W ) ? IRA_WRITE : IRA_READ;
+	operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;
+	if( decoding & FCML_OA_R ) {
+		operand_decoding->access_mode = IRA_READ;
+	} else if( decoding & FCML_OA_W ) {
+		operand_decoding->access_mode = IRA_WRITE;
+	}
+	if( ( decoding & FCML_OA_RW ) == FCML_OA_RW ) {
+		operand_decoding->access_mode = IRA_READ_WRITE;
+	}
 
 	// Clear access mode.
-	decoding &= ~FCML_OA_W;
+	decoding &= ~FCML_OA_RW;
 
 	uint32_t decoder_type = decoding & 0xFF000000;
 
@@ -1173,15 +1209,6 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_new_immediate;
 		operand_decoding->args = _ira_alloc_new_immediate_type_args( ( decoding & 0x0000FF00) >> 8, decoding & 0x000000FF, &result );
 		break;
-	/*case _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_EOSA:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_relative_dis;
-		operand_decoding->args = NULL; // Use EOSA to calculate displacement size.
-		break;
-	case _IRA_OPERAND_IMMEDIATE_DIS_RELATIVE_R_8:
-		operand_decoding->decoder = &_ira_opcode_decoder_immediate_relative_dis;
-		// Displacement size is described using immediate type arguments.
-		operand_decoding->args = _ira_alloc_immediate_type_args( IRA_IMMEDIATE_8, &result );
-		break;*/
 	case FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE:
 		operand_decoding->decoder = &fcml_ifn_opdec_immediate_relative_dis;
 		operand_decoding->args = fcml_ifn_alloc_immediate_relative_dis_type_args( decoding & 0x000000FF, &result );
@@ -1193,11 +1220,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 		operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_far_indirect_pointer_operand_size_provider, 0, &result );
 		break;
-	case FCML_OP_EXPLICIT_REG_BASE: {
+	case FCML_OP_EXPLICIT_REG_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_explicit_register;
 		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x0000F000 ) >> 12, ( decoding & 0x00000F00 ) >> 8, decoding & 0x000000FF, &result );
 		break;
-	}
 	case FCML_OP_OPCODE_REG_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_opcode_register;
 		operand_decoding->args = _ira_alloc_reg_type_args( ( decoding & 0x0000FF00 ) >> 8, 0 /*From opcode.*/, decoding & 0x000000FF, &result );
@@ -1837,7 +1863,7 @@ int _ira_opcode_decoder_immediate( struct ira_diss_context *context, struct ira_
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 
-// TODO: Do usuniecia da sie zastapic _ira_opcode_decoder_modrm_rm z flaga odpowiednia: _IRA_RMF_M
+// TODO: Do usuniecia da sie zastapic _ira_opcode_decoder_modrm_rm z flaga odpowiednia: FCML_RMF_M
 // Memory addressing decoder. It is based on Mod/RM but registers aren't allowed ( R/M != 3 ).
 int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_instruction_operand_wrapper *operand_wrapper, void *args ) {
 
@@ -1919,15 +1945,15 @@ int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_i
 
 	// Check allowed addressing modes.
 	uint8_t flags = register_type_size_args->flags;
-	if( ( flags & _IRA_RMF_RM ) != _IRA_RMF_RM ) {
+	if( ( flags & FCML_RMF_RM ) != FCML_RMF_RM ) {
 
 		struct ira_decoded_mod_rm *decoded_mod_rm = &(decoding_context->mod_rm);
 
-		if( !(flags & _IRA_RMF_R) && _IRA_MODRM_MOD( decoded_mod_rm->raw_mod_rm.value ) == 3 ) {
+		if( !(flags & FCML_RMF_R) && _IRA_MODRM_MOD( decoded_mod_rm->raw_mod_rm.value ) == 3 ) {
 			return _IRA_INT_ERROR_ILLEGAL_ADDRESSING;
 		}
 
-		if( !(flags & _IRA_RMF_M) && _IRA_MODRM_MOD( decoded_mod_rm->raw_mod_rm.value ) != 3 ) {
+		if( !(flags & FCML_RMF_M) && _IRA_MODRM_MOD( decoded_mod_rm->raw_mod_rm.value ) != 3 ) {
 			return _IRA_INT_ERROR_ILLEGAL_ADDRESSING;
 		}
 	}
