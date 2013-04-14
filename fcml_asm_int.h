@@ -21,4 +21,12 @@ typedef struct fcml_st_asm_instruction_encoding {
 	uint32_t opcode_flags;
 } fcml_st_asm_instruction_encoding;
 
+typedef struct fcml_st_asm_encoded_operand {
+
+} fcml_st_asm_encoded_operand;
+
+typedef struct fcml_st_asm_encodeing_context {
+
+} fcml_st_asm_encodeing_context;
+
 #endif /* FCML_ASM_INT_H_ */

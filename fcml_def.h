@@ -10,6 +10,7 @@
 
 #include "fcml_types.h"
 #include "fcml_common.h"
+#include "fcml_ceh.h"
 
 /* Constants used to encode operand size on one byte. Used only in instruction descriptions. */
 
@@ -305,5 +306,77 @@ typedef struct fcml_st_def_instruction_description {
 extern struct fcml_st_def_instruction_description fcml_ext_instructions_def[];
 
 #define FCML_EMPTY_MNEMONIC	""
+
+/* Addressing modes arguments encoders. */
+
+typedef struct fcml_st_def_decoded_addr_mode {
+	// Code of the addressing mode.
+	fcml_uint8_t addr_mode;
+	// Decoded arguments.
+	fcml_ptr addr_mode_args;
+} fcml_st_def_decoded_addr_mode;
+
+fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error );
+
+void fcml_fnp_def_free_addr_mode( fcml_st_def_decoded_addr_mode *decoded_addr_mode );
+
+/* Addressing modes arguments. */
+
+typedef struct fcml_sf_def_tma_imm {
+	fcml_uint8_t encoded_imm_size;
+	fcml_uint8_t encoded_ex_imm_size;
+} fcml_sf_def_tma_imm;
+
+typedef struct fcml_sf_def_tma_explicit_reg {
+	fcml_uint8_t reg_type;
+	fcml_uint8_t reg_num;
+	fcml_uint8_t encoded_reg_size;
+} fcml_sf_def_tma_explicit_reg;
+
+typedef struct fcml_sf_def_tma_opcode_reg {
+	fcml_uint8_t reg_type;
+	fcml_uint8_t encoded_reg_size;
+} fcml_sf_def_tma_opcode_reg;
+
+typedef struct fcml_sf_def_tma_immediate_dis_relative {
+	fcml_uint8_t encoded_imm_size;
+} fcml_sf_def_tma_immediate_dis_relative;
+
+typedef struct fcml_sf_def_tma_explicit_gps_reg_addressing {
+	fcml_uint8_t reg_num;
+	fcml_uint8_t encoded_operand_size;
+	fcml_uint8_t encoded_segment_register;
+} fcml_sf_def_tma_explicit_gps_reg_addressing;
+
+typedef struct fcml_sf_def_tma_explicit_ib {
+	fcml_uint8_t ib;
+} fcml_sf_def_tma_explicit_ib;
+
+typedef struct fcml_sf_def_tma_segment_relative_offset {
+	fcml_uint8_t encoded_operand_size;
+	fcml_uint8_t encoded_segment_register;
+} fcml_sf_def_tma_segment_relative_offset;
+
+typedef struct fcml_sf_def_tma_rm {
+	fcml_uint8_t reg_type;
+	fcml_uint8_t encoded_register_operand_size;
+	fcml_uint8_t encoded_memory_operand_size;
+	fcml_uint8_t flags;
+} fcml_sf_def_tma_rm;
+
+typedef struct fcml_sf_def_tma_r {
+	fcml_uint8_t reg_type;
+	fcml_uint8_t encoded_register_operand_size;
+} fcml_sf_def_tma_r;
+
+typedef struct fcml_sf_def_tma_vex_vvvv_reg {
+	fcml_uint8_t reg_type;
+	fcml_uint8_t encoded_register_size;
+} fcml_sf_def_tma_vex_vvvv_reg;
+
+typedef struct fcml_sf_def_tma_vsib {
+	fcml_uint8_t vector_index_register;
+	fcml_uint8_t index_value_size;
+} fcml_sf_def_tma_vsib;
 
 #endif /* FCML_DEF_H_ */
