@@ -13,12 +13,23 @@
 fcml_coll_map instructions_map = NULL;
 
 fcml_st_asm_instruction_addr_mode *fcml_ifn_asm_prepare_addr_mode( fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ceh_error *error ) {
+
 	fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)fcml_fn_env_memory_alloc( sizeof( fcml_st_asm_instruction_addr_mode ) );
 	if( !addr_mode ) {
 		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
 		return NULL;
 	}
+
+	memset( addr_mode, 0 , sizeof( fcml_st_asm_instruction_addr_mode ) );
+
 	addr_mode->addr_mode_desc = addr_mode_desc;
+
+	// Prepares operand encoders one by one.
+	for( int i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+
+		addr_mode->operand_encoders
+	}
+
 	return addr_mode;
 }
 
@@ -44,7 +55,7 @@ void fcml_ifn_asm_free_instruction_entry( fcml_ptr key, fcml_ptr value ) {
 }
 
 
-void fcml_ifn_asm_add_instruction_decoding( fcml_st_def_instruction_description *instruction, fcml_ceh_error *error ) {
+void fcml_ifn_asm_add_instruction_encoding( fcml_st_def_instruction_description *instruction, fcml_ceh_error *error ) {
 
 	// Prepare encoders for given instruction.
 	int i;
@@ -116,7 +127,7 @@ void fcml_fn_asm_init_instruction_encodings( fcml_ceh_error *error ) {
 	int i = 0;
 	fcml_st_def_instruction_description *instruction = &(fcml_ext_instructions_def[i++]);
 	while( instruction->mnemonic && !*error ) {
-		fcml_ifn_asm_add_instruction_decoding( instruction, error );
+		fcml_ifn_asm_add_instruction_encoding( instruction, error );
 		instruction = &(fcml_ext_instructions_def[i++]);
 	}
 
@@ -134,6 +145,12 @@ void fcml_fn_asm_free_instruction_encodings() {
 	}
 }
 
-fcml_st_asm_instruction_encoding *fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_ceh_error *error ) {
+fcml_st_asm_instruction_addr_modes *fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_ceh_error *error ) {
 	return NULL;
 }
+
+/*********************************
+ * Operand acceptors.
+ *********************************/
+
+

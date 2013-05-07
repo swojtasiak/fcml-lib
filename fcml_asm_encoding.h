@@ -12,6 +12,16 @@
 #include "fcml_asm_int.h"
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
+#include "fcml_common.h"
+
+typedef fcml_bool (*fcml_fnp_asm_operand_encoder)( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc );
+
+typedef struct fcml_st_asm_operand_encoder {
+	// Typ obslugiwany przez ponizszy encoder, uzywany w zasadzie tylko z powodow wydajnosciowych, aby wstepnie porownac typy.
+	fcml_en_operand_type supported_operand_type;
+	// Enkoder wlasciwy odpowiedzialnyz za enkodowanie operandu.
+	fcml_fnp_asm_operand_encoder operand_encoder;
+} fcml_st_asm_operand_encoder;
 
 typedef struct fcml_st_asm_instruction_addr_modes {
 	// All addressing modes for given mnemonic are available in this list.
@@ -21,11 +31,14 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 } fcml_st_asm_instruction_addr_modes;
 
 typedef struct fcml_st_asm_instruction_addr_mode {
+	// Instruction definition.
 	fcml_st_def_addr_mode_desc *addr_mode_desc;
+	// Akceptory operandow odpowiedzialne za wstepna akceptacje operandów.
+	fcml_st_asm_operand_encoder operand_encoders[FCML_OPERANDS_COUNT];
 } fcml_st_asm_instruction_addr_mode;
 
 void fcml_fn_asm_init_instruction_encodings( fcml_ceh_error *error );
 void fcml_fn_asm_free_instruction_encodings();
-fcml_st_asm_instruction_encoding *fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_ceh_error *error );
+fcml_st_asm_instruction_addr_modes *fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_ceh_error *error );
 
 #endif /* FCML_ASM_ENCODING_H_ */

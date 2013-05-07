@@ -991,19 +991,23 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	decoding->instruction_decoder = _ira_choose_instruction_decoder( instruction_desc->instruction_type );
 
 	// Choose functions used to decode operands.
-	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[0]), opcode_desc->opperand_1 );
+	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[0]), opcode_desc->opperands[0] );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
-	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[1]), opcode_desc->opperand_2 );
+	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[1]), opcode_desc->opperands[1] );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
-	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[2]), opcode_desc->opperand_3 );
+	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[2]), opcode_desc->opperands[2] );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
-	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[3]), opcode_desc->opperand_4 );
+	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[3]), opcode_desc->opperands[3] );
+	if( result != _IRA_INT_ERROR_NO_ERROR ) {
+		return result;
+	}
+	result = _ira_prepare_operand_decoding( &(decoding->operand_decodings[4]), opcode_desc->opperands[4] );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}

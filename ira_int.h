@@ -6,6 +6,7 @@
 #include "ira.h"
 
 #include "fcml_stream.h"
+#include "fcml_common.h"
 
 #define _IRA_TRUE 1
 #define _IRA_FALSE 0
@@ -237,7 +238,7 @@ struct ira_diss_tree_instruction_decoding {
 	/* Instruction decoder. */
 	ira_instruction_decoder instruction_decoder;
 	/* Function used to decode instruction operands. */
-	struct ira_operand_decoding operand_decodings[4];
+	struct ira_operand_decoding operand_decodings[FCML_OPERANDS_COUNT];
 	/* Instruction decoding order, for information purpose only. */
 	int order;
 };

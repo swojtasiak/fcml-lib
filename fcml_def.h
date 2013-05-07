@@ -54,10 +54,7 @@ typedef struct fcml_st_def_addr_mode_desc {
 	// Opcode bytes.
 	fcml_uint8_t opcode[3];
 	// Addressing of instruction operands.
-	fcml_uint32_t opperand_1;
-	fcml_uint32_t opperand_2;
-	fcml_uint32_t opperand_3;
-	fcml_uint32_t opperand_4;
+	fcml_uint32_t opperands[FCML_OPERANDS_COUNT];
 } fcml_st_def_addr_mode_desc;
 
 /* Describes one addressing mode of instruction. */
