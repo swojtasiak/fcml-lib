@@ -21,6 +21,8 @@ typedef struct fcml_st_asm_operand_encoder {
 	fcml_en_operand_type supported_operand_type;
 	// Enkoder wlasciwy odpowiedzialnyz za enkodowanie operandu.
 	fcml_fnp_asm_operand_encoder operand_encoder;
+	// Argumenty dla enkodera.
+	fcml_st_def_decoded_addr_mode* decoded_addr_mode;
 } fcml_st_asm_operand_encoder;
 
 typedef struct fcml_st_asm_instruction_addr_modes {

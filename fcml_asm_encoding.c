@@ -5,12 +5,104 @@
  *      Author: tAs
  */
 
+#include <string.h>
+
 #include "fcml_asm_encoding.h"
 #include "fcml_def.h"
 #include "fcml_coll.h"
 #include "fcml_env.h"
 
 fcml_coll_map instructions_map = NULL;
+
+/*********************************
+ * Operand encoders.
+ *********************************/
+
+fcml_bool fcml_fnp_asm_operand_encoder_imm( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_explicit_reg( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {return FCML_FALSE;
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_opcode_reg( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_far_pointer( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_far_pointer_indirect( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_explicit_ib( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_rm( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_r( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_vex_vvvv( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_is4( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_fnp_asm_operand_encoder_vsib( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc ) {
+	return FCML_FALSE;
+}
+
+fcml_fnp_asm_operand_encoder fcml_def_operand_encoders[] = {
+	NULL,
+	fcml_fnp_asm_operand_encoder_imm,
+	fcml_fnp_asm_operand_encoder_explicit_reg,
+	fcml_fnp_asm_operand_encoder_opcode_reg,
+	fcml_fnp_asm_operand_encoder_immediate_dis_relative,
+	fcml_fnp_asm_operand_encoder_far_pointer,
+	fcml_fnp_asm_operand_encoder_far_pointer_indirect,
+	fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing,
+	fcml_fnp_asm_operand_encoder_explicit_ib,
+	fcml_fnp_asm_operand_encoder_segment_relative_offset,
+	fcml_fnp_asm_operand_encoder_rm,
+	fcml_fnp_asm_operand_encoder_r,
+	fcml_fnp_asm_operand_encoder_vex_vvvv,
+	fcml_fnp_asm_operand_encoder_is4,
+	fcml_fnp_asm_operand_encoder_vsib
+};
+
+fcml_st_asm_operand_encoder fcml_ifn_asm_prepare_operand_encoder( fcml_uint32_t encoded_operand, fcml_ceh_error *error ) {
+	fcml_st_asm_operand_encoder encoder = {0};
+	if( encoded_operand != FCML_NA ) {
+		encoder.decoded_addr_mode = fcml_fnp_def_decode_addr_mode_args(encoded_operand, error );
+		if( !*error ) {
+			// Choose operand encoder.
+			encoder.operand_encoder = fcml_def_operand_encoders[encoder.decoded_addr_mode->addr_mode];
+		}
+	}
+	return encoder;
+}
 
 fcml_st_asm_instruction_addr_mode *fcml_ifn_asm_prepare_addr_mode( fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ceh_error *error ) {
 
@@ -20,14 +112,20 @@ fcml_st_asm_instruction_addr_mode *fcml_ifn_asm_prepare_addr_mode( fcml_st_def_a
 		return NULL;
 	}
 
-	memset( addr_mode, 0 , sizeof( fcml_st_asm_instruction_addr_mode ) );
+	memset( addr_mode, 0, sizeof( fcml_st_asm_instruction_addr_mode ) );
 
 	addr_mode->addr_mode_desc = addr_mode_desc;
 
 	// Prepares operand encoders one by one.
-	for( int i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-
-		addr_mode->operand_encoders
+	int i;
+	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+		addr_mode->operand_encoders[i] = fcml_ifn_asm_prepare_operand_encoder( addr_mode_desc->opperands[i], error );
+		if( *error ) {
+			// Something failed, so break whole process.
+			fcml_fn_env_memory_free(addr_mode);
+			addr_mode = NULL;
+			break;
+		}
 	}
 
 	return addr_mode;
@@ -100,11 +198,14 @@ void fcml_ifn_asm_add_instruction_encoding( fcml_st_def_instruction_description 
 		}
 
 		fcml_st_asm_instruction_addr_mode *addr_mode = fcml_ifn_asm_prepare_addr_mode( addr_mode_desc, error );
-		if( !*error ) {
+		if( *error ) {
 			if( !fcml_fn_coll_list_add_front( addr_modes->addr_modes, addr_mode ) ) {
 				*error = FCML_CEH_GEC_OUT_OF_MEMORY;
 				fcml_ifn_asm_free_addr_mode( addr_mode );
+				break;
 			}
+		} else {
+			break;
 		}
 
 		addr_mode_desc++;
@@ -148,9 +249,4 @@ void fcml_fn_asm_free_instruction_encodings() {
 fcml_st_asm_instruction_addr_modes *fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_ceh_error *error ) {
 	return NULL;
 }
-
-/*********************************
- * Operand acceptors.
- *********************************/
-
 
