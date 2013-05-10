@@ -8,6 +8,8 @@
 #ifndef FCML_CEH_H_
 #define FCML_CEH_H_
 
+#include "fcml_types.h"
+
 /* Global error codes. */
 
 #define FCML_CEH_GEC_NO_ERROR			0

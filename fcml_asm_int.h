@@ -9,26 +9,16 @@
 #define FCML_ASM_INT_H_
 
 #include "fcml_coll.h"
-/*
-
-typedef struct fcml_st_asm_instruction_encoding {
-	 Pointer to the next decoding. There is no need to provide additional structure for one directional list
-	struct fcml_st_asm_instruction_encoding *next_instruction_encoding;
-	 Opcodes.
-	uint8_t opcodes[3];
-	 Flags that describe prefixes usage.
-	uint16_t prefixes_flags;
-	 Flags that describe some details of opcodes.
-	uint32_t opcode_flags;
-} fcml_st_asm_instruction_encoding;
-*/
+#include "fcml_common.h"
+#include "fcml_stream.h"
 
 typedef struct fcml_st_asm_encoded_operand {
-
+	// Scace for encoded operands.
+	fcml_st_memory_stream encoded_operand;
 } fcml_st_asm_encoded_operand;
 
 typedef struct fcml_st_asm_encoding_context {
-
-} fcml_st_asm_encodeing_context;
+	fcml_st_asm_encoded_operand encoded_operands[FCML_OPERANDS_COUNT];
+} fcml_st_asm_encoding_context;
 
 #endif /* FCML_ASM_INT_H_ */

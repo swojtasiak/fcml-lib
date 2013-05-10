@@ -14,7 +14,10 @@
 #include "fcml_coll.h"
 #include "fcml_common.h"
 
+struct fcml_st_asm_instruction_addr_modes;
+
 typedef fcml_bool (*fcml_fnp_asm_operand_encoder)( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc );
+typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes );
 
 typedef struct fcml_st_asm_operand_encoder {
 	// Typ obslugiwany przez ponizszy encoder, uzywany w zasadzie tylko z powodow wydajnosciowych, aby wstepnie porownac typy.
@@ -30,6 +33,8 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 	fcml_st_coll_list *addr_modes;
 	// Mnemonic.
 	fcml_string mnemonic;
+	// Instruction encoder.
+	fcml_fnp_asm_instruction_encoder instruction_encoder;
 } fcml_st_asm_instruction_addr_modes;
 
 typedef struct fcml_st_asm_instruction_addr_mode {
@@ -39,8 +44,8 @@ typedef struct fcml_st_asm_instruction_addr_mode {
 	fcml_st_asm_operand_encoder operand_encoders[FCML_OPERANDS_COUNT];
 } fcml_st_asm_instruction_addr_mode;
 
-void fcml_fn_asm_init_instruction_encodings( fcml_ceh_error *error );
+fcml_ceh_error fcml_fn_asm_init_instruction_encodings();
+fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
 void fcml_fn_asm_free_instruction_encodings();
-fcml_st_asm_instruction_addr_modes *fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_ceh_error *error );
 
 #endif /* FCML_ASM_ENCODING_H_ */
