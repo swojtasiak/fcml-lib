@@ -82,7 +82,7 @@ typedef struct fcml_st_def_instruction_description {
 // Intel IA.
 #define FCML_IT_IA			0x00
 
-// Operand type (source/destination).
+// Operand access mode (source/destination).
 #define FCML_OA_R		0x80000000
 #define FCML_OA_W		0x40000000
 #define FCML_OA_RW		( FCML_OA_R | FCML_OA_W )
@@ -309,6 +309,7 @@ extern struct fcml_st_def_instruction_description fcml_ext_instructions_def[];
 typedef struct fcml_st_def_decoded_addr_mode {
 	// Code of the addressing mode.
 	fcml_uint8_t addr_mode;
+	fcml_uint8_t access_mode;
 	// Decoded arguments.
 	fcml_ptr addr_mode_args;
 } fcml_st_def_decoded_addr_mode;

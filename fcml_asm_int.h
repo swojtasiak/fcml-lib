@@ -11,6 +11,7 @@
 #include "fcml_coll.h"
 #include "fcml_common.h"
 #include "fcml_stream.h"
+#include "fcml_assembler.h"
 
 typedef struct fcml_st_asm_encoded_operand {
 	// Scace for encoded operands.
@@ -19,6 +20,7 @@ typedef struct fcml_st_asm_encoded_operand {
 
 typedef struct fcml_st_asm_encoding_context {
 	fcml_st_asm_encoded_operand encoded_operands[FCML_OPERANDS_COUNT];
+	fcml_st_assembler_result *result;
 } fcml_st_asm_encoding_context;
 
 #endif /* FCML_ASM_INT_H_ */

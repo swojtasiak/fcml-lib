@@ -268,6 +268,7 @@ typedef struct fcml_st_offset {
 } fcml_st_offset;
 
 typedef enum fcml_en_operand_type {
+	FCML_EOT_NONE,
     FCML_EOT_IMMEDIATE,
     FCML_EOT_FAR_POINTER,
     FCML_EOT_EFFECTIVE_ADDRESS,
@@ -291,6 +292,7 @@ typedef struct fcml_st_operand {
  *********************************/
 
 typedef enum fcml_en_explicit_prefixes {
+	FCML_PREFIX_NONE,
     FCML_PREFIX_LOCK,
     FCML_PREFIX_WAIT,
     FCML_PREFIX_REPNE,

@@ -2185,7 +2185,7 @@ int _ira_modrm_addressing_decoder_sib( struct ira_diss_context *context, struct 
 		}
 	}
 
-	return _IRA_INT_ERROR_NO_ERROR;
+	return result;
 }
 
 int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, struct ira_modrm_decoder_args *args ) {

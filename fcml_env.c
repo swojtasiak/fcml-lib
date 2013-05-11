@@ -38,6 +38,16 @@ void fcml_fn_env_memory_free( void *ptr ) {
     fcml_gl_fp_memory_free(ptr);
 }
 
+fcml_string fcml_fn_env_memory_strldup( fcml_string str, fcml_usize size ) {
+	// TODO: Unicode support.
+	fcml_string new_str = fcml_fn_env_memory_alloc( size + 1 );
+	if( new_str ) {
+		memcpy( new_str, str, size );
+		new_str[size] = '\0';
+	}
+	return new_str;
+}
+
 fcml_string fcml_fn_env_memory_strdup( fcml_string str ) {
 	uint32_t size = strlen( str ) + 1;
 	fcml_string new_str = fcml_fn_env_memory_alloc( size );

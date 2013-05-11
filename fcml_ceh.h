@@ -19,6 +19,7 @@
 #define FCML_CEH_GEC_INTERNAL_BUG		4
 #define FCML_CEH_GEC_INVALID_INPUT		5
 #define FCML_CEH_GEC_NO_SPACE_LEFT		6
+#define FCML_CEH_GEC_NOT_INITIALIZED	7
 
 typedef fcml_uint16_t fcml_ceh_error;
 

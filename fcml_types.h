@@ -27,6 +27,9 @@ typedef float fcml_float;
 typedef uint8_t fcml_data_size;
 typedef void* fcml_ptr;
 
+typedef unsigned int fcml_usize;
+typedef int fcml_size;
+
 #define FCML_TRUE   1
 #define FCML_FALSE   0
 

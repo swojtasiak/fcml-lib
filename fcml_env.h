@@ -25,6 +25,8 @@ void *fcml_fn_env_memory_alloc( uint32_t size );
 
 fcml_string fcml_fn_env_memory_strdup( fcml_string str );
 
+fcml_string fcml_fn_env_memory_strldup( fcml_string str, fcml_usize size );
+
 void fcml_fn_env_memory_strfree( fcml_string str );
 
 void fcml_fn_env_memory_free( void *ptr );
