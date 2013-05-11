@@ -14,6 +14,10 @@
 #include "fcml_coll.h"
 #include "fcml_common.h"
 
+typedef struct fcml_st_asm_instruction_part {
+	fcml_st_memory_stream encoded_operand;
+} fcml_st_asm_instruction_part;
+
 struct fcml_st_asm_instruction_addr_modes;
 
 typedef fcml_bool (*fcml_fnp_asm_operand_encoder)( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc );
@@ -52,8 +56,6 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 	fcml_string mnemonic;
 	// Instruction encoder.
 	fcml_fnp_asm_instruction_encoder instruction_encoder;
-	// Chain of instruction part processors registered for instruction addressing mode.
-	fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain;
 } fcml_st_asm_instruction_addr_modes;
 
 typedef struct fcml_st_asm_instruction_addr_mode {
@@ -61,6 +63,8 @@ typedef struct fcml_st_asm_instruction_addr_mode {
 	fcml_st_def_addr_mode_desc *addr_mode_desc;
 	// Akceptory operandow odpowiedzialne za wstepna akceptacje operandów.
 	fcml_st_asm_operand_encoder operand_encoders[FCML_OPERANDS_COUNT];
+	// Chain of instruction part processors registered for instruction addressing mode.
+	fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain;
 } fcml_st_asm_instruction_addr_mode;
 
 fcml_ceh_error fcml_fn_asm_init_instruction_encodings();
