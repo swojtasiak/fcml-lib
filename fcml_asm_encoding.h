@@ -19,6 +19,23 @@ struct fcml_st_asm_instruction_addr_modes;
 typedef fcml_bool (*fcml_fnp_asm_operand_encoder)( fcml_st_operand *operand_def, fcml_st_asm_encoded_operand *operand_enc );
 typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes );
 
+typedef enum fcml_ien_asm_instruction_part_processor_type {
+	FCML_IEN_ASM_IPPT_ENCODER,
+	FCML_IEN_ASM_IPPT_DECORATOR,
+} fcml_ien_asm_instruction_part_processor_type;
+
+typedef void (*fcml_ifn_asm_instruction_part_processor)( fcml_st_asm_encoding_context *context );
+
+typedef fcml_ifn_asm_instruction_part_processor (*fcml_ifn_asm_instruction_part_processor_factory)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ien_asm_instruction_part_processor_type *processor_type );
+
+typedef struct fcml_ifn_asm_instruction_part_processor_chain {
+	struct fcml_ifn_asm_instruction_part_processor_chain *next_processor;
+	fcml_ifn_asm_instruction_part_processor processor;
+	fcml_ien_asm_instruction_part_processor_type processor_type;
+} fcml_ifn_asm_instruction_part_processor_chain;
+
+typedef fcml_ifn_asm_instruction_part_processor_chain* (*fcml_ifn_asm_instruction_part_processor_factory_dispatcher)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode );
+
 typedef struct fcml_st_asm_operand_encoder {
 	// Typ obslugiwany przez ponizszy encoder, uzywany w zasadzie tylko z powodow wydajnosciowych, aby wstepnie porownac typy.
 	fcml_en_operand_type supported_operand_type;
@@ -35,6 +52,8 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 	fcml_string mnemonic;
 	// Instruction encoder.
 	fcml_fnp_asm_instruction_encoder instruction_encoder;
+	// Chain of instruction part processors registered for instruction addressing mode.
+	fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain;
 } fcml_st_asm_instruction_addr_modes;
 
 typedef struct fcml_st_asm_instruction_addr_mode {

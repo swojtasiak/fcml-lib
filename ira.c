@@ -1286,7 +1286,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 
 ira_instruction_decoder _ira_choose_instruction_decoder( uint8_t instruction_type ) {
 	switch( instruction_type ) {
-	case FCML_IT_IA:
+	case FCML_EN_IT_IA:
 		// Currently only IA decoder is supported.
 		return &_ira_instruction_decoder_IA;
 	}

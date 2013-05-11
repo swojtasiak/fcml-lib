@@ -43,6 +43,14 @@
 // True if encoded operand size is a dynamic one.
 #define FCML_IS_EOS_DYNAMIC(x)	( ( x & 0x80 ) != 0 )
 
+
+/* Instruction types. */
+
+typedef enum fcml_en_def_instruction_type {
+	// Intel IA.
+	FCML_EN_IT_IA
+} fcml_en_def_instruction_type;
+
 /* Structures used to describe instructions with they all allowed addressing modes. */
 typedef struct fcml_st_def_addr_mode_desc {
 	// Mnemonic, if there is another mnemonic available for this opcode.
@@ -62,7 +70,7 @@ typedef struct fcml_st_def_instruction_description {
 	// Mnemonic.
 	fcml_string mnemonic;
 	// Type of the instruction.
-	fcml_uint8_t instruction_type;
+	fcml_en_def_instruction_type instruction_type;
 	// Number of opcodes' descriptions.
 	fcml_uint8_t opcode_desc_count;
 	// Opcodes' descriptions.
@@ -71,16 +79,11 @@ typedef struct fcml_st_def_instruction_description {
 
 /* Operands encoding */
 
-#define FCML_IA_INSTRUCTION(x,y) { x, FCML_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
+#define FCML_IA_INSTRUCTION(x,y) { x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
 
 /*********************************
  * Addressing modes.
  *********************************/
-
-/* Instruction types. */
-
-// Intel IA.
-#define FCML_IT_IA			0x00
 
 // Operand access mode (source/destination).
 #define FCML_OA_R		0x80000000

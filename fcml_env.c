@@ -30,6 +30,14 @@ void fcml_fn_env_register_memory_free_handler( fcml_fp_env_memory_free_handler f
     fcml_gl_fp_memory_free = function_pointer;
 }
 
+void *fcml_fn_env_clear_memory_alloc( uint32_t size ) {
+	fcml_ptr ptr = fcml_fn_env_memory_alloc( size );
+	if( ptr ) {
+		memset( ptr, 0, size );
+	}
+	return ptr;
+}
+
 void *fcml_fn_env_memory_alloc( uint32_t size ) {
     return fcml_gl_fp_memory_alloc(size);
 }
