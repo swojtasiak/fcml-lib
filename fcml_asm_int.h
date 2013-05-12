@@ -13,18 +13,21 @@
 #include "fcml_stream.h"
 #include "fcml_assembler.h"
 
+/*
 typedef struct fcml_st_asm_encoded_operand {
 	// Scace for encoded operands.
 	fcml_st_memory_stream encoded_operand;
 } fcml_st_asm_encoded_operand;
+*/
 
 typedef struct fcml_st_asm_instruction_encoding_context {
-	fcml_st_asm_encoded_operand encoded_operands[FCML_OPERANDS_COUNT];
+//	fcml_st_asm_encoded_operand encoded_operands[FCML_OPERANDS_COUNT];
 	fcml_st_coll_list instruction_parts;
 } fcml_st_asm_instruction_encoding_context;
 
 typedef struct fcml_st_asm_encoding_context {
 	fcml_st_asm_instruction_encoding_context instruction_context;
+	fcml_st_instruction *instruction;
 	fcml_st_assembler_result *result;
 } fcml_st_asm_encoding_context;
 

@@ -15,7 +15,7 @@
 typedef void *(*fcml_fp_env_memory_alloc_handler)( uint32_t size );
 
 // Memory deallocator function pointer.
-typedef void (*fcml_fp_env_memory_free_handler)( void *memory_block );
+typedef void (*fcml_fp_env_memory_free_handler)( fcml_ptr memory_block );
 
 void fcml_fn_env_register_memory_alloc_handler( fcml_fp_env_memory_alloc_handler function_pointer );
 

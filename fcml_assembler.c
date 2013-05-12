@@ -58,6 +58,8 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_instruction *instruction, fcml_st_assem
 
 	memset( &context, 0, sizeof( fcml_st_asm_encoding_context ) );
 
+	context.instruction = instruction;
+
 	context.result = fcml_fn_env_memory_alloc( sizeof( fcml_st_assembler_result ) );
 	if( !context.result ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
