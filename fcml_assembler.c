@@ -91,6 +91,9 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_instruction *instruction, fcml_st_assem
 		error = FCML_EN_ASM_UNKNOWN_MNEMONIC;
 	}
 
+	// Free potential instruction parts collected during encoding procedure.
+	fcml_fn_free_instruction_parts( context.instruction_context.instruction_parts );
+
 	if( error ) {
 		fcml_fn_env_memory_free( context.result );
 	} else {

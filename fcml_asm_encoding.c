@@ -97,6 +97,33 @@ fcml_fnp_asm_operand_encoder fcml_def_operand_encoders[] = {
  * Instruction encoders.
  *********************************/
 
+void fcml_ifp_coll_list_action_free_instruction_part( fcml_ptr item_value, fcml_ptr *args ) {
+	// Free instruction part.
+	fcml_fn_env_memory_free( item_value );
+}
+
+void fcml_fn_free_instruction_parts( fcml_st_coll_list *instruction_parts ) {
+	if( instruction_parts ) {
+		fcml_fn_coll_list_free( instruction_parts, fcml_ifp_coll_list_action_free_instruction_part );
+	}
+}
+
+fcml_ceh_error fcml_ifn_asm_alloc_instruction_part( fcml_st_asm_instruction_encoding_context *encoding_context, fcml_st_asm_instruction_part **part ) {
+	if( !encoding_context->instruction_parts ) {
+		encoding_context->instruction_parts = fcml_fn_coll_list_alloc();
+		if( !encoding_context->instruction_parts ) {
+			return FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+		*part = (fcml_st_asm_instruction_part *)fcml_fn_env_clear_memory_alloc( sizeof(fcml_st_asm_instruction_part) );
+		if( !fcml_fn_coll_list_add_back( encoding_context->instruction_parts, *part ) ) {
+			fcml_fn_free_instruction_parts( encoding_context->instruction_parts );
+			encoding_context->instruction_parts = NULL;
+			return FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
 fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain, fcml_st_instruction *instruction ) {
 	fcml_ifn_asm_instruction_part_processor_chain *current_processor = part_processor_chain->next_processor;
 	while(current_processor) {
@@ -110,16 +137,52 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_ifn_asm_instruction_part_processor
 }
 
 fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *context, fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_st_asm_instruction_encoding_context *encoding_context = &(context->instruction_context);
+
+	// First phase.
 	fcml_ifn_asm_instruction_part_processor_chain *current_processor = part_processor_chain->next_processor;
+	fcml_st_asm_instruction_part *instruction_part = NULL;
 	while(current_processor) {
 		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
-		fcml_st_asm_instruction_part *instruction_part;
-		if( !descriptor->processor( context, instruction_part, descriptor->processor_args ) ) {
-			return FCML_FALSE;
+		if( descriptor->processor_type == FCML_IEN_ASM_IPPT_ENCODER ) {
+			if( instruction_part ) {
+				error = fcml_ifn_asm_alloc_instruction_part( encoding_context, &instruction_part );
+				if( error ) {
+					break;
+				}
+			}
+		}
+		error = descriptor->processor( FCML_IEN_ASM_IPPP_FIRST_PHASE, context, instruction_part, descriptor->processor_args );
+		if( error ) {
+			// Something failed.
+			break;
 		}
 		current_processor = current_processor->next_processor;
 	}
-	return FCML_TRUE;
+
+	// Second phase.
+	fcml_st_coll_list_element *current_part = NULL;
+	current_processor = part_processor_chain->next_processor;
+	while(current_processor) {
+		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
+		if( descriptor->processor_type == FCML_IEN_ASM_IPPT_ENCODER ) {
+			if( !current_part ) {
+				current_part = encoding_context->instruction_parts->head;
+			} else {
+				current_part = current_part->next;
+			}
+		}
+		error = descriptor->processor( FCML_IEN_ASM_IPPP_SECOND_PHASE, context, (fcml_st_asm_instruction_part *)current_part->item, descriptor->processor_args );
+		if( error ) {
+			// Something failed.
+			break;
+		}
+		current_processor = current_processor->next_processor;
+	}
+
+	return error;
 }
 
 fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {

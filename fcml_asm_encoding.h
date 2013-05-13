@@ -30,12 +30,12 @@ typedef enum fcml_ien_asm_instruction_part_processor_type {
 } fcml_ien_asm_instruction_part_processor_type;
 
 typedef enum fcml_ien_asm_part_processor_phase {
-	FCML_IEN_ASM_IPPP_FIRST_PAHSE,
-	FCML_IEN_ASM_IPPP_SECOND_PAHSE
+	FCML_IEN_ASM_IPPP_FIRST_PHASE,
+	FCML_IEN_ASM_IPPP_SECOND_PHASE
 } fcml_ien_asm_part_processor_phase;
 
-typedef void (*fcml_ifn_asm_instruction_part_processor)( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args );
-typedef fcml_bool (*fcml_ifn_asm_instruction_part_processor_acceptor)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ptr args );
+typedef fcml_ceh_error (*fcml_ifn_asm_instruction_part_processor)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args );
+typedef fcml_bool (*fcml_ifn_asm_instruction_part_processor_acceptor)( fcml_st_instruction *instruction, fcml_ptr args );
 
 typedef struct fcml_ifn_asm_instruction_part_processor_descriptor {
 	fcml_ifn_asm_instruction_part_processor processor;
@@ -72,6 +72,7 @@ typedef struct fcml_st_asm_instruction_addr_mode {
 	fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain;
 } fcml_st_asm_instruction_addr_mode;
 
+void fcml_fn_free_instruction_parts( fcml_st_coll_list *instruction_parts );
 fcml_ceh_error fcml_fn_asm_init_instruction_encodings();
 fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
 void fcml_fn_asm_free_instruction_encodings();

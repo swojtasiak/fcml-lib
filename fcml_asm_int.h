@@ -22,7 +22,7 @@ typedef struct fcml_st_asm_encoded_operand {
 
 typedef struct fcml_st_asm_instruction_encoding_context {
 //	fcml_st_asm_encoded_operand encoded_operands[FCML_OPERANDS_COUNT];
-	fcml_st_coll_list instruction_parts;
+	fcml_st_coll_list *instruction_parts;
 } fcml_st_asm_instruction_encoding_context;
 
 typedef struct fcml_st_asm_encoding_context {
