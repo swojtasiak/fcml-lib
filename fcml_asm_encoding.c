@@ -19,59 +19,59 @@ fcml_coll_map instructions_map = NULL;
  * Operand encoders.
  *********************************/
 
-fcml_bool fcml_fnp_asm_operand_encoder_imm( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_imm( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_explicit_reg( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_explicit_reg( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_opcode_reg( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_far_pointer( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_far_pointer( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_far_pointer_indirect( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_far_pointer_indirect( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_explicit_ib( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_explicit_ib( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_rm( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_r( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_vex_vvvv( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_vex_vvvv( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_is4( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_is4( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
-fcml_bool fcml_fnp_asm_operand_encoder_vsib( fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_bool fcml_fnp_asm_operand_encoder_vsib( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_FALSE;
 }
 
@@ -125,7 +125,7 @@ fcml_ceh_error fcml_ifn_asm_alloc_instruction_part( fcml_st_asm_instruction_enco
 }
 
 fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain, fcml_st_instruction *instruction ) {
-	fcml_ifn_asm_instruction_part_processor_chain *current_processor = part_processor_chain->next_processor;
+	fcml_ifn_asm_instruction_part_processor_chain *current_processor = part_processor_chain;
 	while(current_processor) {
 		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
 		if( !descriptor->processor_acceptor( instruction, descriptor->processor_args ) ) {
@@ -142,7 +142,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 	fcml_st_asm_instruction_encoding_context *encoding_context = &(context->instruction_context);
 
 	// First phase.
-	fcml_ifn_asm_instruction_part_processor_chain *current_processor = part_processor_chain->next_processor;
+	fcml_ifn_asm_instruction_part_processor_chain *current_processor = part_processor_chain;
 	fcml_st_asm_instruction_part *instruction_part = NULL;
 	while(current_processor) {
 		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
@@ -241,8 +241,11 @@ void fcml_ifn_asm_free_part_processor_chain( fcml_ifn_asm_instruction_part_proce
 //////////////////////////////////////
 
 struct fcml_ist_asm_operand_encoder_wrapper_args {
+	// Decoder operand addressing.
 	fcml_st_def_decoded_addr_mode *decoded_addr_mode;
+	// Function responsible for encoding operand.
 	fcml_fnp_asm_operand_encoder operand_encoder;
+	// Index of the operand to encode.
 	int operand_index;
 };
 
@@ -254,14 +257,16 @@ void fcml_ifn_asm_processor_operand_encoder_args_deallocator( fcml_ptr ptr ) {
 	fcml_fn_env_memory_free( wrapper_wrgs );
 }
 
-fcml_bool fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ptr args ) {
-	return FCML_FALSE;
+fcml_bool fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper( fcml_st_instruction *instruction, fcml_ptr args ) {
+	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = (struct fcml_ist_asm_operand_encoder_wrapper_args*)args;
+	fcml_st_operand *operand = &(instruction->operands[wrapper_args->operand_index]);
+	return wrapper_args->operand_encoder( FCML_IEN_ASM_IPPP_ACCEPT, NULL, wrapper_args->decoded_addr_mode, operand, NULL );
 }
 
-void fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = (struct fcml_ist_asm_operand_encoder_wrapper_args*)args;
 	fcml_st_operand *operand = &(context->instruction->operands[wrapper_args->operand_index]);
-	wrapper_args->operand_encoder( context, wrapper_args->decoded_addr_mode, operand, instruction_part );
+	return wrapper_args->operand_encoder( phase, context, wrapper_args->decoded_addr_mode, operand, instruction_part );
 }
 
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
@@ -285,6 +290,7 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 	descriptor.processor_args_deallocator = fcml_ifn_asm_processor_operand_encoder_args_deallocator;
 	descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 	descriptor.processor = fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper;
+	descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper;
 	return descriptor;
 }
 
@@ -292,7 +298,14 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 // Simple opcode encoder factory. //
 ////////////////////////////////////
 
-void fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+fcml_bool fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder_acceptor( fcml_st_instruction *instruction, fcml_ptr args ) {
+	// Simple opcode encoder can be always applied.
+	return FCML_TRUE;
+}
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	return error;
 }
 
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_simple_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
@@ -300,6 +313,7 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 	descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 	descriptor.processor_args = NULL;
 	descriptor.processor = fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder;
+	descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder_acceptor;
 	return descriptor;
 }
 
@@ -315,23 +329,30 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 };
 
 fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IT( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
-	fcml_ifn_asm_instruction_part_processor_chain *chain = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ifn_asm_instruction_part_processor_chain ) );
-	fcml_ifn_asm_instruction_part_processor_chain *current_chain = chain;
-	if( !chain ) {
-		return NULL;
-	}
+	fcml_ifn_asm_instruction_part_processor_chain *chain = NULL;
+	fcml_ifn_asm_instruction_part_processor_chain *current_chain = NULL;
 	fcml_ist_asm_instruction_part_factory_details *current_factory = &fcml_asm_instruction_part_processor_factories_for_IT[0];
 	while( current_factory->factory ) {
 		fcml_ifn_asm_instruction_part_processor_descriptor descriptor = current_factory->factory( current_factory->flags, instruction, addr_mode, error );
 		if( descriptor.processor ) {
-			current_chain->processor_descriptor = descriptor;
-			current_chain->next_processor = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ifn_asm_instruction_part_processor_chain ) );
-			current_chain = current_chain->next_processor;
-			if( !current_chain ) {
+
+			// Allocate chain element for new instruction part encoder.
+			fcml_ifn_asm_instruction_part_processor_chain *new_chain = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ifn_asm_instruction_part_processor_chain ) );
+			if( !new_chain ) {
 				*error = FCML_CEH_GEC_OUT_OF_MEMORY;
 				fcml_ifn_asm_free_part_processor_chain( chain );
 				return NULL;
 			}
+
+			if( !chain ) {
+				chain = new_chain;
+				current_chain = new_chain;
+			} else {
+				current_chain->next_processor = new_chain;
+				current_chain = new_chain;
+			}
+
+			current_chain->processor_descriptor = descriptor;
 		}
 		if( *error ) {
 			fcml_ifn_asm_free_part_processor_chain( chain );
