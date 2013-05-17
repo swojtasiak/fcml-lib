@@ -322,43 +322,72 @@ typedef struct fcml_ist_asm_instruction_part_factory_details {
 	uint32_t flags;
 } fcml_ist_asm_instruction_part_factory_details;
 
-// List of instruction part encoders for IA instructions.
-fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_for_IT[] = {
+typedef struct fcml_ist_asm_instruction_part_factory_sequence {
+	fcml_ist_asm_instruction_part_factory_details *details;
+} fcml_ist_asm_instruction_part_factory_sequence;
+
+// List of instruction part encoders for instruction opcode.
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_opcode_for_IA[] = {
 	{ fcml_ifn_asm_instruction_part_processor_factory_simple_opcode_encoder, 0 },
 	{ NULL, 0 }
 };
 
-fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IT( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+// List of instruction part encoders for instruction prefixes.
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
+	{ NULL, 0 }
+};
+
+// List of instruction part encoders for instruction operands.
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_operands_for_IA[] = {
+	{ NULL, 0 }
+};
+
+fcml_ist_asm_instruction_part_factory_sequence fcml_asm_instruction_part_processor_factory_sequences_for_IA[] = {
+	{ fcml_asm_instruction_part_processor_factories_opcode_for_IA },
+	{ fcml_asm_instruction_part_processor_factories_prefixes_for_IA },
+	{ fcml_asm_instruction_part_processor_factories_operands_for_IA },
+	{ NULL }
+};
+
+fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IA( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_chain *chain = NULL;
 	fcml_ifn_asm_instruction_part_processor_chain *current_chain = NULL;
-	fcml_ist_asm_instruction_part_factory_details *current_factory = &fcml_asm_instruction_part_processor_factories_for_IT[0];
-	while( current_factory->factory ) {
-		fcml_ifn_asm_instruction_part_processor_descriptor descriptor = current_factory->factory( current_factory->flags, instruction, addr_mode, error );
-		if( descriptor.processor ) {
+	fcml_ist_asm_instruction_part_factory_sequence *current_factories_sequence = &fcml_asm_instruction_part_processor_factory_sequences_for_IA[0];
+	while( current_factories_sequence->details ) {
 
-			// Allocate chain element for new instruction part encoder.
-			fcml_ifn_asm_instruction_part_processor_chain *new_chain = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ifn_asm_instruction_part_processor_chain ) );
-			if( !new_chain ) {
-				*error = FCML_CEH_GEC_OUT_OF_MEMORY;
+		fcml_ist_asm_instruction_part_factory_details *current_factory = current_factories_sequence->details;
+		while( current_factory->factory ) {
+			fcml_ifn_asm_instruction_part_processor_descriptor descriptor = current_factory->factory( current_factory->flags, instruction, addr_mode, error );
+			if( descriptor.processor ) {
+
+				// Allocate chain element for new instruction part encoder.
+				fcml_ifn_asm_instruction_part_processor_chain *new_chain = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ifn_asm_instruction_part_processor_chain ) );
+				if( !new_chain ) {
+					*error = FCML_CEH_GEC_OUT_OF_MEMORY;
+					fcml_ifn_asm_free_part_processor_chain( chain );
+					return NULL;
+				}
+
+				if( !chain ) {
+					chain = new_chain;
+					current_chain = new_chain;
+				} else {
+					current_chain->next_processor = new_chain;
+					current_chain = new_chain;
+				}
+
+				current_chain->processor_descriptor = descriptor;
+
+				break;
+			}
+			if( *error ) {
 				fcml_ifn_asm_free_part_processor_chain( chain );
 				return NULL;
 			}
-
-			if( !chain ) {
-				chain = new_chain;
-				current_chain = new_chain;
-			} else {
-				current_chain->next_processor = new_chain;
-				current_chain = new_chain;
-			}
-
-			current_chain->processor_descriptor = descriptor;
+			current_factory++;
 		}
-		if( *error ) {
-			fcml_ifn_asm_free_part_processor_chain( chain );
-			return NULL;
-		}
-		current_factory++;
+
+		current_factories_sequence++;
 	}
 	return chain;
 }
@@ -367,7 +396,7 @@ fcml_ifn_asm_instruction_part_processor_factory_dispatcher fcml_ifn_get_instruct
 	fcml_ifn_asm_instruction_part_processor_factory_dispatcher dispatcher = NULL;
 	switch( instruction_type ) {
 	case FCML_EN_IT_IA:
-		dispatcher = fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IT;
+		dispatcher = fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IA;
 		break;
 	}
 	return dispatcher;
