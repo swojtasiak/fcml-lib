@@ -97,33 +97,6 @@ fcml_fnp_asm_operand_encoder fcml_def_operand_encoders[] = {
  * Instruction encoders.
  *********************************/
 
-void fcml_ifp_coll_list_action_free_instruction_part( fcml_ptr item_value, fcml_ptr *args ) {
-	// Free instruction part.
-	fcml_fn_env_memory_free( item_value );
-}
-
-void fcml_fn_free_instruction_parts( fcml_st_coll_list *instruction_parts ) {
-	if( instruction_parts ) {
-		fcml_fn_coll_list_free( instruction_parts, fcml_ifp_coll_list_action_free_instruction_part );
-	}
-}
-
-fcml_ceh_error fcml_ifn_asm_alloc_instruction_part( fcml_st_asm_instruction_encoding_context *encoding_context, fcml_st_asm_instruction_part **part ) {
-	if( !encoding_context->instruction_parts ) {
-		encoding_context->instruction_parts = fcml_fn_coll_list_alloc();
-		if( !encoding_context->instruction_parts ) {
-			return FCML_CEH_GEC_OUT_OF_MEMORY;
-		}
-		*part = (fcml_st_asm_instruction_part *)fcml_fn_env_clear_memory_alloc( sizeof(fcml_st_asm_instruction_part) );
-		if( !fcml_fn_coll_list_add_back( encoding_context->instruction_parts, *part ) ) {
-			fcml_fn_free_instruction_parts( encoding_context->instruction_parts );
-			encoding_context->instruction_parts = NULL;
-			return FCML_CEH_GEC_OUT_OF_MEMORY;
-		}
-	}
-	return FCML_CEH_GEC_NO_ERROR;
-}
-
 fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain, fcml_st_instruction *instruction ) {
 	fcml_ifn_asm_instruction_part_processor_chain *current_processor = part_processor_chain;
 	while(current_processor) {
@@ -136,51 +109,42 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_ifn_asm_instruction_part_processor
 	return FCML_TRUE;
 }
 
-fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *context, fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain ) {
+fcml_ien_asm_part_processor_phase fcml_asm_executed_phases[] = { FCML_IEN_ASM_IPPP_FIRST_PHASE, FCML_IEN_ASM_IPPP_SECOND_PHASE };
+
+fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_st_asm_instruction_part_container *instruction_part_container ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_st_asm_instruction_encoding_context *encoding_context = &(context->instruction_context);
+
+	// Allocate instruction parts.
+	fcml_st_asm_instruction_part *instruction_part = (fcml_st_asm_instruction_part*)fcml_fn_env_memory_alloc(sizeof( fcml_st_asm_instruction_part ) * addr_mode->instruction_parts );
+	if( !instruction_part ) {
+		return FCML_CEH_GEC_OUT_OF_MEMORY;
+	}
 
 	// First phase.
-	fcml_ifn_asm_instruction_part_processor_chain *current_processor = part_processor_chain;
-	fcml_st_asm_instruction_part *instruction_part = NULL;
-	while(current_processor) {
-		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
-		if( descriptor->processor_type == FCML_IEN_ASM_IPPT_ENCODER ) {
-			if( instruction_part ) {
-				error = fcml_ifn_asm_alloc_instruction_part( encoding_context, &instruction_part );
-				if( error ) {
-					break;
-				}
+
+	int i;
+	for( i = 0; i < sizeof( fcml_asm_executed_phases ) / sizeof( fcml_ien_asm_part_processor_phase ); i++ ) {
+		fcml_st_asm_instruction_part *current_instruction_part = instruction_part;
+		fcml_ifn_asm_instruction_part_processor_chain *current_processor = addr_mode->part_processor_chain;
+		fcml_bool first = FCML_TRUE;
+		while(current_processor) {
+			fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
+			if( !first && descriptor->processor_type == FCML_IEN_ASM_IPPT_ENCODER ) {
+				current_instruction_part++;
 			}
+			first = FCML_FALSE;
+			error = descriptor->processor( fcml_asm_executed_phases[i], context, current_instruction_part, descriptor->processor_args );
+			if( error ) {
+				// Something failed.
+				break;
+			}
+			current_processor = current_processor->next_processor;
 		}
-		error = descriptor->processor( FCML_IEN_ASM_IPPP_FIRST_PHASE, context, instruction_part, descriptor->processor_args );
-		if( error ) {
-			// Something failed.
-			break;
-		}
-		current_processor = current_processor->next_processor;
 	}
 
-	// Second phase.
-	fcml_st_coll_list_element *current_part = NULL;
-	current_processor = part_processor_chain->next_processor;
-	while(current_processor) {
-		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
-		if( descriptor->processor_type == FCML_IEN_ASM_IPPT_ENCODER ) {
-			if( !current_part ) {
-				current_part = encoding_context->instruction_parts->head;
-			} else {
-				current_part = current_part->next;
-			}
-		}
-		error = descriptor->processor( FCML_IEN_ASM_IPPP_SECOND_PHASE, context, (fcml_st_asm_instruction_part *)current_part->item, descriptor->processor_args );
-		if( error ) {
-			// Something failed.
-			break;
-		}
-		current_processor = current_processor->next_processor;
-	}
+	instruction_part_container->instruction_parts = instruction_part;
+	instruction_part_container->count = addr_mode->instruction_parts;
 
 	return error;
 }
@@ -188,8 +152,6 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if( addr_modes ) {
-		fcml_st_asm_instruction_encoding_context instruction_context;
-		fcml_mem_clear(&instruction_context, sizeof(fcml_st_asm_instruction_encoding_context));
 
 		// Choose addressing mode.
 		if( addr_modes->addr_modes->size ) {
@@ -207,8 +169,10 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 			}
 
 			// Use chosen addressing mode to build instruction parts.
+
 			if( chosen_addr_mode ) {
-				error = fcml_ifn_asm_process_addr_mode( context, chosen_addr_mode->part_processor_chain );
+				fcml_st_asm_instruction_part_container instruction_part_container;
+				error = fcml_ifn_asm_process_addr_mode( context, chosen_addr_mode, &instruction_part_container );
 			} else {
 				error = FCML_EN_ASM_UNSUPPORTED_ADDRESSING_MODE;
 			}
@@ -349,7 +313,8 @@ fcml_ist_asm_instruction_part_factory_sequence fcml_asm_instruction_part_process
 	{ NULL }
 };
 
-fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IA( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IA( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, int *parts, fcml_ceh_error *error ) {
+	int instruction_parts = 0;
 	fcml_ifn_asm_instruction_part_processor_chain *chain = NULL;
 	fcml_ifn_asm_instruction_part_processor_chain *current_chain = NULL;
 	fcml_ist_asm_instruction_part_factory_sequence *current_factories_sequence = &fcml_asm_instruction_part_processor_factory_sequences_for_IA[0];
@@ -378,6 +343,10 @@ fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_pro
 
 				current_chain->processor_descriptor = descriptor;
 
+				if( descriptor.processor_type == FCML_IEN_ASM_IPPT_ENCODER ) {
+					instruction_parts++;
+				}
+
 				break;
 			}
 			if( *error ) {
@@ -389,6 +358,9 @@ fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_pro
 
 		current_factories_sequence++;
 	}
+
+	*parts = instruction_parts;
+
 	return chain;
 }
 
@@ -428,12 +400,17 @@ fcml_st_asm_instruction_addr_mode *fcml_ifn_asm_prepare_addr_mode( fcml_st_def_i
 
 	addr_mode->addr_mode_desc = addr_mode_desc;
 
+	int instruction_parts;
+
 	fcml_ifn_asm_instruction_part_processor_factory_dispatcher factory_dispatcher = fcml_ifn_get_instruction_part_processor_factory_dispatcher_for_instruction_type( instruction->instruction_type );
-	addr_mode->part_processor_chain = factory_dispatcher( instruction, addr_mode_desc, error );
+
+	addr_mode->part_processor_chain = factory_dispatcher( instruction, addr_mode_desc, &instruction_parts, error );
 	if( *error ) {
 		fcml_fn_env_memory_free(addr_mode);
 		addr_mode = NULL;
 	}
+
+	addr_mode->instruction_parts = instruction_parts;
 
 	return addr_mode;
 }
