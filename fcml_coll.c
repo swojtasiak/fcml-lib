@@ -26,6 +26,9 @@ fcml_st_coll_list_element *fcml_fn_coll_list_add_front( fcml_st_coll_list *list,
 	fcml_st_coll_list_element *element =  (fcml_st_coll_list_element*)fcml_fn_env_memory_alloc( sizeof( fcml_st_coll_list_element ) );
 	if( element ) {
 		element->next = list->head;
+		if( list->head ) {
+			list->head->prev = element;
+		}
 		element->prev = NULL;
 		element->item = item;
 		list->head = element;

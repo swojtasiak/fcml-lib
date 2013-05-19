@@ -82,6 +82,32 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_IA_INSTRUCTION(x,y) { x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
 
 /*********************************
+ * Opcode fields extractors.
+ *********************************/
+
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_REG(x)			( x & 0x00000001 )
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(x)			( x & 0x00000040 )
+#define FCML_DEF_OPCODE_FLAGS_POS(x)						( ( x & 0x00000700 ) >> 8 )
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(x)					( ( x & 0x00007800 ) >> 11 )
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 			FCML_TP_GET_BIT(x,15)
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT(x) 				FCML_TP_GET_BIT(x,16)
+#define FCML_DEF_OPCODE_FLAGS_MODRM_R(x)	 				FCML_TP_GET_BIT(x,17)
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_NUM(x) 				( ( x & 0x000C0000 ) >> 18 )
+#define FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE(x) 			( ( x & 0x00300000 ) >> 20 )
+#define FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(x)		( x & 0x00800000 )
+#define FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(x)	( x & 0x00400000 )
+#define FCML_DEF_OPCODE_FLAGS_EOSA_16(x)					( x & 0x01000000 )
+#define FCML_DEF_OPCODE_FLAGS_EOSA_32(x)					( x & 0x02000000 )
+#define FCML_DEF_OPCODE_FLAGS_EOSA_64(x)					( x & 0x04000000 )
+#define FCML_DEF_OPCODE_FLAGS_IS_EOSA_RESTRICTION(x)		( x & 0x07000000 )
+#define FCML_DEF_OPCODE_FLAGS_EASA_16(x)					( x & 0x08000000 )
+#define FCML_DEF_OPCODE_FLAGS_EASA_32(x)					( x & 0x10000000 )
+#define FCML_DEF_OPCODE_FLAGS_EASA_64(x)					( x & 0x20000000 )
+#define FCML_DEF_OPCODE_FLAGS_IS_EASA_RESTRICTION(x)		( x & 0x38000000 )
+#define FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA(x)			( x & 0x40000000 )
+#define FCML_DEF_OPCODE_FLAGS_MODRM_M(x)	 				FCML_TP_GET_BIT(x,31)
+
+/*********************************
  * Addressing modes.
  *********************************/
 
