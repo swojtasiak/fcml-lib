@@ -46,6 +46,10 @@ void *fcml_fn_env_memory_alloc( uint32_t size ) {
     return fcml_gl_fp_memory_alloc(size);
 }
 
+void fcml_fn_env_memory_copy( void *dest, const void *src, fcml_usize len ) {
+	memcpy( dest, src, len );
+}
+
 void fcml_fn_env_memory_free( void *ptr ) {
     fcml_gl_fp_memory_free(ptr);
 }

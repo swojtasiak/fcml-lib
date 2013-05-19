@@ -16,8 +16,8 @@
 #include "fcml_common.h"
 
 typedef struct fcml_st_asm_instruction_part {
-	fcml_uint8_t encoded_operand[10];
-	int size;
+	fcml_uint8_t code[10];
+	int code_length;
 } fcml_st_asm_instruction_part;
 
 typedef struct fcml_st_asm_instruction_part_container {

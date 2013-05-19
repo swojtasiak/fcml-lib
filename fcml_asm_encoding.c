@@ -116,7 +116,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	// Allocate instruction parts.
-	fcml_st_asm_instruction_part *instruction_part = (fcml_st_asm_instruction_part*)fcml_fn_env_memory_alloc(sizeof( fcml_st_asm_instruction_part ) * addr_mode->instruction_parts );
+	fcml_st_asm_instruction_part *instruction_part = (fcml_st_asm_instruction_part*)fcml_fn_env_clear_memory_alloc(sizeof( fcml_st_asm_instruction_part ) * addr_mode->instruction_parts );
 	if( !instruction_part ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
@@ -143,37 +143,129 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 		}
 	}
 
-	instruction_part_container->instruction_parts = instruction_part;
-	instruction_part_container->count = addr_mode->instruction_parts;
+	if( error ) {
+		fcml_fn_env_memory_free( instruction_part );
+	} else {
+		instruction_part_container->instruction_parts = instruction_part;
+		instruction_part_container->count = addr_mode->instruction_parts;
+	}
+
+	return error;
+}
+
+void fcml_ifn_assemble_instruction_parts( fcml_st_assembled_instruction *assembled_instruction, fcml_st_asm_instruction_part_container *instruction_part_container ) {
+	int i, count = instruction_part_container->count;
+	int offset = 0;
+	for( i = 0; i < count; i++ ) {
+		fcml_st_asm_instruction_part *part = &(instruction_part_container->instruction_parts[i]);
+		fcml_fn_env_memory_copy( assembled_instruction->code + offset, part->code, part->code_length );
+		offset += part->code_length;
+	}
+	// Just to be consequent.
+	assembled_instruction->code_length = offset;
+}
+
+void fcml_ifn_asm_free_assembled_instruction( fcml_st_assembled_instruction *assembled_instruction ) {
+	if( assembled_instruction ) {
+		if( assembled_instruction->code ) {
+			fcml_fn_env_memory_free( assembled_instruction->code );
+		}
+		fcml_fn_env_memory_free( assembled_instruction );
+	}
+}
+
+fcml_st_assembler_result *fcml_ifn_asm_allocate_result() {
+	// Allocate result.
+	fcml_st_assembler_result *result = (fcml_st_assembler_result *)fcml_fn_env_clear_memory_alloc( sizeof(fcml_st_assembler_result) );
+	if( result ) {
+		result->instructions = fcml_fn_coll_list_alloc();
+		if( !result->instructions ) {
+			fcml_fn_env_memory_free( result );
+			result = NULL;
+		}
+	}
+	return result;
+}
+
+fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_st_assembled_instruction **assembled_instruction ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_st_asm_instruction_part_container instruction_part_container = {0};
+
+	error = fcml_ifn_asm_process_addr_mode( context, addr_mode, &instruction_part_container );
+
+	// Assemble instruction parts.
+	if( !error ) {
+		int i, ip_count = instruction_part_container.count;
+		fcml_usize code_length = 0;
+
+		for( i = 0; i < ip_count; i++ ) {
+			fcml_st_asm_instruction_part *ip = &(instruction_part_container.instruction_parts[i]);
+			code_length += ip->code_length;
+		}
+
+		// Allocate memory block for assembled code.
+		fcml_st_assembled_instruction *asm_inst = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_assembled_instruction ) );
+		if( !asm_inst ) {
+			error = FCML_CEH_GEC_NO_ERROR;
+		} else {
+			asm_inst->code = (fcml_uint8_t*)fcml_fn_env_memory_alloc( code_length );
+			if( !asm_inst->code ) {
+				fcml_fn_env_memory_free( asm_inst );
+				error = FCML_CEH_GEC_NO_ERROR;
+			}
+			asm_inst->code_length = code_length;
+		}
+
+		// Prepareing result.
+		if( !error ) {
+			fcml_ifn_assemble_instruction_parts( asm_inst, &instruction_part_container );
+			*assembled_instruction = asm_inst;
+		}
+
+	}
+
+	// In case of error, free allocated instruction parts.
+	if( instruction_part_container.instruction_parts ) {
+		fcml_fn_env_memory_free( instruction_part_container.instruction_parts );
+	}
 
 	return error;
 }
 
 fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	if( addr_modes ) {
 
+	if( addr_modes ) {
 		// Choose addressing mode.
 		if( addr_modes->addr_modes->size ) {
-
-			fcml_st_asm_instruction_addr_mode *chosen_addr_mode = NULL;
-
 			fcml_st_coll_list_element *addr_mode_element = addr_modes->addr_modes->head;
 			while( addr_mode_element ) {
 				fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)addr_mode_element->item;
 				if( fcml_ifn_asm_accept_addr_mode( addr_mode->part_processor_chain, context->instruction ) ) {
-					chosen_addr_mode = addr_mode;
-					break;
+
+					if( !context->result ) {
+						context->result = fcml_ifn_asm_allocate_result();
+					}
+
+					fcml_st_assembled_instruction *assembled_instruction;
+					error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
+					if( error ) {
+						break;
+					}
+
+					if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
+						fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
+						error = FCML_CEH_GEC_OUT_OF_MEMORY;
+						break;
+					}
+
 				}
 				addr_mode_element = addr_mode_element->next;
 			}
 
-			// Use chosen addressing mode to build instruction parts.
-
-			if( chosen_addr_mode ) {
-				fcml_st_asm_instruction_part_container instruction_part_container;
-				error = fcml_ifn_asm_process_addr_mode( context, chosen_addr_mode, &instruction_part_container );
-			} else {
+			if( context->result->instructions->size == 0 ) {
 				error = FCML_EN_ASM_UNSUPPORTED_ADDRESSING_MODE;
 			}
 
@@ -182,6 +274,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 			error = FCML_CEH_GEC_INTERNAL_BUG;
 		}
 	}
+
 	return error;
 }
 

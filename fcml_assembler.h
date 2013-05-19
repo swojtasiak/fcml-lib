@@ -14,7 +14,7 @@
 
 typedef struct fcml_st_assembled_instruction {
 	fcml_uint8_t *code;
-	fcml_usize size;
+	fcml_usize code_length;
 } fcml_st_assembled_instruction;
 
 typedef struct fcml_st_assembler_result {

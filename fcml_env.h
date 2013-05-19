@@ -25,6 +25,8 @@ void *fcml_fn_env_memory_alloc( uint32_t size );
 
 void *fcml_fn_env_clear_memory_alloc( uint32_t size );
 
+void fcml_fn_env_memory_copy( void *dest, const void *src, fcml_usize len );
+
 void fcml_mem_clear( fcml_ptr ptr, fcml_usize size );
 
 fcml_string fcml_fn_env_memory_strdup( fcml_string str );
