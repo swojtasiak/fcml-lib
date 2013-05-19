@@ -14,6 +14,7 @@
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
 #include "fcml_common.h"
+#include "fcml_modrm_encoder.h"
 
 typedef struct fcml_st_asm_instruction_part {
 	fcml_uint8_t code[10];

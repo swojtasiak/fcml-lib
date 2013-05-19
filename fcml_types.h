@@ -46,4 +46,46 @@ typedef int fcml_size;
 
 #define FCML_TP_GET_BIT(x,y)	( ( x >> y ) & 0x01 )
 
+/* Nulleable types. */
+
+typedef struct fcml_nuint8_t {
+	fcml_uint8_t value;
+	fcml_bool is_null;
+} fcml_nuint8_t;
+
+typedef struct fcml_nuint16_t {
+	fcml_uint16_t value;
+	fcml_bool is_null;
+} fcml_nuint16_t;
+
+typedef struct fcml_nuint32_t {
+	fcml_uint32_t value;
+	fcml_bool is_null;
+} fcml_nuint32_t;
+
+typedef struct fcml_nuint64_t {
+	fcml_uint64_t value;
+	fcml_bool is_null;
+} fcml_nuint64_t;
+
+typedef struct fcml_nint8_t {
+	fcml_int8_t value;
+	fcml_bool is_null;
+} fcml_nint8_t;
+
+typedef struct fcml_nint16_t {
+	fcml_int16_t value;
+	fcml_bool is_null;
+} fcml_nint16_t;
+
+typedef struct fcml_nint32_t {
+	fcml_int32_t value;
+	fcml_bool is_null;
+} fcml_nint32_t;
+
+typedef struct fcml_nint64_t {
+	fcml_int64_t value;
+	fcml_bool is_null;
+} fcml_nint64_t;
+
 #endif /* FCML_TYPES_H_ */

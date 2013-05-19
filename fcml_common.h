@@ -12,6 +12,22 @@
 
 #define FCML_OPERANDS_COUNT	5
 
+// Effective size attribute ata type.
+
+typedef fcml_uint8_t fcml_esa;
+
+// Effective Operand-Size Attributes.
+
+#define FCML_EOSA_16	16
+#define FCML_EOSA_32	32
+#define FCML_EOSA_64	64
+
+// Effective Address-Size Attributes.
+
+#define FCML_EASA_16	16
+#define FCML_EASA_32	32
+#define FCML_EASA_64	64
+
 // Register numbers.
 
 #define FCML_REG_AL		0

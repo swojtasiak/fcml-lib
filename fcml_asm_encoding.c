@@ -60,6 +60,11 @@ fcml_bool fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phase pha
 }
 
 fcml_bool fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+	if( phase == FCML_IEN_ASM_IPPP_ACCEPT ) {
+		return operand_def->type == FCML_EOT_REGISTER;
+	} else if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+
+	}
 	return FCML_FALSE;
 }
 
@@ -313,24 +318,30 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 
-	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = fcml_fn_env_clear_memory_alloc( sizeof( struct fcml_ist_asm_operand_encoder_wrapper_args ) );
-	if( !wrapper_args ) {
-		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
-		return descriptor;
+	if( addr_mode->opperands[flags] != FCML_NA ) {
+
+		struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = fcml_fn_env_clear_memory_alloc( sizeof( struct fcml_ist_asm_operand_encoder_wrapper_args ) );
+		if( !wrapper_args ) {
+			*error = FCML_CEH_GEC_OUT_OF_MEMORY;
+			return descriptor;
+		}
+
+		wrapper_args->decoded_addr_mode = fcml_fnp_def_decode_addr_mode_args( addr_mode->opperands[flags], error );
+		if( *error ) {
+			return descriptor;
+		}
+
+		wrapper_args->operand_encoder = fcml_def_operand_encoders[wrapper_args->decoded_addr_mode->addr_mode];
+		wrapper_args->operand_index = flags;
+
+		descriptor.processor_args_deallocator = fcml_ifn_asm_processor_operand_encoder_args_deallocator;
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor = fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper;
+		descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper;
+		descriptor.processor_args = wrapper_args;
+
 	}
 
-	wrapper_args->decoded_addr_mode = fcml_fnp_def_decode_addr_mode_args( addr_mode->opperands[flags], error );
-	if( *error ) {
-		return descriptor;
-	}
-
-	wrapper_args->operand_encoder = fcml_def_operand_encoders[wrapper_args->decoded_addr_mode->addr_mode];
-	wrapper_args->operand_index = flags;
-
-	descriptor.processor_args_deallocator = fcml_ifn_asm_processor_operand_encoder_args_deallocator;
-	descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
-	descriptor.processor = fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper;
-	descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper;
 	return descriptor;
 }
 
@@ -389,14 +400,39 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 };
 
 // List of instruction part encoders for instruction operands.
-fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_operands_for_IA[] = {
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_operand_1_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper, 0 },
+	{ NULL, 0 }
+};
+
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_operand_2_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper, 1 },
+	{ NULL, 0 }
+};
+
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_operand_3_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper, 2 },
+	{ NULL, 0 }
+};
+
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_operand_4_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper, 3 },
+	{ NULL, 0 }
+};
+
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_operand_5_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper, 4 },
 	{ NULL, 0 }
 };
 
 fcml_ist_asm_instruction_part_factory_sequence fcml_asm_instruction_part_processor_factory_sequences_for_IA[] = {
 	{ fcml_asm_instruction_part_processor_factories_opcode_for_IA },
 	{ fcml_asm_instruction_part_processor_factories_prefixes_for_IA },
-	{ fcml_asm_instruction_part_processor_factories_operands_for_IA },
+	{ fcml_asm_instruction_part_processor_factories_operand_1_for_IA },
+	{ fcml_asm_instruction_part_processor_factories_operand_2_for_IA },
+	{ fcml_asm_instruction_part_processor_factories_operand_3_for_IA },
+	{ fcml_asm_instruction_part_processor_factories_operand_4_for_IA },
+	{ fcml_asm_instruction_part_processor_factories_operand_5_for_IA },
 	{ NULL }
 };
 
