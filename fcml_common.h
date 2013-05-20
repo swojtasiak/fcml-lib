@@ -18,12 +18,14 @@ typedef fcml_uint8_t fcml_esa;
 
 // Effective Operand-Size Attributes.
 
+#define FCML_EOSA_UNDEF	0
 #define FCML_EOSA_16	16
 #define FCML_EOSA_32	32
 #define FCML_EOSA_64	64
 
 // Effective Address-Size Attributes.
 
+#define FCML_EASA_UNDEF	16
 #define FCML_EASA_16	16
 #define FCML_EASA_32	32
 #define FCML_EASA_64	64

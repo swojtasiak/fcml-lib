@@ -23,10 +23,17 @@ typedef struct fcml_st_encoded_modrm {
 } fcml_st_encoded_modrm;
 
 typedef struct fcml_st_modrm {
-	fcml_st_register reg_opcode;
+	// Register number specified by reg_opcode.
+	fcml_nuint8_t reg_opcode;
+	// Register number specified by r/m when mod == 3.
+	fcml_nuint8_t reg;
+	// Base register.
 	fcml_st_register base;
+	// Index register.
 	fcml_st_register index;
+	// Scale factor (SIB only)
 	fcml_uint8_t scale_factor;
+	// Displacement.
 	fcml_st_displacement displacement;
 } fcml_st_modrm;
 
