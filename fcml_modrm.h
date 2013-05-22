@@ -8,7 +8,16 @@
 #ifndef FCML_MODRM_H_
 #define FCML_MODRM_H_
 
+#include "fcml_errors.h"
 #include "fcml_common.h"
+
+// Effective size attribute ata type.
+
+typedef fcml_uint8_t fcml_esa;
+
+#define FCML_ESA_SF_16		0x01
+#define FCML_ESA_SF_32		0x02
+#define FCML_ESA_SF_64		0x04
 
 typedef enum fcml_en_modrm_addr_form {
 	FCML_MODRM_AF_16_BIT,
@@ -35,12 +44,20 @@ typedef struct fcml_st_modrm {
 	fcml_uint8_t scale_factor;
 	// Displacement.
 	fcml_st_displacement displacement;
+
 } fcml_st_modrm;
 
 typedef struct fcml_st_modrm_context {
+	// Sets 32 or 64 bit addressing mode.
 	fcml_en_modrm_addr_form addr_form;
-	fcml_esa eosa;
-	fcml_esa easa;
+	// Effective addres size using to decode/encode ModR/M. It's very important to set this value properly,
+	// because 16 and 32/64 addressing forms
+	fcml_esa effective_address_size;
+	// True if VSIB encoding is available. This flag should be only set for ModR/M
+	// decoder to made it use SIMD register as index register. In case of encoder,
+	// we really don't care if it's SIMD index register or not, because encoding
+	// is similar to GPR index.
+	fcml_bool is_vsib;
 } fcml_st_modrm_context;
 
 #endif /* FCML_MODRM_H_ */

@@ -10,7 +10,7 @@
 
 #include "fcml_coll.h"
 #include "fcml_common.h"
-#include "fcml_asm_errors.h"
+#include "fcml_errors.h"
 
 typedef struct fcml_st_assembled_instruction {
 	fcml_uint8_t *code;

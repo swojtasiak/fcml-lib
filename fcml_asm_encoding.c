@@ -11,7 +11,7 @@
 #include "fcml_def.h"
 #include "fcml_coll.h"
 #include "fcml_env.h"
-#include "fcml_asm_errors.h"
+#include "fcml_errors.h"
 
 fcml_coll_map instructions_map = NULL;
 
@@ -254,7 +254,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 			}
 
 			if( context->result->instructions->size == 0 ) {
-				error = FCML_EN_ASM_UNSUPPORTED_ADDRESSING_MODE;
+				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
 
 		} else {
@@ -676,7 +676,7 @@ fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml
 
 	*addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( instructions_map, mnemonic );
 	if( !*addr_modes ) {
-		return FCML_EN_ASM_UNKNOWN_MNEMONIC;
+		return FCML_EN_UNKNOWN_MNEMONIC;
 	}
 
 	return FCML_CEH_GEC_NO_ERROR;

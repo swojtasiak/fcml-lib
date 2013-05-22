@@ -12,10 +12,6 @@
 
 #define FCML_OPERANDS_COUNT	5
 
-// Effective size attribute ata type.
-
-typedef fcml_uint8_t fcml_esa;
-
 // Effective Operand-Size Attributes.
 
 #define FCML_EOSA_UNDEF	0
@@ -257,7 +253,7 @@ typedef struct fcml_st_far_pointer {
 } fcml_st_far_pointer;
 
 typedef struct fcml_st_displacement {
-    uint8_t size;
+	fcml_data_size size;
     fcml_data_size sign_extension;
     union {
         uint8_t dis8;

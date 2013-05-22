@@ -88,7 +88,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_instruction *instruction, fcml_st_assem
 			error = FCML_CEH_GEC_INTERNAL_BUG;
 		}
 	} else {
-		error = FCML_EN_ASM_UNKNOWN_MNEMONIC;
+		error = FCML_EN_UNKNOWN_MNEMONIC;
 	}
 
 	if( error ) {
