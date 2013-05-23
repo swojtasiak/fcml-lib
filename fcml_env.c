@@ -50,6 +50,10 @@ void fcml_fn_env_memory_copy( void *dest, const void *src, fcml_usize len ) {
 	memcpy( dest, src, len );
 }
 
+void fcml_fn_env_memory_clean( void *src, fcml_usize len ) {
+	memset( src, 0, len );
+}
+
 void fcml_fn_env_memory_free( void *ptr ) {
     fcml_gl_fp_memory_free(ptr);
 }

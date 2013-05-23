@@ -24,7 +24,7 @@ typedef uint64_t fcml_uint64_t;
 typedef char fcml_char;
 typedef char* fcml_string;
 typedef float fcml_float;
-typedef uint8_t fcml_data_size;
+typedef uint16_t fcml_data_size;
 typedef void* fcml_ptr;
 
 typedef unsigned int fcml_usize;

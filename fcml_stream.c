@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #include "fcml_stream.h"
+#include "fcml_env.h"
 
 void fcml_fn_stream_seek( fcml_st_memory_stream *stream, int32_t offset, enum ira_seek_type type ) {
     switch(type) {

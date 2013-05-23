@@ -199,6 +199,7 @@
 #define FCML_DS_32   	32
 #define FCML_DS_64   	64
 #define FCML_DS_128  	128
+#define FCML_DS_256  	256
 
 /* Size operators. */
 
@@ -257,8 +258,8 @@ typedef struct fcml_st_displacement {
     fcml_data_size sign_extension;
     union {
         uint8_t dis8;
-        uint8_t dis16;
-        uint8_t dis32;
+        uint16_t dis16;
+        uint32_t dis32;
     };
 } fcml_st_displacement;
 

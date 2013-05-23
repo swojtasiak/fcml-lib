@@ -29,6 +29,8 @@ typedef struct fcml_st_encoded_modrm {
 	fcml_nuint8_t sib;
 	fcml_uint8_t ext_reg;
 	fcml_uint8_t ext_rm;
+	fcml_uint8_t displacement[4];
+	fcml_uint8_t displacement_size;
 } fcml_st_encoded_modrm;
 
 typedef struct fcml_st_modrm {
