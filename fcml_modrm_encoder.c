@@ -113,8 +113,31 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const
 
 	// Check if there is disp16 addressing mode encoded.
 	if( decoded_modrm->displacement.size && !decoded_modrm->base.type ) {
+
+		// Converts displacement to signed variable size integer value.
+		fcml_vint disp;
+		error = fcml_fn_utils_displacement_to_vint( &(decoded_modrm->displacement), &disp );
+		if( error ) {
+			return error;
+		}
+
+		// Extend displacement value it there is such need.
+		if( disp.size != FCML_DS_16 ) {
+			error = fcml_fn_utils_extend_vint( &disp, FCML_DS_16 );
+			if( error ) {
+				return error;
+			}
+		}
+
+		// Gets displacement as stream.
 		fcml_st_memory_stream stream = fcml_ifn_map_displacement_to_stream( encoded_modrm );
-		error = fcml_fn_utils_encode_displacement( &stream, &(decoded_modrm->displacement) );
+
+		// Extends and encodes displacement to given stream.
+		error = fcml_fn_utils_encode_vint( &stream, &disp );
+		if( error ) {
+			return error;
+		}
+
 		encoded_modrm->displacement_size = stream.offset;
 	}
 
