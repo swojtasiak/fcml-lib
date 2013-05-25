@@ -11,12 +11,16 @@
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
 
+#include "modrm_encoder_t.h"
 #include "modrm_decoder_t.h"
 #include "stream_t.h"
+#include "fcml_coll_t.h"
 
 CU_SuiteInfo *suites[] = {
+	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
+    fcml_si_coll,
     NULL
 };
 
