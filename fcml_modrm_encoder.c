@@ -57,49 +57,6 @@ fcml_ceh_error fcml_fn_modrm_calculate_efective_address_size( const fcml_st_modr
 	return error;
 }
 
-/*
- * int result = _IRA_INT_ERROR_NO_ERROR;
-
-	// ModR/M.
-	uint8_t mod, rm;
-
-	struct ira_decoding_context *decoding_context = &(context->decoding_context);
-	struct ira_decoded_mod_rm *decoded_mod_rm = &(decoding_context->mod_rm);
-
-	// Get raw ModR/M byte to decode it.
-	uint8_t mod_rm = context->decoding_context.mod_rm.raw_mod_rm.value;
-
-	// Decode ModRM.
-	mod = _IRA_MODRM_MOD(mod_rm);
-	rm = _IRA_MODRM_RM(mod_rm);
-
-	if( args->is_vsib ) {
-		return _IRA_INT_ERROR_ILLEGAL_ADDRESSING;
-	}
-
-	if( mod == 0 && rm == 6 ) {
-		// disp16.
-		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_16, IRA_DISPLACEMENT_EXT_SIZE_16 );
-	} else if( mod < 3 ) {
-		decoded_mod_rm->base_reg = _ira_addressing_form_reg_array_16[rm][0];
-		decoded_mod_rm->index_reg = _ira_addressing_form_reg_array_16[rm][1];
-		if( mod > 0 ) {
-			result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), ( mod == 1 ) ? IRA_DISPLACEMENT_8 : IRA_DISPLACEMENT_16, IRA_DISPLACEMENT_EXT_SIZE_16 );
-		}
-	} else {
-		// Straight copy of registers.
-		decoded_mod_rm->reg = _ira_modrm_decode_register( context, args->reg_type, args->register_operand_size, rm );
-	}
-
-	// Decode register if something needs it.
-	if ( args->flags & _IRA_MOD_RM_FLAGS_DECODE_REG ) {
-		decoded_mod_rm->operand_reg = _ira_modrm_decode_register( context, args->reg_type, args->register_operand_size, _IRA_MODRM_REG_OPCODE(mod_rm) );
-		decoded_mod_rm->decoded_reg = _IRA_TRUE;
-	}
-
-	return result;
- */
-
 fcml_st_memory_stream fcml_ifn_map_displacement_to_stream( fcml_st_encoded_modrm *encoded_modrm ) {
 	fcml_st_memory_stream stream;
 	stream.base_address = &(encoded_modrm->displacement);
@@ -108,37 +65,128 @@ fcml_st_memory_stream fcml_ifn_map_displacement_to_stream( fcml_st_encoded_modrm
 	return stream;
 }
 
-fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+// Optionaly extends and encodes displacement.
+fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *displacement, fcml_st_encoded_modrm *encoded_modrm, fcml_usize extension ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	// Converts displacement to signed variable size integer value.
+	fcml_vint disp;
+	error = fcml_fn_utils_displacement_to_vint( displacement, &disp );
+	if( error ) {
+		return error;
+	}
+
+	// Extend displacement value it there is such need.
+	if( disp.size != extension ) {
+		error = fcml_fn_utils_extend_vint( &disp, extension );
+		if( error ) {
+			return error;
+		}
+	}
+
+	// Gets displacement as stream.
+	fcml_st_memory_stream stream = fcml_ifn_map_displacement_to_stream( encoded_modrm );
+
+	// Extends and encodes displacement to given stream.
+	error = fcml_fn_utils_encode_vint( &stream, &disp );
+	if( error ) {
+		return error;
+	}
+
+	encoded_modrm->displacement_size = stream.offset;
+
+	return error;
+}
+
+fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	// ModR/M fields.
+	fcml_uint8_t f_reg = 0;
+	fcml_uint8_t f_mod = 0;
+	fcml_uint8_t f_rm = 0;
 
 	// Check if there is disp16 addressing mode encoded.
 	if( decoded_modrm->displacement.size && !decoded_modrm->base.type ) {
+		// Sign extends displacement to 16 bits if there is such need, and encode it.
+		error = fcml_ifn_modrm_encode_displacement( &(decoded_modrm->displacement), encoded_modrm, FCML_DS_16 );
+	} else if ( decoded_modrm->base.type ) {
 
-		// Converts displacement to signed variable size integer value.
-		fcml_vint disp;
-		error = fcml_fn_utils_displacement_to_vint( &(decoded_modrm->displacement), &disp );
-		if( error ) {
-			return error;
+		// There is base register set.
+		switch( decoded_modrm->base.reg ) {
+		case FCML_REG_BX:
+			if( decoded_modrm->index.type ) {
+				if( decoded_modrm->index.reg == FCML_REG_DI ) {
+					f_rm = 0x01;
+				}
+			} else {
+				f_rm = 0x07;
+			}
+			break;
+		case FCML_REG_BP:
+			if( decoded_modrm->index.type ) {
+				switch( decoded_modrm->index.reg ) {
+				case FCML_REG_SI:
+					f_rm = 0x02;
+					break;
+				case FCML_REG_DI:
+					f_rm = 0x03;
+					break;
+				}
+			} else if( !decoded_modrm->displacement.size ) {
+				// BP is not allowed without displacement.
+				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			} else {
+				f_rm = 0x06;
+			}
+			break;
+		case FCML_REG_SI:
+			f_rm = 0x04;
+			break;
+		case FCML_REG_DI:
+			f_rm = 0x05;
+			break;
 		}
 
-		// Extend displacement value it there is such need.
-		if( disp.size != FCML_DS_16 ) {
-			error = fcml_fn_utils_extend_vint( &disp, FCML_DS_16 );
-			if( error ) {
-				return error;
+		if( !error ) {
+
+			// Now encode displacement, is there is any.
+			switch( decoded_modrm->displacement.size ) {
+			case FCML_DS_UNDEF:
+				f_mod = 0x00;
+				break;
+			case FCML_DS_8:
+				f_mod = 0x01;
+				break;
+			case FCML_DS_16:
+				f_mod = 0x02;
+				break;
+			default:
+				// Only disp8 and disp16 is supporte in 16 bit addressing mode.
+				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+				break;
+			}
+
+			if( f_mod > 0 ) {
+				error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, decoded_modrm->displacement.size );
 			}
 		}
 
-		// Gets displacement as stream.
-		fcml_st_memory_stream stream = fcml_ifn_map_displacement_to_stream( encoded_modrm );
+	} else if ( decoded_modrm->reg.is_not_null ) {
+		f_mod = 0x03;
+		f_rm = decoded_modrm->reg.value;
+	} else {
+		// There is no base register and displacement, so
+		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+	}
 
-		// Extends and encodes displacement to given stream.
-		error = fcml_fn_utils_encode_vint( &stream, &disp );
-		if( error ) {
-			return error;
-		}
-
-		encoded_modrm->displacement_size = stream.offset;
+	if( !error ) {
+		// Encode reg/opcode.
+		f_reg = decoded_modrm->reg_opcode;
+		// Encode calculated ModR/M byte.
+		encoded_modrm->modrm = FCML_MODRM_ENC( f_mod, f_reg, f_rm );
 	}
 
 	return error;
