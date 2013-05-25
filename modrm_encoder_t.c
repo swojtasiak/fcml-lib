@@ -266,7 +266,7 @@ void fcml_tf_modrm_encoder_test_13(void) {
 	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 2 );
 }
 
-// Encode disp8
+// Encode [BX+SI]
 void fcml_tf_modrm_encoder_16_bit_encoding_1(void) {
 
 	fcml_st_modrm modrm;
@@ -276,8 +276,10 @@ void fcml_tf_modrm_encoder_16_bit_encoding_1(void) {
 	fcml_st_modrm_context context;
 	context.effective_address_size = FCML_DS_16;
 
+	modrm.base.type = FCML_REG_GPR;
 	modrm.base.size = FCML_DS_16;
 	modrm.base.reg = FCML_REG_BX;
+	modrm.index.type = FCML_REG_GPR;
 	modrm.index.size = FCML_DS_16;
 	modrm.index.reg = FCML_REG_SI;
 
@@ -290,6 +292,327 @@ void fcml_tf_modrm_encoder_16_bit_encoding_1(void) {
 	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
 	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
 	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0 );
+}
+
+// Encode [BX+DI]
+void fcml_tf_modrm_encoder_16_bit_encoding_2(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_BX;
+	modrm.index.type = FCML_REG_GPR;
+	modrm.index.size = FCML_DS_16;
+	modrm.index.reg = FCML_REG_DI;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 1 );
+}
+
+// Encode [BP+SI]
+void fcml_tf_modrm_encoder_16_bit_encoding_3(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_BP;
+	modrm.index.type = FCML_REG_GPR;
+	modrm.index.size = FCML_DS_16;
+	modrm.index.reg = FCML_REG_SI;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 2 );
+}
+
+// Encode [BP+DI]
+void fcml_tf_modrm_encoder_16_bit_encoding_4(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_BP;
+	modrm.index.type = FCML_REG_GPR;
+	modrm.index.size = FCML_DS_16;
+	modrm.index.reg = FCML_REG_DI;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 3 );
+}
+
+// Encode [SI]
+void fcml_tf_modrm_encoder_16_bit_encoding_5(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_SI;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 4 );
+}
+
+// Encode [DI]
+void fcml_tf_modrm_encoder_16_bit_encoding_6(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_DI;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 5 );
+}
+
+// Encode [BP]
+void fcml_tf_modrm_encoder_16_bit_encoding_7(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_BP;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
+}
+
+// Encode [BX]
+void fcml_tf_modrm_encoder_16_bit_encoding_8(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_BX;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 7 );
+}
+
+// Encode [BX+DI]+disp8
+void fcml_tf_modrm_encoder_16_bit_encoding_9(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_BX;
+	modrm.index.type = FCML_REG_GPR;
+	modrm.index.size = FCML_DS_16;
+	modrm.index.reg = FCML_REG_DI;
+	modrm.displacement.size = FCML_DS_8;
+	modrm.displacement.dis8 = 0x12;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 1 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[0], 0x12 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x41 );
+}
+
+// Encode [BP]+disp8
+void fcml_tf_modrm_encoder_16_bit_encoding_10(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_BP;
+	modrm.displacement.size = FCML_DS_8;
+	modrm.displacement.dis8 = 0xFF;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 1 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[0], 0xFF );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x46 );
+}
+
+// Encode [SI]+disp16
+void fcml_tf_modrm_encoder_16_bit_encoding_11(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_SI;
+	modrm.displacement.size = FCML_DS_16;
+	modrm.displacement.dis16 = 0x0102;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 2 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[0], 0x02 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[1], 0x01 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x84 );
+}
+
+// Encode [BX]+disp16
+void fcml_tf_modrm_encoder_16_bit_encoding_12(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.base.type = FCML_REG_GPR;
+	modrm.base.size = FCML_DS_16;
+	modrm.base.reg = FCML_REG_BX;
+	modrm.displacement.size = FCML_DS_16;
+	modrm.displacement.dis16 = 0xFFF1;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 2 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[0], 0xF1 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[1], 0xFF );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x87 );
+}
+
+
+// Encode DX, BP
+void fcml_tf_modrm_encoder_16_bit_encoding_13(void) {
+
+	fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_context context;
+	context.effective_address_size = FCML_DS_16;
+
+	modrm.reg.is_not_null = FCML_TRUE;
+	modrm.reg.value = FCML_REG_DI;
+	modrm.reg_opcode = FCML_REG_BP;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_reg, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_rm, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0xEF );
 }
 
 CU_TestInfo fctl_ti_modrm_encoder[] = {
@@ -307,6 +630,18 @@ CU_TestInfo fctl_ti_modrm_encoder[] = {
     { "fcml_tf_modrm_encoder_test_12", fcml_tf_modrm_encoder_test_12 },
     { "fcml_tf_modrm_encoder_test_13", fcml_tf_modrm_encoder_test_13 },
     { "fcml_tf_modrm_encoder_16_bit_encoding_1", fcml_tf_modrm_encoder_16_bit_encoding_1 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_2", fcml_tf_modrm_encoder_16_bit_encoding_2 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_3", fcml_tf_modrm_encoder_16_bit_encoding_3 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_4", fcml_tf_modrm_encoder_16_bit_encoding_4 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_5", fcml_tf_modrm_encoder_16_bit_encoding_5 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_6", fcml_tf_modrm_encoder_16_bit_encoding_6 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_7", fcml_tf_modrm_encoder_16_bit_encoding_7 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_8", fcml_tf_modrm_encoder_16_bit_encoding_8 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_9", fcml_tf_modrm_encoder_16_bit_encoding_9 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_10", fcml_tf_modrm_encoder_16_bit_encoding_10 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_11", fcml_tf_modrm_encoder_16_bit_encoding_11 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_12", fcml_tf_modrm_encoder_16_bit_encoding_12 },
+    { "fcml_tf_modrm_encoder_16_bit_encoding_13", fcml_tf_modrm_encoder_16_bit_encoding_13 },
     CU_TEST_INFO_NULL,
 };
 
