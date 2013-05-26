@@ -114,64 +114,76 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const
 		error = fcml_ifn_modrm_encode_displacement( &(decoded_modrm->displacement), encoded_modrm, FCML_DS_16 );
 	} else if ( decoded_modrm->base.type ) {
 
-		// There is base register set.
-		switch( decoded_modrm->base.reg ) {
-		case FCML_REG_BX:
-			if( decoded_modrm->index.type ) {
-				if( decoded_modrm->index.reg == FCML_REG_DI ) {
-					f_rm = 0x01;
-				}
-			} else {
-				f_rm = 0x07;
-			}
-			break;
-		case FCML_REG_BP:
-			if( decoded_modrm->index.type ) {
-				switch( decoded_modrm->index.reg ) {
-				case FCML_REG_SI:
-					f_rm = 0x02;
-					break;
-				case FCML_REG_DI:
-					f_rm = 0x03;
-					break;
-				}
-			} else if( !decoded_modrm->displacement.size ) {
-				// BP is not allowed without displacement.
-				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
-			} else {
-				f_rm = 0x06;
-			}
-			break;
-		case FCML_REG_SI:
-			f_rm = 0x04;
-			break;
-		case FCML_REG_DI:
-			f_rm = 0x05;
-			break;
+		if( decoded_modrm->base.type && decoded_modrm->base.size != FCML_DS_16 ) {
+			error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+		}
+
+		if( decoded_modrm->index.type && decoded_modrm->index.size != FCML_DS_16 ) {
+			error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 		}
 
 		if( !error ) {
 
-			// Now encode displacement, is there is any.
-			switch( decoded_modrm->displacement.size ) {
-			case FCML_DS_UNDEF:
-				f_mod = 0x00;
+			// There is base register set.
+			switch( decoded_modrm->base.reg ) {
+			case FCML_REG_BX:
+				if( decoded_modrm->index.type ) {
+					if( decoded_modrm->index.reg == FCML_REG_DI ) {
+						f_rm = 0x01;
+					}
+				} else {
+					f_rm = 0x07;
+				}
 				break;
-			case FCML_DS_8:
-				f_mod = 0x01;
+			case FCML_REG_BP:
+				if( decoded_modrm->index.type ) {
+					switch( decoded_modrm->index.reg ) {
+					case FCML_REG_SI:
+						f_rm = 0x02;
+						break;
+					case FCML_REG_DI:
+						f_rm = 0x03;
+						break;
+					}
+				} else if( !decoded_modrm->displacement.size ) {
+					// BP is not allowed without displacement.
+					error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+				} else {
+					f_rm = 0x06;
+				}
 				break;
-			case FCML_DS_16:
-				f_mod = 0x02;
+			case FCML_REG_SI:
+				f_rm = 0x04;
 				break;
-			default:
-				// Only disp8 and disp16 is supporte in 16 bit addressing mode.
-				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			case FCML_REG_DI:
+				f_rm = 0x05;
 				break;
 			}
 
-			if( f_mod > 0 ) {
-				error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, decoded_modrm->displacement.size );
+			if( !error ) {
+
+				// Now encode displacement, is there is any.
+				switch( decoded_modrm->displacement.size ) {
+				case FCML_DS_UNDEF:
+					f_mod = 0x00;
+					break;
+				case FCML_DS_8:
+					f_mod = 0x01;
+					break;
+				case FCML_DS_16:
+					f_mod = 0x02;
+					break;
+				default:
+					// Only disp8 and disp16 is supporte in 16 bit addressing mode.
+					error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+					break;
+				}
+
+				if( f_mod > 0 ) {
+					error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, decoded_modrm->displacement.size );
+				}
 			}
+
 		}
 
 	} else if ( decoded_modrm->reg.is_not_null ) {
@@ -192,8 +204,101 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const
 	return error;
 }
 
+// 32 and 64 bit addressing mode.s
 fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_uint8_t f_mod = 0;
+	fcml_uint8_t f_rm = 0;
+	fcml_uint8_t f_reg = 0;
+
+	if( decoded_modrm->index.type ) {
+
+		// SIB needed.
+
+		fcml_uint8_t f_base = 0;
+		fcml_uint8_t f_ss = 0;
+		fcml_uint8_t f_index = 0;
+
+		// Base regiser.
+		if( decoded_modrm->base.type ) {
+			if( context->effective_address_size != decoded_modrm->base.size ) {
+				// Wrong size of base register, it has to be equal to EASA.
+				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			}
+			f_base = decoded_modrm->base.reg;
+		} else {
+			// SIB without base register, there is only one addressing mode with this combination
+			// and it needs disp32.
+			if( decoded_modrm->displacement.size != FCML_DS_32 ) {
+				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			}
+		}
+
+		// Index register.
+		if( decoded_modrm->index.type ) {
+			// Check if index register size is correct.
+			if( context->effective_address_size != decoded_modrm->index.size ) {
+				// Wrong size of index register, it has to be equal to EASA.
+				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			}
+			// ESP is not allowed as index register.
+			if( decoded_modrm->index.reg == FCML_REG_ESP ) {
+				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			}
+			f_index = decoded_modrm->index.reg;
+		}
+
+		// Scale factor.
+		f_ss = decoded_modrm->scale_factor;
+
+		// Encode SIB.
+		encoded_modrm->sib.is_not_null = FCML_TRUE;
+		encoded_modrm->sib.value = FCML_MODRM_SIB_ENC( f_ss, f_index, f_base );
+
+		// RM when SIB is used.
+		f_rm = 0x04;
+
+	} else {
+
+		// SIB not needed.
+
+		if ( decoded_modrm->base.type ) {
+			if( context->effective_address_size != decoded_modrm->base.size ) {
+				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			}
+			f_rm = decoded_modrm->base.reg;
+		} else if ( decoded_modrm->reg.is_not_null ) {
+			f_mod = 0x03;
+			f_rm = decoded_modrm->reg.value;
+		}
+
+	}
+
+	fcml_data_size disp_size = 0;
+
+	// Encode displacement.
+	if( decoded_modrm->displacement.size == FCML_DS_8 ) {
+		disp_size = FCML_DS_8;
+		f_mod = 0x01;
+	} else if ( decoded_modrm->displacement.size ) {
+		disp_size = FCML_DS_32;
+		f_mod = 0x02;
+	} else {
+		f_mod = 0x00;
+	}
+
+	if( disp_size ) {
+		error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, disp_size );
+	}
+
+	// Encode reg/opcode.
+	if( !error ) {
+		f_reg = decoded_modrm->reg_opcode;
+		encoded_modrm->modrm = FCML_MODRM_ENC( f_mod, f_reg, f_rm );
+	}
+
 	return error;
 }
 

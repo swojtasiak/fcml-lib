@@ -54,7 +54,7 @@ typedef struct fcml_st_modrm_context {
 	fcml_en_modrm_addr_form addr_form;
 	// Effective addres size using to decode/encode ModR/M. It's very important to set this value properly,
 	// because 16 and 32/64 addressing forms
-	fcml_esa effective_address_size;
+	fcml_data_size effective_address_size;
 	// True if VSIB encoding is available. This flag should be only set for ModR/M
 	// decoder to made it use SIMD register as index register. In case of encoder,
 	// we really don't care if it's SIMD index register or not, because encoding
