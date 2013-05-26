@@ -27,8 +27,9 @@ typedef enum fcml_en_modrm_addr_form {
 typedef struct fcml_st_encoded_modrm {
 	fcml_uint8_t modrm;
 	fcml_nuint8_t sib;
-	fcml_uint8_t ext_reg;
-	fcml_uint8_t ext_rm;
+	fcml_uint8_t ext_r;
+	fcml_uint8_t ext_x;
+	fcml_uint8_t ext_b;
 	fcml_uint8_t displacement[4];
 	fcml_uint8_t displacement_size;
 } fcml_st_encoded_modrm;
@@ -60,6 +61,12 @@ typedef struct fcml_st_modrm_context {
 	// we really don't care if it's SIMD index register or not, because encoding
 	// is similar to GPR index.
 	fcml_bool is_vsib;
+	// This flag is set only by ModR/M encoder if there is alterative SIB encoding available,
+	// but user chooses default ModR/M only encoding.
+	fcml_bool is_sib_alternative;
+	// This flag is used only by ModR/M encoder, and should be set to TRUE to force
+	// using SIB encoding, if there is such alternative.
+	fcml_bool choose_sib_encoding;
 } fcml_st_modrm_context;
 
 #endif /* FCML_MODRM_H_ */

@@ -30,8 +30,8 @@ typedef void* fcml_ptr;
 typedef unsigned int fcml_usize;
 typedef int fcml_size;
 
-#define FCML_TRUE   1
-#define FCML_FALSE   0
+#define FCML_TRUE		1
+#define FCML_FALSE		0
 
 /*Signed integers.*/
 #define FCML_INT32_MAX	INT32_MAX
