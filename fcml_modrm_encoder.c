@@ -108,6 +108,10 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const
 	fcml_uint8_t f_mod = 0;
 	fcml_uint8_t f_rm = 0;
 
+	if( context->addr_form == FCML_MODRM_AF_64_BIT ) {
+		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+	}
+
 	// Check if there is disp16 addressing mode encoded.
 	if( decoded_modrm->displacement.size && !decoded_modrm->base.type ) {
 		// Sign extends displacement to 16 bits if there is such need, and encode it.
@@ -219,19 +223,27 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, con
 
 	fcml_bool choose_sib = FCML_FALSE;
 
+	// Check if addressing mode and effestive address size are compatible.
+	if( ( context->effective_address_size == FCML_DS_64 && context->addr_form != FCML_MODRM_AF_64_BIT ) || ( context->addr_form == FCML_MODRM_AF_64_BIT && context->effective_address_size == FCML_DS_16 ) ) {
+		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+	}
+
 	// Check if there is SIB alternative.
 	if( decoded_modrm->index.type ) {
 		choose_sib = FCML_TRUE;
 	} else {
 		if( !decoded_modrm->base.type && decoded_modrm->displacement.size ) {
 			// disp32
-			choose_sib = context->is_sib_alternative;
+			choose_sib = context->choose_sib_encoding;
+			context->is_sib_alternative = FCML_TRUE;
 		} else if ( decoded_modrm->base.type ) {
+			// [esp],edx can be only encoded with using of SIB byte.
 			if( decoded_modrm->base.reg == FCML_REG_ESP ) {
 				choose_sib = FCML_TRUE;
 			} else {
-				// [bace]+[disp8/disp32]
-				choose_sib = context->is_sib_alternative;
+				// [base]+[disp8/disp32]
+				choose_sib = context->choose_sib_encoding;
+				context->is_sib_alternative = FCML_TRUE;
 			}
 		}
 	}
@@ -280,6 +292,8 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, con
 				f_ext_x = 0x01;
 				f_index &= 0x07;
 			}
+		} else {
+			f_index = 0x04;
 		}
 
 		// Scale factor.
@@ -323,6 +337,11 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, con
 			disp_size = FCML_DS_32;
 			f_rm = 0x05;
 		}
+
+		if( f_rm > 7 ) {
+			f_ext_b = 0x01;
+			f_rm &= 0x07;
+		}
 	}
 
 	// Encode displacement.
@@ -352,8 +371,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, con
 		f_reg &= 0x07;
 	}
 
-	// Sanity check.
-	if( f_rm > 7 || f_reg > 7 ) {
+	if( context->addr_form != FCML_MODRM_AF_64_BIT && ( f_ext_r || f_ext_x || f_ext_b ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 
@@ -372,8 +390,8 @@ fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_context *context, const fcml_
 	} else if ( context->effective_address_size == FCML_DS_32 || context->effective_address_size == FCML_DS_64 ) {
 		error = fcml_fn_modrm_encode_3264bit( context, decoded_modrm, encoded_modrm );
 	} else {
-		// Unknown
-		error = FCML_CEH_GEC_INVALID_INPUT;
+		// Unknown addressing mode.
+		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 	return error;
 }

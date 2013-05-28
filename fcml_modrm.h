@@ -20,8 +20,8 @@ typedef fcml_uint8_t fcml_esa;
 #define FCML_ESA_SF_64		0x04
 
 typedef enum fcml_en_modrm_addr_form {
-	FCML_MODRM_AF_16_BIT,
-	FCML_MODRM_AF_32_BIT
+	FCML_MODRM_AF_32_BIT,
+	FCML_MODRM_AF_64_BIT,
 } fcml_en_modrm_addr_form;
 
 typedef struct fcml_st_encoded_modrm {
