@@ -30,8 +30,8 @@ void fcml_fn_stream_seek( fcml_st_memory_stream *stream, int32_t offset, enum ir
     }
 }
 
-uint8_t fcml_fn_stream_read( fcml_st_memory_stream *stream, fcml_bool *result ) {
-    uint8_t *base_address = (uint8_t *)stream->base_address;
+fcml_uint8_t fcml_fn_stream_read( fcml_st_memory_stream *stream, fcml_bool *result ) {
+	fcml_uint8_t *base_address = (fcml_uint8_t *)stream->base_address;
     *result = ( stream->offset == stream->size ) ? FCML_FALSE : FCML_TRUE;
     if( *result ) {
         return base_address[stream->offset++];
@@ -49,15 +49,15 @@ fcml_bool fcml_fn_stream_write( fcml_st_memory_stream *stream, uint8_t data ) {
     return result;
 }
 
-uint8_t fcml_fn_stream_peek( fcml_st_memory_stream *stream, fcml_bool *result ) {
-    uint8_t *base_address = (uint8_t *)stream->base_address;
+fcml_uint8_t fcml_fn_stream_peek( fcml_st_memory_stream *stream, fcml_bool *result ) {
+	fcml_uint8_t *base_address = (fcml_uint8_t *)stream->base_address;
     *result = ( stream->offset == stream->size ) ? FCML_FALSE : FCML_TRUE;
     if( *result )
         return base_address[stream->offset];
     return 0;
 }
 
-int32_t fcml_fn_stream_size( fcml_st_memory_stream *stream ) {
+fcml_int32_t fcml_fn_stream_size( const fcml_st_memory_stream *stream ) {
     return stream->size - stream->offset;
 }
 
@@ -78,8 +78,8 @@ int fcml_fn_stream_write_bytes( fcml_st_memory_stream *stream, void *buffer , in
     if( size == 0 ) {
         return 0;
     }
-    uint8_t *source_buffer = (uint8_t*)buffer;
-    uint8_t *destination_buffer = (uint8_t*)stream->base_address;
+    fcml_uint8_t *source_buffer = (fcml_uint8_t*)buffer;
+    fcml_uint8_t *destination_buffer = (fcml_uint8_t*)stream->base_address;
     int i = 0;
     while( stream->offset < stream->size && i < size ) {
         destination_buffer[stream->offset++] = source_buffer[i++];
@@ -87,13 +87,13 @@ int fcml_fn_stream_write_bytes( fcml_st_memory_stream *stream, void *buffer , in
     return i;
 }
 
-uint16_t fcml_fn_stream_read_word( fcml_st_memory_stream *stream, fcml_bool *result ) {
-    uint16_t value = 0;
+fcml_uint16_t fcml_fn_stream_read_word( fcml_st_memory_stream *stream, fcml_bool *result ) {
+	fcml_uint16_t value = 0;
     if( stream->size - stream->offset >= sizeof(uint16_t) ) {
         int offset = stream->offset;
-        value |= ((uint8_t*)stream->base_address)[offset];
-        value |= ((uint8_t*)stream->base_address)[offset + 1] << 8;
-        stream->offset += sizeof(uint16_t);
+        value |= ((fcml_uint8_t*)stream->base_address)[offset];
+        value |= ((fcml_uint8_t*)stream->base_address)[offset + 1] << 8;
+        stream->offset += sizeof(fcml_uint16_t);
         *result = FCML_TRUE;
     } else {
         *result = FCML_FALSE;
@@ -101,15 +101,15 @@ uint16_t fcml_fn_stream_read_word( fcml_st_memory_stream *stream, fcml_bool *res
     return value;
 }
 
-uint32_t fcml_fn_stream_read_dword( fcml_st_memory_stream *stream, fcml_bool *result ) {
-    uint32_t value = 0;
-    if( stream->size - stream->offset >= sizeof(uint32_t) ) {
+fcml_uint32_t fcml_fn_stream_read_dword( fcml_st_memory_stream *stream, fcml_bool *result ) {
+	fcml_uint32_t value = 0;
+    if( stream->size - stream->offset >= sizeof(fcml_uint32_t) ) {
         int offset = stream->offset;
-        value |= ((uint8_t*)stream->base_address)[offset];
-        value |= ((uint8_t*)stream->base_address)[offset + 1] << 8;
-        value |= ((uint8_t*)stream->base_address)[offset + 2] << 16;
-        value |= ((uint8_t*)stream->base_address)[offset + 3] << 24;
-        stream->offset += sizeof(uint32_t);
+        value |= ((fcml_uint8_t*)stream->base_address)[offset];
+        value |= ((fcml_uint8_t*)stream->base_address)[offset + 1] << 8;
+        value |= ((fcml_uint8_t*)stream->base_address)[offset + 2] << 16;
+        value |= ((fcml_uint8_t*)stream->base_address)[offset + 3] << 24;
+        stream->offset += sizeof(fcml_uint32_t);
         *result = FCML_TRUE;
     } else {
         *result = FCML_FALSE;
@@ -117,15 +117,15 @@ uint32_t fcml_fn_stream_read_dword( fcml_st_memory_stream *stream, fcml_bool *re
     return value;
 }
 
-uint64_t fcml_fn_stream_read_qword( fcml_st_memory_stream *stream, fcml_bool *result ) {
-    uint64_t value = 0;
-    if( stream->size - stream->offset >= sizeof(uint64_t) ) {
+fcml_uint64_t fcml_fn_stream_read_qword( fcml_st_memory_stream *stream, fcml_bool *result ) {
+	fcml_uint64_t value = 0;
+    if( stream->size - stream->offset >= sizeof(fcml_uint64_t) ) {
         int i;
         int offset = stream->offset;
-        for( i = 0; i < sizeof(uint64_t); i++ ) {
-            value |= ((uint64_t)((uint8_t*)stream->base_address)[offset + i]) << ( i << 3 );
+        for( i = 0; i < sizeof(fcml_uint64_t); i++ ) {
+            value |= ((fcml_uint64_t)((fcml_uint8_t*)stream->base_address)[offset + i]) << ( i << 3 );
         }
-        stream->offset += sizeof(uint64_t);
+        stream->offset += sizeof(fcml_uint64_t);
         *result = FCML_TRUE;
     } else {
         *result = FCML_FALSE;
@@ -135,50 +135,50 @@ uint64_t fcml_fn_stream_read_qword( fcml_st_memory_stream *stream, fcml_bool *re
 
 fcml_bool fcml_fn_stream_write_word( fcml_st_memory_stream *stream, uint16_t data ) {
     fcml_bool result = FCML_FALSE;
-    if( stream->size - stream->offset >= sizeof(uint16_t) ) {
+    if( stream->size - stream->offset >= sizeof(fcml_uint16_t) ) {
        int offset = stream->offset;
-       uint8_t *buffer = (uint8_t*)stream->base_address;
+       fcml_uint8_t *buffer = (fcml_uint8_t*)stream->base_address;
        buffer[offset] = data & 0x00FF;
        buffer[offset + 1] = data >> 8;
-       stream->offset += sizeof(uint16_t);
+       stream->offset += sizeof(fcml_uint16_t);
        result = FCML_TRUE;
     }
     return result;
 }
 
-fcml_bool fcml_fn_stream_write_dword( fcml_st_memory_stream *stream, uint32_t data ) {
+fcml_bool fcml_fn_stream_write_dword( fcml_st_memory_stream *stream, fcml_uint32_t data ) {
     fcml_bool result = FCML_FALSE;
-    if( stream->size - stream->offset >= sizeof(uint32_t) ) {
+    if( stream->size - stream->offset >= sizeof(fcml_uint32_t) ) {
         int offset = stream->offset;
-        ((uint8_t*)stream->base_address)[offset] = data;
-        ((uint8_t*)stream->base_address)[offset + 1] = data >> 8;
-        ((uint8_t*)stream->base_address)[offset + 2] = data >> 16;
-        ((uint8_t*)stream->base_address)[offset + 3] = data >> 24;
-        stream->offset += sizeof(uint32_t);
+        ((fcml_uint8_t*)stream->base_address)[offset] = data;
+        ((fcml_uint8_t*)stream->base_address)[offset + 1] = data >> 8;
+        ((fcml_uint8_t*)stream->base_address)[offset + 2] = data >> 16;
+        ((fcml_uint8_t*)stream->base_address)[offset + 3] = data >> 24;
+        stream->offset += sizeof(fcml_uint32_t);
         result = FCML_TRUE;
     }
     return result;
 }
 
-fcml_bool fcml_fn_stream_write_qword( fcml_st_memory_stream *stream, uint64_t data ) {
+fcml_bool fcml_fn_stream_write_qword( fcml_st_memory_stream *stream, fcml_uint64_t data ) {
    fcml_bool result = FCML_FALSE;
-   if( stream->size - stream->offset >= sizeof(uint64_t) ) {
+   if( stream->size - stream->offset >= sizeof(fcml_uint64_t) ) {
        int i;
        int offset = stream->offset;
-       uint8_t *buffer = (uint8_t*)stream->base_address;
-       for( i = 0; i < sizeof(uint64_t); i++ ) {
+       fcml_uint8_t *buffer = (fcml_uint8_t*)stream->base_address;
+       for( i = 0; i < sizeof(fcml_uint64_t); i++ ) {
            buffer[offset + i] = data >> ( i << 3 );
        }
-       stream->offset += sizeof(uint64_t);
+       stream->offset += sizeof(fcml_uint64_t);
        result = FCML_TRUE;
    }
    return result;
 }
 
-fcml_stream_pointer fcml_fn_stream_save_point( fcml_st_memory_stream *stream ) {
+fcml_stream_pointer fcml_fn_stream_save_point( const fcml_st_memory_stream *stream ) {
     return stream->offset;
 }
 
-void fcml_fn_stream_restore_point( fcml_st_memory_stream *stream, fcml_stream_pointer stream_pointer ) {
+void fcml_fn_stream_restore_point( fcml_st_memory_stream *stream, const fcml_stream_pointer stream_pointer ) {
     stream->offset = stream_pointer;
 }

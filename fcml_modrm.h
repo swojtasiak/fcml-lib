@@ -10,6 +10,7 @@
 
 #include "fcml_errors.h"
 #include "fcml_common.h"
+#include "fcml_stream.h"
 
 // Effective size attribute ata type.
 
@@ -23,6 +24,14 @@ typedef enum fcml_en_modrm_addr_form {
 	FCML_MODRM_AF_32_BIT,
 	FCML_MODRM_AF_64_BIT,
 } fcml_en_modrm_addr_form;
+
+typedef struct fcml_st_modrm_source {
+	fcml_uint8_t ext_r;
+	fcml_uint8_t ext_x;
+	fcml_uint8_t ext_b;
+	fcml_bool is_vsib;
+	fcml_st_memory_stream stream;
+} fcml_st_modrm_source;
 
 typedef struct fcml_st_encoded_modrm {
 	fcml_uint8_t modrm;
@@ -68,5 +77,7 @@ typedef struct fcml_st_modrm_context {
 	// using SIB encoding, if there is such alternative.
 	fcml_bool choose_sib_encoding;
 } fcml_st_modrm_context;
+
+fcml_ceh_error fcml_fn_modrm_write_encoded_modrm( fcml_st_encoded_modrm *encoded_modrm, fcml_st_memory_stream *stream );
 
 #endif /* FCML_MODRM_H_ */

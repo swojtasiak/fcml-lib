@@ -7,6 +7,62 @@
 
 #include "fcml_utils.h"
 
+fcml_ceh_error fcml_fn_utils_decode_uvint( fcml_st_memory_stream *stream, fcml_uvint *uvint, fcml_usize size ) {
+	fcml_bool result = FCML_FALSE;
+	switch(size) {
+	case FCML_DS_8:
+		uvint->uint8 = fcml_fn_stream_read( stream, &result );
+		uvint->size = FCML_DS_8;
+		break;
+	case FCML_DS_16:
+		uvint->uint16 = fcml_fn_stream_read_word( stream, &result );
+		uvint->size = FCML_DS_16;
+		break;
+	case FCML_DS_32:
+		uvint->uint32 = fcml_fn_stream_read_dword( stream, &result );
+		uvint->size = FCML_DS_32;
+		break;
+	case FCML_DS_64:
+		uvint->uint64 = fcml_fn_stream_read_qword( stream, &result );
+		uvint->size = FCML_DS_64;
+		break;
+	default:
+		return FCML_CEH_GEC_INVALID_INPUT;
+	}
+	if( !result ) {
+		return FCML_CEH_GEC_EOF;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ceh_error fcml_fn_utils_decode_vint( fcml_st_memory_stream *stream, fcml_vint *vint, fcml_usize size ) {
+	fcml_bool result = FCML_FALSE;
+	switch(size) {
+	case FCML_DS_8:
+		vint->int8 = fcml_fn_stream_read( stream, &result );
+		vint->size = FCML_DS_8;
+		break;
+	case FCML_DS_16:
+		vint->int16 = fcml_fn_stream_read_word( stream, &result );
+		vint->size = FCML_DS_16;
+		break;
+	case FCML_DS_32:
+		vint->int32 = fcml_fn_stream_read_dword( stream, &result );
+		vint->size = FCML_DS_32;
+		break;
+	case FCML_DS_64:
+		vint->int64 = fcml_fn_stream_read_qword( stream, &result );
+		vint->size = FCML_DS_64;
+		break;
+	default:
+		return FCML_CEH_GEC_INVALID_INPUT;
+	}
+	if( !result ) {
+		return FCML_CEH_GEC_EOF;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
 fcml_ceh_error fcml_fn_utils_encode_uvint( fcml_st_memory_stream *stream, const fcml_uvint *uvint ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_bool result = FCML_FALSE;
@@ -73,6 +129,48 @@ fcml_ceh_error fcml_fn_utils_displacement_to_uvint( const fcml_st_displacement *
 		break;
 	}
 	uvint->size = displacement->size;
+	return error;
+}
+
+fcml_ceh_error fcml_fn_utils_uvint_to_displacement( const fcml_uvint *uvint, fcml_st_displacement *displacement ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	displacement->dis32 = 0;
+	switch( uvint->size ) {
+	case FCML_DS_8:
+		displacement->dis8 = (signed)uvint->uint8;
+		break;
+	case FCML_DS_16:
+		displacement->dis16 = (signed)uvint->uint16;
+		break;
+	case FCML_DS_32:
+		displacement->dis32 = (signed)uvint->uint32;
+		break;
+	default:
+		error = FCML_CEH_GEC_INVALID_INPUT;
+		break;
+	}
+	displacement->size = uvint->size;
+	return error;
+}
+
+fcml_ceh_error fcml_fn_utils_vint_to_displacement( const fcml_vint *vint, fcml_st_displacement *displacement ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	displacement->dis32 = 0;
+	switch( vint->size ) {
+	case FCML_DS_8:
+		displacement->dis8 = vint->int8;
+		break;
+	case FCML_DS_16:
+		displacement->dis16 = vint->int16;
+		break;
+	case FCML_DS_32:
+		displacement->dis32 = vint->int32;
+		break;
+	default:
+		error = FCML_CEH_GEC_INVALID_INPUT;
+		break;
+	}
+	displacement->size = vint->size;
 	return error;
 }
 
