@@ -275,6 +275,797 @@ void fcml_tf_modrm_decoder_test_7(void) {
 
 }
 
+// [EBX], EBX
+void fcml_tf_modrm_3264_decoder_test_1(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.effective_address_size = FCML_DS_32;
+
+	fcml_uint8_t buffer[] = {0x1B};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_EBX );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EBX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis8, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+
+}
+
+// [04030201], EDX
+void fcml_tf_modrm_3264_decoder_test_2(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.effective_address_size = FCML_DS_32;
+
+	fcml_uint8_t buffer[] = {0x15, 0x01, 0x02, 0x03, 0x04};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x04030201 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// [FFFFFFFFFF887766], EDX
+void fcml_tf_modrm_3264_decoder_test_3(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = {0x15, 0x66, 0x77, 0x88, 0xFF};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFF887766 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// [ECX]+0x66, EAX
+void fcml_tf_modrm_3264_decoder_test_4(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_32;
+
+	fcml_uint8_t buffer[] = {0x41, 0x66};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_ECX );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EAX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis8, 0x66 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+
+// [ECX]+0x01020304, EAX
+void fcml_tf_modrm_3264_decoder_test_5(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_32;
+
+	fcml_uint8_t buffer[] = {0x81, 0x04, 0x03, 0x02, 0x01};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_ECX );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EAX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// [R9]+0x01020304, R8
+void fcml_tf_modrm_3264_decoder_test_6(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = {0x81, 0x04, 0x03, 0x02, 0x01};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// Illegal EASA size.
+void fcml_tf_modrm_3264_decoder_test_7(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_16;
+
+	fcml_uint8_t buffer[] = {0x81, 0x04, 0x03, 0x02, 0x01};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// RAX, EBX
+void fcml_tf_modrm_3264_decoder_test_8(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = {0xD8};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_RAX );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_RBX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// R8, R11
+void fcml_tf_modrm_3264_decoder_test_9(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = {0xD8};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// [01020304], R8
+void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x04, 0x25, 0x04, 0x03, 0x02, 0x01 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// [EBX]+0x01020304, R8
+void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x04, 0x1D, 0x04, 0x03, 0x02, 0x01 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// [ECX+EBX]+0x01, R8
+void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x04, 0x19 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// [ECX+EBX*2]+0x01, R8
+void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x04, 0x59 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 2 );
+}
+
+// [ECX+EBX*4], R8
+void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x04, 0x99 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 4 );
+}
+
+// [ECX+EBX*8], R8
+void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x04, 0xD9 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+}
+
+// [ECX+EBX*8]+0x55, R8
+void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x44, 0xD9, 0x55 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis8, 0x55 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+}
+
+// [ECX+EBX*8]+0x01020304, R8
+void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x84, 0xD9, 0x04, 0x03, 0x02, 0x01 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+}
+
+// [R9]+0x01020304, R8
+void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x84, 0xE1, 0x04, 0x03, 0x02, 0x01 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+}
+
+// [ECX+XMM1*8]+0x01020304, R8
+void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x84, 0xD9, 0x04, 0x03, 0x02, 0x01 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	modrm_source.is_vsib = FCML_TRUE;
+	modrm_source.vsib_index_size = FCML_DS_128;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_SIMD );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_XMM11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_128 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+}
+
+// [ECX+YMM1*8]+0x01020304, R8
+void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
+
+	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = { 0x84, 0xD9, 0x04, 0x03, 0x02, 0x01 };
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 1;
+	modrm_source.ext_r = 1;
+	modrm_source.ext_x = 1;
+	modrm_source.stream = stream;
+	modrm_source.is_vsib = FCML_TRUE;
+	modrm_source.vsib_index_size = FCML_DS_256;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_SIMD );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_XMM11 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_256 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+}
+
 CU_TestInfo fctl_ti_modrm_decoder[] = {
     { "fcml_tf_modrm_decoder_test_1", fcml_tf_modrm_decoder_test_1 },
     { "fcml_tf_modrm_decoder_test_2", fcml_tf_modrm_decoder_test_2 },
@@ -283,6 +1074,26 @@ CU_TestInfo fctl_ti_modrm_decoder[] = {
     { "fcml_tf_modrm_decoder_test_5", fcml_tf_modrm_decoder_test_5 },
     { "fcml_tf_modrm_decoder_test_6", fcml_tf_modrm_decoder_test_6 },
     { "fcml_tf_modrm_decoder_test_7", fcml_tf_modrm_decoder_test_7 },
+    { "fcml_tf_modrm_3264_decoder_test_1", fcml_tf_modrm_3264_decoder_test_1 },
+    { "fcml_tf_modrm_3264_decoder_test_2", fcml_tf_modrm_3264_decoder_test_2 },
+    { "fcml_tf_modrm_3264_decoder_test_3", fcml_tf_modrm_3264_decoder_test_3 },
+    { "fcml_tf_modrm_3264_decoder_test_4", fcml_tf_modrm_3264_decoder_test_4 },
+    { "fcml_tf_modrm_3264_decoder_test_5", fcml_tf_modrm_3264_decoder_test_5 },
+    { "fcml_tf_modrm_3264_decoder_test_6", fcml_tf_modrm_3264_decoder_test_6 },
+    { "fcml_tf_modrm_3264_decoder_test_7", fcml_tf_modrm_3264_decoder_test_7 },
+    { "fcml_tf_modrm_3264_decoder_test_8", fcml_tf_modrm_3264_decoder_test_8 },
+    { "fcml_tf_modrm_3264_decoder_test_9", fcml_tf_modrm_3264_decoder_test_9 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_1", fcml_tf_modrm_3264_decoder_sib_test_1 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_2", fcml_tf_modrm_3264_decoder_sib_test_2 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_3", fcml_tf_modrm_3264_decoder_sib_test_3 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_4", fcml_tf_modrm_3264_decoder_sib_test_4 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_5", fcml_tf_modrm_3264_decoder_sib_test_5 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_6", fcml_tf_modrm_3264_decoder_sib_test_6 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_7", fcml_tf_modrm_3264_decoder_sib_test_7 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_8", fcml_tf_modrm_3264_decoder_sib_test_8 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_9", fcml_tf_modrm_3264_decoder_sib_test_9 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_10", fcml_tf_modrm_3264_decoder_sib_test_10 },
+    { "fcml_tf_modrm_3264_decoder_sib_test_11", fcml_tf_modrm_3264_decoder_sib_test_11 },
     CU_TEST_INFO_NULL,
 };
 
