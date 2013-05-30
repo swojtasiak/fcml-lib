@@ -43,7 +43,6 @@
 // True if encoded operand size is a dynamic one.
 #define FCML_IS_EOS_DYNAMIC(x)	( ( x & 0x80 ) != 0 )
 
-
 /* Instruction types. */
 
 typedef enum fcml_en_def_instruction_type {
@@ -116,7 +115,7 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_OA_W		0x40000000
 #define FCML_OA_RW		( FCML_OA_R | FCML_OA_W )
 
-#define FCML_NA		0x00000000
+#define FCML_NA			0x00000000
 
 // Immediate data.
 #define FCML_OP_IMM_BASE							0x01000000
