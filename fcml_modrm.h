@@ -30,6 +30,7 @@ typedef struct fcml_st_modrm_source {
 	fcml_uint8_t ext_x;
 	fcml_uint8_t ext_b;
 	fcml_bool is_vsib;
+	fcml_usize vsib_index_size;
 	fcml_st_memory_stream stream;
 } fcml_st_modrm_source;
 
@@ -56,7 +57,6 @@ typedef struct fcml_st_modrm {
 	fcml_uint8_t scale_factor;
 	// Displacement.
 	fcml_st_displacement displacement;
-
 } fcml_st_modrm;
 
 typedef struct fcml_st_modrm_context {

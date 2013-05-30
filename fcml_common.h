@@ -257,9 +257,9 @@ typedef struct fcml_st_displacement {
 	fcml_data_size size;
     fcml_data_size sign_extension;
     union {
-        uint8_t dis8;
-        uint16_t dis16;
-        uint32_t dis32;
+        int8_t dis8;
+        int16_t dis16;
+        int32_t dis32;
     };
 } fcml_st_displacement;
 
