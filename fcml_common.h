@@ -273,7 +273,7 @@ typedef struct fcml_st_effective_address {
 	fcml_st_register segment_selector;
     fcml_st_register base;
     fcml_st_register index;
-    uint8_t scale_factor;
+    fcml_uint8_t scale_factor;
     fcml_st_displacement displacement;
 } fcml_st_effective_address;
 

@@ -33,7 +33,8 @@ struct fcml_st_asm_instruction_addr_modes;
 typedef enum fcml_ien_asm_part_processor_phase {
 	FCML_IEN_ASM_IPPP_ACCEPT,
 	FCML_IEN_ASM_IPPP_FIRST_PHASE,
-	FCML_IEN_ASM_IPPP_SECOND_PHASE
+	FCML_IEN_ASM_IPPP_SECOND_PHASE,
+	FCML_IEN_ASM_IPPP_THIRD_PHASE
 } fcml_ien_asm_part_processor_phase;
 
 typedef fcml_ceh_error (*fcml_fnp_asm_operand_encoder)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );

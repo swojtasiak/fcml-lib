@@ -13,8 +13,10 @@
 #include "fcml_stream.h"
 #include "fcml_assembler.h"
 #include "fcml_asm_encoding.h"
+#include "fcml_modrm.h"
 
 typedef struct fcml_st_asm_encoding_context {
+	fcml_st_modrm mod_rm;
 	fcml_st_assembler_context *assembler_context;
 	fcml_st_instruction *instruction;
 	fcml_st_assembler_result *result;

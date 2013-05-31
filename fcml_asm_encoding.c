@@ -110,6 +110,33 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_ien_as
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+
+	fcml_sf_def_tma_rm *args = (fcml_sf_def_tma_rm*)addr_mode->addr_mode_args;
+
+	if( phase == FCML_IEN_ASM_IPPP_ACCEPT ) {
+		fcml_bool result = FCML_TRUE;
+		if ( args->flags == FCML_RMF_RM ) {
+			result &= ( operand_def->type == FCML_EOT_REGISTER || operand_def->type == FCML_EOT_EFFECTIVE_ADDRESS );
+		} else if ( args->flags & FCML_RMF_R ) {
+			result &= operand_def->type == FCML_EOT_REGISTER;
+		} else if ( args->flags & FCML_RMF_M ) {
+			result &= operand_def->type == FCML_EOT_EFFECTIVE_ADDRESS;
+		}
+		if( !result ) {
+			return FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+	} else if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+		if( operand_def->type == FCML_EOT_REGISTER ) {
+			context->mod_rm.reg.is_not_null = FCML_TRUE;
+			context->mod_rm.reg.value = operand_def->reg.reg;
+		} else {
+			context->mod_rm.base = operand_def->effective_address.base;
+			context->mod_rm.displacement = operand_def->effective_address.displacement;
+			context->mod_rm.index = operand_def->effective_address.index;
+			context->mod_rm.scale_factor = operand_def->effective_address.scale_factor;
+		}
+	}
+
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
@@ -118,17 +145,14 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase
 	fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
 
 	if( phase == FCML_IEN_ASM_IPPP_ACCEPT ) {
-
 		if( operand_def->type != FCML_EOT_REGISTER ) {
 			return FCML_EN_UNSUPPORTED_OPPERAND;
 		}
-
 		if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size ) ) {
 			return FCML_EN_UNSUPPORTED_OPPERAND;
 		}
-
 	} else if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
-
+		context->mod_rm.reg_opcode = operand_def->reg.reg;
 	}
 
 	return FCML_CEH_GEC_NO_ERROR;
@@ -180,7 +204,7 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_st_asm_encoding_context *context, 
 	return FCML_TRUE;
 }
 
-fcml_ien_asm_part_processor_phase fcml_asm_executed_phases[] = { FCML_IEN_ASM_IPPP_FIRST_PHASE, FCML_IEN_ASM_IPPP_SECOND_PHASE };
+fcml_ien_asm_part_processor_phase fcml_asm_executed_phases[] = { FCML_IEN_ASM_IPPP_FIRST_PHASE, FCML_IEN_ASM_IPPP_SECOND_PHASE, FCML_IEN_ASM_IPPP_THIRD_PHASE };
 
 fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_st_asm_instruction_part_container *instruction_part_container ) {
 
