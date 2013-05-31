@@ -56,10 +56,9 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st
 
 	fcml_st_asm_encoding_context context;
 
-	context.assembler_context = asm_context;
-
 	memset( &context, 0, sizeof( fcml_st_asm_encoding_context ) );
 
+	context.assembler_context = asm_context;
 	context.instruction = instruction;
 
 	context.result = fcml_fn_env_memory_alloc( sizeof( fcml_st_assembler_result ) );
