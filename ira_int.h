@@ -285,7 +285,7 @@ struct ira_instruction_opcode_decoder {
 #define _IRA_VEX_B(x)				!_IRA_GET_BIT(x, 5)
 #define _IRA_VEX_L(x)				_IRA_GET_BIT(x, 2)
 #define _IRA_VEX_MMMM(x)			( x & 0x1F )
-#define _IRA_VEX_VVVV(x)			(~( ( x & 0x78 ) >> 3 ) & 0x00F)
+#define _IRA_VEX_VVVV(x)			( ~( ( x & 0x78 ) >> 3 ) & 0x00F )
 #define _IRA_VEX_PP(x)				( x & 0x03 )
 
 /* Prefixes flags. */

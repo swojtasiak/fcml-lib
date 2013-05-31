@@ -48,7 +48,7 @@ fcml_ceh_error fcml_fn_modrm_decode_16bit( fcml_st_modrm_context *context, fcml_
 	fcml_bool result;
 	fcml_st_memory_stream *stream = &(modrm_source->stream);
 
-	if( context->addr_form != FCML_MODRM_AF_32_BIT ) {
+	if( context->addr_form != FCML_AF_32_BIT ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 

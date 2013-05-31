@@ -81,6 +81,22 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_IA_INSTRUCTION(x,y) { x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
 
 /*********************************
+ * Prefix fields.
+ *********************************/
+
+#define FCML_DEF_PREFIX_W_1(x)								FCML_TP_GET_BIT(x,3)
+#define FCML_DEF_PREFIX_W_0(x)								FCML_TP_GET_BIT(x,4)
+#define FCML_DEF_PREFIX_VEX_L_1(x)							FCML_TP_GET_BIT(x,5)
+#define FCML_DEF_PREFIX_VEX_L_0(x)							FCML_TP_GET_BIT(x,6)
+#define FCML_DEF_PREFIX_VEX_REQ(x)							FCML_TP_GET_BIT(x,7)
+#define FCML_DEF_PREFIX_VEX_VVVV(x)							FCML_TP_GET_BIT(x,8)
+#define FCML_DEF_PREFIX_VEX_L_IGNORE_OS(x)					FCML_TP_GET_BIT(x,9)
+#define FCML_DEF_PREFIX_XOP_REQ(x)							FCML_TP_GET_BIT(x,10)
+#define FCML_DEF_PREFIX_MANDATORY_66(x) 					FCML_TP_GET_BIT(x,12)
+#define FCML_DEF_PREFIX_MANDATORY_F2(x) 					FCML_TP_GET_BIT(x,13)
+#define FCML_DEF_PREFIX_MANDATORY_F3(x) 					FCML_TP_GET_BIT(x,14)
+
+/*********************************
  * Opcode fields extractors.
  *********************************/
 

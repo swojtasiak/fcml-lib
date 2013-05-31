@@ -108,7 +108,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const
 	fcml_uint8_t f_mod = 0;
 	fcml_uint8_t f_rm = 0;
 
-	if( context->addr_form == FCML_MODRM_AF_64_BIT ) {
+	if( context->addr_form == FCML_AF_64_BIT ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 
@@ -224,7 +224,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, con
 	fcml_bool choose_sib = FCML_FALSE;
 
 	// Check if addressing mode and effestive address size are compatible.
-	if( ( context->effective_address_size == FCML_DS_64 && context->addr_form != FCML_MODRM_AF_64_BIT ) || ( context->addr_form == FCML_MODRM_AF_64_BIT && context->effective_address_size == FCML_DS_16 ) ) {
+	if( ( context->effective_address_size == FCML_DS_64 && context->addr_form != FCML_AF_64_BIT ) || ( context->addr_form == FCML_AF_64_BIT && context->effective_address_size == FCML_DS_16 ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 
@@ -371,7 +371,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, con
 		f_reg &= 0x07;
 	}
 
-	if( context->addr_form != FCML_MODRM_AF_64_BIT && ( f_ext_r || f_ext_x || f_ext_b ) ) {
+	if( context->addr_form != FCML_AF_64_BIT && ( f_ext_r || f_ext_x || f_ext_b ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 

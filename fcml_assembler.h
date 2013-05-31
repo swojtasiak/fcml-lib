@@ -12,6 +12,12 @@
 #include "fcml_common.h"
 #include "fcml_errors.h"
 
+typedef struct fcml_st_assembler_context {
+	fcml_en_addr_form addr_form;
+	fcml_data_size effective_address_size;
+	fcml_data_size effective_operand_size;
+} fcml_st_assembler_context;
+
 typedef struct fcml_st_assembled_instruction {
 	fcml_uint8_t *code;
 	fcml_usize code_length;
@@ -23,7 +29,7 @@ typedef struct fcml_st_assembler_result {
 } fcml_st_assembler_result;
 
 fcml_ceh_error fcml_fn_asm_init();
-fcml_ceh_error fcml_fn_assemble( fcml_st_instruction *instruction, fcml_st_assembler_result **result );
+fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, fcml_st_instruction *instruction, fcml_st_assembler_result **result );
 void fcml_fn_assemble_free( fcml_st_assembler_result *result );
 void fcml_fn_asm_free();
 

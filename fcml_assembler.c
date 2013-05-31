@@ -39,7 +39,7 @@ void fcml_fn_assemble_free( fcml_st_assembler_result *result ) {
 	}
 }
 
-fcml_ceh_error fcml_fn_assemble( fcml_st_instruction *instruction, fcml_st_assembler_result **result ) {
+fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st_instruction *instruction, fcml_st_assembler_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -55,6 +55,8 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_instruction *instruction, fcml_st_assem
 	}
 
 	fcml_st_asm_encoding_context context;
+
+	context.assembler_context = asm_context;
 
 	memset( &context, 0, sizeof( fcml_st_asm_encoding_context ) );
 

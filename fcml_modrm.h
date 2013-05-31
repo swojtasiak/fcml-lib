@@ -20,11 +20,6 @@ typedef fcml_uint8_t fcml_esa;
 #define FCML_ESA_SF_32		0x02
 #define FCML_ESA_SF_64		0x04
 
-typedef enum fcml_en_modrm_addr_form {
-	FCML_MODRM_AF_32_BIT,
-	FCML_MODRM_AF_64_BIT,
-} fcml_en_modrm_addr_form;
-
 typedef struct fcml_st_modrm_source {
 	fcml_uint8_t ext_r;
 	fcml_uint8_t ext_x;
@@ -61,7 +56,7 @@ typedef struct fcml_st_modrm {
 
 typedef struct fcml_st_modrm_context {
 	// Sets 32 or 64 bit addressing mode.
-	fcml_en_modrm_addr_form addr_form;
+	fcml_en_addr_form addr_form;
 	// Effective addres size using to decode/encode ModR/M. It's very important to set this value properly,
 	// because 16 and 32/64 addressing forms
 	fcml_data_size effective_address_size;
