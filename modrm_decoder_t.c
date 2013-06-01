@@ -28,7 +28,7 @@ void fcml_tf_modrm_decoder_test_1(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_uint8_t buffer[] = {23};
@@ -65,7 +65,7 @@ void fcml_tf_modrm_decoder_test_2(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_uint8_t buffer[] = {0x1E, 0x01, 0x02};
@@ -103,7 +103,7 @@ void fcml_tf_modrm_decoder_test_3(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_uint8_t buffer[] = {0x0B};
@@ -140,7 +140,7 @@ void fcml_tf_modrm_decoder_test_4(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_uint8_t buffer[] = {0x14};
@@ -177,7 +177,7 @@ void fcml_tf_modrm_decoder_test_5(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_uint8_t buffer[] = {0x14};
@@ -214,7 +214,7 @@ void fcml_tf_modrm_decoder_test_6(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_uint8_t buffer[] = {0x73, 0x01};
@@ -252,7 +252,7 @@ void fcml_tf_modrm_decoder_test_7(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_uint8_t buffer[] = {0x73};
@@ -280,7 +280,7 @@ void fcml_tf_modrm_3264_decoder_test_1(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_32;
 
 	fcml_uint8_t buffer[] = {0x1B};
@@ -319,7 +319,7 @@ void fcml_tf_modrm_3264_decoder_test_2(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_32_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_32;
 
 	fcml_uint8_t buffer[] = {0x15, 0x01, 0x02, 0x03, 0x04};
@@ -357,7 +357,7 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = {0x15, 0x66, 0x77, 0x88, 0xFF};
@@ -396,7 +396,7 @@ void fcml_tf_modrm_3264_decoder_test_4(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_32;
 
 	fcml_uint8_t buffer[] = {0x41, 0x66};
@@ -436,7 +436,7 @@ void fcml_tf_modrm_3264_decoder_test_5(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_32;
 
 	fcml_uint8_t buffer[] = {0x81, 0x04, 0x03, 0x02, 0x01};
@@ -475,7 +475,7 @@ void fcml_tf_modrm_3264_decoder_test_6(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = {0x81, 0x04, 0x03, 0x02, 0x01};
@@ -514,7 +514,7 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_uint8_t buffer[] = {0x81, 0x04, 0x03, 0x02, 0x01};
@@ -553,7 +553,7 @@ void fcml_tf_modrm_3264_decoder_test_8(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = {0xD8};
@@ -590,7 +590,7 @@ void fcml_tf_modrm_3264_decoder_test_9(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = {0xD8};
@@ -627,7 +627,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x04, 0x25, 0x04, 0x03, 0x02, 0x01 };
@@ -667,7 +667,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x04, 0x1D, 0x04, 0x03, 0x02, 0x01 };
@@ -707,7 +707,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x04, 0x19 };
@@ -747,7 +747,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x04, 0x59 };
@@ -787,7 +787,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x04, 0x99 };
@@ -827,7 +827,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x04, 0xD9 };
@@ -867,7 +867,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x44, 0xD9, 0x55 };
@@ -907,7 +907,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x84, 0xD9, 0x04, 0x03, 0x02, 0x01 };
@@ -947,7 +947,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x84, 0xE1, 0x04, 0x03, 0x02, 0x01 };
@@ -987,7 +987,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x84, 0xD9, 0x04, 0x03, 0x02, 0x01 };
@@ -1029,7 +1029,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 
 	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
-	context.addr_form = FCML_MODRM_AF_64_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
 	fcml_uint8_t buffer[] = { 0x84, 0xD9, 0x04, 0x03, 0x02, 0x01 };

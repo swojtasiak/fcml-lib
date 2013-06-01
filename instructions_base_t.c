@@ -1,0 +1,162 @@
+/*
+ * instructions_base_t.c
+ *
+ *  Created on: 01-06-2013
+ *      Author: tAs
+ */
+
+#include "instructions_base_t.h"
+
+#include <string.h>
+#include <stdio.h>
+
+#include "fcml_assembler.h"
+#include "ira.h"
+#include "ira_ren_intel.h"
+#include "fcml_x64intel_asm_parser.h"
+
+void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed ) {
+
+	struct ira_disassemble_info info;
+	info.address = code;
+	info.size = size;
+	info.address_size_attribute = 0;
+	info.operand_size_attribute = 0;
+	info.mode = x64 ? IRA_MOD_64BIT : IRA_MOD_32BIT;
+	info.config.flags = 0;
+
+	if( x64 ) {
+		info.instruction_pointer.rip = 0x0000800000401000;
+	} else {
+		info.instruction_pointer.eip = 0x00401000;
+	}
+
+	struct ira_disassemble_result result;
+
+	// Disassemble.
+	ira_disassemble( &info, &result );
+
+	if( result.code == RC_OK ) {
+
+		if( !failed ) {
+			printf("Should fail: %s\n", mnemonic);
+			CU_FAIL(FCML_FALSE);
+			return;
+		}
+
+		// Print.
+		char buffer[512] = {0};
+
+		struct ira_intel_format_info format;
+		format.show_zero_displacement = 0;
+		format.show_extended_displacement = 1;
+		format.immediate_hex_display = 1;
+		format.immediate_signed = 1;
+		format.show_instruction_code = 0;
+		format.show_extended_immediate = 1;
+		format.show_conditional_mnemonics_for_carry_flag = 1;
+		format.conditional_suffix_group = 0;
+
+		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
+
+		if( strcmp( buffer, mnemonic ) != 0 ) {
+			printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
+			CU_ASSERT( FCML_FALSE );
+			return;
+		} else {
+			CU_ASSERT(FCML_TRUE);
+		}
+
+		// Assemblation.
+		fcml_st_x64iap_parser_result *result;
+		fcml_ceh_error error = fcml_x64iap_parse( mnemonic, &result );
+		if( error ) {
+			printf("Can not parse: %s\n", mnemonic );
+			CU_ASSERT( FCML_FALSE );
+			return;
+		}
+
+		fcml_st_assembler_context context;
+		context.effective_address_size = 0;
+		context.effective_operand_size = 0;
+		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
+
+		fcml_st_assembler_result *asm_result;
+		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
+		if( error ) {
+			printf("Can not parse: %s\n", mnemonic );
+			CU_ASSERT( FCML_FALSE );
+		} else {
+
+			fcml_bool looking_for_instruction = FCML_TRUE;
+			fcml_bool found = FCML_FALSE;
+
+			int j = 0;
+			for( j = 0; j < 2; j++ ) {
+
+				fcml_st_coll_list *inst = asm_result->instructions;
+				fcml_st_coll_list_element *element = inst->head;
+				while( element ) {
+					fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
+					fcml_bool differ = FCML_FALSE;
+					int i;
+					if( size == assembled_instruction->code_length ) {
+						for( i = 0; i < size; i++ ) {
+							if( code[i] != assembled_instruction->code[i] ) {
+								differ = FCML_TRUE;
+								break;
+							}
+						}
+					} else {
+						differ = FCML_TRUE;
+					}
+					if( !differ ) {
+						found = FCML_TRUE;
+						break;
+					}
+					if( differ && !looking_for_instruction ) {
+						printf( "Original code:" );
+						for( i = 0; i < size; i++ ) {
+							printf( "%02"PRIx8, code[i] );
+						}
+						printf( "Assembled code:" );
+						for( i = 0; i < size; i++ ) {
+							printf( "%02"PRIx8, assembled_instruction->code[i] );
+						}
+					}
+					element = element->next;
+				}
+
+				if( found ) {
+					break;
+				}
+
+				looking_for_instruction = FCML_FALSE;
+			}
+
+			if( !found ) {
+				printf("Can not assemble: %s\n", mnemonic);
+				CU_ASSERT( FCML_FALSE );
+			}
+
+		}
+
+		fcml_fn_assemble_free( asm_result );
+
+		fcml_x64iap_free( result );
+
+
+	} else {
+
+		if( !failed ) {
+			return;
+		}
+
+		if( strcmp( "FAIL", mnemonic ) != 0 ) {
+			printf("Failed: %s\n", mnemonic);
+			CU_ASSERT( FCML_FALSE );
+		}
+	}
+
+}
+
