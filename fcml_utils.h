@@ -20,7 +20,11 @@ fcml_ceh_error fcml_fn_utils_displacement_to_uvint( const fcml_st_displacement *
 fcml_ceh_error fcml_fn_utils_displacement_to_vint( const fcml_st_displacement *displacement, fcml_vint *vint );
 fcml_ceh_error fcml_fn_utils_uvint_to_displacement( const fcml_uvint *uvint, fcml_st_displacement *displacement );
 fcml_ceh_error fcml_fn_utils_vint_to_displacement( const fcml_vint *vint, fcml_st_displacement *displacement );
+fcml_ceh_error fcml_fn_utils_imm_to_uvint( fcml_st_immediate *imm, fcml_uvint *uvint );
+fcml_ceh_error fcml_fn_utils_imm_to_vint( fcml_st_immediate *imm, fcml_vint *vint );
 fcml_ceh_error fcml_fn_utils_extend_uvint( fcml_uvint *uvint, fcml_usize extension );
 fcml_ceh_error fcml_fn_utils_extend_vint( fcml_vint *vint, fcml_usize extension );
+fcml_data_size fcml_fn_utils_get_default_ASA(fcml_en_addr_form addr_form);
+fcml_data_size fcml_fn_utils_get_default_OSA(fcml_en_addr_form addr_form);
 
 #endif /* FCML_UTILS_H_ */

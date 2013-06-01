@@ -41,6 +41,7 @@ typedef fcml_ceh_error (*fcml_fnp_asm_operand_encoder)( fcml_ien_asm_part_proces
 typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes );
 
 typedef enum fcml_ien_asm_instruction_part_processor_type {
+	FCML_IEN_ASM_IPPT_VERIFIER,
 	FCML_IEN_ASM_IPPT_ENCODER,
 	FCML_IEN_ASM_IPPT_DECORATOR,
 } fcml_ien_asm_instruction_part_processor_type;

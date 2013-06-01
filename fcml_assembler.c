@@ -9,6 +9,7 @@
 
 #include "fcml_ceh.h"
 #include "fcml_env.h"
+#include "fcml_utils.h"
 
 #include "fcml_assembler.h"
 #include "fcml_asm_encoding.h"
@@ -52,6 +53,13 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st
 	error = fcml_fn_asm_get_instruction_encodings( instruction->mnemonic, &addr_modes );
 	if( error ) {
 		return error;
+	}
+
+	if( !asm_context->effective_address_size ) {
+		asm_context->effective_address_size = fcml_fn_utils_get_default_ASA(asm_context->addr_form);
+	}
+	if( !asm_context->effective_operand_size ) {
+		asm_context->effective_operand_size = fcml_fn_utils_get_default_OSA(asm_context->addr_form);
 	}
 
 	fcml_st_asm_encoding_context context;

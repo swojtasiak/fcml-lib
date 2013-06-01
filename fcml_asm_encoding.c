@@ -12,10 +12,157 @@
 #include "fcml_coll.h"
 #include "fcml_env.h"
 #include "fcml_errors.h"
+#include "fcml_utils.h"
 
 fcml_coll_map instructions_map = NULL;
 
-fcml_uint8_t fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_uint8_t encoded_register_operand_size, fcml_data_size operand_size ) {
+enum fcml_ien_comparator_type {
+	FCML_IEN_CT_EQUAL,
+	FCML_IEN_CT_EQUAL_OR_LESS,
+};
+
+fcml_ceh_error fcml_ifn_decode_dynamic_operand_size( fcml_st_asm_encoding_context *context, fcml_uint8_t encoded_operand_size, fcml_data_size data_size, fcml_data_size *encoded_data_size, enum fcml_ien_comparator_type comparator ) {
+	fcml_st_asm_data_size_flags *flags = &(context->data_size_flags);
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_data_size effective_address_size = 0;
+	fcml_data_size effective_operand_size = 0;
+	fcml_nuint8_t l = { 0, FCML_FALSE };
+	if( encoded_data_size != NULL ) {
+		*encoded_data_size = data_size;
+	}
+	switch( encoded_operand_size ) {
+	case FCML_EOS_UNDEFINED:
+		break;
+	case FCML_EOS_L:
+		switch( data_size) {
+		case FCML_DS_128:
+			l.is_not_null = FCML_TRUE;
+			l.value = 0;
+			break;
+		case FCML_DS_256:
+			l.is_not_null = FCML_TRUE;
+			l.value = 1;
+			break;
+		default:
+			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			break;
+		}
+		break;
+	case FCML_EOS_EASA:
+		if( data_size == FCML_DS_16 || data_size == FCML_DS_32 || data_size == FCML_DS_64 ) {
+			effective_address_size = data_size;
+		} else {
+			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+		}
+		break;
+	case FCML_EOS_EOSA:
+		if( data_size == FCML_DS_16 || data_size == FCML_DS_32 || data_size == FCML_DS_64 ) {
+			effective_operand_size = data_size;
+		} else {
+			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+		}
+		break;
+	case FCML_EOS_14_28:
+		switch( data_size ) {
+		case 14 * 8:
+			effective_operand_size = 16;
+			break;
+		case 28 * 8:
+			if( context->assembler_context->effective_operand_size == FCML_DS_16 ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			} else {
+				effective_operand_size = context->assembler_context->effective_operand_size;
+			}
+			break;
+		default:
+			break;
+		}
+		break;
+	case FCML_EOS_32_64:
+		switch( data_size ) {
+		case 16 * 2:
+			effective_operand_size = 16;
+			break;
+		case 32 * 2:
+			if( context->assembler_context->effective_operand_size == FCML_DS_16 ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			} else {
+				effective_operand_size = context->assembler_context->effective_operand_size;
+			}
+			break;
+		default:
+			break;
+		}
+		break;
+	case FCML_EOS_94_108:
+		switch( data_size ) {
+		case 94 * 8:
+			effective_operand_size = 16;
+			break;
+		case 108 * 8:
+			if( context->assembler_context->effective_operand_size == FCML_DS_16 ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			} else {
+				effective_operand_size = context->assembler_context->effective_operand_size;
+			}
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		if( comparator == FCML_IEN_CT_EQUAL ) {
+			if ( encoded_operand_size * 8 != data_size ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			}
+		} else {
+			if ( encoded_operand_size * 8 < data_size ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			} else {
+				if( encoded_data_size != NULL ) {
+					*encoded_data_size = encoded_operand_size * 8;
+				}
+			}
+		}
+
+		break;
+	}
+
+	if( !error ) {
+		if( l.is_not_null ) {
+			if( flags->l.is_not_null && flags->l.value != l.value ) {
+				// All dynamic operands have to be of the same size.
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			} else {
+				flags->l = l;
+			}
+		}
+		if( effective_address_size ) {
+			if( flags->effective_address_size && effective_address_size != flags->effective_address_size ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			} else {
+				flags->effective_address_size = effective_address_size;
+				if( encoded_data_size != NULL ) {
+					*encoded_data_size = effective_address_size;
+				}
+			}
+		}
+		if( effective_operand_size ) {
+			if( flags->effective_operand_size && effective_operand_size != flags->effective_operand_size ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			} else {
+				flags->effective_operand_size = effective_operand_size;
+				if( encoded_data_size != NULL ) {
+					*encoded_data_size = effective_operand_size;
+				}
+			}
+		}
+	}
+
+	return error;
+}
+
+fcml_bool fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_uint8_t encoded_register_operand_size, fcml_data_size operand_size, enum fcml_ien_comparator_type comparator ) {
 	fcml_bool result = FCML_TRUE;
 	switch( encoded_register_operand_size ) {
 	case FCML_EOS_UNDEFINED:
@@ -63,7 +210,11 @@ fcml_uint8_t fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, f
 		}
 		break;
 	default:
-		result = ( encoded_register_operand_size * 8 == operand_size );
+		if( comparator == FCML_IEN_CT_EQUAL ) {
+			result = ( encoded_register_operand_size * 8 == operand_size );
+		} else {
+			result = ( encoded_register_operand_size * 8 >= operand_size );
+		}
 		break;
 	}
 	return result;
@@ -74,42 +225,97 @@ fcml_uint8_t fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, f
  *********************************/
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_imm( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_sf_def_tma_imm *args = (fcml_sf_def_tma_imm*)addr_mode->addr_mode_args;
+	fcml_st_immediate *immediate = &(operand_def->immediate);
+	switch( phase ) {
+	case FCML_IEN_ASM_IPPP_ACCEPT:
+		if( operand_def->type == FCML_EOT_IMMEDIATE ) {
+			if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_imm_size, operand_def->immediate.imm_size, FCML_IEN_CT_EQUAL_OR_LESS ) ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND;
+			}
+		} else {
+			error = FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+		break;
+	case FCML_IEN_ASM_IPPP_FIRST_PHASE: {
+		// Encode IMM.
+		fcml_data_size encoded_size;
+		error = fcml_ifn_decode_dynamic_operand_size( context, args->encoded_imm_size, immediate->imm_size, &encoded_size, FCML_IEN_CT_EQUAL_OR_LESS );
+		if( !error ) {
+			fcml_uvint uvint;
+			if( !fcml_fn_utils_imm_to_uvint( immediate, &uvint ) && !fcml_fn_utils_extend_uvint( &uvint, encoded_size ) ) {
+				fcml_st_memory_stream stream = { &(operand_enc->code), 0, sizeof( operand_enc->code ) };
+				error = fcml_fn_utils_encode_uvint( &stream, &uvint );
+				if( !error ) {
+					operand_enc->code_length = stream.offset;
+				}
+			} else {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	return error;
 }
 
+// Example: FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE )
 fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_reg( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_sf_def_tma_explicit_reg *args = (fcml_sf_def_tma_explicit_reg*)addr_mode->addr_mode_args;
+	fcml_st_register *reg = &(operand_def->reg);
+	switch( phase ) {
+	case FCML_IEN_ASM_IPPP_ACCEPT:
+		if( operand_def->type != FCML_EOT_REGISTER ) {
+			error = FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+		break;
+	case FCML_IEN_ASM_IPPP_FIRST_PHASE: {
+		// Encode IMM.
+		fcml_data_size encoded_size;
+		error = fcml_ifn_decode_dynamic_operand_size( context, args->encoded_reg_size, reg->size, &encoded_size, FCML_IEN_CT_EQUAL );
+		break;
+	}
+	default:
+		break;
+	}
+	return error;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer_indirect( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_ib( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+
+	/*fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;;
 
 	fcml_sf_def_tma_rm *args = (fcml_sf_def_tma_rm*)addr_mode->addr_mode_args;
 
@@ -129,6 +335,8 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		if( operand_def->type == FCML_EOT_REGISTER ) {
 			context->mod_rm.reg.is_not_null = FCML_TRUE;
 			context->mod_rm.reg.value = operand_def->reg.reg;
+			// Modify data size flags if there is such need.
+			error = fcml_ifn_set_data_size_flags( context, args->encoded_register_operand_size, operand_def->reg.size, NULL );
 		} else {
 			context->mod_rm.base = operand_def->effective_address.base;
 			context->mod_rm.displacement = operand_def->effective_address.displacement;
@@ -137,12 +345,14 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		}
 	}
 
-	return FCML_CEH_GEC_NO_ERROR;
+	return error;*/
+
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 
-	fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
+	/*fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
 
 	if( phase == FCML_IEN_ASM_IPPP_ACCEPT ) {
 		if( operand_def->type != FCML_EOT_REGISTER ) {
@@ -155,19 +365,21 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase
 		context->mod_rm.reg_opcode = operand_def->reg.reg;
 	}
 
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_CEH_GEC_NO_ERROR;*/
+
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_vex_vvvv( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_is4( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_vsib( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_CEH_GEC_NO_ERROR;
+	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
 fcml_fnp_asm_operand_encoder fcml_def_operand_encoders[] = {
@@ -219,7 +431,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 	// First phase.
 
 	int i;
-	for( i = 0; i < sizeof( fcml_asm_executed_phases ) / sizeof( fcml_ien_asm_part_processor_phase ); i++ ) {
+	for( i = 0; !error && i < sizeof( fcml_asm_executed_phases ) / sizeof( fcml_ien_asm_part_processor_phase ); i++ ) {
 		fcml_st_asm_instruction_part *current_instruction_part = instruction_part;
 		fcml_ifn_asm_instruction_part_processor_chain *current_processor = addr_mode->part_processor_chain;
 		fcml_bool first = FCML_TRUE;
@@ -229,7 +441,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 				current_instruction_part++;
 			}
 			first = FCML_FALSE;
-			error = descriptor->processor( fcml_asm_executed_phases[i], context, addr_mode->addr_mode_desc, current_instruction_part, descriptor->processor_args );
+			error = descriptor->processor( fcml_asm_executed_phases[i], context, addr_mode->addr_mode_desc, descriptor->processor_type == FCML_IEN_ASM_IPPT_VERIFIER ? NULL : current_instruction_part, descriptor->processor_args );
 			if( error ) {
 				// Something failed.
 				break;
@@ -326,19 +538,15 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 			while( addr_mode_element ) {
 				fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)addr_mode_element->item;
 				if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
-
 					fcml_st_assembled_instruction *assembled_instruction;
 					error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
-					if( error ) {
-						break;
+					if( !error ) {
+						if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
+							fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
+							error = FCML_CEH_GEC_OUT_OF_MEMORY;
+							break;
+						}
 					}
-
-					if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
-						fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
-						error = FCML_CEH_GEC_OUT_OF_MEMORY;
-						break;
-					}
-
 				}
 				addr_mode_element = addr_mode_element->next;
 			}
@@ -395,26 +603,38 @@ void fcml_ifn_asm_processor_operand_encoder_args_deallocator( fcml_ptr ptr ) {
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper( fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_instruction *instruction, fcml_ptr args ) {
 	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = (struct fcml_ist_asm_operand_encoder_wrapper_args*)args;
 	fcml_st_operand *operand = &(instruction->operands[wrapper_args->operand_index]);
-	return wrapper_args->operand_encoder( FCML_IEN_ASM_IPPP_ACCEPT, context, addr_mode_desc, wrapper_args->decoded_addr_mode, operand, NULL );
+	if( wrapper_args->operand_encoder ) {
+		return wrapper_args->operand_encoder( FCML_IEN_ASM_IPPP_ACCEPT, context, addr_mode_desc, wrapper_args->decoded_addr_mode, operand, NULL );
+	} else {
+		// This operand shouldn't be defined.
+		if( instruction->operands[wrapper_args->operand_index].type != FCML_EOT_NONE ) {
+			return FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+		return FCML_CEH_GEC_NO_ERROR;
+	}
 }
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = (struct fcml_ist_asm_operand_encoder_wrapper_args*)args;
 	fcml_st_operand *operand = &(context->instruction->operands[wrapper_args->operand_index]);
-	return wrapper_args->operand_encoder( phase, context, addr_mode_def, wrapper_args->decoded_addr_mode, operand, instruction_part );
+	if( wrapper_args->operand_encoder ) {
+		return wrapper_args->operand_encoder( phase, context, addr_mode_def, wrapper_args->decoded_addr_mode, operand, instruction_part );
+	} else {
+		return FCML_CEH_GEC_NO_ERROR;
+	}
 }
 
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
 
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 
-	if( addr_mode->opperands[flags] != FCML_NA ) {
+	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = fcml_fn_env_clear_memory_alloc( sizeof( struct fcml_ist_asm_operand_encoder_wrapper_args ) );
+	if( !wrapper_args ) {
+		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
+		return descriptor;
+	}
 
-		struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = fcml_fn_env_clear_memory_alloc( sizeof( struct fcml_ist_asm_operand_encoder_wrapper_args ) );
-		if( !wrapper_args ) {
-			*error = FCML_CEH_GEC_OUT_OF_MEMORY;
-			return descriptor;
-		}
+	if( addr_mode->opperands[flags] != FCML_NA ) {
 
 		wrapper_args->decoded_addr_mode = fcml_fnp_def_decode_addr_mode_args( addr_mode->opperands[flags], error );
 		if( *error ) {
@@ -422,15 +642,18 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 		}
 
 		wrapper_args->operand_encoder = fcml_def_operand_encoders[wrapper_args->decoded_addr_mode->addr_mode];
-		wrapper_args->operand_index = flags;
 
-		descriptor.processor_args_deallocator = fcml_ifn_asm_processor_operand_encoder_args_deallocator;
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
-		descriptor.processor = fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper;
-		descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper;
-		descriptor.processor_args = wrapper_args;
-
+	} else {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_VERIFIER;
 	}
+
+	wrapper_args->operand_index = flags;
+
+	descriptor.processor_args_deallocator = fcml_ifn_asm_processor_operand_encoder_args_deallocator;
+	descriptor.processor = fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper;
+	descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper;
+	descriptor.processor_args = wrapper_args;
 
 	return descriptor;
 }

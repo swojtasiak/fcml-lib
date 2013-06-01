@@ -7,6 +7,41 @@
 
 #include "fcml_utils.h"
 
+fcml_data_size fcml_fn_utils_get_default_ASA(fcml_en_addr_form addr_form) {
+	fcml_data_size result = 0;
+	if (addr_form) {
+		switch (addr_form) {
+		case FCML_AF_16_BIT:
+			result = FCML_DS_16;
+			break;
+		case FCML_AF_32_BIT:
+			result = FCML_DS_32;
+			break;
+		case FCML_AF_64_BIT:
+			result = FCML_DS_64;
+			break;
+
+		}
+	}
+	return result;
+}
+
+fcml_data_size fcml_fn_utils_get_default_OSA(fcml_en_addr_form addr_form) {
+	fcml_data_size result = 0;
+	switch (addr_form) {
+	case FCML_AF_16_BIT:
+		result = FCML_DS_16;
+		break;
+	case FCML_AF_32_BIT:
+		result = FCML_DS_32;
+		break;
+	case FCML_AF_64_BIT:
+		result = FCML_DS_32;
+		break;
+	}
+	return result;
+}
+
 fcml_ceh_error fcml_fn_utils_decode_uvint( fcml_st_memory_stream *stream, fcml_uvint *uvint, fcml_usize size ) {
 	fcml_bool result = FCML_FALSE;
 	switch(size) {
@@ -192,6 +227,48 @@ fcml_ceh_error fcml_fn_utils_displacement_to_vint( const fcml_st_displacement *d
 		break;
 	}
 	vint->size = displacement->size;
+	return error;
+}
+
+fcml_ceh_error fcml_fn_utils_imm_to_uvint( fcml_st_immediate *imm, fcml_uvint *uvint ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	uvint->uint64 = 0;
+	switch( imm->imm_size ) {
+	case FCML_DS_8:
+		uvint->uint8 = (unsigned)imm->imm8;
+		break;
+	case FCML_DS_16:
+		uvint->uint16 = (unsigned)imm->imm16;
+		break;
+	case FCML_DS_32:
+		uvint->uint32 = (unsigned)imm->imm32;
+		break;
+	default:
+		error = FCML_CEH_GEC_INVALID_INPUT;
+		break;
+	}
+	uvint->size = imm->imm_size;
+	return error;
+}
+
+fcml_ceh_error fcml_fn_utils_imm_to_vint( fcml_st_immediate *imm, fcml_vint *vint ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	vint->int64 = 0;
+	switch( imm->imm_size ) {
+	case FCML_DS_8:
+		vint->int8 = (signed)imm->imm8;
+		break;
+	case FCML_DS_16:
+		vint->int16 = (signed)imm->imm16;
+		break;
+	case FCML_DS_32:
+		vint->int32 = (signed)imm->imm32;
+		break;
+	default:
+		error = FCML_CEH_GEC_INVALID_INPUT;
+		break;
+	}
+	vint->size = imm->imm_size;
 	return error;
 }
 

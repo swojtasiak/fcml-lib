@@ -13,6 +13,7 @@
 #define FCML_OPERANDS_COUNT	5
 
 typedef enum fcml_en_addr_form {
+	FCML_AF_16_BIT,
 	FCML_AF_32_BIT,
 	FCML_AF_64_BIT,
 } fcml_en_addr_form;
