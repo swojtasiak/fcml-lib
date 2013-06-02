@@ -129,7 +129,11 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 						}
 					}
 					if( only_print_result || ( differ && !looking_for_instruction ) ) {
-						printf( "index: %d\nOriginal code:", assembled_instruction->__def_index );
+#if FCML_DEBUG
+						printf( "Index: %d\nOriginal code:", assembled_instruction->__def_index );
+#else
+						printf( "Original code:" );
+#endif
 						int i;
 						for( i = 0; i < size; i++ ) {
 							printf( "%02"PRIx8, code[i] );
