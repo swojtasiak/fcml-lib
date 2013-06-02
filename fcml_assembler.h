@@ -19,6 +19,10 @@ typedef struct fcml_st_assembler_context {
 } fcml_st_assembler_context;
 
 typedef struct fcml_st_assembled_instruction {
+#ifdef FCML_DEBUG
+	// Index of addressing mode used to assemble instruction.
+	fcml_uint8_t __def_index;
+#endif
 	fcml_uint8_t *code;
 	fcml_usize code_length;
 } fcml_st_assembled_instruction;

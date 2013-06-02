@@ -32,8 +32,11 @@ struct fcml_st_asm_instruction_addr_modes;
 
 typedef enum fcml_ien_asm_part_processor_phase {
 	FCML_IEN_ASM_IPPP_ACCEPT,
+	// ModR/M arguments filling.
 	FCML_IEN_ASM_IPPP_FIRST_PHASE,
+	// ModR/M encoding.
 	FCML_IEN_ASM_IPPP_SECOND_PHASE,
+	// Prefixes are applied in this phase.
 	FCML_IEN_ASM_IPPP_THIRD_PHASE
 } fcml_ien_asm_part_processor_phase;
 
@@ -50,7 +53,7 @@ typedef fcml_ceh_error (*fcml_ifn_asm_instruction_part_processor)( fcml_ien_asm_
 typedef fcml_ceh_error (*fcml_ifn_asm_instruction_part_processor_acceptor)( fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_instruction *instruction, fcml_ptr args );
 
 typedef struct fcml_ifn_asm_instruction_part_processor_descriptor {
-	fcml_ifn_asm_instruction_part_processor processor;
+	fcml_ifn_asm_instruction_part_processor processor_encoder;
 	fcml_ifn_asm_instruction_part_processor_acceptor processor_acceptor;
 	fcml_ien_asm_instruction_part_processor_type processor_type;
 	fcml_ptr processor_args;

@@ -408,7 +408,7 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_st_asm_encoding_context *context, 
 	fcml_ifn_asm_instruction_part_processor_chain *current_processor = addr_mode->part_processor_chain;
 	while( current_processor ) {
 		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
-		if( descriptor->processor_acceptor( context, addr_mode->addr_mode_desc, instruction, descriptor->processor_args ) == FCML_EN_UNSUPPORTED_OPPERAND ) {
+		if( descriptor->processor_acceptor != NULL && descriptor->processor_acceptor( context, addr_mode->addr_mode_desc, instruction, descriptor->processor_args ) == FCML_EN_UNSUPPORTED_OPPERAND ) {
 			return FCML_FALSE;
 		}
 		current_processor = current_processor->next_processor;
@@ -441,7 +441,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 				current_instruction_part++;
 			}
 			first = FCML_FALSE;
-			error = descriptor->processor( fcml_asm_executed_phases[i], context, addr_mode->addr_mode_desc, descriptor->processor_type == FCML_IEN_ASM_IPPT_VERIFIER ? NULL : current_instruction_part, descriptor->processor_args );
+			error = descriptor->processor_encoder( fcml_asm_executed_phases[i], context, addr_mode->addr_mode_desc, descriptor->processor_type == FCML_IEN_ASM_IPPT_VERIFIER ? NULL : current_instruction_part, descriptor->processor_args );
 			if( error ) {
 				// Something failed.
 				break;
@@ -535,12 +535,18 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 		// Choose addressing mode.
 		if( addr_modes->addr_modes->size ) {
 			fcml_st_coll_list_element *addr_mode_element = addr_modes->addr_modes->head;
+#ifdef FCML_DEBUG
+			int index = 0;
+#endif
 			while( addr_mode_element ) {
 				fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)addr_mode_element->item;
 				if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
 					fcml_st_assembled_instruction *assembled_instruction;
 					error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
 					if( !error ) {
+#ifdef FCML_DEBUG
+							assembled_instruction->__def_index = index;
+#endif
 						if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
 							fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
 							error = FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -549,6 +555,9 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 					}
 				}
 				addr_mode_element = addr_mode_element->next;
+#ifdef FCML_DEBUG
+				index++;
+#endif
 			}
 
 			if( context->result->instructions->size == 0 ) {
@@ -651,7 +660,7 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 	wrapper_args->operand_index = flags;
 
 	descriptor.processor_args_deallocator = fcml_ifn_asm_processor_operand_encoder_args_deallocator;
-	descriptor.processor = fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper;
+	descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper;
 	descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper;
 	descriptor.processor_args = wrapper_args;
 
@@ -683,8 +692,44 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 	descriptor.processor_args = NULL;
-	descriptor.processor = fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder;
+	descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder;
 	descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder_acceptor;
+	return descriptor;
+}
+
+/////////////////////////////////
+// Prefixes encoder factories. //
+/////////////////////////////////
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_66_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+	if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
+		fcml_bool encode = FCML_FALSE;
+		if( FCML_DEF_PREFIX_MANDATORY_66( addr_mode_def->allowed_prefixes ) ) {
+			encode = FCML_TRUE;
+		} else {
+			encode = ( context->assembler_context->addr_form == FCML_AF_16_BIT && context->data_size_flags.effective_operand_size == FCML_DS_32 ) ||
+					( ( context->assembler_context->addr_form == FCML_AF_32_BIT || context->assembler_context->addr_form == FCML_AF_64_BIT ) && context->data_size_flags.effective_operand_size == FCML_DS_16 );
+		}
+		if( encode ) {
+			instruction_part->code[0] = 0x66;
+			instruction_part->code_length = 1;
+		}
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+
+	// 66 prefix can be applied to instructions without neither XOP nor VEX prefixes. Remember that this prefix can bes mandatory one.
+	if( ( FCML_DEF_PREFIX_MANDATORY_66( addr_mode->allowed_prefixes ) ||
+			( !FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) ) ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_66_prefix_encoder;
+		descriptor.processor_acceptor = NULL;
+	}
+
 	return descriptor;
 }
 
@@ -709,6 +754,7 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 
 // List of instruction part encoders for instruction prefixes.
 fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder, 0 },
 	{ NULL, 0 }
 };
 
@@ -739,8 +785,8 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 };
 
 fcml_ist_asm_instruction_part_factory_sequence fcml_asm_instruction_part_processor_factory_sequences_for_IA[] = {
-	{ fcml_asm_instruction_part_processor_factories_opcode_for_IA },
 	{ fcml_asm_instruction_part_processor_factories_prefixes_for_IA },
+	{ fcml_asm_instruction_part_processor_factories_opcode_for_IA },
 	{ fcml_asm_instruction_part_processor_factories_operand_1_for_IA },
 	{ fcml_asm_instruction_part_processor_factories_operand_2_for_IA },
 	{ fcml_asm_instruction_part_processor_factories_operand_3_for_IA },
@@ -759,7 +805,7 @@ fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_pro
 		fcml_ist_asm_instruction_part_factory_details *current_factory = current_factories_sequence->details;
 		while( current_factory->factory ) {
 			fcml_ifn_asm_instruction_part_processor_descriptor descriptor = current_factory->factory( current_factory->flags, instruction, addr_mode, error );
-			if( descriptor.processor ) {
+			if( descriptor.processor_encoder ) {
 
 				// Allocate chain element for new instruction part encoder.
 				fcml_ifn_asm_instruction_part_processor_chain *new_chain = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ifn_asm_instruction_part_processor_chain ) );
@@ -932,7 +978,7 @@ void fcml_ifn_asm_add_instruction_encoding( fcml_st_def_instruction_description 
 
 		fcml_st_asm_instruction_addr_mode *addr_mode = fcml_ifn_asm_prepare_addr_mode( instruction, addr_mode_desc, error );
 		if( !*error ) {
-			if( !fcml_fn_coll_list_add_front( addr_modes->addr_modes, addr_mode ) ) {
+			if( !fcml_fn_coll_list_add_back( addr_modes->addr_modes, addr_mode ) ) {
 				*error = FCML_CEH_GEC_OUT_OF_MEMORY;
 				fcml_ifn_asm_free_addr_mode( addr_mode );
 				break;
