@@ -15,7 +15,7 @@
 #include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
 
-void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed ) {
+void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result ) {
 
 	struct ira_disassemble_info info;
 	info.address = code;
@@ -37,6 +37,10 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 	ira_disassemble( &info, &result );
 
 	if( result.code == RC_OK ) {
+
+		if( only_print_result ) {
+			printf("Instruction: %s\n", mnemonic);
+		}
 
 		if( !failed ) {
 			printf("Should fail: %s\n", mnemonic);
@@ -61,10 +65,14 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 
 		if( strcmp( buffer, mnemonic ) != 0 ) {
 			printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
-			CU_ASSERT( FCML_FALSE );
+			if( !only_print_result ) {
+				CU_ASSERT( FCML_FALSE );
+			}
 			return;
 		} else {
-			CU_ASSERT(FCML_TRUE);
+			if( !only_print_result ) {
+				CU_ASSERT(FCML_TRUE);
+			}
 		}
 
 		// Assemblation.
@@ -72,7 +80,9 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		fcml_ceh_error error = fcml_x64iap_parse( mnemonic, &result );
 		if( error ) {
 			printf("Can not parse: %s\n", mnemonic );
-			CU_ASSERT( FCML_FALSE );
+			if( !only_print_result ) {
+				CU_ASSERT( FCML_FALSE );
+			}
 			return;
 		}
 
@@ -84,8 +94,10 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		fcml_st_assembler_result *asm_result;
 		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
 		if( error ) {
-			printf("Can not parse: %s\n", mnemonic );
-			CU_ASSERT( FCML_FALSE );
+			printf("Can not assemble: %s\n", mnemonic );
+			if( !only_print_result ) {
+				CU_ASSERT( FCML_FALSE );
+			}
 		} else {
 
 			fcml_bool looking_for_instruction = FCML_TRUE;
@@ -99,30 +111,34 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 				while( element ) {
 					fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
 					fcml_bool differ = FCML_FALSE;
-					int i;
-					if( size == assembled_instruction->code_length ) {
-						for( i = 0; i < size; i++ ) {
-							if( code[i] != assembled_instruction->code[i] ) {
-								differ = FCML_TRUE;
-								break;
+					if( !only_print_result ) {
+						int i;
+						if( size == assembled_instruction->code_length ) {
+							for( i = 0; i < size; i++ ) {
+								if( code[i] != assembled_instruction->code[i] ) {
+									differ = FCML_TRUE;
+									break;
+								}
 							}
+						} else {
+							differ = FCML_TRUE;
 						}
-					} else {
-						differ = FCML_TRUE;
+						if( !differ ) {
+							found = FCML_TRUE;
+							break;
+						}
 					}
-					if( !differ ) {
-						found = FCML_TRUE;
-						break;
-					}
-					if( differ && !looking_for_instruction ) {
-						printf( "Original code:" );
+					if( only_print_result || ( differ && !looking_for_instruction ) ) {
+						printf( "index: %d\nOriginal code:", assembled_instruction->__def_index );
+						int i;
 						for( i = 0; i < size; i++ ) {
 							printf( "%02"PRIx8, code[i] );
 						}
-						printf( "Assembled code:" );
-						for( i = 0; i < size; i++ ) {
+						printf( "\nAssembled code:" );
+						for( i = 0; i < assembled_instruction->code_length; i++ ) {
 							printf( "%02"PRIx8, assembled_instruction->code[i] );
 						}
+						printf("\n");
 					}
 					element = element->next;
 				}
@@ -132,11 +148,17 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 				}
 
 				looking_for_instruction = FCML_FALSE;
+
+				if( only_print_result ) {
+					break;
+				}
 			}
 
-			if( !found ) {
+			if( !only_print_result && !found ) {
 				printf("Can not assemble: %s\n", mnemonic);
-				CU_ASSERT( FCML_FALSE );
+				if( !only_print_result ) {
+					CU_ASSERT( FCML_FALSE );
+				}
 			}
 
 		}
@@ -154,7 +176,9 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 
 		if( strcmp( "FAIL", mnemonic ) != 0 ) {
 			printf("Failed: %s\n", mnemonic);
-			CU_ASSERT( FCML_FALSE );
+			if( !only_print_result ) {
+				CU_ASSERT( FCML_FALSE );
+			}
 		}
 	}
 
