@@ -24,6 +24,7 @@ typedef struct fcml_st_asm_data_size_flags {
 typedef struct fcml_st_asm_encoding_context {
 	fcml_st_asm_data_size_flags data_size_flags;
 	fcml_st_modrm mod_rm;
+	fcml_st_encoded_modrm encoded_mod_rm;
 	fcml_st_assembler_context *assembler_context;
 	fcml_st_instruction *instruction;
 	fcml_st_assembler_result *result;

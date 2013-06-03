@@ -16,6 +16,12 @@
 #include "fcml_common.h"
 #include "fcml_modrm_encoder.h"
 
+#define FCML_ENCODE_REX_BASE		0x40
+#define FCML_ENCODE_REX_W(rex,w)	( rex | ( w << 3 ) )
+#define FCML_ENCODE_REX_R(rex,r)	( rex | ( r << 2 ) )
+#define FCML_ENCODE_REX_X(rex,x)	( rex | ( x << 1 ) )
+#define FCML_ENCODE_REX_B(rex,b)	( rex | b )
+
 typedef struct fcml_st_asm_instruction_part {
 	fcml_uint8_t code[10];
 	int code_length;
