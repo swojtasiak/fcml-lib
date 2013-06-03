@@ -120,6 +120,9 @@ void fcml_tf_instruction_ADC(void) {
 	// 15 iw ADC AX, imm16
 	// 15 id ADC EAX, imm32
 	FCML_I3264( "adc ax,8042h",  0x66, 0x15, 0x42, 0x80 );
+	FCML_I3264( "adc eax,42806521h", 0x15, 0x21, 0x65, 0x80, 0x42 );
+	// REX.W + 15 id ADC RAX, imm32
+	FCML_I64( "adc rax,0000000042806521h", 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
 }
 
 CU_TestInfo fctl_ti_instructions_a[] = {

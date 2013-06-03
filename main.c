@@ -40,9 +40,10 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_I32_P( "adc ax,8042h",  0x66, 0x15, 0x42, 0x80 );
+//	FCML_I64_P( "adc eax,42806521h", 0x15, 0x21, 0x65, 0x80, 0x42 );
+	//FCML_I64_P( "adc rax,0000000042806521h", 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
 
-	return 0;
+	//return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
