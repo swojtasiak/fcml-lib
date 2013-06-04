@@ -229,7 +229,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
 	modrm.displacement.size = FCML_DS_16;
 	modrm.displacement.dis16 = 0xF2F1;
 
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_st_encoded_modrm encoded_modrm;
@@ -252,7 +252,7 @@ void fcml_tf_modrm_encoder_test_13(void) {
 	modrm.displacement.size = FCML_DS_8;
 	modrm.displacement.dis8 = 0xF1;
 
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_st_encoded_modrm encoded_modrm;
@@ -273,7 +273,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_1(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -303,7 +303,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_2(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -333,7 +333,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_3(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -363,7 +363,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_4(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -393,7 +393,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_5(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -420,7 +420,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_6(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -447,7 +447,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_7(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -467,7 +467,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_8(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -494,7 +494,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_9(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -527,7 +527,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_10(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -557,7 +557,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_11(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -588,7 +588,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_12(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -620,7 +620,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_13(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_16;
 
@@ -647,7 +647,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_1(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -675,7 +675,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_2(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -703,7 +703,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_3(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_64;
 	context.addr_form = FCML_AF_64_BIT;
@@ -732,7 +732,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_4(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_64;
 
@@ -753,7 +753,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_5(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	context.effective_address_size = FCML_DS_32;
 
 	modrm.base.type = FCML_REG_GPR;
@@ -775,7 +775,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_6(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -847,7 +847,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_7(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 	context.addr_form = FCML_AF_64_BIT;
@@ -880,7 +880,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_8(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -955,7 +955,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_9(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 	context.addr_form = FCML_AF_64_BIT;
@@ -983,7 +983,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_10(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -1005,7 +1005,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_11(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 	context.addr_form = FCML_AF_64_BIT;
@@ -1034,7 +1034,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_12(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_64;
 	context.addr_form = FCML_AF_32_BIT;
@@ -1056,7 +1056,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_1(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -1087,7 +1087,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_2(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -1118,7 +1118,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_3(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -1150,7 +1150,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_4(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -1182,7 +1182,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_5(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	context.effective_address_size = FCML_DS_32;
 
 	modrm.base.type = FCML_REG_GPR;
@@ -1213,7 +1213,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_6(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -1248,7 +1248,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_7(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -1286,7 +1286,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_8(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 
@@ -1326,7 +1326,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_9(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 	context.choose_sib_encoding = FCML_TRUE;
@@ -1402,7 +1402,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_10(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 	context.addr_form = FCML_AF_64_BIT;
@@ -1433,7 +1433,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_11(void) {
 	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_context context;
+	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
 	context.addr_form = FCML_AF_64_BIT;

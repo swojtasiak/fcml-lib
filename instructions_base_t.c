@@ -188,3 +188,67 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 
 }
 
+void IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed ) {
+
+	struct ira_disassemble_info info;
+	info.address = code;
+	info.size = size;
+	info.address_size_attribute = 0;
+	info.operand_size_attribute = 0;
+	info.mode = x64 ? IRA_MOD_64BIT : IRA_MOD_32BIT;
+	info.config.flags = 0;
+
+	if( x64 ) {
+		info.instruction_pointer.rip = 0x0000800000401000;
+	} else {
+		info.instruction_pointer.eip = 0x00401000;
+	}
+
+	struct ira_disassemble_result result;
+
+	// Disassemble.
+	ira_disassemble( &info, &result );
+
+	if( result.code == RC_OK ) {
+
+		if( !failed ) {
+			printf("Should fail: %s\n", mnemonic);
+			CU_FAIL(FCML_FALSE);
+			return;
+		}
+
+		// Print.
+		char buffer[512] = {0};
+
+		struct ira_intel_format_info format;
+		format.show_zero_displacement = 0;
+		format.show_extended_displacement = 1;
+		format.immediate_hex_display = 1;
+		format.immediate_signed = 1;
+		format.show_instruction_code = 0;
+		format.show_extended_immediate = 1;
+		format.show_conditional_mnemonics_for_carry_flag = 1;
+		format.conditional_suffix_group = 0;
+
+		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
+
+		if( strcmp( buffer, mnemonic ) != 0 ) {
+			printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
+			CU_ASSERT( FCML_FALSE );
+			return;
+		} else {
+
+			if( result.instruction_size != size ) {
+				printf("Instruction size: %d Disassembled code size: %d (%s)\n", (fcml_uint32_t)result.instruction_size, size, mnemonic);
+				CU_ASSERT(FCML_FALSE);
+			} else {
+				CU_ASSERT(FCML_TRUE);
+			}
+		}
+
+	} else {
+		CU_ASSERT(FCML_TRUE);
+	}
+
+}
+

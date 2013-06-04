@@ -41,26 +41,7 @@ void fcml_tf_instruction_AAS(void) {
 }
 
 /*
- * // ADC
-	_TEST32( "801501020304ff adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
-	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
-	_TEST32( "1442 adc al,42h", 0x14, 0x42 );
-	_TEST32( "1400 adc al,00h", 0x14, 0x00 );
-	_TEST32( "14ff adc al,0ffh", 0x14, 0xff );
-	_TEST64( "1442 adc al,42h", 0x14, 0x42 );
-	_TEST64( "1400 adc al,00h", 0x14, 0x00 );
-	_TEST64( "14ff adc al,0ffh", 0x14, 0xff );
-	// 15 iw ADC AX, imm16 C Valid Valid Add with carry imm16 to AX.
-	// 15 id ADC EAX, imm32 C Valid Valid Add with carry imm32 to EAX.
-	_TEST32( "66154280 adc ax,8042h", 0x66, 0x15, 0x42, 0x80 );
-	_TEST32( "1521658042 adc eax,42806521h", 0x15, 0x21, 0x65, 0x80, 0x42 );
-	_TEST64( "401521658042 adc eax,42806521h", 0x40, 0x15, 0x21, 0x65, 0x80, 0x42 );
-	_TEST64( "6640152165 adc ax,6521h", 0x66, 0x40, 0x15, 0x21, 0x65, 0x80, 0x42 );
-	// REX.W + 15 id ADC RAX, imm32 C Valid N.E. Add with carry imm32 sign extended to 64-bits to RAX.
-	_TEST64( "481521658042 adc rax,0000000042806521h", 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
-	_TEST64( "66481521658042 adc rax,0000000042806521h", 0x66, 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
-	_TEST64( "6766481521658042 adc rax,0000000042806521h", 0x67, 0x66, 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
-	_TEST64( "67664815ffffffff adc rax,0ffffffffffffffffh", 0x67, 0x66, 0x48, 0x15, 0xff, 0xff, 0xff, 0xff );
+ *
 	// 80 /2 ib ADC r/m8, imm8 B Valid Valid Add with carry imm8 to r/m8.
 	// REX + 80 /2 ib ADC r/m8*, imm8 B Valid N.E. Add with carry imm8 to r/m8.
 	_TEST32( "801501020304ff adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
@@ -110,8 +91,6 @@ void fcml_tf_instruction_AAS(void) {
 	_TEST64( "4d13648901 adc r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x13, 0x64, 0x89, 0x01 );
  */
 
-
-
 void fcml_tf_instruction_ADC(void) {
 	// 14 ib ADC AL, imm8
 	FCML_I3264( "adc al,42h", 0x14, 0x42 );
@@ -121,8 +100,18 @@ void fcml_tf_instruction_ADC(void) {
 	// 15 id ADC EAX, imm32
 	FCML_I3264( "adc ax,8042h",  0x66, 0x15, 0x42, 0x80 );
 	FCML_I3264( "adc eax,42806521h", 0x15, 0x21, 0x65, 0x80, 0x42 );
+	FCML_I64_D( "adc eax,42806521h", 0x40, 0x15, 0x21, 0x65, 0x80, 0x42 );
+	FCML_I64_D( "adc ax,6521h", 0x66, 0x40, 0x15, 0x21, 0x65 );
 	// REX.W + 15 id ADC RAX, imm32
 	FCML_I64( "adc rax,0000000042806521h", 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
+	FCML_I64_D( "adc rax,0000000042806521h", 0x66, 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
+	FCML_I64_D( "adc rax,0000000042806521h", 0x67, 0x66, 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
+	FCML_I64_D( "adc rax,0ffffffffffffffffh", 0x67, 0x66, 0x48, 0x15, 0xff, 0xff, 0xff, 0xff );
+	// 80 /2 ib ADC r/m8, imm8 B Valid Valid Add with carry imm8 to r/m8.
+	// REX + 80 /2 ib ADC r/m8*, imm8 B Valid N.E. Add with carry imm8 to r/m8.
+	FCML_I32( "adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
+	//_TEST32( "809601020304ff adc byte ptr [esi+04030201h],0ffh", 0x80, 0x96, 0x01, 0x02, 0x03, 0x04, 0xff, 0x00, 0x00 );
+	//_TEST32( "8054010203 adc byte ptr [ecx+eax+00000002h],03h", 0x80, 0x54, 0x01, 0x02, 0x03 );
 }
 
 CU_TestInfo fctl_ti_instructions_a[] = {
