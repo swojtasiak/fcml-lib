@@ -12,7 +12,12 @@
 #include "fcml_common.h"
 #include "fcml_errors.h"
 
+typedef struct fcml_st_assembler_configuration {
+	fcml_bool choose_sib_encoding;
+} fcml_st_assembler_configuration;
+
 typedef struct fcml_st_assembler_context {
+	fcml_st_assembler_configuration configuration;
 	fcml_en_addr_form addr_form;
 	fcml_data_size effective_address_size;
 	fcml_data_size effective_operand_size;

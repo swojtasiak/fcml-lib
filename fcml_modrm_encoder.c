@@ -99,7 +99,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *d
 	return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -209,7 +209,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_context *context, const
 }
 
 // 32 and 64 bit addressing mode.s
-fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
 
 	fcml_uint8_t f_mod = 0;
 	fcml_uint8_t f_rm = 0;
@@ -383,11 +383,32 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_context *context, con
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	if( context->effective_address_size == FCML_DS_16 ) {
+
+	fcml_data_size easa = context->effective_address_size;
+	fcml_en_addr_form addr_form = context->addr_form;
+
+	// Check if there is ambiguity.
+	if( decoded_modrm->base.size == FCML_DS_16 || decoded_modrm->index.size == FCML_DS_16 ) {
+		if( addr_form == FCML_AF_64_BIT ) {
+			// 16 bit addressing is not supported in 64 bit mode.
+			return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+		}
+		easa = FCML_DS_16;
+	} else if( decoded_modrm->base.size == FCML_DS_64 || decoded_modrm->index.size == FCML_DS_64 ) {
+		if( addr_form == FCML_AF_16_BIT ) {
+			// 64 bit addressing is not supported in 16 bit mode.
+			return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+		}
+		easa = FCML_DS_64;
+	}
+
+	context->chosen_effective_address_size = easa;
+
+	if( easa == FCML_DS_16 ) {
 		error = fcml_fn_modrm_encode_16bit( context, decoded_modrm, encoded_modrm );
-	} else if ( context->effective_address_size == FCML_DS_32 || context->effective_address_size == FCML_DS_64 ) {
+	} else if ( easa == FCML_DS_32 || easa == FCML_DS_64 ) {
 		error = fcml_fn_modrm_encode_3264bit( context, decoded_modrm, encoded_modrm );
 	} else {
 		// Unknown addressing mode.

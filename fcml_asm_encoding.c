@@ -21,6 +21,27 @@ enum fcml_ien_comparator_type {
 	FCML_IEN_CT_EQUAL_OR_LESS,
 };
 
+fcml_bool fcml_ifn_validate_effective_address_size( fcml_st_asm_encoding_context *context ) {
+	fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+	fcml_data_size eas = context->data_size_flags.effective_address_size;
+	if( eas ) {
+		if( addr_form == FCML_AF_64_BIT && eas == FCML_DS_16 ) {
+			return FCML_FALSE;
+		}
+		if( addr_form == FCML_AF_16_BIT && eas == FCML_DS_64 ) {
+			return FCML_FALSE;
+		}
+	}
+	return FCML_TRUE;
+}
+
+fcml_data_size fcml_ifn_get_effective_address_size( fcml_st_asm_encoding_context *context ) {
+	if(context->data_size_flags.effective_address_size ) {
+		return context->data_size_flags.effective_address_size;
+	}
+	return context->assembler_context->effective_address_size;
+}
+
 fcml_ceh_error fcml_ifn_decode_dynamic_operand_size( fcml_st_asm_encoding_context *context, fcml_uint8_t encoded_operand_size, fcml_data_size data_size, fcml_data_size *encoded_data_size, enum fcml_ien_comparator_type comparator ) {
 	fcml_st_asm_data_size_flags *flags = &(context->data_size_flags);
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -315,11 +336,13 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_ien_as
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 
-	/*fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;;
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;;
 
 	fcml_sf_def_tma_rm *args = (fcml_sf_def_tma_rm*)addr_mode->addr_mode_args;
+	fcml_st_assembler_context *assembler_context = context->assembler_context;
 
-	if( phase == FCML_IEN_ASM_IPPP_ACCEPT ) {
+	switch( phase ) {
+	case FCML_IEN_ASM_IPPP_ACCEPT: {
 		fcml_bool result = FCML_TRUE;
 		if ( args->flags == FCML_RMF_RM ) {
 			result &= ( operand_def->type == FCML_EOT_REGISTER || operand_def->type == FCML_EOT_EFFECTIVE_ADDRESS );
@@ -331,41 +354,68 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		if( !result ) {
 			return FCML_EN_UNSUPPORTED_OPPERAND;
 		}
-	} else if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+		break;
+	}
+	case FCML_IEN_ASM_IPPP_FIRST_PHASE:
 		if( operand_def->type == FCML_EOT_REGISTER ) {
 			context->mod_rm.reg.is_not_null = FCML_TRUE;
 			context->mod_rm.reg.value = operand_def->reg.reg;
 			// Modify data size flags if there is such need.
-			error = fcml_ifn_set_data_size_flags( context, args->encoded_register_operand_size, operand_def->reg.size, NULL );
+			error = fcml_ifn_decode_dynamic_operand_size( context, args->encoded_register_operand_size, operand_def->reg.size, NULL,FCML_IEN_CT_EQUAL );
 		} else {
 			context->mod_rm.base = operand_def->effective_address.base;
 			context->mod_rm.displacement = operand_def->effective_address.displacement;
 			context->mod_rm.index = operand_def->effective_address.index;
 			context->mod_rm.scale_factor = operand_def->effective_address.scale_factor;
 		}
+		break;
+	case FCML_IEN_ASM_IPPP_SECOND_PHASE: {
+
+		fcml_st_modrm_encoder_context ctx;
+		ctx.addr_form = assembler_context->addr_form;
+		ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
+		ctx.chosen_effective_address_size = 0;
+		ctx.effective_address_size = fcml_ifn_get_effective_address_size( context );
+		ctx.is_sib_alternative = FCML_FALSE;
+
+		error = fcml_fn_modrm_encode( &ctx, &(context->mod_rm), &(context->encoded_mod_rm) );
+
+		if( !error ) {
+			if( context->data_size_flags.effective_address_size && ctx.chosen_effective_address_size != context->data_size_flags.effective_address_size ) {
+				error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+			} else {
+				context->data_size_flags.effective_address_size = ctx.chosen_effective_address_size;
+				if( !fcml_ifn_validate_effective_address_size( context ) ) {
+					return FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+				}
+			}
+		}
+
+		break;
+	}
+	default:
+		break;
 	}
 
-	return error;*/
-
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+	return error;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 
-	/*fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
+	fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
 
 	if( phase == FCML_IEN_ASM_IPPP_ACCEPT ) {
 		if( operand_def->type != FCML_EOT_REGISTER ) {
 			return FCML_EN_UNSUPPORTED_OPPERAND;
 		}
-		if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size ) ) {
+		if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
 			return FCML_EN_UNSUPPORTED_OPPERAND;
 		}
 	} else if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 		context->mod_rm.reg_opcode = operand_def->reg.reg;
 	}
 
-	return FCML_CEH_GEC_NO_ERROR;*/
+	return FCML_CEH_GEC_NO_ERROR;
 
 	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
