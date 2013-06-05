@@ -90,6 +90,7 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		context.effective_address_size = 0;
 		context.effective_operand_size = 0;
 		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
+		context.configuration.choose_sib_encoding = FCML_FALSE;
 
 		fcml_st_assembler_result *asm_result;
 		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
