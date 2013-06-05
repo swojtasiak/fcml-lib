@@ -21,6 +21,22 @@ enum fcml_ien_comparator_type {
 	FCML_IEN_CT_EQUAL_OR_LESS,
 };
 
+void fcml_ifn_clean_context( fcml_st_asm_encoding_context *context ) {
+	fcml_st_asm_data_size_flags *data_size_flags = &(context->data_size_flags);
+	data_size_flags->effective_address_size = FCML_DS_UNDEF;
+	data_size_flags->effective_operand_size = FCML_DS_UNDEF;
+	data_size_flags->l.is_not_null = FCML_FALSE;
+	data_size_flags->l.value = 0;
+}
+
+fcml_st_memory_stream fcml_ifn_instruction_part_stream( fcml_st_asm_instruction_part *instruction_part ) {
+	fcml_st_memory_stream stream;
+	stream.base_address = &(instruction_part->code);
+	stream.offset = 0;
+	stream.size = sizeof(instruction_part->code);
+	return stream;
+}
+
 fcml_bool fcml_ifn_validate_effective_address_size( fcml_st_asm_encoding_context *context ) {
 	fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 	fcml_data_size eas = context->data_size_flags.effective_address_size;
@@ -290,7 +306,7 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_reg( fcml_ien_asm_part_proc
 	fcml_st_register *reg = &(operand_def->reg);
 	switch( phase ) {
 	case FCML_IEN_ASM_IPPP_ACCEPT:
-		if( operand_def->type != FCML_EOT_REGISTER ) {
+		if( operand_def->type != FCML_EOT_REGISTER || operand_def->reg.reg != args->reg_num ) {
 			error = FCML_EN_UNSUPPORTED_OPPERAND;
 		}
 		break;
@@ -339,17 +355,23 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;;
 
 	fcml_sf_def_tma_rm *args = (fcml_sf_def_tma_rm*)addr_mode->addr_mode_args;
-	fcml_st_assembler_context *assembler_context = context->assembler_context;
 
 	switch( phase ) {
 	case FCML_IEN_ASM_IPPP_ACCEPT: {
 		fcml_bool result = FCML_TRUE;
+		// Check operand type.
 		if ( args->flags == FCML_RMF_RM ) {
 			result &= ( operand_def->type == FCML_EOT_REGISTER || operand_def->type == FCML_EOT_EFFECTIVE_ADDRESS );
 		} else if ( args->flags & FCML_RMF_R ) {
 			result &= operand_def->type == FCML_EOT_REGISTER;
+			if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			}
 		} else if ( args->flags & FCML_RMF_M ) {
 			result &= operand_def->type == FCML_EOT_EFFECTIVE_ADDRESS;
+			if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_memory_operand_size, operand_def->effective_address.size_operator, FCML_IEN_CT_EQUAL ) ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			}
 		}
 		if( !result ) {
 			return FCML_EN_UNSUPPORTED_OPPERAND;
@@ -367,32 +389,9 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 			context->mod_rm.displacement = operand_def->effective_address.displacement;
 			context->mod_rm.index = operand_def->effective_address.index;
 			context->mod_rm.scale_factor = operand_def->effective_address.scale_factor;
+			error = fcml_ifn_decode_dynamic_operand_size( context, args->encoded_memory_operand_size, operand_def->effective_address.size_operator, NULL, FCML_IEN_CT_EQUAL );
 		}
 		break;
-	case FCML_IEN_ASM_IPPP_SECOND_PHASE: {
-
-		fcml_st_modrm_encoder_context ctx;
-		ctx.addr_form = assembler_context->addr_form;
-		ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
-		ctx.chosen_effective_address_size = 0;
-		ctx.effective_address_size = fcml_ifn_get_effective_address_size( context );
-		ctx.is_sib_alternative = FCML_FALSE;
-
-		error = fcml_fn_modrm_encode( &ctx, &(context->mod_rm), &(context->encoded_mod_rm) );
-
-		if( !error ) {
-			if( context->data_size_flags.effective_address_size && ctx.chosen_effective_address_size != context->data_size_flags.effective_address_size ) {
-				error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
-			} else {
-				context->data_size_flags.effective_address_size = ctx.chosen_effective_address_size;
-				if( !fcml_ifn_validate_effective_address_size( context ) ) {
-					return FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
-				}
-			}
-		}
-
-		break;
-	}
 	default:
 		break;
 	}
@@ -590,6 +589,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 #endif
 			while( addr_mode_element ) {
 				fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)addr_mode_element->item;
+				fcml_ifn_clean_context( context );
 				if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
 					fcml_st_assembled_instruction *assembled_instruction;
 					error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
@@ -843,6 +843,66 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 }
 
 /////////////////////////////////
+// ModR/M encoder factories.   //
+/////////////////////////////////
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_st_assembler_context *assembler_context = context->assembler_context;
+	if( phase == FCML_IEN_ASM_IPPP_SECOND_PHASE ) {
+
+		fcml_st_modrm_encoder_context ctx;
+		ctx.addr_form = assembler_context->addr_form;
+		ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
+		ctx.chosen_effective_address_size = 0;
+		ctx.effective_address_size = fcml_ifn_get_effective_address_size( context );
+		ctx.is_sib_alternative = FCML_FALSE;
+
+		if( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT( addr_mode_def->opcode_flags ) ) {
+			context->mod_rm.reg_opcode = FCML_DEF_OPCODE_FLAGS_OPCODE_EXT( addr_mode_def->opcode_flags );
+		}
+
+		// Encodes ModR/M bytes.
+		error = fcml_fn_modrm_encode( &ctx, &(context->mod_rm), &(context->encoded_mod_rm) );
+		if( !error ) {
+			if( context->data_size_flags.effective_address_size && ctx.chosen_effective_address_size != context->data_size_flags.effective_address_size ) {
+				error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+			} else {
+				context->data_size_flags.effective_address_size = ctx.chosen_effective_address_size;
+				if( fcml_ifn_validate_effective_address_size( context ) ) {
+					fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( instruction_part );
+					fcml_st_encoded_modrm *encoded_modrm = &(context->encoded_mod_rm);
+					fcml_fn_stream_write( &stream, encoded_modrm->modrm );
+					if( encoded_modrm->sib.is_not_null ) {
+						fcml_fn_stream_write( &stream, encoded_modrm->sib.value );
+					}
+					if( encoded_modrm->displacement_size ) {
+						fcml_fn_stream_write_bytes( &stream, &(encoded_modrm->displacement), encoded_modrm->displacement_size );
+					}
+					instruction_part->code_length = stream.offset;
+				} else {
+					error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+				}
+			}
+		}
+
+	}
+	return error;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_ModRM_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+	// Check if instruction has ModR/M byte.
+	if( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode->opcode_flags ) ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_ModRM_encoder;
+		descriptor.processor_acceptor = NULL;
+	}
+	return descriptor;
+}
+
+/////////////////////////////////
 // Addressing mode validators. //
 /////////////////////////////////
 
@@ -903,6 +963,12 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 	{ NULL, 0 }
 };
 
+// ModR/M byte encoder.
+fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_ModRM_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_ModRM_encoder, 0 },
+	{ NULL, 0 }
+};
+
 // List of instruction part encoders for instruction operands.
 fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_operands_for_IA[] = {
 	{ fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper, 0 },
@@ -917,6 +983,7 @@ fcml_ist_asm_instruction_part_factory_sequence fcml_asm_instruction_part_process
 	{ fcml_asm_instruction_part_processor_factories_acceptors_IA, FCML_IPCT_ALL },
 	{ fcml_asm_instruction_part_processor_factories_prefixes_for_IA, FCML_IPCT_ALL },
 	{ fcml_asm_instruction_part_processor_factories_opcode_for_IA, FCML_IPCT_ONE },
+	{ fcml_asm_instruction_part_processor_factories_ModRM_for_IA, FCML_IPCT_ALL },
 	{ fcml_asm_instruction_part_processor_factories_operands_for_IA, FCML_IPCT_ALL },
 	{ NULL }
 };
