@@ -111,7 +111,7 @@ struct ira_modrm_decoder_args {
 	uint16_t index_register_size;
 };
 
-int _ira_modrm_decoder( struct ira_diss_context *context, struct ira_modrm_decoder_args *args );
+int _ira_modrm_decoder( struct ira_diss_context *context, struct ira_modrm_decoder_args *args,  struct ira_instruction_operand_wrapper *operand_wrapper );
 
 /* Opcode decoders. */
 
@@ -166,6 +166,7 @@ uint8_t _ira_util_override_segment_reg( struct ira_diss_context *context, uint8_
 /* Post processing handlers. */
 
 int ira_relative_addressing_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] );
+int ira_rip_addressing_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] );
 int ira_is4_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] );
 
 /* Decoders' helpers methods. */
@@ -1893,7 +1894,7 @@ int _ira_opcode_decoder_modrm_m( struct ira_diss_context *context, struct ira_in
 	md_args.is_vsib = register_type_size_args->is_vsib;
 	md_args.index_register_size = register_type_size_args->vir == FCML_VSIB_XMM ? _IRA_OS_XMMWORD : _IRA_OS_YMMWORD;
 
-	int result = _ira_modrm_decoder( context, &md_args );
+	int result = _ira_modrm_decoder( context, &md_args, operand_wrapper );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -1942,7 +1943,7 @@ int _ira_opcode_decoder_modrm_rm( struct ira_diss_context *context, struct ira_i
 	md_args.flags = _IRA_MOD_RM_FLAGS_DECODE_ADDRESSING;
 	md_args.is_vsib = FCML_FALSE;
 
-	int result = _ira_modrm_decoder( context, &md_args );
+	int result = _ira_modrm_decoder( context, &md_args, operand_wrapper );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -1981,7 +1982,7 @@ int _ira_opcode_decoder_modrm_r( struct ira_diss_context *context, struct ira_in
 	md_args.reg_type = register_type_size_args->reg_type;
 	md_args.register_operand_size = register_type_size_args->register_operand_size;
 
-	int result = _ira_modrm_decoder( context, &md_args );
+	int result = _ira_modrm_decoder( context, &md_args, operand_wrapper );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
 		return result;
 	}
@@ -2031,6 +2032,7 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 			// Copy all needed fields.
 			mod_rm->raw_mod_rm = decoded_mod_rm->raw_mod_rm;
 			mod_rm->raw_sib = decoded_mod_rm->raw_sib;
+			mod_rm->rip = decoded_mod_rm->rip;
 			//mod_rm->raw_rex = decoded_mod_rm->raw_rex;
 			mod_rm->base_reg = decoded_mod_rm->base_reg;
 			mod_rm->index_reg = decoded_mod_rm->index_reg;
@@ -2232,7 +2234,7 @@ int _ira_modrm_addressing_decoder_16_bit( struct ira_diss_context *context, stru
 	return result;
 }
 
-int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, struct ira_modrm_decoder_args *args ) {
+int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, struct ira_modrm_decoder_args *args, struct ira_instruction_operand_wrapper *operand_wrapper ) {
 
 	int result = _IRA_INT_ERROR_NO_ERROR;
 
@@ -2273,10 +2275,43 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, s
 		// Decode SIB addressing format.
 		result = _ira_modrm_addressing_decoder_sib( context, args );
 	} else if( mod == 0 && _IRA_MODRM_RM(mod_rm) == 5 ) {
+
+		/*struct ira_immediate_data imm_data;
+
+		imm_data.immediate_data_type = IRA_IMMEDIATE_32;
+
+		// For 32 and 64 bit addressing, 32 bit immediate value should be used.
+		// Only for 16 bit addressing value differs and is equal to 16.
+		if( context->decoding_context.effective_operand_size_attribute == 16 ) {
+			imm_data.immediate_data_type = IRA_IMMEDIATE_16;
+		}
+
+		// RIP relative addressing.
+		// Read immediate value used then to calculate relative address.
+		int result = _ira_decode_immediate( context, &imm_data, imm_data.immediate_data_type );
+		if( result != _IRA_INT_ERROR_NO_ERROR ) {
+			return result;
+		}
+
+		// Postprocessor uses it to calculate relative address.
+		operand->immediate = imm_data;
+
+		// Set extension size. It's not used in next phases, it's for informational purpose only.
+		// Currently only renderers make good use of it.
+		operand->immediate.extension_size = context->decoding_context.effective_operand_size_attribute;
+
+		// This handler is responsible for calculating address in post processing phase when
+		// instruction size is already available.
+		operand_wrapper->post_processor = &ira_relative_addressing_instruction_operand_handler;*/
+
 		// disp32.
 		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
 		result = _ira_decode_displacement( context, &(decoded_mod_rm->displacement), IRA_DISPLACEMENT_32,
 				( effective_address_size == _IRA_ASA_64 ) ? IRA_DISPLACEMENT_EXT_SIZE_64 : IRA_DISPLACEMENT_EXT_SIZE_32 );
+		if( context->mode == IRA_MOD_64BIT ) {
+			operand_wrapper->post_processor = &ira_rip_addressing_instruction_operand_handler;
+			decoded_mod_rm->rip = FCML_TRUE;
+		}
 	} else {
 		// Base register.
 		uint8_t effective_address_size = decoding_context->effective_address_size_attribute;
@@ -2304,7 +2339,7 @@ int _ira_modrm_addressing_decoder_32_64_bit( struct ira_diss_context *context, s
 	return result;
 }
 
-int _ira_modrm_decoder( struct ira_diss_context *context, struct ira_modrm_decoder_args *args ) {
+int _ira_modrm_decoder( struct ira_diss_context *context, struct ira_modrm_decoder_args *args, struct ira_instruction_operand_wrapper *operand_wrapper ) {
 
 	int result;
 
@@ -2330,7 +2365,7 @@ int _ira_modrm_decoder( struct ira_diss_context *context, struct ira_modrm_decod
 			if( effective_asa == _IRA_ASA_16 ) {
 				result = _ira_modrm_addressing_decoder_16_bit(context, args);
 			} else {
-				result = _ira_modrm_addressing_decoder_32_64_bit(context, args);
+				result = _ira_modrm_addressing_decoder_32_64_bit(context, args, operand_wrapper);
 			}
 
 			if( result != _IRA_INT_ERROR_NO_ERROR ) {
@@ -2576,6 +2611,41 @@ int ira_relative_addressing_instruction_operand_handler( struct ira_diss_context
 			int32_t address = ( immediate_data->immediate_data_type == IRA_IMMEDIATE_8 ) ? (int8_t)immediate_value->immediate_8 : (int32_t)immediate_value->immediate_32;
 			addressing->address_size = IRA_ADDRESS_64;
 			addressing->address_value.address_64 = (int64_t)(context->instruction_pointer.rip + (int64_t)instruction_size) + (int64_t)address;
+			break;
+		}
+	}
+
+	return _IRA_INT_ERROR_NO_ERROR;
+}
+
+int ira_rip_addressing_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] ) {
+
+	struct ira_decoding_context *decoding_context = &(context->decoding_context);
+	struct ira_addressing *addressing = &(operand->addressing);
+	struct ira_mod_rm_addressing *mod_rm = &(operand->addressing.mod_rm);
+	struct ira_displacement *displacement = &(mod_rm->displacement);
+
+	int instruction_size = decoding_context->instruction_size;
+
+	// This handler is used in case of near jumps. It's why we doesn't take into account addressing mode here.
+	// When in 64-bit mode, the operand size for near call (and all near branches) is forced to 64-bits
+
+	// Sprawdzic jak zostanie zdekodowany rel8, kiedy ASA = 16. Bo chyba bedzie operowac na IP, a my tego nie obsluzymy, poniewaz
+	// OSA bedzie np 32? Soprawdzic jak dekoduje VS i Olly
+
+	switch( decoding_context->effective_operand_size_attribute ) {
+		case 32:
+		{
+			// 32 bit addressing.
+			addressing->address_size = IRA_ADDRESS_32;
+			addressing->address_value.address_32 = (int32_t)(context->instruction_pointer.eip + instruction_size) + (int32_t)displacement->displacement.displacement_32;
+			break;
+		}
+		case 64:
+		{
+			// 64 bit addressing.
+			addressing->address_size = IRA_ADDRESS_64;
+			addressing->address_value.address_64 = (int64_t)(context->instruction_pointer.rip + (int64_t)instruction_size) + (int64_t)displacement->displacement.displacement_32;
 			break;
 		}
 	}

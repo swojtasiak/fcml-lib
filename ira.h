@@ -2,6 +2,7 @@
 #define IRA_H_INCLUDED
 
 #include <inttypes.h>
+#include "fcml_types.h"
 
 /* Instruction groups. */
 
@@ -477,6 +478,8 @@ enum ira_access_mode {
 };
 
 struct ira_mod_rm_addressing {
+	// True if RIP addressing is used.
+	fcml_bool rip;
 	// ModRM byte.
 	n_byte raw_mod_rm;
 	// SIB byte.

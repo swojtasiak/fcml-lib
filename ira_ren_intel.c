@@ -182,22 +182,33 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 		// Treat displacement like a plain integer value.
 		struct _ira_integer displacement_value = {0};
-		displacement_value.is_signed = _IRA_TRUE;
-		displacement_value.size = mod_rm->displacement.displacement_type;
 
-		switch(mod_rm->displacement.displacement_type) {
-		case IRA_DISPLACEMENT_8:
-			displacement_value.value.v8 = mod_rm->displacement.displacement.displacement_8;
-			break;
-		case IRA_DISPLACEMENT_16:
-			displacement_value.value.v16 = mod_rm->displacement.displacement.displacement_16;
-			break;
-		case IRA_DISPLACEMENT_32:
-			displacement_value.value.v32 = mod_rm->displacement.displacement.displacement_32;
-			break;
-		case IRA_NO_DISPLACEMENT:
-			// Should never happened. Added only to avoid warnings.
-			break;
+		if( mod_rm->rip ) {
+
+			displacement_value.is_signed = _IRA_TRUE;
+			displacement_value.size = addressing->address_size;
+			displacement_value.value.v32 = addressing->address_value.address_32;
+
+		} else {
+
+			displacement_value.is_signed = _IRA_TRUE;
+			displacement_value.size = mod_rm->displacement.displacement_type;
+
+			switch(mod_rm->displacement.displacement_type) {
+			case IRA_DISPLACEMENT_8:
+				displacement_value.value.v8 = mod_rm->displacement.displacement.displacement_8;
+				break;
+			case IRA_DISPLACEMENT_16:
+				displacement_value.value.v16 = mod_rm->displacement.displacement.displacement_16;
+				break;
+			case IRA_DISPLACEMENT_32:
+				displacement_value.value.v32 = mod_rm->displacement.displacement.displacement_32;
+				break;
+			case IRA_NO_DISPLACEMENT:
+				// Should never happened. Added only to avoid warnings.
+				break;
+			}
+
 		}
 
 		// Extend displacement if there is such need.
