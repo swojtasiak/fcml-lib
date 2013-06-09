@@ -854,9 +854,11 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 		fcml_st_modrm_encoder_context ctx;
 		ctx.addr_form = assembler_context->addr_form;
 		ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
+		ctx.choose_rip_encoding = assembler_context->configuration.choose_rip_encoding;
 		ctx.chosen_effective_address_size = 0;
 		ctx.effective_address_size = fcml_ifn_get_effective_address_size( context );
 		ctx.is_sib_alternative = FCML_FALSE;
+		ctx.is_rip_encoding = FCML_FALSE;
 
 		if( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT( addr_mode_def->opcode_flags ) ) {
 			context->mod_rm.reg_opcode = FCML_DEF_OPCODE_FLAGS_OPCODE_EXT( addr_mode_def->opcode_flags );

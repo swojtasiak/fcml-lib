@@ -8,6 +8,26 @@
 #include "fcml_modrm_encoder.h"
 #include "fcml_utils.h"
 
+fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, fcml_uint64_t rip, fcml_uint8_t instruction_size, fcml_st_encoded_modrm *encoded_modrm ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	if( encoded_modrm->is_rip ) {
+		/*fcml_int64_t effective_address = (fcml_int64_t)rip + encoded_modrm->rip_offset + instruction_size;
+
+		// Extends and encodes displacement to given stream.
+		error = fcml_fn_utils_encode_vint( stream, &disp );
+		if( error ) {
+			return error;
+		}*/
+
+	} else {
+		error = FCML_CEH_GEC_INVALID_INPUT;
+	}
+
+	return error;
+}
+
 fcml_ceh_error fcml_fn_modrm_calculate_efective_address_size( const fcml_st_modrm *decoded_modrm, fcml_esa *effective_address_size ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -66,7 +86,7 @@ fcml_st_memory_stream fcml_ifn_map_displacement_to_stream( fcml_st_encoded_modrm
 }
 
 // Optionaly extends and encodes displacement.
-fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *displacement, fcml_st_encoded_modrm *encoded_modrm, fcml_usize extension ) {
+fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *displacement, fcml_st_encoded_modrm *encoded_modrm, fcml_usize extension, fcml_bool is_rip ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -77,6 +97,11 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *d
 		return error;
 	}
 
+	if( is_rip ) {
+		// Just in case.
+		extension = FCML_DS_32;
+	}
+
 	// Extend displacement value it there is such need.
 	if( disp.size != extension ) {
 		error = fcml_fn_utils_extend_vint( &disp, extension );
@@ -85,16 +110,22 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *d
 		}
 	}
 
-	// Gets displacement as stream.
-	fcml_st_memory_stream stream = fcml_ifn_map_displacement_to_stream( encoded_modrm );
+	if( is_rip ) {
+		// Store RIP offset. It can be used then to calculate displacement
+		encoded_modrm->is_rip = is_rip;
+		encoded_modrm->rip_offset = (fcml_int32_t)disp.int32;
+	} else {
+		// Gets displacement as stream.
+		fcml_st_memory_stream stream = fcml_ifn_map_displacement_to_stream( encoded_modrm );
 
-	// Extends and encodes displacement to given stream.
-	error = fcml_fn_utils_encode_vint( &stream, &disp );
-	if( error ) {
-		return error;
+		// Extends and encodes displacement to given stream.
+		error = fcml_fn_utils_encode_vint( &stream, &disp );
+		if( error ) {
+			return error;
+		}
+
+		encoded_modrm->displacement_size = stream.offset;
 	}
-
-	encoded_modrm->displacement_size = stream.offset;
 
 	return error;
 }
@@ -115,7 +146,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *contex
 	// Check if there is disp16 addressing mode encoded.
 	if( decoded_modrm->displacement.size && !decoded_modrm->base.type ) {
 		// Sign extends displacement to 16 bits if there is such need, and encode it.
-		error = fcml_ifn_modrm_encode_displacement( &(decoded_modrm->displacement), encoded_modrm, FCML_DS_16 );
+		error = fcml_ifn_modrm_encode_displacement( &(decoded_modrm->displacement), encoded_modrm, FCML_DS_16, FCML_FALSE );
 	} else if ( decoded_modrm->base.type ) {
 
 		if( decoded_modrm->base.type && decoded_modrm->base.size != FCML_DS_16 ) {
@@ -184,7 +215,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *contex
 				}
 
 				if( f_mod > 0 ) {
-					error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, decoded_modrm->displacement.size );
+					error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, decoded_modrm->displacement.size, FCML_FALSE );
 				}
 			}
 
@@ -234,8 +265,13 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 	} else {
 		if( !decoded_modrm->base.type && decoded_modrm->displacement.size ) {
 			// disp32
-			choose_sib = context->choose_sib_encoding;
-			context->is_sib_alternative = FCML_TRUE;
+			if( context->choose_rip_encoding && context->addr_form == FCML_AF_64_BIT ) {
+				context->is_rip_encoding = FCML_TRUE;
+				context->is_sib_alternative = FCML_FALSE;
+			} else {
+				choose_sib = context->choose_sib_encoding;
+				context->is_sib_alternative = FCML_TRUE;
+			}
 		} else if ( decoded_modrm->base.type ) {
 			// [esp],edx can be only encoded with using of SIB byte.
 			if( decoded_modrm->base.reg == FCML_REG_ESP ) {
@@ -358,7 +394,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 	}
 
 	if( disp_size ) {
-		fcml_ceh_error error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, disp_size );
+		fcml_ceh_error error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, disp_size, context->is_rip_encoding );
 		if( error ) {
 			return error;
 		}

@@ -14,6 +14,7 @@
 
 typedef struct fcml_st_assembler_configuration {
 	fcml_bool choose_sib_encoding;
+	fcml_bool choose_rip_encoding;
 } fcml_st_assembler_configuration;
 
 typedef struct fcml_st_assembler_context {

@@ -37,6 +37,8 @@ typedef struct fcml_st_encoded_modrm {
 	fcml_uint8_t ext_b;
 	fcml_uint8_t displacement[4];
 	fcml_uint8_t displacement_size;
+	fcml_bool is_rip;
+	fcml_int32_t rip_offset;
 } fcml_st_encoded_modrm;
 
 typedef struct fcml_st_modrm {
@@ -53,25 +55,6 @@ typedef struct fcml_st_modrm {
 	// Displacement.
 	fcml_st_displacement displacement;
 } fcml_st_modrm;
-
-typedef struct fcml_st_modrm_context {
-	// Sets 32 or 64 bit addressing mode.
-	fcml_en_addr_form addr_form;
-	// Effective addres size using to decode/encode ModR/M. It's very important to set this value properly,
-	// because 16 and 32/64 addressing forms
-	fcml_data_size effective_address_size;
-	// True if VSIB encoding is available. This flag should be only set for ModR/M
-	// decoder to made it use SIMD register as index register. In case of encoder,
-	// we really don't care if it's SIMD index register or not, because encoding
-	// is similar to GPR index.
-	fcml_bool is_vsib;
-	// This flag is set only by ModR/M encoder if there is alterative SIB encoding available,
-	// but user chooses default ModR/M only encoding.
-	fcml_bool is_sib_alternative;
-	// This flag is used only by ModR/M encoder, and should be set to TRUE to force
-	// using SIB encoding, if there is such alternative.
-	fcml_bool choose_sib_encoding;
-} fcml_st_modrm_context;
 
 fcml_ceh_error fcml_fn_modrm_write_encoded_modrm( fcml_st_encoded_modrm *encoded_modrm, fcml_st_memory_stream *stream );
 

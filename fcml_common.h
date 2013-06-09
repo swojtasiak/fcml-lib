@@ -18,6 +18,13 @@ typedef enum fcml_en_addr_form {
 	FCML_AF_64_BIT,
 } fcml_en_addr_form;
 
+// Instruction pointer.
+
+typedef union fcml_st_instruction_pointer {
+	fcml_uint32_t eip;
+	fcml_uint64_t rip;
+} fcml_st_instruction_pointer;
+
 // Effective Operand-Size Attributes.
 
 #define FCML_EOSA_UNDEF	0
@@ -262,12 +269,27 @@ typedef struct fcml_st_far_pointer {
 typedef struct fcml_st_displacement {
 	fcml_data_size size;
     fcml_data_size sign_extension;
+    enum {
+    	FCML_DT_UNKNOWN = 0,
+    	FCML_DT_DISPLACEMENT,
+    	FCML_DT_ADDRESS
+    } displacement_type;
     union {
         int8_t dis8;
         int16_t dis16;
         int32_t dis32;
+        int64_t dis64;
     };
 } fcml_st_displacement;
+
+typedef struct fcml_st_address {
+	fcml_data_size size;
+    union {
+        uint16_t off16;
+        uint32_t off32;
+        uint64_t off64;
+    };
+} fcml_st_address;
 
 typedef struct fcml_st_effective_address {
 	fcml_uint16_t size_operator;
