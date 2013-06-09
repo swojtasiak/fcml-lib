@@ -10,8 +10,8 @@
 #include "fcml_modrm_decoder.h"
 #include "fcml_env.h"
 
-fcml_st_modrm_context fcml_ifn_modrm_decoder_alloc_ctx() {
-	fcml_st_modrm_context context;
+fcml_st_modrm_decoder_context fcml_ifn_modrm_decoder_alloc_ctx() {
+	fcml_st_modrm_decoder_context context;
 	fcml_fn_env_memory_clean( &context, sizeof( context ) );
 	return context;
 }
@@ -26,7 +26,7 @@ int fcml_tf_modrm_decoder_suite_cleanup(void) {
 
 void fcml_tf_modrm_decoder_test_1(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
@@ -63,7 +63,7 @@ void fcml_tf_modrm_decoder_test_1(void) {
 
 void fcml_tf_modrm_decoder_test_2(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
@@ -101,7 +101,7 @@ void fcml_tf_modrm_decoder_test_2(void) {
 
 void fcml_tf_modrm_decoder_test_3(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
@@ -138,7 +138,7 @@ void fcml_tf_modrm_decoder_test_3(void) {
 
 void fcml_tf_modrm_decoder_test_4(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
@@ -175,7 +175,7 @@ void fcml_tf_modrm_decoder_test_4(void) {
 
 void fcml_tf_modrm_decoder_test_5(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_16;
@@ -212,7 +212,7 @@ void fcml_tf_modrm_decoder_test_5(void) {
 
 void fcml_tf_modrm_decoder_test_6(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
@@ -250,7 +250,7 @@ void fcml_tf_modrm_decoder_test_6(void) {
 
 void fcml_tf_modrm_decoder_test_7(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_16;
@@ -278,7 +278,7 @@ void fcml_tf_modrm_decoder_test_7(void) {
 // [EBX], EBX
 void fcml_tf_modrm_3264_decoder_test_1(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_32;
@@ -317,7 +317,7 @@ void fcml_tf_modrm_3264_decoder_test_1(void) {
 // [04030201], EDX
 void fcml_tf_modrm_3264_decoder_test_2(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_32_BIT;
 	context.effective_address_size = FCML_DS_32;
@@ -352,15 +352,18 @@ void fcml_tf_modrm_3264_decoder_test_2(void) {
 	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
 }
 
+// RIP-addressing.
+// RIP: 401000h
+// disp32: 0f1efbf00h
 // [FFFFFFFFFF887766], EDX
 void fcml_tf_modrm_3264_decoder_test_3(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
 
-	fcml_uint8_t buffer[] = {0x15, 0x66, 0x77, 0x88, 0xFF};
+	fcml_uint8_t buffer[] = {0x15, 0xfa, 0xf1, 0xbf, 0xff};
 
 	fcml_st_memory_stream stream;
 	stream.base_address = &buffer;
@@ -385,16 +388,24 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
 	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFF887766 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFFBFF1FA );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
+
+	fcml_st_address address = {0};
+	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.displacement), &address );
+
+	CU_ASSERT_EQUAL( address.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( address.off64, 0x1faUL );
+
 }
 
 // [ECX]+0x66, EAX
 void fcml_tf_modrm_3264_decoder_test_4(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_32;
@@ -434,7 +445,7 @@ void fcml_tf_modrm_3264_decoder_test_4(void) {
 // [ECX]+0x01020304, EAX
 void fcml_tf_modrm_3264_decoder_test_5(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_32;
@@ -473,7 +484,7 @@ void fcml_tf_modrm_3264_decoder_test_5(void) {
 // [R9]+0x01020304, R8
 void fcml_tf_modrm_3264_decoder_test_6(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -512,7 +523,7 @@ void fcml_tf_modrm_3264_decoder_test_6(void) {
 // Illegal EASA size.
 void fcml_tf_modrm_3264_decoder_test_7(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_16;
@@ -551,7 +562,7 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 // RAX, EBX
 void fcml_tf_modrm_3264_decoder_test_8(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -588,7 +599,7 @@ void fcml_tf_modrm_3264_decoder_test_8(void) {
 // R8, R11
 void fcml_tf_modrm_3264_decoder_test_9(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -622,10 +633,152 @@ void fcml_tf_modrm_3264_decoder_test_9(void) {
 	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
 }
 
+
+// RIP-addressing.
+void fcml_tf_modrm_3264_decoder_test_10(void) {
+
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = {0x15, 0xff, 0xff, 0xff, 0xff};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFFFFFFFF );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
+
+	fcml_st_address address = {0};
+	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.displacement), &address );
+
+	CU_ASSERT_EQUAL( address.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( address.off64, 0x400fffUL );
+
+}
+
+// RIP-addressing.
+void fcml_tf_modrm_3264_decoder_test_11(void) {
+
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_AF_64_BIT;
+	context.effective_address_size = FCML_DS_64;
+
+	fcml_uint8_t buffer[] = {0x15, 0x00, 0xE0, 0x7F, 0xFF};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFF7FE000 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
+
+	fcml_st_address address = {0};
+	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.displacement), &address );
+
+	CU_ASSERT_EQUAL( address.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( address.off64, 0xffffffffffbff000UL );
+
+}
+
+// RIP-addressing.
+void fcml_tf_modrm_3264_decoder_test_12(void) {
+
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+	context.addr_form = FCML_AF_64_BIT;
+	context.effective_address_size = FCML_DS_32;
+
+	fcml_uint8_t buffer[] = {0x15, 0x00, 0xE0, 0x7F, 0xFF};
+
+	fcml_st_memory_stream stream;
+	stream.base_address = &buffer;
+	stream.size = sizeof( buffer );
+	stream.offset = 0;
+
+	fcml_st_modrm_source modrm_source;
+	modrm_source.ext_b = 0;
+	modrm_source.ext_r = 0;
+	modrm_source.ext_x = 0;
+	modrm_source.stream = stream;
+	fcml_st_modrm decoded_modrm;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFF7FE000 );
+	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
+
+	fcml_st_address address = {0};
+	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_32, &(decoded_modrm.displacement), &address );
+
+	CU_ASSERT_EQUAL( address.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( address.off64, 0x00000000ffbff000UL );
+
+}
+
 // [01020304], R8
 void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -665,7 +818,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 // [EBX]+0x01020304, R8
 void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -705,7 +858,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 // [ECX+EBX]+0x01, R8
 void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -745,7 +898,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 // [ECX+EBX*2]+0x01, R8
 void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -785,7 +938,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 // [ECX+EBX*4], R8
 void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -825,7 +978,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 // [ECX+EBX*8], R8
 void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -865,7 +1018,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 // [ECX+EBX*8]+0x55, R8
 void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -905,7 +1058,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 // [ECX+EBX*8]+0x01020304, R8
 void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -945,7 +1098,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 // [R9]+0x01020304, R8
 void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -985,7 +1138,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 // [ECX+XMM1*8]+0x01020304, R8
 void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -1027,7 +1180,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 // [ECX+YMM1*8]+0x01020304, R8
 void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 
-	fcml_st_modrm_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
@@ -1083,6 +1236,9 @@ CU_TestInfo fctl_ti_modrm_decoder[] = {
     { "fcml_tf_modrm_3264_decoder_test_7", fcml_tf_modrm_3264_decoder_test_7 },
     { "fcml_tf_modrm_3264_decoder_test_8", fcml_tf_modrm_3264_decoder_test_8 },
     { "fcml_tf_modrm_3264_decoder_test_9", fcml_tf_modrm_3264_decoder_test_9 },
+    { "fcml_tf_modrm_3264_decoder_test_10", fcml_tf_modrm_3264_decoder_test_10 },
+    { "fcml_tf_modrm_3264_decoder_test_11", fcml_tf_modrm_3264_decoder_test_11 },
+    { "fcml_tf_modrm_3264_decoder_test_12", fcml_tf_modrm_3264_decoder_test_12 },
     { "fcml_tf_modrm_3264_decoder_sib_test_1", fcml_tf_modrm_3264_decoder_sib_test_1 },
     { "fcml_tf_modrm_3264_decoder_sib_test_2", fcml_tf_modrm_3264_decoder_sib_test_2 },
     { "fcml_tf_modrm_3264_decoder_sib_test_3", fcml_tf_modrm_3264_decoder_sib_test_3 },

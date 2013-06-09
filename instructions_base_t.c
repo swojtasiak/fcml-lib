@@ -15,7 +15,7 @@
 #include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
 
-void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result ) {
+void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip ) {
 
 	struct ira_disassemble_info info;
 	info.address = code;
@@ -91,6 +91,7 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		context.effective_operand_size = 0;
 		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
 		context.configuration.choose_sib_encoding = FCML_FALSE;
+		context.configuration.choose_rip_encoding = enable_rip;
 
 		fcml_st_assembler_result *asm_result;
 		error = fcml_fn_assemble( &context, result->instruction, &asm_result );

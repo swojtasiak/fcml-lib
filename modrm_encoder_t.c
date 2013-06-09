@@ -1462,6 +1462,44 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_11(void) {
 
 }
 
+// Encode [00001AF0], RAX
+void fcml_tf_modrm_rip_encoder_3264_bit_encoding_1(void) {
+	/*fcml_st_modrm modrm;
+	fcml_fn_env_memory_clean( &modrm, sizeof( modrm ) );
+	fcml_st_encoded_modrm encoded_modrm;
+	fcml_fn_env_memory_clean( &encoded_modrm, sizeof( encoded_modrm ) );
+	fcml_st_modrm_encoder_context context;
+	fcml_fn_env_memory_clean( &context, sizeof( context ) );
+	context.effective_address_size = FCML_DS_32;
+	context.addr_form = FCML_AF_64_BIT;
+	context.choose_sib_encoding = FCML_TRUE;
+	context.choose_rip_encoding = FCML_TRUE;
+
+	modrm.base.type = FCML_REG_UNDEFINED;
+	modrm.base.reg = 0;
+	modrm.base.size = 0;
+	modrm.index.type = FCML_REG_UNDEFINED;
+	modrm.index.reg = 0;
+	modrm.index.size = 0;
+	modrm.scale_factor = 0;
+	modrm.reg_opcode = 0;
+	modrm.displacement.size = FCML_DS_32;
+	modrm.displacement.dis32 = 0xFFBFF000;
+
+	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 4 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_b, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_r, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.ext_x, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
+	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0x00 );
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x05 );
+	CU_ASSERT_EQUAL( context.is_sib_alternative, FCML_FALSE );
+	CU_ASSERT_EQUAL( context.is_rip_encoding, FCML_TRUE );*/
+}
+
 CU_TestInfo fctl_ti_modrm_encoder[] = {
     { "fcml_tf_modrm_encoder_test_1", fcml_tf_modrm_encoder_test_1 },
     { "fcml_tf_modrm_encoder_test_2", fcml_tf_modrm_encoder_test_2 },
@@ -1512,6 +1550,7 @@ CU_TestInfo fctl_ti_modrm_encoder[] = {
     { "fcml_tf_modrm_sib_encoder_3264_bit_encoding_9", fcml_tf_modrm_sib_encoder_3264_bit_encoding_9 },
     { "fcml_tf_modrm_sib_encoder_3264_bit_encoding_10", fcml_tf_modrm_sib_encoder_3264_bit_encoding_10 },
     { "fcml_tf_modrm_sib_encoder_3264_bit_encoding_11", fcml_tf_modrm_sib_encoder_3264_bit_encoding_11 },
+    { "fcml_tf_modrm_rip_encoder_3264_bit_encoding_1", fcml_tf_modrm_rip_encoder_3264_bit_encoding_1 },
     CU_TEST_INFO_NULL,
 };
 
