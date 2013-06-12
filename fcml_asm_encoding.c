@@ -499,6 +499,27 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 		}
 	}
 
+	// Calculate insruction size.
+	fcml_uint8_t code_length = 0;
+	for( i = 0; i < addr_mode->instruction_parts; i++ ) {
+		fcml_st_asm_instruction_part *ip = &(instruction_part[i]);
+		code_length += ip->code_length;
+	}
+
+	context->instruction_size.is_not_null = FCML_TRUE;
+	context->instruction_size.value = code_length;
+
+	// Execute potential post processors.
+	for( i = 0; i < addr_mode->instruction_parts; i++ ) {
+		fcml_st_asm_instruction_part *ip = &(instruction_part[i]);
+		if( ip->post_processor != NULL ) {
+			fcml_ceh_error error = ip->post_processor( context, ip, ip->post_processor_args );
+			if( error ) {
+				break;
+			}
+		}
+	}
+
 	if( error ) {
 		fcml_fn_env_memory_free( instruction_part );
 	} else {
@@ -846,6 +867,24 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 // ModR/M encoder factories.   //
 /////////////////////////////////
 
+fcml_ceh_error fcml_st_asm_instruction_part_rip_post_processor( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_st_assembler_context *assembler_context = context->assembler_context;
+	fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
+
+	if( !context->instruction_size.is_not_null ) {
+		// Should never happened.
+		error = FCML_CEH_GEC_INTERNAL_BUG;
+	} else {
+		// Encode ModR/M and displacement.
+		fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( instruction_part );
+		fcml_fn_stream_write( &stream, encoded_mod_rm->modrm );
+		error = fcml_fn_modrm_encode_rip_offset( &stream, assembler_context->ip.rip, context->instruction_size.value, encoded_mod_rm );
+	}
+
+	return error;
+}
+
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_assembler_context *assembler_context = context->assembler_context;
@@ -872,16 +911,23 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 			} else {
 				context->data_size_flags.effective_address_size = ctx.chosen_effective_address_size;
 				if( fcml_ifn_validate_effective_address_size( context ) ) {
-					fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( instruction_part );
-					fcml_st_encoded_modrm *encoded_modrm = &(context->encoded_mod_rm);
-					fcml_fn_stream_write( &stream, encoded_modrm->modrm );
-					if( encoded_modrm->sib.is_not_null ) {
-						fcml_fn_stream_write( &stream, encoded_modrm->sib.value );
+					if( context->encoded_mod_rm.is_rip ) {
+						// ModR/M + 4bytes displacement.
+						instruction_part->code_length = 5;
+						instruction_part->post_processor = fcml_st_asm_instruction_part_rip_post_processor;
+						instruction_part->post_processor_args = NULL;
+					} else {
+						fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( instruction_part );
+						fcml_st_encoded_modrm *encoded_modrm = &(context->encoded_mod_rm);
+						fcml_fn_stream_write( &stream, encoded_modrm->modrm );
+						if( encoded_modrm->sib.is_not_null ) {
+							fcml_fn_stream_write( &stream, encoded_modrm->sib.value );
+						}
+						if( encoded_modrm->displacement_size ) {
+							fcml_fn_stream_write_bytes( &stream, &(encoded_modrm->displacement), encoded_modrm->displacement_size );
+						}
+						instruction_part->code_length = stream.offset;
 					}
-					if( encoded_modrm->displacement_size ) {
-						fcml_fn_stream_write_bytes( &stream, &(encoded_modrm->displacement), encoded_modrm->displacement_size );
-					}
-					instruction_part->code_length = stream.offset;
 				} else {
 					error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
 				}

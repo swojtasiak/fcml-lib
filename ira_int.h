@@ -44,6 +44,7 @@ struct ira_decoded_mod_rm {
 	// SIB byte.
 	n_byte raw_sib;
 	fcml_bool rip;
+	fcml_uint64_t rip_address;
 	// REX prefix.
 	// n_byte raw_rex;
 	// Base register.

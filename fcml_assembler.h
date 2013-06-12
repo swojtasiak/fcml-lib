@@ -22,6 +22,7 @@ typedef struct fcml_st_assembler_context {
 	fcml_en_addr_form addr_form;
 	fcml_data_size effective_address_size;
 	fcml_data_size effective_operand_size;
+	fcml_st_instruction_pointer ip;
 } fcml_st_assembler_context;
 
 typedef struct fcml_st_assembled_instruction {

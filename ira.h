@@ -480,6 +480,8 @@ enum ira_access_mode {
 struct ira_mod_rm_addressing {
 	// True if RIP addressing is used.
 	fcml_bool rip;
+	// Calculated RIP address.
+	fcml_uint64_t rip_address;
 	// ModRM byte.
 	n_byte raw_mod_rm;
 	// SIB byte.

@@ -21,6 +21,7 @@
 #define FCML_CEH_GEC_NO_SPACE_LEFT		6
 #define FCML_CEH_GEC_NOT_INITIALIZED	7
 #define FCML_CEH_GEC_EOF				8
+#define FCML_CEH_GEC_VALUE_OUT_OF_RANGE	9
 
 typedef fcml_uint16_t fcml_ceh_error;
 

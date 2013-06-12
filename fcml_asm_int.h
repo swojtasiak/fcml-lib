@@ -28,6 +28,7 @@ typedef struct fcml_st_asm_encoding_context {
 	fcml_st_assembler_context *assembler_context;
 	fcml_st_instruction *instruction;
 	fcml_st_assembler_result *result;
+	fcml_nint8_t instruction_size;
 } fcml_st_asm_encoding_context;
 
 #endif /* FCML_ASM_INT_H_ */

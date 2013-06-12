@@ -22,9 +22,15 @@
 #define FCML_ENCODE_REX_X(rex,x)	( rex | ( x << 1 ) )
 #define FCML_ENCODE_REX_B(rex,b)	( rex | b )
 
+struct fcml_st_asm_instruction_part;
+
+typedef fcml_ceh_error (*fcml_st_asm_instruction_part_post_processor)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args );
+
 typedef struct fcml_st_asm_instruction_part {
 	fcml_uint8_t code[10];
 	int code_length;
+	fcml_ptr post_processor_args;
+	fcml_st_asm_instruction_part_post_processor post_processor;
 } fcml_st_asm_instruction_part;
 
 typedef struct fcml_st_asm_instruction_part_container {

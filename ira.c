@@ -2033,6 +2033,7 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 			mod_rm->raw_mod_rm = decoded_mod_rm->raw_mod_rm;
 			mod_rm->raw_sib = decoded_mod_rm->raw_sib;
 			mod_rm->rip = decoded_mod_rm->rip;
+			mod_rm->rip_address = decoded_mod_rm->rip_address;
 			//mod_rm->raw_rex = decoded_mod_rm->raw_rex;
 			mod_rm->base_reg = decoded_mod_rm->base_reg;
 			mod_rm->index_reg = decoded_mod_rm->index_reg;
@@ -2621,7 +2622,6 @@ int ira_relative_addressing_instruction_operand_handler( struct ira_diss_context
 int ira_rip_addressing_instruction_operand_handler( struct ira_diss_context *context, struct ira_instruction_operand *operand, struct ira_instruction_operand *istruction_operands[4] ) {
 
 	struct ira_decoding_context *decoding_context = &(context->decoding_context);
-	struct ira_addressing *addressing = &(operand->addressing);
 	struct ira_mod_rm_addressing *mod_rm = &(operand->addressing.mod_rm);
 	struct ira_displacement *displacement = &(mod_rm->displacement);
 
@@ -2633,22 +2633,13 @@ int ira_rip_addressing_instruction_operand_handler( struct ira_diss_context *con
 	// Sprawdzic jak zostanie zdekodowany rel8, kiedy ASA = 16. Bo chyba bedzie operowac na IP, a my tego nie obsluzymy, poniewaz
 	// OSA bedzie np 32? Soprawdzic jak dekoduje VS i Olly
 
-	switch( decoding_context->effective_operand_size_attribute ) {
-		case 32:
-		{
-			// 32 bit addressing.
-			addressing->address_size = IRA_ADDRESS_32;
-			addressing->address_value.address_32 = (int32_t)(context->instruction_pointer.eip + instruction_size) + (int32_t)displacement->displacement.displacement_32;
-			break;
-		}
-		case 64:
-		{
-			// 64 bit addressing.
-			addressing->address_size = IRA_ADDRESS_64;
-			addressing->address_value.address_64 = (int64_t)(context->instruction_pointer.rip + (int64_t)instruction_size) + (int64_t)displacement->displacement.displacement_32;
-			break;
-		}
+	fcml_int64_t rip = (fcml_int64_t)(context->instruction_pointer.rip + (fcml_int64_t)instruction_size) + (fcml_int64_t)displacement->displacement.displacement_32;
+
+	if( decoding_context->effective_address_size_attribute == IRA_ADDRESS_32 ) {
+		rip &= 0x00000000FFFFFFFFUL;
 	}
+
+	operand->addressing.mod_rm.rip_address = rip;
 
 	return _IRA_INT_ERROR_NO_ERROR;
 }

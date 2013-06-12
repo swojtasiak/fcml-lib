@@ -13,14 +13,20 @@ fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, f
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	if( encoded_modrm->is_rip ) {
-		/*fcml_int64_t effective_address = (fcml_int64_t)rip + encoded_modrm->rip_offset + instruction_size;
+		fcml_int64_t rip_offset = ( encoded_modrm->rip_address + instruction_size ) - (fcml_int64_t)rip;
 
-		// Extends and encodes displacement to given stream.
-		error = fcml_fn_utils_encode_vint( stream, &disp );
-		if( error ) {
-			return error;
-		}*/
+		if( rip_offset < FCML_INT32_MIN || rip_offset > FCML_INT32_MAX ) {
+			error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+		} else {
 
+			fcml_uvint uvint;
+			uvint.uint32 = (fcml_uint32_t)rip_offset;
+			uvint.size = FCML_DS_32;
+
+			// Extends and encodes displacement to given stream.
+			error = fcml_fn_utils_encode_uvint( stream, &uvint );
+
+		}
 	} else {
 		error = FCML_CEH_GEC_INVALID_INPUT;
 	}
@@ -90,6 +96,8 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *d
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
+	// Zdekodowac displacement i zapsac go ewentualnie jako RIP do poziejzego rpzetworzenia przez post processing i encoer RIP z mod_rm_encoding.
+
 	// Converts displacement to signed variable size integer value.
 	fcml_vint disp;
 	error = fcml_fn_utils_displacement_to_vint( displacement, &disp );
@@ -99,10 +107,10 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *d
 
 	if( is_rip ) {
 		// Just in case.
-		extension = FCML_DS_32;
+		extension = FCML_DS_64;
 	}
 
-	// Extend displacement value it there is such need.
+	// Extend displacement value if there is such need.
 	if( disp.size != extension ) {
 		error = fcml_fn_utils_extend_vint( &disp, extension );
 		if( error ) {
@@ -113,7 +121,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *d
 	if( is_rip ) {
 		// Store RIP offset. It can be used then to calculate displacement
 		encoded_modrm->is_rip = is_rip;
-		encoded_modrm->rip_offset = (fcml_int32_t)disp.int32;
+		encoded_modrm->rip_address = disp.int64;
 	} else {
 		// Gets displacement as stream.
 		fcml_st_memory_stream stream = fcml_ifn_map_displacement_to_stream( encoded_modrm );

@@ -175,7 +175,17 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 	}
 
 	// Append displacement.
-	if( mod_rm->displacement.displacement_type != IRA_NO_DISPLACEMENT
+	if( mod_rm->rip ) {
+
+		struct _ira_integer rip_address_value = {0};
+
+		rip_address_value.is_signed = FCML_FALSE;
+		rip_address_value.size = 64;
+		rip_address_value.value.v64 = mod_rm->rip_address;
+
+		_ira_format_append_integer( stream, &rip_address_value, 16 );
+
+	} else if( mod_rm->displacement.displacement_type != IRA_NO_DISPLACEMENT
 			&& ( format_info->show_zero_displacement || mod_rm->displacement.displacement.displacement_32 != 0 ) ) {
 
 		_ira_format_append_if_not_first( stream, &first, "+" );
