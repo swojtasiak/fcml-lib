@@ -13,7 +13,7 @@ fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, f
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	if( encoded_modrm->is_rip ) {
-		fcml_int64_t rip_offset = ( encoded_modrm->rip_address + instruction_size ) - (fcml_int64_t)rip;
+		fcml_int64_t rip_offset = ( encoded_modrm->rip_address - instruction_size ) - (fcml_int64_t)rip;
 
 		if( rip_offset < FCML_INT32_MIN || rip_offset > FCML_INT32_MAX ) {
 			error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -23,7 +23,7 @@ fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, f
 			uvint.uint32 = (fcml_uint32_t)rip_offset;
 			uvint.size = FCML_DS_32;
 
-			// Extends and encodes displacement to given stream.
+			// Encodes and encodes displacement to given stream.
 			error = fcml_fn_utils_encode_uvint( stream, &uvint );
 
 		}
@@ -92,11 +92,9 @@ fcml_st_memory_stream fcml_ifn_map_displacement_to_stream( fcml_st_encoded_modrm
 }
 
 // Optionaly extends and encodes displacement.
-fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *displacement, fcml_st_encoded_modrm *encoded_modrm, fcml_usize extension, fcml_bool is_rip ) {
+fcml_ceh_error fcml_ifn_modrm_encode_displacement( fcml_st_modrm_encoder_context *context, const fcml_st_displacement *displacement, fcml_st_encoded_modrm *encoded_modrm, fcml_usize extension, fcml_bool is_rip ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
-	// Zdekodowac displacement i zapsac go ewentualnie jako RIP do poziejzego rpzetworzenia przez post processing i encoer RIP z mod_rm_encoding.
 
 	// Converts displacement to signed variable size integer value.
 	fcml_vint disp;
@@ -122,6 +120,13 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( const fcml_st_displacement *d
 		// Store RIP offset. It can be used then to calculate displacement
 		encoded_modrm->is_rip = is_rip;
 		encoded_modrm->rip_address = disp.int64;
+
+		// Check if 32 bit ASA should be used, if so check if RIP address is not out of range.
+		fcml_data_size asa = ( context->chosen_effective_address_size ) ? context->chosen_effective_address_size : context->effective_address_size;
+		if( asa == FCML_DS_32 && (fcml_uint64_t)disp.int64 > FCML_UINT32_MAX ) {
+			return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+		}
+
 	} else {
 		// Gets displacement as stream.
 		fcml_st_memory_stream stream = fcml_ifn_map_displacement_to_stream( encoded_modrm );
@@ -154,7 +159,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *contex
 	// Check if there is disp16 addressing mode encoded.
 	if( decoded_modrm->displacement.size && !decoded_modrm->base.type ) {
 		// Sign extends displacement to 16 bits if there is such need, and encode it.
-		error = fcml_ifn_modrm_encode_displacement( &(decoded_modrm->displacement), encoded_modrm, FCML_DS_16, FCML_FALSE );
+		error = fcml_ifn_modrm_encode_displacement( context, &(decoded_modrm->displacement), encoded_modrm, FCML_DS_16, FCML_FALSE );
 	} else if ( decoded_modrm->base.type ) {
 
 		if( decoded_modrm->base.type && decoded_modrm->base.size != FCML_DS_16 ) {
@@ -223,7 +228,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *contex
 				}
 
 				if( f_mod > 0 ) {
-					error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, decoded_modrm->displacement.size, FCML_FALSE );
+					error = fcml_ifn_modrm_encode_displacement( context, &(decoded_modrm->displacement), encoded_modrm, decoded_modrm->displacement.size, FCML_FALSE );
 				}
 			}
 
@@ -272,7 +277,11 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 		choose_sib = FCML_TRUE;
 	} else {
 		if( !decoded_modrm->base.type && decoded_modrm->displacement.size ) {
-			// disp32
+			// disp32 or RIP
+			if( decoded_modrm->displacement.displacement_type == FCML_DT_ADDRESS && ( !context->choose_rip_encoding || !context->addr_form == FCML_AF_64_BIT ) ) {
+				// Uses choses address displacement, but RIP addressing can not be used.
+				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			}
 			if( context->choose_rip_encoding && context->addr_form == FCML_AF_64_BIT ) {
 				context->is_rip_encoding = FCML_TRUE;
 				context->is_sib_alternative = FCML_FALSE;
@@ -402,7 +411,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 	}
 
 	if( disp_size ) {
-		fcml_ceh_error error = fcml_ifn_modrm_encode_displacement(  &(decoded_modrm->displacement), encoded_modrm, disp_size, context->is_rip_encoding );
+		fcml_ceh_error error = fcml_ifn_modrm_encode_displacement( context, &(decoded_modrm->displacement), encoded_modrm, disp_size, context->is_rip_encoding );
 		if( error ) {
 			return error;
 		}

@@ -180,6 +180,9 @@ fcml_ceh_error fcml_fn_utils_uvint_to_displacement( const fcml_uvint *uvint, fcm
 	case FCML_DS_32:
 		displacement->dis32 = (signed)uvint->uint32;
 		break;
+	case FCML_DS_64:
+		displacement->dis64 = (signed)uvint->uint64;
+		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;
 		break;
@@ -201,6 +204,9 @@ fcml_ceh_error fcml_fn_utils_vint_to_displacement( const fcml_vint *vint, fcml_s
 	case FCML_DS_32:
 		displacement->dis32 = vint->int32;
 		break;
+	case FCML_DS_64:
+		displacement->dis64 = vint->int64;
+		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;
 		break;
@@ -214,13 +220,16 @@ fcml_ceh_error fcml_fn_utils_displacement_to_vint( const fcml_st_displacement *d
 	vint->int64 = 0;
 	switch( displacement->size ) {
 	case FCML_DS_8:
-		vint->int8 = (signed)displacement->dis8;
+		vint->int8 = (fcml_int8_t)displacement->dis8;
 		break;
 	case FCML_DS_16:
-		vint->int16 = (signed)displacement->dis16;
+		vint->int16 = (fcml_int16_t)displacement->dis16;
 		break;
 	case FCML_DS_32:
-		vint->int32 = (signed)displacement->dis32;
+		vint->int32 = (fcml_int32_t)displacement->dis32;
+		break;
+	case FCML_DS_64:
+		vint->int64 = (fcml_int64_t)displacement->dis64;
 		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;
