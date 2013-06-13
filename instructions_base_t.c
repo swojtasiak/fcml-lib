@@ -92,6 +92,11 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
 		context.configuration.choose_sib_encoding = FCML_FALSE;
 		context.configuration.choose_rip_encoding = enable_rip;
+		if( x64 ) {
+			context.ip.rip = 0x0000800000401000;
+		} else {
+			context.ip.eip = 0x00401000;
+		}
 
 		fcml_st_assembler_result *asm_result;
 		error = fcml_fn_assemble( &context, result->instruction, &asm_result );

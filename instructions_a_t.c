@@ -116,6 +116,8 @@ void fcml_tf_instruction_ADC(void) {
 	FCML_I32( "adc dword ptr [esi],00000001h", 0x83, 0x16, 0x01 );
 	FCML_I32( "adc word ptr [esi],0001h", 0x66, 0x83, 0x16, 0x01 );
 	FCML_I64( "adc word ptr [rsi],0001h", 0x66, 0x83, 0x16, 0x01 );
+	// RIP
+	FCML_I64_RIP( "adc dword ptr [0000800000401007h],00000003h", 0x83, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
 	//FCML_I32( "adc dword ptr [0201h],00000003h", 0x67, 0x83, 0x16, 0x01, 0x02, 0x03 );
 	// 00000000`00401000 8315faf1bfff03  adc     dword ptr [00000000`00000201],3
 

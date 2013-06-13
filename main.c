@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_I64_RIP_P( "adc dword ptr [0000800000401007h],00000003h", 0x83, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
+	//FCML_I64_RIP_P( "adc dword ptr [0000800000401007h],00000003h", 0x83, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
 
 	//FCML_I64_P( "adc word ptr [0x12FF88FF88FF88],0001h", 0x66, 0x83, 0x16, 0x01 );
 
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 //	FCML_I64_P( "adc eax,42806521h", 0x15, 0x21, 0x65, 0x80, 0x42 );
 	//FCML_I64_P( "adc rax,0000000042806521h", 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
 
-	return 0;
+	//return 0;
 
 	//return 0;
 
