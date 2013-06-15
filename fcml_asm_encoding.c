@@ -568,6 +568,8 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_st_asm_encoding_context *context, 
 
 fcml_ien_asm_part_processor_phase fcml_asm_executed_phases[] = { FCML_IEN_ASM_IPPP_FIRST_PHASE, FCML_IEN_ASM_IPPP_SECOND_PHASE, FCML_IEN_ASM_IPPP_THIRD_PHASE };
 
+
+// Responsible for assembling given addressing mode using attributes provided by context.
 fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_st_asm_instruction_part_container *instruction_part_container ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -600,7 +602,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 		}
 	}
 
-	// Calculate insruction size.
+	// Calculate instruction size.
 	fcml_uint8_t code_length = 0;
 	for( i = 0; i < addr_mode->instruction_parts; i++ ) {
 		fcml_st_asm_instruction_part *ip = &(instruction_part[i]);
@@ -1203,22 +1205,6 @@ fcml_ifn_asm_instruction_part_processor_factory_dispatcher fcml_ifn_get_instruct
 	}
 	return dispatcher;
 }
-
-
-/*
-
-fcml_st_asm_operand_encoder fcml_ifn_asm_prepare_operand_encoder( fcml_uint32_t encoded_operand, fcml_ceh_error *error ) {
-	fcml_st_asm_operand_encoder encoder = {0};
-	if( encoded_operand != FCML_NA ) {
-		encoder.decoded_addr_mode = fcml_fnp_def_decode_addr_mode_args(encoded_operand, error );
-		if( !*error ) {
-			// Choose operand encoder.
-			encoder.operand_encoder = fcml_def_operand_encoders[encoder.decoded_addr_mode->addr_mode];
-		}
-	}
-	return encoder;
-}
-*/
 
 fcml_st_asm_instruction_addr_mode *fcml_ifn_asm_prepare_addr_mode( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ceh_error *error ) {
 
