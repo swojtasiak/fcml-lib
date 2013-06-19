@@ -92,6 +92,7 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
 		context.configuration.choose_sib_encoding = FCML_FALSE;
 		context.configuration.choose_rip_encoding = enable_rip;
+		context.configuration.optimizer = FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
 		if( x64 ) {
 			context.ip.rip = 0x0000800000401000;
 		} else {
