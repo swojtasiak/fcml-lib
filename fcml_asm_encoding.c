@@ -13,6 +13,7 @@
 #include "fcml_env.h"
 #include "fcml_errors.h"
 #include "fcml_utils.h"
+#include "fcml_optimizers.h"
 
 fcml_coll_map instructions_map = NULL;
 
@@ -27,6 +28,7 @@ void fcml_ifn_clean_context( fcml_st_asm_encoding_context *context ) {
 	data_size_flags->effective_operand_size = FCML_DS_UNDEF;
 	data_size_flags->l.is_not_null = FCML_FALSE;
 	data_size_flags->l.value = 0;
+	data_size_flags->allowed_effective_address_size = 0;
 }
 
 fcml_st_memory_stream fcml_ifn_instruction_part_stream( fcml_st_asm_instruction_part *instruction_part ) {
@@ -429,23 +431,40 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_ien_as
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_rm( fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;;
 	fcml_bool result = FCML_TRUE;
+	fcml_bool is_reg = FCML_FALSE;
+	fcml_bool is_mem = FCML_FALSE;
 	fcml_sf_def_tma_rm *args = (fcml_sf_def_tma_rm*)addr_mode->addr_mode_args;
+	is_mem = operand_def->type == FCML_EOT_EFFECTIVE_ADDRESS;
+	is_reg = operand_def->type == FCML_EOT_REGISTER;
 	// Check operand type.
 	if ( args->flags == FCML_RMF_RM ) {
-		result &= ( operand_def->type == FCML_EOT_REGISTER || operand_def->type == FCML_EOT_EFFECTIVE_ADDRESS );
+		result &= ( is_mem || is_reg );
 	} else if ( args->flags & FCML_RMF_R ) {
-		result &= operand_def->type == FCML_EOT_REGISTER;
-		if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
-			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
-		}
+		result &= is_reg;
 	} else if ( args->flags & FCML_RMF_M ) {
-		result &= operand_def->type == FCML_EOT_EFFECTIVE_ADDRESS;
-		if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_memory_operand_size, operand_def->effective_address.size_operator, FCML_IEN_CT_EQUAL ) ) {
-			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
-		}
+		result &= is_mem;
 	}
-	if( !result ) {
-		return FCML_EN_UNSUPPORTED_OPPERAND;
+	if( result ) {
+		if( is_reg ) {
+			if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			}
+		}
+		if( is_mem ) {
+			if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_memory_operand_size, operand_def->effective_address.size_operator, FCML_IEN_CT_EQUAL ) ) {
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			}
+			if( !(operand_def->effective_address.base.type) && !(operand_def->effective_address.index.type) && !(context->assembler_context->configuration.choose_rip_encoding) ) {
+				// No register defined, so dispacement only addressing has to be used. We do not check RIP here, because in case of RIP, rip encoding is always used.
+				if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+					context->data_size_flags.allowed_effective_address_size = FCML_EN_ASF_64 | FCML_EN_ASF_32;
+				} else if( context->assembler_context->addr_form == FCML_AF_32_BIT || context->assembler_context->addr_form == FCML_AF_16_BIT ) {
+					context->data_size_flags.allowed_effective_address_size = FCML_EN_ASF_16 | FCML_EN_ASF_32;
+				}
+			}
+		}
+	} else {
+		error = FCML_EN_UNSUPPORTED_OPPERAND;
 	}
 	return error;
 }
@@ -701,10 +720,35 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_st_asm_encoding_context *
 	return error;
 }
 
+fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_ptr args ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_st_assembled_instruction *assembled_instruction;
+	error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
+	if( !error ) {
+		#ifdef FCML_DEBUG
+			fcml_st_opt_debug_args *opt_args = (fcml_st_opt_debug_args*)args;
+			assembled_instruction->__def_index = opt_args->__def_index;
+		#endif
+		if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
+			fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
+			error = FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+	}
+	return error;
+}
+
 fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	if( addr_modes ) {
+
+		fcml_en_assembler_optimizers optimizer_type = context->assembler_context->configuration.optimizer;
+		fcml_fnp_asm_optimizer optimizer = fcml_ar_optimizers[optimizer_type];
+		if( !optimizer ) {
+			// Optimizer not found.
+			return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+		}
+
 		// Choose addressing mode.
 		if( addr_modes->addr_modes->size ) {
 			fcml_st_coll_list_element *addr_mode_element = addr_modes->addr_modes->head;
@@ -712,21 +756,17 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 			int index = 0;
 #endif
 			while( addr_mode_element ) {
+				error = FCML_CEH_GEC_NO_ERROR;
 				fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)addr_mode_element->item;
 				fcml_ifn_clean_context( context );
 				if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
-					fcml_st_assembled_instruction *assembled_instruction;
-					error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
-					if( !error ) {
 #ifdef FCML_DEBUG
-							assembled_instruction->__def_index = index;
+					fcml_st_opt_debug_args args;
+					args.__def_index = index;
+					error = optimizer( context, addr_mode, fcml_ifn_asm_assemble_and_collect_instruction, &args );
+#else
+					error = optimizer( context, addr_mode, fcml_ifn_asm_assemble_and_collect_instruction, NULL );
 #endif
-						if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
-							fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
-							error = FCML_CEH_GEC_OUT_OF_MEMORY;
-							break;
-						}
-					}
 				}
 				addr_mode_element = addr_mode_element->next;
 #ifdef FCML_DEBUG
@@ -1013,31 +1053,27 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 		// Encodes ModR/M bytes.
 		error = fcml_fn_modrm_encode( &ctx, &(context->mod_rm), &(context->encoded_mod_rm) );
 		if( !error ) {
-			if( context->data_size_flags.effective_address_size && ctx.chosen_effective_address_size != context->data_size_flags.effective_address_size ) {
-				error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
-			} else {
-				context->data_size_flags.effective_address_size = ctx.chosen_effective_address_size;
-				if( fcml_ifn_validate_effective_address_size( context ) ) {
-					if( context->encoded_mod_rm.is_rip ) {
-						// ModR/M + 4bytes displacement.
-						instruction_part->code_length = 5;
-						instruction_part->post_processor = fcml_st_asm_instruction_part_rip_post_processor;
-						instruction_part->post_processor_args = NULL;
-					} else {
-						fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( instruction_part );
-						fcml_st_encoded_modrm *encoded_modrm = &(context->encoded_mod_rm);
-						fcml_fn_stream_write( &stream, encoded_modrm->modrm );
-						if( encoded_modrm->sib.is_not_null ) {
-							fcml_fn_stream_write( &stream, encoded_modrm->sib.value );
-						}
-						if( encoded_modrm->displacement_size ) {
-							fcml_fn_stream_write_bytes( &stream, &(encoded_modrm->displacement), encoded_modrm->displacement_size );
-						}
-						instruction_part->code_length = stream.offset;
-					}
+			context->data_size_flags.effective_address_size = ctx.chosen_effective_address_size;
+			if( fcml_ifn_validate_effective_address_size( context ) ) {
+				if( context->encoded_mod_rm.is_rip ) {
+					// ModR/M + 4bytes displacement.
+					instruction_part->code_length = 5;
+					instruction_part->post_processor = fcml_st_asm_instruction_part_rip_post_processor;
+					instruction_part->post_processor_args = NULL;
 				} else {
-					error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+					fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( instruction_part );
+					fcml_st_encoded_modrm *encoded_modrm = &(context->encoded_mod_rm);
+					fcml_fn_stream_write( &stream, encoded_modrm->modrm );
+					if( encoded_modrm->sib.is_not_null ) {
+						fcml_fn_stream_write( &stream, encoded_modrm->sib.value );
+					}
+					if( encoded_modrm->displacement_size ) {
+						fcml_fn_stream_write_bytes( &stream, &(encoded_modrm->displacement), encoded_modrm->displacement_size );
+					}
+					instruction_part->code_length = stream.offset;
 				}
+			} else {
+				error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
 			}
 		}
 

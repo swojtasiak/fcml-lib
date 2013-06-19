@@ -13,6 +13,7 @@
 
 #include "fcml_assembler.h"
 #include "fcml_asm_encoding.h"
+#include "fcml_optimizers.h"
 
 fcml_ceh_error fcml_fn_asm_init() {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;

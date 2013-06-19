@@ -12,9 +12,15 @@
 #include "fcml_common.h"
 #include "fcml_errors.h"
 
+typedef enum fcml_en_assembler_optimizers {
+	FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER = 0,
+	FCML_EN_OP_NO_OPTIMIZER,
+} fcml_en_assembler_optimizers;
+
 typedef struct fcml_st_assembler_configuration {
 	fcml_bool choose_sib_encoding;
 	fcml_bool choose_rip_encoding;
+	fcml_en_assembler_optimizers optimizer;
 } fcml_st_assembler_configuration;
 
 typedef struct fcml_st_assembler_context {

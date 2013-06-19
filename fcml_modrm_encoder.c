@@ -268,7 +268,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 	fcml_bool choose_sib = FCML_FALSE;
 
 	// Check if addressing mode and effestive address size are compatible.
-	if( ( context->effective_address_size == FCML_DS_64 && context->addr_form != FCML_AF_64_BIT ) || ( context->addr_form == FCML_AF_64_BIT && context->effective_address_size == FCML_DS_16 ) ) {
+	if( ( context->chosen_effective_address_size == FCML_DS_64 && context->addr_form != FCML_AF_64_BIT ) || ( context->addr_form == FCML_AF_64_BIT && context->chosen_effective_address_size == FCML_DS_16 ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 
@@ -311,7 +311,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 
 		// Base register.
 		if( decoded_modrm->base.type ) {
-			if( context->effective_address_size != decoded_modrm->base.size ) {
+			if( context->chosen_effective_address_size != decoded_modrm->base.size ) {
 				// Wrong size of base register, it has to be equal to EASA.
 				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
@@ -332,7 +332,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 		// Index register.
 		if( decoded_modrm->index.type ) {
 			// Check if index register size is correct.
-			if( context->effective_address_size != decoded_modrm->index.size ) {
+			if( context->chosen_effective_address_size != decoded_modrm->index.size ) {
 				// Wrong size of index register, it has to be equal to EASA.
 				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
@@ -374,7 +374,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 		// SIB not needed.
 
 		if ( decoded_modrm->base.type ) {
-			if( context->effective_address_size != decoded_modrm->base.size ) {
+			if( context->chosen_effective_address_size != decoded_modrm->base.size ) {
 				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
 			f_rm = decoded_modrm->base.reg;

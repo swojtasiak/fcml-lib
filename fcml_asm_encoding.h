@@ -104,6 +104,17 @@ typedef struct fcml_st_asm_instruction_addr_mode {
 	int instruction_parts;
 } fcml_st_asm_instruction_addr_mode;
 
+
+#ifdef FCML_DEBUG
+	typedef struct fcml_st_opt_debug_args {
+		int __def_index;
+	} fcml_st_opt_debug_args;
+#endif
+
+// Optimizer definition.
+typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_ptr args );
+typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
+
 void fcml_fn_free_instruction_parts( fcml_st_coll_list *instruction_parts );
 fcml_ceh_error fcml_fn_asm_init_instruction_encodings();
 fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
