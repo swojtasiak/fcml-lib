@@ -39,6 +39,7 @@ fcml_st_memory_stream fcml_ifn_instruction_part_stream( fcml_st_asm_instruction_
 	return stream;
 }
 
+// TODO: Je¿eli nie ebdzie uzywana wywaliæ.
 fcml_bool fcml_ifn_validate_effective_address_size( fcml_st_asm_encoding_context *context ) {
 	fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 	fcml_data_size eas = context->data_size_flags.effective_address_size;
@@ -451,17 +452,36 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_rm( fcml_st_asm_encoding_context *c
 			}
 		}
 		if( is_mem ) {
+			// OSA.
 			if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_memory_operand_size, operand_def->effective_address.size_operator, FCML_IEN_CT_EQUAL ) ) {
 				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			}
-			if( !(operand_def->effective_address.base.type) && !(operand_def->effective_address.index.type) && !(context->assembler_context->configuration.choose_rip_encoding) ) {
-				// No register defined, so dispacement only addressing has to be used. We do not check RIP here, because in case of RIP, rip encoding is always used.
-				if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
-					context->data_size_flags.allowed_effective_address_size = FCML_EN_ASF_64 | FCML_EN_ASF_32;
-				} else if( context->assembler_context->addr_form == FCML_AF_32_BIT || context->assembler_context->addr_form == FCML_AF_16_BIT ) {
-					context->data_size_flags.allowed_effective_address_size = FCML_EN_ASF_16 | FCML_EN_ASF_32;
+			if( !error ) {
+
+				// ASA.
+				fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+				fcml_st_effective_address *effective_address = &(operand_def->effective_address);
+
+				fcml_st_modrm mod_rm;
+				mod_rm.base = effective_address->base;
+				mod_rm.displacement = effective_address->displacement;
+				mod_rm.index = effective_address->index;
+				mod_rm.scale_factor = effective_address->scale_factor;
+
+				fcml_esa esa;
+				fcml_fn_modrm_calculate_effective_address_size( &mod_rm, &esa, context->assembler_context->configuration.choose_rip_encoding );
+				if( ( esa & FCML_ESA_SF_16 ) && addr_form != FCML_AF_64_BIT ) {
+					context->data_size_flags.allowed_effective_address_size |= FCML_EN_ASF_16;
 				}
+				if( esa & FCML_ESA_SF_32 ) {
+					context->data_size_flags.allowed_effective_address_size |= FCML_EN_ASF_32;
+				}
+				if( ( esa & FCML_ESA_SF_64 ) && addr_form != FCML_AF_16_BIT ) {
+					context->data_size_flags.allowed_effective_address_size |= FCML_EN_ASF_64;
+				}
+
 			}
+
 		}
 	} else {
 		error = FCML_EN_UNSUPPORTED_OPPERAND;
@@ -1053,8 +1073,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 		// Encodes ModR/M bytes.
 		error = fcml_fn_modrm_encode( &ctx, &(context->mod_rm), &(context->encoded_mod_rm) );
 		if( !error ) {
-			context->data_size_flags.effective_address_size = ctx.chosen_effective_address_size;
-			if( fcml_ifn_validate_effective_address_size( context ) ) {
+			if( context->data_size_flags.effective_address_size == ctx.chosen_effective_address_size ) {
 				if( context->encoded_mod_rm.is_rip ) {
 					// ModR/M + 4bytes displacement.
 					instruction_part->code_length = 5;
@@ -1073,6 +1092,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 					instruction_part->code_length = stream.offset;
 				}
 			} else {
+				// ModRM encoded to the form not supported by current addressing mode. For example, addressing mode needs ASA 32, but asembled ModRM required 16 bit ASA.
 				error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
 			}
 		}

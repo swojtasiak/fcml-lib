@@ -34,7 +34,7 @@ fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, f
 	return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_calculate_efective_address_size( const fcml_st_modrm *decoded_modrm, fcml_esa *effective_address_size ) {
+fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_esa *effective_address_size, fcml_bool is_rip ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -65,8 +65,10 @@ fcml_ceh_error fcml_fn_modrm_calculate_efective_address_size( const fcml_st_modr
 		}
 	} else if ( decoded_modrm->displacement.size ) {
 		// Base register is not available, but displacement is.
-		if( decoded_modrm->displacement.size <= FCML_DS_16 ) {
+		if( decoded_modrm->displacement.size <= FCML_DS_16 && !is_rip ) {
 			easa = FCML_ESA_SF_16 | FCML_ESA_SF_32 | FCML_ESA_SF_64;
+		} else if( is_rip && decoded_modrm->displacement.size > FCML_DS_64 ) {
+			easa = FCML_ESA_SF_64;
 		} else {
 			easa = FCML_ESA_SF_32 | FCML_ESA_SF_64;
 		}
