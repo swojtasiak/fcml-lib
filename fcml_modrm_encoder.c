@@ -162,6 +162,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *contex
 	if( decoded_modrm->displacement.size && !decoded_modrm->base.type ) {
 		// Sign extends displacement to 16 bits if there is such need, and encode it.
 		error = fcml_ifn_modrm_encode_displacement( context, &(decoded_modrm->displacement), encoded_modrm, FCML_DS_16, FCML_FALSE );
+		f_rm = 0x06;
 	} else if ( decoded_modrm->base.type ) {
 
 		if( decoded_modrm->base.type && decoded_modrm->base.size != FCML_DS_16 ) {

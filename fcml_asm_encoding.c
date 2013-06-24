@@ -973,6 +973,43 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 	return descriptor;
 }
 
+// 67 prefix.
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_67_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
+		if( context->assembler_context->effective_address_size != context->data_size_flags.effective_address_size ) {
+			fcml_bool encode =
+					( context->assembler_context->effective_address_size == FCML_DS_16 && context->data_size_flags.effective_address_size == FCML_DS_32 ) ||
+					( context->assembler_context->effective_address_size == FCML_DS_32 && context->data_size_flags.effective_address_size == FCML_DS_16 ) ||
+					( context->assembler_context->effective_address_size == FCML_DS_64 && context->data_size_flags.effective_address_size == FCML_DS_32 );
+			if( encode ) {
+				instruction_part->code[0] = 0x67;
+				instruction_part->code_length = 1;
+			} else {
+				error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+			}
+		}
+	}
+	return error;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+
+	// 67 prefix can be applied to instructions without neither XOP nor VEX prefixes.
+	if( !FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_67_prefix_encoder;
+		descriptor.processor_acceptor = NULL;
+	}
+
+	return descriptor;
+}
+
+
+
 // REX prefix.
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
@@ -1170,6 +1207,7 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 // List of instruction part encoders for instruction prefixes.
 fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
 	{ fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder, 0 },
+	{ fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder, 0 },
 	{ NULL, 0 }
 };

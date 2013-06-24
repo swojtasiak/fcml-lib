@@ -27,17 +27,6 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_AAS[] = {
 	{ NULL, 0x0001, 0x00440000, { 0x3F, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
-
-struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ADC[] = {
-		// 83 /2 ib ADC r/m16, imm8 B Valid Valid Add with CF sign-extended imm8 to r/m16.
-		// 83 /2 ib ADC r/m32, imm8 B Valid Valid Add with CF sign-extended imm8 into r/m32.
-		{ NULL, 0x0001, 0x00C59000, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
-		// REX.W + 83 /2 ib ADC r/m64, imm8 B Valid N.E. Add with CF sign-extended imm8 into r/m64.
-		//{ NULL, 0x0009, 0x00859000, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } }
-};
-
-/*
-
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ADC[] = {
 	// 14 ib ADC AL, imm8 C Valid Valid Add with carry imm8 to AL.
 	{ NULL, 0x0000, 0x00C40000, { 0x14, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
@@ -74,7 +63,6 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ADC[] = {
 	// REX.W + 13 /r ADC r64, r/m64 A Valid N.E. Add with CF r/m64 to r64.
 	{ NULL, 0x0001, 0x00C48000, { 0x13, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
 };
-*/
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ADD[] = {
 	// 04 ib ADD AL, imm8 C Valid Valid Add imm8 to AL..
