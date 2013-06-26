@@ -23,6 +23,7 @@
 #define FCML_CEH_GEC_EOF						8
 #define FCML_CEH_GEC_VALUE_OUT_OF_RANGE			9
 #define FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION	10
+#define FCML_CEH_GEC_NOT_SUPPORTED				11
 
 typedef fcml_uint16_t fcml_ceh_error;
 

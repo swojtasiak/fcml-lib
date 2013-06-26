@@ -28,6 +28,8 @@
 
 // Dynamic encoded operand sizes calculated at runtime.
 
+#define FCML_EOS_DYNAMIC_BASE	0xF0
+
 // Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute.
 #define FCML_EOS_EOSA		0xFF
 #define FCML_EOS_EASA		0xFE

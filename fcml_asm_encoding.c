@@ -268,12 +268,109 @@ fcml_bool fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, fcml
 // IMM
 //---------------
 
+
+//if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_imm_size, operand_def->immediate.imm_size, FCML_IEN_CT_EQUAL_OR_LESS ) ) {
+//	error = FCML_EN_UNSUPPORTED_OPPERAND;
+//}
+
+/*
+ * if( immediate->imm_size > imm_size ) {
+				// Ext to imm.
+				if( imm_size_ex ) {
+
+					if( imm_size_ex == FCML_EOS_EOSA ) {
+
+						if( addr_form == FCML_AF_16_BIT ) {
+
+						}
+
+						fcml_fn_utils_can_be_sign_converted_to_size( &immediate, imm_size_ex )
+					} else {
+
+
+					}
+
+				} else {
+					error = FCML_EN_UNSUPPORTED_OPPERAND;
+				}
+			} else {
+				error = FCML_EN_UNSUPPORTED_OPPERAND;
+			}
+
+			switch( imm_size ) {
+			case FCML_EOS_BYTE:
+				break;
+			case FCML_EOS_WORD:
+				break;
+			case FCML_EOS_DWORD:
+				break;
+			case FCML_EOS_QWORD:
+				break;
+			}
+		}
+
+		switch( imm_size ) {
+		case FCML_DS_8:
+			break;
+		case FCML_DS_16:
+			break;
+		case FCML_DS_32:
+			break;
+		default:
+			error = FCML_EN_UNSUPPORTED_OPPERAND;
+			break;
+		}
+ */
+
+fcml_ceh_error fcml_ifn_asm_can_sign_convert_imm( fcml_st_asm_encoding_context *context, fcml_st_immediate *immediate, fcml_uint8_t encoded_size, fcml_en_attribute_size_flag *flags ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	if( encoded_size == FCML_EOS_EOSA ) {
+		fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+		if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_16 ) ) {
+			flags |= FCML_EN_ASF_16;
+		}
+		if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_32 ) ) {
+			flags |= FCML_EN_ASF_32;
+		}
+		if( addr_form == FCML_AF_64_BIT ) {
+			if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_64 ) ) {
+				flags |= FCML_EN_ASF_64;
+			}
+		}
+	} else if ( encoded_size < FCML_EOS_DYNAMIC_BASE ) {
+		if( !fcml_fn_utils_can_be_sign_converted_to_size( immediate, encoded_size * 8 ) ) {
+			error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+		}
+	} else {
+		// Currently not supported, beacause it's just not used.
+		error = FCML_CEH_GEC_NOT_SUPPORTED;
+	}
+	return error;
+}
+
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_imm( fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_sf_def_tma_imm *args = (fcml_sf_def_tma_imm*)addr_mode->addr_mode_args;
+	fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 	if( operand_def->type == FCML_EOT_IMMEDIATE ) {
-		if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_imm_size, operand_def->immediate.imm_size, FCML_IEN_CT_EQUAL_OR_LESS ) ) {
-			error = FCML_EN_UNSUPPORTED_OPPERAND;
+		fcml_uint8_t imm_size = args->encoded_imm_size;
+		fcml_uint8_t imm_size_ex = args->encoded_ex_imm_size;
+		fcml_st_immediate *immediate = &(operand_def->immediate);
+
+		if( !imm_size_ex ) {
+			// Without sign extension.
+			if( imm_size_ex == FCML_EOS_EOSA ) {
+
+			} else {
+
+			}
+		} else {
+			// Sign extension.
+			if( imm_size == FCML_EOS_EOSA ) {
+
+			} else {
+
+			}
 		}
 	} else {
 		error = FCML_EN_UNSUPPORTED_OPPERAND;

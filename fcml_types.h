@@ -33,11 +33,17 @@ typedef int fcml_size;
 #define FCML_TRUE		1
 #define FCML_FALSE		0
 
-/*Signed integers.*/
+/* Signed integers. */
+#define FCML_INT64_MAX	INT64_MAX
+#define FCML_INT64_MIN	INT64_MIN
 #define FCML_INT32_MAX	INT32_MAX
 #define FCML_INT32_MIN	INT32_MIN
+#define FCML_INT16_MAX	INT16_MAX
+#define FCML_INT16_MIN	INT16_MIN
+#define FCML_INT8_MAX	INT8_MAX
+#define FCML_INT8_MIN	INT8_MIN
 
-/*Unsigned integers.*/
+/* Unsigned integers. */
 #define FCML_UINT8_MAX	UINT8_MAX
 #define FCML_UINT16_MAX	UINT16_MAX
 #define FCML_UINT32_MAX	UINT32_MAX
