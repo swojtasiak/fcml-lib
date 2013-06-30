@@ -29,7 +29,7 @@ void fcml_tf_modrm_encoder_test_1(void) {
 	modrm.base.reg = FCML_REG_EAX;
 	modrm.base.size = FCML_DS_32;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT_EQUAL( effective_address_size, FCML_ESA_SF_32 );
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
@@ -47,7 +47,7 @@ void fcml_tf_modrm_encoder_test_2(void) {
 	modrm.base.reg = FCML_REG_RAX;
 	modrm.base.size = FCML_DS_64;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT_EQUAL( effective_address_size, FCML_ESA_SF_64 );
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
@@ -65,7 +65,7 @@ void fcml_tf_modrm_encoder_test_3(void) {
 	modrm.base.reg = FCML_REG_AX;
 	modrm.base.size = FCML_DS_16;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT_EQUAL( effective_address_size, FCML_ESA_SF_16 );
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
@@ -84,7 +84,7 @@ void fcml_tf_modrm_encoder_test_4(void) {
 	modrm.index.reg = FCML_REG_AX;
 	modrm.index.size = FCML_DS_16;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT_EQUAL( effective_address_size, FCML_ESA_SF_16 );
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
@@ -102,7 +102,7 @@ void fcml_tf_modrm_encoder_test_5(void) {
 	modrm.index.reg = FCML_REG_EAX;
 	modrm.index.size = FCML_DS_32;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT_EQUAL( effective_address_size, FCML_ESA_SF_32 );
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
@@ -120,7 +120,7 @@ void fcml_tf_modrm_encoder_test_6(void) {
 	modrm.index.reg = FCML_REG_RAX;
 	modrm.index.size = FCML_DS_64;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT_EQUAL( effective_address_size, FCML_ESA_SF_64 );
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
@@ -136,7 +136,7 @@ void fcml_tf_modrm_encoder_test_7(void) {
 
 	modrm.displacement.size = FCML_DS_8;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT( effective_address_size & FCML_ESA_SF_16 );
 	CU_ASSERT( effective_address_size & FCML_ESA_SF_32 );
@@ -154,7 +154,7 @@ void fcml_tf_modrm_encoder_test_8(void) {
 
 	modrm.displacement.size = FCML_DS_16;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT( effective_address_size & FCML_ESA_SF_16 );
 	CU_ASSERT( effective_address_size & FCML_ESA_SF_32 );
@@ -172,7 +172,7 @@ void fcml_tf_modrm_encoder_test_9(void) {
 
 	modrm.displacement.size = FCML_DS_32;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT( !(effective_address_size & FCML_ESA_SF_16) );
 	CU_ASSERT( effective_address_size & FCML_ESA_SF_32 );
@@ -192,7 +192,7 @@ void fcml_tf_modrm_encoder_test_10(void) {
 	modrm.index.reg = FCML_REG_XMM1;
 	modrm.index.size = FCML_DS_128;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT( !(effective_address_size & FCML_ESA_SF_16) );
 	CU_ASSERT( effective_address_size & FCML_ESA_SF_32 );
@@ -212,7 +212,7 @@ void fcml_tf_modrm_encoder_test_11(void) {
 	modrm.index.reg = FCML_REG_XMM1;
 	modrm.index.size = FCML_DS_256;
 
-	fcml_ceh_error error = fcml_fn_modrm_calculate_efective_address_size( &modrm, &effective_address_size );
+	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size, FCML_FALSE );
 
 	CU_ASSERT( !(effective_address_size & FCML_ESA_SF_16) );
 	CU_ASSERT( effective_address_size & FCML_ESA_SF_32 );

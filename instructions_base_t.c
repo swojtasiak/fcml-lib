@@ -15,7 +15,7 @@
 #include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
 
-void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip ) {
+void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags ) {
 
 	struct ira_disassemble_info info;
 	info.address = code;
@@ -46,6 +46,16 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 			printf("Should fail: %s\n", mnemonic);
 			CU_FAIL(FCML_FALSE);
 			return;
+		}
+
+		// Looking for 0x67 prefix.
+		fcml_bool is_67 = FCML_FALSE;
+		int i;
+		for( i = 0; i < _IRA_PREFIXES_COUNT; i++ ) {
+			if( result.prefixes[i].prefix == 0x67 ) {
+				is_67 = FCML_TRUE;
+				break;
+			}
 		}
 
 		// Print.
@@ -86,13 +96,25 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 			return;
 		}
 
+		fcml_uint16_t opt_flags = 0;
+
 		fcml_st_assembler_context context;
 		context.effective_address_size = 0;
 		context.effective_operand_size = 0;
 		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
+
+		if( is_67 ) {
+			if( x64 ) {
+				opt_flags = FCML_OPTF_ASA_32;
+			} else {
+				opt_flags = FCML_OPTF_ASA_16;
+			}
+		}
+
 		context.configuration.choose_sib_encoding = FCML_FALSE;
 		context.configuration.choose_rip_encoding = enable_rip;
-		context.configuration.optimizer = FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
+		context.configuration.optimizer = is_67 ? FCML_EN_OP_CHOOSE_ASA : FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
+		context.configuration.optimizer_flags = opt_flags;
 		if( x64 ) {
 			context.ip.rip = 0x0000800000401000;
 		} else {

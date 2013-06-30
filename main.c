@@ -15,7 +15,9 @@
 #include "modrm_decoder_t.h"
 #include "stream_t.h"
 #include "fcml_coll_t.h"
+#include "fcml_utils_t.h"
 #include "instructions_a_t.h"
+#include "fcml_intel_parser_t.h"
 
 #include "fcml_assembler.h"
 #include "ira.h"
@@ -23,11 +25,13 @@
 #include "instructions_base_t.h"
 
 CU_SuiteInfo *suites[] = {
-	fctl_si_instructions_a,
+	/*fctl_si_instructions_a,
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
     fcml_si_coll,
+    fcml_si_utils,*/
+	fcml_si_intel_parser,
     NULL
 };
 
@@ -40,7 +44,9 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_I32_P( "adc dword ptr [0201h],00000003h", 0x67, 0x83, 0x16, 0x01, 0x02, 0x03 );
+	//FCML_I32_P( "adc word ptr [0201h],0ffffh", 0x66, 0x67, 0x83, 0x16, 0x01, 0x02, 0xFF );
+
+	//FCML_I32_P( "adc dword ptr [0201h],00000003h", 0x67, 0x83, 0x16, 0x01, 0x02, 0x03 );
 
 	//FCML_I64_RIP_P( "adc dword ptr [0000800000401007h],00000003h", 0x83, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
 
@@ -55,7 +61,7 @@ int main(int argc, char **argv) {
 
 	//return 0;
 
-	return 0;
+//	return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
