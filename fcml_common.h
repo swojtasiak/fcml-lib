@@ -250,6 +250,7 @@ typedef struct fcml_st_register {
 
 typedef struct fcml_st_immediate {
 	fcml_data_size imm_size;
+	fcml_bool is_signed;
     union {
         uint8_t imm8;
         uint16_t imm16;

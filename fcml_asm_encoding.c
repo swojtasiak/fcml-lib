@@ -327,14 +327,14 @@ fcml_ceh_error fcml_ifn_asm_can_sign_convert_imm( fcml_st_asm_encoding_context *
 	if( encoded_size == FCML_EOS_EOSA ) {
 		fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 		if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_16 ) ) {
-			flags |= FCML_EN_ASF_16;
+			*flags |= FCML_EN_ASF_16;
 		}
 		if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_32 ) ) {
-			flags |= FCML_EN_ASF_32;
+			*flags |= FCML_EN_ASF_32;
 		}
 		if( addr_form == FCML_AF_64_BIT ) {
 			if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_64 ) ) {
-				flags |= FCML_EN_ASF_64;
+				*flags |= FCML_EN_ASF_64;
 			}
 		}
 	} else if ( encoded_size < FCML_EOS_DYNAMIC_BASE ) {
@@ -352,24 +352,65 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_imm( fcml_st_asm_encoding_context *
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_sf_def_tma_imm *args = (fcml_sf_def_tma_imm*)addr_mode->addr_mode_args;
 	fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+	fcml_en_attribute_size_flag flags;
 	if( operand_def->type == FCML_EOT_IMMEDIATE ) {
 		fcml_uint8_t imm_size = args->encoded_imm_size;
 		fcml_uint8_t imm_size_ex = args->encoded_ex_imm_size;
 		fcml_st_immediate *immediate = &(operand_def->immediate);
-
 		if( !imm_size_ex ) {
 			// Without sign extension.
-			if( imm_size_ex == FCML_EOS_EOSA ) {
-
+			if( imm_size == FCML_EOS_EOSA ) {
+				if( immediate->imm_size <= FCML_DS_16 ) {
+					flags |= FCML_EN_ASF_16;
+					flags |= FCML_EN_ASF_32;
+				} else {
+					// 32 bits.
+					flags |= FCML_EN_ASF_32;
+				}
+				if( addr_form == FCML_AF_64_BIT ) {
+					flags |= FCML_EN_ASF_64;
+				}
+			} else if( imm_size < FCML_EOS_DYNAMIC_BASE ) {
+				fcml_data_size size = imm_size * 8;
+				if( size > FCML_DS_32 ) {
+					error = FCML_CEH_GEC_NOT_SUPPORTED;
+				} else if ( immediate->imm_size > size ) {
+					error = FCML_CEH_GEC_NOT_SUPPORTED;
+				}
 			} else {
-
+				// Not supported dynamic size.
+				error = FCML_CEH_GEC_NOT_SUPPORTED;
 			}
 		} else {
 			// Sign extension.
-			if( imm_size == FCML_EOS_EOSA ) {
-
+			if( imm_size_ex == FCML_EOS_EOSA ) {
 			} else {
+				switch( imm_size ) {
+				case FCML_DS_8:
+					if( immediate->imm_size == FCML_DS_8 ) {
+						flags |= FCML_EN_ASF_16;
+						flags |= FCML_EN_ASF_32;
+					} else if( immediate->imm_size == FCML_DS_16 ) {
+						if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_8 ) ) {
+							flags |= FCML_EN_ASF_16;
+						}
+					} else if( immediate->imm_size == FCML_DS_32 ) {
+						if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_8 ) ) {
+							flags |= FCML_EN_ASF_32;
+						}
+					} else if( immediate->imm_size == FCML_DS_64 ) {
+						if( fcml_fn_utils_can_be_sign_converted_to_size( immediate, FCML_DS_8 ) ) {
+							flags |= FCML_EN_ASF_64;
+						}
+					} else {
 
+					}
+					break;
+				case FCML_DS_16:
+					break;
+				case FCML_DS_32:
+					break;
+				}
 			}
 		}
 	} else {
