@@ -29,8 +29,8 @@ CU_SuiteInfo *suites[] = {
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
-    fcml_si_coll,
-    fcml_si_utils,*/
+    fcml_si_coll,*/
+    //fcml_si_utils,
 	fcml_si_intel_parser,
     NULL
 };
