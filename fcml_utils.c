@@ -8,6 +8,72 @@
 #include "fcml_utils.h"
 #include "fcml_types.h"
 
+fcml_bool fcml_fn_utils_can_convert_imm_to( fcml_st_immediate *imm, fcml_data_size ext, fcml_data_size size ) {
+	fcml_ceh_error error;
+	if( ext ) {
+		switch( ext ) {
+			case FCML_DS_8: {
+				fcml_int8_t value;
+				error = fcml_fn_utils_sign_convert_imm_to_int8( imm, &value );
+				if( !error ) {
+					return FCML_TRUE;
+				}
+				break;
+			}
+			case FCML_DS_16: {
+				fcml_int16_t value;
+				error = fcml_fn_utils_sign_convert_imm_to_int16( imm, &value );
+				if( !error ) {
+					if( size == FCML_DS_8 && value <= FCML_INT8_MAX && value >= FCML_INT8_MIN ) {
+						return FCML_TRUE;
+					}
+				}
+				break;
+			}
+			case FCML_DS_32: {
+				fcml_int32_t value;
+				error = fcml_fn_utils_sign_convert_imm_to_int32( imm, &value );
+				if( !error ) {
+					switch( size ) {
+					case FCML_DS_8:
+						if( value <= FCML_INT8_MAX && value >= FCML_INT8_MIN ) {
+							return FCML_TRUE;
+						}
+						break;
+					case FCML_DS_16:
+						if( value <= FCML_INT16_MAX && value >= FCML_INT16_MIN ) {
+							return FCML_TRUE;
+						}
+						break;
+					case FCML_DS_32:
+						return FCML_TRUE;
+					}
+				}
+				break;
+			}
+		}
+	} else {
+		fcml_int32_t value;
+		if( fcml_fn_utils_sign_convert_imm_to_int32( imm, &value ) ) {
+			switch( size ) {
+			case FCML_DS_8:
+				if( value <= FCML_INT8_MAX && value >= FCML_INT8_MIN ) {
+					return FCML_TRUE;
+				}
+				break;
+			case FCML_DS_16:
+				if( value <= FCML_INT16_MAX && value >= FCML_INT16_MIN ) {
+					return FCML_TRUE;
+				}
+				break;
+			case FCML_DS_32:
+				return FCML_TRUE;
+			}
+		}
+	}
+	return FCML_FALSE;
+}
+
 fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int8( fcml_st_immediate *imm, fcml_int8_t *value ) {
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
@@ -17,13 +83,13 @@ fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int8( fcml_st_immediate *imm, f
 		if( (fcml_int16_t)imm->imm16 < FCML_INT8_MIN || (fcml_int16_t)imm->imm16 > FCML_INT8_MAX ) {
 			return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 		}
-		*value = (fcml_int8_t)imm->imm16;
+		*value = (fcml_int8_t)(fcml_int16_t)imm->imm16;
 		break;
 	case FCML_DS_32:
 		if( (fcml_int32_t)imm->imm32 < FCML_INT8_MIN || (fcml_int32_t)imm->imm32 > FCML_INT8_MAX ) {
 			return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 		}
-		*value = (fcml_int8_t)imm->imm32;
+		*value = (fcml_int8_t)(fcml_int32_t)imm->imm32;
 		break;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
@@ -32,7 +98,7 @@ fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int8( fcml_st_immediate *imm, f
 fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int16( fcml_st_immediate *imm, fcml_int16_t *value ) {
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
-		*value = (fcml_int16_t)(fcml_int8_t)imm->imm8;
+		*value = imm->is_signed ? (fcml_int16_t)(fcml_int8_t)imm->imm8 : (fcml_int16_t)imm->imm8;
 		break;
 	case FCML_DS_16:
 		*value = (fcml_int16_t)imm->imm16;
@@ -50,35 +116,16 @@ fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int16( fcml_st_immediate *imm, 
 fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int32( fcml_st_immediate *imm, fcml_int32_t *value ) {
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
-		*value = (fcml_int32_t)(fcml_int8_t)imm->imm8;
+		*value = imm->is_signed ? (fcml_int32_t)(fcml_int8_t)imm->imm8 : (fcml_int32_t)imm->imm8;
 		break;
 	case FCML_DS_16:
-		*value = (fcml_int32_t)(fcml_int16_t)imm->imm16;
+		*value = imm->is_signed ? (fcml_int32_t)(fcml_int16_t)imm->imm16 : (fcml_int32_t)imm->imm16;
 		break;
 	case FCML_DS_32:
 		*value = (fcml_int32_t)imm->imm32;
 		break;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
-}
-
-fcml_bool fcml_fn_utils_can_be_sign_converted_to_size( fcml_st_immediate *imm, fcml_usize size ) {
-	if( imm->imm_size > size ) {
-		switch( size ) {
-		case FCML_DS_8:
-			if( ( imm->imm_size == FCML_DS_16 && ( (fcml_int16_t)imm->imm16 < FCML_INT8_MIN || (fcml_int16_t)imm->imm16 > FCML_INT8_MAX ) ) ||
-					( imm->imm_size == FCML_DS_32 && ( (fcml_int32_t)imm->imm32 < FCML_INT8_MIN || (fcml_int32_t)imm->imm32 > FCML_INT8_MAX ) ) ) {
-				return FCML_FALSE;
-			}
-		break;
-		case FCML_DS_16:
-			if( imm->imm_size == FCML_DS_32 && ( (fcml_int32_t)imm->imm32 < FCML_INT16_MIN || (fcml_int32_t)imm->imm32 > FCML_INT16_MAX ) ) {
-				return FCML_FALSE;
-			}
-		break;
-		}
-	}
-	return FCML_TRUE;
 }
 
 fcml_data_size fcml_fn_utils_get_default_ASA(fcml_en_addr_form addr_form) {

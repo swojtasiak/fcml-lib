@@ -255,6 +255,7 @@ typedef struct fcml_st_immediate {
         uint8_t imm8;
         uint16_t imm16;
         uint32_t imm32;
+        uint64_t imm64;
     };
 } fcml_st_immediate;
 

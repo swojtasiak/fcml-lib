@@ -26,9 +26,9 @@ fcml_ceh_error fcml_fn_utils_extend_uvint( fcml_uvint *uvint, fcml_usize extensi
 fcml_ceh_error fcml_fn_utils_extend_vint( fcml_vint *vint, fcml_usize extension );
 fcml_data_size fcml_fn_utils_get_default_ASA(fcml_en_addr_form addr_form);
 fcml_data_size fcml_fn_utils_get_default_OSA(fcml_en_addr_form addr_form);
-fcml_bool fcml_fn_utils_can_be_sign_converted_to_size( fcml_st_immediate *imm, fcml_usize size );
 fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int8( fcml_st_immediate *imm, fcml_int8_t *value );
 fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int16( fcml_st_immediate *imm, fcml_int16_t *value );
 fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int32( fcml_st_immediate *imm, fcml_int32_t *value );
+fcml_bool fcml_fn_utils_can_convert_imm_to( fcml_st_immediate *imm, fcml_data_size ext, fcml_data_size size );
 
 #endif /* FCML_UTILS_H_ */

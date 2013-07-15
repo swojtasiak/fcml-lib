@@ -322,7 +322,7 @@ fcml_bool fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, fcml
 		}
  */
 
-fcml_ceh_error fcml_ifn_asm_can_sign_convert_imm( fcml_st_asm_encoding_context *context, fcml_st_immediate *immediate, fcml_uint8_t encoded_size, fcml_en_attribute_size_flag *flags ) {
+/*fcml_ceh_error fcml_ifn_asm_can_sign_convert_imm( fcml_st_asm_encoding_context *context, fcml_st_immediate *immediate, fcml_uint8_t encoded_size, fcml_en_attribute_size_flag *flags ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if( encoded_size == FCML_EOS_EOSA ) {
 		fcml_en_addr_form addr_form = context->assembler_context->addr_form;
@@ -346,11 +346,11 @@ fcml_ceh_error fcml_ifn_asm_can_sign_convert_imm( fcml_st_asm_encoding_context *
 		error = FCML_CEH_GEC_NOT_SUPPORTED;
 	}
 	return error;
-}
+}*/
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_imm( fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_sf_def_tma_imm *args = (fcml_sf_def_tma_imm*)addr_mode->addr_mode_args;
+	/*fcml_sf_def_tma_imm *args = (fcml_sf_def_tma_imm*)addr_mode->addr_mode_args;
 	fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 	fcml_en_attribute_size_flag flags;
 	if( operand_def->type == FCML_EOT_IMMEDIATE ) {
@@ -415,7 +415,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_imm( fcml_st_asm_encoding_context *
 		}
 	} else {
 		error = FCML_EN_UNSUPPORTED_OPPERAND;
-	}
+	}*/
 	return error;
 }
 
@@ -1145,8 +1145,6 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 
 	return descriptor;
 }
-
-
 
 // REX prefix.
 

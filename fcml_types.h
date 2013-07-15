@@ -47,6 +47,7 @@ typedef int fcml_size;
 #define FCML_UINT8_MAX	UINT8_MAX
 #define FCML_UINT16_MAX	UINT16_MAX
 #define FCML_UINT32_MAX	UINT32_MAX
+#define FCML_UINT64_MAX	UINT64_MAX
 
 /* Macro for bit manipulations. */
 

@@ -1,4 +1,47 @@
 
+
+		/*
+		 *
+		 * Previous implementation.
+
+		if( imm <= FCML_UINT8_MAX ) {
+			immediate->imm8 = (fcml_uint8_t)imm;
+			immediate->imm_size = FCML_DS_8;
+		} else if( imm <= FCML_UINT16_MAX ) {
+			immediate->imm16 = (fcml_uint16_t)imm;
+			immediate->imm_size = FCML_DS_16;
+		} else if( imm <= FCML_UINT32_MAX ) {
+			immediate->imm32 = (fcml_uint32_t)imm;
+			immediate->imm_size = FCML_DS_32;
+		} else {
+			fcml_int64_t signed_imm = (fcml_int64_t)imm;
+			if( signed_imm > FCML_INT32_MAX ) {
+				// Value is out of range.
+				error = FCML_EN_APC_AST_ERROR_VALUE_OUT_OF_RANGE;
+			} else {
+				fcml_int32_t signed32_imm = (fcml_int32_t)signed_imm;
+				if( signed_imm < 0 ) {
+					immediate->is_signed = FCML_TRUE;
+					if( signed_imm <= FCML_INT8_MAX && signed32_imm >= FCML_INT8_MIN ) {
+						immediate->imm8 = (fcml_uint8_t)(fcml_int8_t)signed_imm;
+						immediate->imm_size = FCML_DS_8;
+					} else if( signed_imm <= FCML_INT16_MAX && signed32_imm >= FCML_INT16_MIN ) {
+						immediate->imm16 = (fcml_uint16_t)(fcml_int16_t)signed_imm;
+						immediate->imm_size = FCML_DS_16;
+					} else {
+						immediate->imm32 = (fcml_uint32_t)signed32_imm;
+						immediate->imm_size = FCML_DS_32;
+					}
+				} else {
+					immediate->imm32 = (fcml_uint32_t)signed32_imm;
+					immediate->imm_size = FCML_DS_32;
+				}
+			}
+		}
+		*/
+		
+		
+
 int64_t _ira_get_immediate_as_64bit_signed_integer( struct ira_immediate_data *immediate_data ) {
 	int64_t immediate;
 	switch( immediate_data->immediate_data_type ) {
