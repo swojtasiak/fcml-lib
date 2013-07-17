@@ -125,7 +125,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( fcml_st_modrm_encoder_context
 
 		// Check if 32 bit ASA should be used, if so check if RIP address is not out of range.
 		fcml_data_size asa = ( context->chosen_effective_address_size ) ? context->chosen_effective_address_size : context->effective_address_size;
-		if( asa == FCML_DS_32 && (fcml_uint64_t)disp.int64 > FCML_UINT32_MAX ) {
+		if( asa == FCML_DS_32 && ( disp.int64 > FCML_INT32_MAX || disp.int64 < FCML_INT32_MIN ) ) {
 			return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 		}
 
