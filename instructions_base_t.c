@@ -188,8 +188,10 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 				}
 			}
 
-			if( !only_print_result && !found ) {
-				printf("Can not assemble: %s\n", mnemonic);
+			if( !found ) {
+				if( only_print_result ) {
+					printf("Can not assemble: %s\n", mnemonic);
+				}
 				if( !only_print_result ) {
 					CU_ASSERT( FCML_FALSE );
 				}
