@@ -8,94 +8,242 @@
 #include "fcml_utils.h"
 #include "fcml_types.h"
 
-fcml_bool fcml_fn_utils_can_convert_imm_to( fcml_st_immediate *imm, fcml_data_size ext, fcml_data_size size ) {
-	fcml_ceh_error error;
-	if( ext ) {
-		switch( ext ) {
-			case FCML_DS_8: {
-				fcml_int8_t value;
-				error = fcml_fn_utils_sign_convert_imm_to_int8( imm, &value );
-				if( !error ) {
-					return FCML_TRUE;
-				}
-				break;
-			}
-			case FCML_DS_16: {
-				fcml_int16_t value;
-				error = fcml_fn_utils_sign_convert_imm_to_int16( imm, &value );
-				if( !error ) {
-					if( size == FCML_DS_8 && value <= FCML_INT8_MAX && value >= FCML_INT8_MIN ) {
-						return FCML_TRUE;
-					}
-				}
-				break;
-			}
-			case FCML_DS_32: {
-				fcml_int32_t value;
-				error = fcml_fn_utils_sign_convert_imm_to_int32( imm, &value );
-				if( !error ) {
-					switch( size ) {
-					case FCML_DS_8:
-						if( value <= FCML_INT8_MAX && value >= FCML_INT8_MIN ) {
-							return FCML_TRUE;
-						}
-						break;
-					case FCML_DS_16:
-						if( value <= FCML_INT16_MAX && value >= FCML_INT16_MIN ) {
-							return FCML_TRUE;
-						}
-						break;
-					case FCML_DS_32:
-						return FCML_TRUE;
-					}
-				}
-				break;
-			}
+fcml_ceh_error fcml_fn_utils_convert_sig_imm_to_sig_imm( fcml_st_immediate *source, fcml_st_immediate *destination, fcml_data_size expected_source_size, fcml_data_size destination_size ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	// Convert given source immediate value to expected one.
+
+	fcml_st_immediate expected;
+	if( source->imm_size != expected_source_size ) {
+		switch( expected_source_size ) {
+		case FCML_DS_8:
+			error = fcml_fn_utils_convert_imm_to_int8( source, (fcml_int8_t*)&(expected.imm8) );
+			break;
+		case FCML_DS_16:
+			error = fcml_fn_utils_convert_imm_to_int16( source, (fcml_int16_t*)&(expected.imm16) );
+			break;
+		case FCML_DS_32:
+			error = fcml_fn_utils_convert_imm_to_int32( source, (fcml_int32_t*)&(expected.imm32) );
+			break;
+		case FCML_DS_64:
+			error = fcml_fn_utils_convert_imm_to_int64( source, (fcml_int64_t*)&(expected.imm64) );
+			break;
 		}
 	} else {
-		fcml_int32_t value;
-		if( fcml_fn_utils_sign_convert_imm_to_int32( imm, &value ) ) {
-			switch( size ) {
+		expected = *source;
+	}
+
+	if( !error ) {
+
+		// Event is expected immediate value is unsigned, we can treat is as a signed value,
+		// just because we expect signed value here and they are of the same size.
+		expected.is_signed = FCML_TRUE;
+
+		// Convert expected value to destination one.
+
+		switch( destination_size ) {
 			case FCML_DS_8:
-				if( value <= FCML_INT8_MAX && value >= FCML_INT8_MIN ) {
-					return FCML_TRUE;
-				}
+				error = fcml_fn_utils_convert_imm_to_int8( &expected, (fcml_int8_t*)&(destination->imm8) );
 				break;
 			case FCML_DS_16:
-				if( value <= FCML_INT16_MAX && value >= FCML_INT16_MIN ) {
-					return FCML_TRUE;
-				}
+				error = fcml_fn_utils_convert_imm_to_int16( &expected, (fcml_int16_t*)&(destination->imm16) );
 				break;
 			case FCML_DS_32:
-				return FCML_TRUE;
-			}
+				error = fcml_fn_utils_convert_imm_to_int32( &expected, (fcml_int32_t*)&(destination->imm32) );
+				break;
+			case FCML_DS_64:
+				error = fcml_fn_utils_convert_imm_to_int64( &expected, (fcml_int64_t*)&(destination->imm64) );
+				break;
 		}
+
+		destination->imm_size = destination_size;
+		destination->is_signed = FCML_TRUE;
+
 	}
-	return FCML_FALSE;
+
+	return error;
 }
 
-fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int8( fcml_st_immediate *imm, fcml_int8_t *value ) {
+fcml_ceh_error fcml_fn_utils_convert_imm_to_uint8( fcml_st_immediate *imm, fcml_uint8_t *value ) {
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
-		*value = (fcml_int8_t)imm->imm8;
+		// In this case we doesn't care what is in IMM, because no conversion is needed.
+		*value = imm->imm8;
 		break;
 	case FCML_DS_16:
-		if( (fcml_int16_t)imm->imm16 < FCML_INT8_MIN || (fcml_int16_t)imm->imm16 > FCML_INT8_MAX ) {
-			return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+		if( imm->is_signed ) {
+			if( (fcml_int16_t)imm->imm16 > FCML_UINT8_MAX || (fcml_int16_t)imm->imm16 < 0 ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint8_t)(fcml_int16_t)imm->imm16;
+		} else {
+			if( imm->imm16 > FCML_UINT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint8_t)imm->imm16;
 		}
-		*value = (fcml_int8_t)(fcml_int16_t)imm->imm16;
 		break;
 	case FCML_DS_32:
-		if( (fcml_int32_t)imm->imm32 < FCML_INT8_MIN || (fcml_int32_t)imm->imm32 > FCML_INT8_MAX ) {
-			return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+		if( imm->is_signed ) {
+			if( (fcml_int32_t)imm->imm32 > FCML_UINT8_MAX || (fcml_int32_t)imm->imm32 < 0 ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint8_t)(fcml_int32_t)imm->imm32;
+		} else {
+			if( imm->imm32 > FCML_UINT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint8_t)imm->imm32;
 		}
-		*value = (fcml_int8_t)(fcml_int32_t)imm->imm32;
+		break;
+	case FCML_DS_64:
+		if( imm->is_signed ) {
+			if( (fcml_int64_t)imm->imm64 > FCML_UINT8_MAX || (fcml_int64_t)imm->imm64 < 0 ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint8_t)(fcml_int64_t)imm->imm64;
+		} else {
+			if( imm->imm64 > FCML_UINT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint8_t)imm->imm64;
+		}
 		break;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int16( fcml_st_immediate *imm, fcml_int16_t *value ) {
+fcml_ceh_error fcml_fn_utils_convert_imm_to_uint16( fcml_st_immediate *imm, fcml_uint16_t *value ) {
+	switch( imm->imm_size ) {
+	case FCML_DS_8:
+		*value = (fcml_uint16_t)imm->imm8;
+		break;
+	case FCML_DS_16:
+		*value = (fcml_uint16_t)imm->imm16;
+		break;
+	case FCML_DS_32:
+		if( imm->is_signed ) {
+			if( (fcml_int32_t)imm->imm32 > FCML_UINT16_MAX || (fcml_int32_t)imm->imm32 < 0 ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint16_t)(fcml_int32_t)imm->imm32;
+		} else {
+			if( imm->imm32 > FCML_UINT16_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint16_t)imm->imm32;
+		}
+		break;
+	case FCML_DS_64:
+		if( imm->is_signed ) {
+			if( (fcml_int64_t)imm->imm64 > FCML_UINT16_MAX || (fcml_int64_t)imm->imm64 < 0 ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint16_t)(fcml_int64_t)imm->imm64;
+		} else {
+			if( imm->imm64 > FCML_UINT16_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint16_t)imm->imm64;
+		}
+		break;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ceh_error fcml_fn_utils_convert_imm_to_uint32( fcml_st_immediate *imm, fcml_uint32_t *value ) {
+	switch( imm->imm_size ) {
+	case FCML_DS_8:
+		*value = (fcml_uint32_t)imm->imm8;
+		break;
+	case FCML_DS_16:
+		*value = (fcml_uint32_t)imm->imm16;
+		break;
+	case FCML_DS_32:
+		*value = (fcml_uint32_t)imm->imm32;
+		break;
+	case FCML_DS_64:
+		if( imm->is_signed ) {
+			if( (fcml_int64_t)imm->imm64 > FCML_UINT32_MAX || (fcml_int64_t)imm->imm64 < 0 ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint32_t)(fcml_int64_t)imm->imm64;
+		} else {
+			if( imm->imm64 > FCML_UINT32_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+			*value = (fcml_uint32_t)imm->imm64;
+		}
+		break;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ceh_error fcml_fn_utils_convert_imm_to_uint64( fcml_st_immediate *imm, fcml_uint64_t *value ) {
+	switch( imm->imm_size ) {
+	case FCML_DS_8:
+		*value = (fcml_uint64_t)imm->imm8;
+		break;
+	case FCML_DS_16:
+		*value = (fcml_uint64_t)imm->imm16;
+		break;
+	case FCML_DS_32:
+		*value = (fcml_uint64_t)imm->imm32;
+		break;
+	case FCML_DS_64:
+		*value = (fcml_uint64_t)imm->imm64;
+		break;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ceh_error fcml_fn_utils_convert_imm_to_int8( fcml_st_immediate *imm, fcml_int8_t *value ) {
+	switch( imm->imm_size ) {
+	case FCML_DS_8:
+		*value = (fcml_int8_t)imm->imm8;
+		break;
+	case FCML_DS_16:
+		if( imm->is_signed ) {
+			if( (fcml_int16_t)imm->imm16 < FCML_INT8_MIN || (fcml_int16_t)imm->imm16 > FCML_INT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		} else {
+			if( imm->imm16 > FCML_INT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		}
+		*value = (fcml_int8_t)(fcml_int16_t)imm->imm16;
+		break;
+	case FCML_DS_32:
+		if( imm->is_signed ) {
+			if( (fcml_int32_t)imm->imm32 < FCML_INT8_MIN || (fcml_int32_t)imm->imm32 > FCML_INT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		} else {
+			if( imm->imm32 > FCML_INT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		}
+		*value = (fcml_int8_t)(fcml_int32_t)imm->imm32;
+		break;
+	case FCML_DS_64:
+		if( imm->is_signed ) {
+			if( (fcml_int64_t)imm->imm64 < FCML_INT8_MIN || (fcml_int64_t)imm->imm64 > FCML_INT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		} else {
+			if( imm->imm64 > FCML_INT8_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		}
+		*value = (fcml_int8_t)(fcml_int64_t)imm->imm64;
+		break;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ceh_error fcml_fn_utils_convert_imm_to_int16( fcml_st_immediate *imm, fcml_int16_t *value ) {
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
 		*value = imm->is_signed ? (fcml_int16_t)(fcml_int8_t)imm->imm8 : (fcml_int16_t)imm->imm8;
@@ -104,16 +252,34 @@ fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int16( fcml_st_immediate *imm, 
 		*value = (fcml_int16_t)imm->imm16;
 		break;
 	case FCML_DS_32:
-		if( (fcml_int32_t)imm->imm32 < FCML_INT16_MIN || (fcml_int32_t)imm->imm32 > FCML_INT16_MAX ) {
-			return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+		if( imm->is_signed ) {
+			if( (fcml_int32_t)imm->imm32 < FCML_INT16_MIN || (fcml_int32_t)imm->imm32 > FCML_INT16_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		} else {
+			if( imm->imm32 > FCML_INT16_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
 		}
-		*value = (fcml_int16_t)imm->imm32;
+		*value = (fcml_int16_t)(fcml_int32_t)imm->imm32;
+		break;
+	case FCML_DS_64:
+		if( imm->is_signed ) {
+			if( (fcml_int64_t)imm->imm64 < FCML_INT16_MIN || (fcml_int64_t)imm->imm64 > FCML_INT16_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		} else {
+			if( imm->imm64 > FCML_INT16_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		}
+		*value = (fcml_int16_t)(fcml_int64_t)imm->imm64;
 		break;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int32( fcml_st_immediate *imm, fcml_int32_t *value ) {
+fcml_ceh_error fcml_fn_utils_convert_imm_to_int32( fcml_st_immediate *imm, fcml_int32_t *value ) {
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
 		*value = imm->is_signed ? (fcml_int32_t)(fcml_int8_t)imm->imm8 : (fcml_int32_t)imm->imm8;
@@ -123,6 +289,36 @@ fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int32( fcml_st_immediate *imm, 
 		break;
 	case FCML_DS_32:
 		*value = (fcml_int32_t)imm->imm32;
+		break;
+	case FCML_DS_64:
+		if( imm->is_signed ) {
+			if( (fcml_int64_t)imm->imm64 < FCML_INT32_MIN || (fcml_int64_t)imm->imm64 > FCML_INT32_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		} else {
+			if( imm->imm64 > FCML_INT32_MAX ) {
+				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		}
+		*value = (fcml_int32_t)(fcml_int64_t)imm->imm64;
+		break;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ceh_error fcml_fn_utils_convert_imm_to_int64( fcml_st_immediate *imm, fcml_int64_t *value ) {
+	switch( imm->imm_size ) {
+	case FCML_DS_8:
+		*value = imm->is_signed ? (fcml_int64_t)(fcml_int8_t)imm->imm8 : (fcml_int64_t)imm->imm8;
+		break;
+	case FCML_DS_16:
+		*value = imm->is_signed ? (fcml_int64_t)(fcml_int16_t)imm->imm16 : (fcml_int64_t)imm->imm16;
+		break;
+	case FCML_DS_32:
+		*value = imm->is_signed ? (fcml_int64_t)(fcml_int32_t)imm->imm32 : (fcml_int64_t)imm->imm32;
+		break;
+	case FCML_DS_64:
+		*value = (fcml_int64_t)imm->imm64;
 		break;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
@@ -365,13 +561,16 @@ fcml_ceh_error fcml_fn_utils_imm_to_uvint( fcml_st_immediate *imm, fcml_uvint *u
 	uvint->uint64 = 0;
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
-		uvint->uint8 = (unsigned)imm->imm8;
+		uvint->uint8 = imm->imm8;
 		break;
 	case FCML_DS_16:
-		uvint->uint16 = (unsigned)imm->imm16;
+		uvint->uint16 = imm->imm16;
 		break;
 	case FCML_DS_32:
-		uvint->uint32 = (unsigned)imm->imm32;
+		uvint->uint32 = imm->imm32;
+		break;
+	case FCML_DS_64:
+		uvint->uint64 = imm->imm64;
 		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;
@@ -386,13 +585,16 @@ fcml_ceh_error fcml_fn_utils_imm_to_vint( fcml_st_immediate *imm, fcml_vint *vin
 	vint->int64 = 0;
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
-		vint->int8 = (signed)imm->imm8;
+		vint->int8 = (fcml_int8_t)imm->imm8;
 		break;
 	case FCML_DS_16:
-		vint->int16 = (signed)imm->imm16;
+		vint->int16 = (fcml_int16_t)imm->imm16;
 		break;
 	case FCML_DS_32:
-		vint->int32 = (signed)imm->imm32;
+		vint->int32 = (fcml_int32_t)imm->imm32;
+		break;
+	case FCML_DS_64:
+		vint->int64 = (fcml_int64_t)imm->imm64;
 		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;

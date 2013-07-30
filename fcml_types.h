@@ -52,6 +52,7 @@ typedef int fcml_size;
 /* Macro for bit manipulations. */
 
 #define FCML_TP_GET_BIT(x,y)	( ( x >> y ) & 0x01 )
+#define FCML_TP_CLEAR_BIT(x,y)  ( ( x ) &= ~( 1 << ( y ) ) )
 
 /* Nulleable types. */
 

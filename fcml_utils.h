@@ -26,9 +26,14 @@ fcml_ceh_error fcml_fn_utils_extend_uvint( fcml_uvint *uvint, fcml_usize extensi
 fcml_ceh_error fcml_fn_utils_extend_vint( fcml_vint *vint, fcml_usize extension );
 fcml_data_size fcml_fn_utils_get_default_ASA(fcml_en_addr_form addr_form);
 fcml_data_size fcml_fn_utils_get_default_OSA(fcml_en_addr_form addr_form);
-fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int8( fcml_st_immediate *imm, fcml_int8_t *value );
-fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int16( fcml_st_immediate *imm, fcml_int16_t *value );
-fcml_ceh_error fcml_fn_utils_sign_convert_imm_to_int32( fcml_st_immediate *imm, fcml_int32_t *value );
-fcml_bool fcml_fn_utils_can_convert_imm_to( fcml_st_immediate *imm, fcml_data_size ext, fcml_data_size size );
+fcml_ceh_error fcml_fn_utils_convert_imm_to_int8( fcml_st_immediate *imm, fcml_int8_t *value );
+fcml_ceh_error fcml_fn_utils_convert_imm_to_int16( fcml_st_immediate *imm, fcml_int16_t *value );
+fcml_ceh_error fcml_fn_utils_convert_imm_to_int32( fcml_st_immediate *imm, fcml_int32_t *value );
+fcml_ceh_error fcml_fn_utils_convert_imm_to_int64( fcml_st_immediate *imm, fcml_int64_t *value );
+fcml_ceh_error fcml_fn_utils_convert_imm_to_uint8( fcml_st_immediate *imm, fcml_uint8_t *value );
+fcml_ceh_error fcml_fn_utils_convert_imm_to_uint16( fcml_st_immediate *imm, fcml_uint16_t *value );
+fcml_ceh_error fcml_fn_utils_convert_imm_to_uint32( fcml_st_immediate *imm, fcml_uint32_t *value );
+fcml_ceh_error fcml_fn_utils_convert_imm_to_uint64( fcml_st_immediate *imm, fcml_uint64_t *value );
+fcml_ceh_error fcml_fn_utils_convert_sig_imm_to_sig_imm( fcml_st_immediate *source, fcml_st_immediate *destination, fcml_data_size expected_source_size, fcml_data_size destination_size );
 
 #endif /* FCML_UTILS_H_ */

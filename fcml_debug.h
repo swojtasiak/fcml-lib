@@ -8,5 +8,6 @@
 #ifndef FCML_DEBUG_H_
 #define FCML_DEBUG_H_
 
+#include <stdio.h>
 
 #endif /* FCML_DEBUG_H_ */

@@ -8,6 +8,7 @@
 #include "fcml_optimizers.h"
 #include "fcml_assembler.h"
 #include "fcml_errors.h"
+#include "fcml_trace.h"
 
 fcml_ceh_error fcml_fnp_asm_choose_ASA_optimizer( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args ) {
 
@@ -20,17 +21,17 @@ fcml_ceh_error fcml_fnp_asm_choose_ASA_optimizer( fcml_st_asm_encoding_context *
 
 	switch( flags ) {
 	case FCML_OPTF_ASA_16:
-		if( ( ds_flags->allowed_effective_address_size & FCML_EN_ASF_16 ) || ( ds_flags->allowed_effective_address_size == FCML_EN_ASF_ANY ) ) {
+		if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_16 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
 			asa = FCML_DS_16;
 		}
 		break;
 	case FCML_OPTF_ASA_32:
-		if( ( ds_flags->allowed_effective_address_size & FCML_EN_ASF_32 ) || ( ds_flags->allowed_effective_address_size == FCML_EN_ASF_ANY ) ) {
+		if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_32 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
 			asa = FCML_DS_32;
 		}
 		break;
 	case FCML_OPTF_ASA_64:
-		if( ( ds_flags->allowed_effective_address_size & FCML_EN_ASF_64 ) || ( ds_flags->allowed_effective_address_size == FCML_EN_ASF_ANY ) ) {
+		if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_64 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
 			asa = FCML_DS_64;
 		}
 		break;
@@ -56,26 +57,26 @@ fcml_ceh_error fcml_fnp_asm_default_optimizer( fcml_st_asm_encoding_context *con
 		if( !flags->effective_address_size ) {
 			switch( context->assembler_context->addr_form ) {
 			case FCML_AF_16_BIT:
-				if( ( flags->allowed_effective_address_size & FCML_EN_ASF_16 ) || ( flags->allowed_effective_address_size == FCML_EN_ASF_ANY ) ) {
+				if( ( flags->allowed_effective_address_size.flags & FCML_EN_ASF_16 ) || ( flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
 					easa[easa_count++] = FCML_DS_16;
 				}
-				if( flags->allowed_effective_address_size & FCML_EN_ASF_32 ) {
+				if( ( flags->allowed_effective_address_size.flags & FCML_EN_ASF_32 ) || flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) {
 					easa[easa_count++] = FCML_DS_32;
 				}
 				break;
 			case FCML_AF_32_BIT:
-				if( ( flags->allowed_effective_address_size & FCML_EN_ASF_32 ) || ( flags->allowed_effective_address_size == FCML_EN_ASF_ANY ) ) {
+				if( ( flags->allowed_effective_address_size.flags & FCML_EN_ASF_32 ) || ( flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
 					easa[easa_count++] = FCML_DS_32;
 				}
-				if( flags->allowed_effective_address_size & FCML_EN_ASF_16 ) {
+				if( ( flags->allowed_effective_address_size.flags & FCML_EN_ASF_16 ) || flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) {
 					easa[easa_count++] = FCML_DS_16;
 				}
 				break;
 			case FCML_AF_64_BIT:
-				if( ( flags->allowed_effective_address_size & FCML_EN_ASF_64 ) || ( flags->allowed_effective_address_size == FCML_EN_ASF_ANY ) ) {
+				if( ( flags->allowed_effective_address_size.flags & FCML_EN_ASF_64 ) || ( flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
 					easa[easa_count++] = FCML_DS_64;
 				}
-				if( flags->allowed_effective_address_size & FCML_EN_ASF_32 ) {
+				if( ( flags->allowed_effective_address_size.flags & FCML_EN_ASF_32 ) || flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) {
 					easa[easa_count++] = FCML_DS_32;
 				}
 				break;
