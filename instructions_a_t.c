@@ -76,11 +76,12 @@ void fcml_tf_instruction_AAS(void) {
  */
 
 void fcml_tf_instruction_ADC(void) {
+
 	// 14 ib ADC AL, imm8
 	FCML_I3264( "adc al,42h", 0x14, 0x42 );
 	FCML_I3264( "adc al,0ffh", 0x14, 0xFF );
 	FCML_I3264( "adc al,00h", 0x14, 0x00 );
-	// 15 iw ADC AX, imm16
+	// 15 iw ADC AX, imm16s
 	// 15 id ADC EAX, imm32
 	FCML_I3264( "adc ax,8042h",  0x66, 0x15, 0x42, 0x80 );
 	FCML_I3264( "adc eax,42806521h", 0x15, 0x21, 0x65, 0x80, 0x42 );
@@ -91,6 +92,12 @@ void fcml_tf_instruction_ADC(void) {
 	FCML_I64_D( "adc rax,0000000042806521h", 0x66, 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
 	FCML_I64_D( "adc rax,0000000042806521h", 0x67, 0x66, 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
 	FCML_I64_D( "adc rax,0ffffffffffffffffh", 0x67, 0x66, 0x48, 0x15, 0xff, 0xff, 0xff, 0xff );
+
+	/*
+
+
+
+
 	// 80 /2 ib ADC r/m8, imm8
 	// REX + 80 /2 ib ADC r/m8
 	FCML_I32( "adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
@@ -116,10 +123,12 @@ void fcml_tf_instruction_ADC(void) {
 	// RIP
 	//FCML_I32( "adc dword ptr [0201h],00000003h", 0x67, 0x83, 0x16, 0x01, 0x02, 0x03 );
 	// 00000000`00401000 8315faf1bfff03  adc     dword ptr [00000000`00000201],3
-
+	FCML_I64_P( "adc rbp,0ffffffffffffffffh", 0x48, 0x81, 0xD5, 0xff, 0xff, 0xff, 0xff );
 	//FCML_I64_RIP( "adc dword ptr [0000800000401007h],00000003h", 0x83, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
 	//0x401000
 	//0xFFBFF1FA
+	 *
+	 */
 }
 
 CU_TestInfo fctl_ti_instructions_a[] = {

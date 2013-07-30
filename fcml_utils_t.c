@@ -20,14 +20,14 @@ int fcml_tf_utils_suite_cleanup(void) {
 
 void fcml_tf_utils_test_convert(void) {
 
-	fcml_st_immediate imm;
+	/*fcml_st_immediate imm;
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 0xFFFFFFFF;
-	imm.is_signed = FCML_FALSE;
+	imm.is_signed = FCML_FALSE;*/
 
-	CU_ASSERT_TRUE( fcml_fn_utils_can_convert_imm_to( &imm, FCML_DS_32, FCML_DS_8 ) );
+	/*CU_ASSERT_TRUE( fcml_fn_utils_can_convert_imm_to( &imm, FCML_DS_32, FCML_DS_8 ) );
 	CU_ASSERT_TRUE( fcml_fn_utils_can_convert_imm_to( &imm, FCML_DS_32, FCML_DS_16 ) );
-	CU_ASSERT_TRUE( fcml_fn_utils_can_convert_imm_to( &imm, FCML_DS_32, FCML_DS_32 ) );
+	CU_ASSERT_TRUE( fcml_fn_utils_can_convert_imm_to( &imm, FCML_DS_32, FCML_DS_32 ) );*/
 
 	/*
 
@@ -120,52 +120,50 @@ void fcml_fn_utils_test_sign_convert_imm_to_int8(void) {
 	imm.imm_size = FCML_DS_8;
 	imm.imm8 = 0xFF;
 	imm.is_signed = FCML_FALSE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int8_t)-1 );
 
 	imm.imm_size = FCML_DS_8;
 	imm.imm8 = 45;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int8_t)45 );
 
 	imm.imm_size = FCML_DS_16;
 	imm.imm16 = 0xFFFF;
 	imm.is_signed = FCML_FALSE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( value, (fcml_int8_t)-1 );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
 
 	imm.imm_size = FCML_DS_16;
 	imm.imm16 = 0xFFFF;
 	imm.is_signed = FCML_TRUE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int8_t)-1 );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 0xFFFFFFFF;
 	imm.is_signed = FCML_FALSE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( value, (fcml_int8_t)-1 );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 0xFFFFFFFF;
 	imm.is_signed = FCML_TRUE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int8_t)-1 );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 0x00FFFFFF;
 	imm.is_signed = FCML_FALSE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
 
 	imm.imm_size = FCML_DS_16;
 	imm.imm16 = 129;
 	imm.is_signed = FCML_FALSE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 129;
 	imm.is_signed = FCML_FALSE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int8( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
 
 }
 
@@ -178,42 +176,42 @@ void fcml_fn_utils_test_sign_convert_imm_to_int16(void) {
 	imm.imm_size = FCML_DS_8;
 	imm.imm8 = 0xFF;
 	imm.is_signed = FCML_TRUE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int16_t)-1 );
 
 	imm.imm_size = FCML_DS_8;
 	imm.imm8 = 45;
 	imm.is_signed = FCML_TRUE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int16_t)45 );
 
 	imm.imm_size = FCML_DS_16;
 	imm.imm16 = 0xFFFF;
 	imm.is_signed = FCML_TRUE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int16_t)-1 );
 
 	imm.imm_size = FCML_DS_16;
 	imm.imm16 = 0xFFFF;
 	imm.is_signed = FCML_FALSE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int16_t)-1 );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 0xFFFFFFFF;
 	imm.is_signed = FCML_TRUE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int16_t)-1 );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 0x00FFFFFF;
 	imm.is_signed = FCML_TRUE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 32768;
 	imm.is_signed = FCML_TRUE;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int16( &imm, &value ), FCML_CEH_GEC_VALUE_OUT_OF_RANGE );
 
 }
 
@@ -225,27 +223,27 @@ void fcml_fn_utils_test_sign_convert_imm_to_int32(void) {
 
 	imm.imm_size = FCML_DS_8;
 	imm.imm8 = 0xFF;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)-1 );
 
 	imm.imm_size = FCML_DS_8;
 	imm.imm8 = 45;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)45 );
 
 	imm.imm_size = FCML_DS_16;
 	imm.imm16 = 0xFFFF;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)-1 );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 0xFFFFFFFF;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)-1 );
 
 	imm.imm_size = FCML_DS_32;
 	imm.imm32 = 0x00FFFFFF;
-	CU_ASSERT_EQUAL( fcml_fn_utils_sign_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_fn_utils_convert_imm_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)0x00FFFFFF );
 
 }

@@ -15,7 +15,9 @@
 #include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
 
-void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags ) {
+fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags ) {
+
+	fcml_bool success = FCML_TRUE;
 
 	struct ira_disassemble_info info;
 	info.address = code;
@@ -44,8 +46,8 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 
 		if( !failed ) {
 			printf("Should fail: %s\n", mnemonic);
-			CU_FAIL(FCML_FALSE);
-			return;
+			success = FCML_FALSE;
+			return success;
 		}
 
 		// Looking for 0x67 prefix.
@@ -76,9 +78,9 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		if( strcmp( buffer, mnemonic ) != 0 ) {
 			printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
 			if( !only_print_result ) {
-				CU_ASSERT( FCML_FALSE );
+				success = FCML_FALSE;
 			}
-			return;
+			return success;
 		} else {
 			if( !only_print_result ) {
 				CU_ASSERT(FCML_TRUE);
@@ -91,9 +93,9 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		if( error ) {
 			printf("Can not parse: %s\n", mnemonic );
 			if( !only_print_result ) {
-				CU_ASSERT( FCML_FALSE );
+				success = FCML_FALSE;
 			}
-			return;
+			return success;
 		}
 
 		fcml_uint16_t opt_flags = 0;
@@ -126,7 +128,7 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 		if( error ) {
 			printf("Can not assemble: %s\n", mnemonic );
 			if( !only_print_result ) {
-				CU_ASSERT( FCML_FALSE );
+				success = FCML_FALSE;
 			}
 		} else {
 
@@ -193,7 +195,7 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 					printf("Can not assemble: %s\n", mnemonic);
 				}
 				if( !only_print_result ) {
-					CU_ASSERT( FCML_FALSE );
+					success = FCML_FALSE;
 				}
 			}
 
@@ -207,20 +209,24 @@ void IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_
 	} else {
 
 		if( !failed ) {
-			return;
+			success = FCML_TRUE;
+			return success;
 		}
 
 		if( strcmp( "FAIL", mnemonic ) != 0 ) {
-			printf("Failed: %s\n", mnemonic);
+			printf("\nFailed: %s\n", mnemonic);
 			if( !only_print_result ) {
-				CU_ASSERT( FCML_FALSE );
+				success = FCML_FALSE;
 			}
 		}
 	}
 
+	return success;
 }
 
-void IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed ) {
+fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed ) {
+
+	fcml_bool success = FCML_TRUE;
 
 	struct ira_disassemble_info info;
 	info.address = code;
@@ -245,8 +251,7 @@ void IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 		if( !failed ) {
 			printf("Should fail: %s\n", mnemonic);
-			CU_FAIL(FCML_FALSE);
-			return;
+			return FCML_FALSE;
 		}
 
 		// Print.
@@ -266,13 +271,12 @@ void IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 		if( strcmp( buffer, mnemonic ) != 0 ) {
 			printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
-			CU_ASSERT( FCML_FALSE );
-			return;
+			return FCML_FALSE;
 		} else {
 
 			if( result.instruction_size != size ) {
 				printf("Instruction size: %d Disassembled code size: %d (%s)\n", (fcml_uint32_t)result.instruction_size, size, mnemonic);
-				CU_ASSERT(FCML_FALSE);
+				success = FCML_FALSE;
 			} else {
 				CU_ASSERT(FCML_TRUE);
 			}
@@ -282,5 +286,6 @@ void IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		CU_ASSERT(FCML_TRUE);
 	}
 
+	return success;
 }
 
