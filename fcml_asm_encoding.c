@@ -99,6 +99,8 @@ void fcml_ifn_clean_context( fcml_st_asm_encoding_context *context ) {
 	data_size_flags->l.value = 0;
 	data_size_flags->allowed_effective_address_size.flags = 0;
 	data_size_flags->allowed_effective_address_size.is_set = FCML_FALSE;
+	data_size_flags->allowed_effective_operand_size.flags = 0;
+	data_size_flags->allowed_effective_operand_size.is_set = FCML_FALSE;
 }
 
 fcml_st_memory_stream fcml_ifn_instruction_part_stream( fcml_st_asm_instruction_part *instruction_part ) {
@@ -393,7 +395,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_imm( fcml_st_asm_encoding_context *
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if( operand_def->type == FCML_EOT_IMMEDIATE ) {
 
-		fcml_st_immediate destination;
+		fcml_st_immediate destination = {0};
 
 		fcml_en_attribute_size_flag flags = 0;
 
@@ -661,7 +663,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_rm( fcml_st_asm_encoding_context *c
 				fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 				fcml_st_effective_address *effective_address = &(operand_def->effective_address);
 
-				fcml_st_modrm mod_rm;
+				fcml_st_modrm mod_rm= {0};
 				mod_rm.base = effective_address->base;
 				mod_rm.displacement = effective_address->displacement;
 				mod_rm.index = effective_address->index;
@@ -730,6 +732,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_r( fcml_st_asm_encoding_context *co
 fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 		context->mod_rm.reg_opcode = operand_def->reg.reg;
+		context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -1253,6 +1256,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 
 			fcml_st_asm_data_size_flags *size_flags = &(context->data_size_flags);
 			fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
+			fcml_st_modrm *mod_rm = &(context->mod_rm);
 
 			// W field.
 			fcml_data_size eosa = size_flags->effective_operand_size;
@@ -1271,7 +1275,12 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 			rex = FCML_ENCODE_REX_X( rex, encoded_mod_rm->ext_x );
 			rex = FCML_ENCODE_REX_B( rex, encoded_mod_rm->ext_b );
 
-			if( rex != FCML_ENCODE_REX_BASE ) {
+			// Assembler configuration.
+			fcml_st_assembler_configuration *cfg = &(context->assembler_context->configuration);
+
+			// Even if REX do not contains any flags set in some cases registers BPL, SPL, DIL, SIL needs REX to be defined.
+			// Additionally we can force it to occur by setting a configuration flag.
+			if( rex != FCML_ENCODE_REX_BASE || ( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode_def->opcode_flags ) && cfg->force_unnecessary_rex_prefix ) || mod_rm->reg_opcode_needs_rex ) {
 				instruction_part->code[0] = rex;
 				instruction_part->code_length = 1;
 			}

@@ -44,6 +44,8 @@ typedef struct fcml_st_encoded_modrm {
 typedef struct fcml_st_modrm {
 	// Register number specified by reg_opcode.
 	fcml_uint8_t reg_opcode;
+	// True if register needs REX prefix to be encoded.
+	fcml_bool reg_opcode_needs_rex;
 	// Register number specified by r/m when mod == 3.
 	fcml_nuint8_t reg;
 	// Base register.

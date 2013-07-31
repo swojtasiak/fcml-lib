@@ -14,7 +14,8 @@ fcml_ceh_error fcml_fn_utils_convert_sig_imm_to_sig_imm( fcml_st_immediate *sour
 
 	// Convert given source immediate value to expected one.
 
-	fcml_st_immediate expected;
+	fcml_st_immediate expected = {0};
+	expected.imm_size = expected_source_size;
 	if( source->imm_size != expected_source_size ) {
 		switch( expected_source_size ) {
 		case FCML_DS_8:
@@ -110,6 +111,8 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_uint8( fcml_st_immediate *imm, fcml_
 			*value = (fcml_uint8_t)imm->imm64;
 		}
 		break;
+	default:
+		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -148,6 +151,8 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_uint16( fcml_st_immediate *imm, fcml
 			*value = (fcml_uint16_t)imm->imm64;
 		}
 		break;
+	default:
+		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -176,6 +181,8 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_uint32( fcml_st_immediate *imm, fcml
 			*value = (fcml_uint32_t)imm->imm64;
 		}
 		break;
+	default:
+		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -194,6 +201,8 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_uint64( fcml_st_immediate *imm, fcml
 	case FCML_DS_64:
 		*value = (fcml_uint64_t)imm->imm64;
 		break;
+	default:
+		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -239,6 +248,8 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_int8( fcml_st_immediate *imm, fcml_i
 		}
 		*value = (fcml_int8_t)(fcml_int64_t)imm->imm64;
 		break;
+	default:
+		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -275,6 +286,8 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_int16( fcml_st_immediate *imm, fcml_
 		}
 		*value = (fcml_int16_t)(fcml_int64_t)imm->imm64;
 		break;
+	default:
+		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -302,6 +315,8 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_int32( fcml_st_immediate *imm, fcml_
 		}
 		*value = (fcml_int32_t)(fcml_int64_t)imm->imm64;
 		break;
+	default:
+		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -320,6 +335,8 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_int64( fcml_st_immediate *imm, fcml_
 	case FCML_DS_64:
 		*value = (fcml_int64_t)imm->imm64;
 		break;
+	default:
+		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
