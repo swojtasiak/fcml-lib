@@ -44,9 +44,20 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_I64_P( "adc rax,0000000042806521h", 0x48, 0x15, 0x21, 0x65, 0x80, 0x42 );
+	//FCML_I32_P( "adc word ptr [di+0201h],sp", 0x66, 0x67, 0x11, 0xa5, 0x01, 0x02 );
 
-	return 0;
+	//return 0;
+
+	//FCML_I64_P( "adc byte ptr [rbp+0000000000000001h],ah", 0x10, 0x65, 0x01 );
+	//FCML_I64_P( "adc byte ptr [rbp+0000000000000001h],spl", 0x40, 0x10, 0x65, 0x01 );
+
+	//FCML_I32_P( "adc byte ptr [ebp+04030201h],ah", 0x10, 0xa5, 0x01, 0x02, 0x03, 04 );
+
+	//FCML_I64_P( "adc byte ptr [rbp+0000000004030201h],spl", 0x48, 0x10, 0xa5, 0x01, 0x02, 0x03, 04 );
+
+	///FCML_I64_P( "adc word ptr [rsi],0001h", 0x66, 0x83, 0x16, 0x01 );
+
+	//return 0;
 
 	//FCML_I3264_P( "adc eax,42806521h", 0x15, 0x21, 0x65, 0x80, 0x42 );
 

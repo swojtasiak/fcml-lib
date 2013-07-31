@@ -117,6 +117,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		context.configuration.choose_rip_encoding = enable_rip;
 		context.configuration.optimizer = is_67 ? FCML_EN_OP_CHOOSE_ASA : FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
 		context.configuration.optimizer_flags = opt_flags;
+		context.configuration.force_unnecessary_rex_prefix = FCML_FALSE;
 		if( x64 ) {
 			context.ip.rip = 0x0000800000401000;
 		} else {
@@ -191,7 +192,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			}
 
 			if( !found ) {
-				if( only_print_result ) {
+				if( !only_print_result ) {
 					printf("Can not assemble: %s\n", mnemonic);
 				}
 				if( !only_print_result ) {
