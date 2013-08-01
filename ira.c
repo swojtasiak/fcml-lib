@@ -267,7 +267,7 @@ void ira_disassemble( struct ira_disassemble_info *info, struct ira_disassemble_
     uint8_t *virtual_opcode_bytes = NULL;
 
     // Handle escape opcode encoded by VEX prefix.
-    if( ( context.config->flags & _IRA_CF_ENABLE_VAX ) && decoding_context->prefixes_fields.is_vex ) {
+    if( /*( context.config->flags & _IRA_CF_ENABLE_VAX ) &&*/ decoding_context->prefixes_fields.is_vex ) {
 		virtual_opcode_bytes = _ira_avx_decode_escape_opcode_bytes(decoding_context, &virtual_opcode_bytes_count );
     }
 
@@ -617,7 +617,7 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 
             // Handle VEX prefixes.
             if( prefix_type == IRA_VEX ) {
-            	if( ( context->config->flags & _IRA_CF_ENABLE_VAX ) && !vex_illegal_prefixes ) {
+            	if( /*( context->config->flags & _IRA_CF_ENABLE_VAX ) &&*/ !vex_illegal_prefixes ) {
 
             		uint32_t stream_pos = stream->offset;
 
