@@ -44,9 +44,13 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	FCML_I64_P( "vaddpd ymm10,ymm14,ymmword ptr [r9+r8]", 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 );
+
+	// FCML_I32_P( "addpd xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x58, 0x14, 0x01 );
+
 	//FCML_I32_P( "adc word ptr [di+0201h],sp", 0x66, 0x67, 0x11, 0xa5, 0x01, 0x02 );
 
-	//return 0;
+	return 0;
 
 	//FCML_I64_P( "adc byte ptr [rbp+0000000000000001h],ah", 0x10, 0x65, 0x01 );
 	//FCML_I64_P( "adc byte ptr [rbp+0000000000000001h],spl", 0x40, 0x10, 0x65, 0x01 );
