@@ -64,6 +64,11 @@ typedef struct fcml_st_asm_part_processor_context {
 	int part_processor_index;
 } fcml_st_asm_part_processor_context;
 
+typedef struct fcml_st_asm_extension_prefixes_fields {
+	fcml_uint8_t vvvv;
+	fcml_uint8_t mmmm;
+} fcml_st_asm_extension_prefixes_fields;
+
 typedef struct fcml_st_asm_encoding_context {
 #ifdef FCML_DEBUG
 	int __def_index;
