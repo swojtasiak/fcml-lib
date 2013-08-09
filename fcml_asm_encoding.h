@@ -24,6 +24,8 @@
 #define FCML_ENCODE_REX_X(rex,x)	( rex | ( x << 1 ) )
 #define FCML_ENCODE_REX_B(rex,b)	( rex | b )
 
+#define FCML_ENCODE_VEXOP_VVVV(vexop,x)		( (vexop) | ( ( ~( x ) & 0x0F ) << 3 ) )
+
 #define FCML_ASM_FCF	16
 
 typedef enum fcml_en_attribute_size_flag {
@@ -75,6 +77,7 @@ typedef struct fcml_st_asm_encoding_context {
 #endif
 	fcml_st_asm_part_processor_context part_processor_context;
 	fcml_st_asm_data_size_flags data_size_flags;
+	fcml_st_asm_extension_prefixes_fields epf;
 	fcml_st_modrm mod_rm;
 	fcml_st_encoded_modrm encoded_mod_rm;
 	fcml_st_assembler_context *assembler_context;
