@@ -18,13 +18,23 @@
 
 #define FCML_ASM_MAX_PART_PROCESSORS	40
 
+// REX prefix.
 #define FCML_ENCODE_REX_BASE		0x40
 #define FCML_ENCODE_REX_W(rex,w)	( rex | ( w << 3 ) )
 #define FCML_ENCODE_REX_R(rex,r)	( rex | ( r << 2 ) )
 #define FCML_ENCODE_REX_X(rex,x)	( rex | ( x << 1 ) )
 #define FCML_ENCODE_REX_B(rex,b)	( rex | b )
 
-#define FCML_ENCODE_VEXOP_VVVV(vexop,x)		( (vexop) | ( ( ~( x ) & 0x0F ) << 3 ) )
+// XOP/VEX prefixes.
+#define FCML_ENCODE_VEXOP_MMMM(vexop,x)		( ( vexop ) | ( ( x ) & 0x1F ) )
+#define FCML_ENCODE_VEXOP_VVVV(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x0F ) << 3 ) )
+#define FCML_ENCODE_VEXOP_PP(vexop,x)		( ( vexop ) | ( ( x ) & 0x03 ) )
+#define FCML_ENCODE_VEXOP_W(vexop,x)		( ( vexop ) | ( ( ( x ) & 0x01 ) << 7 ) )
+#define FCML_ENCODE_VEXOP_L(vexop,x)		( ( vexop ) | ( ( ( x ) & 0x01 ) << 2 ) )
+// R,X and B are stored in 1's complement form.
+#define FCML_ENCODE_VEXOP_R(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x01 ) << 7 ) )
+#define FCML_ENCODE_VEXOP_X(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x01 ) << 6 ) )
+#define FCML_ENCODE_VEXOP_B(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x01 ) << 5 ) )
 
 #define FCML_ASM_FCF	16
 

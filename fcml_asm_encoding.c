@@ -308,7 +308,7 @@ fcml_bool fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, fcml
 	case FCML_EOS_UNDEFINED:
 		break;
 	case FCML_EOS_L:
-		if( FCML_DEF_PREFIX_VEX_L_IGNORE_OS( addr_mode_desc->allowed_prefixes ) ) {
+		if( FCML_DEF_PREFIX_L_IGNORE_OS( addr_mode_desc->allowed_prefixes ) ) {
 			result = ( operand_size == context->assembler_context->effective_operand_size );
 		} else {
 			result = ( ( operand_size == FCML_DS_128 ) || ( operand_size == FCML_DS_256 ) );
@@ -1152,15 +1152,6 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 // XOP/VEX opcode encoder factory. //
 ////////////////////////////////////
 
-
-fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder_acceptor( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_instruction *instruction, fcml_ptr args ) {
-	// Only instructions with XOP or VEX prefix can be handled by this opcode encoder.
-	if( !FCML_DEF_PREFIX_VEX_REQ( addr_mode_desc->allowed_prefixes ) && !FCML_DEF_PREFIX_XOP_REQ( addr_mode_desc->allowed_prefixes ) ) {
-		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
-	}
-	return FCML_CEH_GEC_NO_ERROR;
-}
-
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 		// Encoder has to set some flags for XOP/VEX prefix encoder.
@@ -1202,10 +1193,12 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder( f
 
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_XOP_VEX_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
-	descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
-	descriptor.processor_args = NULL;
-	descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder;
-	descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder_acceptor;
+	if( FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder;
+		descriptor.processor_acceptor = NULL;
+	}
 	return descriptor;
 }
 
@@ -1312,6 +1305,94 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 	return descriptor;
 }
 
+// ******************
+// * VEX/XOP Prefix *
+// ******************
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+		if( FCML_DEF_PREFIX_L_1( addr_mode_def->allowed_prefixes ) ) {
+			context->data_size_flags.l.is_not_null = FCML_TRUE;
+			context->data_size_flags.l.value = 0x01;
+		} else if ( FCML_DEF_PREFIX_L_0( addr_mode_def->allowed_prefixes ) ) {
+			context->data_size_flags.l.is_not_null = FCML_TRUE;
+			context->data_size_flags.l.value = 0x00;
+		}
+	} if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
+
+		fcml_st_asm_extension_prefixes_fields *epf = &(context->epf);
+		fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
+
+		// Check if one byte VEX encoding can be used.
+		fcml_bool is_vex = FCML_DEF_PREFIX_VEX_REQ( addr_mode_def->allowed_prefixes );
+		fcml_bool is_two_bytes_vex = ( is_vex && !epf->mmmm && !FCML_DEF_PREFIX_W_1( addr_mode_def->allowed_prefixes ) && !encoded_mod_rm->ext_x && !encoded_mod_rm->ext_b );
+
+		fcml_uint8_t prefix_bytes[3];
+		fcml_uint8_t prefix_size = 0;
+
+		// Encode PP.
+		fcml_uint8_t pp = 0;
+		if( FCML_DEF_PREFIX_MANDATORY_66( addr_mode_def->allowed_prefixes ) ) {
+			pp = 0x01;
+		} else if( FCML_DEF_PREFIX_MANDATORY_F2( addr_mode_def->allowed_prefixes ) ) {
+			pp = 0x03;
+		} else if( FCML_DEF_PREFIX_MANDATORY_F3( addr_mode_def->allowed_prefixes ) ) {
+			pp = 0x02;
+		}
+
+		fcml_uint8_t prefix = 0;
+
+		if( is_two_bytes_vex ) {
+			// Two byte VEX prefix.
+			prefix = FCML_ENCODE_VEXOP_R( prefix, encoded_mod_rm->ext_r );
+			prefix = FCML_ENCODE_VEXOP_VVVV( prefix, epf->vvvv );
+			if( context->data_size_flags.l.is_not_null ) {
+				prefix = FCML_ENCODE_VEXOP_L( prefix, context->data_size_flags.l.value );
+			}
+			prefix = FCML_ENCODE_VEXOP_PP( prefix, pp );
+			prefix_bytes[0] = 0xC5;
+			prefix_bytes[1] = prefix;
+			prefix_size = 2;
+		} else {
+			// Three bytes VEX or XOP prefix.
+			prefix_bytes[0] = ( is_vex ) ? 0xC4 : 0x8F;
+			prefix = FCML_ENCODE_VEXOP_R( prefix, encoded_mod_rm->ext_r );
+			prefix = FCML_ENCODE_VEXOP_X( prefix, encoded_mod_rm->ext_x );
+			prefix = FCML_ENCODE_VEXOP_B( prefix, encoded_mod_rm->ext_b );
+			prefix = FCML_ENCODE_VEXOP_MMMM( prefix, epf->mmmm );
+			prefix_bytes[1] = prefix;
+			prefix = 0;
+			prefix = FCML_ENCODE_VEXOP_W( prefix, FCML_DEF_PREFIX_W_1( addr_mode_def->allowed_prefixes ) );
+			prefix = FCML_ENCODE_VEXOP_VVVV( prefix, epf->vvvv );
+			if( context->data_size_flags.l.is_not_null ) {
+				prefix = FCML_ENCODE_VEXOP_L( prefix, context->data_size_flags.l.value );
+			}
+			prefix = FCML_ENCODE_VEXOP_PP( prefix, pp );
+			prefix_bytes[2] = prefix;
+			prefix_size = 3;
+		}
+
+		int i;
+		for( i = 0; i < prefix_size; i++ ) {
+			instruction_part->code[i] = prefix_bytes[i];
+		}
+		instruction_part->code_length = prefix_size;
+
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_VEX_XOP_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+	if( FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder;
+		descriptor.processor_acceptor = NULL;
+	}
+	return descriptor;
+}
+
 // REX prefix.
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
@@ -1366,7 +1447,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	// 66 prefix can be applied to instructions without neither XOP nor VEX prefixes. Remember that this prefix can bes mandatory one.
-	if( FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( addr_mode->opcode_flags ) ) {
+	if( FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( addr_mode->opcode_flags ) && !( FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 		descriptor.processor_args = NULL;
 		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder;
@@ -1528,6 +1609,7 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 	{ fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder, 0 },
+	{ fcml_ifn_asm_instruction_part_processor_factory_VEX_XOP_prefix_encoder, 0 },
 	{ NULL, 0 }
 };
 
