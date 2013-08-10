@@ -44,6 +44,12 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	//FCML_I32_P( "vaddsubpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0xD0, 0x14, 0x01 );
+	//return 0;
+	//FCML_I32_P( "vaddpd xmm2,xmm0,oword ptr [ecx+eax]", 0xC5, 0xF9, 0x58, 0x14, 0x01 );
+
+	//FCML_I32_P( "vaddpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x58, 0x14, 0x01 );
+
 	//FCML_I32_P( "add al,42h", 0x04, 0x42 );
 	//return 0;
 	//FCML_I64_P( "vaddpd ymm10,ymm14,ymmword ptr [r9+r8]", 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 );
