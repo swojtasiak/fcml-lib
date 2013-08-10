@@ -24,6 +24,7 @@ typedef struct fcml_st_assembler_configuration {
 	fcml_en_assembler_optimizers optimizer;
 	fcml_uint16_t optimizer_flags;
 	fcml_bool force_unnecessary_rex_prefix;
+	fcml_bool force_three_byte_VEX;
 } fcml_st_assembler_configuration;
 
 typedef struct fcml_st_assembler_context {

@@ -191,39 +191,39 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_AESKEYGENASSIST[] 
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_AND[] = {
 	// 24 ib AND AL, imm8 C Valid Valid AL AND imm8.
-	{ NULL, 0x0001, 0x00C40000, { 0x24, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00C40000, { 0x24, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
 	// 25 iw AND AX, imm16 C Valid Valid AX AND imm16.
 	// 25 id AND EAX, imm32 C Valid Valid EAX AND imm32.
-	{ NULL, 0x0001, 0x03C40000, { 0x25, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0010, 0x03C40000, { 0x25, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 25 id AND RAX, imm32 C Valid N.E. RAX AND imm32 signextended to 64-bits.
-	{ NULL, 0x0001, 0x04840000, { 0x25, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0008, 0x04840000, { 0x25, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// 80 /4 ib AND r/m8, imm8 MR Valid Valid r/m8 AND imm8.
 	// REX + 80 /4 ib AND r/m8*, imm8 MR Valid N.E. r/m8 AND imm8.
-	{ NULL, 0x0001, 0x00C5A000, { 0x80, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00C5A000, { 0x80, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
 	// 81 /4 iw AND r/m16, imm16 B Valid Valid r/m16 AND imm16.
 	// 81 /4 id AND r/m32, imm32 B Valid Valid r/m32 AND imm32.
-	{ NULL, 0x0001, 0x03C5A000, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0010, 0x03C5A000, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 81 /4 id AND r/m64, imm32 B Valid N.E. r/m64 AND imm32 sign extended to 64-bits.
-	{ NULL, 0x0001, 0x0485A000, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0008, 0x0485A000, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// 83 /4 ib AND r/m16, imm8 B Valid Valid r/m16 AND imm8 (signextended).
 	// 83 /4 ib AND r/m32, imm8 B Valid Valid r/m32 AND imm8 (signextended).
-	{ NULL, 0x0001, 0x03C5A000, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0010, 0x03C5A000, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 83 /4 ib AND r/m64, imm8 B Valid N.E. r/m64 AND imm8 (signextended).
-	{ NULL, 0x0001, 0x0485A000, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0008, 0x0485A000, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// 20 /r AND r/m8, r8 A Valid Valid r/m8 AND r8.
 	// REX + 20 /r AND r/m8*, r8* A Valid N.E. r/m64 AND r8 (signextended).
-	{ NULL, 0x0001, 0x00C48000, { 0x20, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_MODRM_R_8, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00C48000, { 0x20, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_MODRM_R_8, FCML_NA, FCML_NA, FCML_NA } },
 	// 21 /r AND r/m16, r16 A Valid Valid r/m16 AND r16.
 	// 21 /r AND r/m32, r32 A Valid Valid r/m32 AND r32.
 	// REX.W + 21 /r AND r/m64, r64 A Valid N.E. r/m64 AND r32.
-	{ NULL, 0x0001, 0x00C48000, { 0x21, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00C48000, { 0x21, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
 	// 22 /r AND r8, r/m8 A Valid Valid r8 AND r/m8.
 	// REX + 22 /r AND r8*, r/m8* A Valid N.E. r/m64 AND r8 (signextended).
-	{ NULL, 0x0001, 0x00C48000, { 0x22, 0x00, 0x00 }, { FCML_OP_MODRM_R_8_W, FCML_OP_MODRM_RM_8, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00C48000, { 0x22, 0x00, 0x00 }, { FCML_OP_MODRM_R_8_W, FCML_OP_MODRM_RM_8, FCML_NA, FCML_NA, FCML_NA } },
 	// 23 /r AND r16, r/m16 A Valid Valid r16 AND r/m16.
 	// 23 /r AND r32, r/m32 A Valid Valid r32 AND r/m32.
 	// REX.W + 23 /r AND r64, r/m64 A Valid N.E. r64 AND r/m64.
-	{ NULL, 0x0001, 0x00C48000, { 0x23, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00C48000, { 0x23, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ANDPD[] = {

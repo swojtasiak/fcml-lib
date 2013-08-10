@@ -282,7 +282,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 		if( !decoded_modrm->base.type && decoded_modrm->displacement.size ) {
 			// disp32 or RIP
 			if( decoded_modrm->displacement.displacement_type == FCML_DT_ADDRESS && ( !context->choose_rip_encoding || !context->addr_form == FCML_AF_64_BIT ) ) {
-				// Uses choses address displacement, but RIP addressing can not be used.
+				// User chooses address displacement, but RIP addressing can not be used.
 				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
 			if( context->choose_rip_encoding && context->addr_form == FCML_AF_64_BIT ) {

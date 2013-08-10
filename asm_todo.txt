@@ -1,0 +1,1 @@
+1. Dodaæ testy dla parameteru konfiguracyjnego wymuszaj¹cego VEX 2 bajtowy.

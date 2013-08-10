@@ -287,7 +287,7 @@ fcml_ceh_error fcml_ifn_decode_dynamic_operand_size( fcml_st_asm_encoding_contex
 fcml_bool fcml_ifn_set_size_flag( fcml_st_asm_nullable_size_flags *nullable_flags, fcml_en_attribute_size_flag flags ) {
 	if( nullable_flags->is_set ) {
 		if( ( nullable_flags->flags & flags ) == 0 ) {
-			// We need flags that weren't allowed by previous operands.
+			// We need flags that weren't allowed by previous operands or IPPs.
 			return FCML_FALSE;
 		}
 		// Set new set of flags, take into account that these might be a subset of existing ones.
@@ -516,7 +516,7 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_explicit_reg( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_sf_def_tma_explicit_reg *args = (fcml_sf_def_tma_explicit_reg*)addr_mode->addr_mode_args;
-	if( operand_def->type != FCML_EOT_REGISTER || operand_def->reg.reg != args->reg_num ) {
+	if( operand_def->type != FCML_EOT_REGISTER || operand_def->reg.reg != args->reg_num || !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_reg_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
 		error = FCML_EN_UNSUPPORTED_OPPERAND;
 	}
 	return error;
@@ -1206,11 +1206,6 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 // Simple opcode encoder factory. //
 ////////////////////////////////////
 
-fcml_ceh_error fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder_acceptor( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_instruction *instruction, fcml_ptr args ) {
-	// Simple opcode encoder can be always applied.
-	return FCML_CEH_GEC_NO_ERROR;
-}
-
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 		int opcode_bytes = FCML_DEF_OPCODE_FLAGS_OPCODE_NUM( addr_mode_def->opcode_flags );
@@ -1228,13 +1223,42 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 	descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 	descriptor.processor_args = NULL;
 	descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder;
-	descriptor.processor_acceptor = fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder_acceptor;
+	descriptor.processor_acceptor = NULL;
 	return descriptor;
 }
 
 /////////////////////////////////
 // Prefixes encoder factories. //
 /////////////////////////////////
+
+// Mandatory prefixes.
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_mandatory_prefixes_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+	if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
+		fcml_uint8_t prefix = 0x66;
+		if( FCML_DEF_PREFIX_MANDATORY_F2( addr_mode_def->allowed_prefixes ) ) {
+			prefix = 0xF2;
+		} else if( FCML_DEF_PREFIX_MANDATORY_F3( addr_mode_def->allowed_prefixes ) ) {
+			prefix = 0xF3;
+		}
+		instruction_part->code[0] = prefix;
+		instruction_part->code_length = 1;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_mandatory_prefixes_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+	fcml_bool is_mandatory = FCML_DEF_PREFIX_MANDATORY_66( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_MANDATORY_F2( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_MANDATORY_F3( addr_mode->allowed_prefixes );
+	// Mandatory prefixes can be applied to instructions without neither XOP nor VEX prefixes.
+	if( is_mandatory && !FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_mandatory_prefixes_encoder;
+		descriptor.processor_acceptor = NULL;
+	}
+	return descriptor;
+}
 
 // 66 prefix.
 
@@ -1257,16 +1281,13 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_66_prefix_encoder( fcml_i
 
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
-
-	// 66 prefix can be applied to instructions without neither XOP nor VEX prefixes. Remember that this prefix can bes mandatory one.
-	if( ( FCML_DEF_PREFIX_MANDATORY_66( addr_mode->allowed_prefixes ) ||
-			( !FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) ) ) {
+	// Mandatory prefixes are handled by dedicated IPP.
+	if( !FCML_DEF_PREFIX_MANDATORY_66( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 		descriptor.processor_args = NULL;
 		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_66_prefix_encoder;
 		descriptor.processor_acceptor = NULL;
 	}
-
 	return descriptor;
 }
 
@@ -1325,7 +1346,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder( f
 
 		// Check if one byte VEX encoding can be used.
 		fcml_bool is_vex = FCML_DEF_PREFIX_VEX_REQ( addr_mode_def->allowed_prefixes );
-		fcml_bool is_two_bytes_vex = ( is_vex && !epf->mmmm && !FCML_DEF_PREFIX_W_1( addr_mode_def->allowed_prefixes ) && !encoded_mod_rm->ext_x && !encoded_mod_rm->ext_b );
+
+		// Remember, the 2-byte VEX implies a leading 0Fh opcode byte, it's why "m-mmmm" field should be 1.
+		fcml_bool is_two_bytes_vex = ( !context->assembler_context->configuration.force_three_byte_VEX && is_vex && epf->mmmm == 0x01 && !FCML_DEF_PREFIX_W_1( addr_mode_def->allowed_prefixes ) && !encoded_mod_rm->ext_x && !encoded_mod_rm->ext_b );
 
 		fcml_uint8_t prefix_bytes[3];
 		fcml_uint8_t prefix_size = 0;
@@ -1606,6 +1629,7 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 
 // List of instruction part encoders for instruction prefixes.
 fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_mandatory_prefixes_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder, 0 },
