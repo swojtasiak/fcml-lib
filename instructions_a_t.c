@@ -197,13 +197,16 @@ void fcml_tf_instruction_ADDPD(void) {
 	FCML_I32( "addpd xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x58, 0x14, 0x01 );
 	FCML_I64( "addpd xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x58, 0x14, 0x01 );
 
+	// VEX.NDS.128.66.0F 58 /r VADDPD xmm1,xmm2, xmm3/m128
+	FCML_I64_P( "vaddpd ymm10,ymm14,ymmword ptr [r9+r8]", 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 );
+
 	/*
 	// ADDPD
 
 	// VADDPD
-	// VEX.NDS.128.66.0F 58 /r VADDPD xmm1,xmm2, xmm3/m128
+
 	// VAX.X
-	_TEST64_VEX( "c4010d581401 vaddpd ymm10,ymm14,ymmword ptr [r9+r8]", 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 );
+
 	// VAX.R VAX.B (3 byte VAX prefix.)
 	_TEST64_VEX( "c4410d581401 vaddpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x58, 0x14, 0x01 );
 	_TEST64_VEX( "c4c109581401 vaddpd xmm2,xmm14,oword ptr [r9+rax]", 0xC4, 0xC1, 0x09, 0x58, 0x14, 0x01 );
