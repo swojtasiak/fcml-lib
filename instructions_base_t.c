@@ -15,13 +15,18 @@
 #include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
 
-fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags ) {
+fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result ) {
 
 	fcml_bool success = FCML_TRUE;
 
 	struct ira_disassemble_info info;
-	info.address = code;
-	info.size = size;
+	if( !multiple_assemblation_result ) {
+		info.address = code;
+		info.size = size;
+	} else {
+		info.address = code + 2;
+		info.size = code[1];
+	}
 	info.address_size_attribute = 0;
 	info.operand_size_attribute = 0;
 	info.mode = x64 ? IRA_MOD_64BIT : IRA_MOD_32BIT;
@@ -142,25 +147,60 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			for( j = 0; j < 2; j++ ) {
 
 				fcml_st_coll_list *inst = asm_result->instructions;
+
+				/*if( !only_print_result ) {
+					if( !multiple_assemblation_result && inst->size != 1 ) {
+						found = FCML_FALSE;
+						break;
+					}
+				}
+*/
 				fcml_st_coll_list_element *element = inst->head;
 				while( element ) {
 					fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
 					fcml_bool differ = FCML_FALSE;
 					if( !only_print_result ) {
 						int i;
-						if( size == assembled_instruction->code_length ) {
-							for( i = 0; i < size; i++ ) {
-								if( code[i] != assembled_instruction->code[i] ) {
+						if( multiple_assemblation_result ) {
+							int code_index = 0;
+							fcml_uint8_t instruction_count = code[code_index++];
+							for( i = 0; i < instruction_count; i++ ) {
+								fcml_uint8_t code_size = code[code_index++];
+								fcml_uint8_t *code_buff = &(code[code_index]);
+								code_index += code_size;
+								fcml_uint8_t k;
+								differ = FCML_FALSE;
+								if( code_size != assembled_instruction->code_length ) {
 									differ = FCML_TRUE;
+								} else {
+									for( k = 0; k < code_size; k++ ) {
+										if( code_buff[k] != assembled_instruction->code[k] ) {
+											differ = FCML_TRUE;
+											break;
+										}
+									}
+								}
+								if( !differ ) {
 									break;
 								}
 							}
 						} else {
-							differ = FCML_TRUE;
+							if( size == assembled_instruction->code_length ) {
+								for( i = 0; i < size; i++ ) {
+									if( code[i] != assembled_instruction->code[i] ) {
+										differ = FCML_TRUE;
+										break;
+									}
+								}
+							} else {
+								differ = FCML_TRUE;
+							}
 						}
-						if( !differ ) {
-							found = FCML_TRUE;
+						if( differ ) {
+							found = FCML_FALSE;
 							break;
+						} else {
+							found = FCML_TRUE;
 						}
 					}
 					if( only_print_result || ( differ && !looking_for_instruction ) ) {
