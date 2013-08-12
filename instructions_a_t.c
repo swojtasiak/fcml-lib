@@ -412,6 +412,55 @@ void fcml_tf_instruction_ANDPD(void) {
 	FCML_I32( "vandpd xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xC9, 0x54, 0x14, 0x01 );
 }
 
+void fcml_tf_instruction_ANDPS(void) {
+	FCML_I32( "andps xmm2,oword ptr [ecx+eax]", 0x0F, 0x54, 0x14, 0x01 );
+	FCML_I64( "andps xmm2,oword ptr [rcx+rax]", 0x0F, 0x54, 0x14, 0x01 );
+	// VEX.NDS.128.0F 54 /r VANDPS xmm1,xmm2, xmm3/m128
+	// VEX.NDS.256.0F 54 /r VANDPS ymm1, ymm2, ymm3/m256
+	FCML_I64( "vandps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0C, 0x54, 0x14, 0x01 );
+	FCML_I32( "vandps xmm2,xmm7,oword ptr [ecx+eax]", 0xc5, 0xc0, 0x54, 0x14, 0x01 );
+	FCML_I32( "vandps xmm2,xmm2,oword ptr [ecx+eax]", 0xc5, 0xe8, 0x54, 0x14, 0x01 );
+	FCML_I32( "vandps xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xC8, 0x54, 0x14, 0x01 );
+}
+
+void fcml_tf_instruction_ANDNPD(void) {
+	FCML_I32( "andnpd xmm2,oword ptr [ecx+eax]", 0x66, 0x0F, 0x55, 0x14, 0x01 );
+	FCML_I64( "andnpd xmm2,oword ptr [rcx+rax]", 0x66, 0x0F, 0x55, 0x14, 0x01 );
+	// VEX.NDS.128.66.0F 55 /r VANDNPD xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.66.0F 55 /r VANDNPD ymm1,ymm2,ymm3/m256
+	FCML_I64( "vandnpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x55, 0x14, 0x01 );
+	FCML_I32( "vandnpd xmm2,xmm7,oword ptr [ecx+eax]", 0xc5, 0xc1, 0x55, 0x14, 0x01 );
+	FCML_I32( "vandnpd xmm2,xmm2,oword ptr [ecx+eax]", 0xc5, 0xe9, 0x55, 0x14, 0x01 );
+	FCML_I32( "vandnpd xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xC9, 0x55, 0x14, 0x01 );
+}
+
+void fcml_tf_instruction_ANDNPS(void) {
+	FCML_I32( "andnps xmm2,oword ptr [ecx+eax]", 0x0F, 0x55, 0x14, 0x01 );
+	FCML_I64( "andnps xmm2,oword ptr [rcx+rax]", 0x0F, 0x55, 0x14, 0x01 );
+	// VEX.NDS.128.0F 55 /r VANDNPS xmm1,xmm2,xmm3/m128
+	// VEX.NDS.256.0F 55 /r VANDNPS ymm1,ymm2,ymm3/m256
+	FCML_I64( "vandnps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0C, 0x55, 0x14, 0x01 );
+	FCML_I32( "vandnps xmm2,xmm7,oword ptr [ecx+eax]", 0xc5, 0xc0, 0x55, 0x14, 0x01 );
+	FCML_I32( "vandnps xmm2,xmm2,oword ptr [ecx+eax]", 0xc5, 0xe8, 0x55, 0x14, 0x01 );
+	FCML_I32( "vandnps xmm2,xmm6,oword ptr [ecx+eax]", 0xC5, 0xC8, 0x55, 0x14, 0x01 );
+}
+
+void fcml_tf_instruction_ARPL(void) {
+	FCML_I32( "arpl word ptr [ecx+eax],dx", 0x63, 0x14, 0x01 );
+	FCML_I32_D( "arpl word ptr [ecx+eax],dx", 0x66, 0x63, 0x14 );
+	FCML_I32( "arpl word ptr [si],dx", 0x67, 0x63, 0x14 );
+	FCML_I64_FAILED( "arpl edi", 0x63, 0xDF );
+}
+
+void fcml_tf_instruction_ANDN(void) {
+	// VEX.NDS.LZ.0F38.W0 F2 /r ANDN r32a, r32b, r/m32
+	FCML_I32( "andn eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x40, 0xF2, 0x00 );
+	FCML_I32( "andn eax,edi,eax", 0xC4, 0xE2, 0x40, 0xF2, 0xC0 );
+	// VEX.NDS.LZ.0F38.W1 F2 /r ANDN r64a, r64b, r/m64
+	FCML_I32( "andn rax,rdi,qword ptr [eax]", 0xC4, 0xE2, 0xC0, 0xF2, 0x00 );
+	FCML_I32( "andn rax,rdi,rax", 0xC4, 0xE2, 0xC0, 0xF2, 0xC0 );
+}
+
 CU_TestInfo fctl_ti_instructions_a[] = {
     { "fcml_tf_instruction_AAA", fcml_tf_instruction_AAA },
     { "fcml_tf_instruction_AAD", fcml_tf_instruction_AAD },
@@ -433,6 +482,11 @@ CU_TestInfo fctl_ti_instructions_a[] = {
     { "fcml_tf_instruction_AESKEYGENASSIST", fcml_tf_instruction_AESKEYGENASSIST },
     { "fcml_tf_instruction_AND", fcml_tf_instruction_AND },
     { "fcml_tf_instruction_ANDPD", fcml_tf_instruction_ANDPD },
+    { "fcml_tf_instruction_ANDPS", fcml_tf_instruction_ANDPS },
+    { "fcml_tf_instruction_ANDNPD", fcml_tf_instruction_ANDNPD },
+    { "fcml_tf_instruction_ANDNPS", fcml_tf_instruction_ANDNPS },
+    { "fcml_tf_instruction_ARPL", fcml_tf_instruction_ARPL },
+    { "fcml_tf_instruction_ANDN", fcml_tf_instruction_ANDN },
     CU_TEST_INFO_NULL,
 };
 

@@ -44,8 +44,25 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	FCML_I32_P( "andn eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x40, 0xF2, 0x00 );
+	//FCML_I32_P( "andn eax,edi,eax", 0xC4, 0xE2, 0x40, 0xF2, 0xC0 );
+	//FCML_I32_P( "andn rax,rdi,qword ptr [eax]", 0xC4, 0xE2, 0xC0, 0xF2, 0x00 );
+	//FCML_I32_P( "andn rax,rdi,rax", 0xC4, 0xE2, 0xC0, 0xF2, 0xC0 );
 
-//	return 0;
+	return 0;
+
+	//FCML_I32_P( "arpl word ptr [ecx+eax],dx", 0x66, 0x63, 0x14, 0x01 );
+	//FCML_I32_P( "arpl word ptr [si],dx", 0x67, 0x63, 0x14 );
+	//return 0;
+
+	//FCML_I32_P( "vandnps xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x40, 0x55, 0x14, 0x01 );
+	//FCML_I32_P( "vandnps xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x68, 0x55, 0x14, 0x01 );
+
+	//FCML_I32_P( "vandnpd xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0x55, 0x14, 0x01 );
+	//FCML_I32_P( "vandnpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x55, 0x14, 0x01 );
+
+
+	//return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
