@@ -461,6 +461,22 @@ void fcml_tf_instruction_ANDN(void) {
 	FCML_I32( "andn rax,rdi,rax", 0xC4, 0xE2, 0xC0, 0xF2, 0xC0 );
 }
 
+void fcml_tf_instruction_ADCX(void) {
+	// 66 0F 38 F6 /r ADCX r32, r/m32
+	// REX.W + 66 0F 38 F6 /r ADCX r64,r/m64
+	FCML_I32( "adcx eax,dword ptr [eax]", 0x66, 0x0F, 0x38, 0xF6, 0x00 );
+	FCML_I64( "adcx eax,dword ptr [rax]", 0x66, 0x0F, 0x38, 0xF6, 0x00 );
+	FCML_I64( "adcx rax,qword ptr [rax]", 0x66, 0x48, 0x0F, 0x38, 0xF6, 0x00 );
+}
+
+void fcml_tf_instruction_ADOX(void) {
+	// F3 0F 38 F6 /r ADOX r32, r/m32
+	// REX.w + F3 0F 38 F6 /r ADOX r64, r/m64
+	FCML_I32( "adox eax,dword ptr [eax]", 0xF3, 0x0F, 0x38, 0xF6, 0x00 );
+	FCML_I64( "adox eax,dword ptr [rax]", 0xF3, 0x0F, 0x38, 0xF6, 0x00 );
+	FCML_I64( "adox rax,qword ptr [rax]", 0xF3, 0x48, 0x0F, 0x38, 0xF6, 0x00 );
+}
+
 CU_TestInfo fctl_ti_instructions_a[] = {
     { "fcml_tf_instruction_AAA", fcml_tf_instruction_AAA },
     { "fcml_tf_instruction_AAD", fcml_tf_instruction_AAD },
@@ -487,6 +503,8 @@ CU_TestInfo fctl_ti_instructions_a[] = {
     { "fcml_tf_instruction_ANDNPS", fcml_tf_instruction_ANDNPS },
     { "fcml_tf_instruction_ARPL", fcml_tf_instruction_ARPL },
     { "fcml_tf_instruction_ANDN", fcml_tf_instruction_ANDN },
+    { "fcml_tf_instruction_ADCX", fcml_tf_instruction_ADCX },
+    { "fcml_tf_instruction_ADOX", fcml_tf_instruction_ADOX },
     CU_TEST_INFO_NULL,
 };
 

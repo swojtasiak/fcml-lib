@@ -17,6 +17,7 @@
 #include "fcml_coll_t.h"
 #include "fcml_utils_t.h"
 #include "instructions_a_t.h"
+#include "instructions_b_t.h"
 #include "fcml_intel_parser_t.h"
 
 #include "fcml_assembler.h"
@@ -26,6 +27,7 @@
 
 CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_a,
+	fctl_si_instructions_b,
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
@@ -44,12 +46,22 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_I32_P( "andn eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x40, 0xF2, 0x00 );
+	FCML_I64_P( "vblendvpd ymm10,ymm14,ymmword ptr [r9+rax],ymm2", 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20 );
+	return 0;
+
+	//FCML_I32_P( "blendvpd xmm2,oword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
+	//return 0;
+
+	//FCML_I32_P( "vblendpd xmm2,xmm7,oword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x41, 0x0D, 0x14, 0x01, 0x20 );
+	//FCML_I32( "vblendpd xmm2,xmm2,oword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x69, 0x0D, 0x14, 0x01, 0x20 );
+	//return 0;
+
+	//CML_I32_P( "andn eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x40, 0xF2, 0x00 );
 	//FCML_I32_P( "andn eax,edi,eax", 0xC4, 0xE2, 0x40, 0xF2, 0xC0 );
 	//FCML_I32_P( "andn rax,rdi,qword ptr [eax]", 0xC4, 0xE2, 0xC0, 0xF2, 0x00 );
 	//FCML_I32_P( "andn rax,rdi,rax", 0xC4, 0xE2, 0xC0, 0xF2, 0xC0 );
 
-	return 0;
+	//return 0;
 
 	//FCML_I32_P( "arpl word ptr [ecx+eax],dx", 0x66, 0x63, 0x14, 0x01 );
 	//FCML_I32_P( "arpl word ptr [si],dx", 0x67, 0x63, 0x14 );
