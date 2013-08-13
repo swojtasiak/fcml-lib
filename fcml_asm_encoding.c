@@ -742,14 +742,14 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase
 //------------
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_vex_vvvv( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	if( operand_def->type != FCML_EOT_REGISTER ) {
+	fcml_sf_def_tma_vex_vvvv_reg *args = (fcml_sf_def_tma_vex_vvvv_reg*)addr_mode->addr_mode_args;
+	if( operand_def->type != FCML_EOT_REGISTER || operand_def->reg.type != args->reg_type ) {
 		return FCML_EN_UNSUPPORTED_OPPERAND;
 	}
-	fcml_st_register *reg = &(operand_def->reg);
-	if( reg->type == FCML_REG_SIMD && ( reg->size == FCML_DS_128 || reg->size == FCML_DS_256 ) ) {
-		return FCML_CEH_GEC_NO_ERROR;
+	if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
+		return FCML_EN_UNSUPPORTED_OPPERAND;
 	}
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_vex_vvvv( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
