@@ -15,81 +15,91 @@
 #include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
 
-fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result ) {
+fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble ) {
 
 	fcml_bool success = FCML_TRUE;
 
-	struct ira_disassemble_info info;
-	if( !multiple_assemblation_result ) {
-		info.address = code;
-		info.size = size;
-	} else {
-		info.address = code + 2;
-		info.size = code[1];
-	}
-	info.address_size_attribute = 0;
-	info.operand_size_attribute = 0;
-	info.mode = x64 ? IRA_MOD_64BIT : IRA_MOD_32BIT;
-	info.config.flags = 0;
-
-	if( x64 ) {
-		info.instruction_pointer.rip = 0x0000800000401000;
-	} else {
-		info.instruction_pointer.eip = 0x00401000;
-	}
-
 	struct ira_disassemble_result result;
+	result.code = RC_OK;
 
-	// Disassemble.
-	ira_disassemble( &info, &result );
+	if( !only_assemble ) {
+
+		struct ira_disassemble_info info;
+		if( !multiple_assemblation_result ) {
+			info.address = code;
+			info.size = size;
+		} else {
+			info.address = code + 2;
+			info.size = code[1];
+		}
+		info.address_size_attribute = 0;
+		info.operand_size_attribute = 0;
+		info.mode = x64 ? IRA_MOD_64BIT : IRA_MOD_32BIT;
+		info.config.flags = 0;
+
+		if( x64 ) {
+			info.instruction_pointer.rip = 0x0000800000401000;
+		} else {
+			info.instruction_pointer.eip = 0x00401000;
+		}
+
+		// Disassemble.
+		ira_disassemble( &info, &result );
+
+	}
 
 	if( result.code == RC_OK ) {
 
-		if( only_print_result ) {
-			printf("Instruction: %s\n", mnemonic);
-		}
-
-		if( !failed ) {
-			printf("Should fail: %s\n", mnemonic);
-			success = FCML_FALSE;
-			return success;
-		}
-
-		// Looking for 0x67 prefix.
 		fcml_bool is_67 = FCML_FALSE;
-		int i;
-		for( i = 0; i < _IRA_PREFIXES_COUNT; i++ ) {
-			if( result.prefixes[i].prefix == 0x67 ) {
-				is_67 = FCML_TRUE;
-				break;
+
+		if( !only_assemble ) {
+
+			if( only_print_result ) {
+				printf("Instruction: %s\n", mnemonic);
 			}
-		}
 
-		// Print.
-		char buffer[512] = {0};
-
-		struct ira_intel_format_info format;
-		format.show_zero_displacement = 0;
-		format.show_extended_displacement = 1;
-		format.immediate_hex_display = 1;
-		format.immediate_signed = 1;
-		format.show_instruction_code = 0;
-		format.show_extended_immediate = 1;
-		format.show_conditional_mnemonics_for_carry_flag = 1;
-		format.conditional_suffix_group = 0;
-
-		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
-
-		if( strcmp( buffer, mnemonic ) != 0 ) {
-			printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
-			if( !only_print_result ) {
+			if( !failed ) {
+				printf("Should fail: %s\n", mnemonic);
 				success = FCML_FALSE;
+				return success;
 			}
-			return success;
-		} else {
-			if( !only_print_result ) {
-				CU_ASSERT(FCML_TRUE);
+
+			// Looking for 0x67 prefix.
+			int i;
+			for( i = 0; i < _IRA_PREFIXES_COUNT; i++ ) {
+				if( result.prefixes[i].prefix == 0x67 ) {
+					is_67 = FCML_TRUE;
+					break;
+				}
 			}
+
+			// Print.
+			char buffer[512] = {0};
+
+			struct ira_intel_format_info format;
+			format.show_zero_displacement = 0;
+			format.show_extended_displacement = 1;
+			format.immediate_hex_display = 1;
+			format.immediate_signed = 1;
+			format.show_instruction_code = 0;
+			format.show_extended_immediate = 1;
+			format.show_conditional_mnemonics_for_carry_flag = 1;
+			format.conditional_suffix_group = 0;
+
+			ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
+
+			if( strcmp( buffer, mnemonic ) != 0 ) {
+				printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
+				if( !only_print_result ) {
+					success = FCML_FALSE;
+				}
+				return success;
+			} else {
+				if( !only_print_result ) {
+					CU_ASSERT(FCML_TRUE);
+				}
+			}
+
 		}
 
 		// Assemblation.
@@ -148,13 +158,13 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 				fcml_st_coll_list *inst = asm_result->instructions;
 
-				/*if( !only_print_result ) {
+				if( !only_print_result ) {
 					if( !multiple_assemblation_result && inst->size != 1 ) {
 						found = FCML_FALSE;
 						break;
 					}
 				}
-*/
+
 				fcml_st_coll_list_element *element = inst->head;
 				while( element ) {
 					fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
