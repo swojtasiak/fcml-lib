@@ -1,1 +1,3 @@
 1. Dodaæ testy dla parameteru konfiguracyjnego wymuszaj¹cego VEX 2 bajtowy.
+2. Ró¿ne mnemoniki, przyda³o by siê dodac konfiguracjê, aby mo¿na by³o wybiera ktory siê chcê.
+BSF->BSR

@@ -337,21 +337,21 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BSF[] = {
 	// 0F BC /r BSF r16, r/m16 A Valid Valid Bit scan forward on r/m16.
 	// 0F BC /r BSF r32, r/m32 A Valid Valid Bit scan forward on r/m32.
 	// REX.W + 0F BC BSF r64, r/m64 A Valid N.E. Bit scan forward on r/m64.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBC, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xBC, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BSR[] = {
 	// 0F BD /r BSR r16, r/m16 A Valid Valid Bit scan reverse on r/m16.
 	// 0F BD /r BSR r32, r/m32 A Valid Valid Bit scan reverse on r/m32.
 	// REX.W + 0F BD BSR r64, r/m64 A Valid N.E. Bit scan reverse on r/m64.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBC, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xBC, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BSWAP[] = {
 	// 0F C8+rd BSWAP r32 A Valid* Valid Reverses the byte order of a 32-bit register.
-	{ NULL, 0x0001, 0x00D80001, { 0x0F, 0xC8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_GPR, FCML_EOS_DWORD ), FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00D80001, { 0x0F, 0xC8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_GPR, FCML_EOS_DWORD ), FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 0F C8+rd BSWAP r64 A Valid N.E. Reverses the byte order of a 64-bit register.
-	{ NULL, 0x0009, 0x00980001, { 0x0F, 0xC8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_GPR, FCML_EOS_QWORD ), FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0008, 0x00980001, { 0x0F, 0xC8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_GPR, FCML_EOS_QWORD ), FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BT[] = {
