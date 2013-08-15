@@ -545,11 +545,21 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_reg( fcml_ien_asm_part_proc
 //-------------------
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_opcode_reg( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+	fcml_sf_def_tma_opcode_reg *args = (fcml_sf_def_tma_opcode_reg*)addr_mode->addr_mode_args;
+	if( operand_def->type != FCML_EOT_REGISTER || operand_def->reg.type != args->reg_type ) {
+		return FCML_EN_UNSUPPORTED_OPPERAND;
+	}
+	if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_reg_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
+		return FCML_EN_UNSUPPORTED_OPPERAND;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+		context->opcode_reg = operand_def->reg.reg;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 //-------------------------
@@ -1212,6 +1222,31 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 	return descriptor;
 }
 
+///////////////////////////////////////////////////
+// Opcode with register encoded encoder factory. //
+///////////////////////////////////////////////////
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_reg_opcode_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+		int opcode_bytes = FCML_DEF_OPCODE_FLAGS_OPCODE_NUM( addr_mode_def->opcode_flags );
+		int i;
+		for( i = 0; i < opcode_bytes; i++ ) {
+			instruction_part->code[i] = addr_mode_def->opcode[i];
+		}
+		instruction_part->code_length = opcode_bytes;
+	}
+	return  FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_reg_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+	descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+	descriptor.processor_args = NULL;
+	descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_reg_opcode_encoder;
+	descriptor.processor_acceptor = NULL;
+	return descriptor;
+}
+
 ////////////////////////////////////
 // Simple opcode encoder factory. //
 ////////////////////////////////////
@@ -1627,6 +1662,7 @@ typedef struct fcml_ist_asm_instruction_part_factory_sequence {
 // List of instruction part encoders for instruction opcode.
 fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_opcode_for_IA[] = {
 	{ fcml_ifn_asm_instruction_part_processor_factory_XOP_VEX_opcode_encoder, 0 },
+	{ fcml_ifn_asm_instruction_part_processor_factory_reg_opcode_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_simple_opcode_encoder, 0 },
 	{ NULL, 0 }
 };
