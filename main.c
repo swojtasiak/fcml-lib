@@ -46,10 +46,6 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_I32_P( "bswap eax", 0x0f, 0xc8 );
-
-	return 0;
-
 
 	//FCML_I32_P( "blendvpd xmm2,oword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
 	//return 0;
