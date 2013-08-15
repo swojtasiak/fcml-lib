@@ -1569,7 +1569,7 @@ int _ira_opcode_decoder_opcode_register( struct ira_diss_context *context, struc
 
 	struct ira_decoded_fields *prefixes_fields = &(context->decoding_context.prefixes_fields);
 	//if( context->mode == IRA_MOD_64BIT && prefixes_fields->is_rex ) {
-	if( prefixes_fields->r ) {
+	if( prefixes_fields->b ) {
 		reg_num |= 0x08;
 	}
 //	}

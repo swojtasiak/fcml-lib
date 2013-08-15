@@ -81,6 +81,11 @@ typedef struct fcml_st_asm_extension_prefixes_fields {
 	fcml_uint8_t mmmm;
 } fcml_st_asm_extension_prefixes_fields;
 
+typedef struct fcml_st_asm_opcode_reg {
+	fcml_uint8_t opcode_reg;
+	fcml_uint8_t ext_b;
+} fcml_st_asm_opcode_reg;
+
 typedef struct fcml_st_asm_encoding_context {
 #ifdef FCML_DEBUG
 	int __def_index;
@@ -93,7 +98,7 @@ typedef struct fcml_st_asm_encoding_context {
 	fcml_st_assembler_context *assembler_context;
 	fcml_st_instruction *instruction;
 	fcml_st_assembler_result *result;
-	fcml_uint8_t opcode_reg;
+	fcml_st_asm_opcode_reg opcode_reg;
 	fcml_nint8_t instruction_size;
 } fcml_st_asm_encoding_context;
 
