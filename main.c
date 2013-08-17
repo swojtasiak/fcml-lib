@@ -18,6 +18,7 @@
 #include "fcml_utils_t.h"
 #include "instructions_a_t.h"
 #include "instructions_b_t.h"
+#include "instructions_c_t.h"
 #include "fcml_intel_parser_t.h"
 
 #include "fcml_assembler.h"
@@ -28,6 +29,7 @@
 CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_a,
 	fctl_si_instructions_b,
+	fctl_si_instructions_c,
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
@@ -46,6 +48,8 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	FCML_I32_P( "call fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
+	return 0;
 
 	//FCML_I32_P( "blendvpd xmm2,oword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
 	//return 0;
