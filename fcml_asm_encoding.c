@@ -447,7 +447,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_imm( fcml_st_asm_encoding_context *
 			}
 		}
 
-		if( !is_convertable || !fcml_ifn_set_size_flag( &(context->data_size_flags.allowed_effective_operand_size ), flags ) ) {
+		if( !is_convertable || ( flags && !fcml_ifn_set_size_flag( &(context->data_size_flags.allowed_effective_operand_size ), flags ) ) ) {
 			FCML_TRACE("Accept IMM: Can not accept IMM value." );
 			error = FCML_EN_UNSUPPORTED_OPPERAND;
 		}

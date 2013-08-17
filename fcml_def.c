@@ -358,33 +358,33 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BT[] = {
 	// 0F A3 BT r/m16, r16 A Valid Valid Store selected bit in CF flag.
 	// 0F A3 BT r/m32, r32 A Valid Valid Store selected bit in CF flag.
 	// REX.W + 0F A3 BT r/m64, r64 A Valid N.E. Store selected bit in CF flag.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xA3, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xA3, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F BA /4 ib BT r/m16, imm8 B Valid Valid Store selected bit in CF flag.
 	// 0F BA /4 ib BT r/m32, imm8 B Valid Valid Store selected bit in CF flag.
 	// REX.W + 0F BA /4 ib BT r/m64, imm8 B Valid N.E. Store selected bit in CF flag.
-	{ NULL, 0x0001, 0x00D9A000, { 0x0F, 0xBA, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00D9A000, { 0x0F, 0xBA, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BTC[] = {
 	// 0F BB BTC r/m16, r16 A Valid Valid Store selected bit in CF flag and complement.
 	// 0F BB BTC r/m32, r32 A Valid Valid Store selected bit in CF flag and complement.
 	// REX.W + 0F BB BTC r/m64, r64 A Valid N.E. Store selected bit in CF flag and complement.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xBB, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xBB, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F BA /7 ib BTC r/m16, imm8 B Valid Valid Store selected bit in CF flag and complement.
 	// 0F BA /7 ib BTC r/m32, imm8 B Valid Valid Store selected bit in CF flag and complement.
 	// REX.W + 0F BA /7 ib BTC r/m64, imm8 B Valid N.E. Store selected bit in CF flag and complement.
-	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0xBA, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00D9B800, { 0x0F, 0xBA, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BTR[] = {
 	// 0F B3 BTR r/m16, r16 A Valid Valid Store selected bit in CF flag and clear.
 	// 0F B3 BTR r/m32, r32 A Valid Valid Store selected bit in CF flag and clear.
 	// REX.W + 0F B3 BTR r/m64, r64 A Valid N.E. Store selected bit in CF flag and clear.
-	{ NULL, 0x0001, 0x00D88000, { 0x0F, 0xB3, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00D88000, { 0x0F, 0xB3, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F BA /6 ib BTR r/m16, imm8 B Valid Valid Store selected bit in CF flag and clear.
 	// 0F BA /6 ib BTR r/m32, imm8 B Valid Valid Store selected bit in CF flag and clear.
 	// REX.W + 0F BA /6 ib BTR r/m64, imm8 B Valid N.E. Store selected bit in CF flag and clear.
-	{ NULL, 0x0001, 0x00D9B000, { 0x0F, 0xBA, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00D9B000, { 0x0F, 0xBA, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BTS[] = {
@@ -5266,9 +5266,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BEXTR[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLCFILL[] = {
 	// BLCFILL reg32, reg/mem32 8F RXB.09 0.dest.0.00 01 /1
-	{ NULL, 0x0450, 0x00D88000, { 0x09, 0x01, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_DWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0450, 0x00D98800, { 0x09, 0x01, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_DWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA } },
 	// BLCFILL reg64, reg/mem64 8F RXB.09 1.dest.0.00 01 /1
-	{ NULL, 0x0448, 0x00D88000, { 0x09, 0x01, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0448, 0x00D98800, { 0x09, 0x01, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLCI[] = {
