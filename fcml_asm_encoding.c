@@ -227,6 +227,10 @@ fcml_ceh_error fcml_ifn_decode_dynamic_operand_size( fcml_st_asm_encoding_contex
 			break;
 		}
 		break;
+    case FCML_EOS_FPI:
+        // Far pointer indirect.
+        effective_operand_size = data_size - FCML_DS_16;
+        break;
 	default:
 		if( comparator == FCML_IEN_CT_EQUAL ) {
 			if ( encoded_operand_size * 8 != data_size ) {
@@ -359,6 +363,22 @@ fcml_bool fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, fcml
 			result = FCML_FALSE;
 		}
 		break;
+	case FCML_EOS_FPI:
+	    // Far pointer indirect.
+	    switch( operand_size ) {
+	    case FCML_DS_16 + FCML_DS_16:
+            osa_flags |= FCML_EN_ASF_16;
+            break;
+	    case FCML_DS_32 + FCML_DS_16:
+	        osa_flags |= FCML_EN_ASF_32;
+	        break;
+	    case FCML_DS_64 + FCML_DS_16:
+            osa_flags |= FCML_EN_ASF_64;
+            break;
+	    default:
+	        result = FCML_FALSE;
+	    }
+        break;
 	default:
 		if( comparator == FCML_IEN_CT_EQUAL ) {
 			result = ( encoded_register_operand_size * 8 == operand_size );
@@ -592,18 +612,6 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer( fcml_ien_asm_part_proce
 	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
-//-------------------------
-// Far pointer indirect
-//-------------------------
-
-fcml_ceh_error fcml_fnp_asm_operand_acceptor_far_pointer_indirect( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
-}
-
-fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer_indirect( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
-}
-
 //-----------------------------
 // Explicit gps reg addressing
 //-----------------------------
@@ -679,7 +687,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_rm( fcml_st_asm_encoding_context *c
 				fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 				fcml_st_effective_address *effective_address = &(operand_def->effective_address);
 
-				fcml_st_modrm mod_rm= {0};
+				fcml_st_modrm mod_rm = {0};
 				mod_rm.base = effective_address->base;
 				mod_rm.displacement = effective_address->displacement;
 				mod_rm.index = effective_address->index;
@@ -751,6 +759,26 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase
 		context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
+}
+
+//-------------------------
+// Far pointer indirect
+//-------------------------
+
+fcml_sf_def_tma_rm  fcml_ist_far_pointer_indirect_args = { FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_FPI, FCML_RMF_M };
+
+fcml_ceh_error fcml_fnp_asm_operand_acceptor_far_pointer_indirect( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+    // Prepare modified addressing mode for
+    fcml_st_def_decoded_addr_mode l_addr_mode = *addr_mode;
+    l_addr_mode.addr_mode_args = &fcml_ist_far_pointer_indirect_args;
+    return fcml_fnp_asm_operand_acceptor_rm( context, addr_mode_details, addr_mode_desc, &l_addr_mode, operand_def, operand_enc );
+}
+
+fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer_indirect( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+    // Prepare modified addressing mode for
+    fcml_st_def_decoded_addr_mode l_addr_mode = *addr_mode;
+    l_addr_mode.addr_mode_args = &fcml_ist_far_pointer_indirect_args;
+    return fcml_fnp_asm_operand_encoder_rm( phase, context, addr_mode_desc, &l_addr_mode, operand_def, operand_enc );
 }
 
 //------------

@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 #include "fcml_types.h"
+#include "fcml_common.h"
 
 /* Instruction groups. */
 
@@ -589,6 +590,8 @@ struct ira_disassemble_result {
 	enum ira_result_code code;
 	/* Mnemonic */
 	char *mnemonic;
+	// Instruction encoding hints.
+	fcml_hints hints;
 	// TODO: Moze to przeniesc doc egos w rodzaju instruction details.?
 	// Condition used by conditional instructions.
 	struct ira_instruction_condition condition;

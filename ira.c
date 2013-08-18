@@ -1191,6 +1191,8 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 
 	int result = _IRA_INT_ERROR_NO_ERROR;
 
+	operand_decoding->hints = 0;
+
 	// Store access mode for this operand decoding.
 	operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;
 	if( decoding & FCML_OA_R ) {
@@ -1222,6 +1224,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_far_pointer;
 		break;
 	case FCML_OP_FAR_POINTER_INDIRECT:
+	    operand_decoding->hints = FCML_HINT_FAR_POINTER;
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
 		operand_decoding->args = _ira_alloc_modm_decoding_args( &ira_far_indirect_pointer_operand_size_provider, 0, &result );
 		break;
@@ -1429,7 +1432,9 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 				return rc;
 			}
 			// Copy access mode to decoded operand.
-			result->operands[i].access_mode = instruction->operand_decodings[i].access_mode;
+			struct ira_operand_decoding *operand_decoding = &(instruction->operand_decodings[i]);
+			result->operands[i].access_mode = operand_decoding->access_mode;
+			result->hints |= operand_decoding->hints;
 		} else {
 			struct ira_instruction_operand *operand = &(result->operands[i]);
 			memset( operand, 0, sizeof( struct ira_instruction_operand ) );
@@ -2717,6 +2722,9 @@ struct fcml_st_diss_decoded_operand_size fcml_ifn_decode_operand_size( fcml_uint
 			break;
 		case FCML_EOS_32_64:
 			operand_size.operand_size_provider = ira_mm_operand_size_provider;
+			break;
+		case FCML_EOS_FPI:
+			operand_size.operand_size_provider = ira_far_indirect_pointer_operand_size_provider;
 			break;
 		}
 	} else {

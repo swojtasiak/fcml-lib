@@ -95,6 +95,13 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 		_ira_format_append_str( &stream, suffix );
 	}
 
+	// Add hints.
+
+	if( result->hints & FCML_HINT_FAR_POINTER ) {
+	    _ira_format_append_str( &stream, " " );
+	    _ira_format_append_str( &stream, "far" );
+	}
+
 	// Add all operands.
 	for( i = 0; i < _IRA_OPERANDS_COUNT; i++ ) {
 		int res = _ira_format_print_operand( result, format_info, &result->operands[i], &local_stream );

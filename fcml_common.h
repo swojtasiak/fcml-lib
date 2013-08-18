@@ -344,8 +344,15 @@ typedef enum fcml_en_explicit_prefixes {
     FCML_PREFIX_REPE
 } fcml_en_explicit_prefixes;
 
+typedef fcml_uint16_t fcml_hints;
+
+typedef enum fcml_en_hints {
+    FCML_HINT_FAR_POINTER = 0x0001
+} fcml_en_hints;
+
 typedef struct fcml_st_instruction {
     fcml_en_explicit_prefixes prefixes;
+    fcml_hints hints;
     fcml_char *mnemonic;
     fcml_st_operand operands[FCML_OPERANDS_COUNT];
     int operands_count;

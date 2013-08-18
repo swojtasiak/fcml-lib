@@ -224,6 +224,8 @@ struct ira_operand_decoding {
 	ira_operand_decoder decoder;
 	// Optional arguments passed to operand decoder.
 	void *args;
+	// Optional hints, is operand adds any.
+	fcml_hints hints;
 };
 
 struct ira_diss_tree_instruction_decoding {
