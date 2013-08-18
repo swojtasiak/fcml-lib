@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_I32_P( "call fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
+	FCML_I32_P( "call far fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
 	return 0;
 
 	//FCML_I32_P( "blendvpd xmm2,oword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
