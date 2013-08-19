@@ -839,22 +839,30 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_vsib( fcml_ien_asm_part_processor_ph
 	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
+// -----------------
+// Hints calculators
+// -----------------
+
+fcml_hints fcml_fnp_asm_ihc_far_pointer( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
+    return FCML_HINT_FAR_POINTER;
+}
+
 fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
-	{ NULL, NULL },
-	{ fcml_fnp_asm_operand_encoder_imm, fcml_fnp_asm_operand_acceptor_imm },
-	{ fcml_fnp_asm_operand_encoder_explicit_reg, fcml_fnp_asm_operand_acceptor_explicit_reg },
-	{ fcml_fnp_asm_operand_encoder_opcode_reg, fcml_fnp_asm_operand_acceptor_opcode_reg },
-	{ fcml_fnp_asm_operand_encoder_immediate_dis_relative, fcml_fnp_asm_operand_acceptor_immediate_dis_relative },
-	{ fcml_fnp_asm_operand_encoder_far_pointer, fcml_fnp_asm_operand_acceptor_far_pointer },
-	{ fcml_fnp_asm_operand_encoder_far_pointer_indirect, fcml_fnp_asm_operand_acceptor_far_pointer_indirect },
-	{ fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing, fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing },
-	{ fcml_fnp_asm_operand_encoder_explicit_ib, fcml_fnp_asm_operand_acceptor_explicit_ib },
-	{ fcml_fnp_asm_operand_encoder_segment_relative_offset, fcml_fnp_asm_operand_acceptor_segment_relative_offset },
-	{ fcml_fnp_asm_operand_encoder_rm, fcml_fnp_asm_operand_acceptor_rm },
-	{ fcml_fnp_asm_operand_encoder_r, fcml_fnp_asm_operand_acceptor_r },
-	{ fcml_fnp_asm_operand_encoder_vex_vvvv, fcml_fnp_asm_operand_acceptor_vex_vvvv },
-	{ fcml_fnp_asm_operand_encoder_is4, fcml_fnp_asm_operand_acceptor_is4 },
-	{ fcml_fnp_asm_operand_encoder_vsib, fcml_fnp_asm_operand_acceptor_vsib }
+	{ NULL, NULL, NULL },
+	{ fcml_fnp_asm_operand_encoder_imm, fcml_fnp_asm_operand_acceptor_imm, NULL },
+	{ fcml_fnp_asm_operand_encoder_explicit_reg, fcml_fnp_asm_operand_acceptor_explicit_reg, NULL },
+	{ fcml_fnp_asm_operand_encoder_opcode_reg, fcml_fnp_asm_operand_acceptor_opcode_reg, NULL },
+	{ fcml_fnp_asm_operand_encoder_immediate_dis_relative, fcml_fnp_asm_operand_acceptor_immediate_dis_relative, NULL },
+	{ fcml_fnp_asm_operand_encoder_far_pointer, fcml_fnp_asm_operand_acceptor_far_pointer, NULL },
+	{ fcml_fnp_asm_operand_encoder_far_pointer_indirect, fcml_fnp_asm_operand_acceptor_far_pointer_indirect, fcml_fnp_asm_ihc_far_pointer },
+	{ fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing, fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing, NULL },
+	{ fcml_fnp_asm_operand_encoder_explicit_ib, fcml_fnp_asm_operand_acceptor_explicit_ib, NULL },
+	{ fcml_fnp_asm_operand_encoder_segment_relative_offset, fcml_fnp_asm_operand_acceptor_segment_relative_offset, NULL },
+	{ fcml_fnp_asm_operand_encoder_rm, fcml_fnp_asm_operand_acceptor_rm, NULL },
+	{ fcml_fnp_asm_operand_encoder_r, fcml_fnp_asm_operand_acceptor_r, NULL },
+	{ fcml_fnp_asm_operand_encoder_vex_vvvv, fcml_fnp_asm_operand_acceptor_vex_vvvv, NULL },
+	{ fcml_fnp_asm_operand_encoder_is4, fcml_fnp_asm_operand_acceptor_is4, NULL },
+	{ fcml_fnp_asm_operand_encoder_vsib, fcml_fnp_asm_operand_acceptor_vsib, NULL }
 };
 
 /*********************************
@@ -1071,7 +1079,9 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 			int index = 0;
 #endif
 			while( addr_mode_element ) {
+
 				error = FCML_CEH_GEC_NO_ERROR;
+
 				fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)addr_mode_element->item;
 				fcml_ifn_clean_context( context );
 
@@ -1079,8 +1089,13 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 				context->__def_index = index;
 #endif
 
-				if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
-					error = optimizer( context, addr_mode, fcml_ifn_asm_assemble_and_collect_instruction, NULL );
+				// Check if addressing mode matches the hints, if there are any.
+				if( !context->instruction->hints || ( addr_mode->hints & context->instruction->hints ) == addr_mode->hints ) {
+                    if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
+                        // Currently error is just ignored, because we would like to check every available addressing
+                        // mode before we return any errors.
+                        error = optimizer( context, addr_mode, fcml_ifn_asm_assemble_and_collect_instruction, NULL );
+                    }
 				}
 
 				addr_mode_element = addr_mode_element->next;
@@ -1166,7 +1181,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_operand_encoder_wrapper( 
 	}
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 
@@ -1186,6 +1201,10 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 		fcml_st_asm_operand_encoder_def *encoders_def = &(fcml_def_operand_encoders[wrapper_args->decoded_addr_mode->addr_mode]);
 		wrapper_args->operand_encoder = encoders_def->encoder;
 		wrapper_args->operand_acceptor = encoders_def->acceptor;
+
+		if( encoders_def->hints_calculator ) {
+		    *hints |= encoders_def->hints_calculator( addr_mode, wrapper_args->decoded_addr_mode );
+		}
 
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 	} else {
@@ -1245,7 +1264,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder( f
 	return  FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_XOP_VEX_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_XOP_VEX_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	if( FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
@@ -1274,7 +1293,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_reg_opcode_encoder( fcml_
 	return  FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_reg_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_reg_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	if( FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_REG( addr_mode->opcode_flags ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
@@ -1301,7 +1320,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_simple_opcode_encoder( fc
 	return  FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_simple_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_simple_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 	descriptor.processor_args = NULL;
@@ -1330,7 +1349,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_mandatory_prefixes_encode
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_mandatory_prefixes_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_mandatory_prefixes_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	fcml_bool is_mandatory = FCML_DEF_PREFIX_MANDATORY_66( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_MANDATORY_F2( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_MANDATORY_F3( addr_mode->allowed_prefixes );
 	// Mandatory prefixes can be applied to instructions without neither XOP nor VEX prefixes.
@@ -1362,7 +1381,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_66_prefix_encoder( fcml_i
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	// Mandatory prefixes are handled by dedicated IPP.
 	if( !FCML_DEF_PREFIX_MANDATORY_66( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) {
@@ -1395,7 +1414,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_67_prefix_encoder( fcml_i
 	return error;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 
 	// 67 prefix can be applied to instructions without neither XOP nor VEX prefixes.
@@ -1488,7 +1507,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder( f
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_VEX_XOP_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_VEX_XOP_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	if( FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
@@ -1551,7 +1570,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	// 66 prefix can be applied to instructions without neither XOP nor VEX prefixes. Remember that this prefix can bes mandatory one.
 	if( FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( addr_mode->opcode_flags ) && !( FCML_DEF_PREFIX_VEX_REQ( addr_mode->allowed_prefixes ) || FCML_DEF_PREFIX_XOP_REQ( addr_mode->allowed_prefixes ) ) ) {
@@ -1634,7 +1653,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 	return error;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_ModRM_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_ModRM_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	// Check if instruction has ModR/M byte.
 	if( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode->opcode_flags ) ) {
@@ -1670,7 +1689,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_addr_mode_acceptor( fcml_
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_addr_mode_acceptor( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_addr_mode_acceptor( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
 	descriptor.processor_type = FCML_IEN_ASM_IPPT_VERIFIER;
 	descriptor.processor_args = NULL;
@@ -1747,7 +1766,7 @@ fcml_ist_asm_instruction_part_factory_sequence fcml_asm_instruction_part_process
 	{ NULL }
 };
 
-fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IA( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, int *parts, fcml_ceh_error *error ) {
+fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_processor_factory_dispatcher_IA( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, int *parts, fcml_hints *hints, fcml_ceh_error *error ) {
 	int instruction_parts = 0;
 	fcml_ifn_asm_instruction_part_processor_chain *chain = NULL;
 	fcml_ifn_asm_instruction_part_processor_chain *current_chain = NULL;
@@ -1757,7 +1776,7 @@ fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_pro
 		fcml_st_instruction_part_choice_type choice = current_factories_sequence->choice_type;
 		fcml_ist_asm_instruction_part_factory_details *current_factory = current_factories_sequence->details;
 		while( current_factory->factory ) {
-			fcml_ifn_asm_instruction_part_processor_descriptor descriptor = current_factory->factory( current_factory->flags, instruction, addr_mode, error );
+			fcml_ifn_asm_instruction_part_processor_descriptor descriptor = current_factory->factory( current_factory->flags, instruction, addr_mode, hints, error );
 			if( descriptor.processor_encoder || descriptor.processor_acceptor ) {
 
 				processor_counter++;
@@ -1896,7 +1915,7 @@ fcml_st_asm_instruction_addr_mode *fcml_ifn_asm_prepare_addr_mode( fcml_st_def_i
 
 	fcml_ifn_asm_instruction_part_processor_factory_dispatcher factory_dispatcher = fcml_ifn_get_instruction_part_processor_factory_dispatcher_for_instruction_type( instruction->instruction_type );
 
-	addr_mode->part_processor_chain = factory_dispatcher( instruction, addr_mode_desc, &instruction_parts, error );
+	addr_mode->part_processor_chain = factory_dispatcher( instruction, addr_mode_desc, &instruction_parts, &(addr_mode->hints), error );
 	if( *error ) {
 		fcml_fn_env_memory_free(addr_mode);
 		addr_mode = NULL;

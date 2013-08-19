@@ -138,10 +138,12 @@ typedef struct fcml_st_asm_addr_mode_desc_details {
 typedef fcml_ceh_error (*fcml_fnp_asm_operand_encoder)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
 typedef fcml_ceh_error (*fcml_fnp_asm_operand_acceptor)( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
 typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes );
+typedef fcml_hints (*fcml_fnp_asm_instruction_hints_calculator)( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
 
 typedef struct fcml_st_asm_operand_encoder_def {
 	fcml_fnp_asm_operand_encoder encoder;
 	fcml_fnp_asm_operand_acceptor acceptor;
+	fcml_fnp_asm_instruction_hints_calculator hints_calculator;
 } fcml_st_asm_operand_encoder_def;
 
 typedef enum fcml_ien_asm_instruction_part_processor_type {
@@ -161,14 +163,14 @@ typedef struct fcml_ifn_asm_instruction_part_processor_descriptor {
 	fcml_fp_env_memory_free_handler processor_args_deallocator;
 } fcml_ifn_asm_instruction_part_processor_descriptor;
 
-typedef fcml_ifn_asm_instruction_part_processor_descriptor (*fcml_ifn_asm_instruction_part_processor_factory)( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_ceh_error *error );
+typedef fcml_ifn_asm_instruction_part_processor_descriptor (*fcml_ifn_asm_instruction_part_processor_factory)( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error );
 
 typedef struct fcml_ifn_asm_instruction_part_processor_chain {
 	struct fcml_ifn_asm_instruction_part_processor_chain *next_processor;
 	fcml_ifn_asm_instruction_part_processor_descriptor processor_descriptor;
 } fcml_ifn_asm_instruction_part_processor_chain;
 
-typedef fcml_ifn_asm_instruction_part_processor_chain* (*fcml_ifn_asm_instruction_part_processor_factory_dispatcher)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, int *parts, fcml_ceh_error *error );
+typedef fcml_ifn_asm_instruction_part_processor_chain* (*fcml_ifn_asm_instruction_part_processor_factory_dispatcher)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, int *parts, fcml_hints *hints, fcml_ceh_error *error );
 
 typedef struct fcml_st_asm_instruction_addr_modes {
 	// All addressing modes for given mnemonic are available in this list.
@@ -190,6 +192,8 @@ typedef struct fcml_st_asm_instruction_addr_mode {
 	fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain;
 	// Number of instruction parts needed to assemble described instruction.
 	int instruction_parts;
+	// Addressing mode related hints.
+	fcml_hints hints;
 } fcml_st_asm_instruction_addr_mode;
 
 // Optimizer definition.
