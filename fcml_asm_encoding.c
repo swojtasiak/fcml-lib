@@ -605,7 +605,11 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_ien_asm
 //-------------------------
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_far_pointer( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+    if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+        return FCML_EN_UNSUPPORTED_OPPERAND;
+    }
+    context->data_size_flags.allowed_effective_operand_size.flags |= ( operand_def->far_pointer.offset_size == FCML_DS_16 ) ? ( FCML_EN_ASF_16 | FCML_EN_ASF_32 ) : FCML_EN_ASF_32;
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
@@ -853,7 +857,7 @@ fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
 	{ fcml_fnp_asm_operand_encoder_explicit_reg, fcml_fnp_asm_operand_acceptor_explicit_reg, NULL },
 	{ fcml_fnp_asm_operand_encoder_opcode_reg, fcml_fnp_asm_operand_acceptor_opcode_reg, NULL },
 	{ fcml_fnp_asm_operand_encoder_immediate_dis_relative, fcml_fnp_asm_operand_acceptor_immediate_dis_relative, NULL },
-	{ fcml_fnp_asm_operand_encoder_far_pointer, fcml_fnp_asm_operand_acceptor_far_pointer, NULL },
+	{ fcml_fnp_asm_operand_encoder_far_pointer, fcml_fnp_asm_operand_acceptor_far_pointer, fcml_fnp_asm_ihc_far_pointer },
 	{ fcml_fnp_asm_operand_encoder_far_pointer_indirect, fcml_fnp_asm_operand_acceptor_far_pointer_indirect, fcml_fnp_asm_ihc_far_pointer },
 	{ fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing, fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing, NULL },
 	{ fcml_fnp_asm_operand_encoder_explicit_ib, fcml_fnp_asm_operand_acceptor_explicit_ib, NULL },
@@ -1090,7 +1094,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 #endif
 
 				// Check if addressing mode matches the hints, if there are any.
-				if( !context->instruction->hints || ( addr_mode->hints & context->instruction->hints ) == addr_mode->hints ) {
+				if( !context->instruction->hints || ( addr_mode->hints & context->instruction->hints ) == context->instruction->hints ) {
                     if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
                         // Currently error is just ignored, because we would like to check every available addressing
                         // mode before we return any errors.

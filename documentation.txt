@@ -1,0 +1,5 @@
+Przyklad wykorzystania hintow:
+
+ FCML_I32( "call far fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
+ 
+ moze byc takze assemblowany do NEAR call, w tym przypadku hint jednoznacznie dobiera kodowanie.
