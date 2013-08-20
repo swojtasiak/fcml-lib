@@ -48,8 +48,13 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_I32_P( "call far fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
+	FCML_I32_A_P( "call far 6655h+1h:44332211h*2", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
 	return 0;
+
+	//FCML_I64_P( "call far tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x5B, 0x01 ); // Verified.
+//	return 0;
+	//FCML_I32_P( "call far fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
+	//return 0;
 
 	//FCML_I32_P( "blendvpd xmm2,oword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
 	//return 0;
