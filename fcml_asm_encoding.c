@@ -650,6 +650,9 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_ien_asm
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_far_pointer( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
     fcml_ceh_error result = FCML_CEH_GEC_NO_ERROR;
+    if( operand_def->type != FCML_EOT_FAR_POINTER ) {
+        return FCML_EN_UNSUPPORTED_OPPERAND;
+    }
     switch( context->assembler_context->addr_form ) {
     case FCML_AF_16_BIT:
         if( operand_def->far_pointer.offset_size == FCML_DS_16 ) {
@@ -695,10 +698,6 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer( fcml_ien_asm_part_proce
 
         fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( operand_enc );
 
-        // Write segment.
-
-        fcml_fn_stream_write_word( &stream, operand_def->far_pointer.segment );
-
         // Write offset.
 
         if( operand_def->far_pointer.offset_size == FCML_DS_16 ) {
@@ -708,6 +707,10 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer( fcml_ien_asm_part_proce
             fcml_fn_stream_write_dword( &stream, operand_def->far_pointer.offset32 );
             operand_enc->code_length = 6;
         }
+
+        // Write segment.
+
+       fcml_fn_stream_write_word( &stream, operand_def->far_pointer.segment );
 
     }
 	return error;
