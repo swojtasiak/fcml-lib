@@ -51,6 +51,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 	if( result.code == RC_OK ) {
 
 		fcml_bool is_67 = FCML_FALSE;
+		fcml_bool is_66 = FCML_FALSE;
 
 		if( !only_assemble ) {
 
@@ -69,8 +70,10 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			for( i = 0; i < _IRA_PREFIXES_COUNT; i++ ) {
 				if( result.prefixes[i].prefix == 0x67 ) {
 					is_67 = FCML_TRUE;
-					break;
 				}
+				if( result.prefixes[i].prefix == 0x66 ) {
+                    is_66 = FCML_TRUE;
+                }
 			}
 
 			// Print.
@@ -128,10 +131,13 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 				opt_flags = FCML_OPTF_ASA_16;
 			}
 		}
+		if( is_66 ) {
+            opt_flags |= FCML_OPTF_OSA_16;
+        }
 
 		context.configuration.choose_sib_encoding = FCML_FALSE;
 		context.configuration.choose_rip_encoding = enable_rip;
-		context.configuration.optimizer = is_67 ? FCML_EN_OP_CHOOSE_ASA : FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
+		context.configuration.optimizer = FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
 		context.configuration.optimizer_flags = opt_flags;
 		context.configuration.force_unnecessary_rex_prefix = FCML_FALSE;
 		context.configuration.force_three_byte_VEX = FCML_FALSE;
