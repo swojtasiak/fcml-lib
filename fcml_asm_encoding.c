@@ -952,6 +952,10 @@ fcml_hints fcml_fnp_asm_ihc_far_pointer( fcml_st_def_addr_mode_desc *addr_mode, 
     return FCML_HINT_FAR_POINTER;
 }
 
+fcml_hints fcml_fnp_asm_ihc_near_pointer( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
+    return FCML_HINT_NEAR_POINTER;
+}
+
 fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
 	{ NULL, NULL, NULL },
 	{ fcml_fnp_asm_operand_encoder_imm, fcml_fnp_asm_operand_acceptor_imm, NULL },
@@ -963,7 +967,7 @@ fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
 	{ fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing, fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing, NULL },
 	{ fcml_fnp_asm_operand_encoder_explicit_ib, fcml_fnp_asm_operand_acceptor_explicit_ib, NULL },
 	{ fcml_fnp_asm_operand_encoder_segment_relative_offset, fcml_fnp_asm_operand_acceptor_segment_relative_offset, NULL },
-	{ fcml_fnp_asm_operand_encoder_rm, fcml_fnp_asm_operand_acceptor_rm, NULL },
+	{ fcml_fnp_asm_operand_encoder_rm, fcml_fnp_asm_operand_acceptor_rm, fcml_fnp_asm_ihc_near_pointer },
 	{ fcml_fnp_asm_operand_encoder_r, fcml_fnp_asm_operand_acceptor_r, NULL },
 	{ fcml_fnp_asm_operand_encoder_vex_vvvv, fcml_fnp_asm_operand_acceptor_vex_vvvv, NULL },
 	{ fcml_fnp_asm_operand_encoder_is4, fcml_fnp_asm_operand_acceptor_is4, NULL },

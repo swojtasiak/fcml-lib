@@ -347,7 +347,8 @@ typedef enum fcml_en_explicit_prefixes {
 typedef fcml_uint16_t fcml_hints;
 
 typedef enum fcml_en_hints {
-    FCML_HINT_FAR_POINTER = 0x0001
+    FCML_HINT_FAR_POINTER = 0x0001,
+    FCML_HINT_NEAR_POINTER = 0x0002
 } fcml_en_hints;
 
 typedef struct fcml_st_instruction {
