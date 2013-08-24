@@ -48,7 +48,6 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-
 	//FCML_I32_A_P( "call far -1:44332211h", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
 	//return 0;
 

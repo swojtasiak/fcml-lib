@@ -32,22 +32,20 @@ void fcml_tf_instruction_CALL(void) {
     // prt16:16 ptr16:32
     FCML_I32( "call far 6655h:44332211h", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
     FCML_I32( "call far 4433h:2211h", 0x66, 0x9A, 0x11, 0x22, 0x33, 0x44 );
-
-    /*
-
-
-
-	// r/m32
-	FCML_I32( "call dword ptr [edi+00000001h]", 0xFF, 0x57, 0x01 );
+    // r/m32
+    FCML_I32_M( "call dword ptr [edi+00000001h]", 2, FCML_MI( 0xFF, 0x57, 0x01 ), FCML_MI( 0x66, 0xff, 0x5f, 0x01 ) );
+    FCML_I32_A( "call near dword ptr [edi+00000001h]", 0xFF, 0x57, 0x01 );
 	// r/m16
 	FCML_I32( "call word ptr [edi+00000001h]", 0x66, 0xFF, 0x57, 0x01 );
 	// r/m64 (Size directives are the same for operand size 32 and 64 bits.)
-	FCML_I64( "call qword ptr [rdi+0000000000000001h]", 0x66, 0x48, 0xFF, 0x57, 0x01 );
+	FCML_I64_D( "call qword ptr [rdi+0000000000000001h]", 0x66, 0x48, 0xFF, 0x57, 0x01 );
+	FCML_I64( "call qword ptr [rdi+0000000000000001h]", 0x48, 0xFF, 0x57, 0x01 );
+
+    /*
 	// Look at the position of REX prefix, it has to fail.
 	FCML_I64( "FAIL", 0x48, 0x66, 0xFF, 0x57, 0x01 );
 	FCML_I64( "call qword ptr [rdi+0000000000000001h]", 0x66, 0xFF, 0x57, 0x01 );
 	FCML_I32( "call 0ff701005h", 0xE8, 0x00, 0x00, 0x30, 0xFF );
-
 	*/
 }
 
