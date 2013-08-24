@@ -1503,7 +1503,8 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_67_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
-		if( context->assembler_context->effective_address_size != context->data_size_flags.effective_address_size ) {
+	    // If effective address size is not set, it means that instruction is not interested in ASA and just doesn't use it.
+		if( context->data_size_flags.effective_address_size && ( context->assembler_context->effective_address_size != context->data_size_flags.effective_address_size ) ) {
 			fcml_bool encode =
 					( context->assembler_context->effective_address_size == FCML_DS_16 && context->data_size_flags.effective_address_size == FCML_DS_32 ) ||
 					( context->assembler_context->effective_address_size == FCML_DS_32 && context->data_size_flags.effective_address_size == FCML_DS_16 ) ||

@@ -14,7 +14,6 @@
 
 typedef enum fcml_en_assembler_optimizers {
 	FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER = 0,
-	FCML_EN_OP_CHOOSE_ASA = 1,
 	FCML_EN_OP_NO_OPTIMIZER,
 } fcml_en_assembler_optimizers;
 
