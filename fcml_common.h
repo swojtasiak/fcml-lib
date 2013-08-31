@@ -252,10 +252,10 @@ typedef struct fcml_st_immediate {
 	fcml_data_size imm_size;
 	fcml_bool is_signed;
     union {
-        uint8_t imm8;
-        uint16_t imm16;
-        uint32_t imm32;
-        uint64_t imm64;
+        fcml_uint8_t imm8;
+        fcml_uint16_t imm16;
+        fcml_uint32_t imm32;
+        fcml_uint64_t imm64;
     };
 } fcml_st_immediate;
 

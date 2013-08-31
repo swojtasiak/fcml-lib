@@ -115,3 +115,41 @@ if( (scale_factor == 0 || scale_factor == 1 || scale_factor == 2 || scale_factor
 	}
 	
 	
+	
+	 fcml_sf_def_tma_immediate_dis_relative *args = (fcml_sf_def_tma_immediate_dis_relative*)addr_mode->addr_mode_args;
+    fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+    fcml_st_immediate *imm = &(operand_def->immediate);
+    fcml_st_immediate destination = {0};
+
+    fcml_en_attribute_size_flag flags = 0;
+
+    switch( args->encoded_imm_size ) {
+    case FCML_EOS_EOSA:
+        // Check 16 bit relative offset.
+        if( addr_form != FCML_AF_64_BIT ) {
+            // 16 bit relative addressing is only available in 16 and 32 bit addressing mode.
+            flags = FCML_EN_ASF_32;
+            fcml_ifn_asm_can_sign_convert_imm( imm, &destination, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
+        } else {
+            // In 64 bits addressing mode OSA is forced to 64 bits, all prefixes are ignored.
+            flags = FCML_EN_ASF_64;
+        }
+        break;
+    case FCML_EOS_BYTE:
+        if( addr_form != FCML_AF_64_BIT ) {
+            fcml_ifn_asm_can_sign_convert_imm( imm, &destination, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
+        }
+        break;
+    default:
+        // Unsupported operand size.
+        error = FCML_EN_UNSUPPORTED_OPPERAND;
+    }
+
+    if( !error ) {
+        if( !flags || !fcml_ifn_set_size_flag( &(context->data_size_flags.allowed_effective_operand_size ), flags ) ) {
+            FCML_TRACE("Accept relative address: Can not accept offset value." );
+            error = FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+    }
+
+	return error;

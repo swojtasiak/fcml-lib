@@ -632,15 +632,112 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_proces
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-//-------------------------
-// Immediate dis. relative
-//-------------------------
+//---------------------------------
+// Immediate relative displacement
+//---------------------------------
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_immediate_dis_relative( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	if ( operand_def->type == FCML_EOT_IMMEDIATE ) {
+        fcml_en_attribute_size_flag flags = 0;
+	    if( context->assembler_context->addr_form == FCML_DS_64 ) {
+	        // 64 bit OSA forced.
+	        flags = FCML_EN_ASF_64;
+	    } else {
+	        flags = FCML_EN_ASF_32 | FCML_EN_ASF_16;
+	    }
+	    if( !fcml_ifn_set_size_flag( &(context->data_size_flags.allowed_effective_operand_size), FCML_EN_ASF_16 | FCML_EN_ASF_32 ) ) {
+            error = FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+	} else {
+	    error = FCML_EN_UNSUPPORTED_OPPERAND;
+	}
+	return error;
+}
+
+fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processor( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args, fcml_uint8_t encoded_rel_size ) {
+
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    fcml_st_assembler_context *assembler_context = context->assembler_context;
+    fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
+
+    if( !context->instruction_size.is_not_null ) {
+        // Should never happened.
+        error = FCML_CEH_GEC_INTERNAL_BUG;
+    } else {
+
+        // Optimizer is responsible for setting optimal OSA value.
+        fcml_data_size osa = context->data_size_flags.effective_operand_size;
+
+        fcml_st_immediate *imm = (fcml_st_immediate*)post_processor_args;
+        fcml_st_immediate destination;
+
+        fcml_vint displacement = {0};
+
+        switch( osa ) {
+        case FCML_DS_16:
+
+            // Check if segment offset is a 16 bit value. Take into account that in case of 16 bit OSA address is truncated to 16 bits.
+            if( fcml_fn_utils_convert_sig_imm_to_sig_imm( imm, &destination, FCML_DS_16, FCML_DS_16 ) ) {
+                error = FCML_EN_UNSUPPORTED_OPPERAND;
+            }
+
+            fcml_int16_t offset = destination->imm16;
+            fcml_int16_t ip = (fcml_int16_t)( ( context->assembler_context->ip.eip + context->instruction_size.value + 16 ) & 0x0000FFFF);
+
+            fcml_int16_t rel16 = offset - ip;
+
+            displacement.int16 = rel16;
+            displacement.size = FCML_DS_16;
+
+            if( encoded_rel_size == FCML_EOS_BYTE ) {
+                if( rel16 < -128 || rel16 > 127 ) {
+                    error = FCML_EN_UNSUPPORTED_OPPERAND;
+                }
+            } else if( encoded_rel_size != FCML_EOS_EOSA ) {
+                error = FCML_EN_UNSUPPORTED_OPPERAND;
+            }
+
+            break;
+        case FCML_DS_32:
+            break;
+        case FCML_DS_64:
+            break;
+        }
+
+        // Encode ModR/M and displacement.
+        fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( instruction_part );
+        fcml_fn_utils_encode_vint( stream, &displacement );
+
+        instruction_part->code_length = displacement->size;
+    }
+
+    return error;
+}
+
+fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processor_8( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args ) {
+    return fcml_st_asm_instruction_part_immediate_dis_relative_post_processor( context, instruction_part, post_processor_args, FCML_EOS_BYTE );
+}
+
+fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processor_osa( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args ) {
+    return fcml_st_asm_instruction_part_immediate_dis_relative_post_processor( context, instruction_part, post_processor_args, FCML_EOS_EOSA );
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    fcml_sf_def_tma_immediate_dis_relative *args = (fcml_sf_def_tma_immediate_dis_relative*)addr_mode->addr_mode_args;
+
+    operand_enc->code_length = 0;
+    if( args->encoded_imm_size == FCML_EOS_BYTE ) {
+        operand_enc->post_processor = fcml_st_asm_instruction_part_immediate_dis_relative_post_processor_8;
+    } else {
+        operand_enc->post_processor = fcml_st_asm_instruction_part_immediate_dis_relative_post_processor_osa;
+    }
+    operand_enc->post_processor_args = &(operand_def->immediate);
+
 	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
@@ -656,7 +753,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_far_pointer( fcml_st_asm_encoding_c
     switch( context->assembler_context->addr_form ) {
     case FCML_AF_16_BIT:
         if( operand_def->far_pointer.offset_size == FCML_DS_16 ) {
-            if( !fcml_ifn_set_size_flag( &(context->data_size_flags.allowed_effective_operand_size), FCML_DS_16 ) ) {
+            if( !fcml_ifn_set_size_flag( &(context->data_size_flags.allowed_effective_operand_size), FCML_EN_ASF_16 ) ) {
                 // Size can not be used by this operand.
                 result = FCML_EN_UNSUPPORTED_OPPERAND;
             }
