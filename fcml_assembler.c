@@ -15,9 +15,16 @@
 #include "fcml_asm_encoding.h"
 #include "fcml_optimizers.h"
 
-fcml_ceh_error fcml_fn_asm_init() {
+fcml_ceh_error fcml_fn_asm_init( fcml_st_dialect_context context, fcml_st_assembler **assembler ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	error = fcml_fn_asm_init_instruction_encodings();
+
+	*assembler = fcml_fn_env_memory_alloc( sizeof( fcml_st_assembler ) );
+	if( *assembler ) {
+	    error = fcml_fn_asm_init_instruction_encodings( &context, assembler );
+	} else {
+	    error = FCML_CEH_GEC_OUT_OF_MEMORY;
+	}
+
 	return error;
 }
 
@@ -51,7 +58,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st
 
 	// Find instruction addressing modes.
 	fcml_st_asm_instruction_addr_modes *addr_modes = NULL;
-	error = fcml_fn_asm_get_instruction_encodings( instruction->mnemonic, &addr_modes );
+	error = fcml_fn_asm_get_instruction_encodings( asm_context->assembler, instruction->mnemonic, &addr_modes );
 	if( error ) {
 		return error;
 	}
@@ -110,8 +117,8 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st
 	return error;
 }
 
-void fcml_fn_asm_free() {
-	fcml_fn_asm_free_instruction_encodings();
+void fcml_fn_asm_free( fcml_st_assembler *assembler ) {
+	fcml_fn_asm_free_instruction_encodings( assembler );
 }
 
 

@@ -249,6 +249,8 @@ typedef struct fcml_st_register {
  * Conditions.
  *********************************/
 
+#define FCML_NUMBER_OF_CONDITIONS  8
+
 typedef enum fcml_en_condition_type {
     // 0 Overflow
     FCML_CONDITION_O = 0,
@@ -269,8 +271,6 @@ typedef enum fcml_en_condition_type {
 } fcml_en_condition_type;
 
 typedef struct fcml_st_condition {
-    // Has to be set to true in order to set any condition.
-    fcml_bool is_conditional;
     // Condition type.
     fcml_en_condition_type condition_type;
     // True if condition should be negated.
@@ -388,6 +388,7 @@ typedef struct fcml_st_instruction {
     fcml_en_explicit_prefixes prefixes;
     fcml_hints hints;
     fcml_char *mnemonic;
+    fcml_bool is_conditional;
     fcml_st_condition condition;
     fcml_st_operand operands[FCML_OPERANDS_COUNT];
     int operands_count;

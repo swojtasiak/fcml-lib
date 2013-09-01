@@ -16,7 +16,14 @@
 #include "fcml_optimizers.h"
 #include "fcml_trace.h"
 
-fcml_coll_map instructions_map = NULL;
+typedef struct fcml_ist_asm_enc_assembler {
+    fcml_coll_map instructions_map;
+    fcml_st_dialect_context dialect_context;
+} fcml_ist_asm_enc_assembler;
+
+typedef struct fcml_ist_asm_init_context {
+    fcml_ist_asm_enc_assembler *assembler;
+} fcml_ist_asm_init_context;
 
 #ifdef FCML_DEBUG
 
@@ -1117,7 +1124,7 @@ fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
  * Instruction encoders.
  *********************************/
 
-fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_st_instruction *instruction ) {
+fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_instruction *instruction ) {
 
 #ifdef FCML_DEBUG
 	FCML_TRACE( "Accepting addressing mode: %d", context->__def_index );
@@ -1148,7 +1155,7 @@ fcml_ien_asm_part_processor_phase fcml_asm_executed_phases[] = { FCML_IEN_ASM_IP
 
 
 // Responsible for assembling given addressing mode using attributes provided by context.
-fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_st_asm_instruction_part_container *instruction_part_container ) {
+fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_asm_instruction_part_container *instruction_part_container ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1245,7 +1252,7 @@ void fcml_ifn_asm_free_assembled_instruction( fcml_st_assembled_instruction *ass
 	}
 }
 
-fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_st_assembled_instruction **assembled_instruction ) {
+fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_assembled_instruction **assembled_instruction ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1292,7 +1299,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_st_asm_encoding_context *
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode *addr_mode, fcml_ptr args ) {
+fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_ptr args ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_assembled_instruction *assembled_instruction;
 	error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
@@ -1330,7 +1337,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 
 				error = FCML_CEH_GEC_NO_ERROR;
 
-				fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)addr_mode_element->item;
+				fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details *)addr_mode_element->item;
 				fcml_ifn_clean_context( context );
 
 #ifdef FCML_DEBUG
@@ -2155,21 +2162,95 @@ fcml_st_asm_addr_mode_desc_details fcml_ifn_asm_precalculate_addr_mode( fcml_st_
 	return details;
 }
 
-typedef fcml_ceh_error (*fcml_ifn_asm_instruction_addr_mode_handler)( fcml_en_def_instruction_type instruction_type, fcml_string mnemonic, fcml_st_asm_instruction_addr_mode *addr_mode );
+void fcml_ifn_asm_free_addr_mode( fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode ) {
+    if( addr_mode ) {
+        fcml_fn_env_memory_free( addr_mode );
+    }
+}
 
-fcml_ceh_error fcml_ifn_asm_prepare_addr_mode( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ifn_asm_instruction_addr_mode_handler addr_mode_handler ) {
+void fcml_ifn_asm_free_instruction_addr_mode_item_handler( fcml_ptr item_value, fcml_ptr *args ) {
+    fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details*)item_value;
+    if( addr_mode->part_processor_chain ) {
+        fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
+    }
+    fcml_ifn_asm_free_addr_mode( addr_mode );
+}
+
+void fcml_ifn_asm_free_instruction_entry( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
+    fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)value;
+    if( addr_modes ) {
+        if( addr_modes->addr_modes ) {
+            if( addr_modes->mnemonic ) {
+                // Let assembler dialect free mnemonic.
+                ((fcml_st_dialect_context*)args)->free_mnemonic( addr_modes->mnemonic );
+            }
+            fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
+        }
+        fcml_fn_env_memory_free( addr_modes );
+    }
+}
+
+fcml_fnp_asm_instruction_encoder fcml_ifn_asm_choose_instruction_encoder( fcml_en_def_instruction_type instruction_type ) {
+    fcml_fnp_asm_instruction_encoder encoder = NULL;
+    switch( instruction_type ) {
+    case FCML_EN_IT_IA:
+        encoder = fcml_fnp_asm_instruction_encoder_IA;
+        break;
+    }
+    return encoder;
+}
+
+// ******************************************
+// Addressing mode encoding details builders.
+// ******************************************
+
+typedef fcml_ceh_error (*fcml_ifn_asm_instruction_addr_mode_encoding_details_handler)( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode );
+
+typedef fcml_ceh_error (*fcml_ifn_asm_addr_mode_encoding_details_builder)( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ifn_asm_instruction_addr_mode_encoding_details_handler addr_mode_handler );
+
+fcml_st_condition fcml_itb_instruction_conditions[] = {
+};
+
+fcml_ceh_error fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_builder( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ifn_asm_instruction_addr_mode_encoding_details_handler addr_mode_handler ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    int i;
+    for( i = 0; i < FCML_NUMBER_OF_CONDITIONS; i++ ) {
+
+        fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details *)fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_asm_instruction_addr_mode_encoding_details ) );
+        if( !addr_mode ) {
+            return FCML_CEH_GEC_OUT_OF_MEMORY;
+        }
+
+        addr_mode->addr_mode_desc = addr_mode_desc;
+        addr_mode->addr_mode_details = fcml_ifn_asm_precalculate_addr_mode( addr_mode_desc );
+
+        int instruction_parts;
+
+        fcml_ifn_asm_instruction_part_processor_factory_dispatcher factory_dispatcher = fcml_ifn_get_instruction_part_processor_factory_dispatcher_for_instruction_type( instruction->instruction_type );
+
+        addr_mode->part_processor_chain = factory_dispatcher( instruction, addr_mode_desc, &instruction_parts, &(addr_mode->hints), &error );
+        if( !error ) {
+            addr_mode->instruction_parts = instruction_parts;
+            error = addr_mode_handler( init_context, instruction, addr_mode_desc, addr_mode );
+        } else {
+            fcml_fn_env_memory_free(addr_mode);
+            addr_mode = NULL;
+        }
+
+    }
+
+    return error;
+}
+
+fcml_ceh_error fcml_ifn_asm_default_addr_mode_encoding_details_builder( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ifn_asm_instruction_addr_mode_encoding_details_handler addr_mode_handler ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_asm_instruction_addr_mode ) );
+	fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details *)fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_asm_instruction_addr_mode_encoding_details ) );
 	if( !addr_mode ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
-
-	fcml_string mnemonic = addr_mode_desc->mnemonic_override;
-    if( !mnemonic ) {
-        mnemonic = instruction->mnemonic;
-    }
 
 	addr_mode->addr_mode_desc = addr_mode_desc;
 	addr_mode->addr_mode_details = fcml_ifn_asm_precalculate_addr_mode( addr_mode_desc );
@@ -2181,54 +2262,36 @@ fcml_ceh_error fcml_ifn_asm_prepare_addr_mode( fcml_st_def_instruction_descripti
 	addr_mode->part_processor_chain = factory_dispatcher( instruction, addr_mode_desc, &instruction_parts, &(addr_mode->hints), &error );
 	if( !error ) {
 	    addr_mode->instruction_parts = instruction_parts;
-        error = addr_mode_handler( instruction->instruction_type, mnemonic, addr_mode );
+        error = addr_mode_handler( init_context, instruction, addr_mode_desc, addr_mode );
+        if( error ) {
+            // In case of errors from handler, this function is responsible for freeing addressing mode.
+            fcml_fn_env_memory_free(addr_mode);
+        }
 	} else {
         fcml_fn_env_memory_free(addr_mode);
-        addr_mode = NULL;
 	}
 
 	return error;
 }
 
-void fcml_ifn_asm_free_addr_mode( fcml_st_asm_instruction_addr_mode *addr_mode ) {
-	if( addr_mode ) {
-		fcml_fn_env_memory_free( addr_mode );
-	}
+fcml_ifn_asm_addr_mode_encoding_details_builder fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_builder_factory( fcml_st_def_addr_mode_desc *addr_mode_desc ) {
+    if( FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN( addr_mode_desc->opcode_flags ) ) {
+        return &fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_builder;
+    }
+    return &fcml_ifn_asm_default_addr_mode_encoding_details_builder;
 }
 
-void fcml_ifn_asm_free_instruction_addr_mode_item_handler( fcml_ptr item_value, fcml_ptr *args ) {
-	fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode*)item_value;
-	if( addr_mode->part_processor_chain ) {
-		fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
-	}
-	fcml_ifn_asm_free_addr_mode( addr_mode );
-}
+// ******************************************
+// Addressing mode encoding details handlers.
+// ******************************************
 
-void fcml_ifn_asm_free_instruction_entry( fcml_ptr key, fcml_ptr value ) {
-	fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)value;
-	if( addr_modes ) {
-		if( addr_modes->addr_modes ) {
-			fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
-		}
-		fcml_fn_env_memory_free( addr_modes );
-	}
-}
-
-fcml_fnp_asm_instruction_encoder fcml_ifn_asm_choose_instruction_encoder( fcml_en_def_instruction_type instruction_type ) {
-	fcml_fnp_asm_instruction_encoder encoder = NULL;
-	switch( instruction_type ) {
-	case FCML_EN_IT_IA:
-		encoder = fcml_fnp_asm_instruction_encoder_IA;
-		break;
-	}
-	return encoder;
-}
-
-fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_en_def_instruction_type instruction_type, fcml_string mnemonic, fcml_st_asm_instruction_addr_mode *addr_mode ) {
+fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( instructions_map, mnemonic );
+    fcml_string mnemonic = init_context->assembler->dialect_context.get_mnemonic( instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL );
+
+    fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( init_context->assembler->instructions_map, mnemonic );
     if( !addr_modes ) {
 
         // Allocate space for new mnemonic.
@@ -2239,10 +2302,10 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
             addr_modes->addr_modes = fcml_fn_coll_list_alloc();
             if( addr_modes->addr_modes ) {
                 addr_modes->mnemonic = mnemonic;
-                addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction_type );
+                addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction->instruction_type );
 
                 // Puts prepared structure under mnemonic key.
-                fcml_fn_coll_map_put( instructions_map, mnemonic, addr_modes, &error );
+                fcml_fn_coll_map_put( init_context->assembler->instructions_map, mnemonic, addr_modes, &error );
                 if( error ) {
                     fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
                     fcml_fn_env_memory_free(addr_modes);
@@ -2268,7 +2331,11 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
     return error;
 }
 
-void fcml_ifn_asm_prepare_instruction_encoding( fcml_st_def_instruction_description *instruction, fcml_ceh_error *error ) {
+// ****************************************
+// Addressing mode encoders initialization.
+// ****************************************
+
+void fcml_ifn_asm_prepare_instruction_encoding_details( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_ceh_error *error ) {
 
     // Prepare encoders for given instruction.
     int i;
@@ -2276,8 +2343,10 @@ void fcml_ifn_asm_prepare_instruction_encoding( fcml_st_def_instruction_descript
 
         fcml_st_def_addr_mode_desc *addr_mode_desc = &(instruction->addr_modes[i]);
 
+        fcml_ifn_asm_addr_mode_encoding_details_builder encoding_details_builder = fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_builder_factory( addr_mode_desc );
+
         // Prepare encoders for given addressing mode.
-        *error = fcml_ifn_asm_prepare_addr_mode( instruction, addr_mode_desc, &fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding );
+        *error = encoding_details_builder( init_context, instruction, addr_mode_desc, &fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding );
         if( *error ) {
             break;
         }
@@ -2286,49 +2355,74 @@ void fcml_ifn_asm_prepare_instruction_encoding( fcml_st_def_instruction_descript
     }
 }
 
-fcml_ceh_error fcml_fn_asm_init_instruction_encodings() {
+fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *dialect_context, fcml_st_assembler **assembler ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	// Allocate assembler instance.
+	*assembler = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_asm_enc_assembler ) );
+	if( !*assembler ) {
+	    return FCML_CEH_GEC_OUT_OF_MEMORY;
+	}
+
+	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)*assembler;
+
+	enc_asm->dialect_context = *dialect_context;
 
 	// Allocate map for all instructions.
 	fcml_st_coll_map_descriptor inst_map_desc = fcml_coll_map_descriptor_string;
 	inst_map_desc.entry_free_function = fcml_ifn_asm_free_instruction_entry;
+	inst_map_desc.entry_free_args = &(enc_asm->dialect_context);
 
-	instructions_map = fcml_fn_coll_map_alloc( &inst_map_desc, 64, &error );
-	if( !instructions_map ) {
+	enc_asm->instructions_map = fcml_fn_coll_map_alloc( &inst_map_desc, 64, &error );
+	if( !(enc_asm->instructions_map) ) {
+	    fcml_fn_asm_free_instruction_encodings( *assembler );
 		return error;
 	}
+
+	fcml_ist_asm_init_context init_context;
+	init_context.assembler = enc_asm;
 
 	int i = 0;
 	fcml_st_def_instruction_description *instruction = &(fcml_ext_instructions_def[i++]);
 	while( instruction->mnemonic && !error ) {
-	    fcml_ifn_asm_prepare_instruction_encoding( instruction, &error );
+	    fcml_ifn_asm_prepare_instruction_encoding_details( &init_context, instruction, &error );
 		instruction = &(fcml_ext_instructions_def[i++]);
 	}
 
 	if( error ) {
 		// Something failed, so free everything that have been properly allocated.
-		fcml_fn_asm_free_instruction_encodings();
+		fcml_fn_asm_free_instruction_encodings( *assembler );
 	}
 
 	return error;
 
 }
 
-void fcml_fn_asm_free_instruction_encodings() {
-	if( instructions_map ) {
-		fcml_fn_coll_map_free( instructions_map );
-		instructions_map = NULL;
-	}
+void fcml_fn_asm_free_instruction_encodings( fcml_st_assembler *assembler ) {
+
+    fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)assembler;
+
+    if( enc_asm ) {
+
+        if( enc_asm->instructions_map ) {
+            fcml_fn_coll_map_free( enc_asm->instructions_map );
+            enc_asm->instructions_map = NULL;
+        }
+
+        fcml_fn_env_memory_free( enc_asm );
+    }
 }
 
-fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_string mnemonic, fcml_st_asm_instruction_addr_modes **addr_modes ) {
+fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_st_assembler *assembler, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes **addr_modes ) {
 
-	if( !instructions_map ) {
+    fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)assembler;
+
+	if( !(enc_asm->instructions_map) ) {
 		return FCML_CEH_GEC_NOT_INITIALIZED;
 	}
 
-	*addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( instructions_map, mnemonic );
+	*addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( enc_asm->instructions_map, mnemonic );
 	if( !*addr_modes ) {
 		return FCML_EN_UNKNOWN_MNEMONIC;
 	}

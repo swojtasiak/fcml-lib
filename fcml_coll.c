@@ -240,7 +240,7 @@ void fcml_fn_coll_map_put( fcml_coll_map *map_int, fcml_ptr key, fcml_ptr value,
 		if( current_entry->hash == hash && ( key == current_entry->key || descriptor->equals_function( key, current_entry->key ) ) ) {
 			// We found element with same key, so replace key and value.
 			if( descriptor->entry_free_function ) {
-				descriptor->entry_free_function( current_entry->key, current_entry->value );
+				descriptor->entry_free_function( current_entry->key, current_entry->value, map->descriptor.entry_free_args );
 			}
 			current_entry->key = key;
 			current_entry->value = value;
@@ -284,7 +284,7 @@ void fcml_fn_coll_map_remove( fcml_coll_map *map_int, fcml_ptr key ) {
 		if( entry->hash == hash && ( key == entry->key || map->descriptor.equals_function( key, entry->key ) ) ) {
 			// We found entry, so remove it.
 			if( map->descriptor.entry_free_function ) {
-				map->descriptor.entry_free_function( entry->key, entry->value );
+				map->descriptor.entry_free_function( entry->key, entry->value, map->descriptor.entry_free_args );
 			}
 			if( previous_entry ) {
 				previous_entry->next = entry->next;
@@ -308,7 +308,7 @@ void fcml_fn_coll_map_iterate( fcml_coll_map *map_int, fcml_fnp_coll_map_entry_h
 		for( i = 0; i < map->capacity; i++ ) {
 			struct fcml_ist_coll_map_entry *entry = map->map_entries[i];
 			while( entry ) {
-				item_handler( entry->key, entry->value );
+				item_handler( entry->key, entry->value, map->descriptor.entry_free_args );
 				entry = entry->next;
 			}
 		}
@@ -324,7 +324,7 @@ void fcml_fn_coll_map_clear( fcml_coll_map *map_int ) {
 		while( entry ) {
 			next_entry = entry->next;
 			if( map->descriptor.entry_free_function ) {
-				map->descriptor.entry_free_function( entry->key, entry->value );
+				map->descriptor.entry_free_function( entry->key, entry->value, map->descriptor.entry_free_args );
 			}
 			fcml_fn_env_memory_free( entry );
 			entry = next_entry;

@@ -41,7 +41,7 @@ void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action i
 
 // Hash & Equals for strings.
 
-typedef void (*fcml_fnp_coll_map_entry_handler) ( fcml_ptr key, fcml_ptr value );
+typedef void (*fcml_fnp_coll_map_entry_handler) ( fcml_ptr key, fcml_ptr value, fcml_ptr args );
 typedef fcml_uint32_t (*fcml_fnp_coll_map_key_hash) ( fcml_ptr key );
 typedef fcml_bool (*fcml_fnp_coll_map_key_equals) ( fcml_ptr key1, fcml_ptr key2 );
 
@@ -49,6 +49,7 @@ typedef struct fcml_st_coll_map_descriptor {
 	fcml_fnp_coll_map_key_hash hash_function;
 	fcml_fnp_coll_map_key_equals equals_function;
 	fcml_fnp_coll_map_entry_handler entry_free_function;
+	fcml_ptr entry_free_args;
 } fcml_st_coll_map_descriptor;
 
 typedef fcml_ptr fcml_coll_map;

@@ -11,6 +11,10 @@
 #include "fcml_coll.h"
 #include "fcml_common.h"
 #include "fcml_errors.h"
+#include "fcml_asm_dialect.h"
+
+typedef struct fcml_st_assembler {
+} fcml_st_assembler;
 
 typedef enum fcml_en_assembler_optimizers {
 	FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER = 0,
@@ -27,6 +31,8 @@ typedef struct fcml_st_assembler_configuration {
 } fcml_st_assembler_configuration;
 
 typedef struct fcml_st_assembler_context {
+    // Assembler instance that should be used to assemble instructions.
+    fcml_st_assembler *assembler;
 	fcml_st_assembler_configuration configuration;
 	fcml_en_addr_form addr_form;
 	fcml_data_size effective_address_size;
@@ -48,9 +54,9 @@ typedef struct fcml_st_assembler_result {
 	fcml_st_coll_list *instructions;
 } fcml_st_assembler_result;
 
-fcml_ceh_error fcml_fn_asm_init();
+fcml_ceh_error fcml_fn_asm_init( fcml_st_dialect_context context, fcml_st_assembler **assembler );
 fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, fcml_st_instruction *instruction, fcml_st_assembler_result **result );
 void fcml_fn_assemble_free( fcml_st_assembler_result *result );
-void fcml_fn_asm_free();
+void fcml_fn_asm_free( fcml_st_assembler *assembler );
 
 #endif /* FCML_ASSEMBLER_H_ */
