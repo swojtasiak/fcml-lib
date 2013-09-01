@@ -20,6 +20,7 @@
 #include "instructions_b_t.h"
 #include "instructions_c_t.h"
 #include "fcml_intel_parser_t.h"
+#include "fcml_asm_dialect_intel.h"
 
 #include "fcml_assembler.h"
 #include "ira.h"
@@ -42,66 +43,11 @@ CU_SuiteInfo *suites[] = {
 int main(int argc, char **argv) {
 	ira_init();
 
-	fcml_ceh_error error = fcml_fn_asm_init();
+	fcml_ceh_error error = fcml_fn_asm_init( fcml_fn_get_intel_dialect_context(), &assembler );
 	if( error ) {
 		printf("Can not initialize assembler.\n");
 		return 1;
 	}
-
-	//00401000 66e84000        call    00001044
-	//00401004 66e80000        call    00001008
-	//00401008 66e8ffff        call    0000100b
-	//0040100c 66e88000        call    00001090
-
-//	FCML_I32_P( "call 00001044h",  0x66, 0xE8, 0x40, 0x00 );
-	//FCML_I32_P( "call 00001004h",  0x66, 0xE8, 0x00, 0x00 );
-	//FCML_I32_P( "call 00001003h",  0x66, 0xE8, 0xFF, 0xFF );
-	//FCML_I32_P( "call 00001084h",  0x66, 0xE8, 0x80, 0x00 );
-	//FCML_I32_P( "call 00009004h",  0x66, 0xE8, 0x00, 0x80 );
-	//FCML_I32_P( "call 0000809dh",  0x66, 0xE8, 0x99, 0x70 );
-
-	//FCML_I32_P( "call 0ff701005h", 0xE8, 0x00, 0x00, 0x30, 0xFF );
-	//FCML_I32_P( "call 00401004h", 0xE8, 0xFF, 0xFF, 0xFF, 0xFF );
-	//FCML_I32_P( "call 00401006h", 0xE8, 0x01, 0x00, 0x00, 0x00 );
-	//FCML_I32_P( "call 80401005h", 0xE8, 0x00, 0x00, 0x00, 0x80 );
-	//FCML_I64_P( "call 0000800000401005h", 0xE8, 0x00, 0x00, 0x00, 0x00 );
-	//FCML_I64_A_FAILED_P( "call 0000800500401005h", 0xE8, 0x00, 0x00, 0x00, 0x00 );
-	//return 0;
-
-	//FCML_I32_A_P( "call far -1:44332211h", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
-	//return 0;
-
-	//FCML_I64_P( "call far tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x5B, 0x01 ); // Verified.
-//	return 0;
-	//FCML_I32_P( "call far fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
-	//return 0;
-
-	//FCML_I32_P( "blendvpd xmm2,oword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
-	//return 0;
-
-	//FCML_I32_P( "vblendpd xmm2,xmm7,oword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x41, 0x0D, 0x14, 0x01, 0x20 );
-	//FCML_I32( "vblendpd xmm2,xmm2,oword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x69, 0x0D, 0x14, 0x01, 0x20 );
-	//return 0;
-
-	//CML_I32_P( "andn eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x40, 0xF2, 0x00 );
-	//FCML_I32_P( "andn eax,edi,eax", 0xC4, 0xE2, 0x40, 0xF2, 0xC0 );
-	//FCML_I32_P( "andn rax,rdi,qword ptr [eax]", 0xC4, 0xE2, 0xC0, 0xF2, 0x00 );
-	//FCML_I32_P( "andn rax,rdi,rax", 0xC4, 0xE2, 0xC0, 0xF2, 0xC0 );
-
-	//return 0;
-
-	//FCML_I32_P( "arpl word ptr [ecx+eax],dx", 0x66, 0x63, 0x14, 0x01 );
-	//FCML_I32_P( "arpl word ptr [si],dx", 0x67, 0x63, 0x14 );
-	//return 0;
-
-	//FCML_I32_P( "vandnps xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x40, 0x55, 0x14, 0x01 );
-	//FCML_I32_P( "vandnps xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x68, 0x55, 0x14, 0x01 );
-
-	//FCML_I32_P( "vandnpd xmm2,xmm7,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0x55, 0x14, 0x01 );
-	//FCML_I32_P( "vandnpd xmm2,xmm2,oword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x55, 0x14, 0x01 );
-
-
-	//return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
@@ -111,7 +57,7 @@ int main(int argc, char **argv) {
             if (CU_register_suites(suites[i]) != CUE_SUCCESS) {
                 fprintf(stderr, "suite registration failed - %s\n", CU_get_error_msg());
                 ira_deinit();
-                fcml_fn_asm_free();
+                fcml_fn_asm_free( assembler );
                 exit(1);
             }
         }
@@ -119,6 +65,6 @@ int main(int argc, char **argv) {
         CU_cleanup_registry();
     }
     ira_deinit();
-    fcml_fn_asm_free();
+    fcml_fn_asm_free( assembler );
     exit(0);
 }

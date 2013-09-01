@@ -15,6 +15,8 @@
 #include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
 
+extern fcml_st_assembler *assembler;
+
 fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble ) {
 
 	fcml_bool success = FCML_TRUE;
@@ -120,6 +122,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		fcml_uint16_t opt_flags = 0;
 
 		fcml_st_assembler_context context;
+		context.assembler = assembler;
 		context.effective_address_size = 0;
 		context.effective_operand_size = 0;
 		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;

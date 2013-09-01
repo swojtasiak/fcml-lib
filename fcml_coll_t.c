@@ -12,7 +12,7 @@
 fcml_ptr last_free_key;
 fcml_ptr last_free_value;
 
-void fcml_itf_coll_map_entry_handler_test( fcml_ptr key, fcml_ptr value ) {
+void fcml_itf_coll_map_entry_handler_test( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
 	last_free_key = key;
 	last_free_value = value;
 }
@@ -204,7 +204,7 @@ void fcml_tf_coll_test_clear(void) {
 }
 
 int iterator_counter;
-void fcml_itf_coll_test_iterate_handler( fcml_ptr key, fcml_ptr value ) {
+void fcml_itf_coll_test_iterate_handler( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
 	iterator_counter++;
 }
 
