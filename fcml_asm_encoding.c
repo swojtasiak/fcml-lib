@@ -674,7 +674,7 @@ fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processo
         fcml_data_size osa = context->data_size_flags.effective_operand_size;
 
         fcml_st_immediate *imm = (fcml_st_immediate*)post_processor_args;
-        fcml_st_immediate destination;
+        fcml_st_immediate destination = {0};
 
         fcml_vint displacement = {0};
 
