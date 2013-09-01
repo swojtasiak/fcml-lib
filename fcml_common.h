@@ -13,6 +13,7 @@
 #define FCML_OPERANDS_COUNT	5
 
 typedef enum fcml_en_addr_form {
+    // TODO: Sprawdzic czy to supportujemy.
 	FCML_AF_16_BIT,
 	FCML_AF_32_BIT,
 	FCML_AF_64_BIT,
@@ -245,6 +246,38 @@ typedef struct fcml_st_register {
 } fcml_st_register;
 
 /*********************************
+ * Conditions.
+ *********************************/
+
+typedef enum fcml_en_condition_type {
+    // 0 Overflow
+    FCML_CONDITION_O = 0,
+    // 1 Below
+    FCML_CONDITION_B,
+    // 2 Equal
+    FCML_CONDITION_E,
+    // 3 Below or equal
+    FCML_CONDITION_BE,
+    // 4 Sign
+    FCML_CONDITION_S,
+    // 5 Parity
+    FCML_CONDITION_P,
+    // 6 Less than
+    FCML_CONDITION_L,
+    // 7 Less than or equal to
+    FCML_CONDITION_LE
+} fcml_en_condition_type;
+
+typedef struct fcml_st_condition {
+    // Has to be set to true in order to set any condition.
+    fcml_bool is_conditional;
+    // Condition type.
+    fcml_en_condition_type condition_type;
+    // True if condition should be negated.
+    fcml_bool is_negation;
+} fcml_st_condition;
+
+/*********************************
  * Operands.
  *********************************/
 
@@ -355,6 +388,7 @@ typedef struct fcml_st_instruction {
     fcml_en_explicit_prefixes prefixes;
     fcml_hints hints;
     fcml_char *mnemonic;
+    fcml_st_condition condition;
     fcml_st_operand operands[FCML_OPERANDS_COUNT];
     int operands_count;
 } fcml_st_instruction;

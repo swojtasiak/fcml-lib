@@ -2155,13 +2155,21 @@ fcml_st_asm_addr_mode_desc_details fcml_ifn_asm_precalculate_addr_mode( fcml_st_
 	return details;
 }
 
-fcml_st_asm_instruction_addr_mode *fcml_ifn_asm_prepare_addr_mode( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ceh_error *error ) {
+typedef fcml_ceh_error (*fcml_ifn_asm_instruction_addr_mode_handler)( fcml_en_def_instruction_type instruction_type, fcml_string mnemonic, fcml_st_asm_instruction_addr_mode *addr_mode );
+
+fcml_ceh_error fcml_ifn_asm_prepare_addr_mode( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ifn_asm_instruction_addr_mode_handler addr_mode_handler ) {
+
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_st_asm_instruction_addr_mode *addr_mode = (fcml_st_asm_instruction_addr_mode *)fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_asm_instruction_addr_mode ) );
 	if( !addr_mode ) {
-		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
-		return NULL;
+		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
+
+	fcml_string mnemonic = addr_mode_desc->mnemonic_override;
+    if( !mnemonic ) {
+        mnemonic = instruction->mnemonic;
+    }
 
 	addr_mode->addr_mode_desc = addr_mode_desc;
 	addr_mode->addr_mode_details = fcml_ifn_asm_precalculate_addr_mode( addr_mode_desc );
@@ -2170,15 +2178,16 @@ fcml_st_asm_instruction_addr_mode *fcml_ifn_asm_prepare_addr_mode( fcml_st_def_i
 
 	fcml_ifn_asm_instruction_part_processor_factory_dispatcher factory_dispatcher = fcml_ifn_get_instruction_part_processor_factory_dispatcher_for_instruction_type( instruction->instruction_type );
 
-	addr_mode->part_processor_chain = factory_dispatcher( instruction, addr_mode_desc, &instruction_parts, &(addr_mode->hints), error );
-	if( *error ) {
-		fcml_fn_env_memory_free(addr_mode);
-		addr_mode = NULL;
+	addr_mode->part_processor_chain = factory_dispatcher( instruction, addr_mode_desc, &instruction_parts, &(addr_mode->hints), &error );
+	if( !error ) {
+	    addr_mode->instruction_parts = instruction_parts;
+        error = addr_mode_handler( instruction->instruction_type, mnemonic, addr_mode );
+	} else {
+        fcml_fn_env_memory_free(addr_mode);
+        addr_mode = NULL;
 	}
 
-	addr_mode->instruction_parts = instruction_parts;
-
-	return addr_mode;
+	return error;
 }
 
 void fcml_ifn_asm_free_addr_mode( fcml_st_asm_instruction_addr_mode *addr_mode ) {
@@ -2215,64 +2224,66 @@ fcml_fnp_asm_instruction_encoder fcml_ifn_asm_choose_instruction_encoder( fcml_e
 	return encoder;
 }
 
-void fcml_ifn_asm_add_instruction_encoding( fcml_st_def_instruction_description *instruction, fcml_ceh_error *error ) {
+fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_en_def_instruction_type instruction_type, fcml_string mnemonic, fcml_st_asm_instruction_addr_mode *addr_mode ) {
 
-	// Prepare encoders for given instruction.
-	int i;
-	for( i = 0; i < instruction->opcode_desc_count; i++ ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-		fcml_st_def_addr_mode_desc *addr_mode_desc = &(instruction->addr_modes[i]);
+    fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( instructions_map, mnemonic );
+    if( !addr_modes ) {
 
-		fcml_string mnemonic = addr_mode_desc->mnemonic_override;
-		if( !mnemonic ) {
-			mnemonic = instruction->mnemonic;
-		}
+        // Allocate space for new mnemonic.
+        addr_modes = fcml_fn_env_memory_alloc( sizeof(fcml_st_asm_instruction_addr_modes) );
+        if( addr_modes ) {
 
-		fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( instructions_map, mnemonic );
-		if( !addr_modes ) {
+            // Allocate list for addressing modes.
+            addr_modes->addr_modes = fcml_fn_coll_list_alloc();
+            if( addr_modes->addr_modes ) {
+                addr_modes->mnemonic = mnemonic;
+                addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction_type );
 
-			// Allocate space for new mnemonic.
-			addr_modes = fcml_fn_env_memory_alloc( sizeof(fcml_st_asm_instruction_addr_modes) );
-			if( !addr_modes ) {
-				// Out of memory.
-				*error = FCML_CEH_GEC_OUT_OF_MEMORY;
-				break;
-			}
+                // Puts prepared structure under mnemonic key.
+                fcml_fn_coll_map_put( instructions_map, mnemonic, addr_modes, &error );
+                if( error ) {
+                    fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
+                    fcml_fn_env_memory_free(addr_modes);
+                }
 
-			// Allocate list for addressing modes.
-			addr_modes->addr_modes = fcml_fn_coll_list_alloc();
-			if( !(addr_modes->addr_modes) ) {
-				fcml_fn_env_memory_free(addr_modes);
-				*error = FCML_CEH_GEC_OUT_OF_MEMORY;
-				break;
-			}
+            } else {
+                fcml_fn_env_memory_free(addr_modes);
+                error = FCML_CEH_GEC_OUT_OF_MEMORY;
+            }
 
-			addr_modes->mnemonic = mnemonic;
-			addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction->instruction_type );
+        } else {
+            // Out of memory.
+            error = FCML_CEH_GEC_OUT_OF_MEMORY;
+        }
+    }
 
-			// Puts prepared structure under mnemonic key.
-			fcml_fn_coll_map_put( instructions_map, mnemonic, addr_modes, error );
-			if( *error ) {
-				fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
-				fcml_fn_env_memory_free(addr_modes);
-				break;
-			}
+    if( !error ) {
+        if( !fcml_fn_coll_list_add_back( addr_modes->addr_modes, addr_mode ) ) {
+            error = FCML_CEH_GEC_OUT_OF_MEMORY;
+        }
+    }
 
-		}
+    return error;
+}
 
-		fcml_st_asm_instruction_addr_mode *addr_mode = fcml_ifn_asm_prepare_addr_mode( instruction, addr_mode_desc, error );
-		if( !*error ) {
-			if( !fcml_fn_coll_list_add_back( addr_modes->addr_modes, addr_mode ) ) {
-				*error = FCML_CEH_GEC_OUT_OF_MEMORY;
-				fcml_ifn_asm_free_addr_mode( addr_mode );
-				break;
-			}
-		} else {
-			break;
-		}
+void fcml_ifn_asm_prepare_instruction_encoding( fcml_st_def_instruction_description *instruction, fcml_ceh_error *error ) {
 
-		addr_mode_desc++;
-	}
+    // Prepare encoders for given instruction.
+    int i;
+    for( i = 0; i < instruction->opcode_desc_count; i++ ) {
+
+        fcml_st_def_addr_mode_desc *addr_mode_desc = &(instruction->addr_modes[i]);
+
+        // Prepare encoders for given addressing mode.
+        *error = fcml_ifn_asm_prepare_addr_mode( instruction, addr_mode_desc, &fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding );
+        if( *error ) {
+            break;
+        }
+
+        addr_mode_desc++;
+    }
 }
 
 fcml_ceh_error fcml_fn_asm_init_instruction_encodings() {
@@ -2291,7 +2302,7 @@ fcml_ceh_error fcml_fn_asm_init_instruction_encodings() {
 	int i = 0;
 	fcml_st_def_instruction_description *instruction = &(fcml_ext_instructions_def[i++]);
 	while( instruction->mnemonic && !error ) {
-		fcml_ifn_asm_add_instruction_encoding( instruction, &error );
+	    fcml_ifn_asm_prepare_instruction_encoding( instruction, &error );
 		instruction = &(fcml_ext_instructions_def[i++]);
 	}
 

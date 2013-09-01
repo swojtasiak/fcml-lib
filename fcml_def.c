@@ -418,26 +418,26 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CALL[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CBW[] = {
 	// 98 CBW A Valid Valid AX  sign-extend of AL.
-	{ "cbw", 0x0001, 0x01C40000, { 0x98, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+	{ "cbw", 0x0000, 0x01C40000, { 0x98, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// 98 CWDE A Valid Valid EAX  sign-extend of AX.
-	{ "cwde", 0x0001, 0x02C40000, { 0x98, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+	{ "cwde", 0x0000, 0x02C40000, { 0x98, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 98 CDQE A Valid N.E. RAX  sign-extend of EAX.
-	{ "cdqe", 0x0001, 0x04C40000, { 0x98, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+	{ "cdqe", 0x0000, 0x04C40000, { 0x98, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CLC[] = {
 	// F8 CLC A Valid Valid Clear CF flag.
-	{ NULL, 0x0001, 0x00C40000, { 0xF8, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00C40000, { 0xF8, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CLD[] = {
 	// F8 CLC A Valid Valid Clear CF flag.
-	{ NULL, 0x0001, 0x00C40000, { 0xFC, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00C40000, { 0xFC, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CLFLUSH[] = {
 	// 0F AE /7 CLFLUSH m8 A Valid Valid Flushes cache line containing m8.
-	{ NULL, 0x0001, 0x00D9B800, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_8_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0000, 0x00D9B800, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_8_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CLI[] = {
