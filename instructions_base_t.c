@@ -152,111 +152,111 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		if( error ) {
 			printf("Can not assemble: %s\n", mnemonic );
 			if( !only_print_result ) {
-				success = FCML_FALSE;
+				success = failed;
 			}
 		} else {
 
-			fcml_bool looking_for_instruction = FCML_TRUE;
-			fcml_bool found = FCML_FALSE;
+            fcml_bool looking_for_instruction = FCML_TRUE;
+            fcml_bool found = FCML_FALSE;
 
-			int j = 0;
-			for( j = 0; j < 2; j++ ) {
+            int j = 0;
+            for( j = 0; j < 2; j++ ) {
 
-				fcml_st_coll_list *inst = asm_result->instructions;
+                fcml_st_coll_list *inst = asm_result->instructions;
 
-				if( !only_print_result ) {
-					if( !multiple_assemblation_result && inst->size != 1 ) {
-						found = FCML_FALSE;
-						break;
-					}
-				}
+                if( !only_print_result ) {
+                    if( !multiple_assemblation_result && inst->size != 1 ) {
+                        found = FCML_FALSE;
+                        break;
+                    }
+                }
 
-				fcml_st_coll_list_element *element = inst->head;
-				while( element ) {
-					fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
-					fcml_bool differ = FCML_FALSE;
-					if( !only_print_result ) {
-						int i;
-						if( multiple_assemblation_result ) {
-							int code_index = 0;
-							fcml_uint8_t instruction_count = code[code_index++];
-							for( i = 0; i < instruction_count; i++ ) {
-								fcml_uint8_t code_size = code[code_index++];
-								fcml_uint8_t *code_buff = &(code[code_index]);
-								code_index += code_size;
-								fcml_uint8_t k;
-								differ = FCML_FALSE;
-								if( code_size != assembled_instruction->code_length ) {
-									differ = FCML_TRUE;
-								} else {
-									for( k = 0; k < code_size; k++ ) {
-										if( code_buff[k] != assembled_instruction->code[k] ) {
-											differ = FCML_TRUE;
-											break;
-										}
-									}
-								}
-								if( !differ ) {
-									break;
-								}
-							}
-						} else {
-							if( size == assembled_instruction->code_length ) {
-								for( i = 0; i < size; i++ ) {
-									if( code[i] != assembled_instruction->code[i] ) {
-										differ = FCML_TRUE;
-										break;
-									}
-								}
-							} else {
-								differ = FCML_TRUE;
-							}
-						}
-						if( differ ) {
-							found = FCML_FALSE;
-							break;
-						} else {
-							found = FCML_TRUE;
-						}
-					}
-					if( only_print_result || ( differ && !looking_for_instruction ) ) {
+                fcml_st_coll_list_element *element = inst->head;
+                while( element ) {
+                    fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
+                    fcml_bool differ = FCML_FALSE;
+                    if( !only_print_result ) {
+                        int i;
+                        if( multiple_assemblation_result ) {
+                            int code_index = 0;
+                            fcml_uint8_t instruction_count = code[code_index++];
+                            for( i = 0; i < instruction_count; i++ ) {
+                                fcml_uint8_t code_size = code[code_index++];
+                                fcml_uint8_t *code_buff = &(code[code_index]);
+                                code_index += code_size;
+                                fcml_uint8_t k;
+                                differ = FCML_FALSE;
+                                if( code_size != assembled_instruction->code_length ) {
+                                    differ = FCML_TRUE;
+                                } else {
+                                    for( k = 0; k < code_size; k++ ) {
+                                        if( code_buff[k] != assembled_instruction->code[k] ) {
+                                            differ = FCML_TRUE;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if( !differ ) {
+                                    break;
+                                }
+                            }
+                        } else {
+                            if( size == assembled_instruction->code_length ) {
+                                for( i = 0; i < size; i++ ) {
+                                    if( code[i] != assembled_instruction->code[i] ) {
+                                        differ = FCML_TRUE;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                differ = FCML_TRUE;
+                            }
+                        }
+                        if( differ ) {
+                            found = FCML_FALSE;
+                            break;
+                        } else {
+                            found = FCML_TRUE;
+                        }
+                    }
+                    if( only_print_result || ( differ && !looking_for_instruction ) ) {
 #if FCML_DEBUG
-						printf( "Index: %d\nOriginal code : ", assembled_instruction->__def_index );
+                        printf( "Index: %d\nOriginal code : ", assembled_instruction->__def_index );
 #else
-						printf( "Original code : " );
+                        printf( "Original code : " );
 #endif
-						int i;
-						for( i = 0; i < size; i++ ) {
-							printf( "%02"PRIx8, code[i] );
-						}
-						printf( "\nAssembled code: " );
-						for( i = 0; i < assembled_instruction->code_length; i++ ) {
-							printf( "%02"PRIx8, assembled_instruction->code[i] );
-						}
-						printf("\n");
-					}
-					element = element->next;
-				}
+                        int i;
+                        for( i = 0; i < size; i++ ) {
+                            printf( "%02"PRIx8, code[i] );
+                        }
+                        printf( "\nAssembled code: " );
+                        for( i = 0; i < assembled_instruction->code_length; i++ ) {
+                            printf( "%02"PRIx8, assembled_instruction->code[i] );
+                        }
+                        printf("\n");
+                    }
+                    element = element->next;
+                }
 
-				if( found ) {
-					break;
-				}
+                if( found ) {
+                    break;
+                }
 
-				looking_for_instruction = FCML_FALSE;
+                looking_for_instruction = FCML_FALSE;
 
-				if( only_print_result ) {
-					break;
-				}
-			}
+                if( only_print_result ) {
+                    break;
+                }
+            }
 
-			if( !found ) {
-				if( !only_print_result ) {
-					printf("Can not assemble: %s\n", mnemonic);
-				}
-				if( !only_print_result ) {
-					success = FCML_FALSE;
-				}
-			}
+            if( !found ) {
+                if( !only_print_result ) {
+                    printf("Can not assemble: %s\n", mnemonic);
+                }
+                if( !only_print_result ) {
+                    success = failed;
+                }
+            }
 
 		}
 
