@@ -30,6 +30,8 @@ void fcml_fn_env_memory_clean( void *src, fcml_usize len );
 
 void fcml_mem_clear( fcml_ptr ptr, fcml_usize size );
 
+fcml_usize fcml_fn_env_memory_strlen( fcml_string str );
+
 fcml_string fcml_fn_env_memory_strdup( fcml_string str );
 
 fcml_string fcml_fn_env_memory_strldup( fcml_string str, fcml_usize size );

@@ -1337,7 +1337,9 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 
 				error = FCML_CEH_GEC_NO_ERROR;
 
-				fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details *)addr_mode_element->item;
+				fcml_st_asm_instruction_addr_mode_encoding_details_holder *holder = (fcml_st_asm_instruction_addr_mode_encoding_details_holder *)addr_mode_element->item;
+				fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = holder->addr_mode_encoding_details;
+
 				fcml_ifn_clean_context( context );
 
 #ifdef FCML_DEBUG
@@ -2106,7 +2108,7 @@ fcml_ifn_asm_instruction_part_processor_factory_dispatcher fcml_ifn_get_instruct
 // Precalculates some data using given addressing mode.
 fcml_st_asm_addr_mode_desc_details fcml_ifn_asm_precalculate_addr_mode( fcml_st_def_addr_mode_desc *addr_mode_desc ) {
 
-	fcml_st_asm_addr_mode_desc_details details;
+	fcml_st_asm_addr_mode_desc_details details = {0};
 
 	fcml_uint16_t allowed_prefixes = addr_mode_desc->allowed_prefixes;
 
@@ -2169,11 +2171,16 @@ void fcml_ifn_asm_free_addr_mode( fcml_st_asm_instruction_addr_mode_encoding_det
 }
 
 void fcml_ifn_asm_free_instruction_addr_mode_item_handler( fcml_ptr item_value, fcml_ptr *args ) {
-    fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details*)item_value;
-    if( addr_mode->part_processor_chain ) {
-        fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
+    fcml_st_asm_instruction_addr_mode_encoding_details_holder *holder = (fcml_st_asm_instruction_addr_mode_encoding_details_holder*)item_value;
+    // Do not free clones.
+    if( !holder->is_clone ) {
+        fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = holder->addr_mode_encoding_details;
+        if( addr_mode->part_processor_chain ) {
+            fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
+        }
+        fcml_ifn_asm_free_addr_mode( addr_mode );
     }
-    fcml_ifn_asm_free_addr_mode( addr_mode );
+    fcml_fn_env_memory_free( holder );
 }
 
 void fcml_ifn_asm_free_instruction_entry( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
@@ -2215,7 +2222,7 @@ fcml_ceh_error fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_b
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     int i;
-    for( i = 0; i < FCML_NUMBER_OF_CONDITIONS; i++ ) {
+    for( i = 0; i < FCML_NUMBER_OF_CONDITIONS * 2; i++ ) {
 
         fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details *)fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_asm_instruction_addr_mode_encoding_details ) );
         if( !addr_mode ) {
@@ -2224,6 +2231,11 @@ fcml_ceh_error fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_b
 
         addr_mode->addr_mode_desc = addr_mode_desc;
         addr_mode->addr_mode_details = fcml_ifn_asm_precalculate_addr_mode( addr_mode_desc );
+
+        fcml_st_asm_addr_mode_desc_details *addr_mode_details = &(addr_mode->addr_mode_details);
+        addr_mode_details->is_conditional = FCML_TRUE;
+        addr_mode_details->condition.is_negation = ( i % 2 == 1 );
+        addr_mode_details->condition.condition_type = i / 2;
 
         int instruction_parts;
 
@@ -2289,43 +2301,82 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_string mnemonic = init_context->assembler->dialect_context.get_mnemonic( instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL );
+    // Space for mnemonics.
+    fcml_string mnemonics[FCML_ASM_DIALECT_MAX_MNEMONIC_COUNT];
 
-    fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( init_context->assembler->instructions_map, mnemonic );
-    if( !addr_modes ) {
+    int mnemonic_count = init_context->assembler->dialect_context.get_mnemonic( instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL, mnemonics );
+    if( !mnemonic_count ) {
+        return FCML_CEH_GEC_OUT_OF_MEMORY;
+    }
 
-        // Allocate space for new mnemonic.
-        addr_modes = fcml_fn_env_memory_alloc( sizeof(fcml_st_asm_instruction_addr_modes) );
-        if( addr_modes ) {
+    // Prepare addressing mode encoders for every mnemonic.
+    int i;
+    for( i = 0; i < mnemonic_count && !error; i++ ) {
 
-            // Allocate list for addressing modes.
-            addr_modes->addr_modes = fcml_fn_coll_list_alloc();
-            if( addr_modes->addr_modes ) {
-                addr_modes->mnemonic = mnemonic;
-                addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction->instruction_type );
+        fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( init_context->assembler->instructions_map, mnemonics[i] );
+        if( !addr_modes ) {
 
-                // Puts prepared structure under mnemonic key.
-                fcml_fn_coll_map_put( init_context->assembler->instructions_map, mnemonic, addr_modes, &error );
-                if( error ) {
-                    fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
+            // Allocate space for new mnemonic.
+            addr_modes = fcml_fn_env_memory_alloc( sizeof(fcml_st_asm_instruction_addr_modes) );
+            if( addr_modes ) {
+
+                // Allocate list for addressing modes.
+                addr_modes->addr_modes = fcml_fn_coll_list_alloc();
+                if( addr_modes->addr_modes ) {
+                    addr_modes->mnemonic = mnemonics[i];
+                    addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction->instruction_type );
+
+                    // Puts prepared structure under mnemonic key.
+                    fcml_fn_coll_map_put( init_context->assembler->instructions_map, mnemonics[i], addr_modes, &error );
+                    if( error ) {
+                        fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
+                        fcml_fn_env_memory_free(addr_modes);
+                    }
+
+                } else {
                     fcml_fn_env_memory_free(addr_modes);
+                    error = FCML_CEH_GEC_OUT_OF_MEMORY;
                 }
 
             } else {
-                fcml_fn_env_memory_free(addr_modes);
+                // Out of memory.
+                error = FCML_CEH_GEC_OUT_OF_MEMORY;
+            }
+        } else {
+            // Mnemonic is already available in the map, so free it.
+            init_context->assembler->dialect_context.free_mnemonic( mnemonics[i] );
+        }
+
+        if( !error ) {
+
+            // Allocate addressing mode holder.
+            fcml_st_asm_instruction_addr_mode_encoding_details_holder *holder = fcml_fn_env_clear_memory_alloc( sizeof(fcml_st_asm_instruction_addr_mode_encoding_details_holder) );
+            if( holder ) {
+
+                // Take into account that every holder holds the same addressing mode encoding details, it's why we
+                // need this clone flag. It's used to free only one instance of addressing mode details when needed.
+                holder->addr_mode_encoding_details = addr_mode;
+                holder->is_clone = ( i > 0 );
+
+                if( !fcml_fn_coll_list_add_back( addr_modes->addr_modes, holder ) ) {
+                    // Free holder allocated earlier.
+                    fcml_fn_env_memory_free( holder );
+                    error = FCML_CEH_GEC_OUT_OF_MEMORY;
+                }
+
+            } else {
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
             }
 
-        } else {
-            // Out of memory.
-            error = FCML_CEH_GEC_OUT_OF_MEMORY;
         }
-    }
 
-    if( !error ) {
-        if( !fcml_fn_coll_list_add_back( addr_modes->addr_modes, addr_mode ) ) {
-            error = FCML_CEH_GEC_OUT_OF_MEMORY;
+        if( error ) {
+            // In case of error free all mnemonics which haven't been used yet.
+            for( i++; i < mnemonic_count; i++ ) {
+               fcml_fn_asm_dialect_free_mnemonic( mnemonics[i] );
+           }
         }
+
     }
 
     return error;

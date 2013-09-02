@@ -68,6 +68,10 @@ fcml_string fcml_fn_env_memory_strldup( fcml_string str, fcml_usize size ) {
 	return new_str;
 }
 
+fcml_usize fcml_fn_env_memory_strlen( fcml_string str ) {
+    return (fcml_usize)strlen( str );
+}
+
 fcml_string fcml_fn_env_memory_strdup( fcml_string str ) {
 	uint32_t size = strlen( str ) + 1;
 	fcml_string new_str = fcml_fn_env_memory_alloc( size );

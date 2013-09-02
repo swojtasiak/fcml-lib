@@ -198,6 +198,11 @@ typedef struct fcml_st_asm_instruction_addr_mode_encoding_details {
 	fcml_hints hints;
 } fcml_st_asm_instruction_addr_mode_encoding_details;
 
+typedef struct fcml_st_asm_instruction_addr_mode_encoding_details_holder {
+    fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode_encoding_details;
+    fcml_bool is_clone;
+} fcml_st_asm_instruction_addr_mode_encoding_details_holder;
+
 // Optimizer definition.
 typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_ptr args );
 typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
