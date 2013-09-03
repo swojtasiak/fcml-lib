@@ -154,7 +154,7 @@ typedef enum fcml_ien_asm_instruction_part_processor_type {
 	FCML_IEN_ASM_IPPT_DECORATOR,
 } fcml_ien_asm_instruction_part_processor_type;
 
-typedef fcml_ceh_error (*fcml_ifn_asm_instruction_part_processor)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args );
+typedef fcml_ceh_error (*fcml_ifn_asm_instruction_part_processor)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args );
 typedef fcml_ceh_error (*fcml_ifn_asm_instruction_part_processor_acceptor)( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_instruction *instruction, fcml_ptr args );
 
 typedef struct fcml_ifn_asm_instruction_part_processor_descriptor {
