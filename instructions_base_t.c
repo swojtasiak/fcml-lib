@@ -17,7 +17,7 @@
 
 extern fcml_st_assembler *assembler;
 
-fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble ) {
+fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble ) {
 
 	fcml_bool success = FCML_TRUE;
 
@@ -61,7 +61,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 				printf("Instruction: %s\n", mnemonic);
 			}
 
-			if( !failed ) {
+			if( should_fail ) {
 				printf("Should fail: %s\n", mnemonic);
 				success = FCML_FALSE;
 				return success;
@@ -155,7 +155,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		if( error ) {
 			printf("Can not assemble: %s\n", mnemonic );
 			if( !only_print_result ) {
-				success = failed;
+				success = should_fail;
 			}
 		} else {
 
@@ -257,7 +257,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
                     printf("Can not assemble: %s\n", mnemonic);
                 }
                 if( !only_print_result ) {
-                    success = failed;
+                    success = should_fail;
                 }
             }
 
@@ -270,23 +270,14 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 	} else {
 
-		if( !failed ) {
-			success = FCML_TRUE;
-			return success;
-		}
+		success = should_fail;
 
-		if( strcmp( "FAIL", mnemonic ) != 0 ) {
-			printf("\nFailed: %s\n", mnemonic);
-			if( !only_print_result ) {
-				success = FCML_FALSE;
-			}
-		}
 	}
 
 	return success;
 }
 
-fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed ) {
+fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail ) {
 
 	fcml_bool success = FCML_TRUE;
 
@@ -311,7 +302,7 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 
 	if( result.code == RC_OK ) {
 
-		if( !failed ) {
+		if( should_fail ) {
 			printf("Should fail: %s\n", mnemonic);
 			return FCML_FALSE;
 		}

@@ -14,35 +14,35 @@
 
 #define FCML_MI(...) (sizeof((fcml_uint8_t[]){__VA_ARGS__})/sizeof(fcml_uint8_t) ), __VA_ARGS__
 
-#define FCML_I32_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
-#define FCML_I64_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
+#define FCML_I32_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
+#define FCML_I64_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
 #define FCML_I3264_M(x,...) { FCML_I32_M(x,__VA_ARGS__); FCML_I64_M(x,__VA_ARGS__); }
-#define FCML_I32_RIP_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_FALSE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
-#define FCML_I64_RIP_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_FALSE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
+#define FCML_I32_RIP_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_FALSE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
+#define FCML_I64_RIP_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_FALSE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
 
-#define FCML_I32_M_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE); }
-#define FCML_I64_M_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE); }
+#define FCML_I32_M_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE); }
+#define FCML_I64_M_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE); }
 
 #define FCML_I3264(x,...) { FCML_I32(x,__VA_ARGS__); FCML_I64(x,__VA_ARGS__); }
-#define FCML_I32(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
-#define FCML_I64(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
-#define FCML_I32_RIP(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_FALSE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
-#define FCML_I64_RIP(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_FALSE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
-#define FCML_I32_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
-#define FCML_I64_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
+#define FCML_I32(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
+#define FCML_I64(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
+#define FCML_I32_RIP(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_FALSE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
+#define FCML_I64_RIP(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_FALSE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
+#define FCML_I32_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
+#define FCML_I64_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE)); }
 
 #define FCML_I3264_P(x,...) { FCML_I32_P(x,__VA_ARGS__); FCML_I64_P(x,__VA_ARGS__); }
-#define FCML_I32_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE); }
-#define FCML_I64_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE); }
+#define FCML_I32_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE); }
+#define FCML_I64_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE); }
 #define FCML_I3264_RIP_P(x,...) { FCML_I32_RIP_P(x,__VA_ARGS__); FCML_I64_RIP_P(x,__VA_ARGS__); }
-#define FCML_I32_RIP_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_TRUE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE); }
-#define FCML_I64_RIP_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_TRUE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE); }
+#define FCML_I32_RIP_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_TRUE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE); }
+#define FCML_I64_RIP_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_TRUE, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_FALSE); }
 
 #define FCML_I3264_D(x,...) { FCML_I32_D(x,__VA_ARGS__); FCML_I64_D(x,__VA_ARGS__); }
-#define FCML_I32_D(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE)); }
-#define FCML_I64_D(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE)); }
-#define FCML_I32_D_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0)); }
-#define FCML_I64_D_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0)); }
+#define FCML_I32_D(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE)); }
+#define FCML_I64_D(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE)); }
+#define FCML_I32_D_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0)); }
+#define FCML_I64_D_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0)); }
 
 #define FCML_I3264_A(x,...) { FCML_I32_D(x,__VA_ARGS__); FCML_I64_D(x,__VA_ARGS__); }
 #define FCML_I32_A(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_TRUE)); }
@@ -50,8 +50,8 @@
 #define FCML_I64_A_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_TRUE)); }
 
 #define FCML_I3264_A_P(x,...) { FCML_I32_D(x,__VA_ARGS__); FCML_I64_D(x,__VA_ARGS__); }
-#define FCML_I32_A_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_TRUE); }
-#define FCML_I64_A_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_TRUE); }
+#define FCML_I32_A_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_TRUE); }
+#define FCML_I64_A_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_TRUE); }
 #define FCML_I64_A_FAILED_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_TRUE); }
 
 fcml_st_assembler *assembler;
