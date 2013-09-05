@@ -211,7 +211,7 @@ void fcml_tf_instruction_CMPS(void) {
     // alternatywnie mnemonike skrotu, czyli w taim przypaku jezeli wystepuje mnemoika skrotu to ja nalezy zastosowac jezeli konfiguracja przewiduje krotsza alternatywe.
     // oczywiscie assembler obsluguje obie formy.
     // A6
-    FCML_I32( "cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
+   /* FCML_I32( "cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
     FCML_I32( "cmps byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xA6 );
     FCML_I32( "cmps byte ptr [esi],byte ptr [edi]", 0xA6 );
     FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
@@ -225,7 +225,7 @@ void fcml_tf_instruction_CMPS(void) {
     FCML_I64( "cmps qword ptr [rsi],qword ptr [rdi]", 0x48, 0xA7 );
     FCML_I64( "cmps dword ptr [rsi],dword ptr [rdi]", 0x40, 0xA7 );
     FCML_I64( "cmps dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xA7 );
-    FCML_I64( "cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );
+    FCML_I64( "cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );*/
 }
 
 CU_TestInfo fctl_ti_instructions_c[] = {

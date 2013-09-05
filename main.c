@@ -11,6 +11,7 @@
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
 
+#include "fcml_mnemonic_parser_t.h"
 #include "modrm_encoder_t.h"
 #include "modrm_decoder_t.h"
 #include "stream_t.h"
@@ -37,6 +38,7 @@ CU_SuiteInfo *suites[] = {
     fcml_si_coll,
     fcml_si_utils,
 	fcml_si_intel_parser,
+	fcml_si_mnemonic_parser,
     NULL
 };
 
