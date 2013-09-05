@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "fcml_env.h"
 
@@ -72,6 +73,14 @@ fcml_usize fcml_fn_env_memory_strlen( fcml_string str ) {
     return (fcml_usize)strlen( str );
 }
 
+void fcml_fn_env_memory_strcpy( const fcml_string dst, fcml_string src ) {
+    strcpy( dst, src );
+}
+
+void fcml_fn_env_memory_strncpy( const fcml_string dst, fcml_string src, fcml_usize len ) {
+    strncpy( dst, src, len );
+}
+
 fcml_string fcml_fn_env_memory_strdup( fcml_string str ) {
 	uint32_t size = strlen( str ) + 1;
 	fcml_string new_str = fcml_fn_env_memory_alloc( size );
@@ -81,8 +90,23 @@ fcml_string fcml_fn_env_memory_strdup( fcml_string str ) {
 	return new_str;
 }
 
+fcml_string fcml_fn_env_memory_stralloc( fcml_usize len ) {
+    return (fcml_string)fcml_fn_env_clear_memory_alloc( len );
+}
+
+void fcml_fn_env_memory_strclr( fcml_string str ) {
+    str[0] = '\0';
+}
+
 void fcml_fn_env_memory_strfree( fcml_string str ) {
 	fcml_fn_env_memory_free( str );
 }
 
+fcml_bool fcml_fn_env_is_alpha( fcml_char c ) {
+    return isalpha( c );
+}
+
+fcml_bool fcml_fn_env_is_digit( fcml_char c ) {
+    return isdigit( c );
+}
 

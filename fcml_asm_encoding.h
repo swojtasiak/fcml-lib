@@ -12,7 +12,7 @@
 #include "fcml_def.h"
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
-#include "fcml_common.h"
+#include "fcml_common_int.h"
 #include "fcml_modrm_encoder.h"
 #include "fcml_assembler.h"
 
@@ -37,21 +37,6 @@
 #define FCML_ENCODE_VEXOP_B(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x01 ) << 5 ) )
 
 #define FCML_ASM_FCF	16
-
-typedef enum fcml_en_attribute_size_flag {
-	FCML_EN_ASF_ANY = 0x00,
-	FCML_EN_ASF_16 = 0x01,
-	FCML_EN_ASF_32 = 0x02,
-	FCML_EN_ASF_64 = 0x04,
-	FCML_EN_ASF_ALL = FCML_EN_ASF_16 | FCML_EN_ASF_32 | FCML_EN_ASF_64
-} fcml_en_attribute_size_flag;
-
-struct fcml_st_asm_instruction_part;
-
-typedef struct fcml_st_asm_nullable_size_flags {
-	fcml_bool is_set;
-	fcml_en_attribute_size_flag flags;
-} fcml_st_asm_nullable_size_flags;
 
 typedef struct fcml_st_asm_data_size_flags {
 	fcml_nuint8_t l;
