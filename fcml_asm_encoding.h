@@ -15,6 +15,7 @@
 #include "fcml_common_int.h"
 #include "fcml_modrm_encoder.h"
 #include "fcml_assembler.h"
+#include "fcml_mnemonic_parser.h"
 
 #define FCML_ASM_MAX_PART_PROCESSORS	40
 
@@ -163,7 +164,7 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 	// All addressing modes for given mnemonic are available in this list.
 	fcml_st_coll_list *addr_modes;
 	// Mnemonic.
-	fcml_string mnemonic;
+	fcml_st_mp_mnemonic *mnemonic;
 	// Instruction encoder.
 	fcml_fnp_asm_instruction_encoder instruction_encoder;
 } fcml_st_asm_instruction_addr_modes;

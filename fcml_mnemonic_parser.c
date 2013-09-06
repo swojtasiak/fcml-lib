@@ -17,19 +17,19 @@ enum fcml_ien_mp_parser_state {
 
 #define FCML_IDF_MP_BUFF_LEN 256
 
-void fcml_ifn_mp_clean_mnemonic( fcml_mp_mnemonic *mnemonic ) {
+void fcml_ifn_mp_clean_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
     mnemonic->supported_osa = FCML_EN_ASF_ALL;
     mnemonic->supported_asa = FCML_EN_ASF_ALL;
     mnemonic->shortcut = FCML_FALSE;
     mnemonic->mnemonic = NULL;
 }
 
-fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_mp_mnemonic *parsed_mnemonic, fcml_st_coll_list *mnemonics, fcml_string mnemonic_buff, fcml_usize len ) {
+fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, fcml_st_coll_list *mnemonics, fcml_string mnemonic_buff, fcml_usize len ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     // Allocate space for new mnemonic.
-    fcml_mp_mnemonic *new_mnemonic =  fcml_fn_env_clear_memory_alloc( sizeof( fcml_mp_mnemonic ) );
+    fcml_st_mp_mnemonic *new_mnemonic =  fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_mp_mnemonic ) );
     if( new_mnemonic == NULL ) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -76,13 +76,13 @@ fcml_ceh_error fcml_ifn_parse_attribute_size_flag( fcml_char flag_code, fcml_en_
     return error;
 }
 
-fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_mp_mnemonic_set **mnemonics_set ) {
+fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_st_mp_mnemonic_set **mnemonics_set ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_char mnemonic_buff[FCML_IDF_MP_BUFF_LEN];
     int mnemonic_index = 0;
 
-    fcml_mp_mnemonic_set *mnemonics = fcml_fn_env_clear_memory_alloc( sizeof( fcml_mp_mnemonic_set ) );
+    fcml_st_mp_mnemonic_set *mnemonics = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_mp_mnemonic_set ) );
     if( !mnemonics ) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -95,7 +95,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_m
 
     fcml_usize len = fcml_fn_env_memory_strlen( mnemonics_pattern );
 
-    fcml_mp_mnemonic mnemonic;
+    fcml_st_mp_mnemonic mnemonic;
 
     fcml_ifn_mp_clean_mnemonic( &mnemonic );
 
@@ -235,9 +235,31 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_m
     return error;
 }
 
+fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_data_size osa, fcml_data_size asa ) {
+    fcml_st_mp_mnemonic *chosen_mnemonic = NULL;
+    if( mnemonics->mnemonics ) {
+        fcml_st_coll_list_element *next = mnemonics->mnemonics->head;
+        while( next ) {
+            fcml_st_mp_mnemonic *mnemonic = next->item;
+            if( !chosen_mnemonic && !mnemonic->shortcut ) {
+                chosen_mnemonic = mnemonic;
+            }
+            if( fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_asa, asa ) && fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
+                if( mnemonic->shortcut == use_shortcut ) {
+                    chosen_mnemonic = mnemonic;
+                    break;
+                }
+            }
+            next = next->next;
+        }
+    }
+    return chosen_mnemonic;
+
+}
+
 void fcml_ifp_coll_list_action_free_mnemonic( fcml_ptr item_value, fcml_ptr *args ) {
     if( item_value ) {
-        fcml_mp_mnemonic *parsed_mnemonic = (fcml_mp_mnemonic *)item_value;
+        fcml_st_mp_mnemonic *parsed_mnemonic = (fcml_st_mp_mnemonic *)item_value;
         if( parsed_mnemonic->mnemonic ) {
             fcml_fn_env_memory_strfree( parsed_mnemonic->mnemonic );
         }
@@ -245,7 +267,7 @@ void fcml_ifp_coll_list_action_free_mnemonic( fcml_ptr item_value, fcml_ptr *arg
     }
 }
 
-void fcml_fn_mp_free_mnemonics( fcml_mp_mnemonic_set *mnemonics ) {
+void fcml_fn_mp_free_mnemonics( fcml_st_mp_mnemonic_set *mnemonics ) {
     if( mnemonics ) {
         if( mnemonics->mnemonics ) {
             fcml_fn_coll_list_free( mnemonics->mnemonics, &fcml_ifp_coll_list_action_free_mnemonic );

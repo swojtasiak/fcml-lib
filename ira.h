@@ -382,7 +382,8 @@ union ira_instruction_pointer {
 
 // Disassembler configuration.
 
-#define _IRA_CF_ENABLE_VAX			0x00000001
+#define _IRA_CF_ENABLE_VAX			    0x00000001
+#define _IRA_CF_USE_MNEMONIC_SHORTCUTS  0x00000002
 
 struct ira_disassembler_config {
 	uint32_t flags;
@@ -589,6 +590,7 @@ struct ira_disassemble_result {
 	/* Disassemblation result code. */
 	enum ira_result_code code;
 	/* Mnemonic */
+	fcml_bool is_shortcut;
 	char *mnemonic;
 	// Instruction encoding hints.
 	fcml_hints hints;

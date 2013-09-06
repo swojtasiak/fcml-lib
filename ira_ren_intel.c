@@ -95,6 +95,10 @@ void ira_format_intel_instruction( char *buffer, int size, struct ira_disassembl
 		_ira_format_append_str( &stream, suffix );
 	}
 
+	if( result->is_shortcut ) {
+	    return;
+	}
+
 	// Add hints.
 
 	if( result->hints & FCML_HINT_FAR_POINTER ) {

@@ -25,4 +25,6 @@ typedef struct fcml_st_asm_nullable_size_flags {
     fcml_en_attribute_size_flag flags;
 } fcml_st_asm_nullable_size_flags;
 
+fcml_bool fcml_fn_cmi_is_attribute_size_supported( fcml_en_attribute_size_flag flags, fcml_data_size attribute_size );
+
 #endif /* FCML_COMMON_INT_H_ */

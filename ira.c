@@ -811,6 +811,9 @@ void _ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblati
 						free( current_inst_decoding->operand_decodings[i].args );
 					}
 				}
+				if( current_inst_decoding->mnemonics ) {
+				    fcml_fn_mp_free_mnemonics( current_inst_decoding->mnemonics );
+				}
 				free( current_inst_decoding );
 			}
 			_ira_free_disassemblation_tree( diss_tree_opcode->opcodes );
@@ -979,9 +982,15 @@ int _ira_add_instruction_decoding( struct ira_diss_tree_opcode *inst_desc, struc
 	}
 
 	// Choose instruction mnemonic.
-	decoding->mnemonic = instruction_desc->mnemonic;
-	if( opcode_desc->mnemonic_override != NULL ) {
-		decoding->mnemonic = opcode_desc->mnemonic_override;
+
+	fcml_string mnemonic = instruction_desc->mnemonic;
+    if( opcode_desc->mnemonic_override != NULL ) {
+        mnemonic = opcode_desc->mnemonic_override;
+    }
+
+	fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( mnemonic, &(decoding->mnemonics) );
+	if( error ) {
+	    return _IRA_INT_ERROR_ILLEGAL_ARGUMENT;
 	}
 
 	// Copy flags.
@@ -1373,9 +1382,6 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 
 	uint32_t opcode_flags = instruction->opcode_flags;
 
-	// Set mnemonic of disassembled instruction.
-	result->mnemonic = instruction->mnemonic;
-
 	// Copy prefixes.
 	result->prefixes_count = context->decoding_context.instruction_prefix_count;
 
@@ -1463,6 +1469,17 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 		}
 		result->operands[i] = operand_wrappers[i].operand;
 	}
+
+	// Prepare mnemonic
+	fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( instruction->mnemonics, (context->config->flags & _IRA_CF_USE_MNEMONIC_SHORTCUTS) ? FCML_TRUE : FCML_FALSE, decoding_context->effective_operand_size_attribute, decoding_context->effective_address_size_attribute );
+	if( mnemonic ) {
+	    result->is_shortcut = mnemonic->shortcut;
+	    result->mnemonic = mnemonic->mnemonic;
+	} else {
+	    // Mnemonic not found.
+	    return _IRA_INT_ERROR_ILLEGAL_STATE_EXCEPTION;
+	}
+
 	return _IRA_INT_ERROR_NO_ERROR;
 }
 

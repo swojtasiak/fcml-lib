@@ -8,37 +8,63 @@
 #include "fcml_asm_dialect.h"
 #include "fcml_env.h"
 
-fcml_string fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_string mnemonic, fcml_string suffix ) {
-    if( !mnemonic ) {
-        return NULL;
-    }
+fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_mnemonic *mnemonic, fcml_string suffix ) {
+
     if( !suffix ) {
         return fcml_fn_asm_dialect_alloc_mnemonic( mnemonic );
     }
-    fcml_usize mnemonic_len = fcml_fn_env_memory_strlen( mnemonic );
-    fcml_usize suffix_len = fcml_fn_env_memory_strlen( suffix );
-    fcml_string dest_mnemonic = fcml_fn_env_clear_memory_alloc( mnemonic_len + suffix_len + 1 );
-    if( dest_mnemonic != NULL ) {
-        fcml_fn_env_memory_copy( dest_mnemonic, mnemonic, mnemonic_len );
-        fcml_fn_env_memory_copy( dest_mnemonic + mnemonic_len, suffix, suffix_len );
-    }
-    return dest_mnemonic;
-}
 
-fcml_string fcml_fn_asm_dialect_alloc_mnemonic( fcml_string mnemonic ) {
-    if( !mnemonic ) {
+    fcml_st_mp_mnemonic *new_mnemonic = fcml_fn_env_memory_alloc( sizeof( fcml_st_mp_mnemonic ) );
+    if( !new_mnemonic ) {
+        // Out of memory.
         return NULL;
     }
-    fcml_usize len = fcml_fn_env_memory_strlen( mnemonic );
-    fcml_string dest_mnemonic = fcml_fn_env_clear_memory_alloc( len + 1 );
-    if( dest_mnemonic != NULL ) {
-        fcml_fn_env_memory_copy( dest_mnemonic, mnemonic, len );
+
+    *new_mnemonic = *mnemonic;
+
+    fcml_usize mnemonic_len = fcml_fn_env_memory_strlen( mnemonic->mnemonic );
+    fcml_usize suffix_len = fcml_fn_env_memory_strlen( suffix );
+    fcml_string dest_mnemonic = fcml_fn_env_memory_stralloc( mnemonic_len + suffix_len + 1 );
+    if( dest_mnemonic ) {
+        fcml_fn_env_memory_strncpy( dest_mnemonic, mnemonic->mnemonic, mnemonic_len );
+        fcml_fn_env_memory_strncpy( dest_mnemonic + mnemonic_len, suffix, suffix_len );
+        new_mnemonic->mnemonic = dest_mnemonic;
+    } else {
+        // Out of memory, free allocated mnemonic.
+        fcml_fn_env_memory_free( new_mnemonic );
+        new_mnemonic = NULL;
     }
-    return dest_mnemonic;
+
+    return new_mnemonic;
 }
 
-void fcml_fn_asm_dialect_free_mnemonic( fcml_string mnemonic ) {
+fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
+
+    fcml_st_mp_mnemonic *new_mnemonic = fcml_fn_env_memory_alloc( sizeof( fcml_st_mp_mnemonic ) );
+    if( !new_mnemonic ) {
+        // Out of memory.
+        return NULL;
+    }
+
+    *new_mnemonic = *mnemonic;
+
+    fcml_string dest_mnemonic = fcml_fn_env_memory_strdup( mnemonic->mnemonic );
+    if( dest_mnemonic ) {
+        new_mnemonic->mnemonic = dest_mnemonic;
+    } else {
+        // Out of memory, free allocated mnemonic.
+        fcml_fn_env_memory_free( new_mnemonic );
+        new_mnemonic = NULL;
+    }
+
+    return new_mnemonic;
+}
+
+void fcml_fn_asm_dialect_free_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
     if( mnemonic ) {
+        if( mnemonic->mnemonic ) {
+            fcml_fn_env_memory_strfree( mnemonic->mnemonic );
+        }
         fcml_fn_env_memory_free( mnemonic );
     }
 }

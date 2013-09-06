@@ -2334,19 +2334,20 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     // Space for mnemonics.
-    fcml_string mnemonics[FCML_ASM_DIALECT_MAX_MNEMONIC_COUNT];
+    fcml_st_mp_mnemonic *mnemonics[FCML_ASM_DIALECT_MAX_MNEMONIC_COUNT];
 
     // Instruction can be registered for more than one mnemonic.
-    int mnemonic_count = init_context->assembler->dialect_context.get_mnemonic( instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL, mnemonics );
-    if( !mnemonic_count ) {
-        return FCML_CEH_GEC_OUT_OF_MEMORY;
+    int mnemonic_count = 0;
+    error = init_context->assembler->dialect_context.get_mnemonic( instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL, mnemonics, &mnemonic_count );
+    if( error ) {
+        return error;
     }
 
     // Prepare addressing mode encoders for every mnemonic.
     int i;
     for( i = 0; i < mnemonic_count && !error; i++ ) {
 
-        fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( init_context->assembler->instructions_map, mnemonics[i] );
+        fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( init_context->assembler->instructions_map, mnemonics[i]->mnemonic );
         if( !addr_modes ) {
 
             // Allocate space for new mnemonic.
@@ -2360,7 +2361,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
                     addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction->instruction_type );
 
                     // Puts prepared structure under mnemonic key.
-                    fcml_fn_coll_map_put( init_context->assembler->instructions_map, mnemonics[i], addr_modes, &error );
+                    fcml_fn_coll_map_put( init_context->assembler->instructions_map, mnemonics[i]->mnemonic, addr_modes, &error );
                     if( error ) {
                         fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
                         fcml_fn_env_memory_free(addr_modes);

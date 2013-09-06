@@ -7,6 +7,7 @@
 
 #include "fcml_stream.h"
 #include "fcml_common.h"
+#include "fcml_mnemonic_parser.h"
 
 #define _IRA_TRUE 1
 #define _IRA_FALSE 0
@@ -22,6 +23,7 @@
 #define _IRA_INT_ERROR_INSTRUCTION_NOT_ENCODABLE	0x05
 #define _IRA_INT_ERROR_SYNTAX_NOT_SUPPORTED			0x06
 #define _IRA_INT_ERROR_ILLEGAL_INSTRUCTION			0x07
+#define _IRA_INT_ERROR_ILLEGAL_STATE_EXCEPTION      0x08
 
 /* Size attribute types */
 
@@ -234,7 +236,7 @@ struct ira_diss_tree_instruction_decoding {
 	/* Opcodes. */
 	uint8_t opcodes[3];
 	/* Instruction mnemonic */
-	char *mnemonic;
+	fcml_st_mp_mnemonic_set *mnemonics;
 	/* Flags that describe prefixes usage. */
 	uint16_t prefixes_flags;
 	/* Flags that describe some details of opcodes. */
