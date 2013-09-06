@@ -277,7 +277,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 	return success;
 }
 
-fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail ) {
+fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_uint32_t flags, fcml_bool print_only ) {
 
 	fcml_bool success = FCML_TRUE;
 
@@ -287,7 +287,7 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 	info.address_size_attribute = 0;
 	info.operand_size_attribute = 0;
 	info.mode = x64 ? IRA_MOD_64BIT : IRA_MOD_32BIT;
-	info.config.flags = 0;
+	info.config.flags = flags;
 
 	if( x64 ) {
 		info.instruction_pointer.rip = 0x0000800000401000;
@@ -331,12 +331,16 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 				printf("Instruction size: %d Disassembled code size: %d (%s)\n", (fcml_uint32_t)result.instruction_size, size, mnemonic);
 				success = FCML_FALSE;
 			} else {
-				CU_ASSERT(FCML_TRUE);
+			    if( !print_only ) {
+			        CU_ASSERT(FCML_TRUE);
+			    }
 			}
 		}
 
 	} else {
-		CU_ASSERT(FCML_TRUE);
+	    if( !print_only ) {
+	        CU_ASSERT(FCML_TRUE);
+	    }
 	}
 
 	return success;

@@ -20,34 +20,34 @@ int fcml_tf_mnemonic_parser_suite_cleanup(void) {
 
 void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {
 
-    fcml_mp_mnemonic_set *mnemonics_set;
+    fcml_st_mp_mnemonic_set *mnemonics_set;
 
     fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( "cmps;cmpsw[ts,o*,aw];cmpsd[ts,o*,ad];cmpsq[ts,o*,aq]", &mnemonics_set );
     CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 
     fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
-    fcml_mp_mnemonic *mnemonic = (fcml_mp_mnemonic*)element->item;
+    fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmps" );
     CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_FALSE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_EN_ASF_ALL );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_EN_ASF_ALL );
 
     element = element->next;
-    mnemonic = (fcml_mp_mnemonic*)element->item;
+    mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmpsw" );
     CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_EN_ASF_16 );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_EN_ASF_ALL );
 
     element = element->next;
-    mnemonic = (fcml_mp_mnemonic*)element->item;
+    mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmpsd" );
     CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_EN_ASF_32 );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_EN_ASF_ALL );
 
     element = element->next;
-    mnemonic = (fcml_mp_mnemonic*)element->item;
+    mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmpsq" );
     CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_EN_ASF_64 );
@@ -60,13 +60,13 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {
 
 void fcml_tf_mnemonic_parser_test_parse_mnemonics_1(void) {
 
-    fcml_mp_mnemonic_set *mnemonics_set;
+    fcml_st_mp_mnemonic_set *mnemonics_set;
 
     fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( "cmps;", &mnemonics_set );
     CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 
     fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
-    fcml_mp_mnemonic *mnemonic = (fcml_mp_mnemonic*)element->item;
+    fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmps" );
     CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_FALSE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_EN_ASF_ALL );
@@ -79,13 +79,13 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics_1(void) {
 
 void fcml_tf_mnemonic_parser_test_parse_mnemonics_2(void) {
 
-    fcml_mp_mnemonic_set *mnemonics_set;
+    fcml_st_mp_mnemonic_set *mnemonics_set;
 
     fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( "cmps[ts];", &mnemonics_set );
     CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 
     fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
-    fcml_mp_mnemonic *mnemonic = (fcml_mp_mnemonic*)element->item;
+    fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmps" );
     CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_EN_ASF_ALL );
@@ -133,7 +133,7 @@ fcml_string fcml_itb_bad_formatted_mnemonics[] = {
 void fcml_tf_mnemonic_parser_test_parse_mnemonics_3(void) {
     int i;
     for( i = 0; i < sizeof( fcml_itb_bad_formatted_mnemonics ) / sizeof( fcml_string ); i++ ) {
-        fcml_mp_mnemonic_set *mnemonics_set = NULL;
+        fcml_st_mp_mnemonic_set *mnemonics_set = NULL;
         fcml_string mnemonic = fcml_itb_bad_formatted_mnemonics[i];
         fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( mnemonic, &mnemonics_set );
         CU_ASSERT_EQUAL( error, FCML_CEH_GEC_INVALID_INPUT );
