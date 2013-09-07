@@ -43,13 +43,17 @@ CU_SuiteInfo *suites[] = {
 };
 
 int main(int argc, char **argv) {
-	ira_init();
 
 	fcml_ceh_error error = fcml_fn_asm_init( fcml_fn_get_intel_dialect_context(), &assembler );
 	if( error ) {
 		printf("Can not initialize assembler.\n");
 		return 1;
 	}
+
+    ira_init();
+
+    FCML_I32_A_P( "cmpsb", 0xA6 );
+    return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
@@ -66,7 +70,7 @@ int main(int argc, char **argv) {
         CU_basic_run_tests();
         CU_cleanup_registry();
     }
-    ira_deinit();
     fcml_fn_asm_free( assembler );
+    ira_deinit();
     exit(0);
 }
