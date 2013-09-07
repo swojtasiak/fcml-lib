@@ -86,6 +86,7 @@ typedef struct fcml_st_asm_encoding_context {
 	fcml_st_assembler_result *result;
 	fcml_st_asm_opcode_reg opcode_reg;
 	fcml_nint8_t instruction_size;
+	fcml_bool is_shortcut_mnemonic;
 } fcml_st_asm_encoding_context;
 
 typedef fcml_ceh_error (*fcml_st_asm_instruction_part_post_processor)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args );
@@ -149,6 +150,7 @@ typedef struct fcml_ifn_asm_instruction_part_processor_descriptor {
 	fcml_ien_asm_instruction_part_processor_type processor_type;
 	fcml_ptr processor_args;
 	fcml_fp_env_memory_free_handler processor_args_deallocator;
+	fcml_bool is_short_form_supported;
 } fcml_ifn_asm_instruction_part_processor_descriptor;
 
 typedef fcml_ifn_asm_instruction_part_processor_descriptor (*fcml_ifn_asm_instruction_part_processor_factory)( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error );

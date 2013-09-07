@@ -558,7 +558,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPPS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPS[] = {
 	// A6 CMPS m8, m8 A Valid Valid For legacy mode, compare byte at address DS:(E)SI with byte at address ES:(E)DI; For 64-bit mode compare byte at address (R|E)SI to byte at address (R|E)DI. The status flags are set accordingly.
-	{ "cmps;cmpsb", 0x0001, 0x00C40000, { 0xA6, 0x00, 0x00 },
+	{ "cmps;cmpsb[ts]", 0x0001, 0x00C40000, { 0xA6, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } },

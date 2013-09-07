@@ -1136,9 +1136,11 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_st_asm_encoding_context *context, 
 	while( current_processor ) {
 		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
 		context->part_processor_context.part_processor_index = index;
-		if( descriptor->processor_acceptor != NULL && descriptor->processor_acceptor( context, &(addr_mode->addr_mode_details), addr_mode->addr_mode_desc, instruction, descriptor->processor_args ) != FCML_CEH_GEC_NO_ERROR ) {
-			FCML_TRACE( "Addressing mode not accepted." );
-			return FCML_FALSE;
+		if( !context->is_shortcut_mnemonic || ( context->is_shortcut_mnemonic && descriptor->is_short_form_supported ) ) {
+            if( descriptor->processor_acceptor != NULL && descriptor->processor_acceptor( context, &(addr_mode->addr_mode_details), addr_mode->addr_mode_desc, instruction, descriptor->processor_args ) != FCML_CEH_GEC_NO_ERROR ) {
+                FCML_TRACE( "Addressing mode not accepted." );
+                return FCML_FALSE;
+            }
 		}
 		current_processor = current_processor->next_processor;
 		index++;
@@ -1173,7 +1175,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 		int index = 0;
 		while(current_processor) {
 			fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
-			if( descriptor->processor_encoder ) {
+			if( descriptor->processor_encoder && ( !context->is_shortcut_mnemonic || ( context->is_shortcut_mnemonic && descriptor->is_short_form_supported ) ) ) {
 				if( !first && descriptor->processor_type == FCML_IEN_ASM_IPPT_ENCODER ) {
 					current_instruction_part++;
 				}
@@ -1341,6 +1343,9 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 				fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = holder->addr_mode_encoding_details;
 
 				fcml_ifn_clean_context( context );
+
+				// This information is necessary to ignore operands encoding process.
+				context->is_shortcut_mnemonic = addr_modes->mnemonic->shortcut;
 
 #ifdef FCML_DEBUG
 				context->__def_index = index;
@@ -2010,6 +2015,7 @@ typedef enum fcml_st_instruction_part_choice_type {
 typedef struct fcml_ist_asm_instruction_part_factory_sequence {
 	fcml_ist_asm_instruction_part_factory_details *details;
 	fcml_st_instruction_part_choice_type choice_type;
+	fcml_bool is_short_form_supported;
 } fcml_ist_asm_instruction_part_factory_sequence;
 
 // List of instruction part encoders for instruction opcode.
@@ -2054,11 +2060,11 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 };
 
 fcml_ist_asm_instruction_part_factory_sequence fcml_asm_instruction_part_processor_factory_sequences_for_IA[] = {
-	{ fcml_asm_instruction_part_processor_factories_acceptors_IA, FCML_IPCT_ALL },
-	{ fcml_asm_instruction_part_processor_factories_prefixes_for_IA, FCML_IPCT_ALL },
-	{ fcml_asm_instruction_part_processor_factories_opcode_for_IA, FCML_IPCT_ONE },
-	{ fcml_asm_instruction_part_processor_factories_ModRM_for_IA, FCML_IPCT_ALL },
-	{ fcml_asm_instruction_part_processor_factories_operands_for_IA, FCML_IPCT_ALL },
+	{ fcml_asm_instruction_part_processor_factories_acceptors_IA, FCML_IPCT_ALL, FCML_TRUE },
+	{ fcml_asm_instruction_part_processor_factories_prefixes_for_IA, FCML_IPCT_ALL, FCML_TRUE },
+	{ fcml_asm_instruction_part_processor_factories_opcode_for_IA, FCML_IPCT_ONE, FCML_TRUE },
+	{ fcml_asm_instruction_part_processor_factories_ModRM_for_IA, FCML_IPCT_ALL, FCML_FALSE },
+	{ fcml_asm_instruction_part_processor_factories_operands_for_IA, FCML_IPCT_ALL, FCML_FALSE },
 	{ NULL }
 };
 
@@ -2076,6 +2082,8 @@ fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_pro
 			if( descriptor.processor_encoder || descriptor.processor_acceptor ) {
 
 				processor_counter++;
+
+				descriptor.is_short_form_supported = current_factories_sequence->is_short_form_supported;
 
 				// Check max number of processors.
 				if( processor_counter > FCML_ASM_MAX_PART_PROCESSORS ) {
