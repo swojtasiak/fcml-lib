@@ -207,25 +207,50 @@ void fcml_tf_instruction_CMPPS(void) {
 }
 
 void fcml_tf_instruction_CMPS(void) {
-    // TODO: Zastosowac skroty, czyli jezeli wszystko sie zgadza to asz do wyboru albo pokazac mnemonike 1, ze wszsytkii operandami, albo
-    // alternatywnie mnemonike skrotu, czyli w taim przypaku jezeli wystepuje mnemoika skrotu to ja nalezy zastosowac jezeli konfiguracja przewiduje krotsza alternatywe.
-    // oczywiscie assembler obsluguje obie formy.
     // A6
-   /* FCML_I32( "cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
+    FCML_I32( "cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
     FCML_I32( "cmps byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xA6 );
     FCML_I32( "cmps byte ptr [esi],byte ptr [edi]", 0xA6 );
-    FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
-    FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0x40, 0xA6 );
-    FCML_I64( "cmps byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xA6 );
-    FCML_I64( "cmps byte ptr [esi],byte ptr [edi]", 0x66, 0x67, 0x40, 0xA6 );
+    FCML_I64_D( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
+    FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0xA6 );
+    FCML_I64_D( "cmps byte ptr [rsi],byte ptr [rdi]", 0x40, 0xA6 );
+    FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0xA6 );
+    FCML_I64_D( "cmps byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xA6 );
+    FCML_I64( "cmps byte ptr [esi],byte ptr [edi]", 0x67, 0xA6 );
+    FCML_I64_D( "cmps byte ptr [esi],byte ptr [edi]", 0x66, 0x67, 0x40, 0xA6 );
+    FCML_I64( "cmps byte ptr [esi],byte ptr [edi]", 0x66, 0x67, 0xA6 );
     // A7
     FCML_I32( "cmps dword ptr [si],dword ptr [di]", 0x67, 0xA7 );
+    FCML_I64_A_FAILED( "cmps dword ptr [si],dword ptr [di]", 0x67, 0xA7 );
     FCML_I32( "cmps word ptr [si],word ptr [di]", 0x66, 0x67, 0xA7 );
     FCML_I32( "cmps dword ptr [esi],dword ptr [edi]", 0xA7 );
     FCML_I64( "cmps qword ptr [rsi],qword ptr [rdi]", 0x48, 0xA7 );
-    FCML_I64( "cmps dword ptr [rsi],dword ptr [rdi]", 0x40, 0xA7 );
-    FCML_I64( "cmps dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xA7 );
-    FCML_I64( "cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );*/
+    FCML_I64_D( "cmps dword ptr [rsi],dword ptr [rdi]", 0x40, 0xA7 );
+    FCML_I64( "cmps dword ptr [rsi],dword ptr [rdi]", 0xA7 );
+    FCML_I64_D( "cmps dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xA7 );
+    FCML_I64( "cmps dword ptr [esi],dword ptr [edi]", 0x67, 0xA7 );
+    FCML_I64_D( "cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );
+    FCML_I64( "cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0xA7 );
+    // Segment override.
+    // ES cannot be overridden.
+    FCML_I32_A_FAILED( "cmps dword ptr ds:[si],dword ptr cs:[di]", 0x67, 0xA7 );
+    FCML_I32_A_FAILED( "cmps dword ptr ds:[si],dword ptr ds:[di]", 0x67, 0xA7 );
+    FCML_I32_A( "cmps dword ptr ds:[si],dword ptr es:[di]", 0x67, 0xA7 );
+    // DS can be.
+    FCML_I32_A( "cmps dword ptr cs:[si],dword ptr es:[di]", 0x2E, 0x67, 0xA7 );
+    FCML_I32_A( "cmps dword ptr ss:[si],dword ptr es:[di]", 0x36, 0x67, 0xA7 );
+    FCML_I32_A( "cmps dword ptr es:[si],dword ptr es:[di]", 0x26, 0x67, 0xA7 );
+    FCML_I32_A( "cmps dword ptr fs:[si],dword ptr es:[di]", 0x64, 0x67, 0xA7 );
+    FCML_I32_A( "cmps dword ptr gs:[si],dword ptr es:[di]", 0x65, 0x67, 0xA7 );
+    // Short forms.
+    FCML_I32_D_SHORT( "cmpsb", 0xA6 );
+    FCML_I32_D_SHORT( "cmpsw", 0x66, 0xA7 );
+    FCML_I32_D_SHORT( "cmpsd", 0xA7 );
+    FCML_I64_D_SHORT( "cmpsq", 0x48, 0xA7 );
+    FCML_I32_A( "cmpsb", 0xA6 );
+    FCML_I32_A( "cmpsw", 0x66, 0xA7 );
+    FCML_I32_A( "cmpsd", 0xA7 );
+    FCML_I64_A( "cmpsq", 0x48, 0xA7 );
 }
 
 CU_TestInfo fctl_ti_instructions_c[] = {
