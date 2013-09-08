@@ -118,9 +118,8 @@ fcml_string fcml_itb_bad_formatted_mnemonics[] = {
     " cmps",
     "[]",
     "cmps[oda",
-    "cmps[oda]",
     "cmps]",
-    "cmps[odad]",
+    "cmps[odadddf]",
     "cmps[od,,ad]",
     "cmps[,od]",
     "cmps[od,]",
@@ -136,9 +135,31 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics_3(void) {
         fcml_st_mp_mnemonic_set *mnemonics_set = NULL;
         fcml_string mnemonic = fcml_itb_bad_formatted_mnemonics[i];
         fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( mnemonic, &mnemonics_set );
+       // printf("%d:%d\n", i, error);
         CU_ASSERT_EQUAL( error, FCML_CEH_GEC_INVALID_INPUT );
         CU_ASSERT_PTR_NULL( mnemonics_set );
     }
+}
+
+void fcml_tf_mnemonic_parser_test_parse_mnemonics_4(void) {
+
+    fcml_st_mp_mnemonic_set *mnemonics_set;
+
+    fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( "cmpordsd[p07]", &mnemonics_set );
+    CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+
+    fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
+    fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)element->item;
+    CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmpordsd" );
+    CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_FALSE );
+    CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_DS_UNDEF );
+    CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
+    CU_ASSERT_EQUAL( mnemonic->pseudo_op.is_not_null, FCML_TRUE );
+    CU_ASSERT_EQUAL( mnemonic->pseudo_op.value, 0x07 );
+
+    CU_ASSERT_PTR_NULL( element->next );
+
+    fcml_fn_mp_free_mnemonics( mnemonics_set );
 }
 
 CU_TestInfo fcml_ti_mnemonic_parser[] = {
@@ -146,6 +167,7 @@ CU_TestInfo fcml_ti_mnemonic_parser[] = {
     { "fcml_tf_mnemonic_parser_test_parse_mnemonics_1", fcml_tf_mnemonic_parser_test_parse_mnemonics_1 },
     { "fcml_tf_mnemonic_parser_test_parse_mnemonics_2", fcml_tf_mnemonic_parser_test_parse_mnemonics_2 },
     { "fcml_tf_mnemonic_parser_test_parse_mnemonics_3", fcml_tf_mnemonic_parser_test_parse_mnemonics_3 },
+    { "fcml_tf_mnemonic_parser_test_parse_mnemonics_4", fcml_tf_mnemonic_parser_test_parse_mnemonics_4 },
     CU_TEST_INFO_NULL,
 };
 
