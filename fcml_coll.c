@@ -13,13 +13,13 @@
 // Bi directional list.
 
 fcml_st_coll_list *fcml_fn_coll_list_alloc() {
-	fcml_st_coll_list *list =  (fcml_st_coll_list*)fcml_fn_env_memory_alloc( sizeof( fcml_st_coll_list ) );
-	if( list ) {
-		list->head = NULL;
-		list->tail = NULL;
-		list->size = 0;
-	}
-	return list;
+    fcml_st_coll_list *list =  (fcml_st_coll_list*)fcml_fn_env_memory_alloc( sizeof( fcml_st_coll_list ) );
+    if( list ) {
+        list->head = NULL;
+        list->tail = NULL;
+        list->size = 0;
+    }
+    return list;
 }
 
 fcml_st_coll_list_element *fcml_fn_coll_list_add_front( fcml_st_coll_list *list, fcml_ptr item ) {
@@ -94,10 +94,10 @@ void fcml_fn_coll_list_remove( fcml_st_coll_list *list, fcml_st_coll_list_elemen
 	fcml_fn_env_memory_free( element );
 }
 
-void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler ) {
+void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, fcml_ptr item_handler_args ) {
 	fcml_st_coll_list_element *current = list->head;
 	while( current ) {
-		(item_handler)( current->item, NULL );
+		(item_handler)( current->item, item_handler_args );
 		fcml_st_coll_list_element *tmp = current;
 		current = current->next;
 		fcml_fn_env_memory_free( tmp );

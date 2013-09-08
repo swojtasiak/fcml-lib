@@ -327,7 +327,7 @@ typedef struct fcml_st_address {
 } fcml_st_address;
 
 typedef struct fcml_st_effective_address {
-	fcml_uint16_t size_operator;
+    fcml_data_size size_operator;
 	fcml_st_register segment_selector;
     fcml_st_register base;
     fcml_st_register index;
@@ -335,22 +335,11 @@ typedef struct fcml_st_effective_address {
     fcml_st_displacement displacement;
 } fcml_st_effective_address;
 
-// TODO: nie mam pojecia dla jakiego trybu adresowania to zostawilem, jak sobie przypome dodac przyklad trybu.
-typedef struct fcml_st_offset {
-	fcml_data_size size;
-    union {
-        uint16_t off16;
-        uint32_t off32;
-        uint64_t off64;
-    };
-} fcml_st_offset;
-
 typedef enum fcml_en_operand_type {
 	FCML_EOT_NONE,
     FCML_EOT_IMMEDIATE,
     FCML_EOT_FAR_POINTER,
     FCML_EOT_EFFECTIVE_ADDRESS,
-    FCML_EOT_OFFSET,
     FCML_EOT_REGISTER
 } fcml_en_operand_type;
 
@@ -360,7 +349,6 @@ typedef struct fcml_st_operand {
         fcml_st_immediate immediate;
         fcml_st_far_pointer far_pointer;
         fcml_st_effective_address effective_address;
-        fcml_st_offset offset;
         fcml_st_register reg;
     };
 } fcml_st_operand;

@@ -28,8 +28,8 @@ fcml_ceh_error fcml_fn_asm_init( fcml_st_dialect_context context, fcml_st_assemb
 	return error;
 }
 
-void fcml_ifp_coll_list_action_free_assembled_instruction( fcml_ptr item_value, fcml_ptr *args ) {
-	fcml_st_assembled_instruction *asm_inst = (fcml_st_assembled_instruction*)args;
+void fcml_ifp_coll_list_action_free_assembled_instruction( fcml_ptr item_value, fcml_ptr args ) {
+	fcml_st_assembled_instruction *asm_inst = (fcml_st_assembled_instruction*)item_value;
 	if( asm_inst ) {
 		fcml_fn_env_memory_free( asm_inst->code );
 		fcml_fn_env_memory_free( asm_inst );
@@ -42,7 +42,7 @@ void fcml_fn_assemble_free( fcml_st_assembler_result *result ) {
 			fcml_fn_ceh_free_error_container( result->errors );
 		}
 		if(result->instructions ) {
-			fcml_fn_coll_list_free( result->instructions, fcml_ifp_coll_list_action_free_assembled_instruction );
+			fcml_fn_coll_list_free( result->instructions, fcml_ifp_coll_list_action_free_assembled_instruction, NULL );
 		}
 		fcml_fn_env_memory_free( result );
 	}

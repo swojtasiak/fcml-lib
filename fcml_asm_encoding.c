@@ -354,6 +354,30 @@ fcml_bool fcml_ifn_set_size_flag( fcml_st_asm_nullable_size_flags *nullable_flag
 	return FCML_TRUE;
 }
 
+fcml_bool fcml_ifn_accept_segment_register( fcml_st_asm_encoding_context *context, fcml_st_register *segment_register, fcml_uint8_t encoded_segment_register ) {
+    fcml_uint8_t reg_num = encoded_segment_register & 0x7F;
+    fcml_bool allow_override = encoded_segment_register & FCML_SEG_ALLOW_OVERRIDE;
+
+    // No mater what segment register we have expected, default one has been used.
+    if( segment_register->type == FCML_REG_UNDEFINED ) {
+        return FCML_TRUE;
+    } else if( segment_register->type != FCML_REG_SEG ) {
+        // Wrong register type, segment register should be used.
+        return FCML_FALSE;
+    }
+
+    if( segment_register->reg == reg_num ) {
+        // Register are the same, everything going well.
+        return FCML_TRUE;
+    } else if ( allow_override ) {
+        // TODO: dodac komuniat bledu, tak aby yuzytkownik mial swiadomosc tego co jest nie tak.
+        context->segment_override = *segment_register;
+        return FCML_TRUE;
+    }
+
+    return FCML_FALSE;
+}
+
 fcml_bool fcml_ifn_accept_data_size( fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_uint8_t encoded_register_operand_size, fcml_data_size operand_size, enum fcml_ien_comparator_type comparator ) {
 	fcml_st_asm_data_size_flags *data_size_flags = &(context->data_size_flags);
 	fcml_en_attribute_size_flag osa_flags = FCML_EN_ASF_ANY;
@@ -868,11 +892,15 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_far_pointer( fcml_ien_asm_part_proce
 //-----------------------------
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
-}
-
-fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_sf_def_tma_explicit_gps_reg_addressing *args = (fcml_sf_def_tma_explicit_gps_reg_addressing*)addr_mode->addr_mode_args;
+    if( operand_def->type != FCML_EOT_EFFECTIVE_ADDRESS || operand_def->effective_address.base.reg != args->reg_num ||
+            !fcml_ifn_accept_data_size( context, addr_mode_desc, FCML_EOS_EASA, operand_def->effective_address.base.size, FCML_IEN_CT_EQUAL ) ||
+            !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_operand_size, operand_def->effective_address.size_operator, FCML_IEN_CT_EQUAL ) ||
+            !fcml_ifn_accept_segment_register( context, &(operand_def->effective_address.segment_selector), args->encoded_segment_register ) ) {
+        error = FCML_EN_UNSUPPORTED_OPPERAND;
+    }
+	return error;
 }
 
 //-------------
@@ -1110,7 +1138,7 @@ fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
 	{ fcml_fnp_asm_operand_encoder_immediate_dis_relative, fcml_fnp_asm_operand_acceptor_immediate_dis_relative, NULL },
 	{ fcml_fnp_asm_operand_encoder_far_pointer, fcml_fnp_asm_operand_acceptor_far_pointer, fcml_fnp_asm_ihc_far_pointer },
 	{ fcml_fnp_asm_operand_encoder_far_pointer_indirect, fcml_fnp_asm_operand_acceptor_far_pointer_indirect, fcml_fnp_asm_ihc_far_pointer },
-	{ fcml_fnp_asm_operand_encoder_explicit_gps_reg_addressing, fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing, NULL },
+	{ NULL, fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing, NULL },
 	{ fcml_fnp_asm_operand_encoder_explicit_ib, fcml_fnp_asm_operand_acceptor_explicit_ib, NULL },
 	{ fcml_fnp_asm_operand_encoder_segment_relative_offset, fcml_fnp_asm_operand_acceptor_segment_relative_offset, NULL },
 	{ fcml_fnp_asm_operand_encoder_rm, fcml_fnp_asm_operand_acceptor_rm, fcml_fnp_asm_ihc_near_pointer },
@@ -1136,7 +1164,7 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_st_asm_encoding_context *context, 
 	while( current_processor ) {
 		fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
 		context->part_processor_context.part_processor_index = index;
-		if( !context->is_shortcut_mnemonic || ( context->is_shortcut_mnemonic && descriptor->is_short_form_supported ) ) {
+		if( !context->is_short_form || ( context->is_short_form && descriptor->is_short_form_supported ) ) {
             if( descriptor->processor_acceptor != NULL && descriptor->processor_acceptor( context, &(addr_mode->addr_mode_details), addr_mode->addr_mode_desc, instruction, descriptor->processor_args ) != FCML_CEH_GEC_NO_ERROR ) {
                 FCML_TRACE( "Addressing mode not accepted." );
                 return FCML_FALSE;
@@ -1175,7 +1203,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_st_asm_encoding_context *con
 		int index = 0;
 		while(current_processor) {
 			fcml_ifn_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
-			if( descriptor->processor_encoder && ( !context->is_shortcut_mnemonic || ( context->is_shortcut_mnemonic && descriptor->is_short_form_supported ) ) ) {
+			if( descriptor->processor_encoder && ( !context->is_short_form || ( context->is_short_form && descriptor->is_short_form_supported ) ) ) {
 				if( !first && descriptor->processor_type == FCML_IEN_ASM_IPPT_ENCODER ) {
 					current_instruction_part++;
 				}
@@ -1329,6 +1357,16 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 			return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
 		}
 
+		// Check if there are any operands available. Short form can be used only if there are no operands.
+		fcml_bool no_operands = FCML_TRUE;
+		int i;
+		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+		    if( context->instruction->operands[i].type != FCML_EOT_NONE ) {
+		        no_operands = FCML_FALSE;
+		        break;
+		    }
+		}
+
 		// Choose addressing mode.
 		if( addr_modes->addr_modes->size ) {
 			fcml_st_coll_list_element *addr_mode_element = addr_modes->addr_modes->head;
@@ -1339,13 +1377,27 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 
 				error = FCML_CEH_GEC_NO_ERROR;
 
-				fcml_st_asm_instruction_addr_mode_encoding_details_holder *holder = (fcml_st_asm_instruction_addr_mode_encoding_details_holder *)addr_mode_element->item;
-				fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = holder->addr_mode_encoding_details;
+				fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details*)addr_mode_element->item;
 
 				fcml_ifn_clean_context( context );
 
 				// This information is necessary to ignore operands encoding process.
-				context->is_shortcut_mnemonic = addr_modes->mnemonic->shortcut;
+
+				fcml_bool is_short_form = addr_mode->mnemonic->shortcut && no_operands;
+
+				context->is_short_form = is_short_form;
+				if( is_short_form ) {
+				    fcml_data_size asa = addr_mode->mnemonic->supported_asa;
+				    context->data_size_flags.effective_address_size = asa;
+				    if( asa ) {
+				        fcml_fn_cmi_set_attribute_size_flag_for_size( asa, &(context->data_size_flags.allowed_effective_address_size) );
+				    }
+				    fcml_data_size osa = addr_mode->mnemonic->supported_osa;
+				    context->data_size_flags.effective_operand_size = osa;
+				    if( osa ) {
+                        fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context->data_size_flags.allowed_effective_operand_size) );
+                    }
+				}
 
 #ifdef FCML_DEBUG
 				context->__def_index = index;
@@ -1625,6 +1677,43 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 /////////////////////////////////
 // Prefixes encoder factories. //
 /////////////////////////////////
+
+// Segment override prefix.
+
+fcml_uint8_t fcml_itb_asm_prefix_override_mapping[] = {
+    0x26,
+    0x2e,
+    0x36,
+    0x3e,
+    0x64,
+    0x65
+};
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_segment_override_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
+        if( context->segment_override.type == FCML_REG_SEG ) {
+            fcml_uint8_t seg_reg_num = context->segment_override.reg;
+            if( seg_reg_num <= 5) {
+                instruction_part->code[0] = fcml_itb_asm_prefix_override_mapping[ seg_reg_num ];
+                instruction_part->code_length = 1;
+            } else {
+                // Unknown segment register.
+                error = FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+            }
+        }
+    }
+    return error;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_segment_override_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
+    fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+    descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+    descriptor.processor_args = NULL;
+    descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_segment_override_prefix_encoder;
+    descriptor.processor_acceptor = NULL;
+    return descriptor;
+}
 
 // Mandatory prefixes.
 
@@ -2035,9 +2124,10 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 
 // List of instruction part encoders for instruction prefixes.
 fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
-	{ fcml_ifn_asm_instruction_part_processor_factory_mandatory_prefixes_encoder, 0 },
+    { fcml_ifn_asm_instruction_part_processor_factory_segment_override_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder, 0 },
+	{ fcml_ifn_asm_instruction_part_processor_factory_mandatory_prefixes_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_VEX_XOP_prefix_encoder, 0 },
 	{ NULL, 0 }
@@ -2083,6 +2173,7 @@ fcml_ifn_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_pro
 
 				processor_counter++;
 
+				// TODO: ozna by sie zastanowic jak ukrys ta zmienna przed fabyka deskryptorow.
 				descriptor.is_short_form_supported = current_factories_sequence->is_short_form_supported;
 
 				// Check max number of processors.
@@ -2204,34 +2295,31 @@ fcml_st_asm_addr_mode_desc_details fcml_ifn_asm_precalculate_addr_mode( fcml_st_
 	return details;
 }
 
-void fcml_ifn_asm_free_addr_mode( fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode ) {
+void fcml_ifn_asm_free_addr_mode( fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_dialect_context *dialect_context ) {
     if( addr_mode ) {
+        if( addr_mode->mnemonic ) {
+            dialect_context->free_mnemonic( addr_mode->mnemonic );
+        }
         fcml_fn_env_memory_free( addr_mode );
     }
 }
 
-void fcml_ifn_asm_free_instruction_addr_mode_item_handler( fcml_ptr item_value, fcml_ptr *args ) {
-    fcml_st_asm_instruction_addr_mode_encoding_details_holder *holder = (fcml_st_asm_instruction_addr_mode_encoding_details_holder*)item_value;
+void fcml_ifn_asm_free_instruction_addr_mode_item_handler( fcml_ptr item_value, fcml_ptr args ) {
+    fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details*)item_value;
     // Do not free clones.
-    if( !holder->is_clone ) {
-        fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = holder->addr_mode_encoding_details;
+    if( !addr_mode->is_cloned ) {
         if( addr_mode->part_processor_chain ) {
             fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
         }
-        fcml_ifn_asm_free_addr_mode( addr_mode );
     }
-    fcml_fn_env_memory_free( holder );
+    fcml_ifn_asm_free_addr_mode( addr_mode, (fcml_st_dialect_context*)args );
 }
 
 void fcml_ifn_asm_free_instruction_entry( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
     fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)value;
     if( addr_modes ) {
         if( addr_modes->addr_modes ) {
-            if( addr_modes->mnemonic ) {
-                // Let assembler dialect free mnemonic.
-                ((fcml_st_dialect_context*)args)->free_mnemonic( addr_modes->mnemonic );
-            }
-            fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
+            fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler, args );
         }
         fcml_fn_env_memory_free( addr_modes );
     }
@@ -2259,10 +2347,11 @@ fcml_st_condition fcml_itb_instruction_conditions[] = {
 };
 
 fcml_ceh_error fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_builder( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ifn_asm_instruction_addr_mode_encoding_details_handler addr_mode_handler ) {
+
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     int i;
-    for( i = 0; i < FCML_NUMBER_OF_CONDITIONS * 2; i++ ) {
+    for( i = 0; i < FCML_NUMBER_OF_CONDITIONS * 2 && !error; i++ ) {
 
         fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details *)fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_asm_instruction_addr_mode_encoding_details ) );
         if( !addr_mode ) {
@@ -2285,9 +2374,12 @@ fcml_ceh_error fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_b
         if( !error ) {
             addr_mode->instruction_parts = instruction_parts;
             error = addr_mode_handler( init_context, instruction, addr_mode_desc, addr_mode );
+            if( error ) {
+                fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
+                fcml_fn_env_memory_free(addr_mode);
+            }
         } else {
             fcml_fn_env_memory_free(addr_mode);
-            addr_mode = NULL;
         }
 
     }
@@ -2317,6 +2409,7 @@ fcml_ceh_error fcml_ifn_asm_default_addr_mode_encoding_details_builder( fcml_ist
         error = addr_mode_handler( init_context, instruction, addr_mode_desc, addr_mode );
         if( error ) {
             // In case of errors from handler, this function is responsible for freeing addressing mode.
+            fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
             fcml_fn_env_memory_free(addr_mode);
         }
 	} else {
@@ -2336,6 +2429,8 @@ fcml_ifn_asm_addr_mode_encoding_details_builder fcml_ifn_asm_conditional_instruc
 // ******************************************
 // Addressing mode encoding details handlers.
 // ******************************************
+
+//void fcml_fn_asm_
 
 fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode ) {
 
@@ -2365,13 +2460,14 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
                 // Allocate list for addressing modes.
                 addr_modes->addr_modes = fcml_fn_coll_list_alloc();
                 if( addr_modes->addr_modes ) {
-                    addr_modes->mnemonic = mnemonics[i];
+                    // Do not care about freeing this piece of memory. Procedure responsible for freeing adressing mode is responsible for it.
+                    addr_modes->mnemonic = mnemonics[i]->mnemonic;
                     addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction->instruction_type );
 
                     // Puts prepared structure under mnemonic key.
                     fcml_fn_coll_map_put( init_context->assembler->instructions_map, mnemonics[i]->mnemonic, addr_modes, &error );
                     if( error ) {
-                        fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler );
+                        fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler, &(init_context->assembler->dialect_context) );
                         fcml_fn_env_memory_free(addr_modes);
                     }
 
@@ -2384,37 +2480,45 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
                 // Out of memory.
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
             }
-        } else {
-            // Mnemonic is already available in the map, so free it.
-            init_context->assembler->dialect_context.free_mnemonic( mnemonics[i] );
         }
 
         if( !error ) {
 
-            // Allocate addressing mode holder.
-            fcml_st_asm_instruction_addr_mode_encoding_details_holder *holder = fcml_fn_env_clear_memory_alloc( sizeof(fcml_st_asm_instruction_addr_mode_encoding_details_holder) );
-            if( holder ) {
+            fcml_bool is_cloned = ( i > 0 );
 
-                // Take into account that every holder holds the same addressing mode encoding details, it's why we
-                // need this clone flag. It's used to free only one instance of addressing mode details when needed.
-                holder->addr_mode_encoding_details = addr_mode;
-                holder->is_clone = ( i > 0 );
+            fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode_encoding_details = addr_mode;
 
-                if( !fcml_fn_coll_list_add_back( addr_modes->addr_modes, holder ) ) {
-                    // Free holder allocated earlier.
-                    fcml_fn_env_memory_free( holder );
+            if( is_cloned ) {
+
+                // Clone encoding details for secondary mnemonics.
+                fcml_st_asm_instruction_addr_mode_encoding_details *clone_addr_mode_enc_details = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_asm_instruction_addr_mode_encoding_details ) );
+                if( clone_addr_mode_enc_details ) {
+                    *clone_addr_mode_enc_details = *addr_mode_encoding_details;
+                    clone_addr_mode_enc_details->is_cloned = FCML_TRUE;
+                    addr_mode_encoding_details = clone_addr_mode_enc_details;
+                } else {
                     error = FCML_CEH_GEC_OUT_OF_MEMORY;
                 }
 
-            } else {
+            }
+
+            // Every addressing mode has its own mnemonic configuration, it doesn't matter if it is cloned addressing mode or not
+            // it is responsible for deallocating it.
+            addr_mode_encoding_details->mnemonic = mnemonics[i];
+
+            if( !error && !fcml_fn_coll_list_add_back( addr_modes->addr_modes, addr_mode_encoding_details ) ) {
+                // Free holder allocated earlier.
+                if( is_cloned ) {
+                    fcml_fn_env_memory_free( addr_mode_encoding_details );
+                }
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
             }
 
         }
 
         if( error ) {
-            // In case of error free all mnemonics which haven't been used yet.
-            for( i++; i < mnemonic_count; i++ ) {
+            // In case of error free all mnemonics which haven't been added to the addressing mode list.
+            for( ; i < mnemonic_count; i++ ) {
                fcml_fn_asm_dialect_free_mnemonic( mnemonics[i] );
            }
         }

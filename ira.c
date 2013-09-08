@@ -812,6 +812,7 @@ void _ira_free_disassemblation_tree( struct ira_diss_tree_opcode** disassemblati
 					}
 				}
 				if( current_inst_decoding->mnemonics ) {
+				    // TODO: Tu musi byc wykorzystany raczej dialekt mnemonik, poniewaz on jest odpowiedzialny za alokacje mnemonic i dealokacje, ktora sie moze roznic w zaleznosci od dialektu.
 				    fcml_fn_mp_free_mnemonics( current_inst_decoding->mnemonics );
 				}
 				free( current_inst_decoding );

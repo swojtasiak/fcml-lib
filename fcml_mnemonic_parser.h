@@ -16,8 +16,8 @@
 typedef struct fcml_st_mp_mnemonic {
     fcml_string mnemonic;
     fcml_bool shortcut;
-    fcml_en_attribute_size_flag supported_osa;
-    fcml_en_attribute_size_flag supported_asa;
+    fcml_data_size supported_osa;
+    fcml_data_size supported_asa;
 } fcml_st_mp_mnemonic;
 
 typedef struct fcml_st_mp_mnemonic_set {

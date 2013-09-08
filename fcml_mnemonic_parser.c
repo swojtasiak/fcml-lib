@@ -18,8 +18,8 @@ enum fcml_ien_mp_parser_state {
 #define FCML_IDF_MP_BUFF_LEN 256
 
 void fcml_ifn_mp_clean_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
-    mnemonic->supported_osa = FCML_EN_ASF_ALL;
-    mnemonic->supported_asa = FCML_EN_ASF_ALL;
+    mnemonic->supported_osa = FCML_DS_UNDEF;
+    mnemonic->supported_asa = FCML_DS_UNDEF;
     mnemonic->shortcut = FCML_FALSE;
     mnemonic->mnemonic = NULL;
 }
@@ -55,20 +55,20 @@ fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, f
     return error;
 }
 
-fcml_ceh_error fcml_ifn_parse_attribute_size_flag( fcml_char flag_code, fcml_en_attribute_size_flag *flags ) {
+fcml_ceh_error fcml_ifn_parse_attribute_size_flag( fcml_char flag_code, fcml_data_size *flags ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     switch( flag_code ) {
     case 'w':
-        *flags = FCML_EN_ASF_16;
+        *flags = FCML_DS_16;
         break;
     case 'd':
-        *flags = FCML_EN_ASF_32;
+        *flags = FCML_DS_32;
         break;
     case 'q':
-        *flags = FCML_EN_ASF_64;
+        *flags = FCML_DS_64;
         break;
     case '*':
-        *flags = FCML_EN_ASF_ALL;
+        *flags = FCML_DS_UNDEF;
         break;
     default:
         error = FCML_CEH_GEC_INVALID_INPUT;
@@ -257,7 +257,7 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemon
 
 }
 
-void fcml_ifp_coll_list_action_free_mnemonic( fcml_ptr item_value, fcml_ptr *args ) {
+void fcml_ifp_coll_list_action_free_mnemonic( fcml_ptr item_value, fcml_ptr args ) {
     if( item_value ) {
         fcml_st_mp_mnemonic *parsed_mnemonic = (fcml_st_mp_mnemonic *)item_value;
         if( parsed_mnemonic->mnemonic ) {
@@ -270,7 +270,7 @@ void fcml_ifp_coll_list_action_free_mnemonic( fcml_ptr item_value, fcml_ptr *arg
 void fcml_fn_mp_free_mnemonics( fcml_st_mp_mnemonic_set *mnemonics ) {
     if( mnemonics ) {
         if( mnemonics->mnemonics ) {
-            fcml_fn_coll_list_free( mnemonics->mnemonics, &fcml_ifp_coll_list_action_free_mnemonic );
+            fcml_fn_coll_list_free( mnemonics->mnemonics, &fcml_ifp_coll_list_action_free_mnemonic, NULL );
         }
         fcml_fn_env_memory_free( mnemonics );
     }
