@@ -1118,6 +1118,44 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_vsib( fcml_ien_asm_part_processor_ph
 	return FCML_EN_UNSUPPORTED_OPPERAND;
 }
 
+//------------
+// Pseudo-Op.
+//------------
+
+fcml_ceh_error fcml_fnp_asm_operand_acceptor_pseudo_op( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+    fcml_sf_def_tma_pseudo_op *pseudo_op_args = (fcml_sf_def_tma_pseudo_op*)addr_mode->addr_mode_args;
+    fcml_bool is_pseudo_op = context->mnemonic->pseudo_op.is_not_null;
+    if( operand_def->type == FCML_EOT_IMMEDIATE && !is_pseudo_op ) {
+        // IMM8 encoding is given directly in operand.
+        fcml_st_immediate destination_imm;
+        if( !fcml_ifn_asm_can_sign_convert_imm( &(operand_def->immediate), &destination_imm, FCML_DS_8, FCML_DS_8, 0, NULL ) ) {
+            return FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+        if( destination_imm.imm8 & ( ~pseudo_op_args->mask ) ) {
+            // TODO: informacja dla uzytkownika w kontenerze bledow.
+            return FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+    } else if ( !is_pseudo_op || operand_def->type != FCML_EOT_NONE ) {
+        // IMM8 is not available in operand, so its value should be given in mnemonic configuration. In such case, operand shouldn't exist.
+        return FCML_EN_UNSUPPORTED_OPPERAND;
+    }
+    return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ceh_error fcml_fnp_asm_operand_encoder_pseudo_op( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+    if( operand_def->type == FCML_EOT_IMMEDIATE ) {
+        // IMM8 encoding is given directly in operand.
+        fcml_st_immediate destination_imm;
+        fcml_ifn_asm_can_sign_convert_imm( &(operand_def->immediate), &destination_imm, FCML_DS_8, FCML_DS_8, 0, NULL );
+        operand_enc->code[0] = destination_imm.imm8;
+    } else if ( context->mnemonic->pseudo_op.is_not_null ) {
+        // IMM8 is not available in operand, so its value should be given in mnemonic configuration.
+        operand_enc->code[0] = context->mnemonic->pseudo_op.value;
+    }
+    operand_enc->code_length = 1;
+    return FCML_CEH_GEC_NO_ERROR;
+}
+
 // -----------------
 // Hints calculators
 // -----------------
@@ -1145,7 +1183,8 @@ fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
 	{ fcml_fnp_asm_operand_encoder_r, fcml_fnp_asm_operand_acceptor_r, NULL },
 	{ fcml_fnp_asm_operand_encoder_vex_vvvv, fcml_fnp_asm_operand_acceptor_vex_vvvv, NULL },
 	{ fcml_fnp_asm_operand_encoder_is4, fcml_fnp_asm_operand_acceptor_is4, NULL },
-	{ fcml_fnp_asm_operand_encoder_vsib, fcml_fnp_asm_operand_acceptor_vsib, NULL }
+	{ fcml_fnp_asm_operand_encoder_vsib, fcml_fnp_asm_operand_acceptor_vsib, NULL },
+	{ fcml_fnp_asm_operand_encoder_pseudo_op, fcml_fnp_asm_operand_acceptor_pseudo_op, NULL }
 };
 
 /*********************************
@@ -1398,6 +1437,8 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
                         fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context->data_size_flags.allowed_effective_operand_size) );
                     }
 				}
+
+				context->mnemonic = addr_mode->mnemonic;
 
 #ifdef FCML_DEBUG
 				context->__def_index = index;

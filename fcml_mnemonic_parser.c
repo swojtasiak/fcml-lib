@@ -5,14 +5,15 @@
  *      Author: tAs
  */
 
+#include <stdlib.h>
+
 #include "fcml_mnemonic_parser.h"
 
 enum fcml_ien_mp_parser_state {
     FCML_MP_PS_MNEMONIC,
     FCML_MP_PS_BETWEEN_MNEMONICS,
     FCML_MP_PS_ATTRIBUTE_KEY,
-    FCML_MP_PS_ATTRIBUTE_VALUE,
-    FCML_MP_PS_BETWEEN_ATTRIBUTES
+    FCML_MP_PS_ATTRIBUTE_VALUE
 };
 
 #define FCML_IDF_MP_BUFF_LEN 256
@@ -22,6 +23,8 @@ void fcml_ifn_mp_clean_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
     mnemonic->supported_asa = FCML_DS_UNDEF;
     mnemonic->shortcut = FCML_FALSE;
     mnemonic->mnemonic = NULL;
+    mnemonic->pseudo_op.is_not_null = FCML_FALSE;
+    mnemonic->pseudo_op.value = 0x00;
 }
 
 fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, fcml_st_coll_list *mnemonics, fcml_string mnemonic_buff, fcml_usize len ) {
@@ -76,6 +79,41 @@ fcml_ceh_error fcml_ifn_parse_attribute_size_flag( fcml_char flag_code, fcml_dat
     return error;
 }
 
+fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *attr_value, int attr_value_len, fcml_st_mp_mnemonic *mnemonic ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    // Handle attributes.
+    switch( attr_key ) {
+    case 't':
+        if( attr_value[0] == 's' ) {
+            mnemonic->shortcut = FCML_TRUE;
+        } else {
+            // Currently this attribute can be set to 's' only.
+            error = FCML_CEH_GEC_INVALID_INPUT;
+        }
+        break;
+    case 'o':
+        error = fcml_ifn_parse_attribute_size_flag( attr_value[0], &mnemonic->supported_osa );
+        break;
+    case 'a':
+        error = fcml_ifn_parse_attribute_size_flag( attr_value[0], &mnemonic->supported_asa );
+        break;
+    case 'p':
+        if( attr_value_len == 2 ) {
+            // TODO: Zmienic to na rozwiazanie abrdziej prznosnie, rozszrzeyc env o operacje na stringach.
+            unsigned long val = strtoul(attr_value, NULL, 16);
+            mnemonic->pseudo_op.value = (fcml_uint8_t)val;
+            mnemonic->pseudo_op.is_not_null = FCML_TRUE;
+        } else {
+            error = FCML_CEH_GEC_INVALID_INPUT;;
+        }
+        break;
+    default:
+        // Unknown attribute key.
+        error = FCML_CEH_GEC_INVALID_INPUT;
+    }
+    return error;
+}
+
 fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_st_mp_mnemonic_set **mnemonics_set ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -101,7 +139,8 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
 
     enum fcml_ien_mp_parser_state state = FCML_MP_PS_MNEMONIC;
     fcml_char attr_key;
-    fcml_char attr_value;
+    int attr_value_index = 0;
+    fcml_char attr_value[6];
     fcml_usize i;
 
     // Main loop of simple finite-state machine parser.
@@ -126,10 +165,11 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
                     // empty mnemonic.
                     error = FCML_CEH_GEC_INVALID_INPUT;
                 }
+                fcml_ifn_mp_clean_mnemonic( &mnemonic );
                 mnemonic_index = 0;
             break;
             default:
-                if( mnemonic_index < FCML_IDF_MP_BUFF_LEN && ( fcml_fn_env_is_alpha( c ) || fcml_fn_env_is_digit( c ) ) ) {
+                if( mnemonic_index < FCML_IDF_MP_BUFF_LEN && ( fcml_fn_env_is_alpha( c ) || fcml_fn_env_is_digit( c ) || c == '_' ) ) {
                     mnemonic_buff[mnemonic_index++] = c;
                 } else {
                     error = FCML_CEH_GEC_INVALID_INPUT;
@@ -152,17 +192,22 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
         } else {
             switch( c ) {
             case ']':
-                if( state != FCML_MP_PS_BETWEEN_ATTRIBUTES ) {
+                if( state != FCML_MP_PS_ATTRIBUTE_VALUE || attr_value_index == 0 ) {
                     error = FCML_CEH_GEC_INVALID_INPUT;
                     break;
                 }
+                // Handle last mnemonic attribute.
+                error = fcml_ifn_handle_attribute_value( attr_key, attr_value, attr_value_index, &mnemonic );
+                attr_value_index = 0;
                 state = FCML_MP_PS_BETWEEN_MNEMONICS;
                 break;
             case ',':
-                if( state != FCML_MP_PS_BETWEEN_ATTRIBUTES ) {
+                if( state != FCML_MP_PS_ATTRIBUTE_VALUE || attr_value_index == 0 ) {
                     error = FCML_CEH_GEC_INVALID_INPUT;
                     break;
                 }
+                error = fcml_ifn_handle_attribute_value( attr_key, attr_value, attr_value_index, &mnemonic );
+                attr_value_index = 0;
                 state = FCML_MP_PS_ATTRIBUTE_KEY;
                 break;
             default:
@@ -178,32 +223,9 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
                         error = FCML_CEH_GEC_INVALID_INPUT;
                     }
                 } else if( state == FCML_MP_PS_ATTRIBUTE_VALUE ) {
-                    if( fcml_fn_env_is_alpha( c ) || fcml_fn_env_is_digit( c ) || c == '*' ) {
-                        attr_value = c;
-
-                        // Handle attributes.
-                        switch( attr_key ) {
-                        case 't':
-                        if( attr_value == 's' ) {
-                            mnemonic.shortcut = FCML_TRUE;
-                        } else {
-                            // Currently this attribute can be set to 's' only.
-                            error = FCML_CEH_GEC_INVALID_INPUT;
-                        }
-                        break;
-                        case 'o':
-                            error = fcml_ifn_parse_attribute_size_flag( attr_value, &mnemonic.supported_osa );
-                        break;
-                        case 'a':
-                            error = fcml_ifn_parse_attribute_size_flag( attr_value, &mnemonic.supported_asa );
-                        break;
-                        default:
-                            // Unknown attribute key.
-                            error = FCML_CEH_GEC_INVALID_INPUT;
-                        }
-
-                        state = FCML_MP_PS_BETWEEN_ATTRIBUTES;
-
+                    if( ( fcml_fn_env_is_alpha( c ) || fcml_fn_env_is_digit( c ) || c == '*' ) && attr_value_index < 5 ) {
+                        attr_value[attr_value_index++] = c;
+                        attr_value[attr_value_index] = '\0';
                     } else {
                         error = FCML_CEH_GEC_INVALID_INPUT;
                     }
@@ -234,6 +256,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
 
     return error;
 }
+
 
 fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_data_size osa, fcml_data_size asa ) {
     fcml_st_mp_mnemonic *chosen_mnemonic = NULL;

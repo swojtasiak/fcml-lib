@@ -1289,6 +1289,10 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 		operand_decoding->decoder = &_ira_opcode_decoder_VEX_is4;
 		operand_decoding->args = NULL;
 		break;
+	case FCML_OP_PSEUDO_OP_BASE:
+	    operand_decoding->decoder = &_ira_opcode_decoder_new_immediate;
+        operand_decoding->args = _ira_alloc_new_immediate_type_args( FCML_EOS_BYTE, FCML_EOS_BYTE, &result );
+	    break;
 	default:
 		operand_decoding->decoder = NULL;
 		operand_decoding->access_mode = IRA_ACCESS_MODE_UNDEFINED;

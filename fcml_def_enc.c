@@ -109,7 +109,14 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vsib( fcml_uint32_t encoded_addr_mo
 		vsib_args->index_value_size = encoded_addr_mode & 0x03;
 	}
 	return vsib_args;
+}
 
+fcml_ptr fcml_fnp_def_addr_mode_args_decoder_pseudo_op( fcml_uint32_t encoded_addr_mode ) {
+    fcml_sf_def_tma_pseudo_op *pseudo_op_args = (fcml_sf_def_tma_pseudo_op*)fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_pseudo_op));
+    if( pseudo_op_args ) {
+        pseudo_op_args->mask = (fcml_uint8_t)(encoded_addr_mode & 0x000000FF);
+    }
+    return pseudo_op_args;
 }
 
 #define FCML_DEF_DECODERS_COUNT		( sizeof( fcml_def_addr_mode_args_decoders ) / sizeof( fcml_fnp_def_addr_mode_args_decoder ) )
@@ -129,7 +136,8 @@ fcml_fnp_def_addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
 	fcml_fnp_def_addr_mode_args_decoder_r,
 	fcml_fnp_def_addr_mode_args_decoder_vex_vvvv,
 	NULL,
-	fcml_fnp_def_addr_mode_args_decoder_vsib
+	fcml_fnp_def_addr_mode_args_decoder_vsib,
+	fcml_fnp_def_addr_mode_args_decoder_pseudo_op
 };
 
 fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error ) {

@@ -76,6 +76,7 @@ typedef struct fcml_st_asm_encoding_context {
 #ifdef FCML_DEBUG
 	int __def_index;
 #endif
+	fcml_st_mp_mnemonic *mnemonic;
 	fcml_st_asm_part_processor_context part_processor_context;
 	fcml_st_asm_data_size_flags data_size_flags;
 	fcml_st_asm_extension_prefixes_fields epf;

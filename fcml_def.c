@@ -569,19 +569,16 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPS[] = {
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_EOSA, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } }
-	// CMPSB
-	// CMPSW
-	// CMPSD
-	// CMPSQ
-	//CMPSB
 };
 
-// TODO Jak bedzie czas doimplementowac Pseudo-Op patrz: dokumentacja VAX.
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPSD[] = {
-	// F2 0F C2 /r ib CMPSD xmm1, xmm2/m64, imm8 A Valid Valid Compare low doubleprecision floating-point value in xmm2/m64 and xmm1 using imm8 as comparison predicate.
-	{ NULL, 0x2001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_64, FCML_OP_IB, FCML_NA, FCML_NA } },
+	// F2 0F C2 /r ib CMPSD xmm1, xmm2/m64, imm8 A Valid Valid Compare low double precision floating-point value in xmm2/m64 and xmm1 using imm8 as comparison predicate.
+    // Compiler should treat reserved Imm8 values as illegal syntax, it's why appropriate mask is defined.
+	{ "cmpsd", 0x2000, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_64, FCML_OP_PSEUDO_OP( 0x07 ), FCML_NA, FCML_NA } },
+	{ "cmpeqsd[p00];cmpltsd[p01];cmplesd[p02];cmpunordsd[p03];cmpneqsd[p04];cmpnltsd[p05];cmpnlesd[p06];cmpordsd[p07]", 0x2000, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_OP_PSEUDO_OP( 0x07 ), FCML_NA, FCML_NA } },
 	// VEX.NDS.128.F2.0F C2 /r ib VCMPSD xmm1, xmm2, xmm3/m64, imm8
-	{ "vcmpsd", 0x20C0, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_64, FCML_OP_IB, FCML_NA } }
+	{ "vcmpsd", 0x20C0, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_64, FCML_OP_PSEUDO_OP( 0x0F ), FCML_NA } },
+	{ "vcmpeqsd[p00];vcmpltsd[p01];vcmplesd[p02];vcmpunordsd[p03];vcmpneqsd[p04];vcmpnltsd[p05];vcmpnlesd[p06];vcmpordsd[p07];vcmpeq_uqsd[p08];vcmpngesd[p09];vcmpngtsd[p0a];vcmpfalsesd[p0b];vcmpneq_oqsd[p0c];vcmpgesd[p0d];vcmpgtsd[p0e];vcmptruesd[p0f];vcmpeq_ossd[p10];vcmplt_oqsd[p11];vcmple_oqsd[p12];vcmpunord_ssd[p13];vcmpneq_ussd[p14];vcmpnlt_uqsd[p15];vcmpnle_uqsd[p16];vcmpord_ssd[p17];vcmpeq_ussd[p18];vcmpnge_uqsd[p19];vcmpngt_uqsd[p1a];vcmpfalse_ossd[p1b];vcmpneq_ossd[p1c];vcmpge_oqsd[p1d];vcmpgt_oqsd[p1e];vcmptrue_ussd[p1f]", 0x20C0, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_OP_PSEUDO_OP( 0x1F ), FCML_NA } }
 };
 
 // TODO Jak bedzie czas doimplementowac Pseudo-Op patrz: dokumentacja VAX.

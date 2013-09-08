@@ -12,7 +12,7 @@
 #include "fcml_common.h"
 #include "fcml_mnemonic_parser.h"
 
-#define FCML_ASM_DIALECT_MAX_MNEMONIC_COUNT 20
+#define FCML_ASM_DIALECT_MAX_MNEMONIC_COUNT 50
 
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_mnemonic)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonic_counter );
 

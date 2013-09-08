@@ -50,3 +50,5 @@ Regu³y:
 03.09.2013
 Dodac mozliwoœc assemblacji instrucji XOP/VEX z prefixem C4 je¿eli mozna zastosowac krotszy C5.
 
+08.09.2013
+Dodac mozliwosc disassemblacji pseudo opcode, jezeli odpowiednia opcja konfiguracyjna jest wlaczona.

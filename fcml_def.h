@@ -209,8 +209,15 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_VSIB_IS_32	0x01
 #define FCML_VSIB_IS_64	0x02
 
-#define FCML_OP_VSIB_BASE						0x0E000000
+#define FCML_OP_VSIB_BASE						    0x0E000000
 #define FCML_OP_VSIB( vector_index_register, index_value_size )		( FCML_OP_VSIB_BASE | vector_index_register << 2 | index_value_size )
+
+/**************/
+/* Pseudo-Op. */
+/**************/
+
+#define FCML_OP_PSEUDO_OP_BASE                      0x0F000000
+#define FCML_OP_PSEUDO_OP( mask )                   ( FCML_OP_PSEUDO_OP_BASE | ( mask ) )
 
 /*******************************/
 /* Segment registers encoding. */
@@ -426,5 +433,9 @@ typedef struct fcml_sf_def_tma_vsib {
 	fcml_uint8_t vector_index_register;
 	fcml_uint8_t index_value_size;
 } fcml_sf_def_tma_vsib;
+
+typedef struct fcml_sf_def_tma_pseudo_op {
+    fcml_uint8_t mask;
+} fcml_sf_def_tma_pseudo_op;
 
 #endif /* FCML_DEF_H_ */

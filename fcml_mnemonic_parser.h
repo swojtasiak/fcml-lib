@@ -18,6 +18,7 @@ typedef struct fcml_st_mp_mnemonic {
     fcml_bool shortcut;
     fcml_data_size supported_osa;
     fcml_data_size supported_asa;
+    fcml_nuint8_t pseudo_op;
 } fcml_st_mp_mnemonic;
 
 typedef struct fcml_st_mp_mnemonic_set {
