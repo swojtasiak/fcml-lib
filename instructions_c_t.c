@@ -309,6 +309,83 @@ void fcml_tf_instruction_CMPSD(void) {
     FCML_I3264_A_FAILED( "vcmptrue_ussd xmm0,xmm1,xmm2,01fh", 0xc5, 0xf3, 0xc2, 0xc2, 0x1F );
 }
 
+void fcml_tf_instruction_CMPSS(void) {
+    // Wrong comparison predicate.
+    FCML_I32_A_FAILED( "cmpss xmm0,dword ptr [eax+00000020h],08h", 0xf3, 0x0f, 0xc2, 0x40, 0x20, 0x08 );
+    FCML_I32( "cmpss xmm0,dword ptr [eax+00000020h],07h", 0xf3, 0x0f, 0xc2, 0x40, 0x20, 0x07 );
+    FCML_I64( "cmpss xmm0,dword ptr [rax+0000000000000020h],06h", 0xf3, 0x0f, 0xc2, 0x40, 0x20, 0x06 );
+    // pseudo op.
+    FCML_I3264_A( "cmpeqss xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x00 );
+    FCML_I3264_A( "cmpltss xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x01 );
+    FCML_I3264_A( "cmpless xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x02 );
+    FCML_I3264_A( "cmpunordss xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x03 );
+    FCML_I3264_A( "cmpneqss xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x04 );
+    FCML_I3264_A( "cmpnltss xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x05 );
+    FCML_I3264_A( "cmpnless xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x06 );
+    FCML_I3264_A( "cmpordss xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x07 );
+    FCML_I3264_A_FAILED( "cmpordss xmm0,dword ptr [rax+0000000000000020h]", 0xf3, 0x0f, 0xc2, 0xc1, 0x07 );
+    FCML_I32_A_FAILED( "vcmpss xmm2,xmm7,dword ptr [ecx+eax],20h", 0xc5, 0xc2, 0xc2, 0x14, 0x01, 0x20 );
+    FCML_I32( "vcmpss xmm2,xmm7,dword ptr [ecx+eax],0fh", 0xc5, 0xc2, 0xc2, 0x14, 0x01, 0x0F );
+    FCML_I64( "vcmpss xmm10,xmm14,dword ptr [r9+rax],00h", 0xC4, 0x41, 0x0A, 0xC2, 0x14, 0x01, 0x00 );
+    // pseudo op.
+    FCML_I3264_A( "vcmpeqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x00 );
+    FCML_I3264_A( "vcmpltss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x01 );
+    FCML_I3264_A( "vcmpless xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x02 );
+    FCML_I3264_A( "vcmpunordss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x03 );
+    FCML_I3264_A( "vcmpneqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x04 );
+    FCML_I3264_A( "vcmpnltss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x05 );
+    FCML_I3264_A( "vcmpnless xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x06 );
+    FCML_I3264_A( "vcmpordss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x07 );
+    FCML_I3264_A( "vcmpeq_uqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x08 );
+    FCML_I3264_A( "vcmpngess xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x09 );
+    FCML_I3264_A( "vcmpngtss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x0A );
+    FCML_I3264_A( "vcmpfalsess xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x0B );
+    FCML_I3264_A( "vcmpneq_oqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x0C );
+    FCML_I3264_A( "vcmpgess xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x0D );
+    FCML_I3264_A( "vcmpgtss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x0E );
+    FCML_I3264_A( "vcmptruess xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x0F );
+    FCML_I3264_A( "vcmpeq_osss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x10 );
+    FCML_I3264_A( "vcmplt_oqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x11 );
+    FCML_I3264_A( "vcmple_oqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x12 );
+    FCML_I3264_A( "vcmpunord_sss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x13 );
+    FCML_I3264_A( "vcmpneq_usss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x14 );
+    FCML_I3264_A( "vcmpnlt_uqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x15 );
+    FCML_I3264_A( "vcmpnle_uqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x16 );
+    FCML_I3264_A( "vcmpord_sss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x17 );
+    FCML_I3264_A( "vcmpeq_usss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x18 );
+    FCML_I3264_A( "vcmpnge_uqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x19 );
+    FCML_I3264_A( "vcmpngt_uqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x1A );
+    FCML_I3264_A( "vcmpfalse_osss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x1B );
+    FCML_I3264_A( "vcmpneq_osss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x1C );
+    FCML_I3264_A( "vcmpge_oqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x1D );
+    FCML_I3264_A( "vcmpgt_oqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x1E );
+    FCML_I3264_A( "vcmptrue_usss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x1F );
+    FCML_I3264_A_FAILED( "vcmptrue_usss xmm0,xmm1,qword ptr [r9+rax]", 0xc5, 0xf2, 0xc2, 0xc2, 0x1F );
+    FCML_I3264_A_FAILED( "vcmptrue_usss xmm0,xmm1,xmm2,01fh", 0xc5, 0xf2, 0xc2, 0xc2, 0x1F );
+}
+
+void fcml_tf_instruction_CMPXCHG(void) {
+    // 0F B0 /r CMPXCHG r/m8, r8
+    // REX + 0F B0/r CMPXCHG r/m8,r8
+    FCML_I32( "cmpxchg byte ptr [eax],dl", 0x0F, 0xB0, 0x10 );
+    FCML_I64( "cmpxchg byte ptr [rax],dl", 0x0F, 0xB0, 0x10 );
+    FCML_I64_D( "cmpxchg byte ptr [rax],dl", 0x48,  0x0F, 0xB0, 0x10 );
+    // 0F B1/r CMPXCHG r/m16, r16
+    // 0F B1/r CMPXCHG r/m32, r32
+    // REX.W + 0F B1/r CMPXCHG r/m64, r64
+    FCML_I32( "cmpxchg dword ptr [eax],edx", 0x0F, 0xB1, 0x10 );
+    FCML_I32( "cmpxchg word ptr [eax],dx", 0x66, 0x0F, 0xB1, 0x10 );
+    FCML_I64( "cmpxchg qword ptr [rax],rdx", 0x48,  0x0F, 0xB1, 0x10 );
+}
+
+void fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B(void) {
+    // REX.W + 0F C7 /1 m128 CMPXCHG16B m128 A Valid N.E. Compare RDX:RAX with m128. If equal, set ZF and load RCX:RBX into m128. Else, clear ZF and load m128 into RDX:RAX.
+    FCML_I64( "cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
+    // 0F C7 /1 m64 CMPXCHG8B m64 A Valid Valid* Compare EDX:EAX with m64. If equal, set ZF and load ECX:EBX into m64. Else, clear ZF and load m64 into EDX:EAX.
+    FCML_I64( "cmpxchg8b qword ptr [rcx+0ffffffffffffffffh]", 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
+    FCML_I32( "cmpxchg8b qword ptr [ecx+0ffffffffh]", 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
+}
+
 CU_TestInfo fctl_ti_instructions_c[] = {
     { "fcml_tf_instruction_CALL", fcml_tf_instruction_CALL },
     { "fcml_tf_instruction_CBW_CWDE_CDQE", fcml_tf_instruction_CBW_CWDE_CDQE },
@@ -325,6 +402,9 @@ CU_TestInfo fctl_ti_instructions_c[] = {
     { "fcml_tf_instruction_CMPPS", fcml_tf_instruction_CMPPS },
     { "fcml_tf_instruction_CMPS", fcml_tf_instruction_CMPS },
     { "fcml_tf_instruction_CMPSD", fcml_tf_instruction_CMPSD },
+    { "fcml_tf_instruction_CMPSS", fcml_tf_instruction_CMPSS },
+    { "fcml_tf_instruction_CMPXCHG", fcml_tf_instruction_CMPXCHG },
+   // { "fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B", fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B },
     CU_TEST_INFO_NULL,
 };
 

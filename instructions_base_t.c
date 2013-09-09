@@ -150,7 +150,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			context.ip.eip = 0x00401000;
 		}
 
-		fcml_st_assembler_result *asm_result;
+		fcml_st_assembler_result *asm_result = NULL;
 		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
 		if( error ) {
 			printf("Can not assemble: %s\n", mnemonic );
