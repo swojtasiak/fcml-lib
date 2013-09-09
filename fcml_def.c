@@ -581,12 +581,13 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPSD[] = {
 	{ "vcmpeqsd[p00];vcmpltsd[p01];vcmplesd[p02];vcmpunordsd[p03];vcmpneqsd[p04];vcmpnltsd[p05];vcmpnlesd[p06];vcmpordsd[p07];vcmpeq_uqsd[p08];vcmpngesd[p09];vcmpngtsd[p0a];vcmpfalsesd[p0b];vcmpneq_oqsd[p0c];vcmpgesd[p0d];vcmpgtsd[p0e];vcmptruesd[p0f];vcmpeq_ossd[p10];vcmplt_oqsd[p11];vcmple_oqsd[p12];vcmpunord_ssd[p13];vcmpneq_ussd[p14];vcmpnlt_uqsd[p15];vcmpnle_uqsd[p16];vcmpord_ssd[p17];vcmpeq_ussd[p18];vcmpnge_uqsd[p19];vcmpngt_uqsd[p1a];vcmpfalse_ossd[p1b];vcmpneq_ossd[p1c];vcmpge_oqsd[p1d];vcmpgt_oqsd[p1e];vcmptrue_ussd[p1f]", 0x20C0, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_OP_PSEUDO_OP( 0x1F ), FCML_NA } }
 };
 
-// TODO Jak bedzie czas doimplementowac Pseudo-Op patrz: dokumentacja VAX.
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPSS[] = {
-	// F3 0F C2 /r ib CMPSS xmm1, xmm2/m32, imm8 A Valid Valid Compare low singleprecision floating-point value in xmm2/m32 and xmm1 using imm8 as comparison predicate.
-	{ NULL, 0x4001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_32, FCML_OP_IB, FCML_NA, FCML_NA } },
-	// VEX.NDS.128.F3.0F C2 /r ib VCMPSS xmm1, xmm2, xmm3/m32, imm8
-	{ "vcmpss", 0x40C0, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_32, FCML_OP_IB, FCML_NA } }
+    // F3 0F C2 /r ib CMPSS xmm1, xmm2/m32, imm8 A Valid Valid Compare low singleprecision floating-point value in xmm2/m32 and xmm1 using imm8 as comparison predicate.
+    { "cmpss", 0x4000, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_32, FCML_OP_IB, FCML_NA, FCML_NA } },
+    { "cmpeqss[p00];cmpltss[p01];cmpless[p02];cmpunordss[p03];cmpneqss[p04];cmpnltss[p05];cmpnless[p06];cmpordss[p07]", 0x4000, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_OP_PSEUDO_OP( 0x07 ), FCML_NA, FCML_NA } },
+    // VEX.NDS.128.F3.0F C2 /r ib VCMPSS xmm1, xmm2, xmm3/m32, imm8
+    { "vcmpss", 0x40C0, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_32, FCML_OP_IB, FCML_NA } },
+    { "vcmpeqss[p00];vcmpltss[p01];vcmpless[p02];vcmpunordss[p03];vcmpneqss[p04];vcmpnltss[p05];vcmpnless[p06];vcmpordss[p07];vcmpeq_uqss[p08];vcmpngess[p09];vcmpngtss[p0a];vcmpfalsess[p0b];vcmpneq_oqss[p0c];vcmpgess[p0d];vcmpgtss[p0e];vcmptruess[p0f];vcmpeq_osss[p10];vcmplt_oqss[p11];vcmple_oqss[p12];vcmpunord_sss[p13];vcmpneq_usss[p14];vcmpnlt_uqss[p15];vcmpnle_uqss[p16];vcmpord_sss[p17];vcmpeq_usss[p18];vcmpnge_uqss[p19];vcmpngt_uqss[p1a];vcmpfalse_osss[p1b];vcmpneq_osss[p1c];vcmpge_oqss[p1d];vcmpgt_oqss[p1e];vcmptrue_usss[p1f]", 0x40C0, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_OP_PSEUDO_OP( 0x1F ), FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPXCHG[] = {
@@ -602,8 +603,8 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPXCHG[] = {
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPXCHGxB[] = {
 	// 0F C7 /1 m64 CMPXCHG8B m64 A Valid Valid* Compare EDX:EAX with m64. If equal, set ZF and load ECX:EBX into m64. Else, clear ZF and load m64 into EDX:EAX.
 	// REX.W + 0F C7 /1 m128 CMPXCHG16B m128 A Valid N.E. Compare RDX:RAX with m128. If equal, set ZF and load RCX:RBX into m128. Else, clear ZF and load m128 into RDX:RAX.
-	{ "cmpxchg8b", 0x0001, 0x03D98800, { 0x0F, 0xC7, 0x00 }, { FCML_OP_MODRM_MM_OSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
-	{ "cmpxchg16b", 0x0001, 0x04D98800, { 0x0F, 0xC7, 0x00 }, { FCML_OP_MODRM_MM_OSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+	{ "cmpxchg8b", 0x0000, 0x03D98800, { 0x0F, 0xC7, 0x00 }, { FCML_OP_MODRM_MM_OSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+	{ "cmpxchg16b", 0x0000, 0x04998800, { 0x0F, 0xC7, 0x00 }, { FCML_OP_MODRM_MM_OSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_COMISD[] = {
@@ -5839,8 +5840,8 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( "cmppd", _fcml_st_def_addr_mode_desc_CMPPD),
 		FCML_IA_INSTRUCTION( "cmpps", _fcml_st_def_addr_mode_desc_CMPPS),
 		FCML_IA_INSTRUCTION( "cmps", _fcml_st_def_addr_mode_desc_CMPS),
-		FCML_IA_INSTRUCTION( "cmpsd", _fcml_st_def_addr_mode_desc_CMPSD),
-		FCML_IA_INSTRUCTION( "cmpss", _fcml_st_def_addr_mode_desc_CMPSS),
+		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_CMPSD),
+		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_CMPSS),
 		FCML_IA_INSTRUCTION( "cmpxchg", _fcml_st_def_addr_mode_desc_CMPXCHG),
 		FCML_IA_INSTRUCTION( "cmpxchg8b", _fcml_st_def_addr_mode_desc_CMPXCHGxB),
 		FCML_IA_INSTRUCTION( "comisd", _fcml_st_def_addr_mode_desc_COMISD),
