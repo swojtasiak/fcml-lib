@@ -815,9 +815,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CVTTSS2SI[] = {
 	// F3 REX.W 0F 2C /r CVTTSS2SI r64, xmm/m32 A Valid N.E. Convert one single-precision floating-point value from xmm/m32 to one signed quadword integer in
 	{ NULL, 0x4009, 0x04988000, { 0x0F, 0x2C, 0x00 }, { FCML_OP_MODRM_R_64_W, FCML_OP_MODRM_RM_XMM_32, FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.F3.0F.W0 2C /r VCVTTSS2SI r32, xmm1/m32
-	{ "vcvttss2si", 0x41C0, 0x03D88000, { 0x0F, 0x2C, 0x00 }, { FCML_OP_MODRM_R_32_W, FCML_OP_MODRM_RM_SIMD_L_32, FCML_NA, FCML_NA, FCML_NA } },
+	{ "vcvttss2si", 0x4390, 0x03D88000, { 0x0F, 0x2C, 0x00 }, { FCML_OP_MODRM_R_32_W, FCML_OP_MODRM_RM_SIMD_L_32, FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.F3.0F.W1 2C /r VCVTTSS2SI r64, xmm1/m32
-	{ "vcvttss2si", 0x41D0, 0x04988000, { 0x0F, 0x2C, 0x00 }, { FCML_OP_MODRM_R_64_W, FCML_OP_MODRM_RM_SIMD_L_32, FCML_NA, FCML_NA, FCML_NA } }
+	{ "vcvttss2si", 0x4388, 0x04988000, { 0x0F, 0x2C, 0x00 }, { FCML_OP_MODRM_R_64_W, FCML_OP_MODRM_RM_SIMD_L_32, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CWD_CDQ_CQO[] = {
