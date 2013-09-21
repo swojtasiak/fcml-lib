@@ -380,10 +380,10 @@ void fcml_tf_instruction_CMPXCHG(void) {
 
 void fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B(void) {
     // REX.W + 0F C7 /1 m128 CMPXCHG16B m128 A Valid N.E. Compare RDX:RAX with m128. If equal, set ZF and load RCX:RBX into m128. Else, clear ZF and load m128 into RDX:RAX.
-    FCML_I64( "cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
+    FCML_I64_D( "cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF );
     // 0F C7 /1 m64 CMPXCHG8B m64 A Valid Valid* Compare EDX:EAX with m64. If equal, set ZF and load ECX:EBX into m64. Else, clear ZF and load m64 into EDX:EAX.
-    FCML_I64( "cmpxchg8b qword ptr [rcx+0ffffffffffffffffh]", 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
-    FCML_I32( "cmpxchg8b qword ptr [ecx+0ffffffffh]", 0x0F, 0xC7, 0x49, 0xFF, 0x0FF, 0xFF, 0xFF );
+    FCML_I64( "cmpxchg8b qword ptr [rcx+0ffffffffffffffffh]", 0x0F, 0xC7, 0x49, 0xFF );
+    FCML_I32( "cmpxchg8b qword ptr [ecx+0ffffffffh]", 0x0F, 0xC7, 0x49, 0xFF );
 }
 
 CU_TestInfo fctl_ti_instructions_c[] = {
@@ -404,7 +404,7 @@ CU_TestInfo fctl_ti_instructions_c[] = {
     { "fcml_tf_instruction_CMPSD", fcml_tf_instruction_CMPSD },
     { "fcml_tf_instruction_CMPSS", fcml_tf_instruction_CMPSS },
     { "fcml_tf_instruction_CMPXCHG", fcml_tf_instruction_CMPXCHG },
-   // { "fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B", fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B },
+    { "fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B", fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B },
     CU_TEST_INFO_NULL,
 };
 

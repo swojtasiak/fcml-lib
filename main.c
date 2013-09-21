@@ -49,8 +49,8 @@ int main(int argc, char **argv) {
 		printf("Can not initialize assembler.\n");
 		return 1;
 	}
-
 	ira_init();
+
 
 	// FCML_MI( 0x48, 0x83, 0xd5, 0xff )
 

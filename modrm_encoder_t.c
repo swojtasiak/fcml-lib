@@ -811,22 +811,30 @@ void fcml_tf_modrm_encoder_16_bit_encoding_12(void) {
 	modrm.address.effective_address.base.reg = FCML_REG_BX;
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
 	modrm.address.effective_address.displacement.dis16 = 0xFFF1;
+	modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
 	modrm.address.address_form = FCML_AF_COMBINED;
 
 	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 2 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 1 );
 	CU_ASSERT_EQUAL( encoded_modrm.displacement[0], 0xF1 );
-	CU_ASSERT_EQUAL( encoded_modrm.displacement[1], 0xFF );
 	CU_ASSERT_EQUAL( encoded_modrm.ext_b, 0 );
 	CU_ASSERT_EQUAL( encoded_modrm.ext_r, 0 );
 	CU_ASSERT_EQUAL( encoded_modrm.ext_x, 0 );
 	CU_ASSERT_EQUAL( encoded_modrm.sib.is_not_null, FCML_FALSE );
 	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
-	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x87 );
-}
+	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x47 );
 
+	modrm.address.effective_address.displacement.dis16 = 0x1FF1;
+
+	error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
+
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 2 );
+    CU_ASSERT_EQUAL( encoded_modrm.displacement[0], 0xF1 );
+    CU_ASSERT_EQUAL( encoded_modrm.displacement[1], 0x1F );
+    CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x87 );
+}
 
 // Encode DX, BP
 void fcml_tf_modrm_encoder_16_bit_encoding_13(void) {
