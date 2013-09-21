@@ -97,24 +97,15 @@ typedef struct fcml_nint64_t {
 	fcml_bool is_not_null;
 } fcml_nint64_t;
 
-typedef struct fcml_uvint {
-	fcml_usize size;
-	union {
-		fcml_uint8_t uint8;
-		fcml_uint16_t uint16;
-		fcml_uint32_t uint32;
-		fcml_uint64_t uint64;
-	};
-} fcml_uvint;
-
-typedef struct fcml_vint {
-	fcml_usize size;
-	union {
-		fcml_int8_t int8;
-		fcml_int16_t int16;
-		fcml_int32_t int32;
-		fcml_int64_t int64;
-	};
-} fcml_vint;
+typedef struct fcml_st_integer {
+    fcml_data_size size;
+    fcml_bool is_signed;
+    union {
+        fcml_int8_t int8;
+        fcml_int16_t int16;
+        fcml_int32_t int32;
+        fcml_int64_t int64;
+    };
+} fcml_st_integer;
 
 #endif /* FCML_TYPES_H_ */

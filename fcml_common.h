@@ -303,12 +303,7 @@ typedef struct fcml_st_far_pointer {
 
 typedef struct fcml_st_displacement {
 	fcml_data_size size;
-    fcml_data_size sign_extension;
-    enum {
-    	FCML_DT_UNKNOWN = 0,
-    	FCML_DT_DISPLACEMENT,
-    	FCML_DT_ADDRESS
-    } displacement_type;
+	fcml_bool is_signed;
     union {
         int8_t dis8;
         int16_t dis16;
@@ -317,29 +312,52 @@ typedef struct fcml_st_displacement {
     };
 } fcml_st_displacement;
 
-typedef struct fcml_st_address {
+// *****************************************
+// *  Memory addressing using Mod/RM field *
+// *****************************************
+
+typedef enum fcml_en_address_form {
+    // Only displacement value interpreted but it's assembler who decides
+    // what addressing should be used absolute or relative.
+    FCML_AF_OFFSET,
+    // Effective address combined from more address components.
+    FCML_AF_COMBINED
+} fcml_en_effective_address_form;
+
+typedef struct fcml_st_offset {
 	fcml_data_size size;
+	fcml_bool is_signed;
     union {
-        uint16_t off16;
-        uint32_t off32;
-        uint64_t off64;
+        int16_t off16;
+        int32_t off32;
+        int64_t off64;
     };
-} fcml_st_address;
+} fcml_st_offset;
 
 typedef struct fcml_st_effective_address {
     fcml_data_size size_operator;
-	fcml_st_register segment_selector;
     fcml_st_register base;
     fcml_st_register index;
     fcml_uint8_t scale_factor;
     fcml_st_displacement displacement;
 } fcml_st_effective_address;
 
+typedef struct fcml_st_address {
+    // Memory addressing format ABSOLUTE/RELATIVE etc.
+    fcml_en_effective_address_form address_form;
+    // Segment register.
+    fcml_st_register segment_selector;
+    // Memory address for FCML_AF_COMBINED form.
+    fcml_st_effective_address effective_address;
+    // Memory address for FCML_AF_ABSOLUTE and FCML_AF_RELATIVE form.
+    fcml_st_offset offset;
+} fcml_st_address;
+
 typedef enum fcml_en_operand_type {
 	FCML_EOT_NONE,
     FCML_EOT_IMMEDIATE,
     FCML_EOT_FAR_POINTER,
-    FCML_EOT_EFFECTIVE_ADDRESS,
+    FCML_EOT_ADDRESS,
     FCML_EOT_REGISTER
 } fcml_en_operand_type;
 
@@ -348,7 +366,7 @@ typedef struct fcml_st_operand {
     union {
         fcml_st_immediate immediate;
         fcml_st_far_pointer far_pointer;
-        fcml_st_effective_address effective_address;
+        fcml_st_address address;
         fcml_st_register reg;
     };
 } fcml_st_operand;
@@ -369,7 +387,10 @@ typedef fcml_uint16_t fcml_hints;
 
 typedef enum fcml_en_hints {
     FCML_HINT_FAR_POINTER = 0x0001,
-    FCML_HINT_NEAR_POINTER = 0x0002
+    FCML_HINT_NEAR_POINTER = 0x0002,
+    FCML_HINT_ABSOLUTE_ADDRESSING = 0x0004,
+    // RIP.
+    FCML_HINT_RELATIVE_ADDRESSING = 0x0008,
 } fcml_en_hints;
 
 typedef struct fcml_st_instruction {

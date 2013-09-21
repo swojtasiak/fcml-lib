@@ -8,27 +8,77 @@
 #include "fcml_utils.h"
 #include "fcml_types.h"
 
-fcml_ceh_error fcml_fn_utils_convert_sig_imm_to_sig_imm( fcml_st_immediate *source, fcml_st_immediate *destination, fcml_data_size expected_source_size, fcml_data_size destination_size ) {
+fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_src_signed, fcml_st_integer *integer, fcml_en_utils_size_flags filter ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    if( is_src_signed ) {
+        // Optimized for 32 bit processors.
+        if( ( src & 0xFFFFFFFF80000000UL ) == 0xFFFFFFFF80000000UL || ( src & 0xFFFFFFFF00000000UL ) == 0x0000000000000000UL ) {
+            fcml_int32_t s_imm = (fcml_int32_t)src;
+            if( ( filter & FCML_ENUSF_8 ) && ( ( s_imm & 0xFFFFFF80 ) == 0xFFFFFF80 || ( s_imm & 0xFFFFFF00 ) == 0x00000000 ) ) {
+                integer->int8 = (fcml_int8_t)s_imm;
+                integer->size = FCML_DS_8;
+            } else if( ( filter & FCML_ENUSF_16 ) && ( ( s_imm & 0xFFFF8000 ) == 0xFFFF8000 || ( s_imm & 0xFFFF0000 ) == 0x00000000 ) ) {
+                integer->int16 = (fcml_int16_t)s_imm;
+                integer->size = FCML_DS_16;
+            } else if ( filter & FCML_ENUSF_32 ) {
+                integer->int32 = (fcml_int32_t)s_imm;
+                integer->size = FCML_DS_32;
+            } else {
+                error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+            }
+        } else {
+            if( filter & FCML_ENUSF_64 ) {
+                integer->int64 = src;
+                integer->size = FCML_DS_64;
+            } else {
+                error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+            }
+        }
+    } else {
+        if( ( filter & FCML_ENUSF_8 ) && ( src <= FCML_UINT8_MAX ) ) {
+            integer->int8 = (fcml_uint8_t)src;
+            integer->size = FCML_DS_8;
+        } else if( ( filter & FCML_ENUSF_16 ) && ( src <= FCML_UINT16_MAX ) ) {
+            integer->int16 = (fcml_uint16_t)src;
+            integer->size = FCML_DS_16;
+        } else if( ( filter & FCML_ENUSF_32 ) && ( src <= FCML_UINT32_MAX ) ) {
+            integer->int32 = (fcml_uint32_t)src;
+            integer->size = FCML_DS_32;
+        } else if( filter & FCML_ENUSF_64 ) {
+            integer->int64 = src;
+            integer->size = FCML_DS_64;
+        } else {
+            error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+        }
+    }
+    integer->is_signed = is_src_signed;
+    return error;
+}
+
+fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *source, fcml_st_integer *destination, fcml_data_size expected_source_size, fcml_data_size destination_size ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	// Convert given source immediate value to expected one.
 
-	fcml_st_immediate expected = {0};
-	expected.imm_size = expected_source_size;
-	if( source->imm_size != expected_source_size ) {
+	fcml_st_integer expected = {0};
+
+	expected.size = expected_source_size;
+	expected.is_signed = source->is_signed;
+
+	if( source->size != expected_source_size ) {
 		switch( expected_source_size ) {
 		case FCML_DS_8:
-			error = fcml_fn_utils_convert_imm_to_int8( source, (fcml_int8_t*)&(expected.imm8) );
+			error = fcml_fn_utils_convert_integer_to_int8( source, &(expected.int8) );
 			break;
 		case FCML_DS_16:
-			error = fcml_fn_utils_convert_imm_to_int16( source, (fcml_int16_t*)&(expected.imm16) );
+			error = fcml_fn_utils_convert_integer_to_int16( source, &(expected.int16) );
 			break;
 		case FCML_DS_32:
-			error = fcml_fn_utils_convert_imm_to_int32( source, (fcml_int32_t*)&(expected.imm32) );
+			error = fcml_fn_utils_convert_integer_to_int32( source, &(expected.int32) );
 			break;
 		case FCML_DS_64:
-			error = fcml_fn_utils_convert_imm_to_int64( source, (fcml_int64_t*)&(expected.imm64) );
+			error = fcml_fn_utils_convert_integer_to_int64( source, &(expected.int64) );
 			break;
 		}
 	} else {
@@ -37,78 +87,74 @@ fcml_ceh_error fcml_fn_utils_convert_sig_imm_to_sig_imm( fcml_st_immediate *sour
 
 	if( !error ) {
 
-		// Event is expected immediate value is unsigned, we can treat is as a signed value,
-		// just because we expect signed value here and they are of the same size.
-		expected.is_signed = FCML_TRUE;
-
 		// Convert expected value to destination one.
 
 		switch( destination_size ) {
 			case FCML_DS_8:
-				error = fcml_fn_utils_convert_imm_to_int8( &expected, (fcml_int8_t*)&(destination->imm8) );
+				error = fcml_fn_utils_convert_integer_to_int8( &expected, &(destination->int8) );
 				break;
 			case FCML_DS_16:
-				error = fcml_fn_utils_convert_imm_to_int16( &expected, (fcml_int16_t*)&(destination->imm16) );
+				error = fcml_fn_utils_convert_integer_to_int16( &expected, &(destination->int16) );
 				break;
 			case FCML_DS_32:
-				error = fcml_fn_utils_convert_imm_to_int32( &expected, (fcml_int32_t*)&(destination->imm32) );
+				error = fcml_fn_utils_convert_integer_to_int32( &expected, &(destination->int32) );
 				break;
 			case FCML_DS_64:
-				error = fcml_fn_utils_convert_imm_to_int64( &expected, (fcml_int64_t*)&(destination->imm64) );
+				error = fcml_fn_utils_convert_integer_to_int64( &expected, &(destination->int64) );
 				break;
 		}
 
-		destination->imm_size = destination_size;
-		destination->is_signed = FCML_TRUE;
+		destination->size = destination_size;
+		destination->is_signed = expected.is_signed;
 
 	}
 
 	return error;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_imm_to_uint8( fcml_st_immediate *imm, fcml_uint8_t *value ) {
-	switch( imm->imm_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_uint8( fcml_st_integer *integer, fcml_uint8_t *value ) {
+	switch( integer->size ) {
 	case FCML_DS_8:
 		// In this case we doesn't care what is in IMM, because no conversion is needed.
-		*value = imm->imm8;
+		*value = integer->int8;
 		break;
 	case FCML_DS_16:
-		if( imm->is_signed ) {
-			if( (fcml_int16_t)imm->imm16 > FCML_UINT8_MAX || (fcml_int16_t)imm->imm16 < 0 ) {
+		if( integer->is_signed ) {
+			if( integer->int16 > FCML_UINT8_MAX || integer->int16 < 0 ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint8_t)(fcml_int16_t)imm->imm16;
+			*value = (fcml_uint8_t)(fcml_int16_t)integer->int16;
 		} else {
-			if( imm->imm16 > FCML_UINT8_MAX ) {
+			if( (fcml_uint16_t)integer->int16 > FCML_UINT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint8_t)imm->imm16;
+			*value = (fcml_uint8_t)integer->int16;
 		}
 		break;
 	case FCML_DS_32:
-		if( imm->is_signed ) {
-			if( (fcml_int32_t)imm->imm32 > FCML_UINT8_MAX || (fcml_int32_t)imm->imm32 < 0 ) {
+		if( integer->is_signed ) {
+			if( integer->int32 > FCML_UINT8_MAX || integer->int32 < 0 ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint8_t)(fcml_int32_t)imm->imm32;
+			*value = (fcml_uint8_t)(fcml_int32_t)integer->int32;
 		} else {
-			if( imm->imm32 > FCML_UINT8_MAX ) {
+			if( (fcml_uint32_t)integer->int32 > FCML_UINT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint8_t)imm->imm32;
+			*value = (fcml_uint8_t)integer->int32;
 		}
 		break;
 	case FCML_DS_64:
-		if( imm->is_signed ) {
-			if( (fcml_int64_t)imm->imm64 > FCML_UINT8_MAX || (fcml_int64_t)imm->imm64 < 0 ) {
+		if( integer->is_signed ) {
+			if( integer->int64 > FCML_UINT8_MAX || integer->int64 < 0 ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint8_t)(fcml_int64_t)imm->imm64;
+			*value = (fcml_uint8_t)(fcml_int64_t)integer->int64;
 		} else {
-			if( imm->imm64 > FCML_UINT8_MAX ) {
+			if( (fcml_uint64_t)integer->int64 > FCML_UINT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint8_t)imm->imm64;
+			*value = (fcml_uint8_t)integer->int64;
 		}
 		break;
 	default:
@@ -117,38 +163,42 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_uint8( fcml_st_immediate *imm, fcml_
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_imm_to_uint16( fcml_st_immediate *imm, fcml_uint16_t *value ) {
-	switch( imm->imm_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_uint16( fcml_st_integer *integer, fcml_uint16_t *value ) {
+	switch( integer->size ) {
 	case FCML_DS_8:
-		*value = (fcml_uint16_t)imm->imm8;
+	    if( integer->is_signed ) {
+	        *value = (fcml_uint16_t)integer->int8;
+	    } else {
+	        *value = (fcml_uint16_t)(fcml_uint8_t)integer->int8;
+	    }
 		break;
 	case FCML_DS_16:
-		*value = (fcml_uint16_t)imm->imm16;
+		*value = (fcml_uint16_t)integer->int16;
 		break;
 	case FCML_DS_32:
-		if( imm->is_signed ) {
-			if( (fcml_int32_t)imm->imm32 > FCML_UINT16_MAX || (fcml_int32_t)imm->imm32 < 0 ) {
+		if( integer->is_signed ) {
+			if( integer->int32 > FCML_UINT16_MAX || integer->int32 < 0 ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint16_t)(fcml_int32_t)imm->imm32;
+			*value = (fcml_uint16_t)integer->int32;
 		} else {
-			if( imm->imm32 > FCML_UINT16_MAX ) {
+			if( (fcml_uint32_t)integer->int32 > FCML_UINT16_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint16_t)imm->imm32;
+			*value = (fcml_uint16_t)integer->int32;
 		}
 		break;
 	case FCML_DS_64:
-		if( imm->is_signed ) {
-			if( (fcml_int64_t)imm->imm64 > FCML_UINT16_MAX || (fcml_int64_t)imm->imm64 < 0 ) {
+		if( integer->is_signed ) {
+			if( integer->int64 > FCML_UINT16_MAX || integer->int64 < 0 ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint16_t)(fcml_int64_t)imm->imm64;
+			*value = (fcml_uint16_t)integer->int64;
 		} else {
-			if( imm->imm64 > FCML_UINT16_MAX ) {
+			if( (fcml_uint64_t)integer->int64 > FCML_UINT16_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint16_t)imm->imm64;
+			*value = (fcml_uint16_t)integer->int64;
 		}
 		break;
 	default:
@@ -157,28 +207,36 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_uint16( fcml_st_immediate *imm, fcml
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_imm_to_uint32( fcml_st_immediate *imm, fcml_uint32_t *value ) {
-	switch( imm->imm_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_uint32( fcml_st_integer *integer, fcml_uint32_t *value ) {
+	switch( integer->size ) {
 	case FCML_DS_8:
-		*value = (fcml_uint32_t)imm->imm8;
+		if( integer->is_signed ) {
+            *value = (fcml_uint32_t)integer->int8;
+        } else {
+            *value = (fcml_uint32_t)(fcml_uint8_t)integer->int8;
+        }
 		break;
 	case FCML_DS_16:
-		*value = (fcml_uint32_t)imm->imm16;
+		if( integer->is_signed ) {
+            *value = (fcml_uint32_t)integer->int16;
+        } else {
+            *value = (fcml_uint32_t)(fcml_uint16_t)integer->int16;
+        }
 		break;
 	case FCML_DS_32:
-		*value = (fcml_uint32_t)imm->imm32;
+		*value = (fcml_uint32_t)integer->int32;
 		break;
 	case FCML_DS_64:
-		if( imm->is_signed ) {
-			if( (fcml_int64_t)imm->imm64 > FCML_UINT32_MAX || (fcml_int64_t)imm->imm64 < 0 ) {
+		if( integer->is_signed ) {
+			if( integer->int64 > FCML_UINT32_MAX || integer->int64 < 0 ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint32_t)(fcml_int64_t)imm->imm64;
+			*value = (fcml_uint32_t)integer->int16;
 		} else {
-			if( imm->imm64 > FCML_UINT32_MAX ) {
+			if( (fcml_uint64_t)integer->int64 > FCML_UINT32_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
-			*value = (fcml_uint32_t)imm->imm64;
+			*value = (fcml_uint32_t)integer->int64;
 		}
 		break;
 	default:
@@ -187,19 +245,31 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_uint32( fcml_st_immediate *imm, fcml
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_imm_to_uint64( fcml_st_immediate *imm, fcml_uint64_t *value ) {
-	switch( imm->imm_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_uint64( fcml_st_integer *integer, fcml_uint64_t *value ) {
+	switch( integer->size ) {
 	case FCML_DS_8:
-		*value = (fcml_uint64_t)imm->imm8;
+		if( integer->is_signed ) {
+            *value = (fcml_uint64_t)integer->int8;
+        } else {
+            *value = (fcml_uint64_t)(fcml_uint8_t)integer->int8;
+        }
 		break;
 	case FCML_DS_16:
-		*value = (fcml_uint64_t)imm->imm16;
+		if( integer->is_signed ) {
+            *value = (fcml_uint64_t)integer->int16;
+        } else {
+            *value = (fcml_uint64_t)(fcml_uint16_t)integer->int16;
+        }
 		break;
 	case FCML_DS_32:
-		*value = (fcml_uint64_t)imm->imm32;
+		if( integer->is_signed ) {
+            *value = (fcml_uint64_t)integer->int32;
+        } else {
+            *value = (fcml_uint64_t)(fcml_uint32_t)integer->int32;
+        }
 		break;
 	case FCML_DS_64:
-		*value = (fcml_uint64_t)imm->imm64;
+		*value = (fcml_uint64_t)integer->int64;
 		break;
 	default:
 		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -207,46 +277,49 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_uint64( fcml_st_immediate *imm, fcml
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_imm_to_int8( fcml_st_immediate *imm, fcml_int8_t *value ) {
-	switch( imm->imm_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_int8( const fcml_st_integer *integer, fcml_int8_t *value ) {
+	switch( integer->size ) {
 	case FCML_DS_8:
-		*value = (fcml_int8_t)imm->imm8;
+		*value = (fcml_int8_t)integer->int8;
 		break;
 	case FCML_DS_16:
-		if( imm->is_signed ) {
-			if( (fcml_int16_t)imm->imm16 < FCML_INT8_MIN || (fcml_int16_t)imm->imm16 > FCML_INT8_MAX ) {
+		if( integer->is_signed ) {
+			if( integer->int16 < FCML_INT8_MIN || integer->int16 > FCML_INT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int8_t)integer->int16;
 		} else {
-			if( imm->imm16 > FCML_INT8_MAX ) {
+			if( (fcml_uint16_t)integer->int16 > FCML_UINT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int8_t)(fcml_uint16_t)integer->int16;
 		}
-		*value = (fcml_int8_t)(fcml_int16_t)imm->imm16;
 		break;
 	case FCML_DS_32:
-		if( imm->is_signed ) {
-			if( (fcml_int32_t)imm->imm32 < FCML_INT8_MIN || (fcml_int32_t)imm->imm32 > FCML_INT8_MAX ) {
+		if( integer->is_signed ) {
+			if( integer->int32 < FCML_INT8_MIN || integer->int32 > FCML_INT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int8_t)integer->int32;
 		} else {
-			if( imm->imm32 > FCML_INT8_MAX ) {
+			if( (fcml_uint32_t)integer->int32 > FCML_INT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int8_t)(fcml_uint32_t)integer->int32;
 		}
-		*value = (fcml_int8_t)(fcml_int32_t)imm->imm32;
 		break;
 	case FCML_DS_64:
-		if( imm->is_signed ) {
-			if( (fcml_int64_t)imm->imm64 < FCML_INT8_MIN || (fcml_int64_t)imm->imm64 > FCML_INT8_MAX ) {
+		if( integer->is_signed ) {
+			if( (fcml_int64_t)integer->int64 < FCML_INT8_MIN || (fcml_int64_t)integer->int64 > FCML_INT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int8_t)integer->int64;
 		} else {
-			if( imm->imm64 > FCML_INT8_MAX ) {
+			if( (fcml_uint64_t)integer->int64 > FCML_INT8_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int8_t)(fcml_uint64_t)integer->int64;
 		}
-		*value = (fcml_int8_t)(fcml_int64_t)imm->imm64;
 		break;
 	default:
 		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -254,37 +327,39 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_int8( fcml_st_immediate *imm, fcml_i
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_imm_to_int16( fcml_st_immediate *imm, fcml_int16_t *value ) {
-	switch( imm->imm_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_int16( const fcml_st_integer *integer, fcml_int16_t *value ) {
+	switch( integer->size ) {
 	case FCML_DS_8:
-		*value = imm->is_signed ? (fcml_int16_t)(fcml_int8_t)imm->imm8 : (fcml_int16_t)imm->imm8;
+		*value = integer->is_signed ? (fcml_int16_t)integer->int8 : (fcml_int16_t)(fcml_uint8_t)integer->int8;
 		break;
 	case FCML_DS_16:
-		*value = (fcml_int16_t)imm->imm16;
+		*value = integer->int16;
 		break;
 	case FCML_DS_32:
-		if( imm->is_signed ) {
-			if( (fcml_int32_t)imm->imm32 < FCML_INT16_MIN || (fcml_int32_t)imm->imm32 > FCML_INT16_MAX ) {
+		if( integer->is_signed ) {
+			if( integer->int32 < FCML_INT16_MIN || integer->int32 > FCML_INT16_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int16_t)integer->int32;
 		} else {
-			if( imm->imm32 > FCML_INT16_MAX ) {
+			if( (fcml_uint32_t)integer->int32 > FCML_INT16_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int16_t)(fcml_uint32_t)integer->int32;
 		}
-		*value = (fcml_int16_t)(fcml_int32_t)imm->imm32;
 		break;
 	case FCML_DS_64:
-		if( imm->is_signed ) {
-			if( (fcml_int64_t)imm->imm64 < FCML_INT16_MIN || (fcml_int64_t)imm->imm64 > FCML_INT16_MAX ) {
+		if( integer->is_signed ) {
+			if( integer->int64 < FCML_INT16_MIN || integer->int64 > FCML_INT16_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int16_t)integer->int64;
 		} else {
-			if( imm->imm64 > FCML_INT16_MAX ) {
+			if( (fcml_uint64_t)integer->int64 > FCML_INT16_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int16_t)(fcml_uint64_t)integer->int64;
 		}
-		*value = (fcml_int16_t)(fcml_int64_t)imm->imm64;
 		break;
 	default:
 		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -292,28 +367,29 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_int16( fcml_st_immediate *imm, fcml_
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_imm_to_int32( fcml_st_immediate *imm, fcml_int32_t *value ) {
-	switch( imm->imm_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_int32( const fcml_st_integer *integer, fcml_int32_t *value ) {
+	switch( integer->size ) {
 	case FCML_DS_8:
-		*value = imm->is_signed ? (fcml_int32_t)(fcml_int8_t)imm->imm8 : (fcml_int32_t)imm->imm8;
+		*value = integer->is_signed ? (fcml_int32_t)integer->int8 : (fcml_int32_t)(fcml_uint8_t)integer->int8;
 		break;
 	case FCML_DS_16:
-		*value = imm->is_signed ? (fcml_int32_t)(fcml_int16_t)imm->imm16 : (fcml_int32_t)imm->imm16;
+		*value = integer->is_signed ? (fcml_int32_t)integer->int16 : (fcml_int32_t)(fcml_uint16_t)integer->int16;
 		break;
 	case FCML_DS_32:
-		*value = (fcml_int32_t)imm->imm32;
+		*value = integer->int32;
 		break;
 	case FCML_DS_64:
-		if( imm->is_signed ) {
-			if( (fcml_int64_t)imm->imm64 < FCML_INT32_MIN || (fcml_int64_t)imm->imm64 > FCML_INT32_MAX ) {
+		if( integer->is_signed ) {
+			if( integer->int64 < FCML_INT32_MIN || integer->int64 > FCML_INT32_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int32_t)integer->int64;
 		} else {
-			if( imm->imm64 > FCML_INT32_MAX ) {
+			if( (fcml_uint64_t)integer->int64 > FCML_INT32_MAX ) {
 				return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
 			}
+			*value = (fcml_int32_t)(fcml_uint64_t)integer->int64;
 		}
-		*value = (fcml_int32_t)(fcml_int64_t)imm->imm64;
 		break;
 	default:
 		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -321,19 +397,19 @@ fcml_ceh_error fcml_fn_utils_convert_imm_to_int32( fcml_st_immediate *imm, fcml_
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_imm_to_int64( fcml_st_immediate *imm, fcml_int64_t *value ) {
-	switch( imm->imm_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_int64( const fcml_st_integer *integer, fcml_int64_t *value ) {
+	switch( integer->size ) {
 	case FCML_DS_8:
-		*value = imm->is_signed ? (fcml_int64_t)(fcml_int8_t)imm->imm8 : (fcml_int64_t)imm->imm8;
+		*value = integer->is_signed ? (fcml_int64_t)integer->int8 : (fcml_int64_t)(fcml_uint8_t)integer->int8;
 		break;
 	case FCML_DS_16:
-		*value = imm->is_signed ? (fcml_int64_t)(fcml_int16_t)imm->imm16 : (fcml_int64_t)imm->imm16;
+		*value = integer->is_signed ? (fcml_int64_t)integer->int16 : (fcml_int64_t)(fcml_uint16_t)integer->int16;
 		break;
 	case FCML_DS_32:
-		*value = imm->is_signed ? (fcml_int64_t)(fcml_int32_t)imm->imm32 : (fcml_int64_t)imm->imm32;
+		*value = integer->is_signed ? (fcml_int64_t)integer->int32 : (fcml_int64_t)(fcml_uint32_t)integer->int32;
 		break;
 	case FCML_DS_64:
-		*value = (fcml_int64_t)imm->imm64;
+		*value = integer->int64;
 		break;
 	default:
 		return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -376,24 +452,24 @@ fcml_data_size fcml_fn_utils_get_default_OSA(fcml_en_addr_form addr_form) {
 	return result;
 }
 
-fcml_ceh_error fcml_fn_utils_decode_uvint( fcml_st_memory_stream *stream, fcml_uvint *uvint, fcml_usize size ) {
+fcml_ceh_error fcml_fn_utils_decode_integer( fcml_st_memory_stream *stream, fcml_st_integer *integer, fcml_usize size ) {
 	fcml_bool result = FCML_FALSE;
 	switch(size) {
 	case FCML_DS_8:
-		uvint->uint8 = fcml_fn_stream_read( stream, &result );
-		uvint->size = FCML_DS_8;
+	    integer->int8 = fcml_fn_stream_read( stream, &result );
+	    integer->size = FCML_DS_8;
 		break;
 	case FCML_DS_16:
-		uvint->uint16 = fcml_fn_stream_read_word( stream, &result );
-		uvint->size = FCML_DS_16;
+	    integer->int16 = fcml_fn_stream_read_word( stream, &result );
+	    integer->size = FCML_DS_16;
 		break;
 	case FCML_DS_32:
-		uvint->uint32 = fcml_fn_stream_read_dword( stream, &result );
-		uvint->size = FCML_DS_32;
+	    integer->int32 = fcml_fn_stream_read_dword( stream, &result );
+	    integer->size = FCML_DS_32;
 		break;
 	case FCML_DS_64:
-		uvint->uint64 = fcml_fn_stream_read_qword( stream, &result );
-		uvint->size = FCML_DS_64;
+	    integer->int64 = fcml_fn_stream_read_qword( stream, &result );
+	    integer->size = FCML_DS_64;
 		break;
 	default:
 		return FCML_CEH_GEC_INVALID_INPUT;
@@ -404,301 +480,240 @@ fcml_ceh_error fcml_fn_utils_decode_uvint( fcml_st_memory_stream *stream, fcml_u
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_decode_vint( fcml_st_memory_stream *stream, fcml_vint *vint, fcml_usize size ) {
-	fcml_bool result = FCML_FALSE;
-	switch(size) {
-	case FCML_DS_8:
-		vint->int8 = fcml_fn_stream_read( stream, &result );
-		vint->size = FCML_DS_8;
-		break;
-	case FCML_DS_16:
-		vint->int16 = fcml_fn_stream_read_word( stream, &result );
-		vint->size = FCML_DS_16;
-		break;
-	case FCML_DS_32:
-		vint->int32 = fcml_fn_stream_read_dword( stream, &result );
-		vint->size = FCML_DS_32;
-		break;
-	case FCML_DS_64:
-		vint->int64 = fcml_fn_stream_read_qword( stream, &result );
-		vint->size = FCML_DS_64;
-		break;
-	default:
-		return FCML_CEH_GEC_INVALID_INPUT;
-	}
-	if( !result ) {
-		return FCML_CEH_GEC_EOF;
-	}
-	return FCML_CEH_GEC_NO_ERROR;
+
+fcml_ceh_error fcml_fn_utils_encode_integer( fcml_st_memory_stream *stream, const fcml_st_integer *integer ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_bool result = FCML_FALSE;
+    switch( integer->size ) {
+    case FCML_DS_8:
+        result = fcml_fn_stream_write( stream, integer->int8 );
+        break;
+    case FCML_DS_16:
+        result = fcml_fn_stream_write_word( stream, integer->int16 );
+        break;
+    case FCML_DS_32:
+        result = fcml_fn_stream_write_dword( stream, integer->int32 );
+        break;
+    case FCML_DS_64:
+        result = fcml_fn_stream_write_qword( stream, integer->int64 );
+        break;
+    }
+    if( !result ) {
+        // Insufficient stream size.
+        error = FCML_CEH_GEC_INVALID_INPUT;
+    }
+    return error;
 }
 
-fcml_ceh_error fcml_fn_utils_encode_uvint( fcml_st_memory_stream *stream, const fcml_uvint *uvint ) {
+fcml_ceh_error fcml_fn_utils_displacement_to_integer( const fcml_st_displacement *displacement, fcml_st_integer *integer ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_bool result = FCML_FALSE;
-	switch( uvint->size ) {
-	case FCML_DS_8:
-		result = fcml_fn_stream_write( stream, uvint->uint8 );
-		break;
-	case FCML_DS_16:
-		result = fcml_fn_stream_write_word( stream, uvint->uint16 );
-		break;
-	case FCML_DS_32:
-		result = fcml_fn_stream_write_dword( stream, uvint->uint32 );
-		break;
-	case FCML_DS_64:
-		result = fcml_fn_stream_write_qword( stream, uvint->uint64 );
-		break;
-	}
-	if( !result ) {
-		// Insufficient stream size.
-		error = FCML_CEH_GEC_INVALID_INPUT;
-	}
-	return error;
-}
-
-fcml_ceh_error fcml_fn_utils_encode_vint( fcml_st_memory_stream *stream, const fcml_vint *vint ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_bool result = FCML_FALSE;
-	switch( vint->size ) {
-	case FCML_DS_8:
-		result = fcml_fn_stream_write( stream, (unsigned)vint->int8 );
-		break;
-	case FCML_DS_16:
-		result = fcml_fn_stream_write_word( stream, (unsigned)vint->int16 );
-		break;
-	case FCML_DS_32:
-		result = fcml_fn_stream_write_dword( stream, (unsigned)vint->int32 );
-		break;
-	case FCML_DS_64:
-		result = fcml_fn_stream_write_qword( stream, (unsigned)vint->int64 );
-		break;
-	}
-	if( !result ) {
-		// Insufficient stream size.
-		error = FCML_CEH_GEC_INVALID_INPUT;
-	}
-	return error;
-}
-
-fcml_ceh_error fcml_fn_utils_displacement_to_uvint( const fcml_st_displacement *displacement, fcml_uvint *uvint ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	uvint->uint64 = 0;
+	integer->int64 = 0;
 	switch( displacement->size ) {
 	case FCML_DS_8:
-		uvint->uint8 = displacement->dis8;
+	    integer->int8 = displacement->dis8;
 		break;
 	case FCML_DS_16:
-		uvint->uint16 = displacement->dis16;
+	    integer->int16 = displacement->dis16;
 		break;
 	case FCML_DS_32:
-		uvint->uint32 = displacement->dis32;
-		break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-		break;
-	}
-	uvint->size = displacement->size;
-	return error;
-}
-
-fcml_ceh_error fcml_fn_utils_uvint_to_displacement( const fcml_uvint *uvint, fcml_st_displacement *displacement ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	displacement->dis32 = 0;
-	switch( uvint->size ) {
-	case FCML_DS_8:
-		displacement->dis8 = (signed)uvint->uint8;
-		break;
-	case FCML_DS_16:
-		displacement->dis16 = (signed)uvint->uint16;
-		break;
-	case FCML_DS_32:
-		displacement->dis32 = (signed)uvint->uint32;
+	    integer->int32 = displacement->dis32;
 		break;
 	case FCML_DS_64:
-		displacement->dis64 = (signed)uvint->uint64;
-		break;
+        integer->int64 = displacement->dis64;
+        break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;
 		break;
 	}
-	displacement->size = uvint->size;
+	integer->size = displacement->size;
+	integer->is_signed = displacement->is_signed;
 	return error;
 }
 
-fcml_ceh_error fcml_fn_utils_vint_to_displacement( const fcml_vint *vint, fcml_st_displacement *displacement ) {
+fcml_ceh_error fcml_fn_utils_integer_to_displacement( const fcml_st_integer *integer, fcml_st_displacement *displacement ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	displacement->dis32 = 0;
-	switch( vint->size ) {
+	displacement->dis64 = 0;
+	switch( integer->size ) {
 	case FCML_DS_8:
-		displacement->dis8 = vint->int8;
+		displacement->dis8 = integer->int8;
 		break;
 	case FCML_DS_16:
-		displacement->dis16 = vint->int16;
+		displacement->dis16 = integer->int16;
 		break;
 	case FCML_DS_32:
-		displacement->dis32 = vint->int32;
+		displacement->dis32 = integer->int32;
 		break;
 	case FCML_DS_64:
-		displacement->dis64 = vint->int64;
+		displacement->dis64 = integer->int64;
 		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;
 		break;
 	}
-	displacement->size = vint->size;
+	displacement->size = integer->size;
+	displacement->is_signed = integer->is_signed;
 	return error;
 }
 
-fcml_ceh_error fcml_fn_utils_displacement_to_vint( const fcml_st_displacement *displacement, fcml_vint *vint ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	vint->int64 = 0;
-	switch( displacement->size ) {
-	case FCML_DS_8:
-		vint->int8 = (fcml_int8_t)displacement->dis8;
-		break;
-	case FCML_DS_16:
-		vint->int16 = (fcml_int16_t)displacement->dis16;
-		break;
-	case FCML_DS_32:
-		vint->int32 = (fcml_int32_t)displacement->dis32;
-		break;
-	case FCML_DS_64:
-		vint->int64 = (fcml_int64_t)displacement->dis64;
-		break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-		break;
-	}
-	vint->size = displacement->size;
-	return error;
+fcml_ceh_error fcml_fn_utils_offset_to_integer( const fcml_st_offset *offset, fcml_st_integer *integer ) {
+   fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+   integer->int64 = 0;
+   switch( offset->size ) {
+   case FCML_DS_16:
+       integer->int16 = offset->off16;
+       integer->size = FCML_DS_16;
+       break;
+   case FCML_DS_32:
+       integer->int32 = offset->off32;
+       integer->size = FCML_DS_32;
+       break;
+   case FCML_DS_64:
+       integer->int64 = offset->off64;
+       integer->size = FCML_DS_64;
+       break;
+   default:
+       error = FCML_CEH_GEC_INVALID_INPUT;
+       break;
+   }
+   integer->is_signed = offset->is_signed;
+   return error;
 }
 
-fcml_ceh_error fcml_fn_utils_imm_to_uvint( fcml_st_immediate *imm, fcml_uvint *uvint ) {
+fcml_ceh_error fcml_fn_utils_integer_to_offset( const fcml_st_integer *integer, fcml_st_offset *offset ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    offset->off64 = 0;
+    switch( integer->size ) {
+    case FCML_DS_8:
+        offset->off16 = (fcml_uint16_t)integer->int8;
+        offset->size = FCML_DS_16;
+        break;
+    case FCML_DS_16:
+        offset->off16 = (fcml_uint16_t)integer->int16;
+        offset->size = FCML_DS_16;
+        break;
+    case FCML_DS_32:
+        offset->off32 = (fcml_uint32_t)integer->int32;
+        offset->size = FCML_DS_32;
+        break;
+    case FCML_DS_64:
+        offset->off64 = (fcml_uint64_t)integer->int64;
+        offset->size = FCML_DS_64;
+        break;
+    default:
+        error = FCML_CEH_GEC_INVALID_INPUT;
+        break;
+    }
+    offset->is_signed = integer->is_signed;
+    return error;
+}
+
+fcml_ceh_error fcml_fn_utils_imm_to_integer( fcml_st_immediate *imm, fcml_st_integer *integer ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	uvint->uint64 = 0;
+	integer->int64 = 0;
 	switch( imm->imm_size ) {
 	case FCML_DS_8:
-		uvint->uint8 = imm->imm8;
+	    integer->int8 = imm->imm8;
 		break;
 	case FCML_DS_16:
-		uvint->uint16 = imm->imm16;
+	    integer->int16 = imm->imm16;
 		break;
 	case FCML_DS_32:
-		uvint->uint32 = imm->imm32;
+	    integer->int32 = imm->imm32;
 		break;
 	case FCML_DS_64:
-		uvint->uint64 = imm->imm64;
+	    integer->int64 = imm->imm64;
 		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;
 		break;
 	}
-	uvint->size = imm->imm_size;
+	integer->size = imm->imm_size;
+	integer->is_signed = imm->is_signed;
 	return error;
 }
 
-fcml_ceh_error fcml_fn_utils_imm_to_vint( fcml_st_immediate *imm, fcml_vint *vint ) {
+fcml_ceh_error fcml_fn_utils_extend_integer( fcml_st_integer *integer, fcml_usize extension ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	vint->int64 = 0;
-	switch( imm->imm_size ) {
-	case FCML_DS_8:
-		vint->int8 = (fcml_int8_t)imm->imm8;
-		break;
-	case FCML_DS_16:
-		vint->int16 = (fcml_int16_t)imm->imm16;
-		break;
-	case FCML_DS_32:
-		vint->int32 = (fcml_int32_t)imm->imm32;
-		break;
-	case FCML_DS_64:
-		vint->int64 = (fcml_int64_t)imm->imm64;
-		break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-		break;
+	if( !integer->is_signed ) {
+        uint64_t temp_int = 0;
+        switch( integer->size ) {
+        case 8:
+            temp_int = (fcml_uint8_t)integer->int8;
+            break;
+        case 16:
+            temp_int = (fcml_uint16_t)integer->int16;
+            break;
+        case 32:
+            temp_int = (fcml_uint32_t)integer->int32;
+            break;
+        case 64:
+            temp_int = (fcml_uint64_t)integer->int64;
+            break;
+        default:
+            error = FCML_CEH_GEC_INVALID_INPUT;
+            break;
+        }
+        if( !error ) {
+            integer->int64 = 0;
+            switch( extension ) {
+            case 8:
+                integer->int8 = (fcml_uint8_t)temp_int;
+                break;
+            case 16:
+                integer->int16 = (fcml_uint16_t)temp_int;
+                break;
+            case 32:
+                integer->int32 = (fcml_uint32_t)temp_int;
+                break;
+            case 64:
+                integer->int64 = (fcml_uint64_t)temp_int;
+                break;
+            }
+            integer->size = extension;
+        }
+	} else {
+	    int64_t temp_int = 0;
+        switch( integer->size ) {
+        case 8:
+            temp_int = integer->int8;
+            break;
+        case 16:
+            temp_int = integer->int16;
+            break;
+        case 32:
+            temp_int = integer->int32;
+            break;
+        case 64:
+            temp_int = integer->int64;
+            break;
+        default:
+            error = FCML_CEH_GEC_INVALID_INPUT;
+            break;
+        }
+        if( !error ) {
+            integer->int64 = 0;
+            switch( extension ) {
+            case 8:
+                integer->int8 = (fcml_int8_t)temp_int;
+                break;
+            case 16:
+                integer->int16 = (fcml_int16_t)temp_int;
+                break;
+            case 32:
+                integer->int32 = (fcml_int32_t)temp_int;
+                break;
+            case 64:
+                integer->int64 = (fcml_int64_t)temp_int;
+                break;
+            }
+            integer->size = extension;
+        }
+        return error;
 	}
-	vint->size = imm->imm_size;
 	return error;
 }
 
-fcml_ceh_error fcml_fn_utils_extend_uvint( fcml_uvint *uvint, fcml_usize extension ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	uint64_t temp_int = 0;
-	switch( uvint->size ) {
-	case 8:
-		temp_int = uvint->uint8;
-		break;
-	case 16:
-		temp_int = uvint->uint16;
-		break;
-	case 32:
-		temp_int = uvint->uint32;
-		break;
-	case 64:
-		temp_int = uvint->uint64;
-		break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-		break;
-	}
-	if( !error ) {
-		uvint->uint64 = 0;
-		switch( extension ) {
-		case 8:
-			uvint->uint8 = (fcml_uint8_t)temp_int;
-			break;
-		case 16:
-			uvint->uint16 = (fcml_uint16_t)temp_int;
-			break;
-		case 32:
-			uvint->uint32 = (fcml_uint32_t)temp_int;
-			break;
-		case 64:
-			uvint->uint64 = (fcml_uint64_t)temp_int;
-			break;
-		}
-		uvint->size = extension;
-	}
-	return error;
+inline fcml_bool fcml_fn_utils_is_reg_undef( fcml_st_register *reg ) {
+    return reg->type == FCML_REG_UNDEFINED;
 }
 
-fcml_ceh_error fcml_fn_utils_extend_vint( fcml_vint *vint, fcml_usize extension ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	int64_t temp_int = 0;
-	switch( vint->size ) {
-	case 8:
-		temp_int = vint->int8;
-		break;
-	case 16:
-		temp_int = vint->int16;
-		break;
-	case 32:
-		temp_int = vint->int32;
-		break;
-	case 64:
-		temp_int = vint->int64;
-		break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-		break;
-	}
-	if( !error ) {
-		vint->int64 = 0;
-		switch( extension ) {
-		case 8:
-			vint->int8 = (fcml_uint8_t)temp_int;
-			break;
-		case 16:
-			vint->int16 = (fcml_uint16_t)temp_int;
-			break;
-		case 32:
-			vint->int32 = (fcml_uint32_t)temp_int;
-			break;
-		case 64:
-			vint->int64 = (fcml_uint64_t)temp_int;
-			break;
-		}
-		vint->size = extension;
-	}
-	return error;
-}
