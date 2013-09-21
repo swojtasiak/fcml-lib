@@ -116,17 +116,23 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( fcml_st_modrm_encoder_context
 
     fcml_st_integer dest;
 
+    // Displacement value is always signed, so change it to signed value if it has expected size.
+    fcml_st_integer src = *displacement;
+    if( src.size == asa ) {
+        src.is_signed = FCML_TRUE;
+    }
+
 	if( *disp_size == FCML_DS_UNDEF ) {
 
         // Convert displacement to 8 bits value.
-        error = fcml_fn_utils_convert_integer_to_integer( displacement, &dest, asa, FCML_DS_8 );
+        error = fcml_fn_utils_convert_integer_to_integer( &src, &dest, asa, FCML_DS_8 );
         if( error == FCML_CEH_GEC_VALUE_OUT_OF_RANGE ) {
             // Convert displacement to 32 bits value.
-            error = fcml_fn_utils_convert_integer_to_integer( displacement, &dest, asa, asa == FCML_DS_16 ? FCML_DS_16 : FCML_DS_32 );
+            error = fcml_fn_utils_convert_integer_to_integer( &src, &dest, asa, asa == FCML_DS_16 ? FCML_DS_16 : FCML_DS_32 );
         }
 
 	} else {
-	    error = fcml_fn_utils_convert_integer_to_integer( displacement, &dest, asa, *disp_size );
+	    error = fcml_fn_utils_convert_integer_to_integer( &src, &dest, asa, *disp_size );
 	}
 
 	if( error ) {

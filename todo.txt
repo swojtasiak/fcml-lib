@@ -52,3 +52,7 @@ Dodac mozliwoœc assemblacji instrucji XOP/VEX z prefixem C4 je¿eli mozna zastoso
 
 08.09.2013
 Dodac mozliwosc disassemblacji pseudo opcode, jezeli odpowiednia opcja konfiguracyjna jest wlaczona.
+
+21.09.2013
+Dodac hinty, za pomoca ktorych bedzie mozliwosc assemblacji instruckji o okreslonej wielkosci operandu, przykladowo jmp rel8 a jmp rel32, dla -1 zostanie wybrane 8 bitow a mozemy chciec 32.
+Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wyboru optimizerom a czesc trybow adresowania sama decyduje jak optymalizowac.(W tym przypadku optymalizowanie ModRM)
