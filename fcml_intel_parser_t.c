@@ -25,7 +25,9 @@ void fcml_tf_parser_int_parse_test1(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_TRUE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)-10 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -37,7 +39,9 @@ void fcml_tf_parser_int_parse_test2(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, 0xFF );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -49,7 +53,9 @@ void fcml_tf_parser_int_parse_test3(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm16, (fcml_uint16_t)0x0FFF );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -61,7 +67,9 @@ void fcml_tf_parser_int_parse_test4(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm16, (fcml_uint16_t)0xFFFF );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -73,7 +81,9 @@ void fcml_tf_parser_int_parse_test5(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm32, (fcml_uint32_t)0x000FFFFF );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -85,7 +95,9 @@ void fcml_tf_parser_int_parse_test6(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm32, (fcml_uint32_t)0xFFFFFFFF );
-	}
+	} else {
+	    CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -97,7 +109,9 @@ void fcml_tf_parser_int_parse_test7(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm64, 0xFFFFFFFFFFFFFFFFUL );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -109,7 +123,9 @@ void fcml_tf_parser_int_parse_test8(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -121,7 +137,9 @@ void fcml_tf_parser_int_parse_test9(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_TRUE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm16, (fcml_uint16_t)(fcml_int16_t)-255 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -133,7 +151,9 @@ void fcml_tf_parser_int_parse_test10(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)3 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -145,7 +165,9 @@ void fcml_tf_parser_int_parse_test11(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, (fcml_uint8_t)8 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -157,7 +179,9 @@ void fcml_tf_parser_int_parse_test12(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm16, (fcml_uint16_t)0xFFFF );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -169,7 +193,9 @@ void fcml_tf_parser_int_parse_test13(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_TRUE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm16, (fcml_uint16_t)-32768 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -191,7 +217,9 @@ void fcml_tf_parser_int_parse_test15(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_TRUE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm64, (fcml_uint64_t)(-9223372036854775807LL - 1) );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -203,7 +231,9 @@ void fcml_tf_parser_int_parse_test16(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm64, (fcml_uint64_t)18446744073709551615ULL );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -215,7 +245,9 @@ void fcml_tf_parser_int_parse_test17(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm16, (fcml_uint16_t)5675 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -227,7 +259,9 @@ void fcml_tf_parser_int_parse_test18(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm32, (fcml_uint32_t)2147483647 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -239,7 +273,9 @@ void fcml_tf_parser_int_parse_test19(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm32, (fcml_uint32_t)4294967295U );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -251,7 +287,9 @@ void fcml_tf_parser_int_parse_test20(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm64, (fcml_uint64_t)4294967296ULL );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -263,7 +301,9 @@ void fcml_tf_parser_int_parse_test21(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_TRUE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm64, (fcml_uint64_t)-4294967295LL );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -275,7 +315,9 @@ void fcml_tf_parser_int_parse_test22(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, 0xFF );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
 }
 
@@ -287,8 +329,82 @@ void fcml_tf_parser_int_parse_test23(void) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, 1 );
-	}
+	} else {
+        CU_FAIL();
+    }
 	fcml_x64iap_free( result );
+}
+
+void fcml_tf_parser_int_parse_test24(void) {
+    fcml_st_x64iap_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [0x0000FFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    if( result->instruction != NULL ) {
+        CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_OFFSET );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.offset.size, FCML_DS_16 );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.offset.off16, (fcml_int16_t)0xFFFF );
+    } else {
+        CU_FAIL();
+    }
+    fcml_x64iap_free( result );
+}
+
+void fcml_tf_parser_int_parse_test25(void) {
+    fcml_st_x64iap_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [0xFF-1]", &result ), FCML_CEH_GEC_NO_ERROR );
+    if( result->instruction != NULL ) {
+        CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_OFFSET );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.offset.size, FCML_DS_16 );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.offset.off16, 254 );
+    } else {
+        CU_FAIL();
+    }
+    fcml_x64iap_free( result );
+}
+
+void fcml_tf_parser_int_parse_test26(void) {
+    fcml_st_x64iap_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [-1]", &result ), FCML_CEH_GEC_NO_ERROR );
+    if( result->instruction != NULL ) {
+        CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_OFFSET );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.offset.size, FCML_DS_16 );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.offset.off16, (fcml_int16_t)0xFFFF );
+    } else {
+        CU_FAIL();
+    }
+    fcml_x64iap_free( result );
+}
+
+void fcml_tf_parser_int_parse_test27(void) {
+    fcml_st_x64iap_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    if( result->instruction != NULL ) {
+        CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_OFFSET );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.offset.size, FCML_DS_64 );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.offset.off64, 0xFFFFFFFFFFFFFFFFULL );
+    } else {
+        CU_FAIL();
+    }
+    fcml_x64iap_free( result );
+}
+
+void fcml_tf_parser_int_parse_test28(void) {
+    fcml_st_x64iap_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    if( result->instruction != NULL ) {
+        CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_COMBINED );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.effective_address.base.type, FCML_REG_GPR );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.effective_address.base.reg, FCML_REG_EAX );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.effective_address.displacement.size, FCML_DS_64 );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.effective_address.displacement.dis64, 0xFFFFFFFFFFFFFFFFULL );
+    } else {
+        CU_FAIL();
+    }
+    fcml_x64iap_free( result );
 }
 
 CU_TestInfo fcml_ti_parser[] = {
@@ -315,6 +431,11 @@ CU_TestInfo fcml_ti_parser[] = {
     { "fcml_tf_parser_int_parse_test21", fcml_tf_parser_int_parse_test21 },
     { "fcml_tf_parser_int_parse_test22", fcml_tf_parser_int_parse_test22 },
     { "fcml_tf_parser_int_parse_test23", fcml_tf_parser_int_parse_test23 },
+    { "fcml_tf_parser_int_parse_test24", fcml_tf_parser_int_parse_test24 },
+    { "fcml_tf_parser_int_parse_test25", fcml_tf_parser_int_parse_test25 },
+    { "fcml_tf_parser_int_parse_test26", fcml_tf_parser_int_parse_test26 },
+    { "fcml_tf_parser_int_parse_test27", fcml_tf_parser_int_parse_test27 },
+    { "fcml_tf_parser_int_parse_test28", fcml_tf_parser_int_parse_test28 },
     CU_TEST_INFO_NULL,
 };
 

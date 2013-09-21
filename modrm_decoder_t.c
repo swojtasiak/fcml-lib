@@ -48,16 +48,16 @@ void fcml_tf_modrm_decoder_test_1(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_BX );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_16 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_BX );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_16 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_DX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
 }
 
@@ -85,17 +85,17 @@ void fcml_tf_modrm_decoder_test_2(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_BX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_16 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis16, 0x0201 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_16 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis16, 0x0201 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
 }
 
@@ -123,16 +123,16 @@ void fcml_tf_modrm_decoder_test_3(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_BP );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_16 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_DI );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_16 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_BP );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_16 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_DI );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_16 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_CX );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
 }
 
@@ -160,16 +160,16 @@ void fcml_tf_modrm_decoder_test_4(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_SI );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_16 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_SI );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_16 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_DX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
 }
 
@@ -197,16 +197,16 @@ void fcml_tf_modrm_decoder_test_5(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
 }
 
@@ -234,17 +234,17 @@ void fcml_tf_modrm_decoder_test_6(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_BP );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_16 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_DI );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_16 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_BP );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_16 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_DI );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_16 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_SI );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis8, 0x01 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_8 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis8, 0x01 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
 }
 
@@ -300,17 +300,17 @@ void fcml_tf_modrm_3264_decoder_test_1(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_EBX );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_EBX );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EBX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis8, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis8, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
 }
 
@@ -339,17 +339,18 @@ void fcml_tf_modrm_3264_decoder_test_2(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x04030201 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0x04030201 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // RIP-addressing.
@@ -380,22 +381,22 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFFBFF1FA );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0xFFBFF1FA );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
 
-	fcml_st_address address = {0};
-	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.displacement), &address );
+	fcml_st_offset address = {0};
+	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.address.offset), &address );
 
 	CU_ASSERT_EQUAL( address.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( address.off64, 0x1faUL );
@@ -427,18 +428,18 @@ void fcml_tf_modrm_3264_decoder_test_4(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_ECX );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_ECX );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EAX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis8, 0x66 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_8 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis8, 0x66 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 
@@ -467,18 +468,18 @@ void fcml_tf_modrm_3264_decoder_test_5(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_ECX );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_ECX );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EAX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // [R9]+0x01020304, R8
@@ -506,18 +507,18 @@ void fcml_tf_modrm_3264_decoder_test_6(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // Illegal EASA size.
@@ -545,18 +546,21 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_FALSE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // RAX, EBX
@@ -586,14 +590,17 @@ void fcml_tf_modrm_3264_decoder_test_8(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_RAX );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_TRUE );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_RBX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // R8, R11
@@ -623,14 +630,17 @@ void fcml_tf_modrm_3264_decoder_test_9(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_R8 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_TRUE );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R11 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.off64, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 
@@ -659,22 +669,22 @@ void fcml_tf_modrm_3264_decoder_test_10(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFFFFFFFF );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0xFFFFFFFF );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
 
-	fcml_st_address address = {0};
-	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.displacement), &address );
+	fcml_st_offset address = {0};
+	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.address.offset), &address );
 
 	CU_ASSERT_EQUAL( address.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( address.off64, 0x400fffUL );
@@ -706,22 +716,22 @@ void fcml_tf_modrm_3264_decoder_test_11(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFF7FE000 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0xFF7FE000 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
 
-	fcml_st_address address = {0};
-	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.displacement), &address );
+	fcml_st_offset address = {0};
+	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.address.offset), &address );
 
 	CU_ASSERT_EQUAL( address.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( address.off64, 0xffffffffffbff000UL );
@@ -753,22 +763,22 @@ void fcml_tf_modrm_3264_decoder_test_12(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EDX );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0xFF7FE000 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0xFF7FE000 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
 
-	fcml_st_address address = {0};
-	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_32, &(decoded_modrm.displacement), &address );
+	fcml_st_offset address = {0};
+	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_32, &(decoded_modrm.address.offset), &address );
 
 	CU_ASSERT_EQUAL( address.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( address.off64, 0x00000000ffbff000UL );
@@ -802,17 +812,17 @@ void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.off64, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // [EBX]+0x01020304, R8
@@ -842,17 +852,17 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // [ECX+EBX]+0x01, R8
@@ -882,17 +892,20 @@ void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // [ECX+EBX*2]+0x01, R8
@@ -922,17 +935,20 @@ void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 2 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 2 );
 }
 
 // [ECX+EBX*4], R8
@@ -962,17 +978,20 @@ void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 4 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 4 );
 }
 
 // [ECX+EBX*8], R8
@@ -1002,17 +1021,20 @@ void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
+    CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_FALSE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
 // [ECX+EBX*8]+0x55, R8
@@ -1042,17 +1064,17 @@ void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis8, 0x55 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_8 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis8, 0x55 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
 // [ECX+EBX*8]+0x01020304, R8
@@ -1082,17 +1104,17 @@ void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_R11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_R11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
 // [R9]+0x01020304, R8
@@ -1122,17 +1144,17 @@ void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_UNDEFINED );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
 // [ECX+XMM1*8]+0x01020304, R8
@@ -1164,17 +1186,17 @@ void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_SIMD );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_XMM11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_128 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_SIMD );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_XMM11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_128 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
 // [ECX+YMM1*8]+0x01020304, R8
@@ -1206,17 +1228,17 @@ void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
-	CU_ASSERT_EQUAL( decoded_modrm.base.type, FCML_REG_GPR );
-	CU_ASSERT_EQUAL( decoded_modrm.base.reg, FCML_REG_R9 );
-	CU_ASSERT_EQUAL( decoded_modrm.base.size, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.type, FCML_REG_SIMD );
-	CU_ASSERT_EQUAL( decoded_modrm.index.reg, FCML_REG_XMM11 );
-	CU_ASSERT_EQUAL( decoded_modrm.index.size, FCML_DS_256 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, FCML_REG_R9 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_SIMD );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, FCML_REG_XMM11 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_256 );
 	CU_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.size, FCML_DS_32 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.sign_extension, FCML_DS_64 );
-	CU_ASSERT_EQUAL( decoded_modrm.displacement.dis32, 0x01020304 );
-	CU_ASSERT_EQUAL( decoded_modrm.scale_factor, 8 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
 CU_TestInfo fctl_ti_modrm_decoder[] = {
