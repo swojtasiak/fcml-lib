@@ -20,6 +20,12 @@
 #include "instructions_a_t.h"
 #include "instructions_b_t.h"
 #include "instructions_c_t.h"
+#include "instructions_d_t.h"
+#include "instructions_e_t.h"
+#include "instructions_f_t.h"
+#include "instructions_h_t.h"
+#include "instructions_i_t.h"
+#include "instructions_j_t.h"
 #include "fcml_intel_parser_t.h"
 #include "fcml_asm_dialect_intel.h"
 
@@ -32,6 +38,12 @@ CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_a,
 	fctl_si_instructions_b,
 	fctl_si_instructions_c,
+	fctl_si_instructions_d,
+	fctl_si_instructions_e,
+	fctl_si_instructions_f,
+	fctl_si_instructions_h,
+	fctl_si_instructions_i,
+	fctl_si_instructions_j,
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
@@ -51,8 +63,8 @@ int main(int argc, char **argv) {
 	}
 	ira_init();
 
-
 	//FCML_I64_P( "cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF );
+
 	//return 0;
 
 	//FCML_I32_A_P( "cmpsd", 0xA7 );
