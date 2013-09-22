@@ -89,6 +89,8 @@ typedef struct fcml_st_asm_encoding_context {
 	fcml_st_asm_opcode_reg opcode_reg;
 	fcml_nint8_t instruction_size;
 	fcml_bool is_short_form;
+	// TODO: Powtorzone w modrm, zastanowic sie nad tym, narazie zostawiam bo nigdy nie skoncze. W kazdym razie flaga moze byc ustawiona takze przez inne tryby enkodowwania, nie tylko modrm.
+	fcml_bool reg_opcode_needs_rex;
 } fcml_st_asm_encoding_context;
 
 typedef fcml_ceh_error (*fcml_st_asm_instruction_part_post_processor)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args );

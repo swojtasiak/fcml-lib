@@ -687,7 +687,9 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_proces
 		} else {
 			context->opcode_reg.opcode_reg = operand_def->reg.reg;
 		}
-
+		if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+		    context->reg_opcode_needs_rex = operand_def->reg.x64_exp;
+		}
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -944,11 +946,35 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing( fcml_s
 //-------------
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_explicit_ib( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+    fcml_ceh_error error = FCML_EN_UNSUPPORTED_OPPERAND;
+    if( operand_def->type == FCML_EOT_IMMEDIATE ) {
+        fcml_st_integer source;
+        fcml_st_integer dest;
+        error = fcml_fn_utils_imm_to_integer( &(operand_def->immediate), &source );
+        if( !error ) {
+            error = fcml_fn_utils_convert_integer_to_integer( &source, &dest, FCML_DS_8, FCML_DS_8 );
+        }
+    }
+	return error;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_ib( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+    fcml_ceh_error error = FCML_EN_UNSUPPORTED_OPPERAND;
+    if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+        fcml_sf_def_tma_explicit_ib *exp_ib = (fcml_sf_def_tma_explicit_ib*)addr_mode->addr_mode_args;
+        fcml_st_integer source;
+        fcml_st_integer dest;
+        error = fcml_fn_utils_imm_to_integer( &(operand_def->immediate), &source );
+        if( !error ) {
+            error = fcml_fn_utils_convert_integer_to_integer( &source, &dest, FCML_DS_8, FCML_DS_8 );
+            if( !error ) {
+                if( exp_ib->ib == (fcml_uint8_t)dest.int8 ) {
+                    error = FCML_CEH_GEC_NO_ERROR;
+                }
+            }
+        }
+    }
+    return error;
 }
 
 //-------------------------
@@ -968,7 +994,7 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_ien_as
 //-------------
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_rm( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;;
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_bool result = FCML_TRUE;
 	fcml_bool is_reg = FCML_FALSE;
 	fcml_bool is_mem = FCML_FALSE;
@@ -1033,6 +1059,9 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		if( operand_def->type == FCML_EOT_REGISTER ) {
 			context->mod_rm.reg.is_not_null = FCML_TRUE;
 			context->mod_rm.reg.value = operand_def->reg.reg;
+			if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+			    context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
+			}
 			// Modify data size flags if there is such need.
 			error = fcml_ifn_decode_dynamic_operand_size( context, args->encoded_register_operand_size, operand_def->reg.size, NULL,FCML_IEN_CT_EQUAL );
 		} else {
@@ -1064,7 +1093,9 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_r( fcml_st_asm_encoding_context *co
 fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 		context->mod_rm.reg_opcode = operand_def->reg.reg;
-		context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
+		if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+		    context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
+		}
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -2034,7 +2065,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 
 			// Even if REX do not contains any flags set in some cases registers BPL, SPL, DIL, SIL needs REX to be defined.
 			// Additionally we can force it to occur by setting a configuration flag.
-			if( rex != FCML_ENCODE_REX_BASE || ( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode_def->opcode_flags ) && cfg->force_unnecessary_rex_prefix ) || mod_rm->reg_opcode_needs_rex ) {
+			if( rex != FCML_ENCODE_REX_BASE || ( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode_def->opcode_flags ) && cfg->force_unnecessary_rex_prefix ) || mod_rm->reg_opcode_needs_rex || context->reg_opcode_needs_rex ) {
 				instruction_part->code[0] = rex;
 				instruction_part->code_length = 1;
 			}
