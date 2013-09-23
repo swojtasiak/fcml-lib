@@ -18,12 +18,13 @@ int fcml_tf_instructions_j_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_JCXZ(void) {
-    FCML_I64( "jrcxz 0000800000401002h", 0x66, 0xe3, 0xff );
-    FCML_I64( "jecxz 0000800000401003h", 0x66, 0x67, 0xe3, 0xff );
-    FCML_I64( "jrcxz 0000800000401002h", 0x48, 0xe3, 0xff );
-    FCML_I32( "jcxz 00001003h", 0x66, 0x67, 0xe3, 0xff );
-    FCML_I32( "jcxz 00401002h", 0x67, 0xe3, 0xff );
+    FCML_I64( "jrcxz 0000800000401001h", 0xe3, 0xff );
     FCML_I32( "jecxz 00401001h", 0xe3, 0xff );
+    FCML_I64_D( "jrcxz 0000800000401002h", 0x66, 0xe3, 0xff );
+    FCML_I64_D( "jecxz 0000800000401003h", 0x66, 0x67, 0xe3, 0xff );
+    FCML_I64_D( "jrcxz 0000800000401002h", 0x48, 0xe3, 0xff );
+    FCML_I32_D( "jcxz 00001003h", 0x66, 0x67, 0xe3, 0xff );
+    FCML_I32_D( "jcxz 00401002h", 0x67, 0xe3, 0xff );
 }
 
 CU_TestInfo fctl_ti_instructions_j[] = {
