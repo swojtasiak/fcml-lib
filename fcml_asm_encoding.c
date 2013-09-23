@@ -718,6 +718,21 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_immediate_dis_relative( fcml_st_asm
 	return error;
 }
 
+fcml_ceh_error fcml_ifn_asm_convert_to_requested_rel( fcml_st_integer *value, fcml_data_size expected_size, fcml_uint8_t encoded_rel_size ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    if( encoded_rel_size == FCML_EOS_BYTE ) {
+        error = fcml_fn_utils_convert_integer_to_integer( value, value, expected_size, FCML_DS_8 );
+        if( error ) {
+            error = FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+    }
+    return error;
+}
+
+int fcml_ifn_asm_calculate_imm_size_for_encoded_rel( fcml_uint8_t encoded_rel_size ) {
+    return encoded_rel_size;
+}
+
 fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processor( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args, fcml_uint8_t encoded_rel_size ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -740,6 +755,8 @@ fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processo
         fcml_st_integer destination = {0};
         fcml_st_integer displacement = {0};
 
+        int rel_size = fcml_ifn_asm_calculate_imm_size_for_encoded_rel( encoded_rel_size );
+
         error = fcml_fn_utils_imm_to_integer( imm, &source );
         if( !error ) {
 
@@ -756,47 +773,39 @@ fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processo
                     case FCML_DS_16: {
 
                         fcml_int16_t offset = destination.int16;
-                        fcml_int16_t ip = (fcml_int16_t)( ( context->assembler_context->ip.eip + context->instruction_size.value + 2 ) & 0x0000FFFF);
+                        fcml_int16_t ip = (fcml_int16_t)( ( context->assembler_context->ip.eip + context->instruction_size.value + rel_size ) & 0x0000FFFF);
                         fcml_int16_t rel16 = offset - ip;
 
                         displacement.int16 = rel16;
                         displacement.size = FCML_DS_16;
 
-                        if( encoded_rel_size == FCML_EOS_BYTE && ( rel16 < -128 || rel16 > 127 ) ) {
-                            error = FCML_EN_UNSUPPORTED_OPPERAND;
-                        }
+                        error = fcml_ifn_asm_convert_to_requested_rel( &displacement, FCML_DS_16, encoded_rel_size );
 
                         break;
                     }
                     case FCML_DS_32: {
 
                         fcml_int32_t offset = destination.int32;
-                        fcml_int32_t eip = (fcml_int32_t)( context->assembler_context->ip.eip + context->instruction_size.value + 4 );
+                        fcml_int32_t eip = (fcml_int32_t)( context->assembler_context->ip.eip + context->instruction_size.value + rel_size );
                         fcml_int32_t rel32 = offset - eip;
 
                         displacement.int32 = rel32;
                         displacement.size = FCML_DS_32;
 
-                        if( encoded_rel_size == FCML_EOS_BYTE && ( rel32 < -128 || rel32 > 127 ) ) {
-                            error = FCML_EN_UNSUPPORTED_OPPERAND;
-                        }
+                        error = fcml_ifn_asm_convert_to_requested_rel( &displacement, FCML_DS_32, encoded_rel_size );
 
                         break;
                     }
                     case FCML_DS_64: {
 
                         fcml_int64_t offset = (fcml_int64_t)destination.int64;
-                        fcml_int64_t rip = (fcml_int64_t)( context->assembler_context->ip.rip + context->instruction_size.value + 4 );
+                        fcml_int64_t rip = (fcml_int64_t)( context->assembler_context->ip.rip + context->instruction_size.value + rel_size );
                         fcml_int64_t rel32 = offset - rip;
 
                         displacement.int32 = (fcml_int32_t)rel32;
                         displacement.size = FCML_DS_32;
 
-                        if( encoded_rel_size == FCML_EOS_BYTE && ( rel32 < -128 || rel32 > 127 ) ) {
-                            error = FCML_EN_UNSUPPORTED_OPPERAND;
-                        } else if( rel32 < FCML_INT32_MIN || rel32 > FCML_INT32_MAX ) {
-                            error = FCML_EN_UNSUPPORTED_OPPERAND;
-                        }
+                        error = fcml_ifn_asm_convert_to_requested_rel( &displacement, FCML_DS_32, encoded_rel_size );
 
                         break;
                     }
