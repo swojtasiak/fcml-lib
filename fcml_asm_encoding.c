@@ -729,8 +729,12 @@ fcml_ceh_error fcml_ifn_asm_convert_to_requested_rel( fcml_st_integer *value, fc
     return error;
 }
 
-int fcml_ifn_asm_calculate_imm_size_for_encoded_rel( fcml_uint8_t encoded_rel_size ) {
-    return encoded_rel_size;
+int fcml_ifn_asm_calculate_imm_size_for_encoded_rel( fcml_data_size osa, fcml_uint8_t encoded_rel_size ) {
+    if( encoded_rel_size == FCML_EOS_UNDEFINED ) {
+        return osa / 8;
+    } else {
+        return encoded_rel_size;
+    }
 }
 
 fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processor( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args, fcml_uint8_t encoded_rel_size ) {
@@ -755,7 +759,7 @@ fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processo
         fcml_st_integer destination = {0};
         fcml_st_integer displacement = {0};
 
-        int rel_size = fcml_ifn_asm_calculate_imm_size_for_encoded_rel( encoded_rel_size );
+        int rel_size = fcml_ifn_asm_calculate_imm_size_for_encoded_rel( osa, encoded_rel_size );
 
         error = fcml_fn_utils_imm_to_integer( imm, &source );
         if( !error ) {
