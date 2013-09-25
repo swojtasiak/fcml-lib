@@ -143,6 +143,68 @@ void fcml_tf_instruction_LODS(void) {
     FCML_I64_A( "lodsq", 0x48, 0xAD );
 }
 
+void fcml_tf_instruction_LOOP(void) {
+    FCML_I32( "loop 00401012h", 0xE2, 0x10);
+    FCML_I32( "loop 00401013h", 0x67, 0xE2, 0x10);
+    FCML_I64( "loop 0000800000401013h", 0x48, 0xE2, 0x10);
+    FCML_I32( "loope 00401012h", 0xE1, 0x10);
+    FCML_I32( "loope 00401013h", 0x67, 0xE1, 0x10);
+    FCML_I64( "loope 0000800000401013h", 0x48, 0xE1, 0x10);
+    FCML_I32( "loopne 00401012h", 0xE0, 0x10);
+    FCML_I32_A( "loopz 00401012h", 0xE1, 0x10);
+    FCML_I32( "loopne 00401013h", 0x67, 0xE0, 0x10);
+    FCML_I64( "loopne 0000800000401013h", 0x48, 0xE0, 0x10);
+    FCML_I32_A( "loopnz 00401012h", 0xE0, 0x10);
+}
+
+void fcml_tf_instruction_LWPINS(void) {
+    // LWPINS reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /0 /imm32
+    FCML_I32( "lwpins ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
+    FCML_I32( "lwpins ebx,eax,33221100h", 0x8F, 0xEA, 0x60, 0x12, 0xC0, 0x00, 0x11, 0x22, 0x33 );
+    // LWPINS reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /0 /imm32
+    FCML_I32( "lwpins rbx,qword ptr [eax],33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
+    FCML_I32( "lwpins rbx,rax,33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0xC0, 0x00, 0x11, 0x22, 0x33 );
+}
+
+void fcml_tf_instruction_LWPVAL(void) {
+    // LWPVAL reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /1 /imm32
+    FCML_I32( "lwpval ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
+    FCML_I32( "lwpval ebx,eax,33221100h", 0x8F, 0xEA, 0x60, 0x12, 0xC8, 0x00, 0x11, 0x22, 0x33 );
+    // LWPVAL reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /1 /imm32
+    FCML_I32( "lwpval rbx,qword ptr [eax],33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
+    FCML_I32( "lwpval rbx,rax,33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0xC8, 0x00, 0x11, 0x22, 0x33 );
+}
+
+void fcml_tf_instruction_LSL(void) {
+    // 0F 03 /r LSL r16, r16/m16 A Valid Valid Load: r16 segment limit, selector r16/m16.
+    // 0F 03 /r LSL r32, r32/m16*A Valid Valid Load: r32 segment limit, selector r32/m16.
+    FCML_I32( "lsl ebp,word ptr [eax+00000020h]", 0x0f, 0x03, 0x68, 0x20 );
+    FCML_I32( "lsl ecx,esp", 0x0f, 0x03, 0xcc );
+    FCML_I32( "lsl bp,word ptr [eax+00000020h]", 0x66, 0x0f, 0x03, 0x68, 0x20 );
+    FCML_I32( "lsl cx,sp", 0x66, 0x0f, 0x03, 0xcc );
+    FCML_I64( "lsl ebp,word ptr [rax+0000000000000020h]", 0x0f, 0x03, 0x68, 0x20 );
+    FCML_I64( "lsl ecx,esp", 0x0f, 0x03, 0xcc );
+    // REX.W + 0F 03 /r LSL r64, r32/m16*A Valid Valid Load: r64 segment limit, selector r32/m16
+    FCML_I64( "lsl rbp,word ptr [rax+0000000000000020h]", 0x48, 0x0f, 0x03, 0x68, 0x20 );
+    FCML_I64( "lsl rcx,esp", 0x48, 0x0f, 0x03, 0xcc );
+}
+
+void fcml_tf_instruction_LTR(void) {
+    FCML_I32( "ltr word ptr [eax+00000020h]", 0x0F, 0x00, 0x58, 0x20);
+    FCML_I32( "ltr ax", 0x0F, 0x00, 0xD8);
+    FCML_I64( "ltr word ptr [rax+0000000000000020h]", 0x0F, 0x00, 0x58, 0x20);
+}
+
+void fcml_tf_instruction_LZCNT(void) {
+    // F3 0F BD /r LZCNT r16,r/m16
+    // F3 0F BD /r LZCNT r32,r/m32
+    // REX.W + F3 0F BD /r LZCNT r64,r/m64
+    FCML_I32( "lzcnt eax,dword ptr [eax]", 0xF3, 0x0F, 0xBD, 0x00 );
+    FCML_I32( "lzcnt ax,word ptr [eax]", 0x66, 0xF3, 0x0F, 0xBD, 0x00 );
+    FCML_I32( "lzcnt ax,ax", 0x66, 0xF3, 0x0F, 0xBD, 0xC0 );
+    FCML_I64( "lzcnt rax,qword ptr [rax]", 0xF3, 0x48, 0x0F, 0xBD, 0x00 );
+}
+
 CU_TestInfo fctl_ti_instructions_l[] = {
     { "fcml_tf_instruction_LAHF", fcml_tf_instruction_LAHF },
     { "fcml_tf_instruction_LAR", fcml_tf_instruction_LAR },
@@ -157,6 +219,12 @@ CU_TestInfo fctl_ti_instructions_l[] = {
     { "fcml_tf_instruction_LLDT", fcml_tf_instruction_LLDT },
     { "fcml_tf_instruction_LMSW", fcml_tf_instruction_LMSW },
     { "fcml_tf_instruction_LODS", fcml_tf_instruction_LODS },
+    { "fcml_tf_instruction_LOOP", fcml_tf_instruction_LOOP },
+    { "fcml_tf_instruction_LWPINS", fcml_tf_instruction_LWPINS },
+    { "fcml_tf_instruction_LWPVAL", fcml_tf_instruction_LWPVAL },
+    { "fcml_tf_instruction_LSL", fcml_tf_instruction_LSL },
+    { "fcml_tf_instruction_LTR", fcml_tf_instruction_LTR },
+    { "fcml_tf_instruction_LZCNT", fcml_tf_instruction_LZCNT },
     CU_TEST_INFO_NULL,
 };
 
