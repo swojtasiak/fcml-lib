@@ -156,6 +156,12 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 	_ira_print_size_directive( operand->operand_size, stream );
 
+	if( !addressing->segment_selector.is_default_reg ) {
+	    // TODO: Dodac parametr konfigurayjny, pozwalajacy nawet domyslne rejestry wyswietlac.
+	    _ira_format_append_regment_reg( stream, addressing->segment_selector.segment_register );
+	    _ira_format_append_str( stream, ":" );
+	}
+
 	_ira_format_append_str( stream, "[" );
 
 	int is_rex = _ira_is_rex_prefix_available(result);
@@ -267,6 +273,14 @@ void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result
 void _ira_operand_formater_addressing_implicit_reg( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 
 	_ira_print_size_directive( operand->operand_size, stream );
+
+	struct ira_segment_selector *segment_selector = &(operand->addressing.segment_selector);
+
+    if( !segment_selector->is_default_reg ) {
+        // TODO: Dodac parametr konfigurayjny, pozwalajacy nawet domyslne rejestry wyswietlac.
+        _ira_format_append_regment_reg( stream, segment_selector->segment_register );
+        _ira_format_append_str( stream, ":" );
+    }
 
 	_ira_format_append_str( stream, "[" );
 

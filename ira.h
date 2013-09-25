@@ -515,6 +515,8 @@ union ira_address_value {
 struct ira_segment_selector {
 	// Type of the segment register using with addressing.
 	uint8_t segment_register;
+	// True if given register is default one. Used by renderer for instance.
+	fcml_bool is_default_reg;
 	// Value destined for the segment register, for example see: "ptr16:32" addressing mode.
 	uint16_t segment_register_value;
 };

@@ -56,6 +56,8 @@ void _ira_format_append_str( struct _ira_format_stream *destination_stream, cons
 // Cleans stream.
 void _ira_stream_clean( struct _ira_format_stream *stream );
 
+void _ira_format_append_regment_reg( struct _ira_format_stream *stream, uint8_t reg );
+
 // Append given register to stream.
 void _ira_format_append_reg( struct _ira_format_stream *stream, struct ira_register *reg, uint8_t is_rex );
 

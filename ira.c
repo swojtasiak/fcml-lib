@@ -619,65 +619,70 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
             if( prefix_type == IRA_VEX ) {
             	if( /*( context->config->flags & _IRA_CF_ENABLE_VAX ) &&*/ !vex_illegal_prefixes ) {
 
-            		uint32_t stream_pos = stream->offset;
+            	    fcml_stream_pointer sp = fcml_fn_stream_save_point( stream );
 
-            		// Skip to the second byte of VEX prefix.
-					fcml_fn_stream_seek(stream, 1, IRA_CURRENT);
+            	    uint32_t stream_pos = stream->offset;
+
+                    // Skip to the second byte of VEX prefix.
+                    fcml_fn_stream_seek(stream, 1, IRA_CURRENT);
 
 					if( context->mode == IRA_MOD_32BIT ) {
 						// Check if it is really a VEX prefix.
 						uint8_t second_byte = fcml_fn_stream_peek(stream, &result);
 						// VEX.R and VEX.X has to be set to 11 in 32bit mode.
 						if( !result || ( second_byte & 0xC0 ) != 0xC0 ) {
+						    fcml_fn_stream_restore_point( stream, sp );
 							prefix_type = 0;
 						}
 					}
 
 					// Copy rest of the VEX prefixes.
 					if( prefix_type ) {
+
 						int nbytes = fcml_fn_stream_read_bytes( stream, &(prefix_desc->vex_bytes), vex_prefix_size );
 						if( nbytes != vex_prefix_size ) {
 							// Stream is incomplete, so we can not treat it as a VEX.
 							prefix_type = 0;
 						}
+
+                        // Decodes VEX fields.
+                        switch( prefix ) {
+                        case 0x8F:
+                        case 0xC4:
+                            prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
+                            prefixes_fields->x = _IRA_VEX_X(prefix_desc->vex_bytes[0]);
+                            prefixes_fields->b = ( context->mode == IRA_MOD_64BIT ) ? _IRA_VEX_B(prefix_desc->vex_bytes[0]) : 0;
+                            prefixes_fields->w = _IRA_VEX_W(prefix_desc->vex_bytes[1]);
+                            prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[1]);
+                            prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[1]);
+                            prefixes_fields->mmmm = _IRA_VEX_MMMM(prefix_desc->vex_bytes[0]);
+                            prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[1]);
+                            break;
+                        case 0xC5:
+                            prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
+                            prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[0]);
+                            prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[0]);
+                            prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[0]);
+                            break;
+                        }
+
+                        if( context->mode == IRA_MOD_32BIT && prefixes_fields->vvvv > 7 ) {
+                            prefix_type = 0;
+                        }
+
+                        // TODO: Tymczasowo, dopoki ni pojdzie refaktor.
+                        prefixes_fields->vex_prefix = prefix;
+                        if( prefix == 0x8F ) {
+                            prefixes_fields->is_xop = _IRA_TRUE;
+                        }
+                        prefixes_fields->is_vex = _IRA_TRUE;
+                        prefixes_fields->is_rex = _IRA_FALSE;
+
+                        fcml_fn_stream_seek(stream, stream_pos, IRA_START);
+
+                        prefix_size += vex_prefix_size;
+
 					}
-
-					// Decodes VEX fields.
-					switch( prefix ) {
-					case 0x8F:
-					case 0xC4:
-						prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
-						prefixes_fields->x = _IRA_VEX_X(prefix_desc->vex_bytes[0]);
-						prefixes_fields->b = ( context->mode == IRA_MOD_64BIT ) ? _IRA_VEX_B(prefix_desc->vex_bytes[0]) : 0;
-						prefixes_fields->w = _IRA_VEX_W(prefix_desc->vex_bytes[1]);
-						prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[1]);
-						prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[1]);
-						prefixes_fields->mmmm = _IRA_VEX_MMMM(prefix_desc->vex_bytes[0]);
-						prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[1]);
-						break;
-					case 0xC5:
-						prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
-						prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[0]);
-						prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[0]);
-						prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[0]);
-						break;
-					}
-
-					if( context->mode == IRA_MOD_32BIT && prefixes_fields->vvvv > 7 ) {
-						prefix_type = 0;
-					}
-
-					// TODO: Tymczasowo, dopoki ni pojdzie refaktor.
-					prefixes_fields->vex_prefix = prefix;
-					if( prefix == 0x8F ) {
-						prefixes_fields->is_xop = _IRA_TRUE;
-					}
-					prefixes_fields->is_vex = _IRA_TRUE;
-					prefixes_fields->is_rex = _IRA_FALSE;
-
-					fcml_fn_stream_seek(stream, stream_pos, IRA_START);
-
-					prefix_size += vex_prefix_size;
 
 				} else {
 					// If 0xC5 and 0xC4 can not be treated as a VEX prefix, it
@@ -1674,6 +1679,7 @@ int _ira_opcode_decoder_far_pointer( struct ira_diss_context *context, struct ir
 
 	// This register cannot be overridden.
 	segment_selector->segment_register = _IRA_REG_CS;
+	segment_selector->is_default_reg = FCML_TRUE;
 
 	segment_selector->segment_register_value = fcml_fn_stream_read_word( context->stream, &result );
 	if( !result ) {
@@ -2073,8 +2079,10 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 
 			if( mod_rm->base_reg.reg_type == IRA_REG_GPR && ( mod_rm->base_reg.reg == _IRA_REG_BP || mod_rm->base_reg.reg == _IRA_REG_SP ) ) {
 				segment_selector->segment_register = _IRA_REG_SS;
+				segment_selector->is_default_reg = FCML_TRUE;
 			} else {
 				segment_selector->segment_register = _ira_util_override_segment_reg( context, _IRA_REG_DS );
+				segment_selector->is_default_reg = ( segment_selector->segment_register == _IRA_REG_DS ) ? FCML_TRUE : FCML_FALSE;
 			}
 		}
 
@@ -2804,7 +2812,11 @@ void _ira_decode_segment_register( struct ira_diss_context *context, struct ira_
 	// Checks if segment can be overridden.
 	if( FCML_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded_segment_register ) ) {
 		// Register can be overridden, so check if there is appropriate prefix.
+	    uint8_t tmp = reg;
 		reg = _ira_util_override_segment_reg( context, reg );
+		segment_selector->is_default_reg = ( reg == tmp ) ? FCML_TRUE : FCML_FALSE;
+	} else {
+	    segment_selector->is_default_reg = FCML_TRUE;
 	}
 
 	segment_selector->segment_register = reg;

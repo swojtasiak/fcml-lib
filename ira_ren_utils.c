@@ -132,6 +132,10 @@ void _ira_format_printf(struct _ira_format_stream *stream, const char *format, .
 	stream->offset += part_size;
 }
 
+void _ira_format_append_regment_reg( struct _ira_format_stream *stream, uint8_t reg ) {
+    _ira_format_append_str( stream, _ira_reg_symbol_table_rex[IRA_REG_SEG][reg] );
+}
+
 // Append given register to stream.
 void _ira_format_append_reg( struct _ira_format_stream *stream, struct ira_register *reg, uint8_t is_rex ) {
 	int rs = 0;

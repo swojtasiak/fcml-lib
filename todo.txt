@@ -55,4 +55,4 @@ Dodac mozliwosc disassemblacji pseudo opcode, jezeli odpowiednia opcja konfigura
 
 21.09.2013
 Dodac hinty, za pomoca ktorych bedzie mozliwosc assemblacji instruckji o okreslonej wielkosci operandu, przykladowo jmp rel8 a jmp rel32, dla -1 zostanie wybrane 8 bitow a mozemy chciec 32.
-Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wyboru optimizerom a czesc trybow adresowania sama decyduje jak optymalizowac.(W tym przypadku optymalizowanie ModRM)
+Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wyboru optimizerom a czesc trybow adresowania sama decyduje jak optymalizowac ModRM/XOP/VEX 2-3 bajtyprefix.(W tym przypadku optymalizowanie ModRM) 

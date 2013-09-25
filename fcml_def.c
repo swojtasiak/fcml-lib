@@ -1588,9 +1588,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LAHF[] = {
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LAR[] = {
 	// 0F 02 /r LAR r16, r16/m16 A Valid Valid r16 r16/m16 masked by FF00H.
 	// 0F 02 /r LAR r32, r32/m16 A Valid Valid r32 r32/m16 masked by 00FxFF00H
-	{ NULL, 0x0001, 0x03D80000, { 0x0F, 0x02, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_EOSA, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0001, 0x03D88000, { 0x0F, 0x02, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_EOSA, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 0F 02 /r LAR r64, r32/m16 A Valid N.E. r64 r32/m16 masked by 00FxFF00H
-	{ NULL, 0x0001, 0x04980000, { 0x0F, 0x02, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0001, 0x04988000, { 0x0F, 0x02, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LDDQU[] = {
@@ -1611,27 +1611,25 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LDMXCSR[] = {
 	{ NULL, 0x0001, 0x00D99000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
-// TODO: Nie ma aktualnie mozliwosci sprawdzenia po disassemblacji, czy to byl far indirect czy nie, poniewaz jest to
-// disassemblowane poprostu jako RM z okrelslona wielkoscia operandu.
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LDS[] = {
 	// C5 /r LDS r16,m16:16 A Invalid Valid Load DS:r16 with far pointer from memory.
 	// C5 /r LDS r32,m16:32 A Invalid Valid Load DS:r32 with far pointer from memory.
-	{ NULL, 0x0001, 0x00448000, { 0xC5, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0000, 0x00448000, { 0xC5, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F B2 /r LSS r16,m16:16 A Valid Valid Load SS:r16 with far pointer from memory.
 	// 0F B2 /r LSS r32,m16:32 A Valid Valid Load SS:r32 with far pointer from memory.
 	// REX + 0F B2 /r LSS r64,m16:64 A Valid N.E. Load SS:r64 with far pointer from memory.
-	{ "lss", 0x0001, 0x00D88000, { 0x0F, 0xB2, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } },
+	{ "lss", 0x0000, 0x00D88000, { 0x0F, 0xB2, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } },
 	// C4 /r LES r16,m16:16 A Invalid Valid Load ES:r16 with far pointer from memory.
 	// C4 /r LES r32,m16:32 A Invalid Valid Load ES:r32 with far pointer from memory.
-	{ "les", 0x0001, 0x00448000, { 0xC4, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } },
+	{ "les", 0x0000, 0x00448000, { 0xC4, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F B4 /r LFS r16,m16:16 A Valid Valid Load FS:r16 with far pointer from memory.
 	// 0F B4 /r LFS r32,m16:32 A Valid Valid Load FS:r32 with far pointer from memory.
 	// REX + 0F B4 /r LFS r64,m16:64 A Valid N.E. Load FS:r64 with far pointer from memory.
-	{ "lfs", 0x0001, 0x00D88000, { 0x0F, 0xB4, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } },
+	{ "lfs", 0x0000, 0x00D88000, { 0x0F, 0xB4, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F B5 /r LGS r16,m16:16 A Valid Valid Load GS:r16 with far pointer from memory.
 	// 0F B5 /r LGS r32,m16:32 A Valid Valid Load GS:r32 with far pointer from memory.
 	// REX + 0F B5 /r LGS r64,m16:64 A Valid N.E. Load GS:r64 with far pointer from memory.
-	{ "lgs", 0x0001, 0x00D88000, { 0x0F, 0xB5, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } }
+	{ "lgs", 0x0000, 0x00D88000, { 0x0F, 0xB5, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LEA[] = {
@@ -1683,20 +1681,15 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LMSW[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LODS[] = {
 	// AC LODS m8 A Valid Valid For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.
-	{ NULL, 0x0001, 0x00C48000, { 0xAC, 0x00, 0x00 },
+	{ "lods;lodsb[ts]", 0x0001, 0x00C40000, { 0xAC, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// AD LODS m16 A Valid Valid For legacy mode, Load word at address DS:(E)SI into AX. For 64-bit mode load word at address (R)SI into AX.
 	// AD  LODS m32 A Valid Valid For legacy mode, Load dword at address DS:(E)SI into EAX. For 64-bit mode load dword at address (R)SI into EAX.
 	// REX.W + AD LODS m64 A Valid N.E. Load qword at address (R)SI into RAX.
-	{ NULL, 0x0001, 0x00C48000, { 0xAD, 0x00, 0x00 },
+	{ "lods;lodsw[ts,ow,a*];lodsd[ts,od,a*];lodsq[ts,oq,a*]", 0x0001, 0x00C40000, { 0xAD, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
-	// TODO: Probably nedded by assembler.
-	// AC LODSB A Valid Valid For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.
-	// AD LODSW A Valid Valid For legacy mode, Load word at address DS:(E)SI into AX. For 64-bit mode load word at address (R)SI into AX.
-	// AD LODSD A Valid Valid For legacy mode, Load dword at address DS:(E)SI into EAX. For 64-bit mode load dword at address (R)SI into EAX.
-	// REX.W + AD LODSQ A Valid N.E. Load qword at address (R)SI into RAX.
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LOOP[] = {
@@ -5989,7 +5982,7 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( "lgdt", _fcml_st_def_addr_mode_desc_LGDT),
 		FCML_IA_INSTRUCTION( "lldt", _fcml_st_def_addr_mode_desc_LLDT),
 		FCML_IA_INSTRUCTION( "lmsw", _fcml_st_def_addr_mode_desc_LMSW),
-		FCML_IA_INSTRUCTION( "lods", _fcml_st_def_addr_mode_desc_LODS),
+		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_LODS),
 		FCML_IA_INSTRUCTION( "loop", _fcml_st_def_addr_mode_desc_LOOP),
 		FCML_IA_INSTRUCTION( "lwpins", _fcml_st_def_addr_mode_desc_LWPINS),
 		FCML_IA_INSTRUCTION( "lwpval", _fcml_st_def_addr_mode_desc_LWPVAL),
