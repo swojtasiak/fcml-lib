@@ -1696,15 +1696,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LOOP[] = {
 	// E2 cb LOOP rel8 A Valid Valid Decrement count; jump short if count 0.
 	{ NULL, 0x0001, 0x00C40000, { 0xE2, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// E1 cb LOOPE rel8 A Valid Valid Decrement count; jump short if count 0 and ZF = 1.
-	{ "loope", 0x0001, 0x00C40000, { 0xE1, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+	{ "loope;loopz[ts]", 0x0001, 0x00C40000, { 0xE1, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// E0 cb LOOPNE rel8 A Valid Valid Decrement count; jump short if count 0 and ZF = 0.
-	{ "loopne", 0x0001, 0x00C40000, { 0xE0, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
-	// TODO: Alternatywne dla assemblera.
-	// LOOP rel8off E2 cb Decrement rCX, then jump short if rCX is not 0.
-	// LOOPE rel8off E1 cb Decrement rCX, then jump short if rCX is not 0 and ZF is 1.
-	// LOOPNE rel8off E0 cb Decrement rCX, then Jump short if rCX is not 0 and ZF is 0.
-	// LOOPNZ rel8off E0 cb Decrement rCX, then Jump short if rCX is not 0 and ZF is 0.
-	// LOOPZ rel8off E1 cb Decrement rCX, then Jump short if rCX is not 0 and ZF is 1.
+	{ "loopne;loopnz[ts]", 0x0001, 0x00C40000, { 0xE0, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LWPINS[] = {
@@ -1724,9 +1718,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LWPVAL[] = {
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LSL[] = {
 	// 0F 03 /r LSL r16, r16/m16 A Valid Valid Load: r16 segment limit, selector r16/m16.
 	// 0F 03 /r LSL r32, r32/m16* A Valid Valid Load: r32 segment limit, selector r32/m16.
-	{ NULL, 0x0001, 0x03D80000, { 0x0F, 0x03, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_EOSA, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0001, 0x03D88000, { 0x0F, 0x03, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_EOSA, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 0F 03 /r LSL r64, r32/m16* A Valid Valid Load: r64 segment limit, selector r32/m16
-	{ NULL, 0x0001, 0x04980000, { 0x0F, 0x03, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0001, 0x04988000, { 0x0F, 0x03, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LTR[] = {
