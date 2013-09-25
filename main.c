@@ -26,6 +26,7 @@
 #include "instructions_h_t.h"
 #include "instructions_i_t.h"
 #include "instructions_j_t.h"
+#include "instructions_l_t.h"
 #include "fcml_intel_parser_t.h"
 #include "fcml_asm_dialect_intel.h"
 
@@ -44,6 +45,7 @@ CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_h,
 	fctl_si_instructions_i,
 	fctl_si_instructions_j,
+	fctl_si_instructions_l,
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
@@ -63,8 +65,7 @@ int main(int argc, char **argv) {
 	}
 	ira_init();
 
-	FCML_I32_P( "jmp 00401001h", 0xeb, 0xff );
-	return 0;
+
     //FCML_I64_M( "jnc 0000800000401001h", 2, FCML_MI( 0x73, 0xff ), FCML_MI( 0x0f, 0x83, 0xfb, 0xff, 0xff, 0xff ) );
 
 	//return 0;

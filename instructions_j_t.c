@@ -43,7 +43,7 @@ void fcml_tf_instruction_Jcc(void) {
 }
 
 void fcml_tf_instruction_JMP(void) {
-    FCML_I32( "jmp 00401001h", 0xeb, 0xff );
+    FCML_I32_M( "jmp 00401001h", 2, FCML_MI( 0xeb, 0xff ), FCML_MI( 0xe9, 0xfc, 0xff, 0xff, 0xff ) );
     // E9 cw JMP rel16 A N.S. Valid Jump near, relative, displacement relative to next instruction. Not supported in 64-bit mode.
     // E9 cd JMP rel32 A Valid Valid Jump near, relative, RIP = RIP + 32-bit displacement sign extended to 64-bits
     FCML_I32( "jmp 90d11004h", 0xe9, 0xff,0xff, 0x90, 0x90 );
@@ -51,19 +51,23 @@ void fcml_tf_instruction_JMP(void) {
     // FF /4 JMP r/m16 B N.S. Valid Jump near, absolute indirect, address = zero-extended r/m16. Not supported in 64- bit mode.
     // FF /4 JMP r/m32 B N.S. Valid Jump near, absolute indirect, address given in r/m32. Not supported in 64-bit mode.
     // FF /4 JMP r/m64 B Valid N.E. Jump near, absolute indirect, RIP = 64-Bit offset from register or memory
-    FCML_I32( "jmp ebp", 0xff, 0xe5, 0x01, 0x02, 0x03, 0x04 );
-    FCML_I32( "jmp bp", 0x66, 0xff, 0xe5, 0x01, 0x02 );
-    // TODO: Sprawdziæ pod visualem, ppowino wykorzystaæ rejestr 8 bitory a nie 64 bitowy.(void) {
-    FCML_I64( "jmp rbp", 0x67, 0x66, 0x40, 0xff, 0xe5, 0x01, 0x02 ); // 32 bit mode doesn't not allow REX.
+    FCML_I32( "jmp ebp", 0xff, 0xe5 );
+    FCML_I32( "jmp bp", 0x66, 0xff, 0xe5 );
+    FCML_I64_D( "jmp rbp", 0x66, 0x67, 0x40, 0xff, 0xe5 ); // 32 bit mode doesn't not allow REX.
+    FCML_I64( "jmp rbp", 0xff, 0xe5 );
     FCML_I32( "jmp far 6655h:44332211h", 0xEA, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
     FCML_I32( "jmp far 4433h:2211h", 0x66, 0xEA, 0x11, 0x22, 0x33, 0x44 );
     // m16:16,m16:32,m16:64
-    FCML_I32( "jmp fword ptr [ebx+00000001h]", 0xFF, 0x6B, 0x01 );
-    FCML_I32( "jmp dword ptr [ebx+00000001h]", 0x66, 0xFF, 0x6B, 0x01 );
-    FCML_I64( "jmp tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x6B, 0x01 ); // Verified.
-    FCML_I64( "jmp dword ptr [rbx+0000000000000001h]", 0x66, 0x40, 0xFF, 0x6B, 0x01 ); // Verified.
-    FCML_I64( "jmp dword ptr [ebx+00000001h]", 0x67, 0x66, 0x40, 0xFF, 0x6B, 0x01 );
-    FCML_I64( "jmp fword ptr [rbx+0000000000000001h]", 0x40, 0xFF, 0x6B, 0x01 );
+    FCML_I32( "jmp far fword ptr [ebx+00000001h]", 0xFF, 0x6B, 0x01 );
+    FCML_I32( "jmp far dword ptr [ebx+00000001h]", 0x66, 0xFF, 0x6B, 0x01 );
+    FCML_I64_D( "jmp far tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x6B, 0x01 ); // Verified.
+    FCML_I64( "jmp far tbyte ptr [rbx+0000000000000001h]", 0x48, 0xFF, 0x6B, 0x01 ); // Verified.
+    FCML_I64_D( "jmp far dword ptr [rbx+0000000000000001h]", 0x66, 0x40, 0xFF, 0x6B, 0x01 ); // Verified.
+    FCML_I64( "jmp far dword ptr [rbx+0000000000000001h]", 0x66, 0xFF, 0x6B, 0x01 ); // Verified.
+    FCML_I64_D( "jmp far fword ptr [rbx+0000000000000001h]", 0x40, 0xFF, 0x6B, 0x01 );
+    FCML_I64( "jmp far fword ptr [rbx+0000000000000001h]", 0xFF, 0x6B, 0x01 );
+    FCML_I64_D( "jmp far dword ptr [ebx+00000001h]", 0x66, 0x67, 0x40, 0xFF, 0x6B, 0x01 );
+    FCML_I64( "jmp far dword ptr [ebx+00000001h]", 0x66, 0x67, 0xFF, 0x6B, 0x01 );
 }
 
 CU_TestInfo fctl_ti_instructions_j[] = {
