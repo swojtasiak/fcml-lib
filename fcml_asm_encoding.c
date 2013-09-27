@@ -995,11 +995,83 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_ib( fcml_ien_asm_part_proce
 //-------------------------
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_segment_relative_offset( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    if ( operand_def->type == FCML_EOT_ADDRESS ) {
+
+        fcml_sf_def_tma_segment_relative_offset *args = (fcml_sf_def_tma_segment_relative_offset*)addr_mode->addr_mode_args;
+
+        fcml_st_address *address = &(operand_def->address);
+
+        if( address->address_form != FCML_AF_OFFSET ) {
+            return FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+
+        if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_operand_size, operand_def->address.effective_address.size_operator, FCML_IEN_CT_EQUAL ) ) {
+           return FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+
+        fcml_bool is_convertable = FCML_FALSE;
+        fcml_en_attribute_size_flag flags;
+        fcml_st_integer source_address = {0}, converted_address = {0};
+
+        // Convert IMM value to address.
+        error = fcml_fn_utils_offset_to_integer( &(address->offset ), &source_address );
+        if( error ) {
+           return FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+
+        // Check if address can be converted to 16, 32 or 64 bits.
+        is_convertable |= fcml_ifn_asm_convert_signed_integer( &source_address, &converted_address, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
+        if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+           is_convertable |= fcml_ifn_asm_convert_signed_integer( &source_address, &converted_address, FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags );
+        } else {
+           is_convertable |= fcml_ifn_asm_convert_signed_integer( &source_address, &converted_address, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
+        }
+
+        if( !fcml_ifn_set_size_flag( &(context->data_size_flags.allowed_effective_address_size), flags ) ) {
+           error = FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+
+    } else {
+        error = FCML_EN_UNSUPPORTED_OPPERAND;
+    }
+
+    return error;
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_segment_relative_offset( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+        fcml_data_size asa =  context->data_size_flags.effective_address_size;
+        if( asa != FCML_DS_UNDEF ) {
+
+            fcml_st_address *address = &(operand_def->address);
+
+            // Convert IMM value to address.
+            fcml_st_integer offset = {0};
+            error = fcml_fn_utils_offset_to_integer( &(address->offset ), &offset );
+            if( !error ) {
+
+                // Convert address to size indicated by ASA.
+                error = fcml_fn_utils_convert_integer_to_integer( &offset, &offset, asa, asa );
+                if( !error ) {
+
+                    // Encode offset.
+                    fcml_st_memory_stream stream = fcml_ifn_instruction_part_stream( operand_enc );
+                    fcml_fn_utils_encode_integer( &stream, &offset );
+                    operand_enc->code_length = stream.offset;
+                }
+
+            }
+
+        } else {
+            // ASA should be set by optimizer.
+            error = FCML_EN_UNSUPPORTED_OPPERAND;
+        }
+    }
+    return error;
 }
 
 //-------------
@@ -1094,11 +1166,14 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_r( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
-	if( operand_def->type != FCML_EOT_REGISTER ) {
+	if( operand_def->type != FCML_EOT_REGISTER || operand_def->reg.type != args->reg_type  ) {
 		return FCML_EN_UNSUPPORTED_OPPERAND;
 	}
-	if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
-		return FCML_EN_UNSUPPORTED_OPPERAND;
+	// Some registers allow UNDEF size to be defined for them.
+	if( ( operand_def->reg.type != FCML_REG_DR && operand_def->reg.type != FCML_REG_CR ) && operand_def->reg.size != FCML_DS_UNDEF ) {
+        if( !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
+            return FCML_EN_UNSUPPORTED_OPPERAND;
+        }
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -1515,35 +1590,41 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 
 				// This information is necessary to ignore operands encoding process.
 
-				fcml_bool is_short_form = addr_mode->mnemonic->shortcut && no_operands;
+				// Ignore all short forms if there are operands available.
+				if( !addr_mode->mnemonic->shortcut || no_operands ) {
 
-				context->is_short_form = is_short_form;
-				if( is_short_form ) {
-				    fcml_data_size asa = addr_mode->mnemonic->supported_asa;
-				    context->data_size_flags.effective_address_size = asa;
-				    if( asa ) {
-				        fcml_fn_cmi_set_attribute_size_flag_for_size( asa, &(context->data_size_flags.allowed_effective_address_size) );
-				    }
-				    fcml_data_size osa = addr_mode->mnemonic->supported_osa;
-				    context->data_size_flags.effective_operand_size = osa;
-				    if( osa ) {
-                        fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context->data_size_flags.allowed_effective_operand_size) );
+                    fcml_bool is_short_form = addr_mode->mnemonic->shortcut && no_operands;
+
+                    context->is_short_form = is_short_form;
+
+                    if( is_short_form ) {
+                        fcml_data_size asa = addr_mode->mnemonic->supported_asa;
+                        context->data_size_flags.effective_address_size = asa;
+                        if( asa ) {
+                            fcml_fn_cmi_set_attribute_size_flag_for_size( asa, &(context->data_size_flags.allowed_effective_address_size) );
+                        }
+                        fcml_data_size osa = addr_mode->mnemonic->supported_osa;
+                        context->data_size_flags.effective_operand_size = osa;
+                        if( osa ) {
+                            fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context->data_size_flags.allowed_effective_operand_size) );
+                        }
                     }
-				}
 
-				context->mnemonic = addr_mode->mnemonic;
+                    context->mnemonic = addr_mode->mnemonic;
 
 #ifdef FCML_DEBUG
-				context->__def_index = index;
+				    context->__def_index = index;
 #endif
 
-				// Check if addressing mode matches the hints, if there are any.
-				if( !context->instruction->hints || ( addr_mode->hints & context->instruction->hints ) == context->instruction->hints ) {
-                    if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
-                        // Currently error is just ignored, because we would like to check every available addressing
-                        // mode before we return any errors.
-                        error = optimizer( context, addr_mode, fcml_ifn_asm_assemble_and_collect_instruction, NULL );
+                    // Check if addressing mode matches the hints, if there are any.
+                    if( !context->instruction->hints || ( addr_mode->hints & context->instruction->hints ) == context->instruction->hints ) {
+                        if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
+                            // Currently error is just ignored, because we would like to check every available addressing
+                            // mode before we return any errors.
+                            error = optimizer( context, addr_mode, fcml_ifn_asm_assemble_and_collect_instruction, NULL );
+                        }
                     }
+
 				}
 
 				addr_mode_element = addr_mode_element->next;
