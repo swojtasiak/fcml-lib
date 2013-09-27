@@ -68,11 +68,7 @@ int main(int argc, char **argv) {
 	ira_init();
 
 
-
-    //FCML_I64_M( "jnc 0000800000401001h", 2, FCML_MI( 0x73, 0xff ), FCML_MI( 0x0f, 0x83, 0xfb, 0xff, 0xff, 0xff ) );
-
 	//return 0;
-
 	//FCML_I32_A_P( "cmpsd", 0xA7 );
 	//return 0;
 	//  FCML_I64_P( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
