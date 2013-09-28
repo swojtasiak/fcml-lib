@@ -19,6 +19,10 @@ typedef enum fcml_en_addr_form {
 	FCML_AF_64_BIT,
 } fcml_en_addr_form;
 
+// Simple types.
+
+typedef fcml_uint16_t fcml_hints;
+
 // Instruction pointer.
 
 typedef union fcml_st_instruction_pointer {
@@ -361,8 +365,13 @@ typedef enum fcml_en_operand_type {
     FCML_EOT_REGISTER
 } fcml_en_operand_type;
 
+typedef enum fcml_en_operand_hints {
+    FCML_OP_HINT_MULTIMEDIA_INSTRUCTION = 0x0001,
+} fcml_en_operand_hints;
+
 typedef struct fcml_st_operand {
     fcml_en_operand_type type;
+    fcml_hints hints;
     union {
         fcml_st_immediate immediate;
         fcml_st_far_pointer far_pointer;
@@ -383,15 +392,13 @@ typedef enum fcml_en_explicit_prefixes {
     FCML_PREFIX_REPE
 } fcml_en_explicit_prefixes;
 
-typedef fcml_uint16_t fcml_hints;
-
-typedef enum fcml_en_hints {
+typedef enum fcml_en_instruction_hints {
     FCML_HINT_FAR_POINTER = 0x0001,
     FCML_HINT_NEAR_POINTER = 0x0002,
     FCML_HINT_ABSOLUTE_ADDRESSING = 0x0004,
     // RIP.
     FCML_HINT_RELATIVE_ADDRESSING = 0x0008,
-} fcml_en_hints;
+} fcml_en_instruction_hints;
 
 typedef struct fcml_st_instruction {
     fcml_en_explicit_prefixes prefixes;

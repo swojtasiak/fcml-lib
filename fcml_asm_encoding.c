@@ -1328,12 +1328,23 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_pseudo_op( fcml_ien_asm_part_process
 // Hints calculators
 // -----------------
 
-fcml_hints fcml_fnp_asm_ihc_far_pointer( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
-    return FCML_HINT_FAR_POINTER;
+fcml_st_asm_calculated_hints fcml_fnp_asm_ihc_far_pointer( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
+    fcml_st_asm_calculated_hints hints;
+    hints.instruction_hints = FCML_HINT_FAR_POINTER;
+    hints.operand_hints = 0;
+    return hints;
 }
 
-fcml_hints fcml_fnp_asm_ihc_near_pointer( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
-    return FCML_HINT_NEAR_POINTER;
+fcml_st_asm_calculated_hints fcml_fnp_asm_ihc_near_pointer( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
+    fcml_st_asm_calculated_hints hints;
+    hints.instruction_hints = FCML_HINT_NEAR_POINTER;
+    fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm*)decoded_addr_mode->addr_mode_args;
+    if( rm_args->reg_type == FCML_REG_SIMD && ( rm_args->flags & FCML_RMF_M ) ) {
+        hints.operand_hints = FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
+    } else {
+        hints.operand_hints = 0;
+    }
+    return hints;
 }
 
 fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
@@ -1676,6 +1687,8 @@ struct fcml_ist_asm_operand_encoder_wrapper_args {
 	fcml_fnp_asm_operand_encoder operand_encoder;
 	// Index of the operand to encode.
 	int operand_index;
+	// Operand hints.
+	fcml_hints hints;
 };
 
 void fcml_ifn_asm_processor_operand_encoder_args_deallocator( fcml_ptr ptr ) {
@@ -1690,7 +1703,14 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_
 	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = (struct fcml_ist_asm_operand_encoder_wrapper_args*)args;
 	fcml_st_operand *operand = &(instruction->operands[wrapper_args->operand_index]);
 	if( wrapper_args->operand_acceptor ) {
-		return wrapper_args->operand_acceptor( context, addr_mode_details, addr_mode_desc, wrapper_args->decoded_addr_mode, operand, NULL );
+	    // Check hints.
+	    fcml_hints operand_hits = operand->hints;
+	    if( !operand_hits || ( wrapper_args->hints & operand_hits ) == operand_hits ) {
+	        return wrapper_args->operand_acceptor( context, addr_mode_details, addr_mode_desc, wrapper_args->decoded_addr_mode, operand, NULL );
+	    } else {
+	        FCML_TRACE( "Hints do not match." );
+	        return FCML_EN_UNSUPPORTED_OPPERAND;
+	    }
 	} else {
 		// This operand shouldn't be defined.
 		if( instruction->operands[wrapper_args->operand_index].type != FCML_EOT_NONE ) {
@@ -1732,7 +1752,9 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 		wrapper_args->operand_acceptor = encoders_def->acceptor;
 
 		if( encoders_def->hints_calculator ) {
-		    *hints |= encoders_def->hints_calculator( addr_mode, wrapper_args->decoded_addr_mode );
+		    fcml_st_asm_calculated_hints calculated_hints = encoders_def->hints_calculator( addr_mode, wrapper_args->decoded_addr_mode );
+		    *hints |= calculated_hints.instruction_hints;
+		    wrapper_args->hints = calculated_hints.operand_hints;
 		}
 
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;

@@ -128,10 +128,15 @@ typedef struct fcml_st_asm_addr_mode_desc_details {
 	fcml_st_condition condition;
 } fcml_st_asm_addr_mode_desc_details;
 
+typedef struct fcml_st_asm_calculated_hints {
+    fcml_hints instruction_hints;
+    fcml_hints operand_hints;
+} fcml_st_asm_calculated_hints;
+
 typedef fcml_ceh_error (*fcml_fnp_asm_operand_encoder)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
 typedef fcml_ceh_error (*fcml_fnp_asm_operand_acceptor)( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
 typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes );
-typedef fcml_hints (*fcml_fnp_asm_instruction_hints_calculator)( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
+typedef fcml_st_asm_calculated_hints (*fcml_fnp_asm_instruction_hints_calculator)( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
 
 typedef struct fcml_st_asm_operand_encoder_def {
 	fcml_fnp_asm_operand_encoder encoder;
