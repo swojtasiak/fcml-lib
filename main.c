@@ -67,6 +67,9 @@ int main(int argc, char **argv) {
 	}
 	ira_init();
 
+	FCML_I64_A_P( "movq mm2,mmword ptr [rax]", 0x48, 0x0F, 0x6E, 0x10 );
+	return 0;
+
 	//return 0;
 	//FCML_I32_A_P( "cmpsd", 0xA7 );
 	//return 0;

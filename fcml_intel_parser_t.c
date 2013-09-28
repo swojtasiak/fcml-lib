@@ -407,6 +407,23 @@ void fcml_tf_parser_int_parse_test28(void) {
     fcml_x64iap_free( result );
 }
 
+void fcml_tf_parser_int_parse_test29(void) {
+    fcml_st_x64iap_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov xmmword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    if( result->instruction != NULL ) {
+        CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].hints, FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_COMBINED );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.effective_address.base.type, FCML_REG_GPR );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.effective_address.base.reg, FCML_REG_EAX );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.effective_address.displacement.size, FCML_DS_64 );
+        CU_ASSERT_EQUAL( result->instruction->operands[0].address.effective_address.displacement.dis64, 0xFFFFFFFFFFFFFFFFULL );
+    } else {
+        CU_FAIL();
+    }
+    fcml_x64iap_free( result );
+}
+
 CU_TestInfo fcml_ti_parser[] = {
     { "fcml_tf_parser_int_parse_test1", fcml_tf_parser_int_parse_test1 },
     { "fcml_tf_parser_int_parse_test2", fcml_tf_parser_int_parse_test2 },
@@ -436,6 +453,7 @@ CU_TestInfo fcml_ti_parser[] = {
     { "fcml_tf_parser_int_parse_test26", fcml_tf_parser_int_parse_test26 },
     { "fcml_tf_parser_int_parse_test27", fcml_tf_parser_int_parse_test27 },
     { "fcml_tf_parser_int_parse_test28", fcml_tf_parser_int_parse_test28 },
+    { "fcml_tf_parser_int_parse_test29", fcml_tf_parser_int_parse_test29 },
     CU_TEST_INFO_NULL,
 };
 
