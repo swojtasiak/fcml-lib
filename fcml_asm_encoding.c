@@ -731,7 +731,7 @@ fcml_ceh_error fcml_ifn_asm_convert_to_requested_rel( fcml_st_integer *value, fc
 
 int fcml_ifn_asm_calculate_imm_size_for_encoded_rel( fcml_data_size osa, fcml_uint8_t encoded_rel_size ) {
     if( encoded_rel_size == FCML_EOS_UNDEFINED ) {
-        return osa / 8;
+        return ( osa == FCML_DS_64 ) ? 4 : osa / 8;
     } else {
         return encoded_rel_size;
     }

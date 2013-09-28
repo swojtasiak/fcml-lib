@@ -1949,30 +1949,30 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVBE[] = {
 	// 0F 38 F0 /r MOVBE r16, m16 A Valid Valid Reverse byte order in m16 and move to r16
 	// 0F 38 F0 /r MOVBE r32, m32 A Valid Valid Reverse byte order in m32 and move to r32
 	// REX.W + 0F 38 F0 /r MOVBE r64, m64 A Valid N.E. Reverse byte order in m64 and move to r64.
-	{ NULL, 0x0001, 0x00EC8000, { 0x0F, 0x38, 0xF0 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0001, 0x00EC8000, { 0x0F, 0x38, 0xF0 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F 38 F1 /r MOVBE m16, r16 B Valid Valid Reverse byte order in r16 and move to m16
 	// 0F 38 F1 /r MOVBE m32, r32 B Valid Valid Reverse byte order in r32 and move to m32
 	// REX.W + 0F 38 F1 /r MOVBE m64, r64 B Valid N.E. Reverse byte order in
-	{ NULL, 0x0001, 0x00EC8000, { 0x0F, 0x38, 0xF1 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, 0x0001, 0x00EC8000, { 0x0F, 0x38, 0xF1 }, { FCML_OP_MODRM_M_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVD[] = {
 	// 0F 6E /r MOVD mm,r/m32 A Valid Valid Move doubleword from r/m32 to mm.
-	{ NULL, 0x0001, 0x03D88000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0010, 0x03D88000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 0F 6E /r MOVQ mm, r/m64 A Valid N.E. Move quadword from r/m64 to mm.
-	{ "movq", 0x0001, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA } },
+	{ "movq", 0x0008, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F 7E /r MOVD r/m32, mm B Valid Valid Move doubleword from mm to r/m32.
-	{ NULL, 0x0001, 0x03D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x0010, 0x03D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 0F 7E /r MOVQ r/m64, mm B Valid N.E. Move quadword from mm to r/m64.
-	{ "movq", 0x0001, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA } },
+	{ "movq", 0x0008, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA } },
 	// 66 0F 6E /r MOVD xmm, r/m32 A Valid Valid Move doubleword from r/m32 to xmm.
-	{ NULL, 0x1001, 0x03D88000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x1010, 0x03D88000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA } },
 	// 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.
-	{ "movq", 0x1001, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA } },
+	{ "movq", 0x1008, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA } },
 	// 66 0F 7E /r MOVD r/m32, xmm B Valid Valid Move doubleword from xmm register to r/m32.
-	{ NULL, 0x1001, 0x03D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, 0x1010, 0x03D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } },
 	// 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
-	{ "movq", 0x1001, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } },
+	{ "movq", 0x1008, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.66.0F.W0 6E /r VMOVD xmm1,r32/m32
 	{ "vmovd", 0x11D0, 0x03588000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
