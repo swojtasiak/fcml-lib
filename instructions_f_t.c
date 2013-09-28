@@ -304,7 +304,7 @@ void fcml_tf_instruction_FMUL_FMULP_FIMUL(void) {
     FCML_I64( "fimul word ptr [rax+0000000000000020h]", 0xDE, 0x48, 0x20 );
     FCML_I32( "fimul word ptr [eax+00000020h]", 0xDE, 0x48, 0x20 );
     // DE C9 FMULP
-    FCML_I32_P( "fmulp", 0xDE, 0xC9 );
+    FCML_I32_A( "fmulp", 0xDE, 0xC9 );
 }
 
 void fcml_tf_instruction_FNOP(void) {

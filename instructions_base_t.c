@@ -153,7 +153,9 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		fcml_st_assembler_result *asm_result = NULL;
 		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
 		if( error ) {
-			printf("Can not assemble: %s\n", mnemonic );
+		    if( !should_fail ) {
+		        printf("Can not assemble: %s\n", mnemonic );
+		    }
 			if( !only_print_result ) {
 				success = should_fail;
 			}
@@ -162,10 +164,25 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
             fcml_bool looking_for_instruction = FCML_TRUE;
             fcml_bool found = FCML_FALSE;
 
+            fcml_uint8_t *assembled_code[100];
+            int assembled_code_len[100];
+            int assembled_code_index = 0;
+
             int j = 0;
             for( j = 0; j < 2; j++ ) {
 
                 fcml_st_coll_list *inst = asm_result->instructions;
+
+                assembled_code_index = 0;
+
+                // Fill code array.
+                fcml_st_coll_list_element *element = inst->head;
+                while( element ) {
+                    fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
+                    assembled_code_len[assembled_code_index] = assembled_instruction->code_length;
+                    assembled_code[assembled_code_index++] = assembled_instruction->code;
+                    element = element->next;
+                }
 
                 if( !only_print_result ) {
                     if( !multiple_assemblation_result && inst->size != 1 ) {
@@ -174,11 +191,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
                     }
                 }
 
-                fcml_uint8_t *assembled_code[100];
-                int assembled_code_len[100];
-                int assembled_code_index = 0;
-
-                fcml_st_coll_list_element *element = inst->head;
+                element = inst->head;
                 while( element ) {
                     fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
                     fcml_bool differ = FCML_FALSE;
@@ -226,6 +239,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
                             found = FCML_TRUE;
                         }
                     }
+
                     if( only_print_result || ( differ && !looking_for_instruction ) ) {
 #if FCML_DEBUG
                         printf( "Index: %d\nOriginal code : ", assembled_instruction->__def_index );
@@ -242,59 +256,9 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
                             printf( "%02"PRIx8, assembled_instruction->code[i] );
                         }
 
-                        assembled_code_len[assembled_code_index] = assembled_instruction->code_length;
-                        assembled_code[assembled_code_index++] = assembled_instruction->code;
-
                         printf("\n");
                     }
                     element = element->next;
-                }
-
-                // Prints test code.
-                if( assembled_code_index >= 1 ) {
-
-                    printf( "Test code:\n" );
-
-                    // Mnemonic.
-                    fcml_string macro;
-                    if( assembled_code_index > 1 ) {
-                        macro = ( x64 ) ? "FCML_I64_M" : "FCML_I32_M";
-                    } else {
-                        macro = ( x64 ) ? "FCML_I64" : "FCML_I32";
-                    }
-
-                    printf("%s( \"%s\", ", macro, mnemonic );
-
-                    // Code.
-
-                    if( assembled_code_index > 1 ) {
-                        // multi.
-                        printf( "%d, ", assembled_code_index );
-                        int i, j;
-                        for( i = 0; i < assembled_code_index; i++ ) {
-                            if( i > 0 ) {
-                                printf(", ");
-                            }
-                            printf( "FCML_MI( " );
-                            for( j = 0; j < assembled_code_len[i]; j++ ) {
-                                if( j > 0 ) {
-                                    printf(", ");
-                                }
-                                printf( "0x%02"PRIx8, assembled_code[i][j] );
-                            }
-                            printf( " )" );
-                        }
-                    } else if ( assembled_code_index == 1  ) {
-                        int i;
-                        for( i = 0; i < assembled_code_len[0]; i++ ) {
-                            if( i > 0 ) {
-                                printf(", ");
-                            }
-                            printf( "0x%02"PRIx8, assembled_code[0][i] );
-                        }
-                    }
-
-                    printf(" );\n");
                 }
 
                 if( found ) {
@@ -309,12 +273,57 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
             }
 
             if( !found ) {
-                if( !only_print_result ) {
+                if( !only_print_result && !should_fail ) {
                     printf("Can not assemble: %s\n", mnemonic);
                 }
                 if( !only_print_result ) {
                     success = should_fail;
                 }
+            }
+
+            // Prints test code.
+            if( assembled_code_index >= 1 && ( only_print_result || !found ) ) {
+
+               // Mnemonic.
+               fcml_string macro;
+               if( assembled_code_index > 1 ) {
+                   macro = ( x64 ) ? "FCML_I64_M" : "FCML_I32_M";
+               } else {
+                   macro = ( x64 ) ? "FCML_I64" : "FCML_I32";
+               }
+
+               printf("%s( \"%s\", ", macro, mnemonic );
+
+               // Code.
+
+               if( assembled_code_index > 1 ) {
+                   // multi.
+                   printf( "%d, ", assembled_code_index );
+                   int i, j;
+                   for( i = 0; i < assembled_code_index; i++ ) {
+                       if( i > 0 ) {
+                           printf(", ");
+                       }
+                       printf( "FCML_MI( " );
+                       for( j = 0; j < assembled_code_len[i]; j++ ) {
+                           if( j > 0 ) {
+                               printf(", ");
+                           }
+                           printf( "0x%02"PRIx8, assembled_code[i][j] );
+                       }
+                       printf( " )" );
+                   }
+               } else if ( assembled_code_index == 1  ) {
+                   int i;
+                   for( i = 0; i < assembled_code_len[0]; i++ ) {
+                       if( i > 0 ) {
+                           printf(", ");
+                       }
+                       printf( "0x%02"PRIx8, assembled_code[0][i] );
+                   }
+               }
+
+               printf(" );\n");
             }
 
 		}

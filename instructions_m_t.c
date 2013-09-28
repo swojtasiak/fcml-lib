@@ -310,6 +310,79 @@ void fcml_tf_instruction_MOVAPD(void) {
     FCML_I32( "vmovapd oword ptr [eax],xmm0", 0xc5, 0xf9, 0x29, 0x00 );
 }
 
+void fcml_tf_instruction_MOVAPS(void) {
+    // 66 0F 28 /r MOVAPD xmm1, xmm2/m128 A Valid Valid Move packed doubleprecision floating-point values from xmm2/m128 to xmm1.
+    FCML_I64( "movaps xmm0,oword ptr [rax+0000000000000020h]", 0x0F, 0x28, 0x40, 0x20 );
+    FCML_I32_M( "movaps xmm0,xmm2", 2, FCML_MI( 0x0f, 0x29, 0xd0 ), FCML_MI( 0x0f, 0x28, 0xc2 ) );
+    FCML_I32( "movaps xmm0,oword ptr [eax+00000020h]", 0x0F, 0x28, 0x40, 0x20 );
+    // 66 0F 29 /r MOVAPD xmm2/m128, xmm1 B Valid Valid Move packed doubleprecision floating-point values from xmm1 to xmm2/m128.
+    FCML_I64( "movaps oword ptr [rax+0000000000000020h],xmm0", 0x0F, 0x29, 0x40, 0x20 );
+    FCML_I32_M( "movaps xmm2,xmm0", 2, FCML_MI( 0x0f, 0x29, 0xc2 ), FCML_MI( 0x0f, 0x28, 0xd0 ) );
+    FCML_I32( "movaps oword ptr [eax+00000020h],xmm0", 0x0F, 0x29, 0x40, 0x20 );
+    // VEX.128.0F 28 /r VMOVAPS xmm1,xmm2/m128
+    // VEX.256.0F 28 /r VMOVAPS ymm1,ymm2/m256
+    FCML_I64_M( "vmovaps xmm3,xmm0", 2, FCML_MI( 0xc5, 0xf8, 0x29, 0xc3 ), FCML_MI( 0xc5, 0xf8, 0x28, 0xd8 ) );
+    FCML_I32_M( "vmovaps xmm3,xmm0", 2, FCML_MI( 0xc5, 0xf8, 0x29, 0xc3 ), FCML_MI( 0xc5, 0xf8, 0x28, 0xd8 ) );
+    FCML_I32_M( "vmovaps ymm3,ymm0", 2, FCML_MI( 0xc5, 0xfc, 0x29, 0xc3 ), FCML_MI( 0xc5, 0xfc, 0x28, 0xd8 ) );
+    FCML_I32( "vmovaps xmm0,oword ptr [eax]", 0xc5, 0xf8, 0x28, 0x00 );
+    // VEX.128.0F 29 /r VMOVAPS xmm2/m128,xmm1
+    // VEX.256.0F 29 /r VMOVAPS ymm2/m256,ymm1
+    FCML_I64_M( "vmovaps xmm0,xmm3", 2, FCML_MI( 0xc5, 0xf8, 0x29, 0xd8 ), FCML_MI( 0xc5, 0xf8, 0x28, 0xc3 ) );
+    FCML_I32_M( "vmovaps xmm0,xmm3", 2, FCML_MI( 0xc5, 0xf8, 0x29, 0xd8 ), FCML_MI( 0xc5, 0xf8, 0x28, 0xc3 ) );
+    FCML_I32( "vmovaps oword ptr [eax],xmm0", 0xc5, 0xf8, 0x29, 0x00 );
+    FCML_I32( "vmovaps ymmword ptr [eax],ymm0", 0xc5, 0xfc, 0x29, 0x00 );
+}
+
+void fcml_tf_instruction_MOVBE(void) {
+    // 0F 38 F0 /r MOVBE r16, m16 A Valid Valid Reverse byte order in m16 and move to r16
+    // 0F 38 F0 /r MOVBE r32, m32 A Valid Valid Reverse byte order in m32 and move to r32
+    // REX.W + 0F 38 F0 /r MOVBE r64, m64 A Valid N.E. Reverse byte order in m64 and move to r64.
+    FCML_I64( "movbe edx,dword ptr [rax]", 0x0F, 0x38, 0xF0, 0x10 );
+    FCML_I64( "movbe rdx,qword ptr [rax]", 0x48, 0x0F, 0x38, 0xF0, 0x10 );
+    FCML_I32_FAILED( "movbe eax,edx", 0x0F, 0x38, 0xF0, 0xC2 );
+    FCML_I32( "movbe dx,word ptr [eax]", 0x66, 0x0F, 0x38, 0xF0, 0x10 );
+    // 0F 38 F1 /r MOVBE m16, r16 B Valid Valid Reverse byte order in r16 and move to m16
+    // 0F 38 F1 /r MOVBE m32, r32 B Valid Valid Reverse byte order in r32 and move to m32
+    // REX.W + 0F 38 F1 /r MOVBE m64, r64 B Valid N.E. Reverse byte order in
+    FCML_I64( "movbe dword ptr [rax],edx", 0x0F, 0x38, 0xF1, 0x10 );
+    FCML_I64( "movbe qword ptr [rax],rdx", 0x48, 0x0F, 0x38, 0xF1, 0x10 );
+    FCML_I32_FAILED( "movbe edx,eax", 0x0F, 0x38, 0xF1, 0xC2 );
+    FCML_I32( "movbe word ptr [eax],dx", 0x66, 0x0F, 0x38, 0xF1, 0x10 );
+}
+
+void fcml_tf_instruction_MOVD(void) {
+    /*
+    // 0F 6E /r MOVD mm,r/m32 A Valid Valid Move doubleword from r/m32 to mm.
+    FCML_I32( "movd mm2,dword ptr [eax]", 0x0F, 0x6E, 0x10 );
+    FCML_I64( "movd mm2,dword ptr [rax]", 0x0F, 0x6E, 0x10 );
+    // REX.W + 0F 6E /r MOVQ mm, r/m64 A Valid N.E. Move quadword from r/m64 to mm.
+    FCML_I64( "movq mm2,qword ptr [rax]", 0x48, 0x0F, 0x6E, 0x10 );
+    // 0F 7E /r MOVD r/m32, mm B Valid Valid Move doubleword from mm to r/m32.
+    FCML_I32( "movd dword ptr [eax],mm2", 0x0F, 0x7E, 0x10 );
+    FCML_I64( "movd dword ptr [rax],mm2", 0x0F, 0x7E, 0x10 );
+    // REX.W + 0F 7E /r MOVQ r/m64, mm B Valid N.E. Move quadword from mm to r/m64.
+    FCML_I64( "movq qword ptr [rax],mm2", 0x48, 0x0F, 0x7E, 0x10 );
+    // 66 0F 6E /r MOVD xmm, r/m32 A Valid Valid Move doubleword from r/m32 to xmm.
+    FCML_I32( "movd xmm2,dword ptr [eax]", 0x66, 0x0F, 0x6E, 0x10 );
+    FCML_I64( "movd xmm2,dword ptr [rax]", 0x66, 0x0F, 0x6E, 0x10 );
+    // 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.
+    FCML_I64( "movq xmm2,qword ptr [rax]", 0x66, 0x48, 0x0F, 0x6E, 0x10 );
+    // 66 0F 7E /r MOVD r/m32, xmm B Valid Valid Move doubleword from xmm register to r/m32.
+    FCML_I32( "movd dword ptr [eax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
+    FCML_I64( "movd dword ptr [rax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
+    // 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
+    FCML_I64( "movq qword ptr [rax],xmm2", 0x66, 0x48, 0x0F, 0x7E, 0x10 );
+    // VEX.128.66.0F.W0 6E /r VMOVD xmm1,r32/m32
+    FCML_I32( "vmovd xmm2,dword ptr [ecx+eax]", 0xC4, 0xE1, 0x79, 0x6E, 0x14, 0x01 );
+    // VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
+    FCML_I64( "vmovq xmm2,qword ptr [rcx+rax]", 0xC4, 0xE1, 0xF9, 0x6E, 0x14, 0x01 );
+    // VEX.128.66.0F.W0 7E /r VMOVD r32/m32,xmm1
+    FCML_I32( "vmovd dword ptr [ecx+eax],xmm2", 0xC4, 0xE1, 0x79, 0x7E, 0x14, 0x01 );
+    // VEX.128.66.0F.W1 7E /r VMOVQ r64/m64,xmm1
+    FCML_I64( "vmovq qword ptr [rcx+rax],xmm2", 0xC4, 0xE1, 0xF9, 0x7E, 0x14, 0x01 );
+    */
+}
+
 CU_TestInfo fctl_ti_instructions_m[] = {
     { "fcml_tf_instruction_MASKMOVQ", fcml_tf_instruction_MASKMOVQ },
     { "fcml_tf_instruction_MASKMOVDQU", fcml_tf_instruction_MASKMOVDQU },
@@ -325,6 +398,9 @@ CU_TestInfo fctl_ti_instructions_m[] = {
     { "fcml_tf_instruction_MONITOR", fcml_tf_instruction_MONITOR },
     { "fcml_tf_instruction_MOV", fcml_tf_instruction_MOV },
     { "fcml_tf_instruction_MOVAPD", fcml_tf_instruction_MOVAPD },
+    { "fcml_tf_instruction_MOVAPS", fcml_tf_instruction_MOVAPS },
+    { "fcml_tf_instruction_MOVBE", fcml_tf_instruction_MOVBE },
+    { "fcml_tf_instruction_MOVD", fcml_tf_instruction_MOVD },
     CU_TEST_INFO_NULL,
 };
 
