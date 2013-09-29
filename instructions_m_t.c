@@ -356,17 +356,19 @@ void fcml_tf_instruction_MOVD(void) {
     FCML_I32( "movd mm2,dword ptr [eax]", 0x0F, 0x6E, 0x10 );
     FCML_I64( "movd mm2,dword ptr [rax]", 0x0F, 0x6E, 0x10 );
     // REX.W + 0F 6E /r MOVQ mm, r/m64 A Valid N.E. Move quadword from r/m64 to mm.
-    FCML_I64( "movq mm2,qword ptr [rax]", 0x48, 0x0F, 0x6E, 0x10 );
+    FCML_I64_A( "movq mm2,mmword ptr [rax]", 0x0f, 0x6f, 0x10 );
+    FCML_I64_M( "movq mm2,qword ptr [rax]", 2, FCML_MI( 0x0f, 0x6f, 0x10 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ) );
     // 0F 7E /r MOVD r/m32, mm B Valid Valid Move doubleword from mm to r/m32.
     FCML_I32( "movd dword ptr [eax],mm2", 0x0F, 0x7E, 0x10 );
     FCML_I64( "movd dword ptr [rax],mm2", 0x0F, 0x7E, 0x10 );
     // REX.W + 0F 7E /r MOVQ r/m64, mm B Valid N.E. Move quadword from mm to r/m64.
-    FCML_I64( "movq qword ptr [rax],mm2", 0x48, 0x0F, 0x7E, 0x10 );
+    FCML_I64_M( "movq qword ptr [rax],mm2", 2, FCML_MI( 0x0f, 0x7f, 0x10 ), FCML_MI( 0x48, 0x0f, 0x7e, 0x10 ) );
+    FCML_I64_A( "movq mmword ptr [rax],mm2", 0x0f, 0x7f, 0x10 );
     // 66 0F 6E /r MOVD xmm, r/m32 A Valid Valid Move doubleword from r/m32 to xmm.
     FCML_I32( "movd xmm2,dword ptr [eax]", 0x66, 0x0F, 0x6E, 0x10 );
     FCML_I64( "movd xmm2,dword ptr [rax]", 0x66, 0x0F, 0x6E, 0x10 );
     // 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.
-    FCML_I64( "movq xmm2,qword ptr [rax]", 0x66, 0x48, 0x0F, 0x6E, 0x10 );
+    FCML_I64_M( "movq xmm2,qword ptr [rax]", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ) );
     // 66 0F 7E /r MOVD r/m32, xmm B Valid Valid Move doubleword from xmm register to r/m32.
     FCML_I32( "movd dword ptr [eax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
     FCML_I64( "movd dword ptr [rax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
