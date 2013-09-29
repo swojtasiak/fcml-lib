@@ -41,7 +41,7 @@ Regu³y:
 
 
 // Zpomniame toodo:
-
+ 
 // TODO: Zastanowic sie czy do sterowania flagami nie da ie wykorzystac nowych bitow MOD3 ModNot3 zamiast bezposredniego ich podawania.
 #define _IRA_OPERAND_RM_BASE						0x17000000
 #define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
@@ -56,3 +56,36 @@ Dodac mozliwosc disassemblacji pseudo opcode, jezeli odpowiednia opcja konfigura
 21.09.2013
 Dodac hinty, za pomoca ktorych bedzie mozliwosc assemblacji instruckji o okreslonej wielkosci operandu, przykladowo jmp rel8 a jmp rel32, dla -1 zostanie wybrane 8 bitow a mozemy chciec 32.
 Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wyboru optimizerom a czesc trybow adresowania sama decyduje jak optymalizowac ModRM/XOP/VEX 2-3 bajtyprefix.(W tym przypadku optymalizowanie ModRM) 
+
+29.09.2013
+Mozliwosc ustawienia flagi, ktora bedzie wylaczala moliweosc ustaleni prefixow 66 i 67 dla wybranych istruckio, uywane glownie z SIMD.
+Moze zastosowac do tego flage podobna do force EOSA/EASA tlko nazwac ja do not let to change EOSA/EASA. albo fixed EASA/fixedEOSA.
+
+Instrukcje:
+
+VMPTRLD
+VMPTRST
+VMCLEAR
+VMREAD
+VMWRITE
+VMLAUNCH
+VMRESUME
+VMXOFF
+VMXON
+INVEPT
+INVVPID
+VMCALL
+VMFUNC
+
+GETSEC[CAPABILITIES] - Report the SMX Capabilities <- I inne GETSEC.
+
+POPCNT <- Z dokumentcji wynika, e ma wesje AVX, ale nie widze.
+
+Brakuje instrukcji:
+// VEX.NDS.256.66.0F.WIG F1 /r VPSLLW ymm1, ymm2, xmm3/m128
+// VEX.NDS.256.66.0F.WIG F2 /r VPSLLD ymm1, ymm2, xmm3/m128
+// VEX.NDS.256.66.0F.WIG F3 /r VPSLLQ ymm1, ymm2, xmm3/m128
+// VEX.NDD.256.66.0F.WIG 71 /6 ib VPSLLW ymm1, ymm2, imm8
+// VEX.NDD.256.66.0F.WIG 72 /6 ib VPSLLD ymm1, ymm2, imm8
+// VEX.NDD.256.66.0F.WIG 73 /6 ib VPSLLQ ymm1, ymm2, imm8
+

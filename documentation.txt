@@ -3,3 +3,8 @@ Przyklad wykorzystania hintow:
  FCML_I32( "call far fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
  
  moze byc takze assemblowany do NEAR call, w tym przypadku hint jednoznacznie dobiera kodowanie.
+ 
+ Hinty dla operandow, przyklad hintu dla operandu z operujacego na media-SIMD:
+ 
+ FCML_I64_A_P( "movq mm2,mmword ptr [rax]", 0x48, 0x0F, 0x6E, 0x10 );
+ 

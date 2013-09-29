@@ -22,8 +22,10 @@
 #define FCML_EOS_DWORD		4
 #define FCML_EOS_FWORD		6
 #define FCML_EOS_QWORD		8
+#define FCML_EOS_MWORD      8
 #define FCML_EOS_TBYTE		10
 #define FCML_EOS_OWORD		16
+#define FCML_EOS_XWORD      16
 #define FCML_EOS_YWORD		32
 
 // Dynamic encoded operand sizes calculated at runtime.
@@ -47,17 +49,74 @@
 // True if encoded operand size is a dynamic one.
 #define FCML_IS_EOS_DYNAMIC(x)	( ( x & 0x80 ) != 0 )
 
-/* Instruction types. */
+/* Instruction and addressing mode types. */
 
 typedef enum fcml_en_def_instruction_type {
 	// Intel IA.
 	FCML_EN_IT_IA
 } fcml_en_def_instruction_type;
 
+/*********************************************/
+/* Addressing mode types.                    */
+/* Bit fields are not compatible with CPUID. */
+/*********************************************/
+
+#define    FCML_AMT_UNDEF      0x0000000000000000UL
+// Grouping.
+#define    FCML_AMT_SSEx       0x0000000000000001UL
+#define    FCML_AMT_VEXx       0x0000000000000002UL
+#define    FCML_AMT_SIMD       0x0000000000000004UL
+// CPUID.
+#define    FCML_AMT_GPI        0x0000000000000008UL
+#define    FCML_AMT_FPU        0x0000000000000010UL
+#define    FCML_AMT_MMX        0x0000000000000020UL | FCML_AMT_SSEx
+#define    FCML_AMT_SSE        0x0000000000000040UL | FCML_AMT_SSEx
+#define    FCML_AMT_SSE2       0x0000000000000080UL | FCML_AMT_SSEx
+#define    FCML_AMT_SSE3       0x0000000000000100UL | FCML_AMT_SSEx
+#define    FCML_AMT_SSSE3      0x0000000000000200UL | FCML_AMT_SSEx
+#define    FCML_AMT_SSE41      0x0000000000000400UL | FCML_AMT_SSEx
+#define    FCML_AMT_SSE42      0x0000000000000800UL | FCML_AMT_SSEx
+#define    FCML_AMT_SSE4A      0x0000000000001000UL | FCML_AMT_SSEx
+#define    FCML_AMT_AVX        0x0000000000002000UL | FCML_AMT_VEXx
+#define    FCML_AMT_AVX2       0x0000000000004000UL | FCML_AMT_VEXx
+#define    FCML_AMT_AES        0x0000000000008000UL
+#define    FCML_AMT_SYSTEM     0x0000000000010000UL
+#define    FCML_AMT_VTX        0x0000000000020000UL
+#define    FCML_AMT_3DNOW      0x0000000000040000UL | FCML_AMT_MMX
+#define    FCML_AMT_TBM        0x0000000000080000UL | FCML_AMT_VEXx
+#define    FCML_AMT_BMI1       0x0000000000100000UL | FCML_AMT_VEXx
+#define    FCML_AMT_HLE        0x0000000000200000UL
+#define    FCML_AMT_ADX        0x0000000000400000UL
+#define    FCML_AMT_CLMUL      0x0000000000800000UL
+#define    FCML_AMT_F16C       0x0000000001000000UL | FCML_AMT_VEXx
+#define    FCML_AMT_RDRAND     0x0000000002000000UL
+#define    FCML_AMT_RDSEED     0x0000000004000000UL
+#define    FCML_AMT_PRFCHW     0x0000000008000000UL
+#define    FCML_AMT_LWP        0x0000000010000000UL | FCML_AMT_SIMD
+#define    FCML_AMT_SVM        0x0000000020000000UL
+#define    FCML_AMT_FSGSBASE   0x0000000040000000UL
+#define    FCML_AMT_FMA        0x0000000080000000UL | FCML_AMT_SIMD
+#define    FCML_AMT_FMA4       0x0000000100000000UL | FCML_AMT_SIMD
+#define    FCML_AMT_XOP        0x0000000200000000UL | FCML_AMT_SIMD
+#define    FCML_AMT_EDX        0x0000000400000000UL
+// Shortcuts.
+#define    FCML_AMT_MMX_SIMD   FCML_AMT_MMX   | FCML_AMT_SIMD
+#define    FCML_AMT_SSE_SIMD   FCML_AMT_SSE   | FCML_AMT_SIMD
+#define    FCML_AMT_SSE2_SIMD  FCML_AMT_SSE2  | FCML_AMT_SIMD
+#define    FCML_AMT_SSE3_SIMD  FCML_AMT_SSE3  | FCML_AMT_SIMD
+#define    FCML_AMT_SSSE3_SIMD FCML_AMT_SSSE3 | FCML_AMT_SIMD
+#define    FCML_AMT_SSE41_SIMD FCML_AMT_SSE41 | FCML_AMT_SIMD
+#define    FCML_AMT_SSE42_SIMD FCML_AMT_SSE42 | FCML_AMT_SIMD
+#define    FCML_AMT_AVX_SIMD   FCML_AMT_AVX   | FCML_AMT_SIMD
+#define    FCML_AMT_AVX2_SIMD  FCML_AMT_AVX2  | FCML_AMT_SIMD
+#define    FCML_AMT_3DNOW_SIMD FCML_AMT_3DNOW | FCML_AMT_SIMD
+
 /* Structures used to describe instructions with they all allowed addressing modes. */
 typedef struct fcml_st_def_addr_mode_desc {
 	// Mnemonic, if there is another mnemonic available for this opcode.
 	fcml_string mnemonic_override;
+	// Addressing mode type.
+	fcml_uint64_t addressing_mode_type;
 	// Flags describing allowed prefixes.
 	fcml_uint16_t allowed_prefixes;
 	// Some flags that contains various information about opcode.
