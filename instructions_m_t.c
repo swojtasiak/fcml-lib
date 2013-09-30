@@ -351,7 +351,6 @@ void fcml_tf_instruction_MOVBE(void) {
 }
 
 void fcml_tf_instruction_MOVD(void) {
-    /*
     // 0F 6E /r MOVD mm,r/m32 A Valid Valid Move doubleword from r/m32 to mm.
     FCML_I32( "movd mm2,dword ptr [eax]", 0x0F, 0x6E, 0x10 );
     FCML_I64( "movd mm2,dword ptr [rax]", 0x0F, 0x6E, 0x10 );
@@ -368,21 +367,21 @@ void fcml_tf_instruction_MOVD(void) {
     FCML_I32( "movd xmm2,dword ptr [eax]", 0x66, 0x0F, 0x6E, 0x10 );
     FCML_I64( "movd xmm2,dword ptr [rax]", 0x66, 0x0F, 0x6E, 0x10 );
     // 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.
-    FCML_I64_M( "movq xmm2,qword ptr [rax]", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ) );
+    FCML_I64_M( "movq xmm2,qword ptr [rax]", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x48, 0x0f, 0x6e, 0x10 ) );
+    FCML_I64_A( "movq xmm2,mmword ptr [rax]", 0xf3, 0x0f, 0x7e, 0x10 );
     // 66 0F 7E /r MOVD r/m32, xmm B Valid Valid Move doubleword from xmm register to r/m32.
     FCML_I32( "movd dword ptr [eax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
     FCML_I64( "movd dword ptr [rax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
     // 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
-    FCML_I64( "movq qword ptr [rax],xmm2", 0x66, 0x48, 0x0F, 0x7E, 0x10 );
+    FCML_I64_M( "movq qword ptr [rax],xmm2", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0x10 ), FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x10 ) );
     // VEX.128.66.0F.W0 6E /r VMOVD xmm1,r32/m32
-    FCML_I32( "vmovd xmm2,dword ptr [ecx+eax]", 0xC4, 0xE1, 0x79, 0x6E, 0x14, 0x01 );
+    FCML_I32( "vmovd xmm2,dword ptr [ecx+eax]", 0xc5, 0xf9, 0x6e, 0x14, 0x01 );
     // VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
-    FCML_I64( "vmovq xmm2,qword ptr [rcx+rax]", 0xC4, 0xE1, 0xF9, 0x6E, 0x14, 0x01 );
+    FCML_I64_M( "vmovq xmm2,qword ptr [rcx+rax]", 2, FCML_MI( 0xc5, 0xfa, 0x7e, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x6e, 0x14, 0x01 ) );
     // VEX.128.66.0F.W0 7E /r VMOVD r32/m32,xmm1
-    FCML_I32( "vmovd dword ptr [ecx+eax],xmm2", 0xC4, 0xE1, 0x79, 0x7E, 0x14, 0x01 );
+    FCML_I32( "vmovd dword ptr [ecx+eax],xmm2", 0xc5, 0xf9, 0x7e, 0x14, 0x01 );
     // VEX.128.66.0F.W1 7E /r VMOVQ r64/m64,xmm1
-    FCML_I64( "vmovq qword ptr [rcx+rax],xmm2", 0xC4, 0xE1, 0xF9, 0x7E, 0x14, 0x01 );
-    */
+    FCML_I64_M( "vmovq qword ptr [rcx+rax],xmm2", 2, FCML_MI( 0xc5, 0xfa, 0xd6, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x7e, 0x14, 0x01 ) );
 }
 
 CU_TestInfo fctl_ti_instructions_m[] = {
