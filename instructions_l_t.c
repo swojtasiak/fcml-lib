@@ -40,7 +40,7 @@ void fcml_tf_instruction_LDDQU(void) {
     FCML_I64( "lddqu xmm5,[rax+0000000000000020h]", 0xF2, 0x0F, 0xF0, 0x68, 0x20 );
     // VEX.128.F2.0F F0 /r VLDDQU xmm1, m128
     // VEX.256.F2.0F F0 /r VLDDQU ymm1, m256
-    FCML_I64( "vlddqu xmm8,oword ptr [r8]", 0xC4, 0x41, 0x7B, 0xF0, 0x00 );
+    FCML_I64( "vlddqu xmm8,xmmword ptr [r8]", 0xC4, 0x41, 0x7B, 0xF0, 0x00 );
     FCML_I32( "vlddqu ymm0,ymmword ptr [eax]", 0xc5, 0xff, 0xf0, 0x00 );
 }
 
