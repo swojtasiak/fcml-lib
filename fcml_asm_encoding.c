@@ -1986,15 +1986,20 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_66_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
 		fcml_bool encode = FCML_FALSE;
-		if( FCML_DEF_PREFIX_MANDATORY_66( addr_mode_def->allowed_prefixes ) && !FCML_DEF_PREFIX_VEX_REQ( addr_mode_def->allowed_prefixes ) && !FCML_DEF_PREFIX_XOP_REQ( addr_mode_def->allowed_prefixes ) ) {
-			encode = FCML_TRUE;
-		} else {
-			encode = ( context->assembler_context->addr_form == FCML_AF_16_BIT && context->data_size_flags.effective_operand_size == FCML_DS_32 ) ||
-					( ( context->assembler_context->addr_form == FCML_AF_32_BIT || context->assembler_context->addr_form == FCML_AF_64_BIT ) && context->data_size_flags.effective_operand_size == FCML_DS_16 );
-		}
-		if( encode ) {
-			instruction_part->code[0] = 0x66;
-			instruction_part->code_length = 1;
+		fcml_uint64_t addr_type = addr_mode_def->addressing_mode_type;
+		// Mandatory 0x66 prefix is encoded in different way in case of VEX encoded instructions.
+		if( !( addr_type & FCML_AMT_VEXx ) ) {
+            if( FCML_DEF_PREFIX_MANDATORY_66( addr_mode_def->allowed_prefixes ) ) {
+                encode = FCML_TRUE;
+            } else if ( !( addr_type & FCML_AMT_SIMD ) ) {
+                // SIMD instructions do not need 0x66 to change EOSA.
+                encode = ( context->assembler_context->addr_form == FCML_AF_16_BIT && context->data_size_flags.effective_operand_size == FCML_DS_32 ) ||
+                        ( ( context->assembler_context->addr_form == FCML_AF_32_BIT || context->assembler_context->addr_form == FCML_AF_64_BIT ) && context->data_size_flags.effective_operand_size == FCML_DS_16 );
+            }
+            if( encode ) {
+                instruction_part->code[0] = 0x66;
+                instruction_part->code_length = 1;
+            }
 		}
 	}
 	return FCML_CEH_GEC_NO_ERROR;

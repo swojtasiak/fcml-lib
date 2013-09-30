@@ -5333,7 +5333,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LZCNT[] = {
 	// F3 0F BD /r LZCNT r16,r/m16
 	// F3 0F BD /r LZCNT r32,r/m32
 	// REX.W + F3 0F BD /r LZCNT r64,r/m64
-	{ NULL, FCML_AMT_BMI1, 0x4000, 0x00D88000, { 0x0F, 0xBD, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, FCML_AMT_ABM, 0x4000, 0x00D88000, { 0x0F, 0xBD, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MULX[] = {
