@@ -549,6 +549,8 @@ struct ira_addressing {
 	struct ira_register address_register;
 	// ModRM addressing.
 	struct ira_mod_rm_addressing mod_rm;
+	// True if it's multimedia operand.
+    fcml_bool is_multimedia;
 };
 
 struct ira_instruction_operand {

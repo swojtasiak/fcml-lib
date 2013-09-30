@@ -1527,6 +1527,9 @@ int _ira_opcode_decoder_explicit_register_addressing( struct ira_diss_context *c
 	struct ira_addressing *addressing = &(operand->addressing);
 	addressing->addressing_type = IRA_IMPLICIT_REGISTER_ADDRESSING;
 
+	// Currently it's not possible to encode multimedia operand with this encoding.
+	addressing->is_multimedia = FCML_FALSE;
+
 	// Encodes operand size.
 	operand->operand_size = _ira_util_decode_operand_size( context, _ira_common_decode_8b_operand_size( reg_args->encoded_operand_size ), NULL );
 
@@ -1812,6 +1815,7 @@ int _ira_opcode_decoder_seg_relative_offset( struct ira_diss_context *context, s
 	struct ira_addressing *addressing = &(operand->addressing);
 	addressing->addressing_type = IRA_SEGMENT_RELATIVE_ADDRESS;
 	addressing->address_size = address_size;
+	addressing->is_multimedia = FCML_FALSE;
 
 	int result = _ira_opcode_decoder_immediate( context, operand_wrapper, &immediate_args );
 	if( result != _IRA_INT_ERROR_NO_ERROR ) {
@@ -2072,7 +2076,7 @@ int _ira_modrm_decoder_operand_fill_address( struct ira_diss_context *context, s
 			mod_rm->index_reg = decoded_mod_rm->index_reg;
 			mod_rm->scale = decoded_mod_rm->scale;
 			mod_rm->displacement = decoded_mod_rm->displacement;
-
+			operand->addressing.is_multimedia = decoded_mod_rm->multimedia_operand;
 			// Calculate segment selector.
 			struct ira_segment_selector *segment_selector = &(operand->addressing.segment_selector);
 			segment_selector->segment_register_value = 0;
@@ -2406,6 +2410,10 @@ int _ira_modrm_decoder( struct ira_diss_context *context, struct ira_modrm_decod
 
 			if( result != _IRA_INT_ERROR_NO_ERROR ) {
 				return result;
+			}
+
+			if( args->reg_type == IRA_REG_SIMD ) {
+			    decoded_mod_rm->multimedia_operand = FCML_TRUE;
 			}
 
 			decoded_mod_rm->decoded_addressing = _IRA_TRUE;

@@ -37,6 +37,8 @@
 /* ModRM decoding. */
 
 struct ira_decoded_mod_rm {
+    // True if XMM/MM memory location is used.
+    fcml_bool multimedia_operand;
 	// Set to _IRA_TRUE if ModRM exists and addressing has been decoded for the current instruction.
 	uint8_t decoded_addressing;
 	// Set to _IRA_TRUE if ModRM exists and register has been decoded for the current instruction.

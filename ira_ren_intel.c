@@ -40,7 +40,7 @@ int _ira_is_rex_prefix_available(struct ira_disassemble_result *result) {
 
 // Utilities.
 
-void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream );
+void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream, fcml_bool is_multimedia );
 
 /* Maps operand type to formating function. */
 _ira_operand_formater _ira_formating_table[] = {
@@ -154,7 +154,7 @@ void _ira_operand_formater_addressing_modrm( struct ira_disassemble_result *resu
 
 	int first = _IRA_TRUE;
 
-	_ira_print_size_directive( operand->operand_size, stream );
+	_ira_print_size_directive( operand->operand_size, stream, addressing->is_multimedia );
 
 	if( !addressing->segment_selector.is_default_reg ) {
 	    // TODO: Dodac parametr konfigurayjny, pozwalajacy nawet domyslne rejestry wyswietlac.
@@ -272,7 +272,7 @@ void _ira_operand_formater_addressing_far_pointer( struct ira_disassemble_result
 
 void _ira_operand_formater_addressing_implicit_reg( struct ira_disassemble_result *result, struct ira_intel_format_info *format_info, struct ira_instruction_operand *operand, struct _ira_format_stream *stream ) {
 
-	_ira_print_size_directive( operand->operand_size, stream );
+	_ira_print_size_directive( operand->operand_size, stream, operand->addressing.is_multimedia );
 
 	struct ira_segment_selector *segment_selector = &(operand->addressing.segment_selector);
 
@@ -296,7 +296,7 @@ void _ira_operand_formater_addressing_address( struct ira_disassemble_result *re
 	struct ira_addressing *addressing = &operand->addressing;
 
 	if( is_addressing ) {
-		_ira_print_size_directive( operand->operand_size, stream );
+		_ira_print_size_directive( operand->operand_size, stream, addressing->is_multimedia );
 		_ira_format_append_str( stream, "[" );
 	}
 
@@ -366,7 +366,7 @@ void _ira_operand_formater_register( struct ira_disassemble_result *result, stru
 	_ira_format_append_reg( stream, &operand->reg, _ira_is_rex_prefix_available(result) );
 }
 
-void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream ) {
+void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stream *stream, fcml_bool is_multimedia ) {
 
 	struct _ira_integer size_directive_int;
 
@@ -387,13 +387,13 @@ void _ira_print_size_directive( uint16_t size_directive, struct _ira_format_stre
 		_ira_format_append_str( stream, "fword ptr " );
 		break;
 	case 64:
-		_ira_format_append_str( stream, "qword ptr " );
+	    _ira_format_append_str( stream, is_multimedia ? "mmword ptr " : "qword ptr " );
 		break;
 	case 80:
 		_ira_format_append_str( stream, "tbyte ptr " );
 		break;
 	case 128:
-		_ira_format_append_str( stream, "oword ptr " );
+	    _ira_format_append_str( stream, is_multimedia ? "xmmword ptr " : "oword ptr " );
 		break;
 	case 256:
 		_ira_format_append_str( stream, "ymmword ptr " );
