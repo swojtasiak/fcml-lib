@@ -142,3 +142,8 @@ _TEST32_VEX( "c5f8ae10 vldmxcsr dword ptr [eax]", 0xC5, 0xF8, 0xAE, 0x10 );
 // EXTRQ xmm1,xmm2 66 0F 79 /r
 
 W pierwszym przypadku bierze pod uwage ModRM.reg zamiast ModRM.r/m (Patrz /0)
+
+17.
+FCML_I32( "vmovlhps xmm2,xmm5,xmm0", 0xC5, 0xD0, 0x16, 0xD0 );
+a jest:
+c5d016d0        vmovlhps xmm2,xmm0

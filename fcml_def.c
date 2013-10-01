@@ -2030,20 +2030,20 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVHPD[] = {
 	// 66 0F 17 /r MOVHPD m64, xmm B Valid Valid Move double-precision floating-point value from high quadword of xmm to m64.
 	{ NULL, FCML_AMT_SSE2_SIMD, 0x1001, 0x80D88000, { 0x0F, 0x17, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_QWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.NDS.128.66.0F 16 /r VMOVHPD xmm2,xmm1,m64
-	{ "vmovhpd", FCML_AMT_AVX_SIMD, 0x10C0, 0x80D88000, { 0x0F, 0x16, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_64, FCML_NA, FCML_NA } },
+	{ "vmovhpd", FCML_AMT_AVX_SIMD, 0x10C0, 0x80D88000, { 0x0F, 0x16, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA } },
 	// VEX128.66.0F 17/r VMOVHPD m64, xmm1
-	{ "vmovhpd", FCML_AMT_AVX_SIMD, 0x11C0, 0x80D88000, { 0x0F, 0x17, 0x00 }, { FCML_OP_MODRM_RM_SIMD_L_64_W, FCML_OP_MODRM_R_SIMD_L_W, FCML_NA, FCML_NA, FCML_NA } }
+	{ "vmovhpd", FCML_AMT_AVX_SIMD, 0x11C0, 0x80D88000, { 0x0F, 0x17, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_SIMD_L_W, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVHPS[] = {
 	// 0F 16 /r MOVHPS xmm, m64 A Valid Valid Move two packed singleprecision floating-point values from m64 to high quadword of xmm.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x0001, 0x80D88000, { 0x0F, 0x16, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_QWORD, FCML_RMF_M ), FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SSE_SIMD, 0x0001, 0x80D88000, { 0x0F, 0x16, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_MWORD, FCML_RMF_M ), FCML_NA, FCML_NA, FCML_NA } },
 	// 0F 17 /r MOVHPS m64, xmm B Valid Valid Move two packed singleprecision floating-point values from high quadword of xmm to m64.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x0001, 0x80D88000, { 0x0F, 0x17, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_QWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SSE_SIMD, 0x0001, 0x80D88000, { 0x0F, 0x17, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_MWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.NDS.128.0F 16 /r VMOVHPS xmm2,xmm1,m64
-	{ "vmovhps", FCML_AMT_AVX_SIMD, 0x00C0, 0x80D88000, { 0x0F, 0x16, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_64, FCML_NA, FCML_NA } },
+	{ "vmovhps", FCML_AMT_AVX_SIMD, 0x00C0, 0x80D88000, { 0x0F, 0x16, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA } },
 	// VEX.128.0F 17 /r VMOVHPS m64,xmm1
-	{ "vmovhps", FCML_AMT_AVX_SIMD, 0x01C0, 0x80D88000, { 0x0F, 0x17, 0x00 }, { FCML_OP_MODRM_RM_SIMD_L_64_W, FCML_OP_MODRM_R_SIMD_L_W, FCML_NA, FCML_NA, FCML_NA } }
+	{ "vmovhps", FCML_AMT_AVX_SIMD, 0x01C0, 0x80D88000, { 0x0F, 0x17, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVLHPS[] = {
@@ -2059,9 +2059,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVLPD[] = {
 	// 66 0F 13 /r MOVLPD m64, xmm B Valid Valid Move double-precision floating-point nvalue from low quadword of xmm register to m64.
 	{ NULL, FCML_AMT_SSE2_SIMD, 0x1001, 0x80D88000, { 0x0F, 0x13, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_QWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.NDS.128.66.0F 12 /r VMOVLPD xmm2,xmm1,m64
-	{ "vmovlpd", FCML_AMT_AVX_SIMD, 0x10C0, 0x80D88000, { 0x0F, 0x12, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_64, FCML_NA, FCML_NA } },
+	{ "vmovlpd", FCML_AMT_AVX_SIMD, 0x10C0, 0x80D88000, { 0x0F, 0x12, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA } },
 	// VEX.128.66.0F 13 /r VMOVLPD m64,xmm1
-	{ "vmovlpd", FCML_AMT_AVX_SIMD, 0x11C0, 0x80D88000, { 0x0F, 0x13, 0x00 }, { FCML_OP_MODRM_RM_SIMD_L_64_W, FCML_OP_MODRM_R_SIMD_L_W, FCML_NA, FCML_NA, FCML_NA } }
+	{ "vmovlpd", FCML_AMT_AVX_SIMD, 0x11C0, 0x80D88000, { 0x0F, 0x13, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_SIMD_L_W, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVLPS[] = {
@@ -2097,18 +2097,18 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVMSKPS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVNTDQA[] = {
 	// 66 0F 38 2A /r MOVNTDQA xmm1, m128 A Valid Valid Move double quadword from m128 to xmm using non-temporal hint if WC memory type.
-	{ NULL, FCML_AMT_SSE41_SIMD, 0x1001, 0x80EC8000, { 0x0F, 0x38, 0x2A }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_OWORD, FCML_RMF_M ), FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SSE41_SIMD, 0x1001, 0x80EC8000, { 0x0F, 0x38, 0x2A }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_UNDEFINED, FCML_EOS_OWORD, FCML_RMF_M ), FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.66.0F38 2A /r VMOVNTDQA xmm1,m128
-	{ "vmovntdqa", FCML_AMT_AVX_SIMD, 0x11C0, 0x80EC8000, { 0x0F, 0x38, 0x2A }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_M_128, FCML_NA, FCML_NA, FCML_NA } },
+	{ "vmovntdqa", FCML_AMT_AVX_SIMD, 0x11C0, 0x80EC8000, { 0x0F, 0x38, 0x2A }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_M_SIMD_L, FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.256.66.0F38.WIG 2A /r VMOVNTDQA ymm1,m256
-	{ "vmovntdqa", FCML_AMT_AVX2_SIMD, 0x11A0, 0x80EC8000, { 0x0F, 0x38, 0x2A }, { FCML_OP_MODRM_R_YMM_W, FCML_OP_MODRM_M_256, FCML_NA, FCML_NA, FCML_NA } }
+	{ "vmovntdqa", FCML_AMT_AVX2_SIMD, 0x11A0, 0x80EC8000, { 0x0F, 0x38, 0x2A }, { FCML_OP_MODRM_R_YMM_W, FCML_OP_MODRM_M_SIMD_L, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVNTDQ[] = {
 	// 66 0F E7 /r MOVNTDQ m128, xmm A Valid Valid Move double quadword from xmm to m128 using non-temporal hint.
-	{ NULL, FCML_AMT_SSE2, 0x1001, 0x80D88000, { 0x0F, 0xE7, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_OWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM , FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SSE2, 0x1001, 0x80D88000, { 0x0F, 0xE7, 0x00 }, { FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_UNDEFINED, FCML_EOS_XWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM , FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.66.0F E7 /r VMOVNTDQ m128,xmm1
-	{ "vmovntdq", FCML_AMT_AVX_SIMD, 0x11C0, 0x80D88000, { 0x0F, 0xE7, 0x00 }, { FCML_OP_MODRM_M_128_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } }
+	{ "vmovntdq", FCML_AMT_AVX_SIMD, 0x11C0, 0x80D88000, { 0x0F, 0xE7, 0x00 }, { FCML_OP_MODRM_M_XMM_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVNTI[] = {
@@ -2120,16 +2120,16 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVNTI[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVNTPD[] = {
 	// 66 0F 2B /r MOVNTPD m128, xmm A Valid Valid Move packed doubleprecision floating-point values from xmm to m128 using non-temporal hint.
-	{ NULL, FCML_AMT_SSE2, 0x1001, 0x80D88000, { 0x0F, 0x2B, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_OWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM , FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SSE2, 0x1001, 0x80D88000, { 0x0F, 0x2B, 0x00 }, { FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_UNDEFINED, FCML_EOS_XWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM , FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.66.0F 2B /r VMOVNTPD m128,xmm1
-	{ "vmovntpd", FCML_AMT_AVX_SIMD, 0x11C0, 0x80D88000, { 0x0F, 0x2B, 0x00 }, { FCML_OP_MODRM_M_128_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } }
+	{ "vmovntpd", FCML_AMT_AVX_SIMD, 0x11C0, 0x80D88000, { 0x0F, 0x2B, 0x00 }, { FCML_OP_MODRM_M_XMM_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVNTPS[] = {
 	// 0F 2B /r MOVNTPS m128, xmm A Valid Valid Move packed singleprecision floating-point values from xmm to m128 using non-temporal hint.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x0001, 0x80D88000, { 0x0F, 0x2B, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_OWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM , FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SSE_SIMD, 0x0001, 0x80D88000, { 0x0F, 0x2B, 0x00 }, { FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_UNDEFINED, FCML_EOS_OWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_XMM , FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.0F 2B /r VMOVNTPS m128, xmm1
-	{ "vmovntps", FCML_AMT_AVX_SIMD, 0x01C0, 0x80D88000, { 0x0F, 0x2B, 0x00 }, { FCML_OP_MODRM_M_128_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } }
+	{ "vmovntps", FCML_AMT_AVX_SIMD, 0x01C0, 0x80D88000, { 0x0F, 0x2B, 0x00 }, { FCML_OP_MODRM_M_XMM_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVNTSD[] = {
@@ -2171,20 +2171,20 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVQ2DQ[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVS[] = {
 	// A4 MOVS m8, m8 A Valid Valid For legacy mode, Move byte from address DS:(E)SI to ES:(E)DI. For 64-bit mode move byte from address (R|E)SI to (R|E)DI.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x00C40000, { 0xA4, 0x00, 0x00 },
+    // A4 MOVSB A Valid Valid For legacy mode, Move byte from address DS:(E)SI to ES:(E)DI. For 64-bit mode move byte from address (R|E)SI to (R|E)DI.
+	{ "movs;movsb[ts]", FCML_AMT_GPI, 0x0001, 0x00C40000, { 0xA4, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } },
 	// A5 MOVS m16, m16 A Valid Valid For legacy mode, move word from address DS:(E)SI to ES:(E)DI. For 64-bit mode move word at address (R|E)SI to (R|E)DI.
 	// A5 MOVS m32, m32 A Valid Valid For legacy mode, move dword from address DS:(E)SI to ES:(E)DI. For 64-bit mode move dword from address (R|E)SI to (R|E)DI.
 	// REX.W + A5 MOVS m64, m64 A Valid N.E. Move qword from address (R|E)SI to (R|E)DI.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x00C40000, { 0xA5, 0x00, 0x00 },
+    // A5 MOVSW A Valid Valid For legacy mode, move word from address DS:(E)SI to ES:(E)DI. For 64-bit mode move word at address (R|E)SI to (R|E)DI.
+    // A5 MOVSD A Valid Valid For legacy mode, move dword from address DS:(E)SI to ES:(E)DI. For 64-bit mode move dword from address (R|E)SI to (R|E)DI. REX.W + A5 MOVSQ A Valid N.E. Move qword from address
+	{ "movs;movsw[ts,ow,a*];movsd[ts,od,a*];movsq[ts,oq,a*]", FCML_AMT_GPI, 0x0001, 0x00C40000, { 0xA5, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } }
-	// A4 MOVSB A Valid Valid For legacy mode, Move byte from address DS:(E)SI to ES:(E)DI. For 64-bit mode move byte from address (R|E)SI to (R|E)DI.
-	// A5 MOVSW A Valid Valid For legacy mode, move word from address DS:(E)SI to ES:(E)DI. For 64-bit mode move word at address (R|E)SI to (R|E)DI.
-	// A5 MOVSD A Valid Valid For legacy mode, move dword from address DS:(E)SI to ES:(E)DI. For 64-bit mode move dword from address (R|E)SI to (R|E)DI. REX.W + A5 MOVSQ A Valid N.E. Move qword from address
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVSD[] = {
@@ -6008,7 +6008,7 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( "movntq", _fcml_st_def_addr_mode_desc_MOVNTQ),
 		FCML_IA_INSTRUCTION( "movq", _fcml_st_def_addr_mode_desc_MOVQ),
 		FCML_IA_INSTRUCTION( "movq2dq", _fcml_st_def_addr_mode_desc_MOVQ2DQ),
-		FCML_IA_INSTRUCTION( "movs", _fcml_st_def_addr_mode_desc_MOVS),
+		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_MOVS),
 		FCML_IA_INSTRUCTION( "movsd", _fcml_st_def_addr_mode_desc_MOVSD),
 		FCML_IA_INSTRUCTION( "movshdup", _fcml_st_def_addr_mode_desc_MOVSHDUP),
 		FCML_IA_INSTRUCTION( "movsldup", _fcml_st_def_addr_mode_desc_MOVSLDUP),
