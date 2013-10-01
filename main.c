@@ -67,6 +67,7 @@ int main(int argc, char **argv) {
 	}
 	ira_init();
 
+
 	//FCML_I32_A_P( "cmpsd", 0xA7 );
 	//return 0;
 	//  FCML_I64_P( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
