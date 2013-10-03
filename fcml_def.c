@@ -2334,7 +2334,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MULSS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MWAIT[] = {
 	// 0F 01 C9 MWAIT A Valid Valid A hint that allow the processor to stop instruction execution and enter an implementationdependent optimized state until occurrence of a class of events.
-	{ NULL, FCML_AMT_SSE3, 0x0001, 0x00EC8000, { 0x0F, 0x01, 0xC9 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, FCML_AMT_SSE3, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xC9 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_NEG[] = {
@@ -2367,39 +2367,39 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_NOT[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_OR[] = {
 	// 0C ib OR AL, imm8 I Valid Valid AL OR imm8.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x00C40000, { 0x0C, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0x0C, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
 	// 0D iw OR AX, imm16 I Valid Valid AX OR imm16.
 	// 0D id OR EAX, imm32 I Valid Valid EAX OR imm32.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x03C40000, { 0x0D, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C40000, { 0x0D, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 0D id OR RAX, imm32 I Valid N.E. RAX OR imm32 (sign-extended).
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x04840000, { 0x0D, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0008, 0x04840000, { 0x0D, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// 80 /1 ib OR r/m8, imm8 MI Valid Valid r/m8 OR imm8.
 	// REX + 80 /1 ib OR r/m8*, imm8 MI Valid N.E. r/m8 OR imm8.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x00C58800, { 0x80, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C58800, { 0x80, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
 	// 81 /1 iw OR r/m16, imm16 MI Valid Valid r/m16 OR imm16.
 	// 81 /1 id OR r/m32, imm32 MI Valid Valid r/m32 OR imm32.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x03C58800, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C58800, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 81 /1 id OR r/m64, imm32 MI Valid N.E. r/m64 OR imm32 (sign-extended).
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x04858800, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0008, 0x04858800, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// 83 /1 ib OR r/m16, imm8 MI Valid Valid r/m16 OR imm8 (sign-extended).
 	// 83 /1 ib OR r/m32, imm8 MI Valid Valid r/m32 OR imm8 (sign-extended).
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x03C58800, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C58800, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + 83 /1 ib OR r/m64, imm8 MI Valid N.E. r/m64 OR imm8 (sign-extended).
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x04858800, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0008, 0x04858800, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// 08 /r OR r/m8, r8 MR Valid Valid r/m8 OR r8.
 	// REX + 08 /r OR r/m8*, r8* MR Valid N.E. r/m8 OR r8.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x00C48000, { 0x08, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_MODRM_R_8, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x08, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_MODRM_R_8, FCML_NA, FCML_NA, FCML_NA } },
 	// 09 /r OR r/m16, r16 MR Valid Valid r/m16 OR r16.
 	// 09 /r OR r/m32, r32 MR Valid Valid r/m32 OR r32.
 	// REX.W + 09 /r OR r/m64, r64 MR Valid N.E. r/m64 OR r64.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x00C48000, { 0x09, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x09, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } },
 	// 0A /r OR r8, r/m8 RM Valid Valid r8 OR r/m8.
 	// REX + 0A /r OR r8*, r/m8* RM Valid N.E. r8 OR r/m8.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x00C48000, { 0x0A, 0x00, 0x00 }, { FCML_OP_MODRM_R_8_W, FCML_OP_MODRM_RM_8, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x0A, 0x00, 0x00 }, { FCML_OP_MODRM_R_8_W, FCML_OP_MODRM_RM_8, FCML_NA, FCML_NA, FCML_NA } },
 	// 0B /r OR r16, r/m16 RM Valid Valid r16 OR r/m16.
 	// 0B /r OR r32, r/m32 RM Valid Valid r32 OR r/m32.
 	// REX.W + 0B /r OR r64, r/m64 RM Valid N.E. r64 OR r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x00C48000, { 0x0B, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x0B, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ORPD[] = {
@@ -2436,21 +2436,17 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_OUT[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_OUTS[] = {
 	// 6E OUTS DX, m8 NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x07C40000, { 0x6E, 0x00, 0x00 },
+	{ "outs;outsb[ts]", FCML_AMT_GPI, 0x0000, 0x07C40000, { 0x6E, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA } },
 	// 6F OUTS DX, m16 NP Valid Valid Output word from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x01C40000, { 0x6F, 0x00, 0x00 },
+	{ "outs;outsw[ts]", FCML_AMT_GPI, 0x0000, 0x01C40000, { 0x6F, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_WORD, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA } },
 	// 6F OUTS DX, m32 NP Valid Valid Output doubleword from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-	{ NULL, FCML_AMT_GPI, 0x0001, 0x06C40000, { 0x6F, 0x00, 0x00 },
+	{ "outs;outsd[ts]", FCML_AMT_GPI, 0x0000, 0x06C40000, { 0x6F, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_DWORD, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA } }
-	// TODO: W przypadku assemblera trzeba to bedzie obsluzyc.
-	// 6E OUTSB NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-	// 6F OUTSW NP Valid Valid Output word from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-	// 6F OUTSD NP Valid Valid Output doubleword from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PABS[] = {
@@ -6031,7 +6027,7 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( "orpd", _fcml_st_def_addr_mode_desc_ORPD),
 		FCML_IA_INSTRUCTION( "orps", _fcml_st_def_addr_mode_desc_ORPS),
 		FCML_IA_INSTRUCTION( "out", _fcml_st_def_addr_mode_desc_OUT),
-		FCML_IA_INSTRUCTION( "outs", _fcml_st_def_addr_mode_desc_OUTS),
+		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_OUTS),
 		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_PABS),
 		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_PACKSS),
 		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_PACKUSD),
