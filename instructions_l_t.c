@@ -7,7 +7,7 @@
 
 #include "fcml_env.h"
 #include "fcml_assembler.h"
-#include "instructions_i_t.h"
+#include "instructions_l_t.h"
 
 int fcml_tf_instructions_l_suite_init(void) {
 	return 0;

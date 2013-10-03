@@ -28,6 +28,9 @@
 #include "instructions_j_t.h"
 #include "instructions_l_t.h"
 #include "instructions_m_t.h"
+#include "instructions_n_t.h"
+#include "instructions_o_t.h"
+#include "instructions_p_t.h"
 #include "fcml_intel_parser_t.h"
 #include "fcml_asm_dialect_intel.h"
 
@@ -48,6 +51,8 @@ CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_j,
 	fctl_si_instructions_l,
 	fctl_si_instructions_m,
+	fctl_si_instructions_n,
+	fctl_si_instructions_o,
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
