@@ -53,6 +53,7 @@ CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_m,
 	fctl_si_instructions_n,
 	fctl_si_instructions_o,
+	fctl_si_instructions_p,
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
