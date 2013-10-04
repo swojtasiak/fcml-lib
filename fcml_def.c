@@ -3047,7 +3047,6 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PMOVMSKB[] = {
 	{ "vpmovmskb", FCML_AMT_AVX_SIMD, 0x13C0, 0x40DA8000, { 0x0F, 0xD7, 0x22 }, { FCML_OP_MODRM_R_W, FCML_OP_VEX_VVVV_REG( FCML_REG_SIMD, FCML_EOS_OWORD ), FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.256.66.0F.WIG D7 /r VPMOVMSKB reg,ymm1
 	{ "vpmovmskb", FCML_AMT_AVX2_SIMD, 0x13A0, 0x40DA8000, { 0x0F, 0xD7, 0x22 }, { FCML_OP_MODRM_R_W, FCML_OP_VEX_VVVV_REG( FCML_REG_SIMD, FCML_EOS_YWORD ), FCML_NA, FCML_NA, FCML_NA } }
-
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_PMOVSX[] = {
