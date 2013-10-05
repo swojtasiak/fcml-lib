@@ -386,26 +386,6 @@ void fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B(void) {
     FCML_I32( "cmpxchg8b qword ptr [ecx+0ffffffffh]", 0x0F, 0xC7, 0x49, 0xFF );
 }
 
-void fcml_tf_instruction_UCOMISD(void) {
-    // 66 0F 2E /r UCOMISD xmm1,xmm2/m64 RM V/V SSE2 Compares (unordered) the low doubleprecision floating-point values in xmm1 and xmm2/m64 and set the EFLAGS accordingly.
-    FCML_I32( "ucomisd xmm2,mmword ptr [ecx+eax]", 0x66, 0x0F, 0x2E, 0x14, 0x01 );
-    FCML_I64( "ucomisd xmm2,mmword ptr [rcx+rax]", 0x66, 0x0F, 0x2E, 0x14, 0x01 );
-    FCML_I64( "ucomisd xmm0,xmm0", 0x66, 0x0F, 0x2E, 0xC0 );
-    // VEX.LIG.66.0F.WIG 2E /r VUCOMISD xmm1,xmm2/m64 RM V/V AVX Compare low double precision floating-point values in xmm1 and xmm2/mem64 and set the EFLAGS flags accordingly.
-    FCML_I32( "vucomisd xmm0,mmword ptr [eax]", 0xc5, 0xf9, 0x2e, 0x00 );
-    FCML_I64( "vucomisd xmm0,xmm1", 0xc5, 0xf9, 0x2e, 0xc1 );
-}
-
-void fcml_tf_instruction_UCOMISS(void) {
-    // 0F 2E /r UCOMISS xmm1,xmm2/m32 RM V/V SSE Compare lower single-precision floating-point value in xmm1 register with lower singleprecision floating-point value in xmm2/mem and set the status flags accordingly.
-    FCML_I32( "ucomiss xmm2,dword ptr [ecx+eax]", 0x0F, 0x2E, 0x14, 0x01 );
-    FCML_I64( "ucomiss xmm2,dword ptr [rcx+rax]", 0x0F, 0x2E, 0x14, 0x01 );
-    FCML_I64( "ucomiss xmm0,xmm0", 0x0F, 0x2E, 0xC0 );
-    // VEX.LIG.0F.WIG 2E /r VUCOMISS xmm1,xmm2/m32 RM V/V AVX Compare low single precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
-    FCML_I32( "vucomiss xmm0,dword ptr [eax]", 0xc5, 0xf8, 0x2e, 0x00 );
-    FCML_I64( "vucomiss xmm0,xmm1", 0xc5, 0xf8, 0x2e, 0xc1 );
-}
-
 void fcml_tf_instruction_CPUID(void) {
     FCML_I3264( "cpuid", 0x0F, 0xA2 );
 }
@@ -698,8 +678,6 @@ CU_TestInfo fctl_ti_instructions_c[] = {
     { "fcml_tf_instruction_CMPSS", fcml_tf_instruction_CMPSS },
     { "fcml_tf_instruction_CMPXCHG", fcml_tf_instruction_CMPXCHG },
     { "fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B", fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B },
-    { "fcml_tf_instruction_UCOMISD", fcml_tf_instruction_UCOMISD },
-    { "fcml_tf_instruction_UCOMISS", fcml_tf_instruction_UCOMISS },
     { "fcml_tf_instruction_CPUID", fcml_tf_instruction_CPUID },
     { "fcml_tf_instruction_CRC32", fcml_tf_instruction_CRC32 },
     { "fcml_tf_instruction_CVTDQ2PD", fcml_tf_instruction_CVTDQ2PD },
