@@ -55,6 +55,10 @@ void fcml_fn_env_memory_clean( void *src, fcml_usize len ) {
 	memset( src, 0, len );
 }
 
+fcml_bool fcml_fn_env_memory_cmp( const void *src1, const void *src2, fcml_usize len ) {
+    return strncmp( src1, src2, len ) == 0 ? FCML_TRUE : FCML_FALSE;
+}
+
 void fcml_fn_env_memory_free( void *ptr ) {
     fcml_gl_fp_memory_free(ptr);
 }

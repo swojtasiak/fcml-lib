@@ -705,6 +705,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_immediate_dis_relative( fcml_st_asm
 	    if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
             // 64 bit OSA forced. Just in case, addressing mode acceptor is responsible for interpreting FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA
 	        // flag and forcing appropriate OSA size.
+	        // TODO: Pzeanalizowac to czy napewno jest poprawne, jezeli nie ma ustawionego FORCE 64 EOA in 64bit mode, dziala chyba nie tak.
 	        flags = FCML_EN_ASF_64;
 	    } else {
 	        flags = FCML_EN_ASF_32 | FCML_EN_ASF_16;
@@ -1556,9 +1557,31 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_st_asm_encodi
 		#ifdef FCML_DEBUG
 			assembled_instruction->__def_index = context->__def_index;
 		#endif
-		if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
-			fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
-			error = FCML_CEH_GEC_OUT_OF_MEMORY;
+
+		fcml_bool ignore = FCML_FALSE;
+
+		// Check if there is such instruction is already assembled.
+		fcml_st_coll_list *instructions = context->result->instructions;
+		fcml_st_coll_list_element *element = instructions->head;
+		while( element ) {
+		    fcml_st_assembled_instruction *instruction = (fcml_st_assembled_instruction*)element->item;
+		    int max_code_len = instruction->code_length > assembled_instruction->code_length ? assembled_instruction->code_length : instruction->code_length;
+		    if( fcml_fn_env_memory_cmp( instruction->code, assembled_instruction->code, max_code_len ) ) {
+		        // Instructions are the same.
+		        ignore = FCML_TRUE;
+		        break;
+		    }
+		    element = element->next;
+		}
+
+		if( !ignore ) {
+            if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
+                fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
+                error = FCML_CEH_GEC_OUT_OF_MEMORY;
+            }
+		} else {
+		    // Free ignored instruction.
+		    fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
 		}
 	}
 	return error;

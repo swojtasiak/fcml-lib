@@ -89,6 +89,9 @@ Brakuje instrukcji:
 // VEX.NDD.256.66.0F.WIG 72 /6 ib VPSLLD ymm1, ymm2, imm8
 // VEX.NDD.256.66.0F.WIG 73 /6 ib VPSLLQ ymm1, ymm2, imm8
 
+// TODO: Zaimplmentowac jak wrocimy do prefixow, lock rpne itd.
+// F2 XACQUIRE
+// F3 XRELEASE
 
 05.102013
 // TODO: w/d/q mozna rozpoznac na podstaiwe bity w opcode, moze by tak dodac do dialoktu mozliwosc konwersji instrukcji i zrezygnowc z powtarzaia?
