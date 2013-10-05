@@ -152,8 +152,8 @@ void fcml_tf_instruction_INSERTQ(void) {
 
 void fcml_tf_instruction_INT(void) {
     FCML_I3264_M( "int 03h", 2, FCML_MI( 0xCC ), FCML_MI( 0xCD, 0x03 ) );
-    FCML_I32( "int 20h", 0xCD, 0x20 );
-    FCML_I64( "int 20h", 0xCD, 0x20 );
+    FCML_I32_M( "int 20h", 2, FCML_MI( 0xcd, 0x20 ), FCML_MI( 0xcc ) );
+    FCML_I64_M( "int 20h", 2, FCML_MI( 0xcd, 0x20 ), FCML_MI( 0xcc ) );
     FCML_I64( "into", 0xCE );
     FCML_I32( "into", 0xCE );
 }
