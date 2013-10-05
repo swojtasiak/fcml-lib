@@ -634,6 +634,11 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 						    fcml_fn_stream_restore_point( stream, sp );
 							prefix_type = 0;
 						}
+						// If the mmmmm field is less than 8 then these two bytes are a form of the POP instruction rather than an XOP prefix.
+						if( prefix == 0x8F && _IRA_VEX_MMMM( second_byte ) < 0x08) {
+						    fcml_fn_stream_restore_point( stream, sp );
+						    prefix_type = 0;
+						}
 					}
 
 					// Copy rest of the VEX prefixes.
@@ -643,45 +648,49 @@ void _ira_identify_prefixes( struct ira_diss_context *context ) {
 						if( nbytes != vex_prefix_size ) {
 							// Stream is incomplete, so we can not treat it as a VEX.
 							prefix_type = 0;
+						} else {
+
+                            // Decodes VEX fields.
+                            switch( prefix ) {
+                            case 0x8F:
+                            case 0xC4:
+                                if( prefix == 0x8F && _IRA_VEX_MMMM( prefix_desc->vex_bytes[0] ) < 0x08) {
+                                    prefix_type = 0;
+                                    break;
+                                }
+                                prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
+                                prefixes_fields->x = _IRA_VEX_X(prefix_desc->vex_bytes[0]);
+                                prefixes_fields->b = ( context->mode == IRA_MOD_64BIT ) ? _IRA_VEX_B(prefix_desc->vex_bytes[0]) : 0;
+                                prefixes_fields->w = _IRA_VEX_W(prefix_desc->vex_bytes[1]);
+                                prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[1]);
+                                prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[1]);
+                                prefixes_fields->mmmm = _IRA_VEX_MMMM(prefix_desc->vex_bytes[0]);
+                                prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[1]);
+                                break;
+                            case 0xC5:
+                                prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
+                                prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[0]);
+                                prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[0]);
+                                prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[0]);
+                                break;
+                            }
+
+                            if( context->mode == IRA_MOD_32BIT && prefixes_fields->vvvv > 7 ) {
+                                prefix_type = 0;
+                            }
+
+                            // TODO: Tymczasowo, dopoki ni pojdzie refaktor.
+                            prefixes_fields->vex_prefix = prefix;
+                            if( prefix == 0x8F ) {
+                                prefixes_fields->is_xop = _IRA_TRUE;
+                            }
+                            prefixes_fields->is_vex = _IRA_TRUE;
+                            prefixes_fields->is_rex = _IRA_FALSE;
+
+                            prefix_size += vex_prefix_size;
 						}
 
-                        // Decodes VEX fields.
-                        switch( prefix ) {
-                        case 0x8F:
-                        case 0xC4:
-                            prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
-                            prefixes_fields->x = _IRA_VEX_X(prefix_desc->vex_bytes[0]);
-                            prefixes_fields->b = ( context->mode == IRA_MOD_64BIT ) ? _IRA_VEX_B(prefix_desc->vex_bytes[0]) : 0;
-                            prefixes_fields->w = _IRA_VEX_W(prefix_desc->vex_bytes[1]);
-                            prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[1]);
-                            prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[1]);
-                            prefixes_fields->mmmm = _IRA_VEX_MMMM(prefix_desc->vex_bytes[0]);
-                            prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[1]);
-                            break;
-                        case 0xC5:
-                            prefixes_fields->r = _IRA_VEX_R(prefix_desc->vex_bytes[0]);
-                            prefixes_fields->l = _IRA_VEX_L(prefix_desc->vex_bytes[0]);
-                            prefixes_fields->vvvv = _IRA_VEX_VVVV(prefix_desc->vex_bytes[0]);
-                            prefixes_fields->pp = _IRA_VEX_PP(prefix_desc->vex_bytes[0]);
-                            break;
-                        }
-
-                        if( context->mode == IRA_MOD_32BIT && prefixes_fields->vvvv > 7 ) {
-                            prefix_type = 0;
-                        }
-
-                        // TODO: Tymczasowo, dopoki ni pojdzie refaktor.
-                        prefixes_fields->vex_prefix = prefix;
-                        if( prefix == 0x8F ) {
-                            prefixes_fields->is_xop = _IRA_TRUE;
-                        }
-                        prefixes_fields->is_vex = _IRA_TRUE;
-                        prefixes_fields->is_rex = _IRA_FALSE;
-
                         fcml_fn_stream_seek(stream, stream_pos, IRA_START);
-
-                        prefix_size += vex_prefix_size;
-
 					}
 
 				} else {

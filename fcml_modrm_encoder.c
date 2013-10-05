@@ -449,12 +449,13 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 			if( effective_address->displacement.size ) {
 				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
-		} else if ( !is_displacement ) {
-			return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
-		} else {
+		} else if ( is_displacement ) {
 		    // Absolute address or RIP.
 			disp_size = FCML_DS_32;
 			f_rm = 0x05;
+		} else {
+		    // Only reg_opcode is encoded.
+		    f_mod = 0x03;
 		}
 
 		if( f_rm > 7 ) {
