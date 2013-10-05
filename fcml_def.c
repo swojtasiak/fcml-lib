@@ -3796,7 +3796,6 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_ROR[] = {
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C58800, { 0xC1, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
 };
 
-// XMMWORD
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_RCPPS[] = {
 	// 0F 53 /r RCPPS xmm1,xmm2/m128
 	{ NULL, FCML_AMT_SSE_SIMD, 0x0001, 0x00D88000, { 0x0F, 0x53, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA, FCML_NA } },
@@ -3912,28 +3911,10 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_RSQRTSS[] = {
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SAHF[] = {
+    // It is valid in 64-bit mode only if CPUID.80000001H:ECX.LAHF-SAHF[bit 0] = 1.
 	// 9E SAHF
-	// TODO: Narazie dostepne w 64 bit, ale generalnie dostepne w 64 bit tylko jezeli CPUID jest odpowiednio ustawiony.
-	// Jzeli bedziemy dodawali mozliwosc parametryzacji wynikow debugera poprzez dostarczanie CPUID, to trzeba to bedzie obsluzyc.
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0x9E, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
-
-// TODO: Zaimplementowac na cele assemblera dopiero. Jako ze tak samo sie koduje jak SHL.
-// D0 /4 SAL r/m8, 1 M1 Valid Valid Multiply r/m8 by 2, once.
-// REX + D0 /4 SAL r/m8**, 1 M1 Valid N.E. Multiply r/m8 by 2, once.
-// D2 /4 SAL r/m8, CL MC Valid Valid Multiply r/m8 by 2, CL times.
-// REX + D2 /4 SAL r/m8**, CL MC Valid N.E. Multiply r/m8 by 2, CL times.
-// C0 /4 ib SAL r/m8, imm8 MI Valid Valid Multiply r/m8 by 2, imm8 times.
-// REX + C0 /4 ib SAL r/m8**, imm8 MI Valid N.E. Multiply r/m8 by 2, imm8 times.
-// D1 /4 SAL r/m16, 1 M1 Valid Valid Multiply r/m16 by 2, once.
-// D1 /4 SAL r/m32, 1 M1 Valid Valid Multiply r/m32 by 2, once.
-// REX.W + D1 /4 SAL r/m64, 1 M1 Valid N.E. Multiply r/m64 by 2, once.
-// D3 /4 SAL r/m16, CL MC Valid Valid Multiply r/m16 by 2, CL times.
-// D3 /4 SAL r/m32, CL MC Valid Valid Multiply r/m32 by 2, CL times.
-// REX.W + D3 /4 SAL r/m64, CL MC Valid N.E. Multiply r/m64 by 2, CL times.
-// C1 /4 ib SAL r/m16, imm8 MI Valid Valid Multiply r/m16 by 2, imm8 times.
-// C1 /4 ib SAL r/m32, imm8 MI Valid Valid Multiply r/m32 by 2, imm8 times.
-// REX.W + C1 /4 ib SAL r/m64, imm8 MI Valid N.E. Multiply r/m64 by 2, imm8 times.
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SAR[] = {
 	// D0 /7 SAR r/m8, 1
@@ -3959,27 +3940,27 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SAR[] = {
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5B800, { 0xC1, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
 };
 
-struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHL[] = {
-	// D0 /4 SHL r/m8,1
-	// REX + D0 /4 SHL r/m8,1
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SHL_SAL[] = {
+	// D0 /4 SHL/SAL r/m8,1
+	// REX + D0 /4 SHL/SAL r/m8,1
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A000, { 0xD0, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_EXPLICIT_IB(1), FCML_NA, FCML_NA, FCML_NA } },
-	// D2 /4 SHL r/m8,CL
-	// REX + D2 /4 SHL r/m8,CL
+	// D2 /4 SHL/SAL r/m8,CL
+	// REX + D2 /4 SHL/SAL r/m8,CL
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A000, { 0xD2, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_CL, FCML_EOS_BYTE ), FCML_NA, FCML_NA, FCML_NA } },
-	// C0 /4 ib SHL r/m8,imm8
-	// REX + C0 /4 ib SHL r/m8,imm8
+	// C0 /4 ib SHL/SAL r/m8,imm8
+	// REX + C0 /4 ib SHL/SAL r/m8,imm8
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A000, { 0xC0, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } },
-	// D1 /4 SHL r/m16,1
-	// D1 /4 SHL r/m32,1
-	// REX.W + D1 /4 SHL r/m64,1
+	// D1 /4 SHL/SAL r/m16,1
+	// D1 /4 SHL/SAL r/m32,1
+	// REX.W + D1 /4 SHL/SAL r/m64,1
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A000, { 0xD1, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_EXPLICIT_IB(1), FCML_NA, FCML_NA, FCML_NA } },
-	// D3 /4 SHL r/m16,CL
-	// D3 /4 SHL r/m32,CL
-	// REX.W + D3 /4 SHL r/m64,CL
+	// D3 /4 SHL/SAL r/m16,CL
+	// D3 /4 SHL/SAL r/m32,CL
+	// REX.W + D3 /4 SHL/SAL r/m64,CL
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A000, { 0xD3, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_CL, FCML_EOS_BYTE ), FCML_NA, FCML_NA, FCML_NA } },
-	// C1 /4 ib SHL r/m16,imm8
-	// C1 /4 ib SHL r/m32,imm8
-	// REX.W + C1 /4 ib SHL r/m64,imm8
+	// C1 /4 ib SHL/SAL r/m16,imm8
+	// C1 /4 ib SHL/SAL r/m32,imm8
+	// REX.W + C1 /4 ib SHL/SAL r/m64,imm8
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A000, { 0xC1, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA } }
 };
 
@@ -6126,7 +6107,7 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( "rsqrtss", _fcml_st_def_addr_mode_desc_RSQRTSS),
 		FCML_IA_INSTRUCTION( "sahf", _fcml_st_def_addr_mode_desc_SAHF),
 		FCML_IA_INSTRUCTION( "sar", _fcml_st_def_addr_mode_desc_SAR),
-		FCML_IA_INSTRUCTION( "shl", _fcml_st_def_addr_mode_desc_SHL),
+		FCML_IA_INSTRUCTION( "shl;sal", _fcml_st_def_addr_mode_desc_SHL_SAL),
 		FCML_IA_INSTRUCTION( "shr", _fcml_st_def_addr_mode_desc_SHR),
 		FCML_IA_INSTRUCTION( "sbb", _fcml_st_def_addr_mode_desc_SBB),
 		FCML_IA_INSTRUCTION( "scas", _fcml_st_def_addr_mode_desc_SCAS),

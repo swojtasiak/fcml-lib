@@ -972,15 +972,16 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_explicit_ib( fcml_st_asm_encoding_c
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_explicit_ib( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-    fcml_ceh_error error = FCML_EN_UNSUPPORTED_OPPERAND;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+        error = FCML_EN_UNSUPPORTED_OPPERAND;
         fcml_sf_def_tma_explicit_ib *exp_ib = (fcml_sf_def_tma_explicit_ib*)addr_mode->addr_mode_args;
         fcml_st_integer source;
         fcml_st_integer dest;
-        error = fcml_fn_utils_imm_to_integer( &(operand_def->immediate), &source );
-        if( !error ) {
-            error = fcml_fn_utils_convert_integer_to_integer( &source, &dest, FCML_DS_8, FCML_DS_8 );
-            if( !error ) {
+        fcml_ceh_error res = fcml_fn_utils_imm_to_integer( &(operand_def->immediate), &source );
+        if( !res ) {
+            res = fcml_fn_utils_convert_integer_to_integer( &source, &dest, FCML_DS_8, FCML_DS_8 );
+            if( !res ) {
                 if( exp_ib->ib == (fcml_uint8_t)dest.int8 ) {
                     error = FCML_CEH_GEC_NO_ERROR;
                 }
