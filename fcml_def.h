@@ -264,12 +264,8 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_VSIB_XMM	0x01
 #define FCML_VSIB_YMM	0x02
 
-// Index value size.
-#define FCML_VSIB_IS_32	0x01
-#define FCML_VSIB_IS_64	0x02
-
 #define FCML_OP_VSIB_BASE						    0x0E000000
-#define FCML_OP_VSIB( vector_index_register, index_value_size )		( FCML_OP_VSIB_BASE | vector_index_register << 2 | index_value_size )
+#define FCML_OP_VSIB( vector_index_register, encoded_index_value_size )		( FCML_OP_VSIB_BASE | vector_index_register << 8 | encoded_index_value_size )
 
 /**************/
 /* Pseudo-Op. */
@@ -482,6 +478,8 @@ typedef struct fcml_sf_def_tma_rm {
 	fcml_uint8_t encoded_register_operand_size;
 	fcml_uint8_t encoded_memory_operand_size;
 	fcml_uint8_t flags;
+	fcml_uint8_t vector_index_register;
+	fcml_bool is_vsib;
 } fcml_sf_def_tma_rm;
 
 typedef struct fcml_sf_def_tma_r {
@@ -493,11 +491,6 @@ typedef struct fcml_sf_def_tma_vex_vvvv_reg {
 	fcml_uint8_t reg_type;
 	fcml_uint8_t encoded_register_size;
 } fcml_sf_def_tma_vex_vvvv_reg;
-
-typedef struct fcml_sf_def_tma_vsib {
-	fcml_uint8_t vector_index_register;
-	fcml_uint8_t index_value_size;
-} fcml_sf_def_tma_vsib;
 
 typedef struct fcml_sf_def_tma_pseudo_op {
     fcml_uint8_t mask;

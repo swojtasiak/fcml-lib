@@ -1111,24 +1111,44 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_rm( fcml_st_asm_encoding_context *c
 			}
 			if( !error ) {
 
-				// ASA.
-				fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+			    // Check VSIB.
+			    if( args->is_vsib ) {
+			        fcml_st_register *index = &(operand_def->address.effective_address.index);
+			        if( index->type == FCML_REG_SIMD ) {
+			            fcml_data_size vsib_reg_size = args->vector_index_register == FCML_VSIB_XMM ? FCML_DS_128 : FCML_DS_256;
+			            if( vsib_reg_size != index->size ) {
+			                FCML_TRACE( "Wrong VSIB size." );
+			                error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			            }
+			        } else {
+			            FCML_TRACE( "VSIB encoding needs SIMD index register." );
+			            error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			        }
+			    }
 
-				fcml_st_modrm mod_rm = {0};
-				mod_rm.address = operand_def->address;
+			    if( !error ) {
 
-				fcml_esa esa;
-				fcml_fn_modrm_calculate_effective_address_size( &mod_rm, &esa );
-				if( ( esa & FCML_ESA_SF_16 ) && addr_form != FCML_AF_64_BIT ) {
-					context->data_size_flags.allowed_effective_address_size.flags |= FCML_EN_ASF_16;
-				}
-				if( esa & FCML_ESA_SF_32 ) {
-					context->data_size_flags.allowed_effective_address_size.flags |= FCML_EN_ASF_32;
-				}
-				if( ( esa & FCML_ESA_SF_64 ) && addr_form != FCML_AF_16_BIT ) {
-					context->data_size_flags.allowed_effective_address_size.flags |= FCML_EN_ASF_64;
-				}
+                    // ASA.
+                    fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 
+                    fcml_st_modrm mod_rm = {0};
+                    mod_rm.address = operand_def->address;
+
+                    fcml_esa esa;
+                    fcml_fn_modrm_calculate_effective_address_size( &mod_rm, &esa );
+
+                    if( ( esa & FCML_ESA_SF_16 ) && addr_form != FCML_AF_64_BIT ) {
+                        context->data_size_flags.allowed_effective_address_size.flags |= FCML_EN_ASF_16;
+                    }
+
+                    if( esa & FCML_ESA_SF_32 ) {
+                        context->data_size_flags.allowed_effective_address_size.flags |= FCML_EN_ASF_32;
+                    }
+
+                    if( ( esa & FCML_ESA_SF_64 ) && addr_form != FCML_AF_16_BIT ) {
+                        context->data_size_flags.allowed_effective_address_size.flags |= FCML_EN_ASF_64;
+                    }
+			    }
 			}
 
 		}
@@ -1181,13 +1201,21 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_r( fcml_st_asm_encoding_context *co
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+	    fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
 		context->mod_rm.reg_opcode = operand_def->reg.reg;
 		if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
 		    context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
 		}
+		if( ( operand_def->reg.type != FCML_REG_DR && operand_def->reg.type != FCML_REG_CR ) && operand_def->reg.size != FCML_DS_UNDEF ) {
+            error = fcml_ifn_decode_dynamic_operand_size( context, args->encoded_register_operand_size, operand_def->reg.size, NULL, FCML_IEN_CT_EQUAL );
+            if( error ) {
+                error = FCML_EN_UNSUPPORTED_OPPERAND;
+            }
+		}
 	}
-	return FCML_CEH_GEC_NO_ERROR;
+	return error;
 }
 
 //-------------------------
@@ -1259,14 +1287,14 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_is4( fcml_ien_asm_part_processor_pha
 //------
 // vsib
 //------
-
+/*
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_vsib( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	return FCML_EN_UNSUPPORTED_OPPERAND;
+    return
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_vsib( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	return FCML_EN_UNSUPPORTED_OPPERAND;
-}
+}*/
 
 //------------
 // Pseudo-Op.
@@ -1364,7 +1392,7 @@ fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
 	{ fcml_fnp_asm_operand_encoder_r, fcml_fnp_asm_operand_acceptor_r, NULL },
 	{ fcml_fnp_asm_operand_encoder_vex_vvvv, fcml_fnp_asm_operand_acceptor_vex_vvvv, NULL },
 	{ fcml_fnp_asm_operand_encoder_is4, fcml_fnp_asm_operand_acceptor_is4, NULL },
-	{ fcml_fnp_asm_operand_encoder_vsib, fcml_fnp_asm_operand_acceptor_vsib, NULL },
+	{ fcml_fnp_asm_operand_encoder_rm, fcml_fnp_asm_operand_acceptor_rm, NULL },
 	{ fcml_fnp_asm_operand_encoder_pseudo_op, fcml_fnp_asm_operand_acceptor_pseudo_op, NULL }
 };
 
@@ -2261,7 +2289,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 
 		fcml_st_modrm_encoder_context ctx;
 		ctx.addr_form = assembler_context->addr_form;
-		// TODO: Dodac hintsy.
+		// TODO: Dodac hintsy zamiast takiej konfiguracji atrybutowej.
 		ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
 		ctx.choose_rip_encoding = assembler_context->configuration.choose_rip_encoding;
 		ctx.chosen_effective_address_size = 0;

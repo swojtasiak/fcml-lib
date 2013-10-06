@@ -1203,7 +1203,8 @@ void *_ira_alloc_modm_vsib_decoding_args( uint8_t vir, uint8_t ivs, int *result 
 	struct ira_modm_decoding_args *args = (struct ira_modm_decoding_args*)malloc( sizeof( struct ira_modm_decoding_args ) );
 	if( args != NULL ) {
 		args->operand_size_provider = NULL;
-		args->operand_size = ( ivs == FCML_VSIB_IS_32 ) ? _IRA_OS_DWORD : _IRA_OS_QWORD;
+		// TODO: Wykorzystac funkje dekoujaca parametry.
+		args->operand_size = ( ivs == FCML_EOS_DWORD ) ? FCML_OS_DWORD : FCML_OS_QWORD;
 		args->is_vsib = _IRA_TRUE;
 		args->vir = vir;
 	}
@@ -1274,7 +1275,7 @@ int _ira_prepare_operand_decoding( struct ira_operand_decoding *operand_decoding
 	}
 	case FCML_OP_VSIB_BASE:
 		operand_decoding->decoder = &_ira_opcode_decoder_modrm_m;
-		operand_decoding->args = _ira_alloc_modm_vsib_decoding_args( ( decoding >> 2 ), decoding & 0x03, &result );
+		operand_decoding->args = _ira_alloc_modm_vsib_decoding_args( ( decoding >> 8 ), decoding & 0x000000FF, &result );
 		break;
 	case FCML_OP_R_BASE:
 		// TODO: probowac dostosowac do tego tyou adreowania _ira_opcode_decoder_modrm_rm lub dodac dedykowana strukture z argumentami, ta jet nadmiarowa!

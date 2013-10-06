@@ -80,6 +80,8 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm( fcml_uint32_t encoded_addr_mode
 		rm_args->encoded_register_operand_size = ( encoded_addr_mode & 0x0000FF00 ) >> 8;
 		rm_args->encoded_memory_operand_size = ( encoded_addr_mode & 0x00FF0000 ) >> 16;
 		rm_args->flags = encoded_addr_mode & 0x0000000F;
+		rm_args->is_vsib = FCML_FALSE;
+		rm_args->vector_index_register = 0;
 	}
 	return rm_args;
 }
@@ -103,10 +105,14 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vex_vvvv( fcml_uint32_t encoded_add
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vsib( fcml_uint32_t encoded_addr_mode ) {
-	fcml_sf_def_tma_vsib *vsib_args = (fcml_sf_def_tma_vsib*)fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_vsib));
+    fcml_sf_def_tma_rm *vsib_args = (fcml_sf_def_tma_rm*)fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_rm));
 	if( vsib_args ) {
-		vsib_args->vector_index_register =  encoded_addr_mode >> 2;
-		vsib_args->index_value_size = encoded_addr_mode & 0x03;
+		vsib_args->vector_index_register =  encoded_addr_mode >> 8;
+		vsib_args->encoded_memory_operand_size = encoded_addr_mode & 0x000000FF;
+	    vsib_args->encoded_register_operand_size = 0;
+	    vsib_args->flags = FCML_RMF_M;
+	    vsib_args->reg_type = FCML_REG_UNDEFINED;
+	    vsib_args->is_vsib = FCML_TRUE;
 	}
 	return vsib_args;
 }

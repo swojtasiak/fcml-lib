@@ -397,7 +397,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 		// Index register.
 		if( is_index ) {
 			// Check if index register size is correct.
-			if( context->chosen_effective_address_size != effective_address->index.size ) {
+			if( effective_address->index.type != FCML_REG_SIMD && context->chosen_effective_address_size != effective_address->index.size ) {
 				// Wrong size of index register, it has to be equal to EASA.
 				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
