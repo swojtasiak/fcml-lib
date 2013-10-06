@@ -367,11 +367,6 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 
 	if( result.code == RC_OK ) {
 
-		if( should_fail ) {
-			printf("Should fail: %s\n", mnemonic);
-			return FCML_FALSE;
-		}
-
 		// Print.
 		char buffer[512] = {0};
 
@@ -388,16 +383,22 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 		ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
 
 		if( strcmp( buffer, mnemonic ) != 0 ) {
-			printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
-			return FCML_FALSE;
+		    if( !should_fail ) {
+		        printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
+		    }
+			return should_fail ? FCML_TRUE : FCML_FALSE;
 		} else {
-
 			if( result.instruction_size != size ) {
 				printf("Instruction size: %d Disassembled code size: %d (%s)\n", (fcml_uint32_t)result.instruction_size, size, mnemonic);
 				success = FCML_FALSE;
 			} else {
 			    if( !print_only ) {
-			        CU_ASSERT(FCML_TRUE);
+			        if( should_fail ) {
+                        printf("Should fail: %s\n", mnemonic);
+                        success = FCML_FALSE;
+                    } else {
+                        CU_ASSERT(FCML_TRUE);
+                    }
 			    }
 			}
 		}
