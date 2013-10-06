@@ -295,6 +295,65 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_BLENDVPS[] = {
 	{ "vblendvps", FCML_AMT_AVX_SIMD, 0x1080, 0x00EC8000, { 0x0F, 0x3A, 0x4A }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_OPERAND_IS4, FCML_NA } }
 };
 
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMPTRLD[] = {
+    // 0F C7 /6 VMPTRLD m64 Loads the current VMCS pointer from memory.
+    { NULL, FCML_AMT_VMX, 0x0000, 0x8099B000, { 0x0F, 0xC7, 0x00 }, { FCML_OP_MODRM_M_64_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMPTRST[] = {
+    // 0F C7 /7 VMPTRST m64 Stores the current VMCS pointer into memory.
+    { NULL, FCML_AMT_VMX, 0x0000, 0x8099B800, { 0x0F, 0xC7, 0x00 }, { FCML_OP_MODRM_M_64_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMCLEAR[] = {
+    // 66 0F C7 /6 VMCLEAR m64 Copy VMCS data to VMCS region in memory.
+    { NULL, FCML_AMT_VMX, 0x1000, 0x8099B800, { 0x0F, 0xC7, 0x00 }, { FCML_OP_MODRM_M_64_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMREAD[] = {
+    // 0F 78 VMREAD r/m64, r64 Reads a specified VMCS field (in 64-bit mode).
+    // 0F 78 VMREAD r/m32, r32 Reads a specified VMCS field (outside 64-bit mode).
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00588000, { 0x0F, 0x78, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_32, FCML_NA, FCML_NA, FCML_NA } },
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00988000, { 0x0F, 0x78, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_64, FCML_NA, FCML_NA, FCML_NA } },
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMWRITE[] = {
+    // 0F 79 VMWRITE r64, r/m64 Writes a specified VMCS field (in 64-bit mode)
+    // 0F 79 VMWRITE r32, r/m32 Writes a specified VMCS field (outside 64-bit mode)
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00588000, { 0x0F, 0x79, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_32, FCML_NA, FCML_NA, FCML_NA } },
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00988000, { 0x0F, 0x79, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_64, FCML_NA, FCML_NA, FCML_NA } },
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMLAUNCH[] = {
+    // 0F 01 C2 VMLAUNCH Launch virtual machine managed by current VMCS.
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00AC0000, { 0x0F, 0x01, 0xC2 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMRESUME[] = {
+    // 0F 01 C3 VMRESUME Resume virtual machine managed by current VMCS.
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00AC0000, { 0x0F, 0x01, 0xC3 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMXOFF[] = {
+    // 0F 01 C4 VMXOFF Leaves VMX operation.
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00AC0000, { 0x0F, 0x01, 0xC4 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMXON[] = {
+    // F3 0F C7 /6 VMXON m64 Enter VMX root operation.
+    { NULL, FCML_AMT_VMX, 0x4000, 0x8099B000, { 0x0F, 0xC7, 0x00 }, { FCML_OP_MODRM_M_64_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMCALL[] = {
+    // 0F 01 C1 VMCALL Call to VM monitor by causing VM exit.
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00AC0000, { 0x0F, 0x01, 0xC1 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMFUNC[] = {
+    // 0F 01 D4 VMFUNC Invoke VM function specified in EAX.
+    { NULL, FCML_AMT_VMX, 0x0000, 0x00AC0000, { 0x0F, 0x01, 0xD4 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+};
+
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VBROADCASTSS[] = {
 	// VEX.128.66.0F38 18 /r VBROADCASTSS xmm1, m32
 	// VEX.256.66.0F38 18 /r VBROADCASTSS ymm1, m32
@@ -1402,6 +1461,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FYL2XP1[] = {
 	{ NULL, FCML_AMT_FPU, 0x0001, 0x00D80000, { 0xD9, 0xF9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_GETSEC[] = {
+    // 0F 37  GETSEC[X] Report the SMX capabilities.
+    { NULL, FCML_AMT_SMX, 0x0000, 0x00D80000, { 0x0F, 0x37, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+};
+
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_HADDPD[] = {
 	// 66 0F 7C /r HADDPD xmm1, xmm2/m128 A Valid Valid Horizontal add packed double-precision floatingpoint values from xmm2/m128 to xmm1.
 	{ NULL, FCML_AMT_SSE3_SIMD, 0x1001, 0x00D88000, { 0x0F, 0x7C, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA, FCML_NA } },
@@ -1437,6 +1501,20 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_HSUBPS[] = {
 	// VEX.NDS.128.F2.0F 7D /r VHSUBPS xmm1,xmm2,xmm3/m128
 	// VEX.NDS.256.F2.0F 7D /r VHSUBPS ymm1,ymm2,ymm3/m256
 	{ "vhsubps", FCML_AMT_AVX_SIMD, 0x2080, 0x00D88000, { 0x0F, 0x7D, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA } }
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INVEPT[] = {
+    // 66 0F 38 80 INVEPT r64, m128 Invalidates EPT-derived entries in the TLBs and paging-structure caches (in 64-bit mode)
+    // 66 0F 38 80 INVEPT r32, m128 Invalidates EPT-derived entries in the TLBs and paging-structure caches (outside 64-bit mode)
+    { NULL, FCML_AMT_VMX, 0x1000, 0x806C8000, { 0x0F, 0x38, 0x80 }, { FCML_OP_MODRM_R_32, FCML_OP_MODRM_RM_128, FCML_NA, FCML_NA, FCML_NA } },
+    { NULL, FCML_AMT_VMX, 0x1000, 0x80AC8000, { 0x0F, 0x38, 0x80 }, { FCML_OP_MODRM_R_64, FCML_OP_MODRM_RM_128, FCML_NA, FCML_NA, FCML_NA } }
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INVVPID[] = {
+    // 66 0F 38 81 INVVPID r64, m128 Invalidates entries in the TLBs and paging-structure caches based on VPID (in 64-bit mode)
+    // 66 0F 38 81 INVVPID r32, m128 Invalidates entries in the TLBs and paging-structure caches based on VPID (outside 64-bit mode)
+    { NULL, FCML_AMT_VMX, 0x1000, 0x806C8000, { 0x0F, 0x38, 0x81 }, { FCML_OP_MODRM_R_32, FCML_OP_MODRM_RM_128, FCML_NA, FCML_NA, FCML_NA } },
+    { NULL, FCML_AMT_VMX, 0x1000, 0x80AC8000, { 0x0F, 0x38, 0x81 }, { FCML_OP_MODRM_R_64, FCML_OP_MODRM_RM_128, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_IDIV[] = {
@@ -3231,7 +3309,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_POPCNT[] = {
 	// F3 0F B8 /r POPCNT r16, r/m16 RM Valid Valid POPCNT on r/m16
 	// F3 0F B8 /r POPCNT r32, r/m32 RM Valid Valid POPCNT on r/m32
 	// F3 REX.W 0F B8 /r POPCNT r64, r/m64 RM Valid N.E. POPCNT on r/m64
-	{ NULL, FCML_AMT_SSE42, 0x4000, 0x00D88000, { 0x0F, 0xB8, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, FCML_AMT_POPCNT, 0x4000, 0x00D88000, { 0x0F, 0xB8, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_POPF[] = {
@@ -5731,6 +5809,17 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( "blendps", _fcml_st_def_addr_mode_desc_BLENDPS),
 		FCML_IA_INSTRUCTION( "blendvpd", _fcml_st_def_addr_mode_desc_BLENDVPD),
 		FCML_IA_INSTRUCTION( "blendvps", _fcml_st_def_addr_mode_desc_BLENDVPS),
+		FCML_IA_INSTRUCTION( "vmptrld", _fcml_st_def_addr_mode_desc_VMPTRLD),
+		FCML_IA_INSTRUCTION( "vmptrst", _fcml_st_def_addr_mode_desc_VMPTRST),
+		FCML_IA_INSTRUCTION( "vmclear", _fcml_st_def_addr_mode_desc_VMCLEAR),
+		FCML_IA_INSTRUCTION( "vmread", _fcml_st_def_addr_mode_desc_VMREAD),
+		FCML_IA_INSTRUCTION( "vmwrite", _fcml_st_def_addr_mode_desc_VMWRITE),
+		FCML_IA_INSTRUCTION( "vmlaunch", _fcml_st_def_addr_mode_desc_VMLAUNCH),
+		FCML_IA_INSTRUCTION( "vmresume", _fcml_st_def_addr_mode_desc_VMRESUME),
+		FCML_IA_INSTRUCTION( "vmxoff", _fcml_st_def_addr_mode_desc_VMXOFF),
+		FCML_IA_INSTRUCTION( "vmxon", _fcml_st_def_addr_mode_desc_VMXON),
+		FCML_IA_INSTRUCTION( "vmcall", _fcml_st_def_addr_mode_desc_VMCALL),
+		FCML_IA_INSTRUCTION( "vmfunc", _fcml_st_def_addr_mode_desc_VMFUNC),
 		FCML_IA_INSTRUCTION( "vbroadcastss", _fcml_st_def_addr_mode_desc_VBROADCASTSS),
 		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_VPBROADCAST),
 		FCML_IA_INSTRUCTION( "bound", _fcml_st_def_addr_mode_desc_BOUND),
@@ -5854,11 +5943,14 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( "fxtract", _fcml_st_def_addr_mode_desc_FXTRACT ),
 		FCML_IA_INSTRUCTION( "fyl2x", _fcml_st_def_addr_mode_desc_FYL2X ),
 		FCML_IA_INSTRUCTION( "fyl2xp1", _fcml_st_def_addr_mode_desc_FYL2XP1 ),
+		FCML_IA_INSTRUCTION( "getsec", _fcml_st_def_addr_mode_desc_GETSEC ),
 		FCML_IA_INSTRUCTION( "haddpd", _fcml_st_def_addr_mode_desc_HADDPD ),
 		FCML_IA_INSTRUCTION( "haddps", _fcml_st_def_addr_mode_desc_HADDPS ),
 		FCML_IA_INSTRUCTION( "hlt", _fcml_st_def_addr_mode_desc_HLT ),
 		FCML_IA_INSTRUCTION( "hsubpd", _fcml_st_def_addr_mode_desc_HSUBPD ),
 		FCML_IA_INSTRUCTION( "hsubps", _fcml_st_def_addr_mode_desc_HSUBPS ),
+		FCML_IA_INSTRUCTION( "invept", _fcml_st_def_addr_mode_desc_INVEPT ),
+		FCML_IA_INSTRUCTION( "invvpid", _fcml_st_def_addr_mode_desc_INVVPID ),
 		FCML_IA_INSTRUCTION( "idiv", _fcml_st_def_addr_mode_desc_IDIV ),
 		FCML_IA_INSTRUCTION( "imul", _fcml_st_def_addr_mode_desc_IMUL ),
 		FCML_IA_INSTRUCTION( "in", _fcml_st_def_addr_mode_desc_IN ),

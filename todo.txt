@@ -61,34 +61,6 @@ Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wy
 Mozliwosc ustawienia flagi, ktora bedzie wylaczala moliweosc ustaleni prefixow 66 i 67 dla wybranych istruckio, uywane glownie z SIMD.
 Moze zastosowac do tego flage podobna do force EOSA/EASA tlko nazwac ja do not let to change EOSA/EASA. albo fixed EASA/fixedEOSA.
 
-Instrukcje:
-
-VMPTRLD
-VMPTRST
-VMCLEAR
-VMREAD
-VMWRITE
-VMLAUNCH
-VMRESUME
-VMXOFF
-VMXON
-INVEPT
-INVVPID
-VMCALL
-VMFUNC
-
-GETSEC[CAPABILITIES] - Report the SMX Capabilities <- I inne GETSEC.
-
-POPCNT <- Z dokumentcji wynika, e ma wesje AVX, ale nie widze.
-
-Brakuje instrukcji:
-// VEX.NDS.256.66.0F.WIG F1 /r VPSLLW ymm1, ymm2, xmm3/m128
-// VEX.NDS.256.66.0F.WIG F2 /r VPSLLD ymm1, ymm2, xmm3/m128
-// VEX.NDS.256.66.0F.WIG F3 /r VPSLLQ ymm1, ymm2, xmm3/m128
-// VEX.NDD.256.66.0F.WIG 71 /6 ib VPSLLW ymm1, ymm2, imm8
-// VEX.NDD.256.66.0F.WIG 72 /6 ib VPSLLD ymm1, ymm2, imm8
-// VEX.NDD.256.66.0F.WIG 73 /6 ib VPSLLQ ymm1, ymm2, imm8
-
 // TODO: Zaimplmentowac jak wrocimy do prefixow, lock rpne itd.
 // F2 XACQUIRE
 // F3 XRELEASE

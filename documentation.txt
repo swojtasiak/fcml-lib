@@ -8,3 +8,11 @@ Przyklad wykorzystania hintow:
  
  FCML_I64_A_P( "movq mm2,mmword ptr [rax]", 0x48, 0x0F, 0x6E, 0x10 );
  
+ ---
+ 
+ Opisac fraze "Outside IA-32e mode, the register operand is always 32 bits, regardless of the value of CS.D; in 64-bit mode, the
+register operand has 64 bits (the instruction cannot be executed in compatibility mode)."
+
+W naszym rzypadku steruje sie tym za pomoca address_mode 32_bit lub 64_bit.
+ 
+ INVEPT
