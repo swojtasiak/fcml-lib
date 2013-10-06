@@ -23,6 +23,7 @@
 #include "instructions_d_t.h"
 #include "instructions_e_t.h"
 #include "instructions_f_t.h"
+#include "instructions_g_t.h"
 #include "instructions_h_t.h"
 #include "instructions_i_t.h"
 #include "instructions_j_t.h"
@@ -53,6 +54,7 @@ CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_d,
 	fctl_si_instructions_e,
 	fctl_si_instructions_f,
+	fctl_si_instructions_g,
 	fctl_si_instructions_h,
 	fctl_si_instructions_i,
 	fctl_si_instructions_j,

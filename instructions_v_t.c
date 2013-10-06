@@ -1288,6 +1288,87 @@ void fcml_tf_instruction_VPSHLW(void) {
     FCML_I64_M( "vpshlw xmm0,xmm5,xmm0", 2, FCML_MI( 0x8f, 0xe9, 0xd0, 0x95, 0xc0 ), FCML_MI( 0x8f, 0xe9, 0x78, 0x95, 0xc5 ) );
 }
 
+void fcml_tf_instruction_VMPTRLD(void) {
+    // 0F C7 /6 VMPTRLD m64 Loads the current VMCS pointer from memory.
+    FCML_I64( "vmptrld qword ptr [rdx]", 0x0F, 0xC7, 0x32 );
+    FCML_I64( "vmptrld qword ptr [edx]", 0x67, 0x0F, 0xC7, 0x32 );
+    // TODO: Disassembler takze powinien sie wywalic, albo worninga rzucic.
+    FCML_I64_A_FAILED( "vmptrld edx", 0x67, 0x0F, 0xC7, 0xF2 );
+    FCML_I32_FAILED( "vmptrld qword ptr [edx]", 0x0F, 0xC7, 0x32 );
+}
+
+void fcml_tf_instruction_VMPTRST(void) {
+    // 0F C7 /7 VMPTRST m64 Stores the current VMCS pointer into memory.
+    FCML_I64( "vmptrst qword ptr [rdx]", 0x0F, 0xC7, 0x3A );
+    FCML_I64( "vmptrst qword ptr [edx]", 0x67, 0x0F, 0xC7, 0x3A );
+    FCML_I64_A_FAILED( "vmptrst edx", 0x67, 0x0F, 0xC7, 0xFA );
+    FCML_I32_FAILED( "vmptrst qword ptr [edx]", 0x0F, 0xC7, 0x3A );
+}
+
+void fcml_tf_instruction_VMCLEAR(void) {
+    // 0F C7 /7 VMPTRST m64 Stores the current VMCS pointer into memory.
+    FCML_I64( "vmclear qword ptr [rdx]", 0x66, 0x0F, 0xC7, 0x3A );
+    FCML_I64( "vmclear qword ptr [edx]", 0x67, 0x66, 0x0F, 0xC7, 0x3A );
+    FCML_I64_A_FAILED( "vmclear edx", 0x67, 0x66, 0x0F, 0xC7, 0xFA );
+    FCML_I32_FAILED( "vmclear qword ptr [edx]", 0x66, 0x0F, 0xC7, 0x3A );
+}
+
+void fcml_tf_instruction_VMREAD(void) {
+    // 0F 78 VMREAD r/m64, r64 Reads a specified VMCS field (in 64-bit mode).
+    // 0F 78 VMREAD r/m32, r32 Reads a specified VMCS field (outside 64-bit mode).
+    FCML_I64( "vmread qword ptr [rdx],rdi", 0x0F, 0x78, 0x3A );
+    FCML_I64( "vmread rdx,rdi", 0x0F, 0x78, 0xFA );
+    FCML_I32( "vmread dword ptr [edx],edi", 0x0F, 0x78, 0x3A );
+    FCML_I32( "vmread edx,edi", 0x0F, 0x78, 0xFA );
+}
+
+void fcml_tf_instruction_VMWRITE(void) {
+    // 0F 79 VMWRITE r64, r/m64 Writes a specified VMCS field (in 64-bit mode)
+    // 0F 79 VMWRITE r32, r/m32 Writes a specified VMCS field (outside 64-bit mode)
+    FCML_I64( "vmwrite qword ptr [rdx],rdi", 0x0F, 0x79, 0x3A );
+    FCML_I64( "vmwrite rdx,rdi", 0x0F, 0x79, 0xFA );
+    FCML_I32( "vmwrite dword ptr [edx],edi", 0x0F, 0x79, 0x3A );
+    FCML_I32( "vmwrite edx,edi", 0x0F, 0x79, 0xFA );
+}
+
+void fcml_tf_instruction_VMLAUNCH(void) {
+    // 0F 01 C2 VMLAUNCH Launch virtual machine managed by current VMCS.
+    FCML_I64( "vmlaunch", 0x0F, 0x01, 0xC2 );
+    FCML_I32_FAILED( "vmlaunch", 0x0F, 0x01, 0xC2 );
+}
+
+void fcml_tf_instruction_VMRESUME(void) {
+    // 0F 01 C3 VMRESUME Resume virtual machine managed by current VMCS.
+    FCML_I64( "vmresume", 0x0F, 0x01, 0xC3 );
+    FCML_I32_FAILED( "vmresume", 0x0F, 0x01, 0xC3 );
+}
+
+void fcml_tf_instruction_VMXON(void) {
+    // 0F C7 /7 VMPTRST m64 Stores the current VMCS pointer into memory.
+    FCML_I64( "vmxon qword ptr [rdx]", 0xF3, 0x0F, 0xC7, 0x32 );
+    FCML_I64( "vmxon qword ptr [edx]", 0x67, 0xF3, 0x0F, 0xC7, 0x32 );
+    FCML_I64_A_FAILED( "vmxon edx", 0x67, 0xF3, 0x0F, 0xC7, 0xF2 );
+    FCML_I32_FAILED( "vmxon qword ptr [edx]", 0xF3, 0x0F, 0xC7, 0x32 );
+}
+
+void fcml_tf_instruction_VMXOFF(void) {
+    // 0F 01 C4 VMXOFF Leaves VMX operation.
+    FCML_I64( "vmxoff", 0x0F, 0x01, 0xC4 );
+    FCML_I32_FAILED( "vmxoff", 0x0F, 0x01, 0xC4 );
+}
+
+void fcml_tf_instruction_VMCALL(void) {
+    // 0F 01 C1 VMCALL Call to VM monitor by causing VM exit.
+    FCML_I64( "vmcall", 0x0F, 0x01, 0xC1 );
+    FCML_I32_FAILED( "vmcall", 0x0F, 0x01, 0xC1 );
+}
+
+void fcml_tf_instruction_VMFUNC(void) {
+    // 0F 01 D4 VMFUNC Invoke VM function specified in EAX.
+    FCML_I64( "vmfunc", 0x0F, 0x01, 0xD4 );
+    FCML_I32_FAILED( "vmfunc", 0x0F, 0x01, 0xD4 );
+}
+
 CU_TestInfo fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VBROADCASTSS", fcml_tf_instruction_VBROADCASTSS },
     { "fcml_tf_instruction_VPBROADCASTB", fcml_tf_instruction_VPBROADCASTB },
@@ -1390,6 +1471,17 @@ CU_TestInfo fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VPSHLD", fcml_tf_instruction_VPSHLD },
     { "fcml_tf_instruction_VPSHLQ", fcml_tf_instruction_VPSHLQ },
     { "fcml_tf_instruction_VPSHLW", fcml_tf_instruction_VPSHLW },
+    { "fcml_tf_instruction_VMPTRLD", fcml_tf_instruction_VMPTRLD },
+    { "fcml_tf_instruction_VMPTRST", fcml_tf_instruction_VMPTRST },
+    { "fcml_tf_instruction_VMCLEAR", fcml_tf_instruction_VMCLEAR },
+    { "fcml_tf_instruction_VMREAD", fcml_tf_instruction_VMREAD },
+    { "fcml_tf_instruction_VMWRITE", fcml_tf_instruction_VMWRITE },
+    { "fcml_tf_instruction_VMLAUNCH", fcml_tf_instruction_VMLAUNCH },
+    { "fcml_tf_instruction_VMRESUME", fcml_tf_instruction_VMRESUME },
+    { "fcml_tf_instruction_VMXON", fcml_tf_instruction_VMXON },
+    { "fcml_tf_instruction_VMXOFF", fcml_tf_instruction_VMXOFF },
+    { "fcml_tf_instruction_VMCALL", fcml_tf_instruction_VMCALL },
+    { "fcml_tf_instruction_VMFUNC", fcml_tf_instruction_VMFUNC },
     CU_TEST_INFO_NULL,
 };
 

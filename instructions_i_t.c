@@ -188,6 +188,16 @@ void fcml_tf_instruction_IRET(void) {
     FCML_I64( "iretq", 0x48, 0xCF );
 }
 
+void fcml_tf_instruction_INVEPT(void) {
+    FCML_I32( "invept esp,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
+    FCML_I64( "invept rsp,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
+}
+
+void fcml_tf_instruction_INVVPID(void) {
+    FCML_I32( "invvpid esp,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
+    FCML_I64( "invvpid rsp,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
+}
+
 CU_TestInfo fctl_ti_instructions_i[] = {
     { "fcml_tf_instruction_IDIV", fcml_tf_instruction_IDIV },
     { "fcml_tf_instruction_IMUL", fcml_tf_instruction_IMUL },
@@ -202,6 +212,8 @@ CU_TestInfo fctl_ti_instructions_i[] = {
     { "fcml_tf_instruction_INVLPGA", fcml_tf_instruction_INVLPGA },
     { "fcml_tf_instruction_INVPCID", fcml_tf_instruction_INVPCID },
     { "fcml_tf_instruction_IRET", fcml_tf_instruction_IRET },
+    { "fcml_tf_instruction_INVEPT", fcml_tf_instruction_INVEPT },
+    { "fcml_tf_instruction_INVVPID", fcml_tf_instruction_INVVPID },
     CU_TEST_INFO_NULL,
 };
 
