@@ -130,26 +130,31 @@ void fcml_fn_utils_test_sign_convert_imm_to_int32(void) {
 
 	imm.size = FCML_DS_8;
 	imm.int8 = 0xFF;
+	imm.is_signed = FCML_TRUE;
 	CU_ASSERT_EQUAL( fcml_fn_utils_convert_integer_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)-1 );
 
 	imm.size = FCML_DS_8;
 	imm.int8 = 45;
+	imm.is_signed = FCML_TRUE;
 	CU_ASSERT_EQUAL( fcml_fn_utils_convert_integer_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)45 );
 
 	imm.size = FCML_DS_16;
 	imm.int16 = 0xFFFF;
+	imm.is_signed = FCML_TRUE;
 	CU_ASSERT_EQUAL( fcml_fn_utils_convert_integer_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)-1 );
 
 	imm.size = FCML_DS_32;
 	imm.int32 = 0xFFFFFFFF;
+	imm.is_signed = FCML_TRUE;
 	CU_ASSERT_EQUAL( fcml_fn_utils_convert_integer_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)-1 );
 
 	imm.size = FCML_DS_32;
 	imm.int32 = 0x00FFFFFF;
+	imm.is_signed = FCML_TRUE;
 	CU_ASSERT_EQUAL( fcml_fn_utils_convert_integer_to_int32( &imm, &value ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( value, (fcml_int32_t)0x00FFFFFF );
 
