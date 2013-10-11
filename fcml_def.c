@@ -995,7 +995,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_EXTRQ[] = {
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_F2XM1[] = {
-	// D9 F0 F2XM1 Valid Valid Replace ST(0) with (2ST(0) – 1).
+	// D9 F0 F2XM1 Valid Valid Replace ST(0) with (2ST(0) ï¿½ 1).
 	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xF0, 0x17 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
@@ -1616,11 +1616,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VINSERTF128[] = {
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INT[] = {
-	// CC INT 3 A Valid Valid Interrupt 3—trap to debugger.
+	// CC INT 3 A Valid Valid Interrupt 3ï¿½trap to debugger.
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCC, 0x00, 0x00 }, { FCML_OP_EXPLICIT_IB( 3 ), FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// CD ib INT imm8 B Valid Valid Interrupt vector number specified by immediate byte.
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCD, 0x00, 0x00 }, { FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
-	// CE INTO A Invalid Valid Interrupt 4—if overflow flag is 1.
+	// CE INTO A Invalid Valid Interrupt 4ï¿½if overflow flag is 1.
 	{ "into", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCE, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 };
 
@@ -1971,22 +1971,22 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOV[] = {
 	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C58000, { 0xC7, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W + C7 /0 MOV r/m64, imm32 F Valid N.E. Move imm32 sign extended to 64-bits to r/m64.
 	{ NULL, FCML_AMT_GPI, 0x0008, 0x04858000, { 0xC7, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA } },
-	// 0F 21/r MOV r32, DR0–DR7 A N.E. Valid Move debug register to r32
+	// 0F 21/r MOV r32, DR0ï¿½DR7 A N.E. Valid Move debug register to r32
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00588000, { 0x0F, 0x21, 0x00 }, { FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ) | FCML_OA_W, FCML_OP_R( FCML_REG_DR, FCML_EOS_DWORD ), FCML_NA, FCML_NA, FCML_NA } },
-    // 0F 21/r MOV r64, DR0–DR7 A Valid N.E. Move extended debug register to r64.
+    // 0F 21/r MOV r64, DR0ï¿½DR7 A Valid N.E. Move extended debug register to r64.
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00988000, { 0x0F, 0x21, 0x00 }, { FCML_OP_RM( FCML_REG_GPR, FCML_EOS_QWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ) | FCML_OA_W, FCML_OP_R( FCML_REG_DR, FCML_EOS_QWORD ), FCML_NA, FCML_NA, FCML_NA } },
-    // 0F 23 /r MOV DR0–DR7, r32 A N.E. Valid Move r32 to debug register
+    // 0F 23 /r MOV DR0ï¿½DR7, r32 A N.E. Valid Move r32 to debug register
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00588000, { 0x0F, 0x23, 0x00 }, { FCML_OP_R( FCML_REG_DR, FCML_EOS_DWORD ) | FCML_OA_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } },
-    // 0F 23 /r MOV DR0–DR7, r64 A Valid N.E. Move r64 to extended debug register.
+    // 0F 23 /r MOV DR0ï¿½DR7, r64 A Valid N.E. Move r64 to extended debug register.
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00988000, { 0x0F, 0x23, 0x00 }, { FCML_OP_R( FCML_REG_DR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_QWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } },
-	// 0F 20/r MOV r32, CR0–CR7 A N.E. Valid Move control register to r32
+	// 0F 20/r MOV r32, CR0ï¿½CR7 A N.E. Valid Move control register to r32
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00588000, { 0x0F, 0x20, 0x00 }, { FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ) | FCML_OA_W, FCML_OP_R( FCML_REG_CR, FCML_EOS_DWORD ), FCML_NA, FCML_NA, FCML_NA } },
-    // 0F 20/r MOV r64, CR0–CR7 A Valid N.E. Move extended control register to r64.
+    // 0F 20/r MOV r64, CR0ï¿½CR7 A Valid N.E. Move extended control register to r64.
     // REX.R + 0F 20 /0 MOV r64, CR8 A Valid N.E. Move extended CR8 to r64.1
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00988000, { 0x0F, 0x20, 0x00 }, { FCML_OP_RM( FCML_REG_GPR, FCML_EOS_QWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ) | FCML_OA_W, FCML_OP_R( FCML_REG_CR, FCML_EOS_QWORD ), FCML_NA, FCML_NA, FCML_NA } },
-    // 0F 22 /r MOV CR0–CR7, r32 A N.E. Valid Move r32 to control register
+    // 0F 22 /r MOV CR0ï¿½CR7, r32 A N.E. Valid Move r32 to control register
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00588000, { 0x0F, 0x22, 0x00 }, { FCML_OP_R( FCML_REG_CR, FCML_EOS_DWORD ) | FCML_OA_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } },
-    // 0F 22 /r MOV CR0–CR7, r64 A Valid N.E. Move r64 to extended control register.
+    // 0F 22 /r MOV CR0ï¿½CR7, r64 A Valid N.E. Move r64 to extended control register.
     // REX.R + 0F 22 /0 MOV CR8, r64 A Valid N.E. Move r64 to extended CR8.1
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00988000, { 0x0F, 0x22, 0x00 }, { FCML_OP_R( FCML_REG_CR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_QWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } }
 };

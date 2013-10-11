@@ -107,7 +107,7 @@ void fcml_fn_env_memory_strfree( fcml_string str ) {
 }
 
 fcml_bool fcml_fn_env_is_alpha( fcml_char c ) {
-    return isalpha( c );
+	return isalpha( c );
 }
 
 fcml_bool fcml_fn_env_is_digit( fcml_char c ) {

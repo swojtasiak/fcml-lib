@@ -13,7 +13,7 @@ TODO: To check how it really works using example code ad debugging.
 2. JMP bug in VS.
 
 Manual says:
-In 64-Bit Mode — The instruction’s operation size is fixed at 64 bits.
+In 64-Bit Mode ï¿½ The instructionï¿½s operation size is fixed at 64 bits.
 
 0000000000401000 48 EB FF         jmp         0000000000401002 
 0000000000401003 66 EB FF         jmp         0000000000001005 <-- It's uses operand size 16, when operand size is forced to 64 bits. 
@@ -118,7 +118,7 @@ _TEST64( "480f015020 lgdt tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 
 
 c4c3094b140120  vblendpd ymm2,ymm14,xmmword ptr [r9+rax],20
 
-Powinno byæ:
+Powinno byï¿½:
 
 14.
 
@@ -147,3 +147,14 @@ W pierwszym przypadku bierze pod uwage ModRM.reg zamiast ModRM.r/m (Patrz /0)
 FCML_I32( "vmovlhps xmm2,xmm5,xmm0", 0xC5, 0xD0, 0x16, 0xD0 );
 a jest:
 c5d016d0        vmovlhps xmm2,xmm0
+-- Bug?
+
+
+fcml_bool fcml_fn_env_is_alpha( fcml_char c ) {
+	fcml_uint8_t res = isalpha( c );
+	int i = isalpha( c );
+	fcml_uint8_t res1 = i;
+	res += res1;
+	return res;
+}
+
