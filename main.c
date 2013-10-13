@@ -80,14 +80,34 @@ CU_SuiteInfo *suites[] = {
     NULL
 };
 
+#include "fcml_disassembler.h"
+
+void new_disassembler_test(void) {
+
+	fcml_st_disassembler *disassembler;
+	fcml_ceh_error error = fcml_fn_disassembler_init( fcml_fn_get_intel_dialect_context(), &disassembler );
+	if( error ) {
+		// Error.
+		return;
+	}
+
+	if( disassembler ) {
+		fcml_fn_disassembler_free( disassembler );
+	}
+
+}
+
 int main(int argc, char **argv) {
 
-	fcml_ceh_error error = fcml_fn_asm_init( fcml_fn_get_intel_dialect_context(), &assembler );
+	fcml_ceh_error error = fcml_fn_assembler_init( fcml_fn_get_intel_dialect_context(), &assembler );
 	if( error ) {
 		printf("Can not initialize assembler.\n");
 		return 1;
 	}
 	ira_init();
+
+	//new_disassembler_test();
+	//return 0;
 
    // FCML_I32_D( "vgatherdpd xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x92, 0x04, 0x28 );
 
@@ -107,14 +127,14 @@ int main(int argc, char **argv) {
             if (CU_register_suites(suites[i]) != CUE_SUCCESS) {
                 fprintf(stderr, "suite registration failed - %s\n", CU_get_error_msg());
                 ira_deinit();
-                fcml_fn_asm_free( assembler );
+                fcml_fn_assembler_free( assembler );
                 exit(1);
             }
         }
         CU_basic_run_tests();
         CU_cleanup_registry();
     }
-    fcml_fn_asm_free( assembler );
+    fcml_fn_assembler_free( assembler );
     ira_deinit();
     exit(0);
 }

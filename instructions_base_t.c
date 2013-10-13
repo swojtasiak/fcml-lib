@@ -328,7 +328,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 		}
 
-		fcml_fn_assemble_free( asm_result );
+		fcml_fn_assembler_result_free( asm_result );
 
 		fcml_x64iap_free( result );
 
