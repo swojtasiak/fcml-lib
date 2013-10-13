@@ -54,9 +54,9 @@ typedef struct fcml_st_assembler_result {
 	fcml_st_coll_list *instructions;
 } fcml_st_assembler_result;
 
-fcml_ceh_error fcml_fn_asm_init( fcml_st_dialect_context context, fcml_st_assembler **assembler );
+fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect_context context, fcml_st_assembler **assembler );
 fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, fcml_st_instruction *instruction, fcml_st_assembler_result **result );
-void fcml_fn_assemble_free( fcml_st_assembler_result *result );
-void fcml_fn_asm_free( fcml_st_assembler *assembler );
+void fcml_fn_assembler_result_free( fcml_st_assembler_result *result );
+void fcml_fn_assembler_free( fcml_st_assembler *assembler );
 
 #endif /* FCML_ASSEMBLER_H_ */

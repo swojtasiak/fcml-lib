@@ -58,13 +58,18 @@ fcml_st_coll_list_element *fcml_fn_coll_list_add_back( fcml_st_coll_list *list, 
 	return element;
 }
 
-fcml_st_coll_list_element *fcml_fn_coll_list_insert( fcml_st_coll_list_element *prev_element, fcml_ptr item ) {
-	fcml_st_coll_list_element *element =  (fcml_st_coll_list_element*)fcml_fn_env_memory_alloc( sizeof( fcml_st_coll_list_element ) );
-	if( element ) {
-		element->item = item;
-		element->prev = prev_element;
-		element->next = prev_element->next;
-		prev_element->next = element;
+fcml_st_coll_list_element *fcml_fn_coll_list_insert( fcml_st_coll_list *list, fcml_st_coll_list_element *prev_element, fcml_ptr item ) {
+	fcml_st_coll_list_element *element;
+	if( prev_element ) {
+		element = (fcml_st_coll_list_element*)fcml_fn_env_memory_alloc( sizeof( fcml_st_coll_list_element ) );
+		if( element ) {
+			element->item = item;
+			element->prev = prev_element;
+			element->next = prev_element->next;
+			prev_element->next = element;
+		}
+	} else {
+		element = fcml_fn_coll_list_add_front( list, item );
 	}
 	return element;
 }

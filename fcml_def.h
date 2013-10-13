@@ -130,6 +130,7 @@ typedef struct fcml_st_def_addr_mode_desc {
 	fcml_uint32_t opperands[FCML_OPERANDS_COUNT];
 } fcml_st_def_addr_mode_desc;
 
+// TODO:zienic nazwe na fcml_st_def_instruction_desc, spojnosc z opcode.
 /* Describes one addressing mode of instruction. */
 typedef struct fcml_st_def_instruction_description {
 	// Mnemonic.
@@ -145,6 +146,9 @@ typedef struct fcml_st_def_instruction_description {
 /* Operands encoding */
 
 #define FCML_IA_INSTRUCTION(x,y) { x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
+
+#define FCML_REG_FIELD_NUMBER_OF_REGISTERS				8
+#define FCML_REG_FIELD_NUMBER_OF_CONDITIONS				16
 
 /*********************************
  * Prefix fields.
@@ -432,7 +436,7 @@ extern struct fcml_st_def_instruction_description fcml_ext_instructions_def[];
 typedef struct fcml_st_def_decoded_addr_mode {
 	// Code of the addressing mode.
 	fcml_uint8_t addr_mode;
-	fcml_uint8_t access_mode;
+	fcml_en_access_mode access_mode;
 	// Decoded arguments.
 	fcml_ptr addr_mode_args;
 } fcml_st_def_decoded_addr_mode;

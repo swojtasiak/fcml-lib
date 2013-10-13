@@ -285,6 +285,13 @@ typedef struct fcml_st_condition {
  * Operands.
  *********************************/
 
+typedef enum fcml_en_access_mode {
+	FCML_AM_ACCESS_MODE_UNDEFINED = 0,
+	FCML_AM_READ = 0x01,
+	FCML_AM_WRITE = 0x02,
+	FCML_AM_READ_WRITE = FCML_AM_READ | FCML_AM_WRITE
+} fcml_en_access_mode;
+
 typedef struct fcml_st_immediate {
 	fcml_data_size imm_size;
 	fcml_bool is_signed;

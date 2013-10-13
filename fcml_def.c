@@ -995,7 +995,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_EXTRQ[] = {
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_F2XM1[] = {
-	// D9 F0 F2XM1 Valid Valid Replace ST(0) with (2ST(0) � 1).
+	// D9 F0 F2XM1 Valid Valid Replace ST(0) with (2ST(0)  1).
 	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xF0, 0x17 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 

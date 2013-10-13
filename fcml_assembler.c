@@ -15,7 +15,7 @@
 #include "fcml_asm_encoding.h"
 #include "fcml_optimizers.h"
 
-fcml_ceh_error fcml_fn_asm_init( fcml_st_dialect_context context, fcml_st_assembler **assembler ) {
+fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect_context context, fcml_st_assembler **assembler ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	*assembler = fcml_fn_env_memory_alloc( sizeof( fcml_st_assembler ) );
@@ -36,7 +36,7 @@ void fcml_ifp_coll_list_action_free_assembled_instruction( fcml_ptr item_value, 
 	}
 }
 
-void fcml_fn_assemble_free( fcml_st_assembler_result *result ) {
+void fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) {
 	if( result ) {
 		if( result->errors ) {
 			fcml_fn_ceh_free_error_container( result->errors );
@@ -85,14 +85,14 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st
 	// Allocate error container.
 	context.result->errors = fcml_fn_ceh_alloc_error_container();
 	if( !(context.result->errors) ) {
-		fcml_fn_assemble_free( context.result );
+		fcml_fn_assembler_result_free( context.result );
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
 	// Allocate list for assembled instructions.
 	context.result->instructions = fcml_fn_coll_list_alloc();
 	if( !(context.result->errors) ) {
-		fcml_fn_assemble_free( context.result );
+		fcml_fn_assembler_result_free( context.result );
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
@@ -117,7 +117,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st
 	return error;
 }
 
-void fcml_fn_asm_free( fcml_st_assembler *assembler ) {
+void fcml_fn_assembler_free( fcml_st_assembler *assembler ) {
 	fcml_fn_asm_free_instruction_encodings( assembler );
 }
 

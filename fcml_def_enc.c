@@ -150,13 +150,25 @@ fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t
 	*error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_def_decoded_addr_mode *addr_mode = (fcml_st_def_decoded_addr_mode*)fcml_fn_env_memory_alloc(sizeof(fcml_st_def_decoded_addr_mode));
 	if( addr_mode ) {
+
 		addr_mode->addr_mode = ( encoded_addr_mode & 0x3F000000 ) >> 24;
-		addr_mode->access_mode = ( encoded_addr_mode & 0xC0000000 ) >> 24;
+
+		// Store access mode for this operand decoding.
+		fcml_en_access_mode access_mode = FCML_AM_ACCESS_MODE_UNDEFINED;
+		if( encoded_addr_mode & FCML_OA_R ) {
+			access_mode |= FCML_AM_READ;
+		} else if( encoded_addr_mode & FCML_OA_W ) {
+			access_mode |= FCML_AM_WRITE;
+		}
+
+		addr_mode->access_mode = access_mode;
+
 		if( addr_mode->addr_mode > FCML_DEF_DECODERS_COUNT ) {
 			*error = FCML_CEH_GEC_INVALID_INPUT;
 			fcml_fn_env_memory_free( addr_mode );
 			return NULL;
 		}
+
 		addr_mode->addr_mode_args = NULL;
 		fcml_fnp_def_addr_mode_args_decoder args_decoder = fcml_def_addr_mode_args_decoders[addr_mode->addr_mode];
 		if( args_decoder ) {

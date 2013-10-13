@@ -1,25 +1,25 @@
-22.08.2012 Opcode A6 dekoduje siê na: -> A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
-Nale¿y zastanowiæ siê jak zakodowaæ taki tryb adresowania gdzie rejestr ogolnego przeznaczenia i rejestr adresowy s¹ podane bezpoœrednio.
+22.08.2012 Opcode A6 dekoduje siï¿½ na: -> A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
+Naleï¿½y zastanowiï¿½ siï¿½ jak zakodowaï¿½ taki tryb adresowania gdzie rejestr ogolnego przeznaczenia i rejestr adresowy sï¿½ podane bezpoï¿½rednio.
 
 02.09.2012
-Zastanowiæ siê wrescie nad implementacja DS, ES itd rejestrów segmentowych.
+Zastanowiï¿½ siï¿½ wrescie nad implementacja DS, ES itd rejestrï¿½w segmentowych.
 
 06.10.2012
 Branch hints:
-• 2EH—Branch not taken (used only with Jcc instructions)
-• 3EH—Branch taken (used only with Jcc instructions)
+ï¿½ 2EHï¿½Branch not taken (used only with Jcc instructions)
+ï¿½ 3EHï¿½Branch taken (used only with Jcc instructions)
 
 14.10.2012
-Sprawdziæ segment register dla trybów adreowania la instrukcji skoków, czy DS , czy moze CS takih jak CALL, bo aktualnie wszystkie
+Sprawdziï¿½ segment register dla trybï¿½w adreowania la instrukcji skokï¿½w, czy DS , czy moze CS takih jak CALL, bo aktualnie wszystkie
 dotaja DS.
 
-Dodaæ renderowanie rjestrów segmentowych.
+Dodaï¿½ renderowanie rjestrï¿½w segmentowych.
 
-Podczas assemblacji dodaæ obs³ugê: CMPSW/CMPSD/CMPSQ
+Podczas assemblacji dodaï¿½ obsï¿½ugï¿½: CMPSW/CMPSD/CMPSQ
 
-Dodaæ mo¿liwoœæ dodawania warningów podczas disassemblacji, i dodawania kilku do kontekstu.
+Dodaï¿½ moï¿½liwoï¿½ï¿½ dodawania warningï¿½w podczas disassemblacji, i dodawania kilku do kontekstu.
 
-Usun¹æ flagi LOCK, z operacji AVX, bo w czêœci zostala!
+Usunï¿½ï¿½ flagi LOCK, z operacji AVX, bo w czï¿½ci zostala!
 
 Sprawdzic i uzupelnic VVVV unued.
 
@@ -32,10 +32,10 @@ VEX-encoded GPR instructions are not supported in real and virtual 8086 modes.
 
 
 
-Regu³y:
-1. Jeden immediate value mo¿e byæ wykorzystany do zdekodowania kilku operandów. Czyli, jeden operand dekoder przyk³¹dowo mo¿e zdekodowaæ 2 operandy, gryzie sie to troche z naszym zlozeniem, ze jeden operand do jednego dekodera.
-2. Instrukcje moga miec do 5 operandow (Moze zrezygnowaæ ze sztywnego okreslania maksymalnej liczby operandow, tylko zastosowac jakœæ liste)
-3. Zastanowic sie nad mozliwoscia zaznaczenia, ¿e wybrana instrukcja nie moze posiadac danych prefixow. A moze domyslnie intrucje SIMD ni zpozwalaja na zadne manadatory,  chyba ze te ktorych wymagaja. Pewnie tak jest.
+Reguï¿½y:
+1. Jeden immediate value moï¿½e byï¿½ wykorzystany do zdekodowania kilku operandï¿½w. Czyli, jeden operand dekoder przykï¿½ï¿½dowo moï¿½e zdekodowaï¿½ 2 operandy, gryzie sie to troche z naszym zlozeniem, ze jeden operand do jednego dekodera.
+2. Instrukcje moga miec do 5 operandow (Moze zrezygnowaï¿½ ze sztywnego okreslania maksymalnej liczby operandow, tylko zastosowac jakï¿½ï¿½ liste)
+3. Zastanowic sie nad mozliwoscia zaznaczenia, ï¿½e wybrana instrukcja nie moze posiadac danych prefixow. A moze domyslnie intrucje SIMD ni zpozwalaja na zadne manadatory,  chyba ze te ktorych wymagaja. Pewnie tak jest.
 4. Oeprandy moga wyznaczac warosi warunkow dla instrukcji warunkowych.
 
 
@@ -48,7 +48,7 @@ Regu³y:
 #define _IRA_OPERAND_RM_W(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags) | _IRA_WRITE )
 
 03.09.2013
-Dodac mozliwoœc assemblacji instrucji XOP/VEX z prefixem C4 je¿eli mozna zastosowac krotszy C5.
+Dodac mozliwoï¿½c assemblacji instrucji XOP/VEX z prefixem C4 jeï¿½eli mozna zastosowac krotszy C5.
 
 08.09.2013
 Dodac mozliwosc disassemblacji pseudo opcode, jezeli odpowiednia opcja konfiguracyjna jest wlaczona.
@@ -67,5 +67,11 @@ Moze zastosowac do tego flage podobna do force EOSA/EASA tlko nazwac ja do not l
 
 05.102013
 // TODO: w/d/q mozna rozpoznac na podstaiwe bity w opcode, moze by tak dodac do dialoktu mozliwosc konwersji instrukcji i zrezygnowc z powtarzaia?
-// Moglo by wyjsc na dobre w przypadku assembleró AT&T.
-Przyk³adowo: PSRL
+// Moglo by wyjsc na dobre w przypadku assemblerï¿½ AT&T.
+Przykï¿½adowo: PSRL
+
+-> Nie wiem co to. MoÅ¼liwe Å¼e doszÅ‚o w pÃ³Åºniejszych wersjach, w kaÅ¼dym razie pierwszy raz siÄ™ z tym spotykam.
+
+Branch hints:
+â€¢ 2EHâ€”Branch not taken (used only with Jcc instructions)
+â€¢ 3EHâ€”Branch taken (used only with Jcc instructions)
