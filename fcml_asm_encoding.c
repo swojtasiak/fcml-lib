@@ -118,7 +118,7 @@ fcml_st_memory_stream fcml_ifn_instruction_part_stream( fcml_st_asm_instruction_
 	return stream;
 }
 
-// TODO: Je¿eli nie ebdzie uzywana wywaliæ.
+// TODO: Jeï¿½eli nie ebdzie uzywana wywaliï¿½.
 fcml_bool fcml_ifn_validate_effective_address_size( fcml_st_asm_encoding_context *context ) {
 	fcml_en_addr_form addr_form = context->assembler_context->addr_form;
 	fcml_data_size eas = context->data_size_flags.effective_address_size;
@@ -487,7 +487,7 @@ fcml_bool fcml_ifn_asm_convert_signed_integer( const fcml_st_integer *source, fc
     // we can treat it like signed value.
 
     // TODO: Zastanowic sie nad tym rozwiazaniem, troche mi nie pasuje ustwianie tego znaku w tym miejscu. zakladamy za kazdy konwerowany imm
-    // jest wartoscia ze znakiem, a to tez raczej ni jest prawd¹, moze powinnimy w argumentach tryubu adresowania zaznaczac czy oczekujemy wartosci
+    // jest wartoscia ze znakiem, a to tez raczej ni jest prawdï¿½, moze powinnimy w argumentach tryubu adresowania zaznaczac czy oczekujemy wartosci
     // ze znakiem? Chyba tak bylo by najsensowiej.
     fcml_st_integer tmp = *source;
     if( tmp.size == expected_size ) {
@@ -1804,9 +1804,9 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 		wrapper_args->operand_acceptor = encoders_def->acceptor;
 
 		if( encoders_def->hints_calculator ) {
-		    fcml_st_asm_calculated_hints calculated_hints = encoders_def->hints_calculator( addr_mode, wrapper_args->decoded_addr_mode );
-		    *hints |= calculated_hints.instruction_hints;
-		    wrapper_args->hints = calculated_hints.operand_hints;
+			fcml_st_asm_calculated_hints calculated_hints = encoders_def->hints_calculator( addr_mode, wrapper_args->decoded_addr_mode );
+			*hints |= calculated_hints.instruction_hints;
+			wrapper_args->hints = calculated_hints.operand_hints;
 		}
 
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;

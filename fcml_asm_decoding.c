@@ -36,7 +36,14 @@ typedef fcml_ceh_error ( *fcml_ifp_asm_dec_operand_decoder )( struct fcml_st_asm
 struct fcml_ceh_asm_dec_instruction_decoding_def;
 
 /* Decoders responsible for instruction disassemblation. */
-typedef fcml_ceh_error (*fcml_ifp_asm_dec_instruction_decoder)(fcml_st_asm_decoding_context *context, struct fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def, fcml_st_disassembler_result *result);
+typedef fcml_ceh_error (*fcml_ifp_asm_dec_instruction_decoder)( fcml_st_asm_decoding_context *context, struct fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def, fcml_st_disassembler_result *result);
+
+typedef fcml_ceh_error (*fcml_ifp_asm_dec_instruction_acceptor)( fcml_st_asm_decoding_context *context, struct fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def, fcml_bool *accept );
+
+typedef struct fcml_ist_asm_dec_addr_mode_acceptor_chain {
+	struct fcml_ist_asm_dec_addr_mode_acceptor_chain *next;
+	fcml_ifp_asm_dec_instruction_acceptor acceptor;
+} fcml_ist_asm_dec_addr_mode_acceptor_chain;
 
 typedef struct fcml_ist_asm_dec_operand_decoding {
 	// Operand access mode.
@@ -58,6 +65,7 @@ typedef struct fcml_ceh_asm_dec_instruction_decoding_def {
 	uint32_t opcode_flags;
 	/* Instruction decoder. */
 	fcml_ifp_asm_dec_instruction_decoder instruction_decoder;
+	fcml_ist_asm_dec_addr_mode_acceptor_chain *instruction_acceptors_chain;
 	/* Function used to decode instruction operands. */
 	fcml_ist_asm_dec_operand_decoding operand_decodings[FCML_OPERANDS_COUNT];
 	/* Instruction decoding order, for information purpose only. */
@@ -277,6 +285,75 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_prepare_operand_decoding( fcml_st_def_addr_m
 	return error;
 }
 
+/*********************
+ * Acceptors.
+ *********************/
+
+typedef fcml_ifp_asm_dec_instruction_acceptor (*fcml_ifp_asm_dec_instruction_acceptor_factory)( fcml_st_def_addr_mode_desc *addr_mode_desc );
+
+// ---------
+// Prefixes.
+// ---------
+
+fcml_ceh_error fcml_ifp_asm_dec_instruction_acceptor_prefixes( fcml_st_asm_decoding_context *context, struct fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def, fcml_bool *accept ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	return error;
+}
+
+fcml_ifp_asm_dec_instruction_acceptor fcml_ifp_asm_dec_instruction_acceptor_factory_prefixes( fcml_st_def_addr_mode_desc *addr_mode_desc ) {
+	return fcml_ifp_asm_dec_instruction_acceptor_prefixes;
+}
+
+fcml_ifp_asm_dec_instruction_acceptor_factory fcml_asm_dec_dts_acceptor_factories[] = {
+	fcml_ifp_asm_dec_instruction_acceptor_factory_prefixes,
+	NULL
+};
+
+void fcml_ifn_asm_dec_dts_free_acceptors_chain( fcml_ist_asm_dec_addr_mode_acceptor_chain *chain ) {
+	if( !chain ) {
+		return;
+	}
+	if( chain->next ) {
+		fcml_ifn_asm_dec_dts_free_acceptors_chain( chain->next );
+	}
+	fcml_fn_env_memory_free( chain );
+}
+
+fcml_ceh_error fcml_ifn_asm_dec_dts_allocate_acceptors_chain( fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ist_asm_dec_addr_mode_acceptor_chain **chain ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_ist_asm_dec_addr_mode_acceptor_chain *current = NULL, *chain_root = NULL;
+
+	fcml_ifp_asm_dec_instruction_acceptor_factory *factory = &(fcml_asm_dec_dts_acceptor_factories[0]);
+
+	while( *factory ) {
+		fcml_ifp_asm_dec_instruction_acceptor acceptor = (*factory)( addr_mode_desc );
+		if( acceptor ) {
+			fcml_ist_asm_dec_addr_mode_acceptor_chain *chain_element = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_asm_dec_addr_mode_acceptor_chain* ) );
+			if( !chain_element ) {
+				// Free already allocated chain.
+				if( chain_root ) {
+					fcml_ifn_asm_dec_dts_free_acceptors_chain( chain_root );
+				}
+				return FCML_CEH_GEC_OUT_OF_MEMORY;
+			}
+			if( !chain_root ) {
+				chain_root = chain_element;
+			}
+			if( current ) {
+				current->next = chain_element;
+			}
+			current = chain_element;
+		}
+		factory++;
+	}
+
+	*chain = chain_root;
+
+	return error;
+}
+
 void fcml_ifn_asm_dec_dts_dispose_instruction_decoding_callback_default( fcml_st_dialect_context *dialect, fcml_ptr decoding_ptr ) {
 
 	fcml_ceh_asm_dec_instruction_decoding_def *decoding = (fcml_ceh_asm_dec_instruction_decoding_def *)decoding_ptr;
@@ -290,10 +367,12 @@ void fcml_ifn_asm_dec_dts_dispose_instruction_decoding_callback_default( fcml_st
 		fcml_ifn_asm_dec_dts_free_operand_decoding( &(decoding->operand_decodings[i]) );
 	}
 
+	fcml_ifn_asm_dec_dts_free_acceptors_chain( decoding->instruction_acceptors_chain );
+
 	fcml_fn_env_memory_free( decoding );
 }
 
-fcml_ceh_error fcml_ifn_asm_dec_dts_prepare_instruction_decoding_callback_default( fcml_st_dialect_context *dialect, fcml_ceh_asm_dec_tree_diss_tree_element *element, fcml_st_def_instruction_description *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc ) {
+fcml_ceh_error fcml_ifn_asm_dec_dts_prepare_instruction_decoding_callback_default( fcml_st_dialect_context *dialect, fcml_ceh_asm_dec_tree_diss_tree_element *element, fcml_st_def_instruction_description *instruction_desc, fcml_st_def_addr_mode_desc *addr_mode_desc ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -305,24 +384,32 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_prepare_instruction_decoding_callback_defaul
 
 	// Copy opcodes.
 	int i;
-	for( i = 0; i < sizeof( opcode_desc->opcode ); i++ ) {
-		decoding->opcodes[i] = opcode_desc->opcode[i];
+	for( i = 0; i < sizeof( addr_mode_desc->opcode ); i++ ) {
+		decoding->opcodes[i] = addr_mode_desc->opcode[i];
 	}
 
 	// Choose instruction mnemonic.
 	fcml_string mnemonic = instruction_desc->mnemonic;
-    if( opcode_desc->mnemonic_override != NULL ) {
-        mnemonic = opcode_desc->mnemonic_override;
+    if( addr_mode_desc->mnemonic_override != NULL ) {
+        mnemonic = addr_mode_desc->mnemonic_override;
     }
 
 	error = fcml_fn_mp_parse_mnemonics( mnemonic, &(decoding->mnemonics) );
 	if( error ) {
+		fcml_fn_env_memory_free( decoding );
 	    return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
 	// Copy flags.
-	decoding->prefixes_flags = opcode_desc->allowed_prefixes;
-	decoding->opcode_flags = opcode_desc->opcode_flags;
+	decoding->prefixes_flags = addr_mode_desc->allowed_prefixes;
+	decoding->opcode_flags = addr_mode_desc->opcode_flags;
+
+	error = fcml_ifn_asm_dec_dts_allocate_acceptors_chain( addr_mode_desc, &(decoding->instruction_acceptors_chain) );
+	if( error ) {
+		fcml_fn_mp_free_mnemonics( decoding->mnemonics );
+		fcml_fn_env_memory_free( decoding );
+		return error;
+	}
 
 	// Choose function used to disassemble instruction.
 	decoding->instruction_decoder = fcml_ifn_asm_dec_dts_choose_instruction_decoder( instruction_desc->instruction_type );
@@ -332,8 +419,11 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_prepare_instruction_decoding_callback_defaul
 
 	// Prepare operand decoders.
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-		error = fcml_ifn_asm_dec_dts_prepare_operand_decoding( opcode_desc, &(decoding->operand_decodings[i]), opcode_desc->opperands[i], &(decoding->hints) );
+		error = fcml_ifn_asm_dec_dts_prepare_operand_decoding( addr_mode_desc, &(decoding->operand_decodings[i]), addr_mode_desc->opperands[i], &(decoding->hints) );
 		if( error ) {
+			fcml_ifn_asm_dec_dts_free_acceptors_chain( decoding->instruction_acceptors_chain );
+			fcml_fn_mp_free_mnemonics( decoding->mnemonics );
+			fcml_fn_env_memory_free( decoding );
 			return error;
 		}
 	}
@@ -358,6 +448,8 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_prepare_instruction_decoding_callback_defaul
 	}
 
 	if( !fcml_fn_coll_list_insert( instruction_decoding_defs, prev, decoding ) ) {
+		fcml_ifn_asm_dec_dts_free_acceptors_chain( decoding->instruction_acceptors_chain );
+		fcml_fn_mp_free_mnemonics( decoding->mnemonics );
 		fcml_fn_env_memory_free( decoding );
 		error = FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
