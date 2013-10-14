@@ -106,8 +106,8 @@ int main(int argc, char **argv) {
 	}
 	ira_init();
 
-	//new_disassembler_test();
-	//return 0;
+	new_disassembler_test();
+	return 0;
 
    // FCML_I32_D( "vgatherdpd xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x92, 0x04, 0x28 );
 
