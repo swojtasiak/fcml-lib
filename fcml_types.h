@@ -11,6 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+typedef int fcml_int;
 typedef int fcml_bool;
 typedef int8_t fcml_int8_t;
 typedef uint8_t fcml_uint8_t;
