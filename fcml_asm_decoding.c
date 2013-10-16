@@ -25,6 +25,7 @@ typedef struct fcml_ist_asm_dec_operand_wrapper {
 	fcml_st_operand operand;
 } fcml_ist_asm_dec_operand_wrapper;
 
+// TODO: Dlaczego to jest w decoding??? a nie w disassembler.h. W assemblerz jest podobnie, ale trzeba sie zstanowic czy to jest spojne i czy ma sens, niby to tylko dekoder a nie caly assembler.
 typedef struct fcml_ist_asm_dec_disassembler {
     fcml_st_dialect_context dialect_context;
     fcml_asm_dec_tree_decoding_tree *decoding_tree;
@@ -752,6 +753,101 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_prepare_instruction_decoding_callback_defaul
 	return error;
 }
 
+/*****************************
+ * Opcode iterator.
+ *****************************/
+
+fcml_uint8_t fcml_ar_asm_dec_escape_0f[] = {0x0F};
+fcml_uint8_t fcml_ar_asm_dec_escape_0f38[] = {0x0F, 0x38};
+fcml_uint8_t fcml_ar_asm_dec_escape_0f3A[] = {0x0F, 0x3A};
+
+fcml_uint8_t *fcml_ar_asm_dec_escape_opcode_table[3] = {fcml_ar_asm_dec_escape_0f, fcml_ar_asm_dec_escape_0f38, fcml_ar_asm_dec_escape_0f3A};
+fcml_uint8_t fcml_ar_asm_dec_escape_size_table[] = {1,2,2};
+
+struct fcml_st_opcode_iterator;
+
+typedef struct fcml_st_opcode_iterator_impl {
+	fcml_st_memory_stream *stream;
+	fcml_uint8_t is_virtual_opcode;
+	fcml_uint8_t *virtual_opcode;
+	fcml_int virtual_opcode_count;
+	fcml_int virtual_opcode_offset;
+} fcml_st_opcode_iterator_impl;
+
+fcml_int fcml_ifn_asm_dec_decode_escape_opcode_bytes( fcml_st_asm_decoding_context *decoding_context, fcml_uint8_t **virtual_opcode ) {
+	fcml_st_asm_dec_prefixes *prefixes_fields = &(decoding_context->prefixes);
+	fcml_int8_t size = 0;
+	if( prefixes_fields->is_vex || prefixes_fields->is_xop ) {
+		if( prefixes_fields->vex_xop_first_byte == 0xC4 ) {
+			int index = prefixes_fields->mmmm - 1;
+			*virtual_opcode = fcml_ar_asm_dec_escape_opcode_table[index];
+			size = fcml_ar_asm_dec_escape_size_table[index];
+		} else if( prefixes_fields->vex_xop_first_byte == 0x8F ) {
+			*virtual_opcode = &(prefixes_fields->mmmm);
+			size = 1;
+		} else {
+			*virtual_opcode = fcml_ar_asm_dec_escape_0f;
+			size = 1;
+		}
+	}
+	return size;
+}
+
+fcml_ceh_error fcml_ifn_asm_dec_prepare_opcode_iterator( fcml_st_asm_decoding_context *decoding_context, struct fcml_st_opcode_iterator **iterator_ptr ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_st_opcode_iterator_impl *iterator = (fcml_st_opcode_iterator_impl*)fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_opcode_iterator_impl ) );
+	if( iterator ) {
+		// Prepare virtual opcodes.
+		iterator->virtual_opcode_count = fcml_ifn_asm_dec_decode_escape_opcode_bytes( decoding_context, &(iterator->virtual_opcode) );
+		iterator->virtual_opcode_offset = 0;
+		iterator->stream = decoding_context->stream;
+		iterator->is_virtual_opcode = FCML_FALSE;
+		// Prepare virtual opcodes.
+		*iterator_ptr = (struct fcml_st_opcode_iterator *)iterator;
+	} else {
+		error = FCML_CEH_GEC_OUT_OF_MEMORY;
+	}
+	return error;
+}
+
+fcml_bool fcml_ifn_asm_dec_opcode_iterator_has_next( struct fcml_st_opcode_iterator *iterator_ptr ) {
+	fcml_st_opcode_iterator_impl *iterator = (fcml_st_opcode_iterator_impl *)iterator_ptr;
+	if( iterator->virtual_opcode_count > 0 && iterator->virtual_opcode_offset < iterator->virtual_opcode_count ) {
+		// Virtual byte is available.
+		return FCML_TRUE;
+	} else if( fcml_fn_stream_size( iterator->stream ) > 0 ) {
+		return FCML_TRUE;
+	}
+	return FCML_FALSE;
+}
+
+fcml_bool fcml_ifn_asm_dec_opcode_iterator_is_virtual_opcode( struct fcml_st_opcode_iterator *iterator_ptr ) {
+	fcml_st_opcode_iterator_impl *iterator = (fcml_st_opcode_iterator_impl *)iterator_ptr;
+	return iterator->is_virtual_opcode;
+}
+
+fcml_uint8_t fcml_ifn_asm_dec_opcode_iterator_next( struct fcml_st_opcode_iterator *iterator_ptr ) {
+	fcml_st_opcode_iterator_impl *iterator = (fcml_st_opcode_iterator_impl *)iterator_ptr;
+	if( iterator->virtual_opcode_count > 0 && iterator->virtual_opcode_offset < iterator->virtual_opcode_count ) {
+		iterator->is_virtual_opcode = FCML_TRUE;
+		return iterator->virtual_opcode[ iterator->virtual_opcode_offset++ ];
+	} else {
+		fcml_bool result;
+		fcml_uint8_t opcode_byte = fcml_fn_stream_read( iterator->stream, &result );
+		if( result ) {
+			iterator->is_virtual_opcode = FCML_FALSE;
+		}
+		return opcode_byte;
+	}
+	return FCML_FALSE;
+}
+
+void fcml_ifn_asm_dec_opcode_iterator_free( struct fcml_st_opcode_iterator *iterator_ptr ) {
+	if( iterator_ptr ) {
+		fcml_fn_env_memory_free( iterator_ptr );
+	}
+}
+
 /************************************
  * Instructions decoding.
  ************************************/
@@ -791,6 +887,38 @@ void fcml_fn_asm_free_instruction_decodings( fcml_st_disassembler *disassembler 
 }
 
 fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *context ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_ist_asm_dec_disassembler *disassembler = (fcml_ist_asm_dec_disassembler *)context->disassembler_context->disassembler;
+	fcml_asm_dec_tree_decoding_tree *decoding_tree = disassembler->decoding_tree;
+
+	// Prepare opcode iterator.
+	struct fcml_st_opcode_iterator *iterator;
+	error = fcml_ifn_asm_dec_prepare_opcode_iterator( context, &iterator );
+	if( error ) {
+		return error;
+	}
+
+	// Found instruction addressing modes going here.
+	fcml_ceh_asm_dec_tree_diss_tree_element* tree_element = NULL;
+
+	while( fcml_ifn_asm_dec_opcode_iterator_has_next( iterator ) && !tree_element ) {
+
+		// Get next instructions opcode.
+		fcml_uint8_t opcode_byte = fcml_ifn_asm_dec_opcode_iterator_next( iterator );
+
+		// Store all non virtual opcode bytes inside context.
+		if( fcml_ifn_asm_dec_opcode_iterator_is_virtual_opcode( iterator ) ) {
+			context->opcodes[context->opcodes_count++] = opcode_byte;
+		}
+
+		// Get instruction for given opcode.
+		tree_element = decoding_tree->opcode[ opcode_byte ];
+
+	}
+
+	// Disassemble instruction using most appropriate addressing mode from disassemblation tree.
+
 	return error;
 }

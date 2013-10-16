@@ -21,6 +21,11 @@
 #define FCML_MODRM_SIB_INDEX(x)			( ( x & 0x38 ) >> 3 )
 #define FCML_MODRM_SIB_BASE(x)			( x & 0x07 )
 
+#define FCML_REX_W(x)					FCML_TP_GET_BIT(x, 3)
+#define FCML_REX_R(x)					FCML_TP_GET_BIT(x, 2)
+#define FCML_REX_X(x)					FCML_TP_GET_BIT(x, 1)
+#define FCML_REX_B(x)					FCML_TP_GET_BIT(x, 0)
+
 typedef struct fcml_st_modrm_decoder_context {
 	// Sets 32 or 64 bit addressing mode.
 	fcml_en_addr_form addr_form;

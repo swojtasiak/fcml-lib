@@ -36,13 +36,25 @@ typedef struct fcml_st_disassembler_context {
 #define FCML_DASM_PREFIXES_COUNT						12
 
 typedef enum fcml_st_dasm_prefix_types {
+	FCML_PT_GROUP_UNKNOWN = 0,
 	FCML_PT_GROUP_1 = 1,
 	FCML_PT_GROUP_2,
 	FCML_PT_GROUP_3,
 	FCML_PT_GROUP_4,
 	FCML_PT_REX,
-	FCML_PT_VEX
+	FCML_PT_VEX,
+	FCML_PT_XOP,
 } fcml_st_dasm_prefix_types;
+
+// R,X and B are stored in 1's complement form.
+#define FCML_VEX_W(x)				FCML_TP_GET_BIT(x, 7)
+#define FCML_VEX_R(x)				!FCML_TP_GET_BIT(x, 7)
+#define FCML_VEX_X(x)				!FCML_TP_GET_BIT(x, 6)
+#define FCML_VEX_B(x)				!FCML_TP_GET_BIT(x, 5)
+#define FCML_VEX_L(x)				FCML_TP_GET_BIT(x, 2)
+#define FCML_VEX_MMMM(x)			( x & 0x1F )
+#define FCML_VEX_VVVV(x)			( ~( ( x & 0x78 ) >> 3 ) & 0x00F )
+#define FCML_VEX_PP(x)				( x & 0x03 )
 
 typedef struct fcml_st_dasm_instruction_prefix {
 	/* Prefix itself. */
@@ -62,6 +74,7 @@ typedef struct fcml_st_dasm_dec_prefixes {
 	fcml_bool is_xop;
 	fcml_bool is_rex;
 	// Fields.
+	fcml_uint8_t vex_xop_first_byte;
 	fcml_uint8_t r;
 	fcml_uint8_t x;
 	fcml_uint8_t b;
