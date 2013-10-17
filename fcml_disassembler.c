@@ -316,8 +316,8 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 	// Prepare disassemble context.
 	fcml_st_asm_decoding_context decoding_context = {0};
 	decoding_context.disassembler_context = context;
-	decoding_context.effective_address_size = context->address_size_attribute;
-	decoding_context.effective_operand_size = context->operand_size_attribute;
+	decoding_context.effective_address_size_attribute = context->address_size_attribute;
+	decoding_context.effective_operand_size_attribute = context->operand_size_attribute;
 
 	decoding_context.stream = &stream;
 

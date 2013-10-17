@@ -21,10 +21,6 @@
  * Structures.
  **************************/
 
-typedef struct fcml_ist_asm_dec_operand_wrapper {
-	fcml_st_operand operand;
-} fcml_ist_asm_dec_operand_wrapper;
-
 // TODO: Dlaczego to jest w decoding??? a nie w disassembler.h. W assemblerz jest podobnie, ale trzeba sie zstanowic czy to jest spojne i czy ma sens, niby to tylko dekoder a nie caly assembler.
 typedef struct fcml_ist_asm_dec_disassembler {
     fcml_st_dialect_context dialect_context;
@@ -38,7 +34,7 @@ typedef fcml_ceh_error ( *fcml_ifp_asm_dec_operand_decoder )( struct fcml_st_asm
 struct fcml_ceh_asm_dec_instruction_decoding_def;
 
 /* Decoders responsible for instruction disassemblation. */
-typedef fcml_ceh_error (*fcml_ifp_asm_dec_instruction_decoder)( fcml_st_asm_decoding_context *context, struct fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def, fcml_st_disassembler_result *result);
+typedef fcml_ceh_error (*fcml_ifp_asm_dec_instruction_decoder)( fcml_st_asm_decoding_context *context, struct fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def );
 
 typedef fcml_bool (*fcml_ifp_asm_dec_instruction_acceptor)( fcml_st_asm_decoding_context *context, struct fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def );
 
@@ -77,7 +73,7 @@ typedef struct fcml_ceh_asm_dec_instruction_decoding_def {
 } fcml_ceh_asm_dec_instruction_decoding_def;
 
 // Instruction decoder for IA instruction set, currently it is the only one supported decoder.
-fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_context *decoding_context, fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def, fcml_st_disassembler_result *result );
+fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_context *decoding_context, fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def );
 
 /***********************************
  * Decoding tree related functions.
@@ -338,6 +334,13 @@ fcml_bool fcml_asm_dec_is_prefix_available( fcml_st_asm_decoding_context *contex
 	return mandatory ? ( found_prefix != NULL && found_prefix->mandatory_prefix ) : ( found_prefix != NULL );
 }
 
+void fcml_ifn_asm_dec_change_prefix_to_mandatory( fcml_st_asm_decoding_context *context, uint8_t prefix_code ) {
+	fcml_st_dasm_instruction_prefix *prefix = fcml_ifn_asm_dec_get_prefix_if_available( context, prefix_code );
+	if( prefix ) {
+		prefix->mandatory_prefix = FCML_TRUE;
+	}
+}
+
 /******************************
  * Effective attributes sizes.
  ******************************/
@@ -573,7 +576,6 @@ fcml_bool fcml_ifp_asm_dec_instruction_acceptor_size_attributes_restrictions( fc
 fcml_ifp_asm_dec_instruction_acceptor fcml_ifp_asm_dec_instruction_acceptor_factory_size_attributes_restrictions( fcml_st_def_addr_mode_desc *addr_mode_desc ) {
 	return fcml_ifp_asm_dec_instruction_acceptor_size_attributes_restrictions;
 }
-
 
 // ----------------
 // Addressing mode.
@@ -852,8 +854,46 @@ void fcml_ifn_asm_dec_opcode_iterator_free( struct fcml_st_opcode_iterator *iter
  * Instructions decoding.
  ************************************/
 
-fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_context *decoding_context, fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def, fcml_st_disassembler_result *result ) {
+fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_context *decoding_context, fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	// Change prefixes to mandatory one if needed.
+
+	if( FCML_DEF_PREFIX_MANDATORY_66( instruction_decoding_def->prefixes_flags ) ) {
+		fcml_ifn_asm_dec_change_prefix_to_mandatory( decoding_context, 0x66 );
+	}
+
+	if( FCML_DEF_PREFIX_MANDATORY_F2( instruction_decoding_def->prefixes_flags ) ) {
+		fcml_ifn_asm_dec_change_prefix_to_mandatory( decoding_context, 0xF2 );
+	}
+
+	if( FCML_DEF_PREFIX_MANDATORY_F3( instruction_decoding_def->prefixes_flags ) ) {
+		fcml_ifn_asm_dec_change_prefix_to_mandatory( decoding_context, 0xF3 );
+	}
+
+	// Calculates effective operand sizes. It's not important if they will be used or not.
+	decoding_context->effective_address_size_attribute = fcml_adm_sec_calculate_effective_asa( decoding_context );
+	decoding_context->effective_operand_size_attribute = fcml_adm_sec_calculate_effective_osa( decoding_context, instruction_decoding_def->opcode_flags );
+
+	fcml_ist_asm_dec_operand_wrapper *operand_wrappers = &(decoding_context->operand_wrappers[0]);
+
+	// TODO: Calculate operands sizes.
+
+	// Decode operands.
+	fcml_int i;
+	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+		fcml_ist_asm_dec_operand_decoding *operand_decoding = &(instruction_decoding_def->operand_decodings[0]);
+		fcml_st_def_decoded_addr_mode *decoded_addr_mode = operand_decoding->decoded_addr_mode;
+		fcml_ceh_error error = operand_decoding->decoder( decoding_context, operand_wrappers, decoded_addr_mode->addr_mode_args );
+		if( error ) {
+			break;
+		}
+		operand_wrappers->operand.hints = operand_decoding->hints;
+		operand_wrappers->access_mode = decoded_addr_mode->access_mode;
+		operand_wrappers++;
+	}
+
 	return error;
 }
 
@@ -916,6 +956,39 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 		// Get instruction for given opcode.
 		tree_element = decoding_tree->opcode[ opcode_byte ];
 
+	}
+
+	// Free opcode iterator.
+	fcml_ifn_asm_dec_opcode_iterator_free( iterator );
+
+	// Skip opcode bytes.
+	fcml_fn_stream_seek( context->stream, context->opcodes_count, IRA_CURRENT );
+
+	if( tree_element ) {
+
+		fcml_st_coll_list_element *current = tree_element->instruction_decoding_defs->head;
+		while( current ) {
+			fcml_ceh_asm_dec_instruction_decoding_def *decoding_def = (fcml_ceh_asm_dec_instruction_decoding_def*)current->item;
+			if( decoding_def ) {
+				// Try to accept this addressing mode.
+				fcml_bool accept = FCML_TRUE;
+				fcml_ist_asm_dec_addr_mode_acceptor_chain *chain = decoding_def->instruction_acceptors_chain;
+				while( chain ) {
+					if( chain->acceptor && !chain->acceptor( context, decoding_def ) ) {
+						accept = FCML_FALSE;
+						break;
+					}
+				}
+				if( accept ) {
+					decoding_def->instruction_decoder( context, decoding_def );
+				}
+			}
+			current = current->next;
+		}
+
+	} else {
+		// Unknown instruction.
+		error = FCML_EN_UNKNOWN_INSTRUCTION;
 	}
 
 	// Disassemble instruction using most appropriate addressing mode from disassemblation tree.
