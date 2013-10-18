@@ -32,12 +32,7 @@ typedef struct fcml_st_modrm_decoder_context {
 	// Effective address size using to decode/encode ModR/M. It's very important to set this value properly,
 	// because 16 and 32/64 addressing forms
 	fcml_data_size effective_address_size;
-	// True if VSIB encoding is available. This flag should be only set for ModR/M
-	// decoder to made it use SIMD register as index register. In case of encoder,
-	// we really don't care if it's SIMD index register or not, because encoding
-	// is similar to GPR index.
-	fcml_bool is_vsib;
-	// This flag is set only by ModR/M encoder if there is alterative SIB encoding available,
+	// This flag is set only by ModR/M encoder if there is alternative SIB encoding available,
 	// but user chooses default ModR/M only encoding.
 	fcml_bool is_sib_alternative;
 	// This flag is used only by ModR/M encoder, and should be set to TRUE to force

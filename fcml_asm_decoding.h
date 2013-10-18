@@ -20,6 +20,7 @@ typedef struct fcml_ist_asm_dec_operand_wrapper {
 
 typedef struct fcml_st_asm_decoding_context {
 	fcml_st_disassembler_context *disassembler_context;
+	fcml_int calculated_instruction_size;
 	fcml_uint8_t opcodes[3];
 	fcml_int opcodes_count;
 	fcml_st_asm_dec_prefixes prefixes;
@@ -27,6 +28,7 @@ typedef struct fcml_st_asm_decoding_context {
 	fcml_data_size effective_operand_size_attribute;
 	fcml_st_memory_stream *stream;
 	fcml_ist_asm_dec_operand_wrapper operand_wrappers[FCML_OPERANDS_COUNT];
+	fcml_st_modrm decoded_modrm;
 } fcml_st_asm_decoding_context;
 
 fcml_ceh_error fcml_fn_asm_init_instruction_decodings( fcml_st_dialect_context *dialect_context, fcml_st_disassembler **disassembler );

@@ -326,7 +326,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 		return error;
 	}
 
-
+	error =  fcml_fn_asm_decode_instruction( &decoding_context );
 
 	return error;
 }
