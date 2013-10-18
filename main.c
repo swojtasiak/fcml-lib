@@ -91,6 +91,21 @@ void new_disassembler_test(void) {
 		return;
 	}
 
+	// adc al,42h
+	fcml_uint8_t code[] = { 0x80, 0xD0, 0x42 };
+
+	fcml_st_disassembler_context context;
+	context.disassembler = disassembler;
+	context.addr_form = FCML_AF_32_BIT;
+	context.address_size_attribute = FCML_DS_32;
+	context.operand_size_attribute = FCML_DS_32;
+	context.code_address = code;
+	context.code_size = sizeof( code );
+	context.ip.eip = FCML_AF_32_BIT;
+
+	fcml_st_disassembler_result *result;
+	fcml_fn_disassemble( &context, &result );
+
 	if( disassembler ) {
 		fcml_fn_disassembler_free( disassembler );
 	}

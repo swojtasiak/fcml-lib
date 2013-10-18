@@ -42,7 +42,7 @@ void fcml_tf_modrm_decoder_test_1(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -79,7 +79,7 @@ void fcml_tf_modrm_decoder_test_2(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -117,7 +117,7 @@ void fcml_tf_modrm_decoder_test_3(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -154,7 +154,7 @@ void fcml_tf_modrm_decoder_test_4(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -191,7 +191,7 @@ void fcml_tf_modrm_decoder_test_5(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -228,7 +228,7 @@ void fcml_tf_modrm_decoder_test_6(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -266,7 +266,7 @@ void fcml_tf_modrm_decoder_test_7(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -294,7 +294,7 @@ void fcml_tf_modrm_3264_decoder_test_1(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -333,7 +333,7 @@ void fcml_tf_modrm_3264_decoder_test_2(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -375,7 +375,7 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -422,7 +422,7 @@ void fcml_tf_modrm_3264_decoder_test_4(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -462,7 +462,7 @@ void fcml_tf_modrm_3264_decoder_test_5(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -501,7 +501,7 @@ void fcml_tf_modrm_3264_decoder_test_6(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -540,7 +540,7 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -582,7 +582,7 @@ void fcml_tf_modrm_3264_decoder_test_8(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -622,7 +622,7 @@ void fcml_tf_modrm_3264_decoder_test_9(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -663,7 +663,7 @@ void fcml_tf_modrm_3264_decoder_test_10(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -710,7 +710,7 @@ void fcml_tf_modrm_3264_decoder_test_11(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -757,7 +757,7 @@ void fcml_tf_modrm_3264_decoder_test_12(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 0;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -804,7 +804,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 0;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -844,7 +844,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 	modrm_source.ext_b = 0;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -884,7 +884,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -927,7 +927,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -970,7 +970,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -1013,7 +1013,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -1056,7 +1056,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -1096,7 +1096,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -1136,7 +1136,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm );
@@ -1176,7 +1176,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	modrm_source.is_vsib = FCML_TRUE;
 	modrm_source.vsib_index_size = FCML_DS_128;
 	fcml_st_modrm decoded_modrm;
@@ -1218,7 +1218,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 	modrm_source.ext_b = 1;
 	modrm_source.ext_r = 1;
 	modrm_source.ext_x = 1;
-	modrm_source.stream = stream;
+	modrm_source.stream = &stream;
 	modrm_source.is_vsib = FCML_TRUE;
 	modrm_source.vsib_index_size = FCML_DS_256;
 	fcml_st_modrm decoded_modrm;
