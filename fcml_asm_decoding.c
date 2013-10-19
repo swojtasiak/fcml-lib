@@ -31,7 +31,7 @@ typedef struct fcml_ist_asm_dec_disassembler {
 typedef fcml_ceh_error ( *fcml_ifp_asm_dec_operand_decoder )( struct fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand, fcml_ptr args );
 
 /* Calculates size of the encoded operand in bytes. */
-typedef int ( *fcml_ifp_asm_dec_operand_size_calculator )( struct fcml_st_asm_decoding_context *context, fcml_ptr args );
+typedef fcml_int ( *fcml_ifp_asm_dec_operand_size_calculator )( struct fcml_st_asm_decoding_context *context, fcml_ptr args );
 
 // Definition is located below.
 struct fcml_ceh_asm_dec_instruction_decoding_def;
@@ -86,6 +86,42 @@ typedef struct fcml_ceh_asm_dec_instruction_decoding_def {
 // Instruction decoder for IA instruction set, currently it is the only one supported decoder.
 fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_context *decoding_context, fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def );
 
+/*********************
+ * Utility functions.
+ *********************/
+
+fcml_data_size fcml_ifn_dec_asm_decode_encoded_size_value( fcml_st_asm_decoding_context *context, fcml_uint8_t encoded_size ) {
+	fcml_data_size result = 0;
+	if( encoded_size >= FCML_EOS_DYNAMIC_BASE ) {
+	switch( encoded_size ) {
+	case FCML_EOS_EOSA:
+		result = context->effective_operand_size_attribute;
+		break;
+	case FCML_EOS_EASA:
+		result = context->effective_address_size_attribute;
+		break;
+	case FCML_EOS_L:
+		result = ( context->prefixes.l ) ? FCML_DS_256 : FCML_DS_128;
+		break;
+	case FCML_EOS_14_28:
+		result = ( context->effective_operand_size_attribute == FCML_DS_16 ) ? ( 14 * 8 ) : ( 28 * 8 );
+		break;
+	case FCML_EOS_94_108:
+		result = ( context->effective_operand_size_attribute == FCML_DS_16 ) ? ( 94 * 8 ) : ( 108 * 8 );
+		break;
+	case FCML_EOS_32_64:
+		result = ( context->effective_operand_size_attribute == FCML_DS_16 ) ? ( 16 * 2 ) : ( 32 * 2 );
+		break;
+	case FCML_EOS_FPI:
+		result = context->effective_operand_size_attribute + 16;
+		break;
+	}
+	} else {
+		result = encoded_size * 8;
+	}
+	return result;
+}
+
 /***********************************
  * Decoding tree related functions.
  ***********************************/
@@ -133,13 +169,16 @@ fcml_ifp_asm_dec_instruction_decoder fcml_ifn_asm_dec_dts_choose_instruction_dec
 // * Operand decoders. *
 // *********************
 
+
+
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_imm( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand, fcml_ptr args ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_imm( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_imm( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+	fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm *)args;
+	return fcml_ifn_dec_asm_decode_encoded_size_value( context, imm_args->encoded_imm_size ) / 8;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_reg( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand, fcml_ptr args ) {
@@ -147,7 +186,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_reg( fcml_st_asm_decodi
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_explicit_reg( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_explicit_reg( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -156,7 +195,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_gps_reg_addressing( fcm
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_explicit_gps_reg_addressing( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_explicit_gps_reg_addressing( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -165,7 +204,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_opcode_reg( fcml_st_asm_decoding
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_opcode_reg( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_opcode_reg( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -174,7 +213,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative( fcml_st_
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -183,7 +222,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer( fcml_st_asm_decodin
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_far_pointer( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_far_pointer( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -192,7 +231,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect( fcml_st_as
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_far_pointer_indirect( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_far_pointer_indirect( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -201,7 +240,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_ib( fcml_st_asm_decodin
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_explicit_ib( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_explicit_ib( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -210,7 +249,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_segment_relative_offset( fcml_st
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_segment_relative_offset( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_segment_relative_offset( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -219,7 +258,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_rm( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_rm( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -228,7 +267,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_r( fcml_st_asm_decoding_context 
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_r( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_r( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -237,7 +276,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_vex_vvvv( fcml_st_asm_decoding_c
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_vex_vvvv( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_vex_vvvv( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -246,7 +285,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_is4( fcml_st_asm_decoding_contex
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_is4( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_is4( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -255,7 +294,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_pseudo_op( fcml_st_asm_decoding_
 	return error;
 }
 
-int fcml_fnp_asm_dec_operand_size_calculator_pseudo_op( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_pseudo_op( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 0;
 }
 
@@ -551,7 +590,7 @@ fcml_ifp_asm_dec_instruction_acceptor fcml_ifp_asm_dec_instruction_acceptor_fact
 fcml_bool fcml_ifp_asm_dec_instruction_acceptor_modrm( fcml_st_asm_decoding_context *context, fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def ) {
 
 	fcml_uint32_t opcode_flags = instruction_decoding_def->opcode_flags;
-	fcml_st_memory_stream *code = context->disassembler_context->code_address;
+	fcml_st_memory_stream *code = context->stream;
 	fcml_st_asm_dec_prefixes *prefixes = &(context->prefixes);
 
 	// Check addressing mode for ModRM opcodes.
@@ -953,7 +992,7 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 		fcml_ifn_asm_dec_change_prefix_to_mandatory( decoding_context, 0xF3 );
 	}
 
-	decoding_context->calculated_instruction_size = decoding_context->prefixes.prefixes_count;
+	decoding_context->calculated_instruction_size = decoding_context->prefixes.prefixes_count + decoding_context->opcodes_count;
 
 	// Calculates effective operand sizes. It's not important if they will be used or not.
 	decoding_context->effective_address_size_attribute = fcml_adm_sec_calculate_effective_asa( decoding_context );
@@ -964,27 +1003,32 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 	fcml_st_asm_dec_prefixes *prefixes = &(decoding_context->prefixes);
 
 	// Decode ModRM field it there is any.
-	fcml_st_modrm_decoder_context modrm_context;
-	modrm_context.addr_form = decoding_context->disassembler_context->addr_form;
-	modrm_context.effective_address_size = decoding_context->effective_address_size_attribute;
 
-	fcml_st_modrm_source modrm_source;
-	modrm_source.is_vsib = modrm_details->is_vsib;
-	modrm_source.vsib_index_size = modrm_details->vsib_index_size;
-	modrm_source.ext_b = prefixes->b;
-	modrm_source.ext_r = prefixes->r;
-	modrm_source.ext_x = prefixes->x;
-	modrm_source.stream = decoding_context->stream;
+	if( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( instruction_decoding_def->opcode_flags ) ) {
 
-	error = fcml_fn_modrm_decode( &modrm_context, &modrm_source, &(decoding_context->decoded_modrm) );
-	if( error ) {
-		return error;
+		fcml_st_modrm_decoder_context modrm_context;
+		modrm_context.addr_form = decoding_context->disassembler_context->addr_form;
+		modrm_context.effective_address_size = decoding_context->effective_address_size_attribute;
+
+		fcml_st_modrm_source modrm_source;
+		modrm_source.is_vsib = modrm_details->is_vsib;
+		modrm_source.vsib_index_size = modrm_details->vsib_index_size;
+		modrm_source.ext_b = prefixes->b;
+		modrm_source.ext_r = prefixes->r;
+		modrm_source.ext_x = prefixes->x;
+		modrm_source.stream = decoding_context->stream;
+
+		error = fcml_fn_modrm_decode( &modrm_context, &modrm_source, &(decoding_context->decoded_modrm) );
+		if( error ) {
+			return error;
+		}
+
 	}
 
 	// Calculate operands size.
 	fcml_int i, operands_size = 0;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-		fcml_ist_asm_dec_operand_decoding *operand_decoding = &(instruction_decoding_def->operand_decodings[0]);
+		fcml_ist_asm_dec_operand_decoding *operand_decoding = &(instruction_decoding_def->operand_decodings[i]);
 		fcml_st_def_decoded_addr_mode *decoded_addr_mode = operand_decoding->decoded_addr_mode;
 		if( operand_decoding->size_calculator ) {
 			operands_size += operand_decoding->size_calculator( decoding_context, decoded_addr_mode->addr_mode_args );
@@ -1093,7 +1137,10 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 					chain = chain->next;
 				}
 				if( accept ) {
-					decoding_def->instruction_decoder( context, decoding_def );
+					error = decoding_def->instruction_decoder( context, decoding_def );
+					if( !error ) {
+						break;
+					}
 				}
 			}
 			current = current->next;

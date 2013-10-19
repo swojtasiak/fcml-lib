@@ -81,7 +81,7 @@ fcml_ceh_error fcml_fn_modrm_decode_rip( fcml_uint64_t rip, fcml_data_size effec
 fcml_ceh_error fcml_fn_modrm_decode_16bit( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm ) {
 
 	fcml_bool result;
-	fcml_st_memory_stream *stream = &(modrm_source->stream);
+	fcml_st_memory_stream *stream = modrm_source->stream;
 
 	if( context->addr_form != FCML_AF_32_BIT ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
@@ -141,7 +141,7 @@ fcml_ceh_error fcml_fn_modrm_decode_sib( fcml_st_modrm_decoder_context *context,
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_memory_stream *stream = &(modrm_source->stream);
+	fcml_st_memory_stream *stream = modrm_source->stream;
 
 	fcml_st_address *address = &(decoded_modrm->address);
     fcml_st_effective_address *effective_address = &(address->effective_address);
@@ -210,7 +210,7 @@ fcml_ceh_error fcml_fn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *cont
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_memory_stream *stream = &(modrm_source->stream);
+	fcml_st_memory_stream *stream = modrm_source->stream;
 
 	fcml_st_address *address = &(decoded_modrm->address);
     fcml_st_effective_address *effective_address = &(address->effective_address);
