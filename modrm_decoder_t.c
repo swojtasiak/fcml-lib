@@ -9,6 +9,7 @@
 
 #include "fcml_modrm_decoder.h"
 #include "fcml_env.h"
+#include "fcml_errors.h"
 
 fcml_st_modrm_decoder_context fcml_ifn_modrm_decoder_alloc_ctx() {
 	fcml_st_modrm_decoder_context context;

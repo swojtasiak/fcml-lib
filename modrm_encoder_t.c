@@ -8,6 +8,7 @@
 #include "fcml_env.h"
 #include "fcml_modrm_encoder.h"
 #include "modrm_encoder_t.h"
+#include "fcml_errors.h"
 
 int fcml_tf_modrm_encoder_suite_init(void) {
 	return 0;

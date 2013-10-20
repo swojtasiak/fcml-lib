@@ -81,19 +81,31 @@ CU_SuiteInfo *suites[] = {
 };
 
 #include "fcml_disassembler.h"
+#include "fcml_rend.h"
 
 void new_disassembler_test(void) {
 
+	fcml_st_dialect_context dialect = fcml_fn_get_intel_dialect_context();
+
 	fcml_st_disassembler *disassembler;
-	fcml_ceh_error error = fcml_fn_disassembler_init( fcml_fn_get_intel_dialect_context(), &disassembler );
+	fcml_ceh_error error = fcml_fn_disassembler_init( &dialect, &disassembler );
 	if( error ) {
 		// Error.
 		return;
 	}
 
-	// adc al,42h
-	fcml_uint8_t code[] = { 0x80, 0xD0, 0x42 };
+	// db 080h, 0D0h, 042h
+	// adc    al,42h
+	// adc    $0x42,%al
 
+	//0x80, 0x54, 0x01, 0x02, 0x03
+	//adc byte ptr [ecx+eax+00000002h],03h
+    //adcb   $0x3,0x2(%rcx,%rax,1)
+
+	// adc al,42h
+
+	fcml_uint8_t code[] = { 0x80, 0xD0, 0x42 };
+	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
 	context.disassembler = disassembler;
 	context.addr_form = FCML_AF_32_BIT;
@@ -104,7 +116,23 @@ void new_disassembler_test(void) {
 	context.ip.eip = FCML_AF_32_BIT;
 
 	fcml_st_disassembler_result *result;
-	fcml_fn_disassemble( &context, &result );
+	error = fcml_fn_disassemble( &context, &result );
+	if( !error ) {
+
+		fcml_char buffer[256];
+
+		fcml_fn_env_memory_clean( buffer, sizeof( buffer ) );
+
+		fcml_st_memory_stream stream;
+		stream.base_address = buffer;
+		stream.offset = 0;
+		stream.size = sizeof( buffer );
+
+		if( !fcml_fn_rend_render_instruction( &dialect, &stream, result, FCML_REND_FLAG_RENDER_CODE ) ) {
+			printf( "%s\n", buffer );
+		}
+
+	}
 
 	if( disassembler ) {
 		fcml_fn_disassembler_free( disassembler );
