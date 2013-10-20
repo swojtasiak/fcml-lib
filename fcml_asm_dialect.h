@@ -10,7 +10,9 @@
 
 #include "fcml_def.h"
 #include "fcml_common.h"
+#include "fcml_stream.h"
 #include "fcml_mnemonic_parser.h"
+#include "fcml_disassembler_result.h"
 
 #define FCML_ASM_DIALECT_MAX_MNEMONIC_COUNT 50
 
@@ -18,9 +20,12 @@ typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_mnemonic)( fcml_st_def_instruc
 
 typedef void (*fcml_fnp_asm_dialect_free_mnemonic)( fcml_st_mp_mnemonic *mnemonics );
 
+typedef fcml_ceh_error (*fcml_fnp_rend_render_instruction)( fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
+
 typedef struct fcml_st_dialect_context {
     fcml_fnp_asm_dialect_get_mnemonic get_mnemonic;
     fcml_fnp_asm_dialect_free_mnemonic free_mnemonic;
+    fcml_fnp_rend_render_instruction instruction_renderer;
 } fcml_st_dialect_context;
 
 fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_mnemonic *mnemonic, fcml_string suffix );

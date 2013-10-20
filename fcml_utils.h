@@ -39,6 +39,7 @@ fcml_ceh_error fcml_fn_utils_integer_to_displacement( const fcml_st_integer *int
 fcml_ceh_error fcml_fn_utils_offset_to_integer( const fcml_st_offset *offset, fcml_st_integer *integer );
 fcml_ceh_error fcml_fn_utils_integer_to_offset( const fcml_st_integer *integer, fcml_st_offset *offset );
 fcml_ceh_error fcml_fn_utils_imm_to_integer( fcml_st_immediate *imm, fcml_st_integer *integer );
+fcml_ceh_error fcml_fn_utils_integer_to_imm( fcml_st_integer *integer, fcml_st_immediate *imm );
 fcml_ceh_error fcml_fn_utils_extend_integer( fcml_st_integer *integer, fcml_usize extension );
 inline fcml_bool fcml_fn_utils_is_reg_undef( fcml_st_register *reg );
 

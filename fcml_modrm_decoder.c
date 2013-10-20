@@ -5,6 +5,7 @@
  *      Author: tAs
  */
 
+#include "fcml_errors.h"
 #include "fcml_modrm_decoder.h"
 #include "fcml_utils.h"
 #include "fcml_env.h"
@@ -251,6 +252,7 @@ fcml_ceh_error fcml_fn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *cont
 		// disp32.
 		if( context->addr_form == FCML_AF_64_BIT ) {
 			context->is_rip = FCML_TRUE;
+			decoded_modrm->is_rip = FCML_TRUE;
 		}
 
 		// Only displacement value is decoded here. RIP offset is calculated in post processors.

@@ -43,5 +43,6 @@ fcml_bool fcml_fn_stream_write_dword( fcml_st_memory_stream *stream, fcml_uint32
 fcml_bool fcml_fn_stream_write_qword( fcml_st_memory_stream *stream, fcml_uint64_t data );
 fcml_stream_pointer fcml_fn_stream_save_point( const fcml_st_memory_stream *stream );
 void fcml_fn_stream_restore_point( fcml_st_memory_stream *stream, const fcml_stream_pointer stream_pointer );
+void fcml_fn_stream_clean( fcml_st_memory_stream *stream );
 
 #endif /* FCML_STREAMING_H_ */

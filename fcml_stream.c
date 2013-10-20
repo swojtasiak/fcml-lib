@@ -30,6 +30,11 @@ void fcml_fn_stream_seek( fcml_st_memory_stream *stream, int32_t offset, enum ir
     }
 }
 
+void fcml_fn_stream_clean( fcml_st_memory_stream *stream ) {
+	fcml_fn_env_memory_clean( stream->base_address, stream->size );
+	stream->offset = 0;
+}
+
 fcml_uint8_t fcml_fn_stream_read( fcml_st_memory_stream *stream, fcml_bool *result ) {
 	fcml_uint8_t *base_address = (fcml_uint8_t *)stream->base_address;
     *result = ( stream->offset == stream->size ) ? FCML_FALSE : FCML_TRUE;

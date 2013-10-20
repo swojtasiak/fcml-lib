@@ -8,6 +8,7 @@
 #include "fcml_asm_dialect_intel.h"
 #include "fcml_env.h"
 #include "fcml_mnemonic_parser.h"
+#include "fcml_rend_intel.h"
 
 #include <string.h>
 
@@ -109,5 +110,6 @@ fcml_st_dialect_context fcml_fn_get_intel_dialect_context() {
     fcml_st_dialect_context context;
     context.get_mnemonic = &fcml_fnp_asm_dialect_get_mnemonic_intel;
     context.free_mnemonic = &fcml_fnp_asm_dialect_free_mnemonic_intel;
+    context.instruction_renderer = &fcml_fn_rend_render_instruction_intel;
     return context;
 }

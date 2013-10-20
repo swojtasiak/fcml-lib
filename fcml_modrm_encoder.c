@@ -5,6 +5,7 @@
  *      Author: tAs
  */
 
+#include "fcml_errors.h"
 #include "fcml_modrm_encoder.h"
 #include "fcml_utils.h"
 

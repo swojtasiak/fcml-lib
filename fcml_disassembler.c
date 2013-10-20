@@ -285,12 +285,12 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
  * API.
  ****************************/
 
-fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect_context context, fcml_st_disassembler **disassembler ) {
+fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect_context *context, fcml_st_disassembler **disassembler ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	*disassembler = fcml_fn_env_memory_alloc( sizeof( fcml_st_disassembler ) );
 	if( *disassembler ) {
-		error = fcml_fn_asm_init_instruction_decodings( &context, disassembler );
+		error = fcml_fn_asm_init_instruction_decodings( context, disassembler );
 	} else {
 		error = FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
@@ -327,6 +327,47 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 	}
 
 	error =  fcml_fn_asm_decode_instruction( &decoding_context );
+
+	if( !error ) {
+		fcml_st_disassembler_result *dis_res = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_disassembler_result ) );
+		if( dis_res ) {
+			// Prepare operands.
+			int i;
+			for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+				fcml_ist_asm_dec_operand_wrapper *operand_wrapper = &(decoding_context.operand_wrappers[i]);
+				if( operand_wrapper->operand.type != FCML_EOT_NONE ) {
+					dis_res->operands[i] = operand_wrapper->operand;
+					dis_res->operand_details[i].access_mode = operand_wrapper->access_mode;
+				} else {
+					break;
+				}
+			}
+
+			// Copy instruction hints.
+			dis_res->hints = decoding_context.instruction_hints;
+
+			// Instruction code.
+			dis_res->instruction_size = decoding_context.calculated_instruction_size;
+			fcml_fn_env_memory_copy( &dis_res->instruction_code, context->code_address, dis_res->instruction_size );
+
+			// Mnemonic.
+			// TODO: To jest chyba zbyt dialect specific.
+			fcml_bool shortform = decoding_context.disassembler_context->configuration.use_short_form_mnemonics;
+			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute );
+			if( mnemonic ) {
+				dis_res->is_shortcut = mnemonic->shortcut;
+				dis_res->mnemonic = mnemonic->mnemonic;
+			} else {
+				// Mnemonic not found.
+				return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+			}
+
+			*result = dis_res;
+
+		} else {
+			error = FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+	}
 
 	return error;
 }

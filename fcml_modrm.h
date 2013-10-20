@@ -8,9 +8,11 @@
 #ifndef FCML_MODRM_H_
 #define FCML_MODRM_H_
 
-#include "fcml_errors.h"
+#include "fcml_ceh.h"
 #include "fcml_common.h"
+//#include "fcml_errors.h"
 #include "fcml_stream.h"
+#include "fcml_types.h"
 
 // Effective size attribute ata type.
 
@@ -50,6 +52,8 @@ typedef struct fcml_st_modrm {
 	fcml_nuint8_t reg;
 	// Effective address.
 	fcml_st_address address;
+	// True if RIP encoding is used.
+	fcml_bool is_rip;
 } fcml_st_modrm;
 
 fcml_ceh_error fcml_fn_modrm_write_encoded_modrm( fcml_st_encoded_modrm *encoded_modrm, fcml_st_memory_stream *stream );

@@ -190,26 +190,29 @@ void fcml_ifn_asm_dec_free_instruction_decoding_element_handler( fcml_ptr item_v
 
 void fcml_fn_asm_dec_tree_element_free( fcml_st_dialect_context *dialect_context, fcml_asm_dec_tree_decoding_tree *tree, fcml_ceh_asm_dec_tree_diss_tree_element *element ) {
 	int i = 0;
+	// Free all child elements.
 	for( i = 0; i < FCML_ASM_DEC_TREE_OPCODE_ARRAY_SIZE; i++ ) {
-		// Free child elements.
 		fcml_ceh_asm_dec_tree_diss_tree_element *child_element = element->opcodes[i];
 		if( child_element ) {
 			fcml_fn_asm_dec_tree_element_free( dialect_context, tree, child_element );
 		}
-		// Free element itself.
-		fcml_st_coll_list *instruction_decoding_defs = element->instruction_decoding_defs;
-		if( instruction_decoding_defs ) {
-			fcml_fn_coll_list_free( instruction_decoding_defs, &fcml_ifn_asm_dec_free_instruction_decoding_element_handler, tree );
-		}
-		fcml_fn_env_memory_free( element );
 	}
+	// Free element itself.
+	fcml_st_coll_list *instruction_decoding_defs = element->instruction_decoding_defs;
+	if( instruction_decoding_defs ) {
+		fcml_fn_coll_list_free( instruction_decoding_defs, &fcml_ifn_asm_dec_free_instruction_decoding_element_handler, tree );
+	}
+	fcml_fn_env_memory_free( element );
 }
 
 void fcml_fn_asm_dec_tree_free( fcml_st_dialect_context *dialect_context, fcml_asm_dec_tree_decoding_tree *tree ) {
 	int i = 0;
 	// Free all child elements.
 	for( i = 0; i < FCML_ASM_DEC_TREE_OPCODE_ARRAY_SIZE; i++ ) {
-		fcml_fn_asm_dec_tree_element_free( dialect_context, tree, tree->opcode[i] );
+		fcml_ceh_asm_dec_tree_diss_tree_element *element = tree->opcode[i];
+		if( element ) {
+			fcml_fn_asm_dec_tree_element_free( dialect_context, tree, element );
+		}
 	}
 	// Free tree.
 	fcml_fn_env_memory_free( tree );
