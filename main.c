@@ -104,7 +104,7 @@ void new_disassembler_test(void) {
 
 	// adc al,42h
 
-	fcml_uint8_t code[] = { 0x80, 0xD0, 0x42 };
+	fcml_uint8_t code[] = { 0x80, 0x54, 0x01, 0x02, 0x03 };
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
 	context.disassembler = disassembler;
@@ -128,7 +128,7 @@ void new_disassembler_test(void) {
 		stream.offset = 0;
 		stream.size = sizeof( buffer );
 
-		if( !fcml_fn_rend_render_instruction( &dialect, &stream, result, FCML_REND_FLAG_RENDER_CODE ) ) {
+		if( !fcml_fn_rend_render_instruction( &dialect, &stream, result, FCML_REND_FLAG_RENDER_CODE | FCML_REND_FLAG_HEX_IMM ) ) {
 			printf( "%s\n", buffer );
 		}
 
