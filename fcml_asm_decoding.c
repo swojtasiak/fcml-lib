@@ -91,6 +91,36 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
  * Utility functions.
  *********************/
 
+fcml_uint8_t fcml_ifn_dec_asm_override_segment_reg( fcml_st_asm_decoding_context *context, fcml_uint8_t reg ) {
+	fcml_int i;
+	for( i = 0; i < context->prefixes.prefixes_count; i++ ) {
+		fcml_st_dasm_instruction_prefix *prefix = &(context->prefixes.prefixes[0]);
+		if( prefix->prefix_type == FCML_PT_GROUP_2 && !prefix->mandatory_prefix ) {
+			switch( prefix->prefix ) {
+			case 0x2E:
+				reg = FCML_REG_CS;
+				break;
+			case 0x36:
+				reg = FCML_REG_SS;
+				break;
+			case 0x3E:
+				reg = FCML_REG_DS;
+				break;
+			case 0x26:
+				reg = FCML_REG_ES;
+				break;
+			case 0x64:
+				reg = FCML_REG_FS;
+				break;
+			case 0x65:
+				reg = FCML_REG_GS;
+				break;
+			}
+		}
+	}
+	return reg;
+}
+
 fcml_data_size fcml_ifn_dec_asm_decode_encoded_size_value( fcml_st_asm_decoding_context *context, fcml_uint8_t encoded_size ) {
 	fcml_data_size result = 0;
 	if( encoded_size >= FCML_EOS_DYNAMIC_BASE ) {
@@ -297,18 +327,45 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context
 	fcml_st_modrm *decoded_modrm = &(context->decoded_modrm);
 	fcml_st_operand *operand = &(operand_wrapper->operand);
 
-	if( decoded_modrm->reg.is_not_null ) {
+	fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm*)args;
+
+	if( ( rm_args->flags & FCML_RMF_R ) && decoded_modrm->reg.is_not_null ) {
+
 		operand->type = FCML_EOT_REGISTER;
 		operand->reg.reg = decoded_modrm->reg.value;
-		operand->reg.type = FCML_REG_GPR;
-		operand->reg.size = ( context->effective_address_size_attribute == FCML_DS_64 ) ? FCML_DS_64 : FCML_DS_32;
-	} else {
+		operand->reg.type = rm_args->reg_type;
+		operand->reg.size = fcml_ifn_dec_asm_decode_encoded_size_value( context, rm_args->encoded_register_operand_size );
+
+	} else if ( rm_args->flags & FCML_RMF_M ) {
+
 		operand->type = FCML_EOT_ADDRESS;
-		operand->address = decoded_modrm->address;
+
+		fcml_st_address *address = &(operand->address);
+		*address = decoded_modrm->address;
+
+		address->effective_address.size_operator = fcml_ifn_dec_asm_decode_encoded_size_value( context, rm_args->encoded_memory_operand_size );
+
 		if( decoded_modrm->is_rip ) {
 			// We known instruction size, so post processing is not needed and RIP can be calculated now.
-			error = fcml_fn_modrm_decode_rip( context->disassembler_context->ip.rip + context->calculated_instruction_size, context->effective_address_size_attribute, &(decoded_modrm->address.offset), &(decoded_modrm->address.offset) );
+			error = fcml_fn_modrm_decode_rip( context->disassembler_context->ip.rip + context->calculated_instruction_size, context->effective_address_size_attribute, &(address->offset), &(address->offset) );
 		}
+
+		// Segment registers.
+
+		fcml_st_effective_address *effective_address = &(address->effective_address);
+		fcml_st_segment_selector *segment_selector = &(address->segment_selector);
+
+		segment_selector->segment_selector.type = FCML_REG_SEG;
+		segment_selector->segment_selector.size = FCML_DS_16;
+
+		if( effective_address->base.type == FCML_REG_GPR && ( effective_address->base.reg == FCML_REG_BP || effective_address->base.reg == FCML_REG_SP ) ) {
+			segment_selector->segment_selector.reg = FCML_REG_SS;
+			segment_selector->is_default_reg = FCML_TRUE;
+		} else {
+			segment_selector->segment_selector.reg = fcml_ifn_dec_asm_override_segment_reg( context, FCML_REG_DS );
+			segment_selector->is_default_reg = ( segment_selector->segment_selector.reg == FCML_REG_DS ) ? FCML_TRUE : FCML_FALSE;
+		}
+
 	}
 
 	return error;

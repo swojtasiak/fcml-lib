@@ -949,7 +949,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_explicit_gps_reg_addressing( fcml_s
     if( operand_def->type != FCML_EOT_ADDRESS || operand_def->address.effective_address.base.reg != args->reg_num ||
             !fcml_ifn_accept_data_size( context, addr_mode_desc, FCML_EOS_EASA, operand_def->address.effective_address.base.size, FCML_IEN_CT_EQUAL ) ||
             !fcml_ifn_accept_data_size( context, addr_mode_desc, args->encoded_operand_size, operand_def->address.effective_address.size_operator, FCML_IEN_CT_EQUAL ) ||
-            !fcml_ifn_accept_segment_register( context, &(operand_def->address.segment_selector), args->encoded_segment_register ) ) {
+            !fcml_ifn_accept_segment_register( context, &(operand_def->address.segment_selector.segment_selector), args->encoded_segment_register ) ) {
         error = FCML_EN_UNSUPPORTED_OPPERAND;
     }
 	return error;

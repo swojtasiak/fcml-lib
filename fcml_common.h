@@ -353,11 +353,16 @@ typedef struct fcml_st_effective_address {
     fcml_st_displacement displacement;
 } fcml_st_effective_address;
 
+typedef struct fcml_st_segment_selector {
+	fcml_st_register segment_selector;
+	fcml_bool is_default_reg;
+} fcml_st_segment_selector;
+
 typedef struct fcml_st_address {
     // Memory addressing format ABSOLUTE/RELATIVE etc.
     fcml_en_effective_address_form address_form;
     // Segment register.
-    fcml_st_register segment_selector;
+    fcml_st_segment_selector segment_selector;
     // Memory address for FCML_AF_COMBINED form.
     fcml_st_effective_address effective_address;
     // Memory address for FCML_AF_ABSOLUTE and FCML_AF_RELATIVE form.

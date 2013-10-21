@@ -20,12 +20,17 @@ typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_mnemonic)( fcml_st_def_instruc
 
 typedef void (*fcml_fnp_asm_dialect_free_mnemonic)( fcml_st_mp_mnemonic *mnemonics );
 
-typedef fcml_ceh_error (*fcml_fnp_rend_render_instruction)( fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
+struct fcml_st_dialect_context;
+
+typedef fcml_ceh_error (*fcml_fnp_rend_render_instruction)( struct fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
+
+typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_register)( fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex );
 
 typedef struct fcml_st_dialect_context {
     fcml_fnp_asm_dialect_get_mnemonic get_mnemonic;
     fcml_fnp_asm_dialect_free_mnemonic free_mnemonic;
     fcml_fnp_rend_render_instruction instruction_renderer;
+    fcml_fnp_asm_dialect_get_register get_register;
 } fcml_st_dialect_context;
 
 fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_mnemonic *mnemonic, fcml_string suffix );
