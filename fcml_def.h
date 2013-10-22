@@ -222,6 +222,7 @@ typedef struct fcml_st_def_instruction_description {
 // Far pointers.
 #define FCML_OP_FAR_POINTER							0x05000000
 
+// TODO: Far pointer indirect mozna zlikwidowac na rzecz Modrm z wielkoscia FCML_EOS_FPI.
 // Far indirect pointer.
 #define FCML_OP_FAR_POINTER_INDIRECT				0x06000000
 

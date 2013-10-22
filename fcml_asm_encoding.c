@@ -883,7 +883,7 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_far_pointer( fcml_st_asm_encoding_c
                 result = FCML_EN_UNSUPPORTED_OPPERAND;
             }
         } else {
-            // 32 bit offset is not suported in 16 bit mode.
+            // 32 bit offset is not supported in 16 bit mode.
             result = FCML_EN_UNSUPPORTED_OPPERAND;
         }
         break;

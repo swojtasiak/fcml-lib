@@ -64,7 +64,7 @@ typedef struct fcml_st_disassembler_result {
 	/* Mnemonic */
 	fcml_bool is_shortcut;
 	fcml_string mnemonic;
-	fcml_uint8_t instruction_code[15];
+	fcml_uint8_t instruction_code[FCML_INSTRUCTION_SIZE];
 	fcml_data_size instruction_size;
 	fcml_st_asm_dec_prefixes prefixes;
 	fcml_st_asm_dec_operand_details operand_details[FCML_OPERANDS_COUNT];

@@ -11,6 +11,7 @@
 #include "fcml_types.h"
 
 #define FCML_OPERANDS_COUNT	5
+#define FCML_INSTRUCTION_SIZE 15
 
 typedef enum fcml_en_addr_form {
     // TODO: Sprawdzic czy to supportujemy.
@@ -307,6 +308,8 @@ typedef struct fcml_st_far_pointer {
     fcml_uint16_t segment;
     fcml_data_size offset_size;
     union {
+    	// TODO: Zastanowic sie nad spojnoscia, wszedzie offsety i displacement obslugujemy w takiej wielkosci jak adres, czyli sign extended o wielkosci ASA
+    	// a tu nie. Pytanie czy zostawiamy taka niespojnosc.
         fcml_uint16_t offset16;
         fcml_uint32_t offset32;
     };
@@ -346,6 +349,7 @@ typedef struct fcml_st_offset {
 } fcml_st_offset;
 
 typedef struct fcml_st_effective_address {
+	// TODO: Przeniesc do adresu, przeciez uzywane takze z offsetem.
     fcml_data_size size_operator;
     fcml_st_register base;
     fcml_st_register index;

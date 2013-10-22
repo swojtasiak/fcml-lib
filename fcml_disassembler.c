@@ -348,7 +348,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 
 			// Instruction code.
 			dis_res->instruction_size = decoding_context.calculated_instruction_size;
-			fcml_fn_env_memory_copy( &dis_res->instruction_code, context->code_address, dis_res->instruction_size );
+			fcml_fn_env_memory_copy( &dis_res->instruction_code, context->code_address, dis_res->instruction_size > FCML_INSTRUCTION_SIZE ? FCML_INSTRUCTION_SIZE : dis_res->instruction_size );
 
 			// Mnemonic.
 			// TODO: To jest chyba zbyt dialect specific.

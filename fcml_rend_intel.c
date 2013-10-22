@@ -36,6 +36,12 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 
 	fcml_st_address *address = &(operand->address);
 
+	if( dialect_context->size_operator_renderer && address->effective_address.size_operator > 0 ) {
+		fcml_char buffer[32] = {0};
+		dialect_context->size_operator_renderer( address->effective_address.size_operator, buffer, sizeof( buffer ), operand_details->hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
+		fcml_fn_rend_utils_format_append_str( output_stream, buffer );
+	}
+
 	if( !address->segment_selector.is_default_reg || ( render_flags & FCML_REND_FLAG_RENDER_DEFAULT_SEG ) ) {
 		fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(address->segment_selector.segment_selector), result->prefixes.is_rex );
 		fcml_fn_rend_utils_format_append_str( output_stream, ":" );
@@ -109,6 +115,34 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 	return error;
 }
 
+fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_asm_dec_operand_details *operand_details, fcml_uint32_t render_flags ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_st_integer integer = {0};
+	integer.is_signed = FCML_TRUE;
+	integer.size = 16;
+	integer.int16 = operand->far_pointer.segment;
+
+	fcml_fn_rend_utils_format_append_integer( output_stream, &integer, FCML_TRUE );
+
+	fcml_fn_rend_utils_format_append_str( output_stream, ":" );
+
+	integer.size = operand->far_pointer.offset_size;
+	switch( integer.size ) {
+	case FCML_DS_16:
+		integer.int16 = operand->far_pointer.offset16;
+		break;
+	case FCML_DS_32:
+		integer.int32 = operand->far_pointer.offset32;
+		break;
+	}
+
+	fcml_fn_rend_utils_format_append_integer( output_stream, &integer, FCML_TRUE );
+
+	return error;
+}
+
 fcml_ceh_error fcml_ifn_rend_print_operand_intel(  fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_int operand_index, fcml_uint32_t render_flags ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_operand *operand = &(result->operands[operand_index]);
@@ -117,6 +151,7 @@ fcml_ceh_error fcml_ifn_rend_print_operand_intel(  fcml_st_dialect_context *dial
 		error = fcml_ifn_rend_operand_renderer_immediate_intel( dialect_context, output_stream, result, operand, &(result->operand_details[operand_index]), render_flags );
 		break;
 	case FCML_EOT_FAR_POINTER:
+		error = fcml_ifn_rend_operand_renderer_far_pointer_intel( dialect_context, output_stream, result, operand, &(result->operand_details[operand_index]), render_flags );
 		break;
 	case FCML_EOT_ADDRESS:
 		error = fcml_ifn_rend_operand_renderer_address_intel( dialect_context, output_stream, result, operand, &(result->operand_details[operand_index]), render_flags );

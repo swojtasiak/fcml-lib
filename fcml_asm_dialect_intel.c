@@ -9,8 +9,10 @@
 #include "fcml_env.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_rend_intel.h"
+#include "fcml_env.h"
 
 #include <string.h>
+#include <stdio.h>
 
 #define FCML_ASM_DIALECT_INTEL_GROUPS 3
 
@@ -197,11 +199,55 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_intel( fcml_st_def_instruction_
     return error;
 }
 
+
+fcml_ceh_error fcml_fnp_asm_dialect_render_size_operator_intel( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
+
+	fcml_string size_operator_printable = NULL;
+
+	switch( size_operator ) {
+	case 0:
+		break;
+	case 8:
+		size_operator_printable = "byte ptr ";
+		break;
+	case 16:
+		size_operator_printable = "word ptr ";
+		break;
+	case 32:
+		size_operator_printable = "dword ptr ";
+		break;
+	case 48:
+		size_operator_printable = "fword ptr ";
+		break;
+	case 64:
+		size_operator_printable = is_media_instruction ? "mmword ptr " : "qword ptr ";
+		break;
+	case 80:
+		size_operator_printable = "tbyte ptr ";
+		break;
+	case 128:
+		size_operator_printable = is_media_instruction ? "xmmword ptr " : "oword ptr ";
+		break;
+	case 256:
+		size_operator_printable = is_media_instruction ? "ymmword ptr " : "qqword ";
+		break;
+	default:
+		snprintf( buffer, buffer_len, "%dbyte ptr ", size_operator / 8 );
+	}
+
+	if( size_operator_printable ) {
+		fcml_fn_env_memory_strncpy( buffer, size_operator_printable, buffer_len );
+	}
+
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
 fcml_st_dialect_context fcml_fn_get_intel_dialect_context() {
     fcml_st_dialect_context context;
     context.get_mnemonic = &fcml_fnp_asm_dialect_get_mnemonic_intel;
     context.free_mnemonic = &fcml_fnp_asm_dialect_free_mnemonic_intel;
     context.instruction_renderer = &fcml_fn_rend_render_instruction_intel;
     context.get_register = &fcml_fnp_asm_dialect_get_register_intel;
+    context.size_operator_renderer = &fcml_fnp_asm_dialect_render_size_operator_intel;
     return context;
 }

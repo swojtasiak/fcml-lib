@@ -121,6 +121,22 @@ fcml_uint8_t fcml_ifn_dec_asm_override_segment_reg( fcml_st_asm_decoding_context
 	return reg;
 }
 
+fcml_ceh_error fcml_st_asm_dec_decode_segment_selector( fcml_st_asm_decoding_context *context, fcml_st_segment_selector *selector, fcml_uint8_t encoded_segment_reg ) {
+	fcml_uint8_t seg_reg = ~FCML_SEG_ALLOW_OVERRIDE & encoded_segment_reg;
+	if( encoded_segment_reg & FCML_SEG_ALLOW_OVERRIDE ) {
+		fcml_uint8_t tmp = seg_reg;
+		seg_reg = fcml_ifn_dec_asm_override_segment_reg( context, seg_reg );
+		selector->is_default_reg = ( seg_reg == tmp );
+	} else {
+		selector->is_default_reg = FCML_TRUE;
+	}
+	selector->segment_selector.reg = seg_reg;
+	selector->segment_selector.size = FCML_DS_16;
+	selector->segment_selector.type = FCML_REG_SEG;
+	selector->segment_selector.x64_exp = FCML_FALSE;
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
 fcml_data_size fcml_ifn_dec_asm_decode_encoded_size_value( fcml_st_asm_decoding_context *context, fcml_uint8_t encoded_size ) {
 	fcml_data_size result = 0;
 	if( encoded_size >= FCML_EOS_DYNAMIC_BASE ) {
@@ -250,21 +266,39 @@ fcml_int fcml_fnp_asm_dec_operand_size_calculator_imm( fcml_st_asm_decoding_cont
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_reg( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	return error;
-}
 
-fcml_int fcml_fnp_asm_dec_operand_size_calculator_explicit_reg( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	fcml_st_operand *operand = &(operand_wrapper->operand);
+	fcml_sf_def_tma_explicit_reg *reg_args = (fcml_sf_def_tma_explicit_reg*)args;
+
+	operand->type = FCML_EOT_REGISTER;
+	operand->reg.reg = reg_args->reg_num;
+	operand->reg.type = reg_args->reg_type;
+	operand->reg.size = fcml_ifn_dec_asm_decode_encoded_size_value( context, reg_args->encoded_reg_size );
+
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_gps_reg_addressing( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	return error;
-}
 
-fcml_int fcml_fnp_asm_dec_operand_size_calculator_explicit_gps_reg_addressing( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	fcml_st_operand *operand = &(operand_wrapper->operand);
+	fcml_st_address *address = &(operand->address);
+	fcml_st_effective_address *effective_address = &(address->effective_address);
+
+	operand->type = FCML_EOT_ADDRESS;
+	address->address_form = FCML_AF_COMBINED;
+
+	fcml_sf_def_tma_explicit_gps_reg_addressing *reg_addr_args = (fcml_sf_def_tma_explicit_gps_reg_addressing*)args;
+
+	// Size operator.
+	effective_address->size_operator = fcml_ifn_dec_asm_decode_encoded_size_value( context, reg_addr_args->encoded_operand_size );
+
+	// Base register.
+	effective_address->base.size = context->effective_address_size_attribute;
+	effective_address->base.reg = reg_addr_args->reg_num;
+	effective_address->base.type = FCML_REG_GPR;
+
+	// Segment register.
+	return fcml_st_asm_dec_decode_segment_selector( context, &(address->segment_selector), reg_addr_args->encoded_segment_register );
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_opcode_reg( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -286,21 +320,42 @@ fcml_int fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative( fcml_s
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_st_operand *operand = &(operand_wrapper->operand);
+	fcml_st_far_pointer *far_pointer = &(operand->far_pointer);
+	fcml_bool result;
+
+	operand->type = FCML_EOT_FAR_POINTER;
+
+	far_pointer->segment = fcml_fn_stream_read_word( context->stream, &result );
+	if( !result ) {
+		return FCML_CEH_GEC_EOF;
+	}
+
+	switch( context->effective_operand_size_attribute ) {
+	case FCML_DS_16:
+		far_pointer->offset16 = fcml_fn_stream_read_word( context->stream, &result );
+		break;
+	case FCML_DS_32:
+		far_pointer->offset32 = fcml_fn_stream_read_dword( context->stream, &result );
+		break;
+	default:
+		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+		break;
+	}
+
+	far_pointer->offset_size = context->effective_operand_size_attribute;
+
+	if( !result ) {
+		error = FCML_CEH_GEC_EOF;
+	}
+
 	return error;
 }
 
 fcml_int fcml_fnp_asm_dec_operand_size_calculator_far_pointer( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
-}
-
-fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	return error;
-}
-
-fcml_int fcml_fnp_asm_dec_operand_size_calculator_far_pointer_indirect( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	return context->effective_operand_size_attribute / 8 + 2;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_ib( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -369,6 +424,13 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context
 	}
 
 	return error;
+}
+
+fcml_sf_def_tma_rm  fcml_ist_asm_dec_far_pointer_indirect_args = { FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_FPI, FCML_RMF_M };
+
+fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
+	fcml_sf_def_tma_rm rm_args = fcml_ist_asm_dec_far_pointer_indirect_args;
+	return fcml_fnp_asm_dec_operand_decoder_rm( context, operand_wrapper, &rm_args );
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_r( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -444,12 +506,12 @@ fcml_st_asm_dec_calculated_hints fcml_fnp_asm_dec_ihc_near_pointer( fcml_st_def_
 fcml_st_asm_dec_operand_decoder_def fcml_def_operand_decoders[] = {
 	{ NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_imm, fcml_fnp_asm_dec_operand_size_calculator_imm, NULL },
-	{ fcml_fnp_asm_dec_operand_decoder_explicit_reg, fcml_fnp_asm_dec_operand_size_calculator_explicit_reg, NULL },
+	{ fcml_fnp_asm_dec_operand_decoder_explicit_reg, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_opcode_reg, fcml_fnp_asm_dec_operand_size_calculator_opcode_reg, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative, fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_far_pointer, fcml_fnp_asm_dec_operand_size_calculator_far_pointer, fcml_fnp_asm_dec_ihc_far_pointer },
-	{ fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect, fcml_fnp_asm_dec_operand_size_calculator_far_pointer_indirect, fcml_fnp_asm_dec_ihc_far_pointer },
-	{ fcml_fnp_asm_dec_operand_decoder_explicit_gps_reg_addressing, fcml_fnp_asm_dec_operand_size_calculator_explicit_gps_reg_addressing, NULL },
+	{ fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect, NULL, fcml_fnp_asm_dec_ihc_far_pointer },
+	{ fcml_fnp_asm_dec_operand_decoder_explicit_gps_reg_addressing, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_explicit_ib, fcml_fnp_asm_dec_operand_size_calculator_explicit_ib, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_segment_relative_offset, fcml_fnp_asm_dec_operand_size_calculator_segment_relative_offset, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_rm, NULL, fcml_fnp_asm_dec_ihc_near_pointer },
