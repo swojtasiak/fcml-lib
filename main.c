@@ -104,7 +104,20 @@ void new_disassembler_test(void) {
 
 	// adc al,42h
 
-	fcml_uint8_t code[] = { 0x80, 0x54, 0x01, 0x02, 0x03 };
+	//fcml_uint8_t code[] = { 0x80, 0x54, 0x01, 0x02, 0x03 };
+	// ff5b01 call far fword ptr [ebx+1]
+
+	// FCML_I32( "call far 6655h:44332211h", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
+	// 9a112233445566 call far 2211h:66554433h
+
+	//FCML_I3264_M( "adc al,42h", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
+	// 1442 adc al,42h
+
+	// FCML_I32( "cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
+	// 67a6 cmps byte ptr [si],byte ptr [di]
+
+	fcml_uint8_t code[] = { 0x67, 0xA6 };
+
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
 	context.disassembler = disassembler;
@@ -160,6 +173,7 @@ int main(int argc, char **argv) {
 	// , FCML_MI( 0xd0, 0x10 )
 	//return 0;
 	//  FCML_I64_P( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
+
   //  return 0;
 
     if (CU_initialize_registry()) {
