@@ -116,7 +116,16 @@ void new_disassembler_test(void) {
 	// FCML_I32( "cmps byte ptr [si],byte ptr [di]", 0x67, 0xA6 );
 	// 67a6 cmps byte ptr [si],byte ptr [di]
 
-	fcml_uint8_t code[] = { 0x67, 0xA6 };
+	//FCML_I3264( "bswap esp", 0x0f, 0xcc );
+	// 0fcc bswap esp
+
+	// FCML_I3264_M( "int 03h", 2, FCML_MI( 0xCC ), FCML_MI( 0xCD, 0x03 ) );
+	// cc int 03h
+
+	// FCML_I32_M( "mov al,byte ptr [40302010h]", 2, FCML_MI( 0xA0, 0x10, 0x20, 0x30, 0x40 ), FCML_MI( 0x8a, 0x05, 0x10, 0x20, 0x30, 0x40 ) );
+	// a010203040 mov al,byte ptr [40302010h]
+
+	fcml_uint8_t code[] = { 0xA0, 0x10, 0x20, 0x30, 0x40 };
 
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
