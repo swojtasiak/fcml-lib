@@ -23,6 +23,7 @@ typedef struct fcml_st_asm_decoding_context {
 	fcml_st_mp_mnemonic_set *mnemonics;
 	fcml_int calculated_instruction_size;
 	fcml_uint8_t opcodes[3];
+	fcml_uint8_t primary_opcode_byte;
 	fcml_int opcodes_count;
 	fcml_st_asm_dec_prefixes prefixes;
 	fcml_data_size effective_address_size_attribute;

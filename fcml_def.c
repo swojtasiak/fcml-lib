@@ -1616,11 +1616,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VINSERTF128[] = {
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INT[] = {
-	// CC INT 3 A Valid Valid Interrupt 3�trap to debugger.
+	// CC INT 3 A Valid Valid Interrupt 3trap to debugger.
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCC, 0x00, 0x00 }, { FCML_OP_EXPLICIT_IB( 3 ), FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// CD ib INT imm8 B Valid Valid Interrupt vector number specified by immediate byte.
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCD, 0x00, 0x00 }, { FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
-	// CE INTO A Invalid Valid Interrupt 4�if overflow flag is 1.
+	// CE INTO A Invalid Valid Interrupt 4if overflow flag is 1.
 	{ "into", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCE, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 };
 

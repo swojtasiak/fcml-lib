@@ -331,6 +331,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 	if( !error ) {
 		fcml_st_disassembler_result *dis_res = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_disassembler_result ) );
 		if( dis_res ) {
+
 			// Prepare operands.
 			int i;
 			for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {

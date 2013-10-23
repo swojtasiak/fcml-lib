@@ -302,16 +302,26 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_gps_reg_addressing( fcm
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_opcode_reg( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	return error;
-}
 
-fcml_int fcml_fnp_asm_dec_operand_size_calculator_opcode_reg( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	fcml_sf_def_tma_opcode_reg *reg_args = (fcml_sf_def_tma_opcode_reg*)args;
+
+	fcml_uint8_t reg_num = context->primary_opcode_byte & 0x07;
+
+	// Size operator.
+	operand_wrapper->operand.type = FCML_EOT_REGISTER;
+	fcml_st_register *reg = &(operand_wrapper->operand.reg);
+
+	// Base register.
+	reg->size = fcml_ifn_dec_asm_decode_encoded_size_value( context, reg_args->encoded_reg_size );
+	reg->type = reg_args->reg_type;
+	reg->reg = reg_num;
+
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	// TODO: tu mamy porblem, mozemy to kodowac do offset? ale w takim rpzypadku dlaczego podczas assemblacji wymagamy imm. A znowu dekodowac do IMM? Troche dziwne, rpzeciez to wyliczony address.
 	return error;
 }
 
@@ -359,21 +369,67 @@ fcml_int fcml_fnp_asm_dec_operand_size_calculator_far_pointer( fcml_st_asm_decod
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_ib( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	return error;
-}
 
-fcml_int fcml_fnp_asm_dec_operand_size_calculator_explicit_ib( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	fcml_sf_def_tma_explicit_ib *imm_args = (fcml_sf_def_tma_explicit_ib*)args;
+
+	fcml_st_operand *operand = &(operand_wrapper->operand);
+	fcml_st_immediate *immediate = &(operand->immediate);
+
+	operand->type = FCML_EOT_IMMEDIATE;
+	immediate->is_signed = FCML_TRUE;
+	immediate->imm_size = FCML_DS_8;
+	immediate->imm8 = imm_args->ib;
+
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_segment_relative_offset( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_sf_def_tma_segment_relative_offset *seg_args = (fcml_sf_def_tma_segment_relative_offset*)args;
+
+	fcml_st_operand *operand = &(operand_wrapper->operand);
+	fcml_st_address *address = &(operand->address);
+	fcml_st_offset *offset = &(address->offset);
+
+	fcml_bool result;
+
+	error = fcml_st_asm_dec_decode_segment_selector( context, &(address->segment_selector), seg_args->encoded_segment_register );
+	if( error ) {
+		return error;
+	}
+
+	address->effective_address.size_operator = fcml_ifn_dec_asm_decode_encoded_size_value( context, seg_args->encoded_operand_size );
+
+	operand->type = FCML_EOT_ADDRESS;
+
+	switch( context->effective_address_size_attribute ) {
+	case FCML_DS_16:
+		offset->off16 = fcml_fn_stream_read_word( context->stream, &result );
+		break;
+	case FCML_DS_32:
+		offset->off32 = fcml_fn_stream_read_dword( context->stream, &result );
+		break;
+	case FCML_DS_64:
+		offset->off64 = fcml_fn_stream_read_qword( context->stream, &result );
+		break;
+	default:
+		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+		break;
+	}
+
+	offset->size = context->effective_address_size_attribute;
+
+	if( !result ) {
+		error = FCML_CEH_GEC_EOF;
+	}
+
 	return error;
 }
 
 fcml_int fcml_fnp_asm_dec_operand_size_calculator_segment_relative_offset( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	return context->effective_address_size_attribute / 8;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -507,12 +563,12 @@ fcml_st_asm_dec_operand_decoder_def fcml_def_operand_decoders[] = {
 	{ NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_imm, fcml_fnp_asm_dec_operand_size_calculator_imm, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_explicit_reg, NULL, NULL },
-	{ fcml_fnp_asm_dec_operand_decoder_opcode_reg, fcml_fnp_asm_dec_operand_size_calculator_opcode_reg, NULL },
+	{ fcml_fnp_asm_dec_operand_decoder_opcode_reg, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative, fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_far_pointer, fcml_fnp_asm_dec_operand_size_calculator_far_pointer, fcml_fnp_asm_dec_ihc_far_pointer },
 	{ fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect, NULL, fcml_fnp_asm_dec_ihc_far_pointer },
 	{ fcml_fnp_asm_dec_operand_decoder_explicit_gps_reg_addressing, NULL, NULL },
-	{ fcml_fnp_asm_dec_operand_decoder_explicit_ib, fcml_fnp_asm_dec_operand_size_calculator_explicit_ib, NULL },
+	{ fcml_fnp_asm_dec_operand_decoder_explicit_ib, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_segment_relative_offset, fcml_fnp_asm_dec_operand_size_calculator_segment_relative_offset, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_rm, NULL, fcml_fnp_asm_dec_ihc_near_pointer },
 	{ fcml_fnp_asm_dec_operand_decoder_r, NULL, NULL },
@@ -1215,6 +1271,10 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 	decoding_context->calculated_instruction_size += operands_size;
 	decoding_context->mnemonics = instruction_decoding_def->mnemonics;
 
+	// Store primary opcode byte.
+	fcml_int opcode_num = FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE( instruction_decoding_def->opcode_flags );
+	decoding_context->primary_opcode_byte = decoding_context->opcodes[ opcode_num ];
+
 	// Decode operands.
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 		fcml_ist_asm_dec_operand_decoding *operand_decoding = &(instruction_decoding_def->operand_decodings[i]);
@@ -1293,7 +1353,11 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 		}
 
 		// Get instruction for given opcode.
-		tree_element = decoding_tree->opcode[ opcode_byte ];
+		if( tree_element ) {
+			tree_element = tree_element->opcodes[ opcode_byte ];
+		} else {
+			tree_element = decoding_tree->opcode[ opcode_byte ];
+		}
 
 	}
 
