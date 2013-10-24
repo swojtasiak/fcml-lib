@@ -228,8 +228,10 @@ typedef union fcml_st_instruction_pointer {
 #define FCML_OS_DWORD		32
 #define FCML_OS_FWORD		48
 #define FCML_OS_QWORD		64
+#define FCML_OS_MWORD		64
 #define FCML_OS_TBYTE		80
 #define FCML_OS_OWORD		128
+#define FCML_OS_XWORD		128
 #define FCML_OS_YWORD		256
 
 typedef enum fcml_en_register {

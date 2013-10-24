@@ -262,6 +262,10 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_OP_VEX_VVVV_REG_BASE						0x0C000000
 #define FCML_OP_VEX_VVVV_REG( reg_type, encoded_register_size )	( FCML_OP_VEX_VVVV_REG_BASE | ( encoded_register_size << 4 ) | reg_type )
 
+/*************************/
+/* IS4 operand decoding. */
+/*************************/
+
 #define FCML_OP_OPERAND_IS4							0x0D000000
 
 /**************************/
