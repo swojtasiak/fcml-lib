@@ -150,14 +150,16 @@ void new_disassembler_test(void) {
 	// FCML_I3264_A( "cmpltsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x01 );
 	// f20fc2c101 cmpltsd xmm0,xmm1
 
-	fcml_uint8_t code[] = { 0xf2, 0x0f, 0xc2, 0xc1, 0x01 };
+	//FCML_I32( "jnc 00000204h", 0x66, 0x0f, 0x83, 0xff, 0xf1 );
+	// 660f83fff1 jnc 00000204h
 
+	fcml_uint8_t code[] = { 0x66, 0x0f, 0x84, 0xff, 0xf1 };
 
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
 	context.configuration.use_short_form_mnemonics = FCML_FALSE;
 	context.disassembler = disassembler;
-	context.addr_form = FCML_AF_64_BIT;
+	context.addr_form = FCML_AF_32_BIT;
 	context.address_size_attribute = FCML_DS_32;
 	context.operand_size_attribute = FCML_DS_32;
 	context.code_address = code;
@@ -186,7 +188,7 @@ void new_disassembler_test(void) {
 		stream.offset = 0;
 		stream.size = sizeof( buffer );
 
-		if( !fcml_fn_rend_render_instruction( &dialect, &stream, result, FCML_REND_FLAG_RENDER_CODE | FCML_REND_FLAG_HEX_IMM ) ) {
+		if( !fcml_fn_rend_render_instruction( &dialect, &stream, result, FCML_REND_FLAG_RENDER_CODE | FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY ) ) {
 			printf( "%s\n", buffer );
 		}
 
