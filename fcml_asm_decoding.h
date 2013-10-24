@@ -25,6 +25,7 @@ typedef struct fcml_st_asm_decoding_context {
 	fcml_uint8_t opcodes[3];
 	fcml_uint8_t primary_opcode_byte;
 	fcml_int opcodes_count;
+	fcml_int virtual_opcodes_count;
 	fcml_st_asm_dec_prefixes prefixes;
 	fcml_data_size effective_address_size_attribute;
 	fcml_data_size effective_operand_size_attribute;

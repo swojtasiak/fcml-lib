@@ -168,7 +168,7 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 			// Handle VEX/XOP prefixes.
 			if( prefix_type == FCML_PT_VEX || prefix_type == FCML_PT_XOP ) {
 
-				if( !is_xop_vex_allowed ) {
+				if( is_xop_vex_allowed ) {
 
 					fcml_stream_pointer sp = fcml_fn_stream_save_point( stream );
 
@@ -247,6 +247,7 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 				prefix_details->prefix = prefix;
 				prefix_details->prefix_type = prefix_type;
 				prefix_details->mandatory_prefix = is_mandatory_candidate;
+				prefixes_details->prefixes_bytes_count += prefix_size;
 				fcml_fn_stream_seek(stream, prefix_size, IRA_CURRENT);
 				prefix_index++;
 			} else {

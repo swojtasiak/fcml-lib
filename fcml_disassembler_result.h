@@ -39,6 +39,7 @@ typedef struct fcml_st_dasm_instruction_prefix {
 typedef struct fcml_st_dasm_dec_prefixes {
 	fcml_st_dasm_instruction_prefix prefixes[FCML_DASM_PREFIXES_COUNT];
 	fcml_int prefixes_count;
+	fcml_int prefixes_bytes_count;
 	fcml_bool is_vex;
 	fcml_bool is_xop;
 	fcml_bool is_rex;

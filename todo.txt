@@ -75,3 +75,6 @@ Przyk�adowo: PSRL
 Branch hints:
 • 2EH—Branch not taken (used only with Jcc instructions)
 • 3EH—Branch taken (used only with Jcc instructions)
+
+24.10.2013
+Dodac sprawdzanie podczas disassemblacji czy czaami nie dobieramy instrukcji ktora nie moze posiaac jakiegokolwiek prefixa 66, albo mentary jezeli jest on dostepny.

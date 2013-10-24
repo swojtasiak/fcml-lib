@@ -91,6 +91,14 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
  * Utility functions.
  *********************/
 
+void fcml_ifn_asm_dec_utils_set_x64_exp( fcml_st_register *reg, fcml_bool is_rex ) {
+	if( is_rex ) {
+		reg->x64_exp = ( reg->type == FCML_REG_GPR && reg->size == FCML_DS_8 && reg->reg >= 4 && reg->reg <= 7 );
+	} else {
+		reg->x64_exp = FCML_FALSE;
+	}
+}
+
 void fcml_ifn_utils_set_segment_selector( fcml_st_segment_selector *seg_sel, fcml_uint8_t seg_reg, fcml_bool is_default ) {
 
 	seg_sel->is_default_reg = is_default;
@@ -456,6 +464,10 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_explicit_ib( fcml_st_asm_decodin
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
+// -----------------------
+// Segment relative offset
+// -----------------------
+
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_segment_relative_offset( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -505,6 +517,10 @@ fcml_int fcml_fnp_asm_dec_operand_size_calculator_segment_relative_offset( fcml_
 	return context->effective_address_size_attribute / 8;
 }
 
+// -----------
+// ModRM - RM
+// -----------
+
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -520,6 +536,8 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context
 		operand->reg.reg = decoded_modrm->reg.value;
 		operand->reg.type = rm_args->reg_type;
 		operand->reg.size = fcml_ifn_dec_asm_decode_encoded_size_value( context, rm_args->encoded_register_operand_size );
+
+		fcml_ifn_asm_dec_utils_set_x64_exp( &(operand->reg), context->prefixes.is_rex );
 
 	} else if ( rm_args->flags & FCML_RMF_M ) {
 
@@ -556,6 +574,10 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context
 	return error;
 }
 
+// --------------------
+// Far pointer indirect
+// --------------------
+
 fcml_sf_def_tma_rm  fcml_ist_asm_dec_far_pointer_indirect_args = { FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_FPI, FCML_RMF_M };
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -563,18 +585,45 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect( fcml_st_as
 	return fcml_fnp_asm_dec_operand_decoder_rm( context, operand_wrapper, &rm_args );
 }
 
+// ----------
+// ModRM - R
+// ----------
+
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_r( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_sf_def_tma_r *r_args = (fcml_sf_def_tma_r*)args;
+
+	operand_wrapper->operand.type = FCML_EOT_REGISTER;
+	fcml_st_register *reg = &(operand_wrapper->operand.reg);
+
+	reg->reg = context->decoded_modrm.reg_opcode;
+	reg->type = r_args->reg_type;
+	reg->size = fcml_ifn_dec_asm_decode_encoded_size_value( context, r_args->encoded_register_operand_size );
+
+	fcml_ifn_asm_dec_utils_set_x64_exp( reg, context->prefixes.is_rex );
+
 	return error;
 }
+
+// ----
+// VVVV
+// ----
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_vex_vvvv( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	return error;
-}
 
-fcml_int fcml_fnp_asm_dec_operand_size_calculator_vex_vvvv( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_sf_def_tma_vex_vvvv_reg *v_args = (fcml_sf_def_tma_vex_vvvv_reg*)args;
+
+	operand_wrapper->operand.type = FCML_EOT_REGISTER;
+	fcml_st_register *reg = &(operand_wrapper->operand.reg);
+
+	reg->reg = context->prefixes.vvvv;
+	reg->type = v_args->reg_type;
+	reg->size = fcml_ifn_dec_asm_decode_encoded_size_value( context, v_args->encoded_register_size );
+
+	return error;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_is4( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -653,7 +702,7 @@ fcml_st_asm_dec_operand_decoder_def fcml_def_operand_decoders[] = {
 	{ fcml_fnp_asm_dec_operand_decoder_segment_relative_offset, fcml_fnp_asm_dec_operand_size_calculator_segment_relative_offset, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_rm, NULL, fcml_fnp_asm_dec_ihc_near_pointer },
 	{ fcml_fnp_asm_dec_operand_decoder_r, NULL, NULL },
-	{ fcml_fnp_asm_dec_operand_decoder_vex_vvvv, fcml_fnp_asm_dec_operand_size_calculator_vex_vvvv, NULL },
+	{ fcml_fnp_asm_dec_operand_decoder_vex_vvvv, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_is4, fcml_fnp_asm_dec_operand_size_calculator_is4, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_rm, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_pseudo_op, fcml_fnp_asm_dec_operand_size_calculator_pseudo_op, NULL }
@@ -1300,7 +1349,7 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 		fcml_ifn_asm_dec_clear_mandatory_flag( decoding_context, 0xF3 );
 	}
 
-	decoding_context->calculated_instruction_size = decoding_context->prefixes.prefixes_count + decoding_context->opcodes_count;
+	decoding_context->calculated_instruction_size = decoding_context->prefixes.prefixes_bytes_count + decoding_context->opcodes_count;
 
 	// Calculates effective operand sizes. It's not important if they will be used or not.
 	decoding_context->effective_address_size_attribute = fcml_adm_sec_calculate_effective_asa( decoding_context );
@@ -1354,7 +1403,7 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 
 	// Store primary opcode byte.
 	fcml_int opcode_num = FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE( instruction_decoding_def->opcode_flags );
-	decoding_context->primary_opcode_byte = decoding_context->opcodes[ opcode_num ];
+	decoding_context->primary_opcode_byte = decoding_context->opcodes[ opcode_num - decoding_context->virtual_opcodes_count ];
 
 	// Decode operands.
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
@@ -1431,6 +1480,8 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 		// Store all non virtual opcode bytes inside context.
 		if( !fcml_ifn_asm_dec_opcode_iterator_is_virtual_opcode( iterator ) ) {
 			context->opcodes[context->opcodes_count++] = opcode_byte;
+		} else {
+			context->virtual_opcodes_count++;
 		}
 
 		// Get instruction for given opcode.
