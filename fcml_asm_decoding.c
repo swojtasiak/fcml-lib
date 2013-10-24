@@ -628,8 +628,6 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_vex_vvvv( fcml_st_asm_decoding_c
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_is4( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
 	// IS4 byte is located just after ModR/M field, so it doesn't have to be read in any post processors.
 
 	fcml_bool result;
@@ -646,7 +644,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_is4( fcml_st_asm_decoding_contex
 	reg->size = context->prefixes.l ? FCML_OS_YWORD : FCML_OS_XWORD;
 	reg->x64_exp = FCML_FALSE;
 
-	return error;
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_int fcml_fnp_asm_dec_operand_size_calculator_is4( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
@@ -654,12 +652,29 @@ fcml_int fcml_fnp_asm_dec_operand_size_calculator_is4( fcml_st_asm_decoding_cont
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_pseudo_op( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	return error;
+
+	fcml_bool result;
+	fcml_uint8_t pseudo_op = fcml_fn_stream_read( context->stream, &result );
+	if( !result ) {
+		return FCML_CEH_GEC_EOF;
+	}
+
+	fcml_st_operand *operand = &(operand_wrapper->operand);
+	fcml_st_immediate *immediate = &(operand->immediate);
+
+	operand->type = FCML_EOT_IMMEDIATE;
+	immediate->is_signed = FCML_TRUE;
+	immediate->imm_size = FCML_DS_8;
+	immediate->imm8 = pseudo_op;
+
+	context->pseudo_opcode.is_not_null = FCML_TRUE;
+	context->pseudo_opcode.value = pseudo_op;
+
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_int fcml_fnp_asm_dec_operand_size_calculator_pseudo_op( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	return 1;
 }
 
 // *********************
@@ -707,6 +722,13 @@ fcml_st_asm_dec_calculated_hints fcml_fnp_asm_dec_ihc_immediate_dis_relative( fc
     return hints;
 }
 
+fcml_st_asm_dec_calculated_hints fcml_fnp_asm_dec_ihc_pseudo_opcode( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
+	fcml_st_asm_dec_calculated_hints hints;
+    hints.instruction_hints = 0;
+    hints.operand_hints = FCML_OP_HINT_PSEUDO_OPCODE;
+    return hints;
+}
+
 fcml_st_asm_dec_operand_decoder_def fcml_def_operand_decoders[] = {
 	{ NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_imm, fcml_fnp_asm_dec_operand_size_calculator_imm, NULL },
@@ -723,7 +745,7 @@ fcml_st_asm_dec_operand_decoder_def fcml_def_operand_decoders[] = {
 	{ fcml_fnp_asm_dec_operand_decoder_vex_vvvv, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_is4, fcml_fnp_asm_dec_operand_size_calculator_is4, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_rm, NULL, NULL },
-	{ fcml_fnp_asm_dec_operand_decoder_pseudo_op, fcml_fnp_asm_dec_operand_size_calculator_pseudo_op, NULL }
+	{ fcml_fnp_asm_dec_operand_decoder_pseudo_op, fcml_fnp_asm_dec_operand_size_calculator_pseudo_op, fcml_fnp_asm_dec_ihc_pseudo_opcode }
 };
 
 void fcml_ifn_asm_dec_dts_free_operand_decoding( fcml_ist_asm_dec_operand_decoding *operand_decoding ) {

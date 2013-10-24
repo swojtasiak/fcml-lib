@@ -33,6 +33,7 @@ typedef struct fcml_st_asm_decoding_context {
 	fcml_ist_asm_dec_operand_wrapper operand_wrappers[FCML_OPERANDS_COUNT];
 	fcml_st_modrm decoded_modrm;
 	fcml_hints instruction_hints;
+	fcml_nuint8_t pseudo_opcode;
 } fcml_st_asm_decoding_context;
 
 fcml_ceh_error fcml_fn_asm_init_instruction_decodings( fcml_st_dialect_context *dialect_context, fcml_st_disassembler **disassembler );

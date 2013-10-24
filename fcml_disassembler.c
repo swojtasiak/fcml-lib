@@ -353,10 +353,10 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 			fcml_fn_env_memory_copy( &dis_res->instruction_code, context->code_address, dis_res->instruction_size > FCML_INSTRUCTION_SIZE ? FCML_INSTRUCTION_SIZE : dis_res->instruction_size );
 
 			// Mnemonic.
-			// TODO: To jest chyba zbyt dialect specific.
 			fcml_bool shortform = decoding_context.disassembler_context->configuration.use_short_form_mnemonics;
-			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute );
+			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute );
 			if( mnemonic ) {
+				dis_res->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
 				dis_res->is_shortcut = mnemonic->shortcut;
 				dis_res->mnemonic = mnemonic->mnemonic;
 			} else {

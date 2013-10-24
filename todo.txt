@@ -77,4 +77,5 @@ Branch hints:
 • 3EH—Branch taken (used only with Jcc instructions)
 
 24.10.2013
-Dodac sprawdzanie podczas disassemblacji czy czaami nie dobieramy instrukcji ktora nie moze posiaac jakiegokolwiek prefixa 66, albo mentary jezeli jest on dostepny.
+- Dodac sprawdzanie podczas disassemblacji czy czaami nie dobieramy instrukcji ktora nie moze posiaac jakiegokolwiek prefixa 66, albo mentary jezeli jest on dostepny.
+- Wybod formy rendering short, pseudo opcode, full dac na poziom renderea i niech on za to podpowiada.

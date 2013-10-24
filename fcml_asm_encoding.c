@@ -1326,27 +1326,29 @@ fcml_ceh_error fcml_fnp_asm_operand_acceptor_pseudo_op( fcml_st_asm_encoding_con
 }
 
 fcml_ceh_error fcml_fnp_asm_operand_encoder_pseudo_op( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-    if( operand_def->type == FCML_EOT_IMMEDIATE ) {
+	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
+		if( operand_def->type == FCML_EOT_IMMEDIATE ) {
 
-        // IMM8 encoding is given directly in operand.
-        fcml_st_integer source;
-        fcml_ceh_error error = fcml_fn_utils_imm_to_integer( &(operand_def->immediate), &source );
-        if( error ) {
-            return error;
-        }
+			// IMM8 encoding is given directly in operand.
+			fcml_st_integer source;
+			fcml_ceh_error error = fcml_fn_utils_imm_to_integer( &(operand_def->immediate), &source );
+			if( error ) {
+				return error;
+			}
 
-        fcml_st_integer destination;
-        if( !fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_8, FCML_DS_8, 0, NULL ) ) {
-            return FCML_EN_UNSUPPORTED_OPPERAND;
-        }
+			fcml_st_integer destination;
+			if( !fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_8, FCML_DS_8, 0, NULL ) ) {
+				return FCML_EN_UNSUPPORTED_OPPERAND;
+			}
 
-        operand_enc->code[0] = destination.int8;
+			operand_enc->code[0] = destination.int8;
 
-    } else if ( context->mnemonic->pseudo_op.is_not_null ) {
-        // IMM8 is not available in operand, so its value should be given in mnemonic configuration.
-        operand_enc->code[0] = context->mnemonic->pseudo_op.value;
-    }
-    operand_enc->code_length = 1;
+		} else if ( context->mnemonic->pseudo_op.is_not_null ) {
+			// IMM8 is not available in operand, so its value should be given in mnemonic configuration.
+			operand_enc->code[0] = context->mnemonic->pseudo_op.value;
+		}
+		operand_enc->code_length = 1;
+	}
     return FCML_CEH_GEC_NO_ERROR;
 }
 

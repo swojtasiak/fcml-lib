@@ -1491,7 +1491,9 @@ int _ira_instruction_decoder_IA( struct ira_diss_context *context, struct ira_di
 	}
 
 	// Prepare mnemonic
-	fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( instruction->mnemonics, (context->config->flags & _IRA_CF_USE_MNEMONIC_SHORTCUTS) ? FCML_TRUE : FCML_FALSE, decoding_context->effective_operand_size_attribute, decoding_context->effective_address_size_attribute );
+	fcml_nuint8_t s;
+	s.is_not_null = FCML_FALSE;
+	fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( instruction->mnemonics, (context->config->flags & _IRA_CF_USE_MNEMONIC_SHORTCUTS) ? FCML_TRUE : FCML_FALSE, s,decoding_context->effective_operand_size_attribute, decoding_context->effective_address_size_attribute );
 	if( mnemonic ) {
 	    result->is_shortcut = mnemonic->shortcut;
 	    result->mnemonic = mnemonic->mnemonic;

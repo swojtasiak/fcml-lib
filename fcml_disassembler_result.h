@@ -63,6 +63,7 @@ typedef struct fcml_st_disassembler_result {
 	fcml_st_ceh_error_container *errors;
 	/* Mnemonic */
 	fcml_bool is_shortcut;
+	fcml_bool is_pseudo_op_shortcut;
 	fcml_string mnemonic;
 	fcml_uint8_t instruction_code[FCML_INSTRUCTION_SIZE];
 	fcml_data_size instruction_size;
