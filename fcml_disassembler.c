@@ -303,6 +303,8 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
+	*result = NULL;
+
 	error = fcml_ifn_dasm_validate_and_prepare_context( context );
 	if( error ) {
 		return error;

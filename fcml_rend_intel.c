@@ -251,7 +251,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *d
 	fcml_int i;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 		if( result->operands[i].type != FCML_EOT_NONE ) {
-			fcml_bool do_not_render;
+			fcml_bool do_not_render = FCML_FALSE;
 			error = fcml_ifn_rend_print_operand_intel( dialect_context, &local_stream, result, i, render_flags, &do_not_render );
 			if( !error ) {
 				if( !do_not_render ) {
