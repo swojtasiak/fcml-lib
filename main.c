@@ -144,11 +144,18 @@ void new_disassembler_test(void) {
 	// FCML_I64( "vblendvpd ymm10,ymm14,ymmword ptr [r9+rax],ymm2", 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20 );
 	// c4430d4b140120 vblendvpd ymm10,ymm14,ymmword ptr [r9d+eax],ymm2
 
+	// FCML_I32( "cmpsd xmm0,mmword ptr [eax+00000020h],07h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x07 );
+	// f20fc2402007 cmpsd xmm0,mmword ptr [eax+32],07h
 
-	fcml_uint8_t code[] = { 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20 };
+	// FCML_I3264_A( "cmpltsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x01 );
+	// f20fc2c101 cmpltsd xmm0,xmm1
+
+	fcml_uint8_t code[] = { 0xf2, 0x0f, 0xc2, 0xc1, 0x01 };
+
 
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
+	context.configuration.use_short_form_mnemonics = FCML_FALSE;
 	context.disassembler = disassembler;
 	context.addr_form = FCML_AF_64_BIT;
 	context.address_size_attribute = FCML_DS_32;
