@@ -125,7 +125,16 @@ void new_disassembler_test(void) {
 	// FCML_I32_M( "mov al,byte ptr [40302010h]", 2, FCML_MI( 0xA0, 0x10, 0x20, 0x30, 0x40 ), FCML_MI( 0x8a, 0x05, 0x10, 0x20, 0x30, 0x40 ) );
 	// a010203040 mov al,byte ptr [40302010h]
 
-	fcml_uint8_t code[] = { 0xA0, 0x10, 0x20, 0x30, 0x40 };
+	// FCML_I32( "call 00001044h",  0x66, 0xE8, 0x40, 0x00 );
+	// 66e84000 call 00001044h
+
+	// FCML_I32( "call 00401004h", 0xE8, 0xFF, 0xFF, 0xFF, 0xFF );
+	// e8ffffffff call 00401004h
+
+	// FCML_I64( "call 0000800000401004h", 0xE8, 0xFF, 0xFF, 0xFF, 0xFF );
+	// e8ffffffff call 0000800000401004h
+
+	fcml_uint8_t code[] = {  0xE8, 0xFF, 0xFF, 0xFF, 0xFF  };
 
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
@@ -135,7 +144,16 @@ void new_disassembler_test(void) {
 	context.operand_size_attribute = FCML_DS_32;
 	context.code_address = code;
 	context.code_size = sizeof( code );
-	context.ip.eip = FCML_AF_32_BIT;
+	context.ip.rip = 0x00401000;
+
+/*	fcml_st_disassembler_context context;
+		context.disassembler = disassembler;
+		context.addr_form = FCML_AF_64_BIT;
+		context.address_size_attribute = FCML_DS_32;
+		context.operand_size_attribute = FCML_DS_32;
+		context.code_address = code;
+		context.code_size = sizeof( code );
+		context.ip.rip = 0x0000800000401000LL;*/
 
 	fcml_st_disassembler_result *result;
 	error = fcml_fn_disassemble( &context, &result );
