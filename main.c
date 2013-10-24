@@ -141,7 +141,11 @@ void new_disassembler_test(void) {
 	// FCML_I64( "vaddpd ymm10,ymm14,ymmword ptr [r9+r8]", 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 );
 	// c4010d581401 vaddpd ymm10,ymm14,ymmword ptr [r9d+r8d] (ASA - 32 bity.)
 
-	fcml_uint8_t code[] = { 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 };
+	// FCML_I64( "vblendvpd ymm10,ymm14,ymmword ptr [r9+rax],ymm2", 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20 );
+	// c4430d4b140120 vblendvpd ymm10,ymm14,ymmword ptr [r9d+eax],ymm2
+
+
+	fcml_uint8_t code[] = { 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20 };
 
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
