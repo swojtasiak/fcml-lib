@@ -14,6 +14,9 @@
 #include "ira.h"
 #include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
+#include "fcml_disassembler.h"
+#include "fcml_asm_dialect_intel.h"
+#include "fcml_rend_intel.h"
 
 extern fcml_st_assembler *assembler;
 
@@ -21,36 +24,51 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 	fcml_bool success = FCML_TRUE;
 
-	struct ira_disassemble_result result;
-	result.code = RC_OK;
+	fcml_st_disassembler_result *dis_result = NULL;
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_st_dialect_context dialect = fcml_fn_get_intel_dialect_context();
+
+	fcml_st_disassembler *disassembler;
 
 	if( !only_assemble ) {
 
-		struct ira_disassemble_info info;
-		if( !multiple_assemblation_result ) {
-			info.address = code;
-			info.size = size;
-		} else {
-			info.address = code + 2;
-			info.size = code[1];
+		error = fcml_fn_disassembler_init( &dialect, &disassembler );
+		if( error ) {
+			// Error.
+			printf( "Can not allocate disassembler." );
+			return FCML_FALSE;
 		}
-		info.address_size_attribute = 0;
-		info.operand_size_attribute = 0;
-		info.mode = x64 ? IRA_MOD_64BIT : IRA_MOD_32BIT;
-		info.config.flags = 0;
 
-		if( x64 ) {
-			info.instruction_pointer.rip = 0x0000800000401000;
+		fcml_st_disassembler_context context;
+		context.configuration.use_short_form_mnemonics = FCML_FALSE;
+		context.configuration.imm_extend_to_osa = FCML_TRUE;
+		context.disassembler = disassembler;
+		context.addr_form = x64 ? IRA_MOD_64BIT : FCML_AF_32_BIT;
+		context.address_size_attribute = 0;
+		context.operand_size_attribute = 0;
+		if( !multiple_assemblation_result ) {
+			context.code_address = code;
+			context.code_size = size;
 		} else {
-			info.instruction_pointer.eip = 0x00401000;
+			context.code_address = code + 2;
+			context.code_size = code[1];
+		}
+		context.code_address = code;
+		context.code_size = sizeof( code );
+		if( x64 ) {
+			context.ip.rip = 0x0000800000401000;
+		} else {
+			context.ip.eip = 0x00401000;
 		}
 
 		// Disassemble.
-		ira_disassemble( &info, &result );
+		error = fcml_fn_disassemble( &context, &dis_result );
 
 	}
 
-	if( result.code == RC_OK ) {
+	if( error == FCML_CEH_GEC_NO_ERROR ) {
 
 		fcml_bool is_67 = FCML_FALSE;
 		fcml_bool is_66 = FCML_FALSE;
@@ -64,16 +82,18 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			if( should_fail ) {
 				printf("Should fail: %s\n", mnemonic);
 				success = FCML_FALSE;
+				fcml_fn_disassemble_result_free( dis_result );
+				fcml_fn_disassembler_free( disassembler );
 				return success;
 			}
 
 			// Looking for 0x67 prefix.
 			int i;
-			for( i = 0; i < _IRA_PREFIXES_COUNT; i++ ) {
-				if( result.prefixes[i].prefix == 0x67 ) {
+			for( i = 0; i < FCML_DASM_PREFIXES_COUNT; i++ ) {
+				if( dis_result->prefixes.prefixes[i].prefix == 0x67 ) {
 					is_67 = FCML_TRUE;
 				}
-				if( result.prefixes[i].prefix == 0x66 ) {
+				if( dis_result->prefixes.prefixes[i].prefix == 0x66 ) {
                     is_66 = FCML_TRUE;
                 }
 			}
@@ -81,23 +101,29 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			// Print.
 			char buffer[512] = {0};
 
-			struct ira_intel_format_info format;
-			format.show_zero_displacement = 0;
-			format.show_extended_displacement = 1;
-			format.immediate_hex_display = 1;
-			format.immediate_signed = 1;
-			format.show_instruction_code = 0;
-			format.show_extended_immediate = 1;
-			format.show_conditional_mnemonics_for_carry_flag = 1;
-			format.conditional_suffix_group = 0;
+			fcml_st_memory_stream stream;
+			stream.base_address = buffer;
+			stream.offset = 0;
+			stream.size = sizeof( buffer );
 
-			ira_format_intel_instruction( buffer, sizeof(buffer), &result, &format );
+			error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY );
+			if( error ) {
+				printf("Disassemblation failed, with error code: %d\n", error );
+				if( !only_print_result ) {
+					success = FCML_FALSE;
+				}
+				fcml_fn_disassemble_result_free( dis_result );
+				fcml_fn_disassembler_free( disassembler );
+				return success;
+			}
 
 			if( strcmp( buffer, mnemonic ) != 0 ) {
 				printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
 				if( !only_print_result ) {
 					success = FCML_FALSE;
 				}
+				fcml_fn_disassemble_result_free( dis_result );
+				fcml_fn_disassembler_free( disassembler );
 				return success;
 			} else {
 				if( !only_print_result ) {
@@ -116,6 +142,8 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 				success = FCML_FALSE;
 			}
 			fcml_x64iap_free( result );
+			fcml_fn_disassemble_result_free( dis_result );
+			fcml_fn_disassembler_free( disassembler );
 			return success;
 		}
 
@@ -338,6 +366,9 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		success = should_fail;
 
 	}
+
+	fcml_fn_disassemble_result_free( dis_result );
+	fcml_fn_disassembler_free( disassembler );
 
 	return success;
 }

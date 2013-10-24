@@ -153,15 +153,15 @@ void new_disassembler_test(void) {
 	//FCML_I32( "jnc 00000204h", 0x66, 0x0f, 0x83, 0xff, 0xf1 );
 	// 660f83fff1 jnc 00000204h
 
-	fcml_uint8_t code[] = { 0x66, 0x0f, 0x84, 0xff, 0xf1 };
+	fcml_uint8_t code[] = {  0x66, 0x81, 0xD5, 0x01, 0x02 };
 
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
 	context.configuration.use_short_form_mnemonics = FCML_FALSE;
 	context.disassembler = disassembler;
 	context.addr_form = FCML_AF_32_BIT;
-	context.address_size_attribute = FCML_DS_32;
-	context.operand_size_attribute = FCML_DS_32;
+	context.address_size_attribute = 0;
+	context.operand_size_attribute = 0;
 	context.code_address = code;
 	context.code_size = sizeof( code );
 	context.ip.rip = 0x00401000;
@@ -209,13 +209,15 @@ int main(int argc, char **argv) {
 	}
 	ira_init();
 
-	new_disassembler_test();
-	return 0;
+	//new_disassembler_test();
+	//return 0;
 
    // FCML_I32_D( "vgatherdpd xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x92, 0x04, 0x28 );
 
 	///return 0;
 
+	FCML_I32_P( "adc bp,0201h", 0x66, 0x81, 0xD5, 0x01, 0x02 );
+	return 0;
 
 	// , FCML_MI( 0xd0, 0x10 )
 	//return 0;
