@@ -91,6 +91,18 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
  * Utility functions.
  *********************/
 
+void fcml_ifn_utils_set_segment_selector( fcml_st_segment_selector *seg_sel, fcml_uint8_t seg_reg, fcml_bool is_default ) {
+
+	seg_sel->is_default_reg = is_default;
+
+	fcml_st_register *reg_seg = &(seg_sel->segment_selector);
+	reg_seg->reg = seg_reg;
+	reg_seg->size = FCML_DS_16;
+	reg_seg->type = FCML_REG_SEG;
+	reg_seg->x64_exp = FCML_FALSE;
+
+}
+
 fcml_uint8_t fcml_ifn_dec_asm_override_segment_reg( fcml_st_asm_decoding_context *context, fcml_uint8_t reg ) {
 	fcml_int i;
 	for( i = 0; i < context->prefixes.prefixes_count; i++ ) {
@@ -320,13 +332,74 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_opcode_reg( fcml_st_asm_decoding
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	// TODO: tu mamy porblem, mozemy to kodowac do offset? ale w takim rpzypadku dlaczego podczas assemblacji wymagamy imm. A znowu dekodowac do IMM? Troche dziwne, rpzeciez to wyliczony address.
+	fcml_sf_def_tma_immediate_dis_relative *rel_args = (fcml_sf_def_tma_immediate_dis_relative*)args;
+	fcml_data_size int_size = 0;
+
+	if( FCML_IS_EOS_DYNAMIC( rel_args->encoded_imm_size ) ) {
+		return FCML_EN_UNSUPPORTED_ADDRESSING_FORM;
+	}
+
+	if( rel_args->encoded_imm_size != FCML_EOS_UNDEFINED ) {
+		int_size = rel_args->encoded_imm_size * 8;
+	} else {
+
+		if( context->effective_operand_size_attribute == FCML_DS_16 && context->disassembler_context->addr_form == FCML_AF_64_BIT ) {
+			return FCML_EN_UNSUPPORTED_ADDRESSING_FORM;
+		}
+
+		int_size = FCML_DS_32;
+
+		// For 32 and 64 bit addressing, 32 bit immediate value should be used.
+		// Only for 16 bit addressing value differs and is equal to 16.
+		if( context->effective_operand_size_attribute == FCML_DS_16 ) {
+			int_size = FCML_DS_16;
+		}
+
+	}
+
+	fcml_st_integer integer;
+	integer.is_signed = FCML_TRUE;
+
+	// Read displacement value from stream.
+	error = fcml_fn_utils_decode_integer( context->stream, &integer, int_size );
+	if( error ) {
+		return error;
+	}
+
+	operand_wrapper->operand.type = FCML_EOT_ADDRESS;
+	operand_wrapper->operand.address.address_form = FCML_AF_OFFSET;
+
+	fcml_st_offset *offset = &(operand_wrapper->operand.address.offset);
+	offset->is_signed = FCML_TRUE;
+
+	// Calculate offset relative to IP.
+	fcml_st_instruction_pointer *ip = &(context->disassembler_context->ip);
+
+	switch( context->effective_operand_size_attribute ) {
+	case FCML_DS_16:
+		offset->off32 = ( (fcml_int32_t)ip->eip + context->calculated_instruction_size + integer.int16 ) & 0x0000FFFF;
+		offset->size = FCML_DS_32;
+		break;
+	case FCML_DS_32:
+		offset->off32 = ( (fcml_int32_t)ip->eip + context->calculated_instruction_size + integer.int32 );
+		offset->size = FCML_DS_32;
+		break;
+	case FCML_DS_64:
+		offset->off64 = ( (fcml_int64_t)ip->rip + context->calculated_instruction_size + integer.int32 );
+		offset->size = FCML_DS_64;
+		break;
+	}
+
+	// Sets CS segment register.
+	fcml_ifn_utils_set_segment_selector( &(operand_wrapper->operand.address.segment_selector), FCML_REG_CS, FCML_TRUE );
+
 	return error;
 }
 
 fcml_int fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return 0;
+	return ( context->effective_operand_size_attribute == FCML_DS_16 ) ? FCML_DS_16 / 8 : FCML_DS_32 / 8;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -433,6 +506,7 @@ fcml_int fcml_fnp_asm_dec_operand_size_calculator_segment_relative_offset( fcml_
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_st_modrm *decoded_modrm = &(context->decoded_modrm);
@@ -559,12 +633,19 @@ fcml_st_asm_dec_calculated_hints fcml_fnp_asm_dec_ihc_near_pointer( fcml_st_def_
     return hints;
 }
 
+fcml_st_asm_dec_calculated_hints fcml_fnp_asm_dec_ihc_immediate_dis_relative( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
+	fcml_st_asm_dec_calculated_hints hints;
+    hints.instruction_hints = 0;
+    hints.operand_hints = FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS;
+    return hints;
+}
+
 fcml_st_asm_dec_operand_decoder_def fcml_def_operand_decoders[] = {
 	{ NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_imm, fcml_fnp_asm_dec_operand_size_calculator_imm, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_explicit_reg, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_opcode_reg, NULL, NULL },
-	{ fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative, fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative, NULL },
+	{ fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative, fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative, fcml_fnp_asm_dec_ihc_immediate_dis_relative },
 	{ fcml_fnp_asm_dec_operand_decoder_far_pointer, fcml_fnp_asm_dec_operand_size_calculator_far_pointer, fcml_fnp_asm_dec_ihc_far_pointer },
 	{ fcml_fnp_asm_dec_operand_decoder_far_pointer_indirect, NULL, fcml_fnp_asm_dec_ihc_far_pointer },
 	{ fcml_fnp_asm_dec_operand_decoder_explicit_gps_reg_addressing, NULL, NULL },
@@ -666,10 +747,10 @@ fcml_bool fcml_asm_dec_is_prefix_available( fcml_st_asm_decoding_context *contex
 	return mandatory ? ( found_prefix != NULL && found_prefix->mandatory_prefix ) : ( found_prefix != NULL );
 }
 
-void fcml_ifn_asm_dec_change_prefix_to_mandatory( fcml_st_asm_decoding_context *context, uint8_t prefix_code ) {
+void fcml_ifn_asm_dec_clear_mandatory_flag( fcml_st_asm_decoding_context *context, uint8_t prefix_code ) {
 	fcml_st_dasm_instruction_prefix *prefix = fcml_ifn_asm_dec_get_prefix_if_available( context, prefix_code );
 	if( prefix ) {
-		prefix->mandatory_prefix = FCML_TRUE;
+		prefix->mandatory_prefix = FCML_FALSE;
 	}
 }
 
@@ -1207,16 +1288,16 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 
 	// Change prefixes to mandatory one if needed.
 
-	if( FCML_DEF_PREFIX_MANDATORY_66( instruction_decoding_def->prefixes_flags ) ) {
-		fcml_ifn_asm_dec_change_prefix_to_mandatory( decoding_context, 0x66 );
+	if( !FCML_DEF_PREFIX_MANDATORY_66( instruction_decoding_def->prefixes_flags ) ) {
+		fcml_ifn_asm_dec_clear_mandatory_flag( decoding_context, 0x66 );
 	}
 
-	if( FCML_DEF_PREFIX_MANDATORY_F2( instruction_decoding_def->prefixes_flags ) ) {
-		fcml_ifn_asm_dec_change_prefix_to_mandatory( decoding_context, 0xF2 );
+	if( !FCML_DEF_PREFIX_MANDATORY_F2( instruction_decoding_def->prefixes_flags ) ) {
+		fcml_ifn_asm_dec_clear_mandatory_flag( decoding_context, 0xF2 );
 	}
 
-	if( FCML_DEF_PREFIX_MANDATORY_F3( instruction_decoding_def->prefixes_flags ) ) {
-		fcml_ifn_asm_dec_change_prefix_to_mandatory( decoding_context, 0xF3 );
+	if( !FCML_DEF_PREFIX_MANDATORY_F3( instruction_decoding_def->prefixes_flags ) ) {
+		fcml_ifn_asm_dec_clear_mandatory_flag( decoding_context, 0xF3 );
 	}
 
 	decoding_context->calculated_instruction_size = decoding_context->prefixes.prefixes_count + decoding_context->opcodes_count;

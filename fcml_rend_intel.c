@@ -36,9 +36,24 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 
 	fcml_st_address *address = &(operand->address);
 
+	fcml_hints hints = operand->hints;
+
+	if( hints & FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS ) {
+
+		fcml_st_integer integer;
+		fcml_ceh_error error = fcml_fn_utils_offset_to_integer( &(address->offset), &integer );
+		if( error ) {
+			return error;
+		}
+
+		error = fcml_fn_rend_utils_format_append_integer( output_stream, &integer, FCML_TRUE );
+
+		return error;
+	}
+
 	if( dialect_context->size_operator_renderer && address->effective_address.size_operator > 0 ) {
 		fcml_char buffer[32] = {0};
-		dialect_context->size_operator_renderer( address->effective_address.size_operator, buffer, sizeof( buffer ), operand_details->hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
+		dialect_context->size_operator_renderer( address->effective_address.size_operator, buffer, sizeof( buffer ), operand->hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
 		fcml_fn_rend_utils_format_append_str( output_stream, buffer );
 	}
 

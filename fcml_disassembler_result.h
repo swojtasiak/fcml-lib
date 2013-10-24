@@ -56,7 +56,6 @@ typedef struct fcml_st_dasm_dec_prefixes {
 
 typedef struct fcml_st_asm_dec_operand_details {
 	fcml_en_access_mode access_mode;
-	fcml_hints hints;
 } fcml_st_asm_dec_operand_details;
 
 typedef struct fcml_st_disassembler_result {

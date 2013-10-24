@@ -700,7 +700,7 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_proces
 
 fcml_ceh_error fcml_fnp_asm_operand_acceptor_immediate_dis_relative( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	if ( operand_def->type == FCML_EOT_IMMEDIATE ) {
+	if ( ( operand_def->type == FCML_EOT_IMMEDIATE ) || ( operand_def->type == FCML_EOT_ADDRESS && operand_def->address.address_form == FCML_AF_OFFSET ) ) {
         fcml_en_attribute_size_flag flags = 0;
 	    if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
             // 64 bit OSA forced. Just in case, addressing mode acceptor is responsible for interpreting FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA
@@ -755,14 +755,22 @@ fcml_ceh_error fcml_st_asm_instruction_part_immediate_dis_relative_post_processo
         // Optimizer is responsible for setting optimal OSA value.
         fcml_data_size osa = context->data_size_flags.effective_operand_size;
 
-        fcml_st_immediate *imm = (fcml_st_immediate*)post_processor_args;
+        fcml_st_operand *operand_def = (fcml_st_operand*)post_processor_args;
+
         fcml_st_integer source;
         fcml_st_integer destination = {0};
         fcml_st_integer displacement = {0};
 
         int rel_size = fcml_ifn_asm_calculate_imm_size_for_encoded_rel( osa, encoded_rel_size );
 
-        error = fcml_fn_utils_imm_to_integer( imm, &source );
+		if( operand_def->type == FCML_EOT_IMMEDIATE ) {
+			error = fcml_fn_utils_imm_to_integer( &(operand_def->immediate), &source );
+		} else if( operand_def->type == FCML_EOT_ADDRESS && operand_def->address.address_form == FCML_AF_OFFSET ) {
+			error = fcml_fn_utils_offset_to_integer( &(operand_def->address.offset), &source );
+		} else {
+			return FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+
         if( !error ) {
 
             displacement.is_signed = FCML_TRUE;
@@ -859,7 +867,7 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_ien_asm
             error = FCML_EN_UNSUPPORTED_OPPERAND;
         }
 
-        operand_enc->post_processor_args = &(operand_def->immediate);
+        operand_enc->post_processor_args = &(operand_def);
 
     }
 

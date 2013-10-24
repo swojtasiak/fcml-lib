@@ -383,6 +383,7 @@ typedef enum fcml_en_operand_type {
 
 typedef enum fcml_en_operand_hints {
     FCML_OP_HINT_MULTIMEDIA_INSTRUCTION = 0x0001,
+    FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS = 0x0002,
 } fcml_en_operand_hints;
 
 typedef struct fcml_st_operand {
