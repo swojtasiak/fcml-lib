@@ -352,6 +352,14 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 			dis_res->instruction_size = decoding_context.calculated_instruction_size;
 			fcml_fn_env_memory_copy( &dis_res->instruction_code, context->code_address, dis_res->instruction_size > FCML_INSTRUCTION_SIZE ? FCML_INSTRUCTION_SIZE : dis_res->instruction_size );
 
+			// Conditions.
+			if( decoding_context.is_conditional ) {
+				dis_res->is_conditional = FCML_TRUE;
+				dis_res->condition = decoding_context.condition;
+			} else {
+				dis_res->is_conditional = FCML_FALSE;
+			}
+
 			// Mnemonic.
 			fcml_bool shortform = decoding_context.disassembler_context->configuration.use_short_form_mnemonics;
 			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute );

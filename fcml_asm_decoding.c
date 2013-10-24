@@ -1367,6 +1367,19 @@ void fcml_ifn_asm_dec_opcode_iterator_free( struct fcml_st_opcode_iterator *iter
  * Instructions decoding.
  ************************************/
 
+void fcml_ifn_asm_dec_decode_opcode_fields( fcml_st_asm_decoding_context *decoding_context, fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def, fcml_uint8_t primary_opcode_byte ) {
+
+	if( FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN( instruction_decoding_def->opcode_flags ) ) {
+		fcml_uint8_t condition = primary_opcode_byte & 0x0F;
+		decoding_context->is_conditional = FCML_TRUE;
+		decoding_context->condition.condition_type = ( condition >> 1 );
+		decoding_context->condition.is_negation = primary_opcode_byte & 0x01;
+	} else {
+		decoding_context->is_conditional = FCML_FALSE;
+	}
+
+}
+
 fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_context *decoding_context, fcml_ceh_asm_dec_instruction_decoding_def *instruction_decoding_def ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1444,6 +1457,9 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 	// Store primary opcode byte.
 	fcml_int opcode_num = FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE( instruction_decoding_def->opcode_flags );
 	decoding_context->primary_opcode_byte = decoding_context->opcodes[ opcode_num - decoding_context->virtual_opcodes_count ];
+
+	// Decode opcode fields.
+	fcml_ifn_asm_dec_decode_opcode_fields( decoding_context, instruction_decoding_def, decoding_context->primary_opcode_byte );
 
 	// Decode operands.
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {

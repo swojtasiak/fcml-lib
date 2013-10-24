@@ -70,6 +70,8 @@ typedef struct fcml_st_disassembler_result {
 	fcml_st_asm_dec_prefixes prefixes;
 	fcml_st_asm_dec_operand_details operand_details[FCML_OPERANDS_COUNT];
 	fcml_st_operand operands[FCML_OPERANDS_COUNT];
+	fcml_bool is_conditional;
+	fcml_st_condition condition;
 	fcml_hints hints;
 } fcml_st_disassembler_result;
 

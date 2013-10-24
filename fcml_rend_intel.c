@@ -189,6 +189,23 @@ fcml_ceh_error fcml_ifn_rend_print_operand_intel(  fcml_st_dialect_context *dial
 	return error;
 }
 
+fcml_string fcml_arr_rend_conditional_suffixes_intel[2][16] = {
+	{ "o", "no", "b", "nb", "e", "ne", "be", "nbe", "s", "ns", "p", "np", "l", "nl", "le", "nle" },
+	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
+};
+
+fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml_uint32_t render_flags ) {
+	if( render_flags & FCML_REND_FLAG_COND_SHOW_CARRY ) {
+		if( condition == 2 ) {
+			return "c";
+		} else if( condition == 3 ) {
+			return "nc";
+		}
+	}
+	fcml_int group = ( render_flags & FCML_REND_FLAG_COND_GROUP_2 ) ? 1 : 0;
+	return fcml_arr_rend_conditional_suffixes_intel[group][condition];
+}
+
 fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags ) {
 
 	fcml_char local_buffer[FCML_REND_LOCAL_BUFFER_SIZE] = {0};
@@ -211,6 +228,13 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *d
 
 	// Mnemonic.
 	fcml_fn_rend_utils_format_append_str( output_stream, result->mnemonic );
+
+	// Conditional suffix.
+	if( result->is_conditional ) {
+		fcml_int condition = ( result->condition.condition_type << 1 ) | ( ( result->condition.is_negation ) ? 1 : 0 );
+		fcml_string suffix = fcml_ifn_rend_get_conditional_suffix_intel( condition, render_flags );
+		fcml_fn_rend_utils_format_append_str( output_stream, suffix );
+	}
 
 	// Short form, so operands should be ignored.
 	if( result->is_shortcut ) {
