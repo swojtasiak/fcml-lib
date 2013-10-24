@@ -134,12 +134,19 @@ void new_disassembler_test(void) {
 	// FCML_I64( "call 0000800000401004h", 0xE8, 0xFF, 0xFF, 0xFF, 0xFF );
 	// e8ffffffff call 0000800000401004h
 
-	fcml_uint8_t code[] = {  0xE8, 0xFF, 0xFF, 0xFF, 0xFF  };
+	// FCML_I32( "add edx,esp", 0x01, 0xe2 );
+	// 01e2 add edx,esp
+
+
+	// FCML_I64( "vaddpd ymm10,ymm14,ymmword ptr [r9+r8]", 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 );
+	// c4010d581401 vaddpd ymm10,ymm14,ymmword ptr [r9d+r8d] (ASA - 32 bity.)
+
+	fcml_uint8_t code[] = { 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01 };
 
 	//imm_extend_to_osa
 	fcml_st_disassembler_context context;
 	context.disassembler = disassembler;
-	context.addr_form = FCML_AF_32_BIT;
+	context.addr_form = FCML_AF_64_BIT;
 	context.address_size_attribute = FCML_DS_32;
 	context.operand_size_attribute = FCML_DS_32;
 	context.code_address = code;
