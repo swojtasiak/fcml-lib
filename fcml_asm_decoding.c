@@ -1528,7 +1528,7 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 	// Found instruction addressing modes going here.
 	fcml_ceh_asm_dec_tree_diss_tree_element* tree_element = NULL;
 
-	while( fcml_ifn_asm_dec_opcode_iterator_has_next( iterator ) && ( !tree_element || !tree_element->instruction_decoding_defs ) ) {
+	while( fcml_ifn_asm_dec_opcode_iterator_has_next( iterator ) && tree_element->instruction_decoding_defs ) {
 
 		// Get next instructions opcode.
 		fcml_uint8_t opcode_byte = fcml_ifn_asm_dec_opcode_iterator_next( iterator );
@@ -1555,6 +1555,9 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 	// Skip opcode bytes.
 	//fcml_fn_stream_seek( context->stream, context->opcodes_count, IRA_CURRENT );
 
+	fcml_bool found = FCML_FALSE;
+
+	// Disassemble instruction using most appropriate addressing mode from disassemblation tree.
 	if( tree_element ) {
 
 		fcml_st_coll_list_element *current = tree_element->instruction_decoding_defs->head;
@@ -1574,6 +1577,7 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 				if( accept ) {
 					error = decoding_def->instruction_decoder( context, decoding_def );
 					if( !error ) {
+						found = FCML_TRUE;
 						break;
 					}
 				}
@@ -1586,7 +1590,9 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 		error = FCML_EN_UNKNOWN_INSTRUCTION;
 	}
 
-	// Disassemble instruction using most appropriate addressing mode from disassemblation tree.
+	if( !found ) {
+		error = FCML_EN_UNKNOWN_INSTRUCTION;
+	}
 
 	return error;
 }
