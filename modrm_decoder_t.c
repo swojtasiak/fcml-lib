@@ -833,6 +833,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 
 	context.addr_form = FCML_AF_64_BIT;
 	context.effective_address_size = FCML_DS_64;
+	context.is_displacement_always_extended = FCML_FALSE;
 
 	fcml_uint8_t buffer[] = { 0x04, 0x1D, 0x04, 0x03, 0x02, 0x01 };
 

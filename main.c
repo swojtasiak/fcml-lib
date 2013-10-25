@@ -49,6 +49,7 @@
 
 CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_a,
+	/*
 	fctl_si_instructions_b,
 	fctl_si_instructions_c,
 	fctl_si_instructions_d,
@@ -70,6 +71,7 @@ CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_v,
 	fctl_si_instructions_w,
 	fctl_si_instructions_x,
+	*/
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
@@ -209,16 +211,16 @@ int main(int argc, char **argv) {
 	}
 	ira_init();
 
+
 	//new_disassembler_test();
 	//return 0;
 
    // FCML_I32_D( "vgatherdpd xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x92, 0x04, 0x28 );
 
 	///return 0;
+	//FCML_I32_P( "adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
 
-	FCML_I32_P( "adc bp,0201h", 0x66, 0x81, 0xD5, 0x01, 0x02 );
-	return 0;
-
+	//return 0;
 	// , FCML_MI( 0xd0, 0x10 )
 	//return 0;
 	//  FCML_I64_P( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );

@@ -44,6 +44,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		fcml_st_disassembler_context context;
 		context.configuration.use_short_form_mnemonics = FCML_FALSE;
 		context.configuration.imm_extend_to_osa = FCML_TRUE;
+		context.configuration.extend_displacement_to_asa = FCML_TRUE;
 		context.disassembler = disassembler;
 		context.addr_form = x64 ? IRA_MOD_64BIT : FCML_AF_32_BIT;
 		context.address_size_attribute = 0;
@@ -55,8 +56,6 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			context.code_address = code + 2;
 			context.code_size = code[1];
 		}
-		context.code_address = code;
-		context.code_size = sizeof( code );
 		if( x64 ) {
 			context.ip.rip = 0x0000800000401000;
 		} else {
@@ -106,7 +105,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			stream.offset = 0;
 			stream.size = sizeof( buffer );
 
-			error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY );
+			error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT );
 			if( error ) {
 				printf("Disassemblation failed, with error code: %d\n", error );
 				if( !only_print_result ) {
