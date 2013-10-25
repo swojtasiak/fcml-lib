@@ -347,6 +347,9 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 				}
 			}
 
+			// Prefixes.
+			dis_res->prefixes = decoding_context.prefixes;
+
 			// Copy instruction hints.
 			dis_res->hints = decoding_context.instruction_hints;
 

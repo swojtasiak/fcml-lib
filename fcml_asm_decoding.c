@@ -260,7 +260,7 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_imm( fcml_st_asm_decoding_contex
 
 	fcml_bool extend = context->disassembler_context->configuration.imm_extend_to_osa;
 
-	error = fcml_fn_utils_decode_integer( stream, &integer, ( extend ) ? imm_size_ex : imm_size );
+	error = fcml_fn_utils_decode_integer( stream, &integer, imm_size );
 	if( error ) {
 		return error;
 	}
@@ -1282,7 +1282,7 @@ fcml_uint8_t fcml_ar_asm_dec_escape_size_table[] = {1,2,2};
 struct fcml_st_opcode_iterator;
 
 typedef struct fcml_st_opcode_iterator_impl {
-	fcml_st_memory_stream *stream;
+	fcml_st_memory_stream stream;
 	fcml_uint8_t is_virtual_opcode;
 	fcml_uint8_t *virtual_opcode;
 	fcml_int virtual_opcode_count;
@@ -1315,7 +1315,7 @@ fcml_ceh_error fcml_ifn_asm_dec_prepare_opcode_iterator( fcml_st_asm_decoding_co
 		// Prepare virtual opcodes.
 		iterator->virtual_opcode_count = fcml_ifn_asm_dec_decode_escape_opcode_bytes( decoding_context, &(iterator->virtual_opcode) );
 		iterator->virtual_opcode_offset = 0;
-		iterator->stream = decoding_context->stream;
+		iterator->stream = *decoding_context->stream;
 		iterator->is_virtual_opcode = FCML_FALSE;
 		// Prepare virtual opcodes.
 		*iterator_ptr = (struct fcml_st_opcode_iterator *)iterator;
@@ -1330,7 +1330,7 @@ fcml_bool fcml_ifn_asm_dec_opcode_iterator_has_next( struct fcml_st_opcode_itera
 	if( iterator->virtual_opcode_count > 0 && iterator->virtual_opcode_offset < iterator->virtual_opcode_count ) {
 		// Virtual byte is available.
 		return FCML_TRUE;
-	} else if( fcml_fn_stream_size( iterator->stream ) > 0 ) {
+	} else if( fcml_fn_stream_size( &(iterator->stream) ) > 0 ) {
 		return FCML_TRUE;
 	}
 	return FCML_FALSE;
@@ -1348,7 +1348,7 @@ fcml_uint8_t fcml_ifn_asm_dec_opcode_iterator_next( struct fcml_st_opcode_iterat
 		return iterator->virtual_opcode[ iterator->virtual_opcode_offset++ ];
 	} else {
 		fcml_bool result;
-		fcml_uint8_t opcode_byte = fcml_fn_stream_read( iterator->stream, &result );
+		fcml_uint8_t opcode_byte = fcml_fn_stream_read( &(iterator->stream), &result );
 		if( result ) {
 			iterator->is_virtual_opcode = FCML_FALSE;
 		}
@@ -1423,6 +1423,7 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 		fcml_st_modrm_decoder_context modrm_context;
 		modrm_context.addr_form = decoding_context->disassembler_context->addr_form;
 		modrm_context.effective_address_size = decoding_context->effective_address_size_attribute;
+		modrm_context.is_displacement_always_extended = decoding_context->disassembler_context->configuration.extend_displacement_to_asa;
 
 		fcml_st_modrm_source modrm_source;
 		modrm_source.is_vsib = modrm_details->is_vsib;
@@ -1525,32 +1526,40 @@ fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *con
 		return error;
 	}
 
+	struct fcml_ceh_asm_dec_tree_diss_tree_element **opcodes = &(decoding_tree->opcode[0]);
+
 	// Found instruction addressing modes going here.
 	fcml_ceh_asm_dec_tree_diss_tree_element* tree_element = NULL;
 
-	while( fcml_ifn_asm_dec_opcode_iterator_has_next( iterator ) && tree_element->instruction_decoding_defs ) {
+	while( fcml_ifn_asm_dec_opcode_iterator_has_next( iterator ) ) {
 
 		// Get next instructions opcode.
 		fcml_uint8_t opcode_byte = fcml_ifn_asm_dec_opcode_iterator_next( iterator );
 
-		// Store all non virtual opcode bytes inside context.
-		if( !fcml_ifn_asm_dec_opcode_iterator_is_virtual_opcode( iterator ) ) {
-			context->opcodes[context->opcodes_count++] = opcode_byte;
-		} else {
-			context->virtual_opcodes_count++;
-		}
-
 		// Get instruction for given opcode.
-		if( tree_element ) {
-			tree_element = tree_element->opcodes[ opcode_byte ];
+		fcml_ceh_asm_dec_tree_diss_tree_element *current = opcodes[opcode_byte];
+
+		if( current ) {
+			// There is something for given opcode byte, so save it.
+			tree_element = current;
+			// Store all non virtual opcode bytes inside context.
+			if( !fcml_ifn_asm_dec_opcode_iterator_is_virtual_opcode( iterator ) ) {
+				context->opcodes[context->opcodes_count++] = opcode_byte;
+			} else {
+				context->virtual_opcodes_count++;
+			}
+			opcodes = &(tree_element->opcodes[0]);
 		} else {
-			tree_element = decoding_tree->opcode[ opcode_byte ];
+			break;
 		}
 
 	}
 
 	// Free opcode iterator.
 	fcml_ifn_asm_dec_opcode_iterator_free( iterator );
+
+	// Skip opcode bytes.
+	fcml_fn_stream_seek( context->stream, context->opcodes_count, IRA_CURRENT );
 
 	// Skip opcode bytes.
 	//fcml_fn_stream_seek( context->stream, context->opcodes_count, IRA_CURRENT );

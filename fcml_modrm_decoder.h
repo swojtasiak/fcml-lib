@@ -40,6 +40,8 @@ typedef struct fcml_st_modrm_decoder_context {
 	fcml_bool choose_sib_encoding;
 	// True if displacement should be used to calculate RIP-relative effective address.
 	fcml_bool is_rip;
+	// True if displacement should be extended to ASA.
+	fcml_bool is_displacement_always_extended;
 } fcml_st_modrm_decoder_context;
 
 fcml_ceh_error fcml_fn_modrm_decode( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm );

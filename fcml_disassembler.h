@@ -21,6 +21,7 @@ typedef struct fcml_st_disassembler {
 typedef struct fcml_st_disassembler_configuration {
 	fcml_bool use_short_form_mnemonics;
 	fcml_bool imm_extend_to_osa;
+	fcml_bool extend_displacement_to_asa;
 } fcml_st_disassembler_configuration;
 
 typedef struct fcml_st_disassembler_context {

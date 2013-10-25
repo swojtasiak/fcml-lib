@@ -102,19 +102,23 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_st_memory_stream *
 
 	switch( integer->size ) {
 	case 8:
-		snprintf( local_buffer, sizeof( local_buffer ), format[0], integer->int8 );
+		snprintf( local_buffer, sizeof( local_buffer ), format[0], (fcml_uint8_t)integer->int8 );
 		break;
 	case 16:
-		snprintf( local_buffer, sizeof( local_buffer ), format[1], integer->int16 );
+		snprintf( local_buffer, sizeof( local_buffer ), format[1], (fcml_uint16_t)integer->int16 );
 		break;
 	case 32:
-		snprintf( local_buffer, sizeof( local_buffer ), format[2], integer->int32 );
+		snprintf( local_buffer, sizeof( local_buffer ), format[2], (fcml_uint32_t)integer->int32 );
 		break;
 	case 64:
-		snprintf( local_buffer, sizeof( local_buffer ), format[3], integer->int64 );
+		snprintf( local_buffer, sizeof( local_buffer ), format[3], (fcml_uint64_t)integer->int64 );
 		break;
 	default:
 		return FCML_CEH_GEC_INVALID_INPUT;
+	}
+
+	if( is_hex && !isdigit( local_buffer[0] ) ) {
+		fcml_fn_rend_utils_format_append_str( stream, "0" );
 	}
 
 	fcml_fn_rend_utils_format_append_str( stream, (fcml_string)local_buffer );
