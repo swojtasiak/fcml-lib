@@ -258,8 +258,6 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_imm( fcml_st_asm_decoding_contex
 	// All immediate integers are signed.
 	integer.is_signed = FCML_TRUE;
 
-	fcml_bool extend = context->disassembler_context->configuration.imm_extend_to_osa;
-
 	error = fcml_fn_utils_decode_integer( stream, &integer, imm_size );
 	if( error ) {
 		return error;
@@ -327,6 +325,10 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_opcode_reg( fcml_st_asm_decoding
 
 	fcml_uint8_t reg_num = context->primary_opcode_byte & 0x07;
 
+	if( context->prefixes.b ) {
+		reg_num |= 0x08;
+	}
+
 	// Size operator.
 	operand_wrapper->operand.type = FCML_EOT_REGISTER;
 	fcml_st_register *reg = &(operand_wrapper->operand.reg);
@@ -344,6 +346,8 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative( fcml_st_
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_sf_def_tma_immediate_dis_relative *rel_args = (fcml_sf_def_tma_immediate_dis_relative*)args;
 	fcml_data_size int_size = 0;
+	fcml_int32_t offset32;
+	fcml_int16_t offset16;
 
 	if( FCML_IS_EOS_DYNAMIC( rel_args->encoded_imm_size ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_FORM;
@@ -387,16 +391,25 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative( fcml_st_
 
 	switch( context->effective_operand_size_attribute ) {
 	case FCML_DS_16:
-		offset->off32 = ( (fcml_int32_t)ip->eip + context->calculated_instruction_size + integer.int16 ) & 0x0000FFFF;
-		offset->size = FCML_DS_32;
+		error = fcml_fn_utils_convert_integer_to_int16( &integer, &offset16 );
+		if( !error ) {
+			offset->off32 = ( (fcml_int32_t)ip->eip + context->calculated_instruction_size + offset16 ) & 0x0000FFFF;
+			offset->size = FCML_DS_32;
+		}
 		break;
 	case FCML_DS_32:
-		offset->off32 = ( (fcml_int32_t)ip->eip + context->calculated_instruction_size + integer.int32 );
-		offset->size = FCML_DS_32;
+		error = fcml_fn_utils_convert_integer_to_int32( &integer, &offset32 );
+		if( !error ) {
+			offset->off32 = ( (fcml_int32_t)ip->eip + context->calculated_instruction_size + offset32 );
+			offset->size = FCML_DS_32;
+		}
 		break;
 	case FCML_DS_64:
-		offset->off64 = ( (fcml_int64_t)ip->rip + context->calculated_instruction_size + integer.int32 );
-		offset->size = FCML_DS_64;
+		error = fcml_fn_utils_convert_integer_to_int32( &integer, &offset32 );
+		if( !error ) {
+			offset->off64 = ( (fcml_int64_t)ip->rip + context->calculated_instruction_size + offset32 );
+			offset->size = FCML_DS_64;
+		}
 		break;
 	}
 
@@ -407,7 +420,14 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_immediate_dis_relative( fcml_st_
 }
 
 fcml_int fcml_fnp_asm_dec_operand_size_calculator_immediate_dis_relative( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
-	return ( context->effective_operand_size_attribute == FCML_DS_16 ) ? FCML_DS_16 / 8 : FCML_DS_32 / 8;
+	fcml_sf_def_tma_immediate_dis_relative *rel_args = (fcml_sf_def_tma_immediate_dis_relative*)args;
+	fcml_int size;
+	if( rel_args->encoded_imm_size != FCML_EOS_UNDEFINED ) {
+		size = rel_args->encoded_imm_size;;
+	} else {
+		size = ( context->effective_operand_size_attribute == FCML_DS_16 ) ? FCML_DS_16 / 8 : FCML_DS_32 / 8;
+	}
+	return size;
 }
 
 fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -418,11 +438,6 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer( fcml_st_asm_decodin
 	fcml_bool result;
 
 	operand->type = FCML_EOT_FAR_POINTER;
-
-	far_pointer->segment = fcml_fn_stream_read_word( context->stream, &result );
-	if( !result ) {
-		return FCML_CEH_GEC_EOF;
-	}
 
 	switch( context->effective_operand_size_attribute ) {
 	case FCML_DS_16:
@@ -437,6 +452,11 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_far_pointer( fcml_st_asm_decodin
 	}
 
 	far_pointer->offset_size = context->effective_operand_size_attribute;
+
+	far_pointer->segment = fcml_fn_stream_read_word( context->stream, &result );
+	if( !result ) {
+		return FCML_CEH_GEC_EOF;
+	}
 
 	if( !result ) {
 		error = FCML_CEH_GEC_EOF;
@@ -569,6 +589,9 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_rm( fcml_st_asm_decoding_context
 			segment_selector->is_default_reg = ( segment_selector->segment_selector.reg == FCML_REG_DS ) ? FCML_TRUE : FCML_FALSE;
 		}
 
+	} else {
+		// TODO: odkomentowac po zakonczeniu testow.
+		//error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 
 	return error;
@@ -946,8 +969,8 @@ fcml_bool fcml_ifp_asm_dec_instruction_acceptor_prefixes( fcml_st_asm_decoding_c
 	}
 
 	// L field.
-	if( ( FCML_DEF_PREFIX_L_1( instruction_decoding_def->prefixes_flags ) && ( !prefixes->is_vex || !prefixes->l ) ) ||
-		( FCML_DEF_PREFIX_L_0( instruction_decoding_def->prefixes_flags ) && ( !prefixes->is_vex || prefixes->l ) ) ) {
+	if( ( FCML_DEF_PREFIX_L_1( instruction_decoding_def->prefixes_flags ) && ( !( prefixes->is_vex || prefixes->is_xop ) || !prefixes->l ) ) ||
+		( FCML_DEF_PREFIX_L_0( instruction_decoding_def->prefixes_flags ) && ( !( prefixes->is_vex || prefixes->is_xop ) || prefixes->l ) ) ) {
 		return FCML_FALSE;
 	}
 
@@ -1174,7 +1197,7 @@ void fcml_ifn_asm_dec_dts_dispose_instruction_decoding_callback_default( fcml_st
 }
 
 void fcml_fn_asm_dec_dts_prepare_modrm_decoding_details( fcml_st_def_decoded_addr_mode *decoded_addr_mode, fcml_st_asm_dec_modrm_decoding_details *modrm_details ) {
-	if( decoded_addr_mode->addr_mode == FCML_OP_VSIB_BASE ) {
+	if( decoded_addr_mode != NULL && decoded_addr_mode->addr_mode == ( FCML_OP_VSIB_BASE >> 24 ) ) {
 		fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm *)decoded_addr_mode->addr_mode_args;
 		modrm_details->is_vsib = FCML_TRUE;
 		modrm_details->vsib_index_size = ( rm_args->vector_index_register ) == FCML_VSIB_XMM ? FCML_DS_128 : FCML_DS_256;
@@ -1467,7 +1490,7 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 		fcml_ist_asm_dec_operand_decoding *operand_decoding = &(instruction_decoding_def->operand_decodings[i]);
 		fcml_st_def_decoded_addr_mode *decoded_addr_mode = operand_decoding->decoded_addr_mode;
 		if( operand_decoding->decoder ) {
-			fcml_ceh_error error = operand_decoding->decoder( decoding_context, operand_wrappers, decoded_addr_mode->addr_mode_args );
+			error = operand_decoding->decoder( decoding_context, operand_wrappers, decoded_addr_mode->addr_mode_args );
 			if( error ) {
 				break;
 			}

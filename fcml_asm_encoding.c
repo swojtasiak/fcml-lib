@@ -867,7 +867,7 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_immediate_dis_relative( fcml_ien_asm
             error = FCML_EN_UNSUPPORTED_OPPERAND;
         }
 
-        operand_enc->post_processor_args = &(operand_def);
+        operand_enc->post_processor_args = operand_def;
 
     }
 

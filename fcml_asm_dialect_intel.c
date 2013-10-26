@@ -78,8 +78,6 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_register_intel(fcml_st_register *reg, fc
 		case 64:
 			rs = 3;
 			break;
-		default:
-			return FCML_CEH_GEC_INVALID_INPUT;
 		}
 		if (is_rex) {
 			if (reg->type == FCML_REG_GPR) {

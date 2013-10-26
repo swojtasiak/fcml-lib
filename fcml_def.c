@@ -1434,16 +1434,16 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FXCH[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FXRSTOR[] = {
 	// 0F AE /1 FXRSTOR m512byte A Valid Valid Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.
-	{ NULL, FCML_AMT_SIMD | FCML_AMT_FPU, 0x0000, 0x03D98800, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_512B, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SIMD | FCML_AMT_FPU, 0x0000, 0x83D98800, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_512B, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W+ 0F AE /1 FXRSTOR64 m512byte A Valid N.E. Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.
-	{ "fxrstor64", FCML_AMT_SIMD | FCML_AMT_FPU, 0x0008, 0x04998800, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_512B, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+	{ "fxrstor64", FCML_AMT_SIMD | FCML_AMT_FPU, 0x0008, 0x84998800, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_512B, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FXSAVE[] = {
 	// 0F AE /0 FXSAVE m512byte A Valid Valid Save the x87 FPU, MMX, XMM, and MXCSR register state to m512byte.
-	{ NULL, FCML_AMT_SIMD | FCML_AMT_FPU, 0x0000, 0x03D98000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_512B, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SIMD | FCML_AMT_FPU, 0x0000, 0x83D98000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_512B, FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// REX.W+ 0F AE /0 FXSAVE64 m512byte A Valid N.E. Save the x87 FPU, MMX, XMM, and MXCSR register state to m512byte.
-	{ "fxsave64", FCML_AMT_SIMD | FCML_AMT_FPU, 0x0008, 0x04998000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_512B, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
+	{ "fxsave64", FCML_AMT_SIMD | FCML_AMT_FPU, 0x0008, 0x84998000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_512B, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_FXTRACT[] = {
@@ -1802,9 +1802,9 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LTR[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MASKMOVDQU[] = {
 	// 66 0F F7 /r MASKMOVDQU xmm1, xmm2 A Valid Valid Selectively write bytes from xmm1 to memory location using the byte mask in xmm2. The default memory location is specified by DS:EDI/RDI.
-	{ NULL, FCML_AMT_SSE2, 0x1001, 0x00D88000, { 0x0F, 0xF7, 0x00 }, { FCML_OP_R( FCML_REG_SIMD, FCML_EOS_OWORD ), FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_SSE2, 0x1001, 0x00DA8000, { 0x0F, 0xF7, 0x00 }, { FCML_OP_R( FCML_REG_SIMD, FCML_EOS_OWORD ), FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } },
 	// VEX.128.66.0F F7 /r VMASKMOVDQU xmm1,xmm2
-	{ "vmaskmovdqu", FCML_AMT_AVX_SIMD, 0x11C0, 0x00D88000, { 0x0F, 0xF7, 0x00 }, { FCML_OP_R( FCML_REG_SIMD, FCML_EOS_OWORD ), FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } }
+	{ "vmaskmovdqu", FCML_AMT_AVX_SIMD, 0x11C0, 0x00DA8000, { 0x0F, 0xF7, 0x00 }, { FCML_OP_R( FCML_REG_SIMD, FCML_EOS_OWORD ), FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VMASKMOVP[] = {
@@ -1839,7 +1839,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VPMASKMOVD[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MASKMOVQ[] = {
 	// 0F F7 /r MASKMOVQ mm1, mm2 A Valid Valid Selectively write bytes from mm1 to memory location using the byte mask in mm2. The default memory location is specified by DS:EDI/RDI.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0xF7, 0x00 }, { FCML_OP_R( FCML_REG_SIMD, FCML_EOS_MWORD ), FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_MWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00DA8000, { 0x0F, 0xF7, 0x00 }, { FCML_OP_R( FCML_REG_SIMD, FCML_EOS_MWORD ), FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_MWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MAXPD[] = {
@@ -2021,11 +2021,11 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVBE[] = {
 	// 0F 38 F0 /r MOVBE r16, m16 A Valid Valid Reverse byte order in m16 and move to r16
 	// 0F 38 F0 /r MOVBE r32, m32 A Valid Valid Reverse byte order in m32 and move to r32
 	// REX.W + 0F 38 F0 /r MOVBE r64, m64 A Valid N.E. Reverse byte order in m64 and move to r64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00EC8000, { 0x0F, 0x38, 0xF0 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M, FCML_NA, FCML_NA, FCML_NA } },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x80EC8000, { 0x0F, 0x38, 0xF0 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M, FCML_NA, FCML_NA, FCML_NA } },
 	// 0F 38 F1 /r MOVBE m16, r16 B Valid Valid Reverse byte order in r16 and move to m16
 	// 0F 38 F1 /r MOVBE m32, r32 B Valid Valid Reverse byte order in r32 and move to m32
 	// REX.W + 0F 38 F1 /r MOVBE m64, r64 B Valid N.E. Reverse byte order in
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00EC8000, { 0x0F, 0x38, 0xF1 }, { FCML_OP_MODRM_M_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } }
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x80EC8000, { 0x0F, 0x38, 0xF1 }, { FCML_OP_MODRM_M_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA } }
 };
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVD[] = {

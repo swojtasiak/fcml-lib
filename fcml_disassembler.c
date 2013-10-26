@@ -92,6 +92,7 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 	fcml_bool is_xop_vex_allowed = FCML_TRUE;
 	fcml_bool is_last_prefix = FCML_FALSE;
 	fcml_int xop_vex_prefix_size = 0;
+	fcml_bool is_vex = FCML_FALSE, is_xop = FCML_FALSE;
 
 	do {
 		prefix_type = FCML_PT_GROUP_UNKNOWN;
@@ -132,19 +133,19 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 				case 0xC5:
 					xop_vex_prefix_size = 1;
 					prefix_type = FCML_PT_VEX;
-					prefixes_details->is_vex = FCML_TRUE;
+					is_vex = FCML_TRUE;
 					is_last_prefix = FCML_TRUE;
 					break;
 				case 0x8F:
 					xop_vex_prefix_size = 2;
 					prefix_type = FCML_PT_XOP;
-					prefixes_details->is_xop = FCML_TRUE;
+					is_xop = FCML_TRUE;
 					is_last_prefix = FCML_TRUE;
 					break;
 				case 0xC4:
 					xop_vex_prefix_size = 2;
 					prefix_type = FCML_PT_VEX;
-					prefixes_details->is_vex = FCML_TRUE;
+					is_vex = FCML_TRUE;
 					is_last_prefix = FCML_TRUE;
 					break;
 				default:
@@ -247,6 +248,8 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 				prefix_details->prefix = prefix;
 				prefix_details->prefix_type = prefix_type;
 				prefix_details->mandatory_prefix = is_mandatory_candidate;
+				prefixes_details->is_vex = is_vex;
+				prefixes_details->is_xop = is_xop;
 				prefixes_details->prefixes_bytes_count += prefix_size;
 				fcml_fn_stream_seek(stream, prefix_size, IRA_CURRENT);
 				prefix_index++;
