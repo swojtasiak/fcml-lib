@@ -43,13 +43,13 @@
 #include "fcml_asm_dialect_intel.h"
 
 #include "fcml_assembler.h"
+#include "fcml_disassembler.h"
 #include "ira.h"
 
 #include "instructions_base_t.h"
 
 CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_a,
-	/*
 	fctl_si_instructions_b,
 	fctl_si_instructions_c,
 	fctl_si_instructions_d,
@@ -71,7 +71,6 @@ CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_v,
 	fctl_si_instructions_w,
 	fctl_si_instructions_x,
-	*/
 	fctl_si_modrm_encoder,
     fctl_si_modrm_decoder,
     fctl_si_stream,
@@ -95,6 +94,7 @@ void new_disassembler_test(void) {
 		// Error.
 		return;
 	}
+
 
 	// db 080h, 0D0h, 042h
 	// adc    al,42h
@@ -210,6 +210,14 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	ira_init();
+	dialect = fcml_fn_get_intel_dialect_context();
+
+	error = fcml_fn_disassembler_init( &dialect, &disassembler );
+	if( error ) {
+		// Error.
+		printf( "Can not allocate disassembler." );
+		return FCML_FALSE;
+	}
 
 
 	//new_disassembler_test();
@@ -242,6 +250,7 @@ int main(int argc, char **argv) {
         CU_basic_run_tests();
         CU_cleanup_registry();
     }
+    fcml_fn_disassembler_free( disassembler );
     fcml_fn_assembler_free( assembler );
     ira_deinit();
     exit(0);

@@ -484,7 +484,6 @@ CU_TestInfo fctl_ti_instructions_a[] = {
     { "fcml_tf_instruction_AAM", fcml_tf_instruction_AAM },
     { "fcml_tf_instruction_AAS", fcml_tf_instruction_AAS },
     { "fcml_tf_instruction_ADC", fcml_tf_instruction_ADC },
-    /*
     { "fcml_tf_instruction_ADD", fcml_tf_instruction_ADD },
     { "fcml_tf_instruction_ADDPD", fcml_tf_instruction_ADDPD },
     { "fcml_tf_instruction_ADDPS", fcml_tf_instruction_ADDPS },
@@ -507,7 +506,6 @@ CU_TestInfo fctl_ti_instructions_a[] = {
     { "fcml_tf_instruction_ANDN", fcml_tf_instruction_ANDN },
     { "fcml_tf_instruction_ADCX", fcml_tf_instruction_ADCX },
     { "fcml_tf_instruction_ADOX", fcml_tf_instruction_ADOX },
-    */
     CU_TEST_INFO_NULL,
 };
 

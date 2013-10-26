@@ -20,6 +20,10 @@
 
 extern fcml_st_assembler *assembler;
 
+extern fcml_st_disassembler *disassembler;
+
+extern fcml_st_dialect_context dialect;
+
 fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble ) {
 
 	fcml_bool success = FCML_TRUE;
@@ -28,18 +32,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_dialect_context dialect = fcml_fn_get_intel_dialect_context();
-
-	fcml_st_disassembler *disassembler;
-
 	if( !only_assemble ) {
-
-		error = fcml_fn_disassembler_init( &dialect, &disassembler );
-		if( error ) {
-			// Error.
-			printf( "Can not allocate disassembler." );
-			return FCML_FALSE;
-		}
 
 		fcml_st_disassembler_context context;
 		context.configuration.use_short_form_mnemonics = FCML_FALSE;
@@ -82,7 +75,6 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 				printf("Should fail: %s\n", mnemonic);
 				success = FCML_FALSE;
 				fcml_fn_disassemble_result_free( dis_result );
-				fcml_fn_disassembler_free( disassembler );
 				return success;
 			}
 
@@ -112,7 +104,6 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 					success = FCML_FALSE;
 				}
 				fcml_fn_disassemble_result_free( dis_result );
-				fcml_fn_disassembler_free( disassembler );
 				return success;
 			}
 
@@ -122,7 +113,6 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 					success = FCML_FALSE;
 				}
 				fcml_fn_disassemble_result_free( dis_result );
-				fcml_fn_disassembler_free( disassembler );
 				return success;
 			} else {
 				if( !only_print_result ) {
@@ -142,7 +132,6 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			}
 			fcml_x64iap_free( result );
 			fcml_fn_disassemble_result_free( dis_result );
-			fcml_fn_disassembler_free( disassembler );
 			return success;
 		}
 
@@ -362,12 +351,13 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 	} else {
 
+		printf("Disassemblarion failed with error code: %d\n", error);
+
 		success = should_fail;
 
 	}
 
 	fcml_fn_disassemble_result_free( dis_result );
-	fcml_fn_disassembler_free( disassembler );
 
 	return success;
 }
