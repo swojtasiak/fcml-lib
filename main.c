@@ -219,6 +219,8 @@ int main(int argc, char **argv) {
 		return FCML_FALSE;
 	}
 
+	//FCML_I64_P( "cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF );
+	//return 0;
 
 	//new_disassembler_test();
 	//return 0;

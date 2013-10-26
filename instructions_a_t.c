@@ -448,7 +448,7 @@ void fcml_tf_instruction_ANDNPS(void) {
 
 void fcml_tf_instruction_ARPL(void) {
 	FCML_I32( "arpl word ptr [ecx+eax],dx", 0x63, 0x14, 0x01 );
-	FCML_I32_D( "arpl word ptr [ecx+eax],dx", 0x66, 0x63, 0x14 );
+	FCML_I32_D( "arpl word ptr [ecx+eax],dx", 0x66, 0x63, 0x14, 0x01 );
 	FCML_I32( "arpl word ptr [si],dx", 0x67, 0x63, 0x14 );
 	FCML_I64_FAILED( "arpl edi", 0x63, 0xDF );
 }

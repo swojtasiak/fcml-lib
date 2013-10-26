@@ -13,6 +13,8 @@
 #include "fcml_optimizers.h"
 #include "fcml_disassembler.h"
 
+#define TEST_FLAG_SHORT	1
+
 #define FCML_MI(...) (sizeof((fcml_uint8_t[]){__VA_ARGS__})/sizeof(fcml_uint8_t) ), __VA_ARGS__
 
 #define FCML_I32_M(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, FCML_FALSE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_TRUE, FCML_FALSE)); }
@@ -48,10 +50,10 @@
 #define FCML_I64_D(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, 0, FCML_FALSE)); }
 #define FCML_I32_D_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_TRUE, 0, FCML_FALSE)); }
 #define FCML_I64_D_FAILED(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, 0, FCML_FALSE)); }
-#define FCML_I32_D_SHORT(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, /*_IRA_CF_USE_MNEMONIC_SHORTCUTS*/2, FCML_FALSE)); }
-#define FCML_I64_D_SHORT(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, /*_IRA_CF_USE_MNEMONIC_SHORTCUTS*/2, FCML_FALSE)); }
-#define FCML_I32_D_SHORT_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, /*_IRA_CF_USE_MNEMONIC_SHORTCUTS*/2,FCML_TRUE); }
-#define FCML_I64_D_SHORT_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, /*_IRA_CF_USE_MNEMONIC_SHORTCUTS*/2, FCML_TRUE); }
+#define FCML_I32_D_SHORT(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, TEST_FLAG_SHORT, FCML_FALSE)); }
+#define FCML_I64_D_SHORT(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, TEST_FLAG_SHORT, FCML_FALSE)); }
+#define FCML_I32_D_SHORT_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_diss_test( code, sizeof( code ), FCML_FALSE, x, FCML_FALSE, TEST_FLAG_SHORT,FCML_TRUE); }
+#define FCML_I64_D_SHORT_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_diss_test( code, sizeof( code ), FCML_TRUE, x, FCML_FALSE, TEST_FLAG_SHORT, FCML_TRUE); }
 
 #define FCML_I3264_A(x,...) { FCML_I32_A(x,__VA_ARGS__); FCML_I64_A(x,__VA_ARGS__); }
 #define FCML_I3264_A_FAILED(x,...) { FCML_I32_A_FAILED(x,__VA_ARGS__); FCML_I64_A_FAILED(x,__VA_ARGS__); }
