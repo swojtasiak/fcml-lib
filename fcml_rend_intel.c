@@ -15,6 +15,13 @@ void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, f
 	if( prefixes->is_lock ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "lock " );
 	}
+	// TODO: Dodac mozliwosc konfiguracji.
+	if( prefixes->is_rep ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "rep " );
+	}
+	if( prefixes->is_repne ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "repne " );
+	}
 }
 
 fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_asm_dec_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {

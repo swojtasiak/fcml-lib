@@ -1970,6 +1970,54 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 // Prefixes encoder factories. //
 /////////////////////////////////
 
+// REP prefix.
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_rep_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
+        if( context->instruction->prefixes & FCML_PREFIX_REP ) {
+			instruction_part->code[0] = 0xF3;
+			instruction_part->code_length = 1;
+        }
+    }
+    return error;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_rep_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
+    fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+    if( FCML_DEF_PREFIX_REP_ALLOWED( addr_mode->allowed_prefixes ) ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_rep_prefix_encoder;
+		descriptor.processor_acceptor = NULL;
+    }
+    return descriptor;
+}
+
+// REPNE prefix.
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_repne_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
+        if( context->instruction->prefixes & FCML_PREFIX_REPNE ) {
+			instruction_part->code[0] = 0xF2;
+			instruction_part->code_length = 1;
+        }
+    }
+    return error;
+}
+
+fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_repne_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
+    fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
+    if( FCML_DEF_PREFIX_REPNE_ALLOWED( addr_mode->allowed_prefixes ) ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_repne_prefix_encoder;
+		descriptor.processor_acceptor = NULL;
+    }
+    return descriptor;
+}
+
 // Lock prefix.
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_lock_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
@@ -2468,6 +2516,8 @@ fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processo
 
 // List of instruction part encoders for instruction prefixes.
 fcml_ist_asm_instruction_part_factory_details fcml_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_rep_prefix_encoder, 0 },
+	{ fcml_ifn_asm_instruction_part_processor_factory_repne_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_lock_prefix_encoder, 0 },
     { fcml_ifn_asm_instruction_part_processor_factory_segment_override_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder, 0 },

@@ -617,14 +617,14 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPPS[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_CMPS[] = {
 	// A6 CMPS m8, m8 A Valid Valid For legacy mode, compare byte at address DS:(E)SI with byte at address ES:(E)DI; For 64-bit mode compare byte at address (R|E)SI to byte at address (R|E)DI. The status flags are set accordingly.
-	{ "cmps;cmpsb[ts]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xA6, 0x00, 0x00 },
+	{ "cmps;cmpsb[ts]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xA6, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } },
 	// A7 CMPS m16, m16 A Valid Valid For legacy mode, compare word at address DS:(E)SI with word at address ES:(E)DI; For 64-bit mode compare word at address (R|E)SI with word at address (R|E)DI. The status flags are set accordingly.
 	// A7 CMPS m32, m32 A Valid Valid For legacy mode, compare dword at address DS:(E)SI at dword at address ES:(E)DI; For 64-bit mode compare dword at address (R|E)SI at dword at address (R|E)DI. The status flags are set accordingly.
 	// REX.W + A7 CMPS m64, m64 A Valid N.E. Compares quadword at address (R|E)SI with quadword at address (R|E)DI and sets the status flags accordingly.
-	{ "cmps;cmpsw[ts,ow,a*];cmpsd[ts,od,a*];cmpsq[ts,oq,a*]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xA7, 0x00, 0x00 },
+	{ "cmps;cmpsw[ts,ow,a*];cmpsd[ts,od,a*];cmpsq[ts,oq,a*]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xA7, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_EOSA, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } }
@@ -1583,15 +1583,15 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INC[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_INS[] = {
 	// 6C INS m8, DX A Valid Valid Input byte from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.*
-	{ "ins;insb[ts]", FCML_AMT_GPI, 0x0000, 0x07C40000, { 0x6C, 0x00, 0x00 },
+	{ "ins;insb[ts]", FCML_AMT_GPI, 0x0004, 0x07C40000, { 0x6C, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ), FCML_NA, FCML_NA, FCML_NA } },
 	// 6D INS m16, DX A Valid Valid Input word from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
-	{ "ins;insw[ts]", FCML_AMT_GPI, 0x0000, 0x01C40000, { 0x6D, 0x00, 0x00 },
+	{ "ins;insw[ts]", FCML_AMT_GPI, 0x0004, 0x01C40000, { 0x6D, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_WORD, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ), FCML_NA, FCML_NA, FCML_NA } },
 	// 6D INS m32, DX A Valid Valid Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
-	{ "ins;insd[ts]", FCML_AMT_GPI, 0x0000, 0x06C40000, { 0x6D, 0x00, 0x00 },
+	{ "ins;insd[ts]", FCML_AMT_GPI, 0x0004, 0x06C40000, { 0x6D, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_DWORD, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ), FCML_NA, FCML_NA, FCML_NA } }
 };
@@ -1753,13 +1753,13 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LMSW[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_LODS[] = {
 	// AC LODS m8 A Valid Valid For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.
-	{ "lods;lodsb[ts]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xAC, 0x00, 0x00 },
+	{ "lods;lodsb[ts]", FCML_AMT_GPI, 0x0004, 0x00C40000, { 0xAC, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// AD LODS m16 A Valid Valid For legacy mode, Load word at address DS:(E)SI into AX. For 64-bit mode load word at address (R)SI into AX.
 	// AD  LODS m32 A Valid Valid For legacy mode, Load dword at address DS:(E)SI into EAX. For 64-bit mode load dword at address (R)SI into EAX.
 	// REX.W + AD LODS m64 A Valid N.E. Load qword at address (R)SI into RAX.
-	{ "lods;lodsw[ts,ow,a*];lodsd[ts,od,a*];lodsq[ts,oq,a*]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xAD, 0x00, 0x00 },
+	{ "lods;lodsw[ts,ow,a*];lodsd[ts,od,a*];lodsq[ts,oq,a*]", FCML_AMT_GPI, 0x0004, 0x00C40000, { 0xAD, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
@@ -2250,7 +2250,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVQ2DQ[] = {
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVS[] = {
 	// A4 MOVS m8, m8 A Valid Valid For legacy mode, Move byte from address DS:(E)SI to ES:(E)DI. For 64-bit mode move byte from address (R|E)SI to (R|E)DI.
     // A4 MOVSB A Valid Valid For legacy mode, Move byte from address DS:(E)SI to ES:(E)DI. For 64-bit mode move byte from address (R|E)SI to (R|E)DI.
-	{ "movs;movsb[ts]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xA4, 0x00, 0x00 },
+	{ "movs;movsb[ts]", FCML_AMT_GPI, 0x0004, 0x00C40000, { 0xA4, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } },
@@ -2259,7 +2259,7 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_MOVS[] = {
 	// REX.W + A5 MOVS m64, m64 A Valid N.E. Move qword from address (R|E)SI to (R|E)DI.
     // A5 MOVSW A Valid Valid For legacy mode, move word from address DS:(E)SI to ES:(E)DI. For 64-bit mode move word at address (R|E)SI to (R|E)DI.
     // A5 MOVSD A Valid Valid For legacy mode, move dword from address DS:(E)SI to ES:(E)DI. For 64-bit mode move dword from address (R|E)SI to (R|E)DI. REX.W + A5 MOVSQ A Valid N.E. Move qword from address
-	{ "movs;movsw[ts,ow,a*];movsd[ts,od,a*];movsq[ts,oq,a*]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xA5, 0x00, 0x00 },
+	{ "movs;movsw[ts,ow,a*];movsd[ts,od,a*];movsq[ts,oq,a*]", FCML_AMT_GPI, 0x0004, 0x00C40000, { 0xA5, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } }
@@ -2514,15 +2514,15 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_OUT[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_OUTS[] = {
 	// 6E OUTS DX, m8 NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-	{ "outs;outsb[ts]", FCML_AMT_GPI, 0x0000, 0x07C40000, { 0x6E, 0x00, 0x00 },
+	{ "outs;outsb[ts]", FCML_AMT_GPI, 0x0004, 0x07C40000, { 0x6E, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA } },
 	// 6F OUTS DX, m16 NP Valid Valid Output word from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-	{ "outs;outsw[ts]", FCML_AMT_GPI, 0x0000, 0x01C40000, { 0x6F, 0x00, 0x00 },
+	{ "outs;outsw[ts]", FCML_AMT_GPI, 0x0004, 0x01C40000, { 0x6F, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_WORD, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA } },
 	// 6F OUTS DX, m32 NP Valid Valid Output doubleword from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-	{ "outs;outsd[ts]", FCML_AMT_GPI, 0x0000, 0x06C40000, { 0x6F, 0x00, 0x00 },
+	{ "outs;outsd[ts]", FCML_AMT_GPI, 0x0004, 0x06C40000, { 0x6F, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_DX, FCML_EOS_WORD ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_DWORD, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA } }
 };
@@ -4105,13 +4105,13 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SBB[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_SCAS[] = {
 	// AE SCAS m8 NP Valid Valid Compare AL with byte at ES:(E)DI or RDI, then set status flags.*
-	{ "scas;scasb[ts]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xAE, 0x00, 0x00 },
+	{ "scas;scasb[ts]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xAE, 0x00, 0x00 },
 				{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 				FCML_NA, FCML_NA, FCML_NA, FCML_NA } },
 	// AF SCAS m16 NP Valid Valid Compare AX with word at ES:(E)DI or RDI, then set status flags.*
 	// AF SCAS m32 NP Valid Valid Compare EAX with doubleword at ES(E)DI or RDI then set status flags.*
 	// REX.W + AF SCAS m64 NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
-	{ "scas;scasw[ts,ow,a*];scasd[ts,od,a*];scasq[ts,oq,a*]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xAF, 0x00, 0x00 },
+	{ "scas;scasw[ts,ow,a*];scasd[ts,od,a*];scasq[ts,oq,a*]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xAF, 0x00, 0x00 },
 				{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 				FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
 };
@@ -4259,14 +4259,14 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_STMXCSR[] = {
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_STOS[] = {
 	// AA STOS m8 NA Valid Valid For legacy mode, store AL at address ES:(E)DI; For 64-bit mode store AL at address RDI or EDI.
-	{ "stos;stosb[ts]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xAA, 0x00, 0x00 },
+	{ "stos;stosb[ts]", FCML_AMT_GPI, 0x0004, 0x00C40000, { 0xAA, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } },
 	// AB STOS m16 NA Valid Valid For legacy mode, store AX at address ES:(E)DI; For 64-bit mode store AX at address RDI or EDI.
 	// AB STOS m32 NA Valid Valid For legacy mode, store EAX at address ES:(E)DI; For 64-bit mode store EAX at address RDI or EDI.
 	// REX.W + AB STOS m64 NA Valid N.E. Store RAX at address RDI or EDI.
-	{ "stos;stosw[ts,ow,a*];stosd[ts,od,a*];stosq[ts,oq,a*]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xAB, 0x00, 0x00 },
+	{ "stos;stosw[ts,ow,a*];stosd[ts,od,a*];stosq[ts,oq,a*]", FCML_AMT_GPI, 0x0004, 0x00C40000, { 0xAB, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
 			FCML_NA, FCML_NA, FCML_NA } }

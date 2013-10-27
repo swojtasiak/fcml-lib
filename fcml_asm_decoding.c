@@ -114,7 +114,7 @@ void fcml_ifn_utils_set_segment_selector( fcml_st_segment_selector *seg_sel, fcm
 fcml_uint8_t fcml_ifn_dec_asm_override_segment_reg( fcml_st_asm_decoding_context *context, fcml_uint8_t reg ) {
 	fcml_int i;
 	for( i = 0; i < context->prefixes.prefixes_count; i++ ) {
-		fcml_st_dasm_instruction_prefix *prefix = &(context->prefixes.prefixes[0]);
+		fcml_st_dasm_instruction_prefix *prefix = &(context->prefixes.prefixes[i]);
 		if( prefix->prefix_type == FCML_PT_GROUP_2 && !prefix->mandatory_prefix ) {
 			switch( prefix->prefix ) {
 			case 0x2E:
@@ -1425,10 +1425,14 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 
 	if( !FCML_DEF_PREFIX_MANDATORY_F2( instruction_decoding_def->prefixes_flags ) ) {
 		fcml_ifn_asm_dec_clear_mandatory_flag( decoding_context, 0xF2 );
+	} else {
+		decoding_context->prefixes.is_repne = FCML_FALSE;
 	}
 
 	if( !FCML_DEF_PREFIX_MANDATORY_F3( instruction_decoding_def->prefixes_flags ) ) {
 		fcml_ifn_asm_dec_clear_mandatory_flag( decoding_context, 0xF3 );
+	} else {
+		decoding_context->prefixes.is_rep = FCML_FALSE;
 	}
 
 	decoding_context->calculated_instruction_size = decoding_context->prefixes.prefixes_bytes_count + decoding_context->opcodes_count;

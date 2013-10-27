@@ -17,7 +17,10 @@
 
 #define FCML_PREFIX_LOCK			0x0001
 #define FCML_PREFIX_REPNE			0x0002
-#define FCML_PREFIX_REPE			0x0004
+#define FCML_PREFIX_REPNZ			FCML_PREFIX_REPNE
+#define FCML_PREFIX_REP				0x0004
+#define FCML_PREFIX_REPE			FCML_PREFIX_REP
+#define FCML_PREFIX_REPZ			FCML_PREFIX_REP
 
 typedef enum fcml_en_addr_form {
     // TODO: Sprawdzic czy to supportujemy.

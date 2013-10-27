@@ -41,6 +41,8 @@ typedef struct fcml_st_dasm_dec_prefixes {
 	fcml_int prefixes_count;
 	fcml_int prefixes_bytes_count;
 	fcml_bool is_lock;
+	fcml_bool is_rep;
+	fcml_bool is_repne;
 	fcml_bool is_vex;
 	fcml_bool is_xop;
 	fcml_bool is_rex;
