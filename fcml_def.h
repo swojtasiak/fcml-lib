@@ -168,6 +168,7 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_DEF_PREFIX_MANDATORY_66(x) 					FCML_TP_GET_BIT(x,12)
 #define FCML_DEF_PREFIX_MANDATORY_F2(x) 					FCML_TP_GET_BIT(x,13)
 #define FCML_DEF_PREFIX_MANDATORY_F3(x) 					FCML_TP_GET_BIT(x,14)
+#define FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED(x)				( ( ( x ) & 0x0006 ) == 0x06 )
 
 /*********************************
  * Opcode fields extractors.

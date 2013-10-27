@@ -12,6 +12,12 @@
 #define FCML_REND_LOCAL_BUFFER_SIZE 512
 
 void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, fcml_st_asm_dec_prefixes *prefixes ) {
+	if( prefixes->is_xacquire ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "xacquire " );
+	}
+	if( prefixes->is_xrelease ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "xrelease " );
+	}
 	if( prefixes->is_lock ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "lock " );
 	}

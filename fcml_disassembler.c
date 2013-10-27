@@ -92,14 +92,14 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 	fcml_bool is_xop_vex_allowed = FCML_TRUE;
 	fcml_bool is_last_prefix = FCML_FALSE;
 	fcml_int xop_vex_prefix_size = 0;
-	fcml_bool is_vex, is_xop, is_lock, is_rep, is_repne;
+	fcml_bool is_vex, is_xop, is_lock, is_rep_xrelease, is_repne_xacquire;
 
 	do {
 		prefix_type = FCML_PT_GROUP_UNKNOWN;
 		is_mandatory_candidate = FCML_FALSE;
 		is_lock = FCML_FALSE;
-		is_rep = FCML_FALSE;
-		is_repne = FCML_FALSE;
+		is_rep_xrelease = FCML_FALSE;
+		is_repne_xacquire = FCML_FALSE;
 		is_vex = FCML_FALSE;
 		is_xop = FCML_FALSE;
 		// Almost all prefixes are one byte length, so it's a reasonable default here.
@@ -114,13 +114,13 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 					is_lock = FCML_TRUE;
 					break;
 				case 0xF2:
-					is_repne = FCML_TRUE;
+					is_repne_xacquire = FCML_TRUE;
 					is_mandatory_candidate = FCML_TRUE;
 					prefix_type = FCML_PT_GROUP_1;
 					is_xop_vex_allowed = FCML_FALSE;
 					break;
 				case 0xF3:
-					is_rep = FCML_TRUE;
+					is_rep_xrelease = FCML_TRUE;
 					is_mandatory_candidate = FCML_TRUE;
 					prefix_type = FCML_PT_GROUP_1;
 					is_xop_vex_allowed = FCML_FALSE;
@@ -267,10 +267,10 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 				if( is_lock ) {
 					prefixes_details->is_lock = FCML_TRUE;
 				}
-				if( is_rep ) {
+				if( is_rep_xrelease ) {
 					prefixes_details->is_rep = FCML_TRUE;
 				}
-				if( is_repne ) {
+				if( is_repne_xacquire ) {
 					prefixes_details->is_repne = FCML_TRUE;
 				}
 				fcml_fn_stream_seek(stream, prefix_size, IRA_CURRENT);
