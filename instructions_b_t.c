@@ -142,6 +142,11 @@ void fcml_tf_instruction_BTC(void) {
 	// 0F BB BTC r/m32, r32 A Valid Valid Store selected bit in CF flag and complement.
 	// REX.W + 0F BB BTC r/m64, r64 A Valid N.E. Store selected bit in CF flag and complement.
 	FCML_I32( "btc dword ptr [esi],eax", 0x0F, 0xBB, 0x06 );
+	FCML_I32( "btc eax,eax", 0x0F, 0xBB, 0xC0 );
+	FCML_I32_A_FAILED( "lock btc eax,eax", 0xF0, 0x0F, 0xBB, 0xC0 );
+	// Such addressing mode is supported but only by disassembler, assembler doesn't allow it.
+	FCML_I32_D( "lock btc eax,eax", 0xF0, 0x0F, 0xBB, 0xC0 );
+	FCML_I32( "lock btc dword ptr [esi],eax", 0xF0, 0x0F, 0xBB, 0x06 );
 	FCML_I32( "btc word ptr [esi],ax", 0x66, 0x0F, 0xBB, 0x06 );
 	FCML_I32( "btc dword ptr [0201h],eax", 0x67, 0x0F, 0xBB, 0x06, 0x01, 0x02 );
 	// 0F BA /7 ib BTC r/m16, imm8 B Valid Valid Store selected bit in CF flag and complement.
@@ -155,6 +160,7 @@ void fcml_tf_instruction_BTC(void) {
 	FCML_I64( "btc qword ptr [rdi+0000000004030201h],05h", 0x48, 0x0F, 0xBA, 0xBF, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=64 EAS=64
 	FCML_I64( "btc qword ptr [rdi+0000000004030201h],0ffh", 0x48, 0x0F, 0xBA, 0xBF, 0x01, 0x02, 0x03, 0x4, 0xff );
+	FCML_I64( "lock btc qword ptr [rdi+0000000004030201h],0ffh", 0xF0, 0x48, 0x0F, 0xBA, 0xBF, 0x01, 0x02, 0x03, 0x4, 0xff );
 }
 
 void fcml_tf_instruction_BTR(void) {
@@ -162,6 +168,7 @@ void fcml_tf_instruction_BTR(void) {
 	// 0F B3 BTR r/m32, r32 A Valid Valid Store selected bit in CF flag and clear.
 	// REX.W + 0F B3 BTR r/m64, r64 A Valid N.E. Store selected bit in CF flag and clear.
 	FCML_I32( "btr dword ptr [esi],eax", 0x0F, 0xB3, 0x06 );
+	FCML_I32( "lock btr dword ptr [esi],eax", 0xF0, 0x0F, 0xB3, 0x06 );
 	FCML_I32( "btr word ptr [esi],ax", 0x66, 0x0F, 0xB3, 0x06 );
 	FCML_I32( "btr dword ptr [0201h],eax", 0x67, 0x0F, 0xB3, 0x06, 0x01, 0x02 );
 	// 0F BA /6 ib BTR r/m16, imm8 B Valid Valid Store selected bit in CF flag and clear.
@@ -175,6 +182,7 @@ void fcml_tf_instruction_BTR(void) {
 	FCML_I64( "btr qword ptr [rdi+0000000004030201h],05h", 0x48, 0x0F, 0xBA, 0xB7, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=64 EAS=64
 	FCML_I64( "btr qword ptr [rdi+0000000004030201h],0ffh", 0x48, 0x0F, 0xBA, 0xB7, 0x01, 0x02, 0x03, 0x4, 0xff );
+	FCML_I64( "lock btr qword ptr [rdi+0000000004030201h],0ffh", 0xF0, 0x48, 0x0F, 0xBA, 0xB7, 0x01, 0x02, 0x03, 0x4, 0xff );
 }
 
 void fcml_tf_instruction_BTS(void) {
@@ -184,6 +192,7 @@ void fcml_tf_instruction_BTS(void) {
 	FCML_I32( "bts dword ptr [esi],eax", 0x0F, 0xAB, 0x06 );
 	FCML_I32( "bts word ptr [esi],ax", 0x66, 0x0F, 0xAB, 0x06 );
 	FCML_I32( "bts dword ptr [0201h],eax", 0x67, 0x0F, 0xAB, 0x06, 0x01, 0x02 );
+	FCML_I32( "lock bts dword ptr [0201h],eax", 0xF0, 0x67, 0x0F, 0xAB, 0x06, 0x01, 0x02 );
 	// 0F BA /5 ib BTS r/m16, imm8 B Valid Valid Store selected bit in CF flag and set.
 	// 0F BA /5 ib BTS r/m32, imm8 B Valid Valid Store selected bit in CF flag and set.
 	// REX.W + 0F BA /5 ib BTS r/m64, imm8 B Valid N.E. Store selected bit in CF flag and set.
@@ -194,7 +203,7 @@ void fcml_tf_instruction_BTS(void) {
 	// EOS=64 EAS=64
 	FCML_I64( "bts qword ptr [rdi+0000000004030201h],05h", 0x48, 0x0F, 0xBA, 0xAF, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=64 EAS=64
-	FCML_I64( "bts qword ptr [rdi+0000000004030201h],0ffh", 0x48, 0x0F, 0xBA, 0xAF, 0x01, 0x02, 0x03, 0x4, 0xff );
+	FCML_I64( "lock bts qword ptr [rdi+0000000004030201h],0ffh", 0xF0, 0x48, 0x0F, 0xBA, 0xAF, 0x01, 0x02, 0x03, 0x4, 0xff );
 }
 
 void fcml_tf_instruction_BEXR(void) {

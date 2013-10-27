@@ -367,7 +367,7 @@ void fcml_tf_instruction_CMPSS(void) {
 void fcml_tf_instruction_CMPXCHG(void) {
     // 0F B0 /r CMPXCHG r/m8, r8
     // REX + 0F B0/r CMPXCHG r/m8,r8
-    FCML_I32( "cmpxchg byte ptr [eax],dl", 0x0F, 0xB0, 0x10 );
+    FCML_I32( "lock cmpxchg byte ptr [eax],dl", 0xF0, 0x0F, 0xB0, 0x10 );
     FCML_I64( "cmpxchg byte ptr [rax],dl", 0x0F, 0xB0, 0x10 );
     FCML_I64_D( "cmpxchg byte ptr [rax],dl", 0x48,  0x0F, 0xB0, 0x10 );
     // 0F B1/r CMPXCHG r/m16, r16
@@ -375,15 +375,15 @@ void fcml_tf_instruction_CMPXCHG(void) {
     // REX.W + 0F B1/r CMPXCHG r/m64, r64
     FCML_I32( "cmpxchg dword ptr [eax],edx", 0x0F, 0xB1, 0x10 );
     FCML_I32( "cmpxchg word ptr [eax],dx", 0x66, 0x0F, 0xB1, 0x10 );
-    FCML_I64( "cmpxchg qword ptr [rax],rdx", 0x48,  0x0F, 0xB1, 0x10 );
+    FCML_I64( "lock cmpxchg qword ptr [rax],rdx", 0xF0, 0x48,  0x0F, 0xB1, 0x10 );
 }
 
 void fcml_tf_instruction_CMPXCHG16B_CMPXCHG8B(void) {
     // REX.W + 0F C7 /1 m128 CMPXCHG16B m128 A Valid N.E. Compare RDX:RAX with m128. If equal, set ZF and load RCX:RBX into m128. Else, clear ZF and load m128 into RDX:RAX.
-    FCML_I64( "cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF );
+    FCML_I64( "lock cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0xF0, 0x48, 0x0F, 0xC7, 0x49, 0xFF );
     // 0F C7 /1 m64 CMPXCHG8B m64 A Valid Valid* Compare EDX:EAX with m64. If equal, set ZF and load ECX:EBX into m64. Else, clear ZF and load m64 into EDX:EAX.
     FCML_I64( "cmpxchg8b qword ptr [rcx+0ffffffffffffffffh]", 0x0F, 0xC7, 0x49, 0xFF );
-    FCML_I32( "cmpxchg8b qword ptr [ecx+0ffffffffh]", 0x0F, 0xC7, 0x49, 0xFF );
+    FCML_I32( "lock cmpxchg8b qword ptr [ecx+0ffffffffh]", 0xF0, 0x0F, 0xC7, 0x49, 0xFF );
 }
 
 void fcml_tf_instruction_CPUID(void) {

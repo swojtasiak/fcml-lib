@@ -101,13 +101,13 @@ void fcml_tf_instruction_INC(void) {
     // FF /0 INC r/m16 A Valid Valid Increment r/m word by 1.
     // FF /0 INC r/m32 A Valid Valid Increment r/m doubleword by 1.
     // REX.W + FF /0 INC r/m64 A Valid N.E. Increment r/m quadword by 1.
-    FCML_I32( "inc byte ptr [eax]", 0xFE, 0x00 );
+    FCML_I32( "lock inc byte ptr [eax]", 0xF0, 0xFE, 0x00 );
     FCML_I64( "inc byte ptr [rax]", 0xFE, 0x00 );
     FCML_I64_D( "inc byte ptr [rax]", 0x48, 0xFE, 0x00 );
     FCML_I64( "inc spl", 0x40, 0xFE, 0xC4 );
     // 40+ rw** INC r16 B N.E. Valid Increment word register by 1.
     // 40+ rd INC r32 B N.E. Valid Increment doubleword register by 1.
-    FCML_I32( "inc dword ptr [ebx]", 0xFF, 0x03 );
+    FCML_I32( "lock inc dword ptr [ebx]", 0xF0, 0xFF, 0x03 );
     FCML_I32( "inc word ptr [ebx]", 0x66, 0xFF, 0x03 );
     FCML_I64( "inc dword ptr [rbx]", 0xFF, 0x03 );
     FCML_I64( "inc qword ptr [rbx]", 0x48, 0xFF, 0x03 );

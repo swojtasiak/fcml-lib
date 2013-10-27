@@ -329,6 +329,8 @@ void fcml_tf_instruction_AESKEYGENASSIST(void) {
 void fcml_tf_instruction_AND(void) {
 	// 24 ib AND AL, imm8 C Valid Valid AL AND imm8.
 	FCML_I32_M( "and al,42h", 2, FCML_MI( 0x24, 0x42 ), FCML_MI( 0x80, 0xE0, 0x42 ) );
+	FCML_I32_A_FAILED( "lock and al,42h", 0xF0, 0x24, 0x42 );
+	FCML_I32_D_FAILED( "lock and al,42h", 0xF0, 0x24, 0x42 );
 	FCML_I32_M( "and al,0ffh", 2, FCML_MI( 0x24, 0xFF ), FCML_MI( 0x80, 0xE0, 0xFF ) );
 	FCML_I32_M( "and al,00h", 2, FCML_MI( 0x24, 0x00 ), FCML_MI( 0x80, 0xE0, 0x00 ) );
 	FCML_I32_M( "and al,0ffh", 2, FCML_MI( 0x24, 0xFF ), FCML_MI( 0x80, 0xE0, 0xFF ) );
@@ -337,6 +339,8 @@ void fcml_tf_instruction_AND(void) {
 	FCML_I32_M( "and ax,8042h", 2, FCML_MI( 0x66, 0x25, 0x42, 0x80 ), FCML_MI( 0x66, 0x81, 0xE0, 0x42, 0x80 ) );
 	FCML_I32_M( "and eax,42806521h", 2, FCML_MI( 0x25, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x81, 0xe0, 0x21, 0x65, 0x80, 0x42 ) );
 	FCML_I64_D( "and eax,42806521h", 0x40, 0x25, 0x21, 0x65, 0x80, 0x42 );
+	FCML_I64_D_FAILED( "lock and eax,42806521h", 0xF0, 0x40, 0x25, 0x21, 0x65, 0x80, 0x42 );
+	FCML_I64_A_FAILED( "lock and eax,42806521h", 0xF0, 0x40, 0x25, 0x21, 0x65, 0x80, 0x42 );
 	FCML_I64_D( "and ax,6521h", 0x66, 0x40, 0x25, 0x21, 0x65 );
 	// REX.W + 25 id AND RAX, imm32 C Valid N.E. RAX AND imm32 signextended to 64-bits.
 	FCML_I64_M( "and rax,0000000042806521h", 2, FCML_MI( 0x48, 0x25, 0x21, 0x65, 0x80, 0x42 ), FCML_MI(0x48, 0x81, 0xe0, 0x21, 0x65, 0x80, 0x42 ) );
@@ -346,6 +350,7 @@ void fcml_tf_instruction_AND(void) {
 	// 80 /4 ib AND r/m8, imm8 B Valid Valid r/m8 AND imm8.
 	// REX + 80 /4 ib AND r/m8*, imm8 B Valid N.E. r/m64 AND imm8 (signextended).
 	FCML_I32( "and byte ptr [04030201h],0ffh", 0x80, 0x25, 0x01, 0x02, 0x03, 0x04, 0xff );
+	FCML_I32( "lock and byte ptr [04030201h],0ffh", 0xF0, 0x80, 0x25, 0x01, 0x02, 0x03, 0x04, 0xff );
 	FCML_I32( "and byte ptr [esi+04030201h],0ffh", 0x80, 0xA6, 0x01, 0x02, 0x03, 0x04, 0xff );
 	FCML_I32( "and byte ptr [ecx+eax+00000002h],03h", 0x80, 0x64, 0x01, 0x02, 0x03 );
 	// 81 /4 iw AND r/m16, imm16 B Valid Valid r/m16 AND imm16.
@@ -361,6 +366,7 @@ void fcml_tf_instruction_AND(void) {
 	// 83 /4 ib AND r/m16, imm8 B Valid Valid r/m16 AND imm8 (signextended).
 	// 83 /4 ib AND r/m32, imm8 B Valid Valid r/m32 AND imm8 (signextended).
 	FCML_I32_M( "and dword ptr [esi],00000001h", 2, FCML_MI( 0x83, 0x26, 0x01 ), FCML_MI( 0x81, 0x26, 0x01, 0x00, 0x00, 0x00 ) );
+	FCML_I32_M( "lock and dword ptr [esi],00000001h", 2, FCML_MI( 0xF0, 0x83, 0x26, 0x01 ), FCML_MI( 0xF0, 0x81, 0x26, 0x01, 0x00, 0x00, 0x00 ) );
 	FCML_I32_M( "and word ptr [esi],0001h", 2, FCML_MI( 0x66, 0x83, 0x26, 0x01 ), FCML_MI( 0x66, 0x81, 0x26, 0x01, 0x00 ) );
 	FCML_I32_M( "and dword ptr [0201h],00000003h", 2, FCML_MI( 0x67, 0x83, 0x26, 0x01, 0x02, 0x03 ), FCML_MI( 0x67, 0x81, 0x26, 0x01, 0x02, 0x03, 0x00, 0x00, 0x00 ) );
 	// REX.W + 83 /4 ib AND r/m64, imm8 B Valid N.E. r/m64 AND imm8 (signextended).
@@ -369,6 +375,7 @@ void fcml_tf_instruction_AND(void) {
 	// 20 /r AND r/m8, r8 A Valid Valid r/m8 AND r8.
 	// REX + 20 /r AND r/m8*, r8* A Valid N.E. r/m64 AND r8 (signextended).
 	FCML_I32( "and byte ptr [ebp+04030201h],ah", 0x20, 0xa5, 0x01, 0x02, 0x03, 04 );
+	FCML_I32( "lock and byte ptr [ebp+04030201h],ah", 0xF0, 0x20, 0xa5, 0x01, 0x02, 0x03, 04 );
 	FCML_I64_D( "and byte ptr [rbp+0000000004030201h],spl", 0x48, 0x20, 0xa5, 0x01, 0x02, 0x03, 04 );
 	FCML_I64_D( "and byte ptr [rbp+0000000000000001h],spl", 0x48, 0x20, 0x64, 0xa5, 0x01 );
 	FCML_I64( "and byte ptr [rbp+0000000000000001h],spl", 0x40, 0x20, 0x65, 0x01 );
@@ -413,6 +420,7 @@ void fcml_tf_instruction_AND(void) {
 	FCML_I32( "and dword ptr [04030201h],edx",  0x21, 0x15, 0x01, 0x02, 0x03, 0x04 ); // DUAL
 	FCML_I32_D( "and dword ptr [esi],edx",  0x21, 0x14, 0x26 ); // DUAL
 	FCML_I32( "and dword ptr [esi],edx",  0x21, 0x16 ); // DUAL
+	FCML_I32( "lock and dword ptr [esi],edx",  0xF0, 0x21, 0x16 ); // DUAL
 }
 
 void fcml_tf_instruction_ANDPD(void) {
