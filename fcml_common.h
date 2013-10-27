@@ -8,10 +8,16 @@
 #ifndef FCML_INT_COMMON_H_
 #define FCML_INT_COMMON_H_
 
+#include <stdint.h>
+
 #include "fcml_types.h"
 
 #define FCML_OPERANDS_COUNT	5
 #define FCML_INSTRUCTION_SIZE 15
+
+#define FCML_PREFIX_LOCK			0x0001
+#define FCML_PREFIX_REPNE			0x0002
+#define FCML_PREFIX_REPE			0x0004
 
 typedef enum fcml_en_addr_form {
     // TODO: Sprawdzic czy to supportujemy.
@@ -23,6 +29,7 @@ typedef enum fcml_en_addr_form {
 // Simple types.
 
 typedef fcml_uint16_t fcml_hints;
+typedef fcml_uint16_t fcml_prefixes;
 
 // Instruction pointer.
 
@@ -404,14 +411,6 @@ typedef struct fcml_st_operand {
  * Instruction definition.
  *********************************/
 
-typedef enum fcml_en_explicit_prefixes {
-	FCML_PREFIX_NONE,
-    FCML_PREFIX_LOCK,
-    FCML_PREFIX_WAIT,
-    FCML_PREFIX_REPNE,
-    FCML_PREFIX_REPE
-} fcml_en_explicit_prefixes;
-
 typedef enum fcml_en_instruction_hints {
     FCML_HINT_FAR_POINTER = 0x0001,
     FCML_HINT_NEAR_POINTER = 0x0002,
@@ -421,7 +420,7 @@ typedef enum fcml_en_instruction_hints {
 } fcml_en_instruction_hints;
 
 typedef struct fcml_st_instruction {
-    fcml_en_explicit_prefixes prefixes;
+	fcml_prefixes prefixes;
     fcml_hints hints;
     fcml_char *mnemonic;
     fcml_bool is_conditional;

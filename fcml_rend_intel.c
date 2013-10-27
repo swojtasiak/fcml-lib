@@ -11,8 +11,10 @@
 
 #define FCML_REND_LOCAL_BUFFER_SIZE 512
 
-void fcml_ifn_rend_print_prefixes_intel( fcml_st_asm_dec_prefixes *prefixes ) {
-	// TODO: Prefixes, when they are added.
+void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, fcml_st_asm_dec_prefixes *prefixes ) {
+	if( prefixes->is_lock ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "lock " );
+	}
 }
 
 fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_asm_dec_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
@@ -224,7 +226,8 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *d
 		fcml_fn_rend_utils_format_append_str( output_stream, " " );
 	}
 
-	fcml_ifn_rend_print_prefixes_intel( &result->prefixes );
+	// Instruction prefixes like LOCK.
+	fcml_ifn_rend_print_prefixes_intel( output_stream, &result->prefixes );
 
 	// Mnemonic.
 	fcml_fn_rend_utils_format_append_str( output_stream, result->mnemonic );

@@ -92,11 +92,14 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 	fcml_bool is_xop_vex_allowed = FCML_TRUE;
 	fcml_bool is_last_prefix = FCML_FALSE;
 	fcml_int xop_vex_prefix_size = 0;
-	fcml_bool is_vex = FCML_FALSE, is_xop = FCML_FALSE;
+	fcml_bool is_vex, is_xop, is_lock;
 
 	do {
 		prefix_type = FCML_PT_GROUP_UNKNOWN;
 		is_mandatory_candidate = FCML_FALSE;
+		is_lock = FCML_FALSE;
+		is_vex = FCML_FALSE;
+		is_xop = FCML_FALSE;
 		// Almost all prefixes are one byte length, so it's a reasonable default here.
 		prefix_size = 1;
 		fcml_uint8_t prefix = fcml_fn_stream_peek(stream, &result);
@@ -106,6 +109,7 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 				case 0xF0:
 					prefix_type = FCML_PT_GROUP_1;
 					is_xop_vex_allowed = FCML_FALSE;
+					is_lock = FCML_TRUE;
 					break;
 				case 0xF2:
 				case 0xF3:
@@ -251,6 +255,9 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
 				prefixes_details->is_vex = is_vex;
 				prefixes_details->is_xop = is_xop;
 				prefixes_details->prefixes_bytes_count += prefix_size;
+				if( is_lock ) {
+					prefixes_details->is_lock = FCML_TRUE;
+				}
 				fcml_fn_stream_seek(stream, prefix_size, IRA_CURRENT);
 				prefix_index++;
 			} else {

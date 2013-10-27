@@ -53,8 +53,6 @@ typedef struct fcml_st_ceh_error_container {
 
 fcml_st_ceh_error_container *fcml_fn_ceh_alloc_error_container();
 void fcml_fn_ceh_free_error_container( fcml_st_ceh_error_container *error_container );
-fcml_st_ceh_error_info *fcml_fn_ceh_alloc_error_info( const fcml_string message, fcml_ceh_error_code code, fcml_en_ceh_error_level level );
-void fcml_fn_ceh_free_error_info( fcml_st_ceh_error_info *error_info );
 fcml_st_ceh_error_info *fcml_fn_ceh_add_error( fcml_st_ceh_error_container **error_container, const fcml_string message, fcml_ceh_error_code code, fcml_en_ceh_error_level level );
 
 #endif /* FCML_CEH_H_ */

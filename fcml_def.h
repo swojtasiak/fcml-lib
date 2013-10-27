@@ -154,6 +154,7 @@ typedef struct fcml_st_def_instruction_description {
  * Prefix fields.
  *********************************/
 
+#define FCML_DEF_PREFIX_LOCK_ALLOWED(x)						FCML_TP_GET_BIT(x,0)
 #define FCML_DEF_PREFIX_W_1(x)								FCML_TP_GET_BIT(x,3)
 #define FCML_DEF_PREFIX_W_0(x)								FCML_TP_GET_BIT(x,4)
 #define FCML_DEF_PREFIX_L_1(x)								FCML_TP_GET_BIT(x,5)

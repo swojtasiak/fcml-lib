@@ -9,6 +9,16 @@
 #include "fcml_env.h"
 #include "fcml_ceh.h"
 
+void fcml_fn_ceh_free_error_info( fcml_st_ceh_error_info *error_info ) {
+	if( error_info ) {
+		if( error_info->message ) {
+			fcml_fn_env_memory_strfree( error_info->message );
+			error_info->message = NULL;
+		}
+		fcml_fn_env_memory_free( error_info );
+	}
+}
+
 fcml_st_ceh_error_container *fcml_fn_ceh_alloc_error_container() {
 	fcml_st_ceh_error_container *error_container = (fcml_st_ceh_error_container*)fcml_fn_env_memory_alloc(sizeof(fcml_st_ceh_error_container));
 	if( error_container ) {
@@ -32,7 +42,7 @@ void fcml_fn_ceh_free_error_container( fcml_st_ceh_error_container *error_contai
 }
 
 fcml_st_ceh_error_info *fcml_fn_ceh_alloc_error_info( fcml_string message, fcml_ceh_error_code code, fcml_en_ceh_error_level level ) {
-	fcml_st_ceh_error_info *error_info = (fcml_st_ceh_error_info*)fcml_fn_env_memory_alloc(sizeof(fcml_st_ceh_error_info));
+	fcml_st_ceh_error_info *error_info = (fcml_st_ceh_error_info*)fcml_fn_env_clear_memory_alloc(sizeof(fcml_st_ceh_error_info));
 	if( error_info ) {
 		error_info->message = fcml_fn_env_memory_strdup( message );
 		if( !error_info->message ) {
@@ -43,16 +53,6 @@ fcml_st_ceh_error_info *fcml_fn_ceh_alloc_error_info( fcml_string message, fcml_
 		error_info->level = level;
 	}
 	return error_info;
-}
-
-void fcml_fn_ceh_free_error_info( fcml_st_ceh_error_info *error_info ) {
-	if( error_info ) {
-		if( error_info->message ) {
-			fcml_fn_env_memory_strfree( error_info->message );
-			error_info->message = NULL;
-		}
-		fcml_fn_env_memory_free( error_info );
-	}
 }
 
 fcml_st_ceh_error_info *fcml_fn_ceh_add_error( fcml_st_ceh_error_container **error_container, const fcml_string message, fcml_ceh_error_code code, fcml_en_ceh_error_level level ) {
@@ -73,7 +73,6 @@ fcml_st_ceh_error_info *fcml_fn_ceh_add_error( fcml_st_ceh_error_container **err
 		}
 		return NULL;
 	}
-	memset( error_info, 0, sizeof(fcml_st_ceh_error_info) );
 	fcml_st_ceh_error_info *last_error = (*error_container)->last_error;
 	if( last_error ) {
 		last_error->next_error = error_info;

@@ -945,6 +945,12 @@ fcml_bool fcml_ifp_asm_dec_instruction_acceptor_prefixes( fcml_st_asm_decoding_c
 	// Prefixes.
 	fcml_st_asm_dec_prefixes *prefixes = &(context->prefixes);
 
+	// LOCK prefix.
+	if( prefixes->is_lock && !FCML_DEF_PREFIX_LOCK_ALLOWED( instruction_decoding_def->prefixes_flags ) ) {
+		// Lock prefix is not allowed.
+		return FCML_FALSE;
+	}
+
 	// VEX required.
 	if( FCML_DEF_PREFIX_VEX_REQ( instruction_decoding_def->prefixes_flags ) && !prefixes->is_vex  ) {
 		// VEX prefix is required.
