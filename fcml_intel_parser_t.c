@@ -7,7 +7,15 @@
 
 #include "fcml_intel_parser_t.h"
 
-#include "fcml_x64intel_asm_parser.h"
+#include <CUnit/CUnit.h>
+#include <CUnit/TestDB.h>
+#include <CUnit/TestRun.h>
+#include <fcml_ceh.h>
+#include <fcml_common.h>
+#include <fcml_types.h>
+#include <fcml_x64intel_asm_parser.h>
+#include <fcml_x64intel_parser_errors.h>
+#include <string.h>
 
 int fcml_tf_parser_suite_init(void) {
 	return 0;
@@ -424,6 +432,54 @@ void fcml_tf_parser_int_parse_test29(void) {
     fcml_x64iap_free( result );
 }
 
+void fcml_tf_parser_int_parse_test30(void) {
+	fcml_st_x64iap_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64iap_parse( "lock mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
+	if( result->instruction != NULL ) {
+		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, (fcml_uint8_t)1 );
+		CU_ASSERT_EQUAL( result->instruction->prefixes, FCML_PREFIX_LOCK );
+	} else {
+        CU_FAIL();
+    }
+	fcml_x64iap_free( result );
+}
+
+void fcml_tf_parser_int_parse_test31(void) {
+	// Check if multiple prefixes are allowed.
+	fcml_st_x64iap_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64iap_parse( "lock repne repe mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
+	if( result->instruction != NULL ) {
+		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, (fcml_uint8_t)1 );
+		CU_ASSERT_EQUAL( result->instruction->prefixes, FCML_PREFIX_LOCK | FCML_PREFIX_REPE | FCML_PREFIX_REPNE );
+	} else {
+        CU_FAIL();
+    }
+	fcml_x64iap_free( result );
+}
+
+void fcml_tf_parser_int_parse_test32(void) {
+	// Duplicated prefixes aren't allowed.
+	fcml_st_x64iap_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64iap_parse( "lock lock mov 1", &result ), FCML_CEH_GEC_INVALID_INPUT );
+	if( result->instruction != NULL ) {
+        CU_FAIL("Instruction should be NULL.");
+	} else if( result->errors != NULL ){
+		fcml_st_ceh_error_container *cont = result->errors;
+		CU_ASSERT_EQUAL( cont->errors->level, FCML_EN_CEH_EL_ERROR );
+		CU_ASSERT_EQUAL( cont->errors->code, FCML_EN_X64IP_ERROR_INVALID_SYNTAX );
+		CU_ASSERT_STRING_EQUAL( "Doubled prefixes.", cont->errors->message );
+    } else {
+    	CU_FAIL("Errors can not be null here.");
+    }
+	fcml_x64iap_free( result );
+}
+
 CU_TestInfo fcml_ti_parser[] = {
     { "fcml_tf_parser_int_parse_test1", fcml_tf_parser_int_parse_test1 },
     { "fcml_tf_parser_int_parse_test2", fcml_tf_parser_int_parse_test2 },
@@ -454,6 +510,9 @@ CU_TestInfo fcml_ti_parser[] = {
     { "fcml_tf_parser_int_parse_test27", fcml_tf_parser_int_parse_test27 },
     { "fcml_tf_parser_int_parse_test28", fcml_tf_parser_int_parse_test28 },
     { "fcml_tf_parser_int_parse_test29", fcml_tf_parser_int_parse_test29 },
+    { "fcml_tf_parser_int_parse_test30", fcml_tf_parser_int_parse_test30 },
+    { "fcml_tf_parser_int_parse_test31", fcml_tf_parser_int_parse_test31 },
+    { "fcml_tf_parser_int_parse_test32", fcml_tf_parser_int_parse_test32 },
     CU_TEST_INFO_NULL,
 };
 
