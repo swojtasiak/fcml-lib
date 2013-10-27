@@ -127,6 +127,9 @@ void fcml_tf_instruction_OUT(void) {
 void fcml_tf_instruction_OUTS(void) {
     // 6E OUTS DX, m8 NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
     FCML_I32( "outs dx,byte ptr [edi]", 0x6e );
+    FCML_I32( "rep outs dx,byte ptr [edi]", 0xF3, 0x6e );
+    FCML_I32_A( "repz outs dx,byte ptr [edi]", 0xF3, 0x6e );
+    FCML_I32_A( "repe outs dx,byte ptr [edi]", 0xF3, 0x6e );
     FCML_I64( "outs dx,byte ptr [rdi]", 0x6e );
     FCML_I64_D( "outs dx,byte ptr [edi]", 0x67, 0x6e );
     FCML_I64_A( "outsb", 0x6e );

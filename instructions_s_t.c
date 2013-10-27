@@ -223,7 +223,7 @@ void fcml_tf_instruction_SBB(void) {
 
 void fcml_tf_instruction_SCAS(void) {
     // AE SCAS m8 NP Valid Valid Compare AL with byte at ES:(E)DI or RDI, then set status flags.
-    FCML_I32( "scas byte ptr [edi]", 0xAE );
+    FCML_I32( "repne scas byte ptr [edi]", 0xf2, 0xAE );
     // AF SCAS m16 NP Valid Valid Compare AX with word at ES:(E)DI or RDI, then set status flags.
     // AF SCAS m32 NP Valid Valid Compare EAX with doubleword at ES(E)DI or RDI then set status flags.
     // REX.W + AF SCAS m64 NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
@@ -234,7 +234,8 @@ void fcml_tf_instruction_SCAS(void) {
     // AF SCASW NP Valid Valid Compare AX with word at ES:(E)DI or RDI then set status flags.
     // AF SCASD NP Valid Valid Compare EAX with doubleword at ES:(E)DI or RDI then set status flags.
     // REX.W + AF SCASQ NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
-    FCML_I32_A( "scasb", 0xAE );
+    FCML_I32_A( "repne scasb", 0xf2, 0xAE );
+    FCML_I32_A( "repnz scasb", 0xf2, 0xAE );
     FCML_I32_A( "scasw", 0x66, 0xAF );
     FCML_I32_A( "scasd", 0xAF );
     FCML_I64_A( "scasq", 0x48, 0xAF );
@@ -427,6 +428,7 @@ void fcml_tf_instruction_STMXCSR(void) {
 void fcml_tf_instruction_STOS(void) {
     // AA STOS m8 NA Valid Valid For legacy mode, store AL at address ES:(E)DI; For 64-bit mode store AL at address RDI or EDI.
     FCML_I32( "stos byte ptr [si],byte ptr [di]", 0x67, 0xAA );
+    FCML_I32( "rep stos byte ptr [si],byte ptr [di]", 0xF3, 0x67, 0xAA );
     FCML_I32_D( "stos byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xAA );
     FCML_I32( "stos byte ptr [esi],byte ptr [edi]", 0xAA );
     FCML_I64_D( "stos byte ptr [rsi],byte ptr [rdi]", 0x48, 0xAA );
@@ -436,7 +438,7 @@ void fcml_tf_instruction_STOS(void) {
     // AB STOS m16 NA Valid Valid For legacy mode, store AX at address ES:(E)DI; For 64-bit mode store AX at address RDI or EDI.
     // AB STOS m32 NA Valid Valid For legacy mode, store EAX at address ES:(E)DI; For 64-bit mode store EAX at address RDI or EDI.
     // REX.W + AB STOS m64 NA Valid N.E. Store RAX at address RDI or EDI.
-    FCML_I32( "stos dword ptr [si],dword ptr [di]", 0x67, 0xAB );
+    FCML_I32( "rep stos dword ptr [si],dword ptr [di]", 0xF3, 0x67, 0xAB );
     FCML_I32( "stos word ptr [si],word ptr [di]", 0x66, 0x67, 0xAB );
     FCML_I32( "stos dword ptr [esi],dword ptr [edi]", 0xAB );
     FCML_I64( "stos qword ptr [rsi],qword ptr [rdi]", 0x48, 0xAB );

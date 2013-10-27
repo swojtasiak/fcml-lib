@@ -117,12 +117,12 @@ void fcml_tf_instruction_INC(void) {
 
 void fcml_tf_instruction_INS(void) {
     // 6C INS m8, DX A Valid Valid Input byte from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.*
-    FCML_I32( "ins byte ptr [edi],dx", 0x6c );
+    FCML_I32( "rep ins byte ptr [edi],dx", 0xF3, 0x6c );
     FCML_I64( "ins byte ptr [rdi],dx", 0x6c );
     FCML_I64( "ins byte ptr [edi],dx", 0x67, 0x6c );
     // 6D INS m16, DX A Valid Valid Input word from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
     // 6D INS m32, DX A Valid Valid Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.1
-    FCML_I32( "ins dword ptr [edi],dx", 0x6D );
+    FCML_I32( "rep ins dword ptr [edi],dx", 0xF3, 0x6D );
     FCML_I64( "ins dword ptr [rdi],dx", 0x6D );
     FCML_I64( "ins dword ptr [edi],dx", 0x67, 0x6D );
     FCML_I64( "ins word ptr [edi],dx", 0x66, 0x67, 0x6D );

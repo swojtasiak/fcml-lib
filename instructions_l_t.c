@@ -129,7 +129,7 @@ void fcml_tf_instruction_LMSW(void) {
 }
 
 void fcml_tf_instruction_LODS(void) {
-    FCML_I32( "lods byte ptr es:[esi]", 0x26, 0xAC );
+    FCML_I32( "rep lods byte ptr es:[esi]", 0xF3, 0x26, 0xAC );
     FCML_I32( "lods byte ptr [esi]", 0xAC );
     FCML_I32( "lods dword ptr [esi]", 0xAD );
     FCML_I32( "lods word ptr [si]",0x66, 0x67, 0xAD );

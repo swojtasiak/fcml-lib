@@ -124,17 +124,17 @@ void fcml_tf_instruction_MONITOR(void) {
 }
 
 void fcml_tf_instruction_MOV(void) {
-    // 0F 21/r MOV r32, DR0–DR7 A N.E. Valid Move debug register to r32
+    // 0F 21/r MOV r32, DR0ï¿½DR7 A N.E. Valid Move debug register to r32
     FCML_I32( "mov eax,dr2", 0x0F, 0x21, 0xD0 );
     FCML_I32( "mov eax,dr2", 0x66, 0x0F, 0x21, 0xD0 );
-    // 0F 21/r MOV r64, DR0–DR7 A Valid N.E. Move extended debug register to r64.
+    // 0F 21/r MOV r64, DR0ï¿½DR7 A Valid N.E. Move extended debug register to r64.
     FCML_I64_D( "mov rax,dr2", 0x66, 0x0F, 0x21, 0xD0 );
     FCML_I64_D( "mov rax,dr2", 0x48, 0x0F, 0x21, 0xD0 );
     FCML_I64( "mov rax,dr2", 0x0F, 0x21, 0xD0 );
-    // 0F 23 /r MOV DR0–DR7, r32 A N.E. Valid Move r32 to debug register
+    // 0F 23 /r MOV DR0ï¿½DR7, r32 A N.E. Valid Move r32 to debug register
     FCML_I32( "mov dr2,eax", 0x0F, 0x23, 0xD0 );
     FCML_I32( "mov dr2,eax", 0x66, 0x0F, 0x23, 0xD0 );
-    // 0F 23 /r MOV DR0–DR7, r64 A Valid N.E. Move r64 to extended debug register.
+    // 0F 23 /r MOV DR0ï¿½DR7, r64 A Valid N.E. Move r64 to extended debug register.
     FCML_I64_D( "mov dr2,rax", 0x66, 0x0F, 0x23, 0xD0 );
     FCML_I64_D( "mov dr2,rax", 0x48, 0x0F, 0x23, 0xD0 );
     FCML_I64( "mov dr2,rax", 0x0F, 0x23, 0xD0 );
@@ -157,16 +157,16 @@ void fcml_tf_instruction_MOV(void) {
     FCML_I64_D( "mov rax,<unknown DR>", 0x44, 0x0F, 0x21, 0xF8 );
 
     // MOV (CR)
-    // 0F 20/r MOV r32, CR0–CR7 A N.E. Valid Move control register to r32
-    // 0F 20/r MOV r64, CR0–CR7 A Valid N.E. Move extended control register to r64.
+    // 0F 20/r MOV r32, CR0ï¿½CR7 A N.E. Valid Move control register to r32
+    // 0F 20/r MOV r64, CR0ï¿½CR7 A Valid N.E. Move extended control register to r64.
     FCML_I32( "mov eax,cr2", 0x0F, 0x20, 0xD0 );
     FCML_I32( "mov eax,cr2", 0x66, 0x0F, 0x20, 0xD0 );
     // REX.R + 0F 20 /0 MOV r64, CR8 A Valid N.E. Move extended CR8 to r64.1
     FCML_I64_D( "mov rax,cr2", 0x66, 0x0F, 0x20, 0xD0 );
     FCML_I64_D( "mov rax,cr2", 0x48, 0x0F, 0x20, 0xD0 );
     FCML_I64( "mov rax,cr2", 0x0F, 0x20, 0xD0 );
-    // 0F 22 /r MOV CR0–CR7, r32 A N.E. Valid Move r32 to control register
-    // 0F 22 /r MOV CR0–CR7, r64 A Valid N.E. Move r64 to extended control register.
+    // 0F 22 /r MOV CR0ï¿½CR7, r32 A N.E. Valid Move r32 to control register
+    // 0F 22 /r MOV CR0ï¿½CR7, r64 A Valid N.E. Move r64 to extended control register.
     FCML_I32( "mov cr2,eax", 0x0F, 0x22, 0xD0 );
     FCML_I32_D( "mov cr2,eax", 0x66, 0x0F, 0x22, 0xD0 );
     // REX.R + 0F 22 /0 MOV CR8, r64 A Valid N.E. Move r64 to extended CR8.1
@@ -646,7 +646,7 @@ void fcml_tf_instruction_MOVQ2DQ(void) {
 
 void fcml_tf_instruction_MOVS(void) {
     // A4 MOVS m8, m8
-    FCML_I32( "movs byte ptr [si],byte ptr [di]", 0x67, 0xA4 );
+    FCML_I32( "rep movs byte ptr [si],byte ptr [di]", 0xF3, 0x67, 0xA4 );
     FCML_I32( "movs byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xA4 );
     FCML_I32( "movs byte ptr [esi],byte ptr [edi]", 0xA4 );
     FCML_I64( "movs byte ptr [rsi],byte ptr [rdi]", 0xA4 );
@@ -657,7 +657,7 @@ void fcml_tf_instruction_MOVS(void) {
     // A5 MOVS m16, m16
     // A5 MOVS m32, m32
     // REX.W + A5 MOVS m64, m64
-    FCML_I32( "movs dword ptr [si],dword ptr [di]", 0x67, 0xA5 );
+    FCML_I32( "rep movs dword ptr [si],dword ptr [di]", 0xF3, 0x67, 0xA5 );
     FCML_I32( "movs word ptr [si],word ptr [di]", 0x66, 0x67, 0xA5 );
     FCML_I32( "movs dword ptr [esi],dword ptr [edi]", 0xA5 );
     FCML_I64( "movs qword ptr [rsi],qword ptr [rdi]", 0x48, 0xA5 );
