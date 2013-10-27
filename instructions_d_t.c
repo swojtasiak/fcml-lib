@@ -38,6 +38,8 @@ void fcml_tf_instruction_DEC(void) {
     // REX + FE /1 DEC r/m8* A Valid N.E. Decrement r/m8 by 1.
     FCML_I32( "dec byte ptr [ebx]", 0xFE, 0x0B );
     FCML_I32( "lock dec byte ptr [ebx]", 0xF0, 0xFE, 0x0B );
+    FCML_I32( "xacquire lock dec byte ptr [ebx]", 0xF2, 0xF0, 0xFE, 0x0B );
+    FCML_I32( "xrelease lock dec byte ptr [ebx]", 0xF3, 0xF0, 0xFE, 0x0B );
     FCML_I64( "dec byte ptr [rbx]", 0xFE, 0x0B );
     FCML_I64_D( "dec byte ptr [rbx]", 0x48, 0xFE, 0x0B );
     FCML_I64( "dec spl", 0x40, 0xFE, 0xCC );
@@ -46,6 +48,8 @@ void fcml_tf_instruction_DEC(void) {
     // REX.W + FF /1 DEC r/m64 A Valid N.E. Decrement r/m64 by 1.
     FCML_I32( "dec dword ptr [ebx]", 0xFF, 0x0B );
     FCML_I32( "lock dec dword ptr [ebx]", 0xF0, 0xFF, 0x0B );
+    FCML_I32( "xacquire lock dec dword ptr [ebx]", 0xF2, 0xF0, 0xFF, 0x0B );
+    FCML_I32( "xrelease lock dec dword ptr [ebx]", 0xF3, 0xF0, 0xFF, 0x0B );
     FCML_I32( "dec word ptr [ebx]", 0x66, 0xFF, 0x0B );
     FCML_I64( "dec dword ptr [rbx]", 0xFF, 0x0B );
     FCML_I64( "dec qword ptr [rbx]", 0x48, 0xFF, 0x0B );

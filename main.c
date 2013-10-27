@@ -219,6 +219,9 @@ int main(int argc, char **argv) {
 		return FCML_FALSE;
 	}
 
+
+	//FCML_I32_A_P( "xacquire lock add byte ptr [04030201h],0ffh", 0xF0, 0x80, 0x05, 0x01, 0x02, 0x03, 0x04, 0xff );
+
 	//FCML_I64_P( "cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF );
 	//return 0;
 

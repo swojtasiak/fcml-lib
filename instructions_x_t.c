@@ -23,12 +23,16 @@ void fcml_tf_instruction_XADD(void) {
     FCML_I64_D( "xadd byte ptr [rax],dl", 0x48, 0x0F, 0xC0, 0x10 );
     FCML_I32( "xadd byte ptr [eax],dl", 0x0F, 0xC0, 0x10 );
     FCML_I32( "lock xadd byte ptr [eax],dl", 0xF0, 0x0F, 0xC0, 0x10 );
+    FCML_I32( "xacquire lock xadd byte ptr [eax],dl", 0xF2, 0xF0, 0x0F, 0xC0, 0x10 );
+    FCML_I32( "xrelease lock xadd byte ptr [eax],dl", 0xF3, 0xF0, 0x0F, 0xC0, 0x10 );
     // 0F C1 /r XADD r/m16,r16 MR Valid Valid Exchange r16 and r/m16; load sum into r/m16.
     // 0F C1 /r XADD r/m32,r32 MR Valid Valid Exchange r32 and r/m32; load sum into r/m32.
     // REX.W + 0F C1 /r XADD r/m64,r64 MR Valid N.E. Exchange r64 and r/m64; load sum into r/m64.
     FCML_I64( "xadd qword ptr [rax],rdx", 0x48, 0x0F, 0xC1, 0x10 );
     FCML_I32( "xadd dword ptr [eax],edx", 0x0F, 0xC1, 0x10 );
     FCML_I32( "lock xadd word ptr [eax],dx", 0xF0, 0x66, 0x0F, 0xC1, 0x10 );
+    FCML_I32( "xacquire lock xadd word ptr [eax],dx", 0xF2, 0xF0, 0x66, 0x0F, 0xC1, 0x10 );
+    FCML_I32( "xrelease lock xadd word ptr [eax],dx", 0xF3, 0xF0, 0x66, 0x0F, 0xC1, 0x10 );
 }
 
 void fcml_tf_instruction_XCHG(void) {
@@ -47,6 +51,9 @@ void fcml_tf_instruction_XCHG(void) {
     // REX + 86 /r XCHG r/m8*, r8* MR Valid N.E. Exchange r8 (byte register) with byte from r/m8.
     // 86 /r XCHG r8, r/m8 RM Valid Valid Exchange byte from r/m8 with r8 (byte register).
     // REX + 86 /r XCHG r8*, r/m8* RM Valid N.E. Exchange byte from r/m8 with r8 (byte register).
+    // xchg do not need lock prefix.
+    FCML_I32( "xacquire xchg byte ptr [eax],al", 0xF2, 0x86, 0x00 );
+	FCML_I32( "xacquire lock xchg byte ptr [eax],al", 0xF2, 0xF0, 0x86, 0x00 );
     FCML_I32( "lock xchg byte ptr [eax],al", 0xF0, 0x86, 0x00 );
     FCML_I32( "xchg al,al", 0x86, 0xc0 );
     FCML_I32_M( "xchg bl,al", 2, FCML_MI( 0x86, 0xc3 ), FCML_MI( 0x86, 0xd8 ) );
@@ -88,27 +95,37 @@ void fcml_tf_instruction_XOR(void) {
     FCML_I64_M( "xor rax,00000000227711ffh", 2, FCML_MI( 0x48, 0x81, 0xf0, 0xff, 0x11, 0x77, 0x22 ), FCML_MI( 0x48, 0x35, 0xff, 0x11, 0x77, 0x22 ) );
     // 80 /6 ib XOR r/m8, imm8 MI Valid Valid r/m8 XOR imm8.
     FCML_I32( "lock xor byte ptr [eax],11h", 0xF0, 0x80, 0x30, 0x11 );
+    FCML_I32( "xacquire lock xor byte ptr [eax],11h", 0xF2, 0xF0, 0x80, 0x30, 0x11 );
+    FCML_I32( "xrelease lock xor byte ptr [eax],11h", 0xF3, 0xF0, 0x80, 0x30, 0x11 );
     // REX + 80 /6 ib XOR r/m8*, imm8 MI Valid N.E. r/m8 XOR imm8.
     FCML_I64( "xor byte ptr [rax],30h", 0x80, 0x30, 0x30 );
     // 81 /6 iw XOR r/m16, imm16 MI Valid Valid r/m16 XOR imm16.
     // 81 /6 id XOR r/m32, imm32 MI Valid Valid r/m32 XOR imm32.
     // REX.W + 81 /6 id XOR r/m64, imm32 MI Valid N.E. r/m64 XOR imm32 (sign-extended).
     FCML_I64( "lock xor dword ptr [rax],22ffff30h", 0xF0, 0x81, 0x30, 0x30, 0xff, 0xff, 0x22 );
+    FCML_I64( "xacquire lock xor dword ptr [rax],22ffff30h", 0xF2, 0xF0, 0x81, 0x30, 0x30, 0xff, 0xff, 0x22 );
+    FCML_I64( "xrelease lock xor dword ptr [rax],22ffff30h", 0xF3, 0xF0, 0x81, 0x30, 0x30, 0xff, 0xff, 0x22 );
     FCML_I64( "xor qword ptr [rax],0ffffffffffffff30h", 0x48, 0x81, 0x30, 0x30, 0xff, 0xff, 0xff  );
     // 83 /6 ib XOR r/m16, imm8 MI Valid Valid r/m16 XOR imm8 (sign-extended).
     // 83 /6 ib XOR r/m32, imm8 MI Valid Valid r/m32 XOR imm8 (sign-extended).
     // REX.W + 83 /6 ib XOR r/m64, imm8 MI Valid N.E. r/m64 XOR imm8 (sign-extended).
     FCML_I64_M( "lock xor dword ptr [rax],00000030h", 2, FCML_MI( 0xF0, 0x83, 0x30, 0x30 ), FCML_MI( 0xF0, 0x81, 0x30, 0x30, 0x00, 0x00, 0x00 ) );
+    FCML_I64_M( "xacquire lock xor dword ptr [rax],00000030h", 2, FCML_MI( 0xF2, 0xF0, 0x83, 0x30, 0x30 ), FCML_MI( 0xF2, 0xF0, 0x81, 0x30, 0x30, 0x00, 0x00, 0x00 ) );
+    FCML_I64_M( "xrelease lock xor dword ptr [rax],00000030h", 2, FCML_MI( 0xF3, 0xF0, 0x83, 0x30, 0x30 ), FCML_MI( 0xF3, 0xF0, 0x81, 0x30, 0x30, 0x00, 0x00, 0x00 ) );
     FCML_I64_M( "xor word ptr [rax],0030h", 2, FCML_MI( 0x66, 0x83, 0x30, 0x30 ), FCML_MI( 0x66, 0x81, 0x30, 0x30, 0x00 ) );
     FCML_I64_M( "xor qword ptr [rax],0000000000000030h", 2, FCML_MI( 0x48, 0x83, 0x30, 0x30 ), FCML_MI( 0x48, 0x81, 0x30, 0x30, 0x00, 0x00, 0x00 ) );
     // 30 /r XOR r/m8, r8 MR Valid Valid r/m8 XOR r8.
     // REX + 30 /r XOR r/m8*, r8* MR Valid N.E. r/m8 XOR r8.
     FCML_I64( "lock xor byte ptr [rax],dh", 0xF0, 0x30, 0x30 );
+    FCML_I64( "xacquire lock xor byte ptr [rax],dh", 0xF2, 0xF0, 0x30, 0x30 );
+    FCML_I64( "xrelease lock xor byte ptr [rax],dh", 0xF3, 0xF0, 0x30, 0x30 );
     FCML_I64( "xor byte ptr [rax],sil", 0x40, 0x30, 0x30 );
     // 31 /r XOR r/m16, r16 MR Valid Valid r/m16 XOR r16.
     // 31 /r XOR r/m32, r32 MR Valid Valid r/m32 XOR r32.
     // REX.W + 31 /r XOR r/m64, r64 MR Valid N.E. r/m64 XOR r64.
     FCML_I64( "lock xor dword ptr [rax],esi", 0xF0, 0x31, 0x30  );
+    FCML_I64( "xacquire lock xor dword ptr [rax],esi", 0xF2, 0xF0, 0x31, 0x30  );
+    FCML_I64( "xrelease lock xor dword ptr [rax],esi", 0xF3, 0xF0, 0x31, 0x30  );
     FCML_I64( "xor word ptr [rax],si", 0x66, 0x31, 0x30 );
     FCML_I64( "xor qword ptr [rax],rsi", 0x48, 0x31, 0x30  );
     // 32 /r XOR r8, r/m8 RM Valid Valid r8 XOR r/m8.
