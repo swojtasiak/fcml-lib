@@ -1369,6 +1369,26 @@ void fcml_tf_instruction_VMFUNC(void) {
     FCML_I32_FAILED( "vmfunc", 0x0F, 0x01, 0xD4 );
 }
 
+void fcml_tf_instruction_VPERMIL2PS(void) {
+	// VPERMIL2PS.
+	FCML_I32( "vpermil2ps xmm0,xmm4,xmmword ptr [ecx],xmm7,01h", 0xC4, 0xE3, 0x59, 0x48, 0x01, 0x71 );
+	FCML_I32( "vpermil2ps xmm0,xmm4,xmm7,xmmword ptr [ecx],01h", 0xC4, 0xE3, 0xD9, 0x48, 0x01, 0x71 );
+	FCML_I32( "vpermil2ps ymm0,ymm4,ymmword ptr [ecx],ymm7,01h", 0xC4, 0xE3, 0x5D, 0x48, 0x01, 0x71 );
+	FCML_I32( "vpermil2ps ymm0,ymm4,ymm7,ymmword ptr [ecx],01h", 0xC4, 0xE3, 0xDD, 0x48, 0x01, 0x71 );
+	FCML_I64( "vpermil2ps ymm0,ymm4,ymm15,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x48, 0x01, 0xF1 );
+	FCML_I64_M( "vpermil2ps ymm0,ymm4,ymm15,ymm1,01h", 2, FCML_MI( 0xc4, 0xe3, 0xdd, 0x48, 0xc1, 0xf1 ), FCML_MI( 0xc4, 0xc3, 0x5d, 0x48, 0xc7, 0x11 ) );
+}
+
+void fcml_tf_instruction_VPERMIL2PD(void) {
+	// VPERMIL2PD.
+	FCML_I32( "vpermil2pd xmm0,xmm4,xmmword ptr [ecx],xmm7,01h", 0xC4, 0xE3, 0x59, 0x49, 0x01, 0x71 );
+	FCML_I32( "vpermil2pd xmm0,xmm4,xmm7,xmmword ptr [ecx],01h", 0xC4, 0xE3, 0xD9, 0x49, 0x01, 0x71 );
+	FCML_I32( "vpermil2pd ymm0,ymm4,ymmword ptr [ecx],ymm7,01h", 0xC4, 0xE3, 0x5D, 0x49, 0x01, 0x71 );
+	FCML_I32( "vpermil2pd ymm0,ymm4,ymm7,ymmword ptr [ecx],01h", 0xC4, 0xE3, 0xDD, 0x49, 0x01, 0x71 );
+	FCML_I64( "vpermil2pd ymm0,ymm4,ymm15,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x49, 0x01, 0xF1 );
+	FCML_I64_M( "vpermil2pd ymm0,ymm4,ymm15,ymm1,01h", 2, FCML_MI( 0xc4, 0xe3, 0xdd, 0x49, 0xc1, 0xf1 ), FCML_MI( 0xc4, 0xc3, 0x5d, 0x49, 0xc7, 0x11 ) );
+}
+
 CU_TestInfo fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VBROADCASTSS", fcml_tf_instruction_VBROADCASTSS },
     { "fcml_tf_instruction_VPBROADCASTB", fcml_tf_instruction_VPBROADCASTB },
@@ -1482,6 +1502,8 @@ CU_TestInfo fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VMXOFF", fcml_tf_instruction_VMXOFF },
     { "fcml_tf_instruction_VMCALL", fcml_tf_instruction_VMCALL },
     { "fcml_tf_instruction_VMFUNC", fcml_tf_instruction_VMFUNC },
+    { "fcml_tf_instruction_VPERMIL2PS", fcml_tf_instruction_VPERMIL2PS },
+    { "fcml_tf_instruction_VPERMIL2PD", fcml_tf_instruction_VPERMIL2PD },
     CU_TEST_INFO_NULL,
 };
 
