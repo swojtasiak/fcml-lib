@@ -55,6 +55,7 @@ typedef union fcml_st_asm_part_processor_cache {
 	fcml_st_immediate imm16;
 	fcml_st_immediate imm32;
 	fcml_st_immediate imm64;
+	fcml_uint8_t is5_m2z;
 } fcml_st_asm_part_processor_cache;
 
 typedef struct fcml_st_asm_part_processor_context {
@@ -91,6 +92,7 @@ typedef struct fcml_st_asm_encoding_context {
 	fcml_bool is_short_form;
 	// TODO: Powtorzone w modrm, zastanowic sie nad tym, narazie zostawiam bo nigdy nie skoncze. W kazdym razie flaga moze byc ustawiona takze przez inne tryby enkodowwania, nie tylko modrm.
 	fcml_bool reg_opcode_needs_rex;
+	fcml_uint8_t is5_byte;
 } fcml_st_asm_encoding_context;
 
 typedef fcml_ceh_error (*fcml_st_asm_instruction_part_post_processor)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args );

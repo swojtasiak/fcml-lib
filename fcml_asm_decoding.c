@@ -649,28 +649,52 @@ fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_vex_vvvv( fcml_st_asm_decoding_c
 	return error;
 }
 
-fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_is4( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
+fcml_ceh_error fcml_fnp_asm_dec_operand_decoder_isX( fcml_st_asm_decoding_context *context, fcml_ist_asm_dec_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
-	// IS4 byte is located just after ModR/M field, so it doesn't have to be read in any post processors.
+	// IS4/IS5 byte is located just after ModR/M field, so it doesn't have to be read in any post processors.
+	fcml_sf_def_tma_is *is_args = (fcml_sf_def_tma_is *)args;
 
-	fcml_bool result;
-	fcml_uint8_t is4 = fcml_fn_stream_read( context->stream, &result );
-	if( !result ) {
-		return FCML_CEH_GEC_EOF;
+	// Read isX byte from stream, or get cached value from context.
+	fcml_uint8_t isX;
+	if( context->isX_byte.is_not_null ) {
+		isX = context->isX_byte.value;
+	} else {
+		fcml_bool result;
+		isX = fcml_fn_stream_read( context->stream, &result );
+		if( !result ) {
+			return FCML_CEH_GEC_EOF;
+		}
+		context->isX_byte.is_not_null = FCML_TRUE;
+		context->isX_byte.value = isX;
 	}
 
-	operand_wrapper->operand.type = FCML_EOT_REGISTER;
-	fcml_st_register *reg = &(operand_wrapper->operand.reg);
+	// IS4.
+	if( ( is_args->flags & FCML_ISF_IS4 ) || ( is_args->flags & FCML_ISF_IS5_SRC ) ) {
 
-	reg->reg = ( ( context->disassembler_context->addr_form == FCML_AF_32_BIT ) ? ( 0x70 & is4 ) : ( 0xF0 & is4 ) ) >> 4;
-	reg->type = FCML_REG_SIMD;
-	reg->size = context->prefixes.l ? FCML_OS_YWORD : FCML_OS_XWORD;
-	reg->x64_exp = FCML_FALSE;
+		operand_wrapper->operand.type = FCML_EOT_REGISTER;
+		fcml_st_register *reg = &(operand_wrapper->operand.reg);
+
+		reg->reg = ( ( context->disassembler_context->addr_form == FCML_AF_32_BIT ) ? ( 0x70 & isX ) : ( 0xF0 & isX ) ) >> 4;
+		reg->type = FCML_REG_SIMD;
+		reg->size = context->prefixes.l ? FCML_OS_YWORD : FCML_OS_XWORD;
+		reg->x64_exp = FCML_FALSE;
+
+	} else {
+
+		// IS5 - M2Z
+
+		operand_wrapper->operand.type = FCML_EOT_IMMEDIATE;
+		fcml_st_immediate *imm = &(operand_wrapper->operand.immediate);
+		imm->is_signed = FCML_FALSE;
+		imm->imm8 = isX & 0x03;
+		imm->imm_size = FCML_DS_8;
+
+	}
 
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_int fcml_fnp_asm_dec_operand_size_calculator_is4( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
+fcml_int fcml_fnp_asm_dec_operand_size_calculator_isX( fcml_st_asm_decoding_context *context, fcml_ptr args ) {
 	return 1;
 }
 
@@ -766,7 +790,7 @@ fcml_st_asm_dec_operand_decoder_def fcml_def_operand_decoders[] = {
 	{ fcml_fnp_asm_dec_operand_decoder_rm, NULL, fcml_fnp_asm_dec_ihc_near_pointer },
 	{ fcml_fnp_asm_dec_operand_decoder_r, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_vex_vvvv, NULL, NULL },
-	{ fcml_fnp_asm_dec_operand_decoder_is4, fcml_fnp_asm_dec_operand_size_calculator_is4, NULL },
+	{ fcml_fnp_asm_dec_operand_decoder_isX, fcml_fnp_asm_dec_operand_size_calculator_isX, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_rm, NULL, NULL },
 	{ fcml_fnp_asm_dec_operand_decoder_pseudo_op, fcml_fnp_asm_dec_operand_size_calculator_pseudo_op, fcml_fnp_asm_dec_ihc_pseudo_opcode }
 };

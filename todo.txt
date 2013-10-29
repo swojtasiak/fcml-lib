@@ -61,10 +61,6 @@ Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wy
 Mozliwosc ustawienia flagi, ktora bedzie wylaczala moliweosc ustaleni prefixow 66 i 67 dla wybranych istruckio, uywane glownie z SIMD.
 Moze zastosowac do tego flage podobna do force EOSA/EASA tlko nazwac ja do not let to change EOSA/EASA. albo fixed EASA/fixedEOSA.
 
-// TODO: Zaimplmentowac jak wrocimy do prefixow, lock rpne itd.
-// F2 XACQUIRE
-// F3 XRELEASE
-
 05.102013
 // TODO: w/d/q mozna rozpoznac na podstaiwe bity w opcode, moze by tak dodac do dialoktu mozliwosc konwersji instrukcji i zrezygnowc z powtarzaia?
 // Moglo by wyjsc na dobre w przypadku assembler� AT&T.

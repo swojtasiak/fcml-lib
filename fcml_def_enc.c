@@ -10,6 +10,14 @@
 
 typedef fcml_ptr (*fcml_fnp_def_addr_mode_args_decoder)( fcml_uint32_t encoded_addr_mode );
 
+fcml_ptr fcml_fnp_def_addr_mode_args_decoder_is( fcml_uint32_t encoded_addr_mode ) {
+	fcml_sf_def_tma_is *is_args = (fcml_sf_def_tma_is*)fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_is));
+	if( is_args ) {
+		is_args->flags = ( encoded_addr_mode & 0x000000FF);
+	}
+	return is_args;
+}
+
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_imm( fcml_uint32_t encoded_addr_mode ) {
 	fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm*)fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_imm));
 	if( imm_args ) {
@@ -141,7 +149,7 @@ fcml_fnp_def_addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
 	fcml_fnp_def_addr_mode_args_decoder_rm,
 	fcml_fnp_def_addr_mode_args_decoder_r,
 	fcml_fnp_def_addr_mode_args_decoder_vex_vvvv,
-	NULL,
+	fcml_fnp_def_addr_mode_args_decoder_is,
 	fcml_fnp_def_addr_mode_args_decoder_vsib,
 	fcml_fnp_def_addr_mode_args_decoder_pseudo_op
 };

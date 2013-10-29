@@ -1275,24 +1275,58 @@ fcml_ceh_error fcml_fnp_asm_operand_encoder_vex_vvvv( fcml_ien_asm_part_processo
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-//-----
-// is4
-//-----
+//--------
+// is4/is5
+//--------
 
-fcml_ceh_error fcml_fnp_asm_operand_acceptor_is4( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
-	if( operand_def->type != FCML_EOT_REGISTER || operand_def->reg.type != FCML_REG_SIMD ) {
-		return FCML_EN_UNSUPPORTED_OPPERAND;
-	}
-	if( !fcml_ifn_accept_data_size( context, addr_mode_desc, FCML_EOS_L, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
+fcml_ceh_error fcml_fnp_asm_operand_acceptor_isX( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+	fcml_sf_def_tma_is *is_args = (fcml_sf_def_tma_is*)addr_mode->addr_mode_args;
+	if( ( is_args->flags & FCML_ISF_IS4 ) || ( is_args->flags & FCML_ISF_IS5_SRC ) ) {
+		// IS4/IS5(src)
+		if( operand_def->type != FCML_EOT_REGISTER || operand_def->reg.type != FCML_REG_SIMD ) {
+			return FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+		if( !fcml_ifn_accept_data_size( context, addr_mode_desc, FCML_EOS_L, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
+			return FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+	} else if( operand_def->type == FCML_EOT_IMMEDIATE ) {
+		// IS5 - m2z
+		fcml_st_integer integer;
+		fcml_ceh_error error = fcml_fn_utils_imm_to_integer( &(operand_def->immediate ), &integer );
+		if( error ) {
+			return FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+		fcml_int8_t imm_value;
+		error = fcml_fn_utils_convert_integer_to_int8( &integer, &imm_value );
+		if( error ) {
+			return FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+		if( imm_value > 3 ) {
+			return FCML_EN_UNSUPPORTED_OPPERAND;
+		}
+		// Store converted value for future use in order to avoid further conversions.
+		context->part_processor_context.cache[context->part_processor_context.part_processor_index].is5_m2z = imm_value;
+	} else {
 		return FCML_EN_UNSUPPORTED_OPPERAND;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fnp_asm_operand_encoder_is4( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
+fcml_ceh_error fcml_fnp_asm_operand_encoder_isX( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc ) {
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
-		operand_enc->code[0] = operand_def->reg.reg << 4;
-		operand_enc->code_length = 1;
+		fcml_sf_def_tma_is *is_args = (fcml_sf_def_tma_is*)addr_mode->addr_mode_args;
+		if( is_args->flags & FCML_ISF_IS4 ) {
+			// is4
+			operand_enc->code[0] = operand_def->reg.reg << 4;
+			operand_enc->code_length = 1;
+		} else if( is_args->flags & FCML_ISF_IS5_SRC ) {
+			// Store is5 source register for last is5 instruction part encoder.
+			context->is5_byte = operand_def->reg.reg << 4;
+		} else {
+			// is5-m2z
+			operand_enc->code[0] = context->is5_byte | context->part_processor_context.cache[context->part_processor_context.part_processor_index].is5_m2z;
+			operand_enc->code_length = 1;
+		}
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -1394,7 +1428,7 @@ fcml_st_asm_operand_encoder_def fcml_def_operand_encoders[] = {
 	{ fcml_fnp_asm_operand_encoder_rm, fcml_fnp_asm_operand_acceptor_rm, fcml_fnp_asm_ihc_near_pointer },
 	{ fcml_fnp_asm_operand_encoder_r, fcml_fnp_asm_operand_acceptor_r, NULL },
 	{ fcml_fnp_asm_operand_encoder_vex_vvvv, fcml_fnp_asm_operand_acceptor_vex_vvvv, NULL },
-	{ fcml_fnp_asm_operand_encoder_is4, fcml_fnp_asm_operand_acceptor_is4, NULL },
+	{ fcml_fnp_asm_operand_encoder_isX, fcml_fnp_asm_operand_acceptor_isX, NULL },
 	{ fcml_fnp_asm_operand_encoder_rm, fcml_fnp_asm_operand_acceptor_rm, NULL },
 	{ fcml_fnp_asm_operand_encoder_pseudo_op, fcml_fnp_asm_operand_acceptor_pseudo_op, NULL }
 };

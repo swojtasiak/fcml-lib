@@ -266,11 +266,18 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_OP_VEX_VVVV_REG_BASE						0x0C000000
 #define FCML_OP_VEX_VVVV_REG( reg_type, encoded_register_size )	( FCML_OP_VEX_VVVV_REG_BASE | ( encoded_register_size << 4 ) | reg_type )
 
-/*************************/
-/* IS4 operand decoding. */
-/*************************/
+/*****************************/
+/* IS4/IS5 operand decoding. */
+/*****************************/
 
-#define FCML_OP_OPERAND_IS4							0x0D000000
+#define FCML_ISF_IS4		0x01
+#define FCML_ISF_IS5		0x02
+#define FCML_ISF_IS5_SRC	0x10
+#define FCML_ISF_IS5_M2Z	0x20
+
+#define FCML_OP_OPERAND_ISx_BASE						0x0D000000
+#define FCML_OP_OPERAND_IS4								( FCML_OP_OPERAND_ISx_BASE | FCML_ISF_IS4 )
+#define FCML_OP_OPERAND_IS5( flags )					( FCML_OP_OPERAND_ISx_BASE | FCML_ISF_IS5 | flags )
 
 /**************************/
 /* VSIB operand decoding. */
@@ -524,5 +531,9 @@ typedef struct fcml_sf_def_tma_vex_vvvv_reg {
 typedef struct fcml_sf_def_tma_pseudo_op {
     fcml_uint8_t mask;
 } fcml_sf_def_tma_pseudo_op;
+
+typedef struct fcml_sf_def_tma_is {
+    fcml_uint8_t flags;
+} fcml_sf_def_tma_is;
 
 #endif /* FCML_DEF_H_ */

@@ -36,11 +36,12 @@ typedef struct fcml_st_asm_decoding_context {
 	fcml_nuint8_t pseudo_opcode;
 	fcml_st_condition condition;
 	fcml_bool is_conditional;
+	fcml_nuint8_t isX_byte;
 } fcml_st_asm_decoding_context;
 
 fcml_ceh_error fcml_fn_asm_init_instruction_decodings( fcml_st_dialect_context *dialect_context, fcml_st_disassembler **disassembler );
 // TODO: sprawdzic spujnosc z assemblerem, encoder tam tylko dostarcza strukture enkodingu reszte robi assembler, tu chyba bedzie trzeba zrobic podobnie.
 fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *context );
-void fcml_fn_asm_free_instruction_decodings( fcml_st_disassembler *disassembler );
+void fcml_fn_asm_free_instruction_decodings(fcml_st_disassembler *disassembler);
 
 #endif /* FCML_ASM_DECODING_H_ */

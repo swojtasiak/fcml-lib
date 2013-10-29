@@ -5431,10 +5431,6 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_TZMSK[] = {
 
 /* HLE */
 
-// TODO: Zaimplmentowac jak wrocimy do prefixow, lock rpne itd.
-// F2 XACQUIRE
-// F3 XRELEASE
-
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_XABORT[] = {
 	// C6 F8 ib XABORT imm8
 	{ NULL, FCML_AMT_HLE, 0x0000, 0x00D80000, { 0xC6, 0xF8, 0x00 }, { FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA, FCML_NA } }
@@ -5544,7 +5540,23 @@ struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VPCOMU[] = {
 	{ "vpcomuq;vpcomltuq[p00];vpcomleuq[p01];vpcomgtuq[p02];vpcomgeuq[p03];vpcomequq[p04];vpcomnequq[p05];vpcomfalseuq[p06];vpcomtrueuq[p07]", FCML_AMT_XOP, 0x0450, 0x00D88000, { 0x08, 0xEF, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_128, FCML_OP_PSEUDO_OP( 0x07 ), FCML_NA } }
 };
 
-// TODO: VPERMIL2PD,VPERMIL2PS
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VPERMIL2PD[] = {
+	// VPERMIL2PS xmm1, xmm2, xmm3/mem128, xmm4, m2z
+	// VPERMIL2PS ymm1, ymm2, ymm3/mem256, ymm4, m2z
+	{ NULL, FCML_AMT_XOP, 0x1090, 0x00EC8000, { 0x0F, 0x3A, 0x49 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_OPERAND_IS5( FCML_ISF_IS5_SRC ), FCML_OP_OPERAND_IS5( FCML_ISF_IS5_M2Z ) } },
+	// VPERMIL2PS xmm1, xmm2, xmm3, xmm4/mem128, m2z
+	// VPERMIL2PS ymm1, ymm2, ymm3, ymm4/mem256, m2z
+	{ NULL, FCML_AMT_XOP, 0x1088, 0x00EC8000, { 0x0F, 0x3A, 0x49 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_OPERAND_IS5( FCML_ISF_IS5_SRC ), FCML_OP_MODRM_RM_SIMD_L, FCML_OP_OPERAND_IS5( FCML_ISF_IS5_M2Z ) } }
+};
+
+struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VPERMIL2PS[] = {
+	// VPERMIL2PS xmm1, xmm2, xmm3/mem128, xmm4, m2z
+	// VPERMIL2PS ymm1, ymm2, ymm3/mem256, ymm4, m2z
+	{ NULL, FCML_AMT_XOP, 0x1090, 0x00EC8000, { 0x0F, 0x3A, 0x48 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_OPERAND_IS5( FCML_ISF_IS5_SRC ), FCML_OP_OPERAND_IS5( FCML_ISF_IS5_M2Z ) } },
+	// VPERMIL2PS xmm1, xmm2, xmm3, xmm4/mem128, m2z
+	// VPERMIL2PS ymm1, ymm2, ymm3, ymm4/mem256, m2z
+	{ NULL, FCML_AMT_XOP, 0x1088, 0x00EC8000, { 0x0F, 0x3A, 0x48 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_OPERAND_IS5( FCML_ISF_IS5_SRC ), FCML_OP_MODRM_RM_SIMD_L, FCML_OP_OPERAND_IS5( FCML_ISF_IS5_M2Z ) } }
+};
 
 struct fcml_st_def_addr_mode_desc _fcml_st_def_addr_mode_desc_VPHADDBD[] = {
 	// VPHADDBD xmm1, xmm2/mem128 8F RXB.01001 0.1111.0.00 C2 /r
@@ -6343,6 +6355,8 @@ struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( "vpcmov", _fcml_st_def_addr_mode_desc_VPCMOV ),
 		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_VPCOM ),
 		FCML_IA_INSTRUCTION( FCML_EMPTY_MNEMONIC, _fcml_st_def_addr_mode_desc_VPCOMU ),
+		FCML_IA_INSTRUCTION( "vpermil2pd", _fcml_st_def_addr_mode_desc_VPERMIL2PD ),
+		FCML_IA_INSTRUCTION( "vpermil2ps", _fcml_st_def_addr_mode_desc_VPERMIL2PS ),
 		FCML_IA_INSTRUCTION( "vphaddbd", _fcml_st_def_addr_mode_desc_VPHADDBD ),
 		FCML_IA_INSTRUCTION( "vphaddbw", _fcml_st_def_addr_mode_desc_VPHADDBW ),
 		FCML_IA_INSTRUCTION( "vphaddbq", _fcml_st_def_addr_mode_desc_VPHADDBQ ),
