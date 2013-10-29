@@ -155,8 +155,8 @@ typedef struct fcml_st_def_instruction_description {
  *********************************/
 
 #define FCML_DEF_PREFIX_LOCK_ALLOWED(x)						FCML_TP_GET_BIT(x,0)
-#define FCML_DEF_PREFIX_REPNE_ALLOWED(x)					FCML_TP_GET_BIT(x,1)
-#define FCML_DEF_PREFIX_REP_ALLOWED(x)						FCML_TP_GET_BIT(x,2)
+#define FCML_DEF_PREFIX_REPNE_XACQUIRE_ALLOWED(x)			FCML_TP_GET_BIT(x,1)
+#define FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED(x)				FCML_TP_GET_BIT(x,2)
 #define FCML_DEF_PREFIX_W_1(x)								FCML_TP_GET_BIT(x,3)
 #define FCML_DEF_PREFIX_W_0(x)								FCML_TP_GET_BIT(x,4)
 #define FCML_DEF_PREFIX_L_1(x)								FCML_TP_GET_BIT(x,5)
@@ -165,10 +165,10 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_DEF_PREFIX_VEXOP_VVVV(x)						FCML_TP_GET_BIT(x,8)
 #define FCML_DEF_PREFIX_L_IGNORE_OS(x)						FCML_TP_GET_BIT(x,9)
 #define FCML_DEF_PREFIX_XOP_REQ(x)							FCML_TP_GET_BIT(x,10)
+#define FCML_DEF_PREFIX_HLE_ENABLED(x)						FCML_TP_GET_BIT(x,11)
 #define FCML_DEF_PREFIX_MANDATORY_66(x) 					FCML_TP_GET_BIT(x,12)
 #define FCML_DEF_PREFIX_MANDATORY_F2(x) 					FCML_TP_GET_BIT(x,13)
 #define FCML_DEF_PREFIX_MANDATORY_F3(x) 					FCML_TP_GET_BIT(x,14)
-#define FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED(x)				( ( ( x ) & 0x0006 ) == 0x06 )
 
 /*********************************
  * Opcode fields extractors.

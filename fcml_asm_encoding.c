@@ -1985,7 +1985,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_rep_prefix_encoder( fcml_
 
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_rep_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
     fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
-    if( FCML_DEF_PREFIX_REP_ALLOWED( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED( addr_mode->allowed_prefixes ) ) {
+    if( FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_HLE_ENABLED( addr_mode->allowed_prefixes ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 		descriptor.processor_args = NULL;
 		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_rep_prefix_encoder;
@@ -2009,7 +2009,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_repne_prefix_encoder( fcm
 
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_repne_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
     fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
-    if( FCML_DEF_PREFIX_REPNE_ALLOWED( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED( addr_mode->allowed_prefixes ) ) {
+    if( FCML_DEF_PREFIX_REPNE_XACQUIRE_ALLOWED( addr_mode->allowed_prefixes ) && !FCML_DEF_PREFIX_HLE_ENABLED( addr_mode->allowed_prefixes ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 		descriptor.processor_args = NULL;
 		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_repne_prefix_encoder;
@@ -2019,24 +2019,32 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 }
 
 // HLE prefixes.
+// TODO: error messages.
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_hle_prefixes_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
     	fcml_bool found = FCML_FALSE;
         if( context->instruction->prefixes & FCML_PREFIX_XACQUIRE ) {
-			instruction_part->code[0] = 0xF2;
-			instruction_part->code_length = 1;
-			found = FCML_TRUE;
+        	if( FCML_DEF_PREFIX_REPNE_XACQUIRE_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
+				instruction_part->code[0] = 0xF2;
+				instruction_part->code_length = 1;
+				found = FCML_TRUE;
+        	} else {
+        		return FCML_EN_UNSUPPORTED_PREFIX;
+        	}
         }
         if( context->instruction->prefixes & FCML_PREFIX_XRELEASE ) {
         	if( found ) {
-        		// TODO: error message.
         		// Only one HLA prefix is allowed for instruction.
-        		return FCML_EN_WRONG_PREFIXES_COMBINATION;
+        		return FCML_EN_UNSUPPORTED_PREFIX;
         	}
-			instruction_part->code[0] = 0xF3;
-			instruction_part->code_length = 1;
+        	if( FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
+				instruction_part->code[0] = 0xF3;
+				instruction_part->code_length = 1;
+        	} else {
+        		return FCML_EN_UNSUPPORTED_PREFIX;
+        	}
 		}
     }
     return error;
@@ -2044,7 +2052,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_hle_prefixes_prefix_encod
 
 fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_hle_prefixes_encoder( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
     fcml_ifn_asm_instruction_part_processor_descriptor descriptor = {0};
-    if( FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED( addr_mode->allowed_prefixes ) ) {
+    if( FCML_DEF_PREFIX_HLE_ENABLED( addr_mode->allowed_prefixes ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
 		descriptor.processor_args = NULL;
 		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_hle_prefixes_prefix_encoder;
@@ -2061,11 +2069,11 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_lock_prefix_encoder( fcml
     	// For instruction that supports LOCK prefixes as well as HLA ones,
     	// LOCK prefix is mandatory. XCHG is only one exception from that rule, and in its case
     	// lock prefix can be ignored.
-    	if( FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED( addr_mode_def->allowed_prefixes ) && ( ( context->instruction->prefixes & FCML_PREFIX_XACQUIRE ) || ( context->instruction->prefixes & FCML_PREFIX_XRELEASE ) ) ) {
+    	if( FCML_DEF_PREFIX_HLE_ENABLED( addr_mode_def->allowed_prefixes ) && ( ( context->instruction->prefixes & FCML_PREFIX_XACQUIRE ) || ( context->instruction->prefixes & FCML_PREFIX_XRELEASE ) ) ) {
     		if( !( context->instruction->prefixes & FCML_PREFIX_LOCK ) ) {
     			// XCHG instruction do not need LOCK prefix.
     			if( addr_mode_def->opcode[0] != 0x86 && addr_mode_def->opcode[0] != 0x87 ) {
-    				return FCML_EN_WRONG_PREFIXES_COMBINATION;
+    				return FCML_EN_UNSUPPORTED_PREFIX;
     			}
     		}
     	}
@@ -2513,19 +2521,19 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_prefixes_acceptor( fcml_s
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 	// Check if REP prefix is allowed for given addressing mode.
-	if( ( instruction->prefixes & FCML_PREFIX_REP ) && !FCML_DEF_PREFIX_REP_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
+	if( ( instruction->prefixes & FCML_PREFIX_REP ) && !FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 	// Check if REPNE prefix is allowed for given addressing mode.
-	if( ( instruction->prefixes & FCML_PREFIX_REPNE ) && !FCML_DEF_PREFIX_REPNE_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
+	if( ( instruction->prefixes & FCML_PREFIX_REPNE ) && !FCML_DEF_PREFIX_REPNE_XACQUIRE_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 	// Check if XACQUIRED prefix is allowed for given addressing mode.
-	if( ( instruction->prefixes & FCML_PREFIX_XACQUIRE ) && !FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
+	if( ( instruction->prefixes & FCML_PREFIX_XACQUIRE ) && ( !FCML_DEF_PREFIX_HLE_ENABLED( addr_mode_def->allowed_prefixes ) || !FCML_DEF_PREFIX_REPNE_XACQUIRE_ALLOWED( addr_mode_def->allowed_prefixes ) ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 	// Check if XRELEASE prefix is allowed for given addressing mode.
-	if( ( instruction->prefixes & FCML_PREFIX_XRELEASE ) && !FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
+	if( ( instruction->prefixes & FCML_PREFIX_XRELEASE ) && ( !FCML_DEF_PREFIX_HLE_ENABLED( addr_mode_def->allowed_prefixes ) || !FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED( addr_mode_def->allowed_prefixes ) ) ) {
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 	return FCML_CEH_GEC_NO_ERROR;

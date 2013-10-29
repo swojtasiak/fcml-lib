@@ -1436,7 +1436,7 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 	}
 
 	// Change REP/REPNE prefixes to XACQUIRE/XRELEASE if instruction support them.
-	if( FCML_DEF_PREFIX_HLE_PREFIXES_ALLOWED( instruction_decoding_def->prefixes_flags ) ) {
+	if( FCML_DEF_PREFIX_HLE_ENABLED( instruction_decoding_def->prefixes_flags ) ) {
 		if( decoding_context->prefixes.is_rep ) {
 			decoding_context->prefixes.is_xrelease = FCML_TRUE;
 			decoding_context->prefixes.is_rep = FCML_FALSE;
