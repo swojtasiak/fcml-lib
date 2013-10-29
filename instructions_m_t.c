@@ -197,12 +197,16 @@ void fcml_tf_instruction_MOV(void) {
     FCML_I64_D( "mov byte ptr [rax],dl", 0x48, 0x88, 0x10 );
     FCML_I64( "mov byte ptr [rax],dl", 0x88, 0x10 );
     FCML_I32( "mov byte ptr [eax],dl", 0x88, 0x10 );
+    FCML_I32( "xrelease mov byte ptr [eax],dl", 0xF3, 0x88, 0x10 );
+    FCML_I32_A_FAILED( "xacquire mov byte ptr [eax],dl", 0xF2, 0x88, 0x10 );
     // 89 /r MOV r/m16,r16 A Valid Valid Move r16 to r/m16.
     // 89 /r MOV r/m32,r32 A Valid Valid Move r32 to r/m32.
     // REX.W + 89 /r MOV r/m64,r64 A Valid N.E. Move r64 to r/m64.
     FCML_I64( "mov qword ptr [rax],rdx", 0x48, 0x89, 0x10 );
     FCML_I32( "mov dword ptr [eax],edx", 0x89, 0x10 );
     FCML_I32( "mov word ptr [eax],dx", 0x66, 0x89, 0x10 );
+    FCML_I32( "xrelease mov word ptr [eax],dx", 0xF3, 0x66, 0x89, 0x10 );
+    FCML_I32_A_FAILED( "xacquire mov word ptr [eax],dx", 0xF2, 0x66, 0x89, 0x10 );
     // 8A /r MOV r8,r/m8 B Valid Valid Move r/m8 to r8.
     // REX + 8A /r MOV r8***,r/m8*** B Valid N.E. Move r/m8 to r8.
     FCML_I64_D( "mov dl,byte ptr [rax]", 0x48, 0x8A, 0x10 );
