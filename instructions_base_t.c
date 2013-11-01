@@ -38,6 +38,9 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		context.configuration.use_short_form_mnemonics = FCML_FALSE;
 		context.configuration.imm_extend_to_osa = FCML_TRUE;
 		context.configuration.extend_displacement_to_asa = FCML_TRUE;
+		context.configuration.conditional_group = FCML_CONDITIONAL_GROUP_1;
+		context.configuration.show_carry = FCML_TRUE;
+		context.configuration.extend_displacement_to_asa = FCML_TRUE;
 		context.disassembler = disassembler;
 		context.addr_form = x64 ? IRA_MOD_64BIT : FCML_AF_32_BIT;
 		context.address_size_attribute = 0;
@@ -298,7 +301,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
             }
 
             // Prints test code.
-            if( assembled_code_index >= 1 && ( only_print_result || !found ) ) {
+            if( !should_fail && assembled_code_index >= 1 && ( only_print_result || !found ) ) {
 
                // Mnemonic.
                fcml_string macro;
@@ -372,6 +375,8 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 	context.configuration.use_short_form_mnemonics = ( flags & TEST_FLAG_SHORT ) ? FCML_TRUE : FCML_FALSE;
 	context.configuration.imm_extend_to_osa = FCML_TRUE;
 	context.configuration.extend_displacement_to_asa = FCML_TRUE;
+	context.configuration.conditional_group = FCML_CONDITIONAL_GROUP_1;
+	context.configuration.show_carry = FCML_TRUE;
 	context.disassembler = disassembler;
 	context.addr_form = x64 ? IRA_MOD_64BIT : FCML_AF_32_BIT;
 	context.address_size_attribute = 0;

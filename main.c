@@ -86,10 +86,17 @@ CU_SuiteInfo *suites[] = {
 
 void new_disassembler_test(void) {
 
+	fcml_ceh_error error;
+
+	error = fcml_fn_init_intel_dialect();
+	if( error ) {
+		return;
+	}
+
 	fcml_st_dialect_context dialect = fcml_fn_get_intel_dialect_context();
 
 	fcml_st_disassembler *disassembler;
-	fcml_ceh_error error = fcml_fn_disassembler_init( &dialect, &disassembler );
+	error = fcml_fn_disassembler_init( &dialect, &disassembler );
 	if( error ) {
 		// Error.
 		return;
@@ -200,11 +207,20 @@ void new_disassembler_test(void) {
 		fcml_fn_disassembler_free( disassembler );
 	}
 
+	fcml_fn_free_intel_dialect();
+
 }
 
 int main(int argc, char **argv) {
 
-	fcml_ceh_error error = fcml_fn_assembler_init( fcml_fn_get_intel_dialect_context(), &assembler );
+	fcml_ceh_error error;
+
+	error = fcml_fn_init_intel_dialect();
+	if( error ) {
+		return 1;
+	}
+
+	error = fcml_fn_assembler_init( fcml_fn_get_intel_dialect_context(), &assembler );
 	if( error ) {
 		printf("Can not initialize assembler.\n");
 		return 1;
@@ -258,5 +274,6 @@ int main(int argc, char **argv) {
     fcml_fn_disassembler_free( disassembler );
     fcml_fn_assembler_free( assembler );
     ira_deinit();
+    fcml_fn_free_intel_dialect();
     exit(0);
 }
