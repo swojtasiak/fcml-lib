@@ -16,6 +16,112 @@
 #include "fcml_optimizers.h"
 #include "fcml_trace.h"
 
+#define FCML_ASM_MAX_PART_PROCESSORS	40
+
+// REX prefix.
+#define FCML_ENCODE_REX_BASE		0x40
+#define FCML_ENCODE_REX_W(rex,w)	( rex | ( w << 3 ) )
+#define FCML_ENCODE_REX_R(rex,r)	( rex | ( r << 2 ) )
+#define FCML_ENCODE_REX_X(rex,x)	( rex | ( x << 1 ) )
+#define FCML_ENCODE_REX_B(rex,b)	( rex | b )
+
+// XOP/VEX prefixes.
+#define FCML_ENCODE_VEXOP_MMMM(vexop,x)		( ( vexop ) | ( ( x ) & 0x1F ) )
+#define FCML_ENCODE_VEXOP_VVVV(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x0F ) << 3 ) )
+#define FCML_ENCODE_VEXOP_PP(vexop,x)		( ( vexop ) | ( ( x ) & 0x03 ) )
+#define FCML_ENCODE_VEXOP_W(vexop,x)		( ( vexop ) | ( ( ( x ) & 0x01 ) << 7 ) )
+#define FCML_ENCODE_VEXOP_L(vexop,x)		( ( vexop ) | ( ( ( x ) & 0x01 ) << 2 ) )
+// R,X and B are stored in 1's complement form.
+#define FCML_ENCODE_VEXOP_R(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x01 ) << 7 ) )
+#define FCML_ENCODE_VEXOP_X(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x01 ) << 6 ) )
+#define FCML_ENCODE_VEXOP_B(vexop,x)		( ( vexop ) | ( ( ~( x ) & 0x01 ) << 5 ) )
+
+#define FCML_ASM_FCF	16
+
+typedef struct fcml_st_asm_extension_prefixes_fields {
+	fcml_uint8_t vvvv;
+	fcml_uint8_t mmmm;
+} fcml_st_asm_extension_prefixes_fields;
+
+typedef struct fcml_st_asm_opcode_reg {
+	fcml_uint8_t opcode_reg;
+	fcml_uint8_t ext_b;
+} fcml_st_asm_opcode_reg;
+
+typedef struct fcml_st_asm_addr_mode_desc_details {
+	// Pre-calculated flags describing which ASA and OSA values are available for addressing mode.
+	fcml_en_attribute_size_flag allowed_osa;
+	fcml_en_attribute_size_flag allowed_asa;
+	fcml_bool is_conditional;
+	fcml_st_condition condition;
+} fcml_st_asm_addr_mode_desc_details;
+
+typedef union fcml_st_asm_part_processor_cache {
+	// Cached immediate value. It's for example used by IMM acceptor to pass converted value to encoder.
+	fcml_st_immediate imm16;
+	fcml_st_immediate imm32;
+	fcml_st_immediate imm64;
+	fcml_uint8_t is5_m2z;
+} fcml_st_asm_part_processor_cache;
+
+typedef struct fcml_st_asm_part_processor_context {
+	fcml_st_asm_part_processor_cache cache[FCML_ASM_MAX_PART_PROCESSORS];
+	int part_processor_index;
+} fcml_st_asm_part_processor_context;
+
+typedef struct fcml_st_asm_encoding_context {
+#ifdef FCML_DEBUG
+	int __def_index;
+#endif
+	fcml_st_assembler_context *assembler_context;
+	fcml_st_instruction *instruction;
+	fcml_st_encoder_result *result;
+	fcml_st_asm_data_size_flags data_size_flags;
+	fcml_st_mp_mnemonic *mnemonic;
+	fcml_st_asm_part_processor_context part_processor_context;
+	fcml_st_asm_extension_prefixes_fields epf;
+	fcml_st_register segment_override;
+	fcml_st_modrm mod_rm;
+	fcml_st_encoded_modrm encoded_mod_rm;
+	fcml_st_asm_opcode_reg opcode_reg;
+	fcml_nint8_t instruction_size;
+	fcml_bool is_short_form;
+	// TODO: Powtorzone w modrm, zastanowic sie nad tym, narazie zostawiam bo nigdy nie skoncze. W kazdym razie flaga moze byc ustawiona takze przez inne tryby enkodowwania, nie tylko modrm.
+	fcml_bool reg_opcode_needs_rex;
+	fcml_uint8_t is5_byte;
+} fcml_st_asm_encoding_context;
+
+typedef fcml_ceh_error (*fcml_st_asm_instruction_part_post_processor)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args );
+
+typedef struct fcml_st_asm_instruction_part {
+	fcml_uint8_t code[10];
+	int code_length;
+	fcml_ptr post_processor_args;
+	fcml_st_asm_instruction_part_post_processor post_processor;
+} fcml_st_asm_instruction_part;
+
+typedef struct fcml_st_asm_instruction_part_container {
+	// Address of the instruction parts array.
+	fcml_st_asm_instruction_part *instruction_parts;
+	// Number of instruction parts in the array.
+	int count;
+} fcml_st_asm_instruction_part_container;
+
+struct fcml_st_asm_instruction_addr_modes;
+
+typedef enum fcml_ien_asm_part_processor_phase {
+	// ModR/M arguments filling.
+	FCML_IEN_ASM_IPPP_FIRST_PHASE,
+	// ModR/M encoding.
+	FCML_IEN_ASM_IPPP_SECOND_PHASE,
+	// Prefixes are applied in this phase.
+	FCML_IEN_ASM_IPPP_THIRD_PHASE
+} fcml_ien_asm_part_processor_phase;
+
+typedef struct fcml_st_asm_calculated_hints {
+    fcml_hints instruction_hints;
+    fcml_hints operand_hints;
+} fcml_st_asm_calculated_hints;
 
 
 typedef struct fcml_ist_asm_enc_assembler {
@@ -26,8 +132,6 @@ typedef struct fcml_ist_asm_enc_assembler {
 typedef struct fcml_ist_asm_init_context {
     fcml_ist_asm_enc_assembler *assembler;
 } fcml_ist_asm_init_context;
-
-#ifdef FCML_DEBUG
 
 typedef fcml_ceh_error (*fcml_fnp_asm_operand_encoder)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
 typedef fcml_ceh_error (*fcml_fnp_asm_operand_acceptor)( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
@@ -90,6 +194,8 @@ typedef struct fcml_st_asm_instruction_addr_mode_encoding_details {
 // DEBUG related functions.
 // ************************
 
+#ifdef FCML_DEBUG
+
 fcml_char __data_attr_flags_buff[64];
 
 fcml_string fcml_idfn_print_attr_size_flags( fcml_en_attribute_size_flag flags ) {
@@ -146,11 +252,12 @@ fcml_string fcml_idfn_encode_size_flags( fcml_st_asm_data_size_flags *size_flags
 	return __data_flags_buff;
 }
 
+#endif
+
 // ************************
 // End of debug functions
 // ************************
 
-#endif
 
 enum fcml_ien_comparator_type {
 	FCML_IEN_CT_EQUAL,
@@ -1673,8 +1780,18 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_st_asm_encoding_context *
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_ptr args ) {
-	fcml_st_asm_encoding_context *context = (fcml_st_asm_encoding_context*)args;
+typedef struct fcml_ist_asm_enc_optimizer_callback_args {
+	fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode;
+	fcml_st_asm_encoding_context *context;
+} fcml_ist_asm_enc_optimizer_callback_args;
+
+fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
+
+	// Restore important information from callback arguments.
+	fcml_ist_asm_enc_optimizer_callback_args *callback_args = (fcml_ist_asm_enc_optimizer_callback_args*)args;
+	fcml_st_asm_encoding_context *context = callback_args->context;
+	fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = callback_args->addr_mode;
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_assembled_instruction *assembled_instruction;
 	error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
@@ -1712,12 +1829,18 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_st_asm_instru
 	return error;
 }
 
-fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
+fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_assembler_context *asm_context, fcml_st_instruction *instruction, fcml_st_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
+
+	fcml_st_asm_encoding_context context = {0};
+	context.assembler_context = asm_context;
+	context.instruction = instruction;
+	context.result = result;
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	if( addr_modes ) {
 
-		fcml_en_assembler_optimizers optimizer_type = context->assembler_context->configuration.optimizer;
+		fcml_en_assembler_optimizers optimizer_type = context.assembler_context->configuration.optimizer;
 		fcml_fnp_asm_optimizer optimizer = fcml_ar_optimizers[optimizer_type];
 		if( !optimizer ) {
 			// Optimizer not found.
@@ -1728,7 +1851,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 		fcml_bool no_operands = FCML_TRUE;
 		int i;
 		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-		    if( context->instruction->operands[i].type != FCML_EOT_NONE ) {
+		    if( context.instruction->operands[i].type != FCML_EOT_NONE ) {
 		        no_operands = FCML_FALSE;
 		        break;
 		    }
@@ -1746,7 +1869,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 
 				fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_st_asm_instruction_addr_mode_encoding_details*)addr_mode_element->item;
 
-				fcml_ifn_clean_context( context );
+				fcml_ifn_clean_context( &context );
 
 				// This information is necessary to ignore operands encoding process.
 
@@ -1755,33 +1878,38 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 
                     fcml_bool is_short_form = addr_mode->mnemonic->shortcut && no_operands;
 
-                    context->is_short_form = is_short_form;
+                    context.is_short_form = is_short_form;
 
                     if( is_short_form ) {
                         fcml_data_size asa = addr_mode->mnemonic->supported_asa;
-                        context->data_size_flags.effective_address_size = asa;
+                        context.data_size_flags.effective_address_size = asa;
                         if( asa ) {
-                            fcml_fn_cmi_set_attribute_size_flag_for_size( asa, &(context->data_size_flags.allowed_effective_address_size) );
+                            fcml_fn_cmi_set_attribute_size_flag_for_size( asa, &(context.data_size_flags.allowed_effective_address_size) );
                         }
                         fcml_data_size osa = addr_mode->mnemonic->supported_osa;
-                        context->data_size_flags.effective_operand_size = osa;
+                        context.data_size_flags.effective_operand_size = osa;
                         if( osa ) {
-                            fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context->data_size_flags.allowed_effective_operand_size) );
+                            fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context.data_size_flags.allowed_effective_operand_size) );
                         }
                     }
 
-                    context->mnemonic = addr_mode->mnemonic;
+                    context.mnemonic = addr_mode->mnemonic;
 
 #ifdef FCML_DEBUG
-				    context->__def_index = index;
+				    context.__def_index = index;
 #endif
 
                     // Check if addressing mode matches the hints, if there are any.
-                    if( !context->instruction->hints || ( addr_mode->hints & context->instruction->hints ) == context->instruction->hints ) {
-                        if( fcml_ifn_asm_accept_addr_mode( context, addr_mode, context->instruction ) ) {
-                            // Currently error is just ignored, because we would like to check every available addressing
+                    if( !context.instruction->hints || ( addr_mode->hints & context.instruction->hints ) == context.instruction->hints ) {
+                        if( fcml_ifn_asm_accept_addr_mode( &context, addr_mode, context.instruction ) ) {
+
+                        	// Currently error is just ignored, because we would like to check every available addressing
                             // mode before we return any errors.
-                            error = optimizer( context->assembler_context, &(context->data_size_flags), addr_mode, fcml_ifn_asm_assemble_and_collect_instruction, context );
+                        	fcml_ist_asm_enc_optimizer_callback_args args;
+                        	args.addr_mode = addr_mode;
+                        	args.context = &context;
+
+                            error = optimizer( context.assembler_context, &(context.data_size_flags), fcml_ifn_asm_assemble_and_collect_instruction, &args );
                         }
                     }
 
@@ -1795,7 +1923,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_encoding_context
 
 			}
 
-			if( context->result->instructions->size == 0 ) {
+			if( context.result->instructions->size == 0 ) {
 				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
 

@@ -10,7 +10,7 @@
 #include "fcml_errors.h"
 #include "fcml_trace.h"
 
-fcml_ceh_error fcml_fnp_asm_default_optimizer( fcml_st_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, struct fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args ) {
+fcml_ceh_error fcml_fnp_asm_default_optimizer( fcml_st_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
 
 	fcml_ceh_error error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
 
@@ -157,7 +157,7 @@ fcml_ceh_error fcml_fnp_asm_default_optimizer( fcml_st_assembler_context *contex
 		ds_flags->effective_address_size = easa[i];
 		for( j = 0; j < eosa_count && error; j++ ) {
 			ds_flags->effective_operand_size = eosa[j];
-		    error = callback( addr_mode, args );
+		    error = callback( callback_args );
 		}
 	}
 

@@ -70,36 +70,35 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st
 		asm_context->effective_operand_size = fcml_fn_utils_get_default_OSA(asm_context->addr_form);
 	}
 
-	fcml_st_asm_encoding_context context;
-
-	memset( &context, 0, sizeof( fcml_st_asm_encoding_context ) );
-
-	context.assembler_context = asm_context;
-	context.instruction = instruction;
-
-	context.result = fcml_fn_env_memory_alloc( sizeof( fcml_st_assembler_result ) );
-	if( !context.result ) {
+	fcml_st_assembler_result *asm_result = fcml_fn_env_memory_alloc( sizeof( fcml_st_encoder_result ) );
+	if( !asm_result ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
 	// Allocate error container.
-	context.result->errors = fcml_fn_ceh_alloc_error_container();
-	if( !(context.result->errors) ) {
-		fcml_fn_assembler_result_free( context.result );
+	asm_result->errors = fcml_fn_ceh_alloc_error_container();
+	if( !(asm_result->errors) ) {
+		fcml_fn_assembler_result_free( asm_result );
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
 	// Allocate list for assembled instructions.
-	context.result->instructions = fcml_fn_coll_list_alloc();
-	if( !(context.result->errors) ) {
-		fcml_fn_assembler_result_free( context.result );
+	asm_result->instructions = fcml_fn_coll_list_alloc();
+	if( !(asm_result->instructions) ) {
+		fcml_fn_assembler_result_free( asm_result );
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
 	// Execute instruction encoder.
 	if( addr_modes != NULL ) {
 		if( addr_modes->instruction_encoder ) {
-			addr_modes->instruction_encoder( &context, addr_modes );
+
+			fcml_st_encoder_result enc_result;
+			enc_result.errors = asm_result->errors;
+			enc_result.instructions = asm_result->instructions;
+
+			addr_modes->instruction_encoder( asm_context, instruction, &enc_result, addr_modes );
+
 		} else {
 			// Unavailable instruction encoder.
 			error = FCML_CEH_GEC_INTERNAL_BUG;
@@ -109,9 +108,9 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, fcml_st
 	}
 
 	if( error ) {
-		fcml_fn_env_memory_free( context.result );
+		fcml_fn_assembler_result_free( asm_result );
 	} else {
-		*result = context.result;
+		*result = asm_result;
 	}
 
 	return error;

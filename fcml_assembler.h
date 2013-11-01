@@ -30,6 +30,11 @@ typedef struct fcml_st_assembler_configuration {
 	fcml_bool force_three_byte_VEX;
 } fcml_st_assembler_configuration;
 
+typedef struct fcml_st_assembler_result {
+	fcml_st_ceh_error_container *errors;
+	fcml_st_coll_list *instructions;
+} fcml_st_assembler_result;
+
 typedef struct fcml_st_assembler_context {
     // Assembler instance that should be used to assemble instructions.
     fcml_st_assembler *assembler;
@@ -48,11 +53,6 @@ typedef struct fcml_st_assembled_instruction {
 	fcml_uint8_t *code;
 	fcml_usize code_length;
 } fcml_st_assembled_instruction;
-
-typedef struct fcml_st_assembler_result {
-	fcml_st_ceh_error_container *errors;
-	fcml_st_coll_list *instructions;
-} fcml_st_assembler_result;
 
 fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect_context context, fcml_st_assembler **assembler );
 fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, fcml_st_instruction *instruction, fcml_st_assembler_result **result );
