@@ -122,56 +122,14 @@ typedef enum fcml_ien_asm_part_processor_phase {
 	FCML_IEN_ASM_IPPP_THIRD_PHASE
 } fcml_ien_asm_part_processor_phase;
 
-typedef struct fcml_st_asm_addr_mode_desc_details {
-	// Pre-calculated flags describing which ASA and OSA values are available for addressing mode.
-	fcml_en_attribute_size_flag allowed_osa;
-	fcml_en_attribute_size_flag allowed_asa;
-	fcml_bool is_conditional;
-	fcml_st_condition condition;
-} fcml_st_asm_addr_mode_desc_details;
-
 typedef struct fcml_st_asm_calculated_hints {
     fcml_hints instruction_hints;
     fcml_hints operand_hints;
 } fcml_st_asm_calculated_hints;
 
-typedef fcml_ceh_error (*fcml_fnp_asm_operand_encoder)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
-typedef fcml_ceh_error (*fcml_fnp_asm_operand_acceptor)( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
+
+
 typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_encoding_context *context, struct fcml_st_asm_instruction_addr_modes *addr_modes );
-typedef fcml_st_asm_calculated_hints (*fcml_fnp_asm_instruction_hints_calculator)( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
-
-typedef struct fcml_st_asm_operand_encoder_def {
-	fcml_fnp_asm_operand_encoder encoder;
-	fcml_fnp_asm_operand_acceptor acceptor;
-	fcml_fnp_asm_instruction_hints_calculator hints_calculator;
-} fcml_st_asm_operand_encoder_def;
-
-typedef enum fcml_ien_asm_instruction_part_processor_type {
-	FCML_IEN_ASM_IPPT_VERIFIER,
-	FCML_IEN_ASM_IPPT_ENCODER,
-	FCML_IEN_ASM_IPPT_DECORATOR,
-} fcml_ien_asm_instruction_part_processor_type;
-
-typedef fcml_ceh_error (*fcml_ifn_asm_instruction_part_processor)( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args );
-typedef fcml_ceh_error (*fcml_ifn_asm_instruction_part_processor_acceptor)( fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_instruction *instruction, fcml_ptr args );
-
-typedef struct fcml_ifn_asm_instruction_part_processor_descriptor {
-	fcml_ifn_asm_instruction_part_processor processor_encoder;
-	fcml_ifn_asm_instruction_part_processor_acceptor processor_acceptor;
-	fcml_ien_asm_instruction_part_processor_type processor_type;
-	fcml_ptr processor_args;
-	fcml_fp_env_memory_free_handler processor_args_deallocator;
-	fcml_bool is_short_form_supported;
-} fcml_ifn_asm_instruction_part_processor_descriptor;
-
-typedef fcml_ifn_asm_instruction_part_processor_descriptor (*fcml_ifn_asm_instruction_part_processor_factory)( fcml_uint32_t flags, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error );
-
-typedef struct fcml_ifn_asm_instruction_part_processor_chain {
-	struct fcml_ifn_asm_instruction_part_processor_chain *next_processor;
-	fcml_ifn_asm_instruction_part_processor_descriptor processor_descriptor;
-} fcml_ifn_asm_instruction_part_processor_chain;
-
-typedef fcml_ifn_asm_instruction_part_processor_chain* (*fcml_ifn_asm_instruction_part_processor_factory_dispatcher)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, int *parts, fcml_hints *hints, fcml_ceh_error *error );
 
 typedef struct fcml_st_asm_instruction_addr_modes {
 	// All addressing modes for given mnemonic are available in this list.
@@ -182,28 +140,21 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 	fcml_fnp_asm_instruction_encoder instruction_encoder;
 } fcml_st_asm_instruction_addr_modes;
 
-typedef struct fcml_st_asm_instruction_addr_mode_encoding_details {
-    // Mnemonic configuration chosen for given addressing mode.
-    fcml_st_mp_mnemonic *mnemonic;
-	// Instruction definition.
-	fcml_st_def_addr_mode_desc *addr_mode_desc;
-	// Some pre-calculated information about instruction addressing mode. This structure can be helpful, because
-	// some details of the addressing mode can be pre-calculate while addressing mode is processed in initialization mode.
-	// So we can get some performance improvements.
-	fcml_st_asm_addr_mode_desc_details addr_mode_details;
-	// Chain of instruction part processors registered for instruction addressing mode.
-	fcml_ifn_asm_instruction_part_processor_chain *part_processor_chain;
-	// Number of instruction parts needed to assemble described instruction.
-	int instruction_parts;
-	// Addressing mode related hints.
-	fcml_hints hints;
-	// True if details are cloned for alternative mnemonics.
-	fcml_bool is_cloned;
-} fcml_st_asm_instruction_addr_mode_encoding_details;
+
+
+typedef struct fcml_st_asm_addr_mode_desc_details {
+	// Pre-calculated flags describing which ASA and OSA values are available for addressing mode.
+	fcml_en_attribute_size_flag allowed_osa;
+	fcml_en_attribute_size_flag allowed_asa;
+	fcml_bool is_conditional;
+	fcml_st_condition condition;
+} fcml_st_asm_addr_mode_desc_details;
+
+typedef struct fcml_st_asm_instruction_addr_mode_encoding_details;
 
 // Optimizer definition.
-typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_ptr args );
-typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
+typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( struct fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_ptr args );
+typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, struct fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
 
 fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *context, fcml_st_assembler **assembler );
 fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_st_assembler *assembler, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
