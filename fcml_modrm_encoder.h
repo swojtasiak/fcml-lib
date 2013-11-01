@@ -23,6 +23,26 @@
 #define FCML_MODRM_ENC_SIB_BASE(x)			( x )
 #define FCML_MODRM_SIB_ENC(ss,index,base)	( FCML_MODRM_ENC_SIB_SS( ss ) | FCML_MODRM_ENC_SIB_INDEX( index ) | FCML_MODRM_ENC_SIB_BASE( base ) )
 
+// Effective size attribute ata type.
+
+typedef fcml_uint8_t fcml_esa;
+
+#define FCML_ESA_SF_16		0x01
+#define FCML_ESA_SF_32		0x02
+#define FCML_ESA_SF_64		0x04
+
+typedef struct fcml_st_encoded_modrm {
+	fcml_uint8_t modrm;
+	fcml_nuint8_t sib;
+	fcml_uint8_t ext_r;
+	fcml_uint8_t ext_x;
+	fcml_uint8_t ext_b;
+	fcml_uint8_t displacement[4];
+	fcml_uint8_t displacement_size;
+	fcml_bool is_rip;
+	fcml_int64_t rip_address;
+} fcml_st_encoded_modrm;
+
 typedef struct fcml_st_modrm_encoder_context {
 	// Sets 32 or 64 bit addressing mode.
 	fcml_en_addr_form addr_form;

@@ -1492,7 +1492,6 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 		fcml_st_modrm_decoder_context modrm_context;
 		modrm_context.addr_form = decoding_context->disassembler_context->addr_form;
 		modrm_context.effective_address_size = decoding_context->effective_address_size_attribute;
-		modrm_context.is_displacement_always_extended = decoding_context->disassembler_context->configuration.extend_displacement_to_asa;
 
 		fcml_st_modrm_source modrm_source;
 		modrm_source.is_vsib = modrm_details->is_vsib;
@@ -1502,7 +1501,12 @@ fcml_ceh_error fcml_fn_asm_dec_instruction_decoder_IA( fcml_st_asm_decoding_cont
 		modrm_source.ext_x = prefixes->x;
 		modrm_source.stream = decoding_context->stream;
 
-		error = fcml_fn_modrm_decode( &modrm_context, &modrm_source, &(decoding_context->decoded_modrm) );
+		fcml_uint8_t flags = 0;
+		if( decoding_context->disassembler_context->configuration.extend_displacement_to_asa ) {
+			flags |= FCML_MODRM_DEC_FLAG_EXTEND_DISPLACEMENT_TO_ASA;
+		}
+
+		error = fcml_fn_modrm_decode( &modrm_context, &modrm_source, &(decoding_context->decoded_modrm), flags );
 		if( error ) {
 			return error;
 		}

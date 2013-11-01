@@ -56,8 +56,20 @@ typedef enum fcml_en_def_instruction_type {
 	FCML_EN_IT_IA
 } fcml_en_def_instruction_type;
 
+/****************/
+/* Instructions */
+/****************/
+
+#define F_AAA		0x0001
+
+/*******************/
+/* Addressing mode */
+/*******************/
+
+#define FCML_AM_NONE	0x0001
+
 /*********************************************/
-/* Addressing mode types.                    */
+/* Instruction groups.                       */
 /* Bit fields are not compatible with CPUID. */
 /*********************************************/
 

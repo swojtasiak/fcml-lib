@@ -11,6 +11,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define FCML_TEXT(x)	x
+
 typedef int fcml_int;
 typedef int fcml_bool;
 typedef int8_t fcml_int8_t;

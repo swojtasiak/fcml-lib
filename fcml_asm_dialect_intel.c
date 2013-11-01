@@ -14,6 +14,19 @@
 #include <string.h>
 #include <stdio.h>
 
+// *************
+// * MNEMONICS *
+// *************
+
+fcml_st_dialect_mnemonic fcml_ar_dialect_intel_mnemonics[] = {
+	{ FCML_TEXT("aaa"), F_AAA, FCML_AM_NONE, 0 },
+	{ NULL, 0, 0, 0 }
+};
+
+// ********************
+// * END OF MNEMONICS *
+// ********************
+
 #define FCML_ASM_DIALECT_INTEL_GROUPS 3
 
 fcml_string fcml_itb_intel_conditional_suffixes[3][16] = {

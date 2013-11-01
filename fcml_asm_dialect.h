@@ -28,6 +28,13 @@ typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_register)( fcml_st_register *r
 
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_render_size_operator)( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction );
 
+typedef struct fcml_st_dialect_mnemonic {
+	fcml_string mnemonic;
+	fcml_uint16_t instruction;
+	fcml_uint16_t addr_mode;
+	fcml_uint8_t flags;
+} fcml_st_dialect_mnemonic;
+
 typedef struct fcml_st_dialect_context {
     fcml_fnp_asm_dialect_get_mnemonic get_mnemonic;
     fcml_fnp_asm_dialect_free_mnemonic free_mnemonic;
