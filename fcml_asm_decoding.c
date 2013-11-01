@@ -1250,13 +1250,7 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_prepare_instruction_decoding_callback_defaul
 		decoding->opcodes[i] = addr_mode_desc->opcode[i];
 	}
 
-	// Choose instruction mnemonic.
-	fcml_string mnemonic = instruction_desc->mnemonic;
-    if( addr_mode_desc->mnemonic_override != NULL ) {
-        mnemonic = addr_mode_desc->mnemonic_override;
-    }
-
-	error = fcml_fn_mp_parse_mnemonics( mnemonic, &(decoding->mnemonics) );
+	error = dialect->get_parsed_mnemonics( instruction_desc, addr_mode_desc, &(decoding->mnemonics) );
 	if( error ) {
 		fcml_fn_env_memory_free( decoding );
 	    return FCML_CEH_GEC_INVALID_INPUT;
@@ -1573,6 +1567,11 @@ fcml_ceh_error fcml_fn_asm_init_instruction_decodings( fcml_st_dialect_context *
 	}
 
 	return error;
+}
+
+fcml_st_dialect_context *fcml_fn_asm_get_dialect_context( fcml_st_disassembler *disassembler ) {
+	fcml_ist_asm_dec_disassembler *int_disasm = (fcml_ist_asm_dec_disassembler *)disassembler;
+	return &(int_disasm->dialect_context);
 }
 
 void fcml_fn_asm_free_instruction_decodings( fcml_st_disassembler *disassembler ) {

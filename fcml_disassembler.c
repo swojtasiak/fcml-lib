@@ -311,6 +311,8 @@ fcml_ceh_error fcml_fn_dasm_decode_prefixes( fcml_st_asm_decoding_context *decod
  * API.
  ****************************/
 
+
+
 fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect_context *context, fcml_st_disassembler **disassembler ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -396,7 +398,8 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 			if( mnemonic ) {
 				dis_res->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
 				dis_res->is_shortcut = mnemonic->shortcut;
-				dis_res->mnemonic = mnemonic->mnemonic;
+				fcml_st_dialect_context *dialect_context = fcml_fn_asm_get_dialect_context( context->disassembler );
+				dis_res->mnemonic = dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.show_carry );
 			} else {
 				// Mnemonic not found.
 				return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
@@ -416,6 +419,9 @@ void fcml_fn_disassemble_result_free( fcml_st_disassembler_result *result ) {
 	if( result ) {
 		if( result->errors ) {
 			fcml_fn_ceh_free_error_container( result->errors );
+		}
+		if( result->mnemonic ) {
+			fcml_fn_env_memory_strfree( result->mnemonic );
 		}
 		fcml_fn_env_memory_free( result );
 	}

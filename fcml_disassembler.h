@@ -15,10 +15,15 @@
 #include "fcml_asm_dialect.h"
 #include "fcml_disassembler_result.h"
 
+#define FCML_CONDITIONAL_GROUP_1	0x00
+#define FCML_CONDITIONAL_GROUP_2	0x01
+
 typedef struct fcml_st_disassembler {
 } fcml_st_disassembler;
 
 typedef struct fcml_st_disassembler_configuration {
+	fcml_bool show_carry;
+	fcml_uint8_t conditional_group;
 	fcml_bool use_short_form_mnemonics;
 	fcml_bool imm_extend_to_osa;
 	fcml_bool extend_displacement_to_asa;

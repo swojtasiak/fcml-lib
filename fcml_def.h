@@ -60,7 +60,8 @@ typedef enum fcml_en_def_instruction_type {
 /* Instructions */
 /****************/
 
-#define F_AAA		0x0001
+#define F_UNKNOWN		0x0000
+#define F_AAA			0x0001
 
 /*******************/
 /* Addressing mode */
@@ -131,7 +132,7 @@ typedef struct fcml_st_def_addr_mode_desc {
 	// Mnemonic, if there is another mnemonic available for this opcode.
 	fcml_string mnemonic_override;
 	// Addressing mode type.
-	fcml_uint64_t addressing_mode_type;
+	fcml_uint64_t instruction_group;
 	// Flags describing allowed prefixes.
 	fcml_uint16_t allowed_prefixes;
 	// Some flags that contains various information about opcode.
@@ -140,11 +141,15 @@ typedef struct fcml_st_def_addr_mode_desc {
 	fcml_uint8_t opcode[3];
 	// Addressing of instruction operands.
 	fcml_uint32_t opperands[FCML_OPERANDS_COUNT];
+	// Addressing mode.
+	fcml_uint16_t addr_mode;
 } fcml_st_def_addr_mode_desc;
 
 // TODO:zienic nazwe na fcml_st_def_instruction_desc, spojnosc z opcode.
 /* Describes one addressing mode of instruction. */
 typedef struct fcml_st_def_instruction_description {
+	// Instruction code.
+	fcml_uint16_t instruction;
 	// Mnemonic.
 	fcml_string mnemonic;
 	// Type of the instruction.
@@ -157,7 +162,7 @@ typedef struct fcml_st_def_instruction_description {
 
 /* Operands encoding */
 
-#define FCML_IA_INSTRUCTION(x,y) { x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
+#define FCML_IA_INSTRUCTION(i,x,y) { i, x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
 
 #define FCML_REG_FIELD_NUMBER_OF_REGISTERS				8
 #define FCML_REG_FIELD_NUMBER_OF_CONDITIONS				16

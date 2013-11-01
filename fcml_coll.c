@@ -131,7 +131,8 @@ struct fcml_ist_coll_map {
 	struct fcml_ist_coll_map_entry** map_entries;
 };
 
-fcml_st_coll_map_descriptor fcml_coll_map_descriptor_string = { fcml_fnp_coll_map_key_hash_string, fcml_fnp_coll_map_key_equals_string, NULL };
+fcml_st_coll_map_descriptor fcml_coll_map_descriptor_string = { fcml_fnp_coll_map_key_hash_string, fcml_fnp_coll_map_key_equals_string, NULL, NULL };
+fcml_st_coll_map_descriptor fcml_coll_map_descriptor_uint32 = { fcml_fnp_coll_map_key_hash_uint32, fcml_fnp_coll_map_key_equals_uint32, NULL, NULL };
 
 fcml_coll_map *fcml_fn_coll_map_alloc( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, fcml_ceh_error *error ) {
 	return fcml_fn_coll_map_alloc_factor( descriptor, capacity, FCML_COLL_MAP_DEFAULT_FACTOR, error );
@@ -361,7 +362,7 @@ void fcml_fn_coll_map_free( fcml_coll_map *map ) {
 	}
 }
 
-// Buildin Hash & Equals implementations.
+// Build-in Hash & Equals implementations.
 
 fcml_uint32_t fcml_fnp_coll_map_key_hash_string ( fcml_ptr key ) {
 	fcml_uint32_t hash = 0;

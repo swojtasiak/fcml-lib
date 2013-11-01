@@ -2201,7 +2201,7 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_66_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_st_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
 		fcml_bool encode = FCML_FALSE;
-		fcml_uint64_t addr_type = addr_mode_def->addressing_mode_type;
+		fcml_uint64_t addr_type = addr_mode_def->instruction_group;
 		// Mandatory 0x66 prefix is encoded in different way in case of VEX encoded instructions.
 		if( !( addr_type & FCML_AMT_VEXx ) ) {
             if( FCML_DEF_PREFIX_MANDATORY_66( addr_mode_def->allowed_prefixes ) ) {
@@ -2929,8 +2929,6 @@ fcml_ifn_asm_addr_mode_encoding_details_builder fcml_ifn_asm_conditional_instruc
 // ******************************************
 // Addressing mode encoding details handlers.
 // ******************************************
-
-//void fcml_fn_asm_
 
 fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_ist_asm_init_context *init_context, fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode ) {
 

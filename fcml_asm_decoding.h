@@ -43,5 +43,6 @@ fcml_ceh_error fcml_fn_asm_init_instruction_decodings( fcml_st_dialect_context *
 // TODO: sprawdzic spujnosc z assemblerem, encoder tam tylko dostarcza strukture enkodingu reszte robi assembler, tu chyba bedzie trzeba zrobic podobnie.
 fcml_ceh_error fcml_fn_asm_decode_instruction( fcml_st_asm_decoding_context *context );
 void fcml_fn_asm_free_instruction_decodings(fcml_st_disassembler *disassembler);
+fcml_st_dialect_context *fcml_fn_asm_get_dialect_context( fcml_st_disassembler *disassembler );
 
 #endif /* FCML_ASM_DECODING_H_ */

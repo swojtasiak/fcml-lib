@@ -103,7 +103,9 @@ void fcml_fn_env_memory_strclr( fcml_string str ) {
 }
 
 void fcml_fn_env_memory_strfree( fcml_string str ) {
-	fcml_fn_env_memory_free( str );
+	if( str ) {
+		fcml_fn_env_memory_free( str );
+	}
 }
 
 fcml_bool fcml_fn_env_is_alpha( fcml_char c ) {
