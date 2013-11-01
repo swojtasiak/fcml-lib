@@ -394,7 +394,7 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
-	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.is_rip, FCML_TRUE );
 
 	fcml_st_offset address = {0};
 	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.address.offset), &address );
@@ -682,7 +682,7 @@ void fcml_tf_modrm_3264_decoder_test_10(void) {
 	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
-	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.is_rip, FCML_TRUE );
 
 	fcml_st_offset address = {0};
 	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.address.offset), &address );
@@ -729,7 +729,7 @@ void fcml_tf_modrm_3264_decoder_test_11(void) {
 	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
-	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.is_rip, FCML_TRUE );
 
 	fcml_st_offset address = {0};
 	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_64, &(decoded_modrm.address.offset), &address );
@@ -776,7 +776,7 @@ void fcml_tf_modrm_3264_decoder_test_12(void) {
 	CU_ASSERT_EQUAL( decoded_modrm.address.offset.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
-	CU_ASSERT_EQUAL( context.is_rip, FCML_TRUE );
+	CU_ASSERT_EQUAL( decoded_modrm.is_rip, FCML_TRUE );
 
 	fcml_st_offset address = {0};
 	error = fcml_fn_modrm_decode_rip( 0x401000, FCML_DS_32, &(decoded_modrm.address.offset), &address );
