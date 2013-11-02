@@ -11,7 +11,7 @@
 #include "fcml_coll.h"
 #include "fcml_common.h"
 #include "fcml_errors.h"
-#include "fcml_asm_dialect.h"
+#include "fcml_dialect.h"
 
 typedef struct fcml_st_assembler {
 } fcml_st_assembler;

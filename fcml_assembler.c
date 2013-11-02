@@ -12,7 +12,7 @@
 #include "fcml_utils.h"
 
 #include "fcml_assembler.h"
-#include "fcml_asm_encoding.h"
+#include "fcml_encoding.h"
 #include "fcml_optimizers.h"
 
 fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect_context context, fcml_st_assembler **assembler ) {

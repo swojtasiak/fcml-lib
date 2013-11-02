@@ -12,7 +12,7 @@
 #include "fcml_stream.h"
 #include "fcml_common.h"
 #include "fcml_ceh.h"
-#include "fcml_asm_dialect.h"
+#include "fcml_dialect.h"
 #include "fcml_disassembler_result.h"
 
 #define FCML_CONDITIONAL_GROUP_1	0x00

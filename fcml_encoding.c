@@ -7,7 +7,7 @@
 
 #include <string.h>
 
-#include "fcml_asm_encoding.h"
+#include "fcml_encoding.h"
 #include "fcml_def.h"
 #include "fcml_coll.h"
 #include "fcml_env.h"

@@ -9,7 +9,7 @@
 #define FCML_ASM_DIALECT_INTEL_H_
 
 #include "fcml_ceh.h"
-#include "fcml_asm_dialect.h"
+#include "fcml_dialect.h"
 
 fcml_ceh_error fcml_fn_init_intel_dialect(void);
 void fcml_fn_intel_dialect_free(void);

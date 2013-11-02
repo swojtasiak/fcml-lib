@@ -11,7 +11,7 @@
 #include "fcml_stream.h"
 #include "fcml_disassembler.h"
 #include "fcml_env.h"
-#include "fcml_asm_decoding_tree.h"
+#include "fcml_decoding_tree.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_utils.h"
 #include "fcml_hints.h"
@@ -54,7 +54,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 
 typedef struct fcml_ist_dasm_disassembler {
     fcml_st_dialect_context dialect_context;
-    fcml_asm_dec_tree_decoding_tree *decoding_tree;
+    fcml_st_dt_decoding_tree *decoding_tree;
 } fcml_ist_dasm_disassembler;
 
 /* Decoders responsible for operand disassemblation. */
@@ -1218,7 +1218,7 @@ void fcml_ifn_dasm_dts_prepare_modrm_decoding_details( fcml_st_def_decoded_addr_
 	}
 }
 
-fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( fcml_st_dialect_context *dialect, fcml_ceh_asm_dec_tree_diss_tree_element *element, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *addr_mode_desc ) {
+fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( fcml_st_dialect_context *dialect, fcml_st_dt_diss_tree_element *element, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *addr_mode_desc ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1539,7 +1539,7 @@ fcml_ceh_error fcml_ifn_dasm_init_instruction_decodings( fcml_st_dialect_context
 	if( int_disasm ) {
 
 		int_disasm->dialect_context = *dialect_context;
-		error = fcml_fn_asm_dec_tree_init( dialect_context, &(int_disasm->decoding_tree), &fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default, &fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default );
+		error = fcml_fn_dt_dts_tree_init( dialect_context, &(int_disasm->decoding_tree), &fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default, &fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default );
 		if( !error ) {
 			*disassembler = (fcml_st_disassembler*)int_disasm;
 		}
@@ -1560,7 +1560,7 @@ void fcml_ifn_dasm_free_instruction_decodings( fcml_st_disassembler *disassemble
 	fcml_ist_dasm_disassembler *dec_disasm = (fcml_ist_dasm_disassembler*)disassembler;
     if( dec_disasm ) {
     	if( dec_disasm->decoding_tree ) {
-    		fcml_fn_asm_dec_tree_free( &(dec_disasm->dialect_context), dec_disasm->decoding_tree );
+    		fcml_fn_dt_dts_tree_free( &(dec_disasm->dialect_context), dec_disasm->decoding_tree );
     	}
         fcml_fn_env_memory_free( dec_disasm );
     }
@@ -1571,7 +1571,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_ist_dasm_disassembler *disassembler = (fcml_ist_dasm_disassembler *)context->disassembler_context->disassembler;
-	fcml_asm_dec_tree_decoding_tree *decoding_tree = disassembler->decoding_tree;
+	fcml_st_dt_decoding_tree *decoding_tree = disassembler->decoding_tree;
 
 	// Prepare opcode iterator.
 	struct fcml_ist_dasm_opcode_iterator *iterator;
@@ -1580,10 +1580,10 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 		return error;
 	}
 
-	struct fcml_ceh_asm_dec_tree_diss_tree_element **opcodes = &(decoding_tree->opcode[0]);
+	struct fcml_st_dt_diss_tree_element **opcodes = &(decoding_tree->opcode[0]);
 
 	// Found instruction addressing modes going here.
-	fcml_ceh_asm_dec_tree_diss_tree_element* tree_element = NULL;
+	fcml_st_dt_diss_tree_element* tree_element = NULL;
 
 	while( fcml_ifn_dasm_opcode_iterator_has_next( iterator ) ) {
 
@@ -1591,7 +1591,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 		fcml_uint8_t opcode_byte = fcml_ifn_dasm_opcode_iterator_next( iterator );
 
 		// Get instruction for given opcode.
-		fcml_ceh_asm_dec_tree_diss_tree_element *current = opcodes[opcode_byte];
+		fcml_st_dt_diss_tree_element *current = opcodes[opcode_byte];
 
 		if( current ) {
 			// There is something for given opcode byte, so save it.

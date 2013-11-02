@@ -11,7 +11,7 @@
 #include "fcml_errors.h"
 #include "fcml_types.h"
 #include "fcml_stream.h"
-#include "fcml_asm_dialect.h"
+#include "fcml_dialect.h"
 
 void fcml_fn_rend_utils_format_printf(struct fcml_st_memory_stream *stream, const fcml_string format, ...);
 void fcml_fn_rend_utils_format_append_hex_byte( fcml_st_memory_stream *stream, fcml_uint8_t hex_byte );
