@@ -94,7 +94,7 @@ void new_disassembler_test(void) {
 
 	fcml_st_dialect_context dialect = fcml_fn_get_intel_dialect_context();
 
-	fcml_st_disassembler *disassembler;
+	fcml_st_dasm_disassembler *disassembler;
 	error = fcml_fn_dasm_disassembler_init( &dialect, &disassembler );
 	if( error ) {
 		// Error.
@@ -163,7 +163,6 @@ void new_disassembler_test(void) {
 
 	fcml_uint8_t code[] = {  0x66, 0x81, 0xD5, 0x01, 0x02 };
 
-	//imm_extend_to_osa
 	fcml_st_dasm_disassembler_context context;
 	context.configuration.use_short_form_mnemonics = FCML_FALSE;
 	context.disassembler = disassembler;
@@ -219,7 +218,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	error = fcml_fn_assembler_init( fcml_fn_get_intel_dialect_context(), &assembler );
+	error = fcml_fn_asm_assembler_init( fcml_fn_get_intel_dialect_context(), &assembler );
 	if( error ) {
 		printf("Can not initialize assembler.\n");
 		return 1;
@@ -242,7 +241,7 @@ int main(int argc, char **argv) {
             if (CU_register_suites(suites[i]) != CUE_SUCCESS) {
                 fprintf(stderr, "suite registration failed - %s\n", CU_get_error_msg());
                 fcml_fn_dasm_disassembler_free( disassembler );
-                fcml_fn_assembler_free( assembler );
+                fcml_fn_asm_assembler_free( assembler );
                 fcml_fn_intel_dialect_free();
                 exit(1);
             }
@@ -251,7 +250,7 @@ int main(int argc, char **argv) {
         CU_cleanup_registry();
     }
     fcml_fn_dasm_disassembler_free( disassembler );
-    fcml_fn_assembler_free( assembler );
+    fcml_fn_asm_assembler_free( assembler );
     fcml_fn_intel_dialect_free();
     exit(0);
 }

@@ -68,10 +68,10 @@
 #define FCML_I64_A_FAILED_P(x,...) { fcml_uint8_t code[] = {__VA_ARGS__}; IA3264_instruction_test( code, sizeof( code ), FCML_TRUE, x, FCML_TRUE, FCML_TRUE, FCML_FALSE, FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER, 0, FCML_FALSE, FCML_TRUE); }
 
 fcml_st_dialect_context dialect;
-fcml_st_assembler *assembler;
-fcml_st_disassembler *disassembler;
+fcml_st_asm_assembler *assembler;
+fcml_st_dasm_disassembler *disassembler;
 
-fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble );
+fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_asm_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble );
 fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool failed, fcml_uint32_t flags, fcml_bool print_only );
 
 #endif /* INSTRUCTIONS_BASE_T_H_ */

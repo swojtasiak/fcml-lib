@@ -17,13 +17,13 @@
 #include "fcml_dialect_intel.h"
 #include "fcml_rend_intel.h"
 
-extern fcml_st_assembler *assembler;
+extern fcml_st_asm_assembler *assembler;
 
-extern fcml_st_disassembler *disassembler;
+extern fcml_st_dasm_disassembler *disassembler;
 
 extern fcml_st_dialect_context dialect;
 
-fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble ) {
+fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_asm_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble ) {
 
 	fcml_bool success = FCML_TRUE;
 
@@ -35,10 +35,9 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 		fcml_st_dasm_disassembler_context context;
 		context.configuration.use_short_form_mnemonics = FCML_FALSE;
-		context.configuration.imm_extend_to_osa = FCML_TRUE;
 		context.configuration.extend_displacement_to_asa = FCML_TRUE;
-		context.configuration.conditional_group = FCML_CONDITIONAL_GROUP_1;
-		context.configuration.show_carry = FCML_TRUE;
+		context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
+		context.configuration.choose_carry_conditional_mnemonic = FCML_TRUE;
 		context.configuration.extend_displacement_to_asa = FCML_TRUE;
 		context.disassembler = disassembler;
 		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
@@ -139,7 +138,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 		fcml_uint16_t opt_flags = 0;
 
-		fcml_st_assembler_context context;
+		fcml_st_asm_assembler_context context;
 		context.assembler = assembler;
 		context.effective_address_size = 0;
 		context.effective_operand_size = 0;
@@ -168,8 +167,8 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			context.ip.eip = 0x00401000;
 		}
 
-		fcml_st_assembler_result *asm_result = NULL;
-		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
+		fcml_st_asm_assembler_result *asm_result = NULL;
+		error = fcml_fn_asm_assemble( &context, result->instruction, &asm_result );
 		if( error ) {
 		    if( !should_fail ) {
 		        printf("Can not assemble: %s\n", mnemonic );
@@ -196,7 +195,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
                 // Fill code array.
                 fcml_st_coll_list_element *element = inst->head;
                 while( element ) {
-                    fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
+                    fcml_st_asm_assembled_instruction *assembled_instruction = (fcml_st_asm_assembled_instruction *)element->item;
                     assembled_code_len[assembled_code_index] = assembled_instruction->code_length;
                     assembled_code[assembled_code_index++] = assembled_instruction->code;
                     element = element->next;
@@ -211,7 +210,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
                 element = inst->head;
                 while( element ) {
-                    fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)element->item;
+                    fcml_st_asm_assembled_instruction *assembled_instruction = (fcml_st_asm_assembled_instruction *)element->item;
                     fcml_bool differ = FCML_FALSE;
                     if( !only_print_result ) {
                         int i;
@@ -346,7 +345,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 		}
 
-		fcml_fn_assembler_result_free( asm_result );
+		fcml_fn_asm_assembler_result_free( asm_result );
 
 		fcml_x64iap_free( result );
 
@@ -372,10 +371,9 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 
 	fcml_st_dasm_disassembler_context context;
 	context.configuration.use_short_form_mnemonics = ( flags & TEST_FLAG_SHORT ) ? FCML_TRUE : FCML_FALSE;
-	context.configuration.imm_extend_to_osa = FCML_TRUE;
 	context.configuration.extend_displacement_to_asa = FCML_TRUE;
-	context.configuration.conditional_group = FCML_CONDITIONAL_GROUP_1;
-	context.configuration.show_carry = FCML_TRUE;
+	context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
+	context.configuration.choose_carry_conditional_mnemonic = FCML_TRUE;
 	context.disassembler = disassembler;
 	context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
 	context.address_size_attribute = 0;
