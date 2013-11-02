@@ -51,8 +51,8 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_ptr args );
 typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_asm_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
 
-fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *context, fcml_st_asm_assembler **assembler );
-fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_st_asm_assembler *assembler, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
-void fcml_fn_asm_free_instruction_encodings( fcml_st_asm_assembler *assembler );
+fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *context, fcml_coll_map *instructions_map );
+fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_coll_map instructions_map, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
+void fcml_fn_asm_free_instruction_encodings( fcml_coll_map instructions_map );
 
 #endif /* FCML_ASM_ENCODING_H_ */

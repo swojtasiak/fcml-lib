@@ -15,11 +15,33 @@
 #include "fcml_encoding.h"
 #include "fcml_optimizers.h"
 
+typedef struct fcml_ist_asm_enc_assembler {
+    fcml_coll_map instructions_map;
+    fcml_st_dialect_context dialect_context;
+} fcml_ist_asm_enc_assembler;
+
 fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect_context context, fcml_st_asm_assembler **assembler ) {
-	return fcml_fn_asm_init_instruction_encodings( &context, assembler );
+
+	// Allocate assembler instance.
+	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_asm_enc_assembler ) );
+	if( !enc_asm ) {
+		return FCML_CEH_GEC_OUT_OF_MEMORY;
+	}
+
+	fcml_ceh_error error = fcml_fn_asm_init_instruction_encodings( &context, &(enc_asm->instructions_map) );
+	if( error ) {
+		fcml_fn_env_memory_free( enc_asm );
+		return error;
+	}
+
+	enc_asm->dialect_context = context;
+
+	*assembler = (fcml_st_asm_assembler *)enc_asm;
+
+	return FCML_CEH_GEC_NO_ERROR;
 }
 
-void fcml_ifp_coll_list_action_free_assembled_instruction( fcml_ptr item_value, fcml_ptr args ) {
+void fcml_ifn_asm_coll_list_action_free_assembled_instruction( fcml_ptr item_value, fcml_ptr args ) {
 	fcml_st_asm_assembled_instruction *asm_inst = (fcml_st_asm_assembled_instruction*)item_value;
 	if( asm_inst ) {
 		fcml_fn_env_memory_free( asm_inst->code );
@@ -33,7 +55,7 @@ void fcml_fn_asm_assembler_result_free( fcml_st_asm_assembler_result *result ) {
 			fcml_fn_ceh_free_error_container( result->errors );
 		}
 		if(result->instructions ) {
-			fcml_fn_coll_list_free( result->instructions, fcml_ifp_coll_list_action_free_assembled_instruction, NULL );
+			fcml_fn_coll_list_free( result->instructions, fcml_ifn_asm_coll_list_action_free_assembled_instruction, NULL );
 		}
 		fcml_fn_env_memory_free( result );
 	}
@@ -47,9 +69,11 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
+	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)asm_context->assembler;
+
 	// Find instruction addressing modes.
 	fcml_st_asm_instruction_addr_modes *addr_modes = NULL;
-	error = fcml_fn_asm_get_instruction_encodings( asm_context->assembler, instruction->mnemonic, &addr_modes );
+	error = fcml_fn_asm_get_instruction_encodings( enc_asm->instructions_map, instruction->mnemonic, &addr_modes );
 	if( error ) {
 		return error;
 	}
@@ -108,7 +132,13 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 }
 
 void fcml_fn_asm_assembler_free( fcml_st_asm_assembler *assembler ) {
-	fcml_fn_asm_free_instruction_encodings( assembler );
+	if( assembler ) {
+		fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler *)assembler;
+		if( enc_asm->instructions_map ) {
+			fcml_fn_asm_free_instruction_encodings( enc_asm->instructions_map );
+		}
+		fcml_fn_env_memory_free( enc_asm );
+	}
 }
 
 

@@ -122,14 +122,9 @@ typedef struct fcml_st_asm_calculated_hints {
     fcml_hints operand_hints;
 } fcml_st_asm_calculated_hints;
 
-
-typedef struct fcml_ist_asm_enc_assembler {
-    fcml_coll_map instructions_map;
-    fcml_st_dialect_context dialect_context;
-} fcml_ist_asm_enc_assembler;
-
 typedef struct fcml_ist_asm_init_context {
-    fcml_ist_asm_enc_assembler *assembler;
+	fcml_coll_map instructions_map;
+	fcml_st_dialect_context *dialect_context;
 } fcml_ist_asm_init_context;
 
 typedef fcml_ceh_error (*fcml_fnp_asm_operand_encoder)( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_st_asm_instruction_part *operand_enc );
@@ -3126,7 +3121,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
 
     // Instruction can be registered for more than one mnemonic.
     int mnemonic_count = 0;
-    error = init_context->assembler->dialect_context.get_mnemonic( instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL, mnemonics, &mnemonic_count );
+    error = init_context->dialect_context->get_mnemonic( instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL, mnemonics, &mnemonic_count );
     if( error ) {
         return error;
     }
@@ -3135,7 +3130,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
     int i;
     for( i = 0; i < mnemonic_count && !error; i++ ) {
 
-        fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( init_context->assembler->instructions_map, mnemonics[i]->mnemonic );
+        fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( init_context->instructions_map, mnemonics[i]->mnemonic );
         if( !addr_modes ) {
 
             // Allocate space for new mnemonic.
@@ -3150,9 +3145,9 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
                     addr_modes->instruction_encoder = fcml_ifn_asm_choose_instruction_encoder( instruction->instruction_type );
 
                     // Puts prepared structure under mnemonic key.
-                    fcml_fn_coll_map_put( init_context->assembler->instructions_map, mnemonics[i]->mnemonic, addr_modes, &error );
+                    fcml_fn_coll_map_put( init_context->instructions_map, mnemonics[i]->mnemonic, addr_modes, &error );
                     if( error ) {
-                        fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler, &(init_context->assembler->dialect_context) );
+                        fcml_fn_coll_list_free( addr_modes->addr_modes, fcml_ifn_asm_free_instruction_addr_mode_item_handler, &(init_context->dialect_context) );
                         fcml_fn_env_memory_free(addr_modes);
                     }
 
@@ -3237,33 +3232,25 @@ void fcml_ifn_asm_prepare_instruction_encoding_details( fcml_ist_asm_init_contex
     }
 }
 
-fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *dialect_context, fcml_st_asm_assembler **assembler ) {
+fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *dialect_context, fcml_coll_map *inst_map ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	// Allocate assembler instance.
-	*assembler = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_asm_enc_assembler ) );
-	if( !*assembler ) {
-	    return FCML_CEH_GEC_OUT_OF_MEMORY;
-	}
-
-	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)*assembler;
-
-	enc_asm->dialect_context = *dialect_context;
+	fcml_coll_map instructions_map;
 
 	// Allocate map for all instructions.
 	fcml_st_coll_map_descriptor inst_map_desc = fcml_coll_map_descriptor_string;
 	inst_map_desc.entry_free_function = fcml_ifn_asm_free_instruction_entry;
-	inst_map_desc.entry_free_args = &(enc_asm->dialect_context);
+	inst_map_desc.entry_free_args = dialect_context;
 
-	enc_asm->instructions_map = fcml_fn_coll_map_alloc( &inst_map_desc, 64, &error );
-	if( !(enc_asm->instructions_map) ) {
-	    fcml_fn_asm_free_instruction_encodings( *assembler );
+	instructions_map = fcml_fn_coll_map_alloc( &inst_map_desc, 64, &error );
+	if( !instructions_map ) {
 		return error;
 	}
 
 	fcml_ist_asm_init_context init_context;
-	init_context.assembler = enc_asm;
+	init_context.dialect_context = dialect_context;
+	init_context.instructions_map = instructions_map;
 
 	int i = 0;
 	fcml_st_def_instruction_desc *instruction = &(fcml_ext_instructions_def[i++]);
@@ -3274,37 +3261,28 @@ fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *
 
 	if( error ) {
 		// Something failed, so free everything that have been properly allocated.
-		fcml_fn_asm_free_instruction_encodings( *assembler );
+		fcml_fn_coll_map_free( instructions_map );
 	}
+
+	*inst_map = instructions_map;
 
 	return error;
 
 }
 
-void fcml_fn_asm_free_instruction_encodings( fcml_st_asm_assembler *assembler ) {
-
-    fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)assembler;
-
-    if( enc_asm ) {
-
-        if( enc_asm->instructions_map ) {
-            fcml_fn_coll_map_free( enc_asm->instructions_map );
-            enc_asm->instructions_map = NULL;
-        }
-
-        fcml_fn_env_memory_free( enc_asm );
-    }
+void fcml_fn_asm_free_instruction_encodings( fcml_coll_map instructions_map ) {
+	if( instructions_map ) {
+		fcml_fn_coll_map_free( instructions_map );
+	}
 }
 
-fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_st_asm_assembler *assembler, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes **addr_modes ) {
+fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_coll_map instructions_map, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes **addr_modes ) {
 
-    fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)assembler;
-
-	if( !(enc_asm->instructions_map) ) {
+	if( !instructions_map ) {
 		return FCML_CEH_GEC_NOT_INITIALIZED;
 	}
 
-	*addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( enc_asm->instructions_map, mnemonic );
+	*addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( instructions_map, mnemonic );
 	if( !*addr_modes ) {
 		return FCML_EN_UNKNOWN_MNEMONIC;
 	}
