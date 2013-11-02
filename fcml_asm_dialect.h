@@ -28,15 +28,15 @@ typedef struct fcml_st_dialect_mnemonic {
 	fcml_uint8_t flags;
 } fcml_st_dialect_mnemonic;
 
-typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_mnemonic)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonic_counter );
+typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_mnemonic)( fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonic_counter );
 
-typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_parsed_mnemonics)( fcml_st_def_instruction_description *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_mp_mnemonic_set **mnemonics );
+typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_parsed_mnemonics)( fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_mp_mnemonic_set **mnemonics );
 
 typedef void (*fcml_fnp_asm_dialect_free_mnemonic)( fcml_st_mp_mnemonic *mnemonics );
 
 typedef fcml_string (*fcml_fnp_asm_dialect_render_mnemonic)( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry );
 
-typedef fcml_ceh_error (*fcml_fnp_rend_render_instruction)( struct fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
+typedef fcml_ceh_error (*fcml_fnp_rend_render_instruction)( struct fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_uint32_t render_flags );
 
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_register)( fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex );
 

@@ -24,7 +24,7 @@ typedef struct fcml_ist_asm_dec_dts_opcodes {
 	fcml_uint8_t opcode_bytes[3];
 } fcml_ist_asm_dec_dts_opcodes;
 
-typedef fcml_ceh_error ( *fcml_ifp_asm_dec_dts_opcode_callback )( fcml_asm_dec_tree_decoding_tree *dec_tree, fcml_st_def_instruction_description *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ist_asm_dec_dts_opcodes *opcodes );
+typedef fcml_ceh_error ( *fcml_ifp_asm_dec_dts_opcode_callback )( fcml_asm_dec_tree_decoding_tree *dec_tree, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ist_asm_dec_dts_opcodes *opcodes );
 
 /* Sets opcode field into a opcode byte. */
 fcml_uint8_t fcml_ifn_asm_dec_dts_utils_set_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, int field_size, uint8_t field_value ) {
@@ -32,7 +32,7 @@ fcml_uint8_t fcml_ifn_asm_dec_dts_utils_set_opcode_byte_field( uint8_t opcode_by
 	return ( opcode_byte & bit_mask ) | ( field_value << opcode_field_pos );
 }
 
-fcml_ceh_error fcml_ifn_asm_dec_dts_default_opcode_callback( fcml_asm_dec_tree_decoding_tree *dec_tree, fcml_st_def_instruction_description *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ist_asm_dec_dts_opcodes *opcodes ) {
+fcml_ceh_error fcml_ifn_asm_dec_dts_default_opcode_callback( fcml_asm_dec_tree_decoding_tree *dec_tree, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ist_asm_dec_dts_opcodes *opcodes ) {
 
 	fcml_ceh_asm_dec_tree_diss_tree_element **current_elements = &(dec_tree->opcode[0]);
 	fcml_ceh_asm_dec_tree_diss_tree_element *element = NULL;
@@ -68,7 +68,7 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_default_opcode_callback( fcml_asm_dec_tree_d
 
 
 /* Function used to calculate all instruction opcode bytes using recursion. */
-fcml_ceh_error fcml_ifn_asm_dec_dts_handle_next_opcode_byte( fcml_asm_dec_tree_decoding_tree *dec_tree, fcml_st_def_instruction_description *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ist_asm_dec_dts_opcodes *opcodes, fcml_ifp_asm_dec_dts_opcode_callback callback, int opcode_bytes_count, int opcode_byte_num, int primary_opcode_byte_num ) {
+fcml_ceh_error fcml_ifn_asm_dec_dts_handle_next_opcode_byte( fcml_asm_dec_tree_decoding_tree *dec_tree, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ist_asm_dec_dts_opcodes *opcodes, fcml_ifp_asm_dec_dts_opcode_callback callback, int opcode_bytes_count, int opcode_byte_num, int primary_opcode_byte_num ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -119,7 +119,7 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_handle_next_opcode_byte( fcml_asm_dec_tree_d
 	return fcml_ifn_asm_dec_dts_handle_next_opcode_byte( dec_tree, instruction_desc, opcode_desc, opcodes, callback, opcode_bytes_count, opcode_byte_num + 1, primary_opcode_byte_num );
 }
 
-fcml_ceh_error fcml_ifn_asm_dec_dts_iterate_through_all_opcodes( fcml_asm_dec_tree_decoding_tree *dec_tree, fcml_st_def_instruction_description *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ifp_asm_dec_dts_opcode_callback callback ) {
+fcml_ceh_error fcml_ifn_asm_dec_dts_iterate_through_all_opcodes( fcml_asm_dec_tree_decoding_tree *dec_tree, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ifp_asm_dec_dts_opcode_callback callback ) {
 
 	// Number of opcode bytes.
 	int opcode_bytes_count = FCML_DEF_OPCODE_FLAGS_OPCODE_NUM( opcode_desc->opcode_flags );
@@ -135,14 +135,14 @@ fcml_ceh_error fcml_ifn_asm_dec_dts_iterate_through_all_opcodes( fcml_asm_dec_tr
 	return fcml_ifn_asm_dec_dts_handle_next_opcode_byte( dec_tree, instruction_desc, opcode_desc, &opcode, callback, opcode_bytes_count, 0, primary_opcode_byte_num );
 }
 
-int fcml_ifn_asm_dec_dts_update_disassemblation_tree( fcml_st_def_instruction_description *instruction_desc_src, fcml_asm_dec_tree_decoding_tree *dec_tree ) {
+int fcml_ifn_asm_dec_dts_update_disassemblation_tree( fcml_st_def_instruction_desc *instruction_desc_src, fcml_asm_dec_tree_decoding_tree *dec_tree ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	// Get instruction description.
 	int instruction_index = 0;
 	while( instruction_desc_src[instruction_index].mnemonic != NULL && !error ) {
-		struct fcml_st_def_instruction_description *instruction_desc = &instruction_desc_src[instruction_index++];
+		struct fcml_st_def_instruction_desc *instruction_desc = &instruction_desc_src[instruction_index++];
 
 		// Get description of the specific instruction form.
 		int opcode_index = 0;

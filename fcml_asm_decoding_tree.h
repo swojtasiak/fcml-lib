@@ -19,7 +19,7 @@ typedef struct fcml_ceh_asm_dec_tree_diss_tree_element {
 	fcml_st_coll_list *instruction_decoding_defs;
 } fcml_ceh_asm_dec_tree_diss_tree_element;
 
-typedef fcml_ceh_error (*fcml_fp_asm_dec_dts_prepare_instruction_decoding_callback)( fcml_st_dialect_context *dialect, fcml_ceh_asm_dec_tree_diss_tree_element *element, fcml_st_def_instruction_description *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc );
+typedef fcml_ceh_error (*fcml_fp_asm_dec_dts_prepare_instruction_decoding_callback)( fcml_st_dialect_context *dialect, fcml_ceh_asm_dec_tree_diss_tree_element *element, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc );
 typedef void (*fcml_fp_asm_dec_dts_dispose_instruction_decoding_callback)( fcml_st_dialect_context *dialect, fcml_ptr instruction_decoding );
 
 typedef struct fcml_asm_dec_tree_decoding_tree {

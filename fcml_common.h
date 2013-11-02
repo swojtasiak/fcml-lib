@@ -12,8 +12,9 @@
 
 #include "fcml_types.h"
 
-#define FCML_OPERANDS_COUNT	5
-#define FCML_INSTRUCTION_SIZE 15
+#define FCML_OPERANDS_COUNT			5
+#define FCML_INSTRUCTION_SIZE 		15
+#define FCML_OPCODES_NUM			3
 
 #define FCML_PREFIX_LOCK			0x0001
 #define FCML_PREFIX_REPNE			0x0002

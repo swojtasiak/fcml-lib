@@ -145,9 +145,8 @@ typedef struct fcml_st_def_addr_mode_desc {
 	fcml_uint16_t addr_mode;
 } fcml_st_def_addr_mode_desc;
 
-// TODO:zienic nazwe na fcml_st_def_instruction_desc, spojnosc z opcode.
 /* Describes one addressing mode of instruction. */
-typedef struct fcml_st_def_instruction_description {
+typedef struct fcml_st_def_instruction_desc {
 	// Instruction code.
 	fcml_uint16_t instruction;
 	// Mnemonic.
@@ -157,8 +156,8 @@ typedef struct fcml_st_def_instruction_description {
 	// Number of opcodes' descriptions.
 	fcml_uint8_t opcode_desc_count;
 	// Opcodes' descriptions.
-	struct fcml_st_def_addr_mode_desc *addr_modes;
-} fcml_st_def_instruction_description;
+	fcml_st_def_addr_mode_desc *addr_modes;
+} fcml_st_def_instruction_desc;
 
 /* Operands encoding */
 
@@ -225,38 +224,38 @@ typedef struct fcml_st_def_instruction_description {
 #define FCML_NA			0x00000000
 
 // Immediate data.
-#define FCML_OP_IMM_BASE							0x01000000
+#define FCML_OP_IMM_BASE											0x01000000
 #define FCML_OP_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OP_IMM_BASE | encoded_imm_size << 8 | encoded_ex_imm_size )
 
 // Register explicitly set.
-#define FCML_OP_EXPLICIT_REG_BASE					0x02000000
+#define FCML_OP_EXPLICIT_REG_BASE									0x02000000
 #define FCML_OP_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( FCML_OP_EXPLICIT_REG_BASE | reg_type << 12 | reg_num << 8 | encoded_reg_size )
 
 // Register field in opcode byte.
-#define FCML_OP_OPCODE_REG_BASE						0x03000000
-#define FCML_OP_OPCODE_REG(reg_type, encoded_reg_size)		( FCML_OP_OPCODE_REG_BASE | reg_type << 8 | encoded_reg_size )
+#define FCML_OP_OPCODE_REG_BASE										0x03000000
+#define FCML_OP_OPCODE_REG(reg_type, encoded_reg_size)				( FCML_OP_OPCODE_REG_BASE | reg_type << 8 | encoded_reg_size )
 
 // Relative addressing.
-#define FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE			0x04000000
-#define FCML_OP_IMMEDIATE_DIS_RELATIVE( encoded_imm_size )	( FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE | encoded_imm_size )
+#define FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE							0x04000000
+#define FCML_OP_IMMEDIATE_DIS_RELATIVE( encoded_imm_size )			( FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE | encoded_imm_size )
 
 // Far pointers.
-#define FCML_OP_FAR_POINTER							0x05000000
+#define FCML_OP_FAR_POINTER											0x05000000
 
 // TODO: Far pointer indirect mozna zlikwidowac na rzecz Modrm z wielkoscia FCML_EOS_FPI.
 // Far indirect pointer.
-#define FCML_OP_FAR_POINTER_INDIRECT				0x06000000
+#define FCML_OP_FAR_POINTER_INDIRECT								0x06000000
 
 // Addressing by explicit GPR register. (Used by CMPS for instance.)
-#define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE	0x07000000
+#define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE					0x07000000
 #define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE | reg_num << 16 | encoded_operand_size << 8 | encoded_segment_register )
 
 // It allows defining explicit IMM8 operand type. See INT instruction.
-#define FCML_OP_EXPLICIT_IB_BASE					0x08000000
-#define FCML_OP_EXPLICIT_IB(value)				( FCML_OP_EXPLICIT_IB_BASE | value )
+#define FCML_OP_EXPLICIT_IB_BASE									0x08000000
+#define FCML_OP_EXPLICIT_IB(value)									( FCML_OP_EXPLICIT_IB_BASE | value )
 
 // Segment relative addressing.
-#define FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE		0x09000000
+#define FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE						0x09000000
 #define FCML_OP_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
 
 /********************************/
@@ -471,7 +470,7 @@ typedef struct fcml_st_def_instruction_description {
 
 /* Externals. */
 
-extern struct fcml_st_def_instruction_description fcml_ext_instructions_def[];
+extern struct fcml_st_def_instruction_desc fcml_ext_instructions_def[];
 
 #define FCML_EMPTY_MNEMONIC	""
 

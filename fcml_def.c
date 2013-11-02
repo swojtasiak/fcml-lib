@@ -5792,7 +5792,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPSHLW[] = {
 	{ NULL, FCML_AMT_XOP, 0x0448, 0x00D88000, { 0x09, 0x95, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA }, FCML_AM_NONE },
 };
 
-struct fcml_st_def_instruction_description fcml_ext_instructions_def[] = {
+struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_AAA, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_AAA ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "aad", fcml_st_def_addr_mode_desc_AAD ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "aam", fcml_st_def_addr_mode_desc_AAM ),
