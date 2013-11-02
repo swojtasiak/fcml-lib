@@ -139,7 +139,7 @@ fcml_ceh_error fcml_fn_init_intel_dialect(void) {
 	return error;
 }
 
-void fcml_fn_free_intel_dialect(void) {
+void fcml_fn_intel_dialect_free(void) {
 	if( fcml_map_dialect_intel_mnemonics_lookup ) {
 		fcml_fn_coll_map_free( fcml_map_dialect_intel_mnemonics_lookup );
 		fcml_map_dialect_intel_mnemonics_lookup = NULL;
