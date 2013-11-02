@@ -28,13 +28,13 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 	fcml_bool success = FCML_TRUE;
 
-	fcml_st_disassembler_result *dis_result = NULL;
+	fcml_st_dasm_disassembler_result *dis_result = NULL;
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	if( !only_assemble ) {
 
-		fcml_st_disassembler_context context;
+		fcml_st_dasm_disassembler_context context;
 		context.configuration.use_short_form_mnemonics = FCML_FALSE;
 		context.configuration.imm_extend_to_osa = FCML_TRUE;
 		context.configuration.extend_displacement_to_asa = FCML_TRUE;
@@ -59,7 +59,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		}
 
 		// Disassemble.
-		error = fcml_fn_disassemble( &context, &dis_result );
+		error = fcml_fn_dasm_disassemble( &context, &dis_result );
 
 	}
 
@@ -77,7 +77,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			if( should_fail ) {
 				printf("Should fail: %s\n", mnemonic);
 				success = FCML_FALSE;
-				fcml_fn_disassemble_result_free( dis_result );
+				fcml_fn_dasm_disassemble_result_free( dis_result );
 				return success;
 			}
 
@@ -106,7 +106,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 				if( !only_print_result ) {
 					success = FCML_FALSE;
 				}
-				fcml_fn_disassemble_result_free( dis_result );
+				fcml_fn_dasm_disassemble_result_free( dis_result );
 				return success;
 			}
 
@@ -115,7 +115,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 				if( !only_print_result ) {
 					success = FCML_FALSE;
 				}
-				fcml_fn_disassemble_result_free( dis_result );
+				fcml_fn_dasm_disassemble_result_free( dis_result );
 				return success;
 			} else {
 				if( !only_print_result ) {
@@ -134,7 +134,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 				success = FCML_FALSE;
 			}
 			fcml_x64iap_free( result );
-			fcml_fn_disassemble_result_free( dis_result );
+			fcml_fn_dasm_disassemble_result_free( dis_result );
 			return success;
 		}
 
@@ -358,7 +358,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 
 	}
 
-	fcml_fn_disassemble_result_free( dis_result );
+	fcml_fn_dasm_disassemble_result_free( dis_result );
 
 	return success;
 }
@@ -367,11 +367,11 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 
 	fcml_bool success = FCML_TRUE;
 
-	fcml_st_disassembler_result *dis_result = NULL;
+	fcml_st_dasm_disassembler_result *dis_result = NULL;
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_disassembler_context context;
+	fcml_st_dasm_disassembler_context context;
 	context.configuration.use_short_form_mnemonics = ( flags & TEST_FLAG_SHORT ) ? FCML_TRUE : FCML_FALSE;
 	context.configuration.imm_extend_to_osa = FCML_TRUE;
 	context.configuration.extend_displacement_to_asa = FCML_TRUE;
@@ -390,7 +390,7 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 	}
 
 	// Disassemble.
-	error = fcml_fn_disassemble( &context, &dis_result );
+	error = fcml_fn_dasm_disassemble( &context, &dis_result );
 
 	if( !error ) {
 
@@ -430,7 +430,7 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 		}
 	}
 
-	fcml_fn_disassemble_result_free( dis_result );
+	fcml_fn_dasm_disassemble_result_free( dis_result );
 
 	return success;
 }

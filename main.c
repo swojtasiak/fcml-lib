@@ -96,7 +96,7 @@ void new_disassembler_test(void) {
 	fcml_st_dialect_context dialect = fcml_fn_get_intel_dialect_context();
 
 	fcml_st_disassembler *disassembler;
-	error = fcml_fn_disassembler_init( &dialect, &disassembler );
+	error = fcml_fn_dasm_disassembler_init( &dialect, &disassembler );
 	if( error ) {
 		// Error.
 		return;
@@ -165,7 +165,7 @@ void new_disassembler_test(void) {
 	fcml_uint8_t code[] = {  0x66, 0x81, 0xD5, 0x01, 0x02 };
 
 	//imm_extend_to_osa
-	fcml_st_disassembler_context context;
+	fcml_st_dasm_disassembler_context context;
 	context.configuration.use_short_form_mnemonics = FCML_FALSE;
 	context.disassembler = disassembler;
 	context.addr_form = FCML_AF_32_BIT;
@@ -184,8 +184,8 @@ void new_disassembler_test(void) {
 		context.code_size = sizeof( code );
 		context.ip.rip = 0x0000800000401000LL;*/
 
-	fcml_st_disassembler_result *result;
-	error = fcml_fn_disassemble( &context, &result );
+	fcml_st_dasm_disassembler_result *result;
+	error = fcml_fn_dasm_disassemble( &context, &result );
 	if( !error ) {
 
 		fcml_char buffer[256];
@@ -204,7 +204,7 @@ void new_disassembler_test(void) {
 	}
 
 	if( disassembler ) {
-		fcml_fn_disassembler_free( disassembler );
+		fcml_fn_dasm_disassembler_free( disassembler );
 	}
 
 	fcml_fn_free_intel_dialect();
@@ -228,7 +228,7 @@ int main(int argc, char **argv) {
 	ira_init();
 	dialect = fcml_fn_get_intel_dialect_context();
 
-	error = fcml_fn_disassembler_init( &dialect, &disassembler );
+	error = fcml_fn_dasm_disassembler_init( &dialect, &disassembler );
 	if( error ) {
 		// Error.
 		printf( "Can not allocate disassembler." );
@@ -271,7 +271,7 @@ int main(int argc, char **argv) {
         CU_basic_run_tests();
         CU_cleanup_registry();
     }
-    fcml_fn_disassembler_free( disassembler );
+    fcml_fn_dasm_disassembler_free( disassembler );
     fcml_fn_assembler_free( assembler );
     ira_deinit();
     fcml_fn_free_intel_dialect();
