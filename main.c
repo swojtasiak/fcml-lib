@@ -40,7 +40,7 @@
 #include "instructions_w_t.h"
 #include "instructions_x_t.h"
 #include "fcml_intel_parser_t.h"
-#include "fcml_asm_dialect_intel.h"
+#include "fcml_dialect_intel.h"
 
 #include "fcml_assembler.h"
 #include "fcml_disassembler.h"

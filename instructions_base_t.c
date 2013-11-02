@@ -9,13 +9,12 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <inttypes.h>
 
 #include "fcml_assembler.h"
-#include "ira.h"
-#include "ira_ren_intel.h"
 #include "fcml_x64intel_asm_parser.h"
 #include "fcml_disassembler.h"
-#include "fcml_asm_dialect_intel.h"
+#include "fcml_dialect_intel.h"
 #include "fcml_rend_intel.h"
 
 extern fcml_st_assembler *assembler;
@@ -42,7 +41,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		context.configuration.show_carry = FCML_TRUE;
 		context.configuration.extend_displacement_to_asa = FCML_TRUE;
 		context.disassembler = disassembler;
-		context.addr_form = x64 ? IRA_MOD_64BIT : FCML_AF_32_BIT;
+		context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
 		context.address_size_attribute = 0;
 		context.operand_size_attribute = 0;
 		if( !multiple_assemblation_result ) {
@@ -378,7 +377,7 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 	context.configuration.conditional_group = FCML_CONDITIONAL_GROUP_1;
 	context.configuration.show_carry = FCML_TRUE;
 	context.disassembler = disassembler;
-	context.addr_form = x64 ? IRA_MOD_64BIT : FCML_AF_32_BIT;
+	context.addr_form = x64 ? FCML_AF_64_BIT : FCML_AF_32_BIT;
 	context.address_size_attribute = 0;
 	context.operand_size_attribute = 0;
 	context.code_address = code;
