@@ -36,7 +36,7 @@ typedef struct fcml_st_encoder_result {
 
 struct fcml_st_asm_instruction_addr_modes;
 
-typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_assembler_context *context, fcml_st_instruction *instruction, fcml_st_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes );
+typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_assembler_context *context, fcml_st_instruction *instruction, fcml_st_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes );
 
 typedef struct fcml_st_asm_instruction_addr_modes {
 	// All addressing modes for given mnemonic are available in this list.
@@ -49,10 +49,10 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 
 // Optimizer definition.
 typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_ptr args );
-typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
+typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_asm_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
 
-fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *context, fcml_st_assembler **assembler );
-fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_st_assembler *assembler, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
-void fcml_fn_asm_free_instruction_encodings( fcml_st_assembler *assembler );
+fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *context, fcml_st_asm_assembler **assembler );
+fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_st_asm_assembler *assembler, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
+void fcml_fn_asm_free_instruction_encodings( fcml_st_asm_assembler *assembler );
 
 #endif /* FCML_ASM_ENCODING_H_ */

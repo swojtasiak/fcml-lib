@@ -73,7 +73,7 @@ typedef struct fcml_ist_asm_encoding_context {
 #ifdef FCML_DEBUG
 	int __def_index;
 #endif
-	fcml_st_assembler_context *assembler_context;
+	fcml_st_asm_assembler_context *assembler_context;
 	fcml_st_instruction *instruction;
 	fcml_st_encoder_result *result;
 	fcml_st_asm_data_size_flags data_size_flags;
@@ -1711,7 +1711,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode( fcml_ist_asm_encoding_context *co
 	return error;
 }
 
-void fcml_ifn_assemble_instruction_parts( fcml_st_assembled_instruction *assembled_instruction, fcml_st_asm_instruction_part_container *instruction_part_container ) {
+void fcml_ifn_assemble_instruction_parts( fcml_st_asm_assembled_instruction *assembled_instruction, fcml_st_asm_instruction_part_container *instruction_part_container ) {
 	int i, count = instruction_part_container->count;
 	int offset = 0;
 	for( i = 0; i < count; i++ ) {
@@ -1723,7 +1723,7 @@ void fcml_ifn_assemble_instruction_parts( fcml_st_assembled_instruction *assembl
 	assembled_instruction->code_length = offset;
 }
 
-void fcml_ifn_asm_free_assembled_instruction( fcml_st_assembled_instruction *assembled_instruction ) {
+void fcml_ifn_asm_free_assembled_instruction( fcml_st_asm_assembled_instruction *assembled_instruction ) {
 	if( assembled_instruction ) {
 		if( assembled_instruction->code ) {
 			fcml_fn_env_memory_free( assembled_instruction->code );
@@ -1732,7 +1732,7 @@ void fcml_ifn_asm_free_assembled_instruction( fcml_st_assembled_instruction *ass
 	}
 }
 
-fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_ist_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_assembled_instruction **assembled_instruction ) {
+fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_ist_asm_encoding_context *context, fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_asm_assembled_instruction **assembled_instruction ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1751,7 +1751,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_ist_asm_encoding_context 
 		}
 
 		// Allocate memory block for assembled code.
-		fcml_st_assembled_instruction *asm_inst = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_assembled_instruction ) );
+		fcml_st_asm_assembled_instruction *asm_inst = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_asm_assembled_instruction ) );
 		if( !asm_inst ) {
 			error = FCML_CEH_GEC_NO_ERROR;
 		} else {
@@ -1792,7 +1792,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 	fcml_st_asm_instruction_addr_mode_encoding_details *addr_mode = callback_args->addr_mode;
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_st_assembled_instruction *assembled_instruction;
+	fcml_st_asm_assembled_instruction *assembled_instruction;
 	error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
 	if( !error ) {
 		#ifdef FCML_DEBUG
@@ -1805,7 +1805,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 		fcml_st_coll_list *instructions = context->result->instructions;
 		fcml_st_coll_list_element *element = instructions->head;
 		while( element ) {
-		    fcml_st_assembled_instruction *instruction = (fcml_st_assembled_instruction*)element->item;
+		    fcml_st_asm_assembled_instruction *instruction = (fcml_st_asm_assembled_instruction*)element->item;
 		    int max_code_len = instruction->code_length > assembled_instruction->code_length ? assembled_instruction->code_length : instruction->code_length;
 		    if( fcml_fn_env_memory_cmp( instruction->code, assembled_instruction->code, max_code_len ) ) {
 		        // Instructions are the same.
@@ -1828,7 +1828,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 	return error;
 }
 
-fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_assembler_context *asm_context, fcml_st_instruction *instruction, fcml_st_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
+fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_asm_assembler_context *asm_context, fcml_st_instruction *instruction, fcml_st_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
 
 	fcml_ist_asm_encoding_context context = {0};
 	context.assembler_context = asm_context;
@@ -1839,7 +1839,7 @@ fcml_ceh_error fcml_fnp_asm_instruction_encoder_IA( fcml_st_assembler_context *a
 
 	if( addr_modes ) {
 
-		fcml_en_assembler_optimizers optimizer_type = context.assembler_context->configuration.optimizer;
+		fcml_en_asm_assembler_optimizers optimizer_type = context.assembler_context->configuration.optimizer;
 		fcml_fnp_asm_optimizer optimizer = fcml_ar_optimizers[optimizer_type];
 		if( !optimizer ) {
 			// Optimizer not found.
@@ -2584,7 +2584,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 			rex = FCML_ENCODE_REX_B( rex, context->opcode_reg.ext_b );
 
 			// Assembler configuration.
-			fcml_st_assembler_configuration *cfg = &(context->assembler_context->configuration);
+			fcml_st_asm_assembler_configuration *cfg = &(context->assembler_context->configuration);
 
 			// Even if REX do not contains any flags set in some cases registers BPL, SPL, DIL, SIL needs REX to be defined.
 			// Additionally we can force it to occur by setting a configuration flag.
@@ -2616,7 +2616,7 @@ fcml_ifn_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 
 fcml_ceh_error fcml_st_asm_instruction_part_rip_post_processor( fcml_ist_asm_encoding_context *context, fcml_st_asm_instruction_part *instruction_part, fcml_ptr post_processor_args ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_st_assembler_context *assembler_context = context->assembler_context;
+	fcml_st_asm_assembler_context *assembler_context = context->assembler_context;
 	fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
 
 	if( !context->instruction_size.is_not_null ) {
@@ -2634,7 +2634,7 @@ fcml_ceh_error fcml_st_asm_instruction_part_rip_post_processor( fcml_ist_asm_enc
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_st_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_asm_instruction_part *instruction_part, fcml_ptr args ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_st_assembler_context *assembler_context = context->assembler_context;
+	fcml_st_asm_assembler_context *assembler_context = context->assembler_context;
 	if( phase == FCML_IEN_ASM_IPPP_SECOND_PHASE ) {
 
 		fcml_st_modrm_encoder_context ctx;
@@ -3237,7 +3237,7 @@ void fcml_ifn_asm_prepare_instruction_encoding_details( fcml_ist_asm_init_contex
     }
 }
 
-fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *dialect_context, fcml_st_assembler **assembler ) {
+fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *dialect_context, fcml_st_asm_assembler **assembler ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -3281,7 +3281,7 @@ fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *
 
 }
 
-void fcml_fn_asm_free_instruction_encodings( fcml_st_assembler *assembler ) {
+void fcml_fn_asm_free_instruction_encodings( fcml_st_asm_assembler *assembler ) {
 
     fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)assembler;
 
@@ -3296,7 +3296,7 @@ void fcml_fn_asm_free_instruction_encodings( fcml_st_assembler *assembler ) {
     }
 }
 
-fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_st_assembler *assembler, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes **addr_modes ) {
+fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_st_asm_assembler *assembler, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes **addr_modes ) {
 
     fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)assembler;
 

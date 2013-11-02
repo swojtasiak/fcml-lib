@@ -10,6 +10,7 @@
 
 #include "fcml_stream.h"
 #include "fcml_dialect.h"
+#include "fcml_disassembler.h"
 
 #define FCML_REND_FLAG_RENDER_CODE				0x00000001
 #define FCML_REND_FLAG_HEX_IMM					0x00000002
@@ -20,6 +21,8 @@
 #define FCML_REND_FLAG_COND_SHOW_CARRY			0x00000040
 
 #define RCML_REND_DEFAULT_FLAGS		0
+
+typedef fcml_ceh_error (*fcml_fnp_rend_render_instruction)( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_uint32_t render_flags );
 
 fcml_ceh_error fcml_fn_rend_render_instruction( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_uint32_t render_flags );
 

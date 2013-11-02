@@ -5,15 +5,14 @@
  *      Author: tAs
  */
 
-#include "fcml_dialect_intel.h"
-#include "fcml_env.h"
-#include "fcml_mnemonic_parser.h"
-#include "fcml_rend_intel.h"
-#include "fcml_env.h"
-#include "fcml_coll.h"
-
 #include <string.h>
 #include <stdio.h>
+
+#include "fcml_dialect_intel.h"
+#include "fcml_mnemonic_parser.h"
+#include "fcml_env.h"
+#include "fcml_coll.h"
+#include "fcml_rend_intel.h"
 
 // *************
 // * MNEMONICS *

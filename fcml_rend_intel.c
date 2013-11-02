@@ -245,13 +245,6 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *d
 	// Mnemonic.
 	fcml_fn_rend_utils_format_append_str( output_stream, result->mnemonic );
 
-	// Conditional suffix.
-	/*if( result->is_conditional ) {
-		fcml_int condition = ( result->condition.condition_type << 1 ) | ( ( result->condition.is_negation ) ? 1 : 0 );
-		fcml_string suffix = fcml_ifn_rend_get_conditional_suffix_intel( condition, render_flags );
-		fcml_fn_rend_utils_format_append_str( output_stream, suffix );
-	}*/
-
 	// Short form, so operands should be ignored.
 	if( result->is_shortcut ) {
 		return error;

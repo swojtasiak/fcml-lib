@@ -191,6 +191,8 @@ typedef struct fcml_st_def_instruction_desc {
  *********************************/
 
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_REG(x)			( x & 0x00000001 )
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_W(x)				( x & 0x00000002 )
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_S(x)				( x & 0x00000004 )
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(x)			( x & 0x00000040 )
 #define FCML_DEF_OPCODE_FLAGS_POS(x)						( ( x & 0x00000700 ) >> 8 )
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(x)					( ( x & 0x00007800 ) >> 11 )
