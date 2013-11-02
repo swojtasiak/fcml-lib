@@ -44,7 +44,6 @@
 
 #include "fcml_assembler.h"
 #include "fcml_disassembler.h"
-#include "ira.h"
 
 #include "instructions_base_t.h"
 
@@ -207,7 +206,7 @@ void new_disassembler_test(void) {
 		fcml_fn_dasm_disassembler_free( disassembler );
 	}
 
-	fcml_fn_free_intel_dialect();
+	fcml_fn_intel_dialect_free();
 
 }
 
@@ -225,36 +224,15 @@ int main(int argc, char **argv) {
 		printf("Can not initialize assembler.\n");
 		return 1;
 	}
-	ira_init();
+
 	dialect = fcml_fn_get_intel_dialect_context();
 
 	error = fcml_fn_dasm_disassembler_init( &dialect, &disassembler );
 	if( error ) {
 		// Error.
 		printf( "Can not allocate disassembler." );
-		return FCML_FALSE;
+		return 1;
 	}
-
-
-	//FCML_I32_A_P( "xacquire lock add byte ptr [04030201h],0ffh", 0xF0, 0x80, 0x05, 0x01, 0x02, 0x03, 0x04, 0xff );
-
-	//FCML_I64_P( "cmpxchg16b oword ptr [rcx+0ffffffffffffffffh]", 0x48, 0x0F, 0xC7, 0x49, 0xFF );
-	//return 0;
-
-	//new_disassembler_test();
-	//return 0;
-
-   // FCML_I32_D( "vgatherdpd xmm0,dword ptr [eax+xmm5],xmm0", 0xC4, 0xE2, 0xF9, 0x92, 0x04, 0x28 );
-
-	///return 0;
-	//FCML_I32_P( "adc byte ptr [04030201h],0ffh", 0x80, 0x15, 0x01, 0x02, 0x03, 0x04, 0xff );
-
-	//return 0;
-	// , FCML_MI( 0xd0, 0x10 )
-	//return 0;
-	//  FCML_I64_P( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
-
-  //  return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
@@ -263,8 +241,9 @@ int main(int argc, char **argv) {
         for( i = 0; suites[i]; i++ ) {
             if (CU_register_suites(suites[i]) != CUE_SUCCESS) {
                 fprintf(stderr, "suite registration failed - %s\n", CU_get_error_msg());
-                ira_deinit();
+                fcml_fn_dasm_disassembler_free( disassembler );
                 fcml_fn_assembler_free( assembler );
+                fcml_fn_intel_dialect_free();
                 exit(1);
             }
         }
@@ -273,7 +252,6 @@ int main(int argc, char **argv) {
     }
     fcml_fn_dasm_disassembler_free( disassembler );
     fcml_fn_assembler_free( assembler );
-    ira_deinit();
-    fcml_fn_free_intel_dialect();
+    fcml_fn_intel_dialect_free();
     exit(0);
 }
