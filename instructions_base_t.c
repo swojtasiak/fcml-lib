@@ -23,7 +23,7 @@ extern fcml_st_dasm_disassembler *disassembler;
 
 extern fcml_st_dialect_context dialect;
 
-fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_asm_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble ) {
+fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_bool only_print_result, fcml_bool enable_rip, fcml_en_asm_assembler_optimizers optimizer, fcml_uint16_t opt_flags, fcml_bool multiple_assemblation_result, fcml_bool only_assemble, fcml_uint32_t rend_flags ) {
 
 	fcml_bool success = FCML_TRUE;
 
@@ -98,7 +98,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			stream.offset = 0;
 			stream.size = sizeof( buffer );
 
-			error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT );
+			error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | rend_flags);
 			if( error ) {
 				printf("Disassemblation failed, with error code: %d\n", error );
 				if( !only_print_result ) {
@@ -156,7 +156,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
         }
 
 		context.configuration.choose_sib_encoding = FCML_FALSE;
-		context.configuration.choose_rip_encoding = enable_rip;
+		context.configuration.choose_abs_encoding = !enable_rip;
 		context.configuration.optimizer = FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
 		context.configuration.optimizer_flags = opt_flags;
 		context.configuration.force_unnecessary_rex_prefix = FCML_FALSE;

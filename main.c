@@ -234,11 +234,12 @@ int main(int argc, char **argv) {
 		printf( "Can not allocate disassembler." );
 		return 1;
 	}
-
-	//FCML_I64_A_P( "adc dword ptr [0000800000401007h],00000003h", 0x83, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
-
+	//FCML_I64_RF( "rcl byte ptr [rel 0000800000401007h],03h", FCML_REND_FLAG_RENDER_REL_HINT, 0xc0, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
 	//return 0;
 
+	//FCML_I64_M_P( "mov al,byte ptr [40302010h]", 2, FCML_MI( 0x67, 0xA0, 0x10, 0x20, 0x30, 0x40 ), FCML_MI( 0x67, 0x8a, 0x05, 0x10, 0x20, 0x30, 0x40 ) );
+
+	//return 0;
     //FCML_I64_A_P( "movq mm2,mmword ptr [rax]", 0x0f, 0x6f, 0x10 );
     //return 0;
 
@@ -249,6 +250,10 @@ int main(int argc, char **argv) {
 
 	//FCML_I32_A_P( "add dword ptr [sib eax+00000001h],eax", 0x01, 0x44, 0x20, 0x01 );
 	//FCML_I32_A_P( "add dword ptr [eax+00000001h],eax", 0x01, 0x44, 0x20, 0x01 );
+	//FCML_I64_RF( "rcl byte ptr [abs 0000000000401007h],03h", FCML_REND_FLAG_RENDER_ABS_HINT, 0xc0, 0x15, 0x07, 0x10, 0x40, 0x00, 0x03 );
+	//return 0;
+
+	//
 
 
     if (CU_initialize_registry()) {
