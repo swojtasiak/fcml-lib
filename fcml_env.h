@@ -30,6 +30,7 @@ fcml_usize fcml_fn_env_memory_strlen( fcml_string str );
 fcml_string fcml_fn_env_memory_stralloc( fcml_usize len );
 fcml_string fcml_fn_env_memory_strdup( fcml_string str );
 void fcml_fn_env_memory_strcpy( fcml_string src, fcml_string dst );
+fcml_bool fcml_fn_env_memory_strcmp( const fcml_string src1, const fcml_string src2 );
 void fcml_fn_env_memory_strncpy( const fcml_string dst, fcml_string src, fcml_usize len );
 void fcml_fn_env_memory_strclr( fcml_string str );
 fcml_string fcml_fn_env_memory_strldup( fcml_string str, fcml_usize size );

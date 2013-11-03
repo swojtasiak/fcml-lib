@@ -73,9 +73,9 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 		return error;
 	}
 
-	if( dialect_context->size_operator_renderer && address->effective_address.size_operator > 0 ) {
+	if( dialect_context->size_operator_renderer && address->size_operator > 0 ) {
 		fcml_char buffer[32] = {0};
-		dialect_context->size_operator_renderer( address->effective_address.size_operator, buffer, sizeof( buffer ), operand->hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
+		dialect_context->size_operator_renderer( address->size_operator, buffer, sizeof( buffer ), operand->hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
 		fcml_fn_rend_utils_format_append_str( output_stream, buffer );
 	}
 

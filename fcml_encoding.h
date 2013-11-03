@@ -19,8 +19,8 @@
 
 typedef struct fcml_st_asm_data_size_flags {
 	// Flags describing all EOSa sizes available for given addressing mode.
-	fcml_st_asm_nullable_size_flags allowed_effective_operand_size;
-	fcml_st_asm_nullable_size_flags allowed_effective_address_size;
+	fcml_st_cmi_nullable_size_flags allowed_effective_operand_size;
+	fcml_st_cmi_nullable_size_flags allowed_effective_address_size;
 	// Effective address/operand size chosen for currently processed address mode. If set can not be changed anymore.
 	// It has higher priority than flags above.
 	fcml_data_size effective_address_size;
@@ -29,14 +29,14 @@ typedef struct fcml_st_asm_data_size_flags {
 	fcml_nuint8_t l;
 } fcml_st_asm_data_size_flags;
 
-typedef struct fcml_st_encoder_result {
+typedef struct fcml_st_asm_encoder_result {
 	fcml_st_ceh_error_container *errors;
 	fcml_st_coll_list *instructions;
-} fcml_st_encoder_result;
+} fcml_st_asm_encoder_result;
 
 struct fcml_st_asm_instruction_addr_modes;
 
-typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_assembler_context *context, fcml_st_instruction *instruction, fcml_st_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes );
+typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_assembler_context *context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes );
 
 typedef struct fcml_st_asm_instruction_addr_modes {
 	// All addressing modes for given mnemonic are available in this list.

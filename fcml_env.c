@@ -81,6 +81,10 @@ void fcml_fn_env_memory_strcpy( const fcml_string dst, fcml_string src ) {
     strcpy( dst, src );
 }
 
+fcml_bool fcml_fn_env_memory_strcmp( const fcml_string src1, const fcml_string src2 ) {
+	return !strcmp( src1, src2 );
+}
+
 void fcml_fn_env_memory_strncpy( const fcml_string dst, fcml_string src, fcml_usize len ) {
     strncpy( dst, src, len );
 }

@@ -364,8 +364,6 @@ typedef struct fcml_st_offset {
 } fcml_st_offset;
 
 typedef struct fcml_st_effective_address {
-	// TODO: Przeniesc do adresu, przeciez uzywane takze z offsetem.
-    fcml_data_size size_operator;
     fcml_st_register base;
     fcml_st_register index;
     fcml_uint8_t scale_factor;
@@ -378,6 +376,8 @@ typedef struct fcml_st_segment_selector {
 } fcml_st_segment_selector;
 
 typedef struct fcml_st_address {
+	// Size of data accessed in memory.
+	fcml_data_size size_operator;
     // Memory addressing format ABSOLUTE/RELATIVE etc.
     fcml_en_effective_address_form address_form;
     // Segment register.

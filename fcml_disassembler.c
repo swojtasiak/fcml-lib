@@ -344,7 +344,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing( fcml_i
 	fcml_sf_def_tma_explicit_gps_reg_addressing *reg_addr_args = (fcml_sf_def_tma_explicit_gps_reg_addressing*)args;
 
 	// Size operator.
-	effective_address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, reg_addr_args->encoded_operand_size );
+	address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, reg_addr_args->encoded_operand_size );
 
 	// Base register.
 	effective_address->base.size = context->effective_address_size_attribute;
@@ -541,7 +541,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset( fcml_ist_d
 		return error;
 	}
 
-	address->effective_address.size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, seg_args->encoded_operand_size );
+	address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, seg_args->encoded_operand_size );
 
 	operand->type = FCML_EOT_ADDRESS;
 
@@ -602,7 +602,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		fcml_st_address *address = &(operand->address);
 		*address = decoded_modrm->address;
 
-		address->effective_address.size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, rm_args->encoded_memory_operand_size );
+		address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, rm_args->encoded_memory_operand_size );
 
 		if( decoded_modrm->is_rip ) {
 			// We known instruction size, so post processing is not needed and RIP can be calculated now.

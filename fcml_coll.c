@@ -10,7 +10,7 @@
 #include "fcml_env.h"
 #include "fcml_ceh.h"
 
-// Bi directional list.
+// Bidirectional list.
 
 fcml_st_coll_list *fcml_fn_coll_list_alloc() {
     fcml_st_coll_list *list =  (fcml_st_coll_list*)fcml_fn_env_memory_alloc( sizeof( fcml_st_coll_list ) );
@@ -140,7 +140,7 @@ fcml_coll_map *fcml_fn_coll_map_alloc( fcml_st_coll_map_descriptor *descriptor, 
 
 fcml_coll_map *fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, float load_factor, fcml_ceh_error *error ) {
 
-	if( capacity > (1<<31) ) {
+	if( capacity > ( 1<< 31 ) ) {
 		*error = FCML_CEH_GEC_INVALID_INPUT;
 		return NULL;
 	}
@@ -173,7 +173,7 @@ fcml_coll_map *fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descr
 		return NULL;
 	}
 
-	memset( map->map_entries, 0, sizeof( struct fcml_ist_coll_map_entry* ) * real_capacity );
+	fcml_fn_env_memory_clean(map->map_entries, sizeof( struct fcml_ist_coll_map_entry* ) * real_capacity );
 
 	return (fcml_coll_map)map;
 }
@@ -201,7 +201,7 @@ fcml_bool fcml_ifn_coll_map_expand( struct fcml_ist_coll_map *map, fcml_ceh_erro
 		return FCML_FALSE;
 	}
 
-	memset( new_map_entries, 0, new_capacity * sizeof( struct fcml_ist_coll_map_entry* ) );
+	fcml_fn_env_memory_clean( new_map_entries, new_capacity * sizeof( struct fcml_ist_coll_map_entry* ) );
 
 	fcml_uint32_t new_hash_mask = ( new_capacity - 1 );
 	int i;
@@ -376,7 +376,7 @@ fcml_uint32_t fcml_fnp_coll_map_key_hash_string ( fcml_ptr key ) {
 }
 
 fcml_bool fcml_fnp_coll_map_key_equals_string( fcml_ptr key1, fcml_ptr key2 ) {
-	return strcpy( key1, key2 ) ? FCML_TRUE : FCML_FALSE;
+	return fcml_fn_env_memory_strcmp( key1, key2 );
 }
 
 fcml_uint32_t fcml_fnp_coll_map_key_hash_uint32( fcml_ptr key ) {

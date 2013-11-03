@@ -10,22 +10,20 @@
 
 #include "fcml_common.h"
 
-typedef enum fcml_en_attribute_size_flag {
+typedef enum fcml_en_cmi_attribute_size_flag {
     FCML_EN_ASF_ANY = 0x00,
     FCML_EN_ASF_16 = 0x01,
     FCML_EN_ASF_32 = 0x02,
     FCML_EN_ASF_64 = 0x04,
     FCML_EN_ASF_ALL = FCML_EN_ASF_16 | FCML_EN_ASF_32 | FCML_EN_ASF_64
-} fcml_en_attribute_size_flag;
+} fcml_en_cmi_attribute_size_flag;
 
-struct fcml_st_asm_instruction_part;
-
-typedef struct fcml_st_asm_nullable_size_flags {
+typedef struct fcml_st_cmi_nullable_size_flags {
     fcml_bool is_set;
-    fcml_en_attribute_size_flag flags;
-} fcml_st_asm_nullable_size_flags;
+    fcml_en_cmi_attribute_size_flag flags;
+} fcml_st_cmi_nullable_size_flags;
 
 fcml_bool fcml_fn_cmi_is_attribute_size_supported( fcml_data_size supported_attribute_size, fcml_data_size attribute_size );
-void fcml_fn_cmi_set_attribute_size_flag_for_size( fcml_data_size attribute_size, fcml_st_asm_nullable_size_flags *flags );
+void fcml_fn_cmi_set_attribute_size_flag_for_size( fcml_data_size attribute_size, fcml_st_cmi_nullable_size_flags *flags );
 
 #endif /* FCML_COMMON_INT_H_ */

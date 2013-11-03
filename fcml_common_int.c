@@ -14,8 +14,8 @@ fcml_bool fcml_fn_cmi_is_attribute_size_supported( fcml_data_size supported_attr
     return supported_attribute_size == attribute_size;
 }
 
-void fcml_fn_cmi_set_attribute_size_flag_for_size( fcml_data_size attribute_size, fcml_st_asm_nullable_size_flags *flags ) {
-    fcml_en_attribute_size_flag flag = 0;
+void fcml_fn_cmi_set_attribute_size_flag_for_size( fcml_data_size attribute_size, fcml_st_cmi_nullable_size_flags *flags ) {
+    fcml_en_cmi_attribute_size_flag flag = 0;
     switch( attribute_size ) {
     case FCML_DS_16:
         flag = FCML_EN_ASF_16;
