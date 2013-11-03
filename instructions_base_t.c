@@ -82,10 +82,10 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 			// Looking for 0x67 prefix.
 			int i;
 			for( i = 0; i < FCML_DASM_PREFIXES_COUNT; i++ ) {
-				if( dis_result->prefixes.prefixes[i].prefix == 0x67 ) {
+				if( dis_result->instruction_details.prefixes.prefixes[i].prefix == 0x67 ) {
 					is_67 = FCML_TRUE;
 				}
-				if( dis_result->prefixes.prefixes[i].prefix == 0x66 ) {
+				if( dis_result->instruction_details.prefixes.prefixes[i].prefix == 0x66 ) {
                     is_66 = FCML_TRUE;
                 }
 			}
@@ -407,8 +407,8 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 			}
 			return should_fail ? FCML_TRUE : FCML_FALSE;
 		} else {
-			if( dis_result->instruction_size != size ) {
-				printf("Instruction size: %d Disassembled code size: %d (%s)\n", (fcml_uint32_t)dis_result->instruction_size, size, mnemonic);
+			if( dis_result->instruction_details.instruction_size != size ) {
+				printf("Instruction size: %d Disassembled code size: %d (%s)\n", (fcml_uint32_t)dis_result->instruction_details.instruction_size, size, mnemonic);
 				success = FCML_FALSE;
 			} else {
 				if( !print_only ) {
