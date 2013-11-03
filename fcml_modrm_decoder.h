@@ -35,6 +35,11 @@ typedef struct fcml_st_modrm_source {
 	fcml_st_memory_stream *stream;
 } fcml_st_modrm_source;
 
+typedef struct fcml_st_modrm_details {
+	fcml_uint8_t modrm;
+	fcml_nuint8_t sib;
+} fcml_st_modrm_details;
+
 typedef struct fcml_st_modrm_decoder_context {
 	// Sets 32 or 64 bit addressing mode.
 	fcml_en_addr_form addr_form;
@@ -43,7 +48,7 @@ typedef struct fcml_st_modrm_decoder_context {
 	fcml_data_size effective_address_size;
 } fcml_st_modrm_decoder_context;
 
-fcml_ceh_error fcml_fn_modrm_decode( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_uint8_t flags );
+fcml_ceh_error fcml_fn_modrm_decode( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_st_modrm_details *modrm_details, fcml_uint8_t flags );
 fcml_ceh_error fcml_fn_modrm_decode_rip( fcml_uint64_t rip, fcml_data_size effective_address_size, fcml_st_offset *offset, fcml_st_offset *address );
 
 #endif /* FCML_MODRM_DECODER_H_ */

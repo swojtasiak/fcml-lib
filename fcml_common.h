@@ -401,6 +401,9 @@ typedef enum fcml_en_operand_hints {
     FCML_OP_HINT_MULTIMEDIA_INSTRUCTION = 0x0001,
     FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS = 0x0002,
     FCML_OP_HINT_PSEUDO_OPCODE = 0x0004,
+    FCML_OP_HINT_ABSOLUTE_ADDRESSING = 0x0008,
+    FCML_OP_HINT_RELATIVE_ADDRESSING = 0x0010,
+    FCML_OP_HINT_SIB_ENCODING = 0x0020
 } fcml_en_operand_hints;
 
 typedef struct fcml_st_operand {
@@ -421,9 +424,6 @@ typedef struct fcml_st_operand {
 typedef enum fcml_en_instruction_hints {
     FCML_HINT_FAR_POINTER = 0x0001,
     FCML_HINT_NEAR_POINTER = 0x0002,
-    FCML_HINT_ABSOLUTE_ADDRESSING = 0x0004,
-    // RIP.
-    FCML_HINT_RELATIVE_ADDRESSING = 0x0008,
 } fcml_en_instruction_hints;
 
 /* Generic instruction definition used by assembler and disassembler to encode/decode instruction. */

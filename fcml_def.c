@@ -472,7 +472,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CALL[] = {
 	// FF /3 CALL m16:16 B Valid Valid Call far, absolute indirect address given in m16:16.
 	// FF /3 CALL m16:32 B Valid Valid In 64-bit mode.
 	// REX.W + FF /3 CALL m16:64 B Valid N.E. In 64-bit mode.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C59800, { 0xFF, 0x00, 0x00 }, { FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C59800, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CBW[] = {
@@ -559,7 +559,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_JMP[] = {
 	// FF /5 JMP m16:16 A Valid Valid Jump far, absolute indirect, address given in m16:16
 	// FF /5 JMP m16:32 A Valid Valid Jump far, absolute indirect, address given in m16:32.
 	// REX.W + FF /5 JMP m16:64 A Valid N.E. Jump far, absolute indirect, address given in m16:64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A800, { 0xFF, 0x00, 0x00 }, { FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A800, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CMP[] = {
@@ -1686,22 +1686,22 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LDMXCSR[] = {
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LDS[] = {
 	// C5 /r LDS r16,m16:16 A Invalid Valid Load DS:r16 with far pointer from memory.
 	// C5 /r LDS r32,m16:32 A Invalid Valid Load DS:r32 with far pointer from memory.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00448000, { 0xC5, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00448000, { 0xC5, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// 0F B2 /r LSS r16,m16:16 A Valid Valid Load SS:r16 with far pointer from memory.
 	// 0F B2 /r LSS r32,m16:32 A Valid Valid Load SS:r32 with far pointer from memory.
 	// REX + 0F B2 /r LSS r64,m16:64 A Valid N.E. Load SS:r64 with far pointer from memory.
-	{ "lss", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB2, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ "lss", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB2, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// C4 /r LES r16,m16:16 A Invalid Valid Load ES:r16 with far pointer from memory.
 	// C4 /r LES r32,m16:32 A Invalid Valid Load ES:r32 with far pointer from memory.
-	{ "les", FCML_AMT_GPI, 0x0000, 0x00448000, { 0xC4, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ "les", FCML_AMT_GPI, 0x0000, 0x00448000, { 0xC4, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// 0F B4 /r LFS r16,m16:16 A Valid Valid Load FS:r16 with far pointer from memory.
 	// 0F B4 /r LFS r32,m16:32 A Valid Valid Load FS:r32 with far pointer from memory.
 	// REX + 0F B4 /r LFS r64,m16:64 A Valid N.E. Load FS:r64 with far pointer from memory.
-	{ "lfs", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB4, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ "lfs", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB4, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// 0F B5 /r LGS r16,m16:16 A Valid Valid Load GS:r16 with far pointer from memory.
 	// 0F B5 /r LGS r32,m16:32 A Valid Valid Load GS:r32 with far pointer from memory.
 	// REX + 0F B5 /r LGS r64,m16:64 A Valid N.E. Load GS:r64 with far pointer from memory.
-	{ "lgs", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB5, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_FAR_POINTER_INDIRECT, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ "lgs", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB5, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LEA[] = {

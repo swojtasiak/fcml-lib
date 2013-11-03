@@ -87,6 +87,11 @@ typedef struct fcml_ist_asm_encoding_context {
 	fcml_ist_asm_extension_prefixes_fields epf;
 	fcml_st_register segment_override;
 	fcml_st_modrm mod_rm;
+	// ModR/M related operand hints.
+	fcml_bool is_sib_alternative_hint;
+	fcml_bool is_rel_alternative_hint;
+	fcml_bool is_abs_alternative_hint;
+	// True if SIB alternative is available, but hasn't been chosen.
 	fcml_bool is_sib_alternative_encoding;
 	fcml_st_encoded_modrm encoded_mod_rm;
 	fcml_ist_asm_opcode_reg opcode_reg;
@@ -1331,6 +1336,10 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 			// Modify data size flags if there is such need.
 			error = fcml_ifn_asm_decode_dynamic_operand_size( context, args->encoded_register_operand_size, operand_def->reg.size, NULL,FCML_IEN_CT_EQUAL );
 		} else {
+			// Set hints for ModR/M instruction part encoder.
+			context->is_sib_alternative_hint = ( operand_def->hints & FCML_OP_HINT_SIB_ENCODING );
+			context->is_abs_alternative_hint = ( operand_def->hints & FCML_OP_HINT_ABSOLUTE_ADDRESSING );
+			context->is_rel_alternative_hint = ( operand_def->hints & FCML_OP_HINT_RELATIVE_ADDRESSING );
 		    context->mod_rm.address = operand_def->address;
 			error = fcml_ifn_asm_decode_dynamic_operand_size( context, args->encoded_memory_operand_size, operand_def->address.size_operator, NULL, FCML_IEN_CT_EQUAL );
 		}
@@ -1548,7 +1557,7 @@ fcml_ist_asm_operand_encoder_def fcml_iarr_asm_def_operand_encoders[] = {
 	{ NULL, fcml_ifn_asm_operand_acceptor_explicit_gps_reg_addressing, NULL },
 	{ fcml_ifn_asm_operand_encoder_explicit_ib, fcml_ifn_asm_operand_acceptor_explicit_ib, NULL },
 	{ fcml_ifn_asm_operand_encoder_segment_relative_offset, fcml_ifn_asm_operand_acceptor_segment_relative_offset, NULL },
-	{ fcml_ifn_asm_operand_encoder_rm, fcml_ifn_asm_operand_acceptor_rm, fcml_fn_hts_ihc_near_pointer },
+	{ fcml_ifn_asm_operand_encoder_rm, fcml_ifn_asm_operand_acceptor_rm, fcml_fn_hts_ihc_modrm_hints },
 	{ fcml_ifn_asm_operand_encoder_r, fcml_ifn_asm_operand_acceptor_r, NULL },
 	{ fcml_ifn_asm_operand_encoder_vex_vvvv, fcml_ifn_asm_operand_acceptor_vex_vvvv, NULL },
 	{ fcml_ifn_asm_operand_encoder_isX, fcml_ifn_asm_operand_acceptor_isX, NULL },
@@ -1790,6 +1799,10 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 	return error;
 }
 
+fcml_bool fcml_ifn_asm_accept_instruction_hints( fcml_hints addr_mode_dest_hints, fcml_hints instruction_hints ) {
+	return ( ( instruction_hints & addr_mode_dest_hints & FCML_HINT_FAR_POINTER ) || ( instruction_hints & addr_mode_dest_hints & FCML_HINT_NEAR_POINTER ) );
+}
+
 fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_context *asm_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
 
 	fcml_ist_asm_encoding_context context = {0};
@@ -1861,7 +1874,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 #endif
 
                     // Check if addressing mode matches the hints, if there are any.
-                    if( !context.instruction->hints || ( addr_mode->hints & context.instruction->hints ) == context.instruction->hints ) {
+                    if( !context.instruction->hints || fcml_ifn_asm_accept_instruction_hints( addr_mode->hints, context.instruction->hints ) ) {
                         if( fcml_ifn_asm_accept_addr_mode( &context, addr_mode, context.instruction ) ) {
 
                         	// Currently error is just ignored, because we would like to check every available addressing
@@ -1937,13 +1950,20 @@ void fcml_ifn_asm_processor_operand_encoder_args_deallocator( fcml_ptr ptr ) {
 	fcml_fn_env_memory_free( wrapper_wrgs );
 }
 
+fcml_bool fcml_ifn_asm_accept_operand_hints( fcml_hints addr_mode_desc_operand_hints, fcml_hints operand_hints ) {
+	if( ( operand_hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION ) && !(addr_mode_desc_operand_hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION) ) {
+		return FCML_FALSE;
+	}
+	return FCML_TRUE;
+}
+
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_wrapper( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_instruction *instruction, fcml_ptr args ) {
 	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = (struct fcml_ist_asm_operand_encoder_wrapper_args*)args;
 	fcml_st_operand *operand = &(instruction->operands[wrapper_args->operand_index]);
 	if( wrapper_args->operand_acceptor ) {
 	    // Check hints.
-	    fcml_hints operand_hits = operand->hints;
-	    if( !operand_hits || ( wrapper_args->hints & operand_hits ) == operand_hits ) {
+	    fcml_hints operand_hints = operand->hints;
+	    if( !operand_hints || fcml_ifn_asm_accept_operand_hints( wrapper_args->hints, operand_hints ) ) {
 	        return wrapper_args->operand_acceptor( context, addr_mode_details, addr_mode_desc, wrapper_args->decoded_addr_mode, operand, NULL );
 	    } else {
 	        FCML_TRACE( "Hints do not match." );
@@ -2609,9 +2629,18 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 
 		fcml_st_modrm_encoder_context ctx;
 		ctx.addr_form = assembler_context->addr_form;
-		// TODO: Dodac hintsy zamiast takiej konfiguracji atrybutowej.
+
+		// Hints have higher precedence than configuration.
+
 		ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
+		if( context->is_sib_alternative_hint ) {
+			ctx.choose_sib_encoding = FCML_TRUE;
+		}
+
 		ctx.choose_rip_encoding = assembler_context->configuration.choose_rip_encoding;
+		if( context->is_sib_alternative_hint ) {
+		}
+
 		ctx.chosen_effective_address_size = 0;
 		ctx.effective_address_size = fcml_ifn_asm_get_effective_address_size( context );
 		ctx.is_sib_alternative = FCML_FALSE;

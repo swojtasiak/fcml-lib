@@ -104,6 +104,11 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 
 	fcml_bool first = FCML_TRUE;
 
+	// Adds SIB hints to all instructions where SIB presents.
+	if( ( operand->hints & FCML_REND_FLAG_RENDER_SIB_HINT ) && ( result->instruction_details.modrm_details.sib.is_not_null ) ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "sib " );
+	}
+
 	if( address->address_form == FCML_AF_COMBINED ) {
 
 		// Append base register.

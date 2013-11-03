@@ -91,6 +91,12 @@ typedef struct fcml_st_dasm_operand_details {
 	fcml_en_access_mode access_mode;
 } fcml_st_dasm_operand_details;
 
+typedef struct fcml_st_dasm_modrm_details {
+	fcml_uint8_t modrm;
+	fcml_nuint8_t sib;
+	fcml_bool is_rip;
+} fcml_st_dasm_modrm_details;
+
 /* Additional details provided by disassembler. */
 typedef struct fcml_st_dasm_instruction_details {
 	fcml_bool is_shortcut;
@@ -99,6 +105,7 @@ typedef struct fcml_st_dasm_instruction_details {
 	fcml_data_size instruction_size;
 	fcml_st_dasm_prefixes prefixes;
 	fcml_st_dasm_operand_details operand_details[FCML_OPERANDS_COUNT];
+	fcml_st_dasm_modrm_details modrm_details;
 	fcml_bool opcode_field_s_bit;
 	fcml_bool opcode_field_w_bit;
 } fcml_st_dasm_instruction_details;

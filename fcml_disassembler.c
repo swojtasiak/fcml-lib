@@ -56,6 +56,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_dasm_prefixes prefixes;
 	fcml_ist_dasm_operand_wrapper operand_wrappers[FCML_OPERANDS_COUNT];
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details decoded_modrm_details;
 	fcml_hints instruction_hints;
 	fcml_nuint8_t pseudo_opcode;
 	// Opcode fields.
@@ -791,7 +792,7 @@ fcml_ist_dasm_operand_decoder_def fcml_iarr_def_operand_decoders[] = {
 	{ fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing, NULL, NULL },
 	{ fcml_ifn_dasm_operand_decoder_explicit_ib, NULL, NULL },
 	{ fcml_ifn_dasm_operand_decoder_segment_relative_offset, fcml_ifn_dasm_operand_size_calculator_segment_relative_offset, NULL },
-	{ fcml_ifn_dasm_operand_decoder_rm, NULL, fcml_fn_hts_ihc_near_pointer },
+	{ fcml_ifn_dasm_operand_decoder_rm, NULL, fcml_fn_hts_ihc_modrm_hints },
 	{ fcml_ifn_dasm_operand_decoder_r, NULL, NULL },
 	{ fcml_ifn_dasm_operand_decoder_vex_vvvv, NULL, NULL },
 	{ fcml_ifn_dasm_operand_decoder_isX, fcml_ifn_dasm_operand_size_calculator_isX, NULL },
@@ -1514,7 +1515,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 			flags |= FCML_MODRM_DEC_FLAG_EXTEND_DISPLACEMENT_TO_ASA;
 		}
 
-		error = fcml_fn_modrm_decode( &modrm_context, &modrm_source, &(decoding_context->decoded_modrm), flags );
+		error = fcml_fn_modrm_decode( &modrm_context, &modrm_source, &(decoding_context->decoded_modrm), &(decoding_context->decoded_modrm_details), flags );
 		if( error ) {
 			return error;
 		}
@@ -2046,6 +2047,12 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 			}
 
 			instruction->operands_count = i;
+
+			// ModR/M details.
+			fcml_st_dasm_modrm_details *modrm_details = &(instruction_details->modrm_details);
+			modrm_details->modrm = decoding_context.decoded_modrm_details.modrm;
+			modrm_details->sib = decoding_context.decoded_modrm_details.sib;
+			modrm_details->is_rip = decoding_context.decoded_modrm.is_rip;
 
 			// Prefixes.
 			instruction_details->prefixes = decoding_context.prefixes;
