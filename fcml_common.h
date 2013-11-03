@@ -425,6 +425,7 @@ typedef enum fcml_en_instruction_hints {
     FCML_HINT_RELATIVE_ADDRESSING = 0x0008,
 } fcml_en_instruction_hints;
 
+/* Generic instruction definition used by assembler and disassembler to encode/decode instruction. */
 typedef struct fcml_st_instruction {
 	fcml_prefixes prefixes;
     fcml_hints hints;
@@ -432,7 +433,7 @@ typedef struct fcml_st_instruction {
     fcml_bool is_conditional;
     fcml_st_condition condition;
     fcml_st_operand operands[FCML_OPERANDS_COUNT];
-    int operands_count;
+    fcml_int operands_count;
 } fcml_st_instruction;
 
 #endif /* FCML_INT_COMMON_H_ */

@@ -33,7 +33,7 @@ void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, f
 fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_st_operand *operand, fcml_st_dasm_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 
 	// Do not render pseudo opcodes if shortcut is used.
-	if( ( operand->hints & FCML_OP_HINT_PSEUDO_OPCODE ) && result->is_pseudo_op_shortcut ) {
+	if( ( operand->hints & FCML_OP_HINT_PSEUDO_OPCODE ) && result->instruction_details.is_pseudo_op_shortcut ) {
 		*do_not_render = FCML_TRUE;
 		return FCML_CEH_GEC_NO_ERROR;
 	}
@@ -48,7 +48,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_dialect_c
 }
 
 fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_st_operand *operand, fcml_st_dasm_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
-	fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(operand->reg), result->prefixes.is_rex );
+	fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(operand->reg), result->instruction_details.prefixes.is_rex );
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
@@ -57,6 +57,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_st_address *address = &(operand->address);
+	fcml_st_dasm_prefixes *prefixes = &(result->instruction_details.prefixes);
 
 	fcml_hints hints = operand->hints;
 
@@ -80,7 +81,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 	}
 
 	if( !address->segment_selector.is_default_reg || ( render_flags & FCML_REND_FLAG_RENDER_DEFAULT_SEG ) ) {
-		fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(address->segment_selector.segment_selector), result->prefixes.is_rex );
+		fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(address->segment_selector.segment_selector), prefixes->is_rex );
 		fcml_fn_rend_utils_format_append_str( output_stream, ":" );
 	}
 
@@ -94,14 +95,14 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 
 		// Append base register.
 		if( !fcml_fn_utils_is_reg_undef( &(effective_address->base) ) ) {
-			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->base), result->prefixes.is_rex );
+			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->base), prefixes->is_rex );
 			first = FCML_FALSE;
 		}
 
 		// Append index register.
 		if( !fcml_fn_utils_is_reg_undef( &(effective_address->index) ) ) {
 			fcml_fn_rend_utils_format_append_str_if( output_stream, "+", !first );
-			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->index), result->prefixes.is_rex );
+			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->index), prefixes->is_rex );
 			first = FCML_FALSE;
 		}
 
@@ -182,19 +183,19 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_intel( fcml_st_dialect
 
 fcml_ceh_error fcml_ifn_rend_print_operand_intel(  fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_int operand_index, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_st_operand *operand = &(result->operands[operand_index]);
+	fcml_st_operand *operand = &(result->instruction.operands[operand_index]);
 	switch( operand->type ) {
 	case FCML_EOT_IMMEDIATE:
-		error = fcml_ifn_rend_operand_renderer_immediate_intel( dialect_context, output_stream, result, operand, &(result->operand_details[operand_index]), render_flags, do_not_render );
+		error = fcml_ifn_rend_operand_renderer_immediate_intel( dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), render_flags, do_not_render );
 		break;
 	case FCML_EOT_FAR_POINTER:
-		error = fcml_ifn_rend_operand_renderer_far_pointer_intel( dialect_context, output_stream, result, operand, &(result->operand_details[operand_index]), render_flags, do_not_render );
+		error = fcml_ifn_rend_operand_renderer_far_pointer_intel( dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), render_flags, do_not_render );
 		break;
 	case FCML_EOT_ADDRESS:
-		error = fcml_ifn_rend_operand_renderer_address_intel( dialect_context, output_stream, result, operand, &(result->operand_details[operand_index]), render_flags, do_not_render );
+		error = fcml_ifn_rend_operand_renderer_address_intel( dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), render_flags, do_not_render );
 		break;
 	case FCML_EOT_REGISTER:
-		error = fcml_ifn_rend_operand_renderer_reg_intel( dialect_context, output_stream, result, operand, &(result->operand_details[operand_index]), render_flags, do_not_render );
+		error = fcml_ifn_rend_operand_renderer_reg_intel( dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), render_flags, do_not_render );
 		break;
 	case FCML_EOT_NONE:
 		break;
@@ -235,23 +236,23 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *d
 
 	// Instruction code.
 	if( render_flags & FCML_REND_FLAG_RENDER_CODE ) {
-		fcml_fn_rend_utils_format_append_code( output_stream, result->instruction_code, result->instruction_size );
+		fcml_fn_rend_utils_format_append_code( output_stream, result->instruction_details.instruction_code, result->instruction_details.instruction_size );
 		fcml_fn_rend_utils_format_append_str( output_stream, " " );
 	}
 
 	// Instruction prefixes like LOCK.
-	fcml_ifn_rend_print_prefixes_intel( output_stream, &result->prefixes );
+	fcml_ifn_rend_print_prefixes_intel( output_stream, &(result->instruction_details.prefixes) );
 
 	// Mnemonic.
-	fcml_fn_rend_utils_format_append_str( output_stream, result->mnemonic );
+	fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
 
 	// Short form, so operands should be ignored.
-	if( result->is_shortcut ) {
+	if( result->instruction_details.is_shortcut ) {
 		return error;
 	}
 
 	// Add hints.
-	if( result->hints & FCML_HINT_FAR_POINTER ) {
+	if( result->instruction.hints & FCML_HINT_FAR_POINTER ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, " " );
 		fcml_fn_rend_utils_format_append_str( output_stream, "far" );
 	}
@@ -259,7 +260,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *d
 	// Add all operands.
 	fcml_int i;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-		if( result->operands[i].type != FCML_EOT_NONE ) {
+		if( result->instruction.operands[i].type != FCML_EOT_NONE ) {
 			fcml_bool do_not_render = FCML_FALSE;
 			error = fcml_ifn_rend_print_operand_intel( dialect_context, &local_stream, result, i, render_flags, &do_not_render );
 			if( !error ) {

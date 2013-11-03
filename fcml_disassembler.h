@@ -92,22 +92,22 @@ typedef struct fcml_st_dasm_operand_details {
 	fcml_en_access_mode access_mode;
 } fcml_st_dasm_operand_details;
 
-typedef struct fcml_st_dasm_disassembler_result {
-	fcml_st_ceh_error_container *errors;
-	/* Mnemonic */
+/* Additional details provided by disassembler. */
+typedef struct fcml_st_dasm_instruction_details {
 	fcml_bool is_shortcut;
 	fcml_bool is_pseudo_op_shortcut;
-	fcml_string mnemonic;
 	fcml_uint8_t instruction_code[FCML_INSTRUCTION_SIZE];
 	fcml_data_size instruction_size;
 	fcml_st_dasm_prefixes prefixes;
 	fcml_st_dasm_operand_details operand_details[FCML_OPERANDS_COUNT];
-	fcml_st_operand operands[FCML_OPERANDS_COUNT];
-	fcml_bool is_conditional;
 	fcml_bool opcode_field_s_bit;
 	fcml_bool opcode_field_w_bit;
-	fcml_st_condition condition;
-	fcml_hints hints;
+} fcml_st_dasm_instruction_details;
+
+typedef struct fcml_st_dasm_disassembler_result {
+	fcml_st_ceh_error_container *errors;
+	fcml_st_dasm_instruction_details instruction_details;
+	fcml_st_instruction instruction;
 } fcml_st_dasm_disassembler_result;
 
 fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect_context *context, fcml_st_dasm_disassembler **disassembler );
