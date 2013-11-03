@@ -8,11 +8,10 @@
 #ifndef FCML_DISASSEMBLER_H_
 #define FCML_DISASSEMBLER_H_
 
-#include "fcml_errors.h"
-#include "fcml_stream.h"
-#include "fcml_common.h"
 #include "fcml_ceh.h"
+#include "fcml_common.h"
 #include "fcml_dialect.h"
+#include "fcml_types.h"
 
 #define FCML_DASM_PREFIXES_COUNT	12
 #define FCML_DASM_CONDITIONAL_GROUP_1	0x00

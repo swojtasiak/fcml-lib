@@ -14,7 +14,7 @@
 #include "fcml_stream.h"
 #include "fcml_types.h"
 
-// Macros.
+// Some macros that might be also useful outside decoder.
 
 #define FCML_MODRM_DEC_MOD(x)			( x >> 6 )
 #define FCML_MODRM_DEC_REG_OPCODE(x)	( ( x & 0x38 ) >> 3 )
@@ -23,11 +23,6 @@
 #define FCML_MODRM_SIB_SS(x)			( x >> 6 )
 #define FCML_MODRM_SIB_INDEX(x)			( ( x & 0x38 ) >> 3 )
 #define FCML_MODRM_SIB_BASE(x)			( x & 0x07 )
-
-#define FCML_REX_W(x)					FCML_TP_GET_BIT(x, 3)
-#define FCML_REX_R(x)					FCML_TP_GET_BIT(x, 2)
-#define FCML_REX_X(x)					FCML_TP_GET_BIT(x, 1)
-#define FCML_REX_B(x)					FCML_TP_GET_BIT(x, 0)
 
 #define FCML_MODRM_DEC_FLAG_EXTEND_DISPLACEMENT_TO_ASA		0x01
 

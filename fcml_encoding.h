@@ -8,14 +8,13 @@
 #ifndef FCML_ASM_ENCODING_H_
 #define FCML_ASM_ENCODING_H_
 
-#include "fcml_env.h"
-#include "fcml_def.h"
+#include "fcml_assembler.h"
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
+#include "fcml_common.h"
 #include "fcml_common_int.h"
-#include "fcml_modrm_encoder.h"
-#include "fcml_assembler.h"
-#include "fcml_mnemonic_parser.h"
+#include "fcml_dialect.h"
+#include "fcml_types.h"
 
 typedef struct fcml_st_asm_data_size_flags {
 	// Flags describing all EOSa sizes available for given addressing mode.

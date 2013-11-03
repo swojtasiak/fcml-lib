@@ -75,3 +75,6 @@ Branch hints:
 24.10.2013
 - Dodac sprawdzanie podczas disassemblacji czy czaami nie dobieramy instrukcji ktora nie moze posiaac jakiegokolwiek prefixa 66, albo mentary jezeli jest on dostepny.
 - Wybod formy rendering short, pseudo opcode, full dac na poziom renderea i niech on za to podpowiada.
+
+3.11.2013
+Mozliwosc podawania symbolow podczas parsowania i ich resolving. W zasadzie tylko parser powinien to obslugiwac, dl assemblera trafiac powinein juz address.

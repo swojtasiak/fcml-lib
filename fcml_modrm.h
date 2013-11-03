@@ -8,10 +8,7 @@
 #ifndef FCML_MODRM_H_
 #define FCML_MODRM_H_
 
-#include "fcml_ceh.h"
 #include "fcml_common.h"
-//#include "fcml_errors.h"
-#include "fcml_stream.h"
 #include "fcml_types.h"
 
 typedef struct fcml_st_modrm {

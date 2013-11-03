@@ -7,22 +7,34 @@
 
 #include "fcml_rend_utils.h"
 
-//#include <ctype.h>
+#include <ctype.h>
 #include <inttypes.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "fcml_ceh.h"
+#include "fcml_common.h"
+#include "fcml_dialect.h"
 #include "fcml_stream.h"
 #include "fcml_types.h"
+
+fcml_string fcml_iarr_rend_utils_integer_formats[4][4] = {
+	// Signed integer values.
+	{"%"PRId8, "%"PRId16, "%"PRId32, "%"PRId64},
+	// Unsigned integer values.
+	{"%"PRIu8, "%"PRIu16, "%"PRIu32, "%"PRIu64},
+	// Signed hex values.
+	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"},
+	// Unsigned hex values.
+	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"}
+};
 
 void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml_string format, ...) {
 
 	// We'll never reach this limit.
 	fcml_char local_buffer[512];
 
-	// TODO: Some of these functions might be platform specific, it would be probably a good idea to move it to the fcml_env.h.
 	va_list arg_list;
 	va_start(arg_list, format);
 
@@ -68,7 +80,7 @@ void fcml_fn_rend_utils_format_append_str( fcml_st_memory_stream *stream, const 
 	stream->offset += n;
 }
 
-void fcml_fn_rend_utils_format_append_stream( fcml_st_memory_stream *destination_stream, fcml_st_memory_stream *source_stream ) {
+void fcml_fn_rend_utils_format_append_stream( fcml_st_memory_stream *destination_stream, const fcml_st_memory_stream *source_stream ) {
 	if( source_stream->offset == 0 ) {
 		return;
 	}
@@ -78,24 +90,13 @@ void fcml_fn_rend_utils_format_append_stream( fcml_st_memory_stream *destination
 	destination_stream->offset += n;
 }
 
-fcml_string fcml_ar_rend_utils_integer_formats[4][4] = {
-	// Signed integer values.
-	{"%"PRId8, "%"PRId16, "%"PRId32, "%"PRId64},
-	// Unsigned integer values.
-	{"%"PRIu8, "%"PRIu16, "%"PRIu32, "%"PRIu64},
-	// Signed hex values.
-	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"},
-	// Unsigned hex values.
-	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"}
-};
-
-fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_st_memory_stream *stream, fcml_st_integer *integer, fcml_bool is_hex ) {
+fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_st_memory_stream *stream, const fcml_st_integer *integer, fcml_bool is_hex ) {
 
 	fcml_string *format;
 	if( integer->is_signed ) {
-		format = &(fcml_ar_rend_utils_integer_formats[is_hex ? 2 : 0][0]);
+		format = &(fcml_iarr_rend_utils_integer_formats[is_hex ? 2 : 0][0]);
 	} else {
-		format = &(fcml_ar_rend_utils_integer_formats[is_hex ? 3 : 1][0]);
+		format = &(fcml_iarr_rend_utils_integer_formats[is_hex ? 3 : 1][0]);
 	}
 
 	fcml_char local_buffer[32];
@@ -126,7 +127,7 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_st_memory_stream *
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-void fcml_fn_rend_utils_format_append_reg( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_register *reg, fcml_bool is_rex ) {
+void fcml_fn_rend_utils_format_append_reg( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, const fcml_st_register *reg, fcml_bool is_rex ) {
 	fcml_string printable_reg;
 	dialect_context->get_register( reg, &printable_reg, is_rex );
 	fcml_fn_rend_utils_format_append_str( output_stream, printable_reg );

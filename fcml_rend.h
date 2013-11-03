@@ -8,9 +8,11 @@
 #ifndef FCML_REND_H_
 #define FCML_REND_H_
 
-#include "fcml_stream.h"
+#include "fcml_ceh.h"
 #include "fcml_dialect.h"
 #include "fcml_disassembler.h"
+#include "fcml_stream.h"
+#include "fcml_types.h"
 
 #define FCML_REND_FLAG_RENDER_CODE				0x00000001
 #define FCML_REND_FLAG_HEX_IMM					0x00000002

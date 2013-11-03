@@ -9,6 +9,7 @@
 #define FCML_INT_COMMON_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
 #include "fcml_types.h"
 

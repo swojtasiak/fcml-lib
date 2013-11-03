@@ -22,12 +22,12 @@ fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_
 
     *new_mnemonic = *mnemonic;
 
-    fcml_usize mnemonic_len = fcml_fn_env_memory_strlen( mnemonic->mnemonic );
-    fcml_usize suffix_len = fcml_fn_env_memory_strlen( suffix );
-    fcml_string dest_mnemonic = fcml_fn_env_memory_stralloc( mnemonic_len + suffix_len + 1 );
+    fcml_usize mnemonic_len = fcml_fn_env_str_strlen( mnemonic->mnemonic );
+    fcml_usize suffix_len = fcml_fn_env_str_strlen( suffix );
+    fcml_string dest_mnemonic = fcml_fn_env_str_stralloc( mnemonic_len + suffix_len + 1 );
     if( dest_mnemonic ) {
-        fcml_fn_env_memory_strncpy( dest_mnemonic, mnemonic->mnemonic, mnemonic_len );
-        fcml_fn_env_memory_strncpy( dest_mnemonic + mnemonic_len, suffix, suffix_len );
+        fcml_fn_env_str_strncpy( dest_mnemonic, mnemonic->mnemonic, mnemonic_len );
+        fcml_fn_env_str_strncpy( dest_mnemonic + mnemonic_len, suffix, suffix_len );
         new_mnemonic->mnemonic = dest_mnemonic;
     } else {
         // Out of memory, free allocated mnemonic.
@@ -48,7 +48,7 @@ fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic( fcml_st_mp_mnemonic *mn
 
     *new_mnemonic = *mnemonic;
 
-    fcml_string dest_mnemonic = fcml_fn_env_memory_strdup( mnemonic->mnemonic );
+    fcml_string dest_mnemonic = fcml_fn_env_str_strdup( mnemonic->mnemonic );
     if( dest_mnemonic ) {
         new_mnemonic->mnemonic = dest_mnemonic;
     } else {
@@ -63,7 +63,7 @@ fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic( fcml_st_mp_mnemonic *mn
 void fcml_fn_asm_dialect_free_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
     if( mnemonic ) {
         if( mnemonic->mnemonic ) {
-            fcml_fn_env_memory_strfree( mnemonic->mnemonic );
+            fcml_fn_env_str_strfree( mnemonic->mnemonic );
         }
         fcml_fn_env_memory_free( mnemonic );
     }

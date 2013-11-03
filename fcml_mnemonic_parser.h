@@ -26,9 +26,7 @@ typedef struct fcml_st_mp_mnemonic_set {
 } fcml_st_mp_mnemonic_set;
 
 fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_st_mp_mnemonic_set **mnemonics );
-
 void fcml_fn_mp_free_mnemonics( fcml_st_mp_mnemonic_set *mnemonics );
-
 fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_nuint8_t pseudo_opcode, fcml_data_size osa, fcml_data_size asa );
 
 #endif /* FCML_MNEMONIC_PARSER_H_ */

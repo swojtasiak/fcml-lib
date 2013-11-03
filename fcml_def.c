@@ -6398,6 +6398,6 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "vpshld", fcml_st_def_addr_mode_desc_VPSHLD ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "vpshlq", fcml_st_def_addr_mode_desc_VPSHLQ ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "vpshlw", fcml_st_def_addr_mode_desc_VPSHLW ),
-		{ NULL, 0, 0, NULL }
+		FCML_IA_INSTRUCTION( F_UNKNOWN, NULL, NULL )
 };
 

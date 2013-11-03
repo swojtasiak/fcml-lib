@@ -5,15 +5,11 @@
  *      Author: tAs
  */
 
-#include <string.h>
+#include "fcml_assembler.h"
 
-#include "fcml_ceh.h"
+#include "fcml_encoding.h"
 #include "fcml_env.h"
 #include "fcml_utils.h"
-
-#include "fcml_assembler.h"
-#include "fcml_encoding.h"
-#include "fcml_optimizers.h"
 
 typedef struct fcml_ist_asm_enc_assembler {
     fcml_coll_map instructions_map;
@@ -23,7 +19,7 @@ typedef struct fcml_ist_asm_enc_assembler {
 fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect_context context, fcml_st_asm_assembler **assembler ) {
 
 	// Allocate assembler instance.
-	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_asm_enc_assembler ) );
+	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
 	if( !enc_asm ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}

@@ -8,10 +8,12 @@
 #ifndef FCML_ASSEMBLER_H_
 #define FCML_ASSEMBLER_H_
 
+#include "fcml_ceh.h"
 #include "fcml_coll.h"
 #include "fcml_common.h"
-#include "fcml_errors.h"
 #include "fcml_dialect.h"
+#include "fcml_errors.h"
+#include "fcml_types.h"
 
 typedef struct fcml_st_asm_assembler {
 } fcml_st_asm_assembler;

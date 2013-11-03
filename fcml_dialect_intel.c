@@ -57,15 +57,15 @@ fcml_string fcml_fnp_asm_dialect_render_mnemonic_intel( fcml_string mnemonic, fc
 		if( !suffix ) {
 			suffix = fcml_itb_intel_conditional_suffixes_render[conditional_group][cond];
 		}
-		fcml_usize mnemonic_len = fcml_fn_env_memory_strlen( mnemonic );
-		fcml_usize len = mnemonic_len + fcml_fn_env_memory_strlen( suffix ) ;
-		rendered_mnemonic = fcml_fn_env_memory_stralloc( len + 1 );
+		fcml_usize mnemonic_len = fcml_fn_env_str_strlen( mnemonic );
+		fcml_usize len = mnemonic_len + fcml_fn_env_str_strlen( suffix ) ;
+		rendered_mnemonic = fcml_fn_env_str_stralloc( len + 1 );
 		if( rendered_mnemonic ) {
-			fcml_fn_env_memory_strcpy(rendered_mnemonic, mnemonic);
-			fcml_fn_env_memory_strcpy(rendered_mnemonic + mnemonic_len, suffix);
+			fcml_fn_env_str_strcpy(rendered_mnemonic, mnemonic);
+			fcml_fn_env_str_strcpy(rendered_mnemonic + mnemonic_len, suffix);
 		}
 	} else {
-		rendered_mnemonic = fcml_fn_env_memory_strdup( mnemonic );
+		rendered_mnemonic = fcml_fn_env_str_strdup( mnemonic );
 	}
 	return rendered_mnemonic;
 }
@@ -145,7 +145,7 @@ void fcml_fn_intel_dialect_free(void) {
 	}
 }
 
-fcml_ceh_error fcml_fnp_asm_dialect_get_register_intel(fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex) {
+fcml_ceh_error fcml_fnp_asm_dialect_get_register_intel( const fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex) {
 	fcml_int rs = 0;
 	if (reg->type != FCML_REG_SIMD) {
 		switch (reg->size) {
@@ -332,7 +332,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_render_size_operator_intel( fcml_data_size s
 	}
 
 	if( size_operator_printable ) {
-		fcml_fn_env_memory_strncpy( buffer, size_operator_printable, buffer_len );
+		fcml_fn_env_str_strncpy( buffer, size_operator_printable, buffer_len );
 	}
 
 	return FCML_CEH_GEC_NO_ERROR;

@@ -8,8 +8,10 @@
 #ifndef FCML_OPTIMIZERS_H_
 #define FCML_OPTIMIZERS_H_
 
-#include "fcml_encoding.h"
+#include "fcml_assembler.h"
 #include "fcml_ceh.h"
+#include "fcml_encoding.h"
+#include "fcml_types.h"
 
 extern fcml_fnp_asm_optimizer fcml_ar_optimizers[];
 

@@ -8,6 +8,7 @@
 #ifndef FCML_H_
 #define FCML_H_
 
-
+#include "fcml_assembler.h"
+#include "fcml_disassembler.h"
 
 #endif /* FCML_H_ */

@@ -5,16 +5,21 @@
  *      Author: tas
  */
 
-#include <assert.h>
+#include "fcml_disassembler.h"
 
+#include <stddef.h>
+
+#include "fcml_coll.h"
+#include "fcml_decoding_tree.h"
+#include "fcml_def.h"
+#include "fcml_env.h"
+#include "fcml_errors.h"
+#include "fcml_hints.h"
+#include "fcml_mnemonic_parser.h"
+#include "fcml_modrm.h"
 #include "fcml_modrm_decoder.h"
 #include "fcml_stream.h"
-#include "fcml_disassembler.h"
-#include "fcml_env.h"
-#include "fcml_decoding_tree.h"
-#include "fcml_mnemonic_parser.h"
 #include "fcml_utils.h"
-#include "fcml_hints.h"
 
 // R,X and B are stored in 1's complement form.
 #define FCML_VEX_W(x)				FCML_TP_GET_BIT(x, 7)
@@ -25,6 +30,12 @@
 #define FCML_VEX_MMMM(x)			( x & 0x1F )
 #define FCML_VEX_VVVV(x)			( ~( ( x & 0x78 ) >> 3 ) & 0x00F )
 #define FCML_VEX_PP(x)				( x & 0x03 )
+
+// REX prefix fields.
+#define FCML_REX_W(x)					FCML_TP_GET_BIT(x, 3)
+#define FCML_REX_R(x)					FCML_TP_GET_BIT(x, 2)
+#define FCML_REX_X(x)					FCML_TP_GET_BIT(x, 1)
+#define FCML_REX_B(x)					FCML_TP_GET_BIT(x, 0)
 
 typedef struct fcml_ist_dasm_operand_wrapper {
 	fcml_st_operand operand;
@@ -1172,7 +1183,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain( fcml_st_def_addr_mode
 	while( *factory ) {
 		fcml_ifp_dasm_instruction_acceptor acceptor = (*factory)( addr_mode_desc );
 		if( acceptor ) {
-			fcml_ist_dasm_addr_mode_acceptor_chain *chain_element = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_dasm_addr_mode_acceptor_chain* ) );
+			fcml_ist_dasm_addr_mode_acceptor_chain *chain_element = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_addr_mode_acceptor_chain* ) );
 			if( !chain_element ) {
 				// Free already allocated chain.
 				if( chain_root ) {
@@ -1232,7 +1243,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	// Prepare instruction decoding structure.
-	fcml_ist_dasm_instruction_decoding_def *decoding = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_dasm_instruction_decoding_def ) );
+	fcml_ist_dasm_instruction_decoding_def *decoding = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_instruction_decoding_def ) );
 	if( !decoding ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
@@ -1350,7 +1361,7 @@ fcml_int fcml_ifn_dasm_decode_escape_opcode_bytes( fcml_ist_dasm_decoding_contex
 
 fcml_ceh_error fcml_ifn_dasm_prepare_opcode_iterator( fcml_ist_dasm_decoding_context *decoding_context, struct fcml_ist_dasm_opcode_iterator **iterator_ptr ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_ist_dasm_opcode_iterator_impl *iterator = (fcml_ist_dasm_opcode_iterator_impl*)fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_dasm_opcode_iterator_impl ) );
+	fcml_ist_dasm_opcode_iterator_impl *iterator = (fcml_ist_dasm_opcode_iterator_impl*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_opcode_iterator_impl ) );
 	if( iterator ) {
 		// Prepare virtual opcodes.
 		iterator->virtual_opcode_count = fcml_ifn_dasm_decode_escape_opcode_bytes( decoding_context, &(iterator->virtual_opcode) );
@@ -1601,7 +1612,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 	fcml_ifn_dasm_opcode_iterator_free( iterator );
 
 	// Skip opcode bytes.
-	fcml_fn_stream_seek( context->stream, context->opcodes_count, IRA_CURRENT );
+	fcml_fn_stream_seek( context->stream, context->opcodes_count, FCML_EN_ST_CURRENT );
 
 	fcml_bool found = FCML_FALSE;
 
@@ -1816,7 +1827,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 					fcml_stream_pointer sp = fcml_fn_stream_save_point( stream );
 
 					// Skip to the second byte of VEX prefix.
-					fcml_fn_stream_seek(stream, 1, IRA_CURRENT);
+					fcml_fn_stream_seek(stream, 1, FCML_EN_ST_CURRENT);
 
 					if( addr_form == FCML_AF_32_BIT ) {
 						// Check if it is really a VEX/XOP prefix.
@@ -1903,7 +1914,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 				if( is_repne_xacquire ) {
 					prefixes_details->is_repne = FCML_TRUE;
 				}
-				fcml_fn_stream_seek(stream, prefix_size, IRA_CURRENT);
+				fcml_fn_stream_seek(stream, prefix_size, FCML_EN_ST_CURRENT);
 				prefix_index++;
 			} else {
 				is_last_prefix = FCML_FALSE;
@@ -1967,7 +1978,7 @@ fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect_context *context,
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_ist_dasm_disassembler *int_disasm = fcml_fn_env_clear_memory_alloc( sizeof( fcml_ist_dasm_disassembler ) );
+	fcml_ist_dasm_disassembler *int_disasm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_disassembler ) );
 	if( int_disasm ) {
 
 		int_disasm->dialect_context = *context;
@@ -2016,7 +2027,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 	error =  fcml_ifn_dasm_decode_instruction( &decoding_context );
 
 	if( !error ) {
-		fcml_st_dasm_disassembler_result *dis_res = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_dasm_disassembler_result ) );
+		fcml_st_dasm_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dasm_disassembler_result ) );
 		if( dis_res ) {
 
 			fcml_st_instruction *instruction = &(dis_res->instruction);
@@ -2091,7 +2102,7 @@ void fcml_fn_dasm_disassemble_result_free( fcml_st_dasm_disassembler_result *res
 			fcml_fn_ceh_free_error_container( result->errors );
 		}
 		if( result->instruction.mnemonic ) {
-			fcml_fn_env_memory_strfree( result->instruction.mnemonic );
+			fcml_fn_env_str_strfree( result->instruction.mnemonic );
 		}
 		fcml_fn_env_memory_free( result );
 	}

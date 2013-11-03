@@ -5,11 +5,24 @@
  *      Author: tas
  */
 
-#include "fcml_utils.h"
 #include "fcml_rend_intel.h"
+
+#include "fcml_ceh.h"
+#include "fcml_common.h"
+#include "fcml_dialect.h"
+#include "fcml_disassembler.h"
+#include "fcml_rend.h"
 #include "fcml_rend_utils.h"
+#include "fcml_stream.h"
+#include "fcml_types.h"
+#include "fcml_utils.h"
 
 #define FCML_REND_LOCAL_BUFFER_SIZE 512
+
+fcml_string fcml_iarr_rend_conditional_suffixes_intel[2][16] = {
+	{ "o", "no", "b", "nb", "e", "ne", "be", "nbe", "s", "ns", "p", "np", "l", "nl", "le", "nle" },
+	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
+};
 
 void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, fcml_st_dasm_prefixes *prefixes ) {
 	if( prefixes->is_xacquire ) {
@@ -205,11 +218,6 @@ fcml_ceh_error fcml_ifn_rend_print_operand_intel(  fcml_st_dialect_context *dial
 	return error;
 }
 
-fcml_string fcml_arr_rend_conditional_suffixes_intel[2][16] = {
-	{ "o", "no", "b", "nb", "e", "ne", "be", "nbe", "s", "ns", "p", "np", "l", "nl", "le", "nle" },
-	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
-};
-
 fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml_uint32_t render_flags ) {
 	if( render_flags & FCML_REND_FLAG_COND_SHOW_CARRY ) {
 		if( condition == 2 ) {
@@ -219,7 +227,7 @@ fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml
 		}
 	}
 	fcml_int group = ( render_flags & FCML_REND_FLAG_COND_GROUP_2 ) ? 1 : 0;
-	return fcml_arr_rend_conditional_suffixes_intel[group][condition];
+	return fcml_iarr_rend_conditional_suffixes_intel[group][condition];
 }
 
 fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_uint32_t render_flags ) {

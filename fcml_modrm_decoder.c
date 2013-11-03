@@ -5,14 +5,17 @@
  *      Author: tAs
  */
 
-#include "fcml_errors.h"
 #include "fcml_modrm_decoder.h"
-#include "fcml_utils.h"
+
+#include <stddef.h>
+
 #include "fcml_env.h"
+#include "fcml_errors.h"
+#include "fcml_utils.h"
 
 /* Register configurations used for 16 bit addressing form decoding */
 
-struct fcml_st_register fcml_modrm_addressing_form_reg_array_16[8][2] = {
+struct fcml_st_register fcml_iarr_modrm_addressing_form_reg_16[8][2] = {
 	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE }, { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE } },
 	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE }, { FCML_REG_GPR, FCML_DS_16, FCML_REG_DI, FCML_FALSE } },
 	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BP, FCML_FALSE }, { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE } },
@@ -23,7 +26,7 @@ struct fcml_st_register fcml_modrm_addressing_form_reg_array_16[8][2] = {
 	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE }, { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } }
 };
 
-fcml_ceh_error fcml_fn_modrm_decode_displacement( fcml_st_memory_stream *stream, fcml_st_displacement *displacement, fcml_st_offset *offset, fcml_usize size, fcml_data_size offset_extension_size, fcml_data_size displacement_extension_size ) {
+fcml_ceh_error fcml_ifn_modrm_decode_displacement( fcml_st_memory_stream *stream, fcml_st_displacement *displacement, fcml_st_offset *offset, fcml_usize size, fcml_data_size offset_extension_size, fcml_data_size displacement_extension_size ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -63,31 +66,11 @@ fcml_ceh_error fcml_fn_modrm_decode_displacement( fcml_st_memory_stream *stream,
     return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_decode_rip( fcml_uint64_t rip, fcml_data_size effective_address_size, fcml_st_offset *offset, fcml_st_offset *address ) {
-
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
-	fcml_int64_t effective_address = (fcml_int64_t)rip + offset->off32;
-
-	if( effective_address_size == FCML_DS_32 ) {
-		effective_address &= 0x00000000FFFFFFFFUL;
-	} else if( effective_address_size == FCML_DS_16 ) {
-		error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
-	}
-
-	if( !error ) {
-		address->off64 = effective_address;
-		address->size = FCML_DS_64;
-	}
-
-	return error;
-}
-
 fcml_data_size fcml_ifn_modrm_get_displacement_extension( fcml_st_modrm_decoder_context *context, fcml_uint8_t flags ) {
 	return flags & FCML_MODRM_DEC_FLAG_EXTEND_DISPLACEMENT_TO_ASA ? context->effective_address_size : 0;
 }
 
-fcml_ceh_error fcml_fn_modrm_decode_16bit( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_uint8_t flags ) {
+fcml_ceh_error fcml_ifn_modrm_decode_16bit( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_uint8_t flags ) {
 
 	fcml_bool result;
 	fcml_st_memory_stream *stream = modrm_source->stream;
@@ -119,7 +102,7 @@ fcml_ceh_error fcml_fn_modrm_decode_16bit( fcml_st_modrm_decoder_context *contex
 	if( f_mod == 0 && f_rm == 6 ) {
 
 		// disp16.
-		fcml_ceh_error error = fcml_fn_modrm_decode_displacement( stream, &(effective_address->displacement), &(address->offset), FCML_DS_16, context->effective_address_size, fcml_ifn_modrm_get_displacement_extension( context, flags ) );
+		fcml_ceh_error error = fcml_ifn_modrm_decode_displacement( stream, &(effective_address->displacement), &(address->offset), FCML_DS_16, context->effective_address_size, fcml_ifn_modrm_get_displacement_extension( context, flags ) );
 		if( error ) {
 			return error;
 		}
@@ -127,10 +110,10 @@ fcml_ceh_error fcml_fn_modrm_decode_16bit( fcml_st_modrm_decoder_context *contex
 		address->address_form = FCML_AF_OFFSET;
 
 	} else if( f_mod < 3 ) {
-	    effective_address->base = fcml_modrm_addressing_form_reg_array_16[f_rm][0];
-	    effective_address->index = fcml_modrm_addressing_form_reg_array_16[f_rm][1];
+	    effective_address->base = fcml_iarr_modrm_addressing_form_reg_16[f_rm][0];
+	    effective_address->index = fcml_iarr_modrm_addressing_form_reg_16[f_rm][1];
 		if( f_mod > 0 ) {
-			fcml_ceh_error error = fcml_fn_modrm_decode_displacement( stream, &(effective_address->displacement), NULL, ( f_mod == 1 ) ? FCML_DS_8 : FCML_DS_16, 0, fcml_ifn_modrm_get_displacement_extension( context, flags ) );
+			fcml_ceh_error error = fcml_ifn_modrm_decode_displacement( stream, &(effective_address->displacement), NULL, ( f_mod == 1 ) ? FCML_DS_8 : FCML_DS_16, 0, fcml_ifn_modrm_get_displacement_extension( context, flags ) );
 			if( error ) {
 				return error;
 			}
@@ -146,7 +129,7 @@ fcml_ceh_error fcml_fn_modrm_decode_16bit( fcml_st_modrm_decoder_context *contex
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_modrm_decode_sib( fcml_st_modrm_decoder_context *context, fcml_uint8_t mod_rm, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_uint8_t flags ) {
+fcml_ceh_error fcml_ifn_modrm_decode_sib( fcml_st_modrm_decoder_context *context, fcml_uint8_t mod_rm, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_uint8_t flags ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -198,7 +181,7 @@ fcml_ceh_error fcml_fn_modrm_decode_sib( fcml_st_modrm_decoder_context *context,
 	    address->address_form = FCML_AF_OFFSET;
 
 		// In this case base register doesn't exist.
-	    error = fcml_fn_modrm_decode_displacement( stream, &(effective_address->displacement), &(address->offset), FCML_DS_32, effective_address_size, 0 );
+	    error = fcml_ifn_modrm_decode_displacement( stream, &(effective_address->displacement), &(address->offset), FCML_DS_32, effective_address_size, 0 );
 
 	} else {
 		// Effective address size affects base register.
@@ -208,14 +191,14 @@ fcml_ceh_error fcml_fn_modrm_decode_sib( fcml_st_modrm_decoder_context *context,
 
 		// There is no displacement for mod == 0.
 		if( f_mod > 0 ) {
-			error = fcml_fn_modrm_decode_displacement( stream, &(effective_address->displacement), NULL, ( f_mod == 1 ) ? FCML_DS_8 : FCML_DS_32, 0, fcml_ifn_modrm_get_displacement_extension( context, flags ) );
+			error = fcml_ifn_modrm_decode_displacement( stream, &(effective_address->displacement), NULL, ( f_mod == 1 ) ? FCML_DS_8 : FCML_DS_32, 0, fcml_ifn_modrm_get_displacement_extension( context, flags ) );
 		}
 	}
 
 	return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_uint8_t flags ) {
+fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_uint8_t flags ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -252,7 +235,7 @@ fcml_ceh_error fcml_fn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *cont
 		decoded_modrm->reg.value = f_rm;
 	} else if( FCML_MODRM_DEC_RM( mod_rm ) == 4 ) {
 		// Decode SIB addressing format.
-		result = fcml_fn_modrm_decode_sib( context, mod_rm, modrm_source, decoded_modrm, flags );
+		result = fcml_ifn_modrm_decode_sib( context, mod_rm, modrm_source, decoded_modrm, flags );
 	} else if( f_mod == 0 && FCML_MODRM_DEC_RM( mod_rm ) == 5 ) {
 
 	    address->address_form = FCML_AF_OFFSET;
@@ -263,7 +246,7 @@ fcml_ceh_error fcml_fn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *cont
 		}
 
 		// Only displacement value is decoded here. RIP offset is calculated in post processors.
-        error = fcml_fn_modrm_decode_displacement( stream, &(effective_address->displacement), &(address->offset), FCML_DS_32, decoded_modrm->is_rip ? 0 : effective_address_size, 0 );
+        error = fcml_ifn_modrm_decode_displacement( stream, &(effective_address->displacement), &(address->offset), FCML_DS_32, decoded_modrm->is_rip ? 0 : effective_address_size, 0 );
         if( error ) {
             return error;
         }
@@ -275,7 +258,7 @@ fcml_ceh_error fcml_fn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *cont
 		effective_address->base.reg = f_rm;
 		// Displacement.
 		if( f_mod != 0 ) {
-			error = fcml_fn_modrm_decode_displacement( stream, &(effective_address->displacement), NULL, ( f_mod == 1 ) ? FCML_DS_8 : FCML_DS_32, 0, fcml_ifn_modrm_get_displacement_extension( context, flags ) );
+			error = fcml_ifn_modrm_decode_displacement( stream, &(effective_address->displacement), NULL, ( f_mod == 1 ) ? FCML_DS_8 : FCML_DS_32, 0, fcml_ifn_modrm_get_displacement_extension( context, flags ) );
 			if( error ) {
 				return error;
 			}
@@ -288,13 +271,33 @@ fcml_ceh_error fcml_fn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *cont
 	return error;
 }
 
+fcml_ceh_error fcml_fn_modrm_decode_rip( fcml_uint64_t rip, fcml_data_size effective_address_size, fcml_st_offset *offset, fcml_st_offset *address ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_int64_t effective_address = (fcml_int64_t)rip + offset->off32;
+
+	if( effective_address_size == FCML_DS_32 ) {
+		effective_address &= 0x00000000FFFFFFFFUL;
+	} else if( effective_address_size == FCML_DS_16 ) {
+		error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+	}
+
+	if( !error ) {
+		address->off64 = effective_address;
+		address->size = FCML_DS_64;
+	}
+
+	return error;
+}
+
 fcml_ceh_error fcml_fn_modrm_decode( fcml_st_modrm_decoder_context *context, fcml_st_modrm_source *modrm_source, fcml_st_modrm *decoded_modrm, fcml_uint8_t flags ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_fn_env_memory_clean( decoded_modrm, sizeof( fcml_st_modrm ) );
+	fcml_fn_env_memory_clear( decoded_modrm, sizeof( fcml_st_modrm ) );
 	if( context->effective_address_size == FCML_DS_16 ) {
-		error = fcml_fn_modrm_decode_16bit( context, modrm_source, decoded_modrm, flags );
+		error = fcml_ifn_modrm_decode_16bit( context, modrm_source, decoded_modrm, flags );
 	} else if ( context->effective_address_size == FCML_DS_32 || context->effective_address_size == FCML_DS_64 ) {
-		error = fcml_fn_modrm_decode_3264bit( context, modrm_source, decoded_modrm, flags );
+		error = fcml_ifn_modrm_decode_3264bit( context, modrm_source, decoded_modrm, flags );
 	} else {
 		// Unknown addressing mode.
 		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;

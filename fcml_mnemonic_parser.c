@@ -5,9 +5,12 @@
  *      Author: tAs
  */
 
+#include "fcml_mnemonic_parser.h"
+
 #include <stdlib.h>
 
-#include "fcml_mnemonic_parser.h"
+#include "fcml_common.h"
+#include "fcml_types.h"
 
 enum fcml_ien_mp_parser_state {
     FCML_MP_PS_MNEMONIC,
@@ -32,7 +35,7 @@ fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, f
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     // Allocate space for new mnemonic.
-    fcml_st_mp_mnemonic *new_mnemonic =  fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_mp_mnemonic ) );
+    fcml_st_mp_mnemonic *new_mnemonic =  fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_mp_mnemonic ) );
     if( new_mnemonic == NULL ) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -40,17 +43,17 @@ fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, f
     // Prepare mnemonic string.
     *new_mnemonic = *parsed_mnemonic;
 
-    new_mnemonic->mnemonic = fcml_fn_env_memory_stralloc( len + 1 );
+    new_mnemonic->mnemonic = fcml_fn_env_str_stralloc( len + 1 );
     if( new_mnemonic->mnemonic == NULL ) {
         fcml_fn_env_memory_free( new_mnemonic );
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     } else {
-        fcml_fn_env_memory_strncpy( new_mnemonic->mnemonic, mnemonic_buff, len );
+        fcml_fn_env_str_strncpy( new_mnemonic->mnemonic, mnemonic_buff, len );
     }
 
     // Add mnemonic to list of already parsed mnemonics.
     if( !fcml_fn_coll_list_add_back( mnemonics, new_mnemonic ) ) {
-        fcml_fn_env_memory_strfree( new_mnemonic->mnemonic );
+        fcml_fn_env_str_strfree( new_mnemonic->mnemonic );
         fcml_fn_env_memory_free( new_mnemonic );
         error = FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -120,7 +123,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
     fcml_char mnemonic_buff[FCML_IDF_MP_BUFF_LEN];
     int mnemonic_index = 0;
 
-    fcml_st_mp_mnemonic_set *mnemonics = fcml_fn_env_clear_memory_alloc( sizeof( fcml_st_mp_mnemonic_set ) );
+    fcml_st_mp_mnemonic_set *mnemonics = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_mp_mnemonic_set ) );
     if( !mnemonics ) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -131,7 +134,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
 
-    fcml_usize len = fcml_fn_env_memory_strlen( mnemonics_pattern );
+    fcml_usize len = fcml_fn_env_str_strlen( mnemonics_pattern );
 
     fcml_st_mp_mnemonic mnemonic;
 
@@ -283,7 +286,7 @@ void fcml_ifp_coll_list_action_free_mnemonic( fcml_ptr item_value, fcml_ptr args
     if( item_value ) {
         fcml_st_mp_mnemonic *parsed_mnemonic = (fcml_st_mp_mnemonic *)item_value;
         if( parsed_mnemonic->mnemonic ) {
-            fcml_fn_env_memory_strfree( parsed_mnemonic->mnemonic );
+            fcml_fn_env_str_strfree( parsed_mnemonic->mnemonic );
         }
         fcml_fn_env_memory_free( parsed_mnemonic );
     }

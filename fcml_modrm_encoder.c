@@ -5,85 +5,15 @@
  *      Author: tAs
  */
 
-#include "fcml_errors.h"
 #include "fcml_modrm_encoder.h"
+
+#include "fcml_common.h"
+#include "fcml_errors.h"
+#include "fcml_stream.h"
+#include "fcml_types.h"
 #include "fcml_utils.h"
 
-fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, fcml_uint64_t rip, fcml_uint8_t instruction_size, fcml_st_encoded_modrm *encoded_modrm ) {
-
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
-	if( encoded_modrm->is_rip ) {
-		fcml_int64_t rip_offset = ( encoded_modrm->rip_address - instruction_size ) - (fcml_int64_t)rip;
-
-		if( rip_offset < FCML_INT32_MIN || rip_offset > FCML_INT32_MAX ) {
-			error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
-		} else {
-
-			fcml_st_integer integer;
-			integer.int32 = (fcml_int32_t)rip_offset;
-			integer.size = FCML_DS_32;
-
-			// Encodes and encodes displacement to given stream.
-			error = fcml_fn_utils_encode_integer( stream, &integer );
-
-		}
-	} else {
-		error = FCML_CEH_GEC_INVALID_INPUT;
-	}
-
-	return error;
-}
-
-fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_esa *effective_address_size ) {
-
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
-	// Calculate EOSA.
-
-	const fcml_st_address *address = &(decoded_modrm->address);
-    const fcml_st_effective_address *effective_address = &(address->effective_address);
-
-	fcml_esa easa;
-
-	fcml_st_register reg;
-	if( effective_address->base.type ) {
-		reg = effective_address->base;
-	} else {
-		reg = effective_address->index;
-	}
-	if( reg.type ) {
-		switch( reg.size ) {
-		case FCML_DS_16:
-		case FCML_DS_32:
-		case FCML_DS_64:
-			easa = reg.size >> 4;
-			break;
-		case FCML_DS_128:
-		case FCML_DS_256:
-			easa = FCML_ESA_SF_32 | FCML_ESA_SF_64;
-			break;
-		default:
-			error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
-			break;
-		}
-	} else  {
-	    // Remember that -1 can be represented as int64 value, so displacement nor offset size cannot be taken into account here.
-	    easa = FCML_ESA_SF_16 | FCML_ESA_SF_32 | FCML_ESA_SF_64;
-	}
-
-	if( error ) {
-		return error;
-	}
-
-	// Calculate EASA.
-
-	*effective_address_size = easa;
-
-	return error;
-}
-
-fcml_st_memory_stream fcml_ifn_map_displacement_to_stream( fcml_st_encoded_modrm *encoded_modrm ) {
+fcml_st_memory_stream fcml_ifn_modrm_map_displacement_to_stream( fcml_st_encoded_modrm *encoded_modrm ) {
 	fcml_st_memory_stream stream;
 	stream.base_address = &(encoded_modrm->displacement);
 	stream.offset = 0;
@@ -91,11 +21,11 @@ fcml_st_memory_stream fcml_ifn_map_displacement_to_stream( fcml_st_encoded_modrm
 	return stream;
 }
 
-inline fcml_ceh_error fcml_ifn_is_displacement( const fcml_st_address *address ) {
+inline fcml_ceh_error fcml_ifn_modrm_is_displacement( const fcml_st_address *address ) {
     return address->offset.size || address->effective_address.displacement.size;
 }
 
-fcml_ceh_error fcml_ifn_convert_absolute_address_to_integer( const fcml_st_address *address, fcml_st_integer *integer ) {
+fcml_ceh_error fcml_ifn_modrm_convert_absolute_address_to_integer( const fcml_st_address *address, fcml_st_integer *integer ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     if( address->address_form == FCML_AF_OFFSET ) {
         if( address->offset.size ) {
@@ -141,7 +71,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( fcml_st_modrm_encoder_context
     }
 
     // Gets displacement as stream.
-    fcml_st_memory_stream stream = fcml_ifn_map_displacement_to_stream( encoded_modrm );
+    fcml_st_memory_stream stream = fcml_ifn_modrm_map_displacement_to_stream( encoded_modrm );
 
     // Extends and encodes displacement to given stream.
     error = fcml_fn_utils_encode_integer( &stream, &dest );
@@ -156,7 +86,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement( fcml_st_modrm_encoder_context
 	return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+fcml_ceh_error fcml_ifn_modrm_encode_16bit( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -182,7 +112,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *contex
 
 	    fcml_st_integer absolute_address;
 
-	    error = fcml_ifn_convert_absolute_address_to_integer( address, &absolute_address );
+	    error = fcml_ifn_modrm_convert_absolute_address_to_integer( address, &absolute_address );
 	    if( !error ) {
 	        disp_size = FCML_DS_16;
 	        error = fcml_ifn_modrm_encode_displacement( context, &absolute_address, encoded_modrm, FCML_DS_16, &disp_size );
@@ -295,7 +225,7 @@ fcml_ceh_error fcml_fn_modrm_encode_16bit( fcml_st_modrm_encoder_context *contex
 }
 
 // 32 and 64 bit addressing mode.s
-fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
 
 	fcml_uint8_t f_mod = 0;
 	fcml_uint8_t f_rm = 0;
@@ -317,7 +247,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 
-	fcml_bool is_displacement = fcml_ifn_is_displacement( address );
+	fcml_bool is_displacement = fcml_ifn_modrm_is_displacement( address );
 	fcml_bool is_base = effective_address->base.type;
 	fcml_bool is_index = effective_address->index.type;
 
@@ -325,6 +255,8 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 	if( ( is_base || is_index ) && address->address_form != FCML_AF_COMBINED )  {
 	    return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
+
+	fcml_bool is_rip = FCML_FALSE;
 
 	// Check if there is SIB alternative.
 	if( is_index ) {
@@ -347,7 +279,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 
 			if( choose_rip ) {
 			    // Relative.
-				context->is_rip_encoding = FCML_TRUE;
+				is_rip = FCML_TRUE;
 				context->is_sib_alternative = FCML_FALSE;
 			} else {
 			    // Absolute.
@@ -465,7 +397,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 		}
 	}
 
-	if( context->is_rip_encoding ) {
+	if( is_rip ) {
 
 	    // Relative address.
 
@@ -542,7 +474,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
             fcml_st_integer absolute_address;
 
             // Convert absolute address to generic integer value in order to convert it to ASA size.
-            fcml_data_size error = fcml_ifn_convert_absolute_address_to_integer( address, &absolute_address );
+            fcml_data_size error = fcml_ifn_modrm_convert_absolute_address_to_integer( address, &absolute_address );
             if( error ) {
                 return error;
             }
@@ -577,6 +509,7 @@ fcml_ceh_error fcml_fn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *cont
 }
 
 fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm ) {
+
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_data_size easa = context->effective_address_size;
@@ -602,13 +535,87 @@ fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, con
 	context->chosen_effective_address_size = easa;
 
 	if( easa == FCML_DS_16 ) {
-		error = fcml_fn_modrm_encode_16bit( context, decoded_modrm, encoded_modrm );
+		error = fcml_ifn_modrm_encode_16bit( context, decoded_modrm, encoded_modrm );
 	} else if ( easa == FCML_DS_32 || easa == FCML_DS_64 ) {
-		error = fcml_fn_modrm_encode_3264bit( context, decoded_modrm, encoded_modrm );
+		error = fcml_ifn_modrm_encode_3264bit( context, decoded_modrm, encoded_modrm );
 	} else {
 		// Unknown addressing mode.
 		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
+	return error;
+}
+
+fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, fcml_uint64_t rip, fcml_uint8_t instruction_size, const fcml_st_encoded_modrm *encoded_modrm ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	if( encoded_modrm->is_rip ) {
+		fcml_int64_t rip_offset = ( encoded_modrm->rip_address - instruction_size ) - (fcml_int64_t)rip;
+
+		if( rip_offset < FCML_INT32_MIN || rip_offset > FCML_INT32_MAX ) {
+			error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+		} else {
+
+			fcml_st_integer integer;
+			integer.int32 = (fcml_int32_t)rip_offset;
+			integer.size = FCML_DS_32;
+
+			// Encodes and encodes displacement to given stream.
+			error = fcml_fn_utils_encode_integer( stream, &integer );
+
+		}
+	} else {
+		error = FCML_CEH_GEC_INVALID_INPUT;
+	}
+
+	return error;
+}
+
+fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_en_cmi_attribute_size_flag *effective_address_size ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	// Calculate EOSA.
+
+	const fcml_st_address *address = &(decoded_modrm->address);
+    const fcml_st_effective_address *effective_address = &(address->effective_address);
+
+    fcml_en_cmi_attribute_size_flag easa;
+
+	fcml_st_register reg;
+	if( effective_address->base.type ) {
+		reg = effective_address->base;
+	} else {
+		reg = effective_address->index;
+	}
+	if( reg.type ) {
+		switch( reg.size ) {
+		case FCML_DS_16:
+		case FCML_DS_32:
+		case FCML_DS_64:
+			easa = reg.size >> 4;
+			break;
+		case FCML_DS_128:
+		case FCML_DS_256:
+			easa = FCML_EN_ASF_32 | FCML_EN_ASF_64;
+			break;
+		default:
+			error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			break;
+		}
+	} else  {
+	    // Remember that -1 can be represented as int64 value, so displacement nor offset size cannot be taken into account here.
+	    easa = FCML_EN_ASF_ALL;
+	}
+
+	if( error ) {
+		return error;
+	}
+
+	// Calculate EASA.
+
+	*effective_address_size = easa;
+
 	return error;
 }
 

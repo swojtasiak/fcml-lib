@@ -112,7 +112,7 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *
 	return error;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_integer_to_uint8( fcml_st_integer *integer, fcml_uint8_t *value ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_uint8( const fcml_st_integer *integer, fcml_uint8_t *value ) {
 	switch( integer->size ) {
 	case FCML_DS_8:
 		// In this case we doesn't care what is in IMM, because no conversion is needed.
@@ -163,7 +163,7 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_uint8( fcml_st_integer *integer,
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_integer_to_uint16( fcml_st_integer *integer, fcml_uint16_t *value ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_uint16( const fcml_st_integer *integer, fcml_uint16_t *value ) {
 	switch( integer->size ) {
 	case FCML_DS_8:
 	    if( integer->is_signed ) {
@@ -207,7 +207,7 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_uint16( fcml_st_integer *integer
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_integer_to_uint32( fcml_st_integer *integer, fcml_uint32_t *value ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_uint32( const fcml_st_integer *integer, fcml_uint32_t *value ) {
 	switch( integer->size ) {
 	case FCML_DS_8:
 		if( integer->is_signed ) {
@@ -245,7 +245,7 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_uint32( fcml_st_integer *integer
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_integer_to_uint64( fcml_st_integer *integer, fcml_uint64_t *value ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_uint64( const fcml_st_integer *integer, fcml_uint64_t *value ) {
 	switch( integer->size ) {
 	case FCML_DS_8:
 		if( integer->is_signed ) {
@@ -607,7 +607,7 @@ fcml_ceh_error fcml_fn_utils_integer_to_offset( const fcml_st_integer *integer, 
     return error;
 }
 
-fcml_ceh_error fcml_fn_utils_imm_to_integer( fcml_st_immediate *imm, fcml_st_integer *integer ) {
+fcml_ceh_error fcml_fn_utils_imm_to_integer( const fcml_st_immediate *imm, fcml_st_integer *integer ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	integer->int64 = 0;
 	switch( imm->imm_size ) {
@@ -632,7 +632,7 @@ fcml_ceh_error fcml_fn_utils_imm_to_integer( fcml_st_immediate *imm, fcml_st_int
 	return error;
 }
 
-fcml_ceh_error fcml_fn_utils_integer_to_imm( fcml_st_integer *integer, fcml_st_immediate *imm ) {
+fcml_ceh_error fcml_fn_utils_integer_to_imm( const fcml_st_integer *integer, fcml_st_immediate *imm ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	imm->imm64 = 0;
 	switch( integer->size ) {
@@ -738,7 +738,7 @@ fcml_ceh_error fcml_fn_utils_extend_integer( fcml_st_integer *integer, fcml_usiz
 	return error;
 }
 
-inline fcml_bool fcml_fn_utils_is_reg_undef( fcml_st_register *reg ) {
+inline fcml_bool fcml_fn_utils_is_reg_undef( const fcml_st_register *reg ) {
     return reg->type == FCML_REG_UNDEFINED;
 }
 
