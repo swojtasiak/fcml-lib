@@ -2632,13 +2632,27 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 
 		// Hints have higher precedence than configuration.
 
+		// Chooses relative or absolute addressing. Configuration as well as rel/abs hints take
+		// effect only in 64 bit addressing mode.
+
+		ctx.choose_rip_encoding = !assembler_context->configuration.choose_abs_encoding;
 		ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
+
 		if( context->is_sib_alternative_hint ) {
 			ctx.choose_sib_encoding = FCML_TRUE;
+			// SIB hint has higher precedence than RIP configuration. There is no way to encode RIP using SIB, so
+			// RIP flag has to be cleared in order to encode absolute offset using requested SIB encoding.
+			ctx.choose_rip_encoding = FCML_FALSE;
 		}
 
-		ctx.choose_rip_encoding = assembler_context->configuration.choose_rip_encoding;
-		if( context->is_sib_alternative_hint ) {
+		if( context->is_rel_alternative_hint ) {
+			// RIP encoding has been forced by using "rel" hint.
+			ctx.choose_rip_encoding = FCML_TRUE;
+		}
+
+		if( context->is_abs_alternative_hint ) {
+			// Absolute offset encoding has been forced by using "abs" hint.
+			ctx.choose_rip_encoding = FCML_FALSE;
 		}
 
 		ctx.chosen_effective_address_size = 0;

@@ -637,6 +637,11 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 			segment_selector->is_default_reg = ( segment_selector->segment_selector.reg == FCML_REG_DS ) ? FCML_TRUE : FCML_FALSE;
 		}
 
+		// These hints aren't used in 32 bit addressing mode.
+		if( context->disassembler_context->addr_form == FCML_AF_64_BIT ) {
+			operand->hints |= context->decoded_modrm.is_rip ? FCML_OP_HINT_RELATIVE_ADDRESSING : FCML_OP_HINT_ABSOLUTE_ADDRESSING;
+		}
+
 	} else {
 		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
@@ -1553,7 +1558,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 			if( error ) {
 				break;
 			}
-			operand_wrappers->operand.hints = operand_decoding->hints;
+			operand_wrappers->operand.hints |= operand_decoding->hints;
 			operand_wrappers->access_mode = decoded_addr_mode->access_mode;
 			operand_wrappers++;
 		} else {

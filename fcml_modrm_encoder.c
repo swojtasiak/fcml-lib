@@ -282,8 +282,8 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 				is_rip = FCML_TRUE;
 				context->is_sib_alternative = FCML_FALSE;
 			} else {
-			    // Absolute.
-				choose_sib = context->choose_sib_encoding;
+			    // In case of 64 bit addressing SIB is needed to encode absolute address.
+				choose_sib = ( context->addr_form == FCML_AF_64_BIT ) ? FCML_TRUE : context->choose_sib_encoding;
 				context->is_sib_alternative = FCML_TRUE;
 			}
 
@@ -325,6 +325,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
 			disp_size = FCML_DS_32;
+			f_base = 0x05;
 		}
 
 		// Index register.

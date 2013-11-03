@@ -105,8 +105,16 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 	fcml_bool first = FCML_TRUE;
 
 	// Adds SIB hints to all instructions where SIB presents.
-	if( ( operand->hints & FCML_REND_FLAG_RENDER_SIB_HINT ) && ( result->instruction_details.modrm_details.sib.is_not_null ) ) {
+	if( ( render_flags & FCML_REND_FLAG_RENDER_SIB_HINT ) && ( result->instruction_details.modrm_details.sib.is_not_null ) ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "sib " );
+	}
+
+	if( ( render_flags & FCML_REND_FLAG_RENDER_ABS_HINT ) && ( operand->hints & FCML_OP_HINT_ABSOLUTE_ADDRESSING ) ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "abs " );
+	}
+
+	if( ( render_flags & FCML_REND_FLAG_RENDER_REL_HINT ) && ( operand->hints & FCML_OP_HINT_RELATIVE_ADDRESSING ) ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "rel " );
 	}
 
 	if( address->address_form == FCML_AF_COMBINED ) {
