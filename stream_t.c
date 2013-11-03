@@ -604,34 +604,34 @@ void fcml_tf_stream_seek() {
     CU_ASSERT( data == 1 );
     CU_ASSERT( stream.offset == 1 );
 
-    fcml_fn_stream_seek( &stream, 3, IRA_START );
+    fcml_fn_stream_seek( &stream, 3, FCML_EN_ST_START );
 
     data = fcml_fn_stream_read( &stream, &result );
     CU_ASSERT( result == FCML_TRUE );
     CU_ASSERT( data == 4 );
     CU_ASSERT( stream.offset == 4 );
 
-    fcml_fn_stream_seek( &stream, -3, IRA_CURRENT );
+    fcml_fn_stream_seek( &stream, -3, FCML_EN_ST_CURRENT );
 
     data = fcml_fn_stream_read( &stream, &result );
     CU_ASSERT( result == FCML_TRUE );
     CU_ASSERT( data == 2 );
     CU_ASSERT( stream.offset == 2 );
 
-    fcml_fn_stream_seek( &stream, -4, IRA_END );
+    fcml_fn_stream_seek( &stream, -4, FCML_EN_ST_END );
 
     data = fcml_fn_stream_read( &stream, &result );
     CU_ASSERT( result == FCML_TRUE );
     CU_ASSERT( data == 1 );
     CU_ASSERT( stream.offset == 1 );
 
-    fcml_fn_stream_seek( &stream, -8, IRA_END );
+    fcml_fn_stream_seek( &stream, -8, FCML_EN_ST_END );
     CU_ASSERT( stream.offset == 0 );
 
-    fcml_fn_stream_seek( &stream, 8, IRA_END );
+    fcml_fn_stream_seek( &stream, 8, FCML_EN_ST_END );
     CU_ASSERT( stream.offset == 4 );
 
-    fcml_fn_stream_seek( &stream, 8, IRA_START );
+    fcml_fn_stream_seek( &stream, 8, FCML_EN_ST_START );
     CU_ASSERT( stream.offset == 4 );
 
 }

@@ -188,7 +188,7 @@ void new_disassembler_test(void) {
 
 		fcml_char buffer[256];
 
-		fcml_fn_env_memory_clean( buffer, sizeof( buffer ) );
+		fcml_fn_env_memory_clear( buffer, sizeof( buffer ) );
 
 		fcml_st_memory_stream stream;
 		stream.base_address = buffer;

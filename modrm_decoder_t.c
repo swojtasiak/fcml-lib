@@ -13,7 +13,7 @@
 
 fcml_st_modrm_decoder_context fcml_ifn_modrm_decoder_alloc_ctx() {
 	fcml_st_modrm_decoder_context context;
-	fcml_fn_env_memory_clean( &context, sizeof( context ) );
+	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	return context;
 }
 
