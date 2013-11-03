@@ -46,7 +46,9 @@ void fcml_tf_modrm_decoder_test_1(void) {
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_st_modrm_details details;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
@@ -83,7 +85,8 @@ void fcml_tf_modrm_decoder_test_2(void) {
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_st_modrm_details details;
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
@@ -121,7 +124,8 @@ void fcml_tf_modrm_decoder_test_3(void) {
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_st_modrm_details details;
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
@@ -158,7 +162,9 @@ void fcml_tf_modrm_decoder_test_4(void) {
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_st_modrm_details details;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
@@ -195,7 +201,9 @@ void fcml_tf_modrm_decoder_test_5(void) {
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_st_modrm_details details;
+
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
@@ -231,8 +239,9 @@ void fcml_tf_modrm_decoder_test_6(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
@@ -269,8 +278,9 @@ void fcml_tf_modrm_decoder_test_7(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_EOF );
 
@@ -297,8 +307,9 @@ void fcml_tf_modrm_3264_decoder_test_1(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
@@ -336,8 +347,9 @@ void fcml_tf_modrm_3264_decoder_test_2(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
@@ -378,8 +390,9 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
@@ -425,8 +438,9 @@ void fcml_tf_modrm_3264_decoder_test_4(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
@@ -465,8 +479,9 @@ void fcml_tf_modrm_3264_decoder_test_5(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
@@ -504,8 +519,9 @@ void fcml_tf_modrm_3264_decoder_test_6(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_GPR );
@@ -543,8 +559,9 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
@@ -585,8 +602,9 @@ void fcml_tf_modrm_3264_decoder_test_8(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_RAX );
@@ -625,8 +643,9 @@ void fcml_tf_modrm_3264_decoder_test_9(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_R8 );
@@ -666,8 +685,9 @@ void fcml_tf_modrm_3264_decoder_test_10(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
@@ -713,8 +733,9 @@ void fcml_tf_modrm_3264_decoder_test_11(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
@@ -760,8 +781,9 @@ void fcml_tf_modrm_3264_decoder_test_12(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
@@ -807,8 +829,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 	modrm_source.ext_x = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -847,8 +870,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 	modrm_source.ext_x = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -887,8 +911,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 	modrm_source.ext_x = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -930,8 +955,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 	modrm_source.ext_x = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -973,8 +999,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 	modrm_source.ext_x = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -1016,8 +1043,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 	modrm_source.ext_x = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -1059,8 +1087,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 	modrm_source.ext_x = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -1099,8 +1128,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 	modrm_source.ext_x = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -1139,8 +1169,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 	modrm_source.ext_x = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -1181,8 +1212,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 	modrm_source.is_vsib = FCML_TRUE;
 	modrm_source.vsib_index_size = FCML_DS_128;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );
@@ -1223,8 +1255,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 	modrm_source.is_vsib = FCML_TRUE;
 	modrm_source.vsib_index_size = FCML_DS_256;
 	fcml_st_modrm decoded_modrm;
+	fcml_st_modrm_details details;
 
-	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, 0 );
+	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( decoded_modrm.reg.value, FCML_REG_UNDEFINED );

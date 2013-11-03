@@ -41,6 +41,7 @@
 #include "instructions_x_t.h"
 #include "fcml_intel_parser_t.h"
 #include "fcml_dialect_intel.h"
+#include "hints_t.h"
 
 #include "fcml_assembler.h"
 #include "fcml_disassembler.h"
@@ -77,6 +78,7 @@ CU_SuiteInfo *suites[] = {
     fcml_si_utils,
 	fcml_si_intel_parser,
 	fcml_si_mnemonic_parser,
+	fcml_si_hints,
     NULL
 };
 
@@ -232,6 +234,22 @@ int main(int argc, char **argv) {
 		printf( "Can not allocate disassembler." );
 		return 1;
 	}
+
+	//FCML_I64_A_P( "adc dword ptr [0000800000401007h],00000003h", 0x83, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
+
+	//return 0;
+
+    //FCML_I64_A_P( "movq mm2,mmword ptr [rax]", 0x0f, 0x6f, 0x10 );
+    //return 0;
+
+	//FCML_I32_P( "add dword ptr [eax],eax", 0x01, 0x00 );
+	//FCML_I32_A_P( "add dword ptr [eax],eax", 0x01, 0x04, 0x20 );
+	//FCML_I32_P( "add dword ptr [eax+00000001h],eax", 0x01, 0x40, 0x01 );
+	//FCML_I32_P( "add dword ptr [eax+00000001h],eax", 0x01, 0x44, 0x20, 0x01 );
+
+	//FCML_I32_A_P( "add dword ptr [sib eax+00000001h],eax", 0x01, 0x44, 0x20, 0x01 );
+	//FCML_I32_A_P( "add dword ptr [eax+00000001h],eax", 0x01, 0x44, 0x20, 0x01 );
+
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
