@@ -389,7 +389,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPBROADCAST[] = {
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_BOUND[] = {
 	// 62 /r BOUND r16, m16&16 A Invalid Valid Check if r16 (array index) is within bounds specified by m16&16.
 	// 62 /r BOUND r32, m32&32 A Invalid Valid Check if r32 (array index) is within bounds specified by m16&16.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00448000, { 0x62 }, { FCML_OP_MODRM_R, FCML_OP_MODRM_MM_OSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00448000, { 0x62 }, { FCML_OP_MODRM_R, FCML_OP_MODRM_MM_OSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_BSF[] = {
@@ -461,18 +461,18 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CALL[] = {
 	// E8 cw CALL rel16 B N.S. Valid Call near, relative, displacement relative to next instruction.
 	// E8 cd CALL rel32 B Valid Valid Call near, relative, displacement relative to next instruction.
 	// 32-bit displacement sign extended to 64-bits in 64-bit mode.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x40C40000, { 0xE8, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C40000, { 0xE8, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// FF /2 CALL r/m16 B N.E. Valid Call near, absolute indirect, address given in r/m16.
 	// FF /2 CALL r/m32 B N.E. Valid Call near, absolute indirect, address given in r/m32.
 	// FF /2 CALL r/m64 B Valid N.E. Call near, absolute indirect, address given in r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x40C59000, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C59000, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// 9A cd CALL ptr16:16 A Invalid Valid Call far, absolute, address given in operand.
 	// 9A cp CALL ptr16:32 A Invalid Valid Call far, absolute, address given in operand.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00440000, { 0x9A, 0x00, 0x00 }, { FCML_OP_FAR_POINTER, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x00440000, { 0x9A, 0x00, 0x00 }, { FCML_OP_FAR_POINTER, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// FF /3 CALL m16:16 B Valid Valid Call far, absolute indirect address given in m16:16.
 	// FF /3 CALL m16:32 B Valid Valid In 64-bit mode.
 	// REX.W + FF /3 CALL m16:64 B Valid N.E. In 64-bit mode.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C59800, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x00C59800, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CBW[] = {
@@ -537,29 +537,29 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_JCXZ[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_Jcc[] = {
 	// JA rel8 A Valid Valid Jump short if ...
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x40C40040, { 0x70, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C40040, { 0x70, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// JA rel32 A Valid Valid Jump near if ...
 	// JAE rel16 A N.S. Valid Jump near if ...
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x40D80040, { 0x0F, 0x80, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40D80040, { 0x0F, 0x80, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_JMP[] = {
 	// EB cb JMP rel8 A Valid Valid Jump short, RIP = RIP + 8-bit displacement sign extended to 64-bits
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x40C40000, { 0xEB, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C40000, { 0xEB, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// E9 cw JMP rel16 A N.S. Valid Jump near, relative, displacement relative to next instruction. Not supported in 64-bit mode.
 	// E9 cd JMP rel32 A Valid Valid Jump near, relative, RIP = RIP + 32-bit displacement sign extended to 64-bits
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x40C40000, { 0xE9, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C40000, { 0xE9, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// FF /4 JMP r/m16 B N.S. Valid Jump near, absolute indirect, address = zero-extended r/m16. Not supported in 64- bit mode.
 	// FF /4 JMP r/m32 B N.S. Valid Jump near, absolute indirect, address given in r/m32. Not supported in 64-bit mode.
 	// FF /4 JMP r/m64 B Valid N.E. Jump near, absolute indirect, RIP = 64-Bit offset from register or memory
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x40C5A000, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C5A000, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// EA cd JMP ptr16:16 A Inv. Valid Jump far, absolute, address given in operand
 	// EA cp JMP ptr16:32 A Inv. Valid Jump far, absolute, address given in operand
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00440000, { 0xEA, 0x00, 0x00 }, { FCML_OP_FAR_POINTER, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x00440000, { 0xEA, 0x00, 0x00 }, { FCML_OP_FAR_POINTER, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// FF /5 JMP m16:16 A Valid Valid Jump far, absolute indirect, address given in m16:16
 	// FF /5 JMP m16:32 A Valid Valid Jump far, absolute indirect, address given in m16:32.
 	// REX.W + FF /5 JMP m16:64 A Valid N.E. Jump far, absolute indirect, address given in m16:64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A800, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x00C5A800, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CMP[] = {
@@ -977,7 +977,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ENTER[] = {
 	// C8 iw 00 ENTER imm16, 0 A Valid Valid Create a stack frame for a procedure.
 	// C8 iw 01 ENTER imm16, 1 A Valid Valid Create a nested stack frame for a procedure.
 	// C8 iw ib ENTER imm16, imm8 A Valid Valid Create a nested stack frame for a procedure.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xC8, 0x00, 0x00 }, { FCML_OP_IW | FCML_OA_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xC8, 0x00, 0x00 }, { FCML_OP_IW | FCML_OA_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_EXTRACTPS[] = {
@@ -1617,11 +1617,11 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VINSERTF128[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_INT[] = {
 	// CC INT 3 A Valid Valid Interrupt 3trap to debugger.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCC, 0x00, 0x00 }, { FCML_OP_EXPLICIT_IB( 3 ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xCC, 0x00, 0x00 }, { FCML_OP_EXPLICIT_IB( 3 ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// CD ib INT imm8 B Valid Valid Interrupt vector number specified by immediate byte.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCD, 0x00, 0x00 }, { FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xCD, 0x00, 0x00 }, { FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// CE INTO A Invalid Valid Interrupt 4if overflow flag is 1.
-	{ "into", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCE, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ "into", FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xCE, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_INVD[] = {
@@ -1648,11 +1648,11 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_INVPCID[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_IRET[] = {
 	// CF IRET A Valid Valid Interrupt return (16-bit operand size).
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x01C40000, { 0xCF, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x01C40000, { 0xCF, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// CF IRETD A Valid Valid Interrupt return (32-bit operand size).
-	{ "iretd", FCML_AMT_GPI, 0x0000, 0x02C40000, { 0xCF, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ "iretd", FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x02C40000, { 0xCF, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// REX.W + CF IRETQ A Valid N.E. Interrupt return (64-bit operand size).
-	{ "iretq", FCML_AMT_GPI, 0x0000, 0x04C40000, { 0xCF, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ "iretq", FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x04C40000, { 0xCF, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LAHF[] = {
@@ -1715,7 +1715,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LEAVE[] = {
 	// C9 LEAVE A Valid Valid Set SP to BP, then pop BP.
 	// C9 LEAVE A N.E. Valid Set ESP to EBP, then pop EBP.
 	// C9 LEAVE A Valid N.E. Set RSP
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xC9, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xC9, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LFENCE[] = {
@@ -1766,11 +1766,11 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LODS[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LOOP[] = {
 	// E2 cb LOOP rel8 A Valid Valid Decrement count; jump short if count 0.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xE2, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x00C40000, { 0xE2, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// E1 cb LOOPE rel8 A Valid Valid Decrement count; jump short if count 0 and ZF = 1.
-	{ "loope;loopz", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xE1, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ "loope;loopz", FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x00C40000, { 0xE1, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// E0 cb LOOPNE rel8 A Valid Valid Decrement count; jump short if count 0 and ZF = 0.
-	{ "loopne;loopnz", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xE0, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ "loopne;loopnz", FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x00C40000, { 0xE0, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LWPINS[] = {
@@ -3930,12 +3930,12 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_RDMSR[] = {
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_RET[] = {
 	// C3 RET
 	// CB RET
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xC3, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
-	{ "retf", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCB, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xC3, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ "retf", FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xCB, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// C2 iw RET imm16
 	// CA iw RET imm16
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xC2, 0x00, 0x00 }, { FCML_OP_IW, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
-	{ "retf", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xCA, 0x00, 0x00 }, { FCML_OP_IW, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xC2, 0x00, 0x00 }, { FCML_OP_IW, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
+	{ "retf", FCML_AMT_GPI | FCML_AMT_CTI, 0x0000, 0x00C40000, { 0xCA, 0x00, 0x00 }, { FCML_OP_IW, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ROUNDPD[] = {

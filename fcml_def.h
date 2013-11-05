@@ -116,6 +116,9 @@ typedef enum fcml_en_def_instruction_type {
 #define    FCML_AMT_VMX        0x0000001000000000UL
 #define    FCML_AMT_SMX        0x0000002000000000UL
 #define    FCML_AMT_POPCNT     0x0000004000000000UL
+// Control transfer instructions.
+#define    FCML_AMT_CTI        0x0000008000000000UL
+#define    FCML_AMT_BRANCH     0x0000010000000000UL
 // Shortcuts.
 #define    FCML_AMT_MMX_SIMD   FCML_AMT_MMX   | FCML_AMT_SIMD
 #define    FCML_AMT_SSE_SIMD   FCML_AMT_SSE   | FCML_AMT_SIMD

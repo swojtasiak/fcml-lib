@@ -42,6 +42,9 @@ typedef struct fcml_ist_dasm_operand_wrapper {
 	fcml_en_access_mode access_mode;
 } fcml_ist_dasm_operand_wrapper;
 
+// Definition is located below.
+struct fcml_ist_dasm_instruction_decoding_def;
+
 typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_dasm_disassembler_context *disassembler_context;
 	fcml_st_memory_stream *stream;
@@ -66,6 +69,8 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_bool opcode_field_s_bit;
 	// is4/is5 byte.
 	fcml_nuint8_t isX_byte;
+	// Currently proceeded decoding definition.
+	struct fcml_ist_dasm_instruction_decoding_def *decoding_def;
 } fcml_ist_dasm_decoding_context;
 
 typedef struct fcml_ist_dasm_disassembler {
@@ -78,9 +83,6 @@ typedef fcml_ceh_error ( *fcml_ifp_dasm_operand_decoder )( struct fcml_ist_dasm_
 
 /* Calculates size of the encoded operand in bytes. */
 typedef fcml_int ( *fcml_ifp_dasm_operand_size_calculator )( struct fcml_ist_dasm_decoding_context *context, fcml_ptr args );
-
-// Definition is located below.
-struct fcml_ist_dasm_instruction_decoding_def;
 
 /* Decoders responsible for instruction disassemblation. */
 typedef fcml_ceh_error (*fcml_ifp_dasm_instruction_decoder)( fcml_ist_dasm_decoding_context *context, struct fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def );
@@ -108,8 +110,10 @@ typedef struct fcml_ist_dasm_modrm_decoding_details {
 } fcml_ist_dasm_modrm_decoding_details;
 
 typedef struct fcml_ist_dasm_instruction_decoding_def {
-	/* Instruction type. */
+	/* Instruction code. */
 	fcml_uint16_t instruction;
+	// Type of the instruction.
+	fcml_uint64_t instruction_group;
 	/* Opcodes. */
 	uint8_t opcodes[FCML_OPCODES_NUM];
 	/* Instruction mnemonic */
@@ -631,12 +635,18 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		segment_selector->segment_selector.type = FCML_REG_SEG;
 		segment_selector->segment_selector.size = FCML_DS_16;
 
-		if( effective_address->base.type == FCML_REG_GPR && ( effective_address->base.reg == FCML_REG_BP || effective_address->base.reg == FCML_REG_SP ) ) {
-			segment_selector->segment_selector.reg = FCML_REG_SS;
+		if( context->decoding_def->instruction_group & FCML_AMT_BRANCH ) {
+			// For all branches only CS segment register is used. Segment override prefixes are ignored in this case.
+			segment_selector->segment_selector.reg = FCML_REG_CS;
 			segment_selector->is_default_reg = FCML_TRUE;
 		} else {
-			segment_selector->segment_selector.reg = fcml_ifn_dasm_utils_override_segment_reg( context, FCML_REG_DS );
-			segment_selector->is_default_reg = ( segment_selector->segment_selector.reg == FCML_REG_DS ) ? FCML_TRUE : FCML_FALSE;
+			if( effective_address->base.type == FCML_REG_GPR && ( effective_address->base.reg == FCML_REG_BP || effective_address->base.reg == FCML_REG_SP ) ) {
+				segment_selector->segment_selector.reg = FCML_REG_SS;
+				segment_selector->is_default_reg = FCML_TRUE;
+			} else {
+				segment_selector->segment_selector.reg = fcml_ifn_dasm_utils_override_segment_reg( context, FCML_REG_DS );
+				segment_selector->is_default_reg = ( segment_selector->segment_selector.reg == FCML_REG_DS ) ? FCML_TRUE : FCML_FALSE;
+			}
 		}
 
 		// These hints aren't used in 32 bit addressing mode.
@@ -1271,6 +1281,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 	// Copy flags.
 	decoding->prefixes_flags = addr_mode_desc->allowed_prefixes;
 	decoding->opcode_flags = addr_mode_desc->opcode_flags;
+	decoding->instruction_group = addr_mode_desc->instruction_group;
 	decoding->instruction = instruction_desc->instruction;
 
 	error = fcml_ifn_dasm_dts_allocate_acceptors_chain( addr_mode_desc, &(decoding->instruction_acceptors_chain) );
@@ -1638,6 +1649,8 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 		while( current ) {
 			fcml_ist_dasm_instruction_decoding_def *decoding_def = (fcml_ist_dasm_instruction_decoding_def*)current->item;
 			if( decoding_def ) {
+				// Set current decoding definition.
+				context->decoding_def = decoding_def;
 				// Try to accept this addressing mode.
 				fcml_bool accept = FCML_TRUE;
 				fcml_ist_dasm_addr_mode_acceptor_chain *chain = decoding_def->instruction_acceptors_chain;
