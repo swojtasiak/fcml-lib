@@ -361,7 +361,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 	return success;
 }
 
-fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_uint32_t flags, fcml_bool print_only ) {
+fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool x64, fcml_string mnemonic, fcml_bool should_fail, fcml_uint32_t flags, fcml_bool print_only, fcml_uint32_t ren_flags ) {
 
 	fcml_bool success = FCML_TRUE;
 
@@ -399,7 +399,7 @@ fcml_bool IA3264_instruction_diss_test( fcml_uint8_t *code, int size, fcml_bool 
 		stream.offset = 0;
 		stream.size = sizeof( buffer );
 
-		error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT );
+		error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | ren_flags );
 
 		if( error || strcmp( buffer, mnemonic ) != 0 ) {
 			if( !should_fail ) {

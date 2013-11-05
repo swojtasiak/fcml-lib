@@ -8,6 +8,7 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_c_t.h"
+#include "fcml_rend.h"
 
 int fcml_tf_instructions_c_suite_init(void) {
 	return 0;
@@ -21,6 +22,9 @@ void fcml_tf_instruction_CALL(void) {
     // m16:16,m16:32,m16:64
     FCML_I64_FAILED( "FAIL", 0x48, 0x66, 0xFF, 0x57, 0x01 );
     FCML_I32( "call far fword ptr [ebx+00000001h]", 0xFF, 0x5B, 0x01 );
+    FCML_I32_RF( "call far fword ptr cs:[ebx+00000001h]", FCML_REND_FLAG_RENDER_DEFAULT_SEG, 0xFF, 0x5B, 0x01 );
+    // Segment register can not be overridden.
+    FCML_I32_D_RF( "call far fword ptr cs:[ebx+00000001h]", FCML_REND_FLAG_RENDER_DEFAULT_SEG, 0x64, 0xFF, 0x5B, 0x01 );
     FCML_I32( "call far dword ptr [ebx+00000001h]", 0x66, 0xFF, 0x5B, 0x01 );
     FCML_I64_D( "call far tbyte ptr [rbx+0000000000000001h]", 0x66, 0x48, 0xFF, 0x5B, 0x01 ); // Verified.
     FCML_I64_D( "call far dword ptr [rbx+0000000000000001h]", 0x66, 0x40, 0xFF, 0x5B, 0x01 ); // Verified.
@@ -59,6 +63,8 @@ void fcml_tf_instruction_CALL(void) {
     FCML_I64( "call 0000800000401004h", 0xE8, 0xFF, 0xFF, 0xFF, 0xFF );
     FCML_I64( "call 00007fff80401005h", 0xE8, 0x00, 0x00, 0x00, 0x80 );
     FCML_I64( "call 0000800079d9a99eh", 0xE8, 0x99, 0x99, 0x99, 0x79 );
+    // Segment register are shown only in case of effective addresses.
+    FCML_I64_RF( "call 0000800079d9a99eh", FCML_REND_FLAG_RENDER_DEFAULT_SEG, 0xE8, 0x99, 0x99, 0x99, 0x79 );
 }
 
 void fcml_tf_instruction_CBW_CWDE_CDQE(void) {

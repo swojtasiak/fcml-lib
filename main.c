@@ -253,6 +253,10 @@ int main(int argc, char **argv) {
 	//FCML_I64_RF( "rcl byte ptr [abs 0000000000401007h],03h", FCML_REND_FLAG_RENDER_ABS_HINT, 0xc0, 0x15, 0x07, 0x10, 0x40, 0x00, 0x03 );
 	//return 0;
 
+	// TODO: sprz<awdzic assemblacje prefixow do zmiany rjestrow segmentowych, ten niby nie assembleuje domyslnego ale czy swiadomie?
+
+	///FCML_I32_A_P( "call far fword ptr cs:[ebx+00000001h]", 0x64, 0xFF, 0x5B, 0x01 );
+	//return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
