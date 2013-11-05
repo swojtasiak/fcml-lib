@@ -1,13 +1,3 @@
-22.08.2012 Opcode A6 dekoduje si� na: -> A6             CMPS BYTE PTR DS:[ESI],BYTE PTR ES:[EDI]
-Nale�y zastanowi� si� jak zakodowa� taki tryb adresowania gdzie rejestr ogolnego przeznaczenia i rejestr adresowy s� podane bezpo�rednio.
-
-02.09.2012
-Zastanowi� si� wrescie nad implementacja DS, ES itd rejestr�w segmentowych.
-
-06.10.2012
-Branch hints:
-� 2EH�Branch not taken (used only with Jcc instructions)
-� 3EH�Branch taken (used only with Jcc instructions)
 
 14.10.2012
 Sprawdzi� segment register dla tryb�w adreowania la instrukcji skok�w, czy DS , czy moze CS takih jak CALL, bo aktualnie wszystkie

@@ -25,6 +25,8 @@
 #define FCML_PREFIX_REPZ			FCML_PREFIX_REP
 #define FCML_PREFIX_XACQUIRE		0x0008
 #define FCML_PREFIX_XRELEASE		0x0010
+#define FCML_PREFIX_BRANCH_HINT		0x0020
+#define FCML_PREFIX_NOBRANCH_HINT	0x0040
 
 typedef enum fcml_en_addr_form {
     // TODO: Sprawdzic czy to supportujemy.
@@ -423,7 +425,7 @@ typedef struct fcml_st_operand {
 
 typedef enum fcml_en_instruction_hints {
     FCML_HINT_FAR_POINTER = 0x0001,
-    FCML_HINT_NEAR_POINTER = 0x0002,
+    FCML_HINT_NEAR_POINTER = 0x0002
 } fcml_en_instruction_hints;
 
 /* Generic instruction definition used by assembler and disassembler to encode/decode instruction. */

@@ -34,6 +34,12 @@ void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, f
 	if( prefixes->is_lock ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "lock " );
 	}
+	if( prefixes->is_branch ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "branch " );
+	}
+	if( prefixes->is_nobranch ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "nobranch " );
+	}
 	// TODO: Dodac mozliwosc konfiguracji.
 	if( prefixes->is_rep ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "rep " );

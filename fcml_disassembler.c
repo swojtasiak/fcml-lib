@@ -108,6 +108,8 @@ typedef struct fcml_ist_dasm_modrm_decoding_details {
 } fcml_ist_dasm_modrm_decoding_details;
 
 typedef struct fcml_ist_dasm_instruction_decoding_def {
+	/* Instruction type. */
+	fcml_uint16_t instruction;
 	/* Opcodes. */
 	uint8_t opcodes[FCML_OPCODES_NUM];
 	/* Instruction mnemonic */
@@ -1269,6 +1271,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 	// Copy flags.
 	decoding->prefixes_flags = addr_mode_desc->allowed_prefixes;
 	decoding->opcode_flags = addr_mode_desc->opcode_flags;
+	decoding->instruction = instruction_desc->instruction;
 
 	error = fcml_ifn_dasm_dts_allocate_acceptors_chain( addr_mode_desc, &(decoding->instruction_acceptors_chain) );
 	if( error ) {
@@ -1471,6 +1474,12 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 		fcml_ifn_dasm_clear_mandatory_flag( decoding_context, 0xF3 );
 	} else {
 		decoding_context->prefixes.is_rep = FCML_FALSE;
+	}
+
+	// Branches.
+	if( instruction_decoding_def->instruction != F_JCC ) {
+		decoding_context->prefixes.is_branch = FCML_FALSE;
+		decoding_context->prefixes.is_nobranch = FCML_FALSE;
 	}
 
 	// Change REP/REPNE prefixes to XACQUIRE/XRELEASE if instruction support them.
@@ -1739,7 +1748,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_int prefix_index = 0, prefix_size, xop_vex_prefix_size = 0;
 	fcml_st_dasm_prefix_types prefix_type;
 	fcml_bool is_mandatory_candidate, is_xop_vex_allowed = FCML_TRUE, is_last_prefix = FCML_FALSE;
-	fcml_bool is_vex, is_xop, is_lock, is_rep_xrelease, is_repne_xacquire;
+	fcml_bool is_vex, is_xop, is_lock, is_rep_xrelease, is_repne_xacquire, is_branch, is_nobranch;
 
 	do {
 		prefix_type = FCML_PT_GROUP_UNKNOWN;
@@ -1749,6 +1758,8 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 		is_repne_xacquire = FCML_FALSE;
 		is_vex = FCML_FALSE;
 		is_xop = FCML_FALSE;
+		is_branch = FCML_FALSE;
+		is_nobranch = FCML_FALSE;
 		// Almost all prefixes are one byte length, so it's a reasonable default here.
 		prefix_size = 1;
 		fcml_uint8_t prefix = fcml_fn_stream_peek(stream, &result);
@@ -1773,9 +1784,15 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 					is_xop_vex_allowed = FCML_FALSE;
 					break;
 				case 0x2E:
-				case 0x36:
+					is_nobranch = FCML_TRUE;
+					prefix_type = FCML_PT_GROUP_2;
+					break;
 				case 0x3E:
+					is_branch = FCML_TRUE;
+					prefix_type = FCML_PT_GROUP_2;
+					break;
 				case 0x26:
+				case 0x36:
 				case 0x64:
 				case 0x65:
 					prefix_type = FCML_PT_GROUP_2;
@@ -1920,6 +1937,12 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 				if( is_repne_xacquire ) {
 					prefixes_details->is_repne = FCML_TRUE;
 				}
+				if( is_branch ) {
+					prefixes_details->is_branch = FCML_TRUE;
+				}
+				if( is_nobranch ) {
+					prefixes_details->is_nobranch = FCML_TRUE;
+				}
 				fcml_fn_stream_seek(stream, prefix_size, FCML_EN_ST_CURRENT);
 				prefix_index++;
 			} else {
@@ -1971,6 +1994,12 @@ fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_dasm_p
 		}
 		if( prefixes->is_xrelease ) {
 			gen_prefixes |= FCML_PREFIX_XRELEASE;
+		}
+		if( prefixes->is_branch ) {
+			gen_prefixes |= FCML_PREFIX_BRANCH_HINT;
+		}
+		if( prefixes->is_nobranch ) {
+			gen_prefixes |= FCML_PREFIX_NOBRANCH_HINT;
 		}
 	}
 	return gen_prefixes;

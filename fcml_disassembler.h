@@ -67,6 +67,8 @@ typedef struct fcml_st_dasm_prefixes {
 	fcml_int prefixes_count;
 	fcml_int prefixes_bytes_count;
 	// Fast lookups.
+	fcml_bool is_branch;
+	fcml_bool is_nobranch;
 	fcml_bool is_lock;
 	fcml_bool is_rep;
 	fcml_bool is_repne;

@@ -5978,7 +5978,7 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "invpcid", fcml_st_def_addr_mode_desc_INVPCID ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "iret", fcml_st_def_addr_mode_desc_IRET ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "jcxz", fcml_st_def_addr_mode_desc_JCXZ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "j", fcml_st_def_addr_mode_desc_Jcc),
+		FCML_IA_INSTRUCTION( F_JCC, "j", fcml_st_def_addr_mode_desc_Jcc),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "jmp", fcml_st_def_addr_mode_desc_JMP),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "lahf", fcml_st_def_addr_mode_desc_LAHF),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "lar", fcml_st_def_addr_mode_desc_LAR),

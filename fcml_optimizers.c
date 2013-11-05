@@ -154,7 +154,7 @@ fcml_ceh_error fcml_fnp_asm_default_optimizer( fcml_st_asm_assembler_context *co
 	if( !eosa_count ) {
         eosa[eosa_count++] = 0;
     }
-
+	// TODO: zoptymalizowac instruckje JCC, jezeli nie mozna zdekodowac rel offset na 8 bitach, to powtarza probe dla wszystkich kombinacji asa i eosa zamiast prejsc o nastepego trybu adresowania, chya bedzie trzeba dodac jakies hinty ook kodu bledu, ktore bea sugerowaly optymizerowi ze nie ma co dalej meczyc daneo trybu adresowania.
 	int i, j;
 	for( i = 0; i < easa_count && error; i++ ) {
 		ds_flags->effective_address_size = easa[i];

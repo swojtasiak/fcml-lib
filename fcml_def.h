@@ -62,6 +62,7 @@ typedef enum fcml_en_def_instruction_type {
 
 #define F_UNKNOWN		0x0000
 #define F_AAA			0x0001
+#define F_JCC			0x0002
 
 /*******************/
 /* Addressing mode */

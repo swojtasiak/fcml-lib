@@ -1338,8 +1338,13 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		} else {
 			// Set hints for ModR/M instruction part encoder.
 			context->is_sib_alternative_hint = ( operand_def->hints & FCML_OP_HINT_SIB_ENCODING );
-			context->is_abs_alternative_hint = ( operand_def->hints & FCML_OP_HINT_ABSOLUTE_ADDRESSING );
-			context->is_rel_alternative_hint = ( operand_def->hints & FCML_OP_HINT_RELATIVE_ADDRESSING );
+			if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+				context->is_abs_alternative_hint = ( operand_def->hints & FCML_OP_HINT_ABSOLUTE_ADDRESSING );
+				context->is_rel_alternative_hint = ( operand_def->hints & FCML_OP_HINT_RELATIVE_ADDRESSING );
+			} else {
+				context->is_abs_alternative_hint = FCML_FALSE;
+				context->is_rel_alternative_hint = FCML_FALSE;
+			}
 		    context->mod_rm.address = operand_def->address;
 			error = fcml_ifn_asm_decode_dynamic_operand_size( context, args->encoded_memory_operand_size, operand_def->address.size_operator, NULL, FCML_IEN_CT_EQUAL );
 		}
@@ -2172,6 +2177,35 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 // Prefixes encoder factories. //
 /////////////////////////////////
 
+// Branch hints.
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_branch_hints_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_ist_asm_instruction_part *instruction_part, fcml_ptr args ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
+    	fcml_st_instruction *instruction = context->instruction;
+        if( instruction->prefixes & FCML_PREFIX_BRANCH_HINT ) {
+        	instruction_part->code[0] = 0x3E;
+			instruction_part->code_length = 1;
+        } else if( instruction->prefixes & FCML_PREFIX_NOBRANCH_HINT ) {
+        	instruction_part->code[0] = 0x2E;
+			instruction_part->code_length = 1;
+        }
+    }
+    return error;
+}
+
+fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_branch_hints_prefix_encoder( fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
+    fcml_ist_asm_instruction_part_processor_descriptor descriptor = {0};
+    // Branch hints are allowed only for JCC instructions.
+    if( instruction->instruction == F_JCC ) {
+		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+		descriptor.processor_args = NULL;
+		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_branch_hints_prefix_encoder;
+		descriptor.processor_acceptor = NULL;
+    }
+    return descriptor;
+}
+
 // REP prefix.
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_rep_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_ist_asm_instruction_part *instruction_part, fcml_ptr args ) {
@@ -2820,6 +2854,7 @@ fcml_ist_asm_instruction_part_factory_details fcml_iarr_asm_instruction_part_pro
 
 // List of instruction part encoders for instruction prefixes.
 fcml_ist_asm_instruction_part_factory_details fcml_iarr_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
+	{ fcml_ifn_asm_instruction_part_processor_factory_branch_hints_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_rep_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_repne_prefix_encoder, 0 },
 	{ fcml_ifn_asm_instruction_part_processor_factory_hle_prefixes_encoder, 0 },

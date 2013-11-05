@@ -16,3 +16,10 @@ register operand has 64 bits (the instruction cannot be executed in compatibilit
 W naszym rzypadku steruje sie tym za pomoca address_mode 32_bit lub 64_bit.
  
  INVEPT
+ 
+ Featurs:
+ branch hints dla JCC
+ 
+ Tam gdzies jest lista features:
+ http://www.godevtool.com/GoasmHelp/GoAsm.htm#why
+ 
