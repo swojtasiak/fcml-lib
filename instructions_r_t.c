@@ -168,6 +168,8 @@ void fcml_tf_instruction_RCPPS(void) {
     // VEX.128.0F.WIG 53 /r VRCPPS xmm1, xmm2/m128
     // VEX.256.0F.WIG 53 /r VRCPPS ymm1, ymm2/m256
     FCML_I32( "vrcpps xmm2,xmmword ptr [eax]", 0xc5, 0xf8, 0x53, 0x10 );
+    // long_form hint test.
+    FCML_I32_A( "vrcpps long_form xmm2,xmmword ptr [eax]", 0xc4, 0xe1, 0x78, 0x53, 0x10 );
     FCML_I64( "vrcpps ymm2,ymmword ptr [rax]", 0xc5, 0xfc, 0x53, 0x10 );
 }
 
