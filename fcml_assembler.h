@@ -26,6 +26,7 @@ typedef enum fcml_en_asm_assembler_optimizers {
 typedef struct fcml_st_asm_assembler_configuration {
 	fcml_bool choose_sib_encoding;
 	fcml_bool choose_abs_encoding;
+	fcml_bool force_3byte_vex;
 	fcml_en_asm_assembler_optimizers optimizer;
 	fcml_uint16_t optimizer_flags;
 	fcml_bool force_unnecessary_rex_prefix;

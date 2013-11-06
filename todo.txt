@@ -1,15 +1,4 @@
-
-14.10.2012
-Sprawdzi� segment register dla tryb�w adreowania la instrukcji skok�w, czy DS , czy moze CS takih jak CALL, bo aktualnie wszystkie
-dotaja DS.
-
-Doda� renderowanie rjestr�w segmentowych.
-
-Podczas assemblacji doda� obs�ug�: CMPSW/CMPSD/CMPSQ
-
 Doda� mo�liwo�� dodawania warning�w podczas disassemblacji, i dodawania kilku do kontekstu.
-
-Usun�� flagi LOCK, z operacji AVX, bo w cz�ci zostala!
 
 Sprawdzic i uzupelnic VVVV unued.
 
@@ -20,29 +9,6 @@ Any VEX-encoded GPR instruction with a 66H, F2H, or F3H prefix preceding VEX wil
 Any VEX-encoded GPR instruction with a REX prefix proceeding VEX will #UD.
 VEX-encoded GPR instructions are not supported in real and virtual 8086 modes.
 
-
-
-Regu�y:
-1. Jeden immediate value mo�e by� wykorzystany do zdekodowania kilku operand�w. Czyli, jeden operand dekoder przyk��dowo mo�e zdekodowa� 2 operandy, gryzie sie to troche z naszym zlozeniem, ze jeden operand do jednego dekodera.
-2. Instrukcje moga miec do 5 operandow (Moze zrezygnowa� ze sztywnego okreslania maksymalnej liczby operandow, tylko zastosowac jak�� liste)
-3. Zastanowic sie nad mozliwoscia zaznaczenia, �e wybrana instrukcja nie moze posiadac danych prefixow. A moze domyslnie intrucje SIMD ni zpozwalaja na zadne manadatory,  chyba ze te ktorych wymagaja. Pewnie tak jest.
-4. Oeprandy moga wyznaczac warosi warunkow dla instrukcji warunkowych.
-
-
-
-// Zpomniame toodo:
- 
-// TODO: Zastanowic sie czy do sterowania flagami nie da ie wykorzystac nowych bitow MOD3 ModNot3 zamiast bezposredniego ich podawania.
-#define _IRA_OPERAND_RM_BASE						0x17000000
-#define _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
-#define _IRA_OPERAND_RM_W(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( _IRA_OPERAND_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags) | _IRA_WRITE )
-
-03.09.2013
-Dodac mozliwo�c assemblacji instrucji XOP/VEX z prefixem C4 je�eli mozna zastosowac krotszy C5.
-
-08.09.2013
-Dodac mozliwosc disassemblacji pseudo opcode, jezeli odpowiednia opcja konfiguracyjna jest wlaczona.
-
 21.09.2013
 Dodac hinty, za pomoca ktorych bedzie mozliwosc assemblacji instruckji o okreslonej wielkosci operandu, przykladowo jmp rel8 a jmp rel32, dla -1 zostanie wybrane 8 bitow a mozemy chciec 32.
 Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wyboru optimizerom a czesc trybow adresowania sama decyduje jak optymalizowac ModRM/XOP/VEX 2-3 bajtyprefix.(W tym przypadku optymalizowanie ModRM) 
@@ -51,20 +17,12 @@ Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wy
 Mozliwosc ustawienia flagi, ktora bedzie wylaczala moliweosc ustaleni prefixow 66 i 67 dla wybranych istruckio, uywane glownie z SIMD.
 Moze zastosowac do tego flage podobna do force EOSA/EASA tlko nazwac ja do not let to change EOSA/EASA. albo fixed EASA/fixedEOSA.
 
-05.102013
-// TODO: w/d/q mozna rozpoznac na podstaiwe bity w opcode, moze by tak dodac do dialoktu mozliwosc konwersji instrukcji i zrezygnowc z powtarzaia?
-// Moglo by wyjsc na dobre w przypadku assembler� AT&T.
-Przyk�adowo: PSRL
-
--> Nie wiem co to. Możliwe że doszło w późniejszych wersjach, w każdym razie pierwszy raz się z tym spotykam.
-
-Branch hints:
-• 2EH—Branch not taken (used only with Jcc instructions)
-• 3EH—Branch taken (used only with Jcc instructions)
-
 24.10.2013
 - Dodac sprawdzanie podczas disassemblacji czy czaami nie dobieramy instrukcji ktora nie moze posiaac jakiegokolwiek prefixa 66, albo mentary jezeli jest on dostepny.
 - Wybod formy rendering short, pseudo opcode, full dac na poziom renderea i niech on za to podpowiada.
 
 3.11.2013
 Mozliwosc podawania symbolow podczas parsowania i ich resolving. W zasadzie tylko parser powinien to obslugiwac, dl assemblera trafiac powinein juz address.
+
+7.11.2013
+Jezeli wybieramy forme krótka, to nie powinismy zwracac uzytkownikowi operandow zakodoanych dla formu dlugiej, musimy byc konsekwentni poiewaz nie ebdzieyw stanie pozniej tak zdisassemblowanej instruckji ponownie zakodowaqc.

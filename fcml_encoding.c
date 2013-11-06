@@ -1805,7 +1805,13 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 }
 
 fcml_bool fcml_ifn_asm_accept_instruction_hints( fcml_hints addr_mode_dest_hints, fcml_hints instruction_hints ) {
-	return ( ( instruction_hints & addr_mode_dest_hints & FCML_HINT_FAR_POINTER ) || ( instruction_hints & addr_mode_dest_hints & FCML_HINT_NEAR_POINTER ) );
+	if( instruction_hints & FCML_HINT_FAR_POINTER ) {
+		return addr_mode_dest_hints & FCML_HINT_FAR_POINTER;
+	}
+	if( instruction_hints & FCML_HINT_NEAR_POINTER ) {
+		return addr_mode_dest_hints & FCML_HINT_NEAR_POINTER;
+	}
+	return FCML_TRUE;
 }
 
 fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_context *asm_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
@@ -2512,6 +2518,12 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder( f
 		}
 
 		fcml_uint8_t prefix = 0;
+
+		// If an instruction syntax can be encoded using the two-byte form, it can also be encoded using the three byte form of VEX.
+		// Three byte VEX can be forced using configuration or "long_form" instruction level hint.
+		if( context->assembler_context->configuration.force_3byte_vex || ( context->instruction->hints & FCML_HINT_LONG_FORM_POINTER ) ) {
+			is_two_bytes_vex = FCML_FALSE;
+		}
 
 		if( is_two_bytes_vex ) {
 			// Two byte VEX prefix.
