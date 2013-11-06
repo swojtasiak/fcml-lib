@@ -5,24 +5,14 @@ Sprawdzic i uzupelnic VVVV unued.
 Zrezygnowac z opcode flags [przynajmniej z R/M na rzecz wstepnej analizy operandow instrukcji, a nastepnie wykorzystaniu tej informacji przy wyboerze isntrukcji. Informacja z opcode flags jest porpostu nadmiarowa, mozna to wyliczyc analizujac operandy.
 Kazdy operand musial by posiadac mozliwosc odawania jakiegos filtr flag czy cos w tym rodzaju.
 
-Any VEX-encoded GPR instruction with a 66H, F2H, or F3H prefix preceding VEX will #UD.
-Any VEX-encoded GPR instruction with a REX prefix proceeding VEX will #UD.
 VEX-encoded GPR instructions are not supported in real and virtual 8086 modes.
 
 21.09.2013
 Dodac hinty, za pomoca ktorych bedzie mozliwosc assemblacji instruckji o okreslonej wielkosci operandu, przykladowo jmp rel8 a jmp rel32, dla -1 zostanie wybrane 8 bitow a mozemy chciec 32.
 Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wyboru optimizerom a czesc trybow adresowania sama decyduje jak optymalizowac ModRM/XOP/VEX 2-3 bajtyprefix.(W tym przypadku optymalizowanie ModRM) 
 
-29.09.2013
-Mozliwosc ustawienia flagi, ktora bedzie wylaczala moliweosc ustaleni prefixow 66 i 67 dla wybranych istruckio, uywane glownie z SIMD.
-Moze zastosowac do tego flage podobna do force EOSA/EASA tlko nazwac ja do not let to change EOSA/EASA. albo fixed EASA/fixedEOSA.
-
-24.10.2013
-- Dodac sprawdzanie podczas disassemblacji czy czaami nie dobieramy instrukcji ktora nie moze posiaac jakiegokolwiek prefixa 66, albo mentary jezeli jest on dostepny.
-- Wybod formy rendering short, pseudo opcode, full dac na poziom renderea i niech on za to podpowiada.
-
 3.11.2013
 Mozliwosc podawania symbolow podczas parsowania i ich resolving. W zasadzie tylko parser powinien to obslugiwac, dl assemblera trafiac powinein juz address.
 
 7.11.2013
-Jezeli wybieramy forme krótka, to nie powinismy zwracac uzytkownikowi operandow zakodoanych dla formu dlugiej, musimy byc konsekwentni poiewaz nie ebdzieyw stanie pozniej tak zdisassemblowanej instruckji ponownie zakodowaqc.
+Jezeli wybieramy forme krótka, to nie powinismy zwracac uzytkownikowi operandow zakodoanych dla formy dlugiej, musimy byc konsekwentni poiewaz nie ebdzieyw stanie pozniej tak zdisassemblowanej instruckji ponownie zakodowaqc.

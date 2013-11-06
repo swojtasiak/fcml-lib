@@ -1764,6 +1764,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_bool is_vex, is_xop, is_lock, is_rep_xrelease, is_repne_xacquire, is_branch, is_nobranch;
 
 	do {
+		// TODO: moze amienic te wszytkie ify na flagi.
 		prefix_type = FCML_PT_GROUP_UNKNOWN;
 		is_mandatory_candidate = FCML_FALSE;
 		is_lock = FCML_FALSE;
@@ -1849,7 +1850,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 						prefixes_details->x = FCML_REX_X(prefix);
 						prefixes_details->b = FCML_REX_B(prefix);
 						// REX can not be used together with the VEX at the moment.
-						is_xop_vex_allowed = FCML_TRUE;
+						is_xop_vex_allowed = FCML_FALSE;
 						is_last_prefix = FCML_TRUE;
 					}
 				break;
