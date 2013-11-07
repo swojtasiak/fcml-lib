@@ -18,10 +18,22 @@
 typedef struct fcml_st_asm_assembler {
 } fcml_st_asm_assembler;
 
+typedef struct fcml_st_asm_assembled_instruction {
+#ifdef FCML_DEBUG
+	// Index of addressing mode used to assemble instruction.
+	fcml_uint8_t __def_index;
+#endif
+	fcml_uint8_t *code;
+	fcml_usize code_length;
+} fcml_st_asm_assembled_instruction;
+
 typedef enum fcml_en_asm_assembler_optimizers {
 	FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER = 0,
 	FCML_EN_OP_NO_OPTIMIZER,
 } fcml_en_asm_assembler_optimizers;
+
+// Chooser definition.
+typedef fcml_st_asm_assembled_instruction* (*fcml_fp_instruction_chooser)( fcml_st_coll_list *instructions );
 
 typedef struct fcml_st_asm_assembler_configuration {
 	fcml_bool choose_sib_encoding;
@@ -29,6 +41,7 @@ typedef struct fcml_st_asm_assembler_configuration {
 	fcml_bool force_3byte_vex;
 	fcml_en_asm_assembler_optimizers optimizer;
 	fcml_uint16_t optimizer_flags;
+	fcml_fp_instruction_chooser chooser;
 	fcml_bool force_unnecessary_rex_prefix;
 	fcml_bool force_three_byte_VEX;
 } fcml_st_asm_assembler_configuration;
@@ -37,6 +50,8 @@ typedef struct fcml_st_asm_assembler_result {
 	fcml_st_ceh_error_container *errors;
 	// List of fcml_st_asm_assembled_instruction structures.
 	fcml_st_coll_list *instructions;
+	// Instruction chosen by used chooser.
+	fcml_st_asm_assembled_instruction *chosen_instruction;
 } fcml_st_asm_assembler_result;
 
 typedef struct fcml_st_asm_assembler_context {
@@ -48,15 +63,6 @@ typedef struct fcml_st_asm_assembler_context {
 	fcml_data_size effective_operand_size;
 	fcml_st_instruction_pointer ip;
 } fcml_st_asm_assembler_context;
-
-typedef struct fcml_st_asm_assembled_instruction {
-#ifdef FCML_DEBUG
-	// Index of addressing mode used to assemble instruction.
-	fcml_uint8_t __def_index;
-#endif
-	fcml_uint8_t *code;
-	fcml_usize code_length;
-} fcml_st_asm_assembled_instruction;
 
 fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect_context context, fcml_st_asm_assembler **assembler );
 fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *context, fcml_st_instruction *instruction, fcml_st_asm_assembler_result **result );

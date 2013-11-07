@@ -1893,7 +1893,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
                         	args.addr_mode = addr_mode;
                         	args.context = &context;
 
-                            error = optimizer( context.assembler_context, &(context.data_size_flags), fcml_ifn_asm_assemble_and_collect_instruction, &args );
+                            optimizer( context.assembler_context, &(context.data_size_flags), fcml_ifn_asm_assemble_and_collect_instruction, &args );
                         }
                     }
 
@@ -1907,8 +1907,14 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 
 			}
 
-			if( context.result->instructions->size == 0 ) {
+			if( result->instructions->size == 0 ) {
 				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+			}
+
+			// Choose instruction.
+			fcml_fp_instruction_chooser chooser = asm_context->configuration.chooser;
+			if( chooser ) {
+				result->chosen_instruction = chooser( result->instructions );
 			}
 
 		} else {

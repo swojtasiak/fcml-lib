@@ -108,7 +108,10 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 			enc_result.errors = asm_result->errors;
 			enc_result.instructions = asm_result->instructions;
 
-			addr_modes->instruction_encoder( asm_context, instruction, &enc_result, addr_modes );
+			error = addr_modes->instruction_encoder( asm_context, instruction, &enc_result, addr_modes );
+			if( !error ) {
+				asm_result->chosen_instruction = enc_result.chosen_instruction;
+			}
 
 		} else {
 			// Unavailable instruction encoder.
