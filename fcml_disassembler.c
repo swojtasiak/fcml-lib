@@ -2057,6 +2057,27 @@ fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect_context *context,
 	return error;
 }
 
+void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruction, fcml_st_dasm_instruction_details *instruction_details ) {
+	if( instruction_details->is_shortcut ) {
+		// Clean all operands, short forms do not have them.
+		instruction->operands_count = 0;
+		fcml_fn_env_memory_clear( &(instruction->operands[0]), sizeof( fcml_st_operand[FCML_OPERANDS_COUNT] ) );
+		fcml_fn_env_memory_clear( &(instruction_details->operand_details[0]), sizeof( fcml_st_dasm_operand_details[FCML_OPERANDS_COUNT] ) );
+	} else if( instruction_details->is_pseudo_op_shortcut ) {
+		int i;
+		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+			// Clean IMM pseudo opcode operand.
+			if( instruction->operands[i].hints & FCML_OP_HINT_PSEUDO_OPCODE ) {
+				fcml_fn_env_memory_clear( &(instruction->operands[i] ), sizeof( fcml_st_operand ) );
+				fcml_fn_env_memory_clear( &(instruction_details->operand_details[i] ), sizeof( fcml_st_dasm_operand_details ) );
+				instruction->operands_count--;
+				// It is always the last one.
+				break;
+			}
+		}
+	}
+}
+
 fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *context, fcml_st_dasm_disassembler_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -2154,6 +2175,9 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 				// Mnemonic not found.
 				return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
 			}
+
+			// Clean operands for short forms.
+			fcml_ifn_dasm_clean_operands_for_short_forms( instruction, instruction_details );
 
 			*result = dis_res;
 

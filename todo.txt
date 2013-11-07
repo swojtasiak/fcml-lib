@@ -7,5 +7,3 @@ Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wy
 3.11.2013
 Mozliwosc podawania symbolow podczas parsowania i ich resolving. W zasadzie tylko parser powinien to obslugiwac, dl assemblera trafiac powinein juz address.
 
-7.11.2013
-Jezeli wybieramy forme krótka, to nie powinismy zwracac uzytkownikowi operandow zakodoanych dla formy dlugiej, musimy byc konsekwentni poiewaz nie ebdzieyw stanie pozniej tak zdisassemblowanej instruckji ponownie zakodowaqc.
