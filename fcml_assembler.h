@@ -18,6 +18,25 @@
 typedef struct fcml_st_asm_assembler {
 } fcml_st_asm_assembler;
 
+// Processing details for optimizers.
+typedef struct fcml_st_asm_data_size_flags {
+	// Flags describing all EOSa sizes available for given addressing mode.
+	fcml_st_cmi_nullable_size_flags allowed_effective_operand_size;
+	fcml_st_cmi_nullable_size_flags allowed_effective_address_size;
+	// Effective address/operand size chosen for currently processed address mode. If set can not be changed anymore.
+	// It has higher priority than flags above.
+	fcml_data_size effective_address_size;
+	fcml_data_size effective_operand_size;
+	// L bit from VEX like prefixes set for encoded instruction.
+	fcml_nuint8_t l;
+} fcml_st_asm_data_size_flags;
+
+struct fcml_st_asm_assembler_context;
+
+// Optimizer definition.
+typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_ptr args );
+typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( struct fcml_st_asm_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
+
 typedef struct fcml_st_asm_assembled_instruction {
 #ifdef FCML_DEBUG
 	// Index of addressing mode used to assemble instruction.
@@ -27,21 +46,16 @@ typedef struct fcml_st_asm_assembled_instruction {
 	fcml_usize code_length;
 } fcml_st_asm_assembled_instruction;
 
-typedef enum fcml_en_asm_assembler_optimizers {
-	FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER = 0,
-	FCML_EN_OP_NO_OPTIMIZER,
-} fcml_en_asm_assembler_optimizers;
-
 // Chooser definition.
-typedef fcml_st_asm_assembled_instruction* (*fcml_fp_instruction_chooser)( fcml_st_coll_list *instructions );
+typedef fcml_st_asm_assembled_instruction* (*fcml_fnp_asm_instruction_chooser)( fcml_st_coll_list *instructions );
 
 typedef struct fcml_st_asm_assembler_configuration {
 	fcml_bool choose_sib_encoding;
 	fcml_bool choose_abs_encoding;
 	fcml_bool force_3byte_vex;
-	fcml_en_asm_assembler_optimizers optimizer;
+	fcml_fnp_asm_optimizer optimizer;
 	fcml_uint16_t optimizer_flags;
-	fcml_fp_instruction_chooser chooser;
+	fcml_fnp_asm_instruction_chooser chooser;
 	fcml_bool force_unnecessary_rex_prefix;
 	fcml_bool force_three_byte_VEX;
 } fcml_st_asm_assembler_configuration;

@@ -189,6 +189,10 @@ fcml_st_operand fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value );
 #define FCML_IMM64_S( x )		fcml_fn_cu_operand_signed_imm_64( x )
 #define FCML_IMM64( x )			fcml_fn_cu_operand_unsigned_imm_64( x )
 
+#ifdef FCML_USE_SHORT_REG
+#define FCML_REG( x )			fcml_fn_cu_operand_reg( &fcml_reg_##x )
+#else
 #define FCML_REG( x )			fcml_fn_cu_operand_reg( &x )
+#endif
 
 #endif /* FCML_COMMON_UTILS_H_ */

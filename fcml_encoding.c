@@ -17,6 +17,7 @@
 #include "fcml_modrm.h"
 #include "fcml_modrm_encoder.h"
 #include "fcml_optimizers.h"
+#include "fcml_choosers.h"
 #include "fcml_stream.h"
 #include "fcml_trace.h"
 #include "fcml_utils.h"
@@ -1824,11 +1825,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 
 	if( addr_modes ) {
 
-		fcml_en_asm_assembler_optimizers optimizer_type = context.assembler_context->configuration.optimizer;
-		fcml_fnp_asm_optimizer optimizer = fcml_ar_optimizers[optimizer_type];
+		fcml_fnp_asm_optimizer optimizer = context.assembler_context->configuration.optimizer;
 		if( !optimizer ) {
-			// Optimizer not found.
-			return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+			optimizer = &fcml_fnp_asm_default_optimizer;
 		}
 
 		// Check if there are any operands available. Short form can be used only if there are no operands.
@@ -1907,15 +1906,18 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 
 			}
 
+			// Check if there is at least one assembled instruction.
 			if( result->instructions->size == 0 ) {
 				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
 
 			// Choose instruction.
-			fcml_fp_instruction_chooser chooser = asm_context->configuration.chooser;
-			if( chooser ) {
-				result->chosen_instruction = chooser( result->instructions );
+			fcml_fnp_asm_instruction_chooser chooser = asm_context->configuration.chooser;
+			if( !chooser ) {
+				chooser = &fcml_fn_asm_default_instruction_chooser;
 			}
+
+			result->chosen_instruction = chooser( result->instructions );
 
 		} else {
 			// There is no addressing mode for given instruction. It should never happened, so it's an internal bug.

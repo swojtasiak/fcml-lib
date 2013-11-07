@@ -166,10 +166,3 @@ fcml_ceh_error fcml_fnp_asm_default_optimizer( fcml_st_asm_assembler_context *co
 
 	return error;
 }
-
-fcml_fnp_asm_optimizer fcml_ar_optimizers[] = {
-	fcml_fnp_asm_default_optimizer,
-	NULL
-};
-
-
