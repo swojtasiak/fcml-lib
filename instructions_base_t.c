@@ -158,6 +158,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 		context.configuration.choose_sib_encoding = FCML_FALSE;
 		context.configuration.choose_abs_encoding = !enable_rip;
 		context.configuration.force_3byte_vex = FCML_FALSE;
+		context.configuration.chooser = NULL;
 		context.configuration.optimizer = FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
 		context.configuration.optimizer_flags = opt_flags;
 		context.configuration.force_unnecessary_rex_prefix = FCML_FALSE;

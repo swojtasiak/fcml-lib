@@ -42,6 +42,7 @@
 #include "fcml_intel_parser_t.h"
 #include "fcml_dialect_intel.h"
 #include "hints_t.h"
+#include "fcml_chooser_t.h"
 
 #include "fcml_assembler.h"
 #include "fcml_disassembler.h"
@@ -79,6 +80,7 @@ CU_SuiteInfo *suites[] = {
 	fcml_si_intel_parser,
 	fcml_si_mnemonic_parser,
 	fcml_si_hints,
+	fcml_si_chooser,
     NULL
 };
 
@@ -257,7 +259,6 @@ int main(int argc, char **argv) {
 
 	///FCML_I32_A_P( "call far fword ptr cs:[ebx+00000001h]", 0x64, 0xFF, 0x5B, 0x01 );
 	//return 0;
-
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
