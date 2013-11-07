@@ -142,7 +142,6 @@ fcml_fnp_def_addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
 	fcml_fnp_def_addr_mode_args_decoder_opcode_reg,
 	fcml_fnp_def_addr_mode_args_decoder_immediate_dis_relative,
 	NULL,
-	NULL,
 	fcml_fnp_def_addr_mode_args_decoder_explicit_gps_reg_addressing,
 	fcml_fnp_def_addr_mode_args_decoder_explicit_ib,
 	fcml_fnp_def_addr_mode_args_decoder_segment_relative_offset,

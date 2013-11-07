@@ -1,10 +1,3 @@
-Doda� mo�liwo�� dodawania warning�w podczas disassemblacji, i dodawania kilku do kontekstu.
-
-Sprawdzic i uzupelnic VVVV unued.
-
-Zrezygnowac z opcode flags [przynajmniej z R/M na rzecz wstepnej analizy operandow instrukcji, a nastepnie wykorzystaniu tej informacji przy wyboerze isntrukcji. Informacja z opcode flags jest porpostu nadmiarowa, mozna to wyliczyc analizujac operandy.
-Kazdy operand musial by posiadac mozliwosc odawania jakiegos filtr flag czy cos w tym rodzaju.
-
 VEX-encoded GPR instructions are not supported in real and virtual 8086 modes.
 
 21.09.2013

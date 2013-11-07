@@ -1,2 +1,3 @@
 VVVV - Czy instrukcja wymaga.
 Czy podano bezwzgledna wielkosc rejestru SIMD, czy moze L jezeli i tak tylko bezwzgledna jest dopuszczalna.
+Sprawdzic i uzupelnic VVVV unused, flagi nie są wszędzie odpowiedio ustawione.

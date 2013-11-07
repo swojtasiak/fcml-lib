@@ -1558,7 +1558,6 @@ fcml_ist_asm_operand_encoder_def fcml_iarr_asm_def_operand_encoders[] = {
 	{ fcml_ifn_asm_operand_encoder_opcode_reg, fcml_ifn_asm_operand_acceptor_opcode_reg, NULL },
 	{ fcml_ifn_asm_operand_encoder_immediate_dis_relative, fcml_ifn_asm_operand_acceptor_immediate_dis_relative, NULL },
 	{ fcml_ifn_asm_operand_encoder_far_pointer, fcml_ifn_asm_operand_acceptor_far_pointer, fcml_fn_hts_ihc_far_pointer },
-	{ fcml_ifn_asm_operand_encoder_far_pointer_indirect, fcml_ifn_asm_operand_acceptor_far_pointer_indirect, fcml_fn_hts_ihc_far_pointer },
 	{ NULL, fcml_ifn_asm_operand_acceptor_explicit_gps_reg_addressing, NULL },
 	{ fcml_ifn_asm_operand_encoder_explicit_ib, fcml_ifn_asm_operand_acceptor_explicit_ib, NULL },
 	{ fcml_ifn_asm_operand_encoder_segment_relative_offset, fcml_ifn_asm_operand_acceptor_segment_relative_offset, NULL },

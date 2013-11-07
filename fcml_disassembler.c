@@ -105,8 +105,14 @@ typedef struct fcml_ist_dasm_operand_decoding {
 } fcml_ist_dasm_operand_decoding;
 
 typedef struct fcml_ist_dasm_modrm_decoding_details {
+	// True if vector-index memory addressing is used.
 	fcml_bool is_vsib;
+	// Vector register size.
 	fcml_data_size vsib_index_size;
+	// True if addressing mode is restricted only to register.
+	fcml_bool is_reg_restriction;
+	// True if addressing mode is restricted only to memory.
+	fcml_bool is_mem_restriction;
 } fcml_ist_dasm_modrm_decoding_details;
 
 typedef struct fcml_ist_dasm_instruction_decoding_def {
@@ -805,7 +811,6 @@ fcml_ist_dasm_operand_decoder_def fcml_iarr_def_operand_decoders[] = {
 	{ fcml_ifn_dasm_operand_decoder_opcode_reg, NULL, NULL },
 	{ fcml_ifn_dasm_operand_decoder_immediate_dis_relative, fcml_ifn_dasm_operand_size_calculator_immediate_dis_relative, fcml_fn_hts_ihc_immediate_dis_relative },
 	{ fcml_ifn_dasm_operand_decoder_far_pointer, fcml_ifn_dasm_operand_size_calculator_far_pointer, fcml_fn_hts_ihc_far_pointer },
-	{ fcml_ifn_dasm_operand_decoder_far_pointer_indirect, NULL, fcml_fn_hts_ihc_far_pointer },
 	{ fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing, NULL, NULL },
 	{ fcml_ifn_dasm_operand_decoder_explicit_ib, NULL, NULL },
 	{ fcml_ifn_dasm_operand_decoder_segment_relative_offset, fcml_ifn_dasm_operand_size_calculator_segment_relative_offset, NULL },
@@ -1061,15 +1066,17 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm( fcml_ist_dasm_decoding_conte
 	fcml_st_memory_stream *code = context->stream;
 	fcml_st_dasm_prefixes *prefixes = &(context->prefixes);
 
+	fcml_ist_dasm_modrm_decoding_details *modrm_details = &(instruction_decoding_def->modrm_details);
+
 	// Check addressing mode for ModRM opcodes.
-	if( FCML_DEF_OPCODE_FLAGS_MODRM_M( opcode_flags ) ) {
+	if( modrm_details->is_mem_restriction ) {
 		fcml_bool modrm_found = FCML_FALSE;
 		uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found );
 		if( !modrm_found || FCML_MODRM_DEC_MOD( modrm ) == 3 ) {
 			return FCML_FALSE;
 		}
 	}
-	if( FCML_DEF_OPCODE_FLAGS_MODRM_R( opcode_flags ) ) {
+	if( modrm_details->is_reg_restriction ) {
 		fcml_bool modrm_found = FCML_FALSE;
 		uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found );
 		if( !modrm_found || FCML_MODRM_DEC_MOD( modrm ) != 3 ) {
@@ -1099,7 +1106,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm( fcml_ist_dasm_decoding_conte
 }
 
 fcml_ifp_dasm_instruction_acceptor fcml_ifn_dasm_instruction_acceptor_factory_modrm( fcml_st_def_addr_mode_desc *addr_mode_desc ) {
-	return fcml_ifn_dasm_instruction_acceptor_modrm;
+	return FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode_desc->opcode_flags ) ? fcml_ifn_dasm_instruction_acceptor_modrm : NULL;
 }
 
 // ----------------
@@ -1151,7 +1158,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions( fcml_
 }
 
 fcml_ifp_dasm_instruction_acceptor fcml_ifn_dasm_instruction_acceptor_factory_size_attributes_restrictions( fcml_st_def_addr_mode_desc *addr_mode_desc ) {
-	return fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions;
+	return ( FCML_DEF_OPCODE_FLAGS_IS_EOSA_RESTRICTION( addr_mode_desc->opcode_flags ) || FCML_DEF_OPCODE_FLAGS_IS_EASA_RESTRICTION( addr_mode_desc->opcode_flags ) ) ? fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions : NULL;
 }
 
 // ----------------
@@ -1249,10 +1256,17 @@ void fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default( fcml_st_di
 }
 
 void fcml_ifn_dasm_dts_prepare_modrm_decoding_details( fcml_st_def_decoded_addr_mode *decoded_addr_mode, fcml_ist_dasm_modrm_decoding_details *modrm_details ) {
-	if( decoded_addr_mode != NULL && decoded_addr_mode->addr_mode == ( FCML_OP_VSIB_BASE >> 24 ) ) {
-		fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm *)decoded_addr_mode->addr_mode_args;
-		modrm_details->is_vsib = FCML_TRUE;
-		modrm_details->vsib_index_size = ( rm_args->vector_index_register ) == FCML_VSIB_XMM ? FCML_DS_128 : FCML_DS_256;
+	if( decoded_addr_mode ) {
+		if( FCMP_DEF_IS_ADDR_MODE( decoded_addr_mode->addr_mode, FCML_OP_VSIB_BASE ) ) {
+			fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm *)decoded_addr_mode->addr_mode_args;
+			modrm_details->is_vsib = FCML_TRUE;
+			modrm_details->vsib_index_size = ( rm_args->vector_index_register ) == FCML_VSIB_XMM ? FCML_DS_128 : FCML_DS_256;
+		}
+		if( FCMP_DEF_IS_ADDR_MODE( decoded_addr_mode->addr_mode, FCML_OP_RM_BASE ) ) {
+			fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm*)decoded_addr_mode->addr_mode_args;
+			modrm_details->is_reg_restriction = ( rm_args->flags == FCML_RMF_R );
+			modrm_details->is_mem_restriction = ( rm_args->flags == FCML_RMF_M );
+		}
 	}
 }
 

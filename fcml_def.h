@@ -39,7 +39,7 @@
 // Operand size calculated on L field.
 #define FCML_EOS_L			0xFD
 
-// Oprand sizes that cannot be simply written as number of bytes.
+// Operand sizes that cannot be simply written as number of bytes.
 #define FCML_EOS_14_28		0xFC
 #define FCML_EOS_94_108		0xFB
 #define FCML_EOS_32_64		0xFA
@@ -202,7 +202,6 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(x)					( ( x & 0x00007800 ) >> 11 )
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 			FCML_TP_GET_BIT(x,15)
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT(x) 				FCML_TP_GET_BIT(x,16)
-#define FCML_DEF_OPCODE_FLAGS_MODRM_R(x)	 				FCML_TP_GET_BIT(x,17)
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_NUM(x) 				( ( x & 0x000C0000 ) >> 18 )
 #define FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE(x) 			( ( x & 0x00300000 ) >> 20 )
 #define FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(x)		( x & 0x00800000 )
@@ -216,7 +215,6 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_OPCODE_FLAGS_EASA_64(x)					( x & 0x20000000 )
 #define FCML_DEF_OPCODE_FLAGS_IS_EASA_RESTRICTION(x)		( x & 0x38000000 )
 #define FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA(x)			( x & 0x40000000 )
-#define FCML_DEF_OPCODE_FLAGS_MODRM_M(x)	 				FCML_TP_GET_BIT(x,31)
 
 /*********************************
  * Addressing modes.
@@ -248,20 +246,16 @@ typedef struct fcml_st_def_instruction_desc {
 // Far pointers.
 #define FCML_OP_FAR_POINTER											0x05000000
 
-// TODO: Far pointer indirect mozna zlikwidowac na rzecz Modrm z wielkoscia FCML_EOS_FPI.
-// Far indirect pointer.
-#define FCML_OP_FAR_POINTER_INDIRECT								0x06000000
-
 // Addressing by explicit GPR register. (Used by CMPS for instance.)
-#define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE					0x07000000
+#define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE					0x06000000
 #define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE | reg_num << 16 | encoded_operand_size << 8 | encoded_segment_register )
 
 // It allows defining explicit IMM8 operand type. See INT instruction.
-#define FCML_OP_EXPLICIT_IB_BASE									0x08000000
+#define FCML_OP_EXPLICIT_IB_BASE									0x07000000
 #define FCML_OP_EXPLICIT_IB(value)									( FCML_OP_EXPLICIT_IB_BASE | value )
 
 // Segment relative addressing.
-#define FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE						0x09000000
+#define FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE						0x08000000
 #define FCML_OP_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
 
 /********************************/
@@ -274,18 +268,18 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_RMF_M		0x02
 #define FCML_RMF_RM		( FCML_RMF_R | FCML_RMF_M )
 
-#define FCML_OP_RM_BASE								0x0A000000
+#define FCML_OP_RM_BASE								0x09000000
 #define FCML_OP_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( FCML_OP_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
 #define FCML_OP_RM_W(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( FCML_OP_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags) | FCML_OA_W )
 
-#define FCML_OP_R_BASE								0x0B000000
+#define FCML_OP_R_BASE								0x0A000000
 #define FCML_OP_R( reg_type, encoded_register_operand_size )	( FCML_OP_R_BASE | ( encoded_register_operand_size << 4 ) | reg_type )
 
 /******************************/
 /* XOP/VEX specific encoding. */
 /******************************/
 
-#define FCML_OP_VEX_VVVV_REG_BASE						0x0C000000
+#define FCML_OP_VEX_VVVV_REG_BASE						0x0B000000
 #define FCML_OP_VEX_VVVV_REG( reg_type, encoded_register_size )	( FCML_OP_VEX_VVVV_REG_BASE | ( encoded_register_size << 4 ) | reg_type )
 
 /*****************************/
@@ -297,7 +291,7 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_ISF_IS5_SRC	0x10
 #define FCML_ISF_IS5_M2Z	0x20
 
-#define FCML_OP_OPERAND_ISx_BASE						0x0D000000
+#define FCML_OP_OPERAND_ISx_BASE						0x0C000000
 #define FCML_OP_OPERAND_IS4								( FCML_OP_OPERAND_ISx_BASE | FCML_ISF_IS4 )
 #define FCML_OP_OPERAND_IS5( flags )					( FCML_OP_OPERAND_ISx_BASE | FCML_ISF_IS5 | flags )
 
@@ -309,15 +303,15 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_VSIB_XMM	0x01
 #define FCML_VSIB_YMM	0x02
 
-#define FCML_OP_VSIB_BASE						    0x0E000000
+#define FCML_OP_VSIB_BASE						    	0x0D000000
 #define FCML_OP_VSIB( vector_index_register, encoded_index_value_size )		( FCML_OP_VSIB_BASE | vector_index_register << 8 | encoded_index_value_size )
 
 /**************/
 /* Pseudo-Op. */
 /**************/
 
-#define FCML_OP_PSEUDO_OP_BASE                      0x0F000000
-#define FCML_OP_PSEUDO_OP( mask )                   ( FCML_OP_PSEUDO_OP_BASE | ( mask ) )
+#define FCML_OP_PSEUDO_OP_BASE                      	0x0E000000
+#define FCML_OP_PSEUDO_OP( mask )                   	( FCML_OP_PSEUDO_OP_BASE | ( mask ) )
 
 /*******************************/
 /* Segment registers encoding. */
@@ -328,6 +322,10 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_SEG_ENCODE_REGISTER( reg_num, override )		( reg_num | override )
 #define FCML_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded )		( FCML_SEG_ALLOW_OVERRIDE & encoded )
 #define FCML_SEG_DECODE_REGISTER( encoded )					( encoded & ~FCML_SEG_ALLOW_OVERRIDE )
+
+// Useful macros related to addressing modes.
+
+#define FCMP_DEF_IS_ADDR_MODE( x, y )						( ( x ) == ( y >> 24 ) )
 
 // Shorthands
 
