@@ -32,8 +32,6 @@ void fcml_fn_chooser_default(void) {
 	fcml_st_asm_assembler_context context = {0};
 	context.assembler = assembler;
 	context.addr_form = FCML_AF_32_BIT;
-	context.configuration.chooser = &fcml_fp_default_instruction_chooser;
-	context.configuration.optimizer = FCML_EN_OP_DEFAULT_ADDRESSING_MODE_OPTIMIZER;
 	context.ip.eip = 0x00401000;
 
 	fcml_st_instruction instruction = {0};
