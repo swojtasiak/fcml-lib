@@ -344,9 +344,9 @@ typedef struct fcml_st_displacement {
     };
 } fcml_st_displacement;
 
-// *****************************************
-// *  Memory addressing using Mod/RM field *
-// *****************************************
+// ******************************************
+// *  Memory addressing using Mod/RM field  *
+// ******************************************
 
 typedef enum fcml_en_address_form {
     // Only displacement value interpreted but it's assembler who decides

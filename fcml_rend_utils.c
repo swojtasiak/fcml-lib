@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "fcml_env.h"
 #include "fcml_ceh.h"
 #include "fcml_common.h"
 #include "fcml_dialect.h"
@@ -21,13 +22,13 @@
 
 fcml_string fcml_iarr_rend_utils_integer_formats[4][4] = {
 	// Signed integer values.
-	{"%"PRId8, "%"PRId16, "%"PRId32, "%"PRId64},
+	{FCML_PRI_INT8_DEC, FCML_PRI_INT16_DEC, FCML_PRI_INT32_DEC, FCML_PRI_INT64_DEC},
 	// Unsigned integer values.
-	{"%"PRIu8, "%"PRIu16, "%"PRIu32, "%"PRIu64},
+	{FCML_PRI_UINT8_DEC, FCML_PRI_UINT16_DEC, FCML_PRI_UINT32_DEC, FCML_PRI_UINT64_DEC},
 	// Signed hex values.
-	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"},
+	{FCML_PRI_INT8_HEX"h", FCML_PRI_INT16_HEX"h", FCML_PRI_INT32_HEX"h", FCML_PRI_INT64_HEX"h"},
 	// Unsigned hex values.
-	{"%02"PRIx8"h", "%04"PRIx16"h", "%08"PRIx32"h", "%016"PRIx64"h"}
+	{FCML_PRI_INT8_HEX"h", FCML_PRI_INT16_HEX"h", FCML_PRI_INT32_HEX"h", FCML_PRI_INT64_HEX"h"}
 };
 
 void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml_string format, ...) {
@@ -50,8 +51,7 @@ void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml
 }
 
 void fcml_fn_rend_utils_format_append_hex_byte( fcml_st_memory_stream *stream, fcml_uint8_t hex_byte ) {
-	// TODO: environment specific formating.
-	fcml_fn_rend_utils_format_printf( stream, "%02"PRIx8, hex_byte );
+	fcml_fn_rend_utils_format_printf( stream, FCML_PRI_INT8_HEX, hex_byte );
 }
 
 void fcml_fn_rend_utils_format_append_code( fcml_st_memory_stream *stream, fcml_uint8_t *instrunction_code, uint8_t instruction_code_size ) {

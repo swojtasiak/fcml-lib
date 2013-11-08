@@ -1762,6 +1762,16 @@ fcml_ceh_error fcml_ifn_dasm_validate_and_prepare_context( fcml_st_dasm_disassem
  * Prefixes decoding.
  ****************************/
 
+#define FCML_IDFPF_IS_MANDATORY_CANDIDATE		0x0001
+#define FCML_IDFPF_IS_LOCK						0x0002
+#define FCML_IDFPF_IS_REP_XRELEASE				0x0004
+#define FCML_IDFPF_IS_REPNE_XACQUIRE			0x0008
+#define FCML_IDFPF_IS_VEX						0x0010
+#define FCML_IDFPF_IS_XOP						0x0020
+#define FCML_IDFPF_IS_BRANCH					0x0040
+#define FCML_IDFPF_IS_XOP_ALLOWED				0x0080
+#define FCML_IDFPF_IS_NOBRANCH					0x0100
+
 fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *decoding_context) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1771,23 +1781,18 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_en_addr_form addr_form = decoding_context->disassembler_context->addr_form;
 	fcml_st_dasm_prefixes *prefixes_details = &(decoding_context->prefixes);
 
-	fcml_bool result = FCML_FALSE;
-	fcml_int prefix_index = 0, prefix_size, xop_vex_prefix_size = 0;
+	fcml_uint16_t p_flags;
 	fcml_st_dasm_prefix_types prefix_type;
-	fcml_bool is_mandatory_candidate, is_xop_vex_allowed = FCML_TRUE, is_last_prefix = FCML_FALSE;
-	fcml_bool is_vex, is_xop, is_lock, is_rep_xrelease, is_repne_xacquire, is_branch, is_nobranch;
+	fcml_int prefix_index = 0;
+	fcml_int prefix_size = 0;
+	fcml_int xop_vex_prefix_size = 0;
+	fcml_bool result = FCML_FALSE;
+	fcml_bool is_xop_vex_allowed = FCML_TRUE;
+	fcml_bool is_last_prefix = FCML_FALSE;
 
 	do {
-		// TODO: moze amienic te wszytkie ify na flagi.
 		prefix_type = FCML_PT_GROUP_UNKNOWN;
-		is_mandatory_candidate = FCML_FALSE;
-		is_lock = FCML_FALSE;
-		is_rep_xrelease = FCML_FALSE;
-		is_repne_xacquire = FCML_FALSE;
-		is_vex = FCML_FALSE;
-		is_xop = FCML_FALSE;
-		is_branch = FCML_FALSE;
-		is_nobranch = FCML_FALSE;
+		p_flags = 0;
 		// Almost all prefixes are one byte length, so it's a reasonable default here.
 		prefix_size = 1;
 		fcml_uint8_t prefix = fcml_fn_stream_peek(stream, &result);
@@ -1797,26 +1802,24 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 				case 0xF0:
 					prefix_type = FCML_PT_GROUP_1;
 					is_xop_vex_allowed = FCML_FALSE;
-					is_lock = FCML_TRUE;
+					p_flags |= FCML_IDFPF_IS_LOCK;
 					break;
 				case 0xF2:
-					is_repne_xacquire = FCML_TRUE;
-					is_mandatory_candidate = FCML_TRUE;
+					p_flags |= ( FCML_IDFPF_IS_MANDATORY_CANDIDATE | FCML_IDFPF_IS_REPNE_XACQUIRE );
 					prefix_type = FCML_PT_GROUP_1;
 					is_xop_vex_allowed = FCML_FALSE;
 					break;
 				case 0xF3:
-					is_rep_xrelease = FCML_TRUE;
-					is_mandatory_candidate = FCML_TRUE;
+					p_flags |= ( FCML_IDFPF_IS_MANDATORY_CANDIDATE | FCML_IDFPF_IS_REP_XRELEASE );
 					prefix_type = FCML_PT_GROUP_1;
 					is_xop_vex_allowed = FCML_FALSE;
 					break;
 				case 0x2E:
-					is_nobranch = FCML_TRUE;
+					p_flags |= FCML_IDFPF_IS_NOBRANCH;
 					prefix_type = FCML_PT_GROUP_2;
 					break;
 				case 0x3E:
-					is_branch = FCML_TRUE;
+					p_flags |= FCML_IDFPF_IS_BRANCH;
 					prefix_type = FCML_PT_GROUP_2;
 					break;
 				case 0x26:
@@ -1827,7 +1830,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 					break;
 				break;
 				case 0x66:
-					is_mandatory_candidate = FCML_TRUE;
+					p_flags |= FCML_IDFPF_IS_MANDATORY_CANDIDATE;
 					prefix_type = FCML_PT_GROUP_3;
 					is_xop_vex_allowed = FCML_FALSE;
 					break;
@@ -1837,19 +1840,19 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 				case 0xC5:
 					xop_vex_prefix_size = 1;
 					prefix_type = FCML_PT_VEX;
-					is_vex = FCML_TRUE;
+					p_flags |= FCML_IDFPF_IS_VEX;
 					is_last_prefix = FCML_TRUE;
 					break;
 				case 0x8F:
 					xop_vex_prefix_size = 2;
 					prefix_type = FCML_PT_XOP;
-					is_xop = FCML_TRUE;
+					p_flags |= FCML_IDFPF_IS_XOP;
 					is_last_prefix = FCML_TRUE;
 					break;
 				case 0xC4:
 					xop_vex_prefix_size = 2;
 					prefix_type = FCML_PT_VEX;
-					is_vex = FCML_TRUE;
+					p_flags |= FCML_IDFPF_IS_VEX;
 					is_last_prefix = FCML_TRUE;
 					break;
 				default:
@@ -1951,26 +1954,29 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 			if( prefix_type != FCML_PT_GROUP_UNKNOWN) {
 				prefix_details->prefix = prefix;
 				prefix_details->prefix_type = prefix_type;
-				prefix_details->mandatory_prefix = is_mandatory_candidate;
-				prefixes_details->is_vex = is_vex;
-				prefixes_details->is_xop = is_xop;
+				prefix_details->mandatory_prefix = ( p_flags & FCML_IDFPF_IS_MANDATORY_CANDIDATE ) ? FCML_TRUE : FCML_FALSE;
+				if( p_flags & FCML_IDFPF_IS_VEX ) {
+					prefixes_details->is_vex = FCML_TRUE;
+				}
+				if( p_flags & FCML_IDFPF_IS_XOP ) {
+					prefixes_details->is_xop = FCML_TRUE;
+				}
+				if( p_flags & FCML_IDFPF_IS_LOCK ) {
+					prefixes_details->is_lock = ( p_flags & FCML_IDFPF_IS_LOCK ) ? FCML_TRUE : FCML_FALSE;
+				}
+				if( p_flags & FCML_IDFPF_IS_REP_XRELEASE ) {
+					prefixes_details->is_rep = ( p_flags & FCML_IDFPF_IS_REP_XRELEASE ) ? FCML_TRUE : FCML_FALSE;
+				}
+				if( p_flags & FCML_IDFPF_IS_REPNE_XACQUIRE ) {
+					prefixes_details->is_repne = ( p_flags & FCML_IDFPF_IS_REPNE_XACQUIRE ) ? FCML_TRUE : FCML_FALSE;
+				}
+				if( p_flags & FCML_IDFPF_IS_BRANCH ) {
+					prefixes_details->is_branch = ( p_flags & FCML_IDFPF_IS_BRANCH ) ? FCML_TRUE : FCML_FALSE;
+				}
+				if( p_flags & FCML_IDFPF_IS_NOBRANCH ) {
+					prefixes_details->is_nobranch = ( p_flags & FCML_IDFPF_IS_NOBRANCH ) ? FCML_TRUE : FCML_FALSE;
+				}
 				prefixes_details->prefixes_bytes_count += prefix_size;
-				// TODO: moze lepiej zamienic to na takie flagi jak w instrukcji latwij operowac i chyba spojiej.
-				if( is_lock ) {
-					prefixes_details->is_lock = FCML_TRUE;
-				}
-				if( is_rep_xrelease ) {
-					prefixes_details->is_rep = FCML_TRUE;
-				}
-				if( is_repne_xacquire ) {
-					prefixes_details->is_repne = FCML_TRUE;
-				}
-				if( is_branch ) {
-					prefixes_details->is_branch = FCML_TRUE;
-				}
-				if( is_nobranch ) {
-					prefixes_details->is_nobranch = FCML_TRUE;
-				}
 				fcml_fn_stream_seek(stream, prefix_size, FCML_EN_ST_CURRENT);
 				prefix_index++;
 			} else {

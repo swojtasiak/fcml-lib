@@ -9,7 +9,47 @@
 #define FCML_ENVIRONMENT_H_
 
 #include <stdint.h>
+#include <inttypes.h>
 #include "fcml_types.h"
+
+#ifdef PRId8
+#define FCML_PRI_INT8_DEC	"%"PRId8
+#endif
+#ifdef PRId16
+#define FCML_PRI_INT16_DEC	"%"PRId16
+#endif
+#ifdef PRId32
+#define FCML_PRI_INT32_DEC	"%"PRId32
+#endif
+#ifdef PRId64
+#define FCML_PRI_INT64_DEC	"%"PRId64
+#endif
+
+#ifdef PRIu8
+#define FCML_PRI_UINT8_DEC	"%"PRIu8
+#endif
+#ifdef PRIu16
+#define FCML_PRI_UINT16_DEC	"%"PRIu16
+#endif
+#ifdef PRIu32
+#define FCML_PRI_UINT32_DEC	"%"PRIu32
+#endif
+#ifdef PRIu64
+#define FCML_PRI_UINT64_DEC	"%"PRIu64
+#endif
+
+#ifdef PRIx8
+#define FCML_PRI_INT8_HEX	"%02"PRIx8
+#endif
+#ifdef PRIx16
+#define FCML_PRI_INT16_HEX	"%04"PRIx16
+#endif
+#ifdef PRIx32
+#define FCML_PRI_INT32_HEX	"%08"PRIx32
+#endif
+#ifdef PRIx64
+#define FCML_PRI_INT64_HEX	"%016"PRIx64
+#endif
 
 // Memory allocator function pointer.
 typedef void *(*fcml_fp_env_memory_alloc_handler)( uint32_t size );

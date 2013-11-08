@@ -24,7 +24,7 @@ fcml_string fcml_iarr_rend_conditional_suffixes_intel[2][16] = {
 	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
 };
 
-void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, fcml_st_dasm_prefixes *prefixes ) {
+void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, fcml_st_dasm_prefixes *prefixes, fcml_uint32_t flags ) {
 	if( prefixes->is_xacquire ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "xacquire " );
 	}
@@ -40,12 +40,21 @@ void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, f
 	if( prefixes->is_nobranch ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "nobranch " );
 	}
-	// TODO: Dodac mozliwosc konfiguracji.
 	if( prefixes->is_rep ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "rep " );
+		if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_1 ) {
+			fcml_fn_rend_utils_format_append_str( output_stream, "repe " );
+		} else if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_2 ) {
+			fcml_fn_rend_utils_format_append_str( output_stream, "repz " );
+		} else {
+			fcml_fn_rend_utils_format_append_str( output_stream, "rep " );
+		}
 	}
 	if( prefixes->is_repne ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "repne " );
+		if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_2 ) {
+			fcml_fn_rend_utils_format_append_str( output_stream, "repnz " );
+		} else {
+			fcml_fn_rend_utils_format_append_str( output_stream, "repne " );
+		}
 	}
 }
 
@@ -268,7 +277,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *d
 	}
 
 	// Instruction prefixes like LOCK.
-	fcml_ifn_rend_print_prefixes_intel( output_stream, &(result->instruction_details.prefixes) );
+	fcml_ifn_rend_print_prefixes_intel( output_stream, &(result->instruction_details.prefixes), render_flags );
 
 	// Mnemonic.
 	fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
