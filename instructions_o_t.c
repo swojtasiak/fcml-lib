@@ -8,6 +8,7 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_o_t.h"
+#include <fcml_rend.h>
 
 int fcml_tf_instructions_o_suite_init(void) {
 	return 0;
@@ -133,6 +134,11 @@ void fcml_tf_instruction_OUT(void) {
 }
 
 void fcml_tf_instruction_OUTS(void) {
+
+	// Rep rendering.
+	FCML_I32_D_RF( "repe outs dx,byte ptr [edi]", FCML_REND_FLAG_REP_PREFIX_GROUP_1, 0xF3, 0x6e );
+	FCML_I32_D_RF( "repz outs dx,byte ptr [edi]", FCML_REND_FLAG_REP_PREFIX_GROUP_2, 0xF3, 0x6e );
+
     // 6E OUTS DX, m8 NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
     FCML_I32( "outs dx,byte ptr [edi]", 0x6e );
     FCML_I32( "rep outs dx,byte ptr [edi]", 0xF3, 0x6e );

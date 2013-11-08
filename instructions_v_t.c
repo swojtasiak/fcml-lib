@@ -1292,8 +1292,8 @@ void fcml_tf_instruction_VMPTRLD(void) {
     // 0F C7 /6 VMPTRLD m64 Loads the current VMCS pointer from memory.
     FCML_I64( "vmptrld qword ptr [rdx]", 0x0F, 0xC7, 0x32 );
     FCML_I64( "vmptrld qword ptr [edx]", 0x67, 0x0F, 0xC7, 0x32 );
-    // TODO: Disassembler takze powinien sie wywalic, albo worninga rzucic.
     FCML_I64_A_FAILED( "vmptrld edx", 0x67, 0x0F, 0xC7, 0xF2 );
+    FCML_I64_D_FAILED( "vmptrld edx", 0x67, 0x0F, 0xC7, 0xF2 );
     FCML_I32_FAILED( "vmptrld qword ptr [edx]", 0x0F, 0xC7, 0x32 );
 }
 

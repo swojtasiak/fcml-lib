@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <fcml_env.h>
 
 #include "fcml_assembler.h"
 #include "fcml_x64intel_asm_parser.h"
@@ -267,12 +268,12 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
 #endif
                         int i;
                         for( i = 0; i < size; i++ ) {
-                            printf( "%02"PRIx8, code[i] );
+                            printf( FCML_PRI_INT8_HEX, code[i] );
                         }
 
                         printf( "\nAssembled code: " );
                         for( i = 0; i < assembled_instruction->code_length; i++ ) {
-                            printf( "%02"PRIx8, assembled_instruction->code[i] );
+                            printf( FCML_PRI_INT8_HEX, assembled_instruction->code[i] );
                         }
 
                         printf("\n");
@@ -328,7 +329,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
                            if( j > 0 ) {
                                printf(", ");
                            }
-                           printf( "0x%02"PRIx8, assembled_code[i][j] );
+                           printf( "0x"FCML_PRI_INT8_HEX, assembled_code[i][j] );
                        }
                        printf( " )" );
                    }
@@ -338,7 +339,7 @@ fcml_bool IA3264_instruction_test( fcml_uint8_t *code, int size, fcml_bool x64, 
                        if( i > 0 ) {
                            printf(", ");
                        }
-                       printf( "0x%02"PRIx8, assembled_code[0][i] );
+                       printf( "0x"FCML_PRI_INT8_HEX, assembled_code[0][i] );
                    }
                }
 

@@ -8,6 +8,7 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_s_t.h"
+#include <fcml_rend.h>
 
 int fcml_tf_instructions_s_suite_init(void) {
 	return 0;
@@ -247,6 +248,10 @@ void fcml_tf_instruction_SCAS(void) {
     FCML_I32_A( "scasw", 0x66, 0xAF );
     FCML_I32_A( "scasd", 0xAF );
     FCML_I64_A( "scasq", 0x48, 0xAF );
+
+    // Prefixes rendering.
+    FCML_I32_D_RF( "repne scas byte ptr [edi]", FCML_REND_FLAG_REP_PREFIX_GROUP_1, 0xf2, 0xAE );
+    FCML_I32_D_RF( "repnz scas byte ptr [edi]", FCML_REND_FLAG_REP_PREFIX_GROUP_2, 0xf2, 0xAE );
 }
 
 void fcml_tf_instruction_SETcc(void) {

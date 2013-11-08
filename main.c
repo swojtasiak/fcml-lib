@@ -260,6 +260,7 @@ int main(int argc, char **argv) {
 	///FCML_I32_A_P( "call far fword ptr cs:[ebx+00000001h]", 0x64, 0xFF, 0x5B, 0x01 );
 	//return 0;
 
+
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");
     } else {
