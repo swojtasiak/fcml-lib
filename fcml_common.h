@@ -28,10 +28,13 @@
 #define FCML_PREFIX_BRANCH_HINT		0x0020
 #define FCML_PREFIX_NOBRANCH_HINT	0x0040
 
+// Supported addressing modes.
 typedef enum fcml_en_addr_form {
-    // TODO: Sprawdzic czy to supportujemy.
-	FCML_AF_16_BIT,
+	// Real-addressing mode, virtual 8086 mode.
+	FCML_AF_16_BIT = 1,
+	// Protected/Compatibility mode when 'D' segment descriptor flag is set to 1.
 	FCML_AF_32_BIT,
+	// 64-bit mode. ('L' flag of segment descriptor set to 1.)
 	FCML_AF_64_BIT,
 } fcml_en_addr_form;
 

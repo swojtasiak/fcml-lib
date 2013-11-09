@@ -1527,10 +1527,6 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_IDIV[] = {
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5B800, { 0xF7, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ), FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
-// ***********************************
-// TODO: RWX(W) is not used from here!
-// ***********************************
-
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_IMUL[] = {
 	// F6 /5 IMUL r/m8* A Valid Valid AX AL r/m byte.
 	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A800, { 0xF6, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NONE },
@@ -1777,14 +1773,14 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LWPINS[] = {
 	// LWPINS reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /0 /imm32
 	{ NULL, FCML_AMT_LWP, 0x0450, 0x00D98000, { 0x0A, 0x12, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_DWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_32, FCML_OP_ID, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// LWPINS reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /0 /imm32
-	{ NULL, FCML_AMT_LWP, 0x0448, 0x00D98000, { 0x0A, 0x12, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_64, FCML_OP_ID, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ NULL, FCML_AMT_LWP, 0x0448, 0x00D98000, { 0x0A, 0x12, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_32, FCML_OP_ID, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LWPVAL[] = {
 	// LWPVAL reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /1 /imm32
 	{ NULL, FCML_AMT_LWP, 0x0450, 0x00D98800, { 0x0A, 0x12, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_DWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_32, FCML_OP_ID, FCML_NA, FCML_NA }, FCML_AM_NONE },
 	// LWPVAL reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /1 /imm32
-	{ NULL, FCML_AMT_LWP, 0x0448, 0x00D98800, { 0x0A, 0x12, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_64, FCML_OP_ID, FCML_NA, FCML_NA }, FCML_AM_NONE }
+	{ NULL, FCML_AMT_LWP, 0x0448, 0x00D98800, { 0x0A, 0x12, 0x00 }, { FCML_OP_VEX_VVVV_REG( FCML_REG_GPR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_MODRM_RM_32, FCML_OP_ID, FCML_NA, FCML_NA }, FCML_AM_NONE }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LSL[] = {

@@ -23,3 +23,5 @@ W naszym rzypadku steruje sie tym za pomoca address_mode 32_bit lub 64_bit.
  Tam gdzies jest lista features:
  http://www.godevtool.com/GoasmHelp/GoAsm.htm#why
  
+ Zaznaczyć ze nie rozrozniamy virtual 8086 oraz real-mode addressing wiec podcaas assemblacji nie sprawdzamy tej graniy 1MB przy adresowaniu linowym czyli przy 0x67 zmienijącym tryb adresowania na 32 bitowy w real mode.
+ 

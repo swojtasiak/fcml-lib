@@ -71,10 +71,14 @@ typedef struct fcml_st_asm_assembler_result {
 typedef struct fcml_st_asm_assembler_context {
     // Assembler instance that should be used to assemble instructions.
     fcml_st_asm_assembler *assembler;
+    // Assembler behavior can be configured here.
 	fcml_st_asm_assembler_configuration configuration;
+	// Processor addressing mode 16/32/64-bit.
 	fcml_en_addr_form addr_form;
-	fcml_data_size effective_address_size;
-	fcml_data_size effective_operand_size;
+	// Default address/operand size attribute (See 'D' flag of segment descriptor.)
+	fcml_data_size address_size_attribute;
+	fcml_data_size operand_size_attribute;
+	// Instruction pointer used for relative addressing address calculation.
 	fcml_st_instruction_pointer ip;
 } fcml_st_asm_assembler_context;
 

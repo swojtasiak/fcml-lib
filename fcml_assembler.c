@@ -74,11 +74,11 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 		return error;
 	}
 
-	if( !asm_context->effective_address_size ) {
-		asm_context->effective_address_size = fcml_fn_utils_get_default_ASA(asm_context->addr_form);
+	if( !asm_context->address_size_attribute ) {
+		asm_context->address_size_attribute = fcml_fn_utils_get_default_ASA(asm_context->addr_form);
 	}
-	if( !asm_context->effective_operand_size ) {
-		asm_context->effective_operand_size = fcml_fn_utils_get_default_OSA(asm_context->addr_form);
+	if( !asm_context->operand_size_attribute ) {
+		asm_context->operand_size_attribute = fcml_fn_utils_get_default_OSA(asm_context->addr_form);
 	}
 
 	fcml_st_asm_assembler_result *asm_result = fcml_fn_env_memory_alloc( sizeof( fcml_st_asm_encoder_result ) );

@@ -1790,6 +1790,11 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_bool is_xop_vex_allowed = FCML_TRUE;
 	fcml_bool is_last_prefix = FCML_FALSE;
 
+	// VEX like prefixes are not allowed in 16 bit mode.
+	if( decoding_context->disassembler_context->addr_form == FCML_AF_16_BIT ) {
+		is_xop_vex_allowed = FCML_FALSE;
+	}
+
 	do {
 		prefix_type = FCML_PT_GROUP_UNKNOWN;
 		p_flags = 0;
@@ -1917,8 +1922,14 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 								}
 								prefixes_details->r = FCML_VEX_R(prefix_details->vex_xop_bytes[0]);
 								prefixes_details->x = FCML_VEX_X(prefix_details->vex_xop_bytes[0]);
-								prefixes_details->b = ( addr_form == FCML_AF_64_BIT ) ? FCML_VEX_B(prefix_details->vex_xop_bytes[0]) : 0;
-								prefixes_details->w = FCML_VEX_W(prefix_details->vex_xop_bytes[1]);
+								if( addr_form == FCML_AF_64_BIT ) {
+									prefixes_details->b = FCML_VEX_B(prefix_details->vex_xop_bytes[0]);
+									prefixes_details->w = FCML_VEX_W(prefix_details->vex_xop_bytes[1]);
+								} else {
+									// These bits should be silently ignored in 32-bit mode.
+									prefixes_details->b = 0;
+									prefixes_details->w = 0;
+								}
 								prefixes_details->l = FCML_VEX_L(prefix_details->vex_xop_bytes[1]);
 								prefixes_details->pp = FCML_VEX_PP(prefix_details->vex_xop_bytes[1]);
 								prefixes_details->mmmm = FCML_VEX_MMMM(prefix_details->vex_xop_bytes[0]);

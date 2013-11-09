@@ -13,147 +13,184 @@
 #include "fcml_common_int.h"
 #include "fcml_errors.h"
 
-fcml_ceh_error fcml_fnp_asm_default_optimizer( fcml_st_asm_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
+typedef struct fcml_ist_asm_opt_optimization_path_element {
+	fcml_en_cmi_attribute_size_flag flags;
+	fcml_data_size attribute_size;
+} fcml_ist_asm_opt_optimization_path_element;
+
+fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_16_32_bit_optimization_path_16[] = {
+	{ FCML_EN_ASF_16, FCML_DS_16 },
+	{ FCML_EN_ASF_32, FCML_DS_32 }
+};
+
+fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_16_32_bit_optimization_path_32[] = {
+	{ FCML_EN_ASF_32, FCML_DS_32 },
+	{ FCML_EN_ASF_16, FCML_DS_16 }
+};
+
+fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_64[] = {
+	{ FCML_EN_ASF_64, FCML_DS_64 },
+	{ FCML_EN_ASF_32, FCML_DS_32 }
+};
+
+fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_32[] = {
+	{ FCML_EN_ASF_32, FCML_DS_32 },
+	{ FCML_EN_ASF_64, FCML_DS_64 }
+};
+
+fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_16[] = {
+	{ FCML_EN_ASF_16, FCML_DS_16 },
+	{ FCML_EN_ASF_64, FCML_DS_64 },
+	{ FCML_EN_ASF_32, FCML_DS_32 }
+};
+
+fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_32[] = {
+	{ FCML_EN_ASF_32, FCML_DS_32 },
+	{ FCML_EN_ASF_64, FCML_DS_64 },
+	{ FCML_EN_ASF_16, FCML_DS_16 }
+};
+
+fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_64[] = {
+	{ FCML_EN_ASF_64, FCML_DS_64 },
+	{ FCML_EN_ASF_32, FCML_DS_32 },
+	{ FCML_EN_ASF_16, FCML_DS_16 }
+};
+
+inline fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_en_cmi_attribute_size_flag flags, fcml_int path_length, fcml_ist_asm_opt_optimization_path_element *path, fcml_data_size *attribute_dest ) {
+	int i, count = 0;
+	for( i = 0; i < path_length; i++ ) {
+		fcml_ist_asm_opt_optimization_path_element *element = &(path[i]);
+		if( ( flags & element->flags ) || ( flags == FCML_EN_ASF_ANY ) ) {
+			attribute_dest[count++] = element->attribute_size;
+		}
+	}
+	return count;
+}
+
+inline fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_en_cmi_attribute_size_flag flags, fcml_uint16_t opt_flags, fcml_data_size attribute_size, fcml_data_size *attribute_dest ) {
+	if( ( flags & opt_flags ) || ( flags == FCML_EN_ASF_ANY ) ) {
+		*attribute_dest = attribute_size;
+		return 1;
+	}
+	return 0;
+}
+
+fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
 
 	fcml_ceh_error error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
 
-	fcml_data_size easa[2], eosa[3];
+	fcml_data_size easa[2];
+	fcml_data_size eosa[3];
 
-	int easa_count = 0, eosa_count = 0;
+	fcml_int easa_count = 0;
+	fcml_int eosa_count = 0;
 
-	// Choose best ASA and OSA size, but first check if uses decided to set attribute size himself.
-
-    fcml_data_size asa = 0, osa = 0;
-
-	// ASA
+	fcml_ist_asm_opt_optimization_path_element *path;
 
     fcml_uint16_t opt_flags = context->configuration.optimizer_flags;
 
-    switch( opt_flags & 0x000F ) {
-    case FCML_OPTF_ASA_16:
-        if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_16 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
-            asa = FCML_DS_16;
-        }
-        break;
-    case FCML_OPTF_ASA_32:
-        if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_32 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
-            asa = FCML_DS_32;
-        }
-        break;
-    case FCML_OPTF_ASA_64:
-        if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_64 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
-            asa = FCML_DS_64;
-        }
-        break;
+    if( ds_flags == NULL ) {
+    	return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+    }
+
+	// ASA
+
+    if( ds_flags->effective_address_size ) {
+    	// Effective address size has been already chosen and cannot be changed.
+    	easa[easa_count++] = ds_flags->effective_address_size;
+    } else {
+    	// Maybe user has already forced any address size attribute to be chosen?
+    	fcml_data_size attr_size = 0;
+    	fcml_en_cmi_attribute_size_flag attr_size_flag = 0;
+		switch( opt_flags & 0x000F ) {
+		case FCML_OPTF_ASA_16:
+			attr_size = FCML_DS_16;
+			attr_size_flag = FCML_EN_ASF_16;
+			break;
+		case FCML_OPTF_ASA_32:
+			attr_size = FCML_DS_32;
+			attr_size_flag = FCML_EN_ASF_32;
+			break;
+		case FCML_OPTF_ASA_64:
+			attr_size = FCML_DS_64;
+			attr_size_flag = FCML_EN_ASF_64;
+			break;
+		}
+		if( attr_size ) {
+			easa_count = fcml_ifn_asm_opt_try_setting_attribute_size( ds_flags->allowed_effective_address_size.flags, attr_size_flag, attr_size, &(easa[easa_count]) );
+		}
     }
 
     // OSA
 
-    switch( opt_flags & 0x00F0 ) {
-    case FCML_OPTF_OSA_16:
-        if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_16 ) || ( ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) ) {
-            osa = FCML_DS_16;
-        }
-        break;
-    case FCML_OPTF_OSA_32:
-        if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_32 ) || ( ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) ) {
-            osa = FCML_DS_32;
-        }
-        break;
-    case FCML_OPTF_OSA_64:
-        if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_64 ) || ( ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) ) {
-            osa = FCML_DS_64;
-        }
-        break;
-    }
-
-	if( ds_flags ) {
-		if( !ds_flags->effective_address_size ) {
-			switch( context->addr_form ) {
-			case FCML_AF_16_BIT:
-			    // ASA.
-			    if( asa ) {
-			        easa[easa_count++] = asa;
-			    } else {
-                    if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_16 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
-                        easa[easa_count++] = FCML_DS_16;
-                    }
-                    if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_32 ) || ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) {
-                        easa[easa_count++] = FCML_DS_32;
-                    }
-			    }
-				// OSA.
-			    if( osa ) {
-			        eosa[eosa_count++] = osa;
-			    } else {
-                    if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_16 ) || ( ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) ) {
-                        eosa[eosa_count++] = FCML_DS_16;
-                    }
-                    if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_32 ) || ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) {
-                        eosa[eosa_count++] = FCML_DS_32;
-                    }
-			    }
-				break;
-			case FCML_AF_32_BIT:
-			    if( asa ) {
-                    easa[easa_count++] = asa;
-                } else {
-                    if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_32 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
-                        easa[easa_count++] = FCML_DS_32;
-                    }
-                    if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_16 ) || ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) {
-                        easa[easa_count++] = FCML_DS_16;
-                    }
-                }
-				// OSA.
-			    if( osa ) {
-                   eosa[eosa_count++] = osa;
-                } else {
-                    if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_32 ) || ( ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) ) {
-                        eosa[eosa_count++] = FCML_DS_32;
-                    }
-                    if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_16 ) || ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) {
-                        eosa[eosa_count++] = FCML_DS_16;
-                    }
-                }
-				break;
-			case FCML_AF_64_BIT:
-			    if( asa ) {
-                    easa[easa_count++] = asa;
-                } else {
-                    if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_64 ) || ( ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) ) {
-                        easa[easa_count++] = FCML_DS_64;
-                    }
-                    if( ( ds_flags->allowed_effective_address_size.flags & FCML_EN_ASF_32 ) || ds_flags->allowed_effective_address_size.flags == FCML_EN_ASF_ANY ) {
-                        easa[easa_count++] = FCML_DS_32;
-                    }
-                }
-				// OSA.
-			    if( osa ) {
-                  eosa[eosa_count++] = osa;
-                } else {
-                    if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_32 ) || ( ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) ) {
-                        eosa[eosa_count++] = FCML_DS_32;
-                    }
-                    if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_64 ) || ( ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) ) {
-                        eosa[eosa_count++] = FCML_DS_64;
-                    }
-                    if( ( ds_flags->allowed_effective_operand_size.flags & FCML_EN_ASF_16 ) || ds_flags->allowed_effective_operand_size.flags == FCML_EN_ASF_ANY ) {
-                        eosa[eosa_count++] = FCML_DS_16;
-                    }
-                }
-				break;
-			}
+	if( ds_flags->effective_operand_size ) {
+		// Effective address size has been already chosen and cannot be changed.
+		eosa[eosa_count++] = ds_flags->effective_operand_size;
+	} else {
+		// Maybe user has already forced any address size attribute to be chosen?
+		fcml_data_size attr_size = 0;
+		fcml_en_cmi_attribute_size_flag attr_size_flag = 0;
+		switch( opt_flags & 0x00F0 ) {
+		case FCML_OPTF_OSA_16:
+			attr_size = FCML_DS_16;
+			attr_size_flag = FCML_EN_ASF_16;
+			break;
+		case FCML_OPTF_OSA_32:
+			attr_size = FCML_DS_32;
+			attr_size_flag = FCML_EN_ASF_32;
+			break;
+		case FCML_OPTF_OSA_64:
+			attr_size = FCML_DS_64;
+			attr_size_flag = FCML_EN_ASF_64;
+			break;
+		}
+		if( attr_size ) {
+			eosa_count = fcml_ifn_asm_opt_try_setting_attribute_size( ds_flags->allowed_effective_operand_size.flags, attr_size_flag, attr_size, &(eosa[eosa_count]) );
 		}
 	}
 
+	// Choosing best optimization path for ASA.
+
 	if( !easa_count ) {
-	    easa[easa_count++] = 0;
+		switch( context->addr_form ) {
+		case FCML_AF_16_BIT:
+		case FCML_AF_32_BIT:
+			path = ( context->address_size_attribute == FCML_DS_16 ) ? fcml_iarr_asm_opt_16_32_bit_optimization_path_16 : fcml_iarr_asm_opt_16_32_bit_optimization_path_32;
+			easa_count = fcml_ifn_asm_opt_go_through_the_optimization_path( ds_flags->allowed_effective_address_size.flags, 2, path, easa );
+			break;
+		case FCML_AF_64_BIT:
+			path = ( context->address_size_attribute == FCML_DS_32 ) ? fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_32 : fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_64;
+			easa_count = fcml_ifn_asm_opt_go_through_the_optimization_path( ds_flags->allowed_effective_address_size.flags, 2, path, easa );
+			break;
+		}
 	}
 
+	// Choosing best optimization path for OSA.
+
 	if( !eosa_count ) {
-        eosa[eosa_count++] = 0;
-    }
+		switch( context->addr_form ) {
+		case FCML_AF_16_BIT:
+		case FCML_AF_32_BIT:
+			path = ( context->operand_size_attribute == FCML_DS_16 ) ? fcml_iarr_asm_opt_16_32_bit_optimization_path_16 : fcml_iarr_asm_opt_16_32_bit_optimization_path_32;
+			eosa_count = fcml_ifn_asm_opt_go_through_the_optimization_path( ds_flags->allowed_effective_operand_size.flags, 2, path, eosa );
+			break;
+		case FCML_AF_64_BIT:
+			switch( context->operand_size_attribute ) {
+			case FCML_DS_16:
+				path = &fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_16[0];
+				break;
+			case FCML_DS_32:
+				path = &fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_32[0];
+				break;
+			case FCML_DS_64:
+				path = &fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_64[0];
+				break;
+			}
+			eosa_count = fcml_ifn_asm_opt_go_through_the_optimization_path( ds_flags->allowed_effective_operand_size.flags, 3, path, eosa );
+			break;
+		}
+	}
+
 	// TODO: zoptymalizowac instruckje JCC, jezeli nie mozna zdekodowac rel offset na 8 bitach, to powtarza probe dla wszystkich kombinacji asa i eosa zamiast prejsc o nastepego trybu adresowania, chya bedzie trzeba dodac jakies hinty ook kodu bledu, ktore bea sugerowaly optymizerowi ze nie ma co dalej meczyc daneo trybu adresowania.
 	int i, j;
 	for( i = 0; i < easa_count && error; i++ ) {
