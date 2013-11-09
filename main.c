@@ -43,6 +43,7 @@
 #include "fcml_dialect_intel.h"
 #include "hints_t.h"
 #include "fcml_chooser_t.h"
+#include "prefixes_t.h"
 
 #include "fcml_assembler.h"
 #include "fcml_disassembler.h"
@@ -81,6 +82,7 @@ CU_SuiteInfo *suites[] = {
 	fcml_si_mnemonic_parser,
 	fcml_si_hints,
 	fcml_si_chooser,
+	fcml_si_prefixes,
     NULL
 };
 
@@ -236,6 +238,7 @@ int main(int argc, char **argv) {
 		printf( "Can not allocate disassembler." );
 		return 1;
 	}
+
 	//FCML_I64_RF( "rcl byte ptr [rel 0000800000401007h],03h", FCML_REND_FLAG_RENDER_REL_HINT, 0xc0, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
 	//return 0;
 
@@ -259,7 +262,6 @@ int main(int argc, char **argv) {
 
 	///FCML_I32_A_P( "call far fword ptr cs:[ebx+00000001h]", 0x64, 0xFF, 0x5B, 0x01 );
 	//return 0;
-
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");

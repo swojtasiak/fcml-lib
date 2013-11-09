@@ -1924,8 +1924,8 @@ void fcml_tf_instruction_PDEP(void) {
     FCML_I32( "pdep eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x43, 0xF5, 0x00 );
     FCML_I32( "pdep eax,edi,eax", 0xC4, 0xE2, 0x43, 0xF5, 0xC0 );
     // VEX.NDS.LZ.F2.0F38.W1 F5 /r PDEP r64a, r64b, r/m64
-    FCML_I32( "pdep rax,rdi,qword ptr [eax]", 0xC4, 0xE2, 0xC3, 0xF5, 0x00 );
-    FCML_I32( "pdep rax,rdi,rax", 0xC4, 0xE2, 0xC3, 0xF5, 0xC0 );
+    FCML_I64( "pdep rax,rdi,qword ptr [rax]", 0xC4, 0xE2, 0xC3, 0xF5, 0x00 );
+    FCML_I64( "pdep rax,rdi,rax", 0xC4, 0xE2, 0xC3, 0xF5, 0xC0 );
 }
 
 void fcml_tf_instruction_PEXT(void) {
@@ -1933,8 +1933,8 @@ void fcml_tf_instruction_PEXT(void) {
     FCML_I32( "pext eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x42, 0xF5, 0x00 );
     FCML_I32( "pext eax,edi,eax", 0xC4, 0xE2, 0x42, 0xF5, 0xC0 );
     // VEX.NDS.LZ.F3.0F38.W1 F5 /r PEXT r64a, r64b, r/m64
-    FCML_I32( "pext rax,rdi,qword ptr [eax]", 0xC4, 0xE2, 0xC2, 0xF5, 0x00 );
-    FCML_I32( "pext rax,rdi,rax", 0xC4, 0xE2, 0xC2, 0xF5, 0xC0 );
+    FCML_I64( "pext rax,rdi,qword ptr [rax]", 0xC4, 0xE2, 0xC2, 0xF5, 0x00 );
+    FCML_I64( "pext rax,rdi,rax", 0xC4, 0xE2, 0xC2, 0xF5, 0xC0 );
 }
 
 CU_TestInfo fctl_ti_instructions_p[] = {
