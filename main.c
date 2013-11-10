@@ -239,6 +239,9 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	//FCML_I64_M_P( "adc rbp,0ffffffffffffffffh", 2, FCML_MI( 0x48, 0x81, 0xD5, 0xff, 0xff, 0xff, 0xff ), FCML_MI( 0x48, 0x83, 0xd5, 0xff ) );
+//	return 0;
+
 	//FCML_I64_RF( "rcl byte ptr [rel 0000800000401007h],03h", FCML_REND_FLAG_RENDER_REL_HINT, 0xc0, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
 	//return 0;
 

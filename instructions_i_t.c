@@ -69,7 +69,9 @@ void fcml_tf_instruction_IMUL(void) {
     FCML_I32( "imul bp,word ptr [eax+00000020h],5040h", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
     FCML_I64( "imul ebp,dword ptr [rax+0000000000000020h],70605040h", 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0x70 );
     FCML_I64( "imul bp,word ptr [rax+0000000000000020h],5040h", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
-    FCML_I64( "imul rbp,qword ptr [rax+0000000000000020h],0ffffffffff605040h", 0x48, 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0xFF );
+    // In this case value is not sign extended to 64 bits, so can not be treated as signed!
+    FCML_I64_A_FAILED( "imul rbp,qword ptr [rax+0000000000000020h],0ffffffffff605040h", 0x48, 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0xFF );
+    FCML_I64_D( "imul rbp,qword ptr [rax+0000000000000020h],0ff605040h", 0x48, 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0xFF );
 }
 
 void fcml_tf_instruction_IN(void) {
