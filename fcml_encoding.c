@@ -450,7 +450,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 fcml_ceh_error fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *context, fcml_data_size *osa ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     if( !context->data_size_flags.allowed_effective_operand_size.is_set ) {
-        // On order to choose optimal OSA, flags should be set.
+        // In order to choose optimal OSA, flags should be set.
         return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
     }
     fcml_en_cmi_attribute_size_flag flags = context->data_size_flags.allowed_effective_operand_size.flags;
@@ -630,21 +630,21 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
  * Operand encoders.
  *********************************/
 
-// TODO: zastnawic sie nad nazwa, ta jest beznadziejna,.
-fcml_bool fcml_ifn_asm_convert_signed_integer( const fcml_st_integer *source, fcml_st_integer *destination, fcml_data_size expected_size, fcml_data_size size, fcml_en_cmi_attribute_size_flag flag, fcml_en_cmi_attribute_size_flag *flags ) {
+fcml_bool fcml_ifn_asm_try_to_convert_integer_and_set_flag( const fcml_st_integer *source, fcml_st_integer *destination, fcml_data_size expected_size, fcml_data_size size, fcml_en_cmi_attribute_size_flag flag, fcml_en_cmi_attribute_size_flag *flags ) {
 
     // We expect signed integers here, but of course user is not forced to provide values that match expected size. In such cases values are converted to
     // appropriate size using sign set by user. Anyway sometimes user is not able to guess if values are signed or not in given context.
     // Parsers might be a good example. To avoid sign problem, if source operand has expected size (so conversion to the expected size is not necessary),
     // we can treat it like signed value.
 
-    // TODO: Zastanowic sie nad tym rozwiazaniem, troche mi nie pasuje ustwianie tego znaku w tym miejscu. zakladamy za kazdy konwerowany imm
-    // jest wartoscia ze znakiem, a to tez raczej ni jest prawd�, moze powinnimy w argumentach tryubu adresowania zaznaczac czy oczekujemy wartosci
-    // ze znakiem? Chyba tak bylo by najsensowiej.
-    fcml_st_integer tmp = *source;
-    if( tmp.size == expected_size ) {
-        tmp.is_signed = FCML_TRUE;
-    }
+	fcml_st_integer tmp = *source;
+	if( !expected_size ) {
+		expected_size = size;
+	} else {
+		if( tmp.size == expected_size ) {
+			tmp.is_signed = FCML_TRUE;
+		}
+	}
 
 	fcml_ceh_error error = fcml_fn_utils_convert_integer_to_integer( &tmp, destination, expected_size, size );
 	if( !error && flags ) {
@@ -674,43 +674,40 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
 			osa_flags = FCML_EN_ASF_ALL;
 		}
 
-		if( imm_size_ex == 0 ) {
-			imm_size_ex = imm_size;
-		}
-
 		fcml_st_integer source;
 		error = fcml_fn_utils_imm_to_integer( immediate, &source );
 		if( !error ) {
 
             // Not all EOSA values are available for every addressing mode. Additional flags can enable or disable some of them.
+			//source.is_signed = is_signed_value;
 
             if( imm_size != FCML_EOS_EOSA && imm_size_ex != FCML_EOS_EOSA ) {
-                is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, imm_size_ex * 8, imm_size * 8, 0, NULL );
+                is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, imm_size_ex * 8, imm_size * 8, 0, NULL );
             } else if( imm_size == FCML_EOS_EOSA && imm_size_ex == FCML_EOS_EOSA ) {
                 // Destination size calculated by EOSA.
                 if( osa_flags & FCML_EN_ASF_16 )
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags );
                 }
             } else if( imm_size == FCML_EOS_EOSA ) {
                 if( osa_flags & FCML_EN_ASF_16 )
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, imm_size_ex * 8, FCML_DS_16, FCML_EN_ASF_16, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, imm_size_ex * 8, FCML_DS_16, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, imm_size_ex * 8, FCML_DS_32, FCML_EN_ASF_32, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, imm_size_ex * 8, FCML_DS_32, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, imm_size_ex * 8, FCML_DS_64, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, imm_size_ex * 8, FCML_DS_64, FCML_EN_ASF_64, &flags );
                 }
             } else {
                 // IMM extended to effective address size attribute.
                 if( osa_flags & FCML_EN_ASF_16 )
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_16, imm_size * 8, FCML_EN_ASF_16, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, imm_size * 8, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_32, imm_size * 8, FCML_EN_ASF_32, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, imm_size * 8, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_64, imm_size * 8, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, imm_size * 8, FCML_EN_ASF_64, &flags );
                 }
             }
 
@@ -738,10 +735,6 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 		fcml_uint8_t imm_size = args->encoded_imm_size;
 		fcml_uint8_t imm_size_ex = args->encoded_ex_imm_size;
 
-		if( imm_size_ex == 0 ) {
-			imm_size_ex = imm_size;
-		}
-
 		fcml_st_immediate *source_imm = &(operand_def->immediate);
 		fcml_st_integer source;
 		fcml_st_integer converted_source;
@@ -761,13 +754,13 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 		fcml_bool is_converted = FCML_FALSE;
 
 		if( imm_size != FCML_EOS_EOSA && imm_size_ex != FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_convert_signed_integer( &source, &converted_source, imm_size_ex * 8, imm_size * 8, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, imm_size_ex * 8, imm_size * 8, 0, NULL );
 		} else if( imm_size == FCML_EOS_EOSA && imm_size_ex == FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_convert_signed_integer( &source, &converted_source, eosa_size, eosa_size, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, eosa_size, 0, NULL );
 		} else if( imm_size == FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_convert_signed_integer( &source, &converted_source, imm_size_ex * 8, eosa_size, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, imm_size_ex * 8, eosa_size, 0, NULL );
 		} else {
-		    is_converted = fcml_ifn_asm_convert_signed_integer( &source, &converted_source, eosa_size, imm_size * 8, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, imm_size * 8, 0, NULL );
 		}
 
 		if( !is_converted ) {
@@ -1185,11 +1178,13 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_segment_relative_offset( fcml_ist_a
         }
 
         // Check if address can be converted to 16, 32 or 64 bits.
-        is_convertable |= fcml_ifn_asm_convert_signed_integer( &source_address, &converted_address, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
+        source_address.is_signed = FCML_TRUE;
+
+        is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
         if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
-           is_convertable |= fcml_ifn_asm_convert_signed_integer( &source_address, &converted_address, FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags );
+           is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags );
         } else {
-           is_convertable |= fcml_ifn_asm_convert_signed_integer( &source_address, &converted_address, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
+           is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
         }
 
         if( !fcml_ifn_asm_set_size_flag( &(context->data_size_flags.allowed_effective_address_size), flags ) ) {
@@ -1509,7 +1504,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_pseudo_op( fcml_ist_asm_encoding_co
         }
 
         fcml_st_integer destination;
-        if( !fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_8, FCML_DS_8, 0, NULL ) ) {
+        if( !fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_8, FCML_DS_8, 0, NULL ) ) {
             return FCML_EN_UNSUPPORTED_OPPERAND;
         }
 
@@ -1537,7 +1532,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_pseudo_op( fcml_ien_asm_part_process
 			}
 
 			fcml_st_integer destination;
-			if( !fcml_ifn_asm_convert_signed_integer( &source, &destination, FCML_DS_8, FCML_DS_8, 0, NULL ) ) {
+			if( !fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_8, FCML_DS_8, 0, NULL ) ) {
 				return FCML_EN_UNSUPPORTED_OPPERAND;
 			}
 
@@ -2774,7 +2769,6 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_addr_mode_acceptor( fcml_
 		return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 	}
 	// Set restrictions if there are any.
-	// TODO: sprawzi czy faktycznie jest potrzebne rozdzielenie na nullable i zwykla wartosc.
 	if( addr_mode_details->allowed_osa != FCML_EN_ASF_ANY ) {
 		context->data_size_flags.allowed_effective_operand_size.flags = addr_mode_details->allowed_osa;
 		context->data_size_flags.allowed_effective_operand_size.is_set = FCML_TRUE;

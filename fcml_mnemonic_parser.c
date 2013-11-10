@@ -102,8 +102,7 @@ fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *a
         break;
     case 'p':
         if( attr_value_len == 2 ) {
-            // TODO: Zmienic to na rozwiazanie abrdziej prznosnie, rozszrzeyc env o operacje na stringach.
-            unsigned long val = strtoul(attr_value, NULL, 16);
+        	unsigned long int val = strtoul(attr_value, NULL, 16);
             mnemonic->pseudo_op.value = (fcml_uint8_t)val;
             mnemonic->pseudo_op.is_not_null = FCML_TRUE;
         } else {
