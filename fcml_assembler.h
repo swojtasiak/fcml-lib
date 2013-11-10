@@ -19,7 +19,7 @@ typedef struct fcml_st_asm_assembler {
 } fcml_st_asm_assembler;
 
 // Processing details for optimizers.
-typedef struct fcml_st_asm_data_size_flags {
+typedef struct fcml_st_asm_optimizer_processing_details {
 	// Flags describing all EOSa sizes available for given addressing mode.
 	fcml_st_cmi_nullable_size_flags allowed_effective_operand_size;
 	fcml_st_cmi_nullable_size_flags allowed_effective_address_size;
@@ -29,13 +29,15 @@ typedef struct fcml_st_asm_data_size_flags {
 	fcml_data_size effective_operand_size;
 	// L bit from VEX like prefixes set for encoded instruction.
 	fcml_nuint8_t l;
-} fcml_st_asm_data_size_flags;
+	// Set to true in order to break optimization process.
+	fcml_bool break_optimization;
+} fcml_st_asm_optimizer_processing_details;
 
 struct fcml_st_asm_assembler_context;
 
 // Optimizer definition.
 typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_ptr args );
-typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( struct fcml_st_asm_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
+typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( struct fcml_st_asm_assembler_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
 
 typedef struct fcml_st_asm_assembled_instruction {
 #ifdef FCML_DEBUG

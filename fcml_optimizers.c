@@ -75,7 +75,7 @@ inline fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_en_cmi_attribu
 	return 0;
 }
 
-fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_assembler_context *context, fcml_st_asm_data_size_flags *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
+fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_assembler_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
 
 	fcml_ceh_error error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
 
@@ -191,11 +191,12 @@ fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_assembler_context *con
 		}
 	}
 
-	// TODO: zoptymalizowac instruckje JCC, jezeli nie mozna zdekodowac rel offset na 8 bitach, to powtarza probe dla wszystkich kombinacji asa i eosa zamiast prejsc o nastepego trybu adresowania, chya bedzie trzeba dodac jakies hinty ook kodu bledu, ktore bea sugerowaly optymizerowi ze nie ma co dalej meczyc daneo trybu adresowania.
+	ds_flags->break_optimization = FCML_FALSE;
+
 	int i, j;
-	for( i = 0; i < easa_count && error; i++ ) {
+	for( i = 0; i < easa_count && error && !ds_flags->break_optimization; i++ ) {
 		ds_flags->effective_address_size = easa[i];
-		for( j = 0; j < eosa_count && error; j++ ) {
+		for( j = 0; j < eosa_count && error && !ds_flags->break_optimization; j++ ) {
 			ds_flags->effective_operand_size = eosa[j];
 		    error = callback( callback_args );
 		}

@@ -329,8 +329,6 @@ typedef struct fcml_st_far_pointer {
     fcml_uint16_t segment;
     fcml_data_size offset_size;
     union {
-    	// TODO: Zastanowic sie nad spojnoscia, wszedzie offsety i displacement obslugujemy w takiej wielkosci jak adres, czyli sign extended o wielkosci ASA
-    	// a tu nie. Pytanie czy zostawiamy taka niespojnosc.
         fcml_uint16_t offset16;
         fcml_uint32_t offset32;
     };

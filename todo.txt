@@ -9,3 +9,4 @@ Zastanowic sie przy okazji nad niekonsekwencja assemlacji, czesc zotawiamy do wy
 Mozliwosc podawania symbolow podczas parsowania i ich resolving. W zasadzie tylko parser powinien to obslugiwac, dl assemblera trafiac powinein juz address.
 
 Dodac do domyslnego optimizera flage, ktora bedzie umozliwala assemblacje wszystkichopcji, dl wszystkich kombinaji ASA OSA a nie rpzywala po pierwszej akonzonej sukcesem. Przydatne jezei ktos bedzie chcial zobaczyc wszystckie mozliwe opcje assemblacji.
+
