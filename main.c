@@ -44,6 +44,7 @@
 #include "hints_t.h"
 #include "fcml_chooser_t.h"
 #include "prefixes_t.h"
+#include "segment_reg_t.h"
 
 #include "fcml_assembler.h"
 #include "fcml_disassembler.h"
@@ -51,6 +52,7 @@
 #include "instructions_base_t.h"
 
 CU_SuiteInfo *suites[] = {
+	/*
 	fctl_si_instructions_a,
 	fctl_si_instructions_b,
 	fctl_si_instructions_c,
@@ -83,6 +85,8 @@ CU_SuiteInfo *suites[] = {
 	fcml_si_hints,
 	fcml_si_chooser,
 	fcml_si_prefixes,
+	*/
+	fcml_si_segment_reg,
     NULL
 };
 
@@ -255,10 +259,6 @@ int main(int argc, char **argv) {
 	//FCML_I32_A_P( "add dword ptr [eax],eax", 0x01, 0x04, 0x20 );
 	//FCML_I32_P( "add dword ptr [eax+00000001h],eax", 0x01, 0x40, 0x01 );
 	//FCML_I32_P( "add dword ptr [eax+00000001h],eax", 0x01, 0x44, 0x20, 0x01 );
-
-	//FCML_I32_A_P( "add dword ptr [eax+00000001h],eax", 0x01, 0x44, 0x20, 0x01 );
-	//FCML_I64_RF( "rcl byte ptr [abs 0000000000401007h],03h", FCML_REND_FLAG_RENDER_ABS_HINT, 0xc0, 0x15, 0x07, 0x10, 0x40, 0x00, 0x03 );
-	//return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.");

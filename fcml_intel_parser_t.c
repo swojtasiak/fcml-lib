@@ -469,8 +469,8 @@ void fcml_tf_parser_int_parse_test32(void) {
 	CU_ASSERT_EQUAL( fcml_x64iap_parse( "lock lock mov 1", &result ), FCML_CEH_GEC_INVALID_INPUT );
 	if( result->instruction != NULL ) {
         CU_FAIL("Instruction should be NULL.");
-	} else if( result->errors != NULL ){
-		fcml_st_ceh_error_container *cont = result->errors;
+	} else if( result->errors.errors ){
+		fcml_st_ceh_error_container *cont = &(result->errors);
 		CU_ASSERT_EQUAL( cont->errors->level, FCML_EN_CEH_EL_ERROR );
 		CU_ASSERT_EQUAL( cont->errors->code, FCML_EN_X64IP_ERROR_INVALID_SYNTAX );
 		CU_ASSERT_STRING_EQUAL( "Doubled prefixes.", cont->errors->message );
