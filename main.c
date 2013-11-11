@@ -52,7 +52,6 @@
 #include "instructions_base_t.h"
 
 CU_SuiteInfo *suites[] = {
-	/*
 	fctl_si_instructions_a,
 	fctl_si_instructions_b,
 	fctl_si_instructions_c,
@@ -85,7 +84,6 @@ CU_SuiteInfo *suites[] = {
 	fcml_si_hints,
 	fcml_si_chooser,
 	fcml_si_prefixes,
-	*/
 	fcml_si_segment_reg,
     NULL
 };
