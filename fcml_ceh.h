@@ -25,6 +25,12 @@
 #define FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION	10
 #define FCML_CEH_GEC_NOT_SUPPORTED				11
 
+/* Assembler error codes */
+
+#define FCML_CEH_AEC_ILLEGAL_SEG_REG_OVERRIDE	100
+
+/* Disassembler error codes */
+
 typedef fcml_uint16_t fcml_ceh_error;
 
 struct fcml_st_coll_list;
@@ -52,7 +58,8 @@ typedef struct fcml_st_ceh_error_container {
 } fcml_st_ceh_error_container;
 
 fcml_st_ceh_error_container *fcml_fn_ceh_alloc_error_container();
+void fcml_fn_ceh_free_errors_only( fcml_st_ceh_error_container *error_container );
 void fcml_fn_ceh_free_error_container( fcml_st_ceh_error_container *error_container );
-fcml_st_ceh_error_info *fcml_fn_ceh_add_error( fcml_st_ceh_error_container **error_container, const fcml_string message, fcml_ceh_error_code code, fcml_en_ceh_error_level level );
+fcml_st_ceh_error_info *fcml_fn_ceh_add_error( fcml_st_ceh_error_container *error_container, const fcml_string message, fcml_ceh_error_code code, fcml_en_ceh_error_level level );
 
 #endif /* FCML_CEH_H_ */

@@ -21,6 +21,7 @@
 #include "fcml_stream.h"
 #include "fcml_trace.h"
 #include "fcml_utils.h"
+#include "fcml_messages.h"
 
 #define FCML_ASM_MAX_PART_PROCESSORS	40
 
@@ -100,6 +101,9 @@ typedef struct fcml_ist_asm_encoding_context {
 	fcml_bool is_short_form;
 	fcml_bool reg_opcode_needs_rex;
 	fcml_uint8_t is5_byte;
+	// Error messages.
+	fcml_st_ceh_error_container global_error_msg;
+	fcml_st_ceh_error_container addr_mode_error_msg;
 } fcml_ist_asm_encoding_context;
 
 struct fcml_ist_asm_instruction_part;
@@ -522,9 +526,11 @@ fcml_bool fcml_ifn_asm_accept_segment_register( fcml_ist_asm_encoding_context *c
         // Register are the same, everything going well.
         return FCML_TRUE;
     } else if ( allow_override ) {
-        // TODO: dodac komuniat bledu, tak aby yuzytkownik mial swiadomosc tego co jest nie tak.
         context->segment_override = *segment_register;
         return FCML_TRUE;
+    } else {
+    	// Register can not be overridden.
+    	fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN ), FCML_CEH_AEC_ILLEGAL_SEG_REG_OVERRIDE, FCML_EN_CEH_EL_ERROR );
     }
 
     return FCML_FALSE;
@@ -1702,6 +1708,7 @@ void fcml_ifn_asm_free_assembled_instruction( fcml_st_asm_assembled_instruction 
 		if( assembled_instruction->code ) {
 			fcml_fn_env_memory_free( assembled_instruction->code );
 		}
+		fcml_fn_ceh_free_errors_only( &(assembled_instruction->errors) );
 		fcml_fn_env_memory_free( assembled_instruction );
 	}
 }
@@ -1767,6 +1774,10 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_asm_assembled_instruction *assembled_instruction;
+
+	// Free errors and warnings related to previous addressing mode.
+	fcml_fn_ceh_free_errors_only( &(context->addr_mode_error_msg) );
+
 	error = fcml_ifn_asm_assemble_instruction( context, addr_mode, &assembled_instruction );
 	if( !error ) {
 		#ifdef FCML_DEBUG
@@ -1790,15 +1801,26 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 		}
 
 		if( !ignore ) {
+
+			// Adds errors to collected during assemblation process.
+			assembled_instruction->errors = context->addr_mode_error_msg;
+
+			context->addr_mode_error_msg.errors = NULL;
+			context->addr_mode_error_msg.last_error = NULL;
+
             if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
                 fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
             }
+
 		} else {
 		    // Free ignored instruction.
 		    fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
 		}
 	}
+
+	fcml_fn_ceh_free_errors_only( &(context->addr_mode_error_msg) );
+
 	return error;
 }
 
@@ -1906,7 +1928,17 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 
 			// Check if there is at least one assembled instruction.
 			if( result->instructions->size == 0 ) {
+
+				// Copy global errors to result.
+				result->errors = context.global_error_msg;
+
 				error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+
+			} else {
+
+				// Assemblation succeed, so free global errors.
+				fcml_fn_ceh_free_errors_only( &(context.global_error_msg) );
+
 			}
 
 			// Choose instruction.

@@ -47,9 +47,7 @@ void fcml_ifn_asm_coll_list_action_free_assembled_instruction( fcml_ptr item_val
 
 void fcml_fn_asm_assembler_result_free( fcml_st_asm_assembler_result *result ) {
 	if( result ) {
-		if( result->errors ) {
-			fcml_fn_ceh_free_error_container( result->errors );
-		}
+		fcml_fn_ceh_free_errors_only( &(result->errors) );
 		if(result->instructions ) {
 			fcml_fn_coll_list_free( result->instructions, fcml_ifn_asm_coll_list_action_free_assembled_instruction, NULL );
 		}
@@ -81,15 +79,8 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 		asm_context->operand_size_attribute = fcml_fn_utils_get_default_OSA(asm_context->addr_form);
 	}
 
-	fcml_st_asm_assembler_result *asm_result = fcml_fn_env_memory_alloc( sizeof( fcml_st_asm_encoder_result ) );
+	fcml_st_asm_assembler_result *asm_result = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_asm_encoder_result ) );
 	if( !asm_result ) {
-		return FCML_CEH_GEC_OUT_OF_MEMORY;
-	}
-
-	// Allocate error container.
-	asm_result->errors = fcml_fn_ceh_alloc_error_container();
-	if( !(asm_result->errors) ) {
-		fcml_fn_asm_assembler_result_free( asm_result );
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
@@ -104,14 +95,15 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 	if( addr_modes != NULL ) {
 		if( addr_modes->instruction_encoder ) {
 
-			fcml_st_asm_encoder_result enc_result;
-			enc_result.errors = asm_result->errors;
+			fcml_st_asm_encoder_result enc_result = {{0}};
 			enc_result.instructions = asm_result->instructions;
 
 			error = addr_modes->instruction_encoder( asm_context, instruction, &enc_result, addr_modes );
 			if( !error ) {
 				asm_result->chosen_instruction = enc_result.chosen_instruction;
 			}
+
+			asm_result->errors = enc_result.errors;
 
 		} else {
 			// Unavailable instruction encoder.
@@ -121,11 +113,19 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 		error = FCML_EN_UNKNOWN_MNEMONIC;
 	}
 
+	// Free results but only if there is no error messages.
 	if( error ) {
-		fcml_fn_asm_assembler_result_free( asm_result );
-	} else {
-		*result = asm_result;
+		if( !asm_result->errors.errors ) {
+			fcml_fn_asm_assembler_result_free( asm_result );
+			asm_result = NULL;
+		} else {
+			// Free only instructions, error messages should be returned to user.
+			fcml_fn_coll_list_free( asm_result->instructions, fcml_ifn_asm_coll_list_action_free_assembled_instruction, NULL );
+			asm_result->instructions = NULL;
+		}
 	}
+
+	*result = asm_result;
 
 	return error;
 }

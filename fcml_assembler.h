@@ -44,6 +44,8 @@ typedef struct fcml_st_asm_assembled_instruction {
 	// Index of addressing mode used to assemble instruction.
 	fcml_uint8_t __def_index;
 #endif
+	// Error and warning messages related to assembled instruction.
+	fcml_st_ceh_error_container errors;
 	fcml_uint8_t *code;
 	fcml_usize code_length;
 } fcml_st_asm_assembled_instruction;
@@ -63,7 +65,7 @@ typedef struct fcml_st_asm_assembler_configuration {
 } fcml_st_asm_assembler_configuration;
 
 typedef struct fcml_st_asm_assembler_result {
-	fcml_st_ceh_error_container *errors;
+	fcml_st_ceh_error_container errors;
 	// List of fcml_st_asm_assembled_instruction structures.
 	fcml_st_coll_list *instructions;
 	// Instruction chosen by used chooser.
