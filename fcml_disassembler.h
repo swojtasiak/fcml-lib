@@ -113,7 +113,7 @@ typedef struct fcml_st_dasm_instruction_details {
 } fcml_st_dasm_instruction_details;
 
 typedef struct fcml_st_dasm_disassembler_result {
-	fcml_st_ceh_error_container *errors;
+	fcml_st_ceh_error_container errors;
 	fcml_st_dasm_instruction_details instruction_details;
 	fcml_st_instruction instruction;
 } fcml_st_dasm_disassembler_result;

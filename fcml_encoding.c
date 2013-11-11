@@ -1518,7 +1518,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_pseudo_op( fcml_ist_asm_encoding_co
         }
 
         if( destination.int8 & ( ~pseudo_op_args->mask ) ) {
-            // TODO: informacja dla uzytkownika w kontenerze bledow.
+        	fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_INVALID_PSEUDO_OPCODE_IMM ), FCML_CEH_AEC_INVALID_PSEUDO_OPCODE_VALUE, FCML_EN_CEH_EL_ERROR );
             return FCML_EN_UNSUPPORTED_OPPERAND;
         }
 
@@ -2298,7 +2298,6 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 }
 
 // HLE prefixes.
-// TODO: error messages.
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_hle_prefixes_prefix_encoder( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_ist_asm_instruction_part *instruction_part, fcml_ptr args ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -2310,18 +2309,21 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_hle_prefixes_prefix_encod
 				instruction_part->code_length = 1;
 				found = FCML_TRUE;
         	} else {
+        		fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_HLE_PREFIXES_NOT_ALLOWED ), FCML_CEH_AEC_HLE_PREFIX_NOT_ALLOWED, FCML_EN_CEH_EL_ERROR );
         		return FCML_EN_UNSUPPORTED_PREFIX;
         	}
         }
         if( context->instruction->prefixes & FCML_PREFIX_XRELEASE ) {
         	if( found ) {
         		// Only one HLA prefix is allowed for instruction.
+        		fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_HLE_MORE_THAN_ONE_PREFIX ), FCML_CEH_AEC_HLE_MORE_THAN_ONE_PREFIX, FCML_EN_CEH_EL_ERROR );
         		return FCML_EN_UNSUPPORTED_PREFIX;
         	}
         	if( FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
 				instruction_part->code[0] = 0xF3;
 				instruction_part->code_length = 1;
         	} else {
+        		fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_HLE_PREFIXES_NOT_ALLOWED ), FCML_CEH_AEC_HLE_PREFIX_NOT_ALLOWED, FCML_EN_CEH_EL_ERROR );
         		return FCML_EN_UNSUPPORTED_PREFIX;
         	}
 		}

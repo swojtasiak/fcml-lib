@@ -47,6 +47,7 @@ struct fcml_ist_dasm_instruction_decoding_def;
 
 typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_dasm_disassembler_context *disassembler_context;
+	fcml_st_ceh_error_container errors;
 	fcml_st_memory_stream *stream;
 	fcml_st_mp_mnemonic_set *mnemonics;
 	fcml_data_size effective_address_size_attribute;
@@ -2131,6 +2132,9 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 		fcml_st_dasm_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dasm_disassembler_result ) );
 		if( dis_res ) {
 
+			// Copy potential errors.
+			dis_res->errors = decoding_context.errors;
+
 			fcml_st_instruction *instruction = &(dis_res->instruction);
 			fcml_st_dasm_instruction_details *instruction_details = &(dis_res->instruction_details);
 
@@ -2201,6 +2205,13 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 		} else {
 			error = FCML_CEH_GEC_OUT_OF_MEMORY;
 		}
+	} else if( decoding_context.errors.errors ) {
+		// If there are any errors, return them back to the user.
+		fcml_st_dasm_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dasm_disassembler_result ) );
+		if( dis_res ) {
+			dis_res->errors = decoding_context.errors;
+		}
+		*result = dis_res;
 	}
 
 	return error;
@@ -2208,9 +2219,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 
 void fcml_fn_dasm_disassemble_result_free( fcml_st_dasm_disassembler_result *result ) {
 	if( result ) {
-		if( result->errors ) {
-			fcml_fn_ceh_free_error_container( result->errors );
-		}
+		fcml_fn_ceh_free_errors_only( &(result->errors) );
 		if( result->instruction.mnemonic ) {
 			fcml_fn_env_str_strfree( result->instruction.mnemonic );
 		}
