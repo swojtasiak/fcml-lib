@@ -134,14 +134,15 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 		}
 
 		// Parsing.
-		fcml_st_x64iap_parser_result *result;
-		fcml_ceh_error error = fcml_x64iap_parse( mnemonic, &result );
+
+		fcml_st_parser_result *result;
+		fcml_ceh_error error = fcml_fn_parse_instruction( &dialect, mnemonic, &result );
 		if( error ) {
 			printf("Can not parse: %s\n", mnemonic );
 			if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 				success = FCML_FALSE;
 			}
-			fcml_x64iap_free( result );
+			fcml_fn_parser_result_free( result );
 			fcml_fn_dasm_disassemble_result_free( dis_result );
 			return success;
 		}
@@ -363,7 +364,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_fn_asm_assembler_result_free( asm_result );
 
-		fcml_x64iap_free( result );
+		fcml_fn_parser_result_free( result );
 
 
 	} else {

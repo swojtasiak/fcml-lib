@@ -13,11 +13,15 @@
 #include <fcml_ceh.h>
 #include <fcml_common.h>
 #include <fcml_types.h>
+#include <fcml_errors.h>
 #include <fcml_x64intel_asm_parser.h>
-#include <fcml_x64intel_parser_errors.h>
+#include <fcml_dialect_intel.h>
 #include <string.h>
 
+fcml_st_dialect_context dialect_intel;
+
 int fcml_tf_parser_suite_init(void) {
+	dialect_intel = fcml_fn_get_intel_dialect_context();
 	return 0;
 }
 
@@ -26,8 +30,8 @@ int fcml_tf_parser_suite_cleanup(void) {
 }
 
 void fcml_tf_parser_int_parse_test1(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 80-90", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 80-90", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -36,12 +40,12 @@ void fcml_tf_parser_int_parse_test1(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test2(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -50,12 +54,12 @@ void fcml_tf_parser_int_parse_test2(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test3(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 0xFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 0xFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -64,12 +68,12 @@ void fcml_tf_parser_int_parse_test3(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test4(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 0xFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 0xFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -78,12 +82,12 @@ void fcml_tf_parser_int_parse_test4(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test5(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 0xFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 0xFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
@@ -92,12 +96,12 @@ void fcml_tf_parser_int_parse_test5(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test6(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
@@ -106,12 +110,12 @@ void fcml_tf_parser_int_parse_test6(void) {
 	} else {
 	    CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test7(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -120,12 +124,12 @@ void fcml_tf_parser_int_parse_test7(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test8(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov -0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov -0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -134,12 +138,12 @@ void fcml_tf_parser_int_parse_test8(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test9(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov -0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov -0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -148,12 +152,12 @@ void fcml_tf_parser_int_parse_test9(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test10(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 1+2", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 1+2", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -162,12 +166,12 @@ void fcml_tf_parser_int_parse_test10(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test11(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 1+2*8/(15-13)-1", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 1+2*8/(15-13)-1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -176,12 +180,12 @@ void fcml_tf_parser_int_parse_test11(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test12(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 65535", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 65535", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -190,12 +194,12 @@ void fcml_tf_parser_int_parse_test12(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test13(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov -32768", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov -32768", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -204,22 +208,22 @@ void fcml_tf_parser_int_parse_test13(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test14(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov (-2147483647 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov (-2147483647 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
 	CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 	CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
 	CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_TRUE );
 	CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm32, (fcml_uint32_t)(-2147483647 - 1) );
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test15(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov (-9223372036854775807 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov (-9223372036854775807 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -228,12 +232,12 @@ void fcml_tf_parser_int_parse_test15(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test16(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 18446744073709551615", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 18446744073709551615", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -242,12 +246,12 @@ void fcml_tf_parser_int_parse_test16(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test17(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 5675", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 5675", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -256,12 +260,12 @@ void fcml_tf_parser_int_parse_test17(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test18(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 2147483647", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 2147483647", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
@@ -270,12 +274,12 @@ void fcml_tf_parser_int_parse_test18(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test19(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 4294967295", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 4294967295", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_32 );
@@ -284,12 +288,12 @@ void fcml_tf_parser_int_parse_test19(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test20(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 4294967296", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 4294967296", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -298,12 +302,12 @@ void fcml_tf_parser_int_parse_test20(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test21(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov -0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov -0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -312,12 +316,12 @@ void fcml_tf_parser_int_parse_test21(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test22(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 255", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 255", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -326,12 +330,12 @@ void fcml_tf_parser_int_parse_test22(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test23(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -340,12 +344,12 @@ void fcml_tf_parser_int_parse_test23(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test24(void) {
-    fcml_st_x64iap_parser_result *result;
-    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [0x0000FFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    fcml_st_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov dword ptr [0x0000FFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result->instruction != NULL ) {
         CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
         CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_OFFSET );
@@ -354,12 +358,12 @@ void fcml_tf_parser_int_parse_test24(void) {
     } else {
         CU_FAIL();
     }
-    fcml_x64iap_free( result );
+    fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test25(void) {
-    fcml_st_x64iap_parser_result *result;
-    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [0xFF-1]", &result ), FCML_CEH_GEC_NO_ERROR );
+    fcml_st_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov dword ptr [0xFF-1]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result->instruction != NULL ) {
         CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
         CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_OFFSET );
@@ -368,12 +372,12 @@ void fcml_tf_parser_int_parse_test25(void) {
     } else {
         CU_FAIL();
     }
-    fcml_x64iap_free( result );
+    fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test26(void) {
-    fcml_st_x64iap_parser_result *result;
-    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [-1]", &result ), FCML_CEH_GEC_NO_ERROR );
+    fcml_st_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov dword ptr [-1]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result->instruction != NULL ) {
         CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
         CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_OFFSET );
@@ -382,12 +386,12 @@ void fcml_tf_parser_int_parse_test26(void) {
     } else {
         CU_FAIL();
     }
-    fcml_x64iap_free( result );
+    fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test27(void) {
-    fcml_st_x64iap_parser_result *result;
-    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    fcml_st_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov dword ptr [0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result->instruction != NULL ) {
         CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
         CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_OFFSET );
@@ -396,12 +400,12 @@ void fcml_tf_parser_int_parse_test27(void) {
     } else {
         CU_FAIL();
     }
-    fcml_x64iap_free( result );
+    fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test28(void) {
-    fcml_st_x64iap_parser_result *result;
-    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov dword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    fcml_st_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov dword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result->instruction != NULL ) {
         CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
         CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_COMBINED );
@@ -412,12 +416,12 @@ void fcml_tf_parser_int_parse_test28(void) {
     } else {
         CU_FAIL();
     }
-    fcml_x64iap_free( result );
+    fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test29(void) {
-    fcml_st_x64iap_parser_result *result;
-    CU_ASSERT_EQUAL( fcml_x64iap_parse( "mov xmmword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    fcml_st_parser_result *result;
+    CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "mov xmmword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result->instruction != NULL ) {
         CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
         CU_ASSERT_EQUAL( result->instruction->operands[0].hints, FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
@@ -429,12 +433,12 @@ void fcml_tf_parser_int_parse_test29(void) {
     } else {
         CU_FAIL();
     }
-    fcml_x64iap_free( result );
+    fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test30(void) {
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "lock mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "lock mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -444,13 +448,13 @@ void fcml_tf_parser_int_parse_test30(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test31(void) {
 	// Check if multiple prefixes are allowed.
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "lock repne repe mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "lock repne repe mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -460,13 +464,13 @@ void fcml_tf_parser_int_parse_test31(void) {
 	} else {
         CU_FAIL();
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_int_parse_test32(void) {
 	// Duplicated prefixes aren't allowed.
-	fcml_st_x64iap_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64iap_parse( "lock lock mov 1", &result ), FCML_CEH_GEC_INVALID_INPUT );
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64intel_parse( &dialect_intel, "lock lock mov 1", &result ), FCML_CEH_GEC_INVALID_INPUT );
 	if( result->instruction != NULL ) {
         CU_FAIL("Instruction should be NULL.");
 	} else if( result->errors.errors ){
@@ -477,7 +481,7 @@ void fcml_tf_parser_int_parse_test32(void) {
     } else {
     	CU_FAIL("Errors can not be null here.");
     }
-	fcml_x64iap_free( result );
+	fcml_fn_parser_result_free( result );
 }
 
 CU_TestInfo fcml_ti_parser[] = {
