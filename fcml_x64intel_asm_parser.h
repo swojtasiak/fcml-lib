@@ -8,18 +8,11 @@
 #ifndef FCML_X64INTEL_ASM_PARSER_H_
 #define FCML_X64INTEL_ASM_PARSER_H_
 
-#define FCML_X64IAP_MAX_INSTRUCTION_LEN		1024
-
 #include "fcml_ceh.h"
+#include "fcml_parser.h"
 #include "fcml_types.h"
-#include "fcml_common.h"
+#include "fcml_dialect.h"
 
-typedef struct fcml_st_x64iap_parser_result {
-	fcml_st_ceh_error_container errors;
-	fcml_st_instruction *instruction;
-} fcml_st_x64iap_parser_result;
-
-fcml_ceh_error fcml_x64iap_parse( fcml_string instruction, fcml_st_x64iap_parser_result **result_out );
-void fcml_x64iap_free( fcml_st_x64iap_parser_result *result );
+fcml_ceh_error fcml_x64intel_parse( fcml_st_dialect_context *dialect, fcml_string instruction, fcml_st_parser_result **result_out );
 
 #endif /* FCML_X64INTEL_ASM_PARSER_H_ */

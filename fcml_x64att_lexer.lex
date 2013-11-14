@@ -5,7 +5,7 @@
 	#include "fcml_env.h"
 	#include "fcml_types.h"
 	#include "fcml_parser_utils.h"
-	#include "fcml_x64intel_parser.tab.h"
+	#include "fcml_x64att_parser.tab.h"
 %}
 
 %option noyywrap
@@ -18,10 +18,10 @@
 %option 8bit 
 %option reentrant
 %option bison-bridge
-%option outfile="fcml_x64intel_lexer.c"
-%option header-file="fcml_x64intel_lexer.h"
+%option outfile="fcml_x64att_lexer.c"
+%option header-file="fcml_x64att_lexer.h"
 %option nounistd
-%option prefix="intel_"
+%option prefix="att_"
 
 %option extra-type="struct fcml_st_parser_data *"
 

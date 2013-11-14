@@ -30,14 +30,14 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_INTEL_FCML_X64INTEL_PARSER_TAB_H_INCLUDED
-# define YY_INTEL_FCML_X64INTEL_PARSER_TAB_H_INCLUDED
+#ifndef YY_ATT_FCML_X64ATT_PARSER_TAB_H_INCLUDED
+# define YY_ATT_FCML_X64ATT_PARSER_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 #if YYDEBUG
-extern int intel_debug;
+extern int att_debug;
 #endif
 
 /* Tokens.  */
@@ -70,7 +70,7 @@ extern int intel_debug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 89 "fcml_x64intel_parser.y"
+#line 89 "fcml_x64att_parser.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
@@ -87,7 +87,7 @@ typedef union YYSTYPE
 
 
 /* Line 2053 of yacc.c  */
-#line 91 "fcml_x64intel_parser.tab.h"
+#line 91 "fcml_x64att_parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -97,16 +97,16 @@ typedef union YYSTYPE
 
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
-int intel_parse (void *YYPARSE_PARAM);
+int att_parse (void *YYPARSE_PARAM);
 #else
-int intel_parse ();
+int att_parse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int intel_parse (struct fcml_st_parser_data *pd);
+int att_parse (struct fcml_st_parser_data *pd);
 #else
-int intel_parse ();
+int att_parse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_INTEL_FCML_X64INTEL_PARSER_TAB_H_INCLUDED  */
+#endif /* !YY_ATT_FCML_X64ATT_PARSER_TAB_H_INCLUDED  */

@@ -1,0 +1,1307 @@
+Terminals unused in grammar
+
+   FCML_TK_UNEXPECTED
+
+
+Grammar
+
+    0 $accept: start $end
+
+    1 start: /* empty */
+    2      | instruction
+
+    3 instruction: mnemonic
+    4            | mnemonic operand_list
+    5            | mnemonic hint_list operand_list
+    6            | inst_prefixes mnemonic
+    7            | inst_prefixes mnemonic operand_list
+    8            | inst_prefixes mnemonic hint_list operand_list
+
+    9 inst_prefixes: FCML_TK_PREFIX
+   10              | inst_prefixes FCML_TK_PREFIX
+
+   11 mnemonic: FCML_TK_SYMBOL
+
+   12 hint_list: FCML_TK_HINTS
+   13          | hint_list FCML_TK_HINTS
+
+   14 operand_list: operand
+   15             | operand_list ',' operand
+
+   16 operand: exp
+   17        | far_pointer
+   18        | effective_address
+   19        | reg
+
+   20 effective_address: '[' effective_address_components ']'
+   21                  | FCML_TK_SIZE_OPERATOR '[' effective_address_components ']'
+   22                  | segment_selector '[' effective_address_components ']'
+   23                  | FCML_TK_SIZE_OPERATOR segment_selector '[' effective_address_components ']'
+
+   24 effective_address_components: reg
+   25                             | FCML_TK_SIB_HINT reg
+   26                             | reg '+' reg
+   27                             | reg '+' reg '*' FCML_TK_INTEGER
+   28                             | reg '+' reg '*' FCML_TK_INTEGER '+' exp
+   29                             | reg '+' reg '*' FCML_TK_INTEGER '-' exp
+   30                             | reg '+' reg '+' exp
+   31                             | reg '+' reg '-' exp
+   32                             | reg '+' exp
+   33                             | FCML_TK_SIB_HINT reg '+' exp
+   34                             | reg '-' exp
+   35                             | FCML_TK_SIB_HINT reg '-' exp
+   36                             | exp
+   37                             | FCML_TK_EAO_HINTS exp
+   38                             | FCML_TK_SIB_HINT exp
+
+   39 segment_selector: FCML_TK_REG_SEG ':'
+
+   40 far_pointer: exp ':' exp
+
+   41 exp: FCML_TK_INTEGER
+   42    | FCML_TK_FLOAT
+   43    | exp '-' exp
+   44    | exp '+' exp
+   45    | exp '/' exp
+   46    | exp '*' exp
+   47    | '-' exp
+   48    | '(' exp ')'
+
+   49 reg: FCML_TK_REG_GPR
+   50    | FCML_TK_REG_SIMD
+   51    | FCML_TK_REG_FPU
+   52    | FCML_TK_REG_SEG
+   53    | FCML_TK_REG_CR
+   54    | FCML_TK_REG_DR
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 48
+')' (41) 48
+'*' (42) 27 28 29 46
+'+' (43) 26 27 28 29 30 31 32 33 44
+',' (44) 15
+'-' (45) 29 31 34 35 43 47
+'/' (47) 45
+':' (58) 39 40
+'[' (91) 20 21 22 23
+']' (93) 20 21 22 23
+error (256)
+FCML_TK_UNEXPECTED (258)
+FCML_TK_REG_GPR (259) 49
+FCML_TK_REG_SIMD (260) 50
+FCML_TK_REG_FPU (261) 51
+FCML_TK_REG_SEG (262) 39 52
+FCML_TK_REG_CR (263) 53
+FCML_TK_REG_DR (264) 54
+FCML_TK_INTEGER (265) 27 28 29 41
+FCML_TK_FLOAT (266) 42
+FCML_TK_SIZE_OPERATOR (267) 21 23
+FCML_TK_SYMBOL (268) 11
+FCML_TK_HINTS (269) 12 13
+FCML_TK_EAO_HINTS (270) 37
+FCML_TK_SIB_HINT (271) 25 33 35 38
+FCML_TK_PREFIX (272) 9 10
+FCML_OP_UMINUS (273)
+
+
+Nonterminals, with rules where they appear
+
+$accept (29)
+    on left: 0
+start (30)
+    on left: 1 2, on right: 0
+instruction (31)
+    on left: 3 4 5 6 7 8, on right: 2
+inst_prefixes (32)
+    on left: 9 10, on right: 6 7 8 10
+mnemonic (33)
+    on left: 11, on right: 3 4 5 6 7 8
+hint_list (34)
+    on left: 12 13, on right: 5 8 13
+operand_list (35)
+    on left: 14 15, on right: 4 5 7 8 15
+operand (36)
+    on left: 16 17 18 19, on right: 14 15
+effective_address (37)
+    on left: 20 21 22 23, on right: 18
+effective_address_components (38)
+    on left: 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38, on right:
+    20 21 22 23
+segment_selector (39)
+    on left: 39, on right: 22 23
+far_pointer (40)
+    on left: 40, on right: 17
+exp (41)
+    on left: 41 42 43 44 45 46 47 48, on right: 16 28 29 30 31 32 33
+    34 35 36 37 38 40 43 44 45 46 47 48
+reg (42)
+    on left: 49 50 51 52 53 54, on right: 19 24 25 26 27 28 29 30 31
+    32 33 34 35
+
+
+State 0
+
+    0 $accept: . start $end
+
+    FCML_TK_SYMBOL  shift, and go to state 1
+    FCML_TK_PREFIX  shift, and go to state 2
+
+    $default  reduce using rule 1 (start)
+
+    start          go to state 3
+    instruction    go to state 4
+    inst_prefixes  go to state 5
+    mnemonic       go to state 6
+
+
+State 1
+
+   11 mnemonic: FCML_TK_SYMBOL .
+
+    $default  reduce using rule 11 (mnemonic)
+
+
+State 2
+
+    9 inst_prefixes: FCML_TK_PREFIX .
+
+    $default  reduce using rule 9 (inst_prefixes)
+
+
+State 3
+
+    0 $accept: start . $end
+
+    $end  shift, and go to state 7
+
+
+State 4
+
+    2 start: instruction .
+
+    $default  reduce using rule 2 (start)
+
+
+State 5
+
+    6 instruction: inst_prefixes . mnemonic
+    7            | inst_prefixes . mnemonic operand_list
+    8            | inst_prefixes . mnemonic hint_list operand_list
+   10 inst_prefixes: inst_prefixes . FCML_TK_PREFIX
+
+    FCML_TK_SYMBOL  shift, and go to state 1
+    FCML_TK_PREFIX  shift, and go to state 8
+
+    mnemonic  go to state 9
+
+
+State 6
+
+    3 instruction: mnemonic .
+    4            | mnemonic . operand_list
+    5            | mnemonic . hint_list operand_list
+
+    FCML_TK_REG_GPR        shift, and go to state 10
+    FCML_TK_REG_SIMD       shift, and go to state 11
+    FCML_TK_REG_FPU        shift, and go to state 12
+    FCML_TK_REG_SEG        shift, and go to state 13
+    FCML_TK_REG_CR         shift, and go to state 14
+    FCML_TK_REG_DR         shift, and go to state 15
+    FCML_TK_INTEGER        shift, and go to state 16
+    FCML_TK_FLOAT          shift, and go to state 17
+    FCML_TK_SIZE_OPERATOR  shift, and go to state 18
+    FCML_TK_HINTS          shift, and go to state 19
+    '-'                    shift, and go to state 20
+    '['                    shift, and go to state 21
+    '('                    shift, and go to state 22
+
+    $default  reduce using rule 3 (instruction)
+
+    hint_list          go to state 23
+    operand_list       go to state 24
+    operand            go to state 25
+    effective_address  go to state 26
+    segment_selector   go to state 27
+    far_pointer        go to state 28
+    exp                go to state 29
+    reg                go to state 30
+
+
+State 7
+
+    0 $accept: start $end .
+
+    $default  accept
+
+
+State 8
+
+   10 inst_prefixes: inst_prefixes FCML_TK_PREFIX .
+
+    $default  reduce using rule 10 (inst_prefixes)
+
+
+State 9
+
+    6 instruction: inst_prefixes mnemonic .
+    7            | inst_prefixes mnemonic . operand_list
+    8            | inst_prefixes mnemonic . hint_list operand_list
+
+    FCML_TK_REG_GPR        shift, and go to state 10
+    FCML_TK_REG_SIMD       shift, and go to state 11
+    FCML_TK_REG_FPU        shift, and go to state 12
+    FCML_TK_REG_SEG        shift, and go to state 13
+    FCML_TK_REG_CR         shift, and go to state 14
+    FCML_TK_REG_DR         shift, and go to state 15
+    FCML_TK_INTEGER        shift, and go to state 16
+    FCML_TK_FLOAT          shift, and go to state 17
+    FCML_TK_SIZE_OPERATOR  shift, and go to state 18
+    FCML_TK_HINTS          shift, and go to state 19
+    '-'                    shift, and go to state 20
+    '['                    shift, and go to state 21
+    '('                    shift, and go to state 22
+
+    $default  reduce using rule 6 (instruction)
+
+    hint_list          go to state 31
+    operand_list       go to state 32
+    operand            go to state 25
+    effective_address  go to state 26
+    segment_selector   go to state 27
+    far_pointer        go to state 28
+    exp                go to state 29
+    reg                go to state 30
+
+
+State 10
+
+   49 reg: FCML_TK_REG_GPR .
+
+    $default  reduce using rule 49 (reg)
+
+
+State 11
+
+   50 reg: FCML_TK_REG_SIMD .
+
+    $default  reduce using rule 50 (reg)
+
+
+State 12
+
+   51 reg: FCML_TK_REG_FPU .
+
+    $default  reduce using rule 51 (reg)
+
+
+State 13
+
+   39 segment_selector: FCML_TK_REG_SEG . ':'
+   52 reg: FCML_TK_REG_SEG .
+
+    ':'  shift, and go to state 33
+
+    $default  reduce using rule 52 (reg)
+
+
+State 14
+
+   53 reg: FCML_TK_REG_CR .
+
+    $default  reduce using rule 53 (reg)
+
+
+State 15
+
+   54 reg: FCML_TK_REG_DR .
+
+    $default  reduce using rule 54 (reg)
+
+
+State 16
+
+   41 exp: FCML_TK_INTEGER .
+
+    $default  reduce using rule 41 (exp)
+
+
+State 17
+
+   42 exp: FCML_TK_FLOAT .
+
+    $default  reduce using rule 42 (exp)
+
+
+State 18
+
+   21 effective_address: FCML_TK_SIZE_OPERATOR . '[' effective_address_components ']'
+   23                  | FCML_TK_SIZE_OPERATOR . segment_selector '[' effective_address_components ']'
+
+    FCML_TK_REG_SEG  shift, and go to state 34
+    '['              shift, and go to state 35
+
+    segment_selector  go to state 36
+
+
+State 19
+
+   12 hint_list: FCML_TK_HINTS .
+
+    $default  reduce using rule 12 (hint_list)
+
+
+State 20
+
+   47 exp: '-' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 37
+
+
+State 21
+
+   20 effective_address: '[' . effective_address_components ']'
+
+    FCML_TK_REG_GPR    shift, and go to state 10
+    FCML_TK_REG_SIMD   shift, and go to state 11
+    FCML_TK_REG_FPU    shift, and go to state 12
+    FCML_TK_REG_SEG    shift, and go to state 38
+    FCML_TK_REG_CR     shift, and go to state 14
+    FCML_TK_REG_DR     shift, and go to state 15
+    FCML_TK_INTEGER    shift, and go to state 16
+    FCML_TK_FLOAT      shift, and go to state 17
+    FCML_TK_EAO_HINTS  shift, and go to state 39
+    FCML_TK_SIB_HINT   shift, and go to state 40
+    '-'                shift, and go to state 20
+    '('                shift, and go to state 22
+
+    effective_address_components  go to state 41
+    exp                           go to state 42
+    reg                           go to state 43
+
+
+State 22
+
+   48 exp: '(' . exp ')'
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 44
+
+
+State 23
+
+    5 instruction: mnemonic hint_list . operand_list
+   13 hint_list: hint_list . FCML_TK_HINTS
+
+    FCML_TK_REG_GPR        shift, and go to state 10
+    FCML_TK_REG_SIMD       shift, and go to state 11
+    FCML_TK_REG_FPU        shift, and go to state 12
+    FCML_TK_REG_SEG        shift, and go to state 13
+    FCML_TK_REG_CR         shift, and go to state 14
+    FCML_TK_REG_DR         shift, and go to state 15
+    FCML_TK_INTEGER        shift, and go to state 16
+    FCML_TK_FLOAT          shift, and go to state 17
+    FCML_TK_SIZE_OPERATOR  shift, and go to state 18
+    FCML_TK_HINTS          shift, and go to state 45
+    '-'                    shift, and go to state 20
+    '['                    shift, and go to state 21
+    '('                    shift, and go to state 22
+
+    operand_list       go to state 46
+    operand            go to state 25
+    effective_address  go to state 26
+    segment_selector   go to state 27
+    far_pointer        go to state 28
+    exp                go to state 29
+    reg                go to state 30
+
+
+State 24
+
+    4 instruction: mnemonic operand_list .
+   15 operand_list: operand_list . ',' operand
+
+    ','  shift, and go to state 47
+
+    $default  reduce using rule 4 (instruction)
+
+
+State 25
+
+   14 operand_list: operand .
+
+    $default  reduce using rule 14 (operand_list)
+
+
+State 26
+
+   18 operand: effective_address .
+
+    $default  reduce using rule 18 (operand)
+
+
+State 27
+
+   22 effective_address: segment_selector . '[' effective_address_components ']'
+
+    '['  shift, and go to state 48
+
+
+State 28
+
+   17 operand: far_pointer .
+
+    $default  reduce using rule 17 (operand)
+
+
+State 29
+
+   16 operand: exp .
+   40 far_pointer: exp . ':' exp
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+    ':'  shift, and go to state 53
+
+    $default  reduce using rule 16 (operand)
+
+
+State 30
+
+   19 operand: reg .
+
+    $default  reduce using rule 19 (operand)
+
+
+State 31
+
+    8 instruction: inst_prefixes mnemonic hint_list . operand_list
+   13 hint_list: hint_list . FCML_TK_HINTS
+
+    FCML_TK_REG_GPR        shift, and go to state 10
+    FCML_TK_REG_SIMD       shift, and go to state 11
+    FCML_TK_REG_FPU        shift, and go to state 12
+    FCML_TK_REG_SEG        shift, and go to state 13
+    FCML_TK_REG_CR         shift, and go to state 14
+    FCML_TK_REG_DR         shift, and go to state 15
+    FCML_TK_INTEGER        shift, and go to state 16
+    FCML_TK_FLOAT          shift, and go to state 17
+    FCML_TK_SIZE_OPERATOR  shift, and go to state 18
+    FCML_TK_HINTS          shift, and go to state 45
+    '-'                    shift, and go to state 20
+    '['                    shift, and go to state 21
+    '('                    shift, and go to state 22
+
+    operand_list       go to state 54
+    operand            go to state 25
+    effective_address  go to state 26
+    segment_selector   go to state 27
+    far_pointer        go to state 28
+    exp                go to state 29
+    reg                go to state 30
+
+
+State 32
+
+    7 instruction: inst_prefixes mnemonic operand_list .
+   15 operand_list: operand_list . ',' operand
+
+    ','  shift, and go to state 47
+
+    $default  reduce using rule 7 (instruction)
+
+
+State 33
+
+   39 segment_selector: FCML_TK_REG_SEG ':' .
+
+    $default  reduce using rule 39 (segment_selector)
+
+
+State 34
+
+   39 segment_selector: FCML_TK_REG_SEG . ':'
+
+    ':'  shift, and go to state 33
+
+
+State 35
+
+   21 effective_address: FCML_TK_SIZE_OPERATOR '[' . effective_address_components ']'
+
+    FCML_TK_REG_GPR    shift, and go to state 10
+    FCML_TK_REG_SIMD   shift, and go to state 11
+    FCML_TK_REG_FPU    shift, and go to state 12
+    FCML_TK_REG_SEG    shift, and go to state 38
+    FCML_TK_REG_CR     shift, and go to state 14
+    FCML_TK_REG_DR     shift, and go to state 15
+    FCML_TK_INTEGER    shift, and go to state 16
+    FCML_TK_FLOAT      shift, and go to state 17
+    FCML_TK_EAO_HINTS  shift, and go to state 39
+    FCML_TK_SIB_HINT   shift, and go to state 40
+    '-'                shift, and go to state 20
+    '('                shift, and go to state 22
+
+    effective_address_components  go to state 55
+    exp                           go to state 42
+    reg                           go to state 43
+
+
+State 36
+
+   23 effective_address: FCML_TK_SIZE_OPERATOR segment_selector . '[' effective_address_components ']'
+
+    '['  shift, and go to state 56
+
+
+State 37
+
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+   47    | '-' exp .
+
+    $default  reduce using rule 47 (exp)
+
+    Conflict between rule 47 and token '-' resolved as reduce ('-' < FCML_OP_UMINUS).
+    Conflict between rule 47 and token '+' resolved as reduce ('+' < FCML_OP_UMINUS).
+    Conflict between rule 47 and token '*' resolved as reduce ('*' < FCML_OP_UMINUS).
+    Conflict between rule 47 and token '/' resolved as reduce ('/' < FCML_OP_UMINUS).
+
+
+State 38
+
+   52 reg: FCML_TK_REG_SEG .
+
+    $default  reduce using rule 52 (reg)
+
+
+State 39
+
+   37 effective_address_components: FCML_TK_EAO_HINTS . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 57
+
+
+State 40
+
+   25 effective_address_components: FCML_TK_SIB_HINT . reg
+   33                             | FCML_TK_SIB_HINT . reg '+' exp
+   35                             | FCML_TK_SIB_HINT . reg '-' exp
+   38                             | FCML_TK_SIB_HINT . exp
+
+    FCML_TK_REG_GPR   shift, and go to state 10
+    FCML_TK_REG_SIMD  shift, and go to state 11
+    FCML_TK_REG_FPU   shift, and go to state 12
+    FCML_TK_REG_SEG   shift, and go to state 38
+    FCML_TK_REG_CR    shift, and go to state 14
+    FCML_TK_REG_DR    shift, and go to state 15
+    FCML_TK_INTEGER   shift, and go to state 16
+    FCML_TK_FLOAT     shift, and go to state 17
+    '-'               shift, and go to state 20
+    '('               shift, and go to state 22
+
+    exp  go to state 58
+    reg  go to state 59
+
+
+State 41
+
+   20 effective_address: '[' effective_address_components . ']'
+
+    ']'  shift, and go to state 60
+
+
+State 42
+
+   36 effective_address_components: exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 36 (effective_address_components)
+
+
+State 43
+
+   24 effective_address_components: reg .
+   26                             | reg . '+' reg
+   27                             | reg . '+' reg '*' FCML_TK_INTEGER
+   28                             | reg . '+' reg '*' FCML_TK_INTEGER '+' exp
+   29                             | reg . '+' reg '*' FCML_TK_INTEGER '-' exp
+   30                             | reg . '+' reg '+' exp
+   31                             | reg . '+' reg '-' exp
+   32                             | reg . '+' exp
+   34                             | reg . '-' exp
+
+    '-'  shift, and go to state 61
+    '+'  shift, and go to state 62
+
+    $default  reduce using rule 24 (effective_address_components)
+
+
+State 44
+
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+   48    | '(' exp . ')'
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+    ')'  shift, and go to state 63
+
+
+State 45
+
+   13 hint_list: hint_list FCML_TK_HINTS .
+
+    $default  reduce using rule 13 (hint_list)
+
+
+State 46
+
+    5 instruction: mnemonic hint_list operand_list .
+   15 operand_list: operand_list . ',' operand
+
+    ','  shift, and go to state 47
+
+    $default  reduce using rule 5 (instruction)
+
+
+State 47
+
+   15 operand_list: operand_list ',' . operand
+
+    FCML_TK_REG_GPR        shift, and go to state 10
+    FCML_TK_REG_SIMD       shift, and go to state 11
+    FCML_TK_REG_FPU        shift, and go to state 12
+    FCML_TK_REG_SEG        shift, and go to state 13
+    FCML_TK_REG_CR         shift, and go to state 14
+    FCML_TK_REG_DR         shift, and go to state 15
+    FCML_TK_INTEGER        shift, and go to state 16
+    FCML_TK_FLOAT          shift, and go to state 17
+    FCML_TK_SIZE_OPERATOR  shift, and go to state 18
+    '-'                    shift, and go to state 20
+    '['                    shift, and go to state 21
+    '('                    shift, and go to state 22
+
+    operand            go to state 64
+    effective_address  go to state 26
+    segment_selector   go to state 27
+    far_pointer        go to state 28
+    exp                go to state 29
+    reg                go to state 30
+
+
+State 48
+
+   22 effective_address: segment_selector '[' . effective_address_components ']'
+
+    FCML_TK_REG_GPR    shift, and go to state 10
+    FCML_TK_REG_SIMD   shift, and go to state 11
+    FCML_TK_REG_FPU    shift, and go to state 12
+    FCML_TK_REG_SEG    shift, and go to state 38
+    FCML_TK_REG_CR     shift, and go to state 14
+    FCML_TK_REG_DR     shift, and go to state 15
+    FCML_TK_INTEGER    shift, and go to state 16
+    FCML_TK_FLOAT      shift, and go to state 17
+    FCML_TK_EAO_HINTS  shift, and go to state 39
+    FCML_TK_SIB_HINT   shift, and go to state 40
+    '-'                shift, and go to state 20
+    '('                shift, and go to state 22
+
+    effective_address_components  go to state 65
+    exp                           go to state 42
+    reg                           go to state 43
+
+
+State 49
+
+   43 exp: exp '-' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 66
+
+
+State 50
+
+   44 exp: exp '+' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 67
+
+
+State 51
+
+   46 exp: exp '*' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 68
+
+
+State 52
+
+   45 exp: exp '/' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 69
+
+
+State 53
+
+   40 far_pointer: exp ':' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 70
+
+
+State 54
+
+    8 instruction: inst_prefixes mnemonic hint_list operand_list .
+   15 operand_list: operand_list . ',' operand
+
+    ','  shift, and go to state 47
+
+    $default  reduce using rule 8 (instruction)
+
+
+State 55
+
+   21 effective_address: FCML_TK_SIZE_OPERATOR '[' effective_address_components . ']'
+
+    ']'  shift, and go to state 71
+
+
+State 56
+
+   23 effective_address: FCML_TK_SIZE_OPERATOR segment_selector '[' . effective_address_components ']'
+
+    FCML_TK_REG_GPR    shift, and go to state 10
+    FCML_TK_REG_SIMD   shift, and go to state 11
+    FCML_TK_REG_FPU    shift, and go to state 12
+    FCML_TK_REG_SEG    shift, and go to state 38
+    FCML_TK_REG_CR     shift, and go to state 14
+    FCML_TK_REG_DR     shift, and go to state 15
+    FCML_TK_INTEGER    shift, and go to state 16
+    FCML_TK_FLOAT      shift, and go to state 17
+    FCML_TK_EAO_HINTS  shift, and go to state 39
+    FCML_TK_SIB_HINT   shift, and go to state 40
+    '-'                shift, and go to state 20
+    '('                shift, and go to state 22
+
+    effective_address_components  go to state 72
+    exp                           go to state 42
+    reg                           go to state 43
+
+
+State 57
+
+   37 effective_address_components: FCML_TK_EAO_HINTS exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 37 (effective_address_components)
+
+
+State 58
+
+   38 effective_address_components: FCML_TK_SIB_HINT exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 38 (effective_address_components)
+
+
+State 59
+
+   25 effective_address_components: FCML_TK_SIB_HINT reg .
+   33                             | FCML_TK_SIB_HINT reg . '+' exp
+   35                             | FCML_TK_SIB_HINT reg . '-' exp
+
+    '-'  shift, and go to state 73
+    '+'  shift, and go to state 74
+
+    $default  reduce using rule 25 (effective_address_components)
+
+
+State 60
+
+   20 effective_address: '[' effective_address_components ']' .
+
+    $default  reduce using rule 20 (effective_address)
+
+
+State 61
+
+   34 effective_address_components: reg '-' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 75
+
+
+State 62
+
+   26 effective_address_components: reg '+' . reg
+   27                             | reg '+' . reg '*' FCML_TK_INTEGER
+   28                             | reg '+' . reg '*' FCML_TK_INTEGER '+' exp
+   29                             | reg '+' . reg '*' FCML_TK_INTEGER '-' exp
+   30                             | reg '+' . reg '+' exp
+   31                             | reg '+' . reg '-' exp
+   32                             | reg '+' . exp
+
+    FCML_TK_REG_GPR   shift, and go to state 10
+    FCML_TK_REG_SIMD  shift, and go to state 11
+    FCML_TK_REG_FPU   shift, and go to state 12
+    FCML_TK_REG_SEG   shift, and go to state 38
+    FCML_TK_REG_CR    shift, and go to state 14
+    FCML_TK_REG_DR    shift, and go to state 15
+    FCML_TK_INTEGER   shift, and go to state 16
+    FCML_TK_FLOAT     shift, and go to state 17
+    '-'               shift, and go to state 20
+    '('               shift, and go to state 22
+
+    exp  go to state 76
+    reg  go to state 77
+
+
+State 63
+
+   48 exp: '(' exp ')' .
+
+    $default  reduce using rule 48 (exp)
+
+
+State 64
+
+   15 operand_list: operand_list ',' operand .
+
+    $default  reduce using rule 15 (operand_list)
+
+
+State 65
+
+   22 effective_address: segment_selector '[' effective_address_components . ']'
+
+    ']'  shift, and go to state 78
+
+
+State 66
+
+   43 exp: exp . '-' exp
+   43    | exp '-' exp .
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 43 (exp)
+
+    Conflict between rule 43 and token '-' resolved as reduce (%left '-').
+    Conflict between rule 43 and token '+' resolved as reduce (%left '+').
+    Conflict between rule 43 and token '*' resolved as shift ('-' < '*').
+    Conflict between rule 43 and token '/' resolved as shift ('-' < '/').
+
+
+State 67
+
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   44    | exp '+' exp .
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 44 (exp)
+
+    Conflict between rule 44 and token '-' resolved as reduce (%left '-').
+    Conflict between rule 44 and token '+' resolved as reduce (%left '+').
+    Conflict between rule 44 and token '*' resolved as shift ('+' < '*').
+    Conflict between rule 44 and token '/' resolved as shift ('+' < '/').
+
+
+State 68
+
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+   46    | exp '*' exp .
+
+    $default  reduce using rule 46 (exp)
+
+    Conflict between rule 46 and token '-' resolved as reduce ('-' < '*').
+    Conflict between rule 46 and token '+' resolved as reduce ('+' < '*').
+    Conflict between rule 46 and token '*' resolved as reduce (%left '*').
+    Conflict between rule 46 and token '/' resolved as reduce (%left '/').
+
+
+State 69
+
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   45    | exp '/' exp .
+   46    | exp . '*' exp
+
+    $default  reduce using rule 45 (exp)
+
+    Conflict between rule 45 and token '-' resolved as reduce ('-' < '/').
+    Conflict between rule 45 and token '+' resolved as reduce ('+' < '/').
+    Conflict between rule 45 and token '*' resolved as reduce (%left '*').
+    Conflict between rule 45 and token '/' resolved as reduce (%left '/').
+
+
+State 70
+
+   40 far_pointer: exp ':' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 40 (far_pointer)
+
+
+State 71
+
+   21 effective_address: FCML_TK_SIZE_OPERATOR '[' effective_address_components ']' .
+
+    $default  reduce using rule 21 (effective_address)
+
+
+State 72
+
+   23 effective_address: FCML_TK_SIZE_OPERATOR segment_selector '[' effective_address_components . ']'
+
+    ']'  shift, and go to state 79
+
+
+State 73
+
+   35 effective_address_components: FCML_TK_SIB_HINT reg '-' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 80
+
+
+State 74
+
+   33 effective_address_components: FCML_TK_SIB_HINT reg '+' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 81
+
+
+State 75
+
+   34 effective_address_components: reg '-' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 34 (effective_address_components)
+
+
+State 76
+
+   32 effective_address_components: reg '+' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 32 (effective_address_components)
+
+
+State 77
+
+   26 effective_address_components: reg '+' reg .
+   27                             | reg '+' reg . '*' FCML_TK_INTEGER
+   28                             | reg '+' reg . '*' FCML_TK_INTEGER '+' exp
+   29                             | reg '+' reg . '*' FCML_TK_INTEGER '-' exp
+   30                             | reg '+' reg . '+' exp
+   31                             | reg '+' reg . '-' exp
+
+    '-'  shift, and go to state 82
+    '+'  shift, and go to state 83
+    '*'  shift, and go to state 84
+
+    $default  reduce using rule 26 (effective_address_components)
+
+
+State 78
+
+   22 effective_address: segment_selector '[' effective_address_components ']' .
+
+    $default  reduce using rule 22 (effective_address)
+
+
+State 79
+
+   23 effective_address: FCML_TK_SIZE_OPERATOR segment_selector '[' effective_address_components ']' .
+
+    $default  reduce using rule 23 (effective_address)
+
+
+State 80
+
+   35 effective_address_components: FCML_TK_SIB_HINT reg '-' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 35 (effective_address_components)
+
+
+State 81
+
+   33 effective_address_components: FCML_TK_SIB_HINT reg '+' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 33 (effective_address_components)
+
+
+State 82
+
+   31 effective_address_components: reg '+' reg '-' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 85
+
+
+State 83
+
+   30 effective_address_components: reg '+' reg '+' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 86
+
+
+State 84
+
+   27 effective_address_components: reg '+' reg '*' . FCML_TK_INTEGER
+   28                             | reg '+' reg '*' . FCML_TK_INTEGER '+' exp
+   29                             | reg '+' reg '*' . FCML_TK_INTEGER '-' exp
+
+    FCML_TK_INTEGER  shift, and go to state 87
+
+
+State 85
+
+   31 effective_address_components: reg '+' reg '-' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 31 (effective_address_components)
+
+
+State 86
+
+   30 effective_address_components: reg '+' reg '+' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 30 (effective_address_components)
+
+
+State 87
+
+   27 effective_address_components: reg '+' reg '*' FCML_TK_INTEGER .
+   28                             | reg '+' reg '*' FCML_TK_INTEGER . '+' exp
+   29                             | reg '+' reg '*' FCML_TK_INTEGER . '-' exp
+
+    '-'  shift, and go to state 88
+    '+'  shift, and go to state 89
+
+    $default  reduce using rule 27 (effective_address_components)
+
+
+State 88
+
+   29 effective_address_components: reg '+' reg '*' FCML_TK_INTEGER '-' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 90
+
+
+State 89
+
+   28 effective_address_components: reg '+' reg '*' FCML_TK_INTEGER '+' . exp
+
+    FCML_TK_INTEGER  shift, and go to state 16
+    FCML_TK_FLOAT    shift, and go to state 17
+    '-'              shift, and go to state 20
+    '('              shift, and go to state 22
+
+    exp  go to state 91
+
+
+State 90
+
+   29 effective_address_components: reg '+' reg '*' FCML_TK_INTEGER '-' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 29 (effective_address_components)
+
+
+State 91
+
+   28 effective_address_components: reg '+' reg '*' FCML_TK_INTEGER '+' exp .
+   43 exp: exp . '-' exp
+   44    | exp . '+' exp
+   45    | exp . '/' exp
+   46    | exp . '*' exp
+
+    '-'  shift, and go to state 49
+    '+'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '/'  shift, and go to state 52
+
+    $default  reduce using rule 28 (effective_address_components)

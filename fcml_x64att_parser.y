@@ -1,6 +1,6 @@
 %define api.pure
 %parse-param { struct fcml_st_parser_data *pd }
-%name-prefix="intel_"
+%name-prefix="att_"
 
 %{
 	#include <stdio.h>

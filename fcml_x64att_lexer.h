@@ -1,10 +1,10 @@
-#ifndef intel_HEADER_H
-#define intel_HEADER_H 1
-#define intel_IN_HEADER 1
+#ifndef att_HEADER_H
+#define att_HEADER_H 1
+#define att_IN_HEADER 1
 
-#line 6 "fcml_x64intel_lexer.h"
+#line 6 "fcml_x64att_lexer.h"
 
-#line 8 "fcml_x64intel_lexer.h"
+#line 8 "fcml_x64att_lexer.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -196,25 +196,25 @@ struct yy_buffer_state
 	};
 #endif /* !YY_STRUCT_YY_BUFFER_STATE */
 
-void intel_restart (FILE *input_file ,yyscan_t yyscanner );
-void intel__switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void intel__delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void intel__flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void intel_push_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void intel_pop_buffer_state (yyscan_t yyscanner );
+void att_restart (FILE *input_file ,yyscan_t yyscanner );
+void att__switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+YY_BUFFER_STATE att__create_buffer (FILE *file,int size ,yyscan_t yyscanner );
+void att__delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void att__flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void att_push_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+void att_pop_buffer_state (yyscan_t yyscanner );
 
-YY_BUFFER_STATE intel__scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__scan_bytes (yyconst char *bytes,yy_size_t len ,yyscan_t yyscanner );
+YY_BUFFER_STATE att__scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
+YY_BUFFER_STATE att__scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
+YY_BUFFER_STATE att__scan_bytes (yyconst char *bytes,yy_size_t len ,yyscan_t yyscanner );
 
-void *intel_alloc (yy_size_t ,yyscan_t yyscanner );
-void *intel_realloc (void *,yy_size_t ,yyscan_t yyscanner );
-void intel_free (void * ,yyscan_t yyscanner );
+void *att_alloc (yy_size_t ,yyscan_t yyscanner );
+void *att_realloc (void *,yy_size_t ,yyscan_t yyscanner );
+void att_free (void * ,yyscan_t yyscanner );
 
 /* Begin user sect3 */
 
-#define intel_wrap(yyscanner) 1
+#define att_wrap(yyscanner) 1
 #define YY_SKIP_YYWRAP
 
 #define yytext_ptr yytext_r
@@ -234,46 +234,46 @@ void intel_free (void * ,yyscan_t yyscanner );
 
 #define YY_EXTRA_TYPE struct fcml_st_parser_data *
 
-int intel_lex_init (yyscan_t* scanner);
+int att_lex_init (yyscan_t* scanner);
 
-int intel_lex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int att_lex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int intel_lex_destroy (yyscan_t yyscanner );
+int att_lex_destroy (yyscan_t yyscanner );
 
-int intel_get_debug (yyscan_t yyscanner );
+int att_get_debug (yyscan_t yyscanner );
 
-void intel_set_debug (int debug_flag ,yyscan_t yyscanner );
+void att_set_debug (int debug_flag ,yyscan_t yyscanner );
 
-YY_EXTRA_TYPE intel_get_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE att_get_extra (yyscan_t yyscanner );
 
-void intel_set_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void att_set_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
 
-FILE *intel_get_in (yyscan_t yyscanner );
+FILE *att_get_in (yyscan_t yyscanner );
 
-void intel_set_in  (FILE * in_str ,yyscan_t yyscanner );
+void att_set_in  (FILE * in_str ,yyscan_t yyscanner );
 
-FILE *intel_get_out (yyscan_t yyscanner );
+FILE *att_get_out (yyscan_t yyscanner );
 
-void intel_set_out  (FILE * out_str ,yyscan_t yyscanner );
+void att_set_out  (FILE * out_str ,yyscan_t yyscanner );
 
-yy_size_t intel_get_leng (yyscan_t yyscanner );
+yy_size_t att_get_leng (yyscan_t yyscanner );
 
-char *intel_get_text (yyscan_t yyscanner );
+char *att_get_text (yyscan_t yyscanner );
 
-int intel_get_lineno (yyscan_t yyscanner );
+int att_get_lineno (yyscan_t yyscanner );
 
-void intel_set_lineno (int line_number ,yyscan_t yyscanner );
+void att_set_lineno (int line_number ,yyscan_t yyscanner );
 
-int intel_get_column  (yyscan_t yyscanner );
+int att_get_column  (yyscan_t yyscanner );
 
-void intel_set_column (int column_no ,yyscan_t yyscanner );
+void att_set_column (int column_no ,yyscan_t yyscanner );
 
-YYSTYPE * intel_get_lval (yyscan_t yyscanner );
+YYSTYPE * att_get_lval (yyscan_t yyscanner );
 
-void intel_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
+void att_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -281,9 +281,9 @@ void intel_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int intel_wrap (yyscan_t yyscanner );
+extern "C" int att_wrap (yyscan_t yyscanner );
 #else
-extern int intel_wrap (yyscan_t yyscanner );
+extern int att_wrap (yyscan_t yyscanner );
 #endif
 #endif
 
@@ -315,10 +315,10 @@ static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int intel_lex \
+extern int att_lex \
                (YYSTYPE * yylval_param ,yyscan_t yyscanner);
 
-#define YY_DECL int intel_lex \
+#define YY_DECL int att_lex \
                (YYSTYPE * yylval_param , yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
@@ -336,9 +336,9 @@ extern int intel_lex \
 #undef YY_DECL
 #endif
 
-#line 339 "fcml_x64intel_lexer.lex"
+#line 339 "fcml_x64att_lexer.lex"
 
 
-#line 343 "fcml_x64intel_lexer.h"
-#undef intel_IN_HEADER
-#endif /* intel_HEADER_H */
+#line 343 "fcml_x64att_lexer.h"
+#undef att_IN_HEADER
+#endif /* att_HEADER_H */

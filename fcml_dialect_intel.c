@@ -13,6 +13,7 @@
 #include "fcml_env.h"
 #include "fcml_coll.h"
 #include "fcml_rend_intel.h"
+#include "fcml_x64intel_asm_parser.h"
 
 // *************
 // * MNEMONICS *
@@ -345,6 +346,7 @@ fcml_st_dialect_context fcml_fn_get_intel_dialect_context() {
     context.get_parsed_mnemonics = &fcml_fn_asm_dialect_get_parsed_mnemonics_intel;
     context.free_mnemonic = &fcml_fnp_asm_dialect_free_mnemonic_intel;
     context.instruction_renderer = &fcml_fn_rend_render_instruction_intel;
+    context.instruction_parser = &fcml_x64intel_parse;
     context.get_register = &fcml_fnp_asm_dialect_get_register_intel;
     context.size_operator_renderer = &fcml_fnp_asm_dialect_render_size_operator_intel;
     return context;
