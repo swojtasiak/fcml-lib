@@ -1,0 +1,198 @@
+
+section .text                   ;section declaration
+
+                                ;we must export the entry point to the ELF linker or
+    global  _start              ;loader. They conventionally recognize _start as their
+			                          ;entry point. Use ld -e foo to override the default.
+
+_start:
+; vmfunc
+db 0x0F, 0x01, 0xD4
+;= vmfunc
+
+; lock adc al,42h				(reg, imm8)
+db 0xF0, 0x14, 0x42
+;= lock adc $0x42,%al
+
+; adc eax,42806521h				(reg, imm32)
+db 0x15, 0x21, 0x65, 0x80, 0x42
+;= adc    $0x42806521,%eax
+
+; adc rax,0000000042806521h 			(rax, imm32)
+db 0x48, 0x15, 0x21, 0x65, 0x80, 0x42
+;= adc    $0x42806521,%rax
+
+; adc rax,0ffffffffffffffffh
+db 0x67, 0x66, 0x48, 0x15, 0xff, 0xff, 0xff, 0xff
+;= addr32 data32 adc $0xffffffffffffffff,%rax
+;(Jak widać, addr32 i data32 są ignorowane.)
+
+; Effective.
+
+;+Displacement 					(and qword ptr [00008000034211ach],rax - RIP)
+db 0x48, 0x21, 0x05, 0xa5, 0x01, 0x02, 0x03
+;= and    %rax,0x30201a5(%rip)        # 0x3420275
+
+;+Base 						(lock adc dword ptr [esi],00000001h)
+db 0xF0, 0x83, 0x16, 0x01
+;=lock adcl $0x1,(%rsi)
+
+;+Base + Displacement				(adc byte ptr [rbp+0000000000000001h],ah)
+db 0x10, 0x65, 0x01
+;=adc    %ah,0x1(%rbp)
+
+;+(Index ∗ Scale) + Displacement 		(ADC DWORD PTR DS:[EAX*4+1],EBX)
+db 0x11, 0x1C, 0x85, 0x01, 0x00, 0x00, 0x00 
+;= adc    %ebx,0x1(,%rax,4)
+
+;+Base + Index + Displacement 			(add byte ptr [ecx+eax+00000002h],03h)
+db 0x80, 0x44, 0x01, 0x02, 0x03
+;= addb   $0x3,0x2(%rcx,%rax,1)
+
+;+Base + (Index ∗ Scale) + Displacement 	(adc qword ptr [r9+rcx*4+0000000000000001h],r12)
+db 0x4D, 0x11, 0x64, 0x89, 0x01
+;= adc    %r12,0x1(%r9,%rcx,4)
+
+;opcode reg (bswap eax)
+db 0x0f, 0xc8
+;=bswap  %eax
+
+;dis relative offset (call 0000800000401004h)
+db 0xE8, 0xFF, 0xFF, 0xFF, 0xFF
+;= callq  0x4000ee
+
+;explicit gpr addressing (CMPS m8, m8)
+db 0xa6
+;= cmpsb  %es:(%rdi),%ds:(%rsi)
+
+;segment relative
+; mov qword ptr [5352515040302010h],rax
+; mov eax,dword ptr [5352515040302010h]
+; mov qword ptr [rbp+rbx*8+0000000040302010h],0ffffffff80706050h
+db 0x48, 0xA3, 0x10, 0x20, 0x30, 0x40, 0x50, 0x51, 0x52, 0x53
+;=movabs %rax,0x5352515040302010
+db 0xA1, 0x10, 0x20, 0x30, 0x40, 0x50, 0x51, 0x52, 0x53
+;=movabs 0x5352515040302010,%eax
+db 0x48, 0xC7, 0x84, 0xDD, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80
+;=movq   $0xffffffff80706050,0x40302010(%rbp,%rbx,8)
+
+; vvvv (vaddpd ymm10,ymm14,ymmword ptr [r9+r8])
+;db 0xC4, 0x01, 0x0D, 0x58, 0x14, 0x01
+;= vaddpd (%r9,%r8,1),%ymm14,%ymm10
+
+;is4 (vblendvpd ymm10,ymm14,ymmword ptr [r9+rax],ymm2)
+db 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20
+;= vblendvpd %ymm2,(%r9,%rax,1),%ymm14,%ymm10
+
+;is5 (vpermil2pd xmm0,xmm4,xmm7,xmmword ptr [rcx],01h)
+db 0xC4, 0xE3, 0xD9, 0x49, 0x01, 0x71
+;= vpermil2pd $0x1,(%rcx),%xmm7,%xmm4,%xmm0
+
+;vsib/vm32x (vgatherdpd xmm0,dword ptr [rax+xmm5],xmm0)
+db 0xC4, 0xE2, 0xF9, 0x92, 0x04, 0x28
+;= vgatherdpd %xmm0,(%rax,%xmm5,1),%xmm0
+
+; pseudo opcode
+; cmpunordsd xmm0,xmm1
+db 0xf2, 0x0f, 0xc2, 0xc1, 0x03
+;=cmpunordsd %xmm1,%xmm0
+; cmpsd xmm0,mmword ptr [rax+0000000000000020h],06h
+db 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x06
+;=cmpnlesd 0x20(%rax),%xmm0
+
+
+Full:
+(gdb) disas /r 0x4000b0,0x4001b0
+Dump of assembler code from 0x4000b0 to 0x4001b0:
+   0x00000000004000b0:	0f 01 d4	vmfunc 
+   0x00000000004000b3:	f0 14 42	lock adc $0x42,%al
+   0x00000000004000b6:	15 21 65 80 42	adc    $0x42806521,%eax
+   0x00000000004000bb:	48 15 21 65 80 42	adc    $0x42806521,%rax
+   0x00000000004000c1:	67 66 48 15 ff ff ff ff	addr32 data32 adc $0xffffffffffffffff,%rax
+   0x00000000004000c9:	48 21 05 a5 01 02 03	and    %rax,0x30201a5(%rip)        # 0x3420275
+   0x00000000004000d0:	f0 83 16 01	lock adcl $0x1,(%rsi)
+   0x00000000004000d4:	10 65 01	adc    %ah,0x1(%rbp)
+   0x00000000004000d7:	11 1c 85 01 00 00 00	adc    %ebx,0x1(,%rax,4)
+   0x00000000004000de:	80 44 01 02 03	addb   $0x3,0x2(%rcx,%rax,1)
+   0x00000000004000e3:	4d 11 64 89 01	adc    %r12,0x1(%r9,%rcx,4)
+   0x00000000004000e8:	0f c8	bswap  %eax
+   0x00000000004000ea:	e8 ff ff ff ff	callq  0x4000ee
+   0x00000000004000ef:	a6	cmpsb  %es:(%rdi),%ds:(%rsi)
+   0x00000000004000f0:	48 a3 10 20 30 40 50 51 52 53	movabs %rax,0x5352515040302010
+   0x00000000004000fa:	a1 10 20 30 40 50 51 52 53	movabs 0x5352515040302010,%eax
+   0x0000000000400103:	48 c7 84 dd 10 20 30 40 50 60 70 80	movq   $0xffffffff80706050,0x40302010(%rbp,%rbx,8)
+   0x000000000040010f:	c4 01 0d 58 14 01	vaddpd (%r9,%r8,1),%ymm14,%ymm10
+   0x0000000000400115:	c4 43 0d 4b 14 01 20	vblendvpd %ymm2,(%r9,%rax,1),%ymm14,%ymm10
+   0x000000000040011c:	c4 e3 d9 49 01 71	vpermil2pd $0x1,(%rcx),%xmm7,%xmm4,%xmm0
+   0x0000000000400122:	c4 e2 f9 92 04 28	vgatherdpd %xmm0,(%rax,%xmm5,1),%xmm0
+   0x0000000000400128:	f2 0f c2 c1 03	cmpunordsd %xmm1,%xmm0
+---Type <return> to continue, or q <return> to quit---
+   0x000000000040012d:	f2 0f c2 40 20 06	cmpnlesd 0x20(%rax),%xmm0
+   0x0000000000400133:	Cannot access memory at address 0x400133
+(gdb) 
+
+
+http://en.wikibooks.org/wiki/X86_Assembly/GAS_Syntax
+
+----
+Bug:
+----
+
+Caveats
+
+From The GAS manual's AT&T Syntax Bugs section:
+
+The UnixWare assembler, and probably other AT&T derived ix86 Unix assemblers, generate floating point instructions with reversed source and destination registers in certain cases. Unfortunately, gcc and possibly many other programs use this reversed syntax, so we're stuck with it.
+
+For example
+
+        fsub %st,%st(3)
+
+results in %st(3) being updated to %st - %st(3) rather than the expected %st(3) - %st. This happens with all the non-commutative arithmetic floating point operations with two register operands where the source register is %st and the destination register is %st(i).
+
+Note that even objdump -d -M intel still uses reversed opcodes, so use a different disassembler to check this. See http://bugs.debian.org/372528 for more info.
+
+---------
+Suffixes:
+---------
+
+Operation Suffixes
+
+GAS assembly instructions are generally suffixed with the letters "b", "s", "w", "l", "q" or "t" to determine what size operand is being manipulated.
+
+    b = byte (8 bit)
+    s = short (16 bit integer) or single (32-bit floating point)
+    w = word (16 bit)
+    l = long (32 bit integer or 64-bit floating point)
+    q = quad (64 bit)
+    t = ten bytes (80-bit floating point)
+
+If the suffix is not specified, and there are no memory operands for the instruction, GAS infers the operand size from the size of the destination register operand (the final operand).
+
+
+--------
+Integers
+--------
+
+Binarne:
+0b00000
+0B00000
+
+Ósemkowe:
+01234567 (Zaczyna się zawsze od 0)
+
+Dziesiętne:
+Zaczyna się od cyfry, która nie byże być zerem.
+4224245
+
+Hex:
+0x000
+0X000
+
+Globalne reguły:
+- AT&T zawsze wymaga lower case, intel proponuje upper case, ale supportuje lower case.
+- Przed rejestrami zawsze występuje '%'.
+- Wartości immediate wymagaja '$'.
+
+
+http://lists.cs.uiuc.edu/pipermail/llvmdev/2013-July/063776.html

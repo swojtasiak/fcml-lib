@@ -41,19 +41,8 @@
 /* Integer values. Encoding doesn't matters. */
 %token <integer_value> FCML_TK_INTEGER
 
-/* Single-precision floating-point in IEEE 754. */
-%token <float_value> FCML_TK_FLOAT
-
-/* Size operand (BYTE PTR etc.) */
-%token <size_operator> FCML_TK_SIZE_OPERATOR;
-
 /* Literal symbol. It's used mainly for mnemonics.*/
 %token <symbol> FCML_TK_SYMBOL
-
-/* Instruction addressing mode hints. */
-%token <hints> FCML_TK_HINTS
-%token <hints> FCML_TK_EAO_HINTS
-%token <hints> FCML_TK_SIB_HINT
 
 /* Prefixes */
 %token <prefixes> FCML_TK_PREFIX
@@ -89,25 +78,23 @@
 %union {
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
-	fcml_st_ast_val_float float_value;
 	fcml_st_register reg_value;
 	fcml_st_ast_node *ast;
 	struct {
 		fcml_string text;
 		int length;
 	} symbol;
-	fcml_st_size_operator size_operator;
 	fcml_hints hints;
 	fcml_prefixes prefixes;
 }
 
 %{
-	#include "fcml_x64intel_lexer.h"
+	#include "fcml_x64att_lexer.h"
 	#define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
 %}
 
 %initial-action { 
-	//yydebug = 1;
+	yydebug = 1;
 }
 
 %%
@@ -118,10 +105,8 @@ start:
 
 instruction: mnemonic { $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, 0, NULL ); HANDLE_ERRORS($$); }
 | mnemonic operand_list { $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, 0, $2 ); HANDLE_ERRORS($$); }
-| mnemonic hint_list operand_list { $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, $2, $3 ); HANDLE_ERRORS($$); }
 | inst_prefixes mnemonic { $$ = fcml_fn_ast_alloc_node_instruction( $1, $2.text, $2.length, 0, NULL ); HANDLE_ERRORS($$); }
 | inst_prefixes mnemonic operand_list { $$ = fcml_fn_ast_alloc_node_instruction( $1, $2.text, $2.length, 0, $3 ); HANDLE_ERRORS($$); }
-| inst_prefixes mnemonic hint_list operand_list { $$ = fcml_fn_ast_alloc_node_instruction( $1, $2.text, $2.length, $3, $4 ); HANDLE_ERRORS($$); }
 ;
 
 inst_prefixes: FCML_TK_PREFIX
@@ -129,10 +114,6 @@ inst_prefixes: FCML_TK_PREFIX
 ;
 
 mnemonic: FCML_TK_SYMBOL 
-;
-
-hint_list: FCML_TK_HINTS
-| hint_list FCML_TK_HINTS  { $$ = $1 | $2; }
 ;
 
 operand_list: operand { $$ = fcml_fn_ast_alloc_node_operand_list( $1, NULL ); HANDLE_ERRORS($$); }
