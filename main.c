@@ -40,6 +40,7 @@
 #include "instructions_w_t.h"
 #include "instructions_x_t.h"
 #include "fcml_intel_parser_t.h"
+#include "fcml_att_parser_t.h"
 #include "fcml_dialect_intel.h"
 #include "hints_t.h"
 #include "fcml_chooser_t.h"
@@ -52,7 +53,7 @@
 #include "instructions_base_t.h"
 
 CU_SuiteInfo *suites[] = {
-	fctl_si_instructions_a,
+	/*fctl_si_instructions_a,
 	fctl_si_instructions_b,
 	fctl_si_instructions_c,
 	fctl_si_instructions_d,
@@ -80,11 +81,13 @@ CU_SuiteInfo *suites[] = {
     fcml_si_coll,
     fcml_si_utils,
 	fcml_si_intel_parser,
+	fcml_si_att_parser,
 	fcml_si_mnemonic_parser,
 	fcml_si_hints,
 	fcml_si_chooser,
 	fcml_si_prefixes,
-	fcml_si_segment_reg,
+	fcml_si_segment_reg,*/
+	fcml_si_att_parser,
     NULL
 };
 
