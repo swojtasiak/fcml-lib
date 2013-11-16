@@ -34,7 +34,7 @@
 # define YY_ATT_FCML_X64ATT_PARSER_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int att_debug;

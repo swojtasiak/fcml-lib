@@ -158,14 +158,21 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer( fcml_st_ast_node *segment_
 }
 
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_details( fcml_st_register *segment_selector, fcml_st_size_operator *size_operator, fcml_st_ast_node *effective_address_node ) {
+
 	fcml_st_ast_node_effective_address *effective_address = (fcml_st_ast_node_effective_address *)effective_address_node->node;
+
 	if( segment_selector ) {
 		effective_address->segment_selector = *segment_selector;
 	}
-	effective_address->size_operator = size_operator->size;
-	if( size_operator->multimedia ) {
-		effective_address->addressing_hints |= FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
+
+	// Size operator is optional because not all assembler dialects allows to specify it here.
+	if( size_operator ) {
+		effective_address->size_operator = size_operator->size;
+		if( size_operator->multimedia ) {
+			effective_address->addressing_hints |= FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
+		}
 	}
+
 	return effective_address_node;
 }
 

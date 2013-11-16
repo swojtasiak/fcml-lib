@@ -23,7 +23,7 @@
 	}
 %}
 
-// %debug
+%debug
 
 /*Terminal symbols.*/
 
@@ -68,7 +68,7 @@
 %destructor { fcml_fn_ast_free_node($$); } <ast>
 
 /* Printers goes here. */
-%printer { YYFPRINTF(yyoutput, "Integer: %d Overflow: %d", $$.value, $$.overflow); } <integer_value>
+%printer { YYFPRINTF(yyoutput, "Integer: %ld Overflow: %d", $$.value, $$.overflow); } <integer_value>
 %printer { YYFPRINTF(yyoutput, "Float: %f Overflow: %d", $$.value, $$.overflow); } <float_value>
 %printer { YYFPRINTF(yyoutput, "AST-Type: %d", $$->type); } <ast>
 %printer { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( $$.type ), $$.size, $$.reg, $$.x64_exp); } <reg_value>
@@ -92,7 +92,7 @@
 %}
 
 %initial-action { 
-	//yydebug = 1;
+	att_debug = 1;
 }
 
 %%
@@ -118,16 +118,26 @@ operand_list: operand { $$ = fcml_fn_ast_alloc_node_operand_list( $1, NULL ); HA
 | operand_list ',' operand { $$ = fcml_fn_ast_alloc_node_operand_list( $1, $3 ); HANDLE_ERRORS($$); }
 ;
 
-operand: exp
+operand: '$' exp { $$ = $2; }
 | effective_address
 | reg {  $$ = fcml_fn_ast_alloc_node_register( &$1 ); HANDLE_ERRORS($$); }
 ;
 
-effective_address:  '[' effective_address_components ']' { $$ = $2; }
-| segment_selector '[' effective_address_components ']' { $$ = fcml_fn_ast_set_effective_address_details( &$1, FCML_OS_UNDEFINED, $3 ); }
+effective_address:  effective_address_components
+| segment_selector effective_address_components { $$ = fcml_fn_ast_set_effective_address_details( &$1, FCML_OS_UNDEFINED, $2 ); }
 ;
 
-effective_address_components: reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, NULL, FCML_FALSE, 0 ); }
+/* displacement(base register, offset register, scalar multiplier). */
+
+//fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( 
+//fcml_st_register *base, fcml_st_register *index, fcml_st_ast_val_integer *scale_factor, 
+//fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints ) {
+
+effective_address_components: '(' reg ')' { $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, 0 ); }
+;
+
+/*
+reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, NULL, FCML_FALSE, 0 ); }
 | reg '+' reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, NULL, FCML_FALSE, 0 ); }
 | reg '+' reg '*' FCML_TK_INTEGER { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, NULL, FCML_FALSE, 0 ); }
 | reg '+' reg '*' FCML_TK_INTEGER '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_FALSE, 0 ); }
@@ -138,6 +148,7 @@ effective_address_components: reg { $$ = fcml_fn_ast_alloc_node_effective_addres
 | reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_TRUE, 0 ); }
 | exp { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $1, FCML_FALSE, 0); }
 ;
+*/
 
 segment_selector: FCML_TK_REG_SEG ':' { $$ = $1; }
 ;

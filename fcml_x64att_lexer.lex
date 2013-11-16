@@ -26,7 +26,7 @@
 /*White spaces.*/
 WS				[ \t]*
 /*Dec and hex values.*/
-DEC				[1-9][0-9]+
+DEC				[1-9][0-9]*
 HEX				0x[0-9a-f]+
 
 %%
@@ -244,8 +244,6 @@ fcml_fn_pu_parse_intege_flags
 "-"		{ return '-'; }
 "*"		{ return '*'; }
 "/"		{ return '/'; }
-"["		{ return '['; }
-"]"		{ return ']'; }
 "("		{ return '('; }
 ")"		{ return ')'; }
 ":"		{ return ':'; }
