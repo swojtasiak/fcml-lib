@@ -21,6 +21,7 @@
 	#define ADD_ERROR_MSG(x) { \
 		yyerror(pd, x); \
 	}
+	
 %}
 
 // %debug

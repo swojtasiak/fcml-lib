@@ -12,6 +12,8 @@
 #include "fcml_common.h"
 #include "fcml_coll.h"
 
+#define FCML_AST_INT_FLAG_IMMEDIATE		0x0001
+
 typedef struct fcml_st_ast_size_operator {
     fcml_uint16_t size;
     fcml_bool multimedia;
@@ -21,6 +23,7 @@ typedef struct fcml_st_ast_val_integer {
 	fcml_uint64_t value;
 	fcml_bool overflow;
 	fcml_bool is_signed;
+	fcml_uint16_t flags;
 } fcml_st_ast_val_integer;
 
 typedef struct fcml_st_ast_val_float {

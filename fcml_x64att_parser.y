@@ -50,12 +50,10 @@
 /*Non-terminal symbols.*/
 %type <reg_value> reg
 %type <reg_value> segment_selector
-%type <hints> hint_list
 %type <ast> operand
 %type <ast> operand_list
 %type <ast> instruction
 %type <ast> exp
-%type <ast> far_pointer
 %type <ast> effective_address
 %type <ast> effective_address_components
 %type <symbol> mnemonic
@@ -94,7 +92,7 @@
 %}
 
 %initial-action { 
-	yydebug = 1;
+	//yydebug = 1;
 }
 
 %%
@@ -121,19 +119,15 @@ operand_list: operand { $$ = fcml_fn_ast_alloc_node_operand_list( $1, NULL ); HA
 ;
 
 operand: exp
-| far_pointer
 | effective_address
 | reg {  $$ = fcml_fn_ast_alloc_node_register( &$1 ); HANDLE_ERRORS($$); }
 ;
 
 effective_address:  '[' effective_address_components ']' { $$ = $2; }
-| FCML_TK_SIZE_OPERATOR '[' effective_address_components ']' { $$ = fcml_fn_ast_set_effective_address_details( NULL, &$1, $3 ); }
 | segment_selector '[' effective_address_components ']' { $$ = fcml_fn_ast_set_effective_address_details( &$1, FCML_OS_UNDEFINED, $3 ); }
-| FCML_TK_SIZE_OPERATOR segment_selector '[' effective_address_components ']' { $$ = fcml_fn_ast_set_effective_address_details( &$2, &$1, $4 ); }
 ;
 
 effective_address_components: reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, NULL, FCML_FALSE, 0 ); }
-| FCML_TK_SIB_HINT reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, $1 ); }
 | reg '+' reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, NULL, FCML_FALSE, 0 ); }
 | reg '+' reg '*' FCML_TK_INTEGER { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, NULL, FCML_FALSE, 0 ); }
 | reg '+' reg '*' FCML_TK_INTEGER '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_FALSE, 0 ); }
@@ -141,22 +135,14 @@ effective_address_components: reg { $$ = fcml_fn_ast_alloc_node_effective_addres
 | reg '+' reg '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_FALSE, 0 ); }
 | reg '+' reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_TRUE, 0 ); }
 | reg '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_FALSE, 0 ); }
-| FCML_TK_SIB_HINT reg '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, $4, FCML_FALSE, $1 ); }
 | reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_TRUE, 0 ); }
-| FCML_TK_SIB_HINT reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, $4, FCML_TRUE, $1 ); }
 | exp { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $1, FCML_FALSE, 0); }
-| FCML_TK_EAO_HINTS exp { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $2, FCML_FALSE, $1); }
-| FCML_TK_SIB_HINT exp { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $2, FCML_FALSE, $1); }
 ;
 
 segment_selector: FCML_TK_REG_SEG ':' { $$ = $1; }
 ;
 
-far_pointer: exp ':' exp { $$ = fcml_fn_ast_alloc_node_far_pointer( $1, $3 ); HANDLE_ERRORS($$); }
-;
-
 exp: FCML_TK_INTEGER { $$ = fcml_fn_ast_alloc_node_integer( &$1 ); HANDLE_ERRORS($$); }
-| FCML_TK_FLOAT { $$ = fcml_fn_ast_alloc_node_float( &$1 ); HANDLE_ERRORS($$); }
 | exp '-' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_SUB, $1, $3 ); HANDLE_ERRORS($$); }
 | exp '+' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_ADD, $1, $3 ); HANDLE_ERRORS($$); }
 | exp '/' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_DIV, $1, $3 ); HANDLE_ERRORS($$); }
