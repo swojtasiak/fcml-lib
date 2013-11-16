@@ -1,11 +1,23 @@
 
 syntax: regexp
-^Debug$
-syntax: regexp
 ^\.cproject$
-syntax: regexp
-^\.settings$
 syntax: regexp
 ^\.project$
 syntax: regexp
+^\.svnignore$
+syntax: regexp
+^ira\.cbp$
+syntax: regexp
+^\.settings$
+syntax: regexp
+^ira\.depend$
+syntax: regexp
+^Debug$
+syntax: regexp
 ^Release$
+syntax: regexp
+^\.cproject_old$
+syntax: regexp
+^\.project_old$
+syntax: regexp
+^fcml_x64att_parser\.output$
