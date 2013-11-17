@@ -30,7 +30,7 @@ void fcml_fn_chooser_default(void) {
 	// Default instruction chooser is responsible for choosing the shortest form.
 
 	fcml_st_asm_assembler_context context = {0};
-	context.assembler = assembler;
+	context.assembler = assembler_intel;
 	context.addr_form = FCML_AF_32_BIT;
 	context.ip.eip = 0x00401000;
 

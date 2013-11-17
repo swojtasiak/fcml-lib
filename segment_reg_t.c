@@ -29,7 +29,7 @@ int fcml_tf_prefixes_segment_reg_suite_cleanup(void) {
 void fcml_fn_segment_reg(void) {
 
 	fcml_st_asm_assembler_context context = {0};
-	context.assembler = assembler;
+	context.assembler = assembler_intel;
 	context.addr_form = FCML_AF_32_BIT;
 	context.ip.eip = 0x00401000;
 

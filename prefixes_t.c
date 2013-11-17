@@ -27,7 +27,7 @@ void fcml_fn_prefixes_66(void) {
 	// Prefixes aren't needed.
 
 	fcml_st_asm_assembler_context context = {0};
-	context.assembler = assembler;
+	context.assembler = assembler_intel;
 	context.addr_form = FCML_AF_16_BIT;
 	context.ip.eip = 0x00401000;
 

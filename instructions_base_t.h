@@ -13,11 +13,13 @@
 #include "fcml_optimizers.h"
 #include "fcml_disassembler.h"
 
-fcml_st_dialect_context dialect;
+fcml_st_dialect_context dialect_intel;
+fcml_st_asm_assembler *assembler_intel;
+fcml_st_dasm_disassembler *disassembler_intel;
 
-fcml_st_asm_assembler *assembler;
-
-fcml_st_dasm_disassembler *disassembler;
+fcml_st_dialect_context dialect_att;
+fcml_st_asm_assembler *assembler_att;
+fcml_st_dasm_disassembler *disassembler_att;
 
 #define FCML_TSF_SHOULD_FAIL		0x00000001
 #define FCML_TSF_SHORT				0x00000002
@@ -25,6 +27,7 @@ fcml_st_dasm_disassembler *disassembler;
 #define FCML_TSF_ENABLE_RIP			0x00000008
 #define FCML_TSF_MULTI_ASM_RESULTS	0x00000010
 #define FCML_TSF_ASM_ONLY			0x00000020
+#define FCML_TSF_GAS_DIALECT		0x00000040
 
 #define FCML_MI(...) 				( sizeof( ( fcml_uint8_t[] ) { __VA_ARGS__ } ) / sizeof( fcml_uint8_t ) ), __VA_ARGS__
 
