@@ -176,6 +176,14 @@ fcml_st_ast_node *fcml_fn_ast_set_effective_address_details( fcml_st_register *s
 	return effective_address_node;
 }
 
+fcml_st_ast_node *fcml_fn_ast_set_displacemnt( fcml_st_ast_node *displacement, fcml_st_ast_node *effective_address_node ) {
+	fcml_st_ast_node_effective_address *effective_address = (fcml_st_ast_node_effective_address *)effective_address_node->node;
+	if( displacement ) {
+		effective_address->displacement = displacement;
+	}
+	return effective_address_node;
+}
+
 fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( fcml_st_register *base, fcml_st_register *index, fcml_st_ast_val_integer *scale_factor, fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints ) {
 	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
@@ -694,6 +702,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 					}
 					current = current->next;
 				}
+				cif_instruction->operands_count = operand_list->operands->size;
 			}
 			break;
 		}

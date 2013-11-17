@@ -9,7 +9,7 @@
 	#include "fcml_apc_ast.h"
 	#include "fcml_parser_utils.h"
 	
-	void yyerror( struct fcml_st_parser_data *pd, const char *error );
+	void att_error( struct fcml_st_parser_data *pd, const char *error );
 	
 	/* Macro responsible for handling 'Out of memory' errors. */
 	#define HANDLE_ERRORS(x) if( !x ) { \
@@ -21,9 +21,10 @@
 	#define ADD_ERROR_MSG(x) { \
 		yyerror(pd, x); \
 	}
+	
 %}
 
-%debug
+//%debug
 
 /*Terminal symbols.*/
 
@@ -55,6 +56,7 @@
 %type <ast> instruction
 %type <ast> exp
 %type <ast> effective_address
+%type <ast> effective_address_components_without_dis
 %type <ast> effective_address_components
 %type <symbol> mnemonic
 %type <prefixes> inst_prefixes
@@ -92,7 +94,7 @@
 %}
 
 %initial-action { 
-	att_debug = 1;
+	//att_debug = 1;
 }
 
 %%
@@ -101,65 +103,57 @@ start:
 | instruction { pd->tree = $1; }
 ;
 
-instruction: mnemonic { $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, 0, NULL ); HANDLE_ERRORS($$); }
-| mnemonic operand_list { $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, 0, $2 ); HANDLE_ERRORS($$); }
-| inst_prefixes mnemonic { $$ = fcml_fn_ast_alloc_node_instruction( $1, $2.text, $2.length, 0, NULL ); HANDLE_ERRORS($$); }
-| inst_prefixes mnemonic operand_list { $$ = fcml_fn_ast_alloc_node_instruction( $1, $2.text, $2.length, 0, $3 ); HANDLE_ERRORS($$); }
+instruction: mnemonic					{ $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, 0, NULL ); HANDLE_ERRORS($$); }
+| mnemonic operand_list					{ $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, 0, $2 ); HANDLE_ERRORS($$); }
+| inst_prefixes mnemonic				{ $$ = fcml_fn_ast_alloc_node_instruction( $1, $2.text, $2.length, 0, NULL ); HANDLE_ERRORS($$); }
+| inst_prefixes mnemonic operand_list	{ $$ = fcml_fn_ast_alloc_node_instruction( $1, $2.text, $2.length, 0, $3 ); HANDLE_ERRORS($$); }
 ;
 
 inst_prefixes: FCML_TK_PREFIX
-| inst_prefixes FCML_TK_PREFIX { if( $1 & $2 ) { ADD_ERROR_MSG( "Doubled prefixes." ); YYERROR; } else { $$ = $1 | $2; } }
+| inst_prefixes FCML_TK_PREFIX	{ if( $1 & $2 ) { ADD_ERROR_MSG( "Doubled prefixes." ); YYERROR; } else { $$ = $1 | $2; } }
 ;
 
 mnemonic: FCML_TK_SYMBOL 
 ;
 
-operand_list: operand { $$ = fcml_fn_ast_alloc_node_operand_list( $1, NULL ); HANDLE_ERRORS($$); }
-| operand_list ',' operand { $$ = fcml_fn_ast_alloc_node_operand_list( $1, $3 ); HANDLE_ERRORS($$); }
+operand_list: operand 			{ $$ = fcml_fn_ast_alloc_node_operand_list( $1, NULL ); HANDLE_ERRORS($$); }
+| operand_list ',' operand 		{ $$ = fcml_fn_ast_alloc_node_operand_list( $1, $3 ); HANDLE_ERRORS($$); }
 ;
 
-operand: '$' exp { $$ = $2; }
+operand: '$' exp 				{ $$ = $2; }
 | effective_address
-| reg {  $$ = fcml_fn_ast_alloc_node_register( &$1 ); HANDLE_ERRORS($$); }
+| reg 							{  $$ = fcml_fn_ast_alloc_node_register( &$1 ); HANDLE_ERRORS($$); }
 ;
 
 effective_address:  effective_address_components
-| segment_selector effective_address_components { $$ = fcml_fn_ast_set_effective_address_details( &$1, FCML_OS_UNDEFINED, $2 ); }
+| segment_selector effective_address_components 	{ $$ = fcml_fn_ast_set_effective_address_details( &$1, FCML_OS_UNDEFINED, $2 ); }
 ;
 
-/* displacement(base register, offset register, scalar multiplier). */
-
-//fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( 
-//fcml_st_register *base, fcml_st_register *index, fcml_st_ast_val_integer *scale_factor, 
-//fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints ) {
-
-effective_address_components: '(' reg ')' { $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, 0 ); }
+effective_address_components:
+  effective_address_components_without_dis
+| exp effective_address_components_without_dis		{ $$ = fcml_fn_ast_set_displacemnt( $1, $2 ); }
+| exp 												{ $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $1, FCML_FALSE, 0); }
 ;
 
-/*
-reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, NULL, FCML_FALSE, 0 ); }
-| reg '+' reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, NULL, FCML_FALSE, 0 ); }
-| reg '+' reg '*' FCML_TK_INTEGER { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, NULL, FCML_FALSE, 0 ); }
-| reg '+' reg '*' FCML_TK_INTEGER '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_FALSE, 0 ); }
-| reg '+' reg '*' FCML_TK_INTEGER '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_TRUE, 0 ); }
-| reg '+' reg '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_FALSE, 0 ); }
-| reg '+' reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_TRUE, 0 ); }
-| reg '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_FALSE, 0 ); }
-| reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_TRUE, 0 ); }
-| exp { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $1, FCML_FALSE, 0); }
+effective_address_components_without_dis:
+  '(' reg ')' 								{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, 0 ); }
+| '(' reg ',' reg ')' 						{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, &$4, NULL, NULL, FCML_FALSE, 0 ); }
+| '(' ',' reg ')' 							{ $$ = fcml_fn_ast_alloc_node_effective_address( NULL, &$3, NULL, NULL, FCML_FALSE, 0 ); }
+| '(' reg ',' reg ',' FCML_TK_INTEGER ')'	{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, &$4, &$6, NULL, FCML_FALSE, 0 ); }
+| '(' ',' reg ',' FCML_TK_INTEGER ')'		{ $$ = fcml_fn_ast_alloc_node_effective_address( NULL, &$3, &$5, NULL, FCML_FALSE, 0 ); }
 ;
-*/
 
 segment_selector: FCML_TK_REG_SEG ':' { $$ = $1; }
 ;
 
-exp: FCML_TK_INTEGER { $$ = fcml_fn_ast_alloc_node_integer( &$1 ); HANDLE_ERRORS($$); }
-| exp '-' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_SUB, $1, $3 ); HANDLE_ERRORS($$); }
-| exp '+' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_ADD, $1, $3 ); HANDLE_ERRORS($$); }
-| exp '/' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_DIV, $1, $3 ); HANDLE_ERRORS($$); }
-| exp '*' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_MUL, $1, $3 ); HANDLE_ERRORS($$); }
-| '-' exp %prec FCML_OP_UMINUS { $$ = fcml_fn_ast_alloc_node_uminus( $2 ); HANDLE_ERRORS($$); }
-| '(' exp ')' { $$ = $2; }
+exp: 
+  FCML_TK_INTEGER	 			{ $$ = fcml_fn_ast_alloc_node_integer( &$1 ); HANDLE_ERRORS($$); }
+| exp '-' exp 					{ $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_SUB, $1, $3 ); HANDLE_ERRORS($$); }
+| exp '+' exp 					{ $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_ADD, $1, $3 ); HANDLE_ERRORS($$); }
+| exp '/' exp					{ $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_DIV, $1, $3 ); HANDLE_ERRORS($$); }
+| exp '*' exp					{ $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_MUL, $1, $3 ); HANDLE_ERRORS($$); }
+| '-' exp %prec FCML_OP_UMINUS	{ $$ = fcml_fn_ast_alloc_node_uminus( $2 ); HANDLE_ERRORS($$); }
+| '(' exp ')'					{ $$ = $2; }
 ;
 
 /* Every register possible. */

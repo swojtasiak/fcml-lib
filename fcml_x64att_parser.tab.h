@@ -34,7 +34,7 @@
 # define YY_ATT_FCML_X64ATT_PARSER_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int att_debug;
@@ -65,7 +65,7 @@ extern int att_debug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 76 "fcml_x64att_parser.y"
+#line 78 "fcml_x64att_parser.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
