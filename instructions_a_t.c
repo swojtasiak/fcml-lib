@@ -19,30 +19,38 @@ int fcml_tf_instructions_a_suite_cleanup(void) {
 
 void fcml_tf_instruction_AAA(void) {
 	FCML_I32( "aaa", 0x37 );
+	FCML_A32( "aaa", 0x37 );
 }
 
 void fcml_tf_instruction_AAD(void) {
 	FCML_I32( "aad", 0xD5, 0x0A );
+	FCML_A32( "aad", 0xD5, 0x0A );
 	FCML_I64_FAILED( "aad", 0xD5, 0x0A );
 	FCML_I32( "aad 0ch", 0xD5, 0x0C );
+	FCML_A32( "aad $0x0c", 0xD5, 0x0C );
 	FCML_I64_FAILED( "aad 0ch", 0xD5, 0x0C );
 }
 
 void fcml_tf_instruction_AAM(void) {
 	FCML_I32( "aam", 0xD4, 0x0A );
+	FCML_A32( "aam", 0xD4, 0x0A );
 	FCML_I64_FAILED( "aam", 0xD4, 0x0A );
 	FCML_I32( "aam 0ch", 0xD4, 0x0C );
+	FCML_A32( "aam $0x0c", 0xD4, 0x0C );
 	FCML_I64_FAILED( "aam 0ch", 0xD4, 0x0C );
+	FCML_I64_FAILED( "aam $0x0c", 0xD4, 0x0C );
 }
 
 void fcml_tf_instruction_AAS(void) {
 	FCML_I32( "aas", 0x3F );
+	FCML_A32( "aas", 0x3F );
 	FCML_I64_FAILED( "aas", 0x3F );
 }
 
 void fcml_tf_instruction_ADC(void) {
 	// 14 ib ADC AL, imm8
 	FCML_I32_FAILED( "lock adc al,42h", 0xF0, 0x14, 0x42 );
+	FCML_A3264_M( "adc $0x42,%al", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
 	FCML_I3264_M( "adc al,42h", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
 	FCML_I3264_M( "adc al,0ffh", 2, FCML_MI( 0x14, 0xFF ), FCML_MI( 0x80, 0xD0, 0xFF ) );
 	FCML_I3264_M( "adc al,00h", 2, FCML_MI( 0x14, 0x00 ), FCML_MI( 0x80, 0xD0, 0x00 ) );
