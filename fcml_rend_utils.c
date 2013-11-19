@@ -20,17 +20,6 @@
 #include "fcml_stream.h"
 #include "fcml_types.h"
 
-fcml_string fcml_iarr_rend_utils_integer_formats[4][4] = {
-	// Signed integer values.
-	{FCML_PRI_INT8_DEC, FCML_PRI_INT16_DEC, FCML_PRI_INT32_DEC, FCML_PRI_INT64_DEC},
-	// Unsigned integer values.
-	{FCML_PRI_UINT8_DEC, FCML_PRI_UINT16_DEC, FCML_PRI_UINT32_DEC, FCML_PRI_UINT64_DEC},
-	// Signed hex values.
-	{FCML_PRI_INT8_HEX"h", FCML_PRI_INT16_HEX"h", FCML_PRI_INT32_HEX"h", FCML_PRI_INT64_HEX"h"},
-	// Unsigned hex values.
-	{FCML_PRI_INT8_HEX"h", FCML_PRI_INT16_HEX"h", FCML_PRI_INT32_HEX"h", FCML_PRI_INT64_HEX"h"}
-};
-
 void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml_string format, ...) {
 
 	// We'll never reach this limit.
@@ -90,13 +79,13 @@ void fcml_fn_rend_utils_format_append_stream( fcml_st_memory_stream *destination
 	destination_stream->offset += n;
 }
 
-fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_st_memory_stream *stream, const fcml_st_integer *integer, fcml_bool is_hex ) {
+fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[4][4], fcml_st_memory_stream *stream, const fcml_st_integer *integer, fcml_bool is_hex ) {
 
 	fcml_string *format;
 	if( integer->is_signed ) {
-		format = &(fcml_iarr_rend_utils_integer_formats[is_hex ? 2 : 0][0]);
+		format = &(patterns[is_hex ? 2 : 0][0]);
 	} else {
-		format = &(fcml_iarr_rend_utils_integer_formats[is_hex ? 3 : 1][0]);
+		format = &(patterns[is_hex ? 3 : 1][0]);
 	}
 
 	fcml_char local_buffer[32];
@@ -118,6 +107,7 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_st_memory_stream *
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
+	// Currently this logic desn't collide with AT&T dialect, so parameterization is not needed.
 	if( is_hex && !isdigit( local_buffer[0] ) ) {
 		fcml_fn_rend_utils_format_append_str( stream, "0" );
 	}

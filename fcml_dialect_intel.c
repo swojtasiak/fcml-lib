@@ -23,7 +23,11 @@
 fcml_coll_map *fcml_map_dialect_intel_mnemonics_lookup = NULL;
 
 fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
-	{ FCML_TEXT("aaa"), FCML_ASM_DIALECT_INSTRUCTION( F_AAA, FCML_AM_NONE ), 0 },
+	{ FCML_TEXT("aaa"), FCML_ASM_DIALECT_INSTRUCTION( F_AAA, FCML_AM_ALL ), FCML_AM_ALL },
+	{ FCML_TEXT("aad"), FCML_ASM_DIALECT_INSTRUCTION( F_AAD, FCML_AM_ALL ), FCML_AM_ALL },
+	{ FCML_TEXT("aam"), FCML_ASM_DIALECT_INSTRUCTION( F_AAM, FCML_AM_ALL ), FCML_AM_ALL },
+	{ FCML_TEXT("aas"), FCML_ASM_DIALECT_INSTRUCTION( F_AAS, FCML_AM_ALL ), FCML_AM_ALL },
+	{ FCML_TEXT("adc"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_ALL ), FCML_AM_ALL },
 	{ NULL, 0, 0 }
 };
 
@@ -169,7 +173,7 @@ fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_intel( fcml_st_def_instr
 
 	fcml_uint32_t keys[] = {
 		FCML_ASM_DIALECT_INSTRUCTION( instruction->instruction, addr_mode->addr_mode ),
-		FCML_ASM_DIALECT_INSTRUCTION( instruction->instruction, FCML_AM_NONE )
+		FCML_ASM_DIALECT_INSTRUCTION( instruction->instruction, FCML_AM_ALL )
 	};
 
 	int i;

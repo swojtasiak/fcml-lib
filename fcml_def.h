@@ -60,15 +60,30 @@ typedef enum fcml_en_def_instruction_type {
 /* Instructions */
 /****************/
 
-#define F_UNKNOWN		0x0000
-#define F_AAA			0x0001
-#define F_JCC			0x0002
+enum fcml_en_instruction_codes {
+	F_UNKNOWN,
+	F_AAA,
+	F_JCC,
+	F_AAD,
+	F_AAM,
+	F_AAS,
+	F_ADC
+};
 
 /*******************/
 /* Addressing mode */
 /*******************/
 
-#define FCML_AM_NONE	0x0001
+// Wild card for mnemonic used by default.
+#define FCML_AM_ALL		0
+
+enum fcml_en_instruction_addr_mode_codes {
+	FCML_AM_UNKNOWN = 0,
+	FCML_AM_NO_OPERANS,
+	FCML_AM_IMM_8,
+	FCML_AM_EXP_REG_GPR_8,
+	FCML_AM_EXP_REG_GPR_EOSA
+};
 
 /*********************************************/
 /* Instruction groups.                       */

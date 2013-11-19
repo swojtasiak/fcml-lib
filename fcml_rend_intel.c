@@ -19,6 +19,17 @@
 
 #define FCML_REND_LOCAL_BUFFER_SIZE 512
 
+fcml_string fcml_iarr_rend_utils_integer_formats_intel[4][4] = {
+	// Signed integer values.
+	{FCML_PRI_INT8_DEC, FCML_PRI_INT16_DEC, FCML_PRI_INT32_DEC, FCML_PRI_INT64_DEC},
+	// Unsigned integer values.
+	{FCML_PRI_UINT8_DEC, FCML_PRI_UINT16_DEC, FCML_PRI_UINT32_DEC, FCML_PRI_UINT64_DEC},
+	// Signed hex values.
+	{FCML_PRI_INT8_HEX"h", FCML_PRI_INT16_HEX"h", FCML_PRI_INT32_HEX"h", FCML_PRI_INT64_HEX"h"},
+	// Unsigned hex values.
+	{FCML_PRI_INT8_HEX"h", FCML_PRI_INT16_HEX"h", FCML_PRI_INT32_HEX"h", FCML_PRI_INT64_HEX"h"}
+};
+
 fcml_string fcml_iarr_rend_conditional_suffixes_intel[2][16] = {
 	{ "o", "no", "b", "nb", "e", "ne", "be", "nbe", "s", "ns", "p", "np", "l", "nl", "le", "nle" },
 	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
@@ -72,7 +83,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_dialect_c
 	if( error ) {
 		return error;
 	}
-	return fcml_fn_rend_utils_format_append_integer( output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_IMM );
+	return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_IMM );
 }
 
 fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_st_operand *operand, fcml_st_dasm_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
@@ -97,7 +108,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 			return error;
 		}
 
-		error = fcml_fn_rend_utils_format_append_integer( output_stream, &integer, FCML_TRUE );
+		error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, FCML_TRUE );
 
 		return error;
 	}
@@ -158,7 +169,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 			scale_value.size = 8;
 			scale_value.int8 = (fcml_int8_t)effective_address->scale_factor;
 
-			fcml_fn_rend_utils_format_append_integer( output_stream, &scale_value, FCML_FALSE );
+			fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &scale_value, FCML_FALSE );
 		}
 
 		// Displacement.
@@ -173,7 +184,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 				return error;
 			}
 
-			error = fcml_fn_rend_utils_format_append_integer( output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT );
+			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT );
 		}
 
 	} else {
@@ -186,7 +197,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 			return error;
 		}
 
-		error = fcml_fn_rend_utils_format_append_integer( output_stream, &integer, FCML_TRUE );
+		error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, FCML_TRUE );
 	}
 
 	fcml_fn_rend_utils_format_append_str( output_stream, "]" );
@@ -203,7 +214,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_intel( fcml_st_dialect
 	integer.size = 16;
 	integer.int16 = operand->far_pointer.segment;
 
-	fcml_fn_rend_utils_format_append_integer( output_stream, &integer, FCML_TRUE );
+	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, FCML_TRUE );
 
 	fcml_fn_rend_utils_format_append_str( output_stream, ":" );
 
@@ -217,7 +228,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_intel( fcml_st_dialect
 		break;
 	}
 
-	fcml_fn_rend_utils_format_append_integer( output_stream, &integer, FCML_TRUE );
+	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, FCML_TRUE );
 
 	return error;
 }
