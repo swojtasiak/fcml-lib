@@ -10,7 +10,7 @@
 
 #include "fcml_ceh.h"
 #include "fcml_common.h"
-#include "fcml_dialect.h"
+#include "fcml_dialect_int.h"
 #include "fcml_stream.h"
 #include "fcml_types.h"
 
@@ -21,6 +21,6 @@ void fcml_fn_rend_utils_format_append_str_if( fcml_st_memory_stream *stream, con
 void fcml_fn_rend_utils_format_append_str( fcml_st_memory_stream *stream, const fcml_string source );
 void fcml_fn_rend_utils_format_append_stream( fcml_st_memory_stream *destination_stream, const fcml_st_memory_stream *source_stream );
 fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[4][4], fcml_st_memory_stream *stream, const fcml_st_integer *integer, fcml_bool is_hex );
-void fcml_fn_rend_utils_format_append_reg( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *stream, const fcml_st_register *reg, fcml_bool is_rex );
+void fcml_fn_rend_utils_format_append_reg( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *stream, const fcml_st_register *reg, fcml_bool is_rex );
 
 #endif /* FCML_REND_UTILS_H_ */

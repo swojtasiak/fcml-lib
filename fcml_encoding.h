@@ -13,7 +13,7 @@
 #include "fcml_coll.h"
 #include "fcml_common.h"
 #include "fcml_common_int.h"
-#include "fcml_dialect.h"
+#include "fcml_dialect_int.h"
 #include "fcml_types.h"
 
 typedef struct fcml_st_asm_encoder_result {
@@ -35,7 +35,7 @@ typedef struct fcml_st_asm_instruction_addr_modes {
 	fcml_fnp_asm_instruction_encoder instruction_encoder;
 } fcml_st_asm_instruction_addr_modes;
 
-fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *context, fcml_coll_map *instructions_map );
+fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context_int *context, fcml_coll_map *instructions_map );
 fcml_ceh_error fcml_fn_asm_get_instruction_encodings( fcml_coll_map instructions_map, fcml_string mnemonic, fcml_st_asm_instruction_addr_modes ** );
 void fcml_fn_asm_free_instruction_encodings( fcml_coll_map instructions_map );
 

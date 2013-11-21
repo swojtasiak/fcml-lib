@@ -7,12 +7,14 @@
 
 #include "fcml_parser.h"
 
+#include "fcml_dialect_int.h"
 #include "fcml_apc_ast.h"
 #include "fcml_env.h"
 
 fcml_ceh_error fcml_fn_parse_instruction( fcml_st_dialect_context *dialect_context, fcml_string instruction, fcml_st_parser_result **result_out ) {
-	if( dialect_context->instruction_parser ) {
-		fcml_fnp_parse_instruction parser = (fcml_fnp_parse_instruction)dialect_context->instruction_parser;
+	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect_context;
+	if( dialect_context_int->instruction_parser ) {
+		fcml_fnp_parse_instruction parser = (fcml_fnp_parse_instruction)dialect_context_int->instruction_parser;
 		return parser( dialect_context, instruction, result_out );
 	} else {
 		// Dialect not initialized correctly.

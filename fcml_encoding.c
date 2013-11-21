@@ -137,7 +137,7 @@ typedef enum fcml_ien_asm_part_processor_phase {
 
 typedef struct fcml_ist_asm_init_context {
 	fcml_coll_map instructions_map;
-	fcml_st_dialect_context *dialect_context;
+	fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_init_context;
 
 typedef fcml_ceh_error (*fcml_ifp_asm_operand_encoder)( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_ist_asm_instruction_part *operand_enc );
@@ -3083,7 +3083,7 @@ fcml_ist_asm_addr_mode_desc_details fcml_ifn_asm_precalculate_addr_mode( fcml_st
 	return details;
 }
 
-void fcml_ifn_asm_free_addr_mode( fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_dialect_context *dialect_context ) {
+void fcml_ifn_asm_free_addr_mode( fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_dialect_context_int *dialect_context ) {
     if( addr_mode ) {
         if( addr_mode->mnemonic ) {
             dialect_context->free_mnemonic( addr_mode->mnemonic );
@@ -3100,7 +3100,7 @@ void fcml_ifn_asm_free_instruction_addr_mode_item_handler( fcml_ptr item_value, 
             fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
         }
     }
-    fcml_ifn_asm_free_addr_mode( addr_mode, (fcml_st_dialect_context*)args );
+    fcml_ifn_asm_free_addr_mode( addr_mode, (fcml_st_dialect_context_int*)args );
 }
 
 void fcml_ifn_asm_free_instruction_entry( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
@@ -3335,7 +3335,7 @@ void fcml_ifn_asm_prepare_instruction_encoding_details( fcml_ist_asm_init_contex
     }
 }
 
-fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context *dialect_context, fcml_coll_map *inst_map ) {
+fcml_ceh_error fcml_fn_asm_init_instruction_encodings( fcml_st_dialect_context_int *dialect_context, fcml_coll_map *inst_map ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

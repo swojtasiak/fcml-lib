@@ -5,7 +5,7 @@
  *      Author: tAs
  */
 
-#include "fcml_dialect.h"
+#include "fcml_dialect_int.h"
 #include "fcml_env.h"
 
 fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_mnemonic *mnemonic, fcml_string suffix ) {

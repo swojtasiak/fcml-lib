@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "fcml_dialect_int.h"
 #include "fcml_dialect_intel.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_env.h"
@@ -48,7 +49,10 @@ fcml_string fcml_itb_att_conditional_suffixes_render[2][16] = {
 	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
 };
 
-fcml_string fcml_fnp_asm_dialect_render_mnemonic_att( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry ) {
+// Dialect instance is set up by "fcml_fn_init_att_dialect" method.
+fcml_st_dialect_context_int fcml_dialect_context_att;
+
+fcml_string fcml_ifn_asm_dialect_render_mnemonic_att( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry ) {
 	fcml_string rendered_mnemonic = NULL;
 	if( condition ) {
 		fcml_string suffix = NULL;
@@ -76,36 +80,6 @@ fcml_string fcml_fnp_asm_dialect_render_mnemonic_att( fcml_string mnemonic, fcml
 	return rendered_mnemonic;
 }
 
-
-
-fcml_ceh_error fcml_fn_init_att_dialect(void) {
-
-	fcml_ceh_error error;
-
-	if( !fcml_map_dialect_att_mnemonics_lookup ) {
-
-		// Prepare mnemonic lookup.
-		fcml_map_dialect_att_mnemonics_lookup = fcml_fn_coll_map_alloc( &fcml_coll_map_descriptor_uint32, sizeof( fcml_arr_dialect_att_mnemonics ) / sizeof( fcml_st_dialect_mnemonic ), &error );
-		if( error ) {
-			return error;
-		}
-
-		fcml_st_dialect_mnemonic *current = &(fcml_arr_dialect_att_mnemonics[0]);
-		while( current->mnemonic ) {
-			fcml_fn_coll_map_put( fcml_map_dialect_att_mnemonics_lookup, &(current->instruction), current, &error );
-			if( error ) {
-				fcml_fn_coll_map_free( fcml_map_dialect_att_mnemonics_lookup );
-				fcml_map_dialect_att_mnemonics_lookup = NULL;
-				break;
-			}
-			current++;
-		}
-
-	}
-
-	return error;
-}
-
 void fcml_fn_att_dialect_free(void) {
 	if( fcml_map_dialect_att_mnemonics_lookup ) {
 		fcml_fn_coll_map_free( fcml_map_dialect_att_mnemonics_lookup );
@@ -113,56 +87,18 @@ void fcml_fn_att_dialect_free(void) {
 	}
 }
 
-fcml_ceh_error fcml_fnp_asm_dialect_get_register_att( const fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex) {
-	fcml_int rs = 0;
-	if (reg->type != FCML_REG_SIMD) {
-		switch (reg->size) {
-		case 8:
-			rs = 0;
-			break;
-		case 16:
-			rs = 1;
-			break;
-		case 32:
-			rs = 2;
-			break;
-		case 64:
-			rs = 3;
-			break;
-		}
-		if (is_rex) {
-			if (reg->type == FCML_REG_GPR) {
-				*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[rs][reg->reg];
-			} else {
-				*printable_reg = fcml_ar_asm_dialect_reg_symbol_table_rex[reg->type][reg->reg];
-			}
-		} else {
-			if (reg->type == FCML_REG_GPR) {
-				*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table[rs][reg->reg];
-			} else {
-				*printable_reg = fcml_ar_asm_dialect_reg_symbol_table[reg->type][reg->reg];
-			}
-		}
-	} else {
-		switch (reg->size) {
-		case 64:
-			rs = 0;
-			break;
-		case 128:
-			rs = 1;
-			break;
-		case 256:
-			rs = 2;
-			break;
-		default:
-			return FCML_CEH_GEC_INVALID_INPUT;
-		}
-		*printable_reg = fcml_ar_asm_dialect_reg_sidm_symbol_table[rs][reg->reg];
+fcml_ceh_error fcml_ifn_asm_dialect_get_register_att( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_string printable_reg;
+	error = fcml_fn_cmn_dialect_get_register( reg, &printable_reg, is_rex );
+	if( error ) {
+		return error;
 	}
-	return FCML_CEH_GEC_NO_ERROR;
+	fcml_fn_env_str_snprintf( buffer, buffer_length, "\%%s", printable_reg );
+	return error;
 }
 
-void fcml_fnp_asm_dialect_free_mnemonic_att( fcml_st_mp_mnemonic *mnemonic ) {
+void fcml_ifn_asm_dialect_free_mnemonic_att( fcml_st_mp_mnemonic *mnemonic ) {
     // Do nothing.
     if( mnemonic ) {
         fcml_fn_asm_dialect_free_mnemonic( mnemonic );
@@ -198,7 +134,7 @@ fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_att( fcml_st_def_instruc
 	return fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
 }
 
-fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_att( fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonics_counter ) {
+fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_att( fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonics_counter ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -253,7 +189,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_att( fcml_st_def_instruction_de
         // Free all prepared mnemonics.
         int i;
         for( i = 0; i < counter; i++ ) {
-            fcml_fnp_asm_dialect_free_mnemonic_att( mnemonics[i] );
+            fcml_ifn_asm_dialect_free_mnemonic_att( mnemonics[i] );
         }
     }
 
@@ -264,7 +200,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_att( fcml_st_def_instruction_de
     return error;
 }
 
-fcml_ceh_error fcml_fnp_asm_dialect_render_size_operator_att( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
+fcml_ceh_error fcml_ifn_asm_dialect_render_size_operator_att( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
 
 	fcml_string size_operator_printable = NULL;
 
@@ -306,15 +242,61 @@ fcml_ceh_error fcml_fnp_asm_dialect_render_size_operator_att( fcml_data_size siz
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_st_dialect_context fcml_fn_get_att_dialect_context() {
-    fcml_st_dialect_context context;
-    context.get_mnemonic = &fcml_fnp_asm_dialect_get_mnemonic_att;
-    context.render_mnemonic = &fcml_fnp_asm_dialect_render_mnemonic_att;
-    context.get_parsed_mnemonics = &fcml_fn_asm_dialect_get_parsed_mnemonics_att;
-    context.free_mnemonic = &fcml_fnp_asm_dialect_free_mnemonic_att;
-    context.instruction_renderer = &fcml_fn_rend_render_instruction_att;
-    context.instruction_parser = &fcml_x64_att_parse;
-    context.get_register = &fcml_fnp_asm_dialect_get_register_att;
-    context.size_operator_renderer = &fcml_fnp_asm_dialect_render_size_operator_att;
-    return context;
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruction *instrunction ) {
+
+	// Operands has to be reverted.
+	fcml_st_operand tmp_operand;
+	fcml_int i;
+	fcml_int operands_count = instrunction->operands_count;
+	for( i = 0; i < operands_count / 2; i++ ) {
+		tmp_operand = instrunction->operands[i];
+		instrunction->operands[i] = instrunction->operands[operands_count - i - 1];
+		instrunction->operands[operands_count - i - 1] = tmp_operand;
+	}
+
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_st_dialect_context *fcml_fn_get_att_dialect_context() {
+    return (fcml_st_dialect_context*)&fcml_dialect_context_att;
+}
+
+fcml_ceh_error fcml_fn_init_att_dialect(void) {
+
+	fcml_ceh_error error;
+
+	if( !fcml_map_dialect_att_mnemonics_lookup ) {
+
+		// Prepare mnemonic lookup.
+		fcml_map_dialect_att_mnemonics_lookup = fcml_fn_coll_map_alloc( &fcml_coll_map_descriptor_uint32, sizeof( fcml_arr_dialect_att_mnemonics ) / sizeof( fcml_st_dialect_mnemonic ), &error );
+		if( error ) {
+			return error;
+		}
+
+		fcml_st_dialect_mnemonic *current = &(fcml_arr_dialect_att_mnemonics[0]);
+		while( current->mnemonic ) {
+			fcml_fn_coll_map_put( fcml_map_dialect_att_mnemonics_lookup, &(current->instruction), current, &error );
+			if( error ) {
+				fcml_fn_coll_map_free( fcml_map_dialect_att_mnemonics_lookup );
+				fcml_map_dialect_att_mnemonics_lookup = NULL;
+				break;
+			}
+			current++;
+		}
+
+	}
+
+	// Prepares dialect instance.
+	fcml_dialect_context_att.get_mnemonic = &fcml_ifn_asm_dialect_get_mnemonic_att;
+	fcml_dialect_context_att.render_mnemonic = &fcml_ifn_asm_dialect_render_mnemonic_att;
+	fcml_dialect_context_att.get_parsed_mnemonics = &fcml_fn_asm_dialect_get_parsed_mnemonics_att;
+	fcml_dialect_context_att.free_mnemonic = &fcml_ifn_asm_dialect_free_mnemonic_att;
+	fcml_dialect_context_att.instruction_renderer = &fcml_fn_rend_render_instruction_att;
+	fcml_dialect_context_att.instruction_parser = &fcml_x64_att_parse;
+	fcml_dialect_context_att.get_register = &fcml_ifn_asm_dialect_get_register_att;
+	fcml_dialect_context_att.size_operator_renderer = &fcml_ifn_asm_dialect_render_size_operator_att;
+	fcml_dialect_context_att.reverted_operands = FCML_TRUE;
+	fcml_dialect_context_att.assembler_preprocessor = &fcml_ifn_asm_dialect_assembler_preprocessor_att;
+
+	return error;
 }

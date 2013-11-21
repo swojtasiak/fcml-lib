@@ -20,6 +20,7 @@
 #include "fcml_modrm_decoder.h"
 #include "fcml_stream.h"
 #include "fcml_utils.h"
+#include "fcml_dialect_int.h"
 
 // R,X and B are stored in 1's complement form.
 #define FCML_VEX_W(x)				FCML_TP_GET_BIT(x, 7)
@@ -75,7 +76,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 } fcml_ist_dasm_decoding_context;
 
 typedef struct fcml_ist_dasm_disassembler {
-    fcml_st_dialect_context dialect_context;
+    fcml_st_dialect_context_int *dialect_context;
     fcml_st_dt_decoding_tree *decoding_tree;
 } fcml_ist_dasm_disassembler;
 
@@ -1238,7 +1239,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain( fcml_st_def_addr_mode
  * Decoding callbacks.
  *********************/
 
-void fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default( fcml_st_dialect_context *dialect, fcml_ptr decoding_ptr ) {
+void fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default( fcml_st_dialect_context_int *dialect, fcml_ptr decoding_ptr ) {
 
 	fcml_ist_dasm_instruction_decoding_def *decoding = (fcml_ist_dasm_instruction_decoding_def *)decoding_ptr;
 
@@ -1271,7 +1272,7 @@ void fcml_ifn_dasm_dts_prepare_modrm_decoding_details( fcml_st_def_decoded_addr_
 	}
 }
 
-fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( fcml_st_dialect_context *dialect, fcml_st_dt_diss_tree_element *element, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *addr_mode_desc ) {
+fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( fcml_st_dialect_context_int *dialect, fcml_st_dt_diss_tree_element *element, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *addr_mode_desc ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2062,8 +2063,8 @@ fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect_context *context,
 	fcml_ist_dasm_disassembler *int_disasm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_disassembler ) );
 	if( int_disasm ) {
 
-		int_disasm->dialect_context = *context;
-		error = fcml_fn_dt_dts_tree_init( context, &(int_disasm->decoding_tree), &fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default, &fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default );
+		int_disasm->dialect_context = (fcml_st_dialect_context_int*)context;
+		error = fcml_fn_dt_dts_tree_init( (fcml_st_dialect_context_int*)context, &(int_disasm->decoding_tree), &fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default, &fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default );
 		if( !error ) {
 			*disassembler = (fcml_st_dasm_disassembler*)int_disasm;
 		}
@@ -2190,8 +2191,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 				instruction_details->is_shortcut = mnemonic->shortcut;
 				// Render mnemonic using provided dialect.
 				fcml_ist_dasm_disassembler *int_disasm = (fcml_ist_dasm_disassembler *)context->disassembler;
-				fcml_st_dialect_context *dialect_context = &(int_disasm->dialect_context);
-				instruction->mnemonic = dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.choose_carry_conditional_mnemonic );
+				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.choose_carry_conditional_mnemonic );
 			} else {
 				// Mnemonic not found.
 				return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
@@ -2231,7 +2231,7 @@ void fcml_fn_dasm_disassembler_free( fcml_st_dasm_disassembler *disassembler ) {
 	fcml_ist_dasm_disassembler *dec_disasm = (fcml_ist_dasm_disassembler*)disassembler;
 	if( dec_disasm ) {
 		if( dec_disasm->decoding_tree ) {
-			fcml_fn_dt_dts_tree_free( &(dec_disasm->dialect_context), dec_disasm->decoding_tree );
+			fcml_fn_dt_dts_tree_free( dec_disasm->dialect_context, dec_disasm->decoding_tree );
 		}
 		fcml_fn_env_memory_free( dec_disasm );
 	}

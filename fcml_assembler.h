@@ -11,8 +11,8 @@
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
 #include "fcml_common.h"
+#include "fcml_common_int.h"
 #include "fcml_dialect.h"
-#include "fcml_errors.h"
 #include "fcml_types.h"
 
 typedef struct fcml_st_asm_assembler {
@@ -86,8 +86,8 @@ typedef struct fcml_st_asm_assembler_context {
 	fcml_st_instruction_pointer ip;
 } fcml_st_asm_assembler_context;
 
-fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect_context context, fcml_st_asm_assembler **assembler );
-fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *context, fcml_st_instruction *instruction, fcml_st_asm_assembler_result **result );
+fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect_context *context, fcml_st_asm_assembler **assembler );
+fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_asm_assembler_result **result );
 void fcml_fn_asm_assembler_result_free( fcml_st_asm_assembler_result *result );
 void fcml_fn_asm_assembler_free( fcml_st_asm_assembler *assembler );
 

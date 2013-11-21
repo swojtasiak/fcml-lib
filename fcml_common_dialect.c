@@ -5,7 +5,10 @@
  *      Author: tas
  */
 
+#include "fcml_ceh.h"
+#include "fcml_common.h"
 #include "fcml_types.h"
+
 #include "fcml_common_dialect.h"
 
 fcml_string fcml_ar_asm_dialect_reg_symbol_table[7][16] = {
@@ -47,3 +50,52 @@ fcml_string fcml_ar_asm_dialect_reg_sidm_symbol_table[3][16] = {
 	{ "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15" },
 	{ "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15" }
 };
+
+fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex) {
+	fcml_int rs = 0;
+	if (reg->type != FCML_REG_SIMD) {
+		switch (reg->size) {
+		case 8:
+			rs = 0;
+			break;
+		case 16:
+			rs = 1;
+			break;
+		case 32:
+			rs = 2;
+			break;
+		case 64:
+			rs = 3;
+			break;
+		}
+		if (is_rex) {
+			if (reg->type == FCML_REG_GPR) {
+				*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[rs][reg->reg];
+			} else {
+				*printable_reg = fcml_ar_asm_dialect_reg_symbol_table_rex[reg->type][reg->reg];
+			}
+		} else {
+			if (reg->type == FCML_REG_GPR) {
+				*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table[rs][reg->reg];
+			} else {
+				*printable_reg = fcml_ar_asm_dialect_reg_symbol_table[reg->type][reg->reg];
+			}
+		}
+	} else {
+		switch (reg->size) {
+		case 64:
+			rs = 0;
+			break;
+		case 128:
+			rs = 1;
+			break;
+		case 256:
+			rs = 2;
+			break;
+		default:
+			return FCML_CEH_GEC_INVALID_INPUT;
+		}
+		*printable_reg = fcml_ar_asm_dialect_reg_sidm_symbol_table[rs][reg->reg];
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}

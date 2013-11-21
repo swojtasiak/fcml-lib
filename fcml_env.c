@@ -10,6 +10,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 static void *fcml_fn_env_default_memory_alloc( uint32_t size ) {
     return malloc(size);
@@ -72,7 +74,7 @@ fcml_usize fcml_fn_env_str_strlen( const fcml_string str ) {
     return (fcml_usize)strlen( str );
 }
 
-void fcml_fn_env_str_strcpy( const fcml_string dst, fcml_string src ) {
+void fcml_fn_env_str_strcpy( fcml_string dst, const fcml_string src ) {
     strcpy( dst, src );
 }
 
@@ -105,6 +107,13 @@ void fcml_fn_env_str_strfree( fcml_string str ) {
 	if( str ) {
 		fcml_fn_env_memory_free( str );
 	}
+}
+
+void fcml_fn_env_str_snprintf( fcml_string buffer, fcml_usize maxlen, fcml_string format, ... ) {
+	va_list args;
+	va_start( args, format );
+	vsnprintf( buffer, maxlen, format, args );
+	va_end( args );
 }
 
 fcml_bool fcml_fn_env_is_alpha( fcml_char c ) {

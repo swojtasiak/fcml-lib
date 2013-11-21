@@ -117,8 +117,8 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[4]
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-void fcml_fn_rend_utils_format_append_reg( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, const fcml_st_register *reg, fcml_bool is_rex ) {
-	fcml_string printable_reg;
-	dialect_context->get_register( reg, &printable_reg, is_rex );
+void fcml_fn_rend_utils_format_append_reg( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, const fcml_st_register *reg, fcml_bool is_rex ) {
+	fcml_char printable_reg[64];
+	dialect_context->get_register( reg, printable_reg, sizeof( printable_reg ), is_rex );
 	fcml_fn_rend_utils_format_append_str( output_stream, printable_reg );
 }
