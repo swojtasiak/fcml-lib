@@ -13,11 +13,11 @@
 #include "fcml_optimizers.h"
 #include "fcml_disassembler.h"
 
-fcml_st_dialect_context dialect_intel;
+fcml_st_dialect_context *dialect_intel;
 fcml_st_asm_assembler *assembler_intel;
 fcml_st_dasm_disassembler *disassembler_intel;
 
-fcml_st_dialect_context dialect_att;
+fcml_st_dialect_context *dialect_att;
 fcml_st_asm_assembler *assembler_att;
 fcml_st_dasm_disassembler *disassembler_att;
 

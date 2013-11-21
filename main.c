@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
 	dialect_intel = fcml_fn_get_intel_dialect_context();
 	dialect_att = fcml_fn_get_att_dialect_context();
 
-	error = fcml_fn_dasm_disassembler_init( &dialect_intel, &disassembler_intel );
+	error = fcml_fn_dasm_disassembler_init( dialect_intel, &disassembler_intel );
 	if( error ) {
 		// Error.
 		fcml_fn_asm_assembler_free( assembler_intel );
@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	error = fcml_fn_dasm_disassembler_init( &dialect_att, &disassembler_att );
+	error = fcml_fn_dasm_disassembler_init( dialect_att, &disassembler_att );
 	if( error ) {
 		// Error.
 		fcml_fn_dasm_disassembler_free( disassembler_intel );

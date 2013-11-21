@@ -26,7 +26,7 @@
 #include <fcml_dialect_att.h>
 #include <string.h>
 
-fcml_st_dialect_context dialect_att;
+fcml_st_dialect_context *dialect_att;
 
 int fcml_tf_att_parser_suite_init(void) {
 	dialect_att = fcml_fn_get_att_dialect_context();
@@ -39,7 +39,7 @@ int fcml_tf_att_parser_suite_cleanup(void) {
 
 void fcml_tf_parser_att_parse_test1(void) {
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "mov $80-90", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "mov $80-90", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -53,7 +53,7 @@ void fcml_tf_parser_att_parse_test1(void) {
 
 void fcml_tf_parser_att_parse_test2(void) {
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "mov (%eax)", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "mov (%eax)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].address.address_form, FCML_AF_COMBINED );
@@ -67,7 +67,7 @@ void fcml_tf_parser_att_parse_test2(void) {
 
 void fcml_tf_parser_att_parse_test3(void) {
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "movq $1,%cs:(%rax)", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,%cs:(%rax)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -86,7 +86,7 @@ void fcml_tf_parser_att_parse_test3(void) {
 
 void fcml_tf_parser_att_parse_test4(void) {
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "movq $1,%cs:(%rax,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,%cs:(%rax,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -108,7 +108,7 @@ void fcml_tf_parser_att_parse_test4(void) {
 void fcml_tf_parser_att_parse_test5(void) {
 	// Index only.
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "movq $1,%cs:(,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,%cs:(,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -130,7 +130,7 @@ void fcml_tf_parser_att_parse_test5(void) {
 void fcml_tf_parser_att_parse_test6(void) {
 	// Index only.
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "movq $1,%cs:(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,%cs:(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -153,14 +153,14 @@ void fcml_tf_parser_att_parse_test6(void) {
 void fcml_tf_parser_att_parse_test7(void) {
 	// Index only.
 	fcml_st_parser_result *result = NULL;
-	CU_ASSERT_NOT_EQUAL( fcml_x64_att_parse( &dialect_att, "movq $1,%cs:(,%rbx,)", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_NOT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,%cs:(,%rbx,)", &result ), FCML_CEH_GEC_NO_ERROR );
 	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_att_parse_test8(void) {
 	// Index only.
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "movq $1,%cs:0x100(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,%cs:0x100(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -185,7 +185,7 @@ void fcml_tf_parser_att_parse_test8(void) {
 void fcml_tf_parser_att_parse_test9(void) {
 	// Index only.
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "movq $1,%cs:0x100", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,%cs:0x100", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -205,7 +205,7 @@ void fcml_tf_parser_att_parse_test9(void) {
 void fcml_tf_parser_att_parse_test10(void) {
 	// Index only.
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "movq $1,%cs:0x100(%rax,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,%cs:0x100(%rax,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -230,7 +230,7 @@ void fcml_tf_parser_att_parse_test10(void) {
 void fcml_tf_parser_att_parse_test11(void) {
 	// Index only.
 	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( &dialect_att, "lcall $0xFFFF,$0x12345678", &result ), FCML_CEH_GEC_NO_ERROR );
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "lcall $0xFFFF,$0x12345678", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
 		CU_ASSERT_EQUAL( result->instruction->operands_count, 1 );
 		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_FAR_POINTER );

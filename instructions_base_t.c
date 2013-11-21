@@ -20,11 +20,11 @@
 
 extern fcml_st_asm_assembler *assembler_intel;
 extern fcml_st_dasm_disassembler *disassembler_intel;
-extern fcml_st_dialect_context dialect_intel;
+extern fcml_st_dialect_context *dialect_intel;
 
 extern fcml_st_asm_assembler *assembler_att;
 extern fcml_st_dasm_disassembler *disassembler_att;
-extern fcml_st_dialect_context dialect_att;
+extern fcml_st_dialect_context *dialect_att;
 
 void fcml_ifn_ts_set_ip( fcml_st_instruction_pointer *ip, fcml_en_addr_form addr_form ) {
 	switch( addr_form ) {
@@ -42,7 +42,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 	fcml_st_asm_assembler *assembler = assembler_intel;
 	fcml_st_dasm_disassembler *disassembler = disassembler_intel;
-	fcml_st_dialect_context dialect = dialect_intel;
+	fcml_st_dialect_context *dialect = dialect_intel;
 
 	if( FCML_TSF_GAS_DIALECT & t_flags ) {
 		assembler = assembler_att;
@@ -120,7 +120,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 			stream.offset = 0;
 			stream.size = sizeof( buffer );
 
-			error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | rend_flags);
+			error = fcml_fn_rend_render_instruction( dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | rend_flags);
 			if( error ) {
 				printf("Disassemblation failed, with error code: %d\n", error );
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
@@ -148,7 +148,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 		// Parsing.
 
 		fcml_st_parser_result *result;
-		fcml_ceh_error error = fcml_fn_parse_instruction( &dialect, mnemonic, &result );
+		fcml_ceh_error error = fcml_fn_parse_instruction( dialect, mnemonic, &result );
 		if( error ) {
 			printf("Can not parse: %s\n", mnemonic );
 			if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
@@ -395,7 +395,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 	fcml_bool success = FCML_TRUE;
 
 	fcml_st_dasm_disassembler *disassembler = disassembler_intel;
-	fcml_st_dialect_context dialect = dialect_intel;
+	fcml_st_dialect_context *dialect = dialect_intel;
 
 	if( FCML_TSF_GAS_DIALECT & t_flags ) {
 		disassembler = disassembler_att;
@@ -433,7 +433,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 		stream.offset = 0;
 		stream.size = sizeof( buffer );
 
-		error = fcml_fn_rend_render_instruction( &dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | ren_flags );
+		error = fcml_fn_rend_render_instruction( dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | ren_flags );
 
 		if( t_flags & FCML_TSF_PRINT_ONLY ) {
 			printf("Disassembled instruction: %s", buffer);
