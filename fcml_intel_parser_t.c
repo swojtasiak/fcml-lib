@@ -18,7 +18,7 @@
 #include <fcml_dialect_intel.h>
 #include <string.h>
 
-fcml_st_dialect_context *dialect_intel;
+fcml_st_dialect *dialect_intel;
 
 int fcml_tf_parser_suite_init(void) {
 	dialect_intel = fcml_fn_get_intel_dialect_context();

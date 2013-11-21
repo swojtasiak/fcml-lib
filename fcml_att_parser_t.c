@@ -26,7 +26,7 @@
 #include <fcml_dialect_att.h>
 #include <string.h>
 
-fcml_st_dialect_context *dialect_att;
+fcml_st_dialect *dialect_att;
 
 int fcml_tf_att_parser_suite_init(void) {
 	dialect_att = fcml_fn_get_att_dialect_context();

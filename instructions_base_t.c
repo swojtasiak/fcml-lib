@@ -20,11 +20,11 @@
 
 extern fcml_st_asm_assembler *assembler_intel;
 extern fcml_st_dasm_disassembler *disassembler_intel;
-extern fcml_st_dialect_context *dialect_intel;
+extern fcml_st_dialect *dialect_intel;
 
 extern fcml_st_asm_assembler *assembler_att;
 extern fcml_st_dasm_disassembler *disassembler_att;
-extern fcml_st_dialect_context *dialect_att;
+extern fcml_st_dialect *dialect_att;
 
 void fcml_ifn_ts_set_ip( fcml_st_instruction_pointer *ip, fcml_en_addr_form addr_form ) {
 	switch( addr_form ) {
@@ -42,7 +42,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 	fcml_st_asm_assembler *assembler = assembler_intel;
 	fcml_st_dasm_disassembler *disassembler = disassembler_intel;
-	fcml_st_dialect_context *dialect = dialect_intel;
+	fcml_st_dialect *dialect = dialect_intel;
 
 	if( FCML_TSF_GAS_DIALECT & t_flags ) {
 		assembler = assembler_att;
@@ -395,7 +395,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 	fcml_bool success = FCML_TRUE;
 
 	fcml_st_dasm_disassembler *disassembler = disassembler_intel;
-	fcml_st_dialect_context *dialect = dialect_intel;
+	fcml_st_dialect *dialect = dialect_intel;
 
 	if( FCML_TSF_GAS_DIALECT & t_flags ) {
 		disassembler = disassembler_att;
