@@ -269,7 +269,7 @@ fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml
 	return fcml_iarr_rend_conditional_suffixes_intel[group][condition];
 }
 
-fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect_context *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_uint32_t render_flags ) {
+fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_uint32_t render_flags ) {
 
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect_context;
 

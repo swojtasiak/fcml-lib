@@ -13,6 +13,6 @@
 
 fcml_ceh_error fcml_fn_init_att_dialect(void);
 void fcml_fn_att_dialect_free(void);
-fcml_st_dialect_context *fcml_fn_get_att_dialect_context();
+fcml_st_dialect *fcml_fn_get_att_dialect_context();
 
 #endif /* FCML_ASM_DIALECT_ATT_H_ */

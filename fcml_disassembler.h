@@ -118,7 +118,7 @@ typedef struct fcml_st_dasm_disassembler_result {
 	fcml_st_instruction instruction;
 } fcml_st_dasm_disassembler_result;
 
-fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect_context *context, fcml_st_dasm_disassembler **disassembler );
+fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect *dialect, fcml_st_dasm_disassembler **disassembler );
 fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *context, fcml_st_dasm_disassembler_result **result );
 void fcml_fn_dasm_disassemble_result_free( fcml_st_dasm_disassembler_result *result );
 void fcml_fn_dasm_disassembler_free( fcml_st_dasm_disassembler *disassembler );

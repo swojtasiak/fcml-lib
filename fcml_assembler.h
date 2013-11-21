@@ -86,7 +86,7 @@ typedef struct fcml_st_asm_assembler_context {
 	fcml_st_instruction_pointer ip;
 } fcml_st_asm_assembler_context;
 
-fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect_context *context, fcml_st_asm_assembler **assembler );
+fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect *context, fcml_st_asm_assembler **assembler );
 fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_asm_assembler_result **result );
 void fcml_fn_asm_assembler_result_free( fcml_st_asm_assembler_result *result );
 void fcml_fn_asm_assembler_free( fcml_st_asm_assembler *assembler );

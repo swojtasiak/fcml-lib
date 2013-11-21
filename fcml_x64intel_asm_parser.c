@@ -20,7 +20,7 @@ void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
 	fcml_fn_ceh_add_error( &(pd->errors), (const fcml_string)error, FCML_EN_X64IP_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR );
 }
 
-fcml_ceh_error fcml_x64intel_parse( fcml_st_dialect_context *dialect, fcml_string asm_code, fcml_st_parser_result **result ) {
+fcml_ceh_error fcml_x64intel_parse( fcml_st_dialect *dialect, fcml_string asm_code, fcml_st_parser_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

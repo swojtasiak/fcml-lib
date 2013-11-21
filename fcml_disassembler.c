@@ -2056,15 +2056,15 @@ fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_dasm_p
  * API.
  ****************************/
 
-fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect_context *context, fcml_st_dasm_disassembler **disassembler ) {
+fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect *dialect, fcml_st_dasm_disassembler **disassembler ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_ist_dasm_disassembler *int_disasm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_disassembler ) );
 	if( int_disasm ) {
 
-		int_disasm->dialect_context = (fcml_st_dialect_context_int*)context;
-		error = fcml_fn_dt_dts_tree_init( (fcml_st_dialect_context_int*)context, &(int_disasm->decoding_tree), &fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default, &fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default );
+		int_disasm->dialect_context = (fcml_st_dialect_context_int*)dialect;
+		error = fcml_fn_dt_dts_tree_init( (fcml_st_dialect_context_int*)dialect, &(int_disasm->decoding_tree), &fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default, &fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default );
 		if( !error ) {
 			*disassembler = (fcml_st_dasm_disassembler*)int_disasm;
 		}
@@ -2100,6 +2100,8 @@ void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruct
 fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *context, fcml_st_dasm_disassembler_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_ist_dasm_disassembler *int_disasm = (fcml_ist_dasm_disassembler *)context->disassembler;
 
 	*result = NULL;
 
@@ -2190,7 +2192,6 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 				instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
 				instruction_details->is_shortcut = mnemonic->shortcut;
 				// Render mnemonic using provided dialect.
-				fcml_ist_dasm_disassembler *int_disasm = (fcml_ist_dasm_disassembler *)context->disassembler;
 				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.choose_carry_conditional_mnemonic );
 			} else {
 				// Mnemonic not found.
@@ -2199,6 +2200,12 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 
 			// Clean operands for short forms.
 			fcml_ifn_dasm_clean_operands_for_short_forms( instruction, instruction_details );
+
+			// Execute disassembler post processor if needed.
+			fcml_fnp_asm_dialect_prepare_disassembler_postprocessor post_processor = int_disasm->dialect_context->disassembler_postprocessor;
+			if( post_processor ) {
+				post_processor( dis_res );
+			}
 
 			*result = dis_res;
 

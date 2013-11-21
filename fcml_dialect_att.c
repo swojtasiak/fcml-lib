@@ -94,7 +94,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_register_att( const fcml_st_register *re
 	if( error ) {
 		return error;
 	}
-	fcml_fn_env_str_snprintf( buffer, buffer_length, "\%%s", printable_reg );
+	fcml_fn_env_str_snprintf( buffer, buffer_length, "%%%s", printable_reg );
 	return error;
 }
 
@@ -242,23 +242,52 @@ fcml_ceh_error fcml_ifn_asm_dialect_render_size_operator_att( fcml_data_size siz
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
+void fcml_ifn_asm_dialect_att_revert_operands( fcml_st_operand *operands, fcml_int count ) {
+	fcml_st_operand tmp_operand;
+	fcml_int i;
+	for( i = 0; i < count / 2; i++ ) {
+		tmp_operand = operands[i];
+		operands[i] = operands[count - i - 1];
+		operands[count - i - 1] = tmp_operand;
+	}
+}
+
 fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruction *instrunction ) {
 
 	// Operands has to be reverted.
-	fcml_st_operand tmp_operand;
-	fcml_int i;
-	fcml_int operands_count = instrunction->operands_count;
-	for( i = 0; i < operands_count / 2; i++ ) {
-		tmp_operand = instrunction->operands[i];
-		instrunction->operands[i] = instrunction->operands[operands_count - i - 1];
-		instrunction->operands[operands_count - i - 1] = tmp_operand;
+	if( instrunction->operands_count > 1 ) {
+		fcml_ifn_asm_dialect_att_revert_operands( instrunction->operands, instrunction->operands_count );
 	}
 
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_st_dialect_context *fcml_fn_get_att_dialect_context() {
-    return (fcml_st_dialect_context*)&fcml_dialect_context_att;
+fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_att( fcml_st_dasm_disassembler_result *disassembler_result ) {
+
+	fcml_int operands_count = disassembler_result->instruction.operands_count;
+
+	if( operands_count > 1 ) {
+
+		// Revert operands.
+		fcml_ifn_asm_dialect_att_revert_operands( disassembler_result->instruction.operands, operands_count );
+
+		// Revert operand details.
+		fcml_st_dasm_operand_details *operand_details = disassembler_result->instruction_details.operand_details;
+		fcml_st_dasm_operand_details tmp_operand_details;
+		fcml_int i;
+		for( i = 0; i < operands_count / 2; i++ ) {
+			tmp_operand_details = operand_details[i];
+			operand_details[i] = operand_details[operands_count - i - 1];
+			operand_details[operands_count - i - 1] = tmp_operand_details;
+		}
+
+	}
+
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_st_dialect *fcml_fn_get_att_dialect_context() {
+    return (fcml_st_dialect*)&fcml_dialect_context_att;
 }
 
 fcml_ceh_error fcml_fn_init_att_dialect(void) {
@@ -295,8 +324,8 @@ fcml_ceh_error fcml_fn_init_att_dialect(void) {
 	fcml_dialect_context_att.instruction_parser = &fcml_x64_att_parse;
 	fcml_dialect_context_att.get_register = &fcml_ifn_asm_dialect_get_register_att;
 	fcml_dialect_context_att.size_operator_renderer = &fcml_ifn_asm_dialect_render_size_operator_att;
-	fcml_dialect_context_att.reverted_operands = FCML_TRUE;
 	fcml_dialect_context_att.assembler_preprocessor = &fcml_ifn_asm_dialect_assembler_preprocessor_att;
+	fcml_dialect_context_att.disassembler_postprocessor = &fcml_ifn_asm_dialect_disassembler_postprocessor_att;
 
 	return error;
 }

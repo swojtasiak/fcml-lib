@@ -20,7 +20,7 @@ typedef struct fcml_ist_asm_enc_assembler {
     fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_enc_assembler;
 
-fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect_context *context, fcml_st_asm_assembler **assembler ) {
+fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect *context, fcml_st_asm_assembler **assembler ) {
 
 	// Allocate assembler instance.
 	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
@@ -73,8 +73,9 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)asm_context->assembler;
 
 	// Check if operands needs to be reverted before processing.
-	if( enc_asm->dialect_context->assembler_preprocessor ) {
-		enc_asm->dialect_context->assembler_preprocessor( &tmp_instruction );
+	fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = enc_asm->dialect_context->assembler_preprocessor;
+	if( assembler_preprocessor ) {
+		assembler_preprocessor( &tmp_instruction );
 	}
 
 	// Find instruction addressing modes.

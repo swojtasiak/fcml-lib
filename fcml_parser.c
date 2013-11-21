@@ -11,11 +11,11 @@
 #include "fcml_apc_ast.h"
 #include "fcml_env.h"
 
-fcml_ceh_error fcml_fn_parse_instruction( fcml_st_dialect_context *dialect_context, fcml_string instruction, fcml_st_parser_result **result_out ) {
-	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect_context;
+fcml_ceh_error fcml_fn_parse_instruction( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result **result_out ) {
+	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect;
 	if( dialect_context_int->instruction_parser ) {
 		fcml_fnp_parse_instruction parser = (fcml_fnp_parse_instruction)dialect_context_int->instruction_parser;
-		return parser( dialect_context, instruction, result_out );
+		return parser( dialect, instruction, result_out );
 	} else {
 		// Dialect not initialized correctly.
 		return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;

@@ -277,11 +277,11 @@ fcml_ceh_error fcml_fn_init_intel_dialect(void) {
 	fcml_dialect_context_intel.get_register = &fcml_fnp_asm_dialect_get_register_intel;
 	fcml_dialect_context_intel.size_operator_renderer = &fcml_fnp_asm_dialect_render_size_operator_intel;
 	fcml_dialect_context_intel.assembler_preprocessor = NULL;
-	fcml_dialect_context_intel.reverted_operands = FCML_FALSE;
+	fcml_dialect_context_intel.disassembler_postprocessor = NULL;
 
 	return error;
 }
 
-fcml_st_dialect_context *fcml_fn_get_intel_dialect_context() {
-    return (fcml_st_dialect_context*)&fcml_dialect_context_intel;
+fcml_st_dialect *fcml_fn_get_intel_dialect_context() {
+    return (fcml_st_dialect*)&fcml_dialect_context_intel;
 }

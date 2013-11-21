@@ -71,7 +71,7 @@ fcml_ceh_error fcml_ifn_att_parser_far_pointer_correction( fcml_st_ceh_error_con
 	return error;
 }
 
-fcml_ceh_error fcml_x64_att_parse( fcml_st_dialect_context *dialect, fcml_string asm_code, fcml_st_parser_result **result ) {
+fcml_ceh_error fcml_x64_att_parse( fcml_st_dialect *dialect, fcml_string asm_code, fcml_st_parser_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

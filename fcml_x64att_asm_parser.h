@@ -13,6 +13,6 @@
 #include "fcml_parser.h"
 #include "fcml_types.h"
 
-fcml_ceh_error fcml_x64_att_parse( fcml_st_dialect_context *dialect, fcml_string instruction, fcml_st_parser_result **result_out );
+fcml_ceh_error fcml_x64_att_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result **result_out );
 
 #endif /* FCML_X64INTEL_ASM_PARSER_H_ */
