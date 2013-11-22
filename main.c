@@ -55,7 +55,7 @@
 #include "instructions_base_t.h"
 
 CU_SuiteInfo *suites[] = {
-		fctl_si_instructions_a,
+	fctl_si_instructions_a,
 	/*
 	fctl_si_instructions_b,
 	fctl_si_instructions_c,

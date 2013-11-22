@@ -55,6 +55,7 @@ fcml_st_dasm_disassembler *disassembler_att;
 #define FCML_I32(x,...)				{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, 0, 0)); }
 #define FCML_A32(x,...)				{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_GAS_DIALECT, 0)); }
 #define FCML_I64(x,...)				{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_64_BIT, x, 0, 0)); }
+#define FCML_A64(x,...)				{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_GAS_DIALECT, 0)); }
 #define FCML_I32_RF(x,ren,...)		{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, 0, ren)); }
 #define FCML_I64_RF(x,ren,...)		{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_64_BIT, x, 0, ren)); }
 #define FCML_I32_RIP(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_ENABLE_RIP, 0)); }
