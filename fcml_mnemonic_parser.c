@@ -28,6 +28,8 @@ void fcml_ifn_mp_clean_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
     mnemonic->mnemonic = NULL;
     mnemonic->pseudo_op.is_not_null = FCML_FALSE;
     mnemonic->pseudo_op.value = 0x00;
+    mnemonic->is_byte_ds = FCML_FALSE;
+    mnemonic->is_full_ds = FCML_FALSE;
 }
 
 fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, fcml_st_coll_list *mnemonics, fcml_string mnemonic_buff, fcml_usize len ) {
@@ -86,6 +88,13 @@ fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *a
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     // Handle attributes.
     switch( attr_key ) {
+    case 's':
+    	if( attr_value[0] == 'b' ) {
+    		mnemonic->is_byte_ds = FCML_TRUE;
+    	} else if( attr_value[0] == 'f' ) {
+    		mnemonic->is_full_ds = FCML_TRUE;
+    	}
+    	break;
     case 't':
         if( attr_value[0] == 's' ) {
             mnemonic->shortcut = FCML_TRUE;
@@ -187,6 +196,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
 
             error = fcml_ifn_mp_dup_mnemonic( &mnemonic, mnemonics->mnemonics, mnemonic_buff, mnemonic_index );
 
+            fcml_ifn_mp_clean_mnemonic( &mnemonic );
             mnemonic_index = 0;
 
             state = FCML_MP_PS_MNEMONIC;

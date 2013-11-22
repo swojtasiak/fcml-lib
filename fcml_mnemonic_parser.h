@@ -16,6 +16,8 @@
 typedef struct fcml_st_mp_mnemonic {
     fcml_string mnemonic;
     fcml_bool shortcut;
+    fcml_data_size is_byte_ds;
+    fcml_data_size is_full_ds;
     fcml_data_size supported_osa;
     fcml_data_size supported_asa;
     fcml_nuint8_t pseudo_op;

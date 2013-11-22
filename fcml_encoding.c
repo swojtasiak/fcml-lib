@@ -1834,12 +1834,17 @@ fcml_bool fcml_ifn_asm_accept_instruction_hints( fcml_hints addr_mode_dest_hints
 	return FCML_TRUE;
 }
 
-fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_context *asm_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
+fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_context *asm_context, fcml_st_dialect_context_int *dialect_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
+
+	// Make a local copy of instruction because it still can be changed by preprocessor.
+	fcml_st_instruction tmp_instruction = *instruction;
 
 	fcml_ist_asm_encoding_context context = {0};
 	context.assembler_context = asm_context;
-	context.instruction = instruction;
+	context.instruction = &tmp_instruction;
 	context.result = result;
+
+	fcml_bool instruction_has_been_changed;
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1868,11 +1873,21 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 #endif
 			while( addr_mode_element ) {
 
+				// This flag is used by preprocessor to signal that instruction has been changed.
+				instruction_has_been_changed = FCML_FALSE;
+
 				error = FCML_CEH_GEC_NO_ERROR;
 
 				fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_ist_asm_instruction_addr_mode_encoding_details*)addr_mode_element->item;
 
 				fcml_ifn_asm_clean_context( &context );
+
+				// Call preprocessor again passing found mnemonic definition this time. Parsed mnemonic can contain some dialect specific information,
+				// so we have to provide dialect a way to modify instruction definition basing on it.
+				fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = dialect_context->assembler_preprocessor;
+				if( assembler_preprocessor ) {
+					assembler_preprocessor( &tmp_instruction, addr_mode->mnemonic, &instruction_has_been_changed );
+				}
 
 				// This information is necessary to ignore operands encoding process.
 
@@ -1923,6 +1938,10 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 #ifdef FCML_DEBUG
 				index++;
 #endif
+				// Restore instruction if preprocessor has changed anything.
+				if( instruction_has_been_changed ) {
+					tmp_instruction = *instruction;
+				}
 
 			}
 

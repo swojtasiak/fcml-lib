@@ -29,6 +29,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("aam"), FCML_ASM_DIALECT_INSTRUCTION( F_AAM, FCML_AM_ALL ), FCML_AM_ALL },
 	{ FCML_TEXT("aas"), FCML_ASM_DIALECT_INSTRUCTION( F_AAS, FCML_AM_ALL ), FCML_AM_ALL },
 	{ FCML_TEXT("adc"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_ALL ), FCML_AM_ALL },
+	{ FCML_TEXT("adcb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_RM8_IMM8 ), 0 },
 	{ NULL, 0, 0 }
 };
 
@@ -252,11 +253,41 @@ void fcml_ifn_asm_dialect_att_revert_operands( fcml_st_operand *operands, fcml_i
 	}
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruction *instrunction ) {
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruction *instrunction, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
 
-	// Operands has to be reverted.
-	if( instrunction->operands_count > 1 ) {
-		fcml_ifn_asm_dialect_att_revert_operands( instrunction->operands, instrunction->operands_count );
+	fcml_bool changed = FCML_FALSE;
+
+	if( !mnemonic ) {
+		// Operands has to be reverted.
+		if( instrunction->operands_count > 1 ) {
+			fcml_ifn_asm_dialect_att_revert_operands( instrunction->operands, instrunction->operands_count );
+			changed = FCML_TRUE;
+		}
+	} else {
+		// Mnemonic has been found, check if data size should be corrected for instruction.
+		fcml_data_size data_size = FCML_DS_UNDEF;
+		if( mnemonic->is_byte_ds ) {
+			data_size = FCML_DS_8;
+		} else if( mnemonic->is_full_ds ) {
+			// Full data size is based on effective operand size attribute.
+			data_size = mnemonic->supported_osa;
+		}
+		if( data_size != FCML_DS_UNDEF ) {
+			// Find effective address and make a correction to size operator.
+			int i;
+			for( i = 0; i < instrunction->operands_count; i++ ) {
+				fcml_st_operand *operand = &(instrunction->operands[i]);
+				if( operand->type == FCML_EOT_ADDRESS ) {
+					operand->address.size_operator = data_size;
+					changed = FCML_TRUE;
+					break;
+				}
+			}
+		}
+	}
+
+	if( has_been_changed ) {
+		*has_been_changed = changed;
 	}
 
 	return FCML_CEH_GEC_NO_ERROR;

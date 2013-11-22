@@ -116,24 +116,18 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 		return error;
 	}
 
-	if( dialect_context->size_operator_renderer && address->size_operator > 0 ) {
-		fcml_char buffer[32] = {0};
-		dialect_context->size_operator_renderer( address->size_operator, buffer, sizeof( buffer ), operand->hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
-		fcml_fn_rend_utils_format_append_str( output_stream, buffer );
-	}
-
 	if( !address->segment_selector.is_default_reg || ( render_flags & FCML_REND_FLAG_RENDER_DEFAULT_SEG ) ) {
 		fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(address->segment_selector.segment_selector), prefixes->is_rex );
 		fcml_fn_rend_utils_format_append_str( output_stream, ":" );
 	}
-
-	fcml_fn_rend_utils_format_append_str( output_stream, "[" );
 
 	fcml_st_effective_address *effective_address = &(address->effective_address);
 
 	fcml_bool first = FCML_TRUE;
 
 	// Adds SIB hints to all instructions where SIB presents.
+
+	/*
 	if( ( render_flags & FCML_REND_FLAG_RENDER_SIB_HINT ) && ( result->instruction_details.modrm_details.sib.is_not_null ) ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "sib " );
 	}
@@ -145,6 +139,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 	if( ( render_flags & FCML_REND_FLAG_RENDER_REL_HINT ) && ( operand->hints & FCML_OP_HINT_RELATIVE_ADDRESSING ) ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "rel " );
 	}
+	*/
 
 	if( address->address_form == FCML_AF_COMBINED ) {
 
@@ -202,8 +197,6 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 
 		error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &integer, FCML_TRUE );
 	}
-
-	fcml_fn_rend_utils_format_append_str( output_stream, "]" );
 
 	return error;
 }

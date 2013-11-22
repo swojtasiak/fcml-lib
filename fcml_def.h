@@ -80,9 +80,25 @@ enum fcml_en_instruction_codes {
 enum fcml_en_instruction_addr_mode_codes {
 	FCML_AM_UNKNOWN = 0,
 	FCML_AM_NO_OPERANS,
-	FCML_AM_IMM_8,
-	FCML_AM_EXP_REG_GPR_8,
-	FCML_AM_EXP_REG_GPR_EOSA
+
+	// IMM
+	FCML_AM_IMM8,
+	FCML_AM_IMMO,
+	// REG, IMM
+	FCML_AM_ER8_IMM8,
+	FCML_AM_ERO_IMMO,
+	// RM, IMM
+	FCML_AM_RM8_IMM8,
+	FCML_AM_RMO_IMMO,
+	FCML_AM_RMO_IMM8,
+	// RM, R / R, RM
+	FCML_AM_RM8_R8,
+	FCML_AM_R8_RM8,
+	FCML_AM_RMO_RO,
+	FCML_AM_RO_RMO,
+
+
+
 };
 
 /*********************************************/

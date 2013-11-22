@@ -75,7 +75,7 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 	// Check if operands needs to be reverted before processing.
 	fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = enc_asm->dialect_context->assembler_preprocessor;
 	if( assembler_preprocessor ) {
-		assembler_preprocessor( &tmp_instruction );
+		assembler_preprocessor( &tmp_instruction, NULL, NULL );
 	}
 
 	// Find instruction addressing modes.
@@ -111,7 +111,7 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 			fcml_st_asm_encoder_result enc_result = {{0}};
 			enc_result.instructions = asm_result->instructions;
 
-			error = addr_modes->instruction_encoder( asm_context, &tmp_instruction, &enc_result, addr_modes );
+			error = addr_modes->instruction_encoder( asm_context, enc_asm->dialect_context, &tmp_instruction, &enc_result, addr_modes );
 			if( !error ) {
 				asm_result->chosen_instruction = enc_result.chosen_instruction;
 			}
