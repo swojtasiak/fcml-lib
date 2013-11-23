@@ -38,6 +38,10 @@ fcml_string fcml_ar_asm_dialect_reg_symbol_table_rex[7][16] = {
 	{ "dr0", "dr1", "dr2", "dr3", "dr4", "dr5", "dr6", "dr7", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>" }
 };
 
+fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[4] = {
+	"<unknown ip>", "ip", "eip", "rip"
+};
+
 fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[4][16] = {
 	{ "al", "cl", "dl", "bl", "spl", "bpl", "sil", "dil", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
 	{ "ax", "cx", "dx", "bx", "sp", "bp", "si", "di", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w" },
@@ -68,17 +72,21 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fc
 			rs = 3;
 			break;
 		}
-		if (is_rex) {
-			if (reg->type == FCML_REG_GPR) {
-				*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[rs][reg->reg];
-			} else {
-				*printable_reg = fcml_ar_asm_dialect_reg_symbol_table_rex[reg->type][reg->reg];
-			}
+		if ( reg->type == FCML_REG_IP ) {
+			*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[rs];
 		} else {
-			if (reg->type == FCML_REG_GPR) {
-				*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table[rs][reg->reg];
+			if (is_rex) {
+				if (reg->type == FCML_REG_GPR) {
+					*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[rs][reg->reg];
+				} else {
+					*printable_reg = fcml_ar_asm_dialect_reg_symbol_table_rex[reg->type][reg->reg];
+				}
 			} else {
-				*printable_reg = fcml_ar_asm_dialect_reg_symbol_table[reg->type][reg->reg];
+				if (reg->type == FCML_REG_GPR) {
+					*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table[rs][reg->reg];
+				} else {
+					*printable_reg = fcml_ar_asm_dialect_reg_symbol_table[reg->type][reg->reg];
+				}
 			}
 		}
 	} else {

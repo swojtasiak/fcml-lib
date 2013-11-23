@@ -194,6 +194,9 @@ fcml_fn_pu_parse_intege_flags
 "%fs"				FCML_FM_SEG_REG(FCML_REG_FS)
 "%gs"				FCML_FM_SEG_REG(FCML_REG_GS)
 
+ /*IP*/
+ "%rip"				FCML_FM_RIP
+
  /* Prefixes */
  
 "lock"			{

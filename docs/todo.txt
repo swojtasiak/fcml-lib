@@ -10,3 +10,4 @@ Mozliwosc podawania symbolow podczas parsowania i ich resolving. W zasadzie tylk
 
 Dodac do domyslnego optimizera flage, ktora bedzie umozliwala assemblacje wszystkichopcji, dl wszystkich kombinaji ASA OSA a nie rpzywala po pierwszej akonzonej sukcesem. Przydatne jezei ktos bedzie chcial zobaczyc wszystckie mozliwe opcje assemblacji.
 
+Na koncu konwertowac kod bledu na opis, przyladowo invalid args na nieppoprawne argumenty wyolania itd.

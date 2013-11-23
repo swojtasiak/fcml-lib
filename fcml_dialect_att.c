@@ -5,17 +5,24 @@
  *      Author: tAs
  */
 
-#include <string.h>
 #include <stdio.h>
+//#include <string.h>
 
-#include "fcml_dialect_int.h"
-#include "fcml_dialect_intel.h"
-#include "fcml_mnemonic_parser.h"
-#include "fcml_env.h"
+#include "fcml_ceh.h"
 #include "fcml_coll.h"
-#include "fcml_rend_att.h"
-#include "fcml_x64att_asm_parser.h"
+#include "fcml_common.h"
 #include "fcml_common_dialect.h"
+#include "fcml_def.h"
+#include "fcml_dialect.h"
+#include "fcml_dialect_int.h"
+//#include "fcml_dialect_intel.h"
+#include "fcml_disassembler.h"
+#include "fcml_env.h"
+#include "fcml_errors.h"
+#include "fcml_mnemonic_parser.h"
+#include "fcml_rend_att.h"
+#include "fcml_types.h"
+#include "fcml_x64att_asm_parser.h"
 
 // *************
 // * MNEMONICS *
@@ -30,6 +37,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("aas"), FCML_ASM_DIALECT_INSTRUCTION( F_AAS, FCML_AM_ALL ), FCML_AM_ALL },
 	{ FCML_TEXT("adc"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_ALL ), FCML_AM_ALL },
 	{ FCML_TEXT("adcb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_RM8_IMM8 ), 0 },
+	{ FCML_TEXT("adc;adcw[sf,ow,mm];adcl[sf,od,mm];adcq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_RMO_IMMO ), 0 },
+	{ FCML_TEXT("adc;adcw[sf,ow,mm];adcl[sf,od,mm];adcq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_RMO_IMM8 ), 0 },
 	{ NULL, 0, 0 }
 };
 
@@ -201,6 +210,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_att( fcml_st_def_instruction_de
     return error;
 }
 
+// TODO: wywalis z dialekt do renderera, dialekt nie ma z tym nic wspolnego.
 fcml_ceh_error fcml_ifn_asm_dialect_render_size_operator_att( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
 
 	fcml_string size_operator_printable = NULL;
@@ -255,16 +265,53 @@ void fcml_ifn_asm_dialect_att_revert_operands( fcml_st_operand *operands, fcml_i
 
 fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruction *instrunction, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
 
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
 	fcml_bool changed = FCML_FALSE;
 
 	if( !mnemonic ) {
+
 		// Operands has to be reverted.
 		if( instrunction->operands_count > 1 ) {
 			fcml_ifn_asm_dialect_att_revert_operands( instrunction->operands, instrunction->operands_count );
 			changed = FCML_TRUE;
 		}
+
+		// If there is memory operand without data size set, it has to be deduced using register given in another operand.
+		int i;
+		fcml_st_operand *operand_reg = NULL;
+		fcml_st_operand *operand_mem = NULL;
+		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+			fcml_st_operand *operand = &(instrunction->operands[i]);
+			switch( operand->type ) {
+			case FCML_EOT_REGISTER:
+				operand_reg = operand;
+				break;
+			case FCML_EOT_ADDRESS:
+				// If size operand has been set by user, we shouldn't correct it in any way.
+				if( operand->address.size_operator == FCML_DS_UNDEF ) {
+					operand_mem = operand;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		if( operand_mem ) {
+			// TODO: Sprawdzic jak sie zachowa z rejestrami CS,DS, DR0. CR0 itd.
+			if( operand_reg && operand_reg->reg.size != FCML_DS_UNDEF ) {
+				// Data size set basing on register size.
+				operand_mem->address.size_operator = operand_reg->reg.size;
+				changed = FCML_TRUE;
+			} else {
+				error = FCML_EN_UNKNOWN_DATA_SIZE_FOR_MEMORY_ADDRESSING;
+			}
+		}
+
 	} else {
-		// Mnemonic has been found, check if data size should be corrected for instruction.
+		// Mnemonic has been found, check if data size should be corrected for instruction. Take into account that data size specified by
+		// mnemonic has greater priority than data size set directly by user.
 		fcml_data_size data_size = FCML_DS_UNDEF;
 		if( mnemonic->is_byte_ds ) {
 			data_size = FCML_DS_8;
@@ -290,7 +337,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruct
 		*has_been_changed = changed;
 	}
 
-	return FCML_CEH_GEC_NO_ERROR;
+	return error;
 }
 
 fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_att( fcml_st_dasm_disassembler_result *disassembler_result ) {

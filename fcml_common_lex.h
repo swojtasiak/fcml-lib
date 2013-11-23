@@ -31,5 +31,7 @@
 #define FCML_FM_DR_REG(x)						{ fcml_fn_pu_parse_register( FCML_REG_DR, FCML_DS_UNDEF, x, FCML_FALSE, &(yylval->reg_value) ); return FCML_TK_REG_DR; }
 /*Segment registers.*/
 #define FCML_FM_SEG_REG(x)						{ fcml_fn_pu_parse_register( FCML_REG_SEG, FCML_DS_UNDEF, x, FCML_FALSE, &(yylval->reg_value) ); return FCML_TK_REG_SEG; }
+/*RIP*/
+#define FCML_FM_RIP								{ fcml_fn_pu_parse_register( FCML_REG_IP, FCML_DS_64, FCML_REG_UNDEFINED, FCML_FALSE, &(yylval->reg_value) ); return FCML_TK_REG_RIP; }
 
 #endif /* FCML_COMMON_LEX_H_ */

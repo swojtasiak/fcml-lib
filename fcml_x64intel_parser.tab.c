@@ -136,15 +136,16 @@ extern int intel_debug;
      FCML_TK_REG_SEG = 262,
      FCML_TK_REG_CR = 263,
      FCML_TK_REG_DR = 264,
-     FCML_TK_INTEGER = 265,
-     FCML_TK_FLOAT = 266,
-     FCML_TK_SIZE_OPERATOR = 267,
-     FCML_TK_SYMBOL = 268,
-     FCML_TK_HINTS = 269,
-     FCML_TK_EAO_HINTS = 270,
-     FCML_TK_SIB_HINT = 271,
-     FCML_TK_PREFIX = 272,
-     FCML_OP_UMINUS = 273
+     FCML_TK_REG_RIP = 265,
+     FCML_TK_INTEGER = 266,
+     FCML_TK_FLOAT = 267,
+     FCML_TK_SIZE_OPERATOR = 268,
+     FCML_TK_SYMBOL = 269,
+     FCML_TK_HINTS = 270,
+     FCML_TK_EAO_HINTS = 271,
+     FCML_TK_SIB_HINT = 272,
+     FCML_TK_PREFIX = 273,
+     FCML_OP_UMINUS = 274
    };
 #endif
 
@@ -153,7 +154,7 @@ extern int intel_debug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 90 "fcml_x64intel_parser.y"
+#line 91 "fcml_x64intel_parser.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
@@ -170,7 +171,7 @@ typedef union YYSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 174 "fcml_x64intel_parser.tab.c"
+#line 175 "fcml_x64intel_parser.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -196,13 +197,13 @@ int intel_parse ();
 
 /* Copy the second part of user declarations.  */
 /* Line 390 of yacc.c  */
-#line 105 "fcml_x64intel_parser.y"
+#line 106 "fcml_x64intel_parser.y"
 
 	#include "fcml_x64intel_lexer.h"
 	#define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
 
 /* Line 390 of yacc.c  */
-#line 206 "fcml_x64intel_parser.tab.c"
+#line 207 "fcml_x64intel_parser.tab.c"
 
 #ifdef short
 # undef short
@@ -431,10 +432,10 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   189
+#define YYLAST   187
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  29
+#define YYNTOKENS  30
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  14
 /* YYNRULES -- Number of rules.  */
@@ -444,7 +445,7 @@ union yyalloc
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   273
+#define YYMAXUTOK   274
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -456,12 +457,12 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      27,    28,    20,    19,    23,    18,     2,    21,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,    26,     2,
+      28,    29,    21,    20,    24,    19,     2,    22,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,    27,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    24,     2,    25,     2,     2,     2,     2,     2,     2,
+       2,    25,     2,    26,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -479,7 +480,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    22
+      15,    16,    17,    18,    23
 };
 
 #if YYDEBUG
@@ -498,36 +499,36 @@ static const yytype_uint8 yyprhs[] =
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      30,     0,    -1,    -1,    31,    -1,    33,    -1,    33,    35,
-      -1,    33,    34,    35,    -1,    32,    33,    -1,    32,    33,
-      35,    -1,    32,    33,    34,    35,    -1,    17,    -1,    32,
-      17,    -1,    13,    -1,    14,    -1,    34,    14,    -1,    36,
-      -1,    35,    23,    36,    -1,    41,    -1,    40,    -1,    37,
-      -1,    42,    -1,    24,    38,    25,    -1,    12,    24,    38,
-      25,    -1,    39,    24,    38,    25,    -1,    12,    39,    24,
-      38,    25,    -1,    42,    -1,    16,    42,    -1,    42,    19,
-      42,    -1,    42,    19,    42,    20,    10,    -1,    42,    19,
-      42,    20,    10,    19,    41,    -1,    42,    19,    42,    20,
-      10,    18,    41,    -1,    42,    19,    42,    19,    41,    -1,
-      42,    19,    42,    18,    41,    -1,    42,    19,    41,    -1,
-      16,    42,    19,    41,    -1,    42,    18,    41,    -1,    16,
-      42,    18,    41,    -1,    41,    -1,    15,    41,    -1,    16,
-      41,    -1,     7,    26,    -1,    41,    26,    41,    -1,    10,
-      -1,    11,    -1,    41,    18,    41,    -1,    41,    19,    41,
-      -1,    41,    21,    41,    -1,    41,    20,    41,    -1,    18,
-      41,    -1,    27,    41,    28,    -1,     4,    -1,     5,    -1,
+      31,     0,    -1,    -1,    32,    -1,    34,    -1,    34,    36,
+      -1,    34,    35,    36,    -1,    33,    34,    -1,    33,    34,
+      36,    -1,    33,    34,    35,    36,    -1,    18,    -1,    33,
+      18,    -1,    14,    -1,    15,    -1,    35,    15,    -1,    37,
+      -1,    36,    24,    37,    -1,    42,    -1,    41,    -1,    38,
+      -1,    43,    -1,    25,    39,    26,    -1,    13,    25,    39,
+      26,    -1,    40,    25,    39,    26,    -1,    13,    40,    25,
+      39,    26,    -1,    43,    -1,    17,    43,    -1,    43,    20,
+      43,    -1,    43,    20,    43,    21,    11,    -1,    43,    20,
+      43,    21,    11,    20,    42,    -1,    43,    20,    43,    21,
+      11,    19,    42,    -1,    43,    20,    43,    20,    42,    -1,
+      43,    20,    43,    19,    42,    -1,    43,    20,    42,    -1,
+      17,    43,    20,    42,    -1,    43,    19,    42,    -1,    17,
+      43,    19,    42,    -1,    42,    -1,    16,    42,    -1,    17,
+      42,    -1,     7,    27,    -1,    42,    27,    42,    -1,    11,
+      -1,    12,    -1,    42,    19,    42,    -1,    42,    20,    42,
+      -1,    42,    22,    42,    -1,    42,    21,    42,    -1,    19,
+      42,    -1,    28,    42,    29,    -1,     4,    -1,     5,    -1,
        6,    -1,     7,    -1,     8,    -1,     9,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   116,   116,   117,   120,   121,   122,   123,   124,   125,
-     128,   129,   132,   135,   136,   139,   140,   143,   144,   145,
-     146,   149,   150,   151,   152,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     172,   175,   178,   179,   180,   181,   182,   183,   184,   185,
-     189,   190,   191,   192,   193,   194
+       0,   117,   117,   118,   121,   122,   123,   124,   125,   126,
+     129,   130,   133,   136,   137,   140,   141,   144,   145,   146,
+     147,   150,   151,   152,   153,   156,   157,   158,   159,   160,
+     161,   162,   163,   164,   165,   166,   167,   168,   169,   170,
+     173,   176,   179,   180,   181,   182,   183,   184,   185,   186,
+     190,   191,   192,   193,   194,   195
 };
 #endif
 
@@ -538,14 +539,14 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "FCML_TK_UNEXPECTED", "FCML_TK_REG_GPR",
   "FCML_TK_REG_SIMD", "FCML_TK_REG_FPU", "FCML_TK_REG_SEG",
-  "FCML_TK_REG_CR", "FCML_TK_REG_DR", "FCML_TK_INTEGER", "FCML_TK_FLOAT",
-  "FCML_TK_SIZE_OPERATOR", "FCML_TK_SYMBOL", "FCML_TK_HINTS",
-  "FCML_TK_EAO_HINTS", "FCML_TK_SIB_HINT", "FCML_TK_PREFIX", "'-'", "'+'",
-  "'*'", "'/'", "FCML_OP_UMINUS", "','", "'['", "']'", "':'", "'('", "')'",
-  "$accept", "start", "instruction", "inst_prefixes", "mnemonic",
-  "hint_list", "operand_list", "operand", "effective_address",
-  "effective_address_components", "segment_selector", "far_pointer", "exp",
-  "reg", YY_NULL
+  "FCML_TK_REG_CR", "FCML_TK_REG_DR", "FCML_TK_REG_RIP", "FCML_TK_INTEGER",
+  "FCML_TK_FLOAT", "FCML_TK_SIZE_OPERATOR", "FCML_TK_SYMBOL",
+  "FCML_TK_HINTS", "FCML_TK_EAO_HINTS", "FCML_TK_SIB_HINT",
+  "FCML_TK_PREFIX", "'-'", "'+'", "'*'", "'/'", "FCML_OP_UMINUS", "','",
+  "'['", "']'", "':'", "'('", "')'", "$accept", "start", "instruction",
+  "inst_prefixes", "mnemonic", "hint_list", "operand_list", "operand",
+  "effective_address", "effective_address_components", "segment_selector",
+  "far_pointer", "exp", "reg", YY_NULL
 };
 #endif
 
@@ -555,20 +556,20 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,    45,    43,
-      42,    47,   273,    44,    91,    93,    58,    40,    41
+     265,   266,   267,   268,   269,   270,   271,   272,   273,    45,
+      43,    42,    47,   274,    44,    91,    93,    58,    40,    41
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    29,    30,    30,    31,    31,    31,    31,    31,    31,
-      32,    32,    33,    34,    34,    35,    35,    36,    36,    36,
-      36,    37,    37,    37,    37,    38,    38,    38,    38,    38,
-      38,    38,    38,    38,    38,    38,    38,    38,    38,    38,
-      39,    40,    41,    41,    41,    41,    41,    41,    41,    41,
-      42,    42,    42,    42,    42,    42
+       0,    30,    31,    31,    32,    32,    32,    32,    32,    32,
+      33,    33,    34,    35,    35,    36,    36,    37,    37,    37,
+      37,    38,    38,    38,    38,    39,    39,    39,    39,    39,
+      39,    39,    39,    39,    39,    39,    39,    39,    39,    39,
+      40,    41,    42,    42,    42,    42,    42,    42,    42,    42,
+      43,    43,    43,    43,    43,    43
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -611,23 +612,23 @@ static const yytype_int8 yydefgoto[] =
 #define YYPACT_NINF -31
 static const yytype_int16 yypact[] =
 {
-      -1,   -31,   -31,    13,   -31,    31,    66,   -31,   -31,    66,
-     -31,   -31,   -31,    -2,   -31,   -31,   -31,   -31,    -3,   -31,
-      -4,   114,    -4,    90,    11,   -31,   -31,    28,   -31,    38,
-     -31,    90,    11,   -31,    -2,   114,    43,   -31,   -31,    -4,
-     162,    30,    67,    27,    19,   -31,    11,   138,   114,    -4,
-      -4,    -4,    -4,    -4,    11,    54,   114,    67,    67,    32,
-     -31,    -4,   162,   -31,   -31,    56,    40,    40,   -31,   -31,
-      67,   -31,    57,    -4,    -4,    67,    67,    -9,   -31,   -31,
-      67,    67,    -4,    -4,    73,    67,    67,    47,    -4,    -4,
+      26,   -31,   -31,     4,   -31,    33,    66,   -31,   -31,    66,
+     -31,   -31,   -31,   -11,   -31,   -31,   -31,   -31,    -1,   -31,
+      27,   116,    27,    91,   -17,   -31,   -31,    -2,   -31,    37,
+     -31,    91,   -17,   -31,   -11,   116,     9,   -31,   -31,    27,
+     159,    11,    67,   -10,    -8,   -31,   -17,   134,   116,    27,
+      27,    27,    27,    27,   -17,    19,   116,    67,    67,    41,
+     -31,    27,   159,   -31,   -31,    22,    61,    61,   -31,   -31,
+      67,   -31,    24,    27,    27,    67,    67,    46,   -31,   -31,
+      67,    67,    27,    27,    65,    67,    67,    73,    27,    27,
       67,    67
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -31,   -31,   -31,   -31,    84,    82,    -6,    45,   -31,   -30,
-      85,   -31,   -20,   -13
+     -31,   -31,   -31,   -31,    47,    71,    -6,    43,   -31,   -30,
+      83,   -31,   -20,   -13
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -636,25 +637,25 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      37,    42,    44,    32,    34,    55,    16,    17,    43,    82,
-      83,    84,     1,     7,    20,    42,     2,    46,    65,    57,
-      58,    35,    43,    22,    33,    54,    72,    59,    42,    66,
-      67,    68,    69,    70,    47,    43,    42,    49,    50,    51,
-      52,    75,    76,    43,     1,    61,    62,    63,     8,    77,
-      73,    74,    48,    80,    81,    60,    49,    50,    51,    52,
-      51,    52,    85,    86,    53,    88,    89,    56,    90,    91,
-      10,    11,    12,    13,    14,    15,    16,    17,    18,    71,
-      19,    78,    79,    87,    20,    49,    50,    51,    52,     9,
-      21,    31,    64,    22,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    36,    45,     0,     0,     0,    20,     0,
-       0,     0,     0,     0,    21,     0,     0,    22,    10,    11,
-      12,    38,    14,    15,    16,    17,     0,     0,     0,    39,
-      40,     0,    20,     0,     0,     0,     0,     0,     0,     0,
-       0,    22,    10,    11,    12,    13,    14,    15,    16,    17,
-      18,     0,     0,     0,     0,     0,    20,     0,     0,     0,
-       0,     0,    21,     0,     0,    22,    10,    11,    12,    38,
-      14,    15,    16,    17,     0,     0,     0,     0,     0,     0,
-      20,     0,     0,     0,     0,     0,     0,     0,     0,    22
+      37,    42,    44,    32,     7,    55,    34,    47,    43,    61,
+      62,    49,    50,    51,    52,    42,    33,    46,    65,    57,
+      58,    63,    43,    48,    35,    54,    72,    59,    42,    66,
+      67,    68,    69,    70,    56,    43,    42,    60,    16,    17,
+       1,    75,    76,    43,     2,    71,    20,     1,    78,    77,
+      79,     8,     9,    80,    81,    22,    49,    50,    51,    52,
+      73,    74,    85,    86,    53,    82,    83,    84,    90,    91,
+      10,    11,    12,    13,    14,    15,    87,    16,    17,    18,
+      31,    19,    51,    52,     0,    20,    49,    50,    51,    52,
+      64,    21,    88,    89,    22,    10,    11,    12,    13,    14,
+      15,    36,    16,    17,    18,     0,    45,     0,     0,     0,
+      20,     0,     0,     0,     0,     0,    21,     0,     0,    22,
+      10,    11,    12,    38,    14,    15,     0,    16,    17,     0,
+       0,     0,    39,    40,     0,    20,     0,     0,    10,    11,
+      12,    13,    14,    15,    22,    16,    17,    18,     0,     0,
+       0,     0,     0,    20,     0,     0,     0,     0,     0,    21,
+       0,     0,    22,    10,    11,    12,    38,    14,    15,     0,
+      16,    17,     0,     0,     0,     0,     0,     0,    20,     0,
+       0,     0,     0,     0,     0,     0,     0,    22
 };
 
 #define yypact_value_is_default(Yystate) \
@@ -665,41 +666,41 @@ static const yytype_uint8 yytable[] =
 
 static const yytype_int8 yycheck[] =
 {
-      20,    21,    22,     9,     7,    35,    10,    11,    21,    18,
-      19,    20,    13,     0,    18,    35,    17,    23,    48,    39,
-      40,    24,    35,    27,    26,    31,    56,    40,    48,    49,
-      50,    51,    52,    53,    23,    48,    56,    18,    19,    20,
-      21,    61,    62,    56,    13,    18,    19,    28,    17,    62,
-      18,    19,    24,    73,    74,    25,    18,    19,    20,    21,
-      20,    21,    82,    83,    26,    18,    19,    24,    88,    89,
-       4,     5,     6,     7,     8,     9,    10,    11,    12,    25,
-      14,    25,    25,    10,    18,    18,    19,    20,    21,     5,
-      24,     9,    47,    27,     4,     5,     6,     7,     8,     9,
-      10,    11,    12,    18,    14,    -1,    -1,    -1,    18,    -1,
-      -1,    -1,    -1,    -1,    24,    -1,    -1,    27,     4,     5,
-       6,     7,     8,     9,    10,    11,    -1,    -1,    -1,    15,
-      16,    -1,    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    27,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    -1,    -1,    -1,    -1,    -1,    18,    -1,    -1,    -1,
-      -1,    -1,    24,    -1,    -1,    27,     4,     5,     6,     7,
-       8,     9,    10,    11,    -1,    -1,    -1,    -1,    -1,    -1,
-      18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    27
+      20,    21,    22,     9,     0,    35,     7,    24,    21,    19,
+      20,    19,    20,    21,    22,    35,    27,    23,    48,    39,
+      40,    29,    35,    25,    25,    31,    56,    40,    48,    49,
+      50,    51,    52,    53,    25,    48,    56,    26,    11,    12,
+      14,    61,    62,    56,    18,    26,    19,    14,    26,    62,
+      26,    18,     5,    73,    74,    28,    19,    20,    21,    22,
+      19,    20,    82,    83,    27,    19,    20,    21,    88,    89,
+       4,     5,     6,     7,     8,     9,    11,    11,    12,    13,
+       9,    15,    21,    22,    -1,    19,    19,    20,    21,    22,
+      47,    25,    19,    20,    28,     4,     5,     6,     7,     8,
+       9,    18,    11,    12,    13,    -1,    15,    -1,    -1,    -1,
+      19,    -1,    -1,    -1,    -1,    -1,    25,    -1,    -1,    28,
+       4,     5,     6,     7,     8,     9,    -1,    11,    12,    -1,
+      -1,    -1,    16,    17,    -1,    19,    -1,    -1,     4,     5,
+       6,     7,     8,     9,    28,    11,    12,    13,    -1,    -1,
+      -1,    -1,    -1,    19,    -1,    -1,    -1,    -1,    -1,    25,
+      -1,    -1,    28,     4,     5,     6,     7,     8,     9,    -1,
+      11,    12,    -1,    -1,    -1,    -1,    -1,    -1,    19,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    28
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    13,    17,    30,    31,    32,    33,     0,    17,    33,
-       4,     5,     6,     7,     8,     9,    10,    11,    12,    14,
-      18,    24,    27,    34,    35,    36,    37,    39,    40,    41,
-      42,    34,    35,    26,     7,    24,    39,    41,     7,    15,
-      16,    38,    41,    42,    41,    14,    35,    23,    24,    18,
-      19,    20,    21,    26,    35,    38,    24,    41,    41,    42,
-      25,    18,    19,    28,    36,    38,    41,    41,    41,    41,
-      41,    25,    38,    18,    19,    41,    41,    42,    25,    25,
-      41,    41,    18,    19,    20,    41,    41,    10,    18,    19,
-      41,    41
+       0,    14,    18,    31,    32,    33,    34,     0,    18,    34,
+       4,     5,     6,     7,     8,     9,    11,    12,    13,    15,
+      19,    25,    28,    35,    36,    37,    38,    40,    41,    42,
+      43,    35,    36,    27,     7,    25,    40,    42,     7,    16,
+      17,    39,    42,    43,    42,    15,    36,    24,    25,    19,
+      20,    21,    22,    27,    36,    39,    25,    42,    42,    43,
+      26,    19,    20,    29,    37,    39,    42,    42,    42,    42,
+      42,    26,    39,    19,    20,    42,    42,    43,    26,    26,
+      42,    42,    19,    20,    21,    42,    42,    11,    19,    20,
+      42,    42
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -823,122 +824,129 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep, pd)
     {
       case 4: /* FCML_TK_REG_GPR */
 /* Line 818 of yacc.c  */
-#line 88 "fcml_x64intel_parser.y"
+#line 89 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
 /* Line 818 of yacc.c  */
-#line 830 "fcml_x64intel_parser.tab.c"
+#line 831 "fcml_x64intel_parser.tab.c"
         break;
       case 5: /* FCML_TK_REG_SIMD */
 /* Line 818 of yacc.c  */
-#line 88 "fcml_x64intel_parser.y"
+#line 89 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
 /* Line 818 of yacc.c  */
-#line 837 "fcml_x64intel_parser.tab.c"
+#line 838 "fcml_x64intel_parser.tab.c"
         break;
       case 6: /* FCML_TK_REG_FPU */
 /* Line 818 of yacc.c  */
-#line 88 "fcml_x64intel_parser.y"
+#line 89 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
 /* Line 818 of yacc.c  */
-#line 844 "fcml_x64intel_parser.tab.c"
+#line 845 "fcml_x64intel_parser.tab.c"
         break;
       case 7: /* FCML_TK_REG_SEG */
 /* Line 818 of yacc.c  */
-#line 88 "fcml_x64intel_parser.y"
+#line 89 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
 /* Line 818 of yacc.c  */
-#line 851 "fcml_x64intel_parser.tab.c"
+#line 852 "fcml_x64intel_parser.tab.c"
         break;
       case 8: /* FCML_TK_REG_CR */
 /* Line 818 of yacc.c  */
-#line 88 "fcml_x64intel_parser.y"
+#line 89 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
 /* Line 818 of yacc.c  */
-#line 858 "fcml_x64intel_parser.tab.c"
+#line 859 "fcml_x64intel_parser.tab.c"
         break;
       case 9: /* FCML_TK_REG_DR */
 /* Line 818 of yacc.c  */
-#line 88 "fcml_x64intel_parser.y"
+#line 89 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
 /* Line 818 of yacc.c  */
-#line 865 "fcml_x64intel_parser.tab.c"
+#line 866 "fcml_x64intel_parser.tab.c"
         break;
-      case 10: /* FCML_TK_INTEGER */
+      case 10: /* FCML_TK_REG_RIP */
 /* Line 818 of yacc.c  */
-#line 85 "fcml_x64intel_parser.y"
-        { YYFPRINTF(yyoutput, "Integer: %d Overflow: %d", ((*yyvaluep).integer_value).value, ((*yyvaluep).integer_value).overflow); };
+#line 89 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
 /* Line 818 of yacc.c  */
-#line 872 "fcml_x64intel_parser.tab.c"
+#line 873 "fcml_x64intel_parser.tab.c"
         break;
-      case 11: /* FCML_TK_FLOAT */
+      case 11: /* FCML_TK_INTEGER */
 /* Line 818 of yacc.c  */
 #line 86 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "Integer: %d Overflow: %d", ((*yyvaluep).integer_value).value, ((*yyvaluep).integer_value).overflow); };
+/* Line 818 of yacc.c  */
+#line 880 "fcml_x64intel_parser.tab.c"
+        break;
+      case 12: /* FCML_TK_FLOAT */
+/* Line 818 of yacc.c  */
+#line 87 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "Float: %f Overflow: %d", ((*yyvaluep).float_value).value, ((*yyvaluep).float_value).overflow); };
 /* Line 818 of yacc.c  */
-#line 879 "fcml_x64intel_parser.tab.c"
+#line 887 "fcml_x64intel_parser.tab.c"
         break;
-      case 31: /* instruction */
-/* Line 818 of yacc.c  */
-#line 87 "fcml_x64intel_parser.y"
-        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
-/* Line 818 of yacc.c  */
-#line 886 "fcml_x64intel_parser.tab.c"
-        break;
-      case 35: /* operand_list */
-/* Line 818 of yacc.c  */
-#line 87 "fcml_x64intel_parser.y"
-        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
-/* Line 818 of yacc.c  */
-#line 893 "fcml_x64intel_parser.tab.c"
-        break;
-      case 36: /* operand */
-/* Line 818 of yacc.c  */
-#line 87 "fcml_x64intel_parser.y"
-        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
-/* Line 818 of yacc.c  */
-#line 900 "fcml_x64intel_parser.tab.c"
-        break;
-      case 37: /* effective_address */
-/* Line 818 of yacc.c  */
-#line 87 "fcml_x64intel_parser.y"
-        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
-/* Line 818 of yacc.c  */
-#line 907 "fcml_x64intel_parser.tab.c"
-        break;
-      case 38: /* effective_address_components */
-/* Line 818 of yacc.c  */
-#line 87 "fcml_x64intel_parser.y"
-        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
-/* Line 818 of yacc.c  */
-#line 914 "fcml_x64intel_parser.tab.c"
-        break;
-      case 39: /* segment_selector */
+      case 32: /* instruction */
 /* Line 818 of yacc.c  */
 #line 88 "fcml_x64intel_parser.y"
-        { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
-/* Line 818 of yacc.c  */
-#line 921 "fcml_x64intel_parser.tab.c"
-        break;
-      case 40: /* far_pointer */
-/* Line 818 of yacc.c  */
-#line 87 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
 /* Line 818 of yacc.c  */
-#line 928 "fcml_x64intel_parser.tab.c"
+#line 894 "fcml_x64intel_parser.tab.c"
         break;
-      case 41: /* exp */
-/* Line 818 of yacc.c  */
-#line 87 "fcml_x64intel_parser.y"
-        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
-/* Line 818 of yacc.c  */
-#line 935 "fcml_x64intel_parser.tab.c"
-        break;
-      case 42: /* reg */
+      case 36: /* operand_list */
 /* Line 818 of yacc.c  */
 #line 88 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
+/* Line 818 of yacc.c  */
+#line 901 "fcml_x64intel_parser.tab.c"
+        break;
+      case 37: /* operand */
+/* Line 818 of yacc.c  */
+#line 88 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
+/* Line 818 of yacc.c  */
+#line 908 "fcml_x64intel_parser.tab.c"
+        break;
+      case 38: /* effective_address */
+/* Line 818 of yacc.c  */
+#line 88 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
+/* Line 818 of yacc.c  */
+#line 915 "fcml_x64intel_parser.tab.c"
+        break;
+      case 39: /* effective_address_components */
+/* Line 818 of yacc.c  */
+#line 88 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
+/* Line 818 of yacc.c  */
+#line 922 "fcml_x64intel_parser.tab.c"
+        break;
+      case 40: /* segment_selector */
+/* Line 818 of yacc.c  */
+#line 89 "fcml_x64intel_parser.y"
         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
 /* Line 818 of yacc.c  */
-#line 942 "fcml_x64intel_parser.tab.c"
+#line 929 "fcml_x64intel_parser.tab.c"
+        break;
+      case 41: /* far_pointer */
+/* Line 818 of yacc.c  */
+#line 88 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
+/* Line 818 of yacc.c  */
+#line 936 "fcml_x64intel_parser.tab.c"
+        break;
+      case 42: /* exp */
+/* Line 818 of yacc.c  */
+#line 88 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); };
+/* Line 818 of yacc.c  */
+#line 943 "fcml_x64intel_parser.tab.c"
+        break;
+      case 43: /* reg */
+/* Line 818 of yacc.c  */
+#line 89 "fcml_x64intel_parser.y"
+        { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); };
+/* Line 818 of yacc.c  */
+#line 950 "fcml_x64intel_parser.tab.c"
         break;
 
       default:
@@ -1339,54 +1347,54 @@ yydestruct (yymsg, yytype, yyvaluep, pd)
 
   switch (yytype)
     {
-      case 31: /* instruction */
+      case 32: /* instruction */
 /* Line 1393 of yacc.c  */
-#line 82 "fcml_x64intel_parser.y"
+#line 83 "fcml_x64intel_parser.y"
         { fcml_fn_ast_free_node(((*yyvaluep).ast)); };
 /* Line 1393 of yacc.c  */
-#line 1348 "fcml_x64intel_parser.tab.c"
+#line 1356 "fcml_x64intel_parser.tab.c"
         break;
-      case 35: /* operand_list */
+      case 36: /* operand_list */
 /* Line 1393 of yacc.c  */
-#line 82 "fcml_x64intel_parser.y"
+#line 83 "fcml_x64intel_parser.y"
         { fcml_fn_ast_free_node(((*yyvaluep).ast)); };
 /* Line 1393 of yacc.c  */
-#line 1355 "fcml_x64intel_parser.tab.c"
+#line 1363 "fcml_x64intel_parser.tab.c"
         break;
-      case 36: /* operand */
+      case 37: /* operand */
 /* Line 1393 of yacc.c  */
-#line 82 "fcml_x64intel_parser.y"
+#line 83 "fcml_x64intel_parser.y"
         { fcml_fn_ast_free_node(((*yyvaluep).ast)); };
 /* Line 1393 of yacc.c  */
-#line 1362 "fcml_x64intel_parser.tab.c"
+#line 1370 "fcml_x64intel_parser.tab.c"
         break;
-      case 37: /* effective_address */
+      case 38: /* effective_address */
 /* Line 1393 of yacc.c  */
-#line 82 "fcml_x64intel_parser.y"
+#line 83 "fcml_x64intel_parser.y"
         { fcml_fn_ast_free_node(((*yyvaluep).ast)); };
 /* Line 1393 of yacc.c  */
-#line 1369 "fcml_x64intel_parser.tab.c"
+#line 1377 "fcml_x64intel_parser.tab.c"
         break;
-      case 38: /* effective_address_components */
+      case 39: /* effective_address_components */
 /* Line 1393 of yacc.c  */
-#line 82 "fcml_x64intel_parser.y"
+#line 83 "fcml_x64intel_parser.y"
         { fcml_fn_ast_free_node(((*yyvaluep).ast)); };
 /* Line 1393 of yacc.c  */
-#line 1376 "fcml_x64intel_parser.tab.c"
+#line 1384 "fcml_x64intel_parser.tab.c"
         break;
-      case 40: /* far_pointer */
+      case 41: /* far_pointer */
 /* Line 1393 of yacc.c  */
-#line 82 "fcml_x64intel_parser.y"
+#line 83 "fcml_x64intel_parser.y"
         { fcml_fn_ast_free_node(((*yyvaluep).ast)); };
 /* Line 1393 of yacc.c  */
-#line 1383 "fcml_x64intel_parser.tab.c"
+#line 1391 "fcml_x64intel_parser.tab.c"
         break;
-      case 41: /* exp */
+      case 42: /* exp */
 /* Line 1393 of yacc.c  */
-#line 82 "fcml_x64intel_parser.y"
+#line 83 "fcml_x64intel_parser.y"
         { fcml_fn_ast_free_node(((*yyvaluep).ast)); };
 /* Line 1393 of yacc.c  */
-#line 1390 "fcml_x64intel_parser.tab.c"
+#line 1398 "fcml_x64intel_parser.tab.c"
         break;
 
       default:
@@ -1512,12 +1520,12 @@ YYSTYPE yylval YY_INITIAL_VALUE(yyval_default);
 
 /* User initialization code.  */
 /* Line 1570 of yacc.c  */
-#line 110 "fcml_x64intel_parser.y"
+#line 111 "fcml_x64intel_parser.y"
 { 
 	//yydebug = 1;
 }
 /* Line 1570 of yacc.c  */
-#line 1521 "fcml_x64intel_parser.tab.c"
+#line 1529 "fcml_x64intel_parser.tab.c"
   goto yysetstate;
 
 /*------------------------------------------------------------.
@@ -1698,253 +1706,253 @@ yyreduce:
     {
         case 3:
 /* Line 1787 of yacc.c  */
-#line 117 "fcml_x64intel_parser.y"
+#line 118 "fcml_x64intel_parser.y"
     { pd->tree = (yyvsp[(1) - (1)].ast); }
     break;
 
   case 4:
 /* Line 1787 of yacc.c  */
-#line 120 "fcml_x64intel_parser.y"
+#line 121 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( 0, (yyvsp[(1) - (1)].symbol).text, (yyvsp[(1) - (1)].symbol).length, 0, NULL ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 5:
 /* Line 1787 of yacc.c  */
-#line 121 "fcml_x64intel_parser.y"
+#line 122 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( 0, (yyvsp[(1) - (2)].symbol).text, (yyvsp[(1) - (2)].symbol).length, 0, (yyvsp[(2) - (2)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 6:
 /* Line 1787 of yacc.c  */
-#line 122 "fcml_x64intel_parser.y"
+#line 123 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( 0, (yyvsp[(1) - (3)].symbol).text, (yyvsp[(1) - (3)].symbol).length, (yyvsp[(2) - (3)].hints), (yyvsp[(3) - (3)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 7:
 /* Line 1787 of yacc.c  */
-#line 123 "fcml_x64intel_parser.y"
+#line 124 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( (yyvsp[(1) - (2)].prefixes), (yyvsp[(2) - (2)].symbol).text, (yyvsp[(2) - (2)].symbol).length, 0, NULL ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 8:
 /* Line 1787 of yacc.c  */
-#line 124 "fcml_x64intel_parser.y"
+#line 125 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( (yyvsp[(1) - (3)].prefixes), (yyvsp[(2) - (3)].symbol).text, (yyvsp[(2) - (3)].symbol).length, 0, (yyvsp[(3) - (3)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 9:
 /* Line 1787 of yacc.c  */
-#line 125 "fcml_x64intel_parser.y"
+#line 126 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( (yyvsp[(1) - (4)].prefixes), (yyvsp[(2) - (4)].symbol).text, (yyvsp[(2) - (4)].symbol).length, (yyvsp[(3) - (4)].hints), (yyvsp[(4) - (4)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 11:
 /* Line 1787 of yacc.c  */
-#line 129 "fcml_x64intel_parser.y"
+#line 130 "fcml_x64intel_parser.y"
     { if( (yyvsp[(1) - (2)].prefixes) & (yyvsp[(2) - (2)].prefixes) ) { ADD_ERROR_MSG( "Doubled prefixes." ); YYERROR; } else { (yyval.prefixes) = (yyvsp[(1) - (2)].prefixes) | (yyvsp[(2) - (2)].prefixes); } }
     break;
 
   case 14:
 /* Line 1787 of yacc.c  */
-#line 136 "fcml_x64intel_parser.y"
+#line 137 "fcml_x64intel_parser.y"
     { (yyval.hints) = (yyvsp[(1) - (2)].hints) | (yyvsp[(2) - (2)].hints); }
     break;
 
   case 15:
 /* Line 1787 of yacc.c  */
-#line 139 "fcml_x64intel_parser.y"
+#line 140 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_operand_list( (yyvsp[(1) - (1)].ast), NULL ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 16:
 /* Line 1787 of yacc.c  */
-#line 140 "fcml_x64intel_parser.y"
+#line 141 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_operand_list( (yyvsp[(1) - (3)].ast), (yyvsp[(3) - (3)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 20:
 /* Line 1787 of yacc.c  */
-#line 146 "fcml_x64intel_parser.y"
+#line 147 "fcml_x64intel_parser.y"
     {  (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[(1) - (1)].reg_value) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 21:
 /* Line 1787 of yacc.c  */
-#line 149 "fcml_x64intel_parser.y"
+#line 150 "fcml_x64intel_parser.y"
     { (yyval.ast) = (yyvsp[(2) - (3)].ast); }
     break;
 
   case 22:
 /* Line 1787 of yacc.c  */
-#line 150 "fcml_x64intel_parser.y"
+#line 151 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_set_effective_address_details( NULL, &(yyvsp[(1) - (4)].size_operator), (yyvsp[(3) - (4)].ast) ); }
     break;
 
   case 23:
 /* Line 1787 of yacc.c  */
-#line 151 "fcml_x64intel_parser.y"
+#line 152 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_set_effective_address_details( &(yyvsp[(1) - (4)].reg_value), FCML_OS_UNDEFINED, (yyvsp[(3) - (4)].ast) ); }
     break;
 
   case 24:
 /* Line 1787 of yacc.c  */
-#line 152 "fcml_x64intel_parser.y"
+#line 153 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_set_effective_address_details( &(yyvsp[(2) - (5)].reg_value), &(yyvsp[(1) - (5)].size_operator), (yyvsp[(4) - (5)].ast) ); }
     break;
 
   case 25:
 /* Line 1787 of yacc.c  */
-#line 155 "fcml_x64intel_parser.y"
+#line 156 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (1)].reg_value), NULL, NULL, NULL, FCML_FALSE, 0 ); }
     break;
 
   case 26:
 /* Line 1787 of yacc.c  */
-#line 156 "fcml_x64intel_parser.y"
+#line 157 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(2) - (2)].reg_value), NULL, NULL, NULL, FCML_FALSE, (yyvsp[(1) - (2)].hints) ); }
     break;
 
   case 27:
 /* Line 1787 of yacc.c  */
-#line 157 "fcml_x64intel_parser.y"
+#line 158 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (3)].reg_value), &(yyvsp[(3) - (3)].reg_value), NULL, NULL, FCML_FALSE, 0 ); }
     break;
 
   case 28:
 /* Line 1787 of yacc.c  */
-#line 158 "fcml_x64intel_parser.y"
+#line 159 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (5)].reg_value), &(yyvsp[(3) - (5)].reg_value), &(yyvsp[(5) - (5)].integer_value), NULL, FCML_FALSE, 0 ); }
     break;
 
   case 29:
 /* Line 1787 of yacc.c  */
-#line 159 "fcml_x64intel_parser.y"
+#line 160 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (7)].reg_value), &(yyvsp[(3) - (7)].reg_value), &(yyvsp[(5) - (7)].integer_value), (yyvsp[(7) - (7)].ast), FCML_FALSE, 0 ); }
     break;
 
   case 30:
 /* Line 1787 of yacc.c  */
-#line 160 "fcml_x64intel_parser.y"
+#line 161 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (7)].reg_value), &(yyvsp[(3) - (7)].reg_value), &(yyvsp[(5) - (7)].integer_value), (yyvsp[(7) - (7)].ast), FCML_TRUE, 0 ); }
     break;
 
   case 31:
 /* Line 1787 of yacc.c  */
-#line 161 "fcml_x64intel_parser.y"
+#line 162 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (5)].reg_value), &(yyvsp[(3) - (5)].reg_value), NULL, (yyvsp[(5) - (5)].ast), FCML_FALSE, 0 ); }
     break;
 
   case 32:
 /* Line 1787 of yacc.c  */
-#line 162 "fcml_x64intel_parser.y"
+#line 163 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (5)].reg_value), &(yyvsp[(3) - (5)].reg_value), NULL, (yyvsp[(5) - (5)].ast), FCML_TRUE, 0 ); }
     break;
 
   case 33:
 /* Line 1787 of yacc.c  */
-#line 163 "fcml_x64intel_parser.y"
+#line 164 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (3)].reg_value), NULL, NULL, (yyvsp[(3) - (3)].ast), FCML_FALSE, 0 ); }
     break;
 
   case 34:
 /* Line 1787 of yacc.c  */
-#line 164 "fcml_x64intel_parser.y"
+#line 165 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(2) - (4)].reg_value), NULL, NULL, (yyvsp[(4) - (4)].ast), FCML_FALSE, (yyvsp[(1) - (4)].hints) ); }
     break;
 
   case 35:
 /* Line 1787 of yacc.c  */
-#line 165 "fcml_x64intel_parser.y"
+#line 166 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(1) - (3)].reg_value), NULL, NULL, (yyvsp[(3) - (3)].ast), FCML_TRUE, 0 ); }
     break;
 
   case 36:
 /* Line 1787 of yacc.c  */
-#line 166 "fcml_x64intel_parser.y"
+#line 167 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[(2) - (4)].reg_value), NULL, NULL, (yyvsp[(4) - (4)].ast), FCML_TRUE, (yyvsp[(1) - (4)].hints) ); }
     break;
 
   case 37:
 /* Line 1787 of yacc.c  */
-#line 167 "fcml_x64intel_parser.y"
+#line 168 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, (yyvsp[(1) - (1)].ast), FCML_FALSE, 0); }
     break;
 
   case 38:
 /* Line 1787 of yacc.c  */
-#line 168 "fcml_x64intel_parser.y"
+#line 169 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, (yyvsp[(2) - (2)].ast), FCML_FALSE, (yyvsp[(1) - (2)].hints)); }
     break;
 
   case 39:
 /* Line 1787 of yacc.c  */
-#line 169 "fcml_x64intel_parser.y"
+#line 170 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, (yyvsp[(2) - (2)].ast), FCML_FALSE, (yyvsp[(1) - (2)].hints)); }
     break;
 
   case 40:
 /* Line 1787 of yacc.c  */
-#line 172 "fcml_x64intel_parser.y"
+#line 173 "fcml_x64intel_parser.y"
     { (yyval.reg_value) = (yyvsp[(1) - (2)].reg_value); }
     break;
 
   case 41:
 /* Line 1787 of yacc.c  */
-#line 175 "fcml_x64intel_parser.y"
+#line 176 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_far_pointer( (yyvsp[(1) - (3)].ast), (yyvsp[(3) - (3)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 42:
 /* Line 1787 of yacc.c  */
-#line 178 "fcml_x64intel_parser.y"
+#line 179 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_integer( &(yyvsp[(1) - (1)].integer_value) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 43:
 /* Line 1787 of yacc.c  */
-#line 179 "fcml_x64intel_parser.y"
+#line 180 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_float( &(yyvsp[(1) - (1)].float_value) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 44:
 /* Line 1787 of yacc.c  */
-#line 180 "fcml_x64intel_parser.y"
+#line 181 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_SUB, (yyvsp[(1) - (3)].ast), (yyvsp[(3) - (3)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 45:
 /* Line 1787 of yacc.c  */
-#line 181 "fcml_x64intel_parser.y"
+#line 182 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_ADD, (yyvsp[(1) - (3)].ast), (yyvsp[(3) - (3)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 46:
 /* Line 1787 of yacc.c  */
-#line 182 "fcml_x64intel_parser.y"
+#line 183 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_DIV, (yyvsp[(1) - (3)].ast), (yyvsp[(3) - (3)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 47:
 /* Line 1787 of yacc.c  */
-#line 183 "fcml_x64intel_parser.y"
+#line 184 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_MUL, (yyvsp[(1) - (3)].ast), (yyvsp[(3) - (3)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 48:
 /* Line 1787 of yacc.c  */
-#line 184 "fcml_x64intel_parser.y"
+#line 185 "fcml_x64intel_parser.y"
     { (yyval.ast) = fcml_fn_ast_alloc_node_uminus( (yyvsp[(2) - (2)].ast) ); HANDLE_ERRORS((yyval.ast)); }
     break;
 
   case 49:
 /* Line 1787 of yacc.c  */
-#line 185 "fcml_x64intel_parser.y"
+#line 186 "fcml_x64intel_parser.y"
     { (yyval.ast) = (yyvsp[(2) - (3)].ast); }
     break;
 
 
 /* Line 1787 of yacc.c  */
-#line 1948 "fcml_x64intel_parser.tab.c"
+#line 1956 "fcml_x64intel_parser.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2176,5 +2184,5 @@ yyreturn:
 
 
 /* Line 2050 of yacc.c  */
-#line 197 "fcml_x64intel_parser.y"
+#line 198 "fcml_x64intel_parser.y"
 

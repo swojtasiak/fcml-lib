@@ -38,6 +38,7 @@
 %token <reg_value> FCML_TK_REG_SEG
 %token <reg_value> FCML_TK_REG_CR
 %token <reg_value> FCML_TK_REG_DR
+%token <reg_value> FCML_TK_REG_RIP
 
 /* Integer values. Encoding doesn't matters. */
 %token <integer_value> FCML_TK_INTEGER

@@ -165,6 +165,10 @@ extern fcml_st_register fcml_reg_DR5;
 extern fcml_st_register fcml_reg_DR6;
 extern fcml_st_register fcml_reg_DR7;
 
+extern fcml_st_register fcml_reg_IP;
+extern fcml_st_register fcml_reg_EIP;
+extern fcml_st_register fcml_reg_RIP;
+
 // REG.
 fcml_st_operand fcml_fn_cu_operand_reg( fcml_st_register *reg );
 

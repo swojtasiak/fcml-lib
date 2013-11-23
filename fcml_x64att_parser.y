@@ -38,6 +38,7 @@
 %token <reg_value> FCML_TK_REG_SEG
 %token <reg_value> FCML_TK_REG_CR
 %token <reg_value> FCML_TK_REG_DR
+%token <reg_value> FCML_TK_REG_RIP
 
 /* Integer values. Encoding doesn't matters. */
 %token <integer_value> FCML_TK_INTEGER
@@ -136,7 +137,8 @@ effective_address_components:
 ;
 
 effective_address_components_without_dis:
-  '(' reg ')' 								{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, 0 ); }
+  '(' FCML_TK_REG_RIP ')' 					{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, 0 ); }
+| '(' reg ')' 								{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, 0 ); }
 | '(' reg ',' reg ')' 						{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, &$4, NULL, NULL, FCML_FALSE, 0 ); }
 | '(' ',' reg ')' 							{ $$ = fcml_fn_ast_alloc_node_effective_address( NULL, &$3, NULL, NULL, FCML_FALSE, 0 ); }
 | '(' reg ',' reg ',' FCML_TK_INTEGER ')'	{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, &$4, &$6, NULL, FCML_FALSE, 0 ); }

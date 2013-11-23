@@ -53,15 +53,16 @@ extern int intel_debug;
      FCML_TK_REG_SEG = 262,
      FCML_TK_REG_CR = 263,
      FCML_TK_REG_DR = 264,
-     FCML_TK_INTEGER = 265,
-     FCML_TK_FLOAT = 266,
-     FCML_TK_SIZE_OPERATOR = 267,
-     FCML_TK_SYMBOL = 268,
-     FCML_TK_HINTS = 269,
-     FCML_TK_EAO_HINTS = 270,
-     FCML_TK_SIB_HINT = 271,
-     FCML_TK_PREFIX = 272,
-     FCML_OP_UMINUS = 273
+     FCML_TK_REG_RIP = 265,
+     FCML_TK_INTEGER = 266,
+     FCML_TK_FLOAT = 267,
+     FCML_TK_SIZE_OPERATOR = 268,
+     FCML_TK_SYMBOL = 269,
+     FCML_TK_HINTS = 270,
+     FCML_TK_EAO_HINTS = 271,
+     FCML_TK_SIB_HINT = 272,
+     FCML_TK_PREFIX = 273,
+     FCML_OP_UMINUS = 274
    };
 #endif
 
@@ -70,7 +71,7 @@ extern int intel_debug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 90 "fcml_x64intel_parser.y"
+#line 91 "fcml_x64intel_parser.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
@@ -87,7 +88,7 @@ typedef union YYSTYPE
 
 
 /* Line 2053 of yacc.c  */
-#line 91 "fcml_x64intel_parser.tab.h"
+#line 92 "fcml_x64intel_parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

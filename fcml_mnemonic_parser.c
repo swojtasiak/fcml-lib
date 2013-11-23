@@ -30,6 +30,9 @@ void fcml_ifn_mp_clean_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
     mnemonic->pseudo_op.value = 0x00;
     mnemonic->is_byte_ds = FCML_FALSE;
     mnemonic->is_full_ds = FCML_FALSE;
+    mnemonic->is_mode_mem_only = FCML_FALSE;
+	mnemonic->is_mode_reg_only = FCML_FALSE;
+	mnemonic->is_default = FCML_TRUE;
 }
 
 fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, fcml_st_coll_list *mnemonics, fcml_string mnemonic_buff, fcml_usize len ) {
@@ -88,6 +91,13 @@ fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *a
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     // Handle attributes.
     switch( attr_key ) {
+    case 'm':
+    	if( attr_value[0] == 'm' ) {
+			mnemonic->is_mode_mem_only = FCML_TRUE;
+		} else if( attr_value[0] == 'r' ) {
+			mnemonic->is_mode_reg_only = FCML_TRUE;
+		}
+		break;
     case 's':
     	if( attr_value[0] == 'b' ) {
     		mnemonic->is_byte_ds = FCML_TRUE;
@@ -164,6 +174,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
             case '[':
                 if( mnemonic_index > 0 ) {
                     state = FCML_MP_PS_ATTRIBUTE_KEY;
+                    mnemonic.is_default = FCML_FALSE;
                 } else {
                     // empty mnemonic.
                     error = FCML_CEH_GEC_INVALID_INPUT;
@@ -269,21 +280,38 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
     return error;
 }
 
-fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_nuint8_t pseudo_opcode, fcml_data_size osa, fcml_data_size asa ) {
+fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_nuint8_t pseudo_opcode, fcml_data_size osa, fcml_data_size asa, fcml_bool is_memory ) {
     fcml_st_mp_mnemonic *chosen_mnemonic = NULL;
     if( mnemonics->mnemonics ) {
         fcml_st_coll_list_element *next = mnemonics->mnemonics->head;
         while( next ) {
+
             fcml_st_mp_mnemonic *mnemonic = next->item;
-            if( !chosen_mnemonic && !mnemonic->shortcut ) {
+
+        	// Set default mnemonic only if there is no mnemonic yet. Default mnemonics can not have any attributes defined, so we do not
+            // need to check anything.
+            if( !chosen_mnemonic && !mnemonic->shortcut && mnemonic->is_default ) {
                 chosen_mnemonic = mnemonic;
             }
-            if( fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_asa, asa ) && fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
-                if( ( mnemonic->shortcut == use_shortcut ) || ( use_shortcut && mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == pseudo_opcode.value ) ) {
-                    chosen_mnemonic = mnemonic;
-                    break;
-                }
-            }
+
+			// Size attributes.
+			if( fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_asa, asa ) && fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
+				// Shortcuts. Pseudo opcode mnemonic is also treated as a shortcut by disassembler.
+				if( ( use_shortcut && ( ( mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == pseudo_opcode.value ) || mnemonic->shortcut ) )
+					|| ( !use_shortcut && !mnemonic->pseudo_op.is_not_null && !mnemonic->shortcut ) ) {
+					// Addressing mode.
+					// See "mm","mr" mnemonic attribute.
+					fcml_bool is_mode_ok = ( ( !mnemonic->is_mode_mem_only && !mnemonic->is_mode_reg_only) || ( mnemonic->is_mode_mem_only && is_memory ) || ( mnemonic->is_mode_reg_only && !is_memory ) );
+					if( is_mode_ok ) {
+						// Default mnemonic can not be overridden by another default.
+						if( !chosen_mnemonic || !mnemonic->is_default ) {
+							chosen_mnemonic = mnemonic;
+							break;
+						}
+					}
+				}
+			}
+
             next = next->next;
         }
     }

@@ -53,10 +53,11 @@ extern int att_debug;
      FCML_TK_REG_SEG = 262,
      FCML_TK_REG_CR = 263,
      FCML_TK_REG_DR = 264,
-     FCML_TK_INTEGER = 265,
-     FCML_TK_SYMBOL = 266,
-     FCML_TK_PREFIX = 267,
-     FCML_OP_UMINUS = 268
+     FCML_TK_REG_RIP = 265,
+     FCML_TK_INTEGER = 266,
+     FCML_TK_SYMBOL = 267,
+     FCML_TK_PREFIX = 268,
+     FCML_OP_UMINUS = 269
    };
 #endif
 
@@ -65,7 +66,7 @@ extern int att_debug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 78 "fcml_x64att_parser.y"
+#line 79 "fcml_x64att_parser.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
@@ -80,7 +81,7 @@ typedef union YYSTYPE
 
 
 /* Line 2053 of yacc.c  */
-#line 84 "fcml_x64att_parser.tab.h"
+#line 85 "fcml_x64att_parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

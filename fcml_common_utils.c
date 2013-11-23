@@ -162,6 +162,10 @@ fcml_st_register fcml_reg_DR5 = { FCML_REG_DR, FCML_DS_UNDEF, FCML_REG_DR5, FCML
 fcml_st_register fcml_reg_DR6 = { FCML_REG_DR, FCML_DS_UNDEF, FCML_REG_DR6, FCML_FALSE };
 fcml_st_register fcml_reg_DR7 = { FCML_REG_DR, FCML_DS_UNDEF, FCML_REG_DR7, FCML_FALSE };
 
+fcml_st_register fcml_reg_IP  = { FCML_REG_IP, FCML_DS_16, FCML_REG_UNDEFINED, FCML_FALSE };
+fcml_st_register fcml_reg_EIP = { FCML_REG_IP, FCML_DS_32, FCML_REG_UNDEFINED, FCML_FALSE };
+fcml_st_register fcml_reg_RIP = { FCML_REG_IP, FCML_DS_64, FCML_REG_UNDEFINED, FCML_FALSE };
+
 fcml_st_operand fcml_fn_cu_operand_unsigned_imm_8( fcml_uint8_t value ) {
 	fcml_st_operand imm = {0};
 	imm.type = FCML_EOT_IMMEDIATE;

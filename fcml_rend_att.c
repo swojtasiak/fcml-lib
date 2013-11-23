@@ -5,12 +5,13 @@
  *      Author: tas
  */
 
-#include "fcml_rend_intel.h"
-
 #include "fcml_ceh.h"
 #include "fcml_common.h"
+#include "fcml_common_utils.h"
+#include "fcml_dialect.h"
 #include "fcml_dialect_int.h"
 #include "fcml_disassembler.h"
+#include "fcml_env.h"
 #include "fcml_rend.h"
 #include "fcml_rend_utils.h"
 #include "fcml_stream.h"
@@ -143,6 +144,8 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 
 	if( address->address_form == FCML_AF_COMBINED ) {
 
+		fcml_fn_rend_utils_format_append_str( output_stream, "(" );
+
 		// Append base register.
 		if( !fcml_fn_utils_is_reg_undef( &(effective_address->base) ) ) {
 			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->base), prefixes->is_rex );
@@ -170,6 +173,8 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 			fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &scale_value, FCML_FALSE );
 		}
 
+		fcml_fn_rend_utils_format_append_str( output_stream, ")" );
+
 		// Displacement.
 		if( effective_address->displacement.size > 0 ) {
 
@@ -187,15 +192,34 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 
 	} else {
 
-		// Offset.
+		// Absolute offset or RIP.
+		if( !error ) {
+			// For RIP base register is set to IP.
+			// TODO: moze dodac jakas flage po ktorej mozna by bylo rozpoznac RIP.
+			fcml_st_integer integer;
+			if( address->effective_address.base.type == FCML_REG_IP ) {
+				// IP relative addressing.
+				fcml_ceh_error error = fcml_fn_utils_displacement_to_integer( &(address->effective_address.displacement), &integer );
+				if( error ) {
+					return error;
+				}
+				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &integer, FCML_TRUE );
+				if( !error ) {
+					fcml_fn_rend_utils_format_append_str( output_stream, "(" );
+					fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(fcml_reg_RIP), FCML_FALSE );
+					fcml_fn_rend_utils_format_append_str( output_stream, ")" );
+				}
+			} else {
+				// Absolute offset.
+				fcml_ceh_error error = fcml_fn_utils_offset_to_integer( &(address->offset), &integer );
+				if( error ) {
+					return error;
+				}
+				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &integer, FCML_TRUE );
+			}
 
-		fcml_st_integer integer;
-		fcml_ceh_error error = fcml_fn_utils_offset_to_integer( &(address->offset), &integer );
-		if( error ) {
-			return error;
 		}
 
-		error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &integer, FCML_TRUE );
 	}
 
 	return error;

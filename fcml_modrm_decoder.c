@@ -251,6 +251,9 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *con
 		// disp32.
 		if( context->addr_form == FCML_AF_64_BIT ) {
 			decoded_modrm->is_rip = FCML_TRUE;
+			// In case of RIP we also set base register to IP.
+			decoded_modrm->address.effective_address.base.type = FCML_REG_IP;
+			decoded_modrm->address.effective_address.base.size = FCML_DS_64;
 		}
 
 		// Only displacement value is decoded here. RIP offset is calculated in post processors.

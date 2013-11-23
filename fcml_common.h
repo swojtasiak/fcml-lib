@@ -261,6 +261,7 @@ typedef enum fcml_en_register {
     FCML_REG_SEG,
     FCML_REG_CR,
     FCML_REG_DR,
+    FCML_REG_IP
 } fcml_en_register;
 
 typedef struct fcml_st_register {
@@ -350,6 +351,8 @@ typedef struct fcml_st_displacement {
 // ******************************************
 
 typedef enum fcml_en_address_form {
+	// Default value set if memory addressing hasn't been configured.
+	FCML_AF_UNDEFINED,
     // Only displacement value interpreted but it's assembler who decides
     // what addressing should be used absolute or relative.
     FCML_AF_OFFSET,

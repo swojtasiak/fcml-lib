@@ -201,6 +201,9 @@ st{WS}("("{WS}7{WS}")"|7)	FCML_FM_FPU_REG(FCML_REG_ST7)
 "fs"			FCML_FM_SEG_REG(FCML_REG_FS)
 "gs"			FCML_FM_SEG_REG(FCML_REG_GS)
 
+ /*RIP*/
+"rip"			FCML_FM_RIP
+
  /*Size operators.*/
 "byte"{PTR}						FCML_FM_SIZE_OPERAND( 8 )
 "word"{PTR}						FCML_FM_SIZE_OPERAND( 16 )
