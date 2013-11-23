@@ -395,9 +395,9 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_IP );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
@@ -690,9 +690,9 @@ void fcml_tf_modrm_3264_decoder_test_10(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_IP );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
@@ -738,9 +738,9 @@ void fcml_tf_modrm_3264_decoder_test_11(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_IP );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
@@ -786,9 +786,9 @@ void fcml_tf_modrm_3264_decoder_test_12(void) {
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
-	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_IP );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
-	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
+	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, FCML_DS_64 );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.type, FCML_REG_UNDEFINED );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.reg, 0 );
 	CU_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );

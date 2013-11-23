@@ -22,7 +22,7 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {
 
     fcml_st_mp_mnemonic_set *mnemonics_set;
 
-    fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( "cmps[sb];cmpsw[ts,o*,aw,sf];cmpsd[ts,o*,ad,sf];cmpsq[ts,o*,aq,sf]", &mnemonics_set );
+    fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( "cmps[sb,mm];cmpsw[ts,o*,aw,sf,mr];cmpsd[ts,o*,ad,sf];cmpsq[ts,o*,aq,sf]", &mnemonics_set );
     CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 
     fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
@@ -33,6 +33,8 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->is_byte_ds, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->is_full_ds, FCML_FALSE );
+    CU_ASSERT_EQUAL( mnemonic->is_mode_mem_only, FCML_TRUE );
+    CU_ASSERT_EQUAL( mnemonic->is_mode_reg_only, FCML_FALSE );
 
     element = element->next;
     mnemonic = (fcml_st_mp_mnemonic*)element->item;
@@ -42,6 +44,8 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->is_byte_ds, FCML_FALSE );
 	CU_ASSERT_EQUAL( mnemonic->is_full_ds, FCML_TRUE );
+	CU_ASSERT_EQUAL( mnemonic->is_mode_mem_only, FCML_FALSE );
+	CU_ASSERT_EQUAL( mnemonic->is_mode_reg_only, FCML_TRUE );
 
     element = element->next;
     mnemonic = (fcml_st_mp_mnemonic*)element->item;

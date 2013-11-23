@@ -243,6 +243,28 @@ void fcml_tf_parser_att_parse_test11(void) {
 	fcml_fn_parser_result_free( result );
 }
 
+void fcml_tf_parser_att_parse_test12(void) {
+	// RIP only.
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,0x100(%rip)", &result ), FCML_CEH_GEC_NO_ERROR );
+	if( result->instruction != NULL ) {
+		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_IMMEDIATE );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.is_signed, FCML_FALSE );
+		CU_ASSERT_EQUAL( result->instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		CU_ASSERT_EQUAL( result->instruction->operands[1].type, FCML_EOT_ADDRESS );
+		CU_ASSERT_EQUAL( result->instruction->operands[1].address.address_form, FCML_AF_COMBINED );
+		CU_ASSERT_EQUAL( result->instruction->operands[1].address.effective_address.base.reg, FCML_REG_UNDEFINED );
+		CU_ASSERT_EQUAL( result->instruction->operands[1].address.effective_address.base.size, FCML_DS_64 );
+		CU_ASSERT_EQUAL( result->instruction->operands[1].address.effective_address.base.type, FCML_REG_IP );
+		CU_ASSERT_EQUAL( result->instruction->operands[1].address.effective_address.displacement.size, FCML_DS_16 );
+		CU_ASSERT_EQUAL( result->instruction->operands[1].address.effective_address.displacement.dis16, (fcml_uint16_t)0x100 );
+	} else {
+		CU_FAIL();
+	}
+	fcml_fn_parser_result_free( result );
+}
+
 CU_TestInfo fcml_ti_parser_att[] = {
     { "fcml_tf_parser_att_parse_test1", fcml_tf_parser_att_parse_test1 },
     { "fcml_tf_parser_att_parse_test2", fcml_tf_parser_att_parse_test2 },
@@ -255,6 +277,7 @@ CU_TestInfo fcml_ti_parser_att[] = {
     { "fcml_tf_parser_att_parse_test9", fcml_tf_parser_att_parse_test9 },
     { "fcml_tf_parser_att_parse_test10", fcml_tf_parser_att_parse_test10 },
     { "fcml_tf_parser_att_parse_test11", fcml_tf_parser_att_parse_test11 },
+    { "fcml_tf_parser_att_parse_test12", fcml_tf_parser_att_parse_test12 },
     CU_TEST_INFO_NULL,
 };
 

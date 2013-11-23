@@ -56,7 +56,6 @@
 
 CU_SuiteInfo *suites[] = {
 	fctl_si_instructions_a,
-	/*
 	fctl_si_instructions_b,
 	fctl_si_instructions_c,
 	fctl_si_instructions_d,
@@ -90,7 +89,7 @@ CU_SuiteInfo *suites[] = {
 	fcml_si_chooser,
 	fcml_si_prefixes,
 	fcml_si_segment_reg,
-	fcml_si_att_parser,*/
+	fcml_si_att_parser,
     NULL
 };
 
@@ -157,6 +156,9 @@ int main(int argc, char **argv) {
 		printf( "Can not allocate AT&T disassembler.\n" );
 		return 1;
 	}
+
+	//FCML_A64_D_P( "adc $0x00000003,0x00000000(%rip)", 0x83, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
+	//return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");
