@@ -1989,7 +1989,11 @@ void fcml_tf_modrm_rip_encoder_3264_bit_encoding_5(void) {
 
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 	// Displacement is not encoded yet.
-	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 0 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement_size, 4 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[0], 0x00 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[1], 0x01 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[2], 0x00 );
+	CU_ASSERT_EQUAL( encoded_modrm.displacement[3], 0x00 );
 	CU_ASSERT_EQUAL( encoded_modrm.ext_b, 0 );
 	CU_ASSERT_EQUAL( encoded_modrm.ext_r, 0 );
 	CU_ASSERT_EQUAL( encoded_modrm.ext_x, 0 );
@@ -1997,21 +2001,9 @@ void fcml_tf_modrm_rip_encoder_3264_bit_encoding_5(void) {
 	CU_ASSERT_EQUAL( encoded_modrm.sib.value, 0x00 );
 	CU_ASSERT_EQUAL( encoded_modrm.modrm, 0x05 );
 	CU_ASSERT_EQUAL( encoded_modrm.is_rip, FCML_TRUE );
-	CU_ASSERT_EQUAL( encoded_modrm.rip_address, 0xFFFFFFFFFFFFFFFFLL );
+	CU_ASSERT_EQUAL( encoded_modrm.is_rip_encoded, FCML_TRUE );
+	CU_ASSERT_EQUAL( encoded_modrm.rip_address, 0x0LL );
 
-	fcml_uint8_t buff[4];
-	fcml_st_memory_stream stream;
-	stream.base_address = &buff;
-	stream.offset = 0;
-	stream.size = 4;
-	error = fcml_fn_modrm_encode_rip_offset( &stream, 0x0000000000401000ULL, 8, &encoded_modrm );
-
-	CU_ASSERT_EQUAL( buff[0], 0xF7 );
-	CU_ASSERT_EQUAL( buff[1], 0xEF );
-	CU_ASSERT_EQUAL( buff[2], 0xBF );
-	CU_ASSERT_EQUAL( buff[3], 0xFF );
-
-	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
 }
 
 CU_TestInfo fctl_ti_modrm_encoder[] = {

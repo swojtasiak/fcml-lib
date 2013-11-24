@@ -44,7 +44,8 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 	fcml_st_dasm_disassembler *disassembler = disassembler_intel;
 	fcml_st_dialect *dialect = dialect_intel;
 
-	if( FCML_TSF_GAS_DIALECT & t_flags ) {
+	fcml_bool is_gas = FCML_TSF_GAS_DIALECT & t_flags;
+	if( is_gas ) {
 		assembler = assembler_att;
 		disassembler = disassembler_att;
 		dialect = dialect_att;
@@ -328,13 +329,13 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
                fcml_string macro;
 			   switch( addr_form ) {
 			   case FCML_AF_16_BIT:
-				   macro = ( assembled_code_index > 1 ) ? "FCML_I16_M" : "FCML_I16";
+				   macro = ( assembled_code_index > 1 ) ? (is_gas ? "FCML_A16_M" : "FCML_I16_M") : (is_gas ? "FCML_A16" : "FCML_I16");
 			   break;
 			   case FCML_AF_32_BIT:
-				   macro = ( assembled_code_index > 1 ) ? "FCML_I32_M" : "FCML_I32";
+				   macro = ( assembled_code_index > 1 ) ? (is_gas ? "FCML_A32_M" : "FCML_I32_M") : (is_gas ? "FCML_A32" : "FCML_I32");
 			   break;
 			   case FCML_AF_64_BIT:
-				   macro = ( assembled_code_index > 1 ) ? "FCML_I64_M" : "FCML_I64";
+				   macro = ( assembled_code_index > 1 ) ? (is_gas ? "FCML_A64_M" : "FCML_I64_M") : (is_gas ? "FCML_A64" : "FCML_I64");
 			   break;
 			   }
 
@@ -436,7 +437,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 		error = fcml_fn_rend_render_instruction( dialect, &stream, dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | ren_flags );
 
 		if( t_flags & FCML_TSF_PRINT_ONLY ) {
-			printf("Disassembled instruction: %s", buffer);
+			printf("Disassembled instruction: %s Renderer error code: %d\n", buffer, error);
 		} else {
 			if( error || strcmp( buffer, mnemonic ) != 0 ) {
 				if( !(t_flags & FCML_TSF_SHOULD_FAIL) ) {
@@ -460,6 +461,11 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 			}
 		}
 	} else {
+
+		if( t_flags & FCML_TSF_PRINT_ONLY ) {
+			printf("Error code: %d\n", error);
+		}
+
 		if( t_flags & FCML_TSF_SHOULD_FAIL ) {
 			if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 				CU_ASSERT(FCML_TRUE);
