@@ -2773,7 +2773,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 		error = fcml_fn_modrm_encode( &ctx, &(context->mod_rm), &(context->encoded_mod_rm) );
 		if( !error ) {
 			if( context->optimizer_processing_details.effective_address_size == ctx.chosen_effective_address_size ) {
-				if( context->encoded_mod_rm.is_rip ) {
+				if( context->encoded_mod_rm.is_rip && !context->encoded_mod_rm.is_rip_encoded ) {
 					// ModR/M + 4bytes displacement.
 					instruction_part->code_length = 5;
 					instruction_part->post_processor = fcml_ifn_asm_instruction_part_rip_post_processor;

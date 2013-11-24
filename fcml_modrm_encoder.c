@@ -251,6 +251,9 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 	fcml_bool is_base = effective_address->base.type;
 	fcml_bool is_index = effective_address->index.type;
 
+	// Should be treated like standard displacement when RIP addressing is not available.
+	fcml_bool is_rip_disp = effective_address->base.type == FCML_REG_IP;
+
 	// Sanity check.
 	if( ( is_base || is_index ) && address->address_form != FCML_AF_COMBINED )  {
 	    return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
@@ -259,42 +262,48 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 	fcml_bool is_rip = FCML_FALSE;
 
 	// Check if there is SIB alternative.
-	if( is_index ) {
-		choose_sib = FCML_TRUE;
-	} else {
-		if( !is_base && is_displacement ) {
+	if( !is_rip_disp ) {
 
-			// disp32 or RIP
+		if( is_index ) {
+			choose_sib = FCML_TRUE;
+		} else {
+			if( !is_base && is_displacement ) {
 
-		    fcml_bool choose_rip = context->choose_rip_encoding && context->addr_form == FCML_AF_64_BIT;
+				// disp32 or RIP
 
-		    if( address->address_form != FCML_AF_OFFSET ) {
-		        choose_rip = FCML_FALSE;
-		    }
+				fcml_bool choose_rip = context->choose_rip_encoding && context->addr_form == FCML_AF_64_BIT;
 
-			if( address->address_form == FCML_AF_OFFSET && !context->addr_form == FCML_AF_64_BIT ) {
-				// User chooses address displacement, but RIP addressing can not be used.
-				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
-			}
+				if( address->address_form != FCML_AF_OFFSET ) {
+					choose_rip = FCML_FALSE;
+				}
 
-			if( choose_rip ) {
-			    // Relative.
-				is_rip = FCML_TRUE;
-				context->is_sib_alternative = FCML_FALSE;
-			} else {
-			    // In case of 64 bit addressing SIB is needed to encode absolute address.
-				choose_sib = ( context->addr_form == FCML_AF_64_BIT ) ? FCML_TRUE : context->choose_sib_encoding;
-				context->is_sib_alternative = FCML_TRUE;
-			}
+				if( address->address_form == FCML_AF_OFFSET && !context->addr_form == FCML_AF_64_BIT ) {
+					// User chooses address displacement, but RIP addressing can not be used.
+					return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+				}
 
-		} else if ( is_base ) {
-			// [esp],edx can be only encoded with using of SIB byte.
-			if( effective_address->base.reg == FCML_REG_ESP ) {
-				choose_sib = FCML_TRUE;
-			} else {
-				// [base]+[disp8/disp32]
-				choose_sib = context->choose_sib_encoding;
-				context->is_sib_alternative = FCML_TRUE;
+				if( choose_rip ) {
+					// Relative.
+					is_rip = FCML_TRUE;
+					context->is_sib_alternative = FCML_FALSE;
+				} else {
+					// In case of 64 bit addressing SIB is needed to encode absolute address.
+					choose_sib = ( context->addr_form == FCML_AF_64_BIT ) ? FCML_TRUE : context->choose_sib_encoding;
+					context->is_sib_alternative = FCML_TRUE;
+				}
+
+			} else if ( is_base ) {
+				// [esp],edx can be only encoded with using of SIB byte.
+				if( effective_address->base.reg == FCML_REG_ESP ) {
+					choose_sib = FCML_TRUE;
+				} else {
+					// RIP relative addressing can not be encoded using SIB.
+					if( effective_address->base.type != FCML_REG_IP ) {
+						// [base]+[disp8/disp32]
+						choose_sib = context->choose_sib_encoding;
+						context->is_sib_alternative = FCML_TRUE;
+					}
+				}
 			}
 		}
 	}
@@ -372,7 +381,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 		// SIB not needed.
 
-		if ( is_base ) {
+		if ( is_base && !is_rip_disp ) {
 			if( context->chosen_effective_address_size != effective_address->base.size ) {
 				return FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
 			}
@@ -400,7 +409,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 	if( is_rip ) {
 
-	    // Relative address.
+	    // RIP given ad absolute address that has to be converted to relative displacement.
 
 	    fcml_st_integer rip_address;
 
@@ -442,9 +451,9 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
         f_mod = 0x00;
 
-	} else if ( is_displacement ) {
+	} else if ( is_displacement || is_rip_disp ) {
 
-	    if( is_base || is_index ) {
+		if( is_base || is_index ) {
 
             // Complex effective address.
             fcml_st_integer displacement;
@@ -463,15 +472,22 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
             // Encode displacement.
             if( disp_size == FCML_DS_8 ) {
                 f_mod = 0x01;
-            } else if ( disp_size == FCML_DS_32 && is_base ) {
+            } else if ( disp_size == FCML_DS_32 && is_base && !is_rip_disp ) {
                 f_mod = 0x02;
             } else {
                 f_mod = 0x00;
             }
 
+            // Displacement has been already encoded, so postprocessing is not needed anymore.
+            if( is_rip_disp ) {
+            	encoded_modrm->is_rip = FCML_TRUE;
+            	encoded_modrm->is_rip_encoded = FCML_TRUE;
+            	encoded_modrm->rip_address = 0LL;
+            }
+
 	    } else {
 
-	        // Absolute address.
+	        // Absolute address or RIP relative displacement.
             fcml_st_integer absolute_address;
 
             // Convert absolute address to generic integer value in order to convert it to ASA size.

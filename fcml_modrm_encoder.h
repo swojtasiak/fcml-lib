@@ -36,6 +36,7 @@ typedef struct fcml_st_encoded_modrm {
 	fcml_uint8_t displacement[4];
 	fcml_uint8_t displacement_size;
 	fcml_bool is_rip;
+	fcml_bool is_rip_encoded;
 	fcml_int64_t rip_address;
 } fcml_st_encoded_modrm;
 

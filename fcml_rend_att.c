@@ -132,17 +132,26 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 	if( ( render_flags & FCML_REND_FLAG_RENDER_SIB_HINT ) && ( result->instruction_details.modrm_details.sib.is_not_null ) ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, "sib " );
 	}
-
-	if( ( render_flags & FCML_REND_FLAG_RENDER_ABS_HINT ) && ( operand->hints & FCML_OP_HINT_ABSOLUTE_ADDRESSING ) ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "abs " );
-	}
-
-	if( ( render_flags & FCML_REND_FLAG_RENDER_REL_HINT ) && ( operand->hints & FCML_OP_HINT_RELATIVE_ADDRESSING ) ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "rel " );
-	}
 	*/
 
 	if( address->address_form == FCML_AF_COMBINED ) {
+
+		// Displacement.
+		if( effective_address->displacement.size > 0 ) {
+
+			first = FCML_FALSE;
+
+			fcml_st_integer integer;
+			error = fcml_fn_utils_displacement_to_integer( &(effective_address->displacement), &integer );
+			if( error ) {
+				return error;
+			}
+
+			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT );
+			if( error ) {
+				return error;
+			}
+		}
 
 		fcml_fn_rend_utils_format_append_str( output_stream, "(" );
 
@@ -154,7 +163,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 
 		// Append index register.
 		if( !fcml_fn_utils_is_reg_undef( &(effective_address->index) ) ) {
-			fcml_fn_rend_utils_format_append_str_if( output_stream, "+", !first );
+			fcml_fn_rend_utils_format_append_str( output_stream, "," );
 			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->index), prefixes->is_rex );
 			first = FCML_FALSE;
 		}
@@ -162,8 +171,9 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 		// Append scale.
 		if( effective_address->scale_factor > 0 ) {
 
-			fcml_fn_rend_utils_format_append_str_if( output_stream, "*", !first );
 			first = FCML_FALSE;
+
+			fcml_fn_rend_utils_format_append_str( output_stream, "," );
 
 			fcml_st_integer scale_value = {0};
 			scale_value.is_signed = FCML_FALSE;
@@ -174,21 +184,6 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 		}
 
 		fcml_fn_rend_utils_format_append_str( output_stream, ")" );
-
-		// Displacement.
-		if( effective_address->displacement.size > 0 ) {
-
-			fcml_fn_rend_utils_format_append_str_if( output_stream, "+", !first );
-			first = FCML_FALSE;
-
-			fcml_st_integer integer;
-			error = fcml_fn_utils_displacement_to_integer( &(effective_address->displacement), &integer );
-			if( error ) {
-				return error;
-			}
-
-			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT );
-		}
 
 	} else {
 

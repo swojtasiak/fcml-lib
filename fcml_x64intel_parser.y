@@ -153,21 +153,23 @@ effective_address:  '[' effective_address_components ']' { $$ = $2; }
 | FCML_TK_SIZE_OPERATOR segment_selector '[' effective_address_components ']' { $$ = fcml_fn_ast_set_effective_address_details( &$2, &$1, $4 ); }
 ;
 
-effective_address_components: reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, NULL, FCML_FALSE, 0 ); }
-| FCML_TK_SIB_HINT reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, $1 ); }
-| reg '+' reg { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, NULL, FCML_FALSE, 0 ); }
-| reg '+' reg '*' FCML_TK_INTEGER { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, NULL, FCML_FALSE, 0 ); }
-| reg '+' reg '*' FCML_TK_INTEGER '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_FALSE, 0 ); }
-| reg '+' reg '*' FCML_TK_INTEGER '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_TRUE, 0 ); }
-| reg '+' reg '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_FALSE, 0 ); }
-| reg '+' reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_TRUE, 0 ); }
-| reg '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_FALSE, 0 ); }
-| FCML_TK_SIB_HINT reg '+' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, $4, FCML_FALSE, $1 ); }
-| reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_TRUE, 0 ); }
-| FCML_TK_SIB_HINT reg '-' exp { $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, $4, FCML_TRUE, $1 ); }
-| exp { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $1, FCML_FALSE, 0); }
-| FCML_TK_EAO_HINTS exp { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $2, FCML_FALSE, $1); }
-| FCML_TK_SIB_HINT exp { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $2, FCML_FALSE, $1); }
+effective_address_components: reg 			{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, NULL, FCML_FALSE, 0 ); }
+| FCML_TK_SIB_HINT reg 						{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, NULL, FCML_FALSE, $1 ); }
+| FCML_TK_REG_RIP 							{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, NULL, FCML_FALSE, 0 ); }
+| reg '+' reg 								{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, NULL, FCML_FALSE, 0 ); }
+| reg '+' reg '*' FCML_TK_INTEGER 			{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, NULL, FCML_FALSE, 0 ); }
+| reg '+' reg '*' FCML_TK_INTEGER '+' exp	{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_FALSE, 0 ); }
+| reg '+' reg '*' FCML_TK_INTEGER '-' exp	{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_TRUE, 0 ); }
+| reg '+' reg '+' exp						{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_FALSE, 0 ); }
+| reg '+' reg '-' exp						{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_TRUE, 0 ); }
+| reg '+' exp								{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_FALSE, 0 ); }
+| FCML_TK_REG_RIP '+' exp					{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_FALSE, 0 ); }
+| FCML_TK_SIB_HINT reg '+' exp				{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, $4, FCML_FALSE, $1 ); }
+| reg '-' exp								{ $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_TRUE, 0 ); }
+| FCML_TK_SIB_HINT reg '-' exp				{ $$ = fcml_fn_ast_alloc_node_effective_address( &$2, NULL, NULL, $4, FCML_TRUE, $1 ); }
+| exp										{ $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $1, FCML_FALSE, 0); }
+| FCML_TK_EAO_HINTS exp						{ $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $2, FCML_FALSE, $1); }
+| FCML_TK_SIB_HINT exp						{ $$ = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, $2, FCML_FALSE, $1); }
 ;
 
 segment_selector: FCML_TK_REG_SEG ':' { $$ = $1; }
