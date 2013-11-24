@@ -79,9 +79,11 @@ fcml_st_dasm_disassembler *disassembler_att;
 #define FCML_I3264_D(x,...)			{ FCML_I32_D( x, __VA_ARGS__ ); FCML_I64_D( x, __VA_ARGS__ ); }
 #define FCML_I16_D(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_16_BIT, x, 0, 0)); }
 #define FCML_I32_D(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, 0, 0)); }
+#define FCML_A32_D(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_GAS_DIALECT, 0)); }
 #define FCML_I32_D_P(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_PRINT_ONLY, 0 ); }
 #define FCML_I32_D_RF(x,ren,...)	{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, 0, ren)); }
 #define FCML_I64_D(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_64_BIT, x, 0, 0)); }
+#define FCML_A64_D(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_GAS_DIALECT, 0)); }
 #define FCML_I64_D_P(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_PRINT_ONLY, 0); }
 #define FCML_A64_D_P(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_PRINT_ONLY | FCML_TSF_GAS_DIALECT, 0); }
 #define FCML_I64_D_RF(x,ren,...)	{ fcml_uint8_t code[] = {__VA_ARGS__}; CU_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_64_BIT, x, 0, ren)); }
