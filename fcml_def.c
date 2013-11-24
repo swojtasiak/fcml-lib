@@ -66,52 +66,58 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ADC[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ADD[] = {
 	// 04 ib ADD AL, imm8 C Valid Valid Add imm8 to AL..
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0x04, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40002, { 0x04, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ) | FCML_OA_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_ER8_IMM8 },
 	// 05 iw ADD AX, imm16 C Valid Valid Add imm16 to AX.
 	// 05 id ADD EAX, imm32 C Valid Valid Add imm32 to EAX.
-	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C40000, { 0x05, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C40002, { 0x05, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_ERO_IMMO },
 	// REX.W + 05 id ADD RAX, imm32 C Valid N.E. Add imm32 sign-extended to 64-bits to RAX.
-	{ NULL, FCML_AMT_GPI, 0x0008, 0x04840000, { 0x05, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0008, 0x04840002, { 0x05, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_ERO_IMMO },
 	// 80 /0 ib ADD r/m8, imm8 B Valid Valid Add imm8 to r/m8.
 	// REX + 80 /0 ib ADD r/m8*, imm8 B Valid N.E. Add sign-extended imm8 to r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C58004, { 0x80, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C58006, { 0x80, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RM8_IMM8 },
 	// 81 /0 iw ADD r/m16, imm16 B Valid Valid Add imm16 to r/m16.
 	// 81 /0 id ADD r/m32, imm32 B Valid Valid Add imm32 to r/m32.
-	{ NULL, FCML_AMT_GPI, 0x0817, 0x03C58004, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0817, 0x03C58006, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMMO },
 	// REX.W + 81 /0 id ADD r/m64, imm32 B Valid N.E. Add imm32 sign-extended to 64-bits to r/m64.
-	{ NULL, FCML_AMT_GPI, 0x080F, 0x04858004, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x080F, 0x04858006, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMMO },
 	// 83 /0 ib ADD r/m16, imm8 B Valid Valid Add sign-extended imm8 to r/m16.
 	// 83 /0 ib ADD r/m32, imm8 B Valid Valid Add sign-extended imm8 to r/m32.
-	{ NULL, FCML_AMT_GPI, 0x0817, 0x03C58004, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0817, 0x03C58006, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMM8 },
 	// REX.W + 83 /0 ib ADD r/m64, imm8 B Valid N.E. Add sign-extended imm8 to r/m64.
-	{ NULL, FCML_AMT_GPI, 0x080F, 0x04858004, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x080F, 0x04858006, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMM8 },
 	// 00 /r ADD r/m8, r8 A Valid Valid Add r8 to r/m8.
 	// REX + 00 /r ADD r/m8*, r8* A Valid N.E. Add r8 to r/m8.
-	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C48000, { 0x00, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_MODRM_R_8, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C48002, { 0x00, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_MODRM_R_8, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RM8_R8 },
 	// 01 /r ADD r/m16, r16 A Valid Valid Add r16 to r/m16.
 	// 01 /r ADD r/m32, r32 A Valid Valid Add r32 to r/m32.
 	// REX.W + 01 /r ADD r/m64, r64 A Valid N.E. Add r64 to r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C48000, { 0x01, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C48002, { 0x01, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_RO },
 	// 02 /r ADD r8, r/m8 A Valid Valid Add r/m8 to r8.
 	// REX + 02 /r ADD r8*, r/m8* A Valid N.E. Add r/m8 to r8.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x02, 0x00, 0x00 }, { FCML_OP_MODRM_R_8_W, FCML_OP_MODRM_RM_8, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48002, { 0x02, 0x00, 0x00 }, { FCML_OP_MODRM_R_8_W, FCML_OP_MODRM_RM_8, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_R8_RM8 },
 	// 03 /r ADD r16, r/m16 A Valid Valid Add r/m16 to r16.
 	// 03 /r ADD r32, r/m32 A Valid Valid Add r/m32 to r32.
 	// REX.W + 03 /r ADD r64, r/m64 A Valid N.E. Add r/m64 to r64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x03, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48002, { 0x03, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RO_RMO }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ADDPD[] = {
 	// 66 0F 58 /r ADDPD xmm1, xmm2/m128 A Valid Valid Add packed double-precision floating-point values from xmm2/m128 to xmm1.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x1000, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1000, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VADDPD[] = {
 	// VEX.NDS.128.66.0F.WIG 58 /r VADDPD xmm1, xmm2, xmm3/m128 V/V AVX Add packed double-precision floating-point values from xmm3/mem to xmm2 and stores result in xmm1.
 	// VEX.NDS.256.66.0F.WIG 58 /r VADDPD ymm1, ymm2, ymm3/m256 Add packed double-precision floating-point values from ymm3/mem to ymm2 and stores result in ymm1.
-	{ "vaddpd", FCML_AMT_AVX_SIMD, 0x1080, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x1080, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ADDPS[] = {
 	// 0F 58 /r ADDPS xmm1, xmm2/m128 A Valid Valid Add packed single-precision floating-point values from xmm2/m128 to xmm1.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VADDPS[] = {
 	// VEX.NDS.128.0F 58 /r VADDPS xmm1,xmm2, xmm3/m128
 	// VEX.NDS.256.0F 58 /r VADDPS ymm1, ymm2, ymm3/m256
 	{ "vaddps", FCML_AMT_AVX_SIMD, 0x0080, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
@@ -5792,9 +5798,11 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_AAM, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_AAM ),
 		FCML_IA_INSTRUCTION( F_AAS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_AAS ),
 		FCML_IA_INSTRUCTION( F_ADC, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_ADC ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "add", fcml_st_def_addr_mode_desc_ADD ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "addpd", fcml_st_def_addr_mode_desc_ADDPD ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "addps", fcml_st_def_addr_mode_desc_ADDPS ),
+		FCML_IA_INSTRUCTION( F_ADD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_ADD ),
+		FCML_IA_INSTRUCTION( F_ADDPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_ADDPD ),
+		FCML_IA_INSTRUCTION( F_VADDPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VADDPD ),
+		FCML_IA_INSTRUCTION( F_ADDPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_ADDPS ),
+		FCML_IA_INSTRUCTION( F_VADDPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VADDPS ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "addsd", fcml_st_def_addr_mode_desc_ADDSD ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "addss", fcml_st_def_addr_mode_desc_ADDSS ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "addsubpd", fcml_st_def_addr_mode_desc_ADDSUBPD ),

@@ -15,3 +15,7 @@ Na koncu konwertowac kod bledu na opis, przyladowo invalid args na nieppoprawne 
 Mozliwosc renderingny intel z RIP jako [rip+disp]
 
 Support hintów dla SIB w przypadku GAS, aktualnie nie obslugujemy.
+
+assemblowac  add dword [ebp],04030201h  , nalezy zwrocic uwage ze aby to zakodowac trzeba niejawnie zakodowac displacemenet = 0.
+
+Ignotowac hinty abs i rel dla dialektu AT&T, poniewaz uzytkownik moze je ustawic poza assemblerem.

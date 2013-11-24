@@ -67,7 +67,12 @@ enum fcml_en_instruction_codes {
 	F_AAD,
 	F_AAM,
 	F_AAS,
-	F_ADC
+	F_ADC,
+	F_ADD,
+	F_ADDPD,
+	F_VADDPD,
+	F_ADDPS,
+	F_VADDPS
 };
 
 /*******************/
