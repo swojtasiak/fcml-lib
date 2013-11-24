@@ -13,3 +13,5 @@ Dodac do domyslnego optimizera flage, ktora bedzie umozliwala assemblacje wszyst
 Na koncu konwertowac kod bledu na opis, przyladowo invalid args na nieppoprawne argumenty wyolania itd.
 
 Mozliwosc renderingny intel z RIP jako [rip+disp]
+
+Support hintów dla SIB w przypadku GAS, aktualnie nie obslugujemy.
