@@ -312,9 +312,10 @@ void fcml_tf_instruction_ADDPS_VADDPS(void) {
 	FCML_I32( "vaddps ymm2,ymm0,ymmword ptr [ecx+eax]", 0xC5, 0xFC, 0x58, 0x14, 0x01 );
 }
 
-void fcml_tf_instruction_ADDSD(void) {
+void fcml_tf_instruction_ADDSD_VADDSD(void) {
 	FCML_I32( "addsd xmm2,mmword ptr [ecx+eax]", 0xF2, 0x0F, 0x58, 0x14, 0x01 );
 	FCML_I64( "addsd xmm2,mmword ptr [rcx+rax]", 0xF2, 0x0F, 0x58, 0x14, 0x01 );
+	FCML_A64( "addsd (%rcx,%rax),%xmm2", 0xF2, 0x0F, 0x58, 0x14, 0x01 );
 	FCML_I32_D( "vaddsd xmm2,xmm5,mmword ptr [ecx+eax]", 0xC4, 0xE1, 0x53, 0x58, 0x14, 0x01 );
 	FCML_I32( "vaddsd xmm2,xmm4,mmword ptr [ecx+eax]", 0xC5, 0xDB, 0x58, 0x14, 0x01 );
 }
@@ -592,7 +593,7 @@ CU_TestInfo fctl_ti_instructions_a[] = {
     { "fcml_tf_instruction_ADD", fcml_tf_instruction_ADD },
     { "fcml_tf_instruction_ADDPD_VADDPD", fcml_tf_instruction_ADDPD_VADDPD },
     { "fcml_tf_instruction_ADDPS_VADDPS", fcml_tf_instruction_ADDPS_VADDPS },
-    { "fcml_tf_instruction_ADDSD", fcml_tf_instruction_ADDSD },
+    { "fcml_tf_instruction_ADDSD_VADDSD", fcml_tf_instruction_ADDSD_VADDSD },
     { "fcml_tf_instruction_ADDSS", fcml_tf_instruction_ADDSS },
     { "fcml_tf_instruction_ADDSUBPD", fcml_tf_instruction_ADDSUBPD },
     { "fcml_tf_instruction_ADDSUBPS", fcml_tf_instruction_ADDSUBPS },
