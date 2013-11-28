@@ -216,8 +216,9 @@ fcml_ceh_error fcml_ifn_dasm_utils_decode_segment_selector( fcml_ist_dasm_decodi
 
 fcml_data_size fcml_ifn_dasm_utils_decode_encoded_size_value( fcml_ist_dasm_decoding_context *context, fcml_uint8_t encoded_size ) {
 	fcml_data_size result = 0;
-	if( encoded_size >= FCML_EOS_DYNAMIC_BASE ) {
-	switch( encoded_size ) {
+	fcml_uint8_t size = ( encoded_size & ~FCML_EOS_OPT );
+	if( size >= FCML_EOS_DYNAMIC_BASE ) {
+	switch( size ) {
 	case FCML_EOS_EOSA:
 		result = context->effective_operand_size_attribute;
 		break;
@@ -241,7 +242,7 @@ fcml_data_size fcml_ifn_dasm_utils_decode_encoded_size_value( fcml_ist_dasm_deco
 		break;
 	}
 	} else {
-		result = encoded_size * 8;
+		result = size * 8;
 	}
 	return result;
 }

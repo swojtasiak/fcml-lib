@@ -158,7 +158,7 @@ fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t
 	fcml_st_def_decoded_addr_mode *addr_mode = (fcml_st_def_decoded_addr_mode*)fcml_fn_env_memory_alloc(sizeof(fcml_st_def_decoded_addr_mode));
 	if( addr_mode ) {
 
-		addr_mode->addr_mode = ( encoded_addr_mode & 0x3F000000 ) >> 24;
+		addr_mode->addr_mode = FCML_GET_ADDR_MODE( encoded_addr_mode );
 
 		// Store access mode for this operand decoding.
 		fcml_en_access_mode access_mode = FCML_AM_ACCESS_MODE_UNDEFINED;

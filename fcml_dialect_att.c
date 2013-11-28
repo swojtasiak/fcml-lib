@@ -49,6 +49,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("vaddpd"), FCML_ASM_DIALECT_INSTRUCTION( F_VADDPD, FCML_AM_ALL ), FCML_AM_ALL },
 	{ FCML_TEXT("addps"), FCML_ASM_DIALECT_INSTRUCTION( F_ADDPS, FCML_AM_ALL ), FCML_AM_ALL },
 	{ FCML_TEXT("vaddps"), FCML_ASM_DIALECT_INSTRUCTION( F_VADDPS, FCML_AM_ALL ), FCML_AM_ALL },
+	{ FCML_TEXT("addsd"), FCML_ASM_DIALECT_INSTRUCTION( F_ADDSD, FCML_AM_ALL ), FCML_AM_ALL },
+	{ FCML_TEXT("vaddsd"), FCML_ASM_DIALECT_INSTRUCTION( F_VADDSD, FCML_AM_ALL ), FCML_AM_ALL },
 	{ NULL, 0, 0 }
 };
 
@@ -288,7 +290,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruct
 		}
 
 		// If there is memory operand without data size set, it has to be deduced using register given in another operand.
-		int i;
+		/*int i;
 		fcml_st_operand *operand_reg = NULL;
 		fcml_st_operand *operand_mem = NULL;
 		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
@@ -317,7 +319,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruct
 			} else {
 				error = FCML_EN_UNKNOWN_DATA_SIZE_FOR_MEMORY_ADDRESSING;
 			}
-		}
+		}*/
 
 	} else {
 		// Mnemonic has been found, check if data size should be corrected for instruction. Take into account that data size specified by

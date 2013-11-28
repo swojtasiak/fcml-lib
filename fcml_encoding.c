@@ -55,12 +55,16 @@ typedef struct fcml_ist_asm_opcode_reg {
 	fcml_uint8_t ext_b;
 } fcml_ist_asm_opcode_reg;
 
+typedef fcml_data_size (*fcml_ifp_asm_memory_data_size_calculator)( fcml_st_instruction *instruction, fcml_ptr args );
+
 typedef struct fcml_ist_asm_addr_mode_desc_details {
 	// Precalculated flags describing which ASA and OSA values are available for addressing mode.
 	fcml_en_cmi_attribute_size_flag allowed_osa;
 	fcml_en_cmi_attribute_size_flag allowed_asa;
 	fcml_bool is_conditional;
 	fcml_st_condition condition;
+	fcml_ifp_asm_memory_data_size_calculator ds_calculator;
+	fcml_ptr ds_calculator_args;
 } fcml_ist_asm_addr_mode_desc_details;
 
 typedef union fcml_ist_asm_part_processor_cache {
@@ -301,6 +305,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_data_size effective_address_size = 0;
 	fcml_data_size effective_operand_size = 0;
+	fcml_uint8_t encoded_static_operand_size = FCML_GET_OS( encoded_operand_size );
 	fcml_nuint8_t l = { 0, FCML_FALSE };
 	if( encoded_data_size != NULL ) {
 		*encoded_data_size = data_size;
@@ -395,22 +400,23 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
         effective_operand_size = data_size - FCML_DS_16;
         break;
 	default:
-		if( comparator == FCML_IEN_CT_EQUAL ) {
-			if ( encoded_operand_size * 8 != data_size ) {
-				FCML_TRACE( "Unsupported operand size. Expected %d got %d.", data_size, encoded_operand_size * 8 );
-				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
-			}
-		} else {
-			if ( encoded_operand_size * 8 < data_size ) {
-				FCML_TRACE( "Unsupported operand size. Expected greater or equal to %d got %d.", data_size, encoded_operand_size * 8 );
-				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+		if( data_size || !FCML_IS_EOS_OPT( encoded_operand_size ) ) {
+			if( comparator == FCML_IEN_CT_EQUAL ) {
+				if ( encoded_static_operand_size * 8 != data_size ) {
+					FCML_TRACE( "Unsupported operand size. Expected %d got %d.", data_size, encoded_static_operand_size * 8 );
+					error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+				}
 			} else {
-				if( encoded_data_size != NULL ) {
-					*encoded_data_size = encoded_operand_size * 8;
+				if ( encoded_static_operand_size * 8 < data_size ) {
+					FCML_TRACE( "Unsupported operand size. Expected greater or equal to %d got %d.", data_size, encoded_static_operand_size * 8 );
+					error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+				} else {
+					if( encoded_data_size != NULL ) {
+						*encoded_data_size = encoded_static_operand_size * 8;
+					}
 				}
 			}
 		}
-
 		break;
 	}
 
@@ -536,12 +542,12 @@ fcml_bool fcml_ifn_asm_accept_segment_register( fcml_ist_asm_encoding_context *c
     return FCML_FALSE;
 }
 
-fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_uint8_t encoded_register_operand_size, fcml_data_size operand_size, enum fcml_ien_asm_comparator_type comparator ) {
+fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_uint8_t encoded_operand_size, fcml_data_size operand_size, enum fcml_ien_asm_comparator_type comparator ) {
 	fcml_st_asm_optimizer_processing_details *data_size_flags = &(context->optimizer_processing_details);
 	fcml_en_cmi_attribute_size_flag osa_flags = FCML_EN_ASF_ANY;
 	fcml_en_cmi_attribute_size_flag asa_flags = FCML_EN_ASF_ANY;
 	fcml_bool result = FCML_TRUE;
-	switch( encoded_register_operand_size ) {
+	switch( encoded_operand_size ) {
 	case FCML_EOS_UNDEFINED:
 		break;
 	case FCML_EOS_L:
@@ -614,9 +620,13 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
         break;
 	default:
 		if( comparator == FCML_IEN_CT_EQUAL ) {
-			result = ( encoded_register_operand_size * 8 == operand_size );
+			result = ( FCML_GET_OS( encoded_operand_size ) * 8 == operand_size );
 		} else {
-			result = ( encoded_register_operand_size * 8 >= operand_size );
+			result = ( FCML_GET_OS( encoded_operand_size ) * 8 >= operand_size );
+		}
+		if( !result && FCML_IS_EOS_OPT( encoded_operand_size ) && operand_size == 0 ) {
+			// Operand size is optional, so return TRUE anyway.
+			result = FCML_TRUE;
 		}
 		break;
 	}
@@ -685,10 +695,9 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
 		if( !error ) {
 
             // Not all EOSA values are available for every addressing mode. Additional flags can enable or disable some of them.
-			//source.is_signed = is_signed_value;
 
             if( imm_size != FCML_EOS_EOSA && imm_size_ex != FCML_EOS_EOSA ) {
-                is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, imm_size_ex * 8, imm_size * 8, 0, NULL );
+                is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_GET_OS( imm_size ) * 8, 0, NULL );
             } else if( imm_size == FCML_EOS_EOSA && imm_size_ex == FCML_EOS_EOSA ) {
                 // Destination size calculated by EOSA.
                 if( osa_flags & FCML_EN_ASF_16 )
@@ -700,20 +709,20 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
                 }
             } else if( imm_size == FCML_EOS_EOSA ) {
                 if( osa_flags & FCML_EN_ASF_16 )
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, imm_size_ex * 8, FCML_DS_16, FCML_EN_ASF_16, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_16, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, imm_size_ex * 8, FCML_DS_32, FCML_EN_ASF_32, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_32, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, imm_size_ex * 8, FCML_DS_64, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_64, FCML_EN_ASF_64, &flags );
                 }
             } else {
                 // IMM extended to effective address size attribute.
                 if( osa_flags & FCML_EN_ASF_16 )
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, imm_size * 8, FCML_EN_ASF_16, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, imm_size * 8, FCML_EN_ASF_32, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, imm_size * 8, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_64, &flags );
                 }
             }
 
@@ -760,13 +769,13 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 		fcml_bool is_converted = FCML_FALSE;
 
 		if( imm_size != FCML_EOS_EOSA && imm_size_ex != FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, imm_size_ex * 8, imm_size * 8, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( imm_size_ex ) * 8, FCML_GET_OS( imm_size ) * 8, 0, NULL );
 		} else if( imm_size == FCML_EOS_EOSA && imm_size_ex == FCML_EOS_EOSA ) {
 		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, eosa_size, 0, NULL );
 		} else if( imm_size == FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, imm_size_ex * 8, eosa_size, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( imm_size_ex ) * 8, eosa_size, 0, NULL );
 		} else {
-		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, imm_size * 8, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, FCML_GET_OS( imm_size ) * 8, 0, NULL );
 		}
 
 		if( !is_converted ) {
@@ -3041,11 +3050,82 @@ fcml_ifp_asm_instruction_part_processor_factory_dispatcher fcml_ifn_get_instruct
 	return dispatcher;
 }
 
+/* Default data size calculator. */
+
+typedef struct fcml_ist_asm_def_data_size_calc_args {
+	fcml_int mem_index;
+	fcml_int reg_index;
+} fcml_ist_asm_def_data_size_calc_args;
+
+fcml_data_size fcml_ifp_asm_default_reg_based_memory_data_size_calculator( fcml_st_instruction *instruction, fcml_ptr args ) {
+	fcml_data_size data = FCML_DS_UNDEF;
+	fcml_ist_asm_def_data_size_calc_args *dsc_args = (fcml_ist_asm_def_data_size_calc_args*)args;
+	if( instruction->operands_count >= dsc_args->reg_index + 1 ) {
+		fcml_st_operand *operand = &(instruction->operands[dsc_args->reg_index]);
+		if( operand->type == FCML_EOT_REGISTER ) {
+			return operand->reg.size;
+		}
+	}
+	return data;
+}
+
+fcml_ceh_error fcml_ifn_asm_prepare_mem_data_size_calculator( fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ist_asm_addr_mode_desc_details *details ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_int mem_index = -1;
+	fcml_int reg_index = -1;
+
+	// Just in case.
+	details->ds_calculator = NULL;
+	details->ds_calculator_args = NULL;
+
+	fcml_int i;
+	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+		fcml_uint32_t addr_mode = addr_mode_desc->opperands[i];
+		if( addr_mode == FCML_NA ) {
+			break;
+		}
+		if( FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode ), FCML_OP_RM_BASE ) ) {
+			fcml_st_def_decoded_addr_mode *dec_addr_mode = fcml_fnp_def_decode_addr_mode_args( addr_mode, &error );
+			if( error ) {
+				return error;
+			}
+			fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm*)dec_addr_mode->addr_mode_args;
+			if( !rm_args  ) {
+				return FCML_CEH_GEC_OUT_OF_MEMORY;
+			}
+			if( rm_args->flags & FCML_RMF_M ) {
+				if( !FCML_IS_EOS_DYNAMIC( rm_args->encoded_memory_operand_size ) ) {
+					mem_index = i;
+				}
+			}
+			fcml_fnp_def_free_addr_mode( dec_addr_mode );
+		}
+		if( FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode_desc->opperands[i] ), FCML_OP_R_BASE ) ) {
+			reg_index = i;
+		}
+	}
+
+	if( mem_index != -1 && reg_index != -1 ) {
+		fcml_ist_asm_def_data_size_calc_args *args = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_def_data_size_calc_args ) );
+		if( !args ) {
+			return FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+		args->mem_index = mem_index;
+		args->reg_index = reg_index;
+		details->ds_calculator = &fcml_ifp_asm_default_reg_based_memory_data_size_calculator;
+		details->ds_calculator_args = args;
+	}
+
+	return error;
+}
+
 // Precalculates some data using given addressing mode. By precalculating them we can get some performance
 // benefits further.
-fcml_ist_asm_addr_mode_desc_details fcml_ifn_asm_precalculate_addr_mode( fcml_st_def_addr_mode_desc *addr_mode_desc ) {
+fcml_ceh_error fcml_ifn_asm_precalculate_addr_mode( fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ist_asm_addr_mode_desc_details *details ) {
 
-	fcml_ist_asm_addr_mode_desc_details details = {0};
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_uint16_t allowed_prefixes = addr_mode_desc->allowed_prefixes;
 
@@ -3096,16 +3176,21 @@ fcml_ist_asm_addr_mode_desc_details fcml_ifn_asm_precalculate_addr_mode( fcml_st
 
 	// Sets calculated values in details.
 
-	details.allowed_asa = asa_flags;
-	details.allowed_osa = osa_flags;
+	details->allowed_asa = asa_flags;
+	details->allowed_osa = osa_flags;
 
-	return details;
+	return error;
 }
 
 void fcml_ifn_asm_free_addr_mode( fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_dialect_context_int *dialect_context ) {
     if( addr_mode ) {
+    	// Free all mnemonics.
         if( addr_mode->mnemonic ) {
             dialect_context->free_mnemonic( addr_mode->mnemonic );
+        }
+        // Free arguments allocated for memory data size calculator if there are any.
+        if( addr_mode->addr_mode_details.ds_calculator_args ) {
+        	fcml_fn_env_memory_free( addr_mode->addr_mode_details.ds_calculator_args );
         }
         fcml_fn_env_memory_free( addr_mode );
     }
@@ -3163,7 +3248,18 @@ fcml_ceh_error fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_b
         }
 
         addr_mode->addr_mode_desc = addr_mode_desc;
-        addr_mode->addr_mode_details = fcml_ifn_asm_precalculate_addr_mode( addr_mode_desc );
+
+        error = fcml_ifn_asm_precalculate_addr_mode( addr_mode_desc, &(addr_mode->addr_mode_details) );
+		if( error ) {
+			fcml_fn_env_memory_free(addr_mode);
+			return error;
+		}
+
+		error = fcml_ifn_asm_prepare_mem_data_size_calculator( addr_mode_desc, &(addr_mode->addr_mode_details) );
+		if( error ) {
+			fcml_fn_env_memory_free(addr_mode);
+			return error;
+		}
 
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details = &(addr_mode->addr_mode_details);
         addr_mode_details->is_conditional = FCML_TRUE;
@@ -3201,7 +3297,19 @@ fcml_ceh_error fcml_ifn_asm_default_addr_mode_encoding_details_builder( fcml_ist
 	}
 
 	addr_mode->addr_mode_desc = addr_mode_desc;
-	addr_mode->addr_mode_details = fcml_ifn_asm_precalculate_addr_mode( addr_mode_desc );
+
+	// Prepare addressing mode details.
+	error = fcml_ifn_asm_precalculate_addr_mode( addr_mode_desc, &(addr_mode->addr_mode_details) );
+	if( error ) {
+		fcml_fn_env_memory_free(addr_mode);
+		return error;
+	}
+	// TODO: boilerplate code.
+	error = fcml_ifn_asm_prepare_mem_data_size_calculator( addr_mode_desc, &(addr_mode->addr_mode_details) );
+	if( error ) {
+		fcml_fn_env_memory_free(addr_mode);
+		return error;
+	}
 
 	int instruction_parts;
 

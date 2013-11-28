@@ -120,14 +120,17 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ADDPS[] = {
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VADDPS[] = {
 	// VEX.NDS.128.0F 58 /r VADDPS xmm1,xmm2, xmm3/m128
 	// VEX.NDS.256.0F 58 /r VADDPS ymm1, ymm2, ymm3/m256
-	{ "vaddps", FCML_AMT_AVX_SIMD, 0x0080, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x0080, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ADDSD[] = {
 	// F2 0F 58 /r ADDSD xmm1, xmm2/m64 A Valid Valid Add the low doubleprecision floating-point value from xmm2/m64 to xmm1.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x2000, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x2000, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VADDSD[] = {
 	// VEX.NDS.128.F2.0F 58 /r VADDSD xmm1,xmm2,xmm3/m64
-	{ "vaddsd", FCML_AMT_AVX_SIMD, 0x20C0, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_64, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x20C0, 0x00D88000, { 0x0F, 0x58, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_OP64, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ADDSS[] = {
@@ -5803,7 +5806,8 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_VADDPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VADDPD ),
 		FCML_IA_INSTRUCTION( F_ADDPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_ADDPS ),
 		FCML_IA_INSTRUCTION( F_VADDPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VADDPS ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "addsd", fcml_st_def_addr_mode_desc_ADDSD ),
+		FCML_IA_INSTRUCTION( F_ADDSD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_ADDSD ),
+		FCML_IA_INSTRUCTION( F_VADDSD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VADDSD ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "addss", fcml_st_def_addr_mode_desc_ADDSS ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "addsubpd", fcml_st_def_addr_mode_desc_ADDSUBPD ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "addsubps", fcml_st_def_addr_mode_desc_ADDSUBPS ),

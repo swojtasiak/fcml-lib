@@ -15,6 +15,7 @@
 /* Constants used to encode operand size on one byte. Used only in instruction descriptions. */
 
 // Take into account that every size is given in a number of bytes.
+
 #define FCML_EOS_UNDEFINED	0
 #define FCML_EOS_512B		FCML_EOS_UNDEFINED
 #define FCML_EOS_BYTE		1
@@ -30,24 +31,27 @@
 
 // Dynamic encoded operand sizes calculated at runtime.
 
-#define FCML_EOS_DYNAMIC_BASE	0xF0
+#define FCML_EOS_DYNAMIC_BASE	0x70
+#define FCML_EOS_OPT			0x80
 
 // Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute.
-#define FCML_EOS_EOSA		0xFF
-#define FCML_EOS_EASA		0xFE
+#define FCML_EOS_EOSA			0x7F
+#define FCML_EOS_EASA			0x7E
 
 // Operand size calculated on L field.
-#define FCML_EOS_L			0xFD
+#define FCML_EOS_L				0x7D
 
 // Operand sizes that cannot be simply written as number of bytes.
-#define FCML_EOS_14_28		0xFC
-#define FCML_EOS_94_108		0xFB
-#define FCML_EOS_32_64		0xFA
+#define FCML_EOS_14_28			0x7C
+#define FCML_EOS_94_108			0x7B
+#define FCML_EOS_32_64			0x7A
 // Far pointer indirect.
-#define FCML_EOS_FPI		0xF9
+#define FCML_EOS_FPI			0x79
 
 // True if encoded operand size is a dynamic one.
-#define FCML_IS_EOS_DYNAMIC(x)	( ( x & 0x80 ) != 0 )
+#define FCML_IS_EOS_DYNAMIC(x)	( ( x & 0x40 ) != 0 )
+#define FCML_IS_EOS_OPT(x)		( ( x & 0x80 ) != 0 )
+#define FCML_GET_OS(x)			( ( x ) & ~FCML_EOS_OPT )
 
 /* Instruction and addressing mode types. */
 
@@ -72,7 +76,9 @@ enum fcml_en_instruction_codes {
 	F_ADDPD,
 	F_VADDPD,
 	F_ADDPS,
-	F_VADDPS
+	F_VADDPS,
+	F_ADDSD,
+	F_VADDSD
 };
 
 /*******************/
@@ -265,15 +271,15 @@ typedef struct fcml_st_def_instruction_desc {
 
 // Immediate data.
 #define FCML_OP_IMM_BASE											0x01000000
-#define FCML_OP_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OP_IMM_BASE | encoded_imm_size << 8 | encoded_ex_imm_size )
+#define FCML_OP_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OP_IMM_BASE | ( encoded_imm_size ) << 8 | encoded_ex_imm_size )
 
 // Register explicitly set.
 #define FCML_OP_EXPLICIT_REG_BASE									0x02000000
-#define FCML_OP_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( FCML_OP_EXPLICIT_REG_BASE | reg_type << 12 | reg_num << 8 | encoded_reg_size )
+#define FCML_OP_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( FCML_OP_EXPLICIT_REG_BASE | ( reg_type ) << 12 | ( reg_num ) << 8 | encoded_reg_size )
 
 // Register field in opcode byte.
 #define FCML_OP_OPCODE_REG_BASE										0x03000000
-#define FCML_OP_OPCODE_REG(reg_type, encoded_reg_size)				( FCML_OP_OPCODE_REG_BASE | reg_type << 8 | encoded_reg_size )
+#define FCML_OP_OPCODE_REG(reg_type, encoded_reg_size)				( FCML_OP_OPCODE_REG_BASE | ( reg_type ) << 8 | encoded_reg_size )
 
 // Relative addressing.
 #define FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE							0x04000000
@@ -284,7 +290,7 @@ typedef struct fcml_st_def_instruction_desc {
 
 // Addressing by explicit GPR register. (Used by CMPS for instance.)
 #define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE					0x06000000
-#define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE | reg_num << 16 | encoded_operand_size << 8 | encoded_segment_register )
+#define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE | ( reg_num ) << 16 | ( encoded_operand_size ) << 8 | ( encoded_segment_register ) )
 
 // It allows defining explicit IMM8 operand type. See INT instruction.
 #define FCML_OP_EXPLICIT_IB_BASE									0x07000000
@@ -292,7 +298,7 @@ typedef struct fcml_st_def_instruction_desc {
 
 // Segment relative addressing.
 #define FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE						0x08000000
-#define FCML_OP_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE | operand_size << 8 | encoded_segment_register )
+#define FCML_OP_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE | ( operand_size ) << 8 | ( encoded_segment_register ) )
 
 /********************************/
 /*      ModR/M encoding.        */
@@ -305,7 +311,7 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_RMF_RM		( FCML_RMF_R | FCML_RMF_M )
 
 #define FCML_OP_RM_BASE								0x09000000
-#define FCML_OP_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( FCML_OP_RM_BASE | encoded_memory_operand_size << 16 | encoded_register_operand_size << 8 | reg_type << 4 | flags )
+#define FCML_OP_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( FCML_OP_RM_BASE | ( ( encoded_memory_operand_size ) << 16 ) | ( ( encoded_register_operand_size ) << 8 ) | ( ( reg_type ) << 4 ) | ( flags ) )
 #define FCML_OP_RM_W(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags )		( FCML_OP_RM(reg_type, encoded_register_operand_size, encoded_memory_operand_size, flags) | FCML_OA_W )
 
 #define FCML_OP_R_BASE								0x0A000000
@@ -340,7 +346,7 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_VSIB_YMM	0x02
 
 #define FCML_OP_VSIB_BASE						    	0x0D000000
-#define FCML_OP_VSIB( vector_index_register, encoded_index_value_size )		( FCML_OP_VSIB_BASE | vector_index_register << 8 | encoded_index_value_size )
+#define FCML_OP_VSIB( vector_index_register, encoded_index_value_size )		( FCML_OP_VSIB_BASE | ( vector_index_register ) << 8 | encoded_index_value_size )
 
 /**************/
 /* Pseudo-Op. */
@@ -361,7 +367,7 @@ typedef struct fcml_st_def_instruction_desc {
 
 // Useful macros related to addressing modes.
 
-#define FCMP_DEF_IS_ADDR_MODE( x, y )						( ( x ) == ( y >> 24 ) )
+#define FCMP_DEF_IS_ADDR_MODE( x, y )						( ( x ) == ( ( y ) >> 24 ) )
 
 // Shorthands
 
@@ -437,6 +443,16 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_MODRM_RM_XMM_32_W		( FCML_OP_MODRM_RM_XMM_32 | FCML_OA_W )
 #define FCML_OP_MODRM_RM_XMM_16         FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_WORD, FCML_RMF_RM )
 #define FCML_OP_MODRM_RM_XMM_16_W		( FCML_OP_MODRM_RM_XMM_16 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_YMM_OP256		FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_YWORD, FCML_EOS_YWORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_YMM_OP256_W	( FCML_OP_MODRM_RM_YMM_OP256 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_XMM_OP128		FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_OWORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_XMM_OP128_W	( FCML_OP_MODRM_RM_XMM_OP128 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_XMM_OP64       FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_QWORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_XMM_OP64_W		( FCML_OP_MODRM_RM_XMM_OP64 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_XMM_OP32       FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_DWORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_XMM_OP32_W		( FCML_OP_MODRM_RM_XMM_OP32 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_XMM_OP16       FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_WORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_XMM_OP16_W		( FCML_OP_MODRM_RM_XMM_OP16 | FCML_OA_W )
 #define FCML_OP_MODRM_M_YMM_256			FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_YWORD, FCML_EOS_YWORD, FCML_RMF_M )
 #define FCML_OP_MODRM_M_YMM_256_W		( FCML_OP_MODRM_RM_YMM_256 | FCML_OA_W )
 #define FCML_OP_MODRM_M_XMM_128			FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_OWORD, FCML_RMF_M )
@@ -465,6 +481,16 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_MODRM_RM_SIMD_L_16_W	( FCML_OP_MODRM_RM_SIMD_L_16 | FCML_OA_W )
 #define FCML_OP_MODRM_RM_SIMD_L_8		FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, FCML_EOS_BYTE, FCML_RMF_RM )
 #define FCML_OP_MODRM_RM_SIMD_L_8_W	    ( FCML_OP_MODRM_RM_SIMD_L_8 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_SIMD_L_OP128	FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, FCML_EOS_OWORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_SIMD_L_OP128_W	( FCML_OP_MODRM_RM_SIMD_L_OP128 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_SIMD_L_OP64	FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, FCML_EOS_QWORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_SIMD_L_OP64_W	( FCML_OP_MODRM_RM_SIMD_L_OP64 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_SIMD_L_OP32	FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, FCML_EOS_DWORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_SIMD_L_OP32_W	( FCML_OP_MODRM_RM_SIMD_L_OP32 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_SIMD_L_OP16	FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, FCML_EOS_WORD | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_SIMD_L_OP16_W	( FCML_OP_MODRM_RM_SIMD_L_OP16 | FCML_OA_W )
+#define FCML_OP_MODRM_RM_SIMD_L_OP8		FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, FCML_EOS_BYTE | FCML_EOS_OPT, FCML_RMF_RM )
+#define FCML_OP_MODRM_RM_SIMD_L_OP8_W	( FCML_OP_MODRM_RM_SIMD_L_OP8 | FCML_OA_W )
 
 #define FCML_OP_MODRM_RM_SIMD_E		FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_EOSA, FCML_EOS_EOSA, FCML_RMF_RM )
 #define FCML_OP_MODRM_RM_SIMD_E_W		( FCML_OP_MODRM_RM_SIMD_E | FCML_OA_W )
@@ -530,6 +556,8 @@ fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t
 void fcml_fnp_def_free_addr_mode( fcml_st_def_decoded_addr_mode *decoded_addr_mode );
 
 /* Addressing modes arguments. */
+
+#define FCML_GET_ADDR_MODE(x) 	( ( x ) & 0x3F000000 ) >> 24
 
 typedef struct fcml_sf_def_tma_imm {
 	fcml_uint8_t encoded_imm_size;
