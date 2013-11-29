@@ -105,6 +105,9 @@ typedef struct fcml_ist_asm_encoding_context {
 	fcml_bool is_short_form;
 	fcml_bool reg_opcode_needs_rex;
 	fcml_uint8_t is5_byte;
+	// Operand size calculator selected for processed addressing mode.
+	fcml_ifp_asm_memory_data_size_calculator ds_calculator;
+	fcml_ptr ds_calculator_args;
 	// Error messages.
 	fcml_st_ceh_error_container global_error_msg;
 	fcml_st_ceh_error_container addr_mode_error_msg;
@@ -298,6 +301,18 @@ fcml_data_size fcml_ifn_asm_get_effective_address_size( fcml_ist_asm_encoding_co
 		return context->optimizer_processing_details.effective_address_size;
 	}
 	return context->assembler_context->address_size_attribute;
+}
+
+fcml_data_size fcml_ifn_asm_calculate_operand_size( fcml_ist_asm_encoding_context *context, fcml_data_size size_operator, fcml_uint8_t encoded_size_operator ) {
+	// Remember, some addressing modes use registers that do not match memory data, these addressing modes
+	// can accept unknown operand size so we do not calculate size operators for them, because such calculated
+	// size wouldn't match data size anyway.
+	if( size_operator == FCML_OS_UNDEFINED && !FCML_IS_EOS_OPT( encoded_size_operator ) ) {
+		if( context->ds_calculator ) {
+			size_operator = context->ds_calculator( context->instruction, context->ds_calculator_args );
+		}
+	}
+	return size_operator;
 }
 
 fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_context *context, fcml_uint8_t encoded_operand_size, fcml_data_size data_size, fcml_data_size *encoded_data_size, enum fcml_ien_asm_comparator_type comparator ) {
@@ -1110,9 +1125,9 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_far_pointer( fcml_ien_asm_part_proce
 
 }
 
-//-----------------------------
-// Explicit gps reg addressing
-//-----------------------------
+//----------------------------------
+// Explicit GPR register addressing
+//----------------------------------
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_explicit_gps_reg_addressing( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_ist_asm_instruction_part *operand_enc ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1283,7 +1298,8 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 		}
 		if( is_mem ) {
 			// OSA.
-			if( !fcml_ifn_asm_accept_data_size( context, addr_mode_desc, args->encoded_memory_operand_size, operand_def->address.size_operator, FCML_IEN_CT_EQUAL ) ) {
+			fcml_data_size mem_data_size = fcml_ifn_asm_calculate_operand_size( context, operand_def->address.size_operator, args->encoded_memory_operand_size );
+			if( !fcml_ifn_asm_accept_data_size( context, addr_mode_desc, args->encoded_memory_operand_size, mem_data_size, FCML_IEN_CT_EQUAL ) ) {
 				FCML_TRACE( "Unsupported memory operand size." );
 				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			}
@@ -1360,7 +1376,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 				context->is_rel_alternative_hint = FCML_FALSE;
 			}
 		    context->mod_rm.address = operand_def->address;
-			error = fcml_ifn_asm_decode_dynamic_operand_size( context, args->encoded_memory_operand_size, operand_def->address.size_operator, NULL, FCML_IEN_CT_EQUAL );
+		    fcml_data_size mem_data_size = fcml_ifn_asm_calculate_operand_size( context, operand_def->address.size_operator, args->encoded_memory_operand_size );
+			error = fcml_ifn_asm_decode_dynamic_operand_size( context, args->encoded_memory_operand_size, mem_data_size, NULL, FCML_IEN_CT_EQUAL );
 		}
 		break;
 	default:
@@ -1843,6 +1860,11 @@ fcml_bool fcml_ifn_asm_accept_instruction_hints( fcml_hints addr_mode_dest_hints
 	return FCML_TRUE;
 }
 
+void fcml_ifn_asm_fill_context_with_addr_mode_details( fcml_ist_asm_encoding_context *context, fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode ) {
+	context->ds_calculator = addr_mode->addr_mode_details.ds_calculator;
+	context->ds_calculator_args = addr_mode->addr_mode_details.ds_calculator_args;
+}
+
 fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_context *asm_context, fcml_st_dialect_context_int *dialect_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
 
 	// Make a local copy of instruction because it still can be changed by preprocessor.
@@ -1925,6 +1947,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 #ifdef FCML_DEBUG
 				    context.__def_index = index;
 #endif
+
+				    fcml_ifn_asm_fill_context_with_addr_mode_details( &context, addr_mode );
 
                     // Check if addressing mode matches the hints, if there are any.
                     if( !context.instruction->hints || fcml_ifn_asm_accept_instruction_hints( addr_mode->hints, context.instruction->hints ) ) {
@@ -3080,6 +3104,11 @@ fcml_ceh_error fcml_ifn_asm_prepare_mem_data_size_calculator( fcml_st_def_addr_m
 	details->ds_calculator = NULL;
 	details->ds_calculator_args = NULL;
 
+	if( addr_mode_desc->opcode[0] == 0x10 && addr_mode_desc->opcode[1] == 0x00 && addr_mode_desc->opcode[2] == 0x00 && addr_mode_desc->opcode_flags == 0x00C48002 ) {
+		// 0x04859006 0x00C48002
+		details->ds_calculator_args = NULL;
+	}
+
 	fcml_int i;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 		fcml_uint32_t addr_mode = addr_mode_desc->opperands[i];
@@ -3096,13 +3125,13 @@ fcml_ceh_error fcml_ifn_asm_prepare_mem_data_size_calculator( fcml_st_def_addr_m
 				return FCML_CEH_GEC_OUT_OF_MEMORY;
 			}
 			if( rm_args->flags & FCML_RMF_M ) {
-				if( !FCML_IS_EOS_DYNAMIC( rm_args->encoded_memory_operand_size ) ) {
-					mem_index = i;
-				}
+				mem_index = i;
 			}
 			fcml_fnp_def_free_addr_mode( dec_addr_mode );
 		}
-		if( FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode_desc->opperands[i] ), FCML_OP_R_BASE ) ) {
+		if( FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode_desc->opperands[i] ), FCML_OP_R_BASE )
+				|| FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode_desc->opperands[i] ), FCML_OP_OPCODE_REG_BASE )
+				|| FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode_desc->opperands[i] ), FCML_OP_EXPLICIT_REG_BASE ) ) {
 			reg_index = i;
 		}
 	}
