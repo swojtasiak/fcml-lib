@@ -1006,17 +1006,19 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes( fcml_ist_dasm_decoding_co
 	}
 
 	// VEX required.
-	if( FCML_DEF_PREFIX_VEX_REQ( instruction_decoding_def->prefixes_flags ) && !prefixes->is_vex  ) {
+	if( ( FCML_DEF_PREFIX_VEX_REQ( instruction_decoding_def->prefixes_flags ) && !prefixes->is_vex )
+			|| ( !FCML_DEF_PREFIX_VEX_REQ( instruction_decoding_def->prefixes_flags ) && prefixes->is_vex ) ) {
 		// VEX prefix is required.
 		return FCML_FALSE;
 	}
 
 	// XOP required.
-	if( FCML_DEF_PREFIX_XOP_REQ( instruction_decoding_def->prefixes_flags ) && !prefixes->is_xop ) {
+	if( ( FCML_DEF_PREFIX_XOP_REQ( instruction_decoding_def->prefixes_flags ) && !prefixes->is_xop )
+			|| ( !FCML_DEF_PREFIX_XOP_REQ( instruction_decoding_def->prefixes_flags ) && prefixes->is_xop ) ) {
 		// VEX prefix is required.
 		return FCML_FALSE;
 	}
-
+	//TODO: powaznie sie nad tym zastanowic, moze jakies poziomy ignorowania bledow, ewentualnie warning, o to bedzie dobre.
 	// Check if VVVV is set to 1111 if needed.
 	if( FCML_DEF_PREFIX_VEXOP_VVVV( instruction_decoding_def->prefixes_flags ) && prefixes->vvvv != 0 ) {
 		return FCML_FALSE;

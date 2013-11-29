@@ -78,7 +78,25 @@ enum fcml_en_instruction_codes {
 	F_ADDPS,
 	F_VADDPS,
 	F_ADDSD,
-	F_VADDSD
+	F_VADDSD,
+	F_ADDSS,
+	F_VADDSS,
+	F_ADDSUBPD,
+	F_VADDSUBPD,
+	F_ADDSUBPS,
+	F_VADDSUBPS,
+	F_AESDEC,
+	F_VAESDEC,
+	F_AESDECLAST,
+	F_VAESDECLAST,
+	F_AESENC,
+	F_VAESENC,
+	F_AESENCLAST,
+	F_VAESENCLAST,
+	F_AESIMC,
+	F_VAESIMC,
+	F_AESKEYGENASSIST,
+	F_VAESKEYGENASSIST
 };
 
 /*******************/
@@ -91,7 +109,6 @@ enum fcml_en_instruction_codes {
 enum fcml_en_instruction_addr_mode_codes {
 	FCML_AM_UNKNOWN = 0,
 	FCML_AM_NO_OPERANS,
-
 	// IMM
 	FCML_AM_IMM8,
 	FCML_AM_IMMO,
@@ -107,9 +124,6 @@ enum fcml_en_instruction_addr_mode_codes {
 	FCML_AM_R8_RM8,
 	FCML_AM_RMO_RO,
 	FCML_AM_RO_RMO,
-
-
-
 };
 
 /*********************************************/
