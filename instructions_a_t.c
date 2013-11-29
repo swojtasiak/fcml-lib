@@ -134,6 +134,7 @@ void fcml_tf_instruction_ADC(void) {
 	// 11 /r ADC r/m32, r32 A Valid Valid Add with CF r32 to r/m32.
 	// REX.W + 11 /r ADC r/m64, r64 A Valid N.E. Add with CF r64 to r/m64.
 	FCML_I32( "lock adc dword ptr [ebp+04030201h],esp", 0xF0, 0x11, 0xa5, 0x01, 0x02, 0x03, 04 );
+	FCML_I32_A( "lock adc [ebp+04030201h],esp", 0xF0, 0x11, 0xa5, 0x01, 0x02, 0x03, 04 );
 	FCML_I32( "adc word ptr [di+0201h],sp", 0x66, 0x67, 0x11, 0xa5, 0x01, 0x02 );
 	FCML_A32( "adc %sp,0x0201(%di)", 0x66, 0x67, 0x11, 0xa5, 0x01, 0x02 );
 	FCML_I32( "adc dword ptr [di+0201h],esp", 0x67, 0x11, 0xa5, 0x01, 0x02 );
@@ -318,91 +319,112 @@ void fcml_tf_instruction_ADDSD_VADDSD(void) {
 	FCML_A64( "addsd (%rcx,%rax),%xmm2", 0xF2, 0x0F, 0x58, 0x14, 0x01 );
 	FCML_I32_D( "vaddsd xmm2,xmm5,mmword ptr [ecx+eax]", 0xC4, 0xE1, 0x53, 0x58, 0x14, 0x01 );
 	FCML_I32( "vaddsd xmm2,xmm4,mmword ptr [ecx+eax]", 0xC5, 0xDB, 0x58, 0x14, 0x01 );
+	FCML_A32( "vaddsd (%ecx,%eax),%xmm4,%xmm2", 0xC5, 0xDB, 0x58, 0x14, 0x01 );
 }
 
-void fcml_tf_instruction_ADDSS(void) {
+void fcml_tf_instruction_ADDSS_VADDSS(void) {
 	FCML_I32( "addss xmm2,dword ptr [ecx+eax]", 0xF3, 0x0F, 0x58, 0x14, 0x01 );
 	FCML_I64( "addss xmm2,dword ptr [rcx+rax]", 0xF3, 0x0F, 0x58, 0x14, 0x01 );
-	// VEX.NDS.128.F3.0F 58 /r VADDSS xmm1,xmm2, xmm3/m32
+	FCML_A64( "addss (%rcx,%rax),%xmm2", 0xF3, 0x0F, 0x58, 0x14, 0x01 );
 	FCML_I32_D( "vaddss xmm2,xmm5,dword ptr [ecx+eax]", 0xC4, 0xE1, 0x52, 0x58, 0x14, 0x01 );
 	FCML_I32( "vaddss xmm2,xmm4,dword ptr [ecx+eax]", 0xC5, 0xDA, 0x58, 0x14, 0x01 );
+	FCML_A32( "vaddss (%ecx,%eax),%xmm4,%xmm2", 0xC5, 0xDA, 0x58, 0x14, 0x01 );
 }
 
-void fcml_tf_instruction_ADDSUBPD(void) {
+void fcml_tf_instruction_ADDSUBPD_VADDSUBPD(void) {
 	FCML_I32( "addsubpd xmm2,xmmword ptr [ecx+eax]", 0x66, 0x0F, 0xD0, 0x14, 0x01 );
 	FCML_I64( "addsubpd xmm2,xmmword ptr [rcx+rax]", 0x66, 0x0F, 0xD0, 0x14, 0x01 );
-	// VEX.NDS.128.66.0F D0 /r VADDSUBPD xmm1,xmm2,xmm3/m128
-	// VEX.NDS.256.66.0F D0 /r VADDSUBPD ymm1, ymm2,ymm3/m256
+	FCML_A64( "addsubpd (%rcx,%rax),%xmm2", 0x66, 0x0F, 0xD0, 0x14, 0x01 );
 	FCML_I64( "vaddsubpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0xD0, 0x14, 0x01 );
+	FCML_I64( "vaddsubpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0xD0, 0x14, 0x01 );
+	FCML_A64( "vaddsubpd (%r9,%rax),%ymm14,%ymm10", 0xC4, 0x41, 0x0D, 0xD0, 0x14, 0x01 );
 	FCML_I32_D( "vaddsubpd xmm2,xmm7,xmmword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0xD0, 0x14, 0x01 );
 	FCML_I32_D( "vaddsubpd xmm2,xmm2,xmmword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0xD0, 0x14, 0x01 );
 	FCML_I32( "vaddsubpd xmm2,xmm7,xmmword ptr [ecx+eax]", 0xC5, 0xC1, 0xD0, 0x14, 0x01 );
 	FCML_I32( "vaddsubpd xmm2,xmm2,xmmword ptr [ecx+eax]", 0xC5, 0xE9, 0xD0, 0x14, 0x01 );
 }
 
-void fcml_tf_instruction_ADDSUBPS(void) {
+void fcml_tf_instruction_ADDSUBPS_VADDSUBPS(void) {
 	FCML_I32( "addsubps xmm2,xmmword ptr [ecx+eax]", 0xf2, 0x0F, 0xD0, 0x14, 0x01 );
+	FCML_I32_A( "addsubps xmm2,[ecx+eax]", 0xf2, 0x0F, 0xD0, 0x14, 0x01 );
 	FCML_I64( "addsubps xmm2,xmmword ptr [rcx+rax]", 0xf2, 0x0F, 0xD0, 0x14, 0x01 );
-	// VEX.NDS.128.F2.0F D0 /r VADDSUBPS xmm1,xmm2,xmm3/m128
-	// VEX.NDS.256.F2.0F D0 /r VADDSUBPS ymm1, ymm2,ymm3/m256
+	FCML_A64( "addsubps (%rcx,%rax),%xmm2", 0xf2, 0x0F, 0xD0, 0x14, 0x01 );
 	FCML_I64( "vaddsubps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0F, 0xD0, 0x14, 0x01 );
+	FCML_I64_A( "vaddsubps ymm10,ymm14,[r9+rax]", 0xC4, 0x41, 0x0F, 0xD0, 0x14, 0x01 );
+	FCML_A64( "vaddsubps (%r9,%rax),%ymm14,%ymm10", 0xC4, 0x41, 0x0F, 0xD0, 0x14, 0x01 );
 	FCML_I64( "vaddsubps xmm2,xmm14,xmmword ptr [r9+rax]", 0xC4, 0xC1, 0x0B, 0xD0, 0x14, 0x01 );
 	FCML_I32_D( "vaddsubps xmm2,xmm2,xmmword ptr [ecx+eax]", 0xC4, 0xC1, 0x6B, 0xD0, 0x14, 0x01 );
 	FCML_I32( "vaddsubps xmm2,xmm2,xmmword ptr [ecx+eax]", 0xC5, 0xEB, 0xD0, 0x14, 0x01 );
 	FCML_I32( "vaddsubps xmm2,xmm6,xmmword ptr [ecx+eax]", 0xC5, 0xCB, 0xD0, 0x14, 0x01 );
+	FCML_A32( "vaddsubps (%ecx,%eax),%xmm6,%xmm2", 0xC5, 0xCB, 0xD0, 0x14, 0x01 );
 }
 
-void fcml_tf_instruction_AESDEC(void) {
+void fcml_tf_instruction_AESDEC_VAESDEC(void) {
 	FCML_I32( "aesdec xmm2,xmmword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDE, 0x14, 0x01 );
 	FCML_I64( "aesdec xmm2,xmmword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDE, 0x14, 0x01 );
-	// VEX.NDS.128.66.0F38.WIG DE /r VAESDEC xmm1,xmm2,xmm3/m128
+	FCML_I64_A( "aesdec xmm2,[rcx+rax]", 0x66, 0x0F, 0x38, 0xDE, 0x14, 0x01 );
+	FCML_A64( "aesdec (%rcx,%rax),%xmm2", 0x66, 0x0F, 0x38, 0xDE, 0x14, 0x01 );
 	FCML_I32( "vaesdec xmm0,xmm3,xmmword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDE, 0x00 );
+	FCML_A32( "vaesdec (%eax),%xmm3,%xmm0", 0xC4, 0xE2, 0x61, 0xDE, 0x00 );
 	FCML_I32( "vaesdec xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDE, 0xC0 );
 	FCML_I64( "vaesdec xmm0,xmm3,xmmword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDE, 0x00 );
 }
 
-void fcml_tf_instruction_AESDECLAST(void) {
+void fcml_tf_instruction_AESDECLAST_VAESDECLAST(void) {
 	FCML_I32( "aesdeclast xmm2,xmmword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDF, 0x14, 0x01 );
 	FCML_I64( "aesdeclast xmm2,xmmword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDF, 0x14, 0x01 );
-	// VEX.NDS.128.66.0F38.WIG DF /r VAESDECLAST xmm1,xmm2,xmm3/m128
+	FCML_I64_A( "aesdeclast xmm2,[rcx+rax]", 0x66, 0x0F, 0x38, 0xDF, 0x14, 0x01 );
+	FCML_A64( "aesdeclast (%rcx,%rax),%xmm2", 0x66, 0x0F, 0x38, 0xDF, 0x14, 0x01 );
 	FCML_I32( "vaesdeclast xmm0,xmm3,xmmword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDF, 0x00 );
 	FCML_I32( "vaesdeclast xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDF, 0xC0 );
 	FCML_I64( "vaesdeclast xmm0,xmm3,xmmword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDF, 0x00 );
+	FCML_A64( "vaesdeclast (%rax),%xmm3,%xmm0", 0xC4, 0xE2, 0x61, 0xDF, 0x00 );
 }
 
-void fcml_tf_instruction_AESENC(void) {
+void fcml_tf_instruction_AESENC_VAESENC(void) {
 	FCML_I32( "aesenc xmm2,xmmword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDC, 0x14, 0x01 );
 	FCML_I64( "aesenc xmm2,xmmword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDC, 0x14, 0x01 );
+	FCML_I64_A( "aesenc xmm2,[rcx+rax]", 0x66, 0x0F, 0x38, 0xDC, 0x14, 0x01 );
+	FCML_A64( "aesenc (%rcx,%rax),%xmm2", 0x66, 0x0F, 0x38, 0xDC, 0x14, 0x01 );
 	// VEX.NDS.128.66.0F38.WIG DC /r VAESENC xmm1, xmm2, xmm3/m128
 	FCML_I32( "vaesenc xmm0,xmm3,xmmword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDC, 0x00 );
 	FCML_I32( "vaesenc xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDC, 0xC0 );
 	FCML_I64( "vaesenc xmm0,xmm3,xmmword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDC, 0x00 );
+	FCML_A64( "vaesenc (%rax),%xmm3,%xmm0", 0xC4, 0xE2, 0x61, 0xDC, 0x00 );
 }
 
 void fcml_tf_instruction_AESENCLAST(void) {
 	FCML_I32( "aesenclast xmm2,xmmword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDD, 0x14, 0x01 );
 	FCML_I64( "aesenclast xmm2,xmmword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDD, 0x14, 0x01 );
+	FCML_I64_A( "aesenclast xmm2,[rcx+rax]", 0x66, 0x0F, 0x38, 0xDD, 0x14, 0x01 );
+	FCML_A64( "aesenclast (%rcx,%rax),%xmm2", 0x66, 0x0F, 0x38, 0xDD, 0x14, 0x01 );
 	// VEX.NDS.128.66.0F38.WIG DD /r VAESENCLAST xmm1,xmm2,xmm3/m128
 	FCML_I32( "vaesenclast xmm0,xmm3,xmmword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDD, 0x00 );
 	FCML_I32( "vaesenclast xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDD, 0xC0 );
 	FCML_I64( "vaesenclast xmm0,xmm3,xmmword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDD, 0x00 );
+	FCML_A64( "vaesenclast (%rax),%xmm3,%xmm0", 0xC4, 0xE2, 0x61, 0xDD, 0x00 );
 }
 
 void fcml_tf_instruction_AESIMC(void) {
 	FCML_I32( "aesimc xmm2,xmmword ptr [ecx+eax]", 0x66, 0x0F, 0x38, 0xDB, 0x14, 0x01 );
 	FCML_I64( "aesimc xmm2,xmmword ptr [rcx+rax]", 0x66, 0x0F, 0x38, 0xDB, 0x14, 0x01 );
+	FCML_I64_A( "aesimc xmm2,[rcx+rax]", 0x66, 0x0F, 0x38, 0xDB, 0x14, 0x01 );
+	FCML_A64( "aesimc (%rcx,%rax),%xmm2", 0x66, 0x0F, 0x38, 0xDB, 0x14, 0x01 );
 	// VEX.128.66.0F38.WIG DB /r VAESIMC xmm1, xmm2/m128
-	FCML_I32( "vaesimc xmm0,xmm3,xmmword ptr [eax]", 0xC4, 0xE2, 0x61, 0xDB, 0x00 );
-	FCML_I32( "vaesimc xmm0,xmm3,xmm0", 0xC4, 0xE2, 0x61, 0xDB, 0xC0 );
-	FCML_I64( "vaesimc xmm0,xmm3,xmmword ptr [rax]", 0xC4, 0xE2, 0x61, 0xDB, 0x00 );
+	FCML_I32( "vaesimc xmm0,xmmword ptr [eax]", 0xC4, 0xE2, 0x79, 0xDB, 0x00 );
+	FCML_I32( "vaesimc xmm0,xmm0", 0xC4, 0xE2, 0x79, 0xDB, 0xC0 );
+	FCML_I64( "vaesimc xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0xDB, 0x00 );
+	FCML_A64( "vaesimc (%rax),%xmm0", 0xC4, 0xE2, 0x79, 0xDB, 0x00 );
 }
 
 void fcml_tf_instruction_AESKEYGENASSIST(void) {
 	FCML_I32( "aeskeygenassist xmm2,xmmword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0x3a, 0xDF, 0x14, 0x01, 0xFF );
 	FCML_I64( "aeskeygenassist xmm2,xmmword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3a, 0xDF, 0x14, 0x01, 0xFF );
+	FCML_A64( "aeskeygenassist $0xff,(%rcx,%rax),%xmm2", 0x66, 0x0F, 0x3a, 0xDF, 0x14, 0x01, 0xFF );
 	// VEX.128.66.0F3A.WIG DF /r ib VAESKEYGENASSIST xmm1,xmm2/m128,imm8
 	FCML_I32( "vaeskeygenassist xmm0,xmmword ptr [eax],0ffh", 0xC4, 0xE3, 0x79, 0xDF, 0x00, 0xFF );
 	FCML_I32( "vaeskeygenassist xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0xDF, 0xC0, 0xFF );
+	FCML_A32( "vaeskeygenassist $0xff,%xmm0,%xmm0", 0xC4, 0xE3, 0x79, 0xDF, 0xC0, 0xFF );
 }
 
 void fcml_tf_instruction_AND(void) {
@@ -594,12 +616,12 @@ CU_TestInfo fctl_ti_instructions_a[] = {
     { "fcml_tf_instruction_ADDPD_VADDPD", fcml_tf_instruction_ADDPD_VADDPD },
     { "fcml_tf_instruction_ADDPS_VADDPS", fcml_tf_instruction_ADDPS_VADDPS },
     { "fcml_tf_instruction_ADDSD_VADDSD", fcml_tf_instruction_ADDSD_VADDSD },
-    { "fcml_tf_instruction_ADDSS", fcml_tf_instruction_ADDSS },
-    { "fcml_tf_instruction_ADDSUBPD", fcml_tf_instruction_ADDSUBPD },
-    { "fcml_tf_instruction_ADDSUBPS", fcml_tf_instruction_ADDSUBPS },
-    { "fcml_tf_instruction_AESDEC", fcml_tf_instruction_AESDEC },
-    { "fcml_tf_instruction_AESDECLAST", fcml_tf_instruction_AESDECLAST },
-    { "fcml_tf_instruction_AESENC", fcml_tf_instruction_AESENC },
+    { "fcml_tf_instruction_ADDSS_VADDSS", fcml_tf_instruction_ADDSS_VADDSS },
+    { "fcml_tf_instruction_ADDSUBPD_VADDSUBPD", fcml_tf_instruction_ADDSUBPD_VADDSUBPD },
+    { "fcml_tf_instruction_ADDSUBPS_VADDSUBPS", fcml_tf_instruction_ADDSUBPS_VADDSUBPS },
+    { "fcml_tf_instruction_AESDEC_VAESDEC", fcml_tf_instruction_AESDEC_VAESDEC },
+    { "fcml_tf_instruction_AESDECLAST_VAESDECLAST", fcml_tf_instruction_AESDECLAST_VAESDECLAST },
+    { "fcml_tf_instruction_AESENC_VAESENC", fcml_tf_instruction_AESENC_VAESENC },
     { "fcml_tf_instruction_AESENCLAST", fcml_tf_instruction_AESENCLAST },
     { "fcml_tf_instruction_AESIMC", fcml_tf_instruction_AESIMC },
     { "fcml_tf_instruction_AESKEYGENASSIST", fcml_tf_instruction_AESKEYGENASSIST },
