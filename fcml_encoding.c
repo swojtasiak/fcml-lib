@@ -325,7 +325,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 	if( encoded_data_size != NULL ) {
 		*encoded_data_size = data_size;
 	}
-	switch( encoded_operand_size ) {
+	switch( encoded_static_operand_size ) {
 	case FCML_EOS_UNDEFINED:
 		break;
 	case FCML_EOS_L:
@@ -562,7 +562,7 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 	fcml_en_cmi_attribute_size_flag osa_flags = FCML_EN_ASF_ANY;
 	fcml_en_cmi_attribute_size_flag asa_flags = FCML_EN_ASF_ANY;
 	fcml_bool result = FCML_TRUE;
-	switch( encoded_operand_size ) {
+	switch( FCML_GET_OS( encoded_operand_size ) ) {
 	case FCML_EOS_UNDEFINED:
 		break;
 	case FCML_EOS_L:
