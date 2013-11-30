@@ -17,52 +17,55 @@ int fcml_tf_instructions_b_suite_cleanup(void) {
 	return 0;
 }
 
-void fcml_tf_instruction_BLENDPD(void) {
+void fcml_tf_instruction_BLENDPD_VBLENDPD(void) {
 	FCML_I32( "blendpd xmm2,xmmword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0x3a, 0x0D, 0x14, 0x01, 0xFF );
 	FCML_I64( "blendpd xmm2,xmmword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3a, 0x0D, 0x14, 0x01, 0xFF );
-	// VEX.NDS.128.66.0F3A 0D /r ib VBLENDPD xmm1,xmm2,xmm3/m128,imm8
-	// VEX.NDS.256.66.0F3A 0D /r ib VBLENDPD ymm1,ymm2,ymm3/m256,imm8
+	FCML_A64( "blendpd $0xff,(%rcx,%rax),%xmm2", 0x66, 0x0F, 0x3a, 0x0D, 0x14, 0x01, 0xFF );
 	FCML_I64( "vblendpd ymm10,ymm14,ymmword ptr [r9+rax],20h", 0xC4, 0x43, 0x0D, 0x0D, 0x14, 0x01, 0x20 );
 	FCML_I32_D( "vblendpd xmm2,xmm7,xmmword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x41, 0x0D, 0x14, 0x01, 0x20 ); // REX.B ignored in 32bit mode.
 	FCML_I32_D( "vblendpd xmm2,xmm2,xmmword ptr [ecx+eax],20h", 0xC4, 0xC3, 0x69, 0x0D, 0x14, 0x01, 0x20 ); // REX.B ignored in 32bit mode.
 	FCML_I32( "vblendpd xmm2,xmm7,xmmword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x41, 0x0D, 0x14, 0x01, 0x20 );
 	FCML_I32( "vblendpd xmm2,xmm2,xmmword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x69, 0x0D, 0x14, 0x01, 0x20 );
+	FCML_A32( "vblendpd $0x20,(%ecx,%eax),%xmm2,%xmm2", 0xC4, 0xE3, 0x69, 0x0D, 0x14, 0x01, 0x20 );
 }
 
-void fcml_tf_instruction_BLENDPS(void) {
+void fcml_tf_instruction_BLENDPS_VBLENDPS(void) {
 	FCML_I32( "blendps xmm2,xmmword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0x3a, 0x0C, 0x14, 0x01, 0xFF );
-	FCML_I64( "blendps xmm2,xmmword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0x3a, 0x0C, 0x14, 0x01, 0xFF );
-	// VEX.NDS.128.66.0F3A 0C /r ib VBLENDPS xmm1,xmm2,xmm3/m128,imm8
-	// VEX.NDS.256.66.0F3A 0C /r ib VBLENDPS ymm1,ymm2,ymm3/m256,imm8
+	FCML_A64( "blendps $0xff,(%rcx,%rax),%xmm2", 0x66, 0x0F, 0x3a, 0x0C, 0x14, 0x01, 0xFF );
 	FCML_I64( "vblendps ymm10,ymm14,ymmword ptr [r9+rax],20h", 0xC4, 0x43, 0x0D, 0x0C, 0x14, 0x01, 0x20 );
 	FCML_I32( "vblendps xmm2,xmm7,xmmword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x41, 0x0C, 0x14, 0x01, 0x20 );
 	FCML_I32( "vblendps xmm2,xmm2,xmmword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x69, 0x0C, 0x14, 0x01, 0x20 );
+	FCML_A64( "vblendps $0x20,(%rcx,%rax),%xmm2,%xmm2", 0xC4, 0xE3, 0x69, 0x0C, 0x14, 0x01, 0x20 );
 }
 
-void fcml_tf_instruction_BLENDVPD(void) {
+void fcml_tf_instruction_BLENDVPD_VBLENDVPD(void) {
 	FCML_I32( "blendvpd xmm2,xmmword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
 	FCML_I64( "blendvpd xmm2,xmmword ptr [rcx+rax],xmm0", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
-	// VEX.NDS.128.66.0F3A 4B /r /is4 VBLENDVPD xmm1, xmm2, xmm3/m128, xmm4
-	// VEX.NDS.256.66.0F3A 4B /r /is4 VBLENDVPD ymm1, ymm2, ymm3/m256, ymm4
+	FCML_A64( "blendvpd %xmm0,(%rcx,%rax),%xmm2", 0x66, 0x0F, 0x38, 0x15, 0x14, 0x01 );
 	FCML_I64( "vblendvpd ymm10,ymm14,ymmword ptr [r9+rax],ymm2", 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20 );
+	FCML_A64( "vblendvpd %ymm2,(%r9,%rax),%ymm14,%ymm10", 0xC4, 0x43, 0x0D, 0x4B, 0x14, 0x01, 0x20 );
 	FCML_I32( "vblendvpd xmm2,xmm7,xmmword ptr [ecx+eax],xmm2", 0xC4, 0xE3, 0x41, 0x4B, 0x14, 0x01, 0x20 );
+	FCML_I32_A( "vblendvpd xmm2,xmm7,[ecx+eax],xmm2", 0xC4, 0xE3, 0x41, 0x4B, 0x14, 0x01, 0x20 );
 	FCML_I32_D( "vblendvpd xmm2,xmm2,xmmword ptr [ecx+eax],xmm2", 0xC4, 0xE3, 0x69, 0x4B, 0x14, 0x01, 0xA0 );
 	FCML_I32( "vblendvpd xmm2,xmm2,xmmword ptr [ecx+eax],xmm2", 0xC4, 0xE3, 0x69, 0x4B, 0x14, 0x01, 0x20 );
+	FCML_A32( "vblendvpd %xmm2,(%ecx,%eax),%xmm2,%xmm2", 0xC4, 0xE3, 0x69, 0x4B, 0x14, 0x01, 0x20 );
 }
 
-void fcml_tf_instruction_BLENDVPS(void) {
+void fcml_tf_instruction_BLENDVPS_VBLENDVPS(void) {
 	FCML_I32( "blendvps xmm2,xmmword ptr [ecx+eax],xmm0", 0x66, 0x0F, 0x38, 0x14, 0x14, 0x01 );
 	FCML_I64( "blendvps xmm2,xmmword ptr [rcx+rax],xmm0", 0x66, 0x0F, 0x38, 0x14, 0x14, 0x01 );
-	// VEX.NDS.128.66.0F3A 4A /r /is4 VBLENDVPS xmm1, xmm2, xmm3/m128, xmm4
-	// VEX.NDS.256.66.0F3A 4A /r /is4 VBLENDVPS ymm1, ymm2, ymm3/m256, ymm4
+	FCML_A64( "blendvps %xmm0,(%rcx,%rax),%xmm2", 0x66, 0x0F, 0x38, 0x14, 0x14, 0x01 );
 	FCML_I64( "vblendvps ymm10,ymm14,ymmword ptr [r9+rax],ymm2", 0xC4, 0x43, 0x0D, 0x4A, 0x14, 0x01, 0x20 );
+	FCML_I64_A( "vblendvps ymm10,ymm14,[r9+rax],ymm2", 0xC4, 0x43, 0x0D, 0x4A, 0x14, 0x01, 0x20 );
 	FCML_I32( "vblendvps xmm2,xmm7,xmmword ptr [ecx+eax],xmm2", 0xC4, 0xE3, 0x41, 0x4A, 0x14, 0x01, 0x20 );
 	FCML_I32_D( "vblendvps xmm2,xmm2,xmmword ptr [ecx+eax],xmm2", 0xC4, 0xC3, 0x69, 0x4A, 0x14, 0x01, 0xA0 );
-	FCML_I32( "vblendvps xmm2,xmm2,xmmword ptr [ecx+eax],xmm2", 0xC4, 0xE3, 0x69, 0x4A, 0x14, 0x01, 0x20 );
+	FCML_A32( "vblendvps %xmm2,(%ecx,%eax),%xmm2,%xmm2", 0xC4, 0xE3, 0x69, 0x4A, 0x14, 0x01, 0x20 );
 }
 
 void fcml_tf_instruction_BOUND(void) {
+	//TODO: GAS taka kolejnosc przyjje:  bound %esi,(%eax)
 	FCML_I32( "bound esi,qword ptr [eax]", 0x62, 0x30 );
+	FCML_A32( "bound (%eax),%esi", 0x62, 0x30 );
 	FCML_I32( "bound si,dword ptr [eax]", 0x66, 0x62, 0x30 );
 	FCML_I32( "bound si,dword ptr [bx+si]", 0x66, 0x67, 0x62, 0x30 );
 	// Not supported in 64.
@@ -72,18 +75,22 @@ void fcml_tf_instruction_BOUND(void) {
 }
 
 void fcml_tf_instruction_BSF(void) {
-	FCML_I32( "bsf esp,dword ptr [ebp+04030201h]", 0x0f, 0xbc, 0xa5, 0x01, 0x02, 0x03, 04 );
+	FCML_I32( "bsf esp,dword ptr [ebp+04030201h]", 0x0f, 0xbc, 0xa5, 0x01, 0x02, 0x03, 0x04 );
 	FCML_I32( "bsf sp,word ptr [di+0201h]", 0x66, 0x67, 0x0f, 0xbc, 0xa5, 0x01, 0x02 );
+	FCML_A32( "bsf 0x0201(%di),%sp", 0x66, 0x67, 0x0f, 0xbc, 0xa5, 0x01, 0x02 );
 	FCML_I32( "bsf esp,dword ptr [di+0201h]", 0x67, 0x0f, 0xbc, 0xa5, 0x01, 0x02 );
 	FCML_I64( "bsf r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x0f, 0xbc, 0x64, 0x89, 0x01 );
+	FCML_A64( "bsf 0x0000000000000001(%r9,%rcx,4),%r12", 0x4D, 0x0f, 0xbc, 0x64, 0x89, 0x01 );
 }
 
 void fcml_tf_instruction_BSR(void) {
 	// We can only assemble BSR instructions, because they are always disassembled to BSF.
-	FCML_I32_A( "bsr esp,dword ptr [ebp+04030201h]", 0x0f, 0xbc, 0xa5, 0x01, 0x02, 0x03, 04 );
+	FCML_I32_A( "bsr esp,dword ptr [ebp+04030201h]", 0x0f, 0xbc, 0xa5, 0x01, 0x02, 0x03, 0x04 );
+	FCML_A32_A( "bsr 0x04030201(%ebp),%esp", 0x0f, 0xbc, 0xa5, 0x01, 0x02, 0x03, 0x04 );
 	FCML_I32_A( "bsr sp,word ptr [di+0201h]", 0x66, 0x67, 0x0f, 0xbc, 0xa5, 0x01, 0x02 );
 	FCML_I32_A( "bsr esp,dword ptr [di+0201h]", 0x67, 0x0f, 0xbc, 0xa5, 0x01, 0x02 );
 	FCML_I64_A( "bsr r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x0f, 0xbc, 0x64, 0x89, 0x01 );
+	FCML_A64_A( "bsr 0x00000001(%r9,%rcx,4),%r12", 0x4D, 0x0f, 0xbc, 0x64, 0x89, 0x01 );
 }
 
 void fcml_tf_instruction_BSWAP(void) {
@@ -98,6 +105,7 @@ void fcml_tf_instruction_BSWAP(void) {
 	FCML_I3264( "bswap edi", 0x0f, 0xcf );
 
 	FCML_I3264_D( "bswap eax", 0x66, 0x0f, 0xc8 );
+	FCML_A32_A( "bswap %eax", 0x0f, 0xc8 );
 	FCML_I3264_D( "bswap ecx", 0x66, 0x0f, 0xc9 );
 	FCML_I3264_D( "bswap edx", 0x66, 0x0f, 0xca );
 	FCML_I3264_D( "bswap ebx", 0x66, 0x0f, 0xcb );
@@ -108,6 +116,7 @@ void fcml_tf_instruction_BSWAP(void) {
 
 	// only REX.R
 	FCML_I64( "bswap r8", 0x49, 0x0f, 0xc8 );
+	FCML_A64( "bswap %r8", 0x49, 0x0f, 0xc8 );
 	FCML_I64( "bswap r9", 0x49, 0x0f, 0xc9 );
 	FCML_I64( "bswap r10", 0x49, 0x0f, 0xca );
 	FCML_I64( "bswap r11", 0x49, 0x0f, 0xcb );
@@ -122,13 +131,19 @@ void fcml_tf_instruction_BT(void) {
 	// 0F A3 BT r/m32, r32 A Valid Valid Store selected bit in CF flag.
 	// REX.W + 0F A3 BT r/m64, r64 A Valid N.E. Store selected bit in CF flag.
 	FCML_I32( "bt dword ptr [esi],eax", 0x0F, 0xA3, 0x06 );
+	FCML_A32( "bt %eax,(%esi)", 0x0F, 0xA3, 0x06 );
 	FCML_I32( "bt word ptr [esi],ax", 0x66, 0x0F, 0xA3, 0x06 );
 	FCML_I32( "bt dword ptr [0201h],eax", 0x67, 0x0F, 0xA3, 0x06, 0x01, 0x02 );
+	FCML_A32( "bt %eax,0x0201", 0x67, 0x0F, 0xA3, 0x06, 0x01, 0x02 );
 	// 0F BA /4 ib BT r/m16, imm8 B Valid Valid Store selected bit in CF flag.
 	// 0F BA /4 ib BT r/m32, imm8 B Valid Valid Store selected bit in CF flag.
 	// REX.W + 0F BA /4 ib BT r/m64, imm8 B Valid N.E. Store selected bit in CF flag.
 	// EOS=32 EAS=64 (displacement extended to 64 bits)
 	FCML_I64( "bt dword ptr [rdi+0000000004030201h],05h", 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
+	// TODO: tu tez podobnie jak w BOUND nie ma okreslonego source/destination a operandy sa odwrocone? WTF
+	FCML_A64( "btl $0x05,0x0000000004030201(%rdi)", 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
+	// Memory data size has to be set. Default size is not supported (and probably won't be) like it is in GAS.
+	FCML_A64_A_FAILED( "bt $0x05,0x0000000004030201(%rdi)", 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=32 EAS=32 (displacement is not extended because EAS is 32)
 	FCML_I64( "bt dword ptr [edi+04030201h],05h", 0x67, 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=64 EAS=64
@@ -142,6 +157,7 @@ void fcml_tf_instruction_BTC(void) {
 	// 0F BB BTC r/m32, r32 A Valid Valid Store selected bit in CF flag and complement.
 	// REX.W + 0F BB BTC r/m64, r64 A Valid N.E. Store selected bit in CF flag and complement.
 	FCML_I32( "btc dword ptr [esi],eax", 0x0F, 0xBB, 0x06 );
+	FCML_A32( "btc %eax,(%esi)", 0x0F, 0xBB, 0x06 );
 	FCML_I32( "btc eax,eax", 0x0F, 0xBB, 0xC0 );
 	FCML_I32_A_FAILED( "lock btc eax,eax", 0xF0, 0x0F, 0xBB, 0xC0 );
 	// Such addressing mode is supported but only by disassembler, assembler doesn't allow it.
@@ -156,6 +172,7 @@ void fcml_tf_instruction_BTC(void) {
 	// REX.W + 0F BA /7 ib BTC r/m64, imm8 B Valid N.E. Store selected bit in CF flag and complement.
 	// EOS=32 EAS=64 (displacement extended to 64 bits)
 	FCML_I64( "btc dword ptr [rdi+0000000004030201h],05h", 0x0F, 0xBA, 0xBF, 0x01, 0x02, 0x03, 0x4, 0x05 );
+	FCML_A64( "btcl $0x05,0x0000000004030201(%rdi)", 0x0F, 0xBA, 0xBF, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=32 EAS=32 (displacement is not extended because EAS is 32)
 	FCML_I64( "btc dword ptr [edi+04030201h],05h", 0x67, 0x0F, 0xBA, 0xBF, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=64 EAS=64
@@ -336,10 +353,10 @@ void fcml_tf_instruction_BZHI(void) {
 }
 
 CU_TestInfo fctl_ti_instructions_b[] = {
-    { "fcml_tf_instruction_BLENDPD", fcml_tf_instruction_BLENDPD },
-    { "fcml_tf_instruction_BLENDPS", fcml_tf_instruction_BLENDPS },
-    { "fcml_tf_instruction_BLENDVPD", fcml_tf_instruction_BLENDVPD },
-    { "fcml_tf_instruction_BLENDVPS", fcml_tf_instruction_BLENDVPS },
+    { "fcml_tf_instruction_BLENDPD_VBLENDPD", fcml_tf_instruction_BLENDPD_VBLENDPD },
+    { "fcml_tf_instruction_BLENDPS_VBLENDPS", fcml_tf_instruction_BLENDPS_VBLENDPS },
+    { "fcml_tf_instruction_BLENDVPD_VBLENDVPD", fcml_tf_instruction_BLENDVPD_VBLENDVPD },
+    { "fcml_tf_instruction_BLENDVPS_VBLENDVPS", fcml_tf_instruction_BLENDVPS_VBLENDVPS },
     { "fcml_tf_instruction_BOUND", fcml_tf_instruction_BOUND },
     { "fcml_tf_instruction_BSF", fcml_tf_instruction_BSF },
     { "fcml_tf_instruction_BSR", fcml_tf_instruction_BSR },
