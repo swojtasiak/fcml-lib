@@ -96,7 +96,20 @@ enum fcml_en_instruction_codes {
 	F_AESIMC,
 	F_VAESIMC,
 	F_AESKEYGENASSIST,
-	F_VAESKEYGENASSIST
+	F_VAESKEYGENASSIST,
+	F_AND,
+	F_ANDPD,
+	F_VANDPD,
+	F_ANDPS,
+	F_VANDPS,
+	F_ANDNPD,
+	F_VANDNPD,
+	F_ANDNPS,
+	F_VANDNPS,
+	F_ARPL,
+	F_ANDN,
+	F_ADCX,
+	F_ADOX,
 };
 
 /*******************/
