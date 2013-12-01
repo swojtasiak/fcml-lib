@@ -157,6 +157,12 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+    //FCML_I64_D_P( "cdqe", 0x48, 0x98 );
+    //FCML_I32( "cwde", 0x98 );
+    //FCML_I64( "cdqe", 0x48, 0x98 );
+
+	//return 0;
+
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");
     } else {

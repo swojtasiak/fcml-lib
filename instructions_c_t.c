@@ -72,43 +72,56 @@ void fcml_tf_instruction_CBW_CWDE_CDQE(void) {
     FCML_I32( "cbw", 0x66, 0x98 );
     FCML_I32( "cwde", 0x98 );
     FCML_I64( "cdqe", 0x48, 0x98 );
+    FCML_A32( "cbtw", 0x66, 0x98 );
+	FCML_A32( "cwtl", 0x98 );
+	FCML_A64( "cltq", 0x48, 0x98 );
 }
 
 void fcml_tf_instruction_CLC(void) {
     FCML_I32( "clc", 0xf8 );
     FCML_I64( "clc", 0xf8 );
+    FCML_A32( "clc", 0xf8 );
+    FCML_A64( "clc", 0xf8 );
 }
 
 void fcml_tf_instruction_CLD(void) {
     FCML_I3264( "cld", 0xfc );
+    FCML_A3264( "cld", 0xfc );
 }
 
 void fcml_tf_instruction_CLFLUSH(void) {
     FCML_I32( "clflush byte ptr [esp+edx+00000020h]", 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
+    FCML_A32( "clflush 0x00000020(%esp,%edx)", 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
     FCML_I32_D( "clflush byte ptr [esp+edx+00000020h]", 0x66, 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
     FCML_I64( "clflush byte ptr [rsp+rdx+0000000000000020h]", 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
+    FCML_A64( "clflush 0x0000000000000020(%rsp,%rdx)", 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
     FCML_I64_D( "clflush byte ptr [rsp+rdx+0000000000000020h]", 0x66, 0x0F, 0xAE, 0x7C, 0x14, 0x20 );
     FCML_I64( "clflush byte ptr [rbp+0000000000000001h]", 0x0F, 0xAE, 0x7D, 0x01 );
 }
 
 void fcml_tf_instruction_CLI(void) {
     FCML_I3264( "cli", 0xfa );
+    FCML_A3264( "cli", 0xfa );
 }
 
 void fcml_tf_instruction_CLGI(void) {
     FCML_I3264( "clgi", 0x0F, 0x01, 0xDD );
+    FCML_A3264( "clgi", 0x0F, 0x01, 0xDD );
 }
 
 void fcml_tf_instruction_CLTS(void) {
     FCML_I3264( "clts", 0x0f, 0x06 );
+    FCML_A3264( "clts", 0x0f, 0x06 );
 }
 
 void fcml_tf_instruction_CMC(void) {
     FCML_I3264( "cmc", 0xf5 );
+    FCML_A3264( "cmc", 0xf5 );
 }
 
 void fcml_tf_instruction_CMOV(void) {
     FCML_I32( "cmovo esp,dword ptr [ebp+04030201h]", 0x0f, 0x40, 0xa5, 0x01, 0x02, 0x03, 04 );
+    FCML_A32( "cmovo 0x04030201(%ebp),%esp", 0x0f, 0x40, 0xa5, 0x01, 0x02, 0x03, 04 );
     FCML_I32( "cmovo sp,word ptr [di+0201h]", 0x66, 0x67, 0x0f, 0x40, 0xa5, 0x01, 0x02 );
     FCML_I32( "cmovo esp,dword ptr [di+0201h]", 0x67, 0x0f, 0x40, 0xa5, 0x01, 0x02 );
     FCML_I64( "cmovo r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x0f, 0x40, 0x64, 0x89, 0x01 );
@@ -120,6 +133,7 @@ void fcml_tf_instruction_CMOV(void) {
     FCML_I32_A( "cmovnb esp,dword ptr [ebp+04030201h]", 0x0f, 0x43, 0xa5, 0x01, 0x02, 0x03, 04 );
     FCML_I32_A( "cmovae esp,dword ptr [ebp+04030201h]", 0x0f, 0x43, 0xa5, 0x01, 0x02, 0x03, 04 );
     FCML_I32( "cmovnc esp,dword ptr [ebp+04030201h]", 0x0f, 0x43, 0xa5, 0x01, 0x02, 0x03, 04 );
+    FCML_A32( "cmovnc 0x04030201(%ebp),%esp", 0x0f, 0x43, 0xa5, 0x01, 0x02, 0x03, 04 );
     FCML_I32_A( "cmovz esp,dword ptr [ebp+04030201h]", 0x0f, 0x44, 0xa5, 0x01, 0x02, 0x03, 04 );
     FCML_I32( "cmove esp,dword ptr [ebp+04030201h]", 0x0f, 0x44, 0xa5, 0x01, 0x02, 0x03, 04 );
     FCML_I32_A( "cmovnz esp,dword ptr [ebp+04030201h]", 0x0f, 0x45, 0xa5, 0x01, 0x02, 0x03, 04 );
@@ -142,6 +156,7 @@ void fcml_tf_instruction_CMOV(void) {
     FCML_I32( "cmovle esp,dword ptr [ebp+04030201h]", 0x0f, 0x4e, 0xa5, 0x01, 0x02, 0x03, 04 );
     FCML_I32_A( "cmovg esp,dword ptr [ebp+04030201h]", 0x0f, 0x4f, 0xa5, 0x01, 0x02, 0x03, 04 );
     FCML_I32( "cmovnle esp,dword ptr [ebp+04030201h]", 0x0f, 0x4f, 0xa5, 0x01, 0x02, 0x03, 04 );
+    FCML_A32( "cmovnle 0x04030201(%ebp),%esp", 0x0f, 0x4f, 0xa5, 0x01, 0x02, 0x03, 04 );
 }
 
 void fcml_tf_instruction_CMP(void) {
