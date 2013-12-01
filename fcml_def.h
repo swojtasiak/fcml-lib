@@ -150,6 +150,12 @@ enum fcml_en_instruction_codes {
 	F_CLTS,
 	F_CMC,
 	F_CMOV,
+	F_CMP,
+	F_CMPPD,
+	F_VCMPPD,
+	F_CMPPS,
+	F_VCMPPS,
+	F_CMPS,
 };
 
 /*******************/
@@ -188,6 +194,8 @@ enum fcml_en_instruction_addr_mode_codes {
 	FCML_RM0,
 	FCML_PTR16_O,
 	FCML_M16_O,
+	FCML_M8_M8,
+	FCML_MO_MO,
 };
 
 /*********************************************/

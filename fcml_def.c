@@ -620,70 +620,76 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_JMP[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CMP[] = {
 	// 3C ib CMP AL, imm8 D Valid Valid Compare imm8 with AL.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40000, { 0x3C, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ), FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C40002, { 0x3C, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_BYTE ) | FCML_OA_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_ER8_IMM8 },
 	// 3D iw CMP AX, imm16 D Valid Valid Compare imm16 with AX.
 	// 3D id CMP EAX, imm32 D Valid Valid Compare imm32 with EAX.
-	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C40000, { 0x3D, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C40002, { 0x3D, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_ERO_IMMO },
 	// REX.W + 3D id CMP RAX, imm32 D Valid N.E. Compare imm32 sign extended to 64-bits with RAX.
-	{ NULL, FCML_AMT_GPI, 0x0008, 0x04840000, { 0x3D, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0008, 0x04840002, { 0x3D, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ) | FCML_OA_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_ERO_IMMO },
 	// 80 /7 ib CMP r/m8, imm8 C Valid Valid Compare imm8 with r/m8.
 	// REX + 80 /7 ib CMP r/m8*, imm8 C Valid N.E. Compare imm8 with r/m8.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5B800, { 0x80, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5B806, { 0x80, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RM8_IMM8 },
 	// 81 /7 iw CMP r/m16, imm16 C Valid Valid Compare imm16 with r/m16.
 	// 81 /7 id CMP r/m32, imm32 C Valid Valid Compare imm32 with r/m32.
-	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C5B800, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C5B806, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMMO },
 	// REX.W + 81 /7 id CMP r/m64, imm32 C Valid N.E. Compare imm32 sign extended to 64-bits with r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0008, 0x0485B800, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0008, 0x0485B806, { 0x81, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMMO },
 	// 83 /7 ib CMP r/m16, imm8 C Valid Valid Compare imm8 with r/m16.
 	// 83 /7 ib CMP r/m32, imm8 C Valid Valid Compare imm8 with r/m32.
-	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C5B800, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C5B806, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMM8 },
 	// REX.W + 83 /7 ib CMP r/m64, imm8 C Valid N.E. Compare imm8 with r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0008, 0x0485B800, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0008, 0x0485B806, { 0x83, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMM8 },
 	// 38 /r CMP r/m8, r8 B Valid Valid Compare r8 with r/m8.
 	// REX + 38 /r CMP r/m8*, r8* B Valid N.E. Compare r8 with r/m8.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x38, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_MODRM_R_8, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48002, { 0x38, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_OP_MODRM_R_8, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RM8_R8 },
 	// 39 /r CMP r/m16, r16 B Valid Valid Compare r16 with r/m16.
 	// 39 /r CMP r/m32, r32 B Valid Valid Compare r32 with r/m32.
 	// REX.W + 39 /r CMP r/m64,r64 B Valid N.E. Compare r64 with r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x39, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48002, { 0x39, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_MODRM_R, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_RO },
 	// 3A /r CMP r8, r/m8 A Valid Valid Compare r/m8 with r8.
 	// REX + 3A /r CMP r8*, r/m8* A Valid N.E. Compare r/m8 with r8.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x3A, 0x00, 0x00 }, { FCML_OP_MODRM_R_8_W, FCML_OP_MODRM_RM_8, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48002, { 0x3A, 0x00, 0x00 }, { FCML_OP_MODRM_R_8_W, FCML_OP_MODRM_RM_8, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_R8_RM8 },
 	// 3B /r CMP r16, r/m16 A Valid Valid Compare r/m16 with r16.
 	// 3B /r CMP r32, r/m32 A Valid Valid Compare r/m32 with r32.
 	// REX.W + 3B /r CMP r64, r/m64 A Valid N.E. Compare r/m64 with r64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48000, { 0x3B, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48002, { 0x3B, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RO_RMO }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CMPPD[] = {
 	// 66 0F C2 /r ib CMPPD xmm1, xmm2/m128, imm8 A Valid Valid Compare packed doubleprecision floating-point values in xmm2/m128 and xmm1 using imm8 as comparison predicate.
 	{ NULL, FCML_AMT_SSE2_SIMD, 0x1001, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VCMPPD[] = {
 	// VEX.NDS.128.66.0F C2 /r ib VCMPPD xmm1, xmm2, xmm3/m128, imm8
 	// VEX.NDS.256.66.0F C2 /r ib VCMPPD ymm1, ymm2, ymm3/m256, imm8
-	{ "vcmppd", FCML_AMT_AVX_SIMD, 0x1080, 0x00D88000, { 0x0F, 0xC2, 0x0C }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x1080, 0x00D88000, { 0x0F, 0xC2, 0x0C }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CMPPS[] = {
 	// 0F C2 /r ib CMPPS xmm1, xmm2/m128, imm8 A Valid Valid Compare packed singleprecision floating-point values in xmm2/mem and xmm1 using imm8 as comparison predicate.
 	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VCMPPS[] = {
 	// VEX.NDS.128.0F C2 /r ib VCMPPS xmm1, xmm2, xmm3/m128, imm8
 	// VEX.NDS.256.0F C2 /r ib VCMPPS ymm1, ymm2, ymm3/m256, imm8
-	{ "vcmpps", FCML_AMT_AVX_SIMD, 0x0080, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x0080, 0x00D88000, { 0x0F, 0xC2, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CMPS[] = {
 	// A6 CMPS m8, m8 A Valid Valid For legacy mode, compare byte at address DS:(E)SI with byte at address ES:(E)DI; For 64-bit mode compare byte at address (R|E)SI to byte at address (R|E)DI. The status flags are set accordingly.
-	{ "cmps;cmpsb[ts]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xA6, 0x00, 0x00 },
+	{ NULL, FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xA6, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
-			FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+			FCML_NA, FCML_NA, FCML_NA }, FCML_M8_M8 },
 	// A7 CMPS m16, m16 A Valid Valid For legacy mode, compare word at address DS:(E)SI with word at address ES:(E)DI; For 64-bit mode compare word at address (R|E)SI with word at address (R|E)DI. The status flags are set accordingly.
 	// A7 CMPS m32, m32 A Valid Valid For legacy mode, compare dword at address DS:(E)SI at dword at address ES:(E)DI; For 64-bit mode compare dword at address (R|E)SI at dword at address (R|E)DI. The status flags are set accordingly.
 	// REX.W + A7 CMPS m64, m64 A Valid N.E. Compares quadword at address (R|E)SI with quadword at address (R|E)DI and sets the status flags accordingly.
-	{ "cmps;cmpsw[ts,ow,a*];cmpsd[ts,od,a*];cmpsq[ts,oq,a*]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xA7, 0x00, 0x00 },
+	{ NULL, FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xA7, 0x00, 0x00 },
 			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_SI, FCML_EOS_EOSA, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
 			FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
-			FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+			FCML_NA, FCML_NA, FCML_NA }, FCML_MO_MO }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CMPSD[] = {
@@ -5929,10 +5935,12 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_CLTS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CLTS),
 		FCML_IA_INSTRUCTION( F_CMC, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CMC),
 		FCML_IA_INSTRUCTION( F_CMOV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CMOV),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "cmp", fcml_st_def_addr_mode_desc_CMP),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "cmppd", fcml_st_def_addr_mode_desc_CMPPD),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "cmpps", fcml_st_def_addr_mode_desc_CMPPS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "cmps", fcml_st_def_addr_mode_desc_CMPS),
+		FCML_IA_INSTRUCTION( F_CMP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CMP),
+		FCML_IA_INSTRUCTION( F_CMPPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CMPPD),
+		FCML_IA_INSTRUCTION( F_VCMPPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VCMPPD),
+		FCML_IA_INSTRUCTION( F_CMPPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CMPPS),
+		FCML_IA_INSTRUCTION( F_VCMPPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VCMPPS),
+		FCML_IA_INSTRUCTION( F_CMPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CMPS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CMPSD),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CMPSS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "cmpxchg", fcml_st_def_addr_mode_desc_CMPXCHG),

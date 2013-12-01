@@ -125,6 +125,17 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("clts"), FCML_ASM_DIALECT_INSTRUCTION( F_CLTS, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("cmc"), FCML_ASM_DIALECT_INSTRUCTION( F_CMC, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("cmov"), FCML_ASM_DIALECT_INSTRUCTION( F_CMOV, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cmp"), FCML_ASM_DIALECT_INSTRUCTION( F_CMP, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cmp"), FCML_ASM_DIALECT_INSTRUCTION( F_CMP, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cmpb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMP, FCML_AM_RM8_IMM8 ), 0 },
+	{ FCML_TEXT("cmp;cmpw[sf,ow,mm];cmpl[sf,od,mm];cmpq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMP, FCML_AM_RMO_IMMO ), 0 },
+	{ FCML_TEXT("cmp;cmpw[sf,ow,mm];cmpl[sf,od,mm];cmpq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMP, FCML_AM_RMO_IMM8 ), 0 },
+	{ FCML_TEXT("cmppd"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPPD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcmppd"), FCML_ASM_DIALECT_INSTRUCTION( F_VCMPPD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cmpps"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPPS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcmpps"), FCML_ASM_DIALECT_INSTRUCTION( F_VCMPPS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cmpsb;cmpsb[ts,sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPS, FCML_M8_M8 ), 0 },
+	{ FCML_TEXT("cmpsw[ts,ow,a*];cmpsd[ts,od,a*];cmpsq[ts,oq,a*]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPS, FCML_MO_MO ), 0 },
 	{ NULL, 0, 0 }
 };
 
