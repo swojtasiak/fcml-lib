@@ -163,6 +163,9 @@ int main(int argc, char **argv) {
 
 	//return 0;
 
+	FCML_A64_A_P( "cmpsb (%rdi),(%rsi)", 0xA6 );
+	return 0;
+
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");
     } else {

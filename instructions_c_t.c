@@ -168,15 +168,19 @@ void fcml_tf_instruction_CMP(void) {
     FCML_I32_M( "cmp eax,40302010h", 2, FCML_MI( 0x3D, 0x10, 0x20, 0x30, 0x40 ), FCML_MI( 0x81, 0xf8, 0x10, 0x20, 0x30, 0x40 ) );
     FCML_I32_M( "cmp ax,2010h", 2, FCML_MI( 0x66, 0x3D, 0x10, 0x20 ), FCML_MI( 0x66, 0x81, 0xf8, 0x10, 0x20 ) );
     FCML_I64_M( "cmp rax,0000000040302010h", 2, FCML_MI( 0x48, 0x3D, 0x10, 0x20, 0x30, 0x40 ), FCML_MI( 0x48, 0x81, 0xf8, 0x10, 0x20, 0x30, 0x40 ) );
+    FCML_A64_M( "cmp $0x0000000040302010,%rax", 2, FCML_MI( 0x48, 0x3D, 0x10, 0x20, 0x30, 0x40 ), FCML_MI( 0x48, 0x81, 0xf8, 0x10, 0x20, 0x30, 0x40 ) );
     // 80 /7 ib CMP r/m8, imm8 C Valid Valid Compare imm8 with r/m8.
     // REX + 80 /7 ib CMP r/m8*, imm8 C Valid N.E. Compare imm8 with r/m8.
     FCML_I32( "cmp byte ptr [eax],20h", 0x80, 0x38, 0x20 );
+    FCML_A32( "cmpb $0x20,(%eax)", 0x80, 0x38, 0x20 );
     FCML_I64_D( "cmp byte ptr [rax],20h", 0x48, 0x80, 0x38, 0x20 );
     // 81 /7 iw CMP r/m16, imm16 C Valid Valid Compare imm16 with r/m16.
     // 81 /7 id CMP r/m32, imm32 C Valid Valid Compare imm32 with r/m32.
     // REX.W + 81 /7 id CMP r/m64, imm32 C Valid N.E. Compare imm32 sign extended to 64-bits with r/m64.
     FCML_I32( "cmp dword ptr [eax],40302010h", 0x81, 0x38, 0x10, 0x20, 0x30, 0x40 );
+    FCML_A32( "cmpl $0x40302010,(%eax)", 0x81, 0x38, 0x10, 0x20, 0x30, 0x40 );
     FCML_I32( "cmp word ptr [eax],2010h", 0x66, 0x81, 0x38, 0x10, 0x20 );
+    FCML_A32( "cmpw $0x2010,(%eax)", 0x66, 0x81, 0x38, 0x10, 0x20 );
     FCML_I64( "cmp qword ptr [rax],0000000040302010h", 0x48, 0x81, 0x38, 0x10, 0x20, 0x30, 0x40 );
     // 83 /7 ib CMP r/m16, imm8 C Valid Valid Compare imm8 with r/m16.
     // 83 /7 ib CMP r/m32, imm8 C Valid Valid Compare imm8 with r/m32.
@@ -184,6 +188,7 @@ void fcml_tf_instruction_CMP(void) {
     FCML_I32_M( "cmp dword ptr [eax],00000010h", 2, FCML_MI( 0x83, 0x38, 0x10 ), FCML_MI( 0x81, 0x38, 0x10, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "cmp word ptr [eax],0010h", 2, FCML_MI( 0x66, 0x83, 0x38, 0x10 ), FCML_MI( 0x66, 0x81, 0x38, 0x10, 0x00 ) );
     FCML_I64_M( "cmp qword ptr [rax],0000000000000010h", 2, FCML_MI( 0x48, 0x83, 0x38, 0x10 ), FCML_MI( 0x48, 0x81, 0x38, 0x10, 0x00, 0x00, 0x00 ) );
+    FCML_A64_M( "cmpq $0x0000000000000010,(%rax)", 2, FCML_MI( 0x48, 0x83, 0x38, 0x10 ), FCML_MI( 0x48, 0x81, 0x38, 0x10, 0x00, 0x00, 0x00 ) );
     // 38 /r CMP r/m8, r8 B Valid Valid Compare r8 with r/m8.
     // REX + 38 /r CMP r/m8*, r8* B Valid N.E. Compare r8 with r/m8.
     FCML_I32( "cmp byte ptr [eax],dl", 0x38, 0x10 );
@@ -204,14 +209,17 @@ void fcml_tf_instruction_CMP(void) {
     FCML_I32( "cmp edx,dword ptr [eax]", 0x3B, 0x10 );
     FCML_I32( "cmp dx,word ptr [eax]", 0x66, 0x3B, 0x10 );
     FCML_I64( "cmp rdx,qword ptr [rax]", 0x48, 0x3B, 0x10 );
+    FCML_A64( "cmp (%rax),%rdx", 0x48, 0x3B, 0x10 );
 }
 
 void fcml_tf_instruction_CMPPD(void) {
     FCML_I32( "cmppd xmm2,xmmword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0xC2, 0x14, 0x01, 0xFF );
     FCML_I64( "cmppd xmm2,xmmword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0xC2, 0x14, 0x01, 0xFF );
+    FCML_A64( "cmppd $0xff,(%rcx,%rax),%xmm2", 0x66, 0x0F, 0xC2, 0x14, 0x01, 0xFF );
     // VEX.NDS.128.66.0F C2 /r ib VCMPPD xmm1, xmm2, xmm3/m128, imm8
     // VEX.NDS.256.66.0F C2 /r ib VCMPPD ymm1, ymm2, ymm3/m256, imm8
     FCML_I64( "vcmppd ymm10,ymm14,ymmword ptr [r9+rax],20h", 0xC4, 0x41, 0x0D, 0xC2, 0x14, 0x01, 0x20 );
+    FCML_A64( "vcmppd $0x20,(%r9,%rax),%ymm14,%ymm10", 0xC4, 0x41, 0x0D, 0xC2, 0x14, 0x01, 0x20 );
     FCML_I32( "vcmppd xmm2,xmm7,xmmword ptr [ecx+eax],20h", 0xc5, 0xC1, 0xC2, 0x14, 0x01, 0x20 );
     FCML_I32_D( "vcmppd xmm2,xmm7,xmmword ptr [ecx+eax],20h", 0xC4, 0xC1, 0x41, 0xC2, 0x14, 0x01, 0x20 );
     FCML_I32( "vcmppd xmm2,xmm2,xmmword ptr [ecx+eax],20h", 0xC5, 0xE9, 0xC2, 0x14, 0x01, 0x20 );
@@ -221,10 +229,12 @@ void fcml_tf_instruction_CMPPD(void) {
 void fcml_tf_instruction_CMPPS(void) {
     FCML_I32( "cmpps xmm2,xmmword ptr [ecx+eax],0ffh", 0x0F, 0xC2, 0x14, 0x01, 0xFF );
     FCML_I64( "cmpps xmm2,xmmword ptr [rcx+rax],0ffh", 0x0F, 0xC2, 0x14, 0x01, 0xFF );
+    FCML_A64( "cmpps $0xff,(%rcx,%rax),%xmm2", 0x0F, 0xC2, 0x14, 0x01, 0xFF );
     // VEX.NDS.128.0F C2 /r ib VCMPPS xmm1, xmm2, xmm3/m128, imm8
     // VEX.NDS.256.0F C2 /r ib VCMPPS ymm1, ymm2, ymm3/m256, imm8
     FCML_I64( "vcmpps ymm10,ymm14,ymmword ptr [r9+rax],20h", 0xC4, 0x41, 0x0C, 0xC2, 0x14, 0x01, 0x20 );
     FCML_I64( "vcmpps xmm2,xmm14,xmmword ptr [r9+rax],20h", 0xC4, 0xC1, 0x08, 0xC2, 0x14, 0x01, 0x20 );
+    FCML_A64( "vcmpps $0x20,(%r9,%rax),%xmm14,%xmm2", 0xC4, 0xC1, 0x08, 0xC2, 0x14, 0x01, 0x20 );
     FCML_I32( "vcmpps xmm2,xmm2,xmmword ptr [ecx+eax],20h", 0xC5, 0xE8, 0xC2, 0x14, 0x01, 0x20 );
 }
 
@@ -235,6 +245,7 @@ void fcml_tf_instruction_CMPS(void) {
     FCML_I32( "cmps byte ptr [esi],byte ptr [edi]", 0xA6 );
     FCML_I64_D( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
     FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0xA6 );
+    FCML_A64( "cmpsb (%rdi),(%rsi)", 0xA6 );
     FCML_I64_D( "cmps byte ptr [rsi],byte ptr [rdi]", 0x40, 0xA6 );
     FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0xA6 );
     FCML_I64_D( "cmps byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xA6 );
