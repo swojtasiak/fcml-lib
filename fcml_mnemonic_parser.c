@@ -1,6 +1,15 @@
 /*
  * fcml_mnemonic_parser.c
  *
+ * mm - Mnemonic for addressing mode using memory addressing.
+ * mr - Mnemonic for addressing mode without memory addressing.
+ * sb - Sets memory data size to one byte.
+ * sf - Sets memory data size to "supported_osa" which can be set using "oX" mnemonic attributes.
+ * oX (X=dwq) - Sets supported operand size attribute to 16, 32 or 64 bits.
+ * aX (X=dwq) - Sets supported address size attribute to 16, 32 or 64 bits.
+ * ts - Sets "shortcut" flags for mnemonic.
+ * pXX - Sets pseudo opcode value for mnemonic.
+ *
  *  Created on: 5 wrz 2013
  *      Author: tAs
  */

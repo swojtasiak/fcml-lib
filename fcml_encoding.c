@@ -1929,18 +1929,17 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 
                     context.is_short_form = is_short_form;
 
-                    if( is_short_form ) {
-                        fcml_data_size asa = addr_mode->mnemonic->supported_asa;
-                        context.optimizer_processing_details.effective_address_size = asa;
-                        if( asa ) {
-                            fcml_fn_cmi_set_attribute_size_flag_for_size( asa, &(context.optimizer_processing_details.allowed_effective_address_size) );
-                        }
-                        fcml_data_size osa = addr_mode->mnemonic->supported_osa;
-                        context.optimizer_processing_details.effective_operand_size = osa;
-                        if( osa ) {
-                            fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context.optimizer_processing_details.allowed_effective_operand_size) );
-                        }
-                    }
+                    // Apply attribute size restrictions from mnemonic definition.
+					fcml_data_size asa = addr_mode->mnemonic->supported_asa;
+					context.optimizer_processing_details.effective_address_size = asa;
+					if( asa ) {
+						fcml_fn_cmi_set_attribute_size_flag_for_size( asa, &(context.optimizer_processing_details.allowed_effective_address_size) );
+					}
+					fcml_data_size osa = addr_mode->mnemonic->supported_osa;
+					context.optimizer_processing_details.effective_operand_size = osa;
+					if( osa ) {
+						fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context.optimizer_processing_details.allowed_effective_operand_size) );
+					}
 
                     context.mnemonic = addr_mode->mnemonic;
 
@@ -3129,9 +3128,10 @@ fcml_ceh_error fcml_ifn_asm_prepare_mem_data_size_calculator( fcml_st_def_addr_m
 			}
 			fcml_fnp_def_free_addr_mode( dec_addr_mode );
 		}
-		if( FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode_desc->opperands[i] ), FCML_OP_R_BASE )
-				|| FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode_desc->opperands[i] ), FCML_OP_OPCODE_REG_BASE )
-				|| FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode_desc->opperands[i] ), FCML_OP_EXPLICIT_REG_BASE ) ) {
+		if( FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode ), FCML_OP_R_BASE )
+				|| FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode ), FCML_OP_OPCODE_REG_BASE )
+				|| FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode ), FCML_OP_EXPLICIT_REG_BASE )
+				|| FCMP_DEF_IS_ADDR_MODE( FCML_GET_ADDR_MODE( addr_mode ), FCML_OP_VEX_VVVV_REG_BASE ) ) {
 			reg_index = i;
 		}
 	}
