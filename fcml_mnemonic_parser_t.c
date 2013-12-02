@@ -28,7 +28,7 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {
     fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
     fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmps" );
-    CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_FALSE );
+    CU_ASSERT_EQUAL( mnemonic->is_shortcut, FCML_FALSE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->is_byte_ds, FCML_TRUE );
@@ -39,7 +39,7 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {
     element = element->next;
     mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmpsw" );
-    CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_TRUE );
+    CU_ASSERT_EQUAL( mnemonic->is_shortcut, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_DS_16 );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->is_byte_ds, FCML_FALSE );
@@ -50,14 +50,14 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {
     element = element->next;
     mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmpsd" );
-    CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_TRUE );
+    CU_ASSERT_EQUAL( mnemonic->is_shortcut, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_DS_32 );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
 
     element = element->next;
     mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmpsq" );
-    CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_TRUE );
+    CU_ASSERT_EQUAL( mnemonic->is_shortcut, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_DS_64 );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
 
@@ -76,7 +76,7 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics_1(void) {
     fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
     fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmps" );
-    CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_FALSE );
+    CU_ASSERT_EQUAL( mnemonic->is_shortcut, FCML_FALSE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
 
@@ -95,7 +95,7 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics_2(void) {
     fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
     fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmps" );
-    CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_TRUE );
+    CU_ASSERT_EQUAL( mnemonic->is_shortcut, FCML_TRUE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
 
@@ -159,7 +159,7 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics_4(void) {
     fcml_st_coll_list_element *element = mnemonics_set->mnemonics->head;
     fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)element->item;
     CU_ASSERT_STRING_EQUAL( mnemonic->mnemonic, "cmpordsd" );
-    CU_ASSERT_EQUAL( mnemonic->shortcut, FCML_FALSE );
+    CU_ASSERT_EQUAL( mnemonic->is_shortcut, FCML_FALSE );
     CU_ASSERT_EQUAL( mnemonic->supported_asa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->supported_osa, FCML_DS_UNDEF );
     CU_ASSERT_EQUAL( mnemonic->pseudo_op.is_not_null, FCML_TRUE );

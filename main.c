@@ -161,10 +161,8 @@ int main(int argc, char **argv) {
     //FCML_I32( "cwde", 0x98 );
     //FCML_I64( "cdqe", 0x48, 0x98 );
 
-	//return 0;
 
-	FCML_A64_A_P( "cmpsb (%rdi),(%rsi)", 0xA6 );
-	return 0;
+	//return 0;
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");

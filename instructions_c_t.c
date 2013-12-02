@@ -246,6 +246,7 @@ void fcml_tf_instruction_CMPS(void) {
     FCML_I64_D( "cmps byte ptr [rsi],byte ptr [rdi]", 0x48, 0xA6 );
     FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0xA6 );
     FCML_A64( "cmpsb (%rdi),(%rsi)", 0xA6 );
+    FCML_A64_D_SHORT( "cmpsb", 0xA6 );
     FCML_I64_D( "cmps byte ptr [rsi],byte ptr [rdi]", 0x40, 0xA6 );
     FCML_I64( "cmps byte ptr [rsi],byte ptr [rdi]", 0xA6 );
     FCML_I64_D( "cmps byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xA6 );
