@@ -8,6 +8,7 @@
  * oX (X=dwq) - Sets supported operand size attribute to 16, 32 or 64 bits.
  * aX (X=dwq) - Sets supported address size attribute to 16, 32 or 64 bits.
  * ts - Sets "shortcut" flags for mnemonic.
+ * tb - Sets "shortcut/classic" flag for mnemonic.
  * pXX - Sets pseudo opcode value for mnemonic.
  *
  *  Created on: 5 wrz 2013
@@ -33,10 +34,11 @@ enum fcml_ien_mp_parser_state {
 void fcml_ifn_mp_clean_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
     mnemonic->supported_osa = FCML_DS_UNDEF;
     mnemonic->supported_asa = FCML_DS_UNDEF;
-    mnemonic->shortcut = FCML_FALSE;
     mnemonic->mnemonic = NULL;
     mnemonic->pseudo_op.is_not_null = FCML_FALSE;
     mnemonic->pseudo_op.value = 0x00;
+    mnemonic->is_shortcut = FCML_FALSE;
+    mnemonic->is_classic = FCML_TRUE;
     mnemonic->is_byte_ds = FCML_FALSE;
     mnemonic->is_full_ds = FCML_FALSE;
     mnemonic->is_mode_mem_only = FCML_FALSE;
@@ -116,7 +118,11 @@ fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *a
     	break;
     case 't':
         if( attr_value[0] == 's' ) {
-            mnemonic->shortcut = FCML_TRUE;
+            mnemonic->is_shortcut = FCML_TRUE;
+            mnemonic->is_classic = FCML_FALSE;
+        } else if( attr_value[0] == 'b' ) {
+            mnemonic->is_shortcut = FCML_TRUE;
+            mnemonic->is_classic = FCML_TRUE;
         } else {
             // Currently this attribute can be set to 's' only.
             error = FCML_CEH_GEC_INVALID_INPUT;
@@ -299,15 +305,15 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemon
 
         	// Set default mnemonic only if there is no mnemonic yet. Default mnemonics can not have any attributes defined, so we do not
             // need to check anything.
-            if( !chosen_mnemonic && !mnemonic->shortcut && mnemonic->is_default ) {
+            if( !chosen_mnemonic && !mnemonic->is_shortcut && mnemonic->is_default ) {
                 chosen_mnemonic = mnemonic;
             }
 
 			// Size attributes.
 			if( fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_asa, asa ) && fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
 				// Shortcuts. Pseudo opcode mnemonic is also treated as a shortcut by disassembler.
-				if( ( use_shortcut && ( ( mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == pseudo_opcode.value ) || mnemonic->shortcut ) )
-					|| ( !use_shortcut && !mnemonic->pseudo_op.is_not_null && !mnemonic->shortcut ) ) {
+				if( ( use_shortcut && ( ( mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == pseudo_opcode.value ) || mnemonic->is_shortcut ) )
+					|| ( !use_shortcut && !mnemonic->pseudo_op.is_not_null && ( !mnemonic->is_shortcut || mnemonic->is_classic ) ) ) {
 					// Addressing mode.
 					// See "mm","mr" mnemonic attribute.
 					fcml_bool is_mode_ok = ( ( !mnemonic->is_mode_mem_only && !mnemonic->is_mode_reg_only) || ( mnemonic->is_mode_mem_only && is_memory ) || ( mnemonic->is_mode_reg_only && !is_memory ) );

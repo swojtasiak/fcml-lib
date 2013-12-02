@@ -15,7 +15,8 @@
 
 typedef struct fcml_st_mp_mnemonic {
     fcml_string mnemonic;
-    fcml_bool shortcut;
+    fcml_bool is_shortcut;
+    fcml_bool is_classic;
     fcml_bool is_mode_mem_only;
     fcml_bool is_mode_reg_only;
     fcml_data_size is_byte_ds;

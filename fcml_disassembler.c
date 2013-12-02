@@ -2194,7 +2194,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory );
 			if( mnemonic ) {
 				instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
-				instruction_details->is_shortcut = mnemonic->shortcut;
+				instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
 				// Render mnemonic using provided dialect.
 				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.choose_carry_conditional_mnemonic );
 			} else {

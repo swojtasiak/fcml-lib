@@ -1923,9 +1923,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 				// This information is necessary to ignore operands encoding process.
 
 				// Ignore all short forms if there are operands available.
-				if( !addr_mode->mnemonic->shortcut || no_operands ) {
+				//if( !addr_mode->mnemonic->is_shortcut || no_operands ) {
 
-                    fcml_bool is_short_form = addr_mode->mnemonic->shortcut && no_operands;
+                    fcml_bool is_short_form = addr_mode->mnemonic->is_shortcut && no_operands;
 
                     context.is_short_form = is_short_form;
 
@@ -1963,7 +1963,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
                         }
                     }
 
-				}
+				//}
 
 				addr_mode_element = addr_mode_element->next;
 
