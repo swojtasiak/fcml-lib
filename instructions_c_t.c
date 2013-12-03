@@ -257,10 +257,16 @@ void fcml_tf_instruction_CMPS(void) {
     FCML_I32( "cmps dword ptr [si],dword ptr [di]", 0x67, 0xA7 );
     FCML_I64_A_FAILED( "cmps dword ptr [si],dword ptr [di]", 0x67, 0xA7 );
     FCML_I32( "cmps word ptr [si],word ptr [di]", 0x66, 0x67, 0xA7 );
+    FCML_A32( "cmpsw (%di),(%si)", 0x66, 0x67, 0xA7 );
+    FCML_A32_D_SHORT( "cmpsw", 0x66, 0x67, 0xA7 );
     FCML_I32( "cmps dword ptr [esi],dword ptr [edi]", 0xA7 );
+    FCML_A32( "cmpsl (%edi),(%esi)", 0xA7 );
+    FCML_A32_D_SHORT( "cmpsl", 0xA7 );
     FCML_I64( "cmps qword ptr [rsi],qword ptr [rdi]", 0x48, 0xA7 );
     FCML_I64_D( "cmps dword ptr [rsi],dword ptr [rdi]", 0x40, 0xA7 );
     FCML_I64( "cmps dword ptr [rsi],dword ptr [rdi]", 0xA7 );
+    FCML_A64( "cmpsq (%rdi),(%rsi)", 0x48, 0xA7 );
+    FCML_A64_D_SHORT( "cmpsq", 0x48, 0xA7 );
     FCML_I64_D( "cmps dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xA7 );
     FCML_I64( "cmps dword ptr [esi],dword ptr [edi]", 0x67, 0xA7 );
     FCML_I64_D( "cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );
@@ -277,6 +283,10 @@ void fcml_tf_instruction_CMPS(void) {
     FCML_I32_A( "cmps dword ptr fs:[si],dword ptr es:[di]", 0x64, 0x67, 0xA7 );
     FCML_I32_A( "cmps dword ptr gs:[si],dword ptr es:[di]", 0x65, 0x67, 0xA7 );
     // Short forms.
+    FCML_A64_A( "cmpsb", 0xA6 );
+	FCML_A32_A( "cmpsw", 0x66, 0xA7 );
+	FCML_A32_A( "cmpsl", 0xA7 );
+	FCML_A64_A( "cmpsq", 0x48, 0xA7 );
     FCML_I32_D_SHORT( "repne cmpsb", 0xF2, 0xA6 );
     FCML_I32_D_SHORT( "cmpsw", 0x66, 0xA7 );
     FCML_I32_D_SHORT( "cmpsd", 0xA7 );
