@@ -135,7 +135,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("cmpps"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPPS, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("vcmpps"), FCML_ASM_DIALECT_INSTRUCTION( F_VCMPPS, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("cmpsb[tb,sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPS, FCML_M8_M8 ), 0 },
-	{ FCML_TEXT("cmpsw[ts,ow,a*];cmpsd[ts,od,a*];cmpsq[ts,oq,a*]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPS, FCML_MO_MO ), 0 },
+	{ FCML_TEXT("cmpsw[tb,ow,sf];cmpsl[tb,od,sf];cmpsq[tb,oq,sf]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPS, FCML_MO_MO ), 0 },
 	{ NULL, 0, 0 }
 };
 
