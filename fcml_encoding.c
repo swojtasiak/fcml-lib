@@ -1940,6 +1940,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 					if( osa ) {
 						fcml_fn_cmi_set_attribute_size_flag_for_size( osa, &(context.optimizer_processing_details.allowed_effective_operand_size) );
 					}
+					context.optimizer_processing_details.l = addr_mode->mnemonic->l;
 
                     context.mnemonic = addr_mode->mnemonic;
 

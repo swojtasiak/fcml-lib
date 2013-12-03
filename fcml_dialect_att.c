@@ -136,6 +136,63 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("vcmpps"), FCML_ASM_DIALECT_INSTRUCTION( F_VCMPPS, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("cmpsb[tb,sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPS, FCML_M8_M8 ), 0 },
 	{ FCML_TEXT("cmpsw[tb,ow,sf];cmpsl[tb,od,sf];cmpsq[tb,oq,sf]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPS, FCML_MO_MO ), 0 },
+	{ FCML_TEXT("cmpsd;cmpeqsd[p00];cmpltsd[p01];cmplesd[p02];cmpunordsd[p03];cmpneqsd[p04];cmpnltsd[p05];cmpnlesd[p06];cmpordsd[p07]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPSD, FCML_RXO_RMX64_OP ), 0 },
+	{ FCML_TEXT("vcmpsd;vcmpeqsd[p00];vcmpltsd[p01];vcmplesd[p02];vcmpunordsd[p03];vcmpneqsd[p04];vcmpnltsd[p05];vcmpnlesd[p06];vcmpordsd[p07];vcmpeq_uqsd[p08];vcmpngesd[p09];vcmpngtsd[p0a];vcmpfalsesd[p0b];vcmpneq_oqsd[p0c];vcmpgesd[p0d];vcmpgtsd[p0e];vcmptruesd[p0f];vcmpeq_ossd[p10];vcmplt_oqsd[p11];vcmple_oqsd[p12];vcmpunord_ssd[p13];vcmpneq_ussd[p14];vcmpnlt_uqsd[p15];vcmpnle_uqsd[p16];vcmpord_ssd[p17];vcmpeq_ussd[p18];vcmpnge_uqsd[p19];vcmpngt_uqsd[p1a];vcmpfalse_ossd[p1b];vcmpneq_ossd[p1c];vcmpge_oqsd[p1d];vcmpgt_oqsd[p1e];vcmptrue_ussd[p1f]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPSD, FCML_RXO_RXO_RMX64_OP ), 0 },
+	{ FCML_TEXT("cmpss;cmpeqss[p00];cmpltss[p01];cmpless[p02];cmpunordss[p03];cmpneqss[p04];cmpnltss[p05];cmpnless[p06];cmpordss[p07]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPSS, FCML_RXO_RMX32_OP ), 0 },
+	{ FCML_TEXT("vcmpss;vcmpeqss[p00];vcmpltss[p01];vcmpless[p02];vcmpunordss[p03];vcmpneqss[p04];vcmpnltss[p05];vcmpnless[p06];vcmpordss[p07];vcmpeq_uqss[p08];vcmpngess[p09];vcmpngtss[p0a];vcmpfalsess[p0b];vcmpneq_oqss[p0c];vcmpgess[p0d];vcmpgtss[p0e];vcmptruess[p0f];vcmpeq_osss[p10];vcmplt_oqss[p11];vcmple_oqss[p12];vcmpunord_sss[p13];vcmpneq_usss[p14];vcmpnlt_uqss[p15];vcmpnle_uqss[p16];vcmpord_sss[p17];vcmpeq_usss[p18];vcmpnge_uqss[p19];vcmpngt_uqss[p1a];vcmpfalse_osss[p1b];vcmpneq_osss[p1c];vcmpge_oqss[p1d];vcmpgt_oqss[p1e];vcmptrue_usss[p1f]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPSS, FCML_RXO_RXO_RMX32_OP ), 0 },
+	{ FCML_TEXT("cmpxchg"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPXCHG, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cmpxchg8b"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPXCHGxB, FCML_M64 ), 0 },
+	{ FCML_TEXT("cmpxchg16b"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPXCHGxB, FCML_M128 ), 0 },
+	{ FCML_TEXT("cpuid"), FCML_ASM_DIALECT_INSTRUCTION( F_CPUID, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("crc32b[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_CRC32, FCML_AM_RO_RM8 ), 0 },
+	{ FCML_TEXT("crc32w[ow,sf];crc32l[od,sf];crc32q[oq,sf]"), FCML_ASM_DIALECT_INSTRUCTION( F_CRC32, FCML_AM_RO_RMO ), 0 },
+	{ FCML_TEXT("cvtdq2pd"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTDQ2PD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtdq2pd"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTDQ2PD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtdq2ps"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTDQ2PS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtdq2ps"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTDQ2PS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtpd2dq"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTPD2DQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtpd2dq"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTPD2DQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtpd2pi"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTPD2PI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtpd2ps"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTPD2PS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtpd2ps"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTPD2PS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtpi2pd"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTPI2PD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtpi2ps"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTPI2PS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtps2dq"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTPS2DQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtps2dq"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTPS2DQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtps2pd"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTPS2PD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtps2pd"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTPS2PD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtps2pi"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTPS2PI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtsd2si"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTSD2SI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtsd2si"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTSD2SI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtsd2ss"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTSD2SS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtsd2ss"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTSD2SS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtsi2sdl"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTSI2SD, FCML_RX_RM32 ), 0 },
+	{ FCML_TEXT("cvtsi2sdq"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTSI2SD, FCML_RX_RM64 ), 0 },
+	{ FCML_TEXT("vcvtsi2sdl"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTSI2SD, FCML_RX_RX_RM32 ), 0 },
+	{ FCML_TEXT("vcvtsi2sdq"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTSI2SD, FCML_RX_RX_RM64 ), 0 },
+	{ FCML_TEXT("cvtsi2ssl"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTSI2SS, FCML_RX_RM32 ), 0 },
+	{ FCML_TEXT("cvtsi2ssq"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTSI2SS, FCML_RX_RM64 ), 0 },
+	{ FCML_TEXT("vcvtsi2ssl"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTSI2SS, FCML_RX_RX_RM32 ), 0 },
+	{ FCML_TEXT("vcvtsi2ssq"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTSI2SS, FCML_RX_RX_RM64 ), 0 },
+	{ FCML_TEXT("cvtss2sd"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTSS2SD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtss2sd"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTSS2SD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvtss2si"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTSS2SI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvtss2si"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTSS2SI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvttpd2dq"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTTPD2DQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvttpd2dqx[l0];vcvttpd2dqy[l1]"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTTPD2DQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvttpd2pi"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTTPD2PI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvttps2dq"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTTPS2DQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvttps2dq"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTTPS2DQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvttps2pi"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTTPS2PI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvttsd2si"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTTSD2SI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvttsd2si"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTTSD2SI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cvttss2si"), FCML_ASM_DIALECT_INSTRUCTION( F_CVTTSS2SI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcvttss2si"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTTSS2SI, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("cwtd[ow];cltd[od];cqto[oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_CWD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("comisd"), FCML_ASM_DIALECT_INSTRUCTION( F_COMISD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcomisd"), FCML_ASM_DIALECT_INSTRUCTION( F_VCOMISD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("comiss"), FCML_ASM_DIALECT_INSTRUCTION( F_COMISS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vcomiss"), FCML_ASM_DIALECT_INSTRUCTION( F_VCOMISS, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 
@@ -415,6 +472,9 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruct
 		} else if( mnemonic->is_full_ds ) {
 			// Full data size is based on effective operand size attribute.
 			data_size = mnemonic->supported_osa;
+		} else if( mnemonic->l.is_not_null ) {
+			// Data size based on L VEX/XOP prefix field.
+			data_size = mnemonic->l.value ? FCML_DS_256 : FCML_DS_128;
 		}
 		if( data_size != FCML_DS_UNDEF ) {
 			// Find effective address and make a correction to size operator.

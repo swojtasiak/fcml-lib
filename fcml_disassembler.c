@@ -2188,10 +2188,18 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 			instruction_details->opcode_field_s_bit = decoding_context.opcode_field_s_bit;
 			instruction_details->opcode_field_w_bit = decoding_context.opcode_field_w_bit;
 
+			// L flag for mnoemonic chooser.
+			fcml_nuint8_t l;
+			l.is_not_null = FCML_FALSE;
+			if( instruction_details->prefixes.is_vex || instruction_details->prefixes.is_xop ) {
+				l.is_not_null = FCML_TRUE;
+				l.value = instruction_details->prefixes.l;
+			}
+
 			// Mnemonic.
 			fcml_bool shortform = decoding_context.disassembler_context->configuration.use_short_form_mnemonics;
 			fcml_bool is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
-			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory );
+			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, l );
 			if( mnemonic ) {
 				instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
 				instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
