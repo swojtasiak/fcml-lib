@@ -198,7 +198,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("dec;decb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_DEC, FCML_RM8 ), 0 },
 	{ FCML_TEXT("dec;decw[ow,sf];decl[od,sf];decq[oq,sf]"), FCML_ASM_DIALECT_INSTRUCTION( F_DEC, FCML_RMO ), 0 },
 	{ FCML_TEXT("dec"), FCML_ASM_DIALECT_INSTRUCTION( F_DEC, FCML_RO ), 0 },
-	{ FCML_TEXT("div"), FCML_ASM_DIALECT_INSTRUCTION( F_DIV, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("div;divb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_DIV, FCML_AM_R16_RM8 ), 0 },
+	{ FCML_TEXT("div;divw[sf,ow];divl[sf,od];divq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_DIV, FCML_AM_RO_RMO ), 0 },
 	{ NULL, 0, 0 }
 };
 
