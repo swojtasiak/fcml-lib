@@ -47,6 +47,7 @@ void fcml_tf_instruction_IMUL(void) {
     FCML_I32( "imul byte ptr [eax+00000020h]", 0xF6, 0x68, 0x20 );
     FCML_I32( "imul byte ptr [eax+00000020h]", 0x66, 0xF6, 0x68, 0x20 );
     FCML_I64( "imul byte ptr [rax+0000000000000020h]", 0xF6, 0x68, 0x20 );
+    FCML_A64( "imulb 0x0000000000000020(%rax)", 0xf6, 0x68, 0x20 );
     // F7 /5 IMUL r/m16 A Valid Valid DX:AX AX r/m word.
     // F7 /5 IMUL r/m32 A Valid Valid EDX:EAX EAX r/m32.
     // REX.W + F7 /5 IMUL r/m64 A Valid N.E. RDX:RAX RAX r/m64.
@@ -55,6 +56,9 @@ void fcml_tf_instruction_IMUL(void) {
     FCML_I64( "imul dword ptr [rax+0000000000000020h]", 0xF7, 0x68, 0x20 );
     FCML_I64( "imul word ptr [rax+0000000000000020h]", 0x66, 0xF7, 0x68, 0x20 );
     FCML_I64( "imul qword ptr [rax+0000000000000020h]", 0x48, 0xF7, 0x68, 0x20 );
+    FCML_A64( "imull 0x0000000000000020(%rax)", 0xf7, 0x68, 0x20 );
+    FCML_A64( "imulw 0x0000000000000020(%rax)", 0x66, 0xf7, 0x68, 0x20 );
+    FCML_A64( "imulq 0x0000000000000020(%rax)", 0x48, 0xf7, 0x68, 0x20 );
     // 0F AF /r IMUL r16, r/m16 B Valid Valid word register word register r/m16.
     // 0F AF /r IMUL r32, r/m32 B Valid Valid doubleword register doubleword register r/m32.
     // REX.W + 0F AF /r IMUL r64, r/m64 B Valid N.E. Quadword register Quadword register r/m64.
@@ -63,6 +67,12 @@ void fcml_tf_instruction_IMUL(void) {
     FCML_I64( "imul ebp,dword ptr [rax+0000000000000020h]", 0x0F, 0xAF, 0x68, 0x20 );
     FCML_I64( "imul bp,word ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xAF, 0x68, 0x20 );
     FCML_I64( "imul rbp,qword ptr [rax+0000000000000020h]", 0x48, 0x0F, 0xAF, 0x68, 0x20 );
+    FCML_A64( "imull 0x0000000000000020(%rax),%ebp", 0x0f, 0xaf, 0x68, 0x20 );
+    FCML_A64( "imulw 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xaf, 0x68, 0x20 );
+    FCML_A64( "imulq 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xaf, 0x68, 0x20 );
+    FCML_A64_A( "imul 0x0000000000000020(%rax),%ebp", 0x0f, 0xaf, 0x68, 0x20 );
+	FCML_A64_A( "imul 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xaf, 0x68, 0x20 );
+	FCML_A64_A( "imul 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xaf, 0x68, 0x20 );
     // 6B /r ib IMUL r16, r/m16, imm8 C Valid Valid word register r/m16 sign-extended immediate byte.
     // 6B /r ib IMUL r32, r/m32, imm8 C Valid Valid doubleword register r/m32 sign-extended immediate byte.
     // REX.W + 6B /r ib IMUL r64, r/m64, imm8 C Valid N.E. Quadword register r/m64 sign-extended immediate byte.
@@ -71,6 +81,7 @@ void fcml_tf_instruction_IMUL(void) {
     FCML_I64_M( "imul ebp,dword ptr [rax+0000000000000020h],00000040h", 2, FCML_MI( 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x69, 0x68, 0x20, 0x40, 0x00, 0x00, 0x00 ) );
     FCML_I64_M( "imul bp,word ptr [rax+0000000000000020h],0040h", 2, FCML_MI( 0x66, 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x66, 0x69, 0x68, 0x20, 0x40, 0x00 ) );
     FCML_I64_M( "imul rbp,qword ptr [rax+0000000000000020h],0000000000000040h", 2, FCML_MI( 0x48, 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x48, 0x69, 0x68, 0x20, 0x40, 0x00, 0x00, 0x00 ) );
+    FCML_A64_M( "imulq $0x0000000000000040,0x0000000000000020(%rax),%rbp", 2, FCML_MI( 0x48, 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x48, 0x69, 0x68, 0x20, 0x40, 0x00, 0x00, 0x00 ) );
     // 69 /r iw IMUL r16, r/m16, imm16 C Valid Valid word register r/m16 immediate word.
     // 69 /r id IMUL r32, r/m32, imm32 C Valid Valid doubleword register r/m32 immediate doubleword.
     // REX.W + 69 /r id IMUL r64, r/m64, imm32 C Valid N.E. Quadword register r/m64 immediate doubleword.
@@ -78,9 +89,12 @@ void fcml_tf_instruction_IMUL(void) {
     FCML_I32( "imul bp,word ptr [eax+00000020h],5040h", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
     FCML_I64( "imul ebp,dword ptr [rax+0000000000000020h],70605040h", 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0x70 );
     FCML_I64( "imul bp,word ptr [rax+0000000000000020h],5040h", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
+    FCML_A64( "imulw $0x5040,0x0000000000000020(%rax),%bp", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
+    FCML_A64_A( "imul $0x5040,0x0000000000000020(%rax),%bp", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
     // In this case value is not sign extended to 64 bits, so can not be treated as signed!
     FCML_I64_A_FAILED( "imul rbp,qword ptr [rax+0000000000000020h],0ffffffffff605040h", 0x48, 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0xFF );
     FCML_I64_D( "imul rbp,qword ptr [rax+0000000000000020h],0ff605040h", 0x48, 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0xFF );
+    FCML_A64( "imulq $0xff605040,0x0000000000000020(%rax),%rbp", 0x48, 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0xff );
 }
 
 void fcml_tf_instruction_IN(void) {
@@ -100,6 +114,12 @@ void fcml_tf_instruction_IN(void) {
     FCML_I32( "in eax,dx", 0xED );
     FCML_I32( "in ax,dx", 0x66, 0xED );
     FCML_I64_D( "in eax,dx", 0x48, 0xED );
+    // GAS
+    FCML_A64( "in $0x20,%al", 0xe4, 0x20 );
+    FCML_A64( "in $0x20,%eax", 0xe5, 0x20 );
+    FCML_A64( "in $0x20,%ax", 0x66, 0xe5, 0x20 );
+    // TODO: Niespójnosć z GAS. GAS ubiera to w nawiasy: in   (%dx),%eax
+    FCML_A64( "in %dx,%al", 0xec );
 }
 
 void fcml_tf_instruction_INC(void) {
