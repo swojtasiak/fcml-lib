@@ -96,13 +96,16 @@ void fcml_tf_instruction_DIV(void) {
 void fcml_tf_instruction_DIVPD(void) {
     FCML_I32( "divpd xmm2,xmmword ptr [ecx+eax]", 0x66, 0x0F, 0x5E, 0x14, 0x01 );
     FCML_I64( "divpd xmm2,xmmword ptr [rcx+rax]", 0x66, 0x0F, 0x5E, 0x14, 0x01 );
+    FCML_A64( "divpd (%rcx,%rax),%xmm2", 0x66, 0x0F, 0x5E, 0x14, 0x01 );
     // VEX.NDS.128.66.0F 5E /r VDIVPD xmm1, xmm2, xmm3/m128
     // VEX.NDS.256.66.0F 5E /r VDIVPD ymm1, ymm2, ymm3/m256
     FCML_I64( "vdivpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x5E, 0x14, 0x01 );
+    FCML_A64( "vdivpd (%r9,%rax),%ymm14,%ymm10", 0xC4, 0x41, 0x0D, 0x5E, 0x14, 0x01 );
     FCML_I32_D( "vdivpd xmm2,xmm7,xmmword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0x5E, 0x14, 0x01 );
     FCML_I32_D( "vdivpd xmm2,xmm2,xmmword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x5E, 0x14, 0x01 );
     FCML_I32( "vdivpd xmm2,xmm7,xmmword ptr [ecx+eax]", 0xc5, 0xc1, 0x5e, 0x14, 0x01 );
     FCML_I32( "vdivpd xmm2,xmm2,xmmword ptr [ecx+eax]", 0xc5, 0xe9, 0x5e, 0x14, 0x01 );
+    FCML_A32( "vdivpd (%ecx,%eax),%xmm2,%xmm2", 0xc5, 0xe9, 0x5e, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_DIVPS(void) {
