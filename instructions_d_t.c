@@ -19,11 +19,13 @@ int fcml_tf_instructions_d_suite_cleanup(void) {
 
 void fcml_tf_instruction_DAA(void) {
     FCML_I32( "daa", 0x27 );
+    FCML_A32( "daa", 0x27 );
     FCML_I64_FAILED( "daa", 0x27 );
 }
 
 void fcml_tf_instruction_DAS(void) {
     FCML_I32( "das", 0x2F );
+    FCML_A32( "das", 0x2F );
     FCML_I64_FAILED( "das", 0x2F );
 }
 
@@ -31,28 +33,39 @@ void fcml_tf_instruction_DEC(void) {
     // 48+rw DEC r16 B N.E. Valid Decrement r16 by 1.
     // 48+rd DEC r32 B N.E. Valid Decrement r32 by 1.
     FCML_I32_M( "dec eax", 2, FCML_MI( 0x48 ), FCML_MI( 0xFF, 0xC8 ) );
+    FCML_A32_M( "dec %eax", 2, FCML_MI( 0x48 ), FCML_MI( 0xFF, 0xC8 ) );
     FCML_I32_M( "dec ax", 2, FCML_MI( 0x66, 0x48 ), FCML_MI( 0x66, 0xff, 0xc8 ) );
     FCML_I64_FAILED( "dec eax", 0x48 );
     FCML_I64_FAILED( "dec spl", 0x48 );
     // FE /1 DEC r/m8 A Valid Valid Decrement r/m8 by 1.
     // REX + FE /1 DEC r/m8* A Valid N.E. Decrement r/m8 by 1.
     FCML_I32( "dec byte ptr [ebx]", 0xFE, 0x0B );
+    FCML_A32( "decb (%ebx)", 0xFE, 0x0B );
+    FCML_A32_D( "decb %dl", 0xFE, 0xca );
+    FCML_A32_A( "dec %dl", 0xFE, 0xca );
     FCML_I32( "lock dec byte ptr [ebx]", 0xF0, 0xFE, 0x0B );
     FCML_I32( "xacquire lock dec byte ptr [ebx]", 0xF2, 0xF0, 0xFE, 0x0B );
+    FCML_A32( "xacquire lock decb (%ebx)", 0xF2, 0xF0, 0xFE, 0x0B );
     FCML_I32( "xrelease lock dec byte ptr [ebx]", 0xF3, 0xF0, 0xFE, 0x0B );
     FCML_I64( "dec byte ptr [rbx]", 0xFE, 0x0B );
+    FCML_A64( "decb (%rbx)", 0xFE, 0x0B );
     FCML_I64_D( "dec byte ptr [rbx]", 0x48, 0xFE, 0x0B );
     FCML_I64( "dec spl", 0x40, 0xFE, 0xCC );
     // FF /1 DEC r/m16 A Valid Valid Decrement r/m16 by 1.
     // FF /1 DEC r/m32 A Valid Valid Decrement r/m32 by 1.
     // REX.W + FF /1 DEC r/m64 A Valid N.E. Decrement r/m64 by 1.
     FCML_I32( "dec dword ptr [ebx]", 0xFF, 0x0B );
+    FCML_A32( "decl (%ebx)", 0xFF, 0x0B );
     FCML_I32( "lock dec dword ptr [ebx]", 0xF0, 0xFF, 0x0B );
     FCML_I32( "xacquire lock dec dword ptr [ebx]", 0xF2, 0xF0, 0xFF, 0x0B );
+    FCML_A32( "xacquire lock decl (%ebx)", 0xF2, 0xF0, 0xFF, 0x0B );
     FCML_I32( "xrelease lock dec dword ptr [ebx]", 0xF3, 0xF0, 0xFF, 0x0B );
     FCML_I32( "dec word ptr [ebx]", 0x66, 0xFF, 0x0B );
     FCML_I64( "dec dword ptr [rbx]", 0xFF, 0x0B );
     FCML_I64( "dec qword ptr [rbx]", 0x48, 0xFF, 0x0B );
+    FCML_A64( "decq (%rbx)", 0x48, 0xFF, 0x0B );
+    FCML_A64( "decq %rbx", 0x48, 0xFF, 0xCB );
+    FCML_A64_A( "dec %rbx", 0x48, 0xFF, 0xCB );
     FCML_I64_D( "dec word ptr [rbx]", 0x66, 0x40, 0xFF, 0x0B );
     FCML_I64( "dec r12", 0x49, 0xFF, 0xCC );
 }
@@ -72,6 +85,7 @@ void fcml_tf_instruction_DIV(void) {
     FCML_I64( "div rax,rsi", 0x48, 0xF7, 0xF6 );
     FCML_I64( "div eax,esi", 0xF7, 0xF6 );
 }
+
 void fcml_tf_instruction_DIVPD(void) {
     FCML_I32( "divpd xmm2,xmmword ptr [ecx+eax]", 0x66, 0x0F, 0x5E, 0x14, 0x01 );
     FCML_I64( "divpd xmm2,xmmword ptr [rcx+rax]", 0x66, 0x0F, 0x5E, 0x14, 0x01 );
