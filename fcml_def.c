@@ -1133,31 +1133,37 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FABS[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FADD[] = {
 	// D8 /0 FADD m32fp Valid Valid Add m32fp to ST(0) and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
 	// DC /0 FADD m64fp Valid Valid Add m64fp to ST(0) and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
 	// D8 C0+i FADD ST(0), ST(i) Valid Valid Add ST(0) to ST(i) and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xC0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xC0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST0_ST },
 	// DC C0+i FADD ST(i), ST(0) Valid Valid Add ST(i) to ST(0) and store result in ST(i).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDC, 0xC0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DE C0+i FADDP ST(i), ST(0) Valid Valid Add ST(0) to ST(i), store result in ST(i), and pop the register stack.
-	{ "faddp", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDE, 0xC0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDC, 0xC0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST_ST0 }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FIADD[] = {
 	// DA /0 FIADD m32int Valid Valid Add m32int to ST(0) and store result in ST(0).
-	{ "fiadd", FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// DE /0 FIADD m16int Valid Valid Add m16int to ST(0) and store result in ST(0).
-	{ "fiadd", FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FADDP[] = {
+	// DE C0+i FADDP ST(i), ST(0) Valid Valid Add ST(0) to ST(i), store result in ST(i), and pop the register stack.
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDE, 0xC0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// DE C1 FADDP
-	{ "faddp", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xC1, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xC1, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FBLD[] = {
 	// DF /4 FBLD m80 dec Valid Valid Convert BCD value to floating-point and push onto the FPU stack.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5A000, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_80, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5A000, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_OP80, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FBSTP[] = {
 	// DF /6 FBSTP m80bcd Valid Valid Store ST(0) in m80bcd and pop ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_80, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_OP80, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCHS[] = {
@@ -1167,60 +1173,99 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCHS[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCLEX[] = {
 	// 9B DB E2 FCLEX Valid Valid Clear floating-point exception flags after checking for pending unmasked floatingpoint exceptions.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00EC0000, { 0x9B, 0xDB, 0xE2 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DB E2 * Valid Valid Clear floating-point exception flags without checking for pending unmasked floating-point exceptions.
-	{ "fnclex", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDB, 0xE2, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00EC0000, { 0x9B, 0xDB, 0xE2 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
-struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOV[] = {
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FNCLEX[] = {
+	// DB E2 * Valid Valid Clear floating-point exception flags without checking for pending unmasked floating-point exceptions.
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDB, 0xE2, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOVB[] = {
 	// DA C0+i FCMOVB ST(0), ST(i) Valid Valid Move if below (CF=1).
-	{ "fcmovb", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDA, 0xC0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDA, 0xC0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOVE[] = {
 	// DA C8+i FCMOVE ST(0), ST(i) Valid Valid Move if equal (ZF=1).
-	{ "fcmove", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDA, 0xC8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDA, 0xC8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOVBE[] = {
 	// DA D0+i FCMOVBE ST(0), ST(i) Valid Valid Move if below or equal (CF=1 or ZF=1).
-	{ "fcmovbe", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDA, 0xD0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDA, 0xD0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOVU[] = {
 	// DA D8+i FCMOVU ST(0), ST(i) Valid Valid Move if unordered (PF=1).
-	{ "fcmovu", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDA, 0xD8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDA, 0xD8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOVNB[] = {
 	// DB C0+i FCMOVNB ST(0), ST(i) Valid Valid Move if not below (CF=0).
-	{ "fcmovnb", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xC0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xC0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOVNE[] = {
 	// DB C8+i FCMOVNE ST(0), ST(i) Valid Valid Move if not equal (ZF=0).
-	{ "fcmovne", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xC8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xC8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOVNBE[] = {
 	// DB D0+i FCMOVNBE ST(0), ST(i) Valid Valid Move if not below or equal (CF=0 and ZF=0).
-	{ "fcmovnbe", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xD0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xD0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCMOVNU[] = {
 	// DB D8+i FCMOVNU ST(0), ST(i) Valid Valid Move if not unordered (PF=0).
-	{ "fcmovnu", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xD8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xD8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCOM[] = {
 	// D8 /2 FCOM m32fp
-	{ "fcom", FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// D8 /3 FCOMP m32fp
-	{ "fcomp", FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
 	// DC /2 FCOM m64fp
-	{ "fcom", FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DC /3 FCOMP m64fp
-	{ "fcomp", FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
 	// D8 D0+i FCOM ST(i)
-	{ "fcom", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xD0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// D8 D8+i FCOMP ST(i)
-	{ "fcomp", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xD8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DE D9 FCOMPP
-	{ "fcompp", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xD9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xD0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_ST },
 	// D8 D1 FCOM
-	{ "fcom", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD8, 0xD1, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD8, 0xD1, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCOMP[] = {
+	// D8 /3 FCOMP m32fp
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
+	// DC /3 FCOMP m64fp
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
+	// D8 D8+i FCOMP ST(i)
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xD8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_ST },
 	// D8 D9 FCOMP
-	{ "fcomp", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD8, 0xD9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD8, 0xD9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCOMPP[] = {
+	// DE D9 FCOMPP
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xD9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCOMI[] = {
 	// DB F0+i FCOMI ST, ST(i) Valid Valid Compare ST(0) with ST(i) and set status flags accordingly.
-	{ "fcomi", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xF0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xF0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCOMIP[] = {
 	// DF F0+i FCOMIP ST, ST(i) Valid Valid Compare ST(0) with ST(i), set status flags accordingly, and pop register stack.
-	{ "fcomip", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDF, 0xF0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDF, 0xF0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FUCOMI[] = {
 	// DB E8+i FUCOMI ST, ST(i) Valid Valid Compare ST(0) with ST(i), check for ordered values, and set status flags accordingly.
-	{ "fucomi", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xE8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDB, 0xE8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FUCOMIP[] = {
 	// DF E8+i FUCOMIP ST, ST(i) Valid Valid Compare ST(0) with ST(i), check for ordered values, set status flags accordingly, and pop register stack.
-	{ "fucomip", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDF, 0xE8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDF, 0xE8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FCOS[] = {
@@ -1235,40 +1280,52 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FDECSTP[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FDIV[] = {
 	// D8 /6 FDIV m32fp Valid Valid Divide ST(0) by m32fp and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
 	// DC /6 FDIV m64fp Valid Valid Divide ST(0) by m64fp and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
 	// D8 F0+i FDIV ST(0), ST(i) Valid Valid Divide ST(0) by ST(i) and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xF0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xF0, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST0_ST },
 	// DC F8+i FDIV ST(i), ST(0) Valid Valid Divide ST(i) by ST(0) and store result in ST(i).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDC, 0xF8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDC, 0xF8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST_ST0 },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FDIVP[] = {
 	// DE F8+i FDIVP ST(i), ST(0) Valid Valid Divide ST(i) by ST(0), store result in ST(i), and pop the register stack.
-	{ "fdivp", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDE, 0xF8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DA /6 FIDIV m32int Valid Valid Divide ST(0) by m32int and store result in ST(0).
-	{ "fidiv", FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DE /6 FIDIV m16int Valid Valid Divide ST(0) by m64int and store result in ST(0).
-	{ "fidiv", FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDE, 0xF8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST_ST0 },
 	// DE F9 FDIVP
-	{ "fdivp", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xF9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xF9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FIDIV[] = {
+	// DA /6 FIDIV m32int Valid Valid Divide ST(0) by m32int and store result in ST(0).
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
+	// DE /6 FIDIV m16int Valid Valid Divide ST(0) by m64int and store result in ST(0).
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M16 },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FDIVR[] = {
 	// D8 /7 FDIVR m32fp Valid Valid Divide m32fp by ST(0) and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
 	// DC /7 FDIVR m64fp Valid Valid Divide m64fp by ST(0) and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
 	// D8 F8+i FDIVR ST(0), ST(i) Valid Valid Divide ST(i) by ST(0) and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xF8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xF8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST0_ST },
 	// DC F0+i FDIVR ST(i), ST(0) Valid Valid Divide ST(0) by ST(i) and store result in ST(i).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDC, 0xF0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDC, 0xF0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST_ST0 },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FDIVRP[] = {
 	// DE F0+i FDIVRP ST(i), ST(0) Valid Valid Divide ST(0) by ST(i), store result in ST(i), and pop the register stack.
-	{ "fdivrp", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDE, 0xF0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DA /7 FIDIVR m32int Valid Valid Divide m32int by ST(0) and store result in ST(0).
-	{ "fidivr", FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DE /7 FIDIVR m16int Valid Valid Divide m16int by ST(0) and store result in ST(0).
-	{ "fidivr", FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDE, 0xF0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST_ST0 },
 	// DE F1 FDIVRP
-	{ "fdivrp", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xF1, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xF1, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FIDIVR[] = {
+	// DA /7 FIDIVR m32int Valid Valid Divide m32int by ST(0) and store result in ST(0).
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
+	// DE /7 FIDIVR m16int Valid Valid Divide m16int by ST(0) and store result in ST(0).
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M16 },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FFREE[] = {
@@ -1278,22 +1335,25 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FFREE[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FICOM[] = {
 	// DE /2 FICOM m16int Valid Valid Compare ST(0) with m16int.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M16 },
 	// DA /2 FICOM m32int Valid Valid Compare ST(0) with m32int.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FICOMP[] = {
 	// DE /3 FICOMP m16int Valid Valid Compare ST(0) with m16int and pop stack register.
-	{ "ficomp", FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M16 },
 	// DA /3 FICOMP m32int Valid Valid Compare ST(0) with m32int and pop stack register.
-	{ "ficomp", FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FILD[] = {
 	// DF /0 FILD m16int Valid Valid Push m16int onto the FPU register stack.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M16 },
 	// DB /0 FILD m32int Valid Valid Push m32int onto the FPU register stack.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDB, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDB, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
 	// DF /5 FILD m64int Valid Valid Push m64int onto the FPU register stack.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5A800, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5A800, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FINCSTP[] = {
@@ -1303,22 +1363,28 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FINCSTP[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FINIT[] = {
 	// 9B DB E3 FINIT Valid Valid Initialize FPU after checking for pending unmasked floating-point exceptions.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00EC0000, { 0x9B, 0xDB, 0xE3 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00EC0000, { 0x9B, 0xDB, 0xE3 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FNINIT[] = {
 	// DB E3 FNINIT* Valid Valid Initialize FPU without checking for pending unmasked floating-point exceptions.
-	{ "fninit", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDB, 0xE3, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDB, 0xE3, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FIST[] = {
 	// DF /2 FIST m16int Valid Valid Store ST(0) in m16int.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M16 },
 	// DB /2 FIST m32int Valid Valid Store ST(0) in m32int.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDB, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59000, { 0xDB, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FISTP[] = {
 	// DF /3 FISTP m16int Valid Valid Store ST(0) in m16int and pop register stack.
-	{ "fistp", FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M16 },
 	// DB /3 FISTP m32int Valid Valid Store ST(0) in m32int and pop register stack.
-	{ "fistp", FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDB, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C59800, { 0xDB, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
 	// DF /7 FISTP m64int Valid Valid Store ST(0) in m64int and pop register stack.
-	{ "fistp", FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B800, { 0xDF, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FISTTP[] = {
@@ -1332,35 +1398,53 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FISTTP[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLD[] = {
 	// D9 /0 FLD m32fp Valid Valid Push m32fp onto the FPU register stack.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xD9, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xD9, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
 	// DD /0 FLD m64fp Valid Valid Push m64fp onto the FPU register stack.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDD, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58000, { 0xDD, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
 	// DB /5 FLD m80fp Valid Valid Push m80fp onto the FPU register stack.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5A800, { 0xDB, 0x00, 0x00 }, { FCML_OP_MODRM_M_80, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5A800, { 0xDB, 0x00, 0x00 }, { FCML_OP_MODRM_M_80, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M80 },
 	// D9 C0+i FLD ST(i) Valid Valid Push ST(i) onto the FPU register stack.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD9, 0xC0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD9, 0xC0, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_ST },
 };
 
-struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDx[] = {
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLD1[] = {
 	// D9 E8 FLD1 Valid Valid Push +1.0 onto the FPU register stack.
-	{ "fld1", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xE8, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xE8, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDL2T[] = {
 	// D9 E9 FLDL2T Valid Valid Push log210 onto the FPU register stack.
-	{ "fldl2t", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xE9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xE9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDL2E[] = {
 	// D9 EA FLDL2E Valid Valid Push log2e onto the FPU register stack.
-	{ "fldl2e", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xEA, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xEA, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDPI[] = {
 	// D9 EB FLDPI Valid Valid Push onto the FPU register stack.
-	{ "fldpi", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xEB, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xEB, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDLG2[] = {
 	// D9 EC FLDLG2 Valid Valid Push log102 onto the FPU register stack.
-	{ "fldlg2", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xEC, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xEC, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDLN2[] = {
 	// D9 ED FLDLN2 Valid Valid Push loge2 onto the FPU register stack.
-	{ "fldln2", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xED, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xED, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDZ[] = {
 	// D9 EE FLDZ Valid Valid Push +0.0 onto the FPU register stack.
-	{ "fldz", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xEE, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xD9, 0xEE, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDCW[] = {
 	// D9 /5 FLDCW m2byte Valid Valid Load FPU control word from m2byte.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5A800, { 0xD9, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5A800, { 0xD9, 0x00, 0x00 }, { FCML_OP_MODRM_M_OP16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDENV[] = {
@@ -1370,21 +1454,28 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FLDENV[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FMUL[] = {
 	// D8 /1 FMUL m32fp Valid Valid Multiply ST(0) by m32fp and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58800, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58800, { 0xD8, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
 	// DC /1 FMUL m64fp Valid Valid Multiply ST(0) by m64fp and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58800, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58800, { 0xDC, 0x00, 0x00 }, { FCML_OP_MODRM_M_64, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M64 },
 	// D8 C8+i FMUL ST(0), ST(i) Valid Valid Multiply ST(0) by ST(i) and store result in ST(0).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xC8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xD8, 0xC8, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST0_ST },
 	// DC C8+i FMUL ST(i), ST(0) Valid Valid Multiply ST(i) by ST(0) and store result in ST(i).
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDC, 0xC8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDC, 0xC8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST_ST0 },
+
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FMULP[] = {
 	// DE C8+i FMULP ST(i), ST(0) Valid Valid Multiply ST(i) by ST(0), store result in ST(i), and pop the register stack.
-	{ "fmulp", FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDE, 0xC8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DA /1 FIMUL m32int Valid Valid Multiply ST(0) by m32int and store result in ST(0).
-	{ "fimul", FCML_AMT_FPU, 0x0000, 0x00C58800, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// DE /1 FIMUL m16int Valid Valid Multiply ST(0) by m16int and store result in ST(0).
-	{ "fimul", FCML_AMT_FPU, 0x0000, 0x00C58800, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80001, { 0xDE, 0xC8, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_FPU, FCML_EOS_UNDEFINED ), FCML_OP_EXPLICIT_REG( FCML_REG_FPU, FCML_REG_ST0, FCML_EOS_UNDEFINED ), FCML_NA, FCML_NA, FCML_NA }, FCML_ST_ST0 },
 	// DE C9 FMULP
-	{ "fmulp", FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xC9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D80000, { 0xDE, 0xC9, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FIMUL[] = {
+	// DA /1 FIMUL m32int Valid Valid Multiply ST(0) by m32int and store result in ST(0).
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58800, { 0xDA, 0x00, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M32 },
+	// DE /1 FIMUL m16int Valid Valid Multiply ST(0) by m16int and store result in ST(0).
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C58800, { 0xDE, 0x00, 0x00 }, { FCML_OP_MODRM_M_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_M16 },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FNOP[] = {
@@ -1424,9 +1515,12 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FRSTOR[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FSAVE[] = {
 	// 9B DD /6 FSAVE m94/108byte Valid Valid Store FPU state to m94byte or m108byte after checking for pending unmasked floatingpoint exceptions. Then reinitialize the FPU.
-	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D9B000, { 0x9B, 0xDD, 0x00 }, { FCML_OP_MODRM_M_94_108, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00D9B000, { 0x9B, 0xDD, 0x00 }, { FCML_OP_MODRM_M_94_108, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FNSAVE[] = {
 	// DD /6 FNSAVE* m94/108byte Valid Valid Store FPU environment to m94byte or m108byte without checking for pending unmasked floating-point exceptions.
-	{ "fnsave", FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDD, 0x00, 0x00 }, { FCML_OP_MODRM_M_94_108, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_FPU, 0x0000, 0x00C5B000, { 0xDD, 0x00, 0x00 }, { FCML_OP_MODRM_M_94_108, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_FSCALE[] = {
@@ -6077,44 +6171,75 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_EXTRACTPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_EXTRACTPS),
 		FCML_IA_INSTRUCTION( F_VEXTRACTPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VEXTRACTPS),
 		FCML_IA_INSTRUCTION( F_EXTRQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_EXTRQ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "f2xm1", fcml_st_def_addr_mode_desc_F2XM1),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fabs", fcml_st_def_addr_mode_desc_FABS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fadd", fcml_st_def_addr_mode_desc_FADD),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fbld", fcml_st_def_addr_mode_desc_FBLD),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fbstp", fcml_st_def_addr_mode_desc_FBSTP),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fchs", fcml_st_def_addr_mode_desc_FCHS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fclex", fcml_st_def_addr_mode_desc_FCLEX),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOV),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCOM),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCOMI),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fcos", fcml_st_def_addr_mode_desc_FCOS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fdecstp", fcml_st_def_addr_mode_desc_FDECSTP),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fdiv", fcml_st_def_addr_mode_desc_FDIV),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fdivr", fcml_st_def_addr_mode_desc_FDIVR),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "ffree", fcml_st_def_addr_mode_desc_FFREE ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "ficom", fcml_st_def_addr_mode_desc_FICOM ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fild", fcml_st_def_addr_mode_desc_FILD ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fincstp", fcml_st_def_addr_mode_desc_FINCSTP ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "finit", fcml_st_def_addr_mode_desc_FINIT ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fist", fcml_st_def_addr_mode_desc_FIST ),
+		FCML_IA_INSTRUCTION( F_F2XM1, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_F2XM1),
+		FCML_IA_INSTRUCTION( F_FABS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FABS),
+		FCML_IA_INSTRUCTION( F_FADD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FADD),
+		FCML_IA_INSTRUCTION( F_FIADD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FIADD),
+		FCML_IA_INSTRUCTION( F_FADDP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FADDP),
+		FCML_IA_INSTRUCTION( F_FBLD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FBLD),
+		FCML_IA_INSTRUCTION( F_FBSTP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FBSTP),
+		FCML_IA_INSTRUCTION( F_FCHS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCHS),
+		FCML_IA_INSTRUCTION( F_FCLEX, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCLEX),
+		FCML_IA_INSTRUCTION( F_FNCLEX, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FNCLEX),
+		FCML_IA_INSTRUCTION( F_FCMOVB, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOVB),
+		FCML_IA_INSTRUCTION( F_FCMOVE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOVE),
+		FCML_IA_INSTRUCTION( F_FCMOVBE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOVBE),
+		FCML_IA_INSTRUCTION( F_FCMOVU, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOVU),
+		FCML_IA_INSTRUCTION( F_FCMOVNB, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOVNB),
+		FCML_IA_INSTRUCTION( F_FCMOVNE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOVNE),
+		FCML_IA_INSTRUCTION( F_FCMOVNBE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOVNBE),
+		FCML_IA_INSTRUCTION( F_FCMOVNU, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCMOVNU),
+		FCML_IA_INSTRUCTION( F_FCOM, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCOM),
+		FCML_IA_INSTRUCTION( F_FCOMP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCOMP),
+		FCML_IA_INSTRUCTION( F_FCOMPP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCOMPP),
+		FCML_IA_INSTRUCTION( F_FCOMI, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCOMI),
+		FCML_IA_INSTRUCTION( F_FCOMIP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCOMIP),
+		FCML_IA_INSTRUCTION( F_FUCOMI, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FUCOMI),
+		FCML_IA_INSTRUCTION( F_FUCOMIP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FUCOMIP),
+		FCML_IA_INSTRUCTION( F_FCOS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FCOS),
+		FCML_IA_INSTRUCTION( F_FDECSTP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FDECSTP),
+		FCML_IA_INSTRUCTION( F_FDIV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FDIV),
+		FCML_IA_INSTRUCTION( F_FDIVP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FDIVP),
+		FCML_IA_INSTRUCTION( F_FIDIV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FIDIV),
+		FCML_IA_INSTRUCTION( F_FDIVR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FDIVR),
+		FCML_IA_INSTRUCTION( F_FDIVRP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FDIVRP),
+		FCML_IA_INSTRUCTION( F_FIDIVR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FIDIVR),
+		FCML_IA_INSTRUCTION( F_FFREE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FFREE),
+		FCML_IA_INSTRUCTION( F_FICOM, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FICOM),
+		FCML_IA_INSTRUCTION( F_FICOMP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FICOMP),
+		FCML_IA_INSTRUCTION( F_FILD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FILD),
+		FCML_IA_INSTRUCTION( F_FINCSTP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FINCSTP),
+		FCML_IA_INSTRUCTION( F_FINIT, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FINIT),
+		FCML_IA_INSTRUCTION( F_FNINIT, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FNINIT),
+		FCML_IA_INSTRUCTION( F_FIST, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FIST),
+		FCML_IA_INSTRUCTION( F_FISTP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FISTP),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "fisttp", fcml_st_def_addr_mode_desc_FISTTP ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fld", fcml_st_def_addr_mode_desc_FLD ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDx ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fldcw", fcml_st_def_addr_mode_desc_FLDCW),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fldenv", fcml_st_def_addr_mode_desc_FLDENV),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fmul", fcml_st_def_addr_mode_desc_FMUL ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fnop", fcml_st_def_addr_mode_desc_FNOP ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fpatan", fcml_st_def_addr_mode_desc_FPATAN ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fprem", fcml_st_def_addr_mode_desc_FPREM ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fprem1", fcml_st_def_addr_mode_desc_FPREM1 ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fptan", fcml_st_def_addr_mode_desc_FPTAN ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "frndint", fcml_st_def_addr_mode_desc_FRNDINT ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "frstor", fcml_st_def_addr_mode_desc_FRSTOR),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fsave", fcml_st_def_addr_mode_desc_FSAVE ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fscale", fcml_st_def_addr_mode_desc_FSCALE ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fsin", fcml_st_def_addr_mode_desc_FSIN ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fsincos", fcml_st_def_addr_mode_desc_FSINCOS ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "fsqrt", fcml_st_def_addr_mode_desc_FSQRT ),
+		FCML_IA_INSTRUCTION( F_FLD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLD),
+		FCML_IA_INSTRUCTION( F_FLD1, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLD1),
+		FCML_IA_INSTRUCTION( F_FLDL2T, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDL2T),
+		FCML_IA_INSTRUCTION( F_FLDL2E, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDL2E),
+		FCML_IA_INSTRUCTION( F_FLDPI, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDPI),
+		FCML_IA_INSTRUCTION( F_FLDLG2, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDLG2),
+		FCML_IA_INSTRUCTION( F_FLDLN2, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDLN2),
+		FCML_IA_INSTRUCTION( F_FLDZ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDZ),
+		FCML_IA_INSTRUCTION( F_FLDCW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDCW),
+		FCML_IA_INSTRUCTION( F_FLDENV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FLDENV),
+		FCML_IA_INSTRUCTION( F_FMUL, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FMUL),
+		FCML_IA_INSTRUCTION( F_FMULP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FMULP),
+		FCML_IA_INSTRUCTION( F_FIMUL, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FIMUL),
+		FCML_IA_INSTRUCTION( F_FNOP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FNOP),
+		FCML_IA_INSTRUCTION( F_FPATAN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FPATAN),
+		FCML_IA_INSTRUCTION( F_FPREM, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FPREM),
+		FCML_IA_INSTRUCTION( F_FPREM1, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FPREM1),
+		FCML_IA_INSTRUCTION( F_FPTAN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FPTAN),
+		FCML_IA_INSTRUCTION( F_FRNDINT, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FRNDINT),
+		FCML_IA_INSTRUCTION( F_FRSTOR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FRSTOR),
+		FCML_IA_INSTRUCTION( F_FSAVE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FSAVE),
+		FCML_IA_INSTRUCTION( F_FNSAVE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FNSAVE),
+		FCML_IA_INSTRUCTION( F_FSCALE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FSCALE),
+		FCML_IA_INSTRUCTION( F_FSIN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FSIN),
+		FCML_IA_INSTRUCTION( F_FSINCOS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FSINCOS),
+		FCML_IA_INSTRUCTION( F_FSQRT, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_FSQRT),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "fst", fcml_st_def_addr_mode_desc_FST ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "fstcw", fcml_st_def_addr_mode_desc_FSTCW ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "fstenv", fcml_st_def_addr_mode_desc_FSTENV ),

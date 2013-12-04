@@ -2144,11 +2144,16 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 			fcml_st_instruction *instruction = &(dis_res->instruction);
 			fcml_st_dasm_instruction_details *instruction_details = &(dis_res->instruction_details);
 
+			fcml_data_size memory_data_size = 0;
+
 			// Prepare operands.
 			fcml_int i;
 			for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 				fcml_ist_dasm_operand_wrapper *operand_wrapper = &(decoding_context.operand_wrappers[i]);
 				if( operand_wrapper->operand.type != FCML_EOT_NONE ) {
+					if( operand_wrapper->operand.type == FCML_EOT_ADDRESS ) {
+						memory_data_size = operand_wrapper->operand.address.size_operator;
+					}
 					instruction->operands[i] = operand_wrapper->operand;
 					instruction_details->operand_details[i].access_mode = operand_wrapper->access_mode;
 				} else {
@@ -2199,7 +2204,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 			// Mnemonic.
 			fcml_bool shortform = decoding_context.disassembler_context->configuration.use_short_form_mnemonics;
 			fcml_bool is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
-			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, l );
+			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, memory_data_size, l );
 			if( mnemonic ) {
 				instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
 				instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;

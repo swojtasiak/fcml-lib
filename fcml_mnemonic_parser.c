@@ -10,6 +10,7 @@
  * ts - Sets "shortcut" flags for mnemonic.
  * tb - Sets "shortcut/classic" flag for mnemonic.
  * pXX - Sets pseudo opcode value for mnemonic.
+ * dXX - Sets memory data size to specified number of bytes.
  * l0 - Mnemonic for L flag set to 0.
  * l1 - Mnemonic for L flag set to 1.
  *
@@ -39,6 +40,8 @@ void fcml_ifn_mp_clean_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
     mnemonic->mnemonic = NULL;
     mnemonic->pseudo_op.is_not_null = FCML_FALSE;
     mnemonic->pseudo_op.value = 0x00;
+    mnemonic->memory_data.is_not_null = FCML_FALSE;
+	mnemonic->memory_data.value = 0x00;
     mnemonic->is_shortcut = FCML_FALSE;
     mnemonic->is_classic = FCML_TRUE;
     mnemonic->is_byte_ds = FCML_FALSE;
@@ -146,13 +149,22 @@ fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *a
     case 'a':
         error = fcml_ifn_parse_attribute_size_flag( attr_value[0], &mnemonic->supported_asa );
         break;
+    case 'd':
+		if( attr_value_len == 2 ) {
+			unsigned long int val = strtoul(attr_value, NULL, 16);
+			mnemonic->memory_data.value = (fcml_uint8_t)val;
+			mnemonic->memory_data.is_not_null = FCML_TRUE;
+		} else {
+			error = FCML_CEH_GEC_INVALID_INPUT;
+		}
+		break;
     case 'p':
         if( attr_value_len == 2 ) {
         	unsigned long int val = strtoul(attr_value, NULL, 16);
             mnemonic->pseudo_op.value = (fcml_uint8_t)val;
             mnemonic->pseudo_op.is_not_null = FCML_TRUE;
         } else {
-            error = FCML_CEH_GEC_INVALID_INPUT;;
+            error = FCML_CEH_GEC_INVALID_INPUT;
         }
         break;
     default:
@@ -307,7 +319,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
     return error;
 }
 
-fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_nuint8_t pseudo_opcode, fcml_data_size osa, fcml_data_size asa, fcml_bool is_memory, fcml_nuint8_t l ) {
+fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_nuint8_t pseudo_opcode, fcml_data_size osa, fcml_data_size asa, fcml_bool is_memory, fcml_data_size memory_data_size, fcml_nuint8_t l ) {
     fcml_st_mp_mnemonic *chosen_mnemonic = NULL;
     if( mnemonics->mnemonics ) {
         fcml_st_coll_list_element *next = mnemonics->mnemonics->head;
@@ -323,19 +335,22 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemon
 
 			// Size attributes.
 			if( fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_asa, asa ) && fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
-				// L flag.
-				if( ( !l.is_not_null && !mnemonic->l.is_not_null ) || ( l.value == mnemonic->l.value ) ) {
-					// Shortcuts. Pseudo opcode mnemonic is also treated as a shortcut by disassembler.
-					if( ( use_shortcut && ( ( mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == pseudo_opcode.value ) || mnemonic->is_shortcut ) )
-						|| ( !use_shortcut && !mnemonic->pseudo_op.is_not_null && ( !mnemonic->is_shortcut || mnemonic->is_classic ) ) ) {
-						// Addressing mode.
-						// See "mm","mr" mnemonic attribute.
-						fcml_bool is_mode_ok = ( ( !mnemonic->is_mode_mem_only && !mnemonic->is_mode_reg_only) || ( mnemonic->is_mode_mem_only && is_memory ) || ( mnemonic->is_mode_reg_only && !is_memory ) );
-						if( is_mode_ok ) {
-							// Default mnemonic can not be overridden by another default.
-							if( !chosen_mnemonic || !mnemonic->is_default ) {
-								chosen_mnemonic = mnemonic;
-								break;
+				// Memory data size.
+				if( !mnemonic->memory_data.is_not_null || ( mnemonic->memory_data.value == ( memory_data_size / 8 ) ) ) {
+					// L flag.
+					if( ( !l.is_not_null && !mnemonic->l.is_not_null ) || ( l.value == mnemonic->l.value ) ) {
+						// Shortcuts. Pseudo opcode mnemonic is also treated as a shortcut by disassembler.
+						if( ( use_shortcut && ( ( mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == pseudo_opcode.value ) || mnemonic->is_shortcut ) )
+							|| ( !use_shortcut && !mnemonic->pseudo_op.is_not_null && ( !mnemonic->is_shortcut || mnemonic->is_classic ) ) ) {
+							// Addressing mode.
+							// See "mm","mr" mnemonic attribute.
+							fcml_bool is_mode_ok = ( ( !mnemonic->is_mode_mem_only && !mnemonic->is_mode_reg_only) || ( mnemonic->is_mode_mem_only && is_memory ) || ( mnemonic->is_mode_reg_only && !is_memory ) );
+							if( is_mode_ok ) {
+								// Default mnemonic can not be overridden by another default.
+								if( !chosen_mnemonic || !mnemonic->is_default ) {
+									chosen_mnemonic = mnemonic;
+									break;
+								}
 							}
 						}
 					}

@@ -158,3 +158,32 @@ fcml_bool fcml_fn_env_is_alpha( fcml_char c ) {
 	return res;
 }
 
+
+****************
+ GAS
+****************
+
+Poprawnie:
+00401000 > $ D8F0           FDIV ST,ST
+00401002   . DCF8           FDIV ST,ST
+00401004   . D8F8           FDIVR ST,ST
+00401006   . DCF0           FDIVR ST,ST
+
+GDB:
+0x00401000:   d8 f0  fdiv   %st(0),%st
+0x00401002:   dc f8  fdivr  %st,%st(0)
+0x00401004:   d8 f8  fdivr  %st(0),%st
+0x00401006:   dc f0  fdiv   %st,%st(0)
+
+0x000000000040050b <main+0>:	d8 f1	fdiv   %st(1),%st
+0x000000000040050d <main+2>:	dc f1	fdiv   %st,%st(1)
+
+Powino być:
+(0xde, 0xf9) fdivp %st(0),%st(1) jest-> fdivrp %st(0),%st(1)
+
+Sprawdzic czy to faktycznie jest błąd, byc może w dokumentacji jest błąd.
+
+FASM assembluje poprawnie, więc to błąd GDB.
+Ale z drugiej strony GAS assemblje podobnie jak GDB, więc chyba by komilatory się wywalały GCC :), do sprawdzenia na procesorze.
+
+

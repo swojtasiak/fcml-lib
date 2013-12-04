@@ -19,3 +19,11 @@ Support hintów dla SIB w przypadku GAS, aktualnie nie obslugujemy.
 assemblowac  add dword [ebp],04030201h  , nalezy zwrocic uwage ze aby to zakodowac trzeba niejawnie zakodowac displacemenet = 0.
 
 Ignotowac hinty abs i rel dla dialektu AT&T, poniewaz uzytkownik moze je ustawic poza assemblerem.
+
+Sposob na implementacje nejednoznacznosci w przypadku far call:
+Umozliwic stosowanie 2 sposobów zapisu operandow
+FAR_POINTER
+IMM, IMM
+I dopiero po wyborze ADD_MODE przed akceptacją zastosować preprocesor udpostępniany przez dialect, który na podstawie typu instrukcji przykładowo F_CALL, odpowiednio przygotuje
+operandy, tak aby dalej juz był wykorzystany zapis FAR_POINTER. Dzięki temu parser bedzie mógł zapisac IMM, IMM a uzytownik sam skladajacy instrukcję będzie miał mozliwośc zapisu
+operatora FAR_POINTER.
