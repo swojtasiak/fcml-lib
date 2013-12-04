@@ -157,7 +157,6 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");
     } else {
