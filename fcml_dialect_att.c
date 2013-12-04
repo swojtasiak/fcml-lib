@@ -330,6 +330,9 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("invvpid"), FCML_ASM_DIALECT_INSTRUCTION( F_INVVPID, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("idiv;idivb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_IDIV, FCML_RM8 ), 0 },
 	{ FCML_TEXT("idiv;idivw[sf,ow];idivl[sf,od];idivq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_IDIV, FCML_RMO ), 0 },
+	{ FCML_TEXT("imul;imulb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_IMUL, FCML_RM8 ), 0 },
+	{ FCML_TEXT("imul;imulw[sf,ow];imull[sf,od];imulq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_IMUL, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("in"), FCML_ASM_DIALECT_INSTRUCTION( F_IN, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 

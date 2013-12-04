@@ -334,7 +334,8 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemon
             }
 
 			// Size attributes.
-			if( fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_asa, asa ) && fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
+			if( fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_asa, asa )
+					&& fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
 				// Memory data size.
 				if( !mnemonic->memory_data.is_not_null || ( mnemonic->memory_data.value == ( memory_data_size / 8 ) ) ) {
 					// L flag.

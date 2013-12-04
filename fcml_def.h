@@ -338,6 +338,8 @@ enum fcml_en_instruction_codes {
 	F_INVEPT,
 	F_INVVPID,
 	F_IDIV,
+	F_IMUL,
+	F_IN,
 };
 
 /*******************/
@@ -367,6 +369,10 @@ enum fcml_en_instruction_addr_mode_codes {
 	FCML_AM_RMO_RO,
 	FCML_AM_RO_RMO,
 	FCML_AM_RO_RM8,
+
+	FCML_AM_RO_RMO_IMM8,
+	FCML_AM_RO_RMO_IMMO,
+
 	//
 	R32A_RM32_R32B,
 	R64A_RM64_R64B,

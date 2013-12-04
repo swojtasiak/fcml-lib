@@ -1793,24 +1793,24 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_IDIV[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_IMUL[] = {
 	// F6 /5 IMUL r/m8* A Valid Valid AX AL r/m byte.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A800, { 0xF6, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A800, { 0xF6, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_RM8 },
 	// F7 /5 IMUL r/m16 A Valid Valid DX:AX AX r/m word.
 	// F7 /5 IMUL r/m32 A Valid Valid EDX:EAX EAX r/m32.
 	// REX.W + F7 /5 IMUL r/m64 A Valid N.E. RDX:RAX RAX r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A800, { 0xF7, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5A800, { 0xF7, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_RMO },
 	// 0F AF /r IMUL r16, r/m16 B Valid Valid word register word register r/m16.
 	// 0F AF /r IMUL r32, r/m32 B Valid Valid doubleword register doubleword register r/m32.
 	// REX.W + 0F AF /r IMUL r64, r/m64 B Valid N.E. Quadword register Quadword register r/m64.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xAF, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM,  FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xAF, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM,  FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_RO },
 	// 6B /r ib IMUL r16, r/m16, imm8 C Valid Valid word register r/m16 sign-extended immediate byte.
 	// 6B /r ib IMUL r32, r/m32, imm8 C Valid Valid doubleword register r/m32 sign-extended immediate byte.
 	// REX.W + 6B /r ib IMUL r64, r/m64, imm8 C Valid N.E. Quadword register r/m64 sign-extended immediate byte.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48004, { 0x6B, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C48004, { 0x6B, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_OP_IB_EX_EOSA, FCML_NA, FCML_NA }, FCML_AM_RO_RMO_IMM8 },
 	// 69 /r iw IMUL r16, r/m16, imm16 C Valid Valid word register r/m16 immediate word.
 	// 69 /r id IMUL r32, r/m32, imm32 C Valid Valid doubleword register r/m32 immediate doubleword.
-	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C48004, { 0x69, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C48004, { 0x69, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA }, FCML_AM_RO_RMO_IMMO },
 	// REX.W + 69 /r id IMUL r64, r/m64, imm32 C Valid N.E. Quadword register r/m64 immediate doubleword.
-	{ NULL, FCML_AMT_GPI, 0x0008, 0x04848004, { 0x69, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_OP_ID, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_GPI, 0x0008, 0x04848004, { 0x69, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_RM, FCML_OP_ID, FCML_NA, FCML_NA }, FCML_AM_RO_RMO_IMMO }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_IN[] = {
@@ -6327,8 +6327,8 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_INVEPT, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_INVEPT),
 		FCML_IA_INSTRUCTION( F_INVVPID, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_INVVPID),
 		FCML_IA_INSTRUCTION( F_IDIV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_IDIV),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "imul", fcml_st_def_addr_mode_desc_IMUL ),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "in", fcml_st_def_addr_mode_desc_IN ),
+		FCML_IA_INSTRUCTION( F_IMUL, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_IMUL),
+		FCML_IA_INSTRUCTION( F_IN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_IN),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "inc", fcml_st_def_addr_mode_desc_INC ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "ins", fcml_st_def_addr_mode_desc_INS ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "insertps", fcml_st_def_addr_mode_desc_INSERTPS ),

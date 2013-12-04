@@ -295,6 +295,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
 	{ FCML_TEXT("invept"), FCML_ASM_DIALECT_INSTRUCTION( F_INVEPT, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("invvpid"), FCML_ASM_DIALECT_INSTRUCTION( F_INVVPID, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("idiv"), FCML_ASM_DIALECT_INSTRUCTION( F_IDIV, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("imul"), FCML_ASM_DIALECT_INSTRUCTION( F_IMUL, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("in"), FCML_ASM_DIALECT_INSTRUCTION( F_IN, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 
