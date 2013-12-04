@@ -168,6 +168,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
 	{ FCML_TEXT("das"), FCML_ASM_DIALECT_INSTRUCTION( F_DAS, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("dec"), FCML_ASM_DIALECT_INSTRUCTION( F_DEC, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("div"), FCML_ASM_DIALECT_INSTRUCTION( F_DIV, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("divpd"), FCML_ASM_DIALECT_INSTRUCTION( F_DIVPD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vdivpd"), FCML_ASM_DIALECT_INSTRUCTION( F_VDIVPD, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 

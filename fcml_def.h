@@ -211,6 +211,8 @@ enum fcml_en_instruction_codes {
 	F_DAS,
 	F_DEC,
 	F_DIV,
+	F_DIVPD,
+	F_VDIVPD,
 };
 
 /*******************/

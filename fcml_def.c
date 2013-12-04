@@ -1026,10 +1026,13 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DIV[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DIVPD[] = {
 	// 66 0F 5E /r DIVPD xmm1, xmm2/m128 A Valid Valid Divide packed doubleprecision floating-point values in xmm1 by packed double-precision floatingpoint values xmm2/m128.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x1001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VDIVPD[] = {
 	// VEX.NDS.128.66.0F 5E /r VDIVPD xmm1, xmm2, xmm3/m128
 	// VEX.NDS.256.66.0F 5E /r VDIVPD ymm1, ymm2, ymm3/m256
-	{ "vdivpd", FCML_AMT_AVX_SIMD, 0x1080, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x1080, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DIVPS[] = {
@@ -6038,7 +6041,8 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_DAS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DAS),
 		FCML_IA_INSTRUCTION( F_DEC, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DEC),
 		FCML_IA_INSTRUCTION( F_DIV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DIV),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "divpd", fcml_st_def_addr_mode_desc_DIVPD),
+		FCML_IA_INSTRUCTION( F_DIVPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DIVPD),
+		FCML_IA_INSTRUCTION( F_VDIVPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDIVPD),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "divps", fcml_st_def_addr_mode_desc_DIVPS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "divsd", fcml_st_def_addr_mode_desc_DIVSD),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "divss", fcml_st_def_addr_mode_desc_DIVSS),
