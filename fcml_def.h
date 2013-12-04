@@ -325,6 +325,19 @@ enum fcml_en_instruction_codes {
 	F_FYL2XP1,
 	F_FEMMS,
 	F_FISTTP,
+	F_GETSEC,
+	F_HADDPD,
+	F_VHADDPD,
+	F_HADDPS,
+	F_VHADDPS,
+	F_HLT,
+	F_HSUBPD,
+	F_VHSUBPD,
+	F_HSUBPS,
+	F_VHSUBPS,
+	F_INVEPT,
+	F_INVVPID,
+	F_IDIV,
 };
 
 /*******************/
@@ -389,7 +402,10 @@ enum fcml_en_instruction_addr_mode_codes {
 	FCML_ST_ST0,
 	FCML_ST,
 	FCML_M2BYTE,
-	FCML_AX
+	FCML_AX,
+	FCML_R64_M128,
+	FCML_R32_M128,
+
 };
 
 /*********************************************/
