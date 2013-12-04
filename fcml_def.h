@@ -213,6 +213,16 @@ enum fcml_en_instruction_codes {
 	F_DIV,
 	F_DIVPD,
 	F_VDIVPD,
+	F_DIVPS,
+	F_VDIVPS,
+	F_DIVSD,
+	F_VDIVSD,
+	F_DIVSS,
+	F_VDIVSS,
+	F_DPPD,
+	F_VDPPD,
+	F_DPPS,
+	F_VDPPS,
 };
 
 /*******************/

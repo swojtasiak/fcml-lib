@@ -1037,39 +1037,54 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VDIVPD[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DIVPS[] = {
 	// 0F 5E /r DIVPS xmm1, xmm2/m128 A Valid Valid Divide packed singleprecision floating-point values in xmm1 by packed single-precision floatingpoint values xmm2/m128.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VDIVPS[] = {
 	// VEX.NDS.128.0F 5E /r VDIVPS xmm1, xmm2, xmm3/m128
 	// VEX.NDS.256.0F 5E /r VDIVPS ymm1, ymm2, ymm3/m256
-	{ "vdivps", FCML_AMT_AVX_SIMD, 0x0080, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x0080, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DIVSD[] = {
 	// F2 0F 5E /r DIVSD xmm1, xmm2/m64 A Valid Valid Divide low double-precision floating-point value n xmm1 by low double-precision floating-point value in xmm2/mem64.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x2001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x2001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VDIVSD[] = {
 	// VEX.NDS.128.F2.0F 5E /r VDIVSD xmm1, xmm2, xmm3/m64
-	{ "vdivsd", FCML_AMT_AVX_SIMD, 0x20C0, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_64, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x20C0, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_OP64, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DIVSS[] = {
 	// F3 0F 5E /r DIVSS xmm1, xmm2/m32 A Valid Valid Divide low single-precision floating-point value in xmm1 by low singleprecision floating-point value in xmm2/m32.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x4001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE_SIMD, 0x4001, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VDIVSS[] = {
 	// VEX.NDS.128.F3.0F 5E /r VDIVSS xmm1, xmm2, xmm3/m32
-	{ "vdivss", FCML_AMT_AVX_SIMD, 0x40C0, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_32, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x40C0, 0x00D88000, { 0x0F, 0x5E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_OP32, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DPPD[] = {
 	// 66 0F 3A 41 /r ib DPPD xmm1, xmm2/m128, imm8 A Valid Valid Selectively multiply packed DP floating-point values from xmm1 with packed DP floating-point values from xmm2, add and selectively store the packed DP floating-point values to xmm1.
-	{ NULL, FCML_AMT_SSE41_SIMD, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x41 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE41_SIMD, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x41 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP128, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VDPPD[] = {
 	// VEX.NDS.128.66.0F3A 41 /r ib VDPPD xmm1,xmm2,xmm3/m128,imm8
-	{ "vdppd", FCML_AMT_AVX_SIMD, 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x41 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_128, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x10C0, 0x00EC8000, { 0x0F, 0x3A, 0x41 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_OP128, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DPPS[] = {
 	// 66 0F 3A 40 /r ib DPPS xmm1, xmm2/m128, imm8 A Valid Valid Selectively multiply packed SP floating-point values from xmm1 with packed SP floating-point values from xmm2, add and selectively store the packed SP floating-point values or zero values to xmm1.
-	{ NULL, FCML_AMT_SSE41_SIMD, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE41_SIMD, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_128, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VDPPS[] = {
 	// VEX.NDS.128.66.0F3A 40 /r ib VDPPS xmm1,xmm2,xmm3/m128,imm8
 	// VEX.NDS.256.66.0F3A 40 /r ib VDPPS ymm1,ymm2,ymm3/m256,imm8
-	{ "vdpps", FCML_AMT_AVX_SIMD, 0x1080, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x1080, 0x00EC8000, { 0x0F, 0x3A, 0x40 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VEXTRACTF128[] = {
@@ -6043,11 +6058,16 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_DIV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DIV),
 		FCML_IA_INSTRUCTION( F_DIVPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DIVPD),
 		FCML_IA_INSTRUCTION( F_VDIVPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDIVPD),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "divps", fcml_st_def_addr_mode_desc_DIVPS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "divsd", fcml_st_def_addr_mode_desc_DIVSD),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "divss", fcml_st_def_addr_mode_desc_DIVSS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "dppd", fcml_st_def_addr_mode_desc_DPPD),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "dpps", fcml_st_def_addr_mode_desc_DPPS),
+		FCML_IA_INSTRUCTION( F_DIVPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DIVPS),
+		FCML_IA_INSTRUCTION( F_VDIVPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDIVPS),
+		FCML_IA_INSTRUCTION( F_DIVSD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DIVSD),
+		FCML_IA_INSTRUCTION( F_VDIVSD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDIVSD),
+		FCML_IA_INSTRUCTION( F_DIVSS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DIVSS),
+		FCML_IA_INSTRUCTION( F_VDIVSS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDIVSS),
+		FCML_IA_INSTRUCTION( F_DPPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DPPD),
+		FCML_IA_INSTRUCTION( F_VDPPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDPPD),
+		FCML_IA_INSTRUCTION( F_DPPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DPPS),
+		FCML_IA_INSTRUCTION( F_VDPPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDPPS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "emms", fcml_st_def_addr_mode_desc_EMMS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "vextractf128", fcml_st_def_addr_mode_desc_VEXTRACTF128),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "enter", fcml_st_def_addr_mode_desc_ENTER),
