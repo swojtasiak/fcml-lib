@@ -186,4 +186,7 @@ Sprawdzic czy to faktycznie jest błąd, byc może w dokumentacji jest błąd.
 FASM assembluje poprawnie, więc to błąd GDB.
 Ale z drugiej strony GAS assemblje podobnie jak GDB, więc chyba by komilatory się wywalały GCC :), do sprawdzenia na procesorze.
 
-
+Ten sam problem z FSUB/FSUBP:
+FCML_A64( "fsubr %st(0),%st(1)", 0xdc, 0xe9 );
+FCML_A64( "fsubrp %st(0),%st(1)", 0xde, 0xe9 );
+FCML_A64( "fsubrp %st(0),%st(1)", 0xde, 0xe9 );
