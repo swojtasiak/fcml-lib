@@ -118,7 +118,8 @@ void fcml_tf_instruction_IN(void) {
     FCML_A64( "in $0x20,%al", 0xe4, 0x20 );
     FCML_A64( "in $0x20,%eax", 0xe5, 0x20 );
     FCML_A64( "in $0x20,%ax", 0x66, 0xe5, 0x20 );
-    // TODO: Niespójnosć z GAS. GAS ubiera to w nawiasy: in   (%dx),%eax
+    // TODO: Niespójnosć z GAS. GAS ubiera to w nawiasy: in   (%dx),%eax pewnie bedzie trzeba dodac dodatkwy tryb adrrsowania, tak aby sie assemblowaly obie formy i tyle.
+    // Gas także dopuszcza obie formy, wiec bedzie ok a w zasadzie juz jest OK, ale dodajmy 2 formy.
     FCML_A64( "in %dx,%al", 0xec );
 }
 
