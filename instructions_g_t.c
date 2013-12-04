@@ -19,6 +19,7 @@ int fcml_tf_instructions_g_suite_cleanup(void) {
 
 void fcml_tf_instruction_GETSEC(void) {
     FCML_I3264( "getsec", 0x0F, 0x37 );
+    FCML_A64( "getsec", 0x0f, 0x37 );
 }
 
 CU_TestInfo fctl_ti_instructions_g[] = {

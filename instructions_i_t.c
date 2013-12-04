@@ -31,6 +31,15 @@ void fcml_tf_instruction_IDIV(void) {
     FCML_I32( "idiv ax,word ptr [ebx]", 0x66, 0xF7, 0x3B );
     FCML_I64( "idiv rax,rsi", 0x48, 0xF7, 0xFE );
     FCML_I64( "idiv eax,esi", 0xF7, 0xFE );
+    // GAS
+    FCML_A64( "idivb (%rbx),%ax", 0xf6, 0x3b );
+    FCML_A64( "idivb %dh,%ax", 0xf6, 0xfe );
+    FCML_A64( "idivl (%rbx),%eax", 0xf7, 0x3b );
+    FCML_A64( "idivw (%rbx),%ax", 0x66, 0xf7, 0x3b );
+    FCML_A64( "idivl %esi,%eax", 0xf7, 0xfe );
+    FCML_A64_A( "idiv %esi,%eax", 0xf7, 0xfe );
+    FCML_A64( "idivq %rsi,%rax", 0x48, 0xf7, 0xfe );
+    FCML_A64_A( "idiv %rsi,%rax", 0x48, 0xf7, 0xfe );
 }
 
 void fcml_tf_instruction_IMUL(void) {
@@ -197,11 +206,21 @@ void fcml_tf_instruction_IRET(void) {
 void fcml_tf_instruction_INVEPT(void) {
     FCML_I32( "invept esp,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
     FCML_I64( "invept rsp,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
+    FCML_I32_A( "invept esp,[eax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
+	FCML_I64_A( "invept rsp,[rax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
+    // GAS
+    FCML_A64( "invept (%rax),%rsp", 0x66, 0x0f, 0x38, 0x80, 0x20 );
+    FCML_A64( "invept (%rax),%rsp", 0x66, 0x0f, 0x38, 0x80, 0x20 );
 }
 
 void fcml_tf_instruction_INVVPID(void) {
     FCML_I32( "invvpid esp,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
     FCML_I64( "invvpid rsp,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
+    FCML_I32_A( "invvpid esp,[eax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
+	FCML_I64_A( "invvpid rsp,[rax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
+	// GAS
+	FCML_A64( "invvpid (%rax),%rsp", 0x66, 0x0f, 0x38, 0x81, 0x20 );
+	FCML_A64( "invvpid (%rax),%rsp", 0x66, 0x0f, 0x38, 0x81, 0x20 );
 }
 
 CU_TestInfo fctl_ti_instructions_i[] = {

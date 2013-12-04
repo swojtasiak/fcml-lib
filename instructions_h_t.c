@@ -27,6 +27,10 @@ void fcml_tf_instruction_HADDPD(void) {
     FCML_I32_D( "vhaddpd xmm2,xmm2,xmmword ptr [ecx+eax]", 0xC4, 0xC1, 0x69, 0x7C, 0x14, 0x01 );
     FCML_I32( "vhaddpd xmm2,xmm7,xmmword ptr [ecx+eax]", 0xc5, 0xc1, 0x7c, 0x14, 0x01 );
     FCML_I32( "vhaddpd xmm2,xmm2,xmmword ptr [ecx+eax]", 0xc5, 0xe9, 0x7c, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "haddpd 0x0000000000000020(%rax),%xmm0", 0x66, 0x0f, 0x7c, 0x40, 0x20 );
+    FCML_A64( "vhaddpd (%r9,%rax),%ymm14,%ymm10", 0xc4, 0x41, 0x0d, 0x7c, 0x14, 0x01 );
+    FCML_A64( "vhaddpd (%rcx,%rax),%xmm2,%xmm2", 0xc5, 0xe9, 0x7c, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_HADDPS(void) {
@@ -39,10 +43,15 @@ void fcml_tf_instruction_HADDPS(void) {
     FCML_I32_D( "vhaddps xmm2,xmm2,xmmword ptr [ecx+eax]", 0xC4, 0xC1, 0x6B, 0x7C, 0x14, 0x01 );
     FCML_I32( "vhaddps xmm2,xmm7,xmmword ptr [ecx+eax]", 0xc5, 0xc3, 0x7c, 0x14, 0x01 );
     FCML_I32( "vhaddps xmm2,xmm2,xmmword ptr [ecx+eax]", 0xc5, 0xeb, 0x7c, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "haddps 0x0000000000000020(%rax),%xmm0", 0xf2, 0x0f, 0x7c, 0x40, 0x20 );
+    FCML_A64( "vhaddps (%r9,%rax),%ymm14,%ymm10", 0xc4, 0x41, 0x0f, 0x7c, 0x14, 0x01 );
+    FCML_A64( "vhaddps (%rcx,%rax),%xmm2,%xmm2", 0xc5, 0xeb, 0x7c, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_HLT(void) {
     FCML_I3264( "hlt", 0xF4 );
+    FCML_A64( "hlt", 0xf4 );
 }
 
 void fcml_tf_instruction_HSUBPD(void) {
@@ -53,6 +62,10 @@ void fcml_tf_instruction_HSUBPD(void) {
     FCML_I64( "vhsubpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x7D, 0x14, 0x01 );
     FCML_I32_D( "vhsubpd xmm2,xmm7,xmmword ptr [ecx+eax]", 0xC4, 0xC1, 0x41, 0x7D, 0x14, 0x01 );
     FCML_I32( "vhsubpd xmm2,xmm7,xmmword ptr [ecx+eax]", 0xc5, 0xc1, 0x7d, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "hsubpd 0x0000000000000020(%rax),%xmm0", 0x66, 0x0f, 0x7d, 0x40, 0x20 );
+    FCML_A64( "vhsubpd (%r9,%rax),%ymm14,%ymm10", 0xc4, 0x41, 0x0d, 0x7d, 0x14, 0x01 );
+    FCML_A64( "vhsubpd (%rcx,%rax),%xmm7,%xmm2", 0xc5, 0xc1, 0x7d, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_HSUBPS(void) {
