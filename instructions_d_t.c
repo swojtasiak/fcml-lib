@@ -74,6 +74,9 @@ void fcml_tf_instruction_DIV(void) {
     // F6 /6 DIV r/m8 A Valid Valid Unsigned divide AX by r/m8,with result stored in AL Quotient, AH Remainder.
     // REX + F6 /6 DIV r/m8* A Valid N.E. Unsigned divide AX by r/m8, with result stored in AL Quotient, AH Remainder.
     FCML_I32( "div ax,byte ptr [ebx]", 0xF6, 0x33 );
+    FCML_A32( "divb (%ebx),%ax", 0xF6, 0x33 );
+    FCML_A32( "divb %bl,%ax", 0xF6, 0xF3 );
+    FCML_A32_A( "div %bl,%ax", 0xF6, 0xF3 );
     FCML_I32( "div ax,byte ptr [ebx]", 0x66, 0xF6, 0x33 );
     FCML_I64( "div ax,sil", 0x40, 0xF6, 0xF6 );
     FCML_I64( "div ax,dh", 0xF6, 0xF6 );
@@ -81,8 +84,12 @@ void fcml_tf_instruction_DIV(void) {
     // F7 /6 DIV r/m32 A Valid Valid Unsigned divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
     // REX.W + F7 /6 DIV r/m64 A Valid N.E. Unsigned divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
     FCML_I32( "div eax,dword ptr [ebx]", 0xF7, 0x33 );
+    FCML_A32( "divl (%ebx),%eax", 0xF7, 0x33 );
     FCML_I32( "div ax,word ptr [ebx]", 0x66, 0xF7, 0x33 );
+    FCML_A32( "divw (%ebx),%ax", 0x66, 0xF7, 0x33 );
     FCML_I64( "div rax,rsi", 0x48, 0xF7, 0xF6 );
+    FCML_A64( "divq %rsi,%rax", 0x48, 0xF7, 0xF6 );
+    FCML_A64_A( "div %rsi,%rax", 0x48, 0xF7, 0xF6 );
     FCML_I64( "div eax,esi", 0xF7, 0xF6 );
 }
 
