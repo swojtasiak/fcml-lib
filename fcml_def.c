@@ -1004,24 +1004,24 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DAS[] = {
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DEC[] = {
 	// FE /1 DEC r/m8 A Valid Valid Decrement r/m8 by 1.
 	// REX + FE /1 DEC r/m8* A Valid N.E. Decrement r/m8 by 1.
-	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C58800, { 0xFE, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C58800, { 0xFE, 0x00, 0x00 }, { FCML_OP_MODRM_RM_8_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_RM8 },
 	// FF /1 DEC r/m16 A Valid Valid Decrement r/m16 by 1.
 	// FF /1 DEC r/m32 A Valid Valid Decrement r/m32 by 1.
 	// REX.W + FF /1 DEC r/m64 A Valid N.E. Decrement r/m64 by 1.
-	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C58800, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0807, 0x00C58800, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_RMO },
 	// 48+rw DEC r16 B N.E. Valid Decrement r16 by 1.
 	// 48+rd DEC r32 B N.E. Valid Decrement r32 by 1.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00440001, { 0x48, 0x00, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_GPR, FCML_EOS_EOSA ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00440001, { 0x48, 0x00, 0x00 }, { FCML_OP_OPCODE_REG( FCML_REG_GPR, FCML_EOS_EOSA ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_RO }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DIV[] = {
 	// F6 /6 DIV r/m8 A Valid Valid Unsigned divide AX by r/m8,with result stored in AL Quotient, AH Remainder.
 	// REX + F6 /6 DIV r/m8* A Valid N.E. Unsigned divide AX by r/m8, with result stored in AL Quotient, AH Remainder.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5B000, { 0xF6, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AX, FCML_EOS_WORD ), FCML_OP_MODRM_RM_8_W, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5B000, { 0xF6, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_WORD ), FCML_OP_MODRM_RM_8_W, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_R16_RM8 },
 	// F7 /6 DIV r/m16 A Valid Valid Unsigned divide DX:AX by r/m16, with result stored in AX Quotient, DX Remainder.
 	// F7 /6 DIV r/m32 A Valid Valid Unsigned divide EDX:EAX by r/m32, with result stored in EAX Quotient, EDX Remainder.
 	// REX.W + F7 /6 DIV r/m64 A Valid N.E. Unsigned divide RDX:RAX by r/m64, with result stored in RAX Quotient, RDX Remainder.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5B000, { 0xF7, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AL, FCML_EOS_EOSA ), FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00C5B000, { 0xF7, 0x00, 0x00 }, { FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_AX, FCML_EOS_EOSA ), FCML_OP_MODRM_RM_W, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RO_RMO }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_DIVPD[] = {
@@ -6034,10 +6034,10 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_CVTTSS2SI, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CVTTSS2SI),
 		FCML_IA_INSTRUCTION( F_VCVTTSS2SI, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VCVTTSS2SI),
 		FCML_IA_INSTRUCTION( F_CWD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_CWD_CDQ_CQO),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "daa", fcml_st_def_addr_mode_desc_DAA),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "das", fcml_st_def_addr_mode_desc_DAS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "dec", fcml_st_def_addr_mode_desc_DEC),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "div", fcml_st_def_addr_mode_desc_DIV),
+		FCML_IA_INSTRUCTION( F_DAA, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DAA),
+		FCML_IA_INSTRUCTION( F_DAS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DAS),
+		FCML_IA_INSTRUCTION( F_DEC, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DEC),
+		FCML_IA_INSTRUCTION( F_DIV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DIV),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "divpd", fcml_st_def_addr_mode_desc_DIVPD),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "divps", fcml_st_def_addr_mode_desc_DIVPS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "divsd", fcml_st_def_addr_mode_desc_DIVSD),

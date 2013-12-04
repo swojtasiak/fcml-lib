@@ -207,6 +207,10 @@ enum fcml_en_instruction_codes {
 	F_VCOMISD,
 	F_COMISS,
 	F_VCOMISS,
+	F_DAA,
+	F_DAS,
+	F_DEC,
+	F_DIV,
 };
 
 /*******************/
@@ -232,6 +236,7 @@ enum fcml_en_instruction_addr_mode_codes {
 	// RM, R / R, RM
 	FCML_AM_RM8_R8,
 	FCML_AM_R8_RM8,
+	FCML_AM_R16_RM8,
 	FCML_AM_RMO_RO,
 	FCML_AM_RO_RMO,
 	FCML_AM_RO_RM8,
@@ -260,6 +265,9 @@ enum fcml_en_instruction_addr_mode_codes {
 	FCML_RX_RX_RM64,
 	FCML_R32_RXM64,
 	FCML_R64_RXM64,
+	FCML_RM8,
+	FCML_RMO,
+	FCML_RO,
 };
 
 /*********************************************/
