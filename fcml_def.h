@@ -223,6 +223,11 @@ enum fcml_en_instruction_codes {
 	F_VDPPD,
 	F_DPPS,
 	F_VDPPS,
+	F_EMMS,
+	F_ENTER,
+	F_EXTRACTPS,
+	F_VEXTRACTPS,
+	F_EXTRQ,
 };
 
 /*******************/

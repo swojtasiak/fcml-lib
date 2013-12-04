@@ -1106,16 +1106,19 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_ENTER[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_EXTRACTPS[] = {
 	// 66 0F 3A 17 /r ib EXTRACTPS reg/m32, xmm2, imm8 A Valid Valid Extract a single-precision floating-point value from xmm2 at the source offset specified by imm8 and store the result to reg or m32. The upper 32 bits of r64 is zeroed if reg is r64.,
-	{ NULL, FCML_AMT_SSE41_SIMD, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_XMM, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE41_SIMD, 0x1001, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, { FCML_OP_MODRM_RM_OP32_W, FCML_OP_MODRM_R_XMM, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VEXTRACTPS[] = {
 	// VEX.128.66.0F3A 17 /r ib VEXTRACTPS r/m32, xmm1, imm8
-	{ "vextractps", FCML_AMT_AVX_SIMD, 0x11C0, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_XMM, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x11C0, 0x00EC8000, { 0x0F, 0x3A, 0x17 }, { FCML_OP_MODRM_RM_OP32_W, FCML_OP_MODRM_R_XMM, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_EXTRQ[] = {
 	// EXTRQ xmm1,imm8,imm8 66 0F 78 /0 ib ib
-	{ NULL, FCML_AMT_SSE4A, 0x1000, 0x00DB8000, { 0x0F, 0x78, 0x00 }, { FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_OP_IB, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE4A, 0x1000, 0x00DB8000, { 0x0F, 0x78, 0x00 }, { FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_XWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_OP_IB, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// EXTRQ xmm1,xmm2 66 0F 79 /r
-	{ NULL, FCML_AMT_SSE4A, 0x1000, 0x00DA8000, { 0x0F, 0x79, 0x00 }, { FCML_OP_MODRM_R_XMM, FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE4A, 0x1000, 0x00DA8000, { 0x0F, 0x79, 0x00 }, { FCML_OP_MODRM_R_XMM, FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_XWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_F2XM1[] = {
@@ -6068,11 +6071,12 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_VDPPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDPPD),
 		FCML_IA_INSTRUCTION( F_DPPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_DPPS),
 		FCML_IA_INSTRUCTION( F_VDPPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VDPPS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "emms", fcml_st_def_addr_mode_desc_EMMS),
+		FCML_IA_INSTRUCTION( F_EMMS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_EMMS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "vextractf128", fcml_st_def_addr_mode_desc_VEXTRACTF128),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "enter", fcml_st_def_addr_mode_desc_ENTER),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "extractps", fcml_st_def_addr_mode_desc_EXTRACTPS),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "extrq", fcml_st_def_addr_mode_desc_EXTRQ),
+		FCML_IA_INSTRUCTION( F_ENTER, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_ENTER),
+		FCML_IA_INSTRUCTION( F_EXTRACTPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_EXTRACTPS),
+		FCML_IA_INSTRUCTION( F_VEXTRACTPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VEXTRACTPS),
+		FCML_IA_INSTRUCTION( F_EXTRQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_EXTRQ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "f2xm1", fcml_st_def_addr_mode_desc_F2XM1),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "fabs", fcml_st_def_addr_mode_desc_FABS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "fadd", fcml_st_def_addr_mode_desc_FADD),
