@@ -25,6 +25,10 @@ void fcml_tf_instruction_JCXZ(void) {
     FCML_I64_D( "jrcxz 0000800000401002h", 0x48, 0xe3, 0xff );
     FCML_I32_D( "jcxz 00001003h", 0x66, 0x67, 0xe3, 0xff );
     FCML_I32_D( "jcxz 00401002h", 0x67, 0xe3, 0xff );
+    // GAS
+    FCML_A64( "jrcxz 0x0000800000401001", 0xe3, 0xff );
+    FCML_A32( "jecxz 0x00401001", 0xe3, 0xff );
+    FCML_A32( "jcxz 0x00401002", 0x67, 0xe3, 0xff );
 }
 
 void fcml_tf_instruction_Jcc(void) {
@@ -32,8 +36,10 @@ void fcml_tf_instruction_Jcc(void) {
     FCML_I64_D( "jnc 0000800000401003h", 0x66, 0x67, 0x73, 0xff );
     FCML_I64_D( "jnc 0000800000401002h", 0x48, 0x73, 0xff );
     FCML_I64_M( "jnc 0000800000401001h", 2, FCML_MI( 0x73, 0xff ), FCML_MI( 0x0f, 0x83, 0xfb, 0xff, 0xff, 0xff ) );
+    FCML_A64_M( "jnc 0x0000800000401001", 2, FCML_MI( 0x73, 0xff ), FCML_MI( 0x0f, 0x83, 0xfb, 0xff, 0xff, 0xff ) );
     FCML_I32_D( "jnc 00001003h", 0x66, 0x67, 0x73, 0xff );
     FCML_I32_M( "jnc 00001002h", 2, FCML_MI( 0x66, 0x73, 0xff ), FCML_MI( 0x66, 0x0f, 0x83, 0xfd, 0xff ) );
+    FCML_A32_M( "jnc 0x00001002", 2, FCML_MI( 0x66, 0x73, 0xff ), FCML_MI( 0x66, 0x0f, 0x83, 0xfd, 0xff ) );
     FCML_I32_D( "jnc 00401002h", 0x67, 0x73, 0xff );
     FCML_I32_M( "jnc 00401001h", 2, FCML_MI( 0x73, 0xff ), FCML_MI( 0x0f, 0x83, 0xfb, 0xff, 0xff, 0xff ) );
     // OSA 32
@@ -46,10 +52,13 @@ void fcml_tf_instruction_Jcc(void) {
 
 void fcml_tf_instruction_JMP(void) {
     FCML_I32_M( "jmp 00401001h", 2, FCML_MI( 0xeb, 0xff ), FCML_MI( 0xe9, 0xfc, 0xff, 0xff, 0xff ) );
+    FCML_A32_M( "jmp 0x00401001", 2, FCML_MI( 0xeb, 0xff ), FCML_MI( 0xe9, 0xfc, 0xff, 0xff, 0xff ) );
     // E9 cw JMP rel16 A N.S. Valid Jump near, relative, displacement relative to next instruction. Not supported in 64-bit mode.
     // E9 cd JMP rel32 A Valid Valid Jump near, relative, RIP = RIP + 32-bit displacement sign extended to 64-bits
     FCML_I32( "jmp 90d11004h", 0xe9, 0xff,0xff, 0x90, 0x90 );
+    FCML_A32( "jmp 0x90d11004", 0xe9, 0xff,0xff, 0x90, 0x90 );
     FCML_I32( "jmp 0000a103h", 0x66, 0xe9, 0xff, 0x90 );
+    FCML_A32( "jmpw 0x0000a103", 0x66, 0xe9, 0xff, 0x90 );
     // FF /4 JMP r/m16 B N.S. Valid Jump near, absolute indirect, address = zero-extended r/m16. Not supported in 64- bit mode.
     // FF /4 JMP r/m32 B N.S. Valid Jump near, absolute indirect, address given in r/m32. Not supported in 64-bit mode.
     // FF /4 JMP r/m64 B Valid N.E. Jump near, absolute indirect, RIP = 64-Bit offset from register or memory

@@ -124,31 +124,49 @@ void fcml_tf_instruction_IN(void) {
 }
 
 void fcml_tf_instruction_INC(void) {
-    // FE /0 INC r/m8 A Valid Valid Increment r/m byte by 1.
-    // REX + FE /0 INC r/m8* A Valid N.E. Increment r/m byte by 1.
+	// FF /0 INC r/m16 A Valid Valid Increment r/m word by 1.
+	// FF /0 INC r/m32 A Valid Valid Increment r/m doubleword by 1.
+	// REX.W + FF /0 INC r/m64 A Valid N.E. Increment r/m quadword by 1.
     FCML_I32_M( "inc eax", 2, FCML_MI( 0x40 ), FCML_MI( 0xff, 0xc0 ) );
     FCML_I32_M( "inc ax", 2, FCML_MI( 0x66, 0x40 ), FCML_MI( 0x66, 0xff, 0xc0 ) );
     FCML_I32_M( "inc ecx", 2, FCML_MI( 0x41 ), FCML_MI( 0xff, 0xc1 ) );
     FCML_I32_M( "inc cx", 2, FCML_MI( 0x66, 0x41 ), FCML_MI( 0x66, 0xff, 0xc1 ) );
-    // FF /0 INC r/m16 A Valid Valid Increment r/m word by 1.
-    // FF /0 INC r/m32 A Valid Valid Increment r/m doubleword by 1.
-    // REX.W + FF /0 INC r/m64 A Valid N.E. Increment r/m quadword by 1.
+    FCML_I32( "lock inc dword ptr [ebx]", 0xF0, 0xFF, 0x03 );
+    FCML_I32( "xacquire lock inc dword ptr [ebx]", 0xF2, 0xF0, 0xFF, 0x03 );
+	FCML_I32( "xrelease lock inc dword ptr [ebx]", 0xF3, 0xF0, 0xFF, 0x03 );
+	FCML_I32( "inc word ptr [ebx]", 0x66, 0xFF, 0x03 );
+	FCML_I64( "inc dword ptr [rbx]", 0xFF, 0x03 );
+	FCML_I64( "inc qword ptr [rbx]", 0x48, 0xFF, 0x03 );
+	FCML_I64_D( "inc word ptr [rbx]", 0x66, 0x40, 0xFF, 0x03 );
+	FCML_I64( "inc r12", 0x49, 0xFF, 0xC4 );
+    // GAC
+    FCML_A64( "incw %ax", 0x66, 0xff, 0xc0 );
+    FCML_A64_A( "inc %ax", 0x66, 0xff, 0xc0 );
+    FCML_A64( "incl (%rax)", 0xff, 0x00 );
+    FCML_A64( "incw (%rax)", 0x66, 0xff, 0x00 );
+    FCML_A64( "incq (%rax)", 0x48, 0xff, 0x00 );
+    // FE /0 INC r/m8 A Valid Valid Increment r/m byte by 1.
+	// REX + FE /0 INC r/m8* A Valid N.E. Increment r/m byte by 1.
     FCML_I32( "lock inc byte ptr [eax]", 0xF0, 0xFE, 0x00 );
     FCML_I32( "xacquire lock inc byte ptr [eax]", 0xF2, 0xF0, 0xFE, 0x00 );
     FCML_I32( "xrelease lock inc byte ptr [eax]", 0xF3, 0xF0, 0xFE, 0x00 );
     FCML_I64( "inc byte ptr [rax]", 0xFE, 0x00 );
     FCML_I64_D( "inc byte ptr [rax]", 0x48, 0xFE, 0x00 );
     FCML_I64( "inc spl", 0x40, 0xFE, 0xC4 );
+    // GAC
+    FCML_A64( "lock incb (%rax)", 0xf0, 0xfe, 0x00 );
+    FCML_A64( "incb (%rax)", 0xfe, 0x00 );
+    FCML_A64( "incb %spl", 0x40, 0xfe, 0xc4 );
+    FCML_A64_A( "inc %spl", 0x40, 0xfe, 0xc4 );
     // 40+ rw** INC r16 B N.E. Valid Increment word register by 1.
     // 40+ rd INC r32 B N.E. Valid Increment doubleword register by 1.
-    FCML_I32( "lock inc dword ptr [ebx]", 0xF0, 0xFF, 0x03 );
-    FCML_I32( "xacquire lock inc dword ptr [ebx]", 0xF2, 0xF0, 0xFF, 0x03 );
-    FCML_I32( "xrelease lock inc dword ptr [ebx]", 0xF3, 0xF0, 0xFF, 0x03 );
-    FCML_I32( "inc word ptr [ebx]", 0x66, 0xFF, 0x03 );
-    FCML_I64( "inc dword ptr [rbx]", 0xFF, 0x03 );
-    FCML_I64( "inc qword ptr [rbx]", 0x48, 0xFF, 0x03 );
-    FCML_I64_D( "inc word ptr [rbx]", 0x66, 0x40, 0xFF, 0x03 );
-    FCML_I64( "inc r12", 0x49, 0xFF, 0xC4 );
+    FCML_I32_M( "inc eax", 2, FCML_MI( 0x40 ), FCML_MI( 0xff, 0xc0 ) );
+	FCML_I32_M( "inc ecx", 2, FCML_MI( 0x41 ), FCML_MI( 0xff, 0xc1 ) );
+	FCML_I32_M( "inc dx", 2, FCML_MI( 0x66, 0x42 ), FCML_MI( 0x66, 0xff, 0xc2 ) );
+	// GAS
+    FCML_A32_M( "inc %eax", 2, FCML_MI( 0x40 ), FCML_MI( 0xff, 0xc0 ) );
+    FCML_A32_M( "inc %ecx", 2, FCML_MI( 0x41 ), FCML_MI( 0xff, 0xc1 ) );
+    FCML_A32_M( "inc %dx", 2, FCML_MI( 0x66, 0x42 ), FCML_MI( 0x66, 0xff, 0xc2 ) );
 }
 
 void fcml_tf_instruction_INS(void) {
@@ -166,6 +184,12 @@ void fcml_tf_instruction_INS(void) {
     FCML_I32_A( "insb", 0x6c );
     FCML_I32_A( "insw", 0x66, 0x6D );
     FCML_I32_A( "insd", 0x6D );
+    // GAS
+    FCML_A64( "insb %dx,(%rdi)", 0x6c );
+    FCML_A64( "insb %dx,(%edi)", 0x67, 0x6c );
+    FCML_A64( "insl %dx,(%rdi)", 0x6d );
+    FCML_A64( "insl %dx,(%edi)", 0x67, 0x6d );
+    FCML_A64( "insw %dx,(%edi)", 0x66, 0x67, 0x6d );
 }
 
 void fcml_tf_instruction_INSERTPS(void) {
@@ -175,6 +199,9 @@ void fcml_tf_instruction_INSERTPS(void) {
     FCML_I64( "vinsertps xmm8,xmm14,dword ptr [r8],20h", 0xC4, 0x43, 0x09, 0x21, 0x00, 0x20 );
     FCML_I32( "vinsertps xmm0,xmm6,dword ptr [eax],20h", 0xC4, 0xE3, 0x49, 0x21, 0x00, 0x20 );
     FCML_I32( "vinsertps xmm0,xmm6,xmm0,20h", 0xC4, 0xE3, 0x49, 0x21, 0xC0, 0x20 );
+    // GAS
+    FCML_A64( "insertps $0x40,(%rax),%xmm4", 0x66, 0x0f, 0x3a, 0x21, 0x20, 0x40 );
+    FCML_A64( "vinsertps $0x20,(%r8),%xmm14,%xmm8", 0xc4, 0x43, 0x09, 0x21, 0x00, 0x20 );
 }
 
 void fcml_tf_instruction_INSERTQ(void) {
@@ -184,14 +211,20 @@ void fcml_tf_instruction_INSERTQ(void) {
     // INSERTQ xmm1, xmm2 F2 0F 79 /r
     FCML_I32( "insertq xmm3,xmm2", 0xF2, 0x0F, 0x79, 0xDA );
     FCML_I64( "insertq xmm3,xmm2", 0xF2, 0x0F, 0x79, 0xDA );
+    // GAS
+    FCML_A64( "insertq $0x02,$0x01,%xmm2,%xmm3", 0xf2, 0x0f, 0x78, 0xda, 0x01, 0x02 );
+    FCML_A64( "insertq %xmm2,%xmm3", 0xf2, 0x0f, 0x79, 0xda );
 }
 
 void fcml_tf_instruction_INT(void) {
-    FCML_I3264_M( "int 03h", 2, FCML_MI( 0xCC ), FCML_MI( 0xCD, 0x03 ) );
-    FCML_I32_M( "int 20h", 2, FCML_MI( 0xcd, 0x20 ), FCML_MI( 0xcc ) );
-    FCML_I64_M( "int 20h", 2, FCML_MI( 0xcd, 0x20 ), FCML_MI( 0xcc ) );
-    FCML_I64( "into", 0xCE );
+    FCML_I3264( "int3", 0xCC );
+    FCML_I3264_M( "int 20h", 2, FCML_MI( 0xcd, 0x20 ), FCML_MI( 0xcc ) );
     FCML_I32( "into", 0xCE );
+    FCML_I64_FAILED( "into", 0xCE );
+    // GAS
+    FCML_A64( "int3", 0xcc );
+    FCML_A64( "int $0x20", 0xcd, 0x20 );
+    FCML_A32( "into", 0xCE );
 }
 
 void fcml_tf_instruction_INVD(void) {
@@ -201,6 +234,8 @@ void fcml_tf_instruction_INVD(void) {
 void fcml_tf_instruction_INVLPG(void) {
     FCML_I32( "invlpg [eax+00000020h]", 0x0F, 0x01, 0x78, 0x20 );
     FCML_I64( "invlpg [rax+0000000000000020h]", 0x0F, 0x01, 0x78, 0x20 );
+    // GAS
+    FCML_A64( "invlpg 0x0000000000000020(%rax)", 0x0f, 0x01, 0x78, 0x20 );
 }
 
 void fcml_tf_instruction_INVLPGA(void) {
@@ -209,11 +244,17 @@ void fcml_tf_instruction_INVLPGA(void) {
     FCML_I32( "invlpga ax,ecx", 0x67, 0x0F, 0x01, 0xDF );
     FCML_I64( "invlpga rax,ecx", 0x0F, 0x01, 0xDF );
     FCML_I64( "invlpga eax,ecx", 0x67, 0x0F, 0x01, 0xDF );
+    // GAS
+    FCML_A64( "invlpga %ecx,%rax", 0x0f, 0x01, 0xdf );
+    FCML_A64_A( "invlpga", 0x0f, 0x01, 0xdf );
 }
 
 void fcml_tf_instruction_INVPCID(void) {
     FCML_I32( "invpcid edx,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x82, 0x10 );
     FCML_I64( "invpcid rdx,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x82, 0x10 );
+    // GAS
+    FCML_A64( "invpcid (%rax),%rdx", 0x66, 0x0f, 0x38, 0x82, 0x10 );
+    FCML_A64( "invpcid (%rax),%rdx", 0x66, 0x0f, 0x38, 0x82, 0x10 );
 }
 
 void fcml_tf_instruction_IRET(void) {
@@ -222,6 +263,10 @@ void fcml_tf_instruction_IRET(void) {
     FCML_I64( "iretd", 0xCF );
     FCML_I64( "iret", 0x66, 0xCF );
     FCML_I64( "iretq", 0x48, 0xCF );
+    // GAS
+    FCML_A64( "iret", 0xcf );
+    FCML_A64( "iretw", 0x66, 0xcf );
+    FCML_A64( "iretq", 0x48, 0xcf );
 }
 
 void fcml_tf_instruction_INVEPT(void) {
@@ -230,7 +275,6 @@ void fcml_tf_instruction_INVEPT(void) {
     FCML_I32_A( "invept esp,[eax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
 	FCML_I64_A( "invept rsp,[rax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
     // GAS
-    FCML_A64( "invept (%rax),%rsp", 0x66, 0x0f, 0x38, 0x80, 0x20 );
     FCML_A64( "invept (%rax),%rsp", 0x66, 0x0f, 0x38, 0x80, 0x20 );
 }
 
