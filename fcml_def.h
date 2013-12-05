@@ -340,6 +340,25 @@ enum fcml_en_instruction_codes {
 	F_IDIV,
 	F_IMUL,
 	F_IN,
+	F_INC,
+	F_INS,
+	F_INSERTPS,
+	F_VINSERTPS,
+	F_VEXTRACTF128,
+	F_VINSERTF128,
+	F_INSERTQ,
+	F_INT3,
+	F_INT,
+	F_INTO,
+	F_INVD,
+	F_INVLPG,
+	F_INVLPGA,
+	F_INVPCID,
+	F_IRET,
+	F_JCXZ,
+	F_JECXZ = F_JCXZ,
+	F_JRCXZ = F_JCXZ,
+	F_JMP,
 };
 
 /*******************/
@@ -368,6 +387,7 @@ enum fcml_en_instruction_addr_mode_codes {
 	FCML_AM_R16_RM8,
 	FCML_AM_RMO_RO,
 	FCML_AM_RO_RMO,
+	FCML_AM_RO_MO,
 	FCML_AM_RO_RM8,
 
 	FCML_AM_RO_RMO_IMM8,
@@ -390,6 +410,7 @@ enum fcml_en_instruction_addr_mode_codes {
 	FCML_RXO_RXO_RMX64_OP,
 	FCML_RXO_RMX32_OP,
 	FCML_RXO_RXO_RMX32_OP,
+	FCML_M8,
 	FCML_M16,
 	FCML_M32,
 	FCML_M64,
@@ -411,7 +432,10 @@ enum fcml_en_instruction_addr_mode_codes {
 	FCML_AX,
 	FCML_R64_M128,
 	FCML_R32_M128,
-
+	FCML_RX_RX_I8_I8,
+	FCML_RX_RX,
+	FCML_REL8,
+	FCML_REL0,
 };
 
 /*********************************************/
