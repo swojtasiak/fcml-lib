@@ -27,7 +27,7 @@
 typedef struct fcml_st_dialect_mnemonic {
 	fcml_string mnemonic;
 	fcml_uint32_t instruction;
-	fcml_uint8_t flags;
+	fcml_uint32_t flags;
 } fcml_st_dialect_mnemonic;
 
 typedef void (*fcml_fnp_asm_dialect_free_mnemonic)( fcml_st_mp_mnemonic *mnemonics );

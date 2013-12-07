@@ -27,6 +27,7 @@ typedef struct fcml_st_mp_mnemonic {
     fcml_nuint8_t memory_data;
     fcml_bool is_default;
     fcml_nuint8_t l;
+    fcml_uint32_t flags;
 } fcml_st_mp_mnemonic;
 
 typedef struct fcml_st_mp_mnemonic_set {

@@ -23,8 +23,10 @@ fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_
 			hints.operand_hints |= FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
     	}
     	if( rm_args->encoded_memory_operand_size == FCML_EOS_FPI ) {
-    		hints.instruction_hints |= FCML_HINT_FAR_POINTER;
+    		// Far pointer indirect.
+    		hints.instruction_hints |= ( FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER );
     	} else {
+    		// If not far, then near :)
     		hints.instruction_hints |= FCML_HINT_NEAR_POINTER;
     	}
     	if( rm_args->flags & FCML_RMF_I ) {

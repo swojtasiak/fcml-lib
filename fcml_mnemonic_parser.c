@@ -10,7 +10,7 @@
  * ts - Sets "shortcut" flags for mnemonic.
  * tb - Sets "shortcut/classic" flag for mnemonic.
  * pXX - Sets pseudo opcode value for mnemonic.
- * dXX - Sets memory data size to specified number of bytes.
+ * dXX - Sets memory data size to specified number of bytes. It has greater priority than "sb" and "sf".
  * l0 - Mnemonic for L flag set to 0.
  * l1 - Mnemonic for L flag set to 1.
  *

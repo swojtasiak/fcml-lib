@@ -319,12 +319,6 @@ fcml_ceh_error fcml_fn_rend_render_instruction_att( fcml_st_dialect *dialect_con
 		return error;
 	}
 
-	// Add hints.
-	if( result->instruction.hints & FCML_HINT_FAR_POINTER ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, " " );
-		fcml_fn_rend_utils_format_append_str( output_stream, "far" );
-	}
-
 	// Add all operands.
 	fcml_int i;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {

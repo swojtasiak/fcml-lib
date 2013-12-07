@@ -357,6 +357,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("jmp"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("jmp[sf,od];jmpw[sf,ow]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_REL0 ), 0 },
 	{ FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_RM0 ), 0 },
+	// TODO: Opisac w dokumentacji jak sa kodowane jmpy. Nie udało mi sie w przypadku GAS zassemblowac far indirect jmp dla REX.W.
+	{ FCML_TEXT("ljmpl[sf,od,d06];ljmpw[sf,ow,d04];ljmpq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_M16_O ), FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER },
 	{ NULL, 0, 0 }
 };
 
@@ -437,6 +439,8 @@ fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_att( fcml_st_def_instruc
 
 	fcml_string mnemonic_pattern = NULL;
 
+	fcml_uint32_t flags = 0;
+
 	fcml_uint32_t keys[] = {
 		FCML_ASM_DIALECT_INSTRUCTION( instruction->instruction, addr_mode->addr_mode ),
 		FCML_ASM_DIALECT_INSTRUCTION( instruction->instruction, FCML_AM_ALL )
@@ -447,6 +451,7 @@ fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_att( fcml_st_def_instruc
 		fcml_st_dialect_mnemonic *dialect_mnemonic = (fcml_st_dialect_mnemonic*)fcml_fn_coll_map_get( fcml_map_dialect_att_mnemonics_lookup, &(keys[i]) );
 		if( dialect_mnemonic ) {
 			mnemonic_pattern = dialect_mnemonic->mnemonic;
+			flags = dialect_mnemonic->flags;
 		}
 	}
 
@@ -459,7 +464,19 @@ fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_att( fcml_st_def_instruc
 		}
 	}
 
-	return fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
+	fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
+
+	// Set flsgs for every parsed mnemonic.
+	if( *mnemonics ) {
+		fcml_st_mp_mnemonic_set *m_set = *mnemonics;
+		fcml_st_coll_list_element *current = m_set->mnemonics->head;
+		while( current ) {
+			((fcml_st_mp_mnemonic*)current->item)->flags = flags;
+			current = current->next;
+		}
+	}
+
+	return error;
 }
 
 fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_att( fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonics_counter ) {
@@ -653,6 +670,8 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruct
 				}
 			}
 		}
+		// In GAS mode, mnemonic flags are treated as instruction hints.
+		instrunction->hints |= mnemonic->flags;
 	}
 
 	if( has_been_changed ) {
