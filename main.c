@@ -157,7 +157,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	//FCML_I32( "jmp far 6655h:44332211h", 0xEA, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
+	// ea 11 22 33 44 55 66   ljmp   $0x6655,$0x44332211
 
 
 	//FCML_I32_A_P( "call dword ptr [00001044h]",  0x66, 0xE8, 0x40, 0x00 );

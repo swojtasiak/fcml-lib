@@ -228,22 +228,6 @@ void fcml_tf_parser_att_parse_test10(void) {
 }
 
 void fcml_tf_parser_att_parse_test11(void) {
-	// Index only.
-	fcml_st_parser_result *result;
-	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "lcall $0xFFFF,$0x12345678", &result ), FCML_CEH_GEC_NO_ERROR );
-	if( result->instruction != NULL ) {
-		CU_ASSERT_EQUAL( result->instruction->operands_count, 1 );
-		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_FAR_POINTER );
-		CU_ASSERT_EQUAL( result->instruction->operands[0].far_pointer.segment, 0xFFFF );
-		CU_ASSERT_EQUAL( result->instruction->operands[0].far_pointer.offset_size, FCML_DS_32 );
-		CU_ASSERT_EQUAL( result->instruction->operands[0].far_pointer.offset32, 0x12345678 );
-	} else {
-		CU_FAIL();
-	}
-	fcml_fn_parser_result_free( result );
-}
-
-void fcml_tf_parser_att_parse_test12(void) {
 	// RIP only.
 	fcml_st_parser_result *result;
 	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "movq $1,0x100(%rip)", &result ), FCML_CEH_GEC_NO_ERROR );
@@ -265,7 +249,7 @@ void fcml_tf_parser_att_parse_test12(void) {
 	fcml_fn_parser_result_free( result );
 }
 
-void fcml_tf_parser_att_parse_test13(void) {
+void fcml_tf_parser_att_parse_test12(void) {
 	fcml_st_parser_result *result;
 	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "mov *0x80", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
@@ -290,7 +274,6 @@ CU_TestInfo fcml_ti_parser_att[] = {
     { "fcml_tf_parser_att_parse_test10", fcml_tf_parser_att_parse_test10 },
     { "fcml_tf_parser_att_parse_test11", fcml_tf_parser_att_parse_test11 },
     { "fcml_tf_parser_att_parse_test12", fcml_tf_parser_att_parse_test12 },
-    { "fcml_tf_parser_att_parse_test13", fcml_tf_parser_att_parse_test13 },
     CU_TEST_INFO_NULL,
 };
 
