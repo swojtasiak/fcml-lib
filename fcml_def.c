@@ -521,11 +521,11 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_CALL[] = {
 	// E8 cw CALL rel16 B N.S. Valid Call near, relative, displacement relative to next instruction.
 	// E8 cd CALL rel32 B Valid Valid Call near, relative, displacement relative to next instruction.
 	// 32-bit displacement sign extended to 64-bits in 64-bit mode.
-	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C40000, { 0xE8, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_REL16 },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C40000, { 0xE8, 0x00, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_REL0 },
 	// FF /2 CALL r/m16 B N.E. Valid Call near, absolute indirect, address given in r/m16.
 	// FF /2 CALL r/m32 B N.E. Valid Call near, absolute indirect, address given in r/m32.
 	// FF /2 CALL r/m64 B Valid N.E. Call near, absolute indirect, address given in r/m64.
-	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C59000, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_RM, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_RM0 },
+	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x40C59000, { 0xFF, 0x00, 0x00 }, { FCML_OP_MODRM_RM_I, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_RM0 },
 	// 9A cd CALL ptr16:16 A Invalid Valid Call far, absolute, address given in operand.
 	// 9A cp CALL ptr16:32 A Invalid Valid Call far, absolute, address given in operand.
 	{ NULL, FCML_AMT_GPI | FCML_AMT_CTI | FCML_AMT_BRANCH, 0x0000, 0x00440000, { 0x9A, 0x00, 0x00 }, { FCML_OP_FAR_POINTER, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_PTR16_O },
