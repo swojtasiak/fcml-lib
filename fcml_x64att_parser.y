@@ -123,7 +123,8 @@ operand_list: operand 			{ $$ = fcml_fn_ast_alloc_node_operand_list( $1, NULL );
 
 operand: '$' exp 				{ $$ = $2; }
 | effective_address
-| reg 							{  $$ = fcml_fn_ast_alloc_node_register( &$1 ); HANDLE_ERRORS($$); }
+| '*' effective_address			{ $$ = fcml_fn_ast_set_effective_address_hins( $2, FCML_HINT_INDIRECT_POINTER ); }
+| reg 							{ $$ = fcml_fn_ast_alloc_node_register( &$1 ); HANDLE_ERRORS($$); }
 ;
 
 effective_address:  effective_address_components

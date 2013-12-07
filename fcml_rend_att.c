@@ -134,6 +134,10 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_att( fcml_st_dialect_conte
 	}
 	*/
 
+	if( result->instruction.hints & FCML_HINT_INDIRECT_POINTER  ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, "*" );
+	}
+
 	if( address->address_form == FCML_AF_COMBINED ) {
 
 		// Displacement.
@@ -248,7 +252,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_att( fcml_st_dialect_c
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_rend_print_operand_att(  fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_int operand_index, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_print_operand_att( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_int operand_index, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_operand *operand = &(result->instruction.operands[operand_index]);
 	switch( operand->type ) {

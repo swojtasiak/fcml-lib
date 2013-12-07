@@ -36,11 +36,11 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("aam"), FCML_ASM_DIALECT_INSTRUCTION( F_AAM, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("aas"), FCML_ASM_DIALECT_INSTRUCTION( F_AAS, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("adc"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_ALL ), 0 },
-	{ FCML_TEXT("adcb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_RM8_IMM8 ), 0 },
+	{ FCML_TEXT("adc;adcb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_RM8_IMM8 ), 0 },
 	{ FCML_TEXT("adc;adcw[sf,ow,mm];adcl[sf,od,mm];adcq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_RMO_IMMO ), 0 },
 	{ FCML_TEXT("adc;adcw[sf,ow,mm];adcl[sf,od,mm];adcq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADC, FCML_AM_RMO_IMM8 ), 0 },
 	{ FCML_TEXT("add"), FCML_ASM_DIALECT_INSTRUCTION( F_ADD, FCML_AM_ALL ), 0 },
-	{ FCML_TEXT("addb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADD, FCML_AM_RM8_IMM8 ), 0 },
+	{ FCML_TEXT("add;addb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADD, FCML_AM_RM8_IMM8 ), 0 },
 	{ FCML_TEXT("add;addw[sf,ow,mm];addl[sf,od,mm];addq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADD, FCML_AM_RMO_IMMO ), 0 },
 	{ FCML_TEXT("add;addw[sf,ow,mm];addl[sf,od,mm];addq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_ADD, FCML_AM_RMO_IMM8 ), 0 },
 	{ FCML_TEXT("addpd"), FCML_ASM_DIALECT_INSTRUCTION( F_ADDPD, FCML_AM_ALL ), 0 },
@@ -68,7 +68,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("aeskeygenassist"), FCML_ASM_DIALECT_INSTRUCTION( F_AESKEYGENASSIST, 0 ), 0 },
 	{ FCML_TEXT("vaeskeygenassist"), FCML_ASM_DIALECT_INSTRUCTION( F_VAESKEYGENASSIST, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("and"), FCML_ASM_DIALECT_INSTRUCTION( F_AND, FCML_AM_ALL ), 0 },
-	{ FCML_TEXT("andb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_AND, FCML_AM_RM8_IMM8 ), 0 },
+	{ FCML_TEXT("and;andb[sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_AND, FCML_AM_RM8_IMM8 ), 0 },
 	{ FCML_TEXT("and;andw[sf,ow,mm];andl[sf,od,mm];andq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_AND, FCML_AM_RMO_IMMO ), 0 },
 	{ FCML_TEXT("and;andw[sf,ow,mm];andl[sf,od,mm];andq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_AND, FCML_AM_RMO_IMM8 ), 0 },
 	{ FCML_TEXT("andpd"), FCML_ASM_DIALECT_INSTRUCTION( F_ANDPD, FCML_AM_ALL ), 0 },
@@ -356,6 +356,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("j"), FCML_ASM_DIALECT_INSTRUCTION( F_JCC, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("jmp"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("jmp[sf,od];jmpw[sf,ow]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_REL0 ), 0 },
+	{ FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_RM0 ), 0 },
 	{ NULL, 0, 0 }
 };
 

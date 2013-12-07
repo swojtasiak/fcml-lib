@@ -430,7 +430,8 @@ typedef struct fcml_st_operand {
 typedef enum fcml_en_instruction_hints {
     FCML_HINT_FAR_POINTER = 0x0001,
     FCML_HINT_NEAR_POINTER = 0x0002,
-    FCML_HINT_LONG_FORM_POINTER = 0x0004
+    FCML_HINT_LONG_FORM_POINTER = 0x0004,
+	FCML_HINT_INDIRECT_POINTER = 0x0008
 } fcml_en_instruction_hints;
 
 /* Generic instruction definition used by assembler and disassembler to encode/decode instruction. */

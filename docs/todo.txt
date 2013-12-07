@@ -27,3 +27,6 @@ IMM, IMM
 I dopiero po wyborze ADD_MODE przed akceptacją zastosować preprocesor udpostępniany przez dialect, który na podstawie typu instrukcji przykładowo F_CALL, odpowiednio przygotuje
 operandy, tak aby dalej juz był wykorzystany zapis FAR_POINTER. Dzięki temu parser bedzie mógł zapisac IMM, IMM a uzytownik sam skladajacy instrukcję będzie miał mozliwośc zapisu
 operatora FAR_POINTER.
+
+Zastanowic sie czy dla intela faktycznie nie chcemy domyslnie drukowac hinta indirect, dzieki temu pozbedziemy sie niejednoznacznosci
+w przypadku jmp dword [eax] ktory moze zostac zassemblowany jako far jmp oraz near indirect jmp.

@@ -10,7 +10,7 @@
 
 #include "stdio.h"
 
-#ifdef _FCML_TRACE
+#ifdef FCML_TRACE_ENABLED
 #define FCML_TRACE(pattern, ...) { printf("%s %d ", __FILE__,  __LINE__); printf(pattern, ##__VA_ARGS__); printf("\n");}
 #else
 #define FCML_TRACE(pattern, ...)

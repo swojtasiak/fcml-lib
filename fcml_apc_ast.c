@@ -157,6 +157,12 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer( fcml_st_ast_node *segment_
 	return node;
 }
 
+fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins( fcml_st_ast_node *effective_address_node, fcml_hints hints ) {
+	fcml_st_ast_node_effective_address *effective_address = (fcml_st_ast_node_effective_address *)effective_address_node->node;
+	effective_address->instruction_hints |= hints;
+	return effective_address_node;
+}
+
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_details( fcml_st_register *segment_selector, fcml_st_size_operator *size_operator, fcml_st_ast_node *effective_address_node ) {
 
 	fcml_st_ast_node_effective_address *effective_address = (fcml_st_ast_node_effective_address *)effective_address_node->node;
@@ -591,11 +597,13 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml_st_ast_node_effective_address *effective_address_node, fcml_en_effective_address_form address_form, fcml_st_operand *operand, fcml_st_ceh_error_container *error_container ) {
+fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml_st_instruction *cif_instruction, fcml_st_ast_node_effective_address *effective_address_node, fcml_en_effective_address_form address_form, fcml_st_operand *operand, fcml_st_ceh_error_container *error_container ) {
 
     fcml_st_address *address = &(operand->address);
 
+    // Copy operands and instruction hints.
     operand->hints |= effective_address_node->addressing_hints;
+    cif_instruction->hints |= effective_address_node->instruction_hints;
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -676,7 +684,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 			fcml_st_ast_node_instruction *node_instruction = (fcml_st_ast_node_instruction*)ast_node->node;
 			// Handle mnemonic.
 			cif_instruction->prefixes = node_instruction->prefixes;
-			cif_instruction->hints = node_instruction->hints;
+			cif_instruction->hints |= node_instruction->hints;
 			cif_instruction->mnemonic = fcml_fn_env_str_strdup( node_instruction->mnemonic );
 			// Handle operands.
 			if( node_instruction->operands ) {
@@ -739,7 +747,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 		}
 		case FCML_EN_TN_EFFECTIVE_ADDRESS: {
 			fcml_st_ast_node_effective_address *effective_address_node = (fcml_st_ast_node_effective_address*)ast_node->node;
-			error = fcml_ifn_ast_util_convert_effective_address_node_to_operand( effective_address_node, effective_address_node->address_form, current_operand, error_container );
+			error = fcml_ifn_ast_util_convert_effective_address_node_to_operand( cif_instruction, effective_address_node, effective_address_node->address_form, current_operand, error_container );
 			current_operand->type = FCML_EOT_ADDRESS;
 			break;
 		}

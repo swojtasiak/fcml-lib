@@ -23,9 +23,12 @@ fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_
 			hints.operand_hints |= FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
     	}
     	if( rm_args->encoded_memory_operand_size == FCML_EOS_FPI ) {
-    		hints.instruction_hints = FCML_HINT_FAR_POINTER;
+    		hints.instruction_hints |= FCML_HINT_FAR_POINTER;
     	} else {
-    		hints.instruction_hints = FCML_HINT_NEAR_POINTER;
+    		hints.instruction_hints |= FCML_HINT_NEAR_POINTER;
+    	}
+    	if( rm_args->flags & FCML_RMF_I ) {
+    		hints.instruction_hints |= FCML_HINT_INDIRECT_POINTER;
     	}
     	// Every ModR/M encoded operand supports SIB hint.
     	hints.operand_hints |= FCML_OP_HINT_SIB_ENCODING;

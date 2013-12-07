@@ -302,8 +302,10 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 
 	// Add hints.
 	if( result->instruction.hints & FCML_HINT_FAR_POINTER ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, " " );
-		fcml_fn_rend_utils_format_append_str( output_stream, "far" );
+		fcml_fn_rend_utils_format_append_str( output_stream, " far" );
+	}
+	if( ( render_flags & FCML_REND_FLAG_RENDER_INDIRECT_HINT ) && ( result->instruction.hints & FCML_HINT_INDIRECT_POINTER ) ) {
+		fcml_fn_rend_utils_format_append_str( output_stream, " indirect" );
 	}
 
 	// Add all operands.

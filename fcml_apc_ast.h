@@ -85,6 +85,7 @@ typedef struct fcml_st_ast_node_far_pointer {
 } fcml_st_ast_node_far_pointer;
 
 typedef struct fcml_st_ast_node_effective_address {
+	fcml_hints instruction_hints;
     fcml_hints addressing_hints;
 	fcml_uint16_t size_operator;
 	fcml_st_register segment_selector;
@@ -120,6 +121,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fc
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register( fcml_st_register *reg );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator operator, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer( fcml_st_ast_node *segment_selector, fcml_st_ast_node *offset );
+fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins( fcml_st_ast_node *effective_address_node, fcml_hints hints );
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_details( fcml_st_register *segment_selector, fcml_st_size_operator *size_operator, fcml_st_ast_node *effective_address );
 fcml_st_ast_node *fcml_fn_ast_set_displacemnt( fcml_st_ast_node *displacement, fcml_st_ast_node *effective_address );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( fcml_st_register *base, fcml_st_register *index, fcml_st_ast_val_integer *scale_factor, fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints );

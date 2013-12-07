@@ -28,3 +28,5 @@ W naszym rzypadku steruje sie tym za pomoca address_mode 32_bit lub 64_bit.
  Dodac informację, że w przypadku DIV należy podawać także ax, eax omimo tego że jest explicite zdefiniowany!
  
  
+ Opisac w hintach INDIRECT addressing, w jaki spsob sie powinno uzywac. Ze w przypadku INTEL jest zupelnie zbedna co najeyzej mozemy wybrac konkretny atryb adresowana
+ poneiwaz instnieje tam nadmiarowosc z far addressing 16 bitowym. Opisac jak jesyt uzywany w GAS i ze tam jest wymagany do assemblacji INDIRECT.

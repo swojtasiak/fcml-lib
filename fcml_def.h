@@ -632,8 +632,13 @@ typedef struct fcml_st_def_instruction_desc {
 
 // Allows to encode all common ModR/M based addressing modes using only one macro.
 
+// Only register addressing is allowed.
 #define FCML_RMF_R		0x01
+// Only memory addressing is allowed.
 #define FCML_RMF_M		0x02
+// Indirect addressing.
+#define FCML_RMF_I		0x04
+// Shortcut, operand acts as source and destination.
 #define FCML_RMF_RM		( FCML_RMF_R | FCML_RMF_M )
 
 #define FCML_OP_RM_BASE								0x09000000
@@ -719,6 +724,8 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_MODRM_RM_OP128_W        ( FCML_OP_MODRM_RM_OP128 | FCML_OA_W )
 #define FCML_OP_MODRM_RM				FCML_OP_RM(FCML_REG_GPR, FCML_EOS_EOSA, FCML_EOS_EOSA, FCML_RMF_RM )
 #define FCML_OP_MODRM_RM_W				( FCML_OP_MODRM_RM | FCML_OA_W )
+#define FCML_OP_MODRM_RM_I				FCML_OP_RM(FCML_REG_GPR, FCML_EOS_EOSA, FCML_EOS_EOSA, FCML_RMF_RM | FCML_RMF_I )
+#define FCML_OP_MODRM_RM_I_W			( FCML_OP_MODRM_RM | FCML_OA_W )
 #define FCML_OP_MODRM_R_8				FCML_OP_R(FCML_REG_GPR, FCML_EOS_BYTE )
 #define FCML_OP_MODRM_R_8_W             ( FCML_OP_MODRM_R_8 | FCML_OA_W )
 #define FCML_OP_MODRM_R_16				FCML_OP_R(FCML_REG_GPR, FCML_EOS_WORD )
