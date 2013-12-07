@@ -381,11 +381,11 @@ void fcml_tf_instruction_MOVD(void) {
     // VEX.128.66.0F.W0 6E /r VMOVD xmm1,r32/m32
     FCML_I32( "vmovd xmm2,dword ptr [ecx+eax]", 0xc5, 0xf9, 0x6e, 0x14, 0x01 );
     // VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
-    FCML_I64_M( "vmovq xmm2,mmword ptr [rcx+rax]", 2, FCML_MI( 0xc5, 0xfa, 0x7e, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x6e, 0x14, 0x01 ) );
+    FCML_I64( "vmovq xmm2,mmword ptr [rcx+rax]", 0xc5, 0xfa, 0x7e, 0x14, 0x01 );
     // VEX.128.66.0F.W0 7E /r VMOVD r32/m32,xmm1
     FCML_I32( "vmovd dword ptr [ecx+eax],xmm2", 0xc5, 0xf9, 0x7e, 0x14, 0x01 );
     // VEX.128.66.0F.W1 7E /r VMOVQ r64/m64,xmm1
-    FCML_I64_M( "vmovq mmword ptr [rcx+rax],xmm2", 2, FCML_MI( 0xc5, 0xfa, 0xd6, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x7e, 0x14, 0x01 ) );
+    FCML_I64( "vmovq mmword ptr [rcx+rax],xmm2", 0xc5, 0xfa, 0xd6, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_MOVDDUP(void) {

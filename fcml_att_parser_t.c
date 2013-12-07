@@ -265,6 +265,18 @@ void fcml_tf_parser_att_parse_test12(void) {
 	fcml_fn_parser_result_free( result );
 }
 
+void fcml_tf_parser_att_parse_test13(void) {
+	fcml_st_parser_result *result;
+	CU_ASSERT_EQUAL( fcml_x64_att_parse( dialect_att, "mov *0x80", &result ), FCML_CEH_GEC_NO_ERROR );
+	if( result->instruction != NULL ) {
+		CU_ASSERT_EQUAL( result->instruction->operands[0].type, FCML_EOT_ADDRESS );
+		CU_ASSERT_EQUAL( result->instruction->hints, FCML_HINT_INDIRECT_POINTER );
+	} else {
+        CU_FAIL();
+    }
+	fcml_fn_parser_result_free( result );
+}
+
 CU_TestInfo fcml_ti_parser_att[] = {
     { "fcml_tf_parser_att_parse_test1", fcml_tf_parser_att_parse_test1 },
     { "fcml_tf_parser_att_parse_test2", fcml_tf_parser_att_parse_test2 },
@@ -278,6 +290,7 @@ CU_TestInfo fcml_ti_parser_att[] = {
     { "fcml_tf_parser_att_parse_test10", fcml_tf_parser_att_parse_test10 },
     { "fcml_tf_parser_att_parse_test11", fcml_tf_parser_att_parse_test11 },
     { "fcml_tf_parser_att_parse_test12", fcml_tf_parser_att_parse_test12 },
+    { "fcml_tf_parser_att_parse_test13", fcml_tf_parser_att_parse_test13 },
     CU_TEST_INFO_NULL,
 };
 

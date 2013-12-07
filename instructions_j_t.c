@@ -8,6 +8,7 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_i_t.h"
+#include "fcml_rend.h"
 
 int fcml_tf_instructions_j_suite_init(void) {
 	return 0;
@@ -52,16 +53,29 @@ void fcml_tf_instruction_Jcc(void) {
 
 void fcml_tf_instruction_JMP(void) {
     FCML_I32_M( "jmp 00401001h", 2, FCML_MI( 0xeb, 0xff ), FCML_MI( 0xe9, 0xfc, 0xff, 0xff, 0xff ) );
-    FCML_A32_M( "jmp 0x00401001", 2, FCML_MI( 0xeb, 0xff ), FCML_MI( 0xe9, 0xfc, 0xff, 0xff, 0xff ) );
+    FCML_A32_M_A( "jmp 0x00401001", 3, FCML_MI( 0xff, 0x25, 0x01, 0x10, 0x40, 0x00 ), FCML_MI( 0xe9, 0xfc, 0xff, 0xff, 0xff ), FCML_MI( 0xeb, 0xff ) );
     // E9 cw JMP rel16 A N.S. Valid Jump near, relative, displacement relative to next instruction. Not supported in 64-bit mode.
     // E9 cd JMP rel32 A Valid Valid Jump near, relative, RIP = RIP + 32-bit displacement sign extended to 64-bits
     FCML_I32( "jmp 90d11004h", 0xe9, 0xff,0xff, 0x90, 0x90 );
-    FCML_A32( "jmp 0x90d11004", 0xe9, 0xff,0xff, 0x90, 0x90 );
+    FCML_A32_M_A( "jmp 0x90d11004", 2, FCML_MI( 0xff, 0x25, 0x04, 0x10, 0xd1, 0x90 ), FCML_MI( 0xe9, 0xff, 0xff, 0x90, 0x90 ) );
+    FCML_A32_A( "jmp *0x90d11004", 0xff, 0x25, 0x04, 0x10, 0xd1, 0x90 );
+    // indirect pointer forced.
+    FCML_A32( "jmp *0x90d11004", 0xff, 0x25, 0x04, 0x10, 0xd1, 0x90 );
     FCML_I32( "jmp 0000a103h", 0x66, 0xe9, 0xff, 0x90 );
-    FCML_A32( "jmpw 0x0000a103", 0x66, 0xe9, 0xff, 0x90 );
+    FCML_A32_M_A( "jmpw 0x0000a103", 2, FCML_MI( 0x66, 0xff, 0x25, 0x03, 0xa1, 0x00, 0x00 ), FCML_MI( 0x66, 0xe9, 0xff, 0x90 ) );
     // FF /4 JMP r/m16 B N.S. Valid Jump near, absolute indirect, address = zero-extended r/m16. Not supported in 64- bit mode.
     // FF /4 JMP r/m32 B N.S. Valid Jump near, absolute indirect, address given in r/m32. Not supported in 64-bit mode.
     // FF /4 JMP r/m64 B Valid N.E. Jump near, absolute indirect, RIP = 64-Bit offset from register or memory
+    // Force indirect near jmp.
+    // OSA is forced to 64 bits in 64 bit mode, so REX is not needed.
+    FCML_A64( "jmpq *(%rax)", 0xff, 0x20 );
+    FCML_I32_A( "jmp indirect near dword ptr [eax]", 0xff, 0x20 );
+    // for intel dialect, "indirect" hint is not rendered by default.
+	FCML_I32_D_RF( "jmp indirect dword ptr [eax]", FCML_REND_FLAG_RENDER_INDIRECT_HINT, 0xff, 0x20 );
+	// This instruction is ambigous.
+    FCML_I32_M( "jmp dword ptr [eax]", 2, FCML_MI( 0xff, 0x20 ), FCML_MI( 0x66, 0xff, 0x28 ) );
+    FCML_A32_M_A( "jmp (%eax)", 2, FCML_MI( 0xff, 0x20 ), FCML_MI( 0x66, 0xff, 0x28 ) );
+    FCML_I32_A( "jmp far dword ptr [eax]", 0x66, 0xff, 0x28 );
     FCML_I32( "jmp ebp", 0xff, 0xe5 );
     FCML_I32( "jmp bp", 0x66, 0xff, 0xe5 );
     FCML_I64_D( "jmp rbp", 0x66, 0x67, 0x40, 0xff, 0xe5 ); // 32 bit mode doesn't not allow REX.

@@ -157,6 +157,19 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	//FCML_I32_M_P( "adc al,42h", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
+	//FCML_A32_M_P( "adc $0x42,%al", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
+	//return 0;
+
+	//FCML_A32_A_P( "jmp *0x90d11004", 0xff, 0x25, 0x04, 0x10, 0xd1, 0x90 );
+
+	//FCML_A32_A_P( "jmp (%eax)", 0xff, 0x20 );
+
+	//FCML_A32_M_A( "jmp (%eax)", 2, FCML_MI( 0xff, 0x20 ), FCML_MI( 0x66, 0xff, 0x28 ) );
+	//return 0;
+
+    //FCML_I32_A_P( "push 0ffffffffh", 3, FCML_MI( 0x68, 0xff, 0xff, 0xff, 0xff ), FCML_MI( 0x66, 0x68, 0xff, 0xff ), FCML_MI( 0x6a, 0xff ) );
+
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");
     } else {

@@ -230,6 +230,11 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
                         found = FCML_FALSE;
                         break;
                     }
+                    // Check if number of assembled instructions matche.
+                    if( (t_flags & FCML_TSF_MULTI_ASM_RESULTS) && inst->size != code[0] ) {
+						found = FCML_FALSE;
+						break;
+					}
                 }
 
                 element = inst->head;

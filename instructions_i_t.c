@@ -218,7 +218,7 @@ void fcml_tf_instruction_INSERTQ(void) {
 
 void fcml_tf_instruction_INT(void) {
     FCML_I3264( "int3", 0xCC );
-    FCML_I3264_M( "int 20h", 2, FCML_MI( 0xcd, 0x20 ), FCML_MI( 0xcc ) );
+    FCML_I3264( "int 20h", 0xcd, 0x20 );
     FCML_I32( "into", 0xCE );
     FCML_I64_FAILED( "into", 0xCE );
     // GAS
