@@ -157,6 +157,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+
 	//FCML_I32_M_P( "adc al,42h", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
 	//FCML_A32_M_P( "adc $0x42,%al", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
 	//return 0;

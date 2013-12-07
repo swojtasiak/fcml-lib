@@ -74,12 +74,13 @@ void fcml_tf_instruction_JMP(void) {
 	FCML_I32_D_RF( "jmp indirect dword ptr [eax]", FCML_REND_FLAG_RENDER_INDIRECT_HINT, 0xff, 0x20 );
 	// This instruction is ambigous.
     FCML_I32_M( "jmp dword ptr [eax]", 2, FCML_MI( 0xff, 0x20 ), FCML_MI( 0x66, 0xff, 0x28 ) );
-    FCML_A32_M_A( "jmp (%eax)", 2, FCML_MI( 0xff, 0x20 ), FCML_MI( 0x66, 0xff, 0x28 ) );
+    FCML_A32_A( "jmp (%eax)", 0xff, 0x20 );
     FCML_I32_A( "jmp far dword ptr [eax]", 0x66, 0xff, 0x28 );
     FCML_I32( "jmp ebp", 0xff, 0xe5 );
     FCML_I32( "jmp bp", 0x66, 0xff, 0xe5 );
     FCML_I64_D( "jmp rbp", 0x66, 0x67, 0x40, 0xff, 0xe5 ); // 32 bit mode doesn't not allow REX.
     FCML_I64( "jmp rbp", 0xff, 0xe5 );
+    // ptr16:16,ptr16:32
     FCML_I32( "jmp far 6655h:44332211h", 0xEA, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
     FCML_I32( "jmp far 4433h:2211h", 0x66, 0xEA, 0x11, 0x22, 0x33, 0x44 );
     // m16:16,m16:32,m16:64
@@ -93,6 +94,11 @@ void fcml_tf_instruction_JMP(void) {
     FCML_I64( "jmp far fword ptr [rbx+0000000000000001h]", 0xFF, 0x6B, 0x01 );
     FCML_I64_D( "jmp far dword ptr [ebx+00000001h]", 0x66, 0x67, 0x40, 0xFF, 0x6B, 0x01 );
     FCML_I64( "jmp far dword ptr [ebx+00000001h]", 0x66, 0x67, 0xFF, 0x6B, 0x01 );
+    // GAS
+    FCML_A32( "ljmpl *0x00000001(%ebx)", 0xFF, 0x6B, 0x01 );
+	FCML_A32( "ljmpw *0x00000001(%ebx)", 0x66, 0xFF, 0x6B, 0x01 );
+	FCML_A64( "ljmpw *0x0000000000000001(%rbx)", 0x66, 0xFF, 0x6B, 0x01 );
+	FCML_A64( "ljmpq *0x0000000000000001(%rbx)", 0x48, 0xFF, 0x6B, 0x01 );
 }
 
 CU_TestInfo fctl_ti_instructions_j[] = {
