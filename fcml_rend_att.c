@@ -233,9 +233,10 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_att( fcml_st_dialect_c
 	integer.size = 16;
 	integer.int16 = operand->far_pointer.segment;
 
+	fcml_fn_rend_utils_format_append_str( output_stream, "$" );
 	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &integer, FCML_TRUE );
 
-	fcml_fn_rend_utils_format_append_str( output_stream, ":" );
+	fcml_fn_rend_utils_format_append_str( output_stream, "," );
 
 	integer.size = operand->far_pointer.offset_size;
 	switch( integer.size ) {
@@ -247,6 +248,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_att( fcml_st_dialect_c
 		break;
 	}
 
+	fcml_fn_rend_utils_format_append_str( output_stream, "$" );
 	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_att, output_stream, &integer, FCML_TRUE );
 
 	return error;

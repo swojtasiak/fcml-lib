@@ -12,8 +12,7 @@ fcml_string fcml_iarr_messages[] = {
 	"Segment register can not be overridden.",
 	"Invalid pseudo opcode value.",
 	"HLA prefixes are not allowed for instruction.",
-	"More than one HLA prefix.",
-	"Value out of range."
+	"More than one HLA prefix."
 };
 
 fcml_string fcml_fn_msg_get_message( fcml_en_msg_message_code code ) {

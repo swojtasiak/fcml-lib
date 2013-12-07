@@ -1916,7 +1916,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 				// so we have to provide dialect a way to modify instruction definition basing on it.
 				fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = dialect_context->assembler_preprocessor;
 				if( assembler_preprocessor ) {
-					assembler_preprocessor( &tmp_instruction, addr_mode->mnemonic, &instruction_has_been_changed );
+					assembler_preprocessor( &tmp_instruction, addr_mode->addr_mode_desc, addr_mode->mnemonic, &instruction_has_been_changed );
 				}
 
 				// This information is necessary to ignore operands encoding process.

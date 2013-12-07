@@ -75,7 +75,7 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 	// Check if operands needs to be reverted before processing.
 	fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = enc_asm->dialect_context->assembler_preprocessor;
 	if( assembler_preprocessor ) {
-		assembler_preprocessor( &tmp_instruction, NULL, NULL );
+		assembler_preprocessor( &tmp_instruction, NULL, NULL, NULL );
 	}
 
 	// Find instruction addressing modes.

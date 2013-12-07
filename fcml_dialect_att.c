@@ -6,7 +6,6 @@
  */
 
 #include <stdio.h>
-//#include <string.h>
 
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
@@ -15,13 +14,12 @@
 #include "fcml_def.h"
 #include "fcml_dialect.h"
 #include "fcml_dialect_int.h"
-//#include "fcml_dialect_intel.h"
 #include "fcml_disassembler.h"
 #include "fcml_env.h"
-#include "fcml_errors.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_rend_att.h"
 #include "fcml_types.h"
+#include "fcml_utils.h"
 #include "fcml_x64att_asm_parser.h"
 
 // *************
@@ -118,6 +116,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("call"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("call[sf,od];callw[sf,ow];callq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_REL0 ), 0 },
 	{ FCML_TEXT("call[sf,od];callw[sf,ow];callq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_RM0 ), 0 },
+	{ FCML_TEXT("lcall[sf,od];lcallw[sf,ow];lcall[sf,od]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_PTR16_O ), 0 },
 	{ FCML_TEXT("lcall[sf,od,d06];lcallw[sf,ow,d04];lcallq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_M16_O ), FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER },
 	{ FCML_TEXT("cbtw[ow];cwtl[od];cltq[oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_CBW, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("clc"), FCML_ASM_DIALECT_INSTRUCTION( F_CLC, FCML_AM_ALL ), 0 },
@@ -360,6 +359,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("jmp"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_REL0 ), 0 },
 	{ FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_RM0 ), 0 },
+	{ FCML_TEXT("ljmpl[sf,od];ljmpw[sf,ow];ljmp[sf,od]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_PTR16_O ), 0 },
 	// TODO: Opisac w dokumentacji jak sa kodowane jmpy. Nie udało mi sie w przypadku GAS zassemblowac far indirect jmp dla REX.W.
 	{ FCML_TEXT("ljmpl[sf,od,d06];ljmpw[sf,ow,d04];ljmpq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_M16_O ), FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER },
 	{ NULL, 0, 0 }
@@ -601,7 +601,60 @@ void fcml_ifn_asm_dialect_att_revert_operands( fcml_st_operand *operands, fcml_i
 	}
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruction *instrunction, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
+fcml_bool fcml_ifn_asm_dialect_att_far_pointer_correction( fcml_st_instruction *instruction ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	// Correction for ambiguous FAR_POINTER addressing mode. Unfortunately we can not treat it as two IMM operands.
+	if( instruction->operands_count == 2 && instruction->operands[0].type == FCML_EOT_IMMEDIATE && instruction->operands[1].type == FCML_EOT_IMMEDIATE ) {
+
+		fcml_st_integer segment = {0};
+		fcml_st_integer offset = {0};
+
+		// Remember that operands are reverted for GAS!
+
+		error = fcml_fn_utils_imm_to_integer( &(instruction->operands[1].immediate), &segment );
+		if( error ) {
+			// Should never happened, because parser is responsible for setting appropriate IMM size.
+			return FCML_FALSE;
+		}
+
+		error = fcml_fn_utils_imm_to_integer( &(instruction->operands[0].immediate), &offset );
+		if( error ) {
+			// Should never happened, because parser is responsible for setting appropriate IMM size.
+			return FCML_FALSE;
+		}
+
+		fcml_st_far_pointer far_pointer = {0};
+
+		error = fcml_fn_utils_convert_integer_to_uint16( &segment, &(far_pointer.segment) );
+		if( !error ) {
+
+			error = fcml_fn_utils_convert_integer_to_uint16( &offset, &(far_pointer.offset16) );
+			if( error ) {
+				error = fcml_fn_utils_convert_integer_to_uint32( &offset, &(far_pointer.offset32) );
+				if( !error ) {
+					far_pointer.offset_size = FCML_DS_32;
+				}
+			} else {
+				far_pointer.offset_size = FCML_DS_16;
+			}
+
+			if( !error ) {
+				// Clean operands.
+				fcml_fn_env_memory_clear( instruction->operands, sizeof( instruction->operands ) );
+				instruction->operands[0].type = FCML_EOT_FAR_POINTER;
+				instruction->operands[0].far_pointer = far_pointer;
+				instruction->operands_count = 1;
+				return FCML_TRUE;
+			}
+		}
+	}
+
+	return FCML_FALSE;
+}
+
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruction *instrunction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -615,41 +668,11 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruct
 			changed = FCML_TRUE;
 		}
 
-		// If there is memory operand without data size set, it has to be deduced using register given in another operand.
-		/*int i;
-		fcml_st_operand *operand_reg = NULL;
-		fcml_st_operand *operand_mem = NULL;
-		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-			fcml_st_operand *operand = &(instrunction->operands[i]);
-			switch( operand->type ) {
-			case FCML_EOT_REGISTER:
-				operand_reg = operand;
-				break;
-			case FCML_EOT_ADDRESS:
-				// If size operand has been set by user, we shouldn't correct it in any way.
-				if( operand->address.size_operator == FCML_DS_UNDEF ) {
-					operand_mem = operand;
-				}
-				break;
-			default:
-				break;
-			}
-		}
-
-		if( operand_mem ) {
-			// TODO: Sprawdzic jak sie zachowa z rejestrami CS,DS, DR0. CR0 itd.
-			if( operand_reg && operand_reg->reg.size != FCML_DS_UNDEF ) {
-				// Data size set basing on register size.
-				operand_mem->address.size_operator = operand_reg->reg.size;
-				changed = FCML_TRUE;
-			} else {
-				error = FCML_EN_UNKNOWN_DATA_SIZE_FOR_MEMORY_ADDRESSING;
-			}
-		}*/
-
 	} else {
+
 		// Mnemonic has been found, check if data size should be corrected for instruction. Take into account that data size specified by
 		// mnemonic has greater priority than data size set directly by user.
+
 		fcml_data_size data_size = FCML_DS_UNDEF;
 		if( mnemonic->memory_data.is_not_null ) {
 			data_size = mnemonic->memory_data.value * 8;
@@ -662,6 +685,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruct
 			// Data size based on L VEX/XOP prefix field.
 			data_size = mnemonic->l.value ? FCML_DS_256 : FCML_DS_128;
 		}
+
 		if( data_size != FCML_DS_UNDEF ) {
 			// Find effective address and make a correction to size operator.
 			int i;
@@ -673,8 +697,24 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_att( fcml_st_instruct
 				}
 			}
 		}
+
 		// In GAS mode, mnemonic flags are treated as instruction hints.
 		instrunction->hints |= mnemonic->flags;
+
+		// Check if addressing mode expects FAR_POINTER addressing mode.
+		if( addr_mode_desc ) {
+			if( addr_mode_desc->opperands[0] == FCML_OP_FAR_POINTER ) {
+				// Prepare operands.
+				if( instrunction->operands_count == 2
+						&& instrunction->operands[0].type == FCML_EOT_IMMEDIATE
+						&& instrunction->operands[1].type == FCML_EOT_IMMEDIATE ) {
+					if( fcml_ifn_asm_dialect_att_far_pointer_correction( instrunction ) ) {
+						changed = FCML_TRUE;
+					}
+				}
+			}
+		}
+
 	}
 
 	if( has_been_changed ) {
