@@ -315,21 +315,24 @@ fcml_data_size fcml_ifn_asm_calculate_operand_size( fcml_ist_asm_encoding_contex
 	return size_operator;
 }
 
-fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_context *context, fcml_uint8_t encoded_operand_size, fcml_data_size data_size, fcml_data_size *encoded_data_size, enum fcml_ien_asm_comparator_type comparator ) {
+fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_context *context, fcml_uint8_t encoded_operand_size, fcml_data_size operand_size, fcml_data_size *encoded_data_size, enum fcml_ien_asm_comparator_type comparator ) {
 	fcml_st_asm_optimizer_processing_details *flags = &(context->optimizer_processing_details);
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_data_size effective_address_size = 0;
 	fcml_data_size effective_operand_size = 0;
 	fcml_uint8_t encoded_static_operand_size = FCML_GET_OS( encoded_operand_size );
 	fcml_nuint8_t l = { 0, FCML_FALSE };
+	if( ( operand_size == FCML_OS_UNDEFINED ) && FCML_IS_EOS_OPT( encoded_operand_size ) ) {
+		return error;
+	}
 	if( encoded_data_size != NULL ) {
-		*encoded_data_size = data_size;
+		*encoded_data_size = operand_size;
 	}
 	switch( encoded_static_operand_size ) {
 	case FCML_EOS_UNDEFINED:
 		break;
 	case FCML_EOS_L:
-		switch( data_size) {
+		switch( operand_size) {
 		case FCML_DS_128:
 			l.is_not_null = FCML_TRUE;
 			l.value = 0;
@@ -344,23 +347,23 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 		}
 		break;
 	case FCML_EOS_EASA:
-		if( data_size == FCML_DS_16 || data_size == FCML_DS_32 || data_size == FCML_DS_64 ) {
-			effective_address_size = data_size;
+		if( operand_size == FCML_DS_16 || operand_size == FCML_DS_32 || operand_size == FCML_DS_64 ) {
+			effective_address_size = operand_size;
 		} else {
 			FCML_TRACE( "Unsupported encoded EOSA size." );
 			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 		}
 		break;
 	case FCML_EOS_EOSA:
-		if( data_size == FCML_DS_16 || data_size == FCML_DS_32 || data_size == FCML_DS_64 ) {
-			effective_operand_size = data_size;
+		if( operand_size == FCML_DS_16 || operand_size == FCML_DS_32 || operand_size == FCML_DS_64 ) {
+			effective_operand_size = operand_size;
 		} else {
 			FCML_TRACE( "Unsupported encoded EASA size." );
 			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 		}
 		break;
 	case FCML_EOS_14_28:
-		switch( data_size ) {
+		switch( operand_size ) {
 		case 14 * 8:
 			effective_operand_size = 16;
 			break;
@@ -377,7 +380,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 		}
 		break;
 	case FCML_EOS_32_64:
-		switch( data_size ) {
+		switch( operand_size ) {
 		case 16 * 2:
 			effective_operand_size = 16;
 			break;
@@ -394,7 +397,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 		}
 		break;
 	case FCML_EOS_94_108:
-		switch( data_size ) {
+		switch( operand_size ) {
 		case 94 * 8:
 			effective_operand_size = 16;
 			break;
@@ -413,18 +416,18 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
     case FCML_EOS_FPI:
     case FCML_EOS_FP:
         // Far pointer indirect.
-        effective_operand_size = data_size - FCML_DS_16;
+        effective_operand_size = operand_size - FCML_DS_16;
         break;
 	default:
-		if( data_size || !FCML_IS_EOS_OPT( encoded_operand_size ) ) {
+		if( operand_size || !FCML_IS_EOS_OPT( encoded_operand_size ) ) {
 			if( comparator == FCML_IEN_CT_EQUAL ) {
-				if ( encoded_static_operand_size * 8 != data_size ) {
-					FCML_TRACE( "Unsupported operand size. Expected %d got %d.", data_size, encoded_static_operand_size * 8 );
+				if ( encoded_static_operand_size * 8 != operand_size ) {
+					FCML_TRACE( "Unsupported operand size. Expected %d got %d.", operand_size, encoded_static_operand_size * 8 );
 					error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 				}
 			} else {
-				if ( encoded_static_operand_size * 8 < data_size ) {
-					FCML_TRACE( "Unsupported operand size. Expected greater or equal to %d got %d.", data_size, encoded_static_operand_size * 8 );
+				if ( encoded_static_operand_size * 8 < operand_size ) {
+					FCML_TRACE( "Unsupported operand size. Expected greater or equal to %d got %d.", operand_size, encoded_static_operand_size * 8 );
 					error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 				} else {
 					if( encoded_data_size != NULL ) {
@@ -563,6 +566,10 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 	fcml_en_cmi_attribute_size_flag osa_flags = FCML_EN_ASF_ANY;
 	fcml_en_cmi_attribute_size_flag asa_flags = FCML_EN_ASF_ANY;
 	fcml_bool result = FCML_TRUE;
+	if( ( operand_size == FCML_OS_UNDEFINED ) && FCML_IS_EOS_OPT( encoded_operand_size ) ) {
+		// If operand size is optional, we do not need to accept it.
+		return FCML_TRUE;
+	}
 	switch( FCML_GET_OS( encoded_operand_size ) ) {
 	case FCML_EOS_UNDEFINED:
 		break;

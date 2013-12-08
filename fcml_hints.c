@@ -22,10 +22,10 @@ fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_
     	if( rm_args->reg_type == FCML_REG_SIMD ) {
 			hints.operand_hints |= FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
     	}
-    	if( rm_args->encoded_memory_operand_size == FCML_EOS_FP ) {
+    	if( FCML_GET_OS( rm_args->encoded_memory_operand_size ) == FCML_EOS_FP ) {
     		// Far pointer.
 			hints.instruction_hints |= FCML_HINT_FAR_POINTER;
-    	} else if( rm_args->encoded_memory_operand_size == FCML_EOS_FPI ) {
+    	} else if( FCML_GET_OS( rm_args->encoded_memory_operand_size ) == FCML_EOS_FPI ) {
     		// Far pointer indirect.
     		hints.instruction_hints |= ( FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER );
     	} else {
