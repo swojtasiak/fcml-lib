@@ -374,6 +374,18 @@ enum fcml_en_instruction_codes {
 	F_LES,
 	F_LFS,
 	F_LGS,
+	F_LEA,
+	F_LEAVE,
+	F_LFENCE,
+	F_LLWPCB,
+	F_LGDT,
+	F_LIDT,
+	F_LLDT,
+	F_LMSW,
+	F_LODS,
+	F_LOOP,
+	F_LOOPE,
+	F_LOOPNE,
 };
 
 /*******************/
