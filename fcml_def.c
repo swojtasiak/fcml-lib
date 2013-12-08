@@ -1933,45 +1933,63 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LAHF[] = {
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LAR[] = {
 	// 0F 02 /r LAR r16, r16/m16 A Valid Valid r16 r16/m16 masked by FF00H.
 	// 0F 02 /r LAR r32, r32/m16 A Valid Valid r32 r32/m16 masked by 00FxFF00H
-	{ NULL, FCML_AMT_SYSTEM, 0x0000, 0x03D88000, { 0x0F, 0x02, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_EOSA, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SYSTEM, 0x0000, 0x03D88000, { 0x0F, 0x02, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_EOSA, FCML_EOS_WORD | FCML_EOS_OPT, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// REX.W + 0F 02 /r LAR r64, r32/m16 A Valid N.E. r64 r32/m16 masked by 00FxFF00H
-	{ NULL, FCML_AMT_SYSTEM, 0x0000, 0x04988000, { 0x0F, 0x02, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_WORD, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SYSTEM, 0x0000, 0x04988000, { 0x0F, 0x02, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_WORD | FCML_EOS_OPT, FCML_RMF_RM ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LDDQU[] = {
 	// F2 0F F0 /r LDDQU xmm1, mem A Valid Valid Load unaligned data from mem and return double quadword in xmm1.
-	{ NULL, FCML_AMT_SSE3, 0x2001, 0x00D88000, { 0x0F, 0xF0, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_M_UNDEF, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE3, 0x2001, 0x00D88000, { 0x0F, 0xF0, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_M_UNDEF, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VLDDQU[] = {
 	// VEX.128.F2.0F F0 /r VLDDQU xmm1, m128
 	// VEX.256.F2.0F F0 /r VLDDQU ymm1, m256
-	{ "vlddqu", FCML_AMT_AVX_SIMD, 0x2180, 0x80D88000, { 0x0F, 0xF0, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_UNDEFINED, FCML_EOS_L, FCML_RMF_M ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_AVX_SIMD, 0x2180, 0x80D88000, { 0x0F, 0xF0, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_W, FCML_OP_RM( FCML_REG_SIMD, FCML_EOS_UNDEFINED, FCML_EOS_L, FCML_RMF_M ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LDMXCSR[] = {
 	// 0F AE /2 LDMXCSR m32 A Valid Valid Load MXCSR register from m32.
-	{ NULL, FCML_AMT_SSE, 0x0000, 0x00D99000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE, 0x0000, 0x00D99000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_MODRM_M_OP32, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VLDMXCSR[] = {
 	// VEX.128.0F AE /2 VLDMXCSR m32
-    { "vldmxcsr", FCML_AMT_AVX, 0x01C0, 0x80D99000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_DWORD, FCML_RMF_M ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+    { NULL, FCML_AMT_AVX, 0x01C0, 0x80D99000, { 0x0F, 0xAE, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_DWORD | FCML_EOS_OPT, FCML_RMF_M ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LDS[] = {
 	// C5 /r LDS r16,m16:16 A Invalid Valid Load DS:r16 with far pointer from memory.
 	// C5 /r LDS r32,m16:32 A Invalid Valid Load DS:r32 with far pointer from memory.
-	{ NULL, FCML_AMT_GPI, 0x0000, 0x00448000, { 0xC5, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00448000, { 0xC5, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_OPFP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LSS[] = {
 	// 0F B2 /r LSS r16,m16:16 A Valid Valid Load SS:r16 with far pointer from memory.
 	// 0F B2 /r LSS r32,m16:32 A Valid Valid Load SS:r32 with far pointer from memory.
 	// REX + 0F B2 /r LSS r64,m16:64 A Valid N.E. Load SS:r64 with far pointer from memory.
-	{ "lss", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB2, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB2, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_OPFP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LES[] = {
 	// C4 /r LES r16,m16:16 A Invalid Valid Load ES:r16 with far pointer from memory.
 	// C4 /r LES r32,m16:32 A Invalid Valid Load ES:r32 with far pointer from memory.
-	{ "les", FCML_AMT_GPI, 0x0000, 0x00448000, { 0xC4, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00448000, { 0xC4, 0x00, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_OPFP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LFS[] = {
 	// 0F B4 /r LFS r16,m16:16 A Valid Valid Load FS:r16 with far pointer from memory.
 	// 0F B4 /r LFS r32,m16:32 A Valid Valid Load FS:r32 with far pointer from memory.
 	// REX + 0F B4 /r LFS r64,m16:64 A Valid N.E. Load FS:r64 with far pointer from memory.
-	{ "lfs", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB4, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB4, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_OPFP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LGS[] = {
 	// 0F B5 /r LGS r16,m16:16 A Valid Valid Load GS:r16 with far pointer from memory.
 	// 0F B5 /r LGS r32,m16:32 A Valid Valid Load GS:r32 with far pointer from memory.
 	// REX + 0F B5 /r LGS r64,m16:64 A Valid N.E. Load GS:r64 with far pointer from memory.
-	{ "lgs", FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB5, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_FPI, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_GPI, 0x0000, 0x00D88000, { 0x0F, 0xB5, 0x00 }, { FCML_OP_MODRM_R_W, FCML_OP_MODRM_M_OPFP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LEA[] = {
@@ -6351,11 +6369,17 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_JCXZ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_JCXZ),
 		FCML_IA_INSTRUCTION( F_JCC, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_Jcc),
 		FCML_IA_INSTRUCTION( F_JMP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_JMP),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "lahf", fcml_st_def_addr_mode_desc_LAHF),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "lar", fcml_st_def_addr_mode_desc_LAR),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "lddqu", fcml_st_def_addr_mode_desc_LDDQU),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "ldmxcsr", fcml_st_def_addr_mode_desc_LDMXCSR),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "lds", fcml_st_def_addr_mode_desc_LDS),
+		FCML_IA_INSTRUCTION( F_LAHF, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LAHF),
+		FCML_IA_INSTRUCTION( F_LAR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LAR),
+		FCML_IA_INSTRUCTION( F_LDDQU, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LDDQU),
+		FCML_IA_INSTRUCTION( F_VLDDQU, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VLDDQU),
+		FCML_IA_INSTRUCTION( F_LDMXCSR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LDMXCSR),
+		FCML_IA_INSTRUCTION( F_VLDMXCSR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VLDMXCSR),
+		FCML_IA_INSTRUCTION( F_LDS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LDS),
+		FCML_IA_INSTRUCTION( F_LSS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LSS),
+		FCML_IA_INSTRUCTION( F_LES, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LES),
+		FCML_IA_INSTRUCTION( F_LFS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LFS),
+		FCML_IA_INSTRUCTION( F_LGS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LGS),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "lea", fcml_st_def_addr_mode_desc_LEA),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "leave", fcml_st_def_addr_mode_desc_LEAVE),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "lfence", fcml_st_def_addr_mode_desc_LFENCE),

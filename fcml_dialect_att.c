@@ -362,6 +362,17 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("ljmpl[sf,od];ljmpw[sf,ow];ljmp[sf,od]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_PTR16_O ), 0 },
 	// TODO: Opisac w dokumentacji jak sa kodowane jmpy. Nie udało mi sie w przypadku GAS zassemblowac far indirect jmp dla REX.W.
 	{ FCML_TEXT("ljmpl[sf,od,d06];ljmpw[sf,ow,d04];ljmpq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_M16_O ), FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER },
+	{ FCML_TEXT("lar"), FCML_ASM_DIALECT_INSTRUCTION( F_LAR, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("lahf"), FCML_ASM_DIALECT_INSTRUCTION( F_LAHF, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("lddqu"), FCML_ASM_DIALECT_INSTRUCTION( F_LDDQU, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vlddqu"), FCML_ASM_DIALECT_INSTRUCTION( F_VLDDQU, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("ldmxcsr"), FCML_ASM_DIALECT_INSTRUCTION( F_LDMXCSR, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vldmxcsr"), FCML_ASM_DIALECT_INSTRUCTION( F_VLDMXCSR, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("lds"), FCML_ASM_DIALECT_INSTRUCTION( F_LDS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("lss"), FCML_ASM_DIALECT_INSTRUCTION( F_LSS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("les"), FCML_ASM_DIALECT_INSTRUCTION( F_LES, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("lfs"), FCML_ASM_DIALECT_INSTRUCTION( F_LFS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("lgs"), FCML_ASM_DIALECT_INSTRUCTION( F_LGS, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 

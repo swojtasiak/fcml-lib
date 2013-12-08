@@ -411,6 +411,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 		}
 		break;
     case FCML_EOS_FPI:
+    case FCML_EOS_FP:
         // Far pointer indirect.
         effective_operand_size = data_size - FCML_DS_16;
         break;
@@ -618,6 +619,7 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 		}
 		break;
 	case FCML_EOS_FPI:
+	case FCML_EOS_FP:
 	    // Far pointer indirect.
 	    switch( operand_size ) {
 	    case FCML_DS_16 + FCML_DS_16:

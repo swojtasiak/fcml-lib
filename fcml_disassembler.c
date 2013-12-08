@@ -237,6 +237,7 @@ fcml_data_size fcml_ifn_dasm_utils_decode_encoded_size_value( fcml_ist_dasm_deco
 	case FCML_EOS_32_64:
 		result = ( context->effective_operand_size_attribute == FCML_DS_16 ) ? ( 16 * 2 ) : ( 32 * 2 );
 		break;
+	case FCML_EOS_FP:
 	case FCML_EOS_FPI:
 		result = context->effective_operand_size_attribute + 16;
 		break;
