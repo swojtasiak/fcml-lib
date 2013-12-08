@@ -19,6 +19,7 @@ int fcml_tf_instructions_l_suite_cleanup(void) {
 
 void fcml_tf_instruction_LAHF(void) {
     FCML_I3264( "lahf", 0x9F );
+    FCML_A64( "lahf", 0x9f );
 }
 
 void fcml_tf_instruction_LAR(void) {
@@ -33,6 +34,11 @@ void fcml_tf_instruction_LAR(void) {
     // REX.W + 0F 02 /r LAR r64, r32/m16 A Valid N.E. r64 r32/m16 masked by 00FxFF00H
     FCML_I64( "lar rbp,word ptr [rax+0000000000000020h]", 0x48, 0x0f, 0x02, 0x68, 0x20 );
     FCML_I64( "lar rcx,esp", 0x48, 0x0f, 0x02, 0xcc );
+    // GAS
+    FCML_A32( "lar 0x00000020(%eax),%ebp", 0x0f, 0x02, 0x68, 0x20 );
+    FCML_A32( "lar 0x00000020(%eax),%bp", 0x66, 0x0f, 0x02, 0x68, 0x20 );
+    FCML_A64( "lar 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0x02, 0x68, 0x20 );
+    FCML_A64( "lar %sp,%cx", 0x66, 0x0f, 0x02, 0xcc );
 }
 
 void fcml_tf_instruction_LDDQU(void) {
@@ -42,11 +48,18 @@ void fcml_tf_instruction_LDDQU(void) {
     // VEX.256.F2.0F F0 /r VLDDQU ymm1, m256
     FCML_I64( "vlddqu xmm8,xmmword ptr [r8]", 0xC4, 0x41, 0x7B, 0xF0, 0x00 );
     FCML_I32( "vlddqu ymm0,ymmword ptr [eax]", 0xc5, 0xff, 0xf0, 0x00 );
+    // GAS
+    FCML_A64( "lddqu 0x0000000000000020(%rax),%xmm5", 0xf2, 0x0f, 0xf0, 0x68, 0x20 );
+    FCML_A64( "vlddqu (%r8),%xmm8", 0xc4, 0x41, 0x7b, 0xf0, 0x00 );
+    FCML_A64( "vlddqu (%rax),%ymm0", 0xc5, 0xff, 0xf0, 0x00 );
 }
 
 void fcml_tf_instruction_LDMXCSR(void) {
     FCML_I32( "ldmxcsr dword ptr [eax+00000020h]", 0x0F, 0xAE, 0x50, 0x20 );
     FCML_I64( "ldmxcsr dword ptr [rax+0000000000000020h]", 0x0F, 0xAE, 0x50, 0x20 );
+    // GAS
+    FCML_A64( "ldmxcsr 0x0000000000000020(%rax)", 0x0f, 0xae, 0x50, 0x20 );
+    FCML_A64( "vldmxcsr 0x0000000000000020(%rax)", 0xc5, 0xf8, 0xae, 0x50, 0x20 );
 }
 
 void fcml_tf_instruction_LDS(void) {
@@ -54,6 +67,9 @@ void fcml_tf_instruction_LDS(void) {
     // C5 /r LDS r32,m16:32 A Invalid Valid Load DS:r32 with far pointer from memory.
     FCML_I32( "lds far ebp,fword ptr [eax+00000020h]", 0xC5, 0x68, 0x20 );
     FCML_I32( "lds far bp,dword ptr [eax+00000020h]", 0x66, 0xc5, 0x68, 0x20 );
+    // GAS
+    FCML_A32( "lds 0x00000020(%eax),%ebp", 0xC5, 0x68, 0x20 );
+    FCML_A32( "lds 0x00000020(%eax),%bp", 0x66, 0xc5, 0x68, 0x20 );
     // 0F B2 /r LSS r16,m16:16 A Valid Valid Load SS:r16 with far pointer from memory.
     // 0F B2 /r LSS r32,m16:32 A Valid Valid Load SS:r32 with far pointer from memory.
     // REX + 0F B2 /r LSS r64,m16:64 A Valid N.E. Load SS:r64 with far pointer from memory.
