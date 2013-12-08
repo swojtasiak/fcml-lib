@@ -119,14 +119,20 @@ void fcml_tf_instruction_LEA(void) {
     FCML_I32( "lea ebp,[eax+00000020h]", 0x8D, 0x68, 0x20 );
     FCML_I32( "lea bp,[eax+00000020h]", 0x66, 0x8D, 0x68, 0x20 );
     FCML_I64( "lea rbp,[rax+0000000000000020h]", 0x48, 0x8D, 0x68, 0x20 );
+    // GAS
+    FCML_A32( "lea 0x00000020(%eax),%ebp", 0x8D, 0x68, 0x20 );
+	FCML_A32( "lea 0x00000020(%eax),%bp", 0x66, 0x8D, 0x68, 0x20 );
+	FCML_A64( "lea 0x0000000000000020(%rax),%rbp", 0x48, 0x8d, 0x68, 0x20 );
 }
 
 void fcml_tf_instruction_LEAVE(void) {
     FCML_I3264( "leave", 0xc9 );
+    FCML_A3264( "leave", 0xc9 );
 }
 
 void fcml_tf_instruction_LFENCE(void) {
     FCML_I3264("lfence", 0x0F, 0xAE, 0xE8);
+    FCML_A3264("lfence", 0x0F, 0xAE, 0xE8);
 }
 
 void fcml_tf_instruction_LLWPCB(void) {
@@ -137,20 +143,44 @@ void fcml_tf_instruction_LLWPCB(void) {
     // LLWPCB reg64 8F RXB.09 1.1111.0.00 12 /0
     FCML_I64_D( "llwpcb rax", 0x8F, 0xE9, 0xE0, 0x12, 0xC0 );
     FCML_I64( "llwpcb rax", 0x8F, 0xE9, 0xF8, 0x12, 0xC0 );
+    // GAS
+    FCML_A32( "llwpcb %eax", 0x8f, 0xe9, 0x78, 0x12, 0xc0 );
+    FCML_A64( "llwpcb %rax", 0x8f, 0xe9, 0xf8, 0x12, 0xc0 );
 }
 
 void fcml_tf_instruction_LGDT(void) {
     FCML_I32( "lgdt fword ptr [eax+00000020h]", 0x0F, 0x01, 0x50, 0x20 );
     FCML_I32( "lgdt fword ptr [eax+00000020h]", 0x66, 0x0F, 0x01, 0x50, 0x20 );
-    FCML_I64( "lgdt fword ptr [rax+0000000000000020h]", 0x0F, 0x01, 0x50, 0x20 );
-    FCML_I64( "lgdt fword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x01, 0x50, 0x20 );
-    FCML_I64( "lgdt tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 0x50, 0x20 );
+    FCML_I64_D( "lgdt tbyte ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x01, 0x50, 0x20 );
+    FCML_I64_D( "lgdt tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 0x50, 0x20 );
+    FCML_I64( "lgdt tbyte ptr [rax+0000000000000020h]", 0x0F, 0x01, 0x50, 0x20 );
+    // GAS
+    FCML_A32( "lgdt 0x00000020(%eax)", 0x0f, 0x01, 0x50, 0x20 );
+    FCML_A64( "lgdt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x50, 0x20 );
+	FCML_A32( "lgdt 0x00000020(%eax)", 0x0f, 0x01, 0x50, 0x20 );
+	FCML_A64( "lgdt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x50, 0x20 );
+}
+
+void fcml_tf_instruction_LIDT(void) {
+    FCML_I32( "lidt fword ptr [eax+00000020h]", 0x0F, 0x01, 0x58, 0x20 );
+    FCML_I32( "lidt fword ptr [eax+00000020h]", 0x66, 0x0F, 0x01, 0x58, 0x20 );
+    FCML_I64_D( "lidt tbyte ptr [rax+0000000000000020h]", 0x66, 0x0F, 0x01, 0x58, 0x20 );
+    FCML_I64_D( "lidt tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0x01, 0x58, 0x20 );
+    FCML_I64( "lidt tbyte ptr [rax+0000000000000020h]", 0x0F, 0x01, 0x58, 0x20 );
+    // GAS
+    FCML_A32( "lidt 0x00000020(%eax)", 0x0f, 0x01, 0x58, 0x20 );
+    FCML_A64( "lidt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x58, 0x20 );
+	FCML_A32( "lidt 0x00000020(%eax)", 0x0f, 0x01, 0x58, 0x20 );
+	FCML_A64( "lidt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x58, 0x20 );
 }
 
 void fcml_tf_instruction_LLDT(void) {
     FCML_I32( "lldt word ptr [eax+00000020h]", 0x0F, 0x00, 0x50, 0x20 );
     FCML_I32( "lldt word ptr [eax+00000020h]", 0x66, 0x0F, 0x00, 0x50, 0x20 );
     FCML_I64( "lldt word ptr [rax+0000000000000020h]", 0x0F, 0x00, 0x50, 0x20 );
+    // GAS
+    FCML_A32( "lldt 0x00000020(%eax)", 0x0F, 0x00, 0x50, 0x20 );
+    FCML_A64( "lldt 0x0000000000000020(%rax)", 0x0f, 0x00, 0x50, 0x20 );
 }
 
 void fcml_tf_instruction_LMSW(void) {
@@ -172,6 +202,16 @@ void fcml_tf_instruction_LODS(void) {
     FCML_I64_A( "lodsw", 0x66, 0xAD );
     FCML_I64_A( "lodsd", 0xAD );
     FCML_I64_A( "lodsq", 0x48, 0xAD );
+    // GAS
+    FCML_A32( "rep lodsb %es:(%esi)", 0xF3, 0x26, 0xAC );
+	FCML_A32( "lodsb (%esi)", 0xAC );
+	FCML_A32( "lodsl (%esi)", 0xAD );
+	FCML_A32( "lodsw (%si)",0x66, 0x67, 0xAD );
+	FCML_A64( "lodsq (%rsi)", 0x48, 0xAD );
+	FCML_A32_A( "lodsb", 0xAC );
+	FCML_A32_A( "lodsl", 0xAD );
+	FCML_A32_A( "lodsw",0x66, 0xAD );
+	FCML_A64_A( "lodsq", 0x48, 0xAD );
 }
 
 void fcml_tf_instruction_LOOP(void) {
@@ -186,6 +226,10 @@ void fcml_tf_instruction_LOOP(void) {
     FCML_I32( "loopne 00401013h", 0x67, 0xE0, 0x10);
     FCML_I64( "loopne 0000800000401013h", 0x48, 0xE0, 0x10);
     FCML_I32_A( "loopnz 00401012h", 0xE0, 0x10);
+    // GAS
+    FCML_A64( "loop 0x0000800000401013", 0x48, 0xE2, 0x10);
+    FCML_A64( "loope 0x0000800000401013", 0x48, 0xE1, 0x10);
+    FCML_A64( "loopne 0x0000800000401013", 0x48, 0xE0, 0x10);
 }
 
 void fcml_tf_instruction_LWPINS(void) {
@@ -247,6 +291,7 @@ CU_TestInfo fctl_ti_instructions_l[] = {
     { "fcml_tf_instruction_LFENCE", fcml_tf_instruction_LFENCE },
     { "fcml_tf_instruction_LLWPCB", fcml_tf_instruction_LLWPCB },
     { "fcml_tf_instruction_LGDT", fcml_tf_instruction_LGDT },
+    { "fcml_tf_instruction_LIDT", fcml_tf_instruction_LIDT },
     { "fcml_tf_instruction_LLDT", fcml_tf_instruction_LLDT },
     { "fcml_tf_instruction_LMSW", fcml_tf_instruction_LMSW },
     { "fcml_tf_instruction_LODS", fcml_tf_instruction_LODS },
