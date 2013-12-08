@@ -69,7 +69,7 @@ void fcml_tf_instruction_LDS(void) {
     FCML_I32( "lds far bp,dword ptr [eax+00000020h]", 0x66, 0xc5, 0x68, 0x20 );
     // GAS
     FCML_A32( "lds 0x00000020(%eax),%ebp", 0xC5, 0x68, 0x20 );
-    FCML_A32( "lds 0x00000020(%eax),%bp", 0x66, 0xc5, 0x68, 0x20 );
+	FCML_A32( "lds 0x00000020(%eax),%bp", 0x66, 0xc5, 0x68, 0x20 );
     // 0F B2 /r LSS r16,m16:16 A Valid Valid Load SS:r16 with far pointer from memory.
     // 0F B2 /r LSS r32,m16:32 A Valid Valid Load SS:r32 with far pointer from memory.
     // REX + 0F B2 /r LSS r64,m16:64 A Valid N.E. Load SS:r64 with far pointer from memory.
@@ -78,10 +78,17 @@ void fcml_tf_instruction_LDS(void) {
     FCML_I32( "lss far bp,dword ptr [eax+00000020h]", 0x66, 0x0F, 0xB2, 0x68, 0x20 );
     FCML_I64( "lss far bp,dword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xB2, 0x68, 0x20 );
     FCML_I64( "lss far rbp,tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0xB2, 0x68, 0x20 );
+    // GAS
+    FCML_A64( "lss 0x0000000000000020(%rax),%ebp", 0x0f, 0xb2, 0x68, 0x20 );
+    FCML_A64( "lss 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xb2, 0x68, 0x20 );
+    FCML_A64( "lss 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xb2, 0x68, 0x20 );
     // C4 /r LES r16,m16:16 A Invalid Valid Load ES:r16 with far pointer from memory.
     // C4 /r LES r32,m16:32 A Invalid Valid Load ES:r32 with far pointer from memory.
     FCML_I32( "les far ebp,fword ptr [eax+00000020h]", 0xC4, 0x68, 0x20 );
     FCML_I32( "les far bp,dword ptr [eax+00000020h]", 0x66, 0xc4, 0x68, 0x20 );
+    // GAS
+    FCML_A32( "les 0x00000020(%eax),%ebp", 0xC4, 0x68, 0x20 );
+    FCML_A32( "les 0x00000020(%eax),%bp", 0x66, 0xc4, 0x68, 0x20 );
     // 0F B4 /r LFS r16,m16:16 A Valid Valid Load FS:r16 with far pointer from memory.
     // 0F B4 /r LFS r32,m16:32 A Valid Valid Load FS:r32 with far pointer from memory.
     // REX + 0F B4 /r LFS r64,m16:64 A Valid N.E. Load FS:r64 with far pointer from memory.
@@ -90,6 +97,10 @@ void fcml_tf_instruction_LDS(void) {
     FCML_I32( "lfs far bp,dword ptr [eax+00000020h]", 0x66, 0x0F, 0xB4, 0x68, 0x20 );
     FCML_I64( "lfs far bp,dword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xB4, 0x68, 0x20 );
     FCML_I64( "lfs far rbp,tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0xB4, 0x68, 0x20 );
+    // GAS
+    FCML_A64( "lfs 0x0000000000000020(%rax),%ebp", 0x0f, 0xb4, 0x68, 0x20 );
+    FCML_A64( "lfs 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xb4, 0x68, 0x20 );
+    FCML_A64( "lfs 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xb4, 0x68, 0x20 );
     // 0F B5 /r LGS r16,m16:16 A Valid Valid Load GS:r16 with far pointer from memory.
     // 0F B5 /r LGS r32,m16:32 A Valid Valid Load GS:r32 with far pointer from memory.
     // REX + 0F B5 /r LGS r64,m16:64 A Valid N.E. Load GS:r64 with far pointer from memory.
@@ -98,6 +109,10 @@ void fcml_tf_instruction_LDS(void) {
     FCML_I32( "lgs far bp,dword ptr [eax+00000020h]", 0x66, 0x0F, 0xB5, 0x68, 0x20 );
     FCML_I64( "lgs far bp,dword ptr [rax+0000000000000020h]", 0x66, 0x0F, 0xB5, 0x68, 0x20 );
     FCML_I64( "lgs far rbp,tbyte ptr [rax+0000000000000020h]", 0x48, 0x0F, 0xB5, 0x68, 0x20 );
+    // GAS
+    FCML_A64( "lgs 0x0000000000000020(%rax),%ebp", 0x0f, 0xb5, 0x68, 0x20 );
+    FCML_A64( "lgs 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xb5, 0x68, 0x20 );
+    FCML_A64( "lgs 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xb5, 0x68, 0x20 );
 }
 
 void fcml_tf_instruction_LEA(void) {

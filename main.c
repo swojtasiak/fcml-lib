@@ -157,10 +157,6 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	FCML_A32_A_P( "lds 0x00000020(%eax),%ebp", 0xC5, 0x68, 0x20 );
-	//FCML_A32_P( "lds 0x00000020(%eax),%bp", 0x66, 0xc5, 0x68, 0x20 );
-	return 0;
-
 	// ea 11 22 33 44 55 66   ljmp   $0x6655,$0x44332211
 
 
