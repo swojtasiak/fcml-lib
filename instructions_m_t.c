@@ -21,14 +21,19 @@ void fcml_tf_instruction_MASKMOVQ(void) {
     FCML_I64( "maskmovq mm3,mm0", 0x0F, 0xF7, 0xD8 );
     FCML_I32( "maskmovq mm4,mm0", 0x0F, 0xF7, 0xE0 );
     FCML_I32_FAILED( "FAIL", 0x0F, 0xF7, 0x40, 0x20 );
-    // VEX.128.66.0F F7 /r VMASKMOVDQU xmm1,xmm2
-    FCML_I3264( "vmaskmovdqu xmm3,xmm0", 0xc5, 0xf9, 0xf7, 0xd8 );
+    // GAS
+    FCML_A64( "maskmovq %mm0,%mm3", 0x0f, 0xf7, 0xd8 );
 }
 
 void fcml_tf_instruction_MASKMOVDQU(void) {
     FCML_I64( "maskmovdqu xmm3,xmm0", 0x66, 0x0F, 0xF7, 0xD8 );
     FCML_I32( "maskmovdqu xmm4,xmm0", 0x66, 0x0F, 0xF7, 0xE0 );
     FCML_I32_FAILED( "FAIL", 0x66, 0x0F, 0xF7, 0x40, 0x20 );
+    // VEX.128.66.0F F7 /r VMASKMOVDQU xmm1,xmm2
+	FCML_I3264( "vmaskmovdqu xmm3,xmm0", 0xc5, 0xf9, 0xf7, 0xd8 );
+	// GAS
+	FCML_A3264( "maskmovdqu %xmm0,%xmm3", 0x66, 0x0f, 0xf7, 0xd8 );
+	FCML_A3264( "vmaskmovdqu %xmm0,%xmm3", 0xc5, 0xf9, 0xf7, 0xd8 );
 }
 
 void fcml_tf_instruction_MAXPD(void) {
@@ -40,6 +45,9 @@ void fcml_tf_instruction_MAXPD(void) {
     FCML_I64( "vmaxpd xmm3,xmm0,xmm0", 0xc5, 0xf9, 0x5f, 0xd8 );
     FCML_I32( "vmaxpd ymm3,ymm0,ymm0", 0xc5, 0xfd, 0x5f, 0xd8 );
     FCML_I32( "vmaxpd ymm3,ymm3,ymmword ptr [eax]", 0xc5, 0xe5, 0x5f, 0x18 );
+    // GAS
+    FCML_A64( "maxpd 0x0000000000000020(%rax),%xmm0", 0x66, 0x0f, 0x5f, 0x40, 0x20 );
+    FCML_A64( "vmaxpd %xmm0,%xmm0,%xmm3", 0xc5, 0xf9, 0x5f, 0xd8 );
 }
 
 void fcml_tf_instruction_MAXPS(void) {
@@ -51,6 +59,9 @@ void fcml_tf_instruction_MAXPS(void) {
     FCML_I64( "vmaxps xmm3,xmm0,xmm0", 0xc5, 0xf8, 0x5f, 0xd8 );
     FCML_I32( "vmaxps ymm3,ymm0,ymm0", 0xc5, 0xfc, 0x5f, 0xd8 );
     FCML_I32( "vmaxps ymm3,ymm3,ymmword ptr [eax]", 0xc5, 0xe4, 0x5f, 0x18 );
+    // GAS
+    FCML_A64( "maxps 0x0000000000000020(%rax),%xmm0", 0x0f, 0x5f, 0x40, 0x20 );
+    FCML_A64( "vmaxps %xmm0,%xmm0,%xmm3", 0xc5, 0xf8, 0x5f, 0xd8 );
 }
 
 void fcml_tf_instruction_MAXSD(void) {
@@ -61,6 +72,9 @@ void fcml_tf_instruction_MAXSD(void) {
     FCML_I64( "vmaxsd xmm3,xmm3,xmm0", 0xc5, 0xe3, 0x5f, 0xd8 );
     FCML_I32( "vmaxsd xmm3,xmm7,xmm0", 0xc5, 0xc3, 0x5f, 0xd8 );
     FCML_I32( "vmaxsd xmm3,xmm0,mmword ptr [eax]", 0xc5, 0xfb, 0x5f, 0x18 );
+    // GAS
+    FCML_A64( "maxsd 0x0000000000000020(%rax),%xmm0", 0xf2, 0x0f, 0x5f, 0x40, 0x20 );
+    FCML_A64( "vmaxsd %xmm0,%xmm3,%xmm3", 0xc5, 0xe3, 0x5f, 0xd8 );
 }
 
 void fcml_tf_instruction_MAXSS(void) {
@@ -71,10 +85,15 @@ void fcml_tf_instruction_MAXSS(void) {
     FCML_I64( "vmaxss xmm3,xmm3,xmm0", 0xc5, 0xe2, 0x5f, 0xd8 );
     FCML_I32( "vmaxss xmm3,xmm7,xmm0", 0xc5, 0xc2, 0x5f, 0xd8 );
     FCML_I32( "vmaxss xmm3,xmm0,dword ptr [eax]", 0xc5, 0xfa, 0x5f, 0x18 );
+    // GAS
+    FCML_A64( "maxss 0x0000000000000020(%rax),%xmm0", 0xf3, 0x0f, 0x5f, 0x40, 0x20 );
+    FCML_A64( "vmaxss %xmm0,%xmm3,%xmm3", 0xc5, 0xe2, 0x5f, 0xd8 );
 }
 
 void fcml_tf_instruction_MFENCE(void) {
     FCML_I3264( "mfence", 0x0F, 0xAE, 0xF0 );
+    // GAS
+    FCML_A64( "mfence", 0x0f, 0xae, 0xf0 );
 }
 
 void fcml_tf_instruction_MINPD(void) {
@@ -86,6 +105,9 @@ void fcml_tf_instruction_MINPD(void) {
     FCML_I64( "vminpd xmm3,xmm0,xmm0", 0xc5, 0xf9, 0x5d, 0xd8 );
     FCML_I32( "vminpd ymm3,ymm0,ymm0", 0xc5, 0xfd, 0x5d, 0xd8 );
     FCML_I32( "vminpd ymm3,ymm3,ymmword ptr [eax]", 0xc5, 0xe5, 0x5d, 0x18 );
+    // GAS
+    FCML_A64( "minpd 0x0000000000000020(%rax),%xmm0", 0x66, 0x0f, 0x5d, 0x40, 0x20 );
+    FCML_A64( "vminpd %xmm0,%xmm0,%xmm3", 0xc5, 0xf9, 0x5d, 0xd8 );
 }
 
 void fcml_tf_instruction_MINPS(void) {
@@ -97,6 +119,9 @@ void fcml_tf_instruction_MINPS(void) {
     FCML_I64( "vminps xmm3,xmm0,xmm0", 0xc5, 0xf8, 0x5d, 0xd8 );
     FCML_I32( "vminps ymm3,ymm0,ymm0", 0xc5, 0xfc, 0x5d, 0xd8 );
     FCML_I32( "vminps ymm3,ymm3,ymmword ptr [eax]", 0xc5, 0xe4, 0x5d, 0x18 );
+    //GAS
+    FCML_A64( "minps 0x0000000000000020(%rax),%xmm0", 0x0f, 0x5d, 0x40, 0x20 );
+    FCML_A64( "vminps %xmm0,%xmm0,%xmm3", 0xc5, 0xf8, 0x5d, 0xd8 );
 }
 
 void fcml_tf_instruction_MINSD(void) {
@@ -107,6 +132,9 @@ void fcml_tf_instruction_MINSD(void) {
     FCML_I64( "vminsd xmm3,xmm0,xmm0", 0xc5, 0xfb, 0x5d, 0xd8 );
     FCML_I32( "vminsd xmm3,xmm0,xmm0", 0xc5, 0xfb, 0x5d, 0xd8 );
     FCML_I32( "vminsd xmm3,xmm3,mmword ptr [eax]", 0xc5, 0xe3, 0x5d, 0x18 );
+    // GAS
+    FCML_A64( "minsd 0x0000000000000020(%rax),%xmm0", 0xf2, 0x0f, 0x5d, 0x40, 0x20 );
+    FCML_A64( "vminsd %xmm0,%xmm0,%xmm3", 0xc5, 0xfb, 0x5d, 0xd8 );
 }
 
 void fcml_tf_instruction_MINSS(void) {
@@ -116,10 +144,18 @@ void fcml_tf_instruction_MINSS(void) {
     // VEX.NDS.128.F3.0F 5D /r VMINSS xmm1,xmm2,xmm3/m32
     FCML_I64( "vminss xmm3,xmm0,xmm0", 0xc5, 0xfa, 0x5d, 0xd8 );
     FCML_I32( "vminss xmm3,xmm0,xmm0", 0xc5, 0xfa, 0x5d, 0xd8 );
+    // GAS
+    FCML_A64( "minss 0x0000000000000020(%rax),%xmm0", 0xf3, 0x0f, 0x5d, 0x40, 0x20 );
+    FCML_A64( "vminss %xmm0,%xmm0,%xmm3", 0xc5, 0xfa, 0x5d, 0xd8 );
 }
 
 void fcml_tf_instruction_MONITOR(void) {
     FCML_I64( "monitor rax,rcx,rdx", 0x0F, 0x01, 0xC8 );
+    FCML_I32_A( "monitor", 0x0F, 0x01, 0xC8 );
+    // GAS
+    // TODO: Dlaczego operandy nie sa zamienione kolejnoscia w GAS?
+    //FCML_A64( "monitor %rax,%rcx,%rdx", 0x0f, 0x01, 0xc8 );
+    FCML_A64( "monitor %rdx,%rcx,%rax", 0x0f, 0x01, 0xc8 );
     FCML_I32_A( "monitor", 0x0F, 0x01, 0xC8 );
 }
 

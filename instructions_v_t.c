@@ -88,18 +88,26 @@ void fcml_tf_instruction_VMASKMOVPS_VMASKMOVPD(void) {
     // VEX.NDS.256.66.0F38 2C /r VMASKMOVPS ymm1,ymm2,m256
     FCML_I64( "vmaskmovps xmm3,xmm2,xmmword ptr [rax]", 0xC4, 0xE2, 0x69, 0x2C, 0x18 );
     FCML_I32( "vmaskmovps ymm3,ymm2,ymmword ptr [eax]", 0xC4, 0xE2, 0x6D, 0x2C, 0x18 );
+    // GAS
+    FCML_A64( "vmaskmovps (%rax),%xmm2,%xmm3", 0xc4, 0xe2, 0x69, 0x2c, 0x18 );
     // VEX.NDS.128.66.0F38 2D /r VMASKMOVPD xmm1,xmm2,m128
     // VEX.NDS.256.66.0F38 2D /r VMASKMOVPD ymm1,ymm2,m256
     FCML_I64( "vmaskmovpd xmm3,xmm2,xmmword ptr [rax]", 0xC4, 0xE2, 0x69, 0x2D, 0x18 );
     FCML_I32( "vmaskmovpd ymm3,ymm2,ymmword ptr [eax]", 0xC4, 0xE2, 0x6D, 0x2D, 0x18 );
+    // GAS
+    FCML_A64( "vmaskmovpd (%rax),%xmm2,%xmm3", 0xc4, 0xe2, 0x69, 0x2d, 0x18 );
     // VEX.NDS.128.66.0F38 2E /r VMASKMOVPS m128,xmm1,xmm2
     // VEX.NDS.256.66.0F38 2E /r VMASKMOVPS m256,ymm1,ymm2
     FCML_I64( "vmaskmovps xmmword ptr [rax],xmm2,xmm3", 0xC4, 0xE2, 0x69, 0x2E, 0x18 );
     FCML_I32( "vmaskmovps ymmword ptr [eax],ymm2,ymm3", 0xC4, 0xE2, 0x6D, 0x2E, 0x18 );
+    // GAS
+    FCML_A64( "vmaskmovps %xmm3,%xmm2,(%rax)", 0xc4, 0xe2, 0x69, 0x2e, 0x18 );
     // VEX.NDS.128.66.0F38 2F /r VMASKMOVPD m128,xmm1,xmm2
     // VEX.NDS.256.66.0F38 2F /r VMASKMOVPD m256,ymm1,ymm2
     FCML_I64( "vmaskmovpd xmmword ptr [rax],xmm2,xmm3", 0xC4, 0xE2, 0x69, 0x2F, 0x18 );
     FCML_I32( "vmaskmovpd ymmword ptr [eax],ymm2,ymm3", 0xC4, 0xE2, 0x6D, 0x2F, 0x18 );
+    // GAS
+    FCML_A64( "vmaskmovpd %xmm3,%xmm2,(%rax)", 0xc4, 0xe2, 0x69, 0x2f, 0x18 );
 }
 
 void fcml_tf_instruction_VPMASKMOVD_VPMASKMOVQ(void) {
@@ -111,6 +119,9 @@ void fcml_tf_instruction_VPMASKMOVD_VPMASKMOVQ(void) {
     FCML_I32( "vpmaskmovd ymm3,ymm2,ymmword ptr [eax]", 0xC4, 0xE2, 0x6D, 0x8C, 0x18 );
     FCML_I64( "vpmaskmovq xmm3,xmm2,xmmword ptr [rax]", 0xC4, 0xE2, 0xE9, 0x8C, 0x18 );
     FCML_I64( "vpmaskmovq ymm3,ymm2,ymmword ptr [rax]", 0xC4, 0xE2, 0xED, 0x8C, 0x18 );
+    // GAS
+    FCML_A64( "vpmaskmovq (%rax),%xmm2,%xmm3", 0xc4, 0xe2, 0xe9, 0x8c, 0x18 );
+    FCML_A64( "vpmaskmovq (%rax),%ymm2,%ymm3", 0xc4, 0xe2, 0xed, 0x8c, 0x18 );
     // VEX.NDS.128.66.0F38.W0 8E /r VPMASKMOVD m128,xmm1,xmm2
     // VEX.NDS.256.66.0F38.W0 8E /r VPMASKMOVD m256,ymm1,ymm2
     // VEX.NDS.128.66.0F38.W1 8E /r VPMASKMOVQ m128,xmm1,xmm2
@@ -119,6 +130,9 @@ void fcml_tf_instruction_VPMASKMOVD_VPMASKMOVQ(void) {
     FCML_I32( "vpmaskmovd ymmword ptr [eax],ymm2,ymm3", 0xC4, 0xE2, 0x6D, 0x8E, 0x18 );
     FCML_I64( "vpmaskmovq xmmword ptr [rax],xmm2,xmm3", 0xC4, 0xE2, 0xE9, 0x8E, 0x18 );
     FCML_I64( "vpmaskmovq ymmword ptr [rax],ymm2,ymm3", 0xC4, 0xE2, 0xED, 0x8E, 0x18 );
+    // GAS
+    FCML_A64( "vpmaskmovq %xmm3,%xmm2,(%rax)", 0xc4, 0xe2, 0xe9, 0x8e, 0x18 );
+    FCML_A64( "vpmaskmovq %ymm3,%ymm2,(%rax)", 0xc4, 0xe2, 0xed, 0x8e, 0x18 );
 }
 
 void fcml_tf_instruction_VPBLENDD(void) {
