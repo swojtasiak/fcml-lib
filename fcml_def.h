@@ -386,6 +386,11 @@ enum fcml_en_instruction_codes {
 	F_LOOP,
 	F_LOOPE,
 	F_LOOPNE,
+	F_LWPINS,
+	F_LWPVAL,
+	F_LSL,
+	F_LTR,
+	F_LZCNT,
 };
 
 /*******************/
