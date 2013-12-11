@@ -430,6 +430,10 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("movabs[sf,oq];mov[sf,od];mov[sf,ow]"), FCML_ASM_DIALECT_INSTRUCTION( F_MOV, FCML_AM_R0_IMM0 ), 0 },
 	{ FCML_TEXT("movb[tb,sb];mov"), FCML_ASM_DIALECT_INSTRUCTION( F_MOV, FCML_AM_RM8_IMM8 ), 0 },
 	{ FCML_TEXT("mov;movw[sf,ow];movl[sf,od];movq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_MOV, FCML_AM_RMO_IMMO ), 0 },
+	{ FCML_TEXT("movd"), FCML_ASM_DIALECT_INSTRUCTION( F_MOVD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vmovd"), FCML_ASM_DIALECT_INSTRUCTION( F_VMOVD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("movq"), FCML_ASM_DIALECT_INSTRUCTION( F_MOVQ, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vmovq"), FCML_ASM_DIALECT_INSTRUCTION( F_VMOVQ, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 
@@ -438,6 +442,10 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 // ********************
 
 #define FCML_ASM_DIALECT_att_GROUPS 3
+
+fcml_string fcml_ar_asm_dialect_reg_symbol_table_att[16] = {
+	"db0", "db1", "db2", "db3", "db4", "db5", "db6", "db7", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>"
+};
 
 fcml_string fcml_itb_att_conditional_suffixes[3][16] = {
     { "o", "no",  "b",   "nb", "e", "ne", "be", "nbe", "s",  "ns", "p",  "np", "l",   "nl", "le", "nle" },
@@ -491,7 +499,11 @@ void fcml_fn_att_dialect_free(void) {
 fcml_ceh_error fcml_ifn_asm_dialect_get_register_att( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_string printable_reg;
-	error = fcml_fn_cmn_dialect_get_register( reg, &printable_reg, is_rex );
+	if( reg->type == FCML_REG_DR ) {
+		printable_reg = fcml_ar_asm_dialect_reg_symbol_table_att[reg->reg];
+	} else {
+		error = fcml_fn_cmn_dialect_get_register( reg, &printable_reg, is_rex );
+	}
 	if( error ) {
 		return error;
 	}

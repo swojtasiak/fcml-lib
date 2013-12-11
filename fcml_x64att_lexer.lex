@@ -177,14 +177,14 @@ fcml_fn_pu_parse_intege_flags
 "%cr8"				FCML_FM_CR_REG(FCML_REG_CR8)
 
  /*Debug registers.*/
-"%dr0"				FCML_FM_DR_REG(FCML_REG_DR0)
-"%dr1"				FCML_FM_DR_REG(FCML_REG_DR1)
-"%dr2"				FCML_FM_DR_REG(FCML_REG_DR2)
-"%dr3"				FCML_FM_DR_REG(FCML_REG_DR3)
-"%dr4"				FCML_FM_DR_REG(FCML_REG_DR4)
-"%dr5"				FCML_FM_DR_REG(FCML_REG_DR5)
-"%dr6"				FCML_FM_DR_REG(FCML_REG_DR6)
-"%dr7"				FCML_FM_DR_REG(FCML_REG_DR7)
+"%db0"				FCML_FM_DR_REG(FCML_REG_DR0)
+"%db1"				FCML_FM_DR_REG(FCML_REG_DR1)
+"%db2"				FCML_FM_DR_REG(FCML_REG_DR2)
+"%db3"				FCML_FM_DR_REG(FCML_REG_DR3)
+"%db4"				FCML_FM_DR_REG(FCML_REG_DR4)
+"%db5"				FCML_FM_DR_REG(FCML_REG_DR5)
+"%db6"				FCML_FM_DR_REG(FCML_REG_DR6)
+"%db7"				FCML_FM_DR_REG(FCML_REG_DR7)
 
  /*Segment registers.*/
 "%es"				FCML_FM_SEG_REG(FCML_REG_ES)

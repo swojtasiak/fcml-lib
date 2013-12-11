@@ -2298,22 +2298,22 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOV[] = {
 	{ NULL, FCML_AMT_GPI, 0x0010, 0x03C58000, { 0xC7, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_IMM_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMMO },
 	// REX.W + C7 /0 MOV r/m64, imm32 F Valid N.E. Move imm32 sign extended to 64-bits to r/m64.
 	{ NULL, FCML_AMT_GPI, 0x0008, 0x04858000, { 0xC7, 0x00, 0x00 }, { FCML_OP_MODRM_RM_W, FCML_OP_ID_EX_EOSA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_RMO_IMMO },
-	// 0F 21/r MOV r32, DR0�DR7 A N.E. Valid Move debug register to r32
+	// 0F 21/r MOV r32, DR0-DR7 A N.E. Valid Move debug register to r32
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00588000, { 0x0F, 0x21, 0x00 }, { FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ) | FCML_OA_W, FCML_OP_R( FCML_REG_DR, FCML_EOS_DWORD ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_R32_DR },
-    // 0F 21/r MOV r64, DR0�DR7 A Valid N.E. Move extended debug register to r64.
+    // 0F 21/r MOV r64, DR0-DR7 A Valid N.E. Move extended debug register to r64.
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00988000, { 0x0F, 0x21, 0x00 }, { FCML_OP_RM( FCML_REG_GPR, FCML_EOS_QWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ) | FCML_OA_W, FCML_OP_R( FCML_REG_DR, FCML_EOS_QWORD ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_R64_DR },
-    // 0F 23 /r MOV DR0�DR7, r32 A N.E. Valid Move r32 to debug register
+    // 0F 23 /r MOV DR0-DR7, r32 A N.E. Valid Move r32 to debug register
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00588000, { 0x0F, 0x23, 0x00 }, { FCML_OP_R( FCML_REG_DR, FCML_EOS_DWORD ) | FCML_OA_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_DR_R32 },
-    // 0F 23 /r MOV DR0�DR7, r64 A Valid N.E. Move r64 to extended debug register.
+    // 0F 23 /r MOV DR0-DR7, r64 A Valid N.E. Move r64 to extended debug register.
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00988000, { 0x0F, 0x23, 0x00 }, { FCML_OP_R( FCML_REG_DR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_QWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_DR_R64 },
-	// 0F 20/r MOV r32, CR0�CR7 A N.E. Valid Move control register to r32
+	// 0F 20/r MOV r32, CR0-CR7 A N.E. Valid Move control register to r32
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00588000, { 0x0F, 0x20, 0x00 }, { FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ) | FCML_OA_W, FCML_OP_R( FCML_REG_CR, FCML_EOS_DWORD ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_R32_CR },
-    // 0F 20/r MOV r64, CR0�CR7 A Valid N.E. Move extended control register to r64.
+    // 0F 20/r MOV r64, CR0-CR7 A Valid N.E. Move extended control register to r64.
     // REX.R + 0F 20 /0 MOV r64, CR8 A Valid N.E. Move extended CR8 to r64.1
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00988000, { 0x0F, 0x20, 0x00 }, { FCML_OP_RM( FCML_REG_GPR, FCML_EOS_QWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ) | FCML_OA_W, FCML_OP_R( FCML_REG_CR, FCML_EOS_QWORD ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_R64_CR },
-    // 0F 22 /r MOV CR0�CR7, r32 A N.E. Valid Move r32 to control register
+    // 0F 22 /r MOV CR0-CR7, r32 A N.E. Valid Move r32 to control register
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00588000, { 0x0F, 0x22, 0x00 }, { FCML_OP_R( FCML_REG_CR, FCML_EOS_DWORD ) | FCML_OA_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_DWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_CR_R32 },
-    // 0F 22 /r MOV CR0�CR7, r64 A Valid N.E. Move r64 to extended control register.
+    // 0F 22 /r MOV CR0-CR7, r64 A Valid N.E. Move r64 to extended control register.
     // REX.R + 0F 22 /0 MOV CR8, r64 A Valid N.E. Move r64 to extended CR8.1
     { NULL, FCML_AMT_SYSTEM, 0x0000, 0x00988000, { 0x0F, 0x22, 0x00 }, { FCML_OP_R( FCML_REG_CR, FCML_EOS_QWORD ) | FCML_OA_W, FCML_OP_RM( FCML_REG_GPR, FCML_EOS_QWORD, FCML_EOS_UNDEFINED, FCML_RMF_R ), FCML_NA, FCML_NA, FCML_NA }, FCML_AM_CR_R64 }
 };
@@ -2363,29 +2363,51 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVBE[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVD[] = {
 	// 0F 6E /r MOVD mm,r/m32 A Valid Valid Move doubleword from r/m32 to mm.
-	{ NULL, FCML_AMT_MMX_SIMD, 0x0010, 0x03D88000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// REX.W + 0F 6E /r MOVQ mm, r/m64 A Valid N.E. Move quadword from r/m64 to mm.
-	{ "movq", FCML_AMT_MMX_SIMD, 0x0008, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_MMX_SIMD, 0x0010, 0x03D88000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_OP32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// 0F 7E /r MOVD r/m32, mm B Valid Valid Move doubleword from mm to r/m32.
-	{ NULL, FCML_AMT_MMX_SIMD, 0x0010, 0x03D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// REX.W + 0F 7E /r MOVQ r/m64, mm B Valid N.E. Move quadword from mm to r/m64.
-	{ "movq", FCML_AMT_MMX_SIMD, 0x0008, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// 66 0F 6E /r MOVD xmm, r/m32 A Valid Valid Move doubleword from r/m32 to xmm.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x1010, 0x03D88000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.
-	{ "movq", FCML_AMT_SSE2_SIMD, 0x1008, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_MMX_SIMD, 0x0010, 0x03D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_OP32_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// 66 0F 7E /r MOVD r/m32, xmm B Valid Valid Move doubleword from xmm register to r/m32.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x1010, 0x03D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
-	{ "movq", FCML_AMT_SSE2_SIMD, 0x1008, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1010, 0x03D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_OP32_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// 66 0F 6E /r MOVD xmm, r/m32 A Valid Valid Move doubleword from r/m32 to xmm.
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1010, 0x03D88000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_OP32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMOVD[] = {
 	// VEX.128.66.0F.W0 6E /r VMOVD xmm1,r32/m32
-	{ "vmovd", FCML_AMT_AVX_SIMD, 0x11D0, 0x03588000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
-	{ "vmovq", FCML_AMT_AVX_SIMD, 0x11C8, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_AVX_SIMD, 0x11D0, 0x03588000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// VEX.128.66.0F.W0 7E /r VMOVD r32/m32,xmm1
-	{ "vmovd", FCML_AMT_AVX_SIMD, 0x11D0, 0x03588000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_AVX_SIMD, 0x11D0, 0x03588000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_32_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVQ[] = {
+	// REX.W + 0F 6E /r MOVQ mm, r/m64 A Valid N.E. Move quadword from r/m64 to mm.
+	{ NULL, FCML_AMT_MMX_SIMD, 0x0008, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_OP64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1008, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_OP64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// REX.W + 0F 7E /r MOVQ r/m64, mm B Valid N.E. Move quadword from mm to r/m64.
+	{ NULL, FCML_AMT_MMX_SIMD, 0x0008, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_OP64_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1008, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_OP64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// F3 0F 7E MOVQ xmm1, xmm2/m64 A Valid Valid Move quadword from xmm2/mem64 to xmm1.
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x4001, 0x00D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// 0F 6F /r MOVQ mm, mm/m64 A Valid Valid Move quadword from mm/m64 to mm.
+	{ NULL, FCML_AMT_MMX_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x6F, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_MMX_OP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// 0F 7F /r MOVQ mm/m64, mm B Valid Valid Move quadword from mm to mm/m64.
+	{ NULL, FCML_AMT_MMX_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x7F, 0x00 }, { FCML_OP_MODRM_RM_MMX_OP_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// 66 0F D6 MOVQ xmm2/m64, xmm1 B Valid Valid Move quadword from xmm1 to xmm2/mem64.
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1001, 0x00D88000, { 0x0F, 0xD6, 0x00 }, { FCML_OP_MODRM_RM_XMM_OP64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMOVQ[] = {
+	// VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
+	{ NULL, FCML_AMT_AVX_SIMD, 0x11C8, 0x04988000, { 0x0F, 0x6E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// VEX.128.66.0F.W1 7E /r VMOVQ r64/m64,xmm1
-	{ "vmovq", FCML_AMT_AVX_SIMD, 0x11C8, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ NULL, FCML_AMT_AVX_SIMD, 0x11C8, 0x04988000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_RM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// VEX.128.F3.0F 7E /r VMOVQ xmm1,xmm2
+	// VEX.128.F3.0F 7E /r VMOVQ xmm1,m64
+	{ NULL, FCML_AMT_AVX_SIMD, 0x41C0, 0x00D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	// VEX.128.66.0F D6 /r VMOVQ xmm1/m64,xmm2
+	{ NULL, FCML_AMT_AVX_SIMD, 0x41C0, 0x00D88000, { 0x0F, 0xD6, 0x00 }, { FCML_OP_MODRM_RM_XMM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVDDUP[] = {
@@ -2556,23 +2578,6 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVNTSS[] = {
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVNTQ[] = {
 	// 0F E7 /r MOVNTQ m64, mm A Valid Valid Move quadword from mm to m64 using non-temporal hint.
 	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x80D88000, { 0x0F, 0xE7, 0x00 }, { FCML_OP_RM( FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_MWORD, FCML_RMF_M ) | FCML_OA_W, FCML_OP_MODRM_R_MMX , FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-};
-
-struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVQ[] = {
-	// 0F 6F /r MOVQ mm, mm/m64 A Valid Valid Move quadword from mm/m64 to mm.
-	{ NULL, FCML_AMT_MMX_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x6F, 0x00 }, { FCML_OP_MODRM_R_MMX_W, FCML_OP_MODRM_RM_MMX, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// 0F 7F /r MOVQ mm/m64, mm B Valid Valid Move quadword from mm to mm/m64.
-	{ NULL, FCML_AMT_MMX_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x7F, 0x00 }, { FCML_OP_MODRM_RM_MMX_W, FCML_OP_MODRM_R_MMX, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// F3 0F 7E MOVQ xmm1, xmm2/m64 A Valid Valid Move quadword from xmm2/mem64 to xmm1.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x4001, 0x00D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// 66 0F D6 MOVQ xmm2/m64, xmm1 B Valid Valid Move quadword from xmm1 to xmm2/mem64.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x1001, 0x00D88000, { 0x0F, 0xD6, 0x00 }, { FCML_OP_MODRM_RM_XMM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// VEX.128.F3.0F 7E /r VMOVQ xmm1,xmm2
-	// VEX.128.F3.0F 7E /r VMOVQ xmm1,m64
-	{ "vmovq", FCML_AMT_AVX_SIMD, 0x41C0, 0x00D88000, { 0x0F, 0x7E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
-	// VEX.128.66.0F D6 /r VMOVQ xmm1/m64,xmm2
-	{ "vmovq", FCML_AMT_AVX_SIMD, 0x41C0, 0x00D88000, { 0x0F, 0xD6, 0x00 }, { FCML_OP_MODRM_RM_XMM_64_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
-
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVQ2DQ[] = {
@@ -6474,7 +6479,10 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 		FCML_IA_INSTRUCTION( F_VMOVAPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VMOVAPS),
 		FCML_IA_INSTRUCTION( F_MOVBE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_MOVBE),
 		FCML_IA_INSTRUCTION( F_MOV, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_MOV),
-		FCML_IA_INSTRUCTION( F_UNKNOWN, "movd", fcml_st_def_addr_mode_desc_MOVD),
+		FCML_IA_INSTRUCTION( F_MOVD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_MOVD),
+		FCML_IA_INSTRUCTION( F_VMOVD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VMOVD),
+		FCML_IA_INSTRUCTION( F_MOVQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_MOVQ),
+		FCML_IA_INSTRUCTION( F_VMOVQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VMOVQ),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "movddup", fcml_st_def_addr_mode_desc_MOVDDUP),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "movdqa", fcml_st_def_addr_mode_desc_MOVDQA),
 		FCML_IA_INSTRUCTION( F_UNKNOWN, "movdqu", fcml_st_def_addr_mode_desc_MOVDQU),
