@@ -1205,8 +1205,10 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_segment_relative_offset( fcml_ist_a
             return FCML_EN_UNSUPPORTED_OPPERAND;
         }
 
-        if( !fcml_ifn_asm_accept_data_size( context, addr_mode_desc, args->encoded_operand_size, operand_def->address.size_operator, FCML_IEN_CT_EQUAL ) ) {
-           return FCML_EN_UNSUPPORTED_OPPERAND;
+        if( operand_def->address.size_operator != FCML_OS_UNDEFINED ) {
+			if( !fcml_ifn_asm_accept_data_size( context, addr_mode_desc, args->encoded_operand_size, operand_def->address.size_operator, FCML_IEN_CT_EQUAL ) ) {
+			   return FCML_EN_UNSUPPORTED_OPPERAND;
+			}
         }
 
         fcml_bool is_convertable = FCML_FALSE;
