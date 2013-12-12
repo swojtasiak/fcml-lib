@@ -1292,8 +1292,11 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 
 	if( result ) {
 		if( is_reg ) {
-			// Lock prefixes are only allowed for destination memory operands.
-			if( ( context->instruction->prefixes & FCML_PREFIX_LOCK ) && addr_mode->access_mode == FCML_AM_WRITE ) {
+			if( args->reg_type != operand_def->reg.type ) {
+				// Different register type.
+				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+			} else if( ( context->instruction->prefixes & FCML_PREFIX_LOCK ) && addr_mode->access_mode == FCML_AM_WRITE ) {
+				// Lock prefixes are only allowed for destination memory operands.
 				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			} else {
 				if( !fcml_ifn_asm_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
