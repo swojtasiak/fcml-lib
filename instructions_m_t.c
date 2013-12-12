@@ -466,32 +466,69 @@ void fcml_tf_instruction_MOVQ(void) {
 	// TODO: Opisac ambigous rozwiazywan w przypadku intela za pomoca typu size oeprandu, a w przypadku GAS niestety nie ma jak.
 	// 0F 6F /r MOVQ mm, mm/m64 A Valid Valid Move quadword from mm/m64 to mm.
 	FCML_I32( "movq mm0,mmword ptr [eax]", 0x0F, 0x6F, 0x00 );
-	FCML_I64( "movq mm0,mmword ptr [rax]",  0x0F, 0x6F, 0x00 );
-	FCML_I64_M( "movq mm2,mm0", 4, FCML_MI( 0x0f, 0x7f, 0xc2 ), FCML_MI( 0x0f, 0x6f, 0xd0 ), FCML_MI( 0x48, 0x0f, 0x7e, 0xc2 ), FCML_MI( 0x48, 0x0f, 0x6e, 0xd0 ) );
+	FCML_I64( "movq mm0,mmword ptr [rax]", 0x0F, 0x6F, 0x00 );
+	FCML_I32_D( "movq mm0,mm2", 0x0f, 0x6f, 0xc2 );
+	FCML_I64_M( "movq mm2,mm0", 2, FCML_MI( 0x0f, 0x6f, 0xd0 ), FCML_MI( 0x0f, 0x7f, 0xc2 ) );
 	// GAS (ambigous syntax)
 	FCML_A64_M( "movq (%rax),%mm0", 2, FCML_MI( 0x0f, 0x6f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x00 ) );
-	FCML_A64( "movq %mm0,%mm0", 0x0f, 0x6f, 0xc0 );
+	FCML_A64_M( "movq %mm0,%mm0", 2, FCML_MI( 0x0f, 0x7f, 0xc0 ), FCML_MI( 0x0f, 0x6f, 0xc0 ) );
 	// 0F 7F /r MOVQ mm/m64, mm B Valid Valid Move quadword from mm to mm/m64.
 	FCML_I32( "movq mmword ptr [eax],mm0", 0x0F, 0x7F, 0x00 );
 	FCML_I64( "movq mmword ptr [rax],mm0",  0x0F, 0x7F, 0x00 );
-	FCML_I64_M( "movq mm0,mm2", 4, FCML_MI( 0x0f, 0x7f, 0xd0 ), FCML_MI( 0x0f, 0x6f, 0xc2 ), FCML_MI( 0x48, 0x0f, 0x7e, 0xd0 ), FCML_MI( 0x48, 0x0f, 0x6e, 0xc2 ) );
+	FCML_I64_M( "movq mm0,mm2", 2, FCML_MI( 0x0f, 0x7f, 0xd0 ), FCML_MI( 0x0f, 0x6f, 0xc2 ) );
 	// GAS
-
+	FCML_A64_M( "movq %mm0,(%rax)", 2, FCML_MI( 0x0f, 0x7f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x7e, 0x00 ) );
+	// REX.W + 0F 7E /r MOVQ r/m64, mm B Valid N.E. Move quadword from mm to r/m64.
+	FCML_I64_A( "movq mmword ptr [rax],mm2", 0x0f, 0x7f, 0x10 );
+	// GAS
+	FCML_A64_M( "movq %mm2,(%rax)", 2, FCML_MI( 0x0f, 0x7f, 0x10 ), FCML_MI( 0x48, 0x0f, 0x7e, 0x10 ) );
 	// F3 0F 7E MOVQ xmm1, xmm2/m64 A Valid Valid Move quadword from xmm2/mem64 to xmm1.
 	FCML_I32( "movq xmm0,mmword ptr [eax]", 0xF3, 0x0F, 0x7E, 0x00 );
 	FCML_I64( "movq xmm0,mmword ptr [rax]", 0xF3, 0x0F, 0x7E, 0x00 );
 	FCML_I64_M( "movq xmm2,xmm0", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xc2 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xd0 ) );
+	// GAS
+	FCML_A64_M( "movq (%rax),%xmm0", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x00 ), FCML_MI( 0x66, 0x48, 0x0f, 0x6e, 0x00 ) );
+	FCML_A64_M( "movq %xmm0,%xmm2", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xc2 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xd0 ) );
 	// 66 0F D6 MOVQ xmm2/m64, xmm1 B Valid Valid Move quadword from xmm1 to xmm2/mem64.
 	FCML_I32( "movq mmword ptr [eax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
 	FCML_I64( "movq mmword ptr [rax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
 	FCML_I64_M( "movq xmm0,xmm2", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xd0 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xc2 ) );
+	// GAS
+	FCML_A64_M( "movq %xmm0,(%rax)", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0x00 ), FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x00 ) );
+	FCML_A64_M( "movq %xmm2,%xmm0", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xd0 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xc2 ) );
 	// VEX.128.F3.0F 7E /r VMOVQ xmm1,xmm2
 	// VEX.128.F3.0F 7E /r VMOVQ xmm1,m64
 	FCML_I32( "vmovq xmm0,mmword ptr [eax]", 0xc5, 0xfa, 0x7e, 0x00 );
-	FCML_I32_M( "vmovq xmm0,xmm0", 2, FCML_MI( 0xc5, 0xfa, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
+	FCML_I32_M( "vmovq xmm0,xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
+	// GAS
+	FCML_A32( "vmovq (%eax),%xmm0", 0xc5, 0xfa, 0x7e, 0x00 );
 	// VEX.128.66.0F D6 /r VMOVQ xmm1/m64,xmm2
-	FCML_I32( "vmovq mmword ptr [eax],xmm0", 0xc5, 0xfa, 0xd6, 0x00 );
-	FCML_I32_M( "vmovq xmm0,xmm0", 2, FCML_MI( 0xc5, 0xfa, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
+	FCML_I32( "vmovq mmword ptr [eax],xmm0", 0xc5, 0xf9, 0xd6, 0x00 );
+	FCML_I32_M( "vmovq xmm0,xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
+	// GAS
+	FCML_A32( "vmovq %xmm0,(%eax)", 0xc5, 0xf9, 0xd6, 0x00 );
+	FCML_A32_M( "vmovq %xmm0,%xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
+	// VEX.128.66.0F.W1 7E /r VMOVQ r64/m64,xmm1
+	FCML_I64( "vmovq mmword ptr [rcx+rax],xmm2", 0xc5, 0xf9, 0xd6, 0x14, 0x01 );
+	// GAS
+	FCML_A64_M( "vmovq %xmm2,(%rcx,%rax)", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x7e, 0x14, 0x01 ) );
+	// REX.W + 0F 6E /r MOVQ mm, r/m64 A Valid N.E. Move quadword from r/m64 to mm.
+	FCML_I64_M( "movq mm2,qword ptr [rax]", 2, FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ), FCML_MI( 0x0f, 0x6f, 0x10 ) );
+	//GAS
+	FCML_A64_M( "movq (%rax),%mm2", 2,FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ), FCML_MI( 0x0f, 0x6f, 0x10 ) );
+	FCML_A64( "movq %rax,%mm0", 0x48, 0x0f, 0x6e, 0xc0 );
+	// 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.l
+	FCML_I64_A( "movq xmm2,mmword ptr [rax]", 0xf3, 0x0f, 0x7e, 0x10 );
+	// GAS
+	FCML_A64_M( "movq (%rax),%xmm2", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x48, 0x0f, 0x6e, 0x10 ) );
+	// 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
+	FCML_I64_M( "movq qword ptr [rax],xmm2", 2, FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x0f, 0xd6, 0x10 ) );
+	// GAS
+	FCML_A64_M( "movq %xmm2,(%rax)", 2, FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x0f, 0xd6, 0x10 ) );
+	// VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
+	FCML_I64( "vmovq xmm2,mmword ptr [rcx+rax]", 0xc5, 0xfa, 0x7e, 0x14, 0x01 );
+	// GAS
+	FCML_A64_M( "vmovq (%rcx,%rax),%xmm2", 2, FCML_MI( 0xc5, 0xfa, 0x7e, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x6e, 0x14, 0x01 ) );
 }
 
 void fcml_tf_instruction_MOVD(void) {
@@ -500,37 +537,36 @@ void fcml_tf_instruction_MOVD(void) {
     FCML_I64( "movd mm2,dword ptr [rax]", 0x0F, 0x6E, 0x10 );
     // GAS
     FCML_A64( "movd (%rax),%mm2", 0x0f, 0x6e, 0x10 );
-    FCML_A64( "movd (%rax),%mm2", 0x0f, 0x6e, 0x10 );
-    // REX.W + 0F 6E /r MOVQ mm, r/m64 A Valid N.E. Move quadword from r/m64 to mm.
-    //FCML_I64_A( "movq mm2,mmword ptr [rax]", 0x0f, 0x6e, 0x10 );
-    //GAS
-    //FCML_A64( "movq (%rax),%mm2", 0x0f, 0x6f, 0x10 );
-    // FCML_I64_M( "movq mm2,mmword ptr [rax]", 2, FCML_MI( 0x0f, 0x6f, 0x10 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ) );
+    FCML_A64( "movd %eax,%mm0", 0x0f, 0x6e, 0xc0 );
     // 0F 7E /r MOVD r/m32, mm B Valid Valid Move doubleword from mm to r/m32.
     FCML_I32( "movd dword ptr [eax],mm2", 0x0F, 0x7E, 0x10 );
     FCML_I64( "movd dword ptr [rax],mm2", 0x0F, 0x7E, 0x10 );
-    // REX.W + 0F 7E /r MOVQ r/m64, mm B Valid N.E. Move quadword from mm to r/m64.
-    //FCML_I64_M( "movq qword ptr [rax],mm2", 2, FCML_MI( 0x0f, 0x7f, 0x10 ), FCML_MI( 0x48, 0x0f, 0x7e, 0x10 ) );
-    FCML_I64_A( "movq mmword ptr [rax],mm2", 0x0f, 0x7f, 0x10 );
+    // GAS
+    FCML_A64( "movd %mm2,(%rax)", 0x0f, 0x7e, 0x10 );
+    FCML_A64( "movd %mm0,%eax", 0x0f, 0x7e, 0xc0 );
     // 66 0F 6E /r MOVD xmm, r/m32 A Valid Valid Move doubleword from r/m32 to xmm.
     FCML_I32( "movd xmm2,dword ptr [eax]", 0x66, 0x0F, 0x6E, 0x10 );
     FCML_I64( "movd xmm2,dword ptr [rax]", 0x66, 0x0F, 0x6E, 0x10 );
-    // 66 REX.W 0F 6E /r MOVQ xmm, r/m64 A Valid N.E. Move quadword from r/m64 to xmm.l
-    //FCML_I64_M( "movq xmm2,qword ptr [rax]", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x48, 0x0f, 0x6e, 0x10 ) );
-    FCML_I64_A( "movq xmm2,mmword ptr [rax]", 0xf3, 0x0f, 0x7e, 0x10 );
+    // GAS
+    FCML_A64( "movd (%rax),%xmm2", 0x66, 0x0f, 0x6e, 0x10 );
+    FCML_A64( "movd %eax,%xmm0", 0x66, 0x0f, 0x6e, 0xc0 );
     // 66 0F 7E /r MOVD r/m32, xmm B Valid Valid Move doubleword from xmm register to r/m32.
     FCML_I32( "movd dword ptr [eax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
     FCML_I64( "movd dword ptr [rax],xmm2", 0x66, 0x0F, 0x7E, 0x10 );
-    // 66 REX.W 0F 7E /r MOVQ r/m64, xmm B Valid N.E. Move quadword from xmm register to r/m64.
-    FCML_I64_M( "movq qword ptr [rax],xmm2", 2, FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x0f, 0xd6, 0x10 ) );
+    // GAS
+    FCML_A64( "movd %xmm2,(%rax)", 0x66, 0x0f, 0x7e, 0x10 );
+    FCML_A64( "movd %xmm0,%eax", 0x66, 0x0f, 0x7e, 0xc0 );
     // VEX.128.66.0F.W0 6E /r VMOVD xmm1,r32/m32
     FCML_I32( "vmovd xmm2,dword ptr [ecx+eax]", 0xc5, 0xf9, 0x6e, 0x14, 0x01 );
-    // VEX.128.66.0F.W1 6E /r VMOVQ xmm1,r64/m64
-    FCML_I64( "vmovq xmm2,mmword ptr [rcx+rax]", 0xc5, 0xfa, 0x7e, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "vmovd (%rcx,%rax),%xmm2", 0xc5, 0xf9, 0x6e, 0x14, 0x01 );
+    FCML_A64( "vmovd (%rcx,%rax,8),%xmm2", 0xc5, 0xf9, 0x6e, 0x14, 0xc1 );
+    FCML_A64( "vmovd %ecx,%xmm0", 0xc5, 0xf9, 0x6e, 0xc1 );
     // VEX.128.66.0F.W0 7E /r VMOVD r32/m32,xmm1
     FCML_I32( "vmovd dword ptr [ecx+eax],xmm2", 0xc5, 0xf9, 0x7e, 0x14, 0x01 );
-    // VEX.128.66.0F.W1 7E /r VMOVQ r64/m64,xmm1
-    FCML_I64( "vmovq mmword ptr [rcx+rax],xmm2", 0xc5, 0xfa, 0xd6, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "vmovd %xmm2,(%rcx,%rax)", 0xc5, 0xf9, 0x7e, 0x14, 0x01 );
+    FCML_A64( "vmovd %xmm0,%ecx", 0xc5, 0xf9, 0x7e, 0xc1 );
 }
 
 void fcml_tf_instruction_MOVDDUP(void) {
