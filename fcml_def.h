@@ -478,6 +478,19 @@ enum fcml_en_instruction_codes {
 	F_VMOVUPD,
 	F_MOVUPS,
 	F_VMOVUPS,
+	F_MOVZX,
+	F_MPSADBW,
+	F_VMPSADBW,
+	F_MUL,
+	F_MULPD,
+	F_VMULPD,
+	F_MULPS,
+	F_VMULPS,
+	F_MULSD,
+	F_VMULSD,
+	F_MULSS,
+	F_VMULSS,
+	F_MWAIT,
 };
 
 /*******************/

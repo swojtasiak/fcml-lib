@@ -488,6 +488,21 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("vmovupd"), FCML_ASM_DIALECT_INSTRUCTION( F_VMOVUPD, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("movups"), FCML_ASM_DIALECT_INSTRUCTION( F_MOVUPS, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("vmovups"), FCML_ASM_DIALECT_INSTRUCTION( F_VMOVUPS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("movzbw[sf,ow,d01,mm];movzbl[sf,od,d01,mm];movzbq[sf,oq,d01,mm];movzbw[sf,ow,mr];movzbl[sf,od,mr];movzbq[sf,oq,mr]"), FCML_ASM_DIALECT_INSTRUCTION( F_MOVZX, FCML_AM_RO_RM8 ), 0 },
+	{ FCML_TEXT("movzww[sf,ow,d02,mm];movzwl[sf,od,d02,mm];movzwq[sf,oq,d02,mm];movzww[sf,ow,mr];movzwl[sf,od,mr];movzwq[sf,oq,mr]"), FCML_ASM_DIALECT_INSTRUCTION( F_MOVZX, FCML_AM_RO_RM16 ), 0 },
+	{ FCML_TEXT("mpsadbw"), FCML_ASM_DIALECT_INSTRUCTION( F_MPSADBW, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vmpsadbw"), FCML_ASM_DIALECT_INSTRUCTION( F_VMPSADBW, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("mulb[sb];mul"), FCML_ASM_DIALECT_INSTRUCTION( F_MUL, FCML_RM8 ), 0 },
+	{ FCML_TEXT("mulw[sf,ow];mull[sf,od];mulq[sf,oq];mul"), FCML_ASM_DIALECT_INSTRUCTION( F_MUL, FCML_RMO ), 0 },
+	{ FCML_TEXT("mulpd"), FCML_ASM_DIALECT_INSTRUCTION( F_MULPD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vmulpd"), FCML_ASM_DIALECT_INSTRUCTION( F_VMULPD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("mulps"), FCML_ASM_DIALECT_INSTRUCTION( F_MULPS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vmulps"), FCML_ASM_DIALECT_INSTRUCTION( F_VMULPS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("mulsd"), FCML_ASM_DIALECT_INSTRUCTION( F_MULSD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vmulsd"), FCML_ASM_DIALECT_INSTRUCTION( F_VMULSD, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("mulss"), FCML_ASM_DIALECT_INSTRUCTION( F_MULSS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("vmulss"), FCML_ASM_DIALECT_INSTRUCTION( F_VMULSS, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("mwait"), FCML_ASM_DIALECT_INSTRUCTION( F_MWAIT, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 
