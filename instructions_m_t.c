@@ -1097,12 +1097,22 @@ void fcml_tf_instruction_MOVZX(void) {
     FCML_I64( "movzx dx,byte ptr [rax]", 0x66, 0x0F, 0xB6, 0x10 );
     FCML_I64( "movzx edx,byte ptr [rax]", 0x0F, 0xB6, 0x10 );
     FCML_I64( "movzx rdx,byte ptr [rax]", 0x48, 0x0F, 0xB6, 0x10 );
+    // GAS
+    FCML_A64( "movzbw (%rax),%dx", 0x66, 0x0f, 0xb6, 0x10 );
+    FCML_A64( "movzbl (%rax),%edx", 0x0f, 0xb6, 0x10 );
+    FCML_A64( "movzbl %al,%eax", 0x0f, 0xb6, 0xc0 );
+    FCML_A64( "movzbq (%rax),%rdx", 0x48, 0x0f, 0xb6, 0x10 );
     // 0F B7 /r MOVZX r32,r/m16
     // REX.W + 0F B7 /r MOVZX r64,r/m16
     FCML_I32( "movzx edx,word ptr [eax]", 0x66, 0x0F, 0xB7, 0x10 );
     FCML_I32( "movzx edx,word ptr [eax]", 0x0F, 0xB7, 0x10 );
     FCML_I64( "movzx edx,word ptr [rax]", 0x66, 0x0F, 0xB7, 0x10 );
     FCML_I64( "movzx rdx,word ptr [rax]", 0x48, 0x0F, 0xB7, 0x10 );
+    // GAS
+    FCML_A64( "movzww (%rax),%edx", 0x66, 0x0f, 0xb7, 0x10 );
+    FCML_A64( "movzwl (%rax),%edx", 0x0f, 0xb7, 0x10 );
+    FCML_A64( "movzwl %ax,%eax", 0x0f, 0xb7, 0xc0 );
+    FCML_A64( "movzwq (%rax),%rdx", 0x48, 0x0f, 0xb7, 0x10 );
 }
 
 void fcml_tf_instruction_MPSADBW(void) {
@@ -1117,6 +1127,11 @@ void fcml_tf_instruction_MPSADBW(void) {
     // VEX.NDS.256.66.0F3A.WIG 42 /r ib VMPSADBW ymm1,ymm2,ymm3/m256,imm8
     FCML_I32( "vmpsadbw ymm2,ymm6,ymmword ptr [ecx+eax],20h", 0xC4, 0xE3, 0x4D, 0x42, 0x14, 0x01, 0x20 );
     FCML_I64( "vmpsadbw ymm2,ymm6,ymmword ptr [rcx+rax],20h", 0xC4, 0xE3, 0x4D, 0x42, 0x14, 0x01, 0x20 );
+    // GAS
+    FCML_A64( "mpsadbw $0x20,(%rax),%xmm2", 0x66, 0x0f, 0x3a, 0x42, 0x10, 0x20 );
+    FCML_A64( "mpsadbw $0x20,%xmm6,%xmm2", 0x66, 0x0f, 0x3a, 0x42, 0xd6, 0x20 );
+    FCML_A64( "vmpsadbw $0x20,(%rcx,%rax),%xmm6,%xmm2", 0xc4, 0xe3, 0x49, 0x42, 0x14, 0x01, 0x20 );
+    FCML_A64( "vmpsadbw $0x20,(%rcx,%rax),%ymm6,%ymm2", 0xc4, 0xe3, 0x4d, 0x42, 0x14, 0x01, 0x20 );
 }
 
 void fcml_tf_instruction_MUL(void) {
@@ -1135,6 +1150,13 @@ void fcml_tf_instruction_MUL(void) {
     FCML_I64_D( "mul word ptr [rax]", 0x66, 0xF7, 0x20 );
     FCML_I64( "mul dword ptr [rax]", 0xF7, 0x20 );
     FCML_I64_D( "mul qword ptr [rax]", 0x48, 0xF7, 0x20 );
+    // GAS
+    FCML_A64( "mulb (%rax)", 0xf6, 0x20 );
+    FCML_A64_A( "mul %dl", 0xf6, 0xe2 );
+    FCML_A64( "mulw (%rax)", 0x66, 0xf7, 0x20 );
+    FCML_A64( "mull (%rax)", 0xf7, 0x20 );
+    FCML_A64( "mulq (%rax)", 0x48, 0xf7, 0x20 );
+    FCML_A64_A( "mul %edx", 0xf7, 0xe2 );
 }
 
 void fcml_tf_instruction_MULPD(void) {
@@ -1147,6 +1169,10 @@ void fcml_tf_instruction_MULPD(void) {
     FCML_I64( "vmulpd xmm3,xmm0,xmm0", 0xc5, 0xf9, 0x59, 0xd8 );
     FCML_I32( "vmulpd ymm3,ymm0,ymm0", 0xc5, 0xfd, 0x59, 0xd8 );
     FCML_I32( "vmulpd ymm3,ymm3,ymmword ptr [eax]", 0xc5, 0xe5, 0x59, 0x18 );
+    // GAS
+    FCML_A64( "mulpd (%rax),%xmm2", 0x66, 0x0f, 0x59, 0x10 );
+    FCML_A64( "vmulpd %xmm0,%xmm0,%xmm3", 0xc5, 0xf9, 0x59, 0xd8 );
+    FCML_A64( "vmulpd (%rax),%ymm3,%ymm3", 0xc5, 0xe5, 0x59, 0x18 );
 }
 
 void fcml_tf_instruction_MULPS(void) {
@@ -1159,6 +1185,10 @@ void fcml_tf_instruction_MULPS(void) {
     FCML_I64( "vmulps xmm3,xmm0,xmm0", 0xc5, 0xf8, 0x59, 0xd8 );
     FCML_I32( "vmulps ymm3,ymm0,ymm0", 0xc5, 0xfc, 0x59, 0xd8 );
     FCML_I32( "vmulps ymm3,ymm3,ymmword ptr [eax]", 0xc5, 0xe4, 0x59, 0x18 );
+    // GAS
+    FCML_A64( "mulps (%rax),%xmm2", 0x0f, 0x59, 0x10 );
+    FCML_A64( "mulps %xmm0,%xmm3", 0x0f, 0x59, 0xd8 );
+    FCML_A64( "vmulps (%rax),%ymm3,%ymm3", 0xc5, 0xe4, 0x59, 0x18 );
 }
 
 void fcml_tf_instruction_MULSD(void) {
@@ -1169,6 +1199,10 @@ void fcml_tf_instruction_MULSD(void) {
     // VEX.NDS.128.F2.0F 59 /r VMULSD xmm1,xmm2,xmm3/m64
     FCML_I3264( "vmulsd xmm3,xmm3,xmm0", 0xc5, 0xe3, 0x59, 0xd8 );
     FCML_I32( "vmulsd xmm3,xmm0,mmword ptr [eax]", 0xc5, 0xfb, 0x59, 0x18 );
+    // GAS
+    FCML_A64( "mulsd (%rax),%xmm2", 0xf2, 0x0f, 0x59, 0x10 );
+    FCML_A64( "mulsd %xmm0,%xmm3", 0xf2, 0x0f, 0x59, 0xd8 );
+    FCML_A64( "vmulsd (%rax),%xmm0,%xmm3", 0xc5, 0xfb, 0x59, 0x18 );
 }
 
 void fcml_tf_instruction_MULSS(void) {
@@ -1179,11 +1213,17 @@ void fcml_tf_instruction_MULSS(void) {
     // VEX.NDS.128.F3.0F 59 /r VMULSS xmm1,xmm2,xmm3/m32
     FCML_I3264( "vmulss xmm3,xmm7,xmm0", 0xc5, 0xc2, 0x59, 0xd8 );
     FCML_I32( "vmulss xmm3,xmm0,dword ptr [eax]", 0xc5, 0xfa, 0x59, 0x18 );
+    // GAS
+    FCML_A64( "mulss %xmm0,%xmm3", 0xf3, 0x0f, 0x59, 0xd8 );
+    FCML_A64( "mulss (%rax),%xmm2", 0xf3, 0x0f, 0x59, 0x10 );
+    FCML_A64( "vmulss (%rax),%xmm0,%xmm3", 0xc5, 0xfa, 0x59, 0x18 );
 }
 
 void fcml_tf_instruction_MWAIT(void) {
     // 0F 01 C9
     FCML_I3264( "mwait", 0x0F, 0x01, 0xC9 );
+    // GAS
+    FCML_A64( "mwait", 0x0f, 0x01, 0xc9 );
 }
 
 CU_TestInfo fctl_ti_instructions_m[] = {
