@@ -21,3 +21,5 @@ syntax: regexp
 ^\.project_old$
 syntax: regexp
 ^fcml_x64att_parser\.output$
+syntax: regexp
+^fcml_x64intel_parser\.output$
