@@ -87,6 +87,19 @@ void fcml_tf_instruction_OR(void) {
     FCML_I32( "or sp,word ptr [di+0201h]", 0x66, 0x67, 0x0b, 0xa5, 0x01, 0x02 );
     FCML_I32( "or esp,dword ptr [di+0201h]", 0x67, 0x0b, 0xa5, 0x01, 0x02 );
     FCML_I64( "or r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x0b, 0x64, 0x89, 0x01 );
+
+    // GAS
+    FCML_A32_M( "or $0x42806521,%eax", 2, FCML_MI( 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
+	FCML_A64_M( "or $0x0000000042806521,%rax", 2, FCML_MI( 0x48, 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 ) )
+	FCML_A64_M( "or $0x6521,%ax", 2, FCML_MI( 0x66, 0x81, 0xc8, 0x21, 0x65 ), FCML_MI( 0x66, 0x0d, 0x21, 0x65 ) );
+	FCML_A32( "lock orb $0xff,0x04030201", 0xF0, 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
+	FCML_A32( "xacquire lock orb $0xff,0x04030201", 0xF2, 0xF0, 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
+	FCML_A64_M( "or $0x42,%al", 2, FCML_MI( 0x80, 0xc8, 0x42 ), FCML_MI( 0x0c, 0x42 ) );
+	FCML_A64( "lock orb $0xff,0x04030201(%rip)", 0xf0, 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
+	FCML_A64_M( "lock orl $0x00000001,(%rsi)", 2, FCML_MI( 0xf0, 0x83, 0x0e, 0x01 ), FCML_MI( 0xf0, 0x81, 0x0e, 0x01, 0x00, 0x00, 0x00 ) );
+	FCML_A64_M( "lock orw $0x0001,(%rsi)", 2, FCML_MI( 0xf0, 0x66, 0x83, 0x0e, 0x01 ), FCML_MI( 0xf0, 0x66, 0x81, 0x0e, 0x01, 0x00 ) );
+	FCML_A64( "or 0x0000000000000001(%r9,%rcx,4),%r12", 0x4d, 0x0b, 0x64, 0x89, 0x01 );
+	FCML_A64_M( "orq $0xffffffffffffffff,0x0000000004030201(%rdi)", 2, FCML_MI( 0x48, 0x83, 0x8f, 0x01, 0x02, 0x03, 0x04, 0xff ), FCML_MI( 0x48, 0x81, 0x8f, 0x01, 0x02, 0x03, 0x04, 0xff, 0xff, 0xff, 0xff ) );
 }
 
 void fcml_tf_instruction_ORPD(void) {
@@ -99,6 +112,11 @@ void fcml_tf_instruction_ORPD(void) {
     FCML_I64( "vorpd xmm3,xmm1,xmm0", 0xc5, 0xf1, 0x56, 0xd8 );
     FCML_I32( "vorpd ymm3,ymm0,ymm0", 0xc5, 0xfd, 0x56, 0xd8 );
     FCML_I32( "vorpd ymm3,ymm3,ymmword ptr [eax]", 0xc5, 0xe5, 0x56, 0x18 );
+    // GAS
+    FCML_A64( "orpd (%rax),%xmm2", 0x66, 0x0f, 0x56, 0x10 );
+    FCML_A64( "orpd %xmm0,%xmm3", 0x66, 0x0f, 0x56, 0xd8 );
+    FCML_A64( "vorpd %xmm0,%xmm1,%xmm3", 0xc5, 0xf1, 0x56, 0xd8 );
+    FCML_A64( "vorpd (%rax),%ymm3,%ymm3", 0xc5, 0xe5, 0x56, 0x18 );
 }
 
 void fcml_tf_instruction_ORPS(void) {
@@ -111,6 +129,11 @@ void fcml_tf_instruction_ORPS(void) {
     FCML_I64( "vorps xmm3,xmm1,xmm0", 0xc5, 0xf0, 0x56, 0xd8 );
     FCML_I32( "vorps ymm3,ymm0,ymm0", 0xc5, 0xfc, 0x56, 0xd8 );
     FCML_I32( "vorps ymm3,ymm3,ymmword ptr [eax]", 0xc5, 0xe4, 0x56, 0x18 );
+    // GAS
+    FCML_A64( "orps (%rax),%xmm2", 0x0f, 0x56, 0x10 );
+    FCML_A64( "orps %xmm0,%xmm3", 0x0f, 0x56, 0xd8 );
+    FCML_A64( "vorps %ymm0,%ymm0,%ymm3", 0xc5, 0xfc, 0x56, 0xd8 );
+    FCML_A64( "vorps (%rax),%ymm3,%ymm3", 0xc5, 0xe4, 0x56, 0x18 );
 }
 
 void fcml_tf_instruction_OUT(void) {
@@ -131,32 +154,44 @@ void fcml_tf_instruction_OUT(void) {
     FCML_I32( "out dx,ax", 0x66, 0xEF );
     FCML_I64_D( "out dx,eax", 0x48, 0xEF );
     FCML_I64( "out dx,eax", 0xEF );
+    // GAS
+    // TODO: Gas troche inaczej disassembluje z nawiasami, mozna pomyslec czy nie zrpbowac dodac opcji takiej.
+    FCML_A64( "out %al,$0x20", 0xe6, 0x20 );
+    FCML_A64( "out %eax,$0x20", 0xe7, 0x20 );
+    FCML_A64( "out %al,%dx", 0xee );
+    FCML_A64( "out %ax,%dx", 0x66, 0xef );
 }
 
 void fcml_tf_instruction_OUTS(void) {
 
 	// Rep rendering.
-	FCML_I32_D_RF( "repe outs dx,byte ptr [edi]", FCML_REND_FLAG_REP_PREFIX_GROUP_1, 0xF3, 0x6e );
-	FCML_I32_D_RF( "repz outs dx,byte ptr [edi]", FCML_REND_FLAG_REP_PREFIX_GROUP_2, 0xF3, 0x6e );
+	FCML_I32_D_RF( "repe outs dx,byte ptr [esi]", FCML_REND_FLAG_REP_PREFIX_GROUP_1, 0xF3, 0x6e );
+	FCML_I32_D_RF( "repz outs dx,byte ptr [esi]", FCML_REND_FLAG_REP_PREFIX_GROUP_2, 0xF3, 0x6e );
 
     // 6E OUTS DX, m8 NP Valid Valid Output byte from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-    FCML_I32( "outs dx,byte ptr [edi]", 0x6e );
-    FCML_I32( "rep outs dx,byte ptr [edi]", 0xF3, 0x6e );
-    FCML_I32_A( "repz outs dx,byte ptr [edi]", 0xF3, 0x6e );
-    FCML_I32_A( "repe outs dx,byte ptr [edi]", 0xF3, 0x6e );
-    FCML_I64( "outs dx,byte ptr [rdi]", 0x6e );
-    FCML_I64_D( "outs dx,byte ptr [edi]", 0x67, 0x6e );
+    FCML_I32( "outs dx,byte ptr [esi]", 0x6e );
+    FCML_I32( "rep outs dx,byte ptr [esi]", 0xF3, 0x6e );
+    FCML_I32_A( "repz outs dx,byte ptr [esi]", 0xF3, 0x6e );
+    FCML_I32_A( "repe outs dx,byte ptr [esi]", 0xF3, 0x6e );
+    FCML_I64( "outs dx,byte ptr [rsi]", 0x6e );
+    FCML_I64_D( "outs dx,byte ptr [esi]", 0x67, 0x6e );
     FCML_I64_A( "outsb", 0x6e );
     // 6F OUTS DX, m16 NP Valid Valid Output word from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
     // 6F OUTS DX, m32 NP Valid Valid Output doubleword from memory location specified in DS:(E)SI or RSI to I/O port specified in DX.
-    FCML_I32( "outs dx,dword ptr [edi]", 0x6f );
-    FCML_I64( "outs dx,dword ptr [rdi]", 0x6f );
-    FCML_I64( "outs dx,dword ptr [edi]", 0x67, 0x6f );
-    FCML_I64( "outs dx,word ptr [edi]", 0x66, 0x67, 0x6f );
+    FCML_I32( "outs dx,dword ptr [esi]", 0x6f );
+    FCML_I64( "outs dx,dword ptr [rsi]", 0x6f );
+    FCML_I64( "outs dx,dword ptr [esi]", 0x67, 0x6f );
+    FCML_I64( "outs dx,word ptr [esi]", 0x66, 0x67, 0x6f );
     FCML_I64_A( "outsw", 0x66, 0x6f );
-    FCML_I64_D( "outs dx,dword ptr [rdi]", 0x48, 0x6f );
-    FCML_I64( "outs dx,dword ptr [rdi]", 0x6f );
+    FCML_I64_D( "outs dx,dword ptr [rsi]", 0x48, 0x6f );
+    FCML_I64( "outs dx,dword ptr [rsi]", 0x6f );
     FCML_I64_A( "outsd", 0x6f );
+    // GAS
+    FCML_A64( "outsb (%rsi),%dx", 0x6e );
+    FCML_A64( "outsb (%esi),%dx", 0x67, 0x6e );
+    FCML_A64( "outsl (%rsi),%dx", 0x6f );
+    FCML_A64( "outsl (%esi),%dx", 0x67, 0x6f );
+    FCML_A64( "outsw (%esi),%dx", 0x66, 0x67, 0x6f );
 }
 
 CU_TestInfo fctl_ti_instructions_o[] = {
