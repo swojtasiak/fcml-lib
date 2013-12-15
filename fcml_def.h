@@ -491,6 +491,16 @@ enum fcml_en_instruction_codes {
 	F_MULSS,
 	F_VMULSS,
 	F_MWAIT,
+	F_NEG,
+	F_NOP,
+	F_NOT,
+	F_OR,
+	F_ORPD,
+	F_VORPD,
+	F_ORPS,
+	F_VORPS,
+	F_OUT,
+	F_OUTS,
 };
 
 /*******************/

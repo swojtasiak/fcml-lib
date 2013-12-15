@@ -30,3 +30,5 @@ operatora FAR_POINTER.
 
 Zastanowic sie czy dla intela faktycznie nie chcemy domyslnie drukowac hinta indirect, dzieki temu pozbedziemy sie niejednoznacznosci
 w przypadku jmp dword [eax] ktory moze zostac zassemblowany jako far jmp oraz near indirect jmp.
+
+Dodac do mnemonic mm wszedzie gdzie ma to sens.
