@@ -3660,7 +3660,6 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_PMULHRSW[] = {
 	{ "vpmulhrsw", FCML_AMT_AVX_SIMD, 0x10C0, 0x00EC8000, { 0x0F, 0x38, 0x0B }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_XMM_128, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// VEX.NDS.256.66.0F38.WIG 0B /r VPMULHRSW ymm1,ymm2,ymm3/m256
 	{ "vpmulhrsw", FCML_AMT_AVX2_SIMD, 0x10A0, 0x00EC8000, { 0x0F, 0x38, 0x0B }, { FCML_OP_MODRM_R_YMM_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_YMM_256, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
-
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_PMULHUW[] = {
