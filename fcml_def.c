@@ -4719,15 +4719,11 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_SBB[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_SCAS[] = {
 	// AE SCAS m8 NP Valid Valid Compare AL with byte at ES:(E)DI or RDI, then set status flags.*
-	{ "scas;scasb[ts]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xAE, 0x00, 0x00 },
-				{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
-				FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ "scas;scasb[ts]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xAE, 0x00, 0x00 }, { FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 	// AF SCAS m16 NP Valid Valid Compare AX with word at ES:(E)DI or RDI, then set status flags.*
 	// AF SCAS m32 NP Valid Valid Compare EAX with doubleword at ES(E)DI or RDI then set status flags.*
 	// REX.W + AF SCAS m64 NP Valid N.E. Compare RAX with quadword at RDI or EDI then set status flags.
-	{ "scas;scasw[ts,ow,a*];scasd[ts,od,a*];scasq[ts,oq,a*]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xAF, 0x00, 0x00 },
-				{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ),
-				FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ "scas;scasw[ts,ow,a*];scasd[ts,od,a*];scasq[ts,oq,a*]", FCML_AMT_GPI, 0x0002, 0x00C40000, { 0xAF, 0x00, 0x00 }, { FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_DI, FCML_EOS_EOSA,FCML_SEG_ENCODE_REGISTER( FCML_REG_ES, FCML_SEG_DENY_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_SETcc[] = {
@@ -5320,9 +5316,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_XLAT[] = {
 	// D7 XLAT m8 NP Valid Valid Set AL to memory byte DS:[(E)BX + unsigned AL].
 	// D7 XLATB NP Valid Valid Set AL to memory byte DS:[(E)BX + unsigned AL].
 	// REX.W + D7 XLATB NP Valid N.E. Set AL to memory byte [RBX + unsigned AL].
-	{ "xlat;xlatb[ts]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xD7, 0x00, 0x00 },
-			{ FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_BX, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ),
-			FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
+	{ "xlat;xlatb[ts]", FCML_AMT_GPI, 0x0000, 0x00C40000, { 0xD7, 0x00, 0x00 }, { FCML_OP_EXPLICIT_GPS_REG_ADDRESSING( FCML_REG_BX, FCML_EOS_BYTE, FCML_SEG_ENCODE_REGISTER( FCML_REG_DS, FCML_SEG_ALLOW_OVERRIDE ) ), FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_XOR[] = {
