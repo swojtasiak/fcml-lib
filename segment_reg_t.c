@@ -46,7 +46,7 @@ void fcml_fn_segment_reg(void) {
 	instruction.operands[1].address.size_operator = FCML_DS_32;
 	instruction.operands[1].address.effective_address.base = fcml_reg_EDI;
 
-	fcml_st_asm_assembler_result *result;
+	fcml_st_asm_assembler_result *result = NULL;
 
 	if( !fcml_fn_asm_assemble( &context, &instruction, &result ) ) {
 		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
@@ -63,6 +63,8 @@ void fcml_fn_segment_reg(void) {
 	fcml_fn_asm_assembler_result_free( result );
 
 	// Now try to override ES.
+
+	result = NULL;
 
 	instruction.operands[1].address.segment_selector.segment_selector = fcml_reg_CS;
 
