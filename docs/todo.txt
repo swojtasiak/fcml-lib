@@ -32,3 +32,6 @@ Zastanowic sie czy dla intela faktycznie nie chcemy domyslnie drukowac hinta ind
 w przypadku jmp dword [eax] ktory moze zostac zassemblowany jako far jmp oraz near indirect jmp.
 
 Dodac do mnemonic mm wszedzie gdzie ma to sens.
+
+Ddoac metody ktore beda pozwalamy konwertowac format ogolny zapisu instruckcji, kolejnosc operandow itd z intela traktowanego jako domyslny na odpowiadajacy dialektowi
+uzywajac takiej metody uzytkownik mogl by zmieniac renderer/dialect a kod analizy zostawiac taki sam. Trudno powiedziec czy to sie uda (mnemoniki sa inne)
