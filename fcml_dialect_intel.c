@@ -491,6 +491,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
 	{ FCML_TEXT("paddq"), FCML_ASM_DIALECT_INSTRUCTION( F_PADDQ, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("vpaddq"), FCML_ASM_DIALECT_INSTRUCTION( F_VPADDQ, FCML_AM_ALL ), 0 },
 	{ FCML_TEXT("pop"), FCML_ASM_DIALECT_INSTRUCTION( F_POP, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("push"), FCML_ASM_DIALECT_INSTRUCTION( F_PUSH, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 

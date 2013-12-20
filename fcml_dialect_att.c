@@ -554,6 +554,11 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 	{ FCML_TEXT("pop;popw[sf,ow,mm];popl[sf,od,mm];popq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_POP, FCML_RMO ), 0 },
 	{ FCML_TEXT("popw[ow];popl[od];popq[oq];pop"), FCML_ASM_DIALECT_INSTRUCTION( F_POP, FCML_SR_FSGSO ), 0 },
 	{ FCML_TEXT("pop"), FCML_ASM_DIALECT_INSTRUCTION( F_POP, FCML_AM_ALL ), 0 },
+	{ FCML_TEXT("push;pushw[sf,ow,mm];pushl[sf,od,mm];pushq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_PUSH, FCML_RMO ), 0 },
+	{ FCML_TEXT("pushb"), FCML_ASM_DIALECT_INSTRUCTION( F_PUSH, FCML_AM_IMM8 ), 0 },
+	{ FCML_TEXT("pushw[ow];pushl[od];pushq[oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_PUSH, FCML_AM_IMMO ), 0 },
+	{ FCML_TEXT("pushw[ow];pushl[od];pushq[oq];push"), FCML_ASM_DIALECT_INSTRUCTION( F_PUSH, FCML_SR_FSGSO ), 0 },
+	{ FCML_TEXT("push"), FCML_ASM_DIALECT_INSTRUCTION( F_PUSH, FCML_AM_ALL ), 0 },
 	{ NULL, 0, 0 }
 };
 

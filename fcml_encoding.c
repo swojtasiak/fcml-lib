@@ -2706,7 +2706,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 					return FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 				}
 				rex = FCML_ENCODE_REX_W( rex, 1 );
-			} else if( eosa == FCML_DS_64 && !FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA( addr_mode_def->opcode_flags ) ) {
+			} else if( eosa == FCML_DS_64 && !FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA( addr_mode_def->opcode_flags ) && !FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT( addr_mode_def->opcode_flags ) ) {
 			    // When OSA is forced to 64 bits, W flag is needless.
 				rex = FCML_ENCODE_REX_W( rex, 1 );
 			}
@@ -2877,9 +2877,15 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_addr_mode_acceptor( fcml_
 		context->optimizer_processing_details.allowed_effective_address_size.is_set = FCML_TRUE;
 	}
 	// Force 64 bit OSA in 64 bit addressing mode.
-	if( addr_form == FCML_AF_64_BIT && FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA( addr_mode_def->opcode_flags ) ) {
-	    context->optimizer_processing_details.allowed_effective_operand_size.flags = FCML_EN_ASF_64;
-        context->optimizer_processing_details.allowed_effective_operand_size.is_set = FCML_TRUE;
+	if( addr_form == FCML_AF_64_BIT ) {
+		if( FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA( addr_mode_def->opcode_flags ) ) {
+			context->optimizer_processing_details.allowed_effective_operand_size.flags = FCML_EN_ASF_64;
+			context->optimizer_processing_details.allowed_effective_operand_size.is_set = FCML_TRUE;
+		} else if( FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT( addr_mode_def->opcode_flags ) ) {
+			// Remember, if 64 bit EOSA is used by default it can be overriden to 16 bits only.
+			context->optimizer_processing_details.allowed_effective_operand_size.flags = ( FCML_EN_ASF_64 | FCML_EN_ASF_16 );
+			context->optimizer_processing_details.allowed_effective_operand_size.is_set = FCML_TRUE;
+		}
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }

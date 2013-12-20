@@ -976,6 +976,12 @@ fcml_data_size fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_con
 				prefix = fcml_ifn_dasm_get_prefix_if_available( context, 0x66 );
 				if( prefix != NULL && !prefix->mandatory_prefix ) {
 					osa = ( osa == FCML_DS_16 ) ? FCML_DS_32 : FCML_DS_16;
+				} else {
+					// By default EOSA 32 bits is a default value in 64 bit mode,
+					// but some instruction do not use this rule.
+					if( FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT( opcode_flags ) && ( osa == FCML_DS_32 ) ) {
+						osa = FCML_DS_64;
+					}
 				}
 			}
 		}

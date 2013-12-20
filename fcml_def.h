@@ -532,6 +532,7 @@ enum fcml_en_instruction_codes {
 	F_VPADDUSB,
 	F_VPADDQ,
 	F_POP,
+	F_PUSH,
 };
 
 /*******************/
@@ -760,6 +761,7 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_W(x)				( x & 0x00000002 )
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_S(x)				( x & 0x00000004 )
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(x)			( x & 0x00000040 )
+#define FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT(x)		( x & 0x00000080 )
 #define FCML_DEF_OPCODE_FLAGS_POS(x)						( ( x & 0x00000700 ) >> 8 )
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(x)					( ( x & 0x00007800 ) >> 11 )
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(x) 			FCML_TP_GET_BIT(x,15)
