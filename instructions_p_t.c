@@ -1731,7 +1731,7 @@ void fcml_tf_instruction_POP(void) {
     // 0F A1 POP FS NP N.E. Valid Pop top of stack into FS; increment stack pointer by 32 bits.
     // 0F A1 POP FS NP Valid N.E. Pop top of stack into FS; increment stack pointer by 64 bits.
     FCML_I32( "pop fs", 0x0F, 0xA1 );
-    FCML_I64_M( "pop fs", 2, FCML_MI( 0x0f, 0xa1 ), FCML_MI( 0x66, 0x0f, 0xa1 ) );
+    FCML_I64( "pop fs", 0x0f, 0xa1 );
     // GAS
     FCML_A32( "popw %fs", 0x66, 0x0f, 0xa1 );
     FCML_A32( "popl %fs", 0x0f, 0xa1 );
@@ -1745,8 +1745,12 @@ void fcml_tf_instruction_POP(void) {
     FCML_I32( "pop gs", 0x0F, 0xA9 );
     FCML_I64( "pop gs", 0x0F, 0xA9 );
     // GAS
-    FCML_A64( "pop %gs", 0x0f, 0xa9 );
-    FCML_A64( "pop %gs", 0x0f, 0xa9 );
+    FCML_A32( "popw %gs", 0x66, 0x0f, 0xa9 );
+	FCML_A32( "popl %gs", 0x0f, 0xa9 );
+	FCML_A32_A( "pop %gs", 0x0f, 0xa9 );
+	FCML_A64( "popw %gs", 0x66, 0x0f, 0xa9 );
+	FCML_A64( "popq %gs", 0x0f, 0xa9 );
+	FCML_A64_A( "pop %gs", 0x0f, 0xa9 );
 }
 
 void fcml_tf_instruction_POPA(void) {
@@ -2335,6 +2339,8 @@ void fcml_tf_instruction_PUSH(void) {
     FCML_I32_D( "push ecx", 0x67, 0xFF, 0xF1 );
     FCML_I32( "push word ptr [bx+si]", 0x66, 0x67, 0xFF, 0x30 );
     FCML_I32_D( "push cx", 0x66, 0x67, 0xFF, 0xF1 );
+    // GAS
+    FCML_A32( "pushl (%eax)", 0xFF, 0x30 );
     // 64 BIT.
     FCML_I64( "push qword ptr [rax]", 0xFF, 0x30 );
     FCML_I64_M( "push rcx", 2, FCML_MI( 0x51 ), FCML_MI( 0xff, 0xf1 ) );
@@ -2346,6 +2352,17 @@ void fcml_tf_instruction_PUSH(void) {
     FCML_I64_D( "push cx", 0x66, 0x67, 0xFF, 0xF1 );
     FCML_I64_D( "push qword ptr [rax]", 0x48, 0xFF, 0x30 );
     FCML_I64_D( "push rcx", 0x48, 0xFF, 0xF1 );
+    // GAS
+    FCML_A64( "pushq (%rax)", 0xFF, 0x30 );
+    FCML_A64_M( "push %rcx", 2, FCML_MI( 0x51 ), FCML_MI( 0xff, 0xf1 ) );
+    FCML_A64( "pushw (%rax)", 0x66, 0xFF, 0x30 );
+    FCML_A64_M( "push %cx", 2, FCML_MI( 0x66, 0x51 ), FCML_MI( 0x66, 0xff, 0xf1 ) );
+    FCML_A64( "pushq (%eax)", 0x67, 0xFF, 0x30 );
+    FCML_A64_D( "push %rcx", 0x67, 0xFF, 0xF1 );
+    FCML_A64( "pushw (%eax)", 0x66, 0x67, 0xFF, 0x30 );
+    FCML_A64_D( "push %cx", 0x66, 0x67, 0xFF, 0xF1 );
+    FCML_A64_D( "pushq (%rax)", 0x48, 0xFF, 0x30 );
+    FCML_A64_D( "push %rcx", 0x48, 0xFF, 0xF1 );
     // 50+rw PUSH r16 O Valid Valid Push r16.
     // 50+rd PUSH r32 O N.E. Valid Push r32.
     // 50+rd PUSH r64 O Valid N.E. Push r64.
@@ -2356,6 +2373,11 @@ void fcml_tf_instruction_PUSH(void) {
     FCML_I64_M( "push ax", 2, FCML_MI( 0x66, 0x50 ), FCML_MI( 0x66, 0xff, 0xf0 ) );
     FCML_I64_D( "push rax", 0x67, 0x50 );
     FCML_I64_D( "push rax", 0x48, 0x50 );
+    // GAS
+    FCML_A64_M( "push %rax", 2, FCML_MI( 0x50 ), FCML_MI( 0xff, 0xf0 ) );
+	FCML_A64_M( "push %ax", 2, FCML_MI( 0x66, 0x50 ), FCML_MI( 0x66, 0xff, 0xf0 ) );
+	FCML_A64_D( "push %rax", 0x67, 0x50 );
+	FCML_A64_D( "push %rax", 0x48, 0x50 );
     // 6A PUSH imm8 I Valid Valid Push imm8.
     // 68 PUSH imm16 I Valid Valid Push imm16.
     // 68 PUSH imm32 I Valid Valid Push imm32.
@@ -2373,6 +2395,8 @@ void fcml_tf_instruction_PUSH(void) {
     FCML_I64( "push 221111ffh", 0x68, 0xff, 0x11, 0x11, 0x22 );
     FCML_I64( "push 0ff1111ffh", 0x68, 0xFF, 0x11, 0x11, 0xFF );
     FCML_I64( "push 0ffffffffff1111ffh", 0x48, 0x68, 0xFF, 0x11, 0x11, 0xFF );
+    // GAS
+    FCML_A64( "pushq $0xffffffffffffffff", 0x68, 0xff, 0xff, 0xff, 0xff );
     // 0E PUSH CS NP Invalid Valid Push CS.
     // 16 PUSH SS NP Invalid Valid Push SS.
     // 1E PUSH DS NP Invalid Valid Push DS.
