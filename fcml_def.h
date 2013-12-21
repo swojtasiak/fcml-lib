@@ -793,7 +793,8 @@ typedef struct fcml_st_def_instruction_desc {
 
 // Immediate data.
 #define FCML_OP_IMM_BASE											0x01000000
-#define FCML_OP_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OP_IMM_BASE | ( encoded_imm_size ) << 8 | encoded_ex_imm_size )
+#define FCML_OP_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OP_IMM_BASE | ( encoded_imm_size ) << 8 | ( encoded_ex_imm_size ) )
+#define FCML_OP_IMM_64												( FCML_OP_IMM_BASE | ( 1 << 16 ) | ( FCML_EOS_EOSA ) << 8 | ( FCML_EOS_UNDEFINED ) )
 
 // Register explicitly set.
 #define FCML_OP_EXPLICIT_REG_BASE									0x02000000
@@ -1110,6 +1111,7 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_IW_EX_EOSA				FCML_OP_IMM( FCML_EOS_WORD, FCML_EOS_EOSA )
 #define FCML_OP_ID						FCML_OP_IMM( FCML_EOS_DWORD, FCML_EOS_UNDEFINED )
 #define FCML_OP_ID_EX_EOSA				FCML_OP_IMM( FCML_EOS_DWORD, FCML_EOS_EOSA )
+#define FCML_OP_EX_EOSA					FCML_OP_IMM( FCML_EOS_EOSA, FCML_EOS_EOSA )
 #define FCML_OP_IMM_EOSA				FCML_OP_IMM( FCML_EOS_EOSA, FCML_EOS_UNDEFINED )
 
 /* Externals. */
@@ -1139,6 +1141,7 @@ void fcml_fnp_def_free_addr_mode( fcml_st_def_decoded_addr_mode *decoded_addr_mo
 typedef struct fcml_sf_def_tma_imm {
 	fcml_uint8_t encoded_imm_size;
 	fcml_uint8_t encoded_ex_imm_size;
+	fcml_bool is_64bit_imm_allowed;
 } fcml_sf_def_tma_imm;
 
 typedef struct fcml_sf_def_tma_explicit_reg {

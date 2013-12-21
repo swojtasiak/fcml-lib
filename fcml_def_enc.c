@@ -23,6 +23,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_imm( fcml_uint32_t encoded_addr_mod
 	if( imm_args ) {
 		imm_args->encoded_imm_size = ( encoded_addr_mode & 0x0000FF00) >> 8;
 		imm_args->encoded_ex_imm_size = encoded_addr_mode & 0x000000FF;
+		imm_args->is_64bit_imm_allowed = ( encoded_addr_mode & 0x00FF0000 ) >> 16;
 	}
 	return imm_args;
 }

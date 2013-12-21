@@ -307,6 +307,12 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context
 	operand->type = FCML_EOT_IMMEDIATE;
 
 	fcml_data_size imm_size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_imm_size );
+
+	// Correct calculated IMM size if 64 bit IMM is not supported by addressing mode.
+	if( imm_size == FCML_DS_64 && !imm_args->is_64bit_imm_allowed ) {
+		imm_size = FCML_DS_32;
+	}
+
 	fcml_data_size imm_size_ex = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_ex_imm_size );
 	if( imm_size_ex == FCML_DS_UNDEF ) {
 		// check if S opcode field is set.
@@ -344,7 +350,12 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context
 
 fcml_int fcml_ifn_dasm_operand_size_calculator_imm( fcml_ist_dasm_decoding_context *context, fcml_ptr args ) {
 	fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm *)args;
-	return fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_imm_size ) / 8;
+	fcml_int imm_size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_imm_size ) / 8;
+	// 8 bytes IMM size is only supported for instructions with following flag set.
+	if( imm_size == 8 && !imm_args->is_64bit_imm_allowed ) {
+		imm_size = 4;
+	}
+	return imm_size;
 }
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {

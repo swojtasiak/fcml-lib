@@ -729,7 +729,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
                 if( osa_flags & FCML_EN_ASF_32 )
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, ( args->is_64bit_imm_allowed ) ? FCML_DS_64 : FCML_DS_32, FCML_EN_ASF_64, &flags );
                 }
             } else if( imm_size == FCML_EOS_EOSA ) {
                 if( osa_flags & FCML_EN_ASF_16 )
@@ -737,7 +737,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
                 if( osa_flags & FCML_EN_ASF_32 )
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_32, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_64, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, args->is_64bit_imm_allowed ? FCML_DS_64 : FCML_DS_32, FCML_EN_ASF_64, &flags );
                 }
             } else {
                 // IMM extended to effective address size attribute.
@@ -785,6 +785,12 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 
 		fcml_data_size eosa_size = context->optimizer_processing_details.effective_operand_size;
 
+		// Remeber that only one addressing mode of MOV instruction for 64 bits mode can encode IMM64.
+		fcml_data_size eosa_imm = eosa_size;
+		if( !args->is_64bit_imm_allowed && eosa_size == FCML_DS_64 ) {
+			eosa_imm = FCML_DS_32;
+		}
+
 		if( ( imm_size == FCML_EOS_EOSA || imm_size_ex == FCML_EOS_EOSA ) && !eosa_size ) {
 			FCML_TRACE("EOSA size not set! Processing failed.");
 			return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
@@ -795,9 +801,9 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 		if( imm_size != FCML_EOS_EOSA && imm_size_ex != FCML_EOS_EOSA ) {
 		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( imm_size_ex ) * 8, FCML_GET_OS( imm_size ) * 8, 0, NULL );
 		} else if( imm_size == FCML_EOS_EOSA && imm_size_ex == FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, eosa_size, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, eosa_imm, 0, NULL );
 		} else if( imm_size == FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( imm_size_ex ) * 8, eosa_size, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( imm_size_ex ) * 8, eosa_imm, 0, NULL );
 		} else {
 		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, FCML_GET_OS( imm_size ) * 8, 0, NULL );
 		}
