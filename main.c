@@ -190,6 +190,9 @@ int main(int argc, char **argv) {
 
     //FCML_I32_A_P( "push 0ffffffffh", 3, FCML_MI( 0x68, 0xff, 0xff, 0xff, 0xff ), FCML_MI( 0x66, 0x68, 0xff, 0xff ), FCML_MI( 0x6a, 0xff ) );
 
+    //FCML_A64_P( "vpsrlw (%rax),%xmm0,%xmm0", 0xc4, 0xe1, 0x79, 0xd1, 0x00 );
+    //return 0;
+
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");
     } else {

@@ -95,13 +95,6 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 				printf("Instruction: %s\n", mnemonic);
 			}
 
-			if( t_flags & FCML_TSF_SHOULD_FAIL ) {
-				printf("Should fail: %s\n", mnemonic);
-				success = FCML_FALSE;
-				fcml_fn_dasm_disassemble_result_free( dis_result );
-				return success;
-			}
-
 			// Looking for 0x67 prefix.
 			int i;
 			for( i = 0; i < FCML_DASM_PREFIXES_COUNT; i++ ) {
@@ -132,6 +125,9 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 			}
 
 			if( strcmp( buffer, mnemonic ) != 0 ) {
+				if( t_flags & FCML_TSF_SHOULD_FAIL ) {
+					return FCML_TRUE;
+				}
 				printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 					success = FCML_FALSE;
@@ -142,6 +138,13 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 					CU_ASSERT(FCML_TRUE);
 				}
+			}
+
+			if( t_flags & FCML_TSF_SHOULD_FAIL ) {
+				printf("Should fail: %s\n", mnemonic);
+				success = FCML_FALSE;
+				fcml_fn_dasm_disassemble_result_free( dis_result );
+				return success;
 			}
 
 		}
