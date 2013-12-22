@@ -533,6 +533,17 @@ enum fcml_en_instruction_codes {
 	F_VPADDQ,
 	F_POP,
 	F_PUSH,
+	// TODO: Opisac konflikt nazewnictwa pomiedzy GAS i Intel, inne kodowanie a ta sama mnemonika :/
+	F_POPA,
+	F_POPAD,
+	F_POPF,
+	F_POPFQ,
+	F_POPFD,
+	F_PUSHA,
+	F_PUSHF,
+	F_PUSHAD,
+	F_PUSHFQ,
+	F_PUSHFD,
 };
 
 /*******************/
@@ -941,6 +952,8 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_MODRM_OPM_W             (FCML_OP_MODRM_OPM | FCML_OA_W)
 #define FCML_OP_MODRM_M_8				FCML_OP_RM(FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_BYTE, FCML_RMF_M )
 #define FCML_OP_MODRM_M_8_W             (FCML_OP_MODRM_M_8 | FCML_OA_W)
+#define FCML_OP_MODRM_M_OP8				FCML_OP_RM(FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_BYTE | FCML_EOS_OPT, FCML_RMF_M )
+#define FCML_OP_MODRM_M_OP8_W           (FCML_OP_MODRM_M_OP8 | FCML_OA_W)
 #define FCML_OP_MODRM_M_16				FCML_OP_RM(FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_WORD, FCML_RMF_M )
 #define FCML_OP_MODRM_M_16_W			(FCML_OP_MODRM_M_16 | FCML_OA_W)
 #define FCML_OP_MODRM_M_OP16			FCML_OP_RM(FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_WORD | FCML_EOS_OPT, FCML_RMF_M )
