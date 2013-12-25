@@ -794,6 +794,12 @@ enum fcml_en_instruction_codes {
 	F_PXOR,
 	F_VPXOR,
 	F_PREFETCH,
+	F_RCL,
+	F_RCR,
+	F_ROL,
+	F_ROR,
+	F_RET,
+	F_RETF,
 };
 
 /*******************/
