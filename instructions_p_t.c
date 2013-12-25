@@ -2830,154 +2830,224 @@ void fcml_tf_instruction_PXOR(void) {
 
 void fcml_tf_instruction_PAVGUSB(void) {
     // PAVGUSB mmreg1, mmreg2/mem64 0F 0Fh / BFh Average of unsigned packed 8-bit values
-    FCML_I32( "pavgusb mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xBF, 0x00 );
-    FCML_I64( "pavgusb mm0,mm1", 0x0F, 0x0F, 0xBF, 0xC1 );
+	FCML_I32( "pavgusb mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xBF );
+    FCML_I64( "pavgusb mm0,mm1", 0x0F, 0x0F, 0xC1, 0xBF );
     // GAS
-
+    FCML_A64( "pavgusb (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xbf );
+    FCML_A64( "pavgusb %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xbf );
 }
 
 void fcml_tf_instruction_PF2ID(void) {
     // PF2ID mmreg1, mmreg2/mem64 0Fh 0Fh / 1Dh Converts packed floating-point operand to packed 32-bit integer
-    FCML_I32( "pf2id mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x1D, 0x00 );
-    FCML_I64( "pf2id mm0,mm1", 0x0F, 0x0F, 0x1D, 0xC1 );
+    FCML_I32( "pf2id mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x1D );
+    FCML_I64( "pf2id mm0,mm1", 0x0F, 0x0F, 0xC1, 0x1D );
+    // GAS
+    FCML_A64( "pf2id (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x1d );
+    FCML_A64( "pf2id %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x1d );
 }
 
 void fcml_tf_instruction_PFACC(void) {
     // PFACC mmreg1, mmreg2/mem64 0Fh 0Fh / AEh Floating-point accumulate
-    FCML_I32( "pfacc mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xAE, 0x00 );
-    FCML_I64( "pfacc mm0,mm1", 0x0F, 0x0F, 0xAE, 0xC1 );
+    FCML_I32( "pfacc mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xAE );
+    FCML_I64( "pfacc mm0,mm1", 0x0F, 0x0F, 0xC1, 0xAE );
+    // GAS
+    FCML_A64( "pfacc (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xae );
+    FCML_A64( "pfacc %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xae );
 }
 
 void fcml_tf_instruction_PFADD(void) {
     // PFADD mmreg1, mmreg2/mem64 0Fh 0Fh / 9Eh Packed, floating-point addition
-    FCML_I32( "pfadd mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x9E, 0x00 );
-    FCML_I64( "pfadd mm0,mm1", 0x0F, 0x0F, 0x9E, 0xC1 );
+    FCML_I32( "pfadd mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x9E );
+    FCML_I64( "pfadd mm0,mm1", 0x0F, 0x0F, 0xC1, 0x9E );
+    // GAS
+    FCML_A64( "pfadd (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x9e );
+    FCML_A64( "pfadd %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x9e );
 }
 
 void fcml_tf_instruction_PFCMPEQ(void) {
     // PFCMPEQ mmreg1, mmreg2/mem64 0Fh 0Fh / B0h Packed floating-point comparison, equal to
-    FCML_I32( "pfcmpeq mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xB0, 0x00 );
-    FCML_I64( "pfcmpeq mm0,mm1", 0x0F, 0x0F, 0xB0, 0xC1 );
+    FCML_I32( "pfcmpeq mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xB0 );
+    FCML_I64( "pfcmpeq mm0,mm1", 0x0F, 0x0F, 0xC1, 0xB0 );
+    // GAS
+    FCML_A64( "pfcmpeq (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xb0 );
+    FCML_A64( "pfcmpeq %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xb0 );
 }
 
 void fcml_tf_instruction_PFCMPGE(void) {
     // PFCMPGE mmreg1, mmreg2/mem64 0Fh 0Fh / 90h Packed floating-point comparison, greater than or equal to
-    FCML_I32( "pfcmpge mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x90, 0x00 );
-    FCML_I64( "pfcmpge mm0,mm1", 0x0F, 0x0F, 0x90, 0xC1 );
+    FCML_I32( "pfcmpge mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x90 );
+    FCML_I64( "pfcmpge mm0,mm1", 0x0F, 0x0F, 0xC1, 0x90 );
+    // GAS
+    FCML_A64( "pfcmpeq (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xb0 );
+    FCML_A64( "pfcmpeq %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xb0 );
 }
 
 void fcml_tf_instruction_PFCMPGT(void) {
     // PFCMPGT mmreg1, mmreg2/mem64 0Fh 0Fh / A0h Packed floating-point comparison, greater than
-    FCML_I32( "pfcmpgt mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xA0, 0x00 );
-    FCML_I64( "pfcmpgt mm0,mm1", 0x0F, 0x0F, 0xA0, 0xC1 );
+    FCML_I32( "pfcmpgt mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xA0 );
+    FCML_I64( "pfcmpgt mm0,mm1", 0x0F, 0x0F, 0xC1, 0xA0 );
+    // GAS
+    FCML_A64( "pfcmpgt (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xa0 );
+    FCML_A64( "pfcmpgt %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xa0 );
 }
 
 void fcml_tf_instruction_PFMAX(void) {
     // PFMAX mmreg1, mmreg2/mem64 0Fh 0Fh / A4h Packed floating-point maximum
-    FCML_I32( "pfmax mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xA4, 0x00 );
-    FCML_I64( "pfmax mm0,mm1", 0x0F, 0x0F, 0xA4, 0xC1 );
+    FCML_I32( "pfmax mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xA4 );
+    FCML_I64( "pfmax mm0,mm1", 0x0F, 0x0F, 0xC1, 0xA4 );
+    // GAS
+    FCML_A64( "pfmax (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xa4 );
+    FCML_A64( "pfmax %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xa4 );
 }
 
 void fcml_tf_instruction_PFMIN(void) {
     // PFMIN mmreg1, mmreg2/mem64 0Fh 0Fh / 94h Packed floating-point minimum
-    FCML_I32( "pfmin mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x94, 0x00 );
-    FCML_I64( "pfmin mm0,mm1", 0x0F, 0x0F, 0x94, 0xC1 );
+    FCML_I32( "pfmin mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x94 );
+    FCML_I64( "pfmin mm0,mm1", 0x0F, 0x0F, 0xC1, 0x94 );
+    // GAS
+    FCML_A64( "pfmin (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x94 );
+    FCML_A64( "pfmin %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x94 );
 }
 
 void fcml_tf_instruction_PFMUL(void) {
     // PFMUL mmreg1, mmreg2/mem64 0Fh 0Fh / B4h Packed floating-point multiplication
-    FCML_I32( "pfmul mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xB4, 0x00 );
-    FCML_I64( "pfmul mm0,mm1", 0x0F, 0x0F, 0xB4, 0xC1 );
+    FCML_I32( "pfmul mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xB4 );
+    FCML_I64( "pfmul mm0,mm1", 0x0F, 0x0F, 0xC1, 0xB4 );
+    // GAS
+    FCML_A64( "pfmul (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xb4 );
+    FCML_A64( "pfmul %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xb4 );
 }
 
 void fcml_tf_instruction_PFRCP(void) {
     // PFRCP mmreg1, mmreg2/mem64 0Fh 0Fh / 96h Floating-point reciprocal approximation
-    FCML_I32( "pfrcp mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x96, 0x00 );
-    FCML_I64( "pfrcp mm0,mm1", 0x0F, 0x0F, 0x96, 0xC1 );
+    FCML_I32( "pfrcp mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x96 );
+    FCML_I64( "pfrcp mm0,mm1", 0x0F, 0x0F, 0xC1, 0x96 );
+    // GAS
+    FCML_A64( "pfrcp (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x96 );
+    FCML_A64( "pfrcp %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x96 );
 }
 
 void fcml_tf_instruction_PFRCPIT1(void) {
     // PFRCPIT1 mmreg1, mmreg2/mem64 0Fh 0Fh / A6h Packed floating-point reciprocal, first iteration step
-    FCML_I32( "pfrcpit1 mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xA6, 0x00 );
-    FCML_I64( "pfrcpit1 mm0,mm1", 0x0F, 0x0F, 0xA6, 0xC1 );
+    FCML_I32( "pfrcpit1 mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xA6 );
+    FCML_I64( "pfrcpit1 mm0,mm1", 0x0F, 0x0F, 0xC1, 0xA6 );
+    // GAS
+    FCML_I32( "pfrcpit1 mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xA6 );
+	FCML_I64( "pfrcpit1 mm0,mm1", 0x0F, 0x0F, 0xC1, 0xA6 );
 }
 
 void fcml_tf_instruction_PFRCPIT2(void) {
     // PFRCPIT2 mmreg1, mmreg2/mem64 0Fh 0Fh / B6h Packed floating-point reciprocal/reciprocal square root, second iteration step
-    FCML_I32( "pfrcpit2 mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xB6, 0x00 );
-    FCML_I64( "pfrcpit2 mm0,mm1", 0x0F, 0x0F, 0xB6, 0xC1 );
+    FCML_I32( "pfrcpit2 mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xB6 );
+    FCML_I64( "pfrcpit2 mm0,mm1", 0x0F, 0x0F, 0xC1, 0xB6 );
+    // GAS
+    FCML_A64( "pfrcpit2 (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xb6 );
+    FCML_A64( "pfrcpit2 %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xb6 );
 }
 
 void fcml_tf_instruction_PFRSQIT1(void) {
     // PFRSQIT1 mmreg1, mmreg2/mem64 0Fh 0Fh / A7h Packed floating-point reciprocal square root, first iteration step
-    FCML_I32( "pfrsqit1 mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xA7, 0x00 );
-    FCML_I64( "pfrsqit1 mm0,mm1", 0x0F, 0x0F, 0xA7, 0xC1 );
+    FCML_I32( "pfrsqit1 mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xA7 );
+    FCML_I64( "pfrsqit1 mm0,mm1", 0x0F, 0x0F, 0xC1, 0xA7 );
+    // GAS
+    FCML_A64( "pfrsqit1 (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xa7 );
+    FCML_A64( "pfrsqit1 %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xa7 );
 }
 
 void fcml_tf_instruction_PFRSQRT(void) {
     // PFRSQRT mmreg1, mmreg2/mem64 0Fh 0Fh / 97h Floating-point reciprocal square root approximation
-    FCML_I32( "pfrsqrt mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x97, 0x00 );
-    FCML_I64( "pfrsqrt mm0,mm1", 0x0F, 0x0F, 0x97, 0xC1 );
+    FCML_I32( "pfrsqrt mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x97 );
+    FCML_I64( "pfrsqrt mm0,mm1", 0x0F, 0x0F, 0xC1, 0x97 );
 }
 
 void fcml_tf_instruction_PFSUB(void) {
     // PFSUB mmreg1, mmreg2/mem64 0Fh 0Fh / 9Ah Packed floating-point subtraction
-    FCML_I32( "pfsub mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x9A, 0x00 );
-    FCML_I64( "pfsub mm0,mm1", 0x0F, 0x0F, 0x9A, 0xC1 );
+    FCML_I32( "pfsub mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x9A );
+    FCML_I64( "pfsub mm0,mm1", 0x0F, 0x0F, 0xC1, 0x9A );
+    // GAS
+    FCML_A64( "pfsub (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x9a );
+    FCML_A64( "pfsub %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x9a );
 }
 
 void fcml_tf_instruction_PFSUBR(void) {
     // PFSUBR mmreg1, mmreg2/mem64 0Fh 0Fh / AAh Packed floating-point reverse subtraction
-    FCML_I32( "pfsubr mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xAA, 0x00 );
-    FCML_I64( "pfsubr mm0,mm1", 0x0F, 0x0F, 0xAA, 0xC1 );
+    FCML_I32( "pfsubr mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xAA );
+    FCML_I64( "pfsubr mm0,mm1", 0x0F, 0x0F, 0xC1, 0xAA );
+    // GAS
+    FCML_A64( "pfsubr (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xaa );
+    FCML_A64( "pfsubr %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xaa );
 }
 
 void fcml_tf_instruction_PI2FD(void) {
     // PI2FD mmreg1, mmreg2/mem64 0Fh 0Fh / 0Dh Packed 32-bit integer to floating-point conversion
-    FCML_I32( "pi2fd mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x0D, 0x00 );
-    FCML_I64( "pi2fd mm0,mm1", 0x0F, 0x0F, 0x0D, 0xC1 );
+    FCML_I32( "pi2fd mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x0D );
+    FCML_I64( "pi2fd mm0,mm1", 0x0F, 0x0F, 0xC1, 0x0D );
+    // GAS
+    FCML_A64( "pi2fd (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x0d );
+    FCML_A64( "pi2fd %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x0d );
 }
 
 void fcml_tf_instruction_PMULHRW(void) {
     // PMULHRW mmreg1, mmreg2/mem64 0F 0Fh/B7h Multiply signed packed 16-bit values with rounding and store the high 16 bits.
-    FCML_I32( "pmulhrw mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xB7, 0x00 );
-    FCML_I64( "pmulhrw mm0,mm1", 0x0F, 0x0F, 0xB7, 0xC1 );
+    FCML_I32( "pmulhrw mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xB7 );
+    FCML_I64( "pmulhrw mm0,mm1", 0x0F, 0x0F, 0xC1, 0xB7 );
+    // GAS
+    FCML_A64( "pmulhrw (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xb7 );
+    FCML_A64( "pmulhrw %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xb7 );
 }
 
 void fcml_tf_instruction_PREFETCH(void) {
     // PREFETCH(W) mem8 0F 0Dh Prefetch processor cache line into L1 data cache (Dcache)
     FCML_I32( "prefetch byte ptr [eax]", 0x0F, 0x0D, 0x00 );
     FCML_I64( "prefetchw byte ptr [rax]", 0x0F, 0x0D, 0x08 );
+    // GAS
+    FCML_A64( "prefetch (%rax)", 0x0f, 0x0d, 0x00 );
+    FCML_A64( "prefetchw (%rax)", 0x0f, 0x0d, 0x08 );
 }
 
 void fcml_tf_instruction_PF2IW(void) {
     // PF2IW mmreg1, mmreg2/mem64 0Fh 0Fh / 1Ch Packed floating-point to integer word conversion with PF2IW sign extend
-    FCML_I32( "pf2iw mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xC1, 0x00 );
-    FCML_I64( "pf2iw mm0,mm1", 0x0F, 0x0F, 0xC1, 0xC1 );
+    FCML_I32( "pf2iw mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x1C );
+    FCML_I64( "pf2iw mm0,mm1", 0x0F, 0x0F, 0xC1, 0x1C );
+    // GAS
+    FCML_A64( "pf2iw (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x1c );
+    FCML_A64( "pf2iw %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x1c );
 }
 
 void fcml_tf_instruction_PFNACC(void) {
     // PFNACC mmreg1, mmreg2/mem64 0Fh 0Fh / 8Ah Packed floating-point negative accumulate
-    FCML_I32( "pfnacc mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x8A, 0x00 );
-    FCML_I64( "pfnacc mm0,mm1", 0x0F, 0x0F, 0x8A, 0xC1 );
+    FCML_I32( "pfnacc mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x8A );
+    FCML_I64( "pfnacc mm0,mm1", 0x0F, 0x0F, 0xC1, 0x8A );
+    // GAS
+    FCML_A64( "pfnacc (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x8a );
+    FCML_A64( "pfnacc %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x8a );
 }
 
 void fcml_tf_instruction_PFPNACC(void) {
     // PFPNACC mmreg1, mmreg2/mem64 0Fh 0Fh / 8Eh Packed floating-point mixed positive-negative accumulate
-    FCML_I32( "pfpnacc mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x8E, 0x00 );
-    FCML_I64( "pfpnacc mm0,mm1", 0x0F, 0x0F, 0x8E, 0xC1 );
+    FCML_I32( "pfpnacc mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x8E );
+    FCML_I64( "pfpnacc mm0,mm1", 0x0F, 0x0F, 0xC1, 0x8E );
+    // GAS
+    FCML_A64( "pfpnacc (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x8e );
+    FCML_A64( "pfpnacc %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x8e );
 }
 
 void fcml_tf_instruction_PI2FW(void) {
     // PI2FW mmreg1, mmreg2/mem64 0Fh 0Fh / 0Ch Packed 16-bit integer to floating-point conversion
-    FCML_I32( "pi2fw mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x0C, 0x00 );
-    FCML_I64( "pi2fw mm0,mm1", 0x0F, 0x0F, 0x0C, 0xC1 );
+    FCML_I32( "pi2fw mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x0C );
+    FCML_I64( "pi2fw mm0,mm1", 0x0F, 0x0F, 0xC1, 0x0C );
+    // GAS
+    FCML_A64( "pi2fw (%rax),%mm0", 0x0f, 0x0f, 0x00, 0x0c );
+    FCML_A64( "pi2fw %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0x0c );
 }
 
 void fcml_tf_instruction_PSWAPD(void) {
     // PSWAPD mmreg1, mmreg2/mem64 0Fh 0Fh / BBh Packed swap doubleword
-    FCML_I32( "pswapd mm0,mmword ptr [eax]", 0x0F, 0x0F, 0xBB, 0x00 );
-    FCML_I64( "pswapd mm0,mm1", 0x0F, 0x0F, 0xBB, 0xC1 );
+    FCML_I32( "pswapd mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0xBB );
+    FCML_I64( "pswapd mm0,mm1", 0x0F, 0x0F, 0xC1, 0xBB );
+    // GAS
+    FCML_A64( "pswapd (%rax),%mm0", 0x0f, 0x0f, 0x00, 0xbb );
+    FCML_A64( "pswapd %mm1,%mm0", 0x0f, 0x0f, 0xc1, 0xbb );
 }
 
 void fcml_tf_instruction_PDEP(void) {
@@ -2987,6 +3057,11 @@ void fcml_tf_instruction_PDEP(void) {
     // VEX.NDS.LZ.F2.0F38.W1 F5 /r PDEP r64a, r64b, r/m64
     FCML_I64( "pdep rax,rdi,qword ptr [rax]", 0xC4, 0xE2, 0xC3, 0xF5, 0x00 );
     FCML_I64( "pdep rax,rdi,rax", 0xC4, 0xE2, 0xC3, 0xF5, 0xC0 );
+    // GAS
+    FCML_A64( "pdep (%rax),%edi,%eax", 0xc4, 0xe2, 0x43, 0xf5, 0x00 );
+    FCML_A64( "pdep %eax,%edi,%eax", 0xc4, 0xe2, 0x43, 0xf5, 0xc0 );
+    FCML_A64( "pdep (%rax),%rdi,%rax", 0xc4, 0xe2, 0xc3, 0xf5, 0x00 );
+    FCML_A64( "pdep %rax,%rdi,%rax", 0xc4, 0xe2, 0xc3, 0xf5, 0xc0 );
 }
 
 void fcml_tf_instruction_PEXT(void) {
@@ -2996,6 +3071,11 @@ void fcml_tf_instruction_PEXT(void) {
     // VEX.NDS.LZ.F3.0F38.W1 F5 /r PEXT r64a, r64b, r/m64
     FCML_I64( "pext rax,rdi,qword ptr [rax]", 0xC4, 0xE2, 0xC2, 0xF5, 0x00 );
     FCML_I64( "pext rax,rdi,rax", 0xC4, 0xE2, 0xC2, 0xF5, 0xC0 );
+    // GAS
+    FCML_A64( "pext (%rax),%edi,%eax", 0xc4, 0xe2, 0x42, 0xf5, 0x00 );
+    FCML_A64( "pext %eax,%edi,%eax", 0xc4, 0xe2, 0x42, 0xf5, 0xc0 );
+    FCML_A64( "pext (%rax),%rdi,%rax", 0xc4, 0xe2, 0xc2, 0xf5, 0x00 );
+    FCML_A64( "pext %rax,%rdi,%rax", 0xc4, 0xe2, 0xc2, 0xf5, 0xc0 );
 }
 
 CU_TestInfo fctl_ti_instructions_p[] = {

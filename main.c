@@ -193,6 +193,7 @@ int main(int argc, char **argv) {
     //FCML_A64_P( "vpsrlw (%rax),%xmm0,%xmm0", 0xc4, 0xe1, 0x79, 0xd1, 0x00 );
     //return 0;
 
+
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");
     } else {
