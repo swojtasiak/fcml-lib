@@ -68,6 +68,10 @@ typedef enum fcml_en_def_instruction_type {
 /* Instructions */
 /****************/
 
+// Multi instrutions.
+
+#define FCML_MI_AMD3DNOW		0x0001
+
 enum fcml_en_instruction_codes {
 	F_UNKNOWN,
 	F_AAA,
@@ -533,7 +537,7 @@ enum fcml_en_instruction_codes {
 	F_VPADDQ,
 	F_POP,
 	F_PUSH,
-	// TODO: Opisac konflikt nazewnictwa pomiedzy GAS i Intel, inne kodowanie a ta sama mnemonika :/
+	// TODO: Opisac konflikt nazewnictwa pomiedzy GAS i Intel, inne kodowanie a ta sama mnemonika :/ byc moze uda sie zrobic z tego jedna instukcje.
 	F_POPA,
 	F_POPAD,
 	F_POPF,
@@ -544,6 +548,252 @@ enum fcml_en_instruction_codes {
 	F_PUSHAD,
 	F_PUSHFQ,
 	F_PUSHFD,
+	F_PAVGUSB,
+	F_PF2ID,
+	F_PFACC,
+	F_PFADD,
+	F_PFCMPEQ,
+	F_PFCMPGE,
+	F_PFCMPGT,
+	F_PFMAX,
+	F_PFMIN,
+	F_PFMUL,
+	F_PFRCP,
+	F_PFRCPIT1,
+	F_PFRCPIT2,
+	F_PFRSQIT1,
+	F_PFRSQRT,
+	F_PFSUB,
+	F_PFSUBR,
+	F_PI2FD,
+	F_PMULHRW,
+	F_PF2IW,
+	F_PFNACC,
+	F_PFPNACC,
+	F_PI2FW,
+	F_PSWAPD,
+	F_PALIGNR,
+	F_VPALIGNR,
+	F_PAND,
+	F_VPAND,
+	F_PANDN,
+	F_VPANDN,
+	F_PAUSE,
+	F_PAVGW,
+	F_PAVGB,
+	F_VPAVGW,
+	F_VPAVGB,
+	F_PBLENDVB,
+	F_VPBLENDVB,
+	F_PBLENDW,
+	F_VPBLENDW,
+	F_VPBLENDD,
+	F_PCLMULQDQ,
+	F_VPCLMULQDQ,
+	F_PCMPEQW,
+	F_PCMPEQB,
+	F_PCMPEQD,
+	F_VPCMPEQD,
+	F_VPCMPEQW,
+	F_VPCMPEQB,
+	F_PCMPEQQ,
+	F_VPCMPEQQ,
+	F_PCMPESTRI,
+	F_VPCMPESTRI,
+	F_PCMPESTRM,
+	F_VPCMPESTRM,
+	F_PCMPGTW,
+	F_PCMPGTD,
+	F_PCMPGTB,
+	F_VPCMPGTW,
+	F_VPCMPGTD,
+	F_VPCMPGTB,
+	F_PCMPGTQ,
+	F_VPCMPGTQ,
+	F_PCMPISTRI,
+	F_VPCMPISTRI,
+	F_PCMPISTRM,
+	F_VPCMPISTRM,
+	F_VPEXTRB,
+	F_VPEXTRQ,
+	F_PEXTRQ,
+	F_PEXTRB,
+	F_PEXTRD,
+	F_VPEXTRD,
+	F_PEXTRW,
+	F_VPEXTRW,
+	F_VPHADDW,
+	F_VPHADDD,
+	F_PHADDD,
+	F_PHADDW,
+	F_PHADDSW,
+	F_VPHADDSW,
+	F_PHMINPOSUW,
+	F_VPHMINPOSUW,
+	F_PHSUBD,
+	F_PHSUBW,
+	F_VPHSUBD,
+	F_VPHSUBW,
+	F_PHSUBSW,
+	F_VPHSUBSW,
+	F_PINSRD,
+	F_VPINSRQ,
+	F_PINSRQ,
+	F_PINSRB,
+	F_VPINSRD,
+	F_VPINSRB,
+	F_PINSRW,
+	F_VPINSRW,
+	F_PMADDUBSW,
+	F_VPMADDUBSW,
+	F_PMADDWD,
+	F_VPMADDWD,
+	F_PMAXSB,
+	F_VPMAXSB,
+	F_PMAXSD,
+	F_VPMAXSD,
+	F_PMAXSW,
+	F_VPMAXSW,
+	F_PMAXUB,
+	F_VPMAXUB,
+	F_PMAXUD,
+	F_VPMAXUD,
+	F_PMAXUW,
+	F_VPMAXUW,
+	F_PMINSB,
+	F_VPMINSB,
+	F_PMINSD,
+	F_VPMINSD,
+	F_PMINSW,
+	F_VPMINSW,
+	F_PMINUW,
+	F_VPMINUW,
+	F_PMINUB,
+	F_VPMINUB,
+	F_PMINUD,
+	F_VPMINUD,
+	F_PMOVMSKB,
+	F_VPMOVMSKB,
+	F_VPMOVSXBQ,
+	F_PMOVSXBW,
+	F_PMOVSXWQ,
+	F_VPMOVSXWQ,
+	F_PMOVSXWD,
+	F_PMOVSXBD,
+	F_VPMOVSXDQ,
+	F_VPMOVSXWD,
+	F_PMOVSXBQ,
+	F_VPMOVSXBW,
+	F_PMOVSXDQ,
+	F_VPMOVSXBD,
+	F_PMOVZXWD,
+	F_PMOVZXDQ,
+	F_VPMOVZXDQ,
+	F_PMOVZXWQ,
+	F_VPMOVZXBQ,
+	F_PMOVZXBQ,
+	F_VPMOVZXWD,
+	F_VPMOVZXBD,
+	F_VPMOVZXWQ,
+	F_PMOVZXBD,
+	F_VPMOVZXBW,
+	F_PMOVZXBW,
+	F_PMULDQ,
+	F_PMULHRSW,
+	F_PMULHUW,
+	F_VPMULDQ,
+	F_VPMULHRSW,
+	F_VPMULHUW,
+	F_PMULHW,
+	F_VPMULHW,
+	F_PMULUDQ,
+	F_VPMULUDQ,
+	F_PMULLW,
+	F_PMULLD,
+	F_VPMULLD,
+	F_VPMULLW,
+	F_POPCNT,
+	F_POR,
+	F_VPOR,
+	F_PREFETCHT2,
+	F_PREFETCHW,
+	F_PREFETCHT1,
+	F_PREFETCHNTA,
+	F_PREFETCHT0,
+	F_PSADBW,
+	F_VPSADBW,
+	F_PSHUFB,
+	F_PSHUFD,
+	F_PSHUFHW,
+	F_VPSHUFD,
+	F_VPSHUFB,
+	F_PSHUFLW,
+	F_PSHUFW,
+	F_VPSHUFLW,
+	F_VPSHUFHW,
+	F_VPSIGNB,
+	F_VPSIGND,
+	F_PSIGNW,
+	F_PSIGNB,
+	F_VPSIGNW,
+	F_PSIGND,
+	F_PSLLDQ,
+	F_VPSLLDQ,
+	F_PSLLQ,
+	F_PSLLD,
+	F_VPSLLW,
+	F_VPSLLQ,
+	F_PSLLW,
+	F_VPSLLD,
+	F_VPSRAW,
+	F_PSRAD,
+	F_PSRAW,
+	F_VPSRAD,
+	F_PSRLDQ,
+	F_VPSRLDQ,
+	F_VPSRLQ,
+	F_PSRLQ,
+	F_PSRLD,
+	F_PSRLW,
+	F_VPSRLD,
+	F_VPSRLW,
+	F_VPSUBD,
+	F_PSUBD,
+	F_PSUBW,
+	F_VPSUBB,
+	F_VPSUBQ,
+	F_PSUBB,
+	F_VPSUBW,
+	F_PSUBQ,
+	F_PSUBSB,
+	F_VPSUBSW,
+	F_VPSUBSB,
+	F_PSUBSW,
+	F_VPSUBUSW,
+	F_VPSUBUSB,
+	F_PSUBUSB,
+	F_PSUBUSW,
+	F_VPTEST,
+	F_PTEST,
+	F_PUNPCKLBW,
+	F_PUNPCKLQDQ,
+	F_VPUNPCKLWD,
+	F_VPUNPCKLQDQ,
+	F_VPUNPCKLBW,
+	F_PUNPCKLWD,
+	F_PUNPCKLDQ,
+	F_VPUNPCKLDQ,
+	F_VPUNPCKHWD,
+	F_PUNPCKHDQ,
+	F_PUNPCKHWD,
+	F_PUNPCKHQDQ,
+	F_VPUNPCKHQDQ,
+	F_VPUNPCKHBW,
+	F_PUNPCKHBW,
+	F_VPUNPCKHDQ,
+	F_PXOR,
+	F_VPXOR,
+	F_PREFETCH,
 };
 
 /*******************/
@@ -705,6 +955,9 @@ enum fcml_en_instruction_addr_mode_codes {
 #define    FCML_AMT_AVX2_SIMD  FCML_AMT_AVX2  | FCML_AMT_SIMD
 #define    FCML_AMT_3DNOW_SIMD FCML_AMT_3DNOW | FCML_AMT_SIMD
 
+#define FCML_IS_MULTI_INSTRUCTION(x)		( 0x8000 & ( x ) )
+#define FCML_MULTI_INSTRUCTION(x)			( 0x8000 | ( x ) )
+
 /* Structures used to describe instructions with they all allowed addressing modes. */
 typedef struct fcml_st_def_addr_mode_desc {
 	// Mnemonic, if there is another mnemonic available for this opcode.
@@ -723,10 +976,20 @@ typedef struct fcml_st_def_addr_mode_desc {
 	fcml_uint16_t addr_mode;
 } fcml_st_def_addr_mode_desc;
 
+// Instruction code definition for multi instructions. Currently only  the instructions with suffixes uses this mechanism.
+typedef struct fcml_st_def_instruction_code_desc {
+	// Instruction code.
+	fcml_uint16_t instruction;
+	// Suffix.
+	fcml_uint8_t suffix;
+} fcml_st_def_instruction_code_desc;
+
 /* Describes one addressing mode of instruction. */
 typedef struct fcml_st_def_instruction_desc {
 	// Instruction code.
 	fcml_uint16_t instruction;
+	// Optional array of multi instruction codes.
+	fcml_st_def_instruction_code_desc *multi_instruction;
 	// Mnemonic.
 	fcml_string mnemonic;
 	// Type of the instruction.
@@ -739,7 +1002,8 @@ typedef struct fcml_st_def_instruction_desc {
 
 /* Operands encoding */
 
-#define FCML_IA_INSTRUCTION(i,x,y) { i, x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
+#define FCML_IA_INSTRUCTION(i,x,y) { i, NULL, x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
+#define FCML_IA_MULTI_INSTRUCTION(i,x,y) { FCML_MULTI_INSTRUCTION( i ), x, FCML_EMPTY_MNEMONIC, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
 
 #define FCML_REG_FIELD_NUMBER_OF_REGISTERS				8
 #define FCML_REG_FIELD_NUMBER_OF_CONDITIONS				16
@@ -763,6 +1027,7 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_PREFIX_MANDATORY_66(x) 					FCML_TP_GET_BIT(x,12)
 #define FCML_DEF_PREFIX_MANDATORY_F2(x) 					FCML_TP_GET_BIT(x,13)
 #define FCML_DEF_PREFIX_MANDATORY_F3(x) 					FCML_TP_GET_BIT(x,14)
+#define FCML_DEF_PREFIX_SUFFIX(x)		 					FCML_TP_GET_BIT(x,15)
 
 /*********************************
  * Opcode fields extractors.

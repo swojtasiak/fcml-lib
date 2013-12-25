@@ -13,6 +13,7 @@
  * dXX - Sets memory data size to specified number of bytes. It has greater priority than "sb" and "sf".
  * l0 - Mnemonic for L flag set to 0.
  * l1 - Mnemonic for L flag set to 1.
+ * Sxx - One byte instruction suffix, used by AMD 3DNow for instance.
  *
  *  Created on: 5 wrz 2013
  *      Author: tAs
@@ -51,6 +52,8 @@ void fcml_ifn_mp_clean_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
 	mnemonic->is_default = FCML_TRUE;
 	mnemonic->l.value = 0;
 	mnemonic->l.is_not_null = FCML_FALSE;
+	mnemonic->suffix.is_not_null = FCML_FALSE;
+	mnemonic->suffix.value = 0x00;
 }
 
 fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, fcml_st_coll_list *mnemonics, fcml_string mnemonic_buff, fcml_usize len ) {
@@ -130,6 +133,15 @@ fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *a
     	} else if( attr_value[0] == 'f' ) {
     		mnemonic->is_full_ds = FCML_TRUE;
     	}
+    	break;
+    case 'S':
+    	if( attr_value_len == 2 ) {
+			unsigned long int val = strtoul(attr_value, NULL, 16);
+			mnemonic->suffix.value = (fcml_uint8_t)val;
+			mnemonic->suffix.is_not_null = FCML_TRUE;
+		} else {
+			error = FCML_CEH_GEC_INVALID_INPUT;
+		}
     	break;
     case 't':
         if( attr_value[0] == 's' ) {
@@ -319,7 +331,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
     return error;
 }
 
-fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_nuint8_t pseudo_opcode, fcml_data_size osa, fcml_data_size asa, fcml_bool is_memory, fcml_data_size memory_data_size, fcml_nuint8_t l ) {
+fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_nuint8_t pseudo_opcode, fcml_nuint8_t suffix, fcml_data_size osa, fcml_data_size asa, fcml_bool is_memory, fcml_data_size memory_data_size, fcml_nuint8_t l ) {
     fcml_st_mp_mnemonic *chosen_mnemonic = NULL;
     if( mnemonics->mnemonics ) {
         fcml_st_coll_list_element *next = mnemonics->mnemonics->head;
@@ -338,19 +350,22 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemon
 					&& fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
 				// Memory data size.
 				if( !mnemonic->memory_data.is_not_null || ( mnemonic->memory_data.value == ( memory_data_size / 8 ) ) ) {
-					// L flag.
-					if( ( !l.is_not_null && !mnemonic->l.is_not_null ) || ( l.value == mnemonic->l.value ) ) {
-						// Shortcuts. Pseudo opcode mnemonic is also treated as a shortcut by disassembler.
-						if( ( use_shortcut && ( ( mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == pseudo_opcode.value ) || mnemonic->is_shortcut ) )
-							|| ( !use_shortcut && !mnemonic->pseudo_op.is_not_null && ( !mnemonic->is_shortcut || mnemonic->is_classic ) ) ) {
-							// Addressing mode.
-							// See "mm","mr" mnemonic attribute.
-							fcml_bool is_mode_ok = ( ( !mnemonic->is_mode_mem_only && !mnemonic->is_mode_reg_only) || ( mnemonic->is_mode_mem_only && is_memory ) || ( mnemonic->is_mode_reg_only && !is_memory ) );
-							if( is_mode_ok ) {
-								// Default mnemonic can not be overridden by another default.
-								if( !chosen_mnemonic || !mnemonic->is_default ) {
-									chosen_mnemonic = mnemonic;
-									break;
+					// Suffix.
+					if( ( mnemonic->suffix.is_not_null == suffix.is_not_null ) && ( !suffix.is_not_null || ( suffix.value == mnemonic->suffix.value ) ) ) {
+						// L flag.
+						if( ( !l.is_not_null && !mnemonic->l.is_not_null ) || ( l.value == mnemonic->l.value ) ) {
+							// Shortcuts. Pseudo opcode mnemonic is also treated as a shortcut by disassembler.
+							if( ( use_shortcut && ( ( mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == pseudo_opcode.value ) || mnemonic->is_shortcut ) )
+								|| ( !use_shortcut && !mnemonic->pseudo_op.is_not_null && ( !mnemonic->is_shortcut || mnemonic->is_classic ) ) ) {
+								// Addressing mode.
+								// See "mm","mr" mnemonic attribute.
+								fcml_bool is_mode_ok = ( ( !mnemonic->is_mode_mem_only && !mnemonic->is_mode_reg_only) || ( mnemonic->is_mode_mem_only && is_memory ) || ( mnemonic->is_mode_reg_only && !is_memory ) );
+								if( is_mode_ok ) {
+									// Default mnemonic can not be overridden by another default.
+									if( !chosen_mnemonic || !mnemonic->is_default ) {
+										chosen_mnemonic = mnemonic;
+										break;
+									}
 								}
 							}
 						}

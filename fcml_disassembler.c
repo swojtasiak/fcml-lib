@@ -64,6 +64,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_modrm_details decoded_modrm_details;
 	fcml_hints instruction_hints;
 	fcml_nuint8_t pseudo_opcode;
+	fcml_nuint8_t suffix;
 	// Opcode fields.
 	fcml_st_condition condition;
 	fcml_bool is_conditional;
@@ -1524,7 +1525,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 		decoding_context->prefixes.is_rep = FCML_FALSE;
 	}
 
-	// Branches.
+	// Branches, take into account that this condition do not colide with multi instructions.
 	if( instruction_decoding_def->instruction != F_JCC ) {
 		decoding_context->prefixes.is_branch = FCML_FALSE;
 		decoding_context->prefixes.is_nobranch = FCML_FALSE;
@@ -1621,6 +1622,17 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 		} else {
 			// First operand without decoder is the last one.
 			break;
+		}
+	}
+
+	// Decode suffix.
+	if( FCML_DEF_PREFIX_SUFFIX( instruction_decoding_def->prefixes_flags ) ) {
+		fcml_bool result;
+		decoding_context->suffix.value = fcml_fn_stream_read( decoding_context->stream, &result );
+		if( result ) {
+			decoding_context->suffix.is_not_null = FCML_TRUE;
+		} else {
+			error = FCML_CEH_GEC_EOF;
 		}
 	}
 
@@ -2222,7 +2234,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 			// Mnemonic.
 			fcml_bool shortform = decoding_context.disassembler_context->configuration.use_short_form_mnemonics;
 			fcml_bool is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
-			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, memory_data_size, l );
+			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.suffix, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, memory_data_size, l );
 			if( mnemonic ) {
 				instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
 				instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
