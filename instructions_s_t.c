@@ -632,24 +632,24 @@ void fcml_tf_instruction_STMXCSR(void) {
 
 void fcml_tf_instruction_STOS(void) {
     // AA STOS m8 NA Valid Valid For legacy mode, store AL at address ES:(E)DI; For 64-bit mode store AL at address RDI or EDI.
-    FCML_I32( "stos byte ptr [si],byte ptr [di]", 0x67, 0xAA );
-    FCML_I32( "rep stos byte ptr [si],byte ptr [di]", 0xF3, 0x67, 0xAA );
-    FCML_I32_D( "stos byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xAA );
-    FCML_I32( "stos byte ptr [esi],byte ptr [edi]", 0xAA );
-    FCML_I64_D( "stos byte ptr [rsi],byte ptr [rdi]", 0x48, 0xAA );
-    FCML_I64_D( "stos byte ptr [rsi],byte ptr [rdi]", 0x40, 0xAA );
-    FCML_I64_D( "stos byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xAA );
-    FCML_I64_D( "stos byte ptr [esi],byte ptr [edi]", 0x66, 0x67, 0x40, 0xAA );
+    FCML_I32( "stos byte ptr [di]", 0x67, 0xAA );
+    FCML_I32( "rep stos byte ptr [di]", 0xF3, 0x67, 0xAA );
+    FCML_I32_D( "stos byte ptr [di]", 0x66, 0x67, 0xAA );
+    FCML_I32( "stos byte ptr [edi]", 0xAA );
+    FCML_I64_D( "stos byte ptr [rdi]", 0x48, 0xAA );
+    FCML_I64_D( "stos byte ptr [rdi]", 0x40, 0xAA );
+    FCML_I64_D( "stos byte ptr [edi]", 0x67, 0x40, 0xAA );
+    FCML_I64_D( "stos byte ptr [edi]", 0x66, 0x67, 0x40, 0xAA );
     // AB STOS m16 NA Valid Valid For legacy mode, store AX at address ES:(E)DI; For 64-bit mode store AX at address RDI or EDI.
     // AB STOS m32 NA Valid Valid For legacy mode, store EAX at address ES:(E)DI; For 64-bit mode store EAX at address RDI or EDI.
     // REX.W + AB STOS m64 NA Valid N.E. Store RAX at address RDI or EDI.
-    FCML_I32( "rep stos dword ptr [si],dword ptr [di]", 0xF3, 0x67, 0xAB );
-    FCML_I32( "stos word ptr [si],word ptr [di]", 0x66, 0x67, 0xAB );
-    FCML_I32( "stos dword ptr [esi],dword ptr [edi]", 0xAB );
-    FCML_I64( "stos qword ptr [rsi],qword ptr [rdi]", 0x48, 0xAB );
-    FCML_I64_D( "stos dword ptr [rsi],dword ptr [rdi]", 0x40, 0xAB );
-    FCML_I64_D( "stos dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xAB );
-    FCML_I64_D( "stos word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xAB );
+    FCML_I32( "rep stos dword ptr [di]", 0xF3, 0x67, 0xAB );
+    FCML_I32( "stos word ptr [di]", 0x66, 0x67, 0xAB );
+    FCML_I32( "stos dword ptr [edi]", 0xAB );
+    FCML_I64( "stos qword ptr [rdi]", 0x48, 0xAB );
+    FCML_I64_D( "stos dword ptr [rdi]", 0x40, 0xAB );
+    FCML_I64_D( "stos dword ptr [edi]", 0x67, 0x40, 0xAB );
+    FCML_I64_D( "stos word ptr [edi]", 0x66, 0x67, 0x40, 0xAB );
     // AA STOSB NA Valid Valid For legacy mode, store AL at address ES:(E)DI; For 64-bit mode store AL at address RDI or EDI.
     // AB STOSW NA Valid Valid For legacy mode, store AX at address ES:(E)DI; For 64-bit mode store AX at address RDI or EDI.
     // AB STOSD NA Valid Valid For legacy mode, store EAX at address ES:(E)DI; For 64-bit mode store EAX at address RDI or EDI.
@@ -658,12 +658,25 @@ void fcml_tf_instruction_STOS(void) {
     FCML_I32_A( "stosw", 0x66, 0xAB );
     FCML_I32_A( "stosd", 0xAB );
     FCML_I64_A( "stosq", 0x48, 0xAB );
+
+    // GAS
+    FCML_A64( "stosb (%rdi)", 0xaa );
+    FCML_A64( "stosw (%rdi)", 0x66, 0xab );
+    FCML_A64( "stosl (%rdi)", 0xab );
+    FCML_A64( "stosq (%rdi)", 0x48, 0xab );
+    FCML_A64_A( "stosb", 0xaa );
+	FCML_A64_A( "stosw", 0x66, 0xab );
+	FCML_A64_A( "stosl", 0xab );
+	FCML_A64_A( "stosq", 0x48, 0xab );
 }
 
 void fcml_tf_instruction_STR(void) {
     // 0F 00 /1 STR r/m16 M Valid Valid Stores segment selector from TR in r/m16.
     FCML_I32( "str word ptr [eax]",  0x0F, 0x00, 0x08 );
     FCML_I64( "str word ptr [rax]", 0x0F, 0x00, 0x08 );
+    // GAS
+    FCML_A32( "str (%eax)", 0x0f, 0x00, 0x08 );
+    FCML_A64( "str (%rax)", 0x0f, 0x00, 0x08 );
 }
 
 void fcml_tf_instruction_SUB(void) {
@@ -737,6 +750,14 @@ void fcml_tf_instruction_SUB(void) {
     FCML_I32( "sub sp,word ptr [di+0201h]", 0x66, 0x67, 0x2b, 0xa5, 0x01, 0x02 );
     FCML_I32( "sub esp,dword ptr [di+0201h]", 0x67, 0x2b, 0xa5, 0x01, 0x02 );
     FCML_I64( "sub r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x2b, 0x64, 0x89, 0x01 );
+    // GAS (similar to add)
+    FCML_A32( "sub 0x0201(%di),%sp", 0x66, 0x67, 0x2b, 0xa5, 0x01, 0x02 );
+    FCML_A32( "sub 0x04030201(%ebp),%esp", 0x2b, 0xa5, 0x01, 0x02, 0x03, 04 );
+    FCML_A64_M( "sub $0x42806521,%eax", 2, FCML_MI( 0x81, 0xe8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x2d, 0x21, 0x65, 0x80, 0x42 ) );
+    FCML_A64( "lock subb $0xff,0x04030201(%rip)", 0xf0, 0x80, 0x2d, 0x01, 0x02, 0x03, 0x04, 0xff );
+    FCML_A64( "sub $0x04030201,%ebp", 0x81, 0xed, 0x01, 0x02, 0x03, 0x04 );
+    FCML_A64_M( "lock subq $0x0000000000000005,0x0000000004030201(%rdi)", 2, FCML_MI( 0xf0, 0x48, 0x83, 0xaf, 0x01, 0x02, 0x03, 0x04, 0x05 ), FCML_MI( 0xf0, 0x48, 0x81, 0xaf, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00, 0x00, 0x00 ) );
+    FCML_A64( "xrelease lock sub %ah,0x0000000004030201(%rbp)", 0xf3, 0xf0, 0x28, 0xa5, 0x01, 0x02, 0x03, 0x04 );
 }
 
 void fcml_tf_instruction_SUBPD(void) {
@@ -749,6 +770,13 @@ void fcml_tf_instruction_SUBPD(void) {
     FCML_I32( "vsubpd xmm0,xmm6,xmmword ptr [eax]", 0xc5, 0xc9, 0x5c, 0x00 );
     FCML_I32( "vsubpd xmm0,xmm6,xmm0", 0xc5, 0xc9, 0x5c, 0xc0 );
     FCML_I64( "vsubpd xmm0,xmm6,xmmword ptr [rax]", 0xc5, 0xc9, 0x5c, 0x00 );
+    // GAS
+    FCML_A64( "subpd (%rax),%xmm0", 0x66, 0x0f, 0x5c, 0x00 );
+    FCML_A64( "subpd %xmm0,%xmm0", 0x66, 0x0f, 0x5c, 0xc0 );
+    FCML_A64( "subpd (%rax),%xmm0", 0x66, 0x0f, 0x5c, 0x00 );
+    FCML_A64( "vsubpd (%rax),%xmm6,%xmm0", 0xc5, 0xc9, 0x5c, 0x00 );
+    FCML_A64( "vsubpd %xmm0,%xmm6,%xmm0", 0xc5, 0xc9, 0x5c, 0xc0 );
+    FCML_A64( "vsubpd (%rax),%xmm6,%xmm0", 0xc5, 0xc9, 0x5c, 0x00 );
 }
 
 void fcml_tf_instruction_SUBPS(void) {
@@ -761,6 +789,13 @@ void fcml_tf_instruction_SUBPS(void) {
     FCML_I32( "vsubps xmm0,xmm6,xmmword ptr [eax]", 0xc5, 0xc8, 0x5c, 0x00 );
     FCML_I32( "vsubps xmm0,xmm6,xmm0", 0xc5, 0xc8, 0x5c, 0xc0 );
     FCML_I64( "vsubps xmm0,xmm6,xmmword ptr [rax]", 0xc5, 0xc8, 0x5c, 0x00 );
+    // GAS
+    FCML_A64( "subps (%rax),%xmm0", 0x0f, 0x5c, 0x00 );
+    FCML_A64( "subps %xmm0,%xmm0", 0x0f, 0x5c, 0xc0 );
+    FCML_A64( "subps (%rax),%xmm0", 0x0f, 0x5c, 0x00 );
+    FCML_A64( "vsubps (%rax),%xmm6,%xmm0", 0xc5, 0xc8, 0x5c, 0x00 );
+    FCML_A64( "vsubps %xmm0,%xmm6,%xmm0", 0xc5, 0xc8, 0x5c, 0xc0 );
+    FCML_A64( "vsubps (%rax),%xmm6,%xmm0", 0xc5, 0xc8, 0x5c, 0x00 );
 }
 
 void fcml_tf_instruction_SUBSD(void) {
@@ -770,6 +805,11 @@ void fcml_tf_instruction_SUBSD(void) {
     // VEX.NDS.LIG.F2.0F.WIG 5C /r VSUBSD xmm1,xmm2,xmm3/m64 RVM V/V AVX Subtract the low double-precision floatingpoint value in xmm3/mem from xmm2 and store the result in xmm1.
     FCML_I32( "vsubsd xmm2,xmm5,mmword ptr [ecx+eax]", 0xc5, 0xd3, 0x5c, 0x14, 0x01 );
     FCML_I32( "vsubsd xmm2,xmm4,mmword ptr [ecx+eax]", 0xC5, 0xDB, 0x5C, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "subsd (%rcx,%rax),%xmm2", 0xf2, 0x0f, 0x5c, 0x14, 0x01 );
+    FCML_A64( "subsd (%rcx,%rax),%xmm2", 0xf2, 0x0f, 0x5c, 0x14, 0x01 );
+    FCML_A64( "vsubsd (%rcx,%rax),%xmm5,%xmm2", 0xc5, 0xd3, 0x5c, 0x14, 0x01 );
+    FCML_A64( "vsubsd (%rcx,%rax),%xmm4,%xmm2", 0xc5, 0xdb, 0x5c, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_SUBSS(void) {
@@ -779,23 +819,33 @@ void fcml_tf_instruction_SUBSS(void) {
     // VEX.NDS.LIG.F3.0F.WIG 5C /r VSUBSS xmm1,xmm2,xmm3/m32
     FCML_I32( "vsubss xmm2,xmm5,dword ptr [ecx+eax]", 0xc5, 0xd2, 0x5c, 0x14, 0x01 );
     FCML_I32( "vsubss xmm2,xmm4,dword ptr [ecx+eax]", 0xC5, 0xDA, 0x5C, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "subss (%rcx,%rax),%xmm2", 0xf3, 0x0f, 0x5c, 0x14, 0x01 );
+    FCML_A64( "subss (%rcx,%rax),%xmm2", 0xf3, 0x0f, 0x5c, 0x14, 0x01 );
+    FCML_A64( "vsubss (%rcx,%rax),%xmm5,%xmm2", 0xc5, 0xd2, 0x5c, 0x14, 0x01 );
+    FCML_A64( "vsubss (%rcx,%rax),%xmm4,%xmm2", 0xc5, 0xda, 0x5c, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_SWAPGS(void) {
     // 0F 01 F8 SWAPGS NP Valid Invalid Exchanges the current GS base register value with the value contained in MSR address C0000102H.
     FCML_I64( "swapgs", 0x0F, 0x01, 0xF8 );
     FCML_I32_FAILED( "swapgs", 0x0F, 0x01, 0xF8 );
+    // GAS
+    FCML_A64( "swapgs", 0x0f, 0x01, 0xf8 );
 }
 
 void fcml_tf_instruction_SYSCALL(void) {
     // 0F 05 SYSCALL NP Valid Invalid Fast call to privilege level 0 system procedures.
     FCML_I64( "syscall", 0x0F, 0x05 );
     FCML_I32_FAILED( "syscall", 0x0F, 0x05 );
+    // GAS
+    FCML_A64( "syscall", 0x0f, 0x05 );
 }
 
 void fcml_tf_instruction_SYSENTER(void) {
     // 0F 34 SYSENTER NP Valid Valid Fast call to privilege level 0 system procedures.
     FCML_I3264( "sysenter", 0x0F, 0x34 );
+    FCML_A64( "sysenter", 0x0f, 0x34 );
 }
 
 void fcml_tf_instruction_SYSEXIT(void) {
@@ -804,6 +854,9 @@ void fcml_tf_instruction_SYSEXIT(void) {
     FCML_I32( "sysexit", 0x0F, 0x35 );
     FCML_I64( "sysexit", 0x0F, 0x35 );
     FCML_I64_D( "sysexit", 0x48, 0x0F, 0x35 );
+    // GAS
+    FCML_A32( "sysexit", 0x0f, 0x35 );
+    FCML_A64( "sysexit", 0x0f, 0x35 );
 }
 
 void fcml_tf_instruction_SYSRET(void) {
@@ -812,6 +865,8 @@ void fcml_tf_instruction_SYSRET(void) {
     FCML_I32_FAILED( "sysret", 0x0F, 0x07 );
     FCML_I64( "sysret", 0x0F, 0x07 );
     FCML_I64_D( "sysret", 0x48, 0x0F, 0x07 );
+    // GAS
+    FCML_A64( "sysret", 0x0f, 0x07 );
 }
 
 void fcml_tf_instruction_SHLX_SHRX_SARX(void) {
@@ -833,11 +888,25 @@ void fcml_tf_instruction_SHLX_SHRX_SARX(void) {
     FCML_I32( "sarx eax,eax,edi", 0xC4, 0xE2, 0x42, 0xF7, 0xC0 );
     FCML_I64( "sarx rax,qword ptr [rax],rdi", 0xC4, 0xE2, 0xC2, 0xF7, 0x00 );
     FCML_I64( "sarx rax,rax,rdi", 0xC4, 0xE2, 0xC2, 0xF7, 0xC0 );
+    // GAS
+    FCML_A64( "shlx %edi,(%rax),%eax", 0xc4, 0xe2, 0x41, 0xf7, 0x00 );
+    FCML_A64( "shlx %edi,%eax,%eax", 0xc4, 0xe2, 0x41, 0xf7, 0xc0 );
+    FCML_A64( "shlx %rdi,(%rax),%rax", 0xc4, 0xe2, 0xc1, 0xf7, 0x00 );
+    FCML_A64( "shlx %rdi,%rax,%rax", 0xc4, 0xe2, 0xc1, 0xf7, 0xc0 );
+    FCML_A64( "shrx %edi,(%rax),%eax", 0xc4, 0xe2, 0x43, 0xf7, 0x00 );
+    FCML_A64( "shrx %edi,%eax,%eax", 0xc4, 0xe2, 0x43, 0xf7, 0xc0 );
+    FCML_A64( "shrx %rdi,(%rax),%rax", 0xc4, 0xe2, 0xc3, 0xf7, 0x00 );
+    FCML_A64( "shrx %rdi,%rax,%rax", 0xc4, 0xe2, 0xc3, 0xf7, 0xc0 );
+    FCML_A64( "sarx %edi,(%rax),%eax", 0xc4, 0xe2, 0x42, 0xf7, 0x00 );
+    FCML_A64( "sarx %edi,%eax,%eax", 0xc4, 0xe2, 0x42, 0xf7, 0xc0 );
+    FCML_A64( "sarx %rdi,(%rax),%rax", 0xc4, 0xe2, 0xc2, 0xf7, 0x00 );
+    FCML_A64( "sarx %rdi,%rax,%rax", 0xc4, 0xe2, 0xc2, 0xf7, 0xc0 );
 }
 
 void fcml_tf_instruction_STAC(void) {
     // 0F 01 CB STAC
     FCML_I3264( "stac", 0x0F, 0x01, 0xCB );
+    FCML_A3264( "stac", 0x0F, 0x01, 0xCB );
 }
 
 CU_TestInfo fctl_ti_instructions_s[] = {
