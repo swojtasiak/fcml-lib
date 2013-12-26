@@ -286,6 +286,11 @@ void fcml_ifn_asm_clean_context( fcml_ist_asm_encoding_context *context ) {
 	data_size_flags->allowed_effective_address_size.is_set = FCML_FALSE;
 	data_size_flags->allowed_effective_operand_size.flags = 0;
 	data_size_flags->allowed_effective_operand_size.is_set = FCML_FALSE;
+	// Clears segment override set by acceptor functions.
+	context->segment_override.reg = 0;
+	context->segment_override.size = FCML_DS_UNDEF;
+	context->segment_override.type = FCML_REG_UNDEFINED;
+	context->segment_override.x64_exp = FCML_FALSE;
 }
 
 fcml_st_memory_stream fcml_ifn_asm_instruction_part_stream( fcml_ist_asm_instruction_part *instruction_part ) {
@@ -1335,6 +1340,37 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 			        }
 			    }
 
+				// Accept segment registers it any of them have been set.
+			    if( !error ) {
+
+					fcml_st_effective_address *effective_address = &(operand_def->address.effective_address);
+					fcml_st_segment_selector *segment_selector = &(operand_def->address.segment_selector);
+					fcml_st_register *segment_register = &(segment_selector->segment_selector);
+
+					if( segment_register->type == FCML_REG_SEG && segment_register->reg != FCML_REG_UNDEFINED ) {
+						// Segment register set, so it has to be accepted.
+						if( addr_mode_desc->instruction_group & FCML_AMT_BRANCH ) {
+							// For branch instructions only CS register can be used and override is not acceptable.
+							if( segment_register->reg != FCML_REG_CS ) {
+								error = FCML_EN_UNSUPPORTED_OPPERAND;
+							}
+						} else if( ( effective_address->base.type == FCML_REG_GPR ) && ( effective_address->base.reg == FCML_REG_BP || effective_address->base.reg == FCML_REG_SP ) ) {
+							// For SP/BP registers SS segment register has to be used.
+							if( segment_register->reg != FCML_REG_SS ) {
+								error = FCML_EN_UNSUPPORTED_OPPERAND;
+							}
+						} else {
+							if( segment_register->reg != FCML_REG_DS ) {
+								context->segment_override = *segment_register;
+							}
+						}
+						if( error ) {
+							fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN ), FCML_CEH_AEC_ILLEGAL_SEG_REG_OVERRIDE, FCML_EN_CEH_EL_ERROR );
+						}
+					}
+
+			    }
+
 			    if( !error ) {
 
                     // ASA.
@@ -1393,6 +1429,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		    context->mod_rm.address = operand_def->address;
 		    fcml_data_size mem_data_size = fcml_ifn_asm_calculate_operand_size( context, operand_def->address.size_operator, args->encoded_memory_operand_size );
 			error = fcml_ifn_asm_decode_dynamic_operand_size( context, args->encoded_memory_operand_size, mem_data_size, NULL, FCML_IEN_CT_EQUAL );
+
+
 		}
 		break;
 	default:
