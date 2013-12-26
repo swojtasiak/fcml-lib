@@ -157,6 +157,8 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+    //FCML_I32_RF( "call far fword ptr cs:[ebx+00000001h]", FCML_REND_FLAG_RENDER_DEFAULT_SEG, 0xFF, 0x5B, 0x01 );
+    //return 0;
 
 	//FCML_I32_M( "push 11ffh", 2, FCML_MI( 0x66, 0x68, 0xff, 0x11 ), FCML_MI( 0x68, 0xff, 0x11, 0x00, 0x00 ) );
 
