@@ -38,3 +38,5 @@ uzywajac takiej metody uzytkownik mogl by zmieniac renderer/dialect a kod analiz
 
 
 Dla multi instrucji dodac dopasowywanie kodu instrukcji, ktory ejst zwracany przez disassembler.
+
+STAC jest niesupportowany przez fasm?
