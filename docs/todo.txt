@@ -40,3 +40,16 @@ uzywajac takiej metody uzytkownik mogl by zmieniac renderer/dialect a kod analiz
 Dla multi instrucji dodac dopasowywanie kodu instrukcji, ktory ejst zwracany przez disassembler.
 
 STAC, CLAC jest niesupportowany przez fasm?
+
+
+
+
+- Ustawić wszędzie opcjonalność wielkości pamięci.
+
+
+
+1. Register i memory.
+2. CRC32, chyba jest konflikt pomimo że rejestr jest podany.
+3. VCVTTPD2DQ Także wyjątek.
+
+- 
