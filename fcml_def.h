@@ -875,7 +875,21 @@ enum fcml_en_instruction_codes {
 	F_SYSENTER,
 	F_SYSEXIT,
 	F_SYSRET,
-
+	F_TEST,
+	F_T1MSKC,
+	F_UCOMISD,
+	F_VUCOMISD,
+	F_UCOMISS,
+	F_VUCOMISS,
+	F_UD2,
+	F_UNPCKHPD,
+	F_VUNPCKHPD,
+	F_UNPCKHPS,
+	F_VUNPCKHPS,
+	F_UNPCKLPD,
+	F_VUNPCKLPD,
+	F_UNPCKLPS,
+	F_VUNPCKLPS,
 };
 
 /*******************/
