@@ -1226,6 +1226,19 @@ void fcml_tf_instruction_MWAIT(void) {
     FCML_A64( "mwait", 0x0f, 0x01, 0xc9 );
 }
 
+void fcml_tf_instruction_MULX(void) {
+	// MULX
+	// VEX.NDD.LZ.F2.0F38.W0 F6 /r MULX r32a, r32b, r/m32
+	FCML_I32( "mulx eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x43, 0xF6, 0x00 );
+	FCML_I32( "mulx eax,edi,eax", 0xC4, 0xE2, 0x43, 0xF6, 0xC0 );
+	// VEX.NDD.LZ.F2.0F38.W1 F6 /r MULX r64a, r64b, r/m64
+	FCML_I64( "mulx rax,rdi,qword ptr [rax]", 0xC4, 0xE2, 0xC3, 0xF6, 0x00 );
+	FCML_I64( "mulx rax,rdi,rax", 0xC4, 0xE2, 0xC3, 0xF6, 0xC0 );
+	// GAS
+	FCML_A64( "mulx (%rax),%rdi,%rax", 0xc4, 0xe2, 0xc3, 0xf6, 0x00 );
+	FCML_A64( "mulx %rax,%rdi,%rax", 0xc4, 0xe2, 0xc3, 0xf6, 0xc0 );
+}
+
 CU_TestInfo fctl_ti_instructions_m[] = {
     { "fcml_tf_instruction_MASKMOVQ", fcml_tf_instruction_MASKMOVQ },
     { "fcml_tf_instruction_MASKMOVDQU", fcml_tf_instruction_MASKMOVDQU },
@@ -1282,6 +1295,7 @@ CU_TestInfo fctl_ti_instructions_m[] = {
     { "fcml_tf_instruction_MULSD", fcml_tf_instruction_MULSD },
     { "fcml_tf_instruction_MULSS", fcml_tf_instruction_MULSS },
     { "fcml_tf_instruction_MWAIT", fcml_tf_instruction_MWAIT },
+    { "fcml_tf_instruction_MULX", fcml_tf_instruction_MULX },
     CU_TEST_INFO_NULL,
 };
 

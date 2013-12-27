@@ -798,6 +798,8 @@ void fcml_tf_instruction_CWD_CDQ_CQO(void) {
 
 void fcml_tf_instruction_CLAC(void) {
     FCML_I3264( "clac", 0x0F, 0x01, 0xCA );
+    // GAS
+    FCML_A3264( "clac", 0x0F, 0x01, 0xCA );
 }
 
 void fcml_tf_instruction_COMISD() {

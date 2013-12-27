@@ -25,6 +25,11 @@ void fcml_tf_instruction_XADD(void) {
     FCML_I32( "lock xadd byte ptr [eax],dl", 0xF0, 0x0F, 0xC0, 0x10 );
     FCML_I32( "xacquire lock xadd byte ptr [eax],dl", 0xF2, 0xF0, 0x0F, 0xC0, 0x10 );
     FCML_I32( "xrelease lock xadd byte ptr [eax],dl", 0xF3, 0xF0, 0x0F, 0xC0, 0x10 );
+    // GAS
+    FCML_A64( "xadd %dl,(%rax)", 0x0f, 0xc0, 0x10 );
+    FCML_A64( "lock xadd %dl,(%rax)", 0xf0, 0x0f, 0xc0, 0x10 );
+    FCML_A64( "xacquire lock xadd %dl,(%rax)", 0xf2, 0xf0, 0x0f, 0xc0, 0x10 );
+    FCML_A64( "add %cl,(%rdi)", 0x00, 0x0f );
     // 0F C1 /r XADD r/m16,r16 MR Valid Valid Exchange r16 and r/m16; load sum into r/m16.
     // 0F C1 /r XADD r/m32,r32 MR Valid Valid Exchange r32 and r/m32; load sum into r/m32.
     // REX.W + 0F C1 /r XADD r/m64,r64 MR Valid N.E. Exchange r64 and r/m64; load sum into r/m64.
@@ -33,6 +38,14 @@ void fcml_tf_instruction_XADD(void) {
     FCML_I32( "lock xadd word ptr [eax],dx", 0xF0, 0x66, 0x0F, 0xC1, 0x10 );
     FCML_I32( "xacquire lock xadd word ptr [eax],dx", 0xF2, 0xF0, 0x66, 0x0F, 0xC1, 0x10 );
     FCML_I32( "xrelease lock xadd word ptr [eax],dx", 0xF3, 0xF0, 0x66, 0x0F, 0xC1, 0x10 );
+    // GAS
+    FCML_A64( "xadd %dl,(%rax)", 0x0f, 0xc0, 0x10 );
+    FCML_A64( "lock xadd %dl,(%rax)", 0xf0, 0x0f, 0xc0, 0x10 );
+    FCML_A64( "xacquire lock xadd %dl,(%rax)", 0xf2, 0xf0, 0x0f, 0xc0, 0x10 );
+    FCML_A64( "xadd %rdx,(%rax)", 0x48, 0x0f, 0xc1, 0x10 );
+    FCML_A64( "xadd %edx,(%rax)", 0x0f, 0xc1, 0x10 );
+    FCML_A64( "lock xadd %dx,(%rax)", 0xf0, 0x66, 0x0f, 0xc1, 0x10 );
+    FCML_A64( "xacquire lock xadd %dx,(%rax)", 0xf2, 0xf0, 0x66, 0x0f, 0xc1, 0x10 );
 }
 
 void fcml_tf_instruction_XCHG(void) {
@@ -42,11 +55,11 @@ void fcml_tf_instruction_XCHG(void) {
     // 90+rd XCHG r32, EAX O Valid Valid Exchange EAX with r32.
     // REX.W + 90+rd XCHG RAX, r64 O Valid N.E. Exchange r64 with RAX.
     // REX.W + 90+rd XCHG r64, RAX O Valid N.E. Exchange RAX with r64.
-    FCML_I32_M( "xchg eax,ecx", 3, FCML_MI( 0x87, 0xc8 ), FCML_MI( 0x87, 0xc1 ), FCML_MI( 0x91 ) );
-    FCML_I32_M( "xchg eax,ecx", 3, FCML_MI( 0x87, 0xc8 ), FCML_MI( 0x87, 0xc1 ), FCML_MI( 0x91 ) );
-    FCML_I64_M( "xchg eax,ecx", 3, FCML_MI( 0x87, 0xc8 ), FCML_MI( 0x87, 0xc1 ), FCML_MI( 0x91 ) );
+    FCML_I3264_M( "xchg eax,ecx", 3, FCML_MI( 0x87, 0xc8 ), FCML_MI( 0x87, 0xc1 ), FCML_MI( 0x91 ) );
     FCML_I64_M( "xchg ax,cx", 3, FCML_MI( 0x66, 0x87, 0xc8 ), FCML_MI( 0x66, 0x87, 0xc1 ), FCML_MI( 0x66, 0x91 ) );
     FCML_I64_M( "xchg rax,rcx", 3, FCML_MI( 0x48, 0x87, 0xc8 ), FCML_MI( 0x48, 0x87, 0xc1 ), FCML_MI( 0x48, 0x91 ) );
+    // GAS
+    FCML_A64_M( "xchg %ecx,%eax", 3, FCML_MI( 0x87, 0xc8 ), FCML_MI( 0x87, 0xc1 ), FCML_MI( 0x91 ) );
     // 86 /r XCHG r/m8, r8 MR Valid Valid Exchange r8 (byte register) with byte from r/m8.
     // REX + 86 /r XCHG r/m8*, r8* MR Valid N.E. Exchange r8 (byte register) with byte from r/m8.
     // 86 /r XCHG r8, r/m8 RM Valid Valid Exchange byte from r/m8 with r8 (byte register).
@@ -57,6 +70,8 @@ void fcml_tf_instruction_XCHG(void) {
     FCML_I32( "lock xchg byte ptr [eax],al", 0xF0, 0x86, 0x00 );
     FCML_I32( "xchg al,al", 0x86, 0xc0 );
     FCML_I32_M( "xchg bl,al", 2, FCML_MI( 0x86, 0xc3 ), FCML_MI( 0x86, 0xd8 ) );
+    // GAS
+    FCML_A64( "lock xchg %al,(%rax)", 0xf0, 0x86, 0x00 );
     // 87 /r XCHG r/m16, r16 MR Valid Valid Exchange r16 with word from r/m16.
     // 87 /r XCHG r16, r/m16 RM Valid Valid Exchange word from r/m16 with r16.
     // 87 /r XCHG r/m32, r32 MR Valid Valid Exchange r32 with doubleword from r/m32.
@@ -67,12 +82,17 @@ void fcml_tf_instruction_XCHG(void) {
     FCML_I32_M( "xchg eax,ecx", 3, FCML_MI( 0x87, 0xc8 ), FCML_MI( 0x87, 0xc1 ), FCML_MI( 0x91 ) );
     FCML_I32_M( "xchg eax,eax", 2, FCML_MI( 0x87, 0xc0 ), FCML_MI( 0x90 ) );
     FCML_I32_M( "xchg ax,ax", 2, FCML_MI( 0x66, 0x87, 0xc0 ), FCML_MI( 0x66, 0x90 ) );
+    // GAS
+    FCML_A32_M( "xchg %ecx,%eax", 3, FCML_MI( 0x87, 0xc8 ), FCML_MI( 0x87, 0xc1 ), FCML_MI( 0x91 ) );
 }
 
 void fcml_tf_instruction_XGETBV(void) {
     // 0F 01 D0 XGETBV NP Valid Valid Reads an XCR specified by ECX into EDX:EAX.
     FCML_I32( "xgetbv", 0x0F, 0x01, 0xD0 );
     FCML_I64( "xgetbv", 0x0F, 0x01, 0xD0 );
+    // GAS
+    FCML_A64( "xgetbv", 0x0f, 0x01, 0xd0 );
+    FCML_A64( "xgetbv", 0x0f, 0x01, 0xd0 );
 }
 
 void fcml_tf_instruction_XLAT(void) {
@@ -82,6 +102,11 @@ void fcml_tf_instruction_XLAT(void) {
     FCML_I32( "xlat byte ptr [ebx]", 0xD7 );
     FCML_I32( "xlat byte ptr [bx]", 0x67, 0xD7 );
     FCML_I32_A( "xlatb", 0xD7 );
+    // GAS
+    FCML_A64( "xlat (%rbx)", 0xd7 );
+    FCML_A64_A( "xlatb (%rbx)", 0xd7 );
+    FCML_A64_A( "xlatb", 0xd7 );
+    FCML_A64_A( "xlat", 0xd7 );
 }
 
 void fcml_tf_instruction_XOR(void) {
@@ -139,6 +164,12 @@ void fcml_tf_instruction_XOR(void) {
     FCML_I64( "xor esi,dword ptr [rax]", 0x33, 0x30  );
     FCML_I64( "xor si,word ptr [rax]", 0x66, 0x33, 0x30 );
     FCML_I64( "xor rsi,qword ptr [rax]", 0x48, 0x33, 0x30  );
+    // GAS (the same excoding model as add, sub etc)
+    FCML_A64( "lock xorl $0x22ffff30,(%rax)", 0xf0, 0x81, 0x30, 0x30, 0xff, 0xff, 0x22 );
+    FCML_A64( "xacquire lock xorl $0x22ffff30,(%rax)", 0xf2, 0xf0, 0x81, 0x30, 0x30, 0xff, 0xff, 0x22 );
+    FCML_A64( "xrelease lock xorl $0x22ffff30,(%rax)", 0xf3, 0xf0, 0x81, 0x30, 0x30, 0xff, 0xff, 0x22 );
+    FCML_A64( "xorq $0xffffffffffffff30,(%rax)", 0x48, 0x81, 0x30, 0x30, 0xff, 0xff, 0xff );
+    FCML_A64( "xor (%rax),%dh", 0x32, 0x30 );
 }
 
 void fcml_tf_instruction_XORPD(void) {
@@ -150,6 +181,12 @@ void fcml_tf_instruction_XORPD(void) {
     FCML_I64( "vxorpd ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0D, 0x57, 0x14, 0x01 );
     FCML_I32( "vxorpd xmm2,xmm7,xmmword ptr [ecx+eax]", 0xc5, 0xc1, 0x57, 0x14, 0x01 );
     FCML_I32( "vxorpd xmm2,xmm2,xmmword ptr [ecx+eax]", 0xc5, 0xe9, 0x57, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "xorpd 0x0000000000000020(%rax),%xmm0", 0x66, 0x0f, 0x57, 0x40, 0x20 );
+    FCML_A64( "xorpd 0x0000000000000020(%rax),%xmm0", 0x66, 0x0f, 0x57, 0x40, 0x20 );
+    FCML_A64( "vxorpd (%r9,%rax),%ymm14,%ymm10", 0xc4, 0x41, 0x0d, 0x57, 0x14, 0x01 );
+    FCML_A64( "vxorpd (%rcx,%rax),%xmm7,%xmm2", 0xc5, 0xc1, 0x57, 0x14, 0x01 );
+    FCML_A64( "vxorpd (%rcx,%rax),%xmm2,%xmm2", 0xc5, 0xe9, 0x57, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_XORPS(void) {
@@ -161,6 +198,11 @@ void fcml_tf_instruction_XORPS(void) {
     FCML_I64( "vxorps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0C, 0x57, 0x14, 0x01 );
     FCML_I32( "vxorps xmm2,xmm7,xmmword ptr [ecx+eax]", 0xc5, 0xc0, 0x57, 0x14, 0x01 );
     FCML_I32( "vxorps xmm2,xmm2,xmmword ptr [ecx+eax]", 0xc5, 0xe8, 0x57, 0x14, 0x01 );
+    // GAS
+    FCML_A64( "xorps 0x0000000000000020(%rax),%xmm0", 0x0f, 0x57, 0x40, 0x20 );
+    FCML_A64( "vxorps (%r9,%rax),%ymm14,%ymm10", 0xc4, 0x41, 0x0c, 0x57, 0x14, 0x01 );
+    FCML_A64( "vxorps (%rcx,%rax),%xmm7,%xmm2", 0xc5, 0xc0, 0x57, 0x14, 0x01 );
+    FCML_A64( "vxorps (%rcx,%rax),%xmm2,%xmm2", 0xc5, 0xe8, 0x57, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_XRSTOR(void) {
@@ -171,6 +213,9 @@ void fcml_tf_instruction_XRSTOR(void) {
     FCML_I64( "xrstor [rax]", 0x66, 0x0F, 0xAE, 0x28 );
     FCML_I32( "xrstor [eax]", 0x66, 0x0F, 0xAE, 0x28 );
     FCML_I64( "xrstor64 [rax]", 0x48, 0x0F, 0xAE, 0x28 );
+    // GAS
+    FCML_A64( "xrstor (%rax)", 0x0f, 0xae, 0x28 );
+    FCML_A64( "xrstor64 (%rax)", 0x48, 0x0f, 0xae, 0x28 );
 }
 
 void fcml_tf_instruction_XSAVE(void) {
@@ -181,6 +226,9 @@ void fcml_tf_instruction_XSAVE(void) {
     FCML_I64( "xsave [rax]", 0x66, 0x0F, 0xAE, 0x20 );
     FCML_I32( "xsave [eax]", 0x66, 0x0F, 0xAE, 0x20 );
     FCML_I64( "xsave64 [rax]", 0x48, 0x0F, 0xAE, 0x20 );
+    // GAS
+    FCML_A64( "xsave (%rax)", 0x0f, 0xae, 0x20 );
+    FCML_A64( "xsave64 (%rax)", 0x48, 0x0f, 0xae, 0x20 );
 }
 
 void fcml_tf_instruction_XSAVEOPT(void) {
@@ -191,17 +239,24 @@ void fcml_tf_instruction_XSAVEOPT(void) {
     FCML_I64( "xsaveopt [rax]", 0x66, 0x0F, 0xAE, 0x30 );
     FCML_I32( "xsaveopt [eax]", 0x66, 0x0F, 0xAE, 0x30 );
     FCML_I64( "xsaveopt64 [rax]", 0x48, 0x0F, 0xAE, 0x30 );
+    // GAS
+    FCML_A64( "xsaveopt (%rax)", 0x0f, 0xae, 0x30 );
+    FCML_A64( "xsaveopt64 (%rax)", 0x48, 0x0f, 0xae, 0x30 );
 }
 
 void fcml_tf_instruction_XSETBV(void) {
     // 0F 01 D1 XSETBV NP Valid Valid Write the value in EDX:EAX to the XCR specified by ECX.
     FCML_I64( "xsetbv", 0x0F, 0x01, 0xD1 );
     FCML_I32( "xsetbv", 0x0F, 0x01, 0xD1 );
+    // GAS
+    FCML_A64( "xsetbv", 0x0f, 0x01, 0xd1 );
 }
 
 void fcml_tf_instruction_XABORT(void) {
     // C6 F8 ib XABORT imm8
     FCML_I3264( "xabort 20h", 0xC6, 0xF8, 0x20 );
+    // GAS
+    FCML_A64( "xabort $0x20", 0xc6, 0xf8, 0x20 );
 }
 
 void fcml_tf_instruction_XBEGIN(void) {
@@ -213,18 +268,26 @@ void fcml_tf_instruction_XBEGIN(void) {
     // TODO: Przyjrzec sie DIS_relative, czy aby a pewno wszystkie tryby dzialaja tak jak powinny.
     FCML_I64_A_FAILED( "xbegin 0000800500401006h", 0xC7, 0xF8, 0x00, 0x00, 0x00, 0x00 );
     FCML_I64( "xbegin 0000800000401005h", 0xC7, 0xF8, 0xFF, 0xFF, 0xFF, 0xFF );
+    // GAS
+    FCML_A64( "xbegin 0x0000800000401005", 0xc7, 0xf8, 0xff, 0xff, 0xff, 0xff );
 }
 
 void fcml_tf_instruction_XEND(void) {
     // 0F 01 D5 XEND
     FCML_I32( "xend", 0x0F, 0x01, 0xD5 );
     FCML_I64( "xend", 0x0F, 0x01, 0xD5 );
+    // GAS
+    FCML_A64( "xend", 0x0f, 0x01, 0xd5 );
+    FCML_A64( "xend", 0x0f, 0x01, 0xd5 );
 }
 
 void fcml_tf_instruction_XTEST(void) {
     // 0F 01 D6 XTEST
     FCML_I32( "xtest", 0x0F, 0x01, 0xD6 );
     FCML_I64( "xtest", 0x0F, 0x01, 0xD6 );
+    // GAS
+    FCML_A64( "xtest", 0x0f, 0x01, 0xd6 );
+    FCML_A64( "xtest", 0x0f, 0x01, 0xd6 );
 }
 
 CU_TestInfo fctl_ti_instructions_x[] = {
