@@ -1167,18 +1167,18 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_att_mnemonics[] = {
 #define FCML_ASM_DIALECT_att_GROUPS 3
 
 fcml_string fcml_ar_asm_dialect_reg_symbol_table_att[16] = {
-	"db0", "db1", "db2", "db3", "db4", "db5", "db6", "db7", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>", "<unknown DB>"
+	FCML_TEXT("db0"), FCML_TEXT("db1"), FCML_TEXT("db2"), FCML_TEXT("db3"), FCML_TEXT("db4"), FCML_TEXT("db5"), FCML_TEXT("db6"), FCML_TEXT("db7"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>")
 };
 
 fcml_string fcml_itb_att_conditional_suffixes[3][16] = {
-    { "o", "no",  "b",   "nb", "e", "ne", "be", "nbe", "s",  "ns", "p",  "np", "l",   "nl", "le", "nle" },
-    { NULL, NULL, "nae", "ae", "z", "nz", "na", "a",   NULL, NULL, "pe", "po", "nge", "ge", "ng", "g"   },
-    { NULL, NULL, "c",   "nc", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  NULL, NULL, NULL  }
+    { FCML_TEXT("o"), FCML_TEXT("no"),  FCML_TEXT("b"),   FCML_TEXT("nb"), FCML_TEXT("e"), FCML_TEXT("ne"), FCML_TEXT("be"), FCML_TEXT("nbe"), FCML_TEXT("s"),  FCML_TEXT("ns"), FCML_TEXT("p"),  FCML_TEXT("np"), FCML_TEXT("l"),   FCML_TEXT("nl"), FCML_TEXT("le"), FCML_TEXT("nle") },
+    { NULL, NULL, FCML_TEXT("nae"), FCML_TEXT("ae"), FCML_TEXT("z"), FCML_TEXT("nz"), FCML_TEXT("na"), FCML_TEXT("a"),   NULL, NULL, FCML_TEXT("pe"), FCML_TEXT("po"), FCML_TEXT("nge"), FCML_TEXT("ge"), FCML_TEXT("ng"), FCML_TEXT("g")   },
+    { NULL, NULL, FCML_TEXT("c"),   FCML_TEXT("nc"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  NULL, NULL, NULL  }
 };
 
 fcml_string fcml_itb_att_conditional_suffixes_render[2][16] = {
-	{ "o", "no", "b", "nb", "e", "ne", "be", "nbe", "s", "ns", "p", "np", "l", "nl", "le", "nle" },
-	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
+	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("b"), FCML_TEXT("nb"), FCML_TEXT("e"), FCML_TEXT("ne"), FCML_TEXT("be"), FCML_TEXT("nbe"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("p"), FCML_TEXT("np"), FCML_TEXT("l"), FCML_TEXT("nl"), FCML_TEXT("le"), FCML_TEXT("nle") },
+	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("nae"), FCML_TEXT("ae"), FCML_TEXT("z"), FCML_TEXT("nz"), FCML_TEXT("na"), FCML_TEXT("a"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("pe"), FCML_TEXT("po"), FCML_TEXT("nge"), FCML_TEXT("ge"), FCML_TEXT("ng"), FCML_TEXT("g") }
 };
 
 // Dialect instance is set up by "fcml_fn_init_att_dialect" method.
@@ -1191,9 +1191,9 @@ fcml_string fcml_ifn_asm_dialect_render_mnemonic_att( fcml_string mnemonic, fcml
 		fcml_int cond = ( condition->condition_type << 1 ) | ( ( condition->is_negation ) ? 1 : 0 );
 		if( show_carry ) {
 			if( cond == 2 ) {
-				suffix = "c";
+				suffix = FCML_TEXT("c");
 			} else if( cond == 3 ) {
-				suffix = "nc";
+				suffix = FCML_TEXT("nc");
 			}
 		}
 		if( !suffix ) {
@@ -1230,7 +1230,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_register_att( const fcml_st_register *re
 	if( error ) {
 		return error;
 	}
-	fcml_fn_env_str_snprintf( buffer, buffer_length, "%%%s", printable_reg );
+	fcml_fn_env_str_snprintf( buffer, buffer_length, FCML_TEXT("%%%s"), printable_reg );
 	return error;
 }
 
@@ -1360,31 +1360,31 @@ fcml_ceh_error fcml_ifn_asm_dialect_render_size_operator_att( fcml_data_size siz
 	case 0:
 		break;
 	case 8:
-		size_operator_printable = "byte ptr ";
+		size_operator_printable = FCML_TEXT("byte ptr ");
 		break;
 	case 16:
-		size_operator_printable = "word ptr ";
+		size_operator_printable = FCML_TEXT("word ptr ");
 		break;
 	case 32:
-		size_operator_printable = "dword ptr ";
+		size_operator_printable = FCML_TEXT("dword ptr ");
 		break;
 	case 48:
-		size_operator_printable = "fword ptr ";
+		size_operator_printable = FCML_TEXT("fword ptr ");
 		break;
 	case 64:
-		size_operator_printable = is_media_instruction ? "mmword ptr " : "qword ptr ";
+		size_operator_printable = is_media_instruction ? FCML_TEXT("mmword ptr ") : FCML_TEXT("qword ptr ");
 		break;
 	case 80:
-		size_operator_printable = "tbyte ptr ";
+		size_operator_printable = FCML_TEXT("tbyte ptr ");
 		break;
 	case 128:
-		size_operator_printable = is_media_instruction ? "xmmword ptr " : "oword ptr ";
+		size_operator_printable = is_media_instruction ? FCML_TEXT("xmmword ptr ") : FCML_TEXT("oword ptr ");
 		break;
 	case 256:
-		size_operator_printable = is_media_instruction ? "ymmword ptr " : "qqword ";
+		size_operator_printable = is_media_instruction ? FCML_TEXT("ymmword ptr ") : FCML_TEXT("qqword ");
 		break;
 	default:
-		snprintf( buffer, buffer_len, "%dbyte ptr ", size_operator / 8 );
+		snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
 	}
 
 	if( size_operator_printable ) {
