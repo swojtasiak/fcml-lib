@@ -14,7 +14,7 @@
 #include "fcml_env.h"
 #include "fcml_coll.h"
 #include "fcml_intel_rend.h"
-#include "fcml_intel_asm_parser.h"
+#include "fcml_intel_parser.h"
 #include "fcml_common_dialect.h"
 
 // *************

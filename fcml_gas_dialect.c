@@ -17,10 +17,10 @@
 #include "fcml_disassembler.h"
 #include "fcml_env.h"
 #include "fcml_mnemonic_parser.h"
-#include "fcml_gas_rend.h"
 #include "fcml_types.h"
 #include "fcml_utils.h"
-#include "fcml_gas_asm_parser.h"
+#include "fcml_gas_rend.h"
+#include "fcml_gas_parser.h"
 
 // *************
 // * MNEMONICS *
