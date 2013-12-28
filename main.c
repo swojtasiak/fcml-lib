@@ -11,8 +11,8 @@
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
 
-#include "fcml_dialect_intel.h"
-#include "fcml_dialect_att.h"
+#include "fcml_intel_dialect.h"
+#include "fcml_gas_dialect.h"
 
 #include "fcml_assembler.h"
 #include "fcml_disassembler.h"
@@ -46,7 +46,7 @@
 #include "instructions_w_t.h"
 #include "instructions_x_t.h"
 #include "fcml_intel_parser_t.h"
-#include "fcml_att_parser_t.h"
+#include "fcml_gas_parser_t.h"
 #include "hints_t.h"
 #include "fcml_chooser_t.h"
 #include "prefixes_t.h"
@@ -83,13 +83,13 @@ CU_SuiteInfo *suites[] = {
     fcml_si_coll,
     fcml_si_utils,
 	fcml_si_intel_parser,
-	fcml_si_att_parser,
+	fcml_si_gas_parser,
 	fcml_si_mnemonic_parser,
 	fcml_si_hints,
 	fcml_si_chooser,
 	fcml_si_prefixes,
 	fcml_si_segment_reg,
-	fcml_si_att_parser,
+	fcml_si_gas_parser,
     NULL
 };
 
@@ -105,54 +105,54 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	error = fcml_fn_init_att_dialect();
+	error = fcml_fn_init_gas_dialect();
 	if( error ) {
 		fcml_fn_intel_dialect_free();
 		return 1;
 	}
 
 	assembler_intel = NULL;
-	assembler_att = NULL;
+	assembler_gas = NULL;
 
 	error = fcml_fn_asm_assembler_init( fcml_fn_get_intel_dialect_context(), &assembler_intel );
 	if( error ) {
 		fcml_fn_intel_dialect_free();
-		fcml_fn_att_dialect_free();
+		fcml_fn_gas_dialect_free();
 		printf("Can not initialize INTEL assembler.\n");
 		return 1;
 	}
 
-	error = fcml_fn_asm_assembler_init( fcml_fn_get_att_dialect_context(), &assembler_att );
+	error = fcml_fn_asm_assembler_init( fcml_fn_get_gas_dialect_context(), &assembler_gas );
 	if( error ) {
 		fcml_fn_asm_assembler_free( assembler_intel );
 		fcml_fn_intel_dialect_free();
-		fcml_fn_att_dialect_free();
+		fcml_fn_gas_dialect_free();
 		printf("Can not initialize AT&T assembler.\n");
 		return 1;
 	}
 
 	dialect_intel = fcml_fn_get_intel_dialect_context();
-	dialect_att = fcml_fn_get_att_dialect_context();
+	dialect_gas = fcml_fn_get_gas_dialect_context();
 
 	error = fcml_fn_dasm_disassembler_init( dialect_intel, &disassembler_intel );
 	if( error ) {
 		// Error.
 		fcml_fn_asm_assembler_free( assembler_intel );
-		fcml_fn_asm_assembler_free( assembler_att );
+		fcml_fn_asm_assembler_free( assembler_gas );
 		fcml_fn_intel_dialect_free();
-		fcml_fn_att_dialect_free();
+		fcml_fn_gas_dialect_free();
 		printf( "Can not allocate INTEL disassembler.\n" );
 		return 1;
 	}
 
-	error = fcml_fn_dasm_disassembler_init( dialect_att, &disassembler_att );
+	error = fcml_fn_dasm_disassembler_init( dialect_gas, &disassembler_gas );
 	if( error ) {
 		// Error.
 		fcml_fn_dasm_disassembler_free( disassembler_intel );
 		fcml_fn_asm_assembler_free( assembler_intel );
-		fcml_fn_asm_assembler_free( assembler_att );
+		fcml_fn_asm_assembler_free( assembler_gas );
 		fcml_fn_intel_dialect_free();
-		fcml_fn_att_dialect_free();
+		fcml_fn_gas_dialect_free();
 		printf( "Can not allocate AT&T disassembler.\n" );
 		return 1;
 	}
@@ -204,11 +204,11 @@ int main(int argc, char **argv) {
             if (CU_register_suites(suites[i]) != CUE_SUCCESS) {
                 fprintf(stderr, "suite registration failed - %s\n", CU_get_error_msg());
                 fcml_fn_dasm_disassembler_free( disassembler_intel );
-                fcml_fn_dasm_disassembler_free( disassembler_att );
+                fcml_fn_dasm_disassembler_free( disassembler_gas );
                 fcml_fn_asm_assembler_free( assembler_intel );
-                fcml_fn_asm_assembler_free( assembler_att );
+                fcml_fn_asm_assembler_free( assembler_gas );
                 fcml_fn_intel_dialect_free();
-				fcml_fn_att_dialect_free();
+				fcml_fn_gas_dialect_free();
                 exit(1);
             }
         }
@@ -216,10 +216,10 @@ int main(int argc, char **argv) {
         CU_cleanup_registry();
     }
     fcml_fn_dasm_disassembler_free( disassembler_intel );
-    fcml_fn_dasm_disassembler_free( disassembler_att );
+    fcml_fn_dasm_disassembler_free( disassembler_gas );
     fcml_fn_asm_assembler_free( assembler_intel );
-    fcml_fn_asm_assembler_free( assembler_att );
+    fcml_fn_asm_assembler_free( assembler_gas );
     fcml_fn_intel_dialect_free();
-    fcml_fn_att_dialect_free();
+    fcml_fn_gas_dialect_free();
     exit(0);
 }

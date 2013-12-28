@@ -9,7 +9,7 @@
 
 #include <fcml_assembler.h>
 #include <fcml_choosers.h>
-#include <fcml_dialect_intel.h>
+#include <fcml_intel_dialect.h>
 #include <fcml_common_utils.h>
 
 #include "instructions_base_t.h"
