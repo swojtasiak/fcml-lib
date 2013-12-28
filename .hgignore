@@ -23,3 +23,7 @@ syntax: regexp
 ^fcml_x64att_parser\.output$
 syntax: regexp
 ^fcml_x64intel_parser\.output$
+syntax: regexp
+^fcml_gas_parser\.output$
+syntax: regexp
+^fcml_intel_parser\.output$
