@@ -1,6 +1,6 @@
 %define api.pure
 %parse-param { struct fcml_st_parser_data *pd }
-%name-prefix="att_"
+%name-prefix="gas_"
 
 %{
 	#include <stdio.h>
@@ -9,7 +9,7 @@
 	#include "fcml_apc_ast.h"
 	#include "fcml_parser_utils.h"
 	
-	void att_error( struct fcml_st_parser_data *pd, const char *error );
+	void gas_error( struct fcml_st_parser_data *pd, const char *error );
 	
 	/* Macro responsible for handling 'Out of memory' errors. */
 	#define HANDLE_ERRORS(x) if( !x ) { \
@@ -90,12 +90,12 @@
 }
 
 %{
-	#include "fcml_x64att_lexer.h"
+	#include "fcml_gas_lexer.h"
 	#define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
 %}
 
 %initial-action { 
-	//att_debug = 1;
+	//gas_debug = 1;
 }
 
 %%

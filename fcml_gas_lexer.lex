@@ -3,7 +3,7 @@
 	#include <stdlib.h>
 	
 	#include "fcml_common_lex.h"
-	#include "fcml_x64att_parser.tab.h"
+	#include "fcml_gas_parser.tab.h"
 %}
 
 %option noyywrap
@@ -16,10 +16,10 @@
 %option 8bit 
 %option reentrant
 %option bison-bridge
-%option outfile="fcml_x64att_lexer.c"
-%option header-file="fcml_x64att_lexer.h"
+%option outfile="fcml_gas_lexer.c"
+%option header-file="fcml_gas_lexer.h"
 %option nounistd
-%option prefix="att_"
+%option prefix="gas_"
 
 %option extra-type="struct fcml_st_parser_data *"
 

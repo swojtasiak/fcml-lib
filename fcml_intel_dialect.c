@@ -9,12 +9,12 @@
 #include <stdio.h>
 
 #include "fcml_dialect_int.h"
-#include "fcml_dialect_intel.h"
+#include "fcml_intel_dialect.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_env.h"
 #include "fcml_coll.h"
-#include "fcml_rend_intel.h"
-#include "fcml_x64intel_asm_parser.h"
+#include "fcml_intel_rend.h"
+#include "fcml_intel_asm_parser.h"
 #include "fcml_common_dialect.h"
 
 // *************
@@ -1294,7 +1294,7 @@ fcml_ceh_error fcml_fn_init_intel_dialect(void) {
 	fcml_dialect_context_intel.get_parsed_mnemonics = &fcml_fn_asm_dialect_get_parsed_mnemonics_intel;
 	fcml_dialect_context_intel.free_mnemonic = &fcml_fnp_asm_dialect_free_mnemonic_intel;
 	fcml_dialect_context_intel.instruction_renderer = &fcml_fn_rend_render_instruction_intel;
-	fcml_dialect_context_intel.instruction_parser = &fcml_x64intel_parse;
+	fcml_dialect_context_intel.instruction_parser = &fcml_intel_parse;
 	fcml_dialect_context_intel.get_register = &fcml_fnp_asm_dialect_get_register_intel;
 	fcml_dialect_context_intel.size_operator_renderer = &fcml_fnp_asm_dialect_render_size_operator_intel;
 	fcml_dialect_context_intel.assembler_preprocessor = NULL;

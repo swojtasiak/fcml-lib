@@ -104,7 +104,7 @@
 }
 
 %{
-	#include "fcml_x64intel_lexer.h"
+	#include "fcml_intel_lexer.h"
 	#define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
 %}
 

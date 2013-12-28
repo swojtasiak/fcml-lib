@@ -7,7 +7,7 @@
 
 #include "fcml_parser_utils.h"
 
-#include "fcml_x64intel_parser.tab.h"
+#include "fcml_intel_parser.tab.h"
 
 #include <stdlib.h>
 #include <errno.h>

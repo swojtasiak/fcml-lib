@@ -5,7 +5,7 @@
  *      Author: tas
  */
 
-#include "fcml_rend_intel.h"
+#include "fcml_intel_rend.h"
 
 #include "fcml_ceh.h"
 #include "fcml_common.h"
@@ -25,46 +25,46 @@ fcml_string fcml_iarr_rend_utils_integer_formats_intel[4][4] = {
 	// Unsigned integer values.
 	{FCML_PRI_UINT8_DEC, FCML_PRI_UINT16_DEC, FCML_PRI_UINT32_DEC, FCML_PRI_UINT64_DEC},
 	// Signed hex values.
-	{FCML_PRI_INT8_HEX"h", FCML_PRI_INT16_HEX"h", FCML_PRI_INT32_HEX"h", FCML_PRI_INT64_HEX"h"},
+	{FCML_PRI_INT8_HEX FCML_TEXT("h"), FCML_PRI_INT16_HEX FCML_TEXT("h"), FCML_PRI_INT32_HEX FCML_TEXT("h"), FCML_PRI_INT64_HEX FCML_TEXT("h")},
 	// Unsigned hex values.
-	{FCML_PRI_INT8_HEX"h", FCML_PRI_INT16_HEX"h", FCML_PRI_INT32_HEX"h", FCML_PRI_INT64_HEX"h"}
+	{FCML_PRI_INT8_HEX FCML_TEXT("h"), FCML_PRI_INT16_HEX FCML_TEXT("h"), FCML_PRI_INT32_HEX FCML_TEXT("h"), FCML_PRI_INT64_HEX FCML_TEXT("h")}
 };
 
 fcml_string fcml_iarr_rend_conditional_suffixes_intel[2][16] = {
-	{ "o", "no", "b", "nb", "e", "ne", "be", "nbe", "s", "ns", "p", "np", "l", "nl", "le", "nle" },
-	{ "o", "no", "nae", "ae", "z", "nz", "na", "a", "s", "ns", "pe", "po", "nge", "ge", "ng", "g" }
+	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("b"), FCML_TEXT("nb"), FCML_TEXT("e"), FCML_TEXT("ne"), FCML_TEXT("be"), FCML_TEXT("nbe"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("p"), FCML_TEXT("np"), FCML_TEXT("l"), FCML_TEXT("nl"), FCML_TEXT("le"), FCML_TEXT("nle") },
+	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("nae"), FCML_TEXT("ae"), FCML_TEXT("z"), FCML_TEXT("nz"), FCML_TEXT("na"), FCML_TEXT("a"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("pe"), FCML_TEXT("po"), FCML_TEXT("nge"), FCML_TEXT("ge"), FCML_TEXT("ng"), FCML_TEXT("g") }
 };
 
 void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, fcml_st_dasm_prefixes *prefixes, fcml_uint32_t flags ) {
 	if( prefixes->is_xacquire ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "xacquire " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("xacquire ") );
 	}
 	if( prefixes->is_xrelease ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "xrelease " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("xrelease ") );
 	}
 	if( prefixes->is_lock ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "lock " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("lock ") );
 	}
 	if( prefixes->is_branch ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "branch " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("branch ") );
 	}
 	if( prefixes->is_nobranch ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "nobranch " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("nobranch ") );
 	}
 	if( prefixes->is_rep ) {
 		if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_1 ) {
-			fcml_fn_rend_utils_format_append_str( output_stream, "repe " );
+			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("repe ") );
 		} else if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_2 ) {
-			fcml_fn_rend_utils_format_append_str( output_stream, "repz " );
+			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("repz ") );
 		} else {
-			fcml_fn_rend_utils_format_append_str( output_stream, "rep " );
+			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("rep ") );
 		}
 	}
 	if( prefixes->is_repne ) {
 		if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_2 ) {
-			fcml_fn_rend_utils_format_append_str( output_stream, "repnz " );
+			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("repnz ") );
 		} else {
-			fcml_fn_rend_utils_format_append_str( output_stream, "repne " );
+			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("repne ") );
 		}
 	}
 }
@@ -121,10 +121,10 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 
 	if( !address->segment_selector.is_default_reg || ( render_flags & FCML_REND_FLAG_RENDER_DEFAULT_SEG ) ) {
 		fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(address->segment_selector.segment_selector), prefixes->is_rex );
-		fcml_fn_rend_utils_format_append_str( output_stream, ":" );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(":") );
 	}
 
-	fcml_fn_rend_utils_format_append_str( output_stream, "[" );
+	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("[") );
 
 	fcml_st_effective_address *effective_address = &(address->effective_address);
 
@@ -132,15 +132,15 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 
 	// Adds SIB hints to all instructions where SIB presents.
 	if( ( render_flags & FCML_REND_FLAG_RENDER_SIB_HINT ) && ( result->instruction_details.modrm_details.sib.is_not_null ) ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "sib " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("sib ") );
 	}
 
 	if( ( render_flags & FCML_REND_FLAG_RENDER_ABS_HINT ) && ( operand->hints & FCML_OP_HINT_ABSOLUTE_ADDRESSING ) ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "abs " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("abs ") );
 	}
 
 	if( ( render_flags & FCML_REND_FLAG_RENDER_REL_HINT ) && ( operand->hints & FCML_OP_HINT_RELATIVE_ADDRESSING ) ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, "rel " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("rel ") );
 	}
 
 	if( address->address_form == FCML_AF_COMBINED ) {
@@ -153,7 +153,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 
 		// Append index register.
 		if( !fcml_fn_utils_is_reg_undef( &(effective_address->index) ) ) {
-			fcml_fn_rend_utils_format_append_str_if( output_stream, "+", !first );
+			fcml_fn_rend_utils_format_append_str_if( output_stream, FCML_TEXT("+"), !first );
 			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->index), prefixes->is_rex );
 			first = FCML_FALSE;
 		}
@@ -161,7 +161,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 		// Append scale.
 		if( effective_address->scale_factor > 0 ) {
 
-			fcml_fn_rend_utils_format_append_str_if( output_stream, "*", !first );
+			fcml_fn_rend_utils_format_append_str_if( output_stream, FCML_TEXT("*"), !first );
 			first = FCML_FALSE;
 
 			fcml_st_integer scale_value = {0};
@@ -175,7 +175,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 		// Displacement.
 		if( effective_address->displacement.size > 0 ) {
 
-			fcml_fn_rend_utils_format_append_str_if( output_stream, "+", !first );
+			fcml_fn_rend_utils_format_append_str_if( output_stream, FCML_TEXT("+"), !first );
 			first = FCML_FALSE;
 
 			fcml_st_integer integer;
@@ -200,7 +200,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 		error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, FCML_TRUE );
 	}
 
-	fcml_fn_rend_utils_format_append_str( output_stream, "]" );
+	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("]") );
 
 	return error;
 }
@@ -216,7 +216,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_intel( fcml_st_dialect
 
 	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, FCML_TRUE );
 
-	fcml_fn_rend_utils_format_append_str( output_stream, ":" );
+	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(":") );
 
 	integer.size = operand->far_pointer.offset_size;
 	switch( integer.size ) {
@@ -260,9 +260,9 @@ fcml_ceh_error fcml_ifn_rend_print_operand_intel(  fcml_st_dialect_context_int *
 fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml_uint32_t render_flags ) {
 	if( render_flags & FCML_REND_FLAG_COND_SHOW_CARRY ) {
 		if( condition == 2 ) {
-			return "c";
+			return FCML_TEXT("c");
 		} else if( condition == 3 ) {
-			return "nc";
+			return FCML_TEXT("nc");
 		}
 	}
 	fcml_int group = ( render_flags & FCML_REND_FLAG_COND_GROUP_2 ) ? 1 : 0;
@@ -286,7 +286,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 	// Instruction code.
 	if( render_flags & FCML_REND_FLAG_RENDER_CODE ) {
 		fcml_fn_rend_utils_format_append_code( output_stream, result->instruction_details.instruction_code, result->instruction_details.instruction_size );
-		fcml_fn_rend_utils_format_append_str( output_stream, " " );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(" ") );
 	}
 
 	// Instruction prefixes like LOCK.
@@ -302,10 +302,10 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 
 	// Add hints.
 	if( result->instruction.hints & FCML_HINT_FAR_POINTER ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, " far" );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(" far") );
 	}
 	if( ( render_flags & FCML_REND_FLAG_RENDER_INDIRECT_HINT ) && ( result->instruction.hints & FCML_HINT_INDIRECT_POINTER ) ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, " indirect" );
+		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(" indirect") );
 	}
 
 	// Add all operands.
@@ -316,7 +316,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 			error = fcml_ifn_rend_print_operand_intel( dialect_context_int, &local_stream, result, i, render_flags, &do_not_render );
 			if( !error ) {
 				if( !do_not_render ) {
-					fcml_fn_rend_utils_format_append_str( output_stream, ( i > 0 )  ? "," : " " );
+					fcml_fn_rend_utils_format_append_str( output_stream, ( i > 0 )  ? FCML_TEXT(",") : FCML_TEXT(" ") );
 					fcml_fn_rend_utils_format_append_stream( output_stream, &local_stream );
 					fcml_fn_stream_clean( &local_stream );
 				}
