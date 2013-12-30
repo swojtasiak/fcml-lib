@@ -509,10 +509,13 @@ void fcml_tf_instruction_CVTDQ2PD(void) {
     // VEX.128.F3.0F E6 /r VCVTDQ2PD xmm1, xmm2/m64
     FCML_I32( "vcvtdq2pd xmm2,mmword ptr [ecx+eax]", 0xc5, 0xfa, 0xe6, 0x14, 0x01 );
     FCML_I64( "vcvtdq2pd xmm10,mmword ptr [r9+rax]", 0xC4, 0x41, 0x7A, 0xE6, 0x14, 0x01 );
+    FCML_A64( "vcvtdq2pd (%rcx,%rax),%xmm2", 0xc5, 0xfa, 0xe6, 0x14, 0x01 );
+    FCML_A64( "vcvtdq2pd %xmm1,%xmm0", 0xc5, 0xfa, 0xe6, 0xc1 );
     // VEX.256.F3.0F E6 /r VCVTDQ2PD ymm1, xmm2/m128
     FCML_I32( "vcvtdq2pd ymm2,xmmword ptr [ecx+eax]", 0xc5, 0xfe, 0xe6, 0x14, 0x01 );
     FCML_I64( "vcvtdq2pd ymm10,xmmword ptr [r9+rax]", 0xC4, 0x41, 0x7E, 0xE6, 0x14, 0x01 );
     FCML_A64( "vcvtdq2pd (%r9,%rax),%ymm10", 0xC4, 0x41, 0x7E, 0xE6, 0x14, 0x01 );
+    FCML_A64( "vcvtdq2pd %xmm1,%ymm0", 0xc5, 0xfe, 0xe6, 0xc1 );
 }
 
 void fcml_tf_instruction_CVTDQ2PS(void) {

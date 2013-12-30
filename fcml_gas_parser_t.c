@@ -22,7 +22,7 @@
 #include <fcml_common.h>
 #include <fcml_types.h>
 #include <fcml_errors.h>
-#include <fcml_gas_asm_parser.h>
+#include <fcml_gas_parser.h>
 #include <fcml_gas_dialect.h>
 #include <string.h>
 

@@ -13,10 +13,10 @@
 #include <fcml_env.h>
 
 #include "fcml_assembler.h"
-#include "fcml_intel_asm_parser.h"
 #include "fcml_disassembler.h"
 #include "fcml_intel_dialect.h"
 #include "fcml_intel_rend.h"
+#include "fcml_intel_parser.h"
 
 extern fcml_st_asm_assembler *assembler_intel;
 extern fcml_st_dasm_disassembler *disassembler_intel;

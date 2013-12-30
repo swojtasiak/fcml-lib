@@ -14,7 +14,7 @@
 #include <fcml_common.h>
 #include <fcml_types.h>
 #include <fcml_errors.h>
-#include <fcml_intel_asm_parser.h>
+#include <fcml_intel_parser.h>
 #include <fcml_intel_dialect.h>
 #include <string.h>
 
