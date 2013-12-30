@@ -42,14 +42,15 @@ Dla multi instrucji dodac dopasowywanie kodu instrukcji, ktory ejst zwracany prz
 STAC, CLAC jest niesupportowany przez fasm?
 
 
-
-
 - Ustawić wszędzie opcjonalność wielkości pamięci.
-
+- Ustawić Source/Destination (R/W) dla operandów.
 
 
 1. Register i memory.
 2. CRC32, chyba jest konflikt pomimo że rejestr jest podany.
 3. VCVTTPD2DQ Także wyjątek.
 
-- 
+1. Read/Write
+2. Kodowanie operandów 
+
+
