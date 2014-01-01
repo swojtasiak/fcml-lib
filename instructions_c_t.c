@@ -555,10 +555,15 @@ void fcml_tf_instruction_CVTPD2PS(void) {
     FCML_I32( "cvtpd2ps xmm0,xmmword ptr [eax+00000020h]", 0x66, 0x0F, 0x5A, 0x40, 0x20 );
     // VEX.128.66.0F 5A /r VCVTPD2PS xmm1, xmm2/m128
     // VEX.256.66.0F 5A /r VCVTPD2PS xmm1, ymm2/m256
+    FCML_I32( "vcvtpd2ps xmm0,xmm1", 0xc5, 0xf9, 0x5a, 0xc1 );
     FCML_I32_D( "vcvtpd2ps xmm2,xmmword ptr [ecx+eax]", 0xC4, 0xE1, 0x79, 0x5A, 0x14, 0x01 );
-    FCML_I64_D( "vcvtpd2ps ymm2,ymmword ptr [rcx+rax]", 0xC4, 0xE1, 0x7D, 0x5A, 0x14, 0x01 );
+    FCML_I64_D( "vcvtpd2ps xmm2,ymmword ptr [rcx+rax]", 0xC4, 0xE1, 0x7D, 0x5A, 0x14, 0x01 );
     FCML_I32( "vcvtpd2ps xmm2,xmmword ptr [ecx+eax]", 0xc5, 0xf9, 0x5a, 0x14, 0x01 );
-    FCML_I64( "vcvtpd2ps ymm2,ymmword ptr [rcx+rax]", 0xc5, 0xfd, 0x5a, 0x14, 0x01 );
+    FCML_I64( "vcvtpd2ps xmm2,ymmword ptr [rcx+rax]", 0xc5, 0xfd, 0x5a, 0x14, 0x01 );
+    // GAS
+    FCML_A32( "vcvtpd2psx %xmm1,%xmm0", 0xc5, 0xf9, 0x5a, 0xc1 );
+    FCML_A64( "vcvtpd2psx (%rcx,%rax),%xmm2", 0xc5, 0xf9, 0x5a, 0x14, 0x01 );
+    FCML_A64( "vcvtpd2psy (%rcx,%rax),%xmm2", 0xc5, 0xfd, 0x5a, 0x14, 0x01 );
 }
 
 void fcml_tf_instruction_CVTPI2PD(void) {
