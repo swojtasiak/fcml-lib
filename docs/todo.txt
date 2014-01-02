@@ -54,3 +54,4 @@ STAC, CLAC jest niesupportowany przez fasm?
 2. Kodowanie operandów 
 
 
+LLWPCB <- Co to jest ten lightweight profiling.
