@@ -2036,7 +2036,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MASKMOVQ[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MAXPD[] = {
 	// 66 0F 5F /r MAXPD xmm1, xmm2/m128 A Valid Valid Return the maximum double-precision floatingpoint values between xmm2/m128 and xmm1.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x1000, 0x00D88000, { 0x0F, 0x5F, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1000, 0x00D88000, { 0x0F, 0x5F, 0x00 }, { FCML_OP_MODRM_R_XMM_RW, FCML_OP_MODRM_RM_XMM_OP_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMAXPD[] = {
@@ -2047,7 +2047,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMAXPD[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MAXPS[] = {
 	// 0F 5F /r MAXPS xmm1, xmm2/m128 A Valid Valid Return the maximum singleprecision floating-point values between xmm2/m128 and xmm1.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x5F, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x5F, 0x00 }, { FCML_OP_MODRM_R_XMM_RW, FCML_OP_MODRM_RM_XMM_OP_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMAXPS[] = {
@@ -2058,7 +2058,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMAXPS[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MAXSD[] = {
 	// F2 0F 5F /r MAXSD xmm1, xmm2/m64 A Valid Valid Return the maximum scalardouble-precision floatingpoint value between xmm2/mem64 and xmm1.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x2000, 0x00D88000, { 0x0F, 0x5F, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x2000, 0x00D88000, { 0x0F, 0x5F, 0x00 }, { FCML_OP_MODRM_R_XMM_RW, FCML_OP_MODRM_RM_XMM_OP_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMAXSD[] = {
@@ -2068,7 +2068,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMAXSD[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MAXSS[] = {
 	// F3 0F 5F /r MAXSS xmm1, xmm2/m32 A Valid Valid Return the maximum scalarsingle-precision floatingpoint value between xmm2/mem32 and xmm1.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x4000, 0x00D88000, { 0x0F, 0x5F, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE_SIMD, 0x4000, 0x00D88000, { 0x0F, 0x5F, 0x00 }, { FCML_OP_MODRM_R_XMM_RW, FCML_OP_MODRM_RM_XMM_OP_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMAXSS[] = {
@@ -2083,7 +2083,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MFENCE[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MINPD[] = {
 	// 66 0F 5D /r MINPD xmm1, xmm2/m128 A Valid Valid Return the minimum doubleprecision floating-point values between xmm2/m128 and xmm1.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x1000, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x1000, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_RW, FCML_OP_MODRM_RM_XMM_OP_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMINPD[] = {
@@ -2094,7 +2094,7 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMINPD[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MINPS[] = {
 	// 0F 5D /r MINPS xmm1, xmm2/m128 A Valid Valid Return the minimum singleprecision floating-point values between xmm2/m128 and xmm1.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE_SIMD, 0x0000, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_RW, FCML_OP_MODRM_RM_XMM_OP_128, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMINPS[] = {
@@ -2105,17 +2105,17 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMINPS[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MINSD[] = {
 	// F2 0F 5D /r MINSD xmm1, xmm2/m64 A Valid Valid Return the minimum scalar double-precision floatingpoint value between xmm2/mem64 and xmm1.
-	{ NULL, FCML_AMT_SSE2_SIMD, 0x2000, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE2_SIMD, 0x2000, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_RW, FCML_OP_MODRM_RM_XMM_OP_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMINSD[] = {
 	// VEX.NDS.128.F2.0F 5D /r VMINSD xmm1, xmm2, xmm3/m64
-	{ NULL, FCML_AMT_AVX_SIMD, 0x20C0, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_XMM_OP_64, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_AVX_SIMD, 0x20C0, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_OP_64, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MINSS[] = {
 	// F3 0F 5D /r MINSS xmm1, xmm2/m32 A Valid Valid Return the minimum scalar single-precision floatingpoint value between xmm2/mem32 and xmm1.
-	{ NULL, FCML_AMT_SSE_SIMD, 0x4000, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_SSE_SIMD, 0x4000, 0x00D88000, { 0x0F, 0x5D, 0x00 }, { FCML_OP_MODRM_R_XMM_RW, FCML_OP_MODRM_RM_XMM_OP_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMINSS[] = {
