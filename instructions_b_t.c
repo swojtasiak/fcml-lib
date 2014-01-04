@@ -65,6 +65,7 @@ void fcml_tf_instruction_BLENDVPS_VBLENDVPS(void) {
 void fcml_tf_instruction_BOUND(void) {
 	//TODO: GAS taka kolejnosc przyjje:  bound %esi,(%eax)
 	FCML_I32( "bound esi,qword ptr [eax]", 0x62, 0x30 );
+	FCML_I32_A( "bound esi,[eax]", 0x62, 0x30 );
 	FCML_A32( "bound (%eax),%esi", 0x62, 0x30 );
 	FCML_I32( "bound si,dword ptr [eax]", 0x66, 0x62, 0x30 );
 	FCML_I32( "bound si,dword ptr [bx+si]", 0x66, 0x67, 0x62, 0x30 );
@@ -140,12 +141,12 @@ void fcml_tf_instruction_BT(void) {
 	// REX.W + 0F BA /4 ib BT r/m64, imm8 B Valid N.E. Store selected bit in CF flag.
 	// EOS=32 EAS=64 (displacement extended to 64 bits)
 	FCML_I64( "bt dword ptr [rdi+0000000004030201h],05h", 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
-	// TODO: tu tez podobnie jak w BOUND nie ma okreslonego source/destination a operandy sa odwrocone? WTF
 	FCML_A64( "btl $0x05,0x0000000004030201(%rdi)", 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// Memory data size has to be set. Default size is not supported (and probably won't be) like it is in GAS.
 	FCML_A64_A_FAILED( "bt $0x05,0x0000000004030201(%rdi)", 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=32 EAS=32 (displacement is not extended because EAS is 32)
 	FCML_I64( "bt dword ptr [edi+04030201h],05h", 0x67, 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
+	FCML_I32( "bt dword ptr [edi+04030201h],05h", 0x0f, 0xba, 0xa7, 0x01, 0x02, 0x03, 0x04, 0x05 );
 	// EOS=64 EAS=64
 	FCML_I64( "bt qword ptr [rdi+0000000004030201h],05h", 0x48, 0x0F, 0xBA, 0xA7, 0x01, 0x02, 0x03, 0x4, 0x05 );
 	// EOS=64 EAS=64

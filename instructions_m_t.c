@@ -890,38 +890,36 @@ void fcml_tf_instruction_MOVQ2DQ(void) {
 
 void fcml_tf_instruction_MOVS(void) {
     // A4 MOVS m8, m8
-    FCML_I32( "rep movs byte ptr [si],byte ptr [di]", 0xF3, 0x67, 0xA4 );
-    FCML_I32( "movs byte ptr [si],byte ptr [di]", 0x66, 0x67, 0xA4 );
-    FCML_I32( "movs byte ptr [esi],byte ptr [edi]", 0xA4 );
-    FCML_I64( "movs byte ptr [rsi],byte ptr [rdi]", 0xA4 );
+    FCML_I32( "rep movs byte ptr [di],byte ptr [si]", 0xF3, 0x67, 0xA4 );
+    FCML_I32( "movs byte ptr [di],byte ptr [si]", 0x66, 0x67, 0xA4 );
+    FCML_I32( "movs byte ptr [edi],byte ptr [esi]", 0xA4 );
+    FCML_I64( "movs byte ptr [rdi],byte ptr [rsi]", 0xA4 );
     FCML_I64_A( "movsb", 0xA4 );
-    FCML_I64_D( "movs byte ptr [rsi],byte ptr [rdi]", 0x40, 0xA4 );
-    FCML_I64_D( "movs byte ptr [esi],byte ptr [edi]", 0x67, 0x40, 0xA4 );
-    FCML_I64_D( "movs byte ptr [esi],byte ptr [edi]", 0x66, 0x67, 0x40, 0xA4 );
+    FCML_I64_D( "movs byte ptr [rdi],byte ptr [rsi]", 0x40, 0xA4 );
+    FCML_I64_D( "movs byte ptr [edi],byte ptr [esi]", 0x67, 0x40, 0xA4 );
+    FCML_I64_D( "movs byte ptr [edi],byte ptr [esi]", 0x66, 0x67, 0x40, 0xA4 );
     // GAS
-    // TODO: GAS jie odwraca tych operandow, zastanowic sie na koncu co z tym zrobic i dlaczego wlasciwie.
-    FCML_A64( "movsb (%rdi),(%rsi)", 0xa4 );
-    FCML_A64( "movsb (%edi),(%esi)", 0x67, 0xa4 );
+    FCML_A64( "movsb (%rsi),(%rdi)", 0xa4 );
+    FCML_A64( "movsb (%esi),(%edi)", 0x67, 0xa4 );
     FCML_A64_A( "movsb", 0xA4 );
     // A5 MOVS m16, m16
     // A5 MOVS m32, m32
     // REX.W + A5 MOVS m64, m64
-    FCML_I32( "rep movs dword ptr [si],dword ptr [di]", 0xF3, 0x67, 0xA5 );
-    FCML_I32( "movs word ptr [si],word ptr [di]", 0x66, 0x67, 0xA5 );
-    FCML_I32( "movs dword ptr [esi],dword ptr [edi]", 0xA5 );
-    FCML_I64( "movs qword ptr [rsi],qword ptr [rdi]", 0x48, 0xA5 );
-    FCML_I64( "movs dword ptr [rsi],dword ptr [rdi]", 0xA5 );
+    FCML_I32( "rep movs dword ptr [di],dword ptr [si]", 0xF3, 0x67, 0xA5 );
+    FCML_I32( "movs word ptr [di],word ptr [si]", 0x66, 0x67, 0xA5 );
+    FCML_I32( "movs dword ptr [edi],dword ptr [esi]", 0xA5 );
+    FCML_I64( "movs qword ptr [rdi],qword ptr [rsi]", 0x48, 0xA5 );
+    FCML_I64( "movs dword ptr [rdi],dword ptr [rsi]", 0xA5 );
     FCML_I64_A( "movsw", 0x66, 0xA5 );
     FCML_I64_A( "movsd", 0xA5 );
     FCML_I64_A( "movsq", 0x48, 0xA5 );
-    FCML_I64_D( "movs dword ptr [rsi],dword ptr [rdi]", 0x40, 0xA5 );
-    FCML_I64_D( "movs dword ptr [esi],dword ptr [edi]", 0x67, 0x40, 0xA5 );
-    FCML_I64_D( "movs word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA5 );
+    FCML_I64_D( "movs dword ptr [rdi],dword ptr [rsi]", 0x40, 0xA5 );
+    FCML_I64_D( "movs dword ptr [edi],dword ptr [esi]", 0x67, 0x40, 0xA5 );
+    FCML_I64_D( "movs word ptr [edi],word ptr [esi]", 0x66, 0x67, 0x40, 0xA5 );
     // GAS
-    // TODO: Arguemnty odwrocone, pytanie dlaczego, zostawiam na koniec.
-    FCML_A32( "rep movsl (%di),(%si)", 0xF3, 0x67, 0xA5 );
-	FCML_A32( "movsw (%di),(%si)", 0x66, 0x67, 0xA5 );
-	FCML_A32( "movsl (%edi),(%esi)", 0xA5 );
+    FCML_A32( "rep movsl (%si),(%di)", 0xF3, 0x67, 0xA5 );
+	FCML_A32( "movsw (%si),(%di)", 0x66, 0x67, 0xA5 );
+	FCML_A32( "movsl (%esi),(%edi)", 0xA5 );
     FCML_A64_A( "movsw", 0x66, 0xA5 );
 	FCML_A64_A( "movsl", 0xA5 );
 	FCML_A64_A( "movsq", 0x48, 0xA5 );

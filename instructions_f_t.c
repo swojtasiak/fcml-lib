@@ -210,6 +210,23 @@ void fcml_tf_instruction_FDECSTP(void) {
     FCML_A64( "fdecstp", 0xd9, 0xf6 );
 }
 
+/*
+
+VS:
+00401000 D8 78 00         fdivr       dword ptr [eax]
+00401003 D8 70 00         fdiv        dword ptr [eax]
+00401006 DA 78 00         fidivr      dword ptr [eax]
+00401009 DA 70 00         fidiv       dword ptr [eax]
+
+GAS:
+fdivrs 0x0(%rax) - 0xd8, 0x78, 0x00
+fdivs 0x0(%rax) - 0xd8, 0x70, 0x00
+fidivrl 0x0(%rax) - 0xda, 0x78, 0x00
+fidivl 0x0(%rax) - 0xda, 0x70, 0x00
+
+
+ */
+
 void fcml_tf_instruction_FDIV(void) {
     FCML_I64( "fdiv dword ptr [rax+0000000000000020h]", 0xD8, 0x70, 0x20 );
     FCML_I32( "fdiv dword ptr [eax+00000020h]", 0xD8, 0x70, 0x20 );
@@ -237,6 +254,7 @@ void fcml_tf_instruction_FDIV(void) {
 
 void fcml_tf_instruction_FDIVR(void) {
 	// TODO: Sprawdzic dlaczego fdivr/fdiv są zamienione w przypadku GAS.
+    FCML_I32( "fdivr dword ptr [eax]", 0xD8, 0x38 );
     FCML_I64( "fdivr dword ptr [rax+0000000000000020h]", 0xD8, 0x78, 0x20 );
     FCML_I32( "fdivr dword ptr [eax+00000020h]", 0xD8, 0x78, 0x20 );
     FCML_I64( "fdivr qword ptr [rax+0000000000000020h]", 0xDC, 0x78, 0x20 );

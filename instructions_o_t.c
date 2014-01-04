@@ -154,7 +154,6 @@ void fcml_tf_instruction_OUT(void) {
     FCML_I64_D( "out dx,eax", 0x48, 0xEF );
     FCML_I64( "out dx,eax", 0xEF );
     // GAS
-    // TODO: Gas troche inaczej disassembluje z nawiasami, mozna pomyslec czy nie zrpbowac dodac opcji takiej.
     FCML_A64( "out %al,$0x20", 0xe6, 0x20 );
     FCML_A64( "out %eax,$0x20", 0xe7, 0x20 );
     FCML_A64( "out %al,%dx", 0xee );
