@@ -55,3 +55,64 @@ STAC, CLAC jest niesupportowany przez fasm?
 
 
 LLWPCB <- Co to jest ten lightweight profiling.
+
+
+---
+
+Hello everyone,
+
+AT&T dialect says, that every instruction has opposite order of destination and source operands in comparison to the Intel syntax. So in fact, all operands are just inverted. Recently, I found out that there are at last two instructions (bound and enter) which seem not to follow the rule. Following example shows how they are currently encoded in GAS/Intel assembler:
+
+INTEL: 62 30     bound esi,[eax]
+GAS:   62 30     bound %esi,(%eax)
+
+INTEL: c8 ee ff 01    enter 0ffeeh,01h
+GAS:   c8 ee ff 01    enter $0xffee,$0x1
+       c8 ee ff 55    enter $0xffee,$0x55
+       
+As you can see, both of these instructions have the same order of the operands. At first, I though that the fact that they do not have destination operand might be the case, but there are other similar instructions like "maskmovdqu" that follows the rule, so it looks like inconsistency. I haven't found any logical explanation yet, so I would be really grateful
+for any information about this issue. Maybe this is expected behaviour (just an exception), or maybe a kind of historical reason?
+
+Thanks in advance.
+
+Regards,
+Sławomir Wojtasiak
+slawomir *DOT* wojtasiak *AT* swkso[remove me]ftware *DOT* pl
+
+
+
+
+Witam wszystkich,
+
+Ostatnio napotkałem na dziwną niekonsystencję w dialekcie AT&T wykorzystywanym przez GAS. 
+Wszystkie instrukcje z jakimi się spotkałem mają odwrócone operandy w stosunku do dialektu intelowskiego. Jednak nastepujące dwie instrukcje nie są zgodne z tą konwencją.
+
+
+       
+Myślałem, że to kwestia tego, że w przypadku tych instrukcji ostatni operand nie jest operandem docelowym (Oba są read only.) ale inne podobne instruckje jak na przykład
+maskmovdqu assemblują/disassemblują się poprawnie. Czy takie zachowanie jest zamierzone? Czy może jest to jakaś pozostałość historyczna?
+
+Regards,
+Sławomir Wojtasiak
+slawomir *DOT* wojtasiak *AT* swksoftware *DOT* pl
+
+INTEL:
+GAS:   0f ba a7 01 02 03 04 05    btl    $0x5,0x4030201(%edi)
+
+00401000 DC F9            fdiv        st(1),st 
+00401002 DC F1            fdivr       st(1),st 
+0xdc, 0xf9 - fdivr %st,%st(1)
+0xdc, 0xf1 - fdiv  %st,%st(1)
+
+W tym przypadku oba operandy są R/R, ale inne isntrukcje mają podobnie.
+
+Transformery. Czyli próba optymalizacji instrukcji przez jej assemblacja, taka optymalizacja moze zmienic operandy przykładowo:
+Okazuje sie ze trafiamy na instrukcje.
+ 
+ bt[l] $63,(%rsi)
+>
+> ... and turn it into:
+>
+>         btl $31,4(%rsi)
+
+W deifnicji insturkcji mamy zapisany 

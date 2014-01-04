@@ -175,8 +175,30 @@ GDB:
 0x00401004:   d8 f8  fdivr  %st(0),%st
 0x00401006:   dc f0  fdiv   %st,%st(0)
 
+VS:
+00401000 D8 F0       fdiv        st,st(0) 
+00401002 DC F8       fdiv        st(0),st 
+00401004 D8 F8       fdivr       st,st(0) 
+00401006 DC F0       fdivr       st(0),st 
+
+00401006 DC F0       fdivr       st(0),st
+00401002 DC F8       fdiv        st(0),st
+
 0x000000000040050b <main+0>:	d8 f1	fdiv   %st(1),%st
 0x000000000040050d <main+2>:	dc f1	fdiv   %st,%st(1)
+
+VS:
+00401000 DC F8            fdiv        st(0),st 
+00401002 DC F0            fdivr       st(0),st 
+00401000 DC F9            fdiv        st(1),st 
+00401002 DC F1            fdivr       st(1),st 
+
+GAS:
+FCML_A64( "fdivr %st,%st(0)", 0xdc, 0xf8 );
+FCML_A64( "fdiv  %st,%st(0)", 0xdc, 0xf0 );
+FCML_A64( "fdivr %st,%st(1)", 0xdc, 0xf9 );
+FCML_A64( "fdiv  %st,%st(1)", 0xdc, 0xf1 );
+
 
 Powino być:
 (0xde, 0xf9) fdivp %st(0),%st(1) jest-> fdivrp %st(0),%st(1)
@@ -194,3 +216,7 @@ FCML_A64( "fsubrp %st(0),%st(1)", 0xde, 0xe9 );
 // Tryb adresowania w zasadzie niedozwolony!
 
 FCML_A64( "mov  %ebx,%ds", 0x8e, 0xdb );
+
+FASM:
+
+monitor eax,ecx,edx w 64 bitach tylko to assembluje a powinien: monitor rax,rcx,rdx
