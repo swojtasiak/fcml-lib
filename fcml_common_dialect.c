@@ -1,15 +1,20 @@
 /*
  * fcml_common_dialect.c
  *
+ * Implementation of utilities for assembler dialects.
+ *
  *  Created on: Nov 16, 2013
  *      Author: tas
  */
 
+#include "fcml_common_dialect.h"
+
 #include "fcml_ceh.h"
 #include "fcml_common.h"
+#include "fcml_dialect.h"
+#include "fcml_dialect_int.h"
+#include "fcml_env.h"
 #include "fcml_types.h"
-
-#include "fcml_common_dialect.h"
 
 fcml_string fcml_ar_asm_dialect_reg_symbol_table[7][16] = {
 	{ "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>" },
@@ -106,4 +111,12 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fc
 		*printable_reg = fcml_ar_asm_dialect_reg_sidm_symbol_table[rs][reg->reg];
 	}
 	return FCML_CEH_GEC_NO_ERROR;
+}
+
+void fcml_fn_cmn_dialect_free( fcml_st_dialect *dialect ) {
+    if( dialect ) {
+        fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*)dialect;
+        fcml_fn_asm_dialect_free_mnemonic_lookup( dialect_context );
+        fcml_fn_env_memory_free( dialect_context );
+    }
 }

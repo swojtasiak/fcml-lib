@@ -259,10 +259,15 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("fucomip"), FCML_ASM_DIALECT_INSTRUCTION( F_FUCOMIP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdecstp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDECSTP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdiv;fdivs[d04];fdivl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIV, FCML_AM_ALL ), 0 },
-    { FCML_TEXT("fdivp;fdivps[d04];fdivpl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("fdivr"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIV, FCML_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
+    // TODO: 2 takie same klucze sprawdzic jak to sie zachowa bo tu chyba kolejnsoc odgrywa scisle znaczenie i to czy zostanie podpisana wartosc dla klucza. a jeszli tak to czy poprzednia zostanie zmapy poprawnie usunieta.
+    { FCML_TEXT("fdivp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("fdivrp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fidiv[d02];fidivl[d04]"), FCML_ASM_DIALECT_INSTRUCTION( F_FIDIV, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdivr;fdivrs[d04];fdivrl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVR, FCML_AM_ALL ), 0 },
-    { FCML_TEXT("fdivrp;fdivrps[d04];fdivrpl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVRP, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("fdiv"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVR, FCML_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
+    { FCML_TEXT("fdivrp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVRP, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("fdivp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVRP, FCML_AM_ALL ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fidivr[d02];fidivrl[d04]"), FCML_ASM_DIALECT_INSTRUCTION( F_FIDIVR, FCML_AM_ALL ), 0 },
     { FCML_TEXT("ffree"), FCML_ASM_DIALECT_INSTRUCTION( F_FFREE, FCML_AM_ALL ), 0 },
     { FCML_TEXT("ficom[d02];ficoml[d04]"), FCML_ASM_DIALECT_INSTRUCTION( F_FICOM, FCML_AM_ALL ), 0 },
@@ -308,12 +313,14 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("fstsw"), FCML_ASM_DIALECT_INSTRUCTION( F_FSTSW, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fnstsw"), FCML_ASM_DIALECT_INSTRUCTION( F_FNSTSW, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fsub;fsubs[d04];fsubl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUB, FCML_AM_ALL ), 0 },
-    { FCML_TEXT("fsubr;fsubrs[d04];fsubrl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUB, FCML_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
+    { FCML_TEXT("fsubr"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUB, FCML_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fsubp"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUBP, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("fsubrp"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUBP, FCML_AM_ALL ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fisub[d02];fisubl[d04]"), FCML_ASM_DIALECT_INSTRUCTION( F_FISUB, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fsubr;fsubrs[d04];fsubrl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUBR, FCML_AM_ALL ), 0 },
-    { FCML_TEXT("fsub;fsubs[d04];fsubl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUBR, FCML_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
+    { FCML_TEXT("fsub"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUBR, FCML_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fsubrp"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUBRP, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("fsubp"), FCML_ASM_DIALECT_INSTRUCTION( F_FSUBRP, FCML_AM_ALL ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fisubr[d02];fisubrl[d04]"), FCML_ASM_DIALECT_INSTRUCTION( F_FISUBR, FCML_AM_ALL ), 0 },
     { FCML_TEXT("ftst"), FCML_ASM_DIALECT_INSTRUCTION( F_FTST, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fucom"), FCML_ASM_DIALECT_INSTRUCTION( F_FUCOM, FCML_AM_ALL ), 0 },
@@ -1569,27 +1576,12 @@ fcml_ceh_error fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dia
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_st_dialect_context_int *dialect_context_gas = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dialect_context_int ) );
-    if( !dialect_context_gas ) {
-        return FCML_CEH_GEC_OUT_OF_MEMORY;
-    }
+    fcml_st_dialect_context_int *dialect_context_gas = NULL;
 
-    // Prepare mnemonic lookup.
-    dialect_context_gas->dialect_mnemonics_lookup = fcml_fn_coll_map_alloc( &fcml_coll_map_descriptor_uint32, sizeof( fcml_arr_dialect_gas_mnemonics ) / sizeof( fcml_st_dialect_mnemonic ), &error );
+    error = fcml_fn_asm_dialect_alloc_mnemonic_lookup( &dialect_context_gas, fcml_arr_dialect_gas_mnemonics, sizeof( fcml_arr_dialect_gas_mnemonics ) / sizeof( fcml_st_dialect_mnemonic ) );
     if( error ) {
         fcml_fn_env_memory_free( dialect_context_gas );
         return error;
-    }
-
-    fcml_st_dialect_mnemonic *current = &(fcml_arr_dialect_gas_mnemonics[0]);
-    while( current->mnemonic ) {
-        fcml_fn_coll_map_put( dialect_context_gas->dialect_mnemonics_lookup, &(current->instruction), current, &error );
-        if( error ) {
-            fcml_fn_coll_map_free( dialect_context_gas->dialect_mnemonics_lookup );
-            fcml_fn_env_memory_free( dialect_context_gas );
-            return error;
-        }
-        current++;
     }
 
     // Prepares dialect instance.
@@ -1612,13 +1604,6 @@ fcml_ceh_error fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dia
 }
 
 void fcml_fn_gas_dialect_free(fcml_st_dialect *dialect) {
-    if( dialect ) {
-        fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*)dialect;
-        if( dialect_context->dialect_mnemonics_lookup ) {
-            fcml_fn_coll_map_free( dialect_context->dialect_mnemonics_lookup );
-        }
-        fcml_fn_env_memory_free( dialect_context );
-    }
+    fcml_fn_cmn_dialect_free( dialect );
 }
-
 

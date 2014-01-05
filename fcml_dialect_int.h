@@ -60,5 +60,7 @@ typedef struct fcml_st_dialect_context_int {
 fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_mnemonic *mnemonic, fcml_string suffix );
 fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic( fcml_st_mp_mnemonic *mnemonic );
 void fcml_fn_asm_dialect_free_mnemonic( fcml_st_mp_mnemonic *mnemonic );
+fcml_ceh_error fcml_fn_asm_dialect_alloc_mnemonic_lookup( fcml_st_dialect_context_int **dialect_context, fcml_st_dialect_mnemonic *mnemonic, fcml_usize capacity );
+void fcml_fn_asm_dialect_free_mnemonic_lookup( fcml_st_dialect_context_int *dialect_context );
 
 #endif /* FCML_ASM_DIALECT_INT_H_ */

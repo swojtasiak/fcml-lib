@@ -1257,27 +1257,12 @@ fcml_ceh_error fcml_fn_intel_dialect_init( fcml_uint32_t config_flags, fcml_st_d
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_st_dialect_context_int *dialect_context_intel = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dialect_context_int ) );
-    if( !dialect_context_intel ) {
-        return FCML_CEH_GEC_OUT_OF_MEMORY;
-    }
+    fcml_st_dialect_context_int *dialect_context_intel = NULL;
 
-    // Prepare mnemonic lookup.
-    dialect_context_intel->dialect_mnemonics_lookup = fcml_fn_coll_map_alloc( &fcml_coll_map_descriptor_uint32, sizeof( fcml_arr_dialect_intel_mnemonics ) / sizeof( fcml_st_dialect_mnemonic ), &error );
+    error = fcml_fn_asm_dialect_alloc_mnemonic_lookup( &dialect_context_intel, fcml_arr_dialect_intel_mnemonics, sizeof( fcml_arr_dialect_intel_mnemonics ) / sizeof( fcml_st_dialect_mnemonic ) );
     if( error ) {
         fcml_fn_env_memory_free( dialect_context_intel );
         return error;
-    }
-
-    fcml_st_dialect_mnemonic *current = &(fcml_arr_dialect_intel_mnemonics[0]);
-    while( current->mnemonic ) {
-        fcml_fn_coll_map_put( dialect_context_intel->dialect_mnemonics_lookup, &(current->instruction), current, &error );
-        if( error ) {
-            fcml_fn_coll_map_free( dialect_context_intel->dialect_mnemonics_lookup );
-            fcml_fn_env_memory_free( dialect_context_intel );
-            return error;
-        }
-        current++;
     }
 
     // Prepares dialect instance.
@@ -1299,11 +1284,5 @@ fcml_ceh_error fcml_fn_intel_dialect_init( fcml_uint32_t config_flags, fcml_st_d
 }
 
 void fcml_fn_intel_dialect_free( fcml_st_dialect *dialect ) {
-    if( dialect ) {
-        fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*)dialect;
-        if( dialect_context->dialect_mnemonics_lookup ) {
-            fcml_fn_coll_map_free( dialect_context->dialect_mnemonics_lookup );
-        }
-        fcml_fn_env_memory_free( dialect_context );
-    }
+    fcml_fn_cmn_dialect_free( dialect );
 }
