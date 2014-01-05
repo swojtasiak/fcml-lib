@@ -9,19 +9,20 @@
 
 #include <stdio.h>
 
+#include "fcml_choosers.h"
 #include "fcml_def.h"
+#include "fcml_dialect.h"
 #include "fcml_env.h"
 #include "fcml_errors.h"
 #include "fcml_hints.h"
+#include "fcml_messages.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_modrm.h"
 #include "fcml_modrm_encoder.h"
 #include "fcml_optimizers.h"
-#include "fcml_choosers.h"
 #include "fcml_stream.h"
 #include "fcml_trace.h"
 #include "fcml_utils.h"
-#include "fcml_messages.h"
 
 #define FCML_ASM_MAX_PART_PROCESSORS	40
 
@@ -1974,7 +1975,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 				// so we have to provide dialect a way to modify instruction definition basing on it.
 				fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = dialect_context->assembler_preprocessor;
 				if( assembler_preprocessor ) {
-					assembler_preprocessor( &tmp_instruction, addr_mode->addr_mode_desc, addr_mode->mnemonic, &instruction_has_been_changed );
+					assembler_preprocessor( (fcml_st_dialect*)dialect_context, &tmp_instruction, addr_mode->addr_mode_desc, addr_mode->mnemonic, &instruction_has_been_changed );
 				}
 
 				// This information is necessary to ignore operands encoding process.
@@ -3472,7 +3473,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
 
     // Instruction can be registered for more than one mnemonic.
     int mnemonic_count = 0;
-    error = init_context->dialect_context->get_mnemonic( instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL, mnemonics, &mnemonic_count );
+    error = init_context->dialect_context->get_mnemonic( (fcml_st_dialect*)init_context->dialect_context, instruction, addr_mode_desc, addr_mode->addr_mode_details.is_conditional ? &(addr_mode->addr_mode_details.condition) : NULL, mnemonics, &mnemonic_count );
     if( error ) {
         return error;
     }

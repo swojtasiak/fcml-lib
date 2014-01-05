@@ -1310,7 +1310,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 		decoding->opcodes[i] = addr_mode_desc->opcode[i];
 	}
 
-	error = dialect->get_parsed_mnemonics( instruction_desc, addr_mode_desc, &(decoding->mnemonics) );
+	error = dialect->get_parsed_mnemonics( (fcml_st_dialect*)dialect, instruction_desc, addr_mode_desc, &(decoding->mnemonics) );
 	if( error ) {
 		fcml_fn_env_memory_free( decoding );
 	    return FCML_CEH_GEC_INVALID_INPUT;

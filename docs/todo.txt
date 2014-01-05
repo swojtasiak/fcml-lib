@@ -82,6 +82,16 @@ slawomir *DOT* wojtasiak *AT* swkso[remove me]ftware *DOT* pl
 
 
 
+
+   0x000000000040050b <main+0>:	d8 e3	fsub   %st(3),%st
+   
+   st0-st3=st0
+   
+   0x000000000040050d <main+2>:	dc e3	fsub   %st,%st(3)
+
+   st0-st3=st3
+
+
 Witam wszystkich,
 
 Ostatnio napotkałem na dziwną niekonsystencję w dialekcie AT&T wykorzystywanym przez GAS. 
