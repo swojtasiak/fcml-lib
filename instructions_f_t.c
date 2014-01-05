@@ -246,14 +246,13 @@ void fcml_tf_instruction_FDIV(void) {
     FCML_A64( "fdivs 0x0000000000000020(%rax)", 0xd8, 0x70, 0x20 );
     FCML_A64( "fdivl 0x0000000000000020(%rax)", 0xdc, 0x70, 0x20 );
     FCML_A64( "fdiv %st(1),%st(0)", 0xd8, 0xf1 );
-    FCML_A64( "fdiv %st(0),%st(1)", 0xdc, 0xf9 );
+    FCML_A64( "fdivr %st(0),%st(1)", 0xdc, 0xf9 );
     FCML_A64( "fidivl 0x0000000000000020(%rax)", 0xda, 0x70, 0x20 );
     FCML_A64( "fidiv 0x0000000000000020(%rax)", 0xde, 0x70, 0x20 );
-    FCML_A64( "fdivp %st(0),%st(1)", 0xde, 0xf9 );
+    FCML_A64( "fdivrp %st(0),%st(1)", 0xde, 0xf9 );
 }
 
 void fcml_tf_instruction_FDIVR(void) {
-	// TODO: Sprawdzic dlaczego fdivr/fdiv są zamienione w przypadku GAS.
     FCML_I32( "fdivr dword ptr [eax]", 0xD8, 0x38 );
     FCML_I64( "fdivr dword ptr [rax+0000000000000020h]", 0xD8, 0x78, 0x20 );
     FCML_I32( "fdivr dword ptr [eax+00000020h]", 0xD8, 0x78, 0x20 );
@@ -275,11 +274,11 @@ void fcml_tf_instruction_FDIVR(void) {
     FCML_A64( "fdivrs 0x0000000000000020(%rax)", 0xd8, 0x78, 0x20 );
     FCML_A64( "fdivrl 0x0000000000000020(%rax)", 0xdc, 0x78, 0x20 );
     FCML_A64( "fdivr %st(1),%st(0)", 0xd8, 0xf9 );
-    FCML_A64( "fdivr %st(0),%st(1)", 0xdc, 0xf1 );
-    FCML_A64( "fdivrp %st(0),%st(1)", 0xde, 0xf1 );
+    FCML_A64( "fdiv %st(0),%st(1)", 0xdc, 0xf1 );
+    FCML_A64( "fdivp %st(0),%st(1)", 0xde, 0xf1 );
     FCML_A64( "fidivrl 0x0000000000000020(%rax)", 0xda, 0x78, 0x20 );
     FCML_A64( "fidivr 0x0000000000000020(%rax)", 0xde, 0x78, 0x20 );
-    FCML_A64( "fdivrp %st(0),%st(1)", 0xde, 0xf1 );
+    FCML_A64( "fdivp %st(0),%st(1)", 0xde, 0xf1 );
 }
 
 void fcml_tf_instruction_FFREE(void) {
@@ -590,10 +589,9 @@ void fcml_tf_instruction_FSUB_FSUBP_FISUB(void) {
     // FCML_A64( "fsub %st(0),%st(1)", 0xdc, 0xe9 );
     // SVR3.2 compatible by default.
     FCML_A64( "fsubr %st(0),%st(1)", 0xdc, 0xe9 );
-    FCML_A64( "fsubp %st(0),%st(1)", 0xde, 0xe9 );
+    FCML_A64( "fsubrp %st(0),%st(1)", 0xde, 0xe9 );
     FCML_A64( "fisubl 0x0000000000000020(%rax)", 0xda, 0x60, 0x20 );
     FCML_A64( "fisub 0x0000000000000020(%rax)", 0xde, 0x60, 0x20 );
-    FCML_A64( "fsubp %st(0),%st(1)", 0xde, 0xe9 );
 }
 
 void fcml_tf_instruction_FSUBR_FSUBRP_FISUBR(void) {
@@ -620,10 +618,9 @@ void fcml_tf_instruction_FSUBR_FSUBRP_FISUBR(void) {
     // FCML_A64( "fsubr %st(0),%st(1)", 0xdc, 0xe1 );
     // SVR3.2 compatible by default.
     FCML_A64( "fsub %st(0),%st(1)", 0xdc, 0xe1 );
-    FCML_A64( "fsubrp %st(0),%st(1)", 0xde, 0xe1 );
+    FCML_A64( "fsubp %st(0),%st(1)", 0xde, 0xe1 );
     FCML_A64( "fisubrl 0x0000000000000020(%rax)", 0xda, 0x68, 0x20 );
     FCML_A64( "fisubr 0x0000000000000020(%rax)", 0xde, 0x68, 0x20 );
-    FCML_A64( "fsubrp %st(0),%st(1)", 0xde, 0xe1 );
 }
 
 void fcml_tf_instruction_FTST(void) {
