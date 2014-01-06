@@ -2251,7 +2251,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 			// Execute disassembler post processor if needed.
 			fcml_fnp_asm_dialect_prepare_disassembler_postprocessor post_processor = int_disasm->dialect_context->disassembler_postprocessor;
 			if( post_processor ) {
-				post_processor( dis_res );
+				post_processor( mnemonic, dis_res );
 			}
 
 			*result = dis_res;

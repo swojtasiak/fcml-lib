@@ -30,9 +30,13 @@
 // Dialect flags.
 
 // Dialect flags fields stores addressing mode hints.
-#define FCML_GAS_DF_HINTS                   0x80000000
+#define FCML_GAS_DF_HINTS                   0x00010000
 
-#define FCML_GAS_DF_SYSV_SVR32_COMPATIBLE   0x00000001
+// Dialect incompatible with srange encoding of SVR3.2 assembler.
+#define FCML_GAS_DF_SYSV_SVR32_COMPATIBLE   0x00020000
+
+// Do not invert operands.
+#define FCML_GAS_DF_DO_NOT_REVERT_OPERANDS  0x00040000
 
 // *************
 // * MNEMONICS *
@@ -99,7 +103,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("vblendvpd"), FCML_ASM_DIALECT_INSTRUCTION( F_VBLENDVPD, FCML_AM_ALL ), 0 },
     { FCML_TEXT("blendvps"), FCML_ASM_DIALECT_INSTRUCTION( F_BLENDVPS, FCML_AM_ALL ), 0 },
     { FCML_TEXT("vblendvps"), FCML_ASM_DIALECT_INSTRUCTION( F_VBLENDVPS, FCML_AM_ALL ), 0 },
-    { FCML_TEXT("bound"), FCML_ASM_DIALECT_INSTRUCTION( F_BOUND, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("bound"), FCML_ASM_DIALECT_INSTRUCTION( F_BOUND, FCML_AM_ALL ), FCML_GAS_DF_DO_NOT_REVERT_OPERANDS },
     { FCML_TEXT("bsf"), FCML_ASM_DIALECT_INSTRUCTION( F_BSF, FCML_AM_ALL ), 0 },
     { FCML_TEXT("bsr"), FCML_ASM_DIALECT_INSTRUCTION( F_BSR, FCML_AM_ALL ), 0 },
     { FCML_TEXT("bswap"), FCML_ASM_DIALECT_INSTRUCTION( F_BSWAP, FCML_AM_ALL ), 0 },
@@ -225,7 +229,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("dpps"), FCML_ASM_DIALECT_INSTRUCTION( F_DPPS, FCML_AM_ALL ), 0 },
     { FCML_TEXT("vdpps"), FCML_ASM_DIALECT_INSTRUCTION( F_VDPPS, FCML_AM_ALL ), 0 },
     { FCML_TEXT("emms"), FCML_ASM_DIALECT_INSTRUCTION( F_EMMS, FCML_AM_ALL ), 0 },
-    { FCML_TEXT("enter;enterq"), FCML_ASM_DIALECT_INSTRUCTION( F_ENTER, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("enter;enterq"), FCML_ASM_DIALECT_INSTRUCTION( F_ENTER, FCML_AM_ALL ), FCML_GAS_DF_DO_NOT_REVERT_OPERANDS },
     { FCML_TEXT("extractps"), FCML_ASM_DIALECT_INSTRUCTION( F_EXTRACTPS, FCML_AM_ALL ), 0 },
     { FCML_TEXT("vextractps"), FCML_ASM_DIALECT_INSTRUCTION( F_VEXTRACTPS, FCML_AM_ALL ), 0 },
     { FCML_TEXT("extrq"), FCML_ASM_DIALECT_INSTRUCTION( F_EXTRQ, FCML_AM_ALL ), 0 },
@@ -260,7 +264,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("fdecstp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDECSTP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdiv;fdivs[d04];fdivl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIV, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdivr"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIV, FCML_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
-    // TODO: 2 takie same klucze sprawdzic jak to sie zachowa bo tu chyba kolejnsoc odgrywa scisle znaczenie i to czy zostanie podpisana wartosc dla klucza. a jeszli tak to czy poprzednia zostanie zmapy poprawnie usunieta.
+    // In this case order of following two definitions really matters, do not change it.
     { FCML_TEXT("fdivp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdivrp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fidiv[d02];fidivl[d04]"), FCML_ASM_DIALECT_INSTRUCTION( F_FIDIV, FCML_AM_ALL ), 0 },
@@ -1271,7 +1275,7 @@ fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_diale
             fcml_bool ignore = FCML_FALSE;
 
             // Check if this mnemonics set is available for current dialect configuration.
-            ignore |= ( dialect_context->config_flags & FCML_GAS_DIALECT_CF_SYSV_SVR32_INCOMPATIBLE ) && ( dialect_mnemonic->flags & FCML_GAS_DF_SYSV_SVR32_COMPATIBLE ) && !( dialect_mnemonic->flags & FCML_GAS_DF_HINTS );
+            ignore |= ( dialect_context->config_flags & FCML_GAS_DIALECT_CF_SYSV_SVR32_INCOMPATIBLE ) && ( dialect_mnemonic->flags & FCML_GAS_DF_SYSV_SVR32_COMPATIBLE );
 
             if( !ignore ) {
                 mnemonic_pattern = dialect_mnemonic->mnemonic;
@@ -1492,6 +1496,14 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
 
     } else {
 
+        // For bound and enter instructions operands should be provided in the same order as for intel assembler, so
+        // they should be reverted one more time. We can gain some performance by doubling this operation for
+        // these two instructions instead of reverting operands for any checked addressing mode.
+        if( mnemonic->flags & FCML_GAS_DF_DO_NOT_REVERT_OPERANDS ) {
+            fcml_ifn_asm_dialect_gas_revert_operands( instrunction->operands, instrunction->operands_count );
+            changed = FCML_TRUE;
+        }
+
         // Mnemonic has been found, check if data size should be corrected for instruction. Take into account that data size specified by
         // mnemonic has greater priority than data size set directly by user.
 
@@ -1523,6 +1535,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
         // In GAS mode, from time to time mnemonic flags are treated as instruction hints.
         if( mnemonic->flags & FCML_GAS_DF_HINTS ) {
             instrunction->hints |= ( mnemonic->flags & ~FCML_GAS_DF_HINTS );
+            changed = FCML_TRUE;
         }
 
         // Check if addressing mode expects FAR_POINTER addressing mode.
@@ -1548,23 +1561,27 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
     return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( fcml_st_dasm_disassembler_result *disassembler_result ) {
+fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_st_mp_mnemonic *mnemonic, fcml_st_dasm_disassembler_result *disassembler_result ) {
 
     fcml_int operands_count = disassembler_result->instruction.operands_count;
 
     if( operands_count > 1 ) {
 
-        // Revert operands.
-        fcml_ifn_asm_dialect_gas_revert_operands( disassembler_result->instruction.operands, operands_count );
+        if( !( mnemonic->flags & FCML_GAS_DF_DO_NOT_REVERT_OPERANDS ) ) {
 
-        // Revert operand details.
-        fcml_st_dasm_operand_details *operand_details = disassembler_result->instruction_details.operand_details;
-        fcml_st_dasm_operand_details tmp_operand_details;
-        fcml_int i;
-        for( i = 0; i < operands_count / 2; i++ ) {
-            tmp_operand_details = operand_details[i];
-            operand_details[i] = operand_details[operands_count - i - 1];
-            operand_details[operands_count - i - 1] = tmp_operand_details;
+            // Revert operands.
+            fcml_ifn_asm_dialect_gas_revert_operands( disassembler_result->instruction.operands, operands_count );
+
+            // Revert operand details.
+            fcml_st_dasm_operand_details *operand_details = disassembler_result->instruction_details.operand_details;
+            fcml_st_dasm_operand_details tmp_operand_details;
+            fcml_int i;
+            for( i = 0; i < operands_count / 2; i++ ) {
+                tmp_operand_details = operand_details[i];
+                operand_details[i] = operand_details[operands_count - i - 1];
+                operand_details[operands_count - i - 1] = tmp_operand_details;
+            }
+
         }
 
     }

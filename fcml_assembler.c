@@ -72,7 +72,7 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 
 	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)asm_context->assembler;
 
-	// Check if operands needs to be reverted before processing.
+	// First place where dialect can ingerate instruction definition.
 	fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = enc_asm->dialect_context->assembler_preprocessor;
 	if( assembler_preprocessor ) {
 		assembler_preprocessor( (fcml_st_dialect*)enc_asm->dialect_context, &tmp_instruction, NULL, NULL, NULL );
