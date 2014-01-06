@@ -35,7 +35,6 @@ typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_mnemonic)( const fcml_st_diale
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_parsed_mnemonics)( const fcml_st_dialect *dialect, fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_mp_mnemonic_set **mnemonics );
 typedef fcml_string (*fcml_fnp_asm_dialect_render_mnemonic)( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry );
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_register)( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex );
-typedef fcml_ceh_error (*fcml_fnp_asm_dialect_render_size_operator)( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction );
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_assembler_preprocessor)( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed );
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_disassembler_postprocessor)( const fcml_st_mp_mnemonic *mnemonic, fcml_st_dasm_disassembler_result *disassembler_result );
 typedef fcml_ceh_error (*fcml_fnp_parse_instruction)( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result **result_out );
@@ -48,7 +47,6 @@ typedef struct fcml_st_dialect_context_int {
     fcml_fnp_asm_dialect_get_parsed_mnemonics get_parsed_mnemonics;
     fcml_fnp_asm_dialect_free_mnemonic free_mnemonic;
     fcml_fnp_asm_dialect_render_mnemonic render_mnemonic;
-    fcml_fnp_asm_dialect_render_size_operator size_operator_renderer;
     fcml_fnp_asm_dialect_get_register get_register;
     fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor;
     fcml_fnp_asm_dialect_prepare_disassembler_postprocessor disassembler_postprocessor;

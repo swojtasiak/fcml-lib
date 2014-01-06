@@ -1211,48 +1211,6 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
     return error;
 }
 
-fcml_ceh_error fcml_fnp_asm_dialect_render_size_operator_intel( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
-
-	fcml_string size_operator_printable = NULL;
-
-	switch( size_operator ) {
-	case 0:
-		break;
-	case 8:
-		size_operator_printable = FCML_TEXT("byte ptr ");
-		break;
-	case 16:
-		size_operator_printable = FCML_TEXT("word ptr ");
-		break;
-	case 32:
-		size_operator_printable = FCML_TEXT("dword ptr ");
-		break;
-	case 48:
-		size_operator_printable = FCML_TEXT("fword ptr ");
-		break;
-	case 64:
-		size_operator_printable = is_media_instruction ? FCML_TEXT("mmword ptr ") : FCML_TEXT("qword ptr ");
-		break;
-	case 80:
-		size_operator_printable = FCML_TEXT("tbyte ptr ");
-		break;
-	case 128:
-		size_operator_printable = is_media_instruction ? FCML_TEXT("xmmword ptr ") : FCML_TEXT("oword ptr ");
-		break;
-	case 256:
-		size_operator_printable = is_media_instruction ? FCML_TEXT("ymmword ptr ") : FCML_TEXT("qqword ");
-		break;
-	default:
-		snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
-	}
-
-	if( size_operator_printable ) {
-		fcml_fn_env_str_strncpy( buffer, size_operator_printable, buffer_len );
-	}
-
-	return FCML_CEH_GEC_NO_ERROR;
-}
-
 fcml_ceh_error fcml_fn_intel_dialect_init( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1273,7 +1231,6 @@ fcml_ceh_error fcml_fn_intel_dialect_init( fcml_uint32_t config_flags, fcml_st_d
     dialect_context_intel->instruction_renderer = &fcml_fn_rend_render_instruction_intel;
     dialect_context_intel->instruction_parser = &fcml_intel_parse;
     dialect_context_intel->get_register = &fcml_fnp_asm_dialect_get_register_intel;
-    dialect_context_intel->size_operator_renderer = &fcml_fnp_asm_dialect_render_size_operator_intel;
     dialect_context_intel->assembler_preprocessor = NULL;
     dialect_context_intel->disassembler_postprocessor = NULL;
 

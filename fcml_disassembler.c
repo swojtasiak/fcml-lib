@@ -2145,8 +2145,8 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 
 	// Prepare stream.
 	fcml_st_memory_stream stream;
-	stream.base_address = context->code_address;
-	stream.size = context->code_size;
+	stream.base_address = context->code;
+	stream.size = context->code_length;
 	stream.offset = 0;
 
 	// Prepare disassemble context.
@@ -2209,7 +2209,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 
 			// Instruction code.
 			instruction_details->instruction_size = decoding_context.calculated_instruction_size;
-			fcml_fn_env_memory_copy( &instruction_details->instruction_code, context->code_address, instruction_details->instruction_size > FCML_INSTRUCTION_SIZE ? FCML_INSTRUCTION_SIZE : instruction_details->instruction_size );
+			fcml_fn_env_memory_copy( &instruction_details->instruction_code, context->code, instruction_details->instruction_size > FCML_INSTRUCTION_SIZE ? FCML_INSTRUCTION_SIZE : instruction_details->instruction_size );
 
 			// Conditions.
 			if( decoding_context.is_conditional ) {

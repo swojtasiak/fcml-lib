@@ -1254,7 +1254,7 @@ void fcml_ifn_asm_dialect_free_mnemonic_gas( fcml_st_mp_mnemonic *mnemonic ) {
     }
 }
 
-fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_dialect *dialect, fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_mp_mnemonic_set **mnemonics ) {
+fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_dialect *dialect, fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_mp_mnemonic_set **mnemonics ) {
 
     fcml_string mnemonic_pattern = NULL;
 
@@ -1316,7 +1316,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_gas( const fcml_st_dialect *dia
 
     fcml_st_mp_mnemonic_set *mnemonic_set;
 
-    error = fcml_fn_asm_dialect_get_parsed_mnemonics_gas( dialect, instruction, addr_mode, &mnemonic_set );
+    error = fcml_ifn_asm_dialect_get_parsed_mnemonics_gas( dialect, instruction, addr_mode, &mnemonic_set );
     if( error ) {
         return error;
     }
@@ -1372,49 +1372,6 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_gas( const fcml_st_dialect *dia
     *mnemonics_counter = counter;
 
     return error;
-}
-
-// TODO: wywalis z dialekt do renderera, dialekt nie ma z tym nic wspolnego.
-fcml_ceh_error fcml_ifn_asm_dialect_render_size_operator_gas( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
-
-    fcml_string size_operator_printable = NULL;
-
-    switch( size_operator ) {
-    case 0:
-        break;
-    case 8:
-        size_operator_printable = FCML_TEXT("byte ptr ");
-        break;
-    case 16:
-        size_operator_printable = FCML_TEXT("word ptr ");
-        break;
-    case 32:
-        size_operator_printable = FCML_TEXT("dword ptr ");
-        break;
-    case 48:
-        size_operator_printable = FCML_TEXT("fword ptr ");
-        break;
-    case 64:
-        size_operator_printable = is_media_instruction ? FCML_TEXT("mmword ptr ") : FCML_TEXT("qword ptr ");
-        break;
-    case 80:
-        size_operator_printable = FCML_TEXT("tbyte ptr ");
-        break;
-    case 128:
-        size_operator_printable = is_media_instruction ? FCML_TEXT("xmmword ptr ") : FCML_TEXT("oword ptr ");
-        break;
-    case 256:
-        size_operator_printable = is_media_instruction ? FCML_TEXT("ymmword ptr ") : FCML_TEXT("qqword ");
-        break;
-    default:
-        snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
-    }
-
-    if( size_operator_printable ) {
-        fcml_fn_env_str_strncpy( buffer, size_operator_printable, buffer_len );
-    }
-
-    return FCML_CEH_GEC_NO_ERROR;
 }
 
 void fcml_ifn_asm_dialect_gas_revert_operands( fcml_st_operand *operands, fcml_int count ) {
@@ -1603,13 +1560,13 @@ fcml_ceh_error fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dia
 
     // Prepares dialect instance.
     dialect_context_gas->get_mnemonic = &fcml_ifn_asm_dialect_get_mnemonic_gas;
+    dialect_context_gas->get_parsed_mnemonics = &fcml_ifn_asm_dialect_get_parsed_mnemonics_gas;
     dialect_context_gas->render_mnemonic = &fcml_ifn_asm_dialect_render_mnemonic_gas;
-    dialect_context_gas->get_parsed_mnemonics = &fcml_fn_asm_dialect_get_parsed_mnemonics_gas;
     dialect_context_gas->free_mnemonic = &fcml_ifn_asm_dialect_free_mnemonic_gas;
     dialect_context_gas->instruction_renderer = &fcml_fn_rend_render_instruction_gas;
     dialect_context_gas->instruction_parser = &fcml_gas_parse;
+    // This method should be available in renderer, but having it here can be useful in the future.
     dialect_context_gas->get_register = &fcml_ifn_asm_dialect_get_register_gas;
-    dialect_context_gas->size_operator_renderer = &fcml_ifn_asm_dialect_render_size_operator_gas;
     dialect_context_gas->assembler_preprocessor = &fcml_ifn_asm_dialect_assembler_preprocessor_gas;
     dialect_context_gas->disassembler_postprocessor = &fcml_ifn_asm_dialect_disassembler_postprocessor_gas;
     dialect_context_gas->config_flags = config_flags;

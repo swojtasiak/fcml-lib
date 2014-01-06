@@ -7,10 +7,14 @@
 
 #include "fcml_intel_rend.h"
 
+#include <stdio.h>
+
 #include "fcml_ceh.h"
 #include "fcml_common.h"
 #include "fcml_dialect.h"
+#include "fcml_dialect_int.h"
 #include "fcml_disassembler.h"
+#include "fcml_env.h"
 #include "fcml_rend.h"
 #include "fcml_rend_utils.h"
 #include "fcml_stream.h"
@@ -91,6 +95,49 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_intel( fcml_st_dialect_context
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
+
+fcml_ceh_error fcml_ifn_rend_size_operator_intel( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
+
+    fcml_string size_operator_printable = NULL;
+
+    switch( size_operator ) {
+    case 0:
+        break;
+    case 8:
+        size_operator_printable = FCML_TEXT("byte ptr ");
+        break;
+    case 16:
+        size_operator_printable = FCML_TEXT("word ptr ");
+        break;
+    case 32:
+        size_operator_printable = FCML_TEXT("dword ptr ");
+        break;
+    case 48:
+        size_operator_printable = FCML_TEXT("fword ptr ");
+        break;
+    case 64:
+        size_operator_printable = is_media_instruction ? FCML_TEXT("mmword ptr ") : FCML_TEXT("qword ptr ");
+        break;
+    case 80:
+        size_operator_printable = FCML_TEXT("tbyte ptr ");
+        break;
+    case 128:
+        size_operator_printable = is_media_instruction ? FCML_TEXT("xmmword ptr ") : FCML_TEXT("oword ptr ");
+        break;
+    case 256:
+        size_operator_printable = is_media_instruction ? FCML_TEXT("ymmword ptr ") : FCML_TEXT("qqword ");
+        break;
+    default:
+        snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
+    }
+
+    if( size_operator_printable ) {
+        fcml_fn_env_str_strncpy( buffer, size_operator_printable, buffer_len );
+    }
+
+    return FCML_CEH_GEC_NO_ERROR;
+}
+
 fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_st_operand *operand, fcml_st_dasm_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -113,9 +160,9 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 		return error;
 	}
 
-	if( dialect_context->size_operator_renderer && address->size_operator > 0 ) {
+	if( address->size_operator > 0 ) {
 		fcml_char buffer[32] = {0};
-		dialect_context->size_operator_renderer( address->size_operator, buffer, sizeof( buffer ), operand->hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
+		fcml_ifn_rend_size_operator_intel( address->size_operator, buffer, sizeof( buffer ), operand->hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
 		fcml_fn_rend_utils_format_append_str( output_stream, buffer );
 	}
 
@@ -327,6 +374,8 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 			break;
 		}
 	}
+
+	fcml_fn_rend_utils_format_finish_str( output_stream );
 
 	return error;
 }

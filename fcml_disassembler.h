@@ -33,8 +33,8 @@ typedef struct fcml_st_dasm_disassembler_context {
 	fcml_en_addr_form addr_form;
 	fcml_data_size address_size_attribute;
 	fcml_data_size operand_size_attribute;
-	fcml_ptr code_address;
-	fcml_data_size code_size;
+	fcml_ptr code;
+	fcml_data_size code_length;
 	fcml_st_instruction_pointer ip;
 } fcml_st_dasm_disassembler_context;
 

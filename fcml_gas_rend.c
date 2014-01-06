@@ -343,5 +343,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_con
 		}
 	}
 
+	fcml_fn_rend_utils_format_finish_str( output_stream );
+
 	return error;
 }

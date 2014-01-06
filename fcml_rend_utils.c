@@ -56,6 +56,14 @@ void fcml_fn_rend_utils_format_append_str_if( fcml_st_memory_stream *stream, con
 	}
 }
 
+void fcml_fn_rend_utils_format_finish_str( fcml_st_memory_stream *stream ) {
+    int size = sizeof( FCML_TEXT( "\0" ) );
+    if( fcml_fn_stream_size( stream ) >= size ) {
+        strncpy( stream->base_address + stream->offset, FCML_TEXT( "\0" ), size );
+        stream->offset += size;
+    }
+}
+
 void fcml_fn_rend_utils_format_append_str( fcml_st_memory_stream *stream, const fcml_string source ) {
 
 	fcml_int source_size;

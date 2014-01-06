@@ -186,3 +186,11 @@ fcml_stream_pointer fcml_fn_stream_save_point( const fcml_st_memory_stream *stre
 void fcml_fn_stream_restore_point( fcml_st_memory_stream *stream, const fcml_stream_pointer stream_pointer ) {
     stream->offset = stream_pointer;
 }
+
+fcml_st_memory_stream fcml_fn_stream_wrap( fcml_string buffer, fcml_usize length ) {
+    fcml_st_memory_stream stream = { 0 };
+    stream.base_address = buffer;
+    stream.offset = 0;
+    stream.size = length;
+    return stream;
+}

@@ -74,6 +74,56 @@ inline fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_en_cmi_attribu
 	}
 	return 0;
 }
+/*
+fcml_ceh_error fcml_fn_asm_all_forms_optimizer( fcml_st_asm_assembler_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
+
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    fcml_int asa_index = 0;
+    fcml_int osa_index = 0;
+    fcml_data_size asa[2];
+    fcml_data_size osa[3];
+
+    if( ds_flags == NULL ) {
+       return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+    }
+
+    fcml_en_cmi_attribute_size_flag asa_flags = ds_flags->allowed_effective_address_size.flags;
+    fcml_en_cmi_attribute_size_flag osa_flags = ds_flags->allowed_effective_operand_size.flags;
+
+    if( ds_flags->effective_address_size ) {
+        // Effective address size has been already chosen and cannot be changed.
+        asa[asa_index++] = ds_flags->effective_address_size;
+    } else {
+        if( ( asa_flags & FCML_EN_ASF_16 ) || ( asa_flags == FCML_EN_ASF_ANY ) ) {
+            asa[asa_index++] = FCML_DS_16;
+        }
+        if( ( asa_flags & FCML_EN_ASF_32 ) || ( asa_flags == FCML_EN_ASF_ANY ) ) {
+            asa[asa_index++] = FCML_DS_32;
+        }
+        if( ( asa_flags & FCML_EN_ASF_64 ) || ( asa_flags == FCML_EN_ASF_ANY ) ) {
+            asa[asa_index++] = FCML_DS_64;
+        }
+    }
+
+    if( ds_flags->effective_operand_size ) {
+        // Effective address size has been already chosen and cannot be changed.
+        osa[osa_index++] = ds_flags->effective_operand_size;
+    } else {
+        if( ( osa_flags & FCML_EN_ASF_16 ) || ( osa_flags == FCML_EN_ASF_ANY ) ) {
+            osa[osa_index++] = FCML_DS_16;
+        }
+        if( ( osa_flags & FCML_EN_ASF_32 ) || ( osa_flags == FCML_EN_ASF_ANY ) ) {
+            osa[osa_index++] = FCML_DS_32;
+        }
+        if( ( osa_flags & FCML_EN_ASF_64 ) || ( osa_flags == FCML_EN_ASF_ANY ) ) {
+            osa[osa_index++] = FCML_DS_64;
+        }
+    }
+
+    return error;
+
+}*/
 
 fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_assembler_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
 
@@ -194,9 +244,9 @@ fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_assembler_context *con
 	ds_flags->break_optimization = FCML_FALSE;
 
 	int i, j;
-	for( i = 0; i < easa_count && error && !ds_flags->break_optimization; i++ ) {
+	for( i = 0; i < easa_count && ( ( opt_flags == FCML_OPTF_ALL_FORMS ) || error ) && !ds_flags->break_optimization; i++ ) {
 		ds_flags->effective_address_size = easa[i];
-		for( j = 0; j < eosa_count && error && !ds_flags->break_optimization; j++ ) {
+		for( j = 0; j < eosa_count && ( ( opt_flags == FCML_OPTF_ALL_FORMS ) || error ) && !ds_flags->break_optimization; j++ ) {
 			ds_flags->effective_operand_size = eosa[j];
 		    error = callback( callback_args );
 		}
