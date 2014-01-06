@@ -20,11 +20,9 @@ int fcml_tf_instructions_e_suite_cleanup(void) {
 void fcml_tf_instruction_EMMS(void) {
     FCML_I3264( "emms", 0x0F, 0x77 );
     FCML_A64( "emms", 0x0f, 0x77 );
-
 }
 
 void fcml_tf_instruction_ENTER(void) {
-	// TODO: Podobnie jak BOUND, nie wiedziec czemu nie zamienione sa kolejnoscia operandy.
     FCML_I32( "enter 0ffeeh,55h", 0xc8, 0xEE, 0xFF, 0x55 );
     FCML_I32( "enter 0ffeeh,55h", 0x66, 0xc8, 0xEE, 0xFF, 0x55 );
     FCML_I64( "enter 0ffeeh,55h", 0xc8, 0xEE, 0xFF, 0x55 );
@@ -32,11 +30,10 @@ void fcml_tf_instruction_ENTER(void) {
     FCML_I64_D( "enter 0ffeeh,55h", 0x66, 0x48, 0xc8, 0xEE, 0xFF, 0x55 );
     FCML_I32( "enter 0ffeeh,00h", 0xc8, 0xEE, 0xFF, 0x00 );
     FCML_I32( "enter 0ffeeh,01h", 0xc8, 0xEE, 0xFF, 0x01 );
-    // TODO: Zapisany tak samo jak FAR pointer! wiec ten hask z far pointered tu nie przejdzie. Zapis jest kompletenie niejednoznaczny!!!!
-    // Chyba bedzie trzeba rozbic far pointer na segment i pointer, osobne operandy.
-   // FCML_A64( "enter $0x55,$0xffee", 0xc8, 0xee, 0xff, 0x55 );
-   // FCML_A64( "enter $0x00,$0xffee", 0xc8, 0xee, 0xff, 0x00 );
-   // FCML_A64( "enter $0x01,$0xffee", 0xc8, 0xee, 0xff, 0x01 );
+    // GAS
+    FCML_A64( "enter $0xffee,$0x55", 0xc8, 0xee, 0xff, 0x55 );
+    FCML_A64( "enter $0xffee,$0x00", 0xc8, 0xee, 0xff, 0x00 );
+    FCML_A64( "enter $0xffee,$0x01", 0xc8, 0xee, 0xff, 0x01 );
 }
 
 void fcml_tf_instruction_EXTRACTPS(void) {

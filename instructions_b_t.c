@@ -63,10 +63,9 @@ void fcml_tf_instruction_BLENDVPS_VBLENDVPS(void) {
 }
 
 void fcml_tf_instruction_BOUND(void) {
-	//TODO: GAS taka kolejnosc przyjje:  bound %esi,(%eax)
 	FCML_I32( "bound esi,qword ptr [eax]", 0x62, 0x30 );
 	FCML_I32_A( "bound esi,[eax]", 0x62, 0x30 );
-	FCML_A32( "bound (%eax),%esi", 0x62, 0x30 );
+	FCML_A32( "bound %esi,(%eax)", 0x62, 0x30 );
 	FCML_I32( "bound si,dword ptr [eax]", 0x66, 0x62, 0x30 );
 	FCML_I32( "bound si,dword ptr [bx+si]", 0x66, 0x67, 0x62, 0x30 );
 	// Not supported in 64.
