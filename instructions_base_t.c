@@ -70,11 +70,11 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 		context.address_size_attribute = 0;
 		context.operand_size_attribute = 0;
 		if( !(t_flags & FCML_TSF_MULTI_ASM_RESULTS) ) {
-			context.code_address = code;
-			context.code_size = size;
+			context.code = code;
+			context.code_length = size;
 		} else {
-			context.code_address = code + 2;
-			context.code_size = code[1];
+			context.code = code + 2;
+			context.code_length = code[1];
 		}
 
 		fcml_ifn_ts_set_ip( &(context.ip), addr_form );
@@ -424,8 +424,8 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 	context.addr_form = addr_form;
 	context.address_size_attribute = 0;
 	context.operand_size_attribute = 0;
-	context.code_address = code;
-	context.code_size = size;
+	context.code = code;
+	context.code_length = size;
 
 	fcml_ifn_ts_set_ip( &(context.ip), addr_form );
 

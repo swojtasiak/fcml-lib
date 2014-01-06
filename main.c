@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
 
 	fcml_ceh_error error;
 
-	error = fcml_fn_intel_dialect_init( FCML_INTEL_DIALECT_CF_DEFAULT, &dialect_intel );
+ 	error = fcml_fn_intel_dialect_init( FCML_INTEL_DIALECT_CF_DEFAULT, &dialect_intel );
 	if( error ) {
 		return 1;
 	}
@@ -153,45 +153,6 @@ int main(int argc, char **argv) {
 		printf( "Can not allocate AT&T disassembler.\n" );
 		return 1;
 	}
-
-
-    //FCML_I32_RF( "call far fword ptr cs:[ebx+00000001h]", FCML_REND_FLAG_RENDER_DEFAULT_SEG, 0xFF, 0x5B, 0x01 );
-    //return 0;
-
-	//FCML_I32_M( "push 11ffh", 2, FCML_MI( 0x66, 0x68, 0xff, 0x11 ), FCML_MI( 0x68, 0xff, 0x11, 0x00, 0x00 ) );
-
-	/*FCML_A64_A_P( "movabs 0x89482010,%al", 0x67, 0xa0, 0x10, 0x20, 0x48, 0x89 );
-	FCML_A64_A_P( "mov 0x89482010,%al", 0x67, 0xa0, 0x10, 0x20, 0x48, 0x89 );
-	FCML_A32_A_P( "movabs 0x89482010,%al", 0x67, 0xa0, 0x10, 0x20, 0x48, 0x89 );
-	FCML_A32_A_P( "mov 0x89482010,%al", 0x67, 0xa0, 0x10, 0x20, 0x48, 0x89 );
-	return 0;
-*/
-
-	//FCML_A64_M_P( "mov $0x2010,%ax", 2, FCML_MI( 0x66, 0xb8, 0x10, 0x20 ), FCML_MI( 0x66, 0xc7, 0xc0, 0x10, 0x20 ) );
-
-
-	// ea 11 22 33 44 55 66   ljmp   $0x6655,$0x44332211
-
-
-	//FCML_I32_A_P( "call dword ptr [00001044h]",  0x66, 0xE8, 0x40, 0x00 );
-
-
-	//FCML_I32_M_P( "adc al,42h", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
-	//FCML_A32_M_P( "adc $0x42,%al", 2, FCML_MI( 0x14, 0x42 ), FCML_MI( 0x80, 0xD0, 0x42 ) );
-	//return 0;
-
-	//FCML_A32_A_P( "jmp *0x90d11004", 0xff, 0x25, 0x04, 0x10, 0xd1, 0x90 );
-
-	//FCML_A32_A_P( "jmp (%eax)", 0xff, 0x20 );
-
-	//FCML_A32_M_A( "jmp (%eax)", 2, FCML_MI( 0xff, 0x20 ), FCML_MI( 0x66, 0xff, 0x28 ) );
-	//return 0;
-
-    //FCML_I32_A_P( "push 0ffffffffh", 3, FCML_MI( 0x68, 0xff, 0xff, 0xff, 0xff ), FCML_MI( 0x66, 0x68, 0xff, 0xff ), FCML_MI( 0x6a, 0xff ) );
-
-    //FCML_A64_P( "vpsrlw (%rax),%xmm0,%xmm0", 0xc4, 0xe1, 0x79, 0xd1, 0x00 );
-    //return 0;
-
 
     if (CU_initialize_registry()) {
         printf("Initialization of Test Registry failed.\n");
