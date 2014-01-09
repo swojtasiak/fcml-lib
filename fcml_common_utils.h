@@ -182,6 +182,30 @@ fcml_st_operand fcml_fn_cu_operand_signed_imm_32( fcml_int32_t value );
 fcml_st_operand fcml_fn_cu_operand_unsigned_imm_64( fcml_uint64_t value );
 fcml_st_operand fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value );
 
+// Memory addressing.
+fcml_st_operand fcml_fn_cu_operand_addr_far_pointer_offset16( fcml_int16_t seg, fcml_int16_t offset );
+fcml_st_operand fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset );
+fcml_st_operand fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset );
+fcml_st_operand fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset );
+fcml_st_operand fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset );
+fcml_st_operand fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset );
+fcml_st_operand fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
+fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
+
+// Hints
+fcml_st_operand fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints );
+
 // Some shortcuts for these who prefer to use macros instead of functions.
 
 #define FCML_IMM8_S( x )		fcml_fn_cu_operand_signed_imm_8( x )
@@ -197,6 +221,40 @@ fcml_st_operand fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value );
 #define FCML_REG( x )			fcml_fn_cu_operand_reg( &fcml_reg_##x )
 #else
 #define FCML_REG( x )			fcml_fn_cu_operand_reg( &x )
+#endif
+
+#define FCML_FAR_POINTER_16( seg, offset )           fcml_fn_cu_operand_addr_far_pointer_offset16( seg, offset )
+#define FCML_FAR_POINTER_32( seg, offset )           fcml_fn_cu_operand_addr_far_pointer_offset32( seg, offset )
+#define FCML_OFFSET_16( offset )                     fcml_fn_cu_operand_addr_offset_16( offset )
+#define FCML_OFFSET_32( offset )                     fcml_fn_cu_operand_addr_offset_32( offset )
+#define FCML_OFFSET_ABS_64( offset )                 fcml_fn_cu_operand_addr_offset_abs_64( offset )
+#define FCML_OFFSET_REL_64( offset )                 fcml_fn_cu_operand_addr_offset_rel_64( offset )
+#define FCML_DISP_16( offset )                       fcml_fn_cu_operand_addr_disp_16( offset )
+#define FCML_DISP_32( offset )                       fcml_fn_cu_operand_addr_disp_32( offset )
+#define FCML_DISP_64( offset )                       fcml_fn_cu_operand_addr_disp_64( offset )
+
+#ifdef FCML_USE_SHORT_REG
+#define FCML_B_DISP_8( base, offset )                   fcml_fn_cu_operand_addr_b_disp_8( &fcml_reg_##base, offset )
+#define FCML_B_DISP_16( base, offset )                  fcml_fn_cu_operand_addr_b_disp_16( &fcml_reg_##base, offset )
+#define FCML_B_DISP_32( base, offset )                  fcml_fn_cu_operand_addr_b_disp_32( &fcml_reg_##base, offset )
+#define FCML_B_DISP_64( base, offset )                  fcml_fn_cu_operand_addr_b_disp_64( &fcml_reg_##base, offset )
+#define FCML_IS_DISP_8( index, scale, offset )          fcml_fn_cu_operand_addr_is_disp_8( &fcml_reg_##index, scale, offset )
+#define FCML_IS_DISP_16( index, scale, offset )         fcml_fn_cu_operand_addr_is_disp_32( &fcml_reg_##index, scale, offset )
+#define FCML_IS_DISP_32( index, scale, offset )         fcml_fn_cu_operand_addr_is_disp_64( &fcml_reg_##index, scale, offset )
+#define FCML_BIS_DISP_8( base, index, scale, offset )   fcml_fn_cu_operand_addr_bis_disp_8( &fcml_reg_##base, &fcml_reg_##index, scale, offset )
+#define FCML_BIS_DISP_16( base, index, scale, offset )  fcml_fn_cu_operand_addr_bis_disp_32( &fcml_reg_##base, &fcml_reg_##index, scale, offset )
+#define FCML_BIS_DISP_32( base, index, scale, offset )  fcml_fn_cu_operand_addr_bis_disp_64( &fcml_reg_##base, &fcml_reg_##index, scale, offset )
+#else
+#define FCML_B_DISP_8( base, offset )                   fcml_fn_cu_operand_addr_b_disp_8( &base, offset )
+#define FCML_B_DISP_16( base, offset )                  fcml_fn_cu_operand_addr_b_disp_16( &base, offset )
+#define FCML_B_DISP_32( base, offset )                  fcml_fn_cu_operand_addr_b_disp_32( &base, offset )
+#define FCML_B_DISP_64( base, offset )                  fcml_fn_cu_operand_addr_b_disp_64( &base, offset )
+#define FCML_IS_DISP_8( index, scale, offset )          fcml_fn_cu_operand_addr_is_disp_8( &index, scale, offset )
+#define FCML_IS_DISP_16( index, scale, offset )         fcml_fn_cu_operand_addr_is_disp_32( &index, scale, offset )
+#define FCML_IS_DISP_32( index, scale, offset )         fcml_fn_cu_operand_addr_is_disp_64( &index, scale, offset )
+#define FCML_BIS_DISP_8( base, index, scale, offset )   fcml_fn_cu_operand_addr_bis_disp_8( &base, &index, scale, offset )
+#define FCML_BIS_DISP_16( base, index, scale, offset )  fcml_fn_cu_operand_addr_bis_disp_32( &base, &index, scale, offset )
+#define FCML_BIS_DISP_32( base, index, scale, offset )  fcml_fn_cu_operand_addr_bis_disp_64( &base, &index, scale, offset )
 #endif
 
 #endif /* FCML_COMMON_UTILS_H_ */

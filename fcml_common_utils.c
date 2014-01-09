@@ -240,3 +240,194 @@ fcml_st_operand fcml_fn_cu_operand_reg( fcml_st_register *reg ) {
 	reg_operand.reg = *reg;
 	return reg_operand;
 }
+
+fcml_st_operand fcml_fn_cu_operand_addr_far_pointer_offset16( fcml_int16_t seg, fcml_int16_t offset ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_FAR_POINTER;
+    fcml_st_far_pointer *far_pointer = &(operand.far_pointer);
+    far_pointer->segment = seg;
+    far_pointer->offset16 = offset;
+    far_pointer->offset_size = FCML_DS_16;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_FAR_POINTER;
+    fcml_st_far_pointer *far_pointer = &(operand.far_pointer);
+    far_pointer->segment = seg;
+    far_pointer->offset32 = offset;
+    far_pointer->offset_size = FCML_DS_32;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    address->address_form = FCML_AF_OFFSET;
+    address->offset.off16 = offset;
+    address->offset.size = FCML_DS_16;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    address->address_form = FCML_AF_OFFSET;
+    address->offset.off32 = offset;
+    address->offset.size = FCML_DS_32;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    address->address_form = FCML_AF_OFFSET;
+    address->offset.off64 = offset;
+    address->offset.size = FCML_DS_64;
+    operand.hints = FCML_OP_HINT_ABSOLUTE_ADDRESSING;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    address->address_form = FCML_AF_OFFSET;
+    address->offset.off64 = offset;
+    address->offset.size = FCML_DS_64;
+    operand.hints = FCML_OP_HINT_RELATIVE_ADDRESSING;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
+    address->address_form = FCML_AF_COMBINED;
+    effective_address->displacement.dis16 = disp;
+    effective_address->displacement.size = FCML_DS_16;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
+    address->address_form = FCML_AF_COMBINED;
+    effective_address->displacement.dis32 = disp;
+    effective_address->displacement.size = FCML_DS_32;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
+    address->address_form = FCML_AF_COMBINED;
+    effective_address->displacement.dis64 = disp;
+    effective_address->displacement.size = FCML_DS_64;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
+    address->address_form = FCML_AF_COMBINED;
+    effective_address->displacement.dis8 = disp;
+    effective_address->displacement.size = FCML_DS_8;
+    effective_address->base = *base;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp ) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_16( disp );
+    operand.address.effective_address.base = *base;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp ) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( disp );
+    operand.address.effective_address.base = *base;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp ) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_64( disp );
+    operand.address.effective_address.base = *base;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
+    address->address_form = FCML_AF_COMBINED;
+    effective_address->displacement.dis8 = disp;
+    effective_address->displacement.size = FCML_DS_8;
+    effective_address->index = *index;
+    effective_address->scale_factor = scale_factor;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp ) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( disp );
+    fcml_st_effective_address *effective_address = &(operand.address.effective_address);
+    effective_address->index = *index;
+    effective_address->scale_factor = scale_factor;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp ) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( disp );
+    fcml_st_effective_address *effective_address = &(operand.address.effective_address);
+    effective_address->index = *index;
+    effective_address->scale_factor = scale_factor;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp ) {
+    fcml_st_operand operand = {0};
+    operand.type = FCML_EOT_ADDRESS;
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
+    address->address_form = FCML_AF_COMBINED;
+    effective_address->displacement.dis8 = disp;
+    effective_address->displacement.size = FCML_DS_8;
+    effective_address->base = *base;
+    effective_address->index = *index;
+    effective_address->scale_factor = scale_factor;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp ) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( disp );
+    fcml_st_effective_address *effective_address = &(operand.address.effective_address);
+    effective_address->base = *base;
+    effective_address->index = *index;
+    effective_address->scale_factor = scale_factor;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp ) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( disp );
+    fcml_st_effective_address *effective_address = &(operand.address.effective_address);
+    effective_address->base = *base;
+    effective_address->index = *index;
+    effective_address->scale_factor = scale_factor;
+    return operand;
+}
+
+fcml_st_operand fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints ) {
+    operand.hints = hints;
+    return operand;
+}
