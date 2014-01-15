@@ -153,9 +153,7 @@ void fcml_tf_instruction_MONITOR(void) {
     FCML_I64( "monitor rax,rcx,rdx", 0x0F, 0x01, 0xC8 );
     FCML_I32_A( "monitor", 0x0F, 0x01, 0xC8 );
     // GAS
-    // TODO: Dlaczego operandy nie sa zamienione kolejnoscia w GAS?
-    //FCML_A64( "monitor %rax,%rcx,%rdx", 0x0f, 0x01, 0xc8 );
-    FCML_A64( "monitor %rdx,%rcx,%rax", 0x0f, 0x01, 0xc8 );
+    FCML_A64( "monitor %rax,%rcx,%rdx", 0x0f, 0x01, 0xc8 );
     FCML_I32_A( "monitor", 0x0F, 0x01, 0xC8 );
 }
 
