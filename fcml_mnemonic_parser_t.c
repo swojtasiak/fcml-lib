@@ -10,6 +10,8 @@
 
 #include <fcml_mnemonic_parser.h>
 
+#include <fcml_common.h>
+
 int fcml_tf_mnemonic_parser_suite_init(void) {
     return 0;
 }

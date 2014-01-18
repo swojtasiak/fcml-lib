@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
 	assembler_intel = NULL;
 	assembler_gas = NULL;
 
-	error = fcml_fn_asm_assembler_init( dialect_intel, &assembler_intel );
+	error = fcml_fn_assembler_init( dialect_intel, &assembler_intel );
 	if( error ) {
 		fcml_fn_intel_dialect_free( dialect_intel );
 		fcml_fn_gas_dialect_free( dialect_gas );
@@ -122,32 +122,32 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	error = fcml_fn_asm_assembler_init( dialect_gas, &assembler_gas );
+	error = fcml_fn_assembler_init( dialect_gas, &assembler_gas );
 	if( error ) {
-		fcml_fn_asm_assembler_free( assembler_intel );
+		fcml_fn_assembler_free( assembler_intel );
 		fcml_fn_intel_dialect_free( dialect_intel );
 		fcml_fn_gas_dialect_free( dialect_gas );
 		printf("Can not initialize AT&T assembler.\n");
 		return 1;
 	}
 
-	error = fcml_fn_dasm_disassembler_init( dialect_intel, &disassembler_intel );
+	error = fcml_fn_disassembler_init( dialect_intel, &disassembler_intel );
 	if( error ) {
 		// Error.
-		fcml_fn_asm_assembler_free( assembler_intel );
-		fcml_fn_asm_assembler_free( assembler_gas );
+		fcml_fn_assembler_free( assembler_intel );
+		fcml_fn_assembler_free( assembler_gas );
 		fcml_fn_intel_dialect_free( dialect_intel );
 		fcml_fn_gas_dialect_free( dialect_gas );
 		printf( "Can not allocate INTEL disassembler.\n" );
 		return 1;
 	}
 
-	error = fcml_fn_dasm_disassembler_init( dialect_gas, &disassembler_gas );
+	error = fcml_fn_disassembler_init( dialect_gas, &disassembler_gas );
 	if( error ) {
 		// Error.
-		fcml_fn_dasm_disassembler_free( disassembler_intel );
-		fcml_fn_asm_assembler_free( assembler_intel );
-		fcml_fn_asm_assembler_free( assembler_gas );
+		fcml_fn_disassembler_free( disassembler_intel );
+		fcml_fn_assembler_free( assembler_intel );
+		fcml_fn_assembler_free( assembler_gas );
 		fcml_fn_intel_dialect_free( dialect_intel );
 		fcml_fn_gas_dialect_free( dialect_gas );
 		printf( "Can not allocate AT&T disassembler.\n" );
@@ -161,10 +161,10 @@ int main(int argc, char **argv) {
         for( i = 0; suites[i]; i++ ) {
             if (CU_register_suites(suites[i]) != CUE_SUCCESS) {
                 fprintf(stderr, "suite registration failed - %s\n", CU_get_error_msg());
-                fcml_fn_dasm_disassembler_free( disassembler_intel );
-                fcml_fn_dasm_disassembler_free( disassembler_gas );
-                fcml_fn_asm_assembler_free( assembler_intel );
-                fcml_fn_asm_assembler_free( assembler_gas );
+                fcml_fn_disassembler_free( disassembler_intel );
+                fcml_fn_disassembler_free( disassembler_gas );
+                fcml_fn_assembler_free( assembler_intel );
+                fcml_fn_assembler_free( assembler_gas );
                 fcml_fn_intel_dialect_free( dialect_intel );
 				fcml_fn_gas_dialect_free( dialect_gas );
                 exit(1);
@@ -173,10 +173,10 @@ int main(int argc, char **argv) {
         CU_basic_run_tests();
         CU_cleanup_registry();
     }
-    fcml_fn_dasm_disassembler_free( disassembler_intel );
-    fcml_fn_dasm_disassembler_free( disassembler_gas );
-    fcml_fn_asm_assembler_free( assembler_intel );
-    fcml_fn_asm_assembler_free( assembler_gas );
+    fcml_fn_disassembler_free( disassembler_intel );
+    fcml_fn_disassembler_free( disassembler_gas );
+    fcml_fn_assembler_free( assembler_intel );
+    fcml_fn_assembler_free( assembler_gas );
     fcml_fn_intel_dialect_free( dialect_intel );
     fcml_fn_gas_dialect_free( dialect_gas );
     exit(0);

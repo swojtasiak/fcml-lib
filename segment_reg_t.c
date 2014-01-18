@@ -48,7 +48,7 @@ void fcml_fn_segment_reg(void) {
 
 	fcml_st_asm_assembler_result *result = NULL;
 
-	if( !fcml_fn_asm_assemble( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
 		if( result->chosen_instruction ) {
 			CU_ASSERT_EQUAL( 1, result->chosen_instruction->code_length );
@@ -60,7 +60,7 @@ void fcml_fn_segment_reg(void) {
 		CU_FAIL("Can not assemble instruction.");
 	}
 
-	fcml_fn_asm_assembler_result_free( result );
+	fcml_fn_assembler_result_free( result );
 
 	// Now try to override ES.
 
@@ -68,7 +68,7 @@ void fcml_fn_segment_reg(void) {
 
 	instruction.operands[1].address.segment_selector.segment_selector = fcml_reg_CS;
 
-	if( fcml_fn_asm_assemble( &context, &instruction, &result ) ) {
+	if( fcml_fn_assemble( &context, &instruction, &result ) ) {
 
 		CU_ASSERT_PTR_NOT_NULL( result->errors.last_error );
 		if( result->errors.last_error ) {
@@ -79,7 +79,7 @@ void fcml_fn_segment_reg(void) {
 		CU_FAIL("Instruction should fail.");
 	}
 
-	fcml_fn_asm_assembler_result_free( result );
+	fcml_fn_assembler_result_free( result );
 
 }
 

@@ -9,6 +9,7 @@
 #include "fcml_modrm_encoder.h"
 #include "modrm_encoder_t.h"
 #include "fcml_errors.h"
+#include <fcml_common.h>
 
 int fcml_tf_modrm_encoder_suite_init(void) {
 	return 0;
@@ -21,7 +22,7 @@ int fcml_tf_modrm_encoder_suite_cleanup(void) {
 // [EAX]
 void fcml_tf_modrm_encoder_test_1(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -39,7 +40,7 @@ void fcml_tf_modrm_encoder_test_1(void) {
 // [RAX]
 void fcml_tf_modrm_encoder_test_2(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -57,7 +58,7 @@ void fcml_tf_modrm_encoder_test_2(void) {
 // [AX]
 void fcml_tf_modrm_encoder_test_3(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -76,7 +77,7 @@ void fcml_tf_modrm_encoder_test_3(void) {
 // SIB index [AX]
 void fcml_tf_modrm_encoder_test_4(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -94,7 +95,7 @@ void fcml_tf_modrm_encoder_test_4(void) {
 // SIB index [EAX]
 void fcml_tf_modrm_encoder_test_5(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -112,7 +113,7 @@ void fcml_tf_modrm_encoder_test_5(void) {
 // SIB index [RAX]
 void fcml_tf_modrm_encoder_test_6(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -130,7 +131,7 @@ void fcml_tf_modrm_encoder_test_6(void) {
 // displacement 8
 void fcml_tf_modrm_encoder_test_7(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -148,7 +149,7 @@ void fcml_tf_modrm_encoder_test_7(void) {
 // displacement 16
 void fcml_tf_modrm_encoder_test_8(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -166,7 +167,7 @@ void fcml_tf_modrm_encoder_test_8(void) {
 // displacement 64
 void fcml_tf_modrm_encoder_test_9(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -184,7 +185,7 @@ void fcml_tf_modrm_encoder_test_9(void) {
 // SIB index [XMM]
 void fcml_tf_modrm_encoder_test_10(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
@@ -204,7 +205,7 @@ void fcml_tf_modrm_encoder_test_10(void) {
 // SIB index [YMM]
 void fcml_tf_modrm_encoder_test_11(void) {
 
-	fcml_en_cmi_attribute_size_flag effective_address_size;
+	fcml_en_attribute_size_flag effective_address_size;
 
 	fcml_st_modrm modrm;
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );

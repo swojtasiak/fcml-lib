@@ -12,6 +12,7 @@
 #include "fcml_types.h"
 #include "fcml_optimizers.h"
 #include "fcml_disassembler.h"
+#include "fcml_assembler.h"
 
 fcml_st_dialect *dialect_intel;
 fcml_st_asm_assembler *assembler_intel;

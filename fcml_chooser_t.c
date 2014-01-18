@@ -53,7 +53,7 @@ void fcml_fn_chooser_default(void) {
 
 	fcml_st_asm_assembler_result *result;
 
-	if( !fcml_fn_asm_assemble( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
 		if( result->chosen_instruction ) {
 			CU_ASSERT_EQUAL( 4, result->chosen_instruction->code_length );
@@ -64,7 +64,7 @@ void fcml_fn_chooser_default(void) {
 				CU_ASSERT_EQUAL( 0x80, result->chosen_instruction->code[3] );
 			}
 		}
-		fcml_fn_asm_assembler_result_free( result );
+		fcml_fn_assembler_result_free( result );
 	} else {
 		CU_FAIL("Can not assemble instruction.");
 	}
@@ -94,7 +94,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
     fcml_st_asm_assembler_result *result;
 
-    if( !fcml_fn_asm_assemble( &context, &instruction, &result ) ) {
+    if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 
         CU_ASSERT_PTR_NULL( result->chosen_instruction );
 
@@ -121,7 +121,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             fcml_st_dasm_disassembler_result *result;
 
-            error = fcml_fn_dasm_disassemble( &d_context, &result );
+            error = fcml_fn_disassemble( &d_context, &result );
             if( error ) {
                 break;
             }
@@ -132,14 +132,14 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             fcml_st_memory_stream buffer_stream = fcml_fn_stream_wrap( buffer, sizeof( buffer ) );
 
-            error = fcml_fn_rend_render_instruction( dialect_intel, &buffer_stream, result, FCML_REND_FLAG_RENDER_CODE );
+            error = fcml_fn_render( dialect_intel, &buffer_stream, result, FCML_REND_FLAG_RENDER_CODE );
             if( error ) {
                 // Free disassemblation result.
-                fcml_fn_dasm_disassemble_result_free( result );
+                fcml_fn_disassemble_result_free( result );
                 break;
             }
 
-            fcml_fn_dasm_disassemble_result_free( result );
+            fcml_fn_disassemble_result_free( result );
 
             if( fcml_fn_env_str_strcmp( FCML_TEXT( "666781d04280 adc ax,32834" ), buffer ) ) {
                 flags |= 0x01;
@@ -160,7 +160,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
             current_instruction = current_instruction->next;
         }
 
-        fcml_fn_asm_assembler_result_free( result );
+        fcml_fn_assembler_result_free( result );
 
         CU_ASSERT_EQUAL( error, 0 );
         CU_ASSERT_EQUAL( flags, 0x0000000F );
