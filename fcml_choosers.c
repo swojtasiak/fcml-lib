@@ -7,6 +7,9 @@
 
 #include "fcml_choosers.h"
 
+#include <fcml_assembler.h>
+#include <fcml_coll.h>
+
 fcml_st_asm_assembled_instruction *fcml_fn_asm_no_instruction_chooser( fcml_st_coll_list *instructions ) {
 	return NULL;
 }

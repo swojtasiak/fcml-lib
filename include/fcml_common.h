@@ -305,6 +305,23 @@ typedef struct fcml_st_condition {
 } fcml_st_condition;
 
 /*********************************
+ * Size attributes flags.
+ *********************************/
+
+typedef enum fcml_en_attribute_size_flag {
+    FCML_EN_ASF_ANY = 0x00,
+    FCML_EN_ASF_16 = 0x01,
+    FCML_EN_ASF_32 = 0x02,
+    FCML_EN_ASF_64 = 0x04,
+    FCML_EN_ASF_ALL = FCML_EN_ASF_16 | FCML_EN_ASF_32 | FCML_EN_ASF_64
+} fcml_en_attribute_size_flag;
+
+typedef struct fcml_st_nullable_size_flags {
+    fcml_bool is_set;
+    fcml_en_attribute_size_flag flags;
+} fcml_st_nullable_size_flags;
+
+/*********************************
  * Operands.
  *********************************/
 

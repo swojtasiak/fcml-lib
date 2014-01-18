@@ -11,7 +11,6 @@
 #include "fcml_env.h"
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
-#include "fcml_common_int.h"
 
 typedef struct fcml_st_mp_mnemonic {
     fcml_string mnemonic;

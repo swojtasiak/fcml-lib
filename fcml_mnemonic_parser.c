@@ -331,6 +331,13 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
     return error;
 }
 
+fcml_bool fcml_ifn_mp_is_attribute_size_supported( fcml_data_size supported_attribute_size, fcml_data_size attribute_size ) {
+    if( supported_attribute_size == FCML_DS_UNDEF ) {
+        return FCML_TRUE;
+    }
+    return supported_attribute_size == attribute_size;
+}
+
 fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_bool use_shortcut, fcml_nuint8_t pseudo_opcode, fcml_nuint8_t suffix, fcml_data_size osa, fcml_data_size asa, fcml_bool is_memory, fcml_data_size memory_data_size, fcml_nuint8_t l ) {
     fcml_st_mp_mnemonic *chosen_mnemonic = NULL;
     if( mnemonics->mnemonics ) {
@@ -346,8 +353,8 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemon
             }
 
 			// Size attributes.
-			if( fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_asa, asa )
-					&& fcml_fn_cmi_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
+			if( fcml_ifn_mp_is_attribute_size_supported( mnemonic->supported_asa, asa )
+					&& fcml_ifn_mp_is_attribute_size_supported( mnemonic->supported_osa, osa ) ) {
 				// Memory data size.
 				if( !mnemonic->memory_data.is_not_null || ( mnemonic->memory_data.value == ( memory_data_size / 8 ) ) ) {
 					// Suffix.

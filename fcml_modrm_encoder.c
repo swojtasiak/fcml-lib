@@ -588,7 +588,7 @@ fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, f
 	return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_en_cmi_attribute_size_flag *effective_address_size ) {
+fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_en_attribute_size_flag *effective_address_size ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -597,7 +597,7 @@ fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_mod
 	const fcml_st_address *address = &(decoded_modrm->address);
     const fcml_st_effective_address *effective_address = &(address->effective_address);
 
-    fcml_en_cmi_attribute_size_flag easa;
+    fcml_en_attribute_size_flag easa;
 
 	fcml_st_register reg;
 	if( effective_address->base.type ) {
