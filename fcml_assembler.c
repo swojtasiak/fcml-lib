@@ -20,7 +20,7 @@ typedef struct fcml_ist_asm_enc_assembler {
     fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_enc_assembler;
 
-fcml_ceh_error fcml_fn_asm_assembler_init( fcml_st_dialect *context, fcml_st_asm_assembler **assembler ) {
+fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_asm_assembler **assembler ) {
 
 	// Allocate assembler instance.
 	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
@@ -49,7 +49,7 @@ void fcml_ifn_asm_coll_list_action_free_assembled_instruction( fcml_ptr item_val
 	}
 }
 
-void fcml_fn_asm_assembler_result_free( fcml_st_asm_assembler_result *result ) {
+void fcml_fn_assembler_result_free( fcml_st_asm_assembler_result *result ) {
 	if( result ) {
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
 		if(result->instructions ) {
@@ -59,7 +59,7 @@ void fcml_fn_asm_assembler_result_free( fcml_st_asm_assembler_result *result ) {
 	}
 }
 
-fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context, const fcml_st_instruction *instruction, fcml_st_asm_assembler_result **result ) {
+fcml_ceh_error fcml_fn_assemble( fcml_st_asm_assembler_context *asm_context, const fcml_st_instruction *instruction, fcml_st_asm_assembler_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -100,7 +100,7 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 	// Allocate list for assembled instructions.
 	asm_result->instructions = fcml_fn_coll_list_alloc();
 	if( !(asm_result->instructions) ) {
-		fcml_fn_asm_assembler_result_free( asm_result );
+		fcml_fn_assembler_result_free( asm_result );
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
@@ -129,7 +129,7 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 	// Free results but only if there is no error messages.
 	if( error ) {
 		if( !asm_result->errors.errors ) {
-			fcml_fn_asm_assembler_result_free( asm_result );
+			fcml_fn_assembler_result_free( asm_result );
 			asm_result = NULL;
 		} else {
 			// Free only instructions, error messages should be returned to user.
@@ -143,7 +143,7 @@ fcml_ceh_error fcml_fn_asm_assemble( fcml_st_asm_assembler_context *asm_context,
 	return error;
 }
 
-void fcml_fn_asm_assembler_free( fcml_st_asm_assembler *assembler ) {
+void fcml_fn_assembler_free( fcml_st_asm_assembler *assembler ) {
 	if( assembler ) {
 		fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler *)assembler;
 		if( enc_asm->instructions_map ) {

@@ -16,6 +16,7 @@
 #include "fcml_gas_parser.h"
 #include "fcml_utils.h"
 #include "fcml_messages.h"
+#include "fcml_parser.h"
 
 void gas_error( struct fcml_st_parser_data *pd, const char *error ) {
 	// Stores parser error into standard container.

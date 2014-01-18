@@ -14,6 +14,7 @@
 #include "fcml_intel_parser.tab.h"
 #include "fcml_intel_lexer.h"
 #include "fcml_intel_parser.h"
+#include "fcml_parser.h"
 
 void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
 	// Stores parser error into standard container.

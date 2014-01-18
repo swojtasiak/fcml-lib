@@ -2089,7 +2089,7 @@ fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_dasm_p
  * API.
  ****************************/
 
-fcml_ceh_error fcml_fn_dasm_disassembler_init( fcml_st_dialect *dialect, fcml_st_dasm_disassembler **disassembler ) {
+fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_dasm_disassembler **disassembler ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2130,7 +2130,7 @@ void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruct
 	}
 }
 
-fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *context, fcml_st_dasm_disassembler_result **result ) {
+fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, fcml_st_dasm_disassembler_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2271,7 +2271,7 @@ fcml_ceh_error fcml_fn_dasm_disassemble( fcml_st_dasm_disassembler_context *cont
 	return error;
 }
 
-void fcml_fn_dasm_disassemble_result_free( fcml_st_dasm_disassembler_result *result ) {
+void fcml_fn_disassemble_result_free( fcml_st_dasm_disassembler_result *result ) {
 	if( result ) {
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
 		if( result->instruction.mnemonic ) {
@@ -2281,7 +2281,7 @@ void fcml_fn_dasm_disassemble_result_free( fcml_st_dasm_disassembler_result *res
 	}
 }
 
-void fcml_fn_dasm_disassembler_free( fcml_st_dasm_disassembler *disassembler ) {
+void fcml_fn_disassembler_free( fcml_st_dasm_disassembler *disassembler ) {
 	fcml_ist_dasm_disassembler *dec_disasm = (fcml_ist_dasm_disassembler*)disassembler;
 	if( dec_disasm ) {
 		if( dec_disasm->decoding_tree ) {
