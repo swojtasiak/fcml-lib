@@ -41,7 +41,7 @@ void fcml_fn_chooser_default(void) {
 	// 2: 0x66, 0x81, 0xd0, 0x42, 0x80
 	// Default instruction chooser is responsible for choosing the shortest form.
 
-	fcml_st_asm_assembler_context context = {0};
+	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
 	context.addr_form = FCML_AF_32_BIT;
 	context.ip.eip = 0x00401000;
@@ -51,7 +51,7 @@ void fcml_fn_chooser_default(void) {
 	instruction.operands[0] = FCML_REG( fcml_reg_AX );
 	instruction.operands[1] = FCML_IMM16( 0x8042 );
 
-	fcml_st_asm_assembler_result *result;
+	fcml_st_assembler_result *result;
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
@@ -80,7 +80,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
     fcml_ceh_error error;
 
-    fcml_st_asm_assembler_context context = {0};
+    fcml_st_assembler_context context = {0};
     context.configuration.optimizer_flags = FCML_OPTF_ALL_FORMS;
     context.configuration.chooser = &fcml_fn_asm_no_instruction_chooser;
     context.assembler = assembler_intel;
@@ -92,7 +92,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
     instruction.operands[0] = FCML_REG( fcml_reg_AX );
     instruction.operands[1] = FCML_IMM16( 0x8042 );
 
-    fcml_st_asm_assembler_result *result;
+    fcml_st_assembler_result *result;
 
     if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 
@@ -100,7 +100,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
         // Disassemble and render every instruction available.
 
-        fcml_st_dasm_disassembler_context d_context = {0};
+        fcml_st_disassembler_context d_context = {0};
         d_context.addr_form = FCML_AF_32_BIT;
         d_context.disassembler = disassembler_intel;
         d_context.ip.eip = 0x00401000;
@@ -109,7 +109,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
         // Iterate over all instructions.
 
-        fcml_st_asm_assembled_instruction *instruction = result->instructions;
+        fcml_st_assembled_instruction *instruction = result->instructions;
 
         while( instruction ) {
 
@@ -118,7 +118,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
             d_context.code = instruction->code;
             d_context.code_length = instruction->code_length;
 
-            fcml_st_dasm_disassembler_result *dasm_result;
+            fcml_st_disassembler_result *dasm_result;
 
             error = fcml_fn_disassemble( &d_context, &dasm_result );
             if( error ) {

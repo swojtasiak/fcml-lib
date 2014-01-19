@@ -26,7 +26,7 @@ void fcml_fn_prefixes_66(void) {
 
 	// Prefixes aren't needed.
 
-	fcml_st_asm_assembler_context context = {0};
+	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
 	context.addr_form = FCML_AF_16_BIT;
 	context.ip.eip = 0x00401000;
@@ -36,7 +36,7 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[0] = FCML_REG( fcml_reg_BP );
 	instruction.operands[1] = FCML_IMM16( 0x0201 );
 
-	fcml_st_asm_assembler_result *result;
+	fcml_st_assembler_result *result;
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );

@@ -18,12 +18,12 @@
 #include "fcml_intel_rend.h"
 #include "fcml_intel_parser.h"
 
-extern fcml_st_asm_assembler *assembler_intel;
-extern fcml_st_dasm_disassembler *disassembler_intel;
+extern fcml_st_assembler *assembler_intel;
+extern fcml_st_disassembler *disassembler_intel;
 extern fcml_st_dialect *dialect_intel;
 
-extern fcml_st_asm_assembler *assembler_gas;
-extern fcml_st_dasm_disassembler *disassembler_gas;
+extern fcml_st_assembler *assembler_gas;
+extern fcml_st_disassembler *disassembler_gas;
 extern fcml_st_dialect *dialect_gas;
 
 void fcml_ifn_ts_set_ip( fcml_st_instruction_pointer *ip, fcml_en_addr_form addr_form ) {
@@ -40,8 +40,8 @@ void fcml_ifn_ts_set_ip( fcml_st_instruction_pointer *ip, fcml_en_addr_form addr
 
 fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_addr_form addr_form, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t rend_flags ) {
 
-	fcml_st_asm_assembler *assembler = assembler_intel;
-	fcml_st_dasm_disassembler *disassembler = disassembler_intel;
+	fcml_st_assembler *assembler = assembler_intel;
+	fcml_st_disassembler *disassembler = disassembler_intel;
 	fcml_st_dialect *dialect = dialect_intel;
 
 	fcml_bool is_gas = FCML_TSF_GAS_DIALECT & t_flags;
@@ -53,18 +53,18 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 	fcml_bool success = FCML_TRUE;
 
-	fcml_st_dasm_disassembler_result *dis_result = NULL;
+	fcml_st_disassembler_result *dis_result = NULL;
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	if( !(t_flags & FCML_TSF_ASM_ONLY) ) {
 
-		fcml_st_dasm_disassembler_context context;
+		fcml_st_disassembler_context context;
 		context.configuration.short_forms = FCML_FALSE;
-		context.configuration.extend_displacement_to_asa = FCML_TRUE;
+		context.configuration.extend_disp_to_asa = FCML_TRUE;
 		context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
-		context.configuration.carry_flag_conditional_mnemonic = FCML_TRUE;
-		context.configuration.extend_displacement_to_asa = FCML_TRUE;
+		context.configuration.carry_flag_conditional_suffix = FCML_TRUE;
+		context.configuration.extend_disp_to_asa = FCML_TRUE;
 		context.disassembler = disassembler;
 		context.addr_form = addr_form;
 		context.address_size_attribute = 0;
@@ -166,7 +166,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 		fcml_uint16_t opt_flags = 0;
 
 		// Assembling.
-		fcml_st_asm_assembler_context context;
+		fcml_st_assembler_context context;
 		context.assembler = assembler;
 		context.address_size_attribute = 0;
 		context.operand_size_attribute = 0;
@@ -193,7 +193,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_ifn_ts_set_ip( &(context.ip), addr_form );
 
-		fcml_st_asm_assembler_result *asm_result = NULL;
+		fcml_st_assembler_result *asm_result = NULL;
 		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
 		if( error ) {
 		    if( !t_flags & FCML_TSF_SHOULD_FAIL ) {
@@ -214,12 +214,12 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
             int j = 0;
             for( j = 0; j < 2; j++ ) {
 
-                fcml_st_asm_assembled_instruction *instructions = asm_result->instructions;
+                fcml_st_assembled_instruction *instructions = asm_result->instructions;
 
                 assembled_code_index = 0;
 
                 // Fill code array.
-                fcml_st_asm_assembled_instruction *assembled_instruction = instructions;
+                fcml_st_assembled_instruction *assembled_instruction = instructions;
                 while( assembled_instruction ) {
                     assembled_code_len[assembled_code_index] = assembled_instruction->code_length;
                     assembled_code[assembled_code_index++] = assembled_instruction->code;
@@ -239,7 +239,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
                 }
 
                 while( instructions ) {
-                    fcml_st_asm_assembled_instruction *assembled_instruction = (fcml_st_asm_assembled_instruction *)instructions;
+                    fcml_st_assembled_instruction *assembled_instruction = (fcml_st_assembled_instruction *)instructions;
                     fcml_bool differ = FCML_FALSE;
                     if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
                         int i;
@@ -400,7 +400,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 
 	fcml_bool success = FCML_TRUE;
 
-	fcml_st_dasm_disassembler *disassembler = disassembler_intel;
+	fcml_st_disassembler *disassembler = disassembler_intel;
 	fcml_st_dialect *dialect = dialect_intel;
 
 	if( FCML_TSF_GAS_DIALECT & t_flags ) {
@@ -408,15 +408,15 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 		dialect = dialect_gas;
 	}
 
-	fcml_st_dasm_disassembler_result *dis_result = NULL;
+	fcml_st_disassembler_result *dis_result = NULL;
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_dasm_disassembler_context context;
+	fcml_st_disassembler_context context;
 	context.configuration.short_forms = ( t_flags & FCML_TSF_SHORT ) ? FCML_TRUE : FCML_FALSE;
-	context.configuration.extend_displacement_to_asa = FCML_TRUE;
+	context.configuration.extend_disp_to_asa = FCML_TRUE;
 	context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
-	context.configuration.carry_flag_conditional_mnemonic = FCML_TRUE;
+	context.configuration.carry_flag_conditional_suffix = FCML_TRUE;
 	context.disassembler = disassembler;
 	context.addr_form = addr_form;
 	context.address_size_attribute = 0;

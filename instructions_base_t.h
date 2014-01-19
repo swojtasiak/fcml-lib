@@ -15,12 +15,12 @@
 #include "fcml_assembler.h"
 
 fcml_st_dialect *dialect_intel;
-fcml_st_asm_assembler *assembler_intel;
-fcml_st_dasm_disassembler *disassembler_intel;
+fcml_st_assembler *assembler_intel;
+fcml_st_disassembler *disassembler_intel;
 
 fcml_st_dialect *dialect_gas;
-fcml_st_asm_assembler *assembler_gas;
-fcml_st_dasm_disassembler *disassembler_gas;
+fcml_st_assembler *assembler_gas;
+fcml_st_disassembler *disassembler_gas;
 
 #define FCML_TSF_SHOULD_FAIL		0x00000001
 #define FCML_TSF_SHORT				0x00000002

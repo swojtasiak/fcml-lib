@@ -28,7 +28,7 @@ int fcml_tf_prefixes_segment_reg_suite_cleanup(void) {
 
 void fcml_fn_segment_reg(void) {
 
-	fcml_st_asm_assembler_context context = {0};
+	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
 	context.addr_form = FCML_AF_32_BIT;
 	context.ip.eip = 0x00401000;
@@ -46,7 +46,7 @@ void fcml_fn_segment_reg(void) {
 	instruction.operands[1].address.size_operator = FCML_DS_32;
 	instruction.operands[1].address.effective_address.base = fcml_reg_EDI;
 
-	fcml_st_asm_assembler_result *result = NULL;
+	fcml_st_assembler_result *result = NULL;
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
