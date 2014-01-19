@@ -39,7 +39,7 @@ fcml_string fcml_iarr_rend_conditional_suffixes_intel[2][16] = {
 	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("nae"), FCML_TEXT("ae"), FCML_TEXT("z"), FCML_TEXT("nz"), FCML_TEXT("na"), FCML_TEXT("a"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("pe"), FCML_TEXT("po"), FCML_TEXT("nge"), FCML_TEXT("ge"), FCML_TEXT("ng"), FCML_TEXT("g") }
 };
 
-void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, fcml_st_dasm_prefixes_details *prefixes, fcml_uint32_t flags ) {
+void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, fcml_st_prefixes_details *prefixes, fcml_uint32_t flags ) {
 	if( prefixes->is_xacquire ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("xacquire ") );
 	}
@@ -73,7 +73,7 @@ void fcml_ifn_rend_print_prefixes_intel( fcml_st_memory_stream *output_stream, f
 	}
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_st_operand *operand, fcml_st_dasm_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 
 	// Do not render pseudo opcodes if shortcut is used.
 	if( ( operand->hints & FCML_OP_HINT_PSEUDO_OPCODE ) && result->instruction_details.is_pseudo_op_shortcut ) {
@@ -90,7 +90,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_dialect_c
 	return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_IMM );
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_st_operand *operand, fcml_st_dasm_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 	fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(operand->reg), result->instruction_details.prefixes_details.is_rex );
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -138,12 +138,12 @@ fcml_ceh_error fcml_ifn_rend_size_operator_intel( fcml_data_size size_operator, 
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_st_operand *operand, fcml_st_dasm_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_st_address *address = &(operand->address);
-	fcml_st_dasm_prefixes_details *prefixes = &(result->instruction_details.prefixes_details);
+	fcml_st_prefixes_details *prefixes = &(result->instruction_details.prefixes_details);
 
 	fcml_hints hints = operand->hints;
 
@@ -252,7 +252,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_st_operand *operand, fcml_st_dasm_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_intel( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -280,7 +280,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_intel( fcml_st_dialect
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_rend_print_operand_intel(  fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_int operand_index, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_print_operand_intel(  fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_int operand_index, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_operand *operand = &(result->instruction.operands[operand_index]);
 	switch( operand->type ) {
@@ -316,7 +316,7 @@ fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml
 	return fcml_iarr_rend_conditional_suffixes_intel[group][condition];
 }
 
-fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_dasm_disassembler_result *result, fcml_uint32_t render_flags ) {
+fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags ) {
 
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect_context;
 

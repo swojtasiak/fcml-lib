@@ -20,7 +20,7 @@ typedef struct fcml_ist_asm_enc_assembler {
     fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_enc_assembler;
 
-fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_asm_assembler **assembler ) {
+fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler ) {
 
 	// Allocate assembler instance.
 	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
@@ -36,21 +36,21 @@ fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_asm_ass
 
 	enc_asm->dialect_context = (fcml_st_dialect_context_int*)context;
 
-	*assembler = (fcml_st_asm_assembler *)enc_asm;
+	*assembler = (fcml_st_assembler *)enc_asm;
 
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-void fcml_ifn_asm_free_instruction_chain( fcml_st_asm_assembled_instruction *chain ) {
+void fcml_ifn_asm_free_instruction_chain( fcml_st_assembled_instruction *chain ) {
     while( chain ) {
-        fcml_st_asm_assembled_instruction *instruction = chain;
+        fcml_st_assembled_instruction *instruction = chain;
         chain = chain->next;
         fcml_fn_env_memory_free( instruction->code );
         fcml_fn_env_memory_free( instruction );
     }
 }
 
-void fcml_fn_assembler_result_free( fcml_st_asm_assembler_result *result ) {
+void fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) {
 	if( result ) {
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
         fcml_ifn_asm_free_instruction_chain( result->instructions );
@@ -58,7 +58,7 @@ void fcml_fn_assembler_result_free( fcml_st_asm_assembler_result *result ) {
 	}
 }
 
-fcml_ceh_error fcml_fn_assemble( fcml_st_asm_assembler_context *asm_context, const fcml_st_instruction *instruction, fcml_st_asm_assembler_result **result ) {
+fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const fcml_st_instruction *instruction, fcml_st_assembler_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -91,7 +91,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_asm_assembler_context *asm_context, con
 		asm_context->operand_size_attribute = fcml_fn_utils_get_default_OSA(asm_context->addr_form);
 	}
 
-	fcml_st_asm_assembler_result *asm_result = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_asm_encoder_result ) );
+	fcml_st_assembler_result *asm_result = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_asm_encoder_result ) );
 	if( !asm_result ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
@@ -137,7 +137,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_asm_assembler_context *asm_context, con
 	return error;
 }
 
-void fcml_fn_assembler_free( fcml_st_asm_assembler *assembler ) {
+void fcml_fn_assembler_free( fcml_st_assembler *assembler ) {
 	if( assembler ) {
 		fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler *)assembler;
 		if( enc_asm->instructions_map ) {

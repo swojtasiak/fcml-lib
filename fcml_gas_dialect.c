@@ -1518,7 +1518,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
     return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_st_mp_mnemonic *mnemonic, fcml_st_dasm_disassembler_result *disassembler_result ) {
+fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_st_mp_mnemonic *mnemonic, fcml_st_disassembler_result *disassembler_result ) {
 
     fcml_int operands_count = disassembler_result->instruction.operands_count;
 
@@ -1530,8 +1530,8 @@ fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_s
             fcml_ifn_asm_dialect_gas_revert_operands( disassembler_result->instruction.operands, operands_count );
 
             // Revert operand details.
-            fcml_st_dasm_operand_details *operand_details = disassembler_result->instruction_details.operand_details;
-            fcml_st_dasm_operand_details tmp_operand_details;
+            fcml_st_operand_details *operand_details = disassembler_result->instruction_details.operand_details;
+            fcml_st_operand_details tmp_operand_details;
             fcml_int i;
             for( i = 0; i < operands_count / 2; i++ ) {
                 tmp_operand_details = operand_details[i];

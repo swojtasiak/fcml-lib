@@ -47,7 +47,7 @@ typedef struct fcml_ist_dasm_operand_wrapper {
 struct fcml_ist_dasm_instruction_decoding_def;
 
 typedef struct fcml_ist_dasm_decoding_context {
-	fcml_st_dasm_disassembler_context *disassembler_context;
+	fcml_st_disassembler_context *disassembler_context;
 	fcml_st_ceh_error_container errors;
 	fcml_st_memory_stream *stream;
 	fcml_st_mp_mnemonic_set *mnemonics;
@@ -58,7 +58,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_uint8_t primary_opcode_byte;
 	fcml_int opcodes_count;
 	fcml_int virtual_opcodes_count;
-	fcml_st_dasm_prefixes_details prefixes;
+	fcml_st_prefixes_details prefixes;
 	fcml_ist_dasm_operand_wrapper operand_wrappers[FCML_OPERANDS_COUNT];
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details decoded_modrm_details;
@@ -172,7 +172,7 @@ void fcml_ifn_dasm_utils_set_segment_selector( fcml_st_segment_selector *seg_sel
 fcml_uint8_t fcml_ifn_dasm_utils_override_segment_reg( fcml_ist_dasm_decoding_context *context, fcml_uint8_t reg ) {
 	fcml_int i;
 	for( i = 0; i < context->prefixes.prefixes_count; i++ ) {
-		fcml_st_dasm_instruction_prefix *prefix = &(context->prefixes.prefixes[i]);
+		fcml_st_instruction_prefix *prefix = &(context->prefixes.prefixes[i]);
 		if( prefix->prefix_type == FCML_PT_GROUP_2 && !prefix->mandatory_prefix ) {
 			switch( prefix->prefix ) {
 			case 0x2E:
@@ -880,9 +880,9 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding( fcml_st_def_addr_mode
  * Prefixes.
  *********************/
 
-fcml_st_dasm_instruction_prefix* fcml_ifn_dasm_get_prefix_by_type( fcml_ist_dasm_decoding_context *context, fcml_st_dasm_prefix_types prefix_type ) {
-	fcml_st_dasm_instruction_prefix* prefix = NULL;
-	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
+fcml_st_instruction_prefix* fcml_ifn_dasm_get_prefix_by_type( fcml_ist_dasm_decoding_context *context, fcml_st_prefix_types prefix_type ) {
+	fcml_st_instruction_prefix* prefix = NULL;
+	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 	fcml_int prefix_count = prefixes->prefixes_count;
 	fcml_int i;
 	for( i = 0; i < prefix_count; i++ ) {
@@ -894,9 +894,9 @@ fcml_st_dasm_instruction_prefix* fcml_ifn_dasm_get_prefix_by_type( fcml_ist_dasm
 	return prefix;
 }
 
-fcml_st_dasm_instruction_prefix* fcml_ifn_dasm_get_prefix_if_available( fcml_ist_dasm_decoding_context *context, fcml_uint8_t prefix_value ) {
-	fcml_st_dasm_instruction_prefix* prefix = NULL;
-	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
+fcml_st_instruction_prefix* fcml_ifn_dasm_get_prefix_if_available( fcml_ist_dasm_decoding_context *context, fcml_uint8_t prefix_value ) {
+	fcml_st_instruction_prefix* prefix = NULL;
+	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 	fcml_int prefix_count = prefixes->prefixes_count;
 	fcml_int i;
 	for( i = 0; i < prefix_count; i++ ) {
@@ -909,7 +909,7 @@ fcml_st_dasm_instruction_prefix* fcml_ifn_dasm_get_prefix_if_available( fcml_ist
 }
 
 fcml_bool fcml_ifn_dasm_is_prefix_available( fcml_ist_dasm_decoding_context *context, uint8_t prefix, fcml_bool mandatory ) {
-	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
+	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 	// Handle VEX mandatory prefixes.
 	if( mandatory && prefixes->is_vex && prefixes->pp ) {
 		if( prefixes->pp == 0x01 && prefix == 0x66 ) {
@@ -922,12 +922,12 @@ fcml_bool fcml_ifn_dasm_is_prefix_available( fcml_ist_dasm_decoding_context *con
 			return FCML_TRUE;
 		}
 	}
-	fcml_st_dasm_instruction_prefix *found_prefix = fcml_ifn_dasm_get_prefix_if_available( context, prefix );
+	fcml_st_instruction_prefix *found_prefix = fcml_ifn_dasm_get_prefix_if_available( context, prefix );
 	return mandatory ? ( found_prefix != NULL && found_prefix->mandatory_prefix ) : ( found_prefix != NULL );
 }
 
 void fcml_ifn_dasm_clear_mandatory_flag( fcml_ist_dasm_decoding_context *context, uint8_t prefix_code ) {
-	fcml_st_dasm_instruction_prefix *prefix = fcml_ifn_dasm_get_prefix_if_available( context, prefix_code );
+	fcml_st_instruction_prefix *prefix = fcml_ifn_dasm_get_prefix_if_available( context, prefix_code );
 	if( prefix ) {
 		prefix->mandatory_prefix = FCML_FALSE;
 	}
@@ -939,7 +939,7 @@ void fcml_ifn_dasm_clear_mandatory_flag( fcml_ist_dasm_decoding_context *context
 
 fcml_data_size fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_context *context ) {
 
-	fcml_st_dasm_disassembler_context *disassembler_context = context->disassembler_context;
+	fcml_st_disassembler_context *disassembler_context = context->disassembler_context;
 	fcml_data_size effective_asa = disassembler_context->address_size_attribute;
 
 	// Checks if address size attribute is overridden.
@@ -960,10 +960,10 @@ fcml_data_size fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_con
 
 fcml_data_size fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_context *context, fcml_uint32_t opcode_flags ) {
 
-	fcml_st_dasm_instruction_prefix *prefix;
+	fcml_st_instruction_prefix *prefix;
 
-	fcml_st_dasm_disassembler_context *disassembler_context = context->disassembler_context;
-	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
+	fcml_st_disassembler_context *disassembler_context = context->disassembler_context;
+	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 	fcml_data_size osa = disassembler_context->operand_size_attribute;
 
 	// Gets effective address-size attribute for used mode.
@@ -1016,7 +1016,7 @@ typedef fcml_ifp_dasm_instruction_acceptor (*fcml_ifp_dasm_instruction_acceptor_
 fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def ) {
 
 	// Prefixes.
-	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
+	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 
 	// LOCK prefix.
 	if( prefixes->is_lock && !FCML_DEF_PREFIX_LOCK_ALLOWED( instruction_decoding_def->prefixes_flags ) ) {
@@ -1088,7 +1088,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm( fcml_ist_dasm_decoding_conte
 
 	fcml_uint32_t opcode_flags = instruction_decoding_def->opcode_flags;
 	fcml_st_memory_stream *code = context->stream;
-	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
+	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 
 	fcml_ist_dasm_modrm_decoding_details *modrm_details = &(instruction_decoding_def->modrm_details);
 
@@ -1146,7 +1146,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions( fcml_
 		fcml_bool mandatory_prefix = FCML_FALSE;
 		// Ignore 0x66 prefix if this instruction uses it as mandatory prefix. This correction is also
 		// done in the next phase for already chosen instruction.
-		fcml_st_dasm_instruction_prefix *prefix = fcml_ifn_dasm_get_prefix_if_available( context, 0x66 );
+		fcml_st_instruction_prefix *prefix = fcml_ifn_dasm_get_prefix_if_available( context, 0x66 );
 		// Set this prefix as a mandatory one if this instruction defines 66 as mandatory.
 		// This is set temporarily, only to calculate correct EOSA for instruction.
 		if( prefix != NULL ) {
@@ -1191,7 +1191,7 @@ fcml_ifp_dasm_instruction_acceptor fcml_ifn_dasm_instruction_acceptor_factory_si
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_addr_mode( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def ) {
 
-	fcml_st_dasm_disassembler_context *disassembler_context = context->disassembler_context;
+	fcml_st_disassembler_context *disassembler_context = context->disassembler_context;
 
 	fcml_en_addr_form addr_form = disassembler_context->addr_form;
 
@@ -1399,7 +1399,7 @@ typedef struct fcml_ist_dasm_opcode_iterator_impl {
 } fcml_ist_dasm_opcode_iterator_impl;
 
 fcml_int fcml_ifn_dasm_decode_escape_opcode_bytes( fcml_ist_dasm_decoding_context *decoding_context, fcml_uint8_t **virtual_opcode ) {
-	fcml_st_dasm_prefixes_details *prefixes_fields = &(decoding_context->prefixes);
+	fcml_st_prefixes_details *prefixes_fields = &(decoding_context->prefixes);
 	fcml_int8_t size = 0;
 	if( prefixes_fields->is_vex || prefixes_fields->is_xop ) {
 		if( prefixes_fields->vex_xop_first_byte == 0xC4 ) {
@@ -1551,7 +1551,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 
 	fcml_ist_dasm_operand_wrapper *operand_wrappers = &(decoding_context->operand_wrappers[0]);
 	fcml_ist_dasm_modrm_decoding_details *modrm_details = &(instruction_decoding_def->modrm_details);
-	fcml_st_dasm_prefixes_details *prefixes = &(decoding_context->prefixes);
+	fcml_st_prefixes_details *prefixes = &(decoding_context->prefixes);
 
 	// Decode ModRM field if there is any.
 
@@ -1574,7 +1574,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 		modrm_source.stream = decoding_context->stream;
 
 		fcml_uint8_t flags = 0;
-		if( decoding_context->disassembler_context->configuration.extend_displacement_to_asa ) {
+		if( decoding_context->disassembler_context->configuration.extend_disp_to_asa ) {
 			flags |= FCML_MODRM_DEC_FLAG_EXTEND_DISPLACEMENT_TO_ASA;
 		}
 
@@ -1737,7 +1737,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
  * Input validation
  **************************/
 
-fcml_ceh_error fcml_ifn_dasm_validate_and_prepare_context( fcml_st_dasm_disassembler_context *context ) {
+fcml_ceh_error fcml_ifn_dasm_validate_and_prepare_context( fcml_st_disassembler_context *context ) {
 
 	/* Mode has to be set. */
     if( context->addr_form != FCML_AF_16_BIT && context->addr_form != FCML_AF_32_BIT && context->addr_form != FCML_AF_64_BIT ) {
@@ -1811,13 +1811,13 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_dasm_prefixes_details *prefixes = &(decoding_context->prefixes);
+	fcml_st_prefixes_details *prefixes = &(decoding_context->prefixes);
 	fcml_st_memory_stream *stream = decoding_context->stream;
 	fcml_en_addr_form addr_form = decoding_context->disassembler_context->addr_form;
-	fcml_st_dasm_prefixes_details *prefixes_details = &(decoding_context->prefixes);
+	fcml_st_prefixes_details *prefixes_details = &(decoding_context->prefixes);
 
 	fcml_uint16_t p_flags;
-	fcml_st_dasm_prefix_types prefix_type;
+	fcml_st_prefix_types prefix_type;
 	fcml_int prefix_index = 0;
 	fcml_int prefix_size = 0;
 	fcml_int xop_vex_prefix_size = 0;
@@ -1837,7 +1837,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 		prefix_size = 1;
 		fcml_uint8_t prefix = fcml_fn_stream_peek(stream, &result);
 		if( result ) {
-			fcml_st_dasm_instruction_prefix *prefix_details = &(prefixes->prefixes[prefix_index]);
+			fcml_st_instruction_prefix *prefix_details = &(prefixes->prefixes[prefix_index]);
 			switch(prefix) {
 				case 0xF0:
 					prefix_type = FCML_PT_GROUP_1;
@@ -2046,7 +2046,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 				 prefixes->prefixes[i - 1].mandatory_prefix = FCML_FALSE;
 			 } else {
 				 // REX prefixes have to be preceded by mandatory and optional prefixes if there are any.
-				 fcml_st_dasm_instruction_prefix *prefix = &(prefixes->prefixes[i - 1]);
+				 fcml_st_instruction_prefix *prefix = &(prefixes->prefixes[i - 1]);
 				 if( !prefix->mandatory_prefix && prefix->prefix_type != FCML_PT_REX ) {
 					 found_plain_prefix = FCML_TRUE;
 				 }
@@ -2057,7 +2057,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	return error;
 }
 
-fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_dasm_prefixes_details *prefixes ) {
+fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_prefixes_details *prefixes ) {
 	fcml_prefixes gen_prefixes = 0;
 	if( prefixes ) {
 		if( prefixes->is_rep ) {
@@ -2089,7 +2089,7 @@ fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_dasm_p
  * API.
  ****************************/
 
-fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_dasm_disassembler **disassembler ) {
+fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2099,7 +2099,7 @@ fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_dasm
 		int_disasm->dialect_context = (fcml_st_dialect_context_int*)dialect;
 		error = fcml_fn_dt_dts_tree_init( (fcml_st_dialect_context_int*)dialect, &(int_disasm->decoding_tree), &fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default, &fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default );
 		if( !error ) {
-			*disassembler = (fcml_st_dasm_disassembler*)int_disasm;
+			*disassembler = (fcml_st_disassembler*)int_disasm;
 		}
 
 	} else {
@@ -2109,19 +2109,19 @@ fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_dasm
 	return error;
 }
 
-void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruction, fcml_st_dasm_instruction_details *instruction_details ) {
+void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruction, fcml_st_instruction_details *instruction_details ) {
 	if( instruction_details->is_shortcut ) {
 		// Clean all operands, short forms do not have them.
 		instruction->operands_count = 0;
 		fcml_fn_env_memory_clear( &(instruction->operands[0]), sizeof( fcml_st_operand[FCML_OPERANDS_COUNT] ) );
-		fcml_fn_env_memory_clear( &(instruction_details->operand_details[0]), sizeof( fcml_st_dasm_operand_details[FCML_OPERANDS_COUNT] ) );
+		fcml_fn_env_memory_clear( &(instruction_details->operand_details[0]), sizeof( fcml_st_operand_details[FCML_OPERANDS_COUNT] ) );
 	} else if( instruction_details->is_pseudo_op_shortcut ) {
 		int i;
 		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 			// Clean IMM pseudo opcode operand.
 			if( instruction->operands[i].hints & FCML_OP_HINT_PSEUDO_OPCODE ) {
 				fcml_fn_env_memory_clear( &(instruction->operands[i] ), sizeof( fcml_st_operand ) );
-				fcml_fn_env_memory_clear( &(instruction_details->operand_details[i] ), sizeof( fcml_st_dasm_operand_details ) );
+				fcml_fn_env_memory_clear( &(instruction_details->operand_details[i] ), sizeof( fcml_st_operand_details ) );
 				instruction->operands_count--;
 				// It is always the last one.
 				break;
@@ -2130,7 +2130,7 @@ void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruct
 	}
 }
 
-fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, fcml_st_dasm_disassembler_result **result ) {
+fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result **result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2165,14 +2165,14 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, 
 	error =  fcml_ifn_dasm_decode_instruction( &decoding_context );
 
 	if( !error ) {
-		fcml_st_dasm_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dasm_disassembler_result ) );
+		fcml_st_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_disassembler_result ) );
 		if( dis_res ) {
 
 			// Copy potential errors.
 			dis_res->errors = decoding_context.errors;
 
 			fcml_st_instruction *instruction = &(dis_res->instruction);
-			fcml_st_dasm_instruction_details *instruction_details = &(dis_res->instruction_details);
+			fcml_st_instruction_details *instruction_details = &(dis_res->instruction_details);
 
 			fcml_data_size memory_data_size = 0;
 
@@ -2194,7 +2194,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, 
 			instruction->operands_count = i;
 
 			// ModR/M details.
-			fcml_st_dasm_modrm_details *modrm_details = &(instruction_details->modrm_details);
+			fcml_st_decoded_modrm_details *modrm_details = &(instruction_details->modrm_details);
 			modrm_details->modrm = decoding_context.decoded_modrm_details.modrm;
 			modrm_details->sib = decoding_context.decoded_modrm_details.sib;
 			modrm_details->is_rip = decoding_context.decoded_modrm.is_rip;
@@ -2239,7 +2239,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, 
 				instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
 				instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
 				// Render mnemonic using provided dialect.
-				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_mnemonic );
+				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_suffix );
 			} else {
 				// Mnemonic not found.
 				return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
@@ -2261,7 +2261,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, 
 		}
 	} else if( decoding_context.errors.errors ) {
 		// If there are any errors, return them back to the user.
-		fcml_st_dasm_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dasm_disassembler_result ) );
+		fcml_st_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_disassembler_result ) );
 		if( dis_res ) {
 			dis_res->errors = decoding_context.errors;
 		}
@@ -2271,7 +2271,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, 
 	return error;
 }
 
-void fcml_fn_disassemble_result_free( fcml_st_dasm_disassembler_result *result ) {
+void fcml_fn_disassemble_result_free( fcml_st_disassembler_result *result ) {
 	if( result ) {
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
 		if( result->instruction.mnemonic ) {
@@ -2281,7 +2281,7 @@ void fcml_fn_disassemble_result_free( fcml_st_dasm_disassembler_result *result )
 	}
 }
 
-void fcml_fn_disassembler_free( fcml_st_dasm_disassembler *disassembler ) {
+void fcml_fn_disassembler_free( fcml_st_disassembler *disassembler ) {
 	fcml_ist_dasm_disassembler *dec_disasm = (fcml_ist_dasm_disassembler*)disassembler;
 	if( dec_disasm ) {
 		if( dec_disasm->decoding_tree ) {

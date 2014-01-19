@@ -17,14 +17,14 @@
 
 typedef struct fcml_st_asm_encoder_result {
 	fcml_st_ceh_error_container errors;
-	fcml_st_asm_assembled_instruction *instructions;
-	fcml_st_asm_assembled_instruction *chosen_instruction;
+	fcml_st_assembled_instruction *instructions;
+	fcml_st_assembled_instruction *chosen_instruction;
 	fcml_usize number_of_instructions;
 } fcml_st_asm_encoder_result;
 
 struct fcml_st_asm_instruction_addr_modes;
 
-typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_asm_assembler_context *context, fcml_st_dialect_context_int *dialect_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes );
+typedef fcml_ceh_error (*fcml_fnp_asm_instruction_encoder)( fcml_st_assembler_context *context, fcml_st_dialect_context_int *dialect_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes );
 
 typedef struct fcml_st_asm_instruction_addr_modes {
 	// All addressing modes for given mnemonic are available in this list.

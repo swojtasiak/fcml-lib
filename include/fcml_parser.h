@@ -20,7 +20,7 @@ typedef struct fcml_st_parser_result {
 	fcml_st_instruction *instruction;
 } fcml_st_parser_result;
 
-fcml_ceh_error fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result **result_out );
+fcml_ceh_error fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result **result );
 void fcml_fn_parser_result_free( fcml_st_parser_result *result );
 
 #endif /* FCML_PARSER_H_ */
