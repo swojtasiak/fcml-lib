@@ -60,10 +60,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 	if( !(t_flags & FCML_TSF_ASM_ONLY) ) {
 
 		fcml_st_dasm_disassembler_context context;
-		context.configuration.use_short_form_mnemonics = FCML_FALSE;
+		context.configuration.short_forms = FCML_FALSE;
 		context.configuration.extend_displacement_to_asa = FCML_TRUE;
 		context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
-		context.configuration.choose_carry_conditional_mnemonic = FCML_TRUE;
+		context.configuration.carry_flag_conditional_mnemonic = FCML_TRUE;
 		context.configuration.extend_displacement_to_asa = FCML_TRUE;
 		context.disassembler = disassembler;
 		context.addr_form = addr_form;
@@ -98,10 +98,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 			// Looking for 0x67 prefix.
 			int i;
 			for( i = 0; i < FCML_DASM_PREFIXES_COUNT; i++ ) {
-				if( dis_result->instruction_details.prefixes.prefixes[i].prefix == 0x67 ) {
+				if( dis_result->instruction_details.prefixes_details.prefixes[i].prefix == 0x67 ) {
 					is_67 = FCML_TRUE;
 				}
-				if( dis_result->instruction_details.prefixes.prefixes[i].prefix == 0x66 ) {
+				if( dis_result->instruction_details.prefixes_details.prefixes[i].prefix == 0x66 ) {
                     is_66 = FCML_TRUE;
                 }
 			}
@@ -185,11 +185,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		context.configuration.choose_sib_encoding = FCML_FALSE;
 		context.configuration.choose_abs_encoding = !(t_flags & FCML_TSF_ENABLE_RIP);
-		context.configuration.force_3byte_vex = FCML_FALSE;
 		context.configuration.chooser = NULL;
 		context.configuration.optimizer = NULL;
 		context.configuration.optimizer_flags = opt_flags;
-		context.configuration.force_unnecessary_rex_prefix = FCML_FALSE;
+		context.configuration.force_rex_prefix = FCML_FALSE;
 		context.configuration.force_three_byte_VEX = FCML_FALSE;
 
 		fcml_ifn_ts_set_ip( &(context.ip), addr_form );
@@ -215,34 +214,32 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
             int j = 0;
             for( j = 0; j < 2; j++ ) {
 
-                fcml_st_coll_list *inst = asm_result->instructions;
+                fcml_st_asm_assembled_instruction *instructions = asm_result->instructions;
 
                 assembled_code_index = 0;
 
                 // Fill code array.
-                fcml_st_coll_list_element *element = inst->head;
-                while( element ) {
-                    fcml_st_asm_assembled_instruction *assembled_instruction = (fcml_st_asm_assembled_instruction *)element->item;
+                fcml_st_asm_assembled_instruction *assembled_instruction = instructions;
+                while( assembled_instruction ) {
                     assembled_code_len[assembled_code_index] = assembled_instruction->code_length;
                     assembled_code[assembled_code_index++] = assembled_instruction->code;
-                    element = element->next;
+                    assembled_instruction = assembled_instruction->next;
                 }
 
                 if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
-                    if( !(t_flags & FCML_TSF_MULTI_ASM_RESULTS) && inst->size != 1 ) {
+                    if( !(t_flags & FCML_TSF_MULTI_ASM_RESULTS) && asm_result->number_of_instructions != 1 ) {
                         found = FCML_FALSE;
                         break;
                     }
-                    // Check if number of assembled instructions matche.
-                    if( (t_flags & FCML_TSF_MULTI_ASM_RESULTS) && inst->size != code[0] ) {
+                    // Check if number of assembled instructions match.
+                    if( (t_flags & FCML_TSF_MULTI_ASM_RESULTS) && asm_result->number_of_instructions != code[0] ) {
 						found = FCML_FALSE;
 						break;
 					}
                 }
 
-                element = inst->head;
-                while( element ) {
-                    fcml_st_asm_assembled_instruction *assembled_instruction = (fcml_st_asm_assembled_instruction *)element->item;
+                while( instructions ) {
+                    fcml_st_asm_assembled_instruction *assembled_instruction = (fcml_st_asm_assembled_instruction *)instructions;
                     fcml_bool differ = FCML_FALSE;
                     if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
                         int i;
@@ -307,7 +304,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
                         printf("\n");
                     }
-                    element = element->next;
+                    instructions = instructions->next;
                 }
 
                 if( found ) {
@@ -416,10 +413,10 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_st_dasm_disassembler_context context;
-	context.configuration.use_short_form_mnemonics = ( t_flags & FCML_TSF_SHORT ) ? FCML_TRUE : FCML_FALSE;
+	context.configuration.short_forms = ( t_flags & FCML_TSF_SHORT ) ? FCML_TRUE : FCML_FALSE;
 	context.configuration.extend_displacement_to_asa = FCML_TRUE;
 	context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
-	context.configuration.choose_carry_conditional_mnemonic = FCML_TRUE;
+	context.configuration.carry_flag_conditional_mnemonic = FCML_TRUE;
 	context.disassembler = disassembler;
 	context.addr_form = addr_form;
 	context.address_size_attribute = 0;

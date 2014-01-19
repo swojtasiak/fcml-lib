@@ -105,23 +105,22 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
         d_context.disassembler = disassembler_intel;
         d_context.ip.eip = 0x00401000;
 
-        fcml_st_coll_list_element *current_instruction = result->instructions->head;
-
         fcml_int flags = 0;
 
         // Iterate over all instructions.
-        while( current_instruction ) {
 
-            fcml_st_asm_assembled_instruction *instruction = (fcml_st_asm_assembled_instruction*)current_instruction->item;
+        fcml_st_asm_assembled_instruction *instruction = result->instructions;
+
+        while( instruction ) {
 
             // Disassemble instructions one by one.
 
             d_context.code = instruction->code;
             d_context.code_length = instruction->code_length;
 
-            fcml_st_dasm_disassembler_result *result;
+            fcml_st_dasm_disassembler_result *dasm_result;
 
-            error = fcml_fn_disassemble( &d_context, &result );
+            error = fcml_fn_disassemble( &d_context, &dasm_result );
             if( error ) {
                 break;
             }
@@ -132,14 +131,14 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             fcml_st_memory_stream buffer_stream = fcml_fn_stream_wrap( buffer, sizeof( buffer ) );
 
-            error = fcml_fn_render( dialect_intel, &buffer_stream, result, FCML_REND_FLAG_RENDER_CODE );
+            error = fcml_fn_render( dialect_intel, &buffer_stream, dasm_result, FCML_REND_FLAG_RENDER_CODE );
             if( error ) {
                 // Free disassemblation result.
-                fcml_fn_disassemble_result_free( result );
+                fcml_fn_disassemble_result_free( dasm_result );
                 break;
             }
 
-            fcml_fn_disassemble_result_free( result );
+            fcml_fn_disassemble_result_free( dasm_result );
 
             if( fcml_fn_env_str_strcmp( FCML_TEXT( "666781d04280 adc ax,32834" ), buffer ) ) {
                 flags |= 0x01;
@@ -157,7 +156,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
                 flags |= 0x08;
             }
 
-            current_instruction = current_instruction->next;
+            instruction = instruction->next;
         }
 
         fcml_fn_assembler_result_free( result );
