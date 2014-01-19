@@ -1851,6 +1851,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 	fcml_ist_asm_enc_optimizer_callback_args *callback_args = (fcml_ist_asm_enc_optimizer_callback_args*)args;
 	fcml_ist_asm_encoding_context *context = callback_args->context;
 	fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode = callback_args->addr_mode;
+	fcml_st_asm_encoder_result *encoding_result = context->result;
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_asm_assembled_instruction *assembled_instruction;
@@ -1867,17 +1868,15 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 		fcml_bool ignore = FCML_FALSE;
 
 		// Check if there is such instruction is already assembled.
-		fcml_st_coll_list *instructions = context->result->instructions;
-		fcml_st_coll_list_element *element = instructions->head;
-		while( element ) {
-		    fcml_st_asm_assembled_instruction *instruction = (fcml_st_asm_assembled_instruction*)element->item;
+		fcml_st_asm_assembled_instruction *instruction = encoding_result->instructions;
+		while( instruction ) {
 		    int max_code_len = instruction->code_length > assembled_instruction->code_length ? assembled_instruction->code_length : instruction->code_length;
 		    if( fcml_fn_env_memory_cmp( instruction->code, assembled_instruction->code, max_code_len ) ) {
 		        // Instructions are the same.
 		        ignore = FCML_TRUE;
 		        break;
 		    }
-		    element = element->next;
+		    instruction = instruction->next;
 		}
 
 		if( !ignore ) {
@@ -1888,10 +1887,12 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 			context->addr_mode_error_msg.errors = NULL;
 			context->addr_mode_error_msg.last_error = NULL;
 
-            if( !fcml_fn_coll_list_add_front( context->result->instructions, assembled_instruction ) ) {
-                fcml_ifn_asm_free_assembled_instruction( assembled_instruction );
-                error = FCML_CEH_GEC_OUT_OF_MEMORY;
-            }
+			// Insert newly assembled instruction to the front of instruction chains.
+			fcml_st_asm_assembled_instruction *instructions = encoding_result->instructions;
+			encoding_result->instructions = assembled_instruction;
+			assembled_instruction->next = instructions;
+
+			encoding_result->number_of_instructions++;
 
 		} else {
 		    // Free ignored instruction.
@@ -1947,6 +1948,30 @@ void fcml_ifn_prepare_optimizer_context( fcml_st_asm_optimizer_context *optimize
     optimizer_context->optimizer_flags = assembler_context->configuration.optimizer_flags;
     optimizer_context->asa = assembler_context->address_size_attribute;
     optimizer_context->osa = assembler_context->operand_size_attribute;
+}
+
+void fcml_ifn_chooser_extract( fcml_ptr instruction_ptr, fcml_st_instruction_code *instruction_code ) {
+    if( instruction_ptr ) {
+        fcml_st_asm_assembled_instruction *instruction = (fcml_st_asm_assembled_instruction*)instruction_ptr;
+        instruction_code->code = instruction->code;
+        instruction_code->code_length = instruction->code_length;
+    }
+}
+
+fcml_ptr fcml_ifn_chooser_next( fcml_ptr instruction_ptr ) {
+    if( instruction_ptr ) {
+        fcml_st_asm_assembled_instruction *instruction = (fcml_st_asm_assembled_instruction*)instruction_ptr;
+        return instruction->next;
+    }
+    return NULL;
+}
+
+void fcml_fcml_ifn_prepare_chooser_context( fcml_st_chooser_context *context, fcml_st_asm_assembled_instruction *instructions ) {
+    if( context ) {
+        context->extract = &fcml_ifn_chooser_extract;
+        context->next = &fcml_ifn_chooser_next;
+        context->instruction = instructions;
+    }
 }
 
 fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_context *asm_context, fcml_st_dialect_context_int *dialect_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
@@ -2064,7 +2089,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 			}
 
 			// Check if there is at least one assembled instruction.
-			if( result->instructions->size == 0 ) {
+			if( result->number_of_instructions == 0 ) {
 
 				// Copy global errors to result.
 				result->errors = context.global_error_msg;
@@ -2084,7 +2109,15 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_asm_assembler_contex
 				chooser = &fcml_fn_asm_default_instruction_chooser;
 			}
 
-			result->chosen_instruction = chooser( result->instructions );
+			if( result->number_of_instructions > 0 ) {
+
+			    // Prepares chooser context.
+			    fcml_st_chooser_context chooser_context;
+			    fcml_fcml_ifn_prepare_chooser_context( &chooser_context, result->instructions );
+
+			    // Chooses most appropriate instruction.
+			    result->chosen_instruction = (fcml_st_asm_assembled_instruction*)chooser( &chooser_context );
+			}
 
 		} else {
 			// There is no addressing mode for given instruction. It should never happened, so it's an internal bug.
@@ -2724,7 +2757,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder( f
 
 		// If an instruction syntax can be encoded using the two-byte form, it can also be encoded using the three byte form of VEX.
 		// Three byte VEX can be forced using configuration or "long_form" instruction level hint.
-		if( context->assembler_context->configuration.force_3byte_vex || ( context->instruction->hints & FCML_HINT_LONG_FORM_POINTER ) ) {
+		if( context->assembler_context->configuration.force_three_byte_VEX || ( context->instruction->hints & FCML_HINT_LONG_FORM_POINTER ) ) {
 			is_two_bytes_vex = FCML_FALSE;
 		}
 
@@ -2822,7 +2855,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 
 			// Even if REX do not contains any flags set in some cases registers BPL, SPL, DIL, SIL needs REX to be defined.
 			// Additionally we can force it to occur by setting a configuration flag.
-			if( rex != FCML_ENCODE_REX_BASE || ( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode_def->opcode_flags ) && cfg->force_unnecessary_rex_prefix ) || mod_rm->reg_opcode_needs_rex || context->reg_opcode_needs_rex ) {
+			if( rex != FCML_ENCODE_REX_BASE || ( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode_def->opcode_flags ) && cfg->force_rex_prefix ) || mod_rm->reg_opcode_needs_rex || context->reg_opcode_needs_rex ) {
 				instruction_part->code[0] = rex;
 				instruction_part->code_length = 1;
 			}

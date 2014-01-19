@@ -14,11 +14,27 @@
 #include "fcml_dialect.h"
 #include "fcml_types.h"
 #include "fcml_optimizers.h"
+#include "fcml_choosers.h"
 
+/* This structure and type definition represents an abstract assembler. */
 typedef struct fcml_st_asm_assembler {
 } fcml_st_asm_assembler;
 
+typedef struct fcml_st_asm_assembler_configuration {
+    // Generic assembler configuration flags.
+    fcml_bool choose_sib_encoding;
+    fcml_bool choose_abs_encoding;
+    fcml_bool force_rex_prefix;
+    fcml_bool force_three_byte_VEX;
+    // Optimizers.
+    fcml_fnp_asm_optimizer optimizer;
+    fcml_uint16_t optimizer_flags;
+    // Choosers.
+    fcml_fnp_asm_instruction_chooser chooser;
+} fcml_st_asm_assembler_configuration;
+
 typedef struct fcml_st_asm_assembled_instruction {
+    // Next assembled instruction in the chain.
     struct fcml_st_asm_assembled_instruction *next;
 #ifdef FCML_DEBUG
 	// Index of addressing mode used to assemble instruction.
@@ -26,30 +42,20 @@ typedef struct fcml_st_asm_assembled_instruction {
 #endif
 	// Error and warning messages related to assembled instruction.
 	fcml_st_ceh_error_container errors;
+	// Instruction machine code.
 	fcml_uint8_t *code;
+	// Instruction code length in bytes.
 	fcml_usize code_length;
 } fcml_st_asm_assembled_instruction;
 
-// Chooser definition.
-typedef fcml_st_asm_assembled_instruction* (*fcml_fnp_asm_instruction_chooser)( fcml_st_coll_list *instructions );
-
-typedef struct fcml_st_asm_assembler_configuration {
-	fcml_bool choose_sib_encoding;
-	fcml_bool choose_abs_encoding;
-	fcml_bool force_3byte_vex;
-	fcml_fnp_asm_optimizer optimizer;
-	fcml_uint16_t optimizer_flags;
-	fcml_fnp_asm_instruction_chooser chooser;
-	fcml_bool force_unnecessary_rex_prefix;
-	fcml_bool force_three_byte_VEX;
-} fcml_st_asm_assembler_configuration;
-
 typedef struct fcml_st_asm_assembler_result {
 	fcml_st_ceh_error_container errors;
-	// List of fcml_st_asm_assembled_instruction structures.
-	fcml_st_coll_list *instructions;
-	// Instruction chosen by used chooser.
+	// List of assembled instructions.
+	fcml_st_asm_assembled_instruction *instructions;
+	// Instruction chosen by used instruction chooser; otherwise null.
 	fcml_st_asm_assembled_instruction *chosen_instruction;
+	// Number of assembled instructions.
+	fcml_usize number_of_instructions;
 } fcml_st_asm_assembler_result;
 
 typedef struct fcml_st_asm_assembler_context {

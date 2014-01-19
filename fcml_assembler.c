@@ -41,20 +41,19 @@ fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_asm_ass
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-void fcml_ifn_asm_coll_list_action_free_assembled_instruction( fcml_ptr item_value, fcml_ptr args ) {
-	fcml_st_asm_assembled_instruction *asm_inst = (fcml_st_asm_assembled_instruction*)item_value;
-	if( asm_inst ) {
-		fcml_fn_env_memory_free( asm_inst->code );
-		fcml_fn_env_memory_free( asm_inst );
-	}
+void fcml_ifn_asm_free_instruction_chain( fcml_st_asm_assembled_instruction *chain ) {
+    while( chain ) {
+        fcml_st_asm_assembled_instruction *instruction = chain;
+        chain = chain->next;
+        fcml_fn_env_memory_free( instruction->code );
+        fcml_fn_env_memory_free( instruction );
+    }
 }
 
 void fcml_fn_assembler_result_free( fcml_st_asm_assembler_result *result ) {
 	if( result ) {
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
-		if(result->instructions ) {
-			fcml_fn_coll_list_free( result->instructions, fcml_ifn_asm_coll_list_action_free_assembled_instruction, NULL );
-		}
+        fcml_ifn_asm_free_instruction_chain( result->instructions );
 		fcml_fn_env_memory_free( result );
 	}
 }
@@ -97,25 +96,20 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_asm_assembler_context *asm_context, con
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
-	// Allocate list for assembled instructions.
-	asm_result->instructions = fcml_fn_coll_list_alloc();
-	if( !(asm_result->instructions) ) {
-		fcml_fn_assembler_result_free( asm_result );
-		return FCML_CEH_GEC_OUT_OF_MEMORY;
-	}
-
 	// Execute instruction encoder.
 	if( addr_modes != NULL ) {
 		if( addr_modes->instruction_encoder ) {
 
 			fcml_st_asm_encoder_result enc_result = {{0}};
-			enc_result.instructions = asm_result->instructions;
 
 			error = addr_modes->instruction_encoder( asm_context, enc_asm->dialect_context, &tmp_instruction, &enc_result, addr_modes );
 			if( !error ) {
+				asm_result->instructions = enc_result.instructions;
+				asm_result->number_of_instructions = enc_result.number_of_instructions;
 				asm_result->chosen_instruction = enc_result.chosen_instruction;
 			}
 
+			// Convert encoding result to assembler result.
 			asm_result->errors = enc_result.errors;
 
 		} else {
@@ -133,7 +127,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_asm_assembler_context *asm_context, con
 			asm_result = NULL;
 		} else {
 			// Free only instructions, error messages should be returned to user.
-			fcml_fn_coll_list_free( asm_result->instructions, fcml_ifn_asm_coll_list_action_free_assembled_instruction, NULL );
+		    fcml_ifn_asm_free_instruction_chain( asm_result->instructions );
 			asm_result->instructions = NULL;
 		}
 	}

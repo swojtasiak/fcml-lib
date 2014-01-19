@@ -17,8 +17,9 @@
 
 typedef struct fcml_st_asm_encoder_result {
 	fcml_st_ceh_error_container errors;
-	fcml_st_coll_list *instructions;
+	fcml_st_asm_assembled_instruction *instructions;
 	fcml_st_asm_assembled_instruction *chosen_instruction;
+	fcml_usize number_of_instructions;
 } fcml_st_asm_encoder_result;
 
 struct fcml_st_asm_instruction_addr_modes;

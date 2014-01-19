@@ -5,30 +5,33 @@
  *      Author: tas
  */
 
-#include "fcml_choosers.h"
+#include <stddef.h>
 
 #include <fcml_assembler.h>
+#include <fcml_choosers.h>
 #include <fcml_coll.h>
 
-fcml_st_asm_assembled_instruction *fcml_fn_asm_no_instruction_chooser( fcml_st_coll_list *instructions ) {
-	return NULL;
+fcml_ptr fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *context ) {
+    return NULL;
 }
 
-fcml_st_asm_assembled_instruction *fcml_fn_asm_default_instruction_chooser( fcml_st_coll_list *instructions ) {
-	fcml_st_asm_assembled_instruction *shortest = NULL;
-	if( instructions->size ) {
-		fcml_st_coll_list_element *element = instructions->head;
-		while( element ) {
-			if( !shortest ) {
-				shortest = (fcml_st_asm_assembled_instruction *)element->item;
-			} else {
-				fcml_st_asm_assembled_instruction *current = (fcml_st_asm_assembled_instruction *)element->item;
-				if( current->code_length < shortest->code_length ) {
-					shortest = current;
-				}
-			}
-			element = element->next;
-		}
+fcml_ptr fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *context ) {
+	fcml_st_instruction_code instruction_code;
+	fcml_ptr instruction = context->instruction;
+	fcml_ptr *shortest = NULL;
+	fcml_usize shortest_code_length = 0;
+	while( instruction ) {
+	    context->extract( instruction, &instruction_code );
+	    if( !shortest ) {
+            shortest = instruction;
+            shortest_code_length = instruction_code.code_length;
+        } else {
+            if( instruction_code.code_length < shortest_code_length ) {
+                shortest = instruction;
+                shortest_code_length = instruction_code.code_length;
+            }
+        }
+	    instruction = context->next( instruction );
 	}
 	return shortest;
 }

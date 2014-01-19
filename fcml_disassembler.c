@@ -58,7 +58,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_uint8_t primary_opcode_byte;
 	fcml_int opcodes_count;
 	fcml_int virtual_opcodes_count;
-	fcml_st_dasm_prefixes prefixes;
+	fcml_st_dasm_prefixes_details prefixes;
 	fcml_ist_dasm_operand_wrapper operand_wrappers[FCML_OPERANDS_COUNT];
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details decoded_modrm_details;
@@ -882,7 +882,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding( fcml_st_def_addr_mode
 
 fcml_st_dasm_instruction_prefix* fcml_ifn_dasm_get_prefix_by_type( fcml_ist_dasm_decoding_context *context, fcml_st_dasm_prefix_types prefix_type ) {
 	fcml_st_dasm_instruction_prefix* prefix = NULL;
-	fcml_st_dasm_prefixes *prefixes = &(context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
 	fcml_int prefix_count = prefixes->prefixes_count;
 	fcml_int i;
 	for( i = 0; i < prefix_count; i++ ) {
@@ -896,7 +896,7 @@ fcml_st_dasm_instruction_prefix* fcml_ifn_dasm_get_prefix_by_type( fcml_ist_dasm
 
 fcml_st_dasm_instruction_prefix* fcml_ifn_dasm_get_prefix_if_available( fcml_ist_dasm_decoding_context *context, fcml_uint8_t prefix_value ) {
 	fcml_st_dasm_instruction_prefix* prefix = NULL;
-	fcml_st_dasm_prefixes *prefixes = &(context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
 	fcml_int prefix_count = prefixes->prefixes_count;
 	fcml_int i;
 	for( i = 0; i < prefix_count; i++ ) {
@@ -909,7 +909,7 @@ fcml_st_dasm_instruction_prefix* fcml_ifn_dasm_get_prefix_if_available( fcml_ist
 }
 
 fcml_bool fcml_ifn_dasm_is_prefix_available( fcml_ist_dasm_decoding_context *context, uint8_t prefix, fcml_bool mandatory ) {
-	fcml_st_dasm_prefixes *prefixes = &(context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
 	// Handle VEX mandatory prefixes.
 	if( mandatory && prefixes->is_vex && prefixes->pp ) {
 		if( prefixes->pp == 0x01 && prefix == 0x66 ) {
@@ -963,7 +963,7 @@ fcml_data_size fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_con
 	fcml_st_dasm_instruction_prefix *prefix;
 
 	fcml_st_dasm_disassembler_context *disassembler_context = context->disassembler_context;
-	fcml_st_dasm_prefixes *prefixes = &(context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
 	fcml_data_size osa = disassembler_context->operand_size_attribute;
 
 	// Gets effective address-size attribute for used mode.
@@ -1016,7 +1016,7 @@ typedef fcml_ifp_dasm_instruction_acceptor (*fcml_ifp_dasm_instruction_acceptor_
 fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def ) {
 
 	// Prefixes.
-	fcml_st_dasm_prefixes *prefixes = &(context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
 
 	// LOCK prefix.
 	if( prefixes->is_lock && !FCML_DEF_PREFIX_LOCK_ALLOWED( instruction_decoding_def->prefixes_flags ) ) {
@@ -1088,7 +1088,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm( fcml_ist_dasm_decoding_conte
 
 	fcml_uint32_t opcode_flags = instruction_decoding_def->opcode_flags;
 	fcml_st_memory_stream *code = context->stream;
-	fcml_st_dasm_prefixes *prefixes = &(context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes = &(context->prefixes);
 
 	fcml_ist_dasm_modrm_decoding_details *modrm_details = &(instruction_decoding_def->modrm_details);
 
@@ -1399,7 +1399,7 @@ typedef struct fcml_ist_dasm_opcode_iterator_impl {
 } fcml_ist_dasm_opcode_iterator_impl;
 
 fcml_int fcml_ifn_dasm_decode_escape_opcode_bytes( fcml_ist_dasm_decoding_context *decoding_context, fcml_uint8_t **virtual_opcode ) {
-	fcml_st_dasm_prefixes *prefixes_fields = &(decoding_context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes_fields = &(decoding_context->prefixes);
 	fcml_int8_t size = 0;
 	if( prefixes_fields->is_vex || prefixes_fields->is_xop ) {
 		if( prefixes_fields->vex_xop_first_byte == 0xC4 ) {
@@ -1551,7 +1551,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 
 	fcml_ist_dasm_operand_wrapper *operand_wrappers = &(decoding_context->operand_wrappers[0]);
 	fcml_ist_dasm_modrm_decoding_details *modrm_details = &(instruction_decoding_def->modrm_details);
-	fcml_st_dasm_prefixes *prefixes = &(decoding_context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes = &(decoding_context->prefixes);
 
 	// Decode ModRM field if there is any.
 
@@ -1811,10 +1811,10 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_dasm_prefixes *prefixes = &(decoding_context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes = &(decoding_context->prefixes);
 	fcml_st_memory_stream *stream = decoding_context->stream;
 	fcml_en_addr_form addr_form = decoding_context->disassembler_context->addr_form;
-	fcml_st_dasm_prefixes *prefixes_details = &(decoding_context->prefixes);
+	fcml_st_dasm_prefixes_details *prefixes_details = &(decoding_context->prefixes);
 
 	fcml_uint16_t p_flags;
 	fcml_st_dasm_prefix_types prefix_type;
@@ -2057,7 +2057,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	return error;
 }
 
-fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_dasm_prefixes *prefixes ) {
+fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_dasm_prefixes_details *prefixes ) {
 	fcml_prefixes gen_prefixes = 0;
 	if( prefixes ) {
 		if( prefixes->is_rep ) {
@@ -2200,7 +2200,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, 
 			modrm_details->is_rip = decoding_context.decoded_modrm.is_rip;
 
 			// Prefixes.
-			instruction_details->prefixes = decoding_context.prefixes;
+			instruction_details->prefixes_details = decoding_context.prefixes;
 
 			instruction->prefixes = fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( &(decoding_context.prefixes) );
 
@@ -2226,20 +2226,20 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_dasm_disassembler_context *context, 
 			// L flag for mnoemonic chooser.
 			fcml_nuint8_t l;
 			l.is_not_null = FCML_FALSE;
-			if( instruction_details->prefixes.is_vex || instruction_details->prefixes.is_xop ) {
+			if( instruction_details->prefixes_details.is_vex || instruction_details->prefixes_details.is_xop ) {
 				l.is_not_null = FCML_TRUE;
-				l.value = instruction_details->prefixes.l;
+				l.value = instruction_details->prefixes_details.l;
 			}
 
 			// Mnemonic.
-			fcml_bool shortform = decoding_context.disassembler_context->configuration.use_short_form_mnemonics;
+			fcml_bool shortform = decoding_context.disassembler_context->configuration.short_forms;
 			fcml_bool is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
 			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.suffix, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, memory_data_size, l );
 			if( mnemonic ) {
 				instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
 				instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
 				// Render mnemonic using provided dialect.
-				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.choose_carry_conditional_mnemonic );
+				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_mnemonic );
 			} else {
 				// Mnemonic not found.
 				return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
