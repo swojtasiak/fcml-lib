@@ -9,7 +9,6 @@
 #define FCML_ASSEMBLER_H_
 
 #include "fcml_ceh.h"
-#include "fcml_coll.h"
 #include "fcml_common.h"
 #include "fcml_dialect.h"
 #include "fcml_types.h"

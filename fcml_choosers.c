@@ -9,7 +9,7 @@
 
 #include <fcml_assembler.h>
 #include <fcml_choosers.h>
-#include <fcml_coll.h>
+#include "fcml_coll.h"
 
 fcml_ptr fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *context ) {
     return NULL;
