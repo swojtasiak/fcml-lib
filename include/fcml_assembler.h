@@ -21,15 +21,22 @@ typedef struct fcml_st_assembler {
 
 /* Assembler runtime configuration. */
 typedef struct fcml_st_assembler_conf {
-    // Generic assembler configuration flags.
+    /* If there is SIB and ModR/M only encoding available, choose the SIB based one. */
     fcml_bool choose_sib_encoding;
+    /* If memory addressing can be encoded as relative and absolute one,
+     * choose absolute addressing. It works in 64 bit mode only. */
     fcml_bool choose_abs_encoding;
+    /* Sometimes REX prefix is useless so it is just omited in the final machine code. By setting this
+     * flag to true you can forse this prefix to be added anyway. */
     fcml_bool force_rex_prefix;
+    /* Every 2 byte VEX/XOP prefix can be encoded using three byte form. Setting this flag to true forces it. */
     fcml_bool force_three_byte_VEX;
-    // Optimizers.
+    /* Optimizer implementation that should be used by assembler. Setting it to NULL causes assembler to use default one. */
     fcml_fnp_asm_optimizer optimizer;
+    /* This filed is passed to optimizer, so it can be used to configure its behavior. */
     fcml_uint16_t optimizer_flags;
-    // Choosers.
+    /* Chooser implementation that should be used by assembler to choose most appropriate instruction encoding.
+     * Setting this value to NULL cause assembler to use default instruction chooser. */
     fcml_fnp_asm_instruction_chooser chooser;
 } fcml_st_assembler_conf;
 

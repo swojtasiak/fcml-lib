@@ -166,14 +166,12 @@ fcml_coll_map *fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descr
 	map->size = 0;
 
 	// Allocate space for entries.
-	map->map_entries = (struct fcml_ist_coll_map_entry**)fcml_fn_env_memory_alloc( sizeof( struct fcml_ist_coll_map_entry* ) * real_capacity );
-	if( map->map_entries == NULL ) {
+	map->map_entries = (struct fcml_ist_coll_map_entry**)fcml_fn_env_memory_alloc_clear( sizeof( struct fcml_ist_coll_map_entry* ) * real_capacity );
+	if( !map->map_entries ) {
 		fcml_fn_env_memory_free(map);
 		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
 		return NULL;
 	}
-
-	fcml_fn_env_memory_clear(map->map_entries, sizeof( struct fcml_ist_coll_map_entry* ) * real_capacity );
 
 	return (fcml_coll_map)map;
 }
@@ -355,9 +353,13 @@ fcml_ptr fcml_fn_coll_map_get( fcml_coll_map *map_int, fcml_ptr key ) {
 	return NULL;
 }
 
-void fcml_fn_coll_map_free( fcml_coll_map *map ) {
-	if( map ) {
-		fcml_fn_coll_map_clear( map );
+void fcml_fn_coll_map_free( fcml_coll_map *map_int ) {
+	if( map_int ) {
+		fcml_fn_coll_map_clear( map_int );
+		struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*)map_int;
+		if( map->map_entries ) {
+		    fcml_fn_env_memory_free( map->map_entries );
+		}
 		fcml_fn_env_memory_free( map );
 	}
 }

@@ -1224,7 +1224,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_segment_relative_offset( fcml_ist_a
         }
 
         fcml_bool is_convertable = FCML_FALSE;
-        fcml_en_attribute_size_flag flags;
+        fcml_en_attribute_size_flag flags = FCML_EN_ASF_ANY;
         fcml_st_integer source_address = {0}, converted_address = {0};
 
         // Convert IMM value to address.
@@ -3259,11 +3259,6 @@ fcml_ceh_error fcml_ifn_asm_prepare_mem_data_size_calculator( fcml_st_def_addr_m
 	details->ds_calculator = NULL;
 	details->ds_calculator_args = NULL;
 
-	if( addr_mode_desc->opcode[0] == 0x10 && addr_mode_desc->opcode[1] == 0x00 && addr_mode_desc->opcode[2] == 0x00 && addr_mode_desc->opcode_flags == 0x00C48002 ) {
-		// 0x04859006 0x00C48002
-		details->ds_calculator_args = NULL;
-	}
-
 	fcml_int i;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 		fcml_uint32_t addr_mode = addr_mode_desc->opperands[i];
@@ -3367,29 +3362,25 @@ fcml_ceh_error fcml_ifn_asm_precalculate_addr_mode( fcml_st_def_addr_mode_desc *
 	return error;
 }
 
-void fcml_ifn_asm_free_addr_mode( fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_dialect_context_int *dialect_context ) {
-    if( addr_mode ) {
-    	// Free all mnemonics.
-        if( addr_mode->mnemonic ) {
-            dialect_context->free_mnemonic( addr_mode->mnemonic );
-        }
-        // Free arguments allocated for memory data size calculator if there are any.
-        if( addr_mode->addr_mode_details.ds_calculator_args ) {
-        	fcml_fn_env_memory_free( addr_mode->addr_mode_details.ds_calculator_args );
-        }
-        fcml_fn_env_memory_free( addr_mode );
-    }
-}
-
 void fcml_ifn_asm_free_instruction_addr_mode_item_handler( fcml_ptr item_value, fcml_ptr args ) {
     fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode = (fcml_ist_asm_instruction_addr_mode_encoding_details*)item_value;
-    // Do not free clones.
+    // Do not free clones. Processor chains and claculator arguments are shared.
     if( !addr_mode->is_cloned ) {
+        // Free processor chain.
         if( addr_mode->part_processor_chain ) {
             fcml_ifn_asm_free_part_processor_chain( addr_mode->part_processor_chain );
         }
+        // Free arguments allocated for memory data size calculator if there are any.
+        if( addr_mode->addr_mode_details.ds_calculator_args ) {
+            fcml_fn_env_memory_free( addr_mode->addr_mode_details.ds_calculator_args );
+        }
     }
-    fcml_ifn_asm_free_addr_mode( addr_mode, (fcml_st_dialect_context_int*)args );
+    fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*)args;
+    // Free all mnemonics.
+    if( addr_mode->mnemonic ) {
+        dialect_context->free_mnemonic( addr_mode->mnemonic );
+    }
+    fcml_fn_env_memory_free( addr_mode );
 }
 
 void fcml_ifn_asm_free_instruction_entry( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
@@ -3489,6 +3480,7 @@ fcml_ceh_error fcml_ifn_asm_default_addr_mode_encoding_details_builder( fcml_ist
 		fcml_fn_env_memory_free(addr_mode);
 		return error;
 	}
+
 	// TODO: boilerplate code.
 	error = fcml_ifn_asm_prepare_mem_data_size_calculator( addr_mode_desc, &(addr_mode->addr_mode_details) );
 	if( error ) {

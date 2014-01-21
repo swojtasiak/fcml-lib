@@ -1232,7 +1232,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain( fcml_st_def_addr_mode
 	while( *factory ) {
 		fcml_ifp_dasm_instruction_acceptor acceptor = (*factory)( addr_mode_desc );
 		if( acceptor ) {
-			fcml_ist_dasm_addr_mode_acceptor_chain *chain_element = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_addr_mode_acceptor_chain* ) );
+			fcml_ist_dasm_addr_mode_acceptor_chain *chain_element = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_addr_mode_acceptor_chain ) );
 			if( !chain_element ) {
 				// Free already allocated chain.
 				if( chain_root ) {

@@ -15,7 +15,7 @@ fcml_st_hts_calculated_hints fcml_fn_hts_ihc_far_pointer( fcml_st_def_addr_mode_
 }
 
 fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode ) {
-	fcml_st_hts_calculated_hints hints;
+	fcml_st_hts_calculated_hints hints = {0};
     fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm*)decoded_addr_mode->addr_mode_args;
     if( rm_args->flags & FCML_RMF_M ) {
     	hints.operand_hints = 0;
