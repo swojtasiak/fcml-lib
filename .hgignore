@@ -1,29 +1,13 @@
 
 syntax: regexp
+^Debug$
+syntax: regexp
 ^\.cproject$
-syntax: regexp
-^\.project$
-syntax: regexp
-^\.svnignore$
-syntax: regexp
-^ira\.cbp$
 syntax: regexp
 ^\.settings$
 syntax: regexp
-^ira\.depend$
-syntax: regexp
-^Debug$
+^\.project$
 syntax: regexp
 ^Release$
 syntax: regexp
-^\.cproject_old$
-syntax: regexp
-^\.project_old$
-syntax: regexp
-^fcml_x64att_parser\.output$
-syntax: regexp
-^fcml_x64intel_parser\.output$
-syntax: regexp
-^fcml_gas_parser\.output$
-syntax: regexp
-^fcml_intel_parser\.output$
+^valgrind-result\.txt$
