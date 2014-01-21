@@ -126,6 +126,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 			if( strcmp( buffer, mnemonic ) != 0 ) {
 				if( t_flags & FCML_TSF_SHOULD_FAIL ) {
+				    fcml_fn_disassemble_result_free( dis_result );
 					return FCML_TRUE;
 				}
 				printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
@@ -448,7 +449,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 				if( !(t_flags & FCML_TSF_SHOULD_FAIL) ) {
 					printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
 				}
-				return (t_flags & FCML_TSF_SHOULD_FAIL) ? FCML_TRUE : FCML_FALSE;
+				success = (t_flags & FCML_TSF_SHOULD_FAIL) ? FCML_TRUE : FCML_FALSE;
 			} else {
 				if( dis_result->instruction_details.instruction_size != size ) {
 					printf("Instruction size: %d Disassembled code size: %d (%s)\n", (fcml_uint32_t)dis_result->instruction_details.instruction_size, size, mnemonic);

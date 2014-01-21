@@ -196,7 +196,7 @@ void fcml_tf_modrm_encoder_test_10(void) {
 
 	fcml_ceh_error error = fcml_fn_modrm_calculate_effective_address_size( &modrm, &effective_address_size );
 
-	CU_ASSERT( !(effective_address_size & FCML_EN_ASF_16) );
+	CU_ASSERT( !(effective_address_size & FCML_EN_ASF_16 ) );
 	CU_ASSERT( effective_address_size & FCML_EN_ASF_32 );
 	CU_ASSERT( effective_address_size & FCML_EN_ASF_64 );
 	CU_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
@@ -238,6 +238,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
 	modrm.address.address_form = FCML_AF_OFFSET;
 
 	fcml_st_modrm_encoder_context context;
+	context.addr_form = FCML_AF_16_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_st_encoded_modrm encoded_modrm;
@@ -357,6 +358,7 @@ void fcml_tf_modrm_encoder_test_13(void) {
 	modrm.address.address_form = FCML_AF_OFFSET;
 
 	fcml_st_modrm_encoder_context context;
+	context.addr_form = FCML_AF_16_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_st_encoded_modrm encoded_modrm;
@@ -386,6 +388,7 @@ void fcml_tf_modrm_encoder_test_14(void) {
     modrm.address.address_form = FCML_AF_OFFSET;
 
     fcml_st_modrm_encoder_context context;
+    context.addr_form = FCML_AF_16_BIT;
     context.effective_address_size = FCML_DS_16;
 
     fcml_st_encoded_modrm encoded_modrm;
@@ -996,6 +999,9 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_5(void) {
 	fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
 	fcml_st_modrm_encoder_context context;
 	context.effective_address_size = FCML_DS_32;
+	context.addr_form = FCML_AF_32_BIT;
+	context.choose_sib_encoding = FCML_TRUE;
+	context.chosen_effective_address_size = FCML_DS_32;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_R12D;
@@ -1457,8 +1463,9 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_5(void) {
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_encoder_context context;
+	fcml_st_modrm_encoder_context context = {0};
 	context.effective_address_size = FCML_DS_32;
+	context.addr_form = FCML_AF_32_BIT;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_EBP;
