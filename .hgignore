@@ -4,11 +4,15 @@ syntax: regexp
 syntax: regexp
 \.la$
 syntax: regexp
+\.o$
+syntax: regexp
 ^config\.h$
 syntax: regexp
 ^aclocal\.m4$
 syntax: regexp
 ^config\.guess$
+syntax: regexp
+^config\.log$
 syntax: regexp
 ^config\.h\.in$
 syntax: regexp
