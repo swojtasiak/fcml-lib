@@ -7,8 +7,6 @@
 
 #include "fcml_parser_utils.h"
 
-#include "fcml_intel_parser.tab.h"
-
 #include <stdlib.h>
 #include <errno.h>
 
@@ -60,3 +58,4 @@ fcml_char *fcml_fn_pu_reg_type_to_string( fcml_en_register type ) {
 	}
 	return desc;
 }
+

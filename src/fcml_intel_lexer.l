@@ -3,7 +3,7 @@
 	#include <stdlib.h>
 	
 	#include "fcml_common_lex.h"
-	#include "fcml_intel_parser.tab.h"
+	#include "fcml_intel_parser_def.h"
 %}
 
 %option noyywrap

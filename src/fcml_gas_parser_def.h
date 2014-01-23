@@ -1,5 +1,8 @@
 /* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
+
+
+
 /* Bison interface for Yacc-like parsers in C
    
       Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
@@ -30,14 +33,14 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_INTEL_FCML_INTEL_PARSER_TAB_H_INCLUDED
-# define YY_INTEL_FCML_INTEL_PARSER_TAB_H_INCLUDED
+#ifndef YY_GAS_Y_TAB_H_INCLUDED
+# define YY_GAS_Y_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 #if YYDEBUG
-extern int intel_debug;
+extern int gas_debug;
 #endif
 
 /* Tokens.  */
@@ -55,40 +58,47 @@ extern int intel_debug;
      FCML_TK_REG_DR = 264,
      FCML_TK_REG_RIP = 265,
      FCML_TK_INTEGER = 266,
-     FCML_TK_FLOAT = 267,
-     FCML_TK_SIZE_OPERATOR = 268,
-     FCML_TK_SYMBOL = 269,
-     FCML_TK_HINTS = 270,
-     FCML_TK_EAO_HINTS = 271,
-     FCML_TK_SIB_HINT = 272,
-     FCML_TK_PREFIX = 273,
-     FCML_OP_UMINUS = 274
+     FCML_TK_SYMBOL = 267,
+     FCML_TK_PREFIX = 268,
+     FCML_OP_UMINUS = 269
    };
 #endif
+/* Tokens.  */
+#define FCML_TK_UNEXPECTED 258
+#define FCML_TK_REG_GPR 259
+#define FCML_TK_REG_SIMD 260
+#define FCML_TK_REG_FPU 261
+#define FCML_TK_REG_SEG 262
+#define FCML_TK_REG_CR 263
+#define FCML_TK_REG_DR 264
+#define FCML_TK_REG_RIP 265
+#define FCML_TK_INTEGER 266
+#define FCML_TK_SYMBOL 267
+#define FCML_TK_PREFIX 268
+#define FCML_OP_UMINUS 269
+
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 91 "fcml_intel_parser.y"
+#line 79 "fcml_gas_parser_def.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
-	fcml_st_ast_val_float float_value;
 	fcml_st_register reg_value;
 	fcml_st_ast_node *ast;
 	struct {
 		fcml_string text;
 		int length;
 	} symbol;
-	fcml_st_size_operator size_operator;
 	fcml_hints hints;
 	fcml_prefixes prefixes;
 
 
 /* Line 2053 of yacc.c  */
-#line 92 "fcml_intel_parser.tab.h"
+#line 99 "fcml_gas_parser_def.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -98,16 +108,16 @@ typedef union YYSTYPE
 
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
-int intel_parse (void *YYPARSE_PARAM);
+int gas_parse (void *YYPARSE_PARAM);
 #else
-int intel_parse ();
+int gas_parse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int intel_parse (struct fcml_st_parser_data *pd);
+int gas_parse (struct fcml_st_parser_data *pd);
 #else
-int intel_parse ();
+int gas_parse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_INTEL_FCML_INTEL_PARSER_TAB_H_INCLUDED  */
+#endif /* !YY_GAS_Y_TAB_H_INCLUDED  */

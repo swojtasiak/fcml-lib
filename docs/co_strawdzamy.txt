@@ -1,5 +1,0 @@
-VVVV - Czy instrukcja wymaga.
-Czy podano bezwzgledna wielkosc rejestru SIMD, czy moze L jezeli i tak tylko bezwzgledna jest dopuszczalna.
-Sprawdzic i uzupelnic VVVV unused, flagi nie są wszędzie odpowiedio ustawione.
-Flagi W,S.
-(Uwaga na S, należy ustawiać tak jak w dokumantacji, jeżeli pisze że dla wszystkich imm to memory, to dla wszystkich a nie tylko dla 8 bitów, na które ma wpływ flaga 'S'.)

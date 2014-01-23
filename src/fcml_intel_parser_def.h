@@ -30,14 +30,14 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_GAS_FCML_GAS_PARSER_TAB_H_INCLUDED
-# define YY_GAS_FCML_GAS_PARSER_TAB_H_INCLUDED
+#ifndef YY_INTEL_Y_TAB_H_INCLUDED
+# define YY_INTEL_Y_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 #if YYDEBUG
-extern int gas_debug;
+extern int intel_debug;
 #endif
 
 /* Tokens.  */
@@ -55,33 +55,59 @@ extern int gas_debug;
      FCML_TK_REG_DR = 264,
      FCML_TK_REG_RIP = 265,
      FCML_TK_INTEGER = 266,
-     FCML_TK_SYMBOL = 267,
-     FCML_TK_PREFIX = 268,
-     FCML_OP_UMINUS = 269
+     FCML_TK_FLOAT = 267,
+     FCML_TK_SIZE_OPERATOR = 268,
+     FCML_TK_SYMBOL = 269,
+     FCML_TK_HINTS = 270,
+     FCML_TK_EAO_HINTS = 271,
+     FCML_TK_SIB_HINT = 272,
+     FCML_TK_PREFIX = 273,
+     FCML_OP_UMINUS = 274
    };
 #endif
+/* Tokens.  */
+#define FCML_TK_UNEXPECTED 258
+#define FCML_TK_REG_GPR 259
+#define FCML_TK_REG_SIMD 260
+#define FCML_TK_REG_FPU 261
+#define FCML_TK_REG_SEG 262
+#define FCML_TK_REG_CR 263
+#define FCML_TK_REG_DR 264
+#define FCML_TK_REG_RIP 265
+#define FCML_TK_INTEGER 266
+#define FCML_TK_FLOAT 267
+#define FCML_TK_SIZE_OPERATOR 268
+#define FCML_TK_SYMBOL 269
+#define FCML_TK_HINTS 270
+#define FCML_TK_EAO_HINTS 271
+#define FCML_TK_SIB_HINT 272
+#define FCML_TK_PREFIX 273
+#define FCML_OP_UMINUS 274
+
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 79 "fcml_gas_parser.y"
+#line 91 "fcml_intel_parser_def.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
+	fcml_st_ast_val_float float_value;
 	fcml_st_register reg_value;
 	fcml_st_ast_node *ast;
 	struct {
 		fcml_string text;
 		int length;
 	} symbol;
+	fcml_st_size_operator size_operator;
 	fcml_hints hints;
 	fcml_prefixes prefixes;
 
 
 /* Line 2053 of yacc.c  */
-#line 85 "fcml_gas_parser.tab.h"
+#line 111 "fcml_intel_parser_def.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -91,16 +117,16 @@ typedef union YYSTYPE
 
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
-int gas_parse (void *YYPARSE_PARAM);
+int intel_parse (void *YYPARSE_PARAM);
 #else
-int gas_parse ();
+int intel_parse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int gas_parse (struct fcml_st_parser_data *pd);
+int intel_parse (struct fcml_st_parser_data *pd);
 #else
-int gas_parse ();
+int intel_parse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_GAS_FCML_GAS_PARSER_TAB_H_INCLUDED  */
+#endif /* !YY_INTEL_Y_TAB_H_INCLUDED  */

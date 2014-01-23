@@ -11,7 +11,7 @@
 #include "fcml_common.h"
 #include "fcml_errors.h"
 #include "fcml_parser_data.h"
-#include "fcml_gas_parser.tab.h"
+#include "fcml_gas_parser_def.h"
 #include "fcml_gas_lexer.h"
 #include "fcml_gas_parser.h"
 #include "fcml_utils.h"

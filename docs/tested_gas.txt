@@ -1,8 +1,0 @@
-adc $0x42,%al
-adc $0x8042,%ax
-adcb $0xff,0x04030201
-lock adcb $0xff,0x04030201
-adcl $0x04030201,(%eax)
-adc $0x42806521,%eax
-adc $0x0000000004030201,%rbp
-xacquire lock adcl $0x00000001,(%esi)
