@@ -57,3 +57,5 @@ syntax: regexp
 \.a$
 syntax: regexp
 \.lai$
+syntax: regexp
+libfcml.so.*
