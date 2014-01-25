@@ -19,3 +19,5 @@
 /stamp-h1
 /ylwrap
 /config.h
+config.h.in~
+compile

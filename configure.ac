@@ -16,6 +16,8 @@ AC_PROG_INSTALL
 AM_PROG_LEX
 AC_PROG_YACC
 
+AM_PROG_CC_C_O
+
 # Configure options: --enable-debug[=no].
 AC_ARG_ENABLE([debug],
 	[AS_HELP_STRING([--enable-debug],
@@ -54,6 +56,7 @@ AS_IF([test "x$debug" = xyes],
 # Configuration files.
 AC_CONFIG_FILES([Makefile
                  src/Makefile
+				 check/Makefile                 
                  include/Makefile])
 
 AC_OUTPUT
