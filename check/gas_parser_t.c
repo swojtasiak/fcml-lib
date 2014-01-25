@@ -15,13 +15,14 @@
 
 #include "gas_parser_t.h"
 
+#include <string.h>
+
 #include <fcml_ceh.h>
 #include <fcml_common.h>
 #include <fcml_types.h>
 #include <fcml_errors.h>
 #include <fcml_gas_parser.h>
 #include <fcml_gas_dialect.h>
-#include <string.h>
 
 fcml_st_dialect *internal_dialect_gas = NULL;
 

@@ -7,9 +7,9 @@
 
 #include "hints_t.h"
 
-#include "instructions_base_t.h"
-
 #include <fcml_rend.h>
+
+#include "instructions_base_t.h"
 
 void fcml_tf_hints_suite_init(void) {
 }

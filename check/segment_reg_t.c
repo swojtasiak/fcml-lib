@@ -7,11 +7,12 @@
 
 #include "segment_reg_t.h"
 
+#include <string.h>
+
 #include <fcml_assembler.h>
 #include <fcml_ceh.h>
 #include <fcml_common.h>
 #include <fcml_common_utils.h>
-#include <string.h>
 
 #include "instructions_base_t.h"
 

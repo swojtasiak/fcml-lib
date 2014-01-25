@@ -7,13 +7,14 @@
 
 #include "intel_parser_t.h"
 
+#include <string.h>
+
 #include <fcml_ceh.h>
 #include <fcml_common.h>
 #include <fcml_types.h>
 #include <fcml_errors.h>
 #include <fcml_intel_parser.h>
 #include <fcml_intel_dialect.h>
-#include <string.h>
 
 fcml_st_dialect *internal_dialect_intel = NULL;
 

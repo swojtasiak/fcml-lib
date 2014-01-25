@@ -57,7 +57,7 @@ void fcml_str_run_assert( fcml_bool condition, fcml_string file, fcml_int line, 
 
 }
 
-void fcml_stf_run_tests( fcml_stf_test_suite **suite ) {
+fcml_bool fcml_stf_run_tests( fcml_stf_test_suite **suite ) {
 
 	// Execute suites one by one.
 
@@ -179,4 +179,5 @@ void fcml_stf_run_tests( fcml_stf_test_suite **suite ) {
 		free( tmp );
 	}
 
+	return fcml_gl_stf_test_result.suites.failed == 0;
 }

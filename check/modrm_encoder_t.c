@@ -5,11 +5,13 @@
  *      Author: Slawomir Wojtasiak
  */
 
-#include "fcml_env.h"
-#include "fcml_modrm_encoder.h"
 #include "modrm_encoder_t.h"
-#include "fcml_errors.h"
+
+#include <fcml_env.h>
+#include <fcml_modrm_encoder.h>
+#include <fcml_errors.h>
 #include <fcml_common.h>
+
 #include "instructions_base_t.h"
 
 void fcml_tf_modrm_encoder_suite_init(void) {

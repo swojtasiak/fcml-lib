@@ -1,8 +1,5 @@
 /* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
-
-
-
 /* Bison interface for Yacc-like parsers in C
    
       Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.

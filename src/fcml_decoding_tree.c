@@ -28,7 +28,17 @@ typedef fcml_ceh_error ( *fcml_ifp_dt_dts_opcode_callback )( fcml_st_dt_decoding
 
 /* Sets opcode field into a opcode byte. */
 fcml_uint8_t fcml_ifn_dt_dts_utils_set_opcode_byte_field( fcml_uint8_t opcode_byte, int opcode_field_pos, int field_size, fcml_uint8_t field_value ) {
-	fcml_uint8_t bit_mask = ~( (int)pow( 2, field_size ) - 1 );
+
+	// Mask for opcode field.
+	fcml_uint8_t bit_mask = 0x00;
+	int i = 0;
+	for( i = 0; i < field_size; i++ ) {
+		bit_mask <<= 1;
+		bit_mask |= 0x01;
+	}
+	bit_mask = ~bit_mask;
+
+	// Preparing opcode with opcode_filed set.
 	return ( opcode_byte & bit_mask ) | ( field_value << opcode_field_pos );
 }
 

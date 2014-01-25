@@ -5,10 +5,10 @@
  *      Author: tAs
  */
 
-#include "fcml_env.h"
-#include "fcml_assembler.h"
+#include <fcml_env.h>
+#include <fcml_assembler.h>
+#include <fcml_rend.h>
 #include "instructions_c_t.h"
-#include "fcml_rend.h"
 #include "instructions_base_t.h"
 
 void fcml_tf_instructions_c_suite_init(void) {

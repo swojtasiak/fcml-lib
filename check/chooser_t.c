@@ -7,6 +7,8 @@
 
 #include "chooser_t.h"
 
+#include <stdio.h>
+
 #include <fcml_assembler.h>
 #include <fcml_ceh.h>
 #include <fcml_choosers.h>
@@ -19,7 +21,6 @@
 #include <fcml_rend.h>
 #include <fcml_stream.h>
 #include <fcml_types.h>
-#include <stdio.h>
 
 #include "instructions_base_t.h"
 
