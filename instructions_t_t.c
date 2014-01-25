@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_t_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_t_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_t_suite_init(void) {
 }
 
-int fcml_tf_instructions_t_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_t_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_TEST(void) {
@@ -104,15 +103,15 @@ void fcml_tf_instruction_T1MSKC(void) {
     FCML_A64( "t1mskc %rax,%rbx", 0x8f, 0xe9, 0xe0, 0x01, 0xf8 );
 }
 
-CU_TestInfo fctl_ti_instructions_t[] = {
-    { "fcml_tf_instruction_TEST", fcml_tf_instruction_TEST },
-    { "fcml_tf_instruction_TZCNT", fcml_tf_instruction_TZCNT },
-    { "fcml_tf_instruction_TZMSK", fcml_tf_instruction_TZMSK },
-    { "fcml_tf_instruction_T1MSKC", fcml_tf_instruction_T1MSKC },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_t[] = {
+	{ "fcml_tf_instruction_TEST", fcml_tf_instruction_TEST },
+	{ "fcml_tf_instruction_TZCNT", fcml_tf_instruction_TZCNT },
+	{ "fcml_tf_instruction_TZMSK", fcml_tf_instruction_TZMSK },
+	{ "fcml_tf_instruction_T1MSKC", fcml_tf_instruction_T1MSKC },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_t[] = {
-    { "suite-fctl_ti_instructions_t", fcml_tf_instructions_t_suite_init, fcml_tf_instructions_t_suite_cleanup, fctl_ti_instructions_t },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_t = {
+	"suite-fctl_ti_instructions_t", fcml_tf_instructions_t_suite_init, fcml_tf_instructions_t_suite_cleanup, fctl_ti_instructions_t
 };
+

@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_n_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_n_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_n_suite_init(void) {
 }
 
-int fcml_tf_instructions_n_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_n_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_NEG(void) {
@@ -86,14 +85,14 @@ void fcml_tf_instruction_NOT(void) {
     FCML_A64_A( "notl %eax", 0xf7, 0xd0 );
 }
 
-CU_TestInfo fctl_ti_instructions_n[] = {
-    { "fcml_tf_instruction_NEG", fcml_tf_instruction_NEG },
-    { "fcml_tf_instruction_NOP", fcml_tf_instruction_NOP },
-    { "fcml_tf_instruction_NOT", fcml_tf_instruction_NOT },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_n[] = {
+	{ "fcml_tf_instruction_NEG", fcml_tf_instruction_NEG },
+	{ "fcml_tf_instruction_NOP", fcml_tf_instruction_NOP },
+	{ "fcml_tf_instruction_NOT", fcml_tf_instruction_NOT },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_n[] = {
-    { "suite-fctl_ti_instructions_n", fcml_tf_instructions_n_suite_init, fcml_tf_instructions_n_suite_cleanup, fctl_ti_instructions_n },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_n = {
+	"suite-fctl_ti_instructions_n", fcml_tf_instructions_n_suite_init, fcml_tf_instructions_n_suite_cleanup, fctl_ti_instructions_n
 };
+

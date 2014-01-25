@@ -5,17 +5,16 @@
  *      Author: tAs
  */
 
+#include <fcml_rend.h>
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_o_t.h"
-#include <fcml_rend.h>
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_o_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_o_suite_init(void) {
 }
 
-int fcml_tf_instructions_o_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_o_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_OR(void) {
@@ -27,7 +26,7 @@ void fcml_tf_instruction_OR(void) {
     // 0D id OR EAX, imm32 I Valid Valid EAX OR imm32.
     FCML_I32_M( "or ax,8042h", 2, FCML_MI( 0x66, 0x81, 0xc8, 0x42, 0x80 ), FCML_MI( 0x66, 0x0d, 0x42, 0x80 ) );
     FCML_I32_M( "or eax,42806521h", 2, FCML_MI( 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
-    FCML_I64_M( "or rax,0000000042806521h", 2, FCML_MI( 0x48, 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 ) )
+    FCML_I64_M( "or rax,0000000042806521h", 2, FCML_MI( 0x48, 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
     FCML_I64_M( "or ax,6521h", 2, FCML_MI( 0x66, 0x81, 0xc8, 0x21, 0x65 ), FCML_MI( 0x66, 0x0d, 0x21, 0x65 ) );
     // REX.W + 0D id OR RAX, imm32 I Valid N.E. RAX OR imm32 (sign-extended).
     FCML_I64_M( "or rax,0000000042806521h", 2, FCML_MI( 0x48, 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
@@ -89,7 +88,7 @@ void fcml_tf_instruction_OR(void) {
     FCML_I64( "or r12,qword ptr [r9+rcx*4+0000000000000001h]", 0x4D, 0x0b, 0x64, 0x89, 0x01 );
     // GAS
     FCML_A32_M( "or $0x42806521,%eax", 2, FCML_MI( 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
-	FCML_A64_M( "or $0x0000000042806521,%rax", 2, FCML_MI( 0x48, 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 ) )
+	FCML_A64_M( "or $0x0000000042806521,%rax", 2, FCML_MI( 0x48, 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
 	FCML_A64_M( "or $0x6521,%ax", 2, FCML_MI( 0x66, 0x81, 0xc8, 0x21, 0x65 ), FCML_MI( 0x66, 0x0d, 0x21, 0x65 ) );
 	FCML_A32( "lock orb $0xff,0x04030201", 0xF0, 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
 	FCML_A32( "xacquire lock orb $0xff,0x04030201", 0xF2, 0xF0, 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
@@ -192,16 +191,17 @@ void fcml_tf_instruction_OUTS(void) {
     FCML_A64( "outsw (%esi),%dx", 0x66, 0x67, 0x6f );
 }
 
-CU_TestInfo fctl_ti_instructions_o[] = {
-    { "fcml_tf_instruction_OR", fcml_tf_instruction_OR },
-    { "fcml_tf_instruction_ORPD", fcml_tf_instruction_ORPD },
-    { "fcml_tf_instruction_ORPS", fcml_tf_instruction_ORPS },
-    { "fcml_tf_instruction_OUT", fcml_tf_instruction_OUT },
-    { "fcml_tf_instruction_OUTS", fcml_tf_instruction_OUTS },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_o[] = {
+	{ "fcml_tf_instruction_OR", fcml_tf_instruction_OR },
+	{ "fcml_tf_instruction_ORPD", fcml_tf_instruction_ORPD },
+	{ "fcml_tf_instruction_ORPS", fcml_tf_instruction_ORPS },
+	{ "fcml_tf_instruction_OUT", fcml_tf_instruction_OUT },
+	{ "fcml_tf_instruction_OUTS", fcml_tf_instruction_OUTS },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_o[] = {
-    { "suite-fctl_ti_instructions_o", fcml_tf_instructions_o_suite_init, fcml_tf_instructions_o_suite_cleanup, fctl_ti_instructions_o },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_o = {
+	"suite-fctl_ti_instructions_o", fcml_tf_instructions_o_suite_init, fcml_tf_instructions_o_suite_cleanup, fctl_ti_instructions_o
 };
+
+

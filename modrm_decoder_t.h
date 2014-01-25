@@ -8,10 +8,8 @@
 #ifndef MODRM_DECODER_T_H_
 #define MODRM_DECODER_T_H_
 
-#include <stdio.h>
+#include "fcml_stf.h"
 
-#include <CUnit/CUnit.h>
-
-extern struct CU_SuiteInfo fctl_si_modrm_decoder[];
+extern fcml_stf_test_suite fctl_si_modrm_decoder;
 
 #endif /* MODRM_DECODER_T_H_ */

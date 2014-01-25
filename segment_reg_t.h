@@ -8,10 +8,8 @@
 #ifndef SEGMENT_REG_T_H_
 #define SEGMENT_REG_T_H_
 
-#include <stdio.h>
+#include "fcml_stf.h"
 
-#include <CUnit/CUnit.h>
-
-extern struct CU_SuiteInfo fcml_si_segment_reg[];
+extern fcml_stf_test_suite fcml_si_segment_reg;
 
 #endif /* SEGMENT_REG_T_H_ */

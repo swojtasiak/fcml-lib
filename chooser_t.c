@@ -5,11 +5,8 @@
  *      Author: tas
  */
 
-#include "fcml_chooser_t.h"
+#include "chooser_t.h"
 
-#include <CUnit/CUnit.h>
-#include <CUnit/TestDB.h>
-#include <CUnit/TestRun.h>
 #include <fcml_assembler.h>
 #include <fcml_ceh.h>
 #include <fcml_choosers.h>
@@ -26,12 +23,10 @@
 
 #include "instructions_base_t.h"
 
-int fcml_tf_chooser_suite_init(void) {
-	return 0;
+void fcml_tf_chooser_suite_init(void) {
 }
 
-int fcml_tf_chooser_suite_cleanup(void) {
-	return 0;
+void fcml_tf_chooser_suite_cleanup(void) {
 }
 
 void fcml_fn_chooser_default(void) {
@@ -54,19 +49,19 @@ void fcml_fn_chooser_default(void) {
 	fcml_st_assembler_result *result;
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
+		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
 		if( result->chosen_instruction ) {
-			CU_ASSERT_EQUAL( 4, result->chosen_instruction->code_length );
+			STF_ASSERT_EQUAL( 4, result->chosen_instruction->code_length );
 			if( result->chosen_instruction->code_length == 4 ) {
-				CU_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
-				CU_ASSERT_EQUAL( 0x15, result->chosen_instruction->code[1] );
-				CU_ASSERT_EQUAL( 0x42, result->chosen_instruction->code[2] );
-				CU_ASSERT_EQUAL( 0x80, result->chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x15, result->chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0x42, result->chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x80, result->chosen_instruction->code[3] );
 			}
 		}
 		fcml_fn_assembler_result_free( result );
 	} else {
-		CU_FAIL("Can not assemble instruction.");
+		STF_FAIL("Can not assemble instruction.");
 	}
 
 }
@@ -96,7 +91,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
     if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 
-        CU_ASSERT_PTR_NULL( result->chosen_instruction );
+        STF_ASSERT_PTR_NULL( result->chosen_instruction );
 
         // Disassemble and render every instruction available.
 
@@ -161,22 +156,22 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
         fcml_fn_assembler_result_free( result );
 
-        CU_ASSERT_EQUAL( error, 0 );
-        CU_ASSERT_EQUAL( flags, 0x0000000F );
+        STF_ASSERT_EQUAL( error, 0 );
+        STF_ASSERT_EQUAL( flags, 0x0000000F );
 
     } else {
-        CU_FAIL("Can not assemble instruction.");
+        STF_FAIL("Can not assemble instruction.");
     }
 
 }
 
-CU_TestInfo fcml_ti_chooser[] = {
-    { "fcml_fn_chooser_default", fcml_fn_chooser_default },
-    { "fcml_fn_chooser_null_optimizer_all_forms", fcml_fn_chooser_null_optimizer_all_forms },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fcml_ti_chooser[] = {
+	{ "fcml_fn_chooser_default", fcml_fn_chooser_default },
+	{ "fcml_fn_chooser_null_optimizer_all_forms", fcml_fn_chooser_null_optimizer_all_forms },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fcml_si_chooser[] = {
-    { "suite-fcml-chooser", fcml_tf_chooser_suite_init, fcml_tf_chooser_suite_cleanup, fcml_ti_chooser },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fcml_si_chooser = {
+	"suite-fcml-chooser", fcml_tf_chooser_suite_init, fcml_tf_chooser_suite_cleanup, fcml_ti_chooser
 };
+

@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_x_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_x_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_x_suite_init(void) {
 }
 
-int fcml_tf_instructions_x_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_x_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_XADD(void) {
@@ -289,26 +288,28 @@ void fcml_tf_instruction_XTEST(void) {
     FCML_A64( "xtest", 0x0f, 0x01, 0xd6 );
 }
 
-CU_TestInfo fctl_ti_instructions_x[] = {
-    { "fcml_tf_instruction_XADD", fcml_tf_instruction_XADD },
-    { "fcml_tf_instruction_XCHG", fcml_tf_instruction_XCHG },
-    { "fcml_tf_instruction_XGETBV", fcml_tf_instruction_XGETBV },
-    { "fcml_tf_instruction_XLAT", fcml_tf_instruction_XLAT },
-    { "fcml_tf_instruction_XOR", fcml_tf_instruction_XOR },
-    { "fcml_tf_instruction_XORPD", fcml_tf_instruction_XORPD },
-    { "fcml_tf_instruction_XORPS", fcml_tf_instruction_XORPS },
-    { "fcml_tf_instruction_XRSTOR", fcml_tf_instruction_XRSTOR },
-    { "fcml_tf_instruction_XSAVE", fcml_tf_instruction_XSAVE },
-    { "fcml_tf_instruction_XSAVEOPT", fcml_tf_instruction_XSAVEOPT },
-    { "fcml_tf_instruction_XSETBV", fcml_tf_instruction_XSETBV },
-    { "fcml_tf_instruction_XABORT", fcml_tf_instruction_XABORT },
-    { "fcml_tf_instruction_XBEGIN", fcml_tf_instruction_XBEGIN },
-    { "fcml_tf_instruction_XEND", fcml_tf_instruction_XEND },
-    { "fcml_tf_instruction_XTEST", fcml_tf_instruction_XTEST },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_x[] = {
+	{ "fcml_tf_instruction_XADD", fcml_tf_instruction_XADD },
+	{ "fcml_tf_instruction_XCHG", fcml_tf_instruction_XCHG },
+	{ "fcml_tf_instruction_XGETBV", fcml_tf_instruction_XGETBV },
+	{ "fcml_tf_instruction_XLAT", fcml_tf_instruction_XLAT },
+	{ "fcml_tf_instruction_XOR", fcml_tf_instruction_XOR },
+	{ "fcml_tf_instruction_XORPD", fcml_tf_instruction_XORPD },
+	{ "fcml_tf_instruction_XORPS", fcml_tf_instruction_XORPS },
+	{ "fcml_tf_instruction_XRSTOR", fcml_tf_instruction_XRSTOR },
+	{ "fcml_tf_instruction_XSAVE", fcml_tf_instruction_XSAVE },
+	{ "fcml_tf_instruction_XSAVEOPT", fcml_tf_instruction_XSAVEOPT },
+	{ "fcml_tf_instruction_XSETBV", fcml_tf_instruction_XSETBV },
+	{ "fcml_tf_instruction_XABORT", fcml_tf_instruction_XABORT },
+	{ "fcml_tf_instruction_XBEGIN", fcml_tf_instruction_XBEGIN },
+	{ "fcml_tf_instruction_XEND", fcml_tf_instruction_XEND },
+	{ "fcml_tf_instruction_XTEST", fcml_tf_instruction_XTEST },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_x[] = {
-    { "suite-fctl_ti_instructions_x", fcml_tf_instructions_x_suite_init, fcml_tf_instructions_x_suite_cleanup, fctl_ti_instructions_x },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_x = {
+	"suite-fctl_ti_instructions_x", fcml_tf_instructions_x_suite_init, fcml_tf_instructions_x_suite_cleanup, fctl_ti_instructions_x
 };
+
+
+

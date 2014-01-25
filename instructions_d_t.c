@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_d_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_d_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_d_suite_init(void) {
 }
 
-int fcml_tf_instructions_d_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_d_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_DAA(void) {
@@ -168,21 +167,23 @@ void fcml_tf_instruction_DPPS(void) {
     FCML_A64( "vdpps $0x20,(%rcx,%rax),%xmm6,%xmm2", 0xc4, 0xe3, 0x49, 0x40, 0x14, 0x01, 0x20 );
 }
 
-CU_TestInfo fctl_ti_instructions_d[] = {
-    { "fcml_tf_instruction_DAA", fcml_tf_instruction_DAA },
-    { "fcml_tf_instruction_DAS", fcml_tf_instruction_DAS },
-    { "fcml_tf_instruction_DEC", fcml_tf_instruction_DEC },
-    { "fcml_tf_instruction_DIV", fcml_tf_instruction_DIV },
-    { "fcml_tf_instruction_DIVPD", fcml_tf_instruction_DIVPD },
-    { "fcml_tf_instruction_DIVPS", fcml_tf_instruction_DIVPS },
-    { "fcml_tf_instruction_DIVSD", fcml_tf_instruction_DIVSD },
-    { "fcml_tf_instruction_DIVSS", fcml_tf_instruction_DIVSS },
-    { "fcml_tf_instruction_DPPD", fcml_tf_instruction_DPPD },
-    { "fcml_tf_instruction_DPPS", fcml_tf_instruction_DPPS },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_d[] = {
+	{ "fcml_tf_instruction_DAA", fcml_tf_instruction_DAA },
+	{ "fcml_tf_instruction_DAS", fcml_tf_instruction_DAS },
+	{ "fcml_tf_instruction_DEC", fcml_tf_instruction_DEC },
+	{ "fcml_tf_instruction_DIV", fcml_tf_instruction_DIV },
+	{ "fcml_tf_instruction_DIVPD", fcml_tf_instruction_DIVPD },
+	{ "fcml_tf_instruction_DIVPS", fcml_tf_instruction_DIVPS },
+	{ "fcml_tf_instruction_DIVSD", fcml_tf_instruction_DIVSD },
+	{ "fcml_tf_instruction_DIVSS", fcml_tf_instruction_DIVSS },
+	{ "fcml_tf_instruction_DPPD", fcml_tf_instruction_DPPD },
+	{ "fcml_tf_instruction_DPPS", fcml_tf_instruction_DPPS },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_d[] = {
-    { "suite-fctl_ti_instructions_d", fcml_tf_instructions_d_suite_init, fcml_tf_instructions_d_suite_cleanup, fctl_ti_instructions_d },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_d = {
+	"suite-fctl_ti_instructions_d", fcml_tf_instructions_d_suite_init, fcml_tf_instructions_d_suite_cleanup, fctl_ti_instructions_d
 };
+
+
+

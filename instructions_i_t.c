@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_i_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_i_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_i_suite_init(void) {
 }
 
-int fcml_tf_instructions_i_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_i_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_IDIV(void) {
@@ -287,26 +286,27 @@ void fcml_tf_instruction_INVVPID(void) {
 	FCML_A64( "invvpid (%rax),%rsp", 0x66, 0x0f, 0x38, 0x81, 0x20 );
 }
 
-CU_TestInfo fctl_ti_instructions_i[] = {
-    { "fcml_tf_instruction_IDIV", fcml_tf_instruction_IDIV },
-    { "fcml_tf_instruction_IMUL", fcml_tf_instruction_IMUL },
-    { "fcml_tf_instruction_IN", fcml_tf_instruction_IN },
-    { "fcml_tf_instruction_INC", fcml_tf_instruction_INC },
-    { "fcml_tf_instruction_INS", fcml_tf_instruction_INS },
-    { "fcml_tf_instruction_INSERTPS", fcml_tf_instruction_INSERTPS },
-    { "fcml_tf_instruction_INSERTQ", fcml_tf_instruction_INSERTQ },
-    { "fcml_tf_instruction_INT", fcml_tf_instruction_INT },
-    { "fcml_tf_instruction_INVD", fcml_tf_instruction_INVD },
-    { "fcml_tf_instruction_INVLPG", fcml_tf_instruction_INVLPG },
-    { "fcml_tf_instruction_INVLPGA", fcml_tf_instruction_INVLPGA },
-    { "fcml_tf_instruction_INVPCID", fcml_tf_instruction_INVPCID },
-    { "fcml_tf_instruction_IRET", fcml_tf_instruction_IRET },
-    { "fcml_tf_instruction_INVEPT", fcml_tf_instruction_INVEPT },
-    { "fcml_tf_instruction_INVVPID", fcml_tf_instruction_INVVPID },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_i[] = {
+	{ "fcml_tf_instruction_IDIV", fcml_tf_instruction_IDIV },
+	{ "fcml_tf_instruction_IMUL", fcml_tf_instruction_IMUL },
+	{ "fcml_tf_instruction_IN", fcml_tf_instruction_IN },
+	{ "fcml_tf_instruction_INC", fcml_tf_instruction_INC },
+	{ "fcml_tf_instruction_INS", fcml_tf_instruction_INS },
+	{ "fcml_tf_instruction_INSERTPS", fcml_tf_instruction_INSERTPS },
+	{ "fcml_tf_instruction_INSERTQ", fcml_tf_instruction_INSERTQ },
+	{ "fcml_tf_instruction_INT", fcml_tf_instruction_INT },
+	{ "fcml_tf_instruction_INVD", fcml_tf_instruction_INVD },
+	{ "fcml_tf_instruction_INVLPG", fcml_tf_instruction_INVLPG },
+	{ "fcml_tf_instruction_INVLPGA", fcml_tf_instruction_INVLPGA },
+	{ "fcml_tf_instruction_INVPCID", fcml_tf_instruction_INVPCID },
+	{ "fcml_tf_instruction_IRET", fcml_tf_instruction_IRET },
+	{ "fcml_tf_instruction_INVEPT", fcml_tf_instruction_INVEPT },
+	{ "fcml_tf_instruction_INVVPID", fcml_tf_instruction_INVVPID },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_i[] = {
-    { "suite-fctl_ti_instructions_i", fcml_tf_instructions_i_suite_init, fcml_tf_instructions_i_suite_cleanup, fctl_ti_instructions_i },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_i = {
+	"suite-fctl_ti_instructions_i", fcml_tf_instructions_i_suite_init, fcml_tf_instructions_i_suite_cleanup, fctl_ti_instructions_i
 };
+
+

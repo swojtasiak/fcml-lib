@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_w_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_w_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_w_suite_init(void) {
 }
 
-int fcml_tf_instructions_w_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_w_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_WAIT(void) {
@@ -60,15 +59,15 @@ void fcml_tf_instruction_WRMSR(void) {
     FCML_A64( "wrmsr", 0x0f, 0x30 );
 }
 
-CU_TestInfo fctl_ti_instructions_w[] = {
-    { "fcml_tf_instruction_WAIT", fcml_tf_instruction_WAIT },
-    { "fcml_tf_instruction_WBINVD", fcml_tf_instruction_WBINVD },
-    { "fcml_tf_instruction_WRFSBASE", fcml_tf_instruction_WRFSBASE },
-    { "fcml_tf_instruction_WRMSR", fcml_tf_instruction_WRMSR },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_w[] = {
+	{ "fcml_tf_instruction_WAIT", fcml_tf_instruction_WAIT },
+	{ "fcml_tf_instruction_WBINVD", fcml_tf_instruction_WBINVD },
+	{ "fcml_tf_instruction_WRFSBASE", fcml_tf_instruction_WRFSBASE },
+	{ "fcml_tf_instruction_WRMSR", fcml_tf_instruction_WRMSR },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_w[] = {
-    { "suite-fctl_ti_instructions_w", fcml_tf_instructions_w_suite_init, fcml_tf_instructions_w_suite_cleanup, fctl_ti_instructions_w },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_w = {
+	"suite-fctl_ti_instructions_w", fcml_tf_instructions_w_suite_init, fcml_tf_instructions_w_suite_cleanup, fctl_ti_instructions_w
 };
+

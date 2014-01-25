@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_u_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_u_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_u_suite_init(void) {
 }
 
-int fcml_tf_instructions_u_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_u_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_UCOMISD(void) {
@@ -125,18 +124,19 @@ void fcml_tf_instruction_UNPCKLPS(void) {
     FCML_A64( "vunpcklps (%rax),%xmm6,%xmm0", 0xc5, 0xc8, 0x14, 0x00 );
 }
 
-CU_TestInfo fctl_ti_instructions_u[] = {
-    { "fcml_tf_instruction_UCOMISD", fcml_tf_instruction_UCOMISD },
-    { "fcml_tf_instruction_UCOMISS", fcml_tf_instruction_UCOMISS },
-    { "fcml_tf_instruction_UD2", fcml_tf_instruction_UD2 },
-    { "fcml_tf_instruction_UNPCKHPD", fcml_tf_instruction_UNPCKHPD },
-    { "fcml_tf_instruction_UNPCKHPS", fcml_tf_instruction_UNPCKHPS },
-    { "fcml_tf_instruction_UNPCKLPD", fcml_tf_instruction_UNPCKLPD },
-    { "fcml_tf_instruction_UNPCKLPS", fcml_tf_instruction_UNPCKLPS },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_u[] = {
+	{ "fcml_tf_instruction_UCOMISD", fcml_tf_instruction_UCOMISD },
+	{ "fcml_tf_instruction_UCOMISS", fcml_tf_instruction_UCOMISS },
+	{ "fcml_tf_instruction_UD2", fcml_tf_instruction_UD2 },
+	{ "fcml_tf_instruction_UNPCKHPD", fcml_tf_instruction_UNPCKHPD },
+	{ "fcml_tf_instruction_UNPCKHPS", fcml_tf_instruction_UNPCKHPS },
+	{ "fcml_tf_instruction_UNPCKLPD", fcml_tf_instruction_UNPCKLPD },
+	{ "fcml_tf_instruction_UNPCKLPS", fcml_tf_instruction_UNPCKLPS },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_u[] = {
-    { "suite-fctl_ti_instructions_u", fcml_tf_instructions_u_suite_init, fcml_tf_instructions_u_suite_cleanup, fctl_ti_instructions_u },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_u = {
+	"suite-fctl_ti_instructions_u", fcml_tf_instructions_u_suite_init, fcml_tf_instructions_u_suite_cleanup, fctl_ti_instructions_u
 };
+
+

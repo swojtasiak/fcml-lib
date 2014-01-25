@@ -14,12 +14,10 @@
 
 #include "instructions_base_t.h"
 
-int fcml_tf_prefixes_suite_init(void) {
-	return 0;
+void fcml_tf_prefixes_suite_init(void) {
 }
 
-int fcml_tf_prefixes_suite_cleanup(void) {
-	return 0;
+void fcml_tf_prefixes_suite_cleanup(void) {
 }
 
 void fcml_fn_prefixes_66(void) {
@@ -39,19 +37,19 @@ void fcml_fn_prefixes_66(void) {
 	fcml_st_assembler_result *result;
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
+		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
 		if( result->chosen_instruction ) {
-			CU_ASSERT_EQUAL( 4, result->chosen_instruction->code_length );
+			STF_ASSERT_EQUAL( 4, result->chosen_instruction->code_length );
 			if( result->chosen_instruction->code_length == 4 ) {
-				CU_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[0] );
-				CU_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[1] );
-				CU_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[2] );
-				CU_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[3] );
 			}
 		}
 		fcml_fn_assembler_result_free( result );
 	} else {
-		CU_FAIL("Can not assemble instruction.");
+		STF_FAIL("Can not assemble instruction.");
 	}
 
 	// Prefixes 0x66 is needed to change default operand size attribute back to 16 bits.
@@ -65,20 +63,20 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[1] = FCML_IMM16( 0x0201 );
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
+		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
 		if( result->chosen_instruction ) {
-			CU_ASSERT_EQUAL( 5, result->chosen_instruction->code_length );
+			STF_ASSERT_EQUAL( 5, result->chosen_instruction->code_length );
 			if( result->chosen_instruction->code_length == 5 ) {
-				CU_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
-				CU_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
-				CU_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
-				CU_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
-				CU_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
+				STF_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
 			}
 		}
 		fcml_fn_assembler_result_free( result );
 	} else {
-		CU_FAIL("Can not assemble instruction.");
+		STF_FAIL("Can not assemble instruction.");
 	}
 
 	// Prefixes 0x66 is needed to change default operand size attribute to 32 bits.
@@ -92,22 +90,22 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[1] = FCML_IMM32( 0x02010000 );
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
+		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
 		if( result->chosen_instruction ) {
-			CU_ASSERT_EQUAL( 7, result->chosen_instruction->code_length );
+			STF_ASSERT_EQUAL( 7, result->chosen_instruction->code_length );
 			if( result->chosen_instruction->code_length == 5 ) {
-				CU_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
-				CU_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
-				CU_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
-				CU_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[3] );
-				CU_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[4] );
-				CU_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
-				CU_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
+				STF_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[4] );
+				STF_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
 			}
 		}
 		fcml_fn_assembler_result_free( result );
 	} else {
-		CU_FAIL("Can not assemble instruction.");
+		STF_FAIL("Can not assemble instruction.");
 	}
 
 	// Prefixes 0x66 is needed to change default operand size attribute back to 32 bits.
@@ -121,32 +119,31 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[1] = FCML_IMM32( 0x02010000 );
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		CU_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
+		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
 		if( result->chosen_instruction ) {
-			CU_ASSERT_EQUAL( 7, result->chosen_instruction->code_length );
+			STF_ASSERT_EQUAL( 7, result->chosen_instruction->code_length );
 			if( result->chosen_instruction->code_length == 5 ) {
-				CU_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
-				CU_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
-				CU_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
-				CU_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[3] );
-				CU_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[4] );
-				CU_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
-				CU_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
+				STF_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[4] );
+				STF_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
 			}
 		}
 		fcml_fn_assembler_result_free( result );
 	} else {
-		CU_FAIL("Can not assemble instruction.");
+		STF_FAIL("Can not assemble instruction.");
 	}
 
 }
 
-CU_TestInfo fcml_ti_prefixes[] = {
-    { "fcml_fn_prefixes_66", fcml_fn_prefixes_66 },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fcml_ti_prefixes[] = {
+	{ "fcml_fn_prefixes_66", fcml_fn_prefixes_66 },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fcml_si_prefixes[] = {
-    { "suite-fcml-prefixes", fcml_tf_prefixes_suite_init, fcml_tf_prefixes_suite_cleanup, fcml_ti_prefixes },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fcml_si_prefixes = {
+	"suite-fcml-prefixes", fcml_tf_prefixes_suite_init, fcml_tf_prefixes_suite_cleanup, fcml_ti_prefixes
 };

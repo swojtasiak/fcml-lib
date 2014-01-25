@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_e_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_e_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_e_suite_init(void) {
 }
 
-int fcml_tf_instructions_e_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_e_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_EMMS(void) {
@@ -61,15 +60,14 @@ void fcml_tf_instruction_EXTRQ(void) {
     FCML_A64( "extrq %xmm1,%xmm4", 0x66, 0x0f, 0x79, 0xe1 );
 }
 
-CU_TestInfo fctl_ti_instructions_e[] = {
-    { "fcml_tf_instruction_EMMS", fcml_tf_instruction_EMMS },
-    { "fcml_tf_instruction_ENTER", fcml_tf_instruction_ENTER },
-    { "fcml_tf_instruction_EXTRACTPS", fcml_tf_instruction_EXTRACTPS },
-    { "fcml_tf_instruction_EXTRQ", fcml_tf_instruction_EXTRQ },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_e[] = {
+	{ "fcml_tf_instruction_EMMS", fcml_tf_instruction_EMMS },
+	{ "fcml_tf_instruction_ENTER", fcml_tf_instruction_ENTER },
+	{ "fcml_tf_instruction_EXTRACTPS", fcml_tf_instruction_EXTRACTPS },
+	{ "fcml_tf_instruction_EXTRQ", fcml_tf_instruction_EXTRQ },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_e[] = {
-    { "suite-fctl_ti_instructions_e", fcml_tf_instructions_e_suite_init, fcml_tf_instructions_e_suite_cleanup, fctl_ti_instructions_e },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_e = {
+	"suite-fctl_ti_instructions_e", fcml_tf_instructions_e_suite_init, fcml_tf_instructions_e_suite_cleanup, fctl_ti_instructions_e
 };

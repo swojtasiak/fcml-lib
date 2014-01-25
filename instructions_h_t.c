@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_h_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_h_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_h_suite_init(void) {
 }
 
-int fcml_tf_instructions_h_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_h_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_HADDPD(void) {
@@ -79,16 +78,17 @@ void fcml_tf_instruction_HSUBPS(void) {
     FCML_I32( "vhsubps xmm2,xmm7,xmmword ptr [ecx+eax]", 0xc5, 0xc3, 0x7d, 0x14, 0x01 );
 }
 
-CU_TestInfo fctl_ti_instructions_h[] = {
-    { "fcml_tf_instruction_HADDPD", fcml_tf_instruction_HADDPD },
-    { "fcml_tf_instruction_HADDPS", fcml_tf_instruction_HADDPS },
-    { "fcml_tf_instruction_HLT", fcml_tf_instruction_HLT },
-    { "fcml_tf_instruction_HSUBPD", fcml_tf_instruction_HSUBPD },
-    { "fcml_tf_instruction_HSUBPS", fcml_tf_instruction_HSUBPS },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_h[] = {
+	{ "fcml_tf_instruction_HADDPD", fcml_tf_instruction_HADDPD },
+	{ "fcml_tf_instruction_HADDPS", fcml_tf_instruction_HADDPS },
+	{ "fcml_tf_instruction_HLT", fcml_tf_instruction_HLT },
+	{ "fcml_tf_instruction_HSUBPD", fcml_tf_instruction_HSUBPD },
+	{ "fcml_tf_instruction_HSUBPS", fcml_tf_instruction_HSUBPS },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_h[] = {
-    { "suite-fctl_ti_instructions_h", fcml_tf_instructions_h_suite_init, fcml_tf_instructions_h_suite_cleanup, fctl_ti_instructions_h },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_h = {
+	"suite-fctl_ti_instructions_h", fcml_tf_instructions_h_suite_init, fcml_tf_instructions_h_suite_cleanup, fctl_ti_instructions_h
 };
+
+

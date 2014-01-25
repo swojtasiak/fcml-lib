@@ -5,7 +5,7 @@
  *      Author: tAs
  */
 
-#include "fcml_coll_t.h"
+#include "coll_t.h"
 
 #include <fcml_coll.h>
 
@@ -17,12 +17,10 @@ void fcml_itf_coll_map_entry_handler_test( fcml_ptr key, fcml_ptr value, fcml_pt
 	last_free_value = value;
 }
 
-int fcml_tf_coll_suite_init(void) {
-	return 0;
+void fcml_tf_coll_suite_init(void) {
 }
 
-int fcml_tf_coll_suite_cleanup(void) {
-	return 0;
+void fcml_tf_coll_suite_cleanup(void) {
 }
 
 void fcml_tf_coll_test_put_the_same_key(void) {
@@ -31,15 +29,15 @@ void fcml_tf_coll_test_put_the_same_key(void) {
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 10, &error );
 	if( map == NULL || error ) {
-		CU_FAIL( "Can not create hash map." );
+		STF_FAIL( "Can not create hash map." );
 	} else {
 		fcml_fn_coll_map_put( map, "KEY_1", "VALUE_1", &error );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_1" ), "VALUE_1" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_1" ), "VALUE_1" );
 		fcml_fn_coll_map_put( map, "KEY_1", "VALUE_2", &error );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_1" ), "VALUE_2" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_1" ), "VALUE_2" );
 		fcml_fn_coll_map_put( map, "KEY_1", "VALUE_3", &error );
-		CU_ASSERT( fcml_fn_coll_map_size( map ) == 1 );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_1" ), "VALUE_3" );
+		STF_ASSERT( fcml_fn_coll_map_size( map ) == 1 );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_1" ), "VALUE_3" );
 	}
 
 	fcml_fn_coll_map_free( map );
@@ -51,7 +49,7 @@ void fcml_tf_coll_test_put_different_keys(void) {
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 10, &error );
 	if( map == NULL || error ) {
-		CU_FAIL( "Can not create hash map." );
+		STF_FAIL( "Can not create hash map." );
 	} else {
 		// index 1.
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -65,16 +63,16 @@ void fcml_tf_coll_test_put_different_keys(void) {
 		fcml_fn_coll_map_put( map, "KEY_F", "VALUE_F", &error );
 		fcml_fn_coll_map_put( map, "KEY_G", "VALUE_G", &error );
 		fcml_fn_coll_map_put( map, "KEY_H", "VALUE_H", &error );
-		CU_ASSERT( fcml_fn_coll_map_size( map ) == 9 );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_A" ), "VALUE_A" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_D" ), "VALUE_D" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
+		STF_ASSERT( fcml_fn_coll_map_size( map ) == 9 );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_A" ), "VALUE_A" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_D" ), "VALUE_D" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
 	}
 
 	fcml_fn_coll_map_free( map );
@@ -88,7 +86,7 @@ void fcml_tf_coll_test_remove_keys(void) {
 	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&descriptor, 10, &error );
 	if( map == NULL || error ) {
-		CU_FAIL( "Can not create hash map." );
+		STF_FAIL( "Can not create hash map." );
 	} else {
 		// index 1.
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -102,38 +100,38 @@ void fcml_tf_coll_test_remove_keys(void) {
 		fcml_fn_coll_map_put( map, "KEY_F", "VALUE_F", &error );
 		fcml_fn_coll_map_put( map, "KEY_G", "VALUE_G", &error );
 		fcml_fn_coll_map_put( map, "KEY_H", "VALUE_H", &error );
-		CU_ASSERT( fcml_fn_coll_map_size( map ) == 9 );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_A" ), "VALUE_A" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_D" ), "VALUE_D" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
+		STF_ASSERT( fcml_fn_coll_map_size( map ) == 9 );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_A" ), "VALUE_A" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_D" ), "VALUE_D" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
 		// Remove KEY_A
 		fcml_fn_coll_map_remove( map, "KEY_A" );
 		// Check if memory was freed.
-		CU_ASSERT_PTR_NOT_NULL( last_free_key );
-		CU_ASSERT_PTR_NOT_NULL( last_free_value );
+		STF_ASSERT_PTR_NOT_NULL( last_free_key );
+		STF_ASSERT_PTR_NOT_NULL( last_free_value );
 		if( last_free_key != NULL ) {
-			CU_ASSERT_STRING_EQUAL( last_free_key, "KEY_A" );
+			STF_ASSERT_STRING_EQUAL( last_free_key, "KEY_A" );
 		}
 		if( last_free_value != NULL ) {
-			CU_ASSERT_STRING_EQUAL( last_free_value, "VALUE_A" );
+			STF_ASSERT_STRING_EQUAL( last_free_value, "VALUE_A" );
 		}
 		// Check if KEY_A has been sucesfully removed.
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_A" ) );
-		CU_ASSERT( fcml_fn_coll_map_size( map ) == 8 );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_A" ) );
+		STF_ASSERT( fcml_fn_coll_map_size( map ) == 8 );
 		// Check if the rest of keys are still there.
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_D" ), "VALUE_D" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_H" ), "VALUE_H" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_D" ), "VALUE_D" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_H" ), "VALUE_H" );
 		// Remove all keys.
 		fcml_fn_coll_map_remove( map, "KEY_B" );
 		fcml_fn_coll_map_remove( map, "KEY_R" );
@@ -144,15 +142,15 @@ void fcml_tf_coll_test_remove_keys(void) {
 		fcml_fn_coll_map_remove( map, "KEY_G" );
 		fcml_fn_coll_map_remove( map, "KEY_H" );
 		// And check if they have been removed as well.
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_B" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_R" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_C" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_D" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_E" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_F" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_G" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_H" ) );
-		CU_ASSERT( fcml_fn_coll_map_size( map ) == 0 );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_B" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_R" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_C" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_D" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_E" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_F" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_G" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_H" ) );
+		STF_ASSERT( fcml_fn_coll_map_size( map ) == 0 );
 	}
 
 	fcml_fn_coll_map_free( map );
@@ -167,7 +165,7 @@ void fcml_tf_coll_test_clear(void) {
 	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&descriptor, 10, &error );
 	if( map == NULL || error ) {
-		CU_FAIL( "Can not create hash map." );
+		STF_FAIL( "Can not create hash map." );
 	} else {
 		// index 1.
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -181,23 +179,23 @@ void fcml_tf_coll_test_clear(void) {
 		fcml_fn_coll_map_put( map, "KEY_F", "VALUE_F", &error );
 		fcml_fn_coll_map_put( map, "KEY_G", "VALUE_G", &error );
 		fcml_fn_coll_map_put( map, "KEY_H", "VALUE_H", &error );
-		CU_ASSERT( fcml_fn_coll_map_size( map ) == 9 );
+		STF_ASSERT( fcml_fn_coll_map_size( map ) == 9 );
 		last_free_key = NULL;
 		last_free_value = NULL;
 		fcml_fn_coll_map_clear( map );
-		CU_ASSERT_PTR_NOT_NULL( last_free_key );
-		CU_ASSERT_PTR_NOT_NULL( last_free_value );
+		STF_ASSERT_PTR_NOT_NULL( last_free_key );
+		STF_ASSERT_PTR_NOT_NULL( last_free_value );
 		// And check if they have been removed.
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_A" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_B" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_R" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_C" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_D" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_E" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_F" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_G" ) );
-		CU_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_H" ) );
-		CU_ASSERT( fcml_fn_coll_map_size( map ) == 0 );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_A" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_B" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_R" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_C" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_D" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_E" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_F" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_G" ) );
+		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_H" ) );
+		STF_ASSERT( fcml_fn_coll_map_size( map ) == 0 );
 	}
 
 	fcml_fn_coll_map_free( map );
@@ -218,7 +216,7 @@ void fcml_tf_coll_test_iterate(void) {
 	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&descriptor, 10, &error );
 	if( map == NULL || error ) {
-		CU_FAIL( "Can not create hash map." );
+		STF_FAIL( "Can not create hash map." );
 	} else {
 		// index 1.
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -233,11 +231,11 @@ void fcml_tf_coll_test_iterate(void) {
 		fcml_fn_coll_map_put( map, "KEY_G", "VALUE_G", &error );
 		fcml_fn_coll_map_put( map, "KEY_H", "VALUE_H", &error );
 		fcml_fn_coll_map_iterate( map, fcml_itf_coll_test_iterate_handler );
-		CU_ASSERT_EQUAL( iterator_counter, 9 );
+		STF_ASSERT_EQUAL( iterator_counter, 9 );
 		iterator_counter = 0;
 		fcml_fn_coll_map_clear( map );
 		fcml_fn_coll_map_iterate( map, fcml_itf_coll_test_iterate_handler );
-		CU_ASSERT_EQUAL( iterator_counter, 0 );
+		STF_ASSERT_EQUAL( iterator_counter, 0 );
 	}
 
 	fcml_fn_coll_map_free( map );
@@ -251,7 +249,7 @@ void fcml_tf_coll_test_extend(void) {
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 2, &error );
 	if( map == NULL || error ) {
-		CU_FAIL( "Can not create hash map." );
+		STF_FAIL( "Can not create hash map." );
 	} else {
 		// index 1.
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -263,31 +261,30 @@ void fcml_tf_coll_test_extend(void) {
 		fcml_fn_coll_map_put( map, "KEY_F", "VALUE_F", &error );
 		fcml_fn_coll_map_put( map, "KEY_G", "VALUE_G", &error );
 		fcml_fn_coll_map_put( map, "KEY_H", "VALUE_H", &error );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_A" ), "VALUE_A" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_D" ), "VALUE_D" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
-		CU_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_H" ), "VALUE_H" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_A" ), "VALUE_A" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_D" ), "VALUE_D" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
+		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_H" ), "VALUE_H" );
 	}
 
 	fcml_fn_coll_map_free( map );
 }
 
-CU_TestInfo fcml_ti_coll[] = {
-    { "fcml_tf_coll_test_put_the_same_key", fcml_tf_coll_test_put_the_same_key },
-    { "fcml_tf_coll_test_put_different_keys", fcml_tf_coll_test_put_different_keys },
-    { "fcml_tf_coll_test_remove_keys", fcml_tf_coll_test_remove_keys },
+fcml_stf_test_case fcml_ti_coll[] = {
+	{ "fcml_tf_coll_test_put_the_same_key", fcml_tf_coll_test_put_the_same_key },
+	{ "fcml_tf_coll_test_put_different_keys", fcml_tf_coll_test_put_different_keys },
+	{ "fcml_tf_coll_test_remove_keys", fcml_tf_coll_test_remove_keys },
 	{ "fcml_tf_coll_test_clear", fcml_tf_coll_test_clear },
 	{ "fcml_tf_coll_test_iterate", fcml_tf_coll_test_iterate },
 	{ "fcml_tf_coll_test_extend", fcml_tf_coll_test_extend },
-    CU_TEST_INFO_NULL,
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fcml_si_coll[] = {
-    { "suite-fcml-coll", fcml_tf_coll_suite_init, fcml_tf_coll_suite_cleanup, fcml_ti_coll },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fcml_si_coll = {
+	"suite-fcml-coll", fcml_tf_coll_suite_init, fcml_tf_coll_suite_cleanup, fcml_ti_coll
 };

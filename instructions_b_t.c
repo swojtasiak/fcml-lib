@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_b_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_b_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_b_suite_init(void) {
 }
 
-int fcml_tf_instructions_b_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_b_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_BLENDPD_VBLENDPD(void) {
@@ -390,36 +389,38 @@ void fcml_tf_instruction_BZHI(void) {
 	FCML_A64( "bzhi %rdi,%rax,%rax", 0xC4, 0xE2, 0xC0, 0xF5, 0xC0 );
 }
 
-CU_TestInfo fctl_ti_instructions_b[] = {
-    { "fcml_tf_instruction_BLENDPD_VBLENDPD", fcml_tf_instruction_BLENDPD_VBLENDPD },
-    { "fcml_tf_instruction_BLENDPS_VBLENDPS", fcml_tf_instruction_BLENDPS_VBLENDPS },
-    { "fcml_tf_instruction_BLENDVPD_VBLENDVPD", fcml_tf_instruction_BLENDVPD_VBLENDVPD },
-    { "fcml_tf_instruction_BLENDVPS_VBLENDVPS", fcml_tf_instruction_BLENDVPS_VBLENDVPS },
-    { "fcml_tf_instruction_BOUND", fcml_tf_instruction_BOUND },
-    { "fcml_tf_instruction_BSF", fcml_tf_instruction_BSF },
-    { "fcml_tf_instruction_BSR", fcml_tf_instruction_BSR },
-    { "fcml_tf_instruction_BSWAP", fcml_tf_instruction_BSWAP },
-    { "fcml_tf_instruction_BT", fcml_tf_instruction_BT },
-    { "fcml_tf_instruction_BTC", fcml_tf_instruction_BTC },
-    { "fcml_tf_instruction_BTR", fcml_tf_instruction_BTR },
-    { "fcml_tf_instruction_BTS", fcml_tf_instruction_BTS },
-    { "fcml_tf_instruction_BEXR", fcml_tf_instruction_BEXR },
-    { "fcml_tf_instruction_BEXTR", fcml_tf_instruction_BEXTR },
-    { "fcml_tf_instruction_BLCFILL", fcml_tf_instruction_BLCFILL },
-    { "fcml_tf_instruction_BLCI", fcml_tf_instruction_BLCI },
-    { "fcml_tf_instruction_BLCIC", fcml_tf_instruction_BLCIC },
-    { "fcml_tf_instruction_BLCMSK", fcml_tf_instruction_BLCMSK },
-    { "fcml_tf_instruction_BLCS", fcml_tf_instruction_BLCS },
-    { "fcml_tf_instruction_BLSFILL", fcml_tf_instruction_BLSFILL },
-    { "fcml_tf_instruction_BLSI", fcml_tf_instruction_BLSI },
-    { "fcml_tf_instruction_BLSIC", fcml_tf_instruction_BLSIC },
-    { "fcml_tf_instruction_BLSMSK", fcml_tf_instruction_BLSMSK },
-    { "fcml_tf_instruction_BLSR", fcml_tf_instruction_BLSR },
-    { "fcml_tf_instruction_BZHI", fcml_tf_instruction_BZHI },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_b[] = {
+	{ "fcml_tf_instruction_BLENDPD_VBLENDPD", fcml_tf_instruction_BLENDPD_VBLENDPD },
+	{ "fcml_tf_instruction_BLENDPS_VBLENDPS", fcml_tf_instruction_BLENDPS_VBLENDPS },
+	{ "fcml_tf_instruction_BLENDVPD_VBLENDVPD", fcml_tf_instruction_BLENDVPD_VBLENDVPD },
+	{ "fcml_tf_instruction_BLENDVPS_VBLENDVPS", fcml_tf_instruction_BLENDVPS_VBLENDVPS },
+	{ "fcml_tf_instruction_BOUND", fcml_tf_instruction_BOUND },
+	{ "fcml_tf_instruction_BSF", fcml_tf_instruction_BSF },
+	{ "fcml_tf_instruction_BSR", fcml_tf_instruction_BSR },
+	{ "fcml_tf_instruction_BSWAP", fcml_tf_instruction_BSWAP },
+	{ "fcml_tf_instruction_BT", fcml_tf_instruction_BT },
+	{ "fcml_tf_instruction_BTC", fcml_tf_instruction_BTC },
+	{ "fcml_tf_instruction_BTR", fcml_tf_instruction_BTR },
+	{ "fcml_tf_instruction_BTS", fcml_tf_instruction_BTS },
+	{ "fcml_tf_instruction_BEXR", fcml_tf_instruction_BEXR },
+	{ "fcml_tf_instruction_BEXTR", fcml_tf_instruction_BEXTR },
+	{ "fcml_tf_instruction_BLCFILL", fcml_tf_instruction_BLCFILL },
+	{ "fcml_tf_instruction_BLCI", fcml_tf_instruction_BLCI },
+	{ "fcml_tf_instruction_BLCIC", fcml_tf_instruction_BLCIC },
+	{ "fcml_tf_instruction_BLCMSK", fcml_tf_instruction_BLCMSK },
+	{ "fcml_tf_instruction_BLCS", fcml_tf_instruction_BLCS },
+	{ "fcml_tf_instruction_BLSFILL", fcml_tf_instruction_BLSFILL },
+	{ "fcml_tf_instruction_BLSI", fcml_tf_instruction_BLSI },
+	{ "fcml_tf_instruction_BLSIC", fcml_tf_instruction_BLSIC },
+	{ "fcml_tf_instruction_BLSMSK", fcml_tf_instruction_BLSMSK },
+	{ "fcml_tf_instruction_BLSR", fcml_tf_instruction_BLSR },
+	{ "fcml_tf_instruction_BZHI", fcml_tf_instruction_BZHI },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_b[] = {
-    { "suite-fctl_ti_instructions_b", fcml_tf_instructions_b_suite_init, fcml_tf_instructions_b_suite_cleanup, fctl_ti_instructions_b },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_b = {
+	"suite-fctl_ti_instructions_b", fcml_tf_instructions_b_suite_init, fcml_tf_instructions_b_suite_cleanup, fctl_ti_instructions_b,
 };
+
+
+

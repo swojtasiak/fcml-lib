@@ -9,14 +9,12 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <inttypes.h>
-#include <fcml_env.h>
 
-#include "fcml_assembler.h"
-#include "fcml_disassembler.h"
-#include "fcml_intel_dialect.h"
-#include "fcml_intel_rend.h"
-#include "fcml_intel_parser.h"
+#include <fcml_assembler.h>
+#include <fcml_disassembler.h>
+#include <fcml_intel_dialect.h>
+#include <fcml_rend.h>
+#include <fcml_parser.h>
 
 extern fcml_st_assembler *assembler_intel;
 extern fcml_st_disassembler *disassembler_intel;
@@ -137,7 +135,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 				return success;
 			} else {
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
-					CU_ASSERT(FCML_TRUE);
+					STF_ASSERT(FCML_TRUE);
 				}
 			}
 
@@ -460,7 +458,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 							printf("Should fail: %s\n", mnemonic);
 							success = FCML_FALSE;
 						} else {
-							CU_ASSERT(FCML_TRUE);
+							STF_ASSERT(FCML_TRUE);
 						}
 					}
 				}
@@ -474,7 +472,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 
 		if( t_flags & FCML_TSF_SHOULD_FAIL ) {
 			if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
-				CU_ASSERT(FCML_TRUE);
+				STF_ASSERT(FCML_TRUE);
 			}
 			success = FCML_TRUE;
 		} else {

@@ -8,11 +8,8 @@
 #ifndef INS_X_H_
 #define INS_X_H_
 
-#include <stdio.h>
-#include "instructions_base_t.h"
+#include "fcml_stf.h"
 
-#include <CUnit/CUnit.h>
-
-extern struct CU_SuiteInfo fctl_si_instructions_x[];
+extern fcml_stf_test_suite fctl_si_instructions_x;
 
 #endif /* INS_X_H_ */

@@ -9,13 +9,12 @@
 #include "fcml_assembler.h"
 #include "instructions_i_t.h"
 #include "fcml_rend.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_j_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_j_suite_init(void) {
 }
 
-int fcml_tf_instructions_j_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_j_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_JCXZ(void) {
@@ -107,14 +106,14 @@ void fcml_tf_instruction_JMP(void) {
 	FCML_A64( "ljmpq *0x0000000000000001(%rbx)", 0x48, 0xFF, 0x6B, 0x01 );
 }
 
-CU_TestInfo fctl_ti_instructions_j[] = {
-    { "fcml_tf_instruction_JCXZ", fcml_tf_instruction_JCXZ },
-    { "fcml_tf_instruction_Jcc", fcml_tf_instruction_Jcc },
-    { "fcml_tf_instruction_JMP", fcml_tf_instruction_JMP },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_j[] = {
+	{ "fcml_tf_instruction_JCXZ", fcml_tf_instruction_JCXZ },
+	{ "fcml_tf_instruction_Jcc", fcml_tf_instruction_Jcc },
+	{ "fcml_tf_instruction_JMP", fcml_tf_instruction_JMP },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_j[] = {
-    { "suite-fctl_ti_instructions_j", fcml_tf_instructions_j_suite_init, fcml_tf_instructions_j_suite_cleanup, fctl_ti_instructions_j },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_j = {
+	"suite-fctl_ti_instructions_j", fcml_tf_instructions_j_suite_init, fcml_tf_instructions_j_suite_cleanup, fctl_ti_instructions_j
 };
+

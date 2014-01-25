@@ -11,12 +11,10 @@
 
 #include <fcml_rend.h>
 
-int fcml_tf_hints_suite_init(void) {
-	return 0;
+void fcml_tf_hints_suite_init(void) {
 }
 
-int fcml_tf_hints_suite_cleanup(void) {
-	return 0;
+void fcml_tf_hints_suite_cleanup(void) {
 }
 
 void fcml_fn_hints_sib(void) {
@@ -51,13 +49,15 @@ void fcml_fn_hints_rip(void) {
 	FCML_I64_RF( "rcl byte ptr [abs 0000000000401007h],03h", FCML_REND_FLAG_RENDER_ABS_HINT, 0xc0, 0x14, 0x25, 0x07, 0x10, 0x40, 0x00, 0x03 );
 }
 
-CU_TestInfo fcml_ti_hints[] = {
-    { "fcml_fn_hints_sib", fcml_fn_hints_sib },
-    { "fcml_fn_hints_rip", fcml_fn_hints_rip },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fcml_ti_hints[] = {
+	{ "fcml_fn_hints_sib", fcml_fn_hints_sib },
+	{ "fcml_fn_hints_rip", fcml_fn_hints_rip },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fcml_si_hints[] = {
-    { "suite-fcml-hints", fcml_tf_hints_suite_init, fcml_tf_hints_suite_cleanup, fcml_ti_hints },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fcml_si_hints = {
+	"suite-fcml-hints", fcml_tf_hints_suite_init, fcml_tf_hints_suite_cleanup, fcml_ti_hints
 };
+
+
+

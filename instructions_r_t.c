@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_r_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_r_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_r_suite_init(void) {
 }
 
-int fcml_tf_instructions_r_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_r_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_RCL(void) {
@@ -485,33 +484,35 @@ void fcml_tf_instruction_RDSEED(void) {
     FCML_A64( "rdseed %rax", 0x48, 0x0f, 0xc7, 0xf8 );
 }
 
-CU_TestInfo fctl_ti_instructions_r[] = {
-    { "fcml_tf_instruction_RCL", fcml_tf_instruction_RCL },
-    { "fcml_tf_instruction_RCR", fcml_tf_instruction_RCR },
-    { "fcml_tf_instruction_ROL", fcml_tf_instruction_ROL },
-    { "fcml_tf_instruction_ROR", fcml_tf_instruction_ROR },
-    { "fcml_tf_instruction_RCPPS", fcml_tf_instruction_RCPPS },
-    { "fcml_tf_instruction_RCPSS", fcml_tf_instruction_RCPSS },
-    { "fcml_tf_instruction_RDFSBASE", fcml_tf_instruction_RDFSBASE },
-    { "fcml_tf_instruction_RDRAND", fcml_tf_instruction_RDRAND },
-    { "fcml_tf_instruction_RDTSCP", fcml_tf_instruction_RDTSCP },
-    { "fcml_tf_instruction_RDTSC", fcml_tf_instruction_RDTSC },
-    { "fcml_tf_instruction_RDPMC", fcml_tf_instruction_RDPMC },
-    { "fcml_tf_instruction_RDMSR", fcml_tf_instruction_RDMSR },
-    { "fcml_tf_instruction_RET", fcml_tf_instruction_RET },
-    { "fcml_tf_instruction_ROUNDPD", fcml_tf_instruction_ROUNDPD },
-    { "fcml_tf_instruction_ROUNDPS", fcml_tf_instruction_ROUNDPS },
-    { "fcml_tf_instruction_ROUNDSD", fcml_tf_instruction_ROUNDSD },
-    { "fcml_tf_instruction_ROUNDSS", fcml_tf_instruction_ROUNDSS },
-    { "fcml_tf_instruction_RSM", fcml_tf_instruction_RSM },
-    { "fcml_tf_instruction_RSQRTPS", fcml_tf_instruction_RSQRTPS },
-    { "fcml_tf_instruction_RSQRTSS", fcml_tf_instruction_RSQRTSS },
-    { "fcml_tf_instruction_RORX", fcml_tf_instruction_RORX },
-    { "fcml_tf_instruction_RDSEED", fcml_tf_instruction_RDSEED },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_r[] = {
+	{ "fcml_tf_instruction_RCL", fcml_tf_instruction_RCL },
+	{ "fcml_tf_instruction_RCR", fcml_tf_instruction_RCR },
+	{ "fcml_tf_instruction_ROL", fcml_tf_instruction_ROL },
+	{ "fcml_tf_instruction_ROR", fcml_tf_instruction_ROR },
+	{ "fcml_tf_instruction_RCPPS", fcml_tf_instruction_RCPPS },
+	{ "fcml_tf_instruction_RCPSS", fcml_tf_instruction_RCPSS },
+	{ "fcml_tf_instruction_RDFSBASE", fcml_tf_instruction_RDFSBASE },
+	{ "fcml_tf_instruction_RDRAND", fcml_tf_instruction_RDRAND },
+	{ "fcml_tf_instruction_RDTSCP", fcml_tf_instruction_RDTSCP },
+	{ "fcml_tf_instruction_RDTSC", fcml_tf_instruction_RDTSC },
+	{ "fcml_tf_instruction_RDPMC", fcml_tf_instruction_RDPMC },
+	{ "fcml_tf_instruction_RDMSR", fcml_tf_instruction_RDMSR },
+	{ "fcml_tf_instruction_RET", fcml_tf_instruction_RET },
+	{ "fcml_tf_instruction_ROUNDPD", fcml_tf_instruction_ROUNDPD },
+	{ "fcml_tf_instruction_ROUNDPS", fcml_tf_instruction_ROUNDPS },
+	{ "fcml_tf_instruction_ROUNDSD", fcml_tf_instruction_ROUNDSD },
+	{ "fcml_tf_instruction_ROUNDSS", fcml_tf_instruction_ROUNDSS },
+	{ "fcml_tf_instruction_RSM", fcml_tf_instruction_RSM },
+	{ "fcml_tf_instruction_RSQRTPS", fcml_tf_instruction_RSQRTPS },
+	{ "fcml_tf_instruction_RSQRTSS", fcml_tf_instruction_RSQRTSS },
+	{ "fcml_tf_instruction_RORX", fcml_tf_instruction_RORX },
+	{ "fcml_tf_instruction_RDSEED", fcml_tf_instruction_RDSEED },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_r[] = {
-    { "suite-fctl_ti_instructions_r", fcml_tf_instructions_r_suite_init, fcml_tf_instructions_r_suite_cleanup, fctl_ti_instructions_r },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_r = {
+	"suite-fctl_ti_instructions_r", fcml_tf_instructions_r_suite_init, fcml_tf_instructions_r_suite_cleanup, fctl_ti_instructions_r
 };
+
+
+

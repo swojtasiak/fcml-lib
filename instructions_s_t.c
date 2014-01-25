@@ -5,17 +5,16 @@
  *      Author: tAs
  */
 
-#include "fcml_env.h"
-#include "fcml_assembler.h"
-#include "instructions_s_t.h"
 #include <fcml_rend.h>
+#include <fcml_assembler.h>
+#include <fcml_env.h>
+#include "instructions_s_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_s_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_s_suite_init(void) {
 }
 
-int fcml_tf_instructions_s_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_s_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_SAHF(void) {
@@ -909,53 +908,53 @@ void fcml_tf_instruction_STAC(void) {
     FCML_A3264( "stac", 0x0F, 0x01, 0xCB );
 }
 
-CU_TestInfo fctl_ti_instructions_s[] = {
-    { "fcml_tf_instruction_SAHF", fcml_tf_instruction_SAHF },
-    { "fcml_tf_instruction_SHL", fcml_tf_instruction_SHL },
-    { "fcml_tf_instruction_SAL", fcml_tf_instruction_SAL },
-    { "fcml_tf_instruction_SAR", fcml_tf_instruction_SAR },
-    { "fcml_tf_instruction_SHR", fcml_tf_instruction_SHR },
-    { "fcml_tf_instruction_SBB", fcml_tf_instruction_SBB },
-    { "fcml_tf_instruction_SCAS", fcml_tf_instruction_SCAS },
-    { "fcml_tf_instruction_SETcc", fcml_tf_instruction_SETcc },
-    { "fcml_tf_instruction_SFENCE", fcml_tf_instruction_SFENCE },
-    { "fcml_tf_instruction_SGDT", fcml_tf_instruction_SGDT },
-    { "fcml_tf_instruction_SHLD", fcml_tf_instruction_SHLD },
-    { "fcml_tf_instruction_SHRD", fcml_tf_instruction_SHRD },
-    { "fcml_tf_instruction_SKINIT", fcml_tf_instruction_SKINIT },
-    { "fcml_tf_instruction_SLWPCB", fcml_tf_instruction_SLWPCB },
-    { "fcml_tf_instruction_SHUFPD", fcml_tf_instruction_SHUFPD },
-    { "fcml_tf_instruction_SHUFPS", fcml_tf_instruction_SHUFPS },
-    { "fcml_tf_instruction_SIDT", fcml_tf_instruction_SIDT },
-    { "fcml_tf_instruction_SLDT", fcml_tf_instruction_SLDT },
-    { "fcml_tf_instruction_SMSW", fcml_tf_instruction_SMSW },
-    { "fcml_tf_instruction_SQRTPD", fcml_tf_instruction_SQRTPD },
-    { "fcml_tf_instruction_SQRTPS", fcml_tf_instruction_SQRTPS },
-    { "fcml_tf_instruction_SQRTSD", fcml_tf_instruction_SQRTSD },
-    { "fcml_tf_instruction_SQRTSS", fcml_tf_instruction_SQRTSS },
-    { "fcml_tf_instruction_STC", fcml_tf_instruction_STC },
-    { "fcml_tf_instruction_STD", fcml_tf_instruction_STD },
-    { "fcml_tf_instruction_STGI", fcml_tf_instruction_STGI },
-    { "fcml_tf_instruction_STI", fcml_tf_instruction_STI },
-    { "fcml_tf_instruction_STMXCSR", fcml_tf_instruction_STMXCSR },
-    { "fcml_tf_instruction_STOS", fcml_tf_instruction_STOS },
-    { "fcml_tf_instruction_STR", fcml_tf_instruction_STR },
-    { "fcml_tf_instruction_SUB", fcml_tf_instruction_SUB },
-    { "fcml_tf_instruction_SUBPD", fcml_tf_instruction_SUBPD },
-    { "fcml_tf_instruction_SUBPS", fcml_tf_instruction_SUBPS },
-    { "fcml_tf_instruction_SUBSD", fcml_tf_instruction_SUBSD },
-    { "fcml_tf_instruction_SUBSS", fcml_tf_instruction_SUBSS },
-    { "fcml_tf_instruction_SWAPGS", fcml_tf_instruction_SWAPGS },
-    { "fcml_tf_instruction_SYSCALL", fcml_tf_instruction_SYSCALL },
-    { "fcml_tf_instruction_SYSENTER", fcml_tf_instruction_SYSENTER },
-    { "fcml_tf_instruction_SYSEXIT", fcml_tf_instruction_SYSEXIT },
-    { "fcml_tf_instruction_SYSRET", fcml_tf_instruction_SYSRET },
-    { "fcml_tf_instruction_SHLX_SHRX_SARX", fcml_tf_instruction_SHLX_SHRX_SARX },
-    { "fcml_tf_instruction_STAC", fcml_tf_instruction_STAC },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_s[] = {
+	{ "fcml_tf_instruction_SAHF", fcml_tf_instruction_SAHF },
+	{ "fcml_tf_instruction_SHL", fcml_tf_instruction_SHL },
+	{ "fcml_tf_instruction_SAL", fcml_tf_instruction_SAL },
+	{ "fcml_tf_instruction_SAR", fcml_tf_instruction_SAR },
+	{ "fcml_tf_instruction_SHR", fcml_tf_instruction_SHR },
+	{ "fcml_tf_instruction_SBB", fcml_tf_instruction_SBB },
+	{ "fcml_tf_instruction_SCAS", fcml_tf_instruction_SCAS },
+	{ "fcml_tf_instruction_SETcc", fcml_tf_instruction_SETcc },
+	{ "fcml_tf_instruction_SFENCE", fcml_tf_instruction_SFENCE },
+	{ "fcml_tf_instruction_SGDT", fcml_tf_instruction_SGDT },
+	{ "fcml_tf_instruction_SHLD", fcml_tf_instruction_SHLD },
+	{ "fcml_tf_instruction_SHRD", fcml_tf_instruction_SHRD },
+	{ "fcml_tf_instruction_SKINIT", fcml_tf_instruction_SKINIT },
+	{ "fcml_tf_instruction_SLWPCB", fcml_tf_instruction_SLWPCB },
+	{ "fcml_tf_instruction_SHUFPD", fcml_tf_instruction_SHUFPD },
+	{ "fcml_tf_instruction_SHUFPS", fcml_tf_instruction_SHUFPS },
+	{ "fcml_tf_instruction_SIDT", fcml_tf_instruction_SIDT },
+	{ "fcml_tf_instruction_SLDT", fcml_tf_instruction_SLDT },
+	{ "fcml_tf_instruction_SMSW", fcml_tf_instruction_SMSW },
+	{ "fcml_tf_instruction_SQRTPD", fcml_tf_instruction_SQRTPD },
+	{ "fcml_tf_instruction_SQRTPS", fcml_tf_instruction_SQRTPS },
+	{ "fcml_tf_instruction_SQRTSD", fcml_tf_instruction_SQRTSD },
+	{ "fcml_tf_instruction_SQRTSS", fcml_tf_instruction_SQRTSS },
+	{ "fcml_tf_instruction_STC", fcml_tf_instruction_STC },
+	{ "fcml_tf_instruction_STD", fcml_tf_instruction_STD },
+	{ "fcml_tf_instruction_STGI", fcml_tf_instruction_STGI },
+	{ "fcml_tf_instruction_STI", fcml_tf_instruction_STI },
+	{ "fcml_tf_instruction_STMXCSR", fcml_tf_instruction_STMXCSR },
+	{ "fcml_tf_instruction_STOS", fcml_tf_instruction_STOS },
+	{ "fcml_tf_instruction_STR", fcml_tf_instruction_STR },
+	{ "fcml_tf_instruction_SUB", fcml_tf_instruction_SUB },
+	{ "fcml_tf_instruction_SUBPD", fcml_tf_instruction_SUBPD },
+	{ "fcml_tf_instruction_SUBPS", fcml_tf_instruction_SUBPS },
+	{ "fcml_tf_instruction_SUBSD", fcml_tf_instruction_SUBSD },
+	{ "fcml_tf_instruction_SUBSS", fcml_tf_instruction_SUBSS },
+	{ "fcml_tf_instruction_SWAPGS", fcml_tf_instruction_SWAPGS },
+	{ "fcml_tf_instruction_SYSCALL", fcml_tf_instruction_SYSCALL },
+	{ "fcml_tf_instruction_SYSENTER", fcml_tf_instruction_SYSENTER },
+	{ "fcml_tf_instruction_SYSEXIT", fcml_tf_instruction_SYSEXIT },
+	{ "fcml_tf_instruction_SYSRET", fcml_tf_instruction_SYSRET },
+	{ "fcml_tf_instruction_SHLX_SHRX_SARX", fcml_tf_instruction_SHLX_SHRX_SARX },
+	{ "fcml_tf_instruction_STAC", fcml_tf_instruction_STAC },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_s[] = {
-    { "suite-fctl_ti_instructions_s", fcml_tf_instructions_s_suite_init, fcml_tf_instructions_s_suite_cleanup, fctl_ti_instructions_s },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_s = {
+	"suite-fctl_ti_instructions_s", fcml_tf_instructions_s_suite_init, fcml_tf_instructions_s_suite_cleanup, fctl_ti_instructions_s
 };
+

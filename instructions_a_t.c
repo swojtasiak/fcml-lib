@@ -8,13 +8,12 @@
 #include "fcml_env.h"
 #include "fcml_assembler.h"
 #include "instructions_a_t.h"
+#include "instructions_base_t.h"
 
-int fcml_tf_instructions_a_suite_init(void) {
-	return 0;
+void fcml_tf_instructions_a_suite_init(void) {
 }
 
-int fcml_tf_instructions_a_suite_cleanup(void) {
-	return 0;
+void fcml_tf_instructions_a_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_AAA(void) {
@@ -618,38 +617,38 @@ void fcml_tf_instruction_ADOX(void) {
 	FCML_A64( "adox (%rax),%rax", 0xF3, 0x48, 0x0F, 0x38, 0xF6, 0x00 );
 }
 
-CU_TestInfo fctl_ti_instructions_a[] = {
-    { "fcml_tf_instruction_AAA", fcml_tf_instruction_AAA },
-    { "fcml_tf_instruction_AAD", fcml_tf_instruction_AAD },
-    { "fcml_tf_instruction_AAM", fcml_tf_instruction_AAM },
-    { "fcml_tf_instruction_AAS", fcml_tf_instruction_AAS },
-    { "fcml_tf_instruction_ADC", fcml_tf_instruction_ADC },
-    { "fcml_tf_instruction_ADD", fcml_tf_instruction_ADD },
-    { "fcml_tf_instruction_ADDPD_VADDPD", fcml_tf_instruction_ADDPD_VADDPD },
-    { "fcml_tf_instruction_ADDPS_VADDPS", fcml_tf_instruction_ADDPS_VADDPS },
-    { "fcml_tf_instruction_ADDSD_VADDSD", fcml_tf_instruction_ADDSD_VADDSD },
-    { "fcml_tf_instruction_ADDSS_VADDSS", fcml_tf_instruction_ADDSS_VADDSS },
-    { "fcml_tf_instruction_ADDSUBPD_VADDSUBPD", fcml_tf_instruction_ADDSUBPD_VADDSUBPD },
-    { "fcml_tf_instruction_ADDSUBPS_VADDSUBPS", fcml_tf_instruction_ADDSUBPS_VADDSUBPS },
-    { "fcml_tf_instruction_AESDEC_VAESDEC", fcml_tf_instruction_AESDEC_VAESDEC },
-    { "fcml_tf_instruction_AESDECLAST_VAESDECLAST", fcml_tf_instruction_AESDECLAST_VAESDECLAST },
-    { "fcml_tf_instruction_AESENC_VAESENC", fcml_tf_instruction_AESENC_VAESENC },
-    { "fcml_tf_instruction_AESENCLAST", fcml_tf_instruction_AESENCLAST },
-    { "fcml_tf_instruction_AESIMC_VAESIMC", fcml_tf_instruction_AESIMC_VAESIMC },
-    { "fcml_tf_instruction_AESKEYGENASSIST_VAESKEYGENASSIST", fcml_tf_instruction_AESKEYGENASSIST_VAESKEYGENASSIST },
-    { "fcml_tf_instruction_AND", fcml_tf_instruction_AND },
-    { "fcml_tf_instruction_ANDPD_VANDPD", fcml_tf_instruction_ANDPD_VANDPD },
-    { "fcml_tf_instruction_ANDPS_VANDPS", fcml_tf_instruction_ANDPS_VANDPS },
-    { "fcml_tf_instruction_ANDNPD_VANDNPD", fcml_tf_instruction_ANDNPD_VANDNPD },
-    { "fcml_tf_instruction_ANDNPS_VANDNPS", fcml_tf_instruction_ANDNPS_VANDNPS },
-    { "fcml_tf_instruction_ARPL", fcml_tf_instruction_ARPL },
-    { "fcml_tf_instruction_ANDN", fcml_tf_instruction_ANDN },
-    { "fcml_tf_instruction_ADCX", fcml_tf_instruction_ADCX },
-    { "fcml_tf_instruction_ADOX", fcml_tf_instruction_ADOX },
-    CU_TEST_INFO_NULL,
+fcml_stf_test_case fctl_ti_instructions_a[] = {
+	{ "fcml_tf_instruction_AAA", fcml_tf_instruction_AAA },
+	{ "fcml_tf_instruction_AAD", fcml_tf_instruction_AAD },
+	{ "fcml_tf_instruction_AAM", fcml_tf_instruction_AAM },
+	{ "fcml_tf_instruction_AAS", fcml_tf_instruction_AAS },
+	{ "fcml_tf_instruction_ADC", fcml_tf_instruction_ADC },
+	{ "fcml_tf_instruction_ADD", fcml_tf_instruction_ADD },
+	{ "fcml_tf_instruction_ADDPD_VADDPD", fcml_tf_instruction_ADDPD_VADDPD },
+	{ "fcml_tf_instruction_ADDPS_VADDPS", fcml_tf_instruction_ADDPS_VADDPS },
+	{ "fcml_tf_instruction_ADDSD_VADDSD", fcml_tf_instruction_ADDSD_VADDSD },
+	{ "fcml_tf_instruction_ADDSS_VADDSS", fcml_tf_instruction_ADDSS_VADDSS },
+	{ "fcml_tf_instruction_ADDSUBPD_VADDSUBPD", fcml_tf_instruction_ADDSUBPD_VADDSUBPD },
+	{ "fcml_tf_instruction_ADDSUBPS_VADDSUBPS", fcml_tf_instruction_ADDSUBPS_VADDSUBPS },
+	{ "fcml_tf_instruction_AESDEC_VAESDEC", fcml_tf_instruction_AESDEC_VAESDEC },
+	{ "fcml_tf_instruction_AESDECLAST_VAESDECLAST", fcml_tf_instruction_AESDECLAST_VAESDECLAST },
+	{ "fcml_tf_instruction_AESENC_VAESENC", fcml_tf_instruction_AESENC_VAESENC },
+	{ "fcml_tf_instruction_AESENCLAST", fcml_tf_instruction_AESENCLAST },
+	{ "fcml_tf_instruction_AESIMC_VAESIMC", fcml_tf_instruction_AESIMC_VAESIMC },
+	{ "fcml_tf_instruction_AESKEYGENASSIST_VAESKEYGENASSIST", fcml_tf_instruction_AESKEYGENASSIST_VAESKEYGENASSIST },
+	{ "fcml_tf_instruction_AND", fcml_tf_instruction_AND },
+	{ "fcml_tf_instruction_ANDPD_VANDPD", fcml_tf_instruction_ANDPD_VANDPD },
+	{ "fcml_tf_instruction_ANDPS_VANDPS", fcml_tf_instruction_ANDPS_VANDPS },
+	{ "fcml_tf_instruction_ANDNPD_VANDNPD", fcml_tf_instruction_ANDNPD_VANDNPD },
+	{ "fcml_tf_instruction_ANDNPS_VANDNPS", fcml_tf_instruction_ANDNPS_VANDNPS },
+	{ "fcml_tf_instruction_ARPL", fcml_tf_instruction_ARPL },
+	{ "fcml_tf_instruction_ANDN", fcml_tf_instruction_ANDN },
+	{ "fcml_tf_instruction_ADCX", fcml_tf_instruction_ADCX },
+	{ "fcml_tf_instruction_ADOX", fcml_tf_instruction_ADOX },
+	FCML_STF_NULL_TEST
 };
 
-CU_SuiteInfo fctl_si_instructions_a[] = {
-    { "suite-fctl_ti_instructions_a", fcml_tf_instructions_a_suite_init, fcml_tf_instructions_a_suite_cleanup, fctl_ti_instructions_a },
-    CU_SUITE_INFO_NULL,
+fcml_stf_test_suite fctl_si_instructions_a = {
+	"suite-fctl_ti_instructions_a", fcml_tf_instructions_a_suite_init, fcml_tf_instructions_a_suite_cleanup, fctl_ti_instructions_a
 };
+
