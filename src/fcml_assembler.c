@@ -22,7 +22,7 @@ typedef struct fcml_ist_asm_enc_assembler {
 
 fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler ) {
 
-	// Allocate assembler instance.
+	/* Allocate assembler instance.*/
 	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
 	if( !enc_asm ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -66,18 +66,18 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const f
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
-	// Take into account that dialect can modify source instruction by preparing it for assembler, so we have to use local copy.
+	/* Take into account that dialect can modify source instruction by preparing it for assembler, so we have to use local copy.*/
 	fcml_st_instruction tmp_instruction = *instruction;
 
 	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)asm_context->assembler;
 
-	// First place where dialect can ingerate instruction definition.
+	/* First place where dialect can ingerate instruction definition.*/
 	fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = enc_asm->dialect_context->assembler_preprocessor;
 	if( assembler_preprocessor ) {
 		assembler_preprocessor( (fcml_st_dialect*)enc_asm->dialect_context, &tmp_instruction, NULL, NULL, NULL );
 	}
 
-	// Find instruction addressing modes.
+	/* Find instruction addressing modes.*/
 	fcml_st_asm_instruction_addr_modes *addr_modes = NULL;
 	error = fcml_fn_asm_get_instruction_encodings( enc_asm->instructions_map, tmp_instruction.mnemonic, &addr_modes );
 	if( error ) {
@@ -96,7 +96,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const f
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
-	// Execute instruction encoder.
+	/* Execute instruction encoder.*/
 	if( addr_modes != NULL ) {
 		if( addr_modes->instruction_encoder ) {
 
@@ -109,24 +109,24 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const f
 				asm_result->chosen_instruction = enc_result.chosen_instruction;
 			}
 
-			// Convert encoding result to assembler result.
+			/* Convert encoding result to assembler result.*/
 			asm_result->errors = enc_result.errors;
 
 		} else {
-			// Unavailable instruction encoder.
+			/* Unavailable instruction encoder.*/
 			error = FCML_CEH_GEC_INTERNAL_BUG;
 		}
 	} else {
 		error = FCML_EN_UNKNOWN_MNEMONIC;
 	}
 
-	// Free results but only if there is no error messages.
+	/* Free results but only if there is no error messages.*/
 	if( error ) {
 		if( !asm_result->errors.errors ) {
 			fcml_fn_assembler_result_free( asm_result );
 			asm_result = NULL;
 		} else {
-			// Free only instructions, error messages should be returned to user.
+			/* Free only instructions, error messages should be returned to user.*/
 		    fcml_ifn_asm_free_instruction_chain( asm_result->instructions );
 			asm_result->instructions = NULL;
 		}
@@ -143,7 +143,7 @@ void fcml_fn_assembler_free( fcml_st_assembler *assembler ) {
 		if( enc_asm->instructions_map ) {
 			fcml_fn_asm_free_instruction_encodings( enc_asm->instructions_map );
 		}
-		// Assembler is not the owner of the dialect context.
+		/* Assembler is not the owner of the dialect context.*/
 		enc_asm->dialect_context = NULL;
 		fcml_fn_env_memory_free( enc_asm );
 	}

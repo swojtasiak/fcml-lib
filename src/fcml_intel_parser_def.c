@@ -1538,7 +1538,7 @@ YYSTYPE yylval YY_INITIAL_VALUE(yyval_default);
 /* Line 1570 of yacc.c  */
 #line 111 "fcml_intel_parser_def.y"
 { 
-	//yydebug = 1;
+	/*yydebug = 1;*/
 }
 /* Line 1570 of yacc.c  */
 #line 1545 "fcml_intel_parser_def.c"

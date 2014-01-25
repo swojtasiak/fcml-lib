@@ -11,7 +11,7 @@
 fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_src_signed, fcml_st_integer *integer, fcml_en_utils_size_flags filter ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     if( is_src_signed ) {
-        // Optimized for 32 bit processors.
+        /* Optimized for 32 bit processors.*/
         if( ( src & 0xFFFFFFFF80000000UL ) == 0xFFFFFFFF80000000UL || ( src & 0xFFFFFFFF00000000UL ) == 0x0000000000000000UL ) {
             fcml_int32_t s_imm = (fcml_int32_t)src;
             if( ( filter & FCML_ENUSF_8 ) && ( ( s_imm & 0xFFFFFF80 ) == 0xFFFFFF80 || ( s_imm & 0xFFFFFF00 ) == 0x00000000 ) ) {
@@ -59,7 +59,7 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	// Convert given source immediate value to expected one.
+	/* Convert given source immediate value to expected one.*/
 
 	fcml_st_integer expected = {0};
 
@@ -87,7 +87,7 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *
 
 	if( !error ) {
 
-		// Convert expected value to destination one.
+		/* Convert expected value to destination one.*/
 
 		switch( destination_size ) {
 			case FCML_DS_8:
@@ -115,7 +115,7 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *
 fcml_ceh_error fcml_fn_utils_convert_integer_to_uint8( const fcml_st_integer *integer, fcml_uint8_t *value ) {
 	switch( integer->size ) {
 	case FCML_DS_8:
-		// In this case we doesn't care what is in IMM, because no conversion is needed.
+		/* In this case we doesn't care what is in IMM, because no conversion is needed.*/
 		*value = integer->int8;
 		break;
 	case FCML_DS_16:
@@ -499,7 +499,7 @@ fcml_ceh_error fcml_fn_utils_encode_integer( fcml_st_memory_stream *stream, cons
         break;
     }
     if( !result ) {
-        // Insufficient stream size.
+        /* Insufficient stream size.*/
         error = FCML_CEH_GEC_INVALID_INPUT;
     }
     return error;

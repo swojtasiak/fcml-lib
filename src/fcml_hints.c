@@ -23,19 +23,19 @@ fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_
 			hints.operand_hints |= FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
     	}
     	if( FCML_GET_OS( rm_args->encoded_memory_operand_size ) == FCML_EOS_FP ) {
-    		// Far pointer.
+    		/* Far pointer.*/
 			hints.instruction_hints |= FCML_HINT_FAR_POINTER;
     	} else if( FCML_GET_OS( rm_args->encoded_memory_operand_size ) == FCML_EOS_FPI ) {
-    		// Far pointer indirect.
+    		/* Far pointer indirect.*/
     		hints.instruction_hints |= ( FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER );
     	} else {
-    		// If not far, then near :)
+    		/* If not far, then near :)*/
     		hints.instruction_hints |= FCML_HINT_NEAR_POINTER;
     	}
     	if( rm_args->flags & FCML_RMF_I ) {
     		hints.instruction_hints |= FCML_HINT_INDIRECT_POINTER;
     	}
-    	// Every ModR/M encoded operand supports SIB hint.
+    	/* Every ModR/M encoded operand supports SIB hint.*/
     	hints.operand_hints |= FCML_OP_HINT_SIB_ENCODING;
     } else {
     	hints.operand_hints = 0;

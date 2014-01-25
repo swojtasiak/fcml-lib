@@ -27,24 +27,24 @@ void fcml_fn_hints_sib(void) {
 }
 
 void fcml_fn_hints_rip(void) {
-	// RIP enabled by default.
+	/* RIP enabled by default.*/
 	FCML_I64_RIP_A( "rcl byte ptr [0000800000401007h],03h", 0xC0, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
-	// RIP by default, absolute forced, take into account that SIB encoding was used to encode it.
+	/* RIP by default, absolute forced, take into account that SIB encoding was used to encode it.*/
 	FCML_I64_RIP_A( "rcl byte ptr [abs 0000000000401007h],03h", 0xc0, 0x14, 0x25, 0x07, 0x10, 0x40, 0x00, 0x03 );
-	// Offset is too big to be encoded as absolute offset.
+	/* Offset is too big to be encoded as absolute offset.*/
 	FCML_I64_A_FAILED( "rcl byte ptr [0000800000401007h],03h", 0xC0, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
-	// Absolute offset enabled by default.
+	/* Absolute offset enabled by default.*/
 	FCML_I64( "rcl byte ptr [0000000000401007h],03h", 0xc0, 0x14, 0x25, 0x07, 0x10, 0x40, 0x00, 0x03 );
-	// In 32 bit mode, SIB is not needed, so it is not used by default, but...
+	/* In 32 bit mode, SIB is not needed, so it is not used by default, but...*/
 	FCML_I32( "rcl byte ptr [00401007h],03h", 0xc0, 0x15, 0x07, 0x10, 0x40, 0x00, 0x03 );
-	// we can force it.
+	/* we can force it.*/
 	FCML_I32_A( "rcl byte ptr [sib 00401007h],03h", 0xc0, 0x14, 0x25, 0x07, 0x10, 0x40, 0x00, 0x03 );
-	// It's interesting combination. RIP should be used by default, but SIB hint was used. Hints have higher precedence
-	// so it forced absolute address to be used (Because absolute offset is encoded using SIB). In this case SIB hint works like the ABS one.
+	/* It's interesting combination. RIP should be used by default, but SIB hint was used. Hints have higher precedence*/
+	/* so it forced absolute address to be used (Because absolute offset is encoded using SIB). In this case SIB hint works like the ABS one.*/
 	FCML_I64_RIP_A( "rcl byte ptr [sib 00401007h],03h", 0xc0, 0x14, 0x25, 0x07, 0x10, 0x40, 0x00, 0x03 );
-	// Absolute by default but RIP forced.
+	/* Absolute by default but RIP forced.*/
 	FCML_I64_A( "rcl byte ptr [rel 0000800000401007h],03h", 0xc0, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
-	// Hints rendering.
+	/* Hints rendering.*/
 	FCML_I64_RF( "rcl byte ptr [rel 0000800000401007h],03h", FCML_REND_FLAG_RENDER_REL_HINT, 0xc0, 0x15, 0x00, 0x00, 0x00, 0x00, 0x03 );
 	FCML_I64_RF( "rcl byte ptr [abs 0000000000401007h],03h", FCML_REND_FLAG_RENDER_ABS_HINT, 0xc0, 0x14, 0x25, 0x07, 0x10, 0x40, 0x00, 0x03 );
 }

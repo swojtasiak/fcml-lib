@@ -24,7 +24,7 @@
 	
 %}
 
-//%debug
+/*%debug*/
 
 /*Terminal symbols.*/
 
@@ -95,7 +95,7 @@
 %}
 
 %initial-action { 
-	//gas_debug = 1;
+	/*gas_debug = 1;*/
 }
 
 %%

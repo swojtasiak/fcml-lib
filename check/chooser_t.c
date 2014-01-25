@@ -32,10 +32,10 @@ void fcml_tf_chooser_suite_cleanup(void) {
 
 void fcml_fn_chooser_default(void) {
 
-	// Instruction "adc ax,8042h" can be assembled in two ways.
-	// 1: 0x66, 0x15, 0x42, 0x80
-	// 2: 0x66, 0x81, 0xd0, 0x42, 0x80
-	// Default instruction chooser is responsible for choosing the shortest form.
+	/* Instruction "adc ax,8042h" can be assembled in two ways.*/
+	/* 1: 0x66, 0x15, 0x42, 0x80*/
+	/* 2: 0x66, 0x81, 0xd0, 0x42, 0x80*/
+	/* Default instruction chooser is responsible for choosing the shortest form.*/
 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
@@ -69,10 +69,10 @@ void fcml_fn_chooser_default(void) {
 
 void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
-    // Instruction "adc ax,8042h" can be assembled in two ways.
-    // 1: 0x66, 0x15, 0x42, 0x80
-    // 2: 0x66, 0x81, 0xd0, 0x42, 0x80
-    // Null instruction chooser is responsible for choosing them all. Optimizer should also try all allowed ASA/OSA combinations.
+    /* Instruction "adc ax,8042h" can be assembled in two ways.*/
+    /* 1: 0x66, 0x15, 0x42, 0x80*/
+    /* 2: 0x66, 0x81, 0xd0, 0x42, 0x80*/
+    /* Null instruction chooser is responsible for choosing them all. Optimizer should also try all allowed ASA/OSA combinations.*/
 
     fcml_ceh_error error;
 
@@ -94,7 +94,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
         STF_ASSERT_PTR_NULL( result->chosen_instruction );
 
-        // Disassemble and render every instruction available.
+        /* Disassemble and render every instruction available.*/
 
         fcml_st_disassembler_context d_context = {0};
         d_context.addr_form = FCML_AF_32_BIT;
@@ -103,13 +103,13 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
         fcml_int flags = 0;
 
-        // Iterate over all instructions.
+        /* Iterate over all instructions.*/
 
         fcml_st_assembled_instruction *instruction = result->instructions;
 
         while( instruction ) {
 
-            // Disassemble instructions one by one.
+            /* Disassemble instructions one by one.*/
 
             d_context.code = instruction->code;
             d_context.code_length = instruction->code_length;
@@ -121,7 +121,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
                 break;
             }
 
-            // Render instructions one by one.
+            /* Render instructions one by one.*/
 
             fcml_char buffer[512];
 
@@ -129,7 +129,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             error = fcml_fn_render( dialect_intel, &buffer_stream, dasm_result, FCML_REND_FLAG_RENDER_CODE );
             if( error ) {
-                // Free disassemblation result.
+                /* Free disassemblation result.*/
                 fcml_fn_disassemble_result_free( dasm_result );
                 break;
             }

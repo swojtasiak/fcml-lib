@@ -40,7 +40,7 @@ typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_disassembler_postprocessor
 typedef fcml_ceh_error (*fcml_fnp_parse_instruction)( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result **result_out );
 typedef fcml_ceh_error (*fcml_fnp_rend_render_instruction)( fcml_st_dialect *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
 
-// Internal representation of dialect context.
+/* Internal representation of dialect context.*/
 typedef struct fcml_st_dialect_context_int {
     fcml_coll_map dialect_mnemonics_lookup;
     fcml_fnp_asm_dialect_get_mnemonic get_mnemonic;

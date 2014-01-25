@@ -45,7 +45,7 @@ typedef struct fcml_stf_test_counter {
 typedef struct fcml_stf_test_result {
 	fcml_stf_result_element *first;
 	fcml_stf_result_element *last;
-	// Counters.
+	/* Counters.*/
 	fcml_stf_test_counter suites;
 	fcml_stf_test_counter tests;
 	fcml_stf_test_counter asserts;
@@ -57,31 +57,31 @@ extern fcml_stf_test_result fcml_gl_stf_test_result;
 
 void fcml_str_run_assert( fcml_bool condition, fcml_string file, fcml_int line, fcml_string message );
 
-// Equals.
+/* Equals.*/
 #define STF_ASSERT_EQUAL(actual, expected)		\
 	( fcml_str_run_assert( (actual) == (expected), __FILE__, __LINE__, ("STF_ASSERT_EQUAL(" #actual "," #expected ")") ) )
 
-// Not equal.
+/* Not equal.*/
 #define STF_ASSERT_NOT_EQUAL(actual, expected)		\
 	( fcml_str_run_assert( (actual) != (expected), __FILE__, __LINE__, ("STF_ASSERT_NOT_EQUAL(" #actual "," #expected ")") ) )
 
-// Boolean.
+/* Boolean.*/
 #define STF_ASSERT(condition)		\
 	fcml_str_run_assert( (condition), __FILE__, __LINE__, ("STF_ASSERT(" #condition ")") )
 
-// Not NULL.
+/* Not NULL.*/
 #define STF_ASSERT_PTR_NOT_NULL(value)		\
 	fcml_str_run_assert( ( value ) != NULL, __FILE__, __LINE__, ("STF_ASSERT_PTR_NOT_NULL(" #value ")") )
 
-// Not NULL.
+/* Not NULL.*/
 #define STF_ASSERT_PTR_NULL(value)		\
 	fcml_str_run_assert( ( value ) == NULL, __FILE__, __LINE__, ("STF_ASSERT_PTR_NULL(" #value ")") )
 
-// Fail immediate.
+/* Fail immediate.*/
 #define STF_FAIL(value)		\
 	fcml_str_run_assert( FCML_FALSE, __FILE__, __LINE__, ("STF_FAIL()") )
 
-// String equal.
+/* String equal.*/
 #define STF_ASSERT_STRING_EQUAL(actual, expected)		\
 	fcml_str_run_assert( (strcmp(actual,expected)==0), __FILE__, __LINE__, ("STF_ASSERT_STRING_EQUAL(" #actual "," #expected ")") )
 

@@ -24,7 +24,7 @@
 	
 %}
 
-// %debug
+/* %debug */
 
 /*Terminal symbols.*/
 
@@ -109,7 +109,7 @@
 %}
 
 %initial-action { 
-	//yydebug = 1;
+	/*yydebug = 1;*/
 }
 
 %%

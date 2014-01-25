@@ -24,9 +24,9 @@ typedef struct fcml_st_disassembler {
 
 /* Disassembler configuration. */
 typedef struct fcml_st_disassembler_conf {
-    // True if suffixes for carry flag has to be used by disassembler.
+    /* True if suffixes for carry flag has to be used by disassembler.*/
 	fcml_bool carry_flag_conditional_suffix;
-	// There are two groups of suffixes for conditional instructions, you can choose which one should be used.
+	/* There are two groups of suffixes for conditional instructions, you can choose which one should be used.*/
 	fcml_uint8_t conditional_group;
 	/* Set to true in order to use short forms of encoded instructions.
 	 * For insatnce 'cmpsb' will be used instead of 'cmps byte ptr [si],byte ptr [di]' */
@@ -37,21 +37,21 @@ typedef struct fcml_st_disassembler_conf {
 
 /* Disassembler context. */
 typedef struct fcml_st_disassembler_context {
-    // Disassembler used to decode instructions.
+    /* Disassembler used to decode instructions.*/
 	fcml_st_disassembler *disassembler;
-	// Disassembler configuration.
+	/* Disassembler configuration.*/
 	fcml_st_disassembler_conf configuration;
-	// Addressing mode: 16, 32 or 64 bit.
+	/* Addressing mode: 16, 32 or 64 bit.*/
 	fcml_en_addr_form addr_form;
-	// Default address size attribute.
+	/* Default address size attribute.*/
 	fcml_data_size address_size_attribute;
-	// Default operand size attribute.
+	/* Default operand size attribute.*/
 	fcml_data_size operand_size_attribute;
-	// Pointer to the encoded instruction.
+	/* Pointer to the encoded instruction.*/
 	fcml_ptr code;
-	// Size of the code in the buffer above.
+	/* Size of the code in the buffer above.*/
 	fcml_data_size code_length;
-	// Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.
+	/* Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.*/
 	fcml_st_instruction_pointer ip;
 } fcml_st_disassembler_context;
 
@@ -83,13 +83,13 @@ typedef struct fcml_st_instruction_prefix {
 
 /* Contains some information about all decoded instruction prefixes. */
 typedef struct fcml_st_prefixes_details {
-    // All decoded prefixes are available here as raw bytes.
+    /* All decoded prefixes are available here as raw bytes.*/
 	fcml_st_instruction_prefix prefixes[FCML_DASM_PREFIXES_COUNT];
-	// Number of decoded prefixes.
+	/* Number of decoded prefixes.*/
 	fcml_int prefixes_count;
-	// Number of bytes used by all decoded prefixes.
+	/* Number of bytes used by all decoded prefixes.*/
 	fcml_int prefixes_bytes_count;
-	// Some flags indicating existence of prefixes.
+	/* Some flags indicating existence of prefixes.*/
 	fcml_bool is_branch;
 	fcml_bool is_nobranch;
 	fcml_bool is_lock;
@@ -100,7 +100,7 @@ typedef struct fcml_st_prefixes_details {
 	fcml_bool is_vex;
 	fcml_bool is_xop;
 	fcml_bool is_rex;
-	// Various fields encoded inside decoded prefixes.
+	/* Various fields encoded inside decoded prefixes.*/
 	fcml_uint8_t vex_xop_first_byte;
 	fcml_uint8_t r;
 	fcml_uint8_t x;
@@ -119,11 +119,11 @@ typedef struct fcml_st_operand_details {
 
 /* Some basic information about decoded ModR/M and SIB bytes. */
 typedef struct fcml_st_decoded_modrm_details {
-    // ModR/M byte is exists.
+    /* ModR/M byte is exists.*/
 	fcml_uint8_t modrm;
-	// SIB byte if exists.
+	/* SIB byte if exists.*/
 	fcml_nuint8_t sib;
-	// True if RIP encoding is used by decoded instruction. This flag is used only in 64 bit mode.
+	/* True if RIP encoding is used by decoded instruction. This flag is used only in 64 bit mode.*/
 	fcml_bool is_rip;
 } fcml_st_decoded_modrm_details;
 
@@ -155,11 +155,11 @@ typedef struct fcml_st_instruction_details {
 
 /* Disassembler result. */
 typedef struct fcml_st_dasm_disassembler_result {
-    // All errors and warnings messages going there.
+    /* All errors and warnings messages going there.*/
 	fcml_st_ceh_error_container errors;
-	// Detailed information about instructions.
+	/* Detailed information about instructions.*/
 	fcml_st_instruction_details instruction_details;
-	// Decoded instruction in its generic form.
+	/* Decoded instruction in its generic form.*/
 	fcml_st_instruction instruction;
 } fcml_st_disassembler_result;
 

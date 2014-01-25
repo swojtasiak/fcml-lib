@@ -17,7 +17,7 @@
 #include "fcml_parser.h"
 
 void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
-	// Stores parser error into standard container.
+	/* Stores parser error into standard container.*/
 	fcml_fn_ceh_add_error( &(pd->errors), (const fcml_string)error, FCML_EN_X64IP_ERROR_INV_SYNTAX, FCML_EN_CEH_EL_ERROR );
 }
 
@@ -53,7 +53,7 @@ fcml_ceh_error fcml_intel_parse( fcml_st_dialect *dialect, fcml_string asm_code,
 
 	intel_lex_destroy( parser.scannerInfo );
 
-	// Copy errors from parser.
+	/* Copy errors from parser.*/
 	tmp_result->errors = parser.errors;
 
 	if( yyresult ) {
@@ -71,7 +71,7 @@ fcml_ceh_error fcml_intel_parse( fcml_st_dialect *dialect, fcml_string asm_code,
 
 	error = fcml_fn_ast_to_cif_converter( parser.tree, &(tmp_result->errors), &(tmp_result->instruction) );
 	if( error ) {
-		// Free instruction, because it might haven't been fully parsed.
+		/* Free instruction, because it might haven't been fully parsed.*/
 		fcml_fn_ast_free_converted_cif( tmp_result->instruction );
 		tmp_result->instruction = NULL;
 	}

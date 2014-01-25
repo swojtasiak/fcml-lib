@@ -14,7 +14,7 @@
 #include "fcml_stream.h"
 #include "fcml_types.h"
 
-// Some macros that might be also useful outside encoder.
+/* Some macros that might be also useful outside encoder.*/
 
 #define FCML_MODRM_ENC_MOD(x)				( x << 6 )
 #define FCML_MODRM_ENC_REG_OPCODE(x)		( x << 3 )
@@ -40,19 +40,19 @@ typedef struct fcml_st_encoded_modrm {
 } fcml_st_encoded_modrm;
 
 typedef struct fcml_st_modrm_encoder_context {
-	// Sets 32 or 64 bit addressing mode.
+	/* Sets 32 or 64 bit addressing mode.*/
 	fcml_en_addr_form addr_form;
-	// Preferred effective address size that should be used to encode ModR/M.
+	/* Preferred effective address size that should be used to encode ModR/M.*/
 	fcml_data_size effective_address_size;
-	// Effective address size ModR/M was encoded for. For example "effective_address_size" might
-	// be set to 32 bits, but [BX+SI] encoding forces 16 bit encoding.
+	/* Effective address size ModR/M was encoded for. For example "effective_address_size" might*/
+	/* be set to 32 bits, but [BX+SI] encoding forces 16 bit encoding.*/
 	fcml_data_size chosen_effective_address_size;
-	// This flag is set by encoder if there is alternative SIB encoding available,
-	// but user chooses ModR/M only encoding.
+	/* This flag is set by encoder if there is alternative SIB encoding available,*/
+	/* but user chooses ModR/M only encoding.*/
 	fcml_bool is_sib_alternative;
-	// If set to true, encoder chooses SIB encoding instead on ModR/M only alternative.
+	/* If set to true, encoder chooses SIB encoding instead on ModR/M only alternative.*/
 	fcml_bool choose_sib_encoding;
-	// If there is alternative, use RIP encoding instead of SIB alternative.
+	/* If there is alternative, use RIP encoding instead of SIB alternative.*/
 	fcml_bool choose_rip_encoding;
 } fcml_st_modrm_encoder_context;
 

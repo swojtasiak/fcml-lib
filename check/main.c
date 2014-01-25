@@ -10,14 +10,14 @@
 
 #include "fcml_stf.h"
 
-// FCML.
+/* FCML.*/
 #include <fcml_intel_dialect.h>
 #include <fcml_gas_dialect.h>
 #include <fcml_assembler.h>
 #include <fcml_disassembler.h>
 #include <fcml_rend.h>
 
-// Tests.
+/* Tests.*/
 #include "instructions_a_t.h"
 #include "instructions_b_t.h"
 #include "instructions_c_t.h"
@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
 
 	error = fcml_fn_disassembler_init( dialect_intel, &disassembler_intel );
 	if( error ) {
-		// Error.
+		/* Error.*/
 		fcml_fn_assembler_free( assembler_intel );
 		fcml_fn_assembler_free( assembler_gas );
 		fcml_fn_intel_dialect_free( dialect_intel );
@@ -142,7 +142,7 @@ int main(int argc, char **argv) {
 
 	error = fcml_fn_disassembler_init( dialect_gas, &disassembler_gas );
 	if( error ) {
-		// Error.
+		/* Error.*/
 		fcml_fn_disassembler_free( disassembler_intel );
 		fcml_fn_assembler_free( assembler_intel );
 		fcml_fn_assembler_free( assembler_gas );
@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	// Run tests.
+	/* Run tests.*/
 	fcml_bool result = fcml_stf_run_tests( fcml_arr_suites );
 
     fcml_fn_disassembler_free( disassembler_intel );

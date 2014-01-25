@@ -58,7 +58,7 @@ void fcml_fn_segment_reg(void) {
 
 	fcml_fn_assembler_result_free( result );
 
-	// Now try to override ES.
+	/* Now try to override ES.*/
 
 	result = NULL;
 

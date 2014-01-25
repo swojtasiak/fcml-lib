@@ -22,7 +22,7 @@
 
 void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml_string format, ...) {
 
-	// We'll never reach this limit.
+	/* We'll never reach this limit.*/
 	fcml_char local_buffer[512];
 
 	va_list arg_list;
@@ -115,7 +115,7 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[4]
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
-	// Currently this logic desn't collide with AT&T dialect, so parameterization is not needed.
+	/* Currently this logic desn't collide with AT&T dialect, so parameterization is not needed.*/
 	if( is_hex && !isdigit( local_buffer[0] ) ) {
 		fcml_fn_rend_utils_format_append_str( stream, "0" );
 	}

@@ -1483,7 +1483,7 @@ YYSTYPE yylval YY_INITIAL_VALUE(yyval_default);
 /* Line 1570 of yacc.c  */
 #line 97 "fcml_gas_parser_def.y"
 { 
-	//gas_debug = 1;
+	/*gas_debug = 1;*/
 }
 /* Line 1570 of yacc.c  */
 #line 1490 "fcml_gas_parser_def.c"

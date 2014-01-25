@@ -92,13 +92,13 @@ fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *con
     	return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
     }
 
-	// ASA
+	/* ASA*/
 
     if( ds_flags->easa ) {
-    	// Effective address size has been already chosen and cannot be changed.
+    	/* Effective address size has been already chosen and cannot be changed.*/
     	easa[easa_count++] = ds_flags->easa;
     } else {
-    	// Maybe user has already forced any address size attribute to be chosen?
+    	/* Maybe user has already forced any address size attribute to be chosen?*/
     	fcml_data_size attr_size = 0;
     	fcml_en_attribute_size_flag attr_size_flag = 0;
 		switch( opt_flags & 0x000F ) {
@@ -120,13 +120,13 @@ fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *con
 		}
     }
 
-    // OSA
+    /* OSA*/
 
 	if( ds_flags->eosa ) {
-		// Effective address size has been already chosen and cannot be changed.
+		/* Effective address size has been already chosen and cannot be changed.*/
 		eosa[eosa_count++] = ds_flags->eosa;
 	} else {
-		// Maybe user has already forced any address size attribute to be chosen?
+		/* Maybe user has already forced any address size attribute to be chosen?*/
 		fcml_data_size attr_size = 0;
 		fcml_en_attribute_size_flag attr_size_flag = 0;
 		switch( opt_flags & 0x00F0 ) {
@@ -148,7 +148,7 @@ fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *con
 		}
 	}
 
-	// Choosing best optimization path for ASA.
+	/* Choosing best optimization path for ASA.*/
 
 	if( !easa_count ) {
 		switch( context->addr_form ) {
@@ -164,7 +164,7 @@ fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *con
 		}
 	}
 
-	// Choosing best optimization path for OSA.
+	/* Choosing best optimization path for OSA.*/
 
 	if( !eosa_count ) {
 		switch( context->addr_form ) {

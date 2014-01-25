@@ -14,7 +14,7 @@ fcml_ceh_error fcml_fn_render( fcml_st_dialect *dialect, fcml_st_memory_stream *
 		fcml_fnp_rend_render_instruction renderer = (fcml_fnp_rend_render_instruction)dialect_context_int->instruction_renderer;
 		return renderer( dialect, output_stream, result, render_flags );
 	} else {
-		// Dialect not initialized correctly.
+		/* Dialect not initialized correctly.*/
 		return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
 	}
 }

@@ -27,20 +27,20 @@
 #include "fcml_gas_rend.h"
 #include "fcml_gas_parser.h"
 
-// Dialect flags.
+/* Dialect flags.*/
 
-// Dialect flags fields stores addressing mode hints.
+/* Dialect flags fields stores addressing mode hints.*/
 #define FCML_GAS_DF_HINTS                   0x00010000
 
-// Dialect incompatible with srange encoding of SVR3.2 assembler.
+/* Dialect incompatible with srange encoding of SVR3.2 assembler.*/
 #define FCML_GAS_DF_SYSV_SVR32_COMPATIBLE   0x00020000
 
-// Do not invert operands.
+/* Do not invert operands.*/
 #define FCML_GAS_DF_DO_NOT_REVERT_OPERANDS  0x00040000
 
-// *************
-// * MNEMONICS *
-// *************
+/* **************/
+/* * MNEMONICS **/
+/* **************/
 
 fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("aaa"), FCML_ASM_DIALECT_INSTRUCTION( F_AAA, FCML_AM_ALL ), 0 },
@@ -264,7 +264,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("fdecstp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDECSTP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdiv;fdivs[d04];fdivl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIV, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdivr"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIV, FCML_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
-    // In this case order of following two definitions really matters, do not change it.
+    /* In this case order of following two definitions really matters, do not change it.*/
     { FCML_TEXT("fdivp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdivrp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fidiv[d02];fidivl[d04]"), FCML_ASM_DIALECT_INSTRUCTION( F_FIDIV, FCML_AM_ALL ), 0 },
@@ -383,7 +383,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_REL0 ), 0 },
     { FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_RMO ), 0 },
     { FCML_TEXT("ljmpl[sf,od];ljmpw[sf,ow];ljmp[sf,od]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_PTR16_O ), 0 },
-    // TODO: Opisac w dokumentacji jak sa kodowane jmpy. Nie udało mi sie w przypadku GAS zassemblowac far indirect jmp dla REX.W.
+    /* TODO: Opisac w dokumentacji jak sa kodowane jmpy. Nie udało mi sie w przypadku GAS zassemblowac far indirect jmp dla REX.W.*/
     { FCML_TEXT("ljmpl[sf,od,d06];ljmpw[sf,ow,d04];ljmpq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_M16_O ), FCML_GAS_DF_HINTS | FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER },
     { FCML_TEXT("lar"), FCML_ASM_DIALECT_INSTRUCTION( F_LAR, FCML_AM_ALL ), 0 },
     { FCML_TEXT("lahf"), FCML_ASM_DIALECT_INSTRUCTION( F_LAHF, FCML_AM_ALL ), 0 },
@@ -1183,9 +1183,9 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { NULL, 0, 0 }
 };
 
-// ********************
-// * END OF MNEMONICS *
-// ********************
+/* *********************/
+/* * END OF MNEMONICS **/
+/* *********************/
 
 #define FCML_ASM_DIALECT_gas_GROUPS 3
 
@@ -1248,7 +1248,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_register_gas( const fcml_st_register *re
 }
 
 void fcml_ifn_asm_dialect_free_mnemonic_gas( fcml_st_mp_mnemonic *mnemonic ) {
-    // Do nothing.
+    /* Do nothing.*/
     if( mnemonic ) {
         fcml_fn_asm_dialect_free_mnemonic( mnemonic );
     }
@@ -1274,7 +1274,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_dial
 
             fcml_bool ignore = FCML_FALSE;
 
-            // Check if this mnemonics set is available for current dialect configuration.
+            /* Check if this mnemonics set is available for current dialect configuration.*/
             ignore |= ( dialect_context->config_flags & FCML_GAS_DIALECT_CF_SYSV_SVR32_INCOMPATIBLE ) && ( dialect_mnemonic->flags & FCML_GAS_DF_SYSV_SVR32_COMPATIBLE );
 
             if( !ignore ) {
@@ -1285,7 +1285,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_dial
     }
 
     if( !mnemonic_pattern ) {
-        // Choose best mnemonic for instruction.
+        /* Choose best mnemonic for instruction.*/
         if( addr_mode->mnemonic_override ) {
             mnemonic_pattern = addr_mode->mnemonic_override;
         } else {
@@ -1295,7 +1295,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_dial
 
     fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
 
-    // Set flags for every parsed mnemonic.
+    /* Set flags for every parsed mnemonic.*/
     if( *mnemonics ) {
         fcml_st_mp_mnemonic_set *m_set = *mnemonics;
         fcml_st_coll_list_element *current = m_set->mnemonics->head;
@@ -1327,7 +1327,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_gas( const fcml_st_dialect *dia
         fcml_st_mp_mnemonic *mnemonic_def = (fcml_st_mp_mnemonic*)element->item;
 
         if( condition != NULL ) {
-            // Conditional instructions.
+            /* Conditional instructions.*/
 
             fcml_uint32_t suffix_nr = condition->condition_type * 2 + ( condition->is_negation ? 1 : 0 );
 
@@ -1337,7 +1337,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_gas( const fcml_st_dialect *dia
                 if( suffix ) {
                     mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( mnemonic_def, suffix );
                     if( !mnemonics[counter] ) {
-                        // Out of memory.
+                        /* Out of memory.*/
                         error = FCML_CEH_GEC_OUT_OF_MEMORY;
                         break;
                     }
@@ -1346,7 +1346,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_gas( const fcml_st_dialect *dia
             }
 
         } else {
-            // Allocate new instance of mnemonic.
+            /* Allocate new instance of mnemonic.*/
             mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic( mnemonic_def );
             if( mnemonics[counter] ) {
                 counter++;
@@ -1360,7 +1360,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_gas( const fcml_st_dialect *dia
     }
 
     if( error ) {
-        // Free all prepared mnemonics.
+        /* Free all prepared mnemonics.*/
         int i;
         for( i = 0; i < counter; i++ ) {
             fcml_ifn_asm_dialect_free_mnemonic_gas( mnemonics[i] );
@@ -1388,23 +1388,23 @@ fcml_bool fcml_ifn_asm_dialect_gas_far_pointer_correction( fcml_st_instruction *
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    // Correction for ambiguous FAR_POINTER addressing mode. Unfortunately we can not treat it as two IMM operands.
+    /* Correction for ambiguous FAR_POINTER addressing mode. Unfortunately we can not treat it as two IMM operands.*/
     if( instruction->operands_count == 2 && instruction->operands[0].type == FCML_EOT_IMMEDIATE && instruction->operands[1].type == FCML_EOT_IMMEDIATE ) {
 
         fcml_st_integer segment = {0};
         fcml_st_integer offset = {0};
 
-        // Remember that operands are reverted for GAS!
+        /* Remember that operands are reverted for GAS!*/
 
         error = fcml_fn_utils_imm_to_integer( &(instruction->operands[1].immediate), &segment );
         if( error ) {
-            // Should never happened, because parser is responsible for setting appropriate IMM size.
+            /* Should never happened, because parser is responsible for setting appropriate IMM size.*/
             return FCML_FALSE;
         }
 
         error = fcml_fn_utils_imm_to_integer( &(instruction->operands[0].immediate), &offset );
         if( error ) {
-            // Should never happened, because parser is responsible for setting appropriate IMM size.
+            /* Should never happened, because parser is responsible for setting appropriate IMM size.*/
             return FCML_FALSE;
         }
 
@@ -1424,7 +1424,7 @@ fcml_bool fcml_ifn_asm_dialect_gas_far_pointer_correction( fcml_st_instruction *
             }
 
             if( !error ) {
-                // Clean operands.
+                /* Clean operands.*/
                 fcml_fn_env_memory_clear( instruction->operands, sizeof( instruction->operands ) );
                 instruction->operands[0].type = FCML_EOT_FAR_POINTER;
                 instruction->operands[0].far_pointer = far_pointer;
@@ -1445,7 +1445,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
 
     if( !mnemonic ) {
 
-        // Operands has to be reverted.
+        /* Operands has to be reverted.*/
         if( instrunction->operands_count > 1 ) {
             fcml_ifn_asm_dialect_gas_revert_operands( instrunction->operands, instrunction->operands_count );
             changed = FCML_TRUE;
@@ -1453,16 +1453,16 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
 
     } else {
 
-        // For bound and enter instructions operands should be provided in the same order as for intel assembler, so
-        // they should be reverted one more time. We can gain some performance by doubling this operation for
-        // these two instructions instead of reverting operands for any checked addressing mode.
+        /* For bound and enter instructions operands should be provided in the same order as for intel assembler, so*/
+        /* they should be reverted one more time. We can gain some performance by doubling this operation for*/
+        /* these two instructions instead of reverting operands for any checked addressing mode.*/
         if( mnemonic->flags & FCML_GAS_DF_DO_NOT_REVERT_OPERANDS ) {
             fcml_ifn_asm_dialect_gas_revert_operands( instrunction->operands, instrunction->operands_count );
             changed = FCML_TRUE;
         }
 
-        // Mnemonic has been found, check if data size should be corrected for instruction. Take into account that data size specified by
-        // mnemonic has greater priority than data size set directly by user.
+        /* Mnemonic has been found, check if data size should be corrected for instruction. Take into account that data size specified by*/
+        /* mnemonic has greater priority than data size set directly by user.*/
 
         fcml_data_size data_size = FCML_DS_UNDEF;
         if( mnemonic->memory_data.is_not_null ) {
@@ -1470,15 +1470,15 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
         } else if( mnemonic->is_byte_ds ) {
             data_size = FCML_DS_8;
         } else if( mnemonic->is_full_ds ) {
-            // Full data size is based on effective operand size attribute.
+            /* Full data size is based on effective operand size attribute.*/
             data_size = mnemonic->supported_osa;
         } else if( mnemonic->l.is_not_null ) {
-            // Data size based on L VEX/XOP prefix field.
+            /* Data size based on L VEX/XOP prefix field.*/
             data_size = mnemonic->l.value ? FCML_DS_256 : FCML_DS_128;
         }
 
         if( data_size != FCML_DS_UNDEF ) {
-            // Find effective address and make a correction to size operator.
+            /* Find effective address and make a correction to size operator.*/
             int i;
             for( i = 0; i < instrunction->operands_count; i++ ) {
                 fcml_st_operand *operand = &(instrunction->operands[i]);
@@ -1489,16 +1489,16 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
             }
         }
 
-        // In GAS mode, from time to time mnemonic flags are treated as instruction hints.
+        /* In GAS mode, from time to time mnemonic flags are treated as instruction hints.*/
         if( mnemonic->flags & FCML_GAS_DF_HINTS ) {
             instrunction->hints |= ( mnemonic->flags & ~FCML_GAS_DF_HINTS );
             changed = FCML_TRUE;
         }
 
-        // Check if addressing mode expects FAR_POINTER addressing mode.
+        /* Check if addressing mode expects FAR_POINTER addressing mode.*/
         if( addr_mode_desc ) {
             if( addr_mode_desc->opperands[0] == FCML_OP_FAR_POINTER ) {
-                // Prepare operands.
+                /* Prepare operands.*/
                 if( instrunction->operands_count == 2
                         && instrunction->operands[0].type == FCML_EOT_IMMEDIATE
                         && instrunction->operands[1].type == FCML_EOT_IMMEDIATE ) {
@@ -1526,10 +1526,10 @@ fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_s
 
         if( !( mnemonic->flags & FCML_GAS_DF_DO_NOT_REVERT_OPERANDS ) ) {
 
-            // Revert operands.
+            /* Revert operands.*/
             fcml_ifn_asm_dialect_gas_revert_operands( disassembler_result->instruction.operands, operands_count );
 
-            // Revert operand details.
+            /* Revert operand details.*/
             fcml_st_operand_details *operand_details = disassembler_result->instruction_details.operand_details;
             fcml_st_operand_details tmp_operand_details;
             fcml_int i;
@@ -1558,14 +1558,14 @@ fcml_ceh_error fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dia
         return error;
     }
 
-    // Prepares dialect instance.
+    /* Prepares dialect instance.*/
     dialect_context_gas->get_mnemonic = &fcml_ifn_asm_dialect_get_mnemonic_gas;
     dialect_context_gas->get_parsed_mnemonics = &fcml_ifn_asm_dialect_get_parsed_mnemonics_gas;
     dialect_context_gas->render_mnemonic = &fcml_ifn_asm_dialect_render_mnemonic_gas;
     dialect_context_gas->free_mnemonic = &fcml_ifn_asm_dialect_free_mnemonic_gas;
     dialect_context_gas->instruction_renderer = &fcml_fn_rend_render_instruction_gas;
     dialect_context_gas->instruction_parser = &fcml_gas_parse;
-    // This method should be available in renderer, but having it here can be useful in the future.
+    /* This method should be available in renderer, but having it here can be useful in the future.*/
     dialect_context_gas->get_register = &fcml_ifn_asm_dialect_get_register_gas;
     dialect_context_gas->assembler_preprocessor = &fcml_ifn_asm_dialect_assembler_preprocessor_gas;
     dialect_context_gas->disassembler_postprocessor = &fcml_ifn_asm_dialect_disassembler_postprocessor_gas;

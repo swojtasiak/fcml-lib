@@ -449,7 +449,7 @@ void fcml_tf_parser_int_parse_test30(void) {
 }
 
 void fcml_tf_parser_int_parse_test31(void) {
-	// Check if multiple prefixes are allowed.
+	/* Check if multiple prefixes are allowed.*/
 	fcml_st_parser_result *result;
 	STF_ASSERT_EQUAL( fcml_intel_parse( internal_dialect_intel, "lock repne repe mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
@@ -465,7 +465,7 @@ void fcml_tf_parser_int_parse_test31(void) {
 }
 
 void fcml_tf_parser_int_parse_test32(void) {
-	// Duplicated prefixes aren't allowed.
+	/* Duplicated prefixes aren't allowed.*/
 	fcml_st_parser_result *result;
 	STF_ASSERT_EQUAL( fcml_intel_parse( internal_dialect_intel, "lock lock mov 1", &result ), FCML_CEH_GEC_INVALID_INPUT );
 	if( result->instruction != NULL ) {

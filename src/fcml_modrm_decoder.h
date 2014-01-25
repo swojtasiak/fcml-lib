@@ -14,7 +14,7 @@
 #include "fcml_stream.h"
 #include "fcml_types.h"
 
-// Some macros that might be also useful outside decoder.
+/* Some macros that might be also useful outside decoder.*/
 
 #define FCML_MODRM_DEC_MOD(x)			( x >> 6 )
 #define FCML_MODRM_DEC_REG_OPCODE(x)	( ( x & 0x38 ) >> 3 )
@@ -41,10 +41,10 @@ typedef struct fcml_st_modrm_details {
 } fcml_st_modrm_details;
 
 typedef struct fcml_st_modrm_decoder_context {
-	// Sets 32 or 64 bit addressing mode.
+	/* Sets 32 or 64 bit addressing mode.*/
 	fcml_en_addr_form addr_form;
-	// Effective address size using to decode/encode ModR/M. It's very important to set this value properly,
-	// because 16 and 32/64 addressing forms
+	/* Effective address size using to decode/encode ModR/M. It's very important to set this value properly,*/
+	/* because 16 and 32/64 addressing forms*/
 	fcml_data_size effective_address_size;
 } fcml_st_modrm_decoder_context;
 

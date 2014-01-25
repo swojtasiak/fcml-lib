@@ -29,9 +29,9 @@
 typedef enum fcml_en_addr_form {
 	/* Real-addressing mode, virtual 8086 mode. */
 	FCML_AF_16_BIT = 1,
-	// Protected/Compatibility mode when 'D' segment descriptor flag is set to 1.
+	/* Protected/Compatibility mode when 'D' segment descriptor flag is set to 1.*/
 	FCML_AF_32_BIT,
-	// 64-bit mode. ('L' flag of segment descriptor set to 1.)
+	/* 64-bit mode. ('L' flag of segment descriptor set to 1.)*/
 	FCML_AF_64_BIT,
 } fcml_en_addr_form;
 
@@ -40,28 +40,28 @@ typedef enum fcml_en_addr_form {
 typedef fcml_uint16_t fcml_hints;
 typedef fcml_uint16_t fcml_prefixes;
 
-// Instruction pointer.
+/* Instruction pointer.*/
 
 typedef union fcml_st_instruction_pointer {
 	fcml_uint32_t eip;
 	fcml_uint64_t rip;
 } fcml_st_instruction_pointer;
 
-// Effective Operand-Size Attributes.
+/* Effective Operand-Size Attributes.*/
 
 #define FCML_EOSA_UNDEF	0
 #define FCML_EOSA_16	16
 #define FCML_EOSA_32	32
 #define FCML_EOSA_64	64
 
-// Effective Address-Size Attributes.
+/* Effective Address-Size Attributes.*/
 
 #define FCML_EASA_UNDEF	16
 #define FCML_EASA_16	16
 #define FCML_EASA_32	32
 #define FCML_EASA_64	64
 
-// Register numbers.
+/* Register numbers.*/
 
 #define FCML_REG_AL		0
 #define FCML_REG_AX		0
@@ -265,7 +265,7 @@ typedef struct fcml_st_register {
     fcml_en_register type;
     fcml_data_size size;
     fcml_uint8_t reg;
-    // In case of SPL,BPL,SIL,DIL GPR registers has to be set to true.
+    /* In case of SPL,BPL,SIL,DIL GPR registers has to be set to true.*/
     fcml_bool x64_exp;
 } fcml_st_register;
 
@@ -276,28 +276,28 @@ typedef struct fcml_st_register {
 #define FCML_NUMBER_OF_CONDITIONS  8
 
 typedef enum fcml_en_condition_type {
-    // 0 Overflow
+    /* 0 Overflow*/
     FCML_CONDITION_O = 0,
-    // 1 Below
+    /* 1 Below*/
     FCML_CONDITION_B,
-    // 2 Equal
+    /* 2 Equal*/
     FCML_CONDITION_E,
-    // 3 Below or equal
+    /* 3 Below or equal*/
     FCML_CONDITION_BE,
-    // 4 Sign
+    /* 4 Sign*/
     FCML_CONDITION_S,
-    // 5 Parity
+    /* 5 Parity*/
     FCML_CONDITION_P,
-    // 6 Less than
+    /* 6 Less than*/
     FCML_CONDITION_L,
-    // 7 Less than or equal to
+    /* 7 Less than or equal to*/
     FCML_CONDITION_LE
 } fcml_en_condition_type;
 
 typedef struct fcml_st_condition {
-    // Condition type.
+    /* Condition type.*/
     fcml_en_condition_type condition_type;
-    // True if condition should be negated.
+    /* True if condition should be negated.*/
     fcml_bool is_negation;
 } fcml_st_condition;
 
@@ -360,17 +360,17 @@ typedef struct fcml_st_displacement {
     };
 } fcml_st_displacement;
 
-// ******************************************
-// *  Memory addressing using Mod/RM field  *
-// ******************************************
+/* *******************************************/
+/* *  Memory addressing using Mod/RM field  **/
+/* *******************************************/
 
 typedef enum fcml_en_address_form {
-	// Default value set if memory addressing hasn't been configured.
+	/* Default value set if memory addressing hasn't been configured.*/
 	FCML_AF_UNDEFINED,
-    // Only displacement value interpreted but it's assembler who decides
-    // what addressing should be used absolute or relative.
+    /* Only displacement value interpreted but it's assembler who decides*/
+    /* what addressing should be used absolute or relative.*/
     FCML_AF_OFFSET,
-    // Effective address combined from more address components.
+    /* Effective address combined from more address components.*/
     FCML_AF_COMBINED
 } fcml_en_effective_address_form;
 
@@ -397,15 +397,15 @@ typedef struct fcml_st_segment_selector {
 } fcml_st_segment_selector;
 
 typedef struct fcml_st_address {
-	// Size of data accessed in memory.
+	/* Size of data accessed in memory.*/
 	fcml_data_size size_operator;
-    // Memory addressing format ABSOLUTE/RELATIVE etc.
+    /* Memory addressing format ABSOLUTE/RELATIVE etc.*/
     fcml_en_effective_address_form address_form;
-    // Segment register.
+    /* Segment register.*/
     fcml_st_segment_selector segment_selector;
-    // Memory address for FCML_AF_COMBINED form.
+    /* Memory address for FCML_AF_COMBINED form.*/
     fcml_st_effective_address effective_address;
-    // Memory address for FCML_AF_ABSOLUTE and FCML_AF_RELATIVE form.
+    /* Memory address for FCML_AF_ABSOLUTE and FCML_AF_RELATIVE form.*/
     fcml_st_offset offset;
 } fcml_st_address;
 

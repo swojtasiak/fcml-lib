@@ -286,7 +286,7 @@ void fcml_tf_modrm_decoder_test_7(void) {
 
 }
 
-// [EBX], EBX
+/* [EBX], EBX*/
 void fcml_tf_modrm_3264_decoder_test_1(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -326,7 +326,7 @@ void fcml_tf_modrm_3264_decoder_test_1(void) {
 
 }
 
-// [04030201], EDX
+/* [04030201], EDX*/
 void fcml_tf_modrm_3264_decoder_test_2(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -366,10 +366,10 @@ void fcml_tf_modrm_3264_decoder_test_2(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// RIP-addressing.
-// RIP: 401000h
-// disp32: 0f1efbf00h
-// [FFFFFFFFFF887766], EDX
+/* RIP-addressing.*/
+/* RIP: 401000h*/
+/* disp32: 0f1efbf00h*/
+/* [FFFFFFFFFF887766], EDX*/
 void fcml_tf_modrm_3264_decoder_test_3(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -417,7 +417,7 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 
 }
 
-// [ECX]+0x66, EAX
+/* [ECX]+0x66, EAX*/
 void fcml_tf_modrm_3264_decoder_test_4(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -458,7 +458,7 @@ void fcml_tf_modrm_3264_decoder_test_4(void) {
 }
 
 
-// [ECX]+0x01020304, EAX
+/* [ECX]+0x01020304, EAX*/
 void fcml_tf_modrm_3264_decoder_test_5(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -498,7 +498,7 @@ void fcml_tf_modrm_3264_decoder_test_5(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// [R9]+0x01020304, R8
+/* [R9]+0x01020304, R8*/
 void fcml_tf_modrm_3264_decoder_test_6(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -538,7 +538,7 @@ void fcml_tf_modrm_3264_decoder_test_6(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// Illegal EASA size.
+/* Illegal EASA size.*/
 void fcml_tf_modrm_3264_decoder_test_7(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -581,7 +581,7 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// RAX, EBX
+/* RAX, EBX*/
 void fcml_tf_modrm_3264_decoder_test_8(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -622,7 +622,7 @@ void fcml_tf_modrm_3264_decoder_test_8(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// R8, R11
+/* R8, R11*/
 void fcml_tf_modrm_3264_decoder_test_9(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -664,7 +664,7 @@ void fcml_tf_modrm_3264_decoder_test_9(void) {
 }
 
 
-// RIP-addressing.
+/* RIP-addressing.*/
 void fcml_tf_modrm_3264_decoder_test_10(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -712,7 +712,7 @@ void fcml_tf_modrm_3264_decoder_test_10(void) {
 
 }
 
-// RIP-addressing.
+/* RIP-addressing.*/
 void fcml_tf_modrm_3264_decoder_test_11(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -760,7 +760,7 @@ void fcml_tf_modrm_3264_decoder_test_11(void) {
 
 }
 
-// RIP-addressing.
+/* RIP-addressing.*/
 void fcml_tf_modrm_3264_decoder_test_12(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -808,7 +808,7 @@ void fcml_tf_modrm_3264_decoder_test_12(void) {
 
 }
 
-// [01020304], R8
+/* [01020304], R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -849,7 +849,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// [EBX]+0x01020304, R8
+/* [EBX]+0x01020304, R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -890,7 +890,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// [ECX+EBX]+0x01, R8
+/* [ECX+EBX]+0x01, R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -934,7 +934,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// [ECX+EBX*2]+0x01, R8
+/* [ECX+EBX*2]+0x01, R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -978,7 +978,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 2 );
 }
 
-// [ECX+EBX*4], R8
+/* [ECX+EBX*4], R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -1022,7 +1022,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 4 );
 }
 
-// [ECX+EBX*8], R8
+/* [ECX+EBX*8], R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -1066,7 +1066,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
-// [ECX+EBX*8]+0x55, R8
+/* [ECX+EBX*8]+0x55, R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -1107,7 +1107,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
-// [ECX+EBX*8]+0x01020304, R8
+/* [ECX+EBX*8]+0x01020304, R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -1148,7 +1148,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
-// [R9]+0x01020304, R8
+/* [R9]+0x01020304, R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -1189,7 +1189,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
 
-// [ECX+XMM1*8]+0x01020304, R8
+/* [ECX+XMM1*8]+0x01020304, R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
@@ -1232,7 +1232,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
-// [ECX+YMM1*8]+0x01020304, R8
+/* [ECX+YMM1*8]+0x01020304, R8*/
 void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 
 	fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();

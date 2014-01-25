@@ -62,7 +62,7 @@ fcml_st_ceh_error_info *fcml_fn_ceh_alloc_error_info( fcml_string message, fcml_
 
 fcml_st_ceh_error_info *fcml_fn_ceh_add_error( fcml_st_ceh_error_container *error_container, const fcml_string message, fcml_ceh_error_code code, fcml_en_ceh_error_level level ) {
 	fcml_st_ceh_error_info *error_info;
-	// Container is null.
+	/* Container is null.*/
 	if( !error_container ) {
 		return NULL;
 	}

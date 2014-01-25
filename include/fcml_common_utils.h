@@ -169,10 +169,10 @@ extern fcml_st_register fcml_reg_IP;
 extern fcml_st_register fcml_reg_EIP;
 extern fcml_st_register fcml_reg_RIP;
 
-// REG.
+/* REG.*/
 fcml_st_operand fcml_fn_cu_operand_reg( fcml_st_register *reg );
 
-// IMM.
+/* IMM.*/
 fcml_st_operand fcml_fn_cu_operand_unsigned_imm_8( fcml_uint8_t value );
 fcml_st_operand fcml_fn_cu_operand_signed_imm_8( fcml_int8_t value );
 fcml_st_operand fcml_fn_cu_operand_unsigned_imm_16( fcml_uint16_t value );
@@ -182,7 +182,7 @@ fcml_st_operand fcml_fn_cu_operand_signed_imm_32( fcml_int32_t value );
 fcml_st_operand fcml_fn_cu_operand_unsigned_imm_64( fcml_uint64_t value );
 fcml_st_operand fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value );
 
-// Memory addressing.
+/* Memory addressing.*/
 fcml_st_operand fcml_fn_cu_operand_addr_far_pointer_offset16( fcml_int16_t seg, fcml_int16_t offset );
 fcml_st_operand fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset );
 fcml_st_operand fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset );
@@ -203,10 +203,10 @@ fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml
 fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
 fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
 
-// Hints
+/* Hints*/
 fcml_st_operand fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints );
 
-// Some shortcuts for these who prefer to use macros instead of functions.
+/* Some shortcuts for these who prefer to use macros instead of functions.*/
 
 #define FCML_IMM8_S( x )		fcml_fn_cu_operand_signed_imm_8( x )
 #define FCML_IMM8( x )			fcml_fn_cu_operand_unsigned_imm_8( x )

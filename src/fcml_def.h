@@ -40,18 +40,18 @@
 /* Operand size calculated on L field. */
 #define FCML_EOS_L				0x7D
 
-// Operand sizes that cannot be simply written as number of bytes.
+/* Operand sizes that cannot be simply written as number of bytes.*/
 #define FCML_EOS_14_28			0x7C
 #define FCML_EOS_94_108			0x7B
 #define FCML_EOS_32_64			0x7A
 
-// Far pointer indirect.
+/* Far pointer indirect.*/
 #define FCML_EOS_FPI			0x79
 
-// Far pointer.
+/* Far pointer.*/
 #define FCML_EOS_FP				0x78
 
-// True if encoded operand size is a dynamic one.
+/* True if encoded operand size is a dynamic one.*/
 #define FCML_IS_EOS_DYNAMIC(x)	( ( x & 0x40 ) != 0 )
 #define FCML_IS_EOS_OPT(x)		( ( x & 0x80 ) != 0 )
 #define FCML_GET_OS(x)			( ( x ) & ~FCML_EOS_OPT )
@@ -59,7 +59,7 @@
 /* Instruction and addressing mode types. */
 
 typedef enum fcml_en_def_instruction_type {
-    // Intel IA.
+    /* Intel IA.*/
     FCML_EN_IT_IA
 } fcml_en_def_instruction_type;
 
@@ -67,7 +67,7 @@ typedef enum fcml_en_def_instruction_type {
 /* Instructions */
 /****************/
 
-// Multi instrutions.
+/* Multi instructions. */
 #define FCML_MI_AMD3DNOW		0x0001
 
 enum fcml_en_instruction_codes {
@@ -537,7 +537,7 @@ enum fcml_en_instruction_codes {
     F_VPADDQ,
     F_POP,
     F_PUSH,
-    // TODO: Opisac konflikt nazewnictwa pomiedzy GAS i Intel, inne kodowanie a ta sama mnemonika :/ byc moze uda sie zrobic z tego jedna instukcje.
+    /* TODO: Opisac konflikt nazewnictwa pomiedzy GAS i Intel, inne kodowanie a ta sama mnemonika :/ byc moze uda sie zrobic z tego jedna instukcje.*/
     F_POPA,
     F_POPAD,
     F_POPF,
@@ -1117,31 +1117,31 @@ enum fcml_en_instruction_codes {
     F_XTEST,
     F_RDSEED,
     F_CLAC,
-    F_STAC,
+    F_STAC
 };
 
 /*******************/
 /* Addressing mode */
 /*******************/
 
-// Wild card for mnemonic used by default.
+/* Wild card for mnemonic used by default.*/
 #define FCML_AM_ALL		0
 
 enum fcml_en_instruction_addr_mode_codes {
     FCML_AM_UNKNOWN = 0, FCML_AM_NO_OPERANS,
-    // IMM
+    /* IMM*/
     FCML_AM_IMM8,
     FCML_AM_IMMO,
-    // REG, IMM
+    /* REG, IMM*/
     FCML_AM_ER8_IMM8,
     FCML_AM_R8_IMM8,
     FCML_AM_ERO_IMMO,
-    // RM, IMM
+    /* RM, IMM*/
     FCML_AM_RM8_IMM8,
     FCML_AM_RMO_IMMO,
     FCML_AM_R0_IMM0,
     FCML_AM_RMO_IMM8,
-    // RM, R / R, RM
+    /* RM, R / R, RM*/
     FCML_AM_RM8_R8,
     FCML_AM_R8_RM8,
     FCML_AM_R8_MOFF8,
@@ -1170,7 +1170,7 @@ enum fcml_en_instruction_addr_mode_codes {
     FCML_AM_RO_RMO_IMM8,
     FCML_AM_RO_RMO_IMMO,
 
-    //
+    /**/
     R32A_RM32_R32B,
     R64A_RM64_R64B,
     FCML_R32_RM32,
@@ -1209,7 +1209,7 @@ enum fcml_en_instruction_addr_mode_codes {
     FCML_RX_RX_I8_I8,
     FCML_RX_RX,
     FCML_REL8,
-    FCML_REL0,
+    FCML_REL0
 };
 
 /*********************************************/
@@ -1218,11 +1218,11 @@ enum fcml_en_instruction_addr_mode_codes {
 /*********************************************/
 
 #define    FCML_AMT_UNDEF      0x0000000000000000UL
-// Grouping.
+/* Grouping.*/
 #define    FCML_AMT_SSEx       0x0000000000000001UL
 #define    FCML_AMT_VEXx       0x0000000000000002UL
 #define    FCML_AMT_SIMD       0x0000000000000004UL
-// CPUID.
+/* CPUID.*/
 #define    FCML_AMT_GPI        0x0000000000000008UL
 #define    FCML_AMT_FPU        0x0000000000000010UL
 #define    FCML_AMT_MMX        0x0000000000000020UL | FCML_AMT_SSEx
@@ -1258,10 +1258,10 @@ enum fcml_en_instruction_addr_mode_codes {
 #define    FCML_AMT_VMX        0x0000001000000000UL
 #define    FCML_AMT_SMX        0x0000002000000000UL
 #define    FCML_AMT_POPCNT     0x0000004000000000UL
-// Control transfer instructions.
+/* Control transfer instructions.*/
 #define    FCML_AMT_CTI        0x0000008000000000UL
 #define    FCML_AMT_BRANCH     0x0000010000000000UL
-// Shortcuts.
+/* Shortcuts.*/
 #define    FCML_AMT_MMX_SIMD   FCML_AMT_MMX   | FCML_AMT_SIMD
 #define    FCML_AMT_SSE_SIMD   FCML_AMT_SSE   | FCML_AMT_SIMD
 #define    FCML_AMT_SSE2_SIMD  FCML_AMT_SSE2  | FCML_AMT_SIMD
@@ -1278,43 +1278,43 @@ enum fcml_en_instruction_addr_mode_codes {
 
 /* Structures used to describe instructions with they all allowed addressing modes. */
 typedef struct fcml_st_def_addr_mode_desc {
-    // Mnemonic, if there is another mnemonic available for this opcode.
+    /* Mnemonic, if there is another mnemonic available for this opcode.*/
     fcml_string mnemonic_override;
-    // Addressing mode type.
+    /* Addressing mode type.*/
     fcml_uint64_t instruction_group;
-    // Flags describing allowed prefixes.
+    /* Flags describing allowed prefixes.*/
     fcml_uint16_t allowed_prefixes;
-    // Some flags that contains various information about opcode.
+    /* Some flags that contains various information about opcode.*/
     fcml_uint32_t opcode_flags;
-    // Opcode bytes.
+    /* Opcode bytes.*/
     fcml_uint8_t opcode[3];
-    // Addressing of instruction operands.
+    /* Addressing of instruction operands.*/
     fcml_uint32_t opperands[FCML_OPERANDS_COUNT];
-    // Addressing mode.
+    /* Addressing mode.*/
     fcml_uint16_t addr_mode;
 } fcml_st_def_addr_mode_desc;
 
-// Instruction code definition for multi instructions. Currently only  the instructions with suffixes uses this mechanism.
+/* Instruction code definition for multi instructions. Currently only  the instructions with suffixes uses this mechanism.*/
 typedef struct fcml_st_def_instruction_code_desc {
-    // Instruction code.
+    /* Instruction code.*/
     fcml_uint16_t instruction;
-    // Suffix.
+    /* Suffix.*/
     fcml_uint8_t suffix;
 } fcml_st_def_instruction_code_desc;
 
 /* Describes one addressing mode of instruction. */
 typedef struct fcml_st_def_instruction_desc {
-    // Instruction code.
+    /* Instruction code.*/
     fcml_uint16_t instruction;
-    // Optional array of multi instruction codes.
+    /* Optional array of multi instruction codes.*/
     fcml_st_def_instruction_code_desc *multi_instruction;
-    // Mnemonic.
+    /* Mnemonic.*/
     fcml_string mnemonic;
-    // Type of the instruction.
+    /* Type of the instruction.*/
     fcml_en_def_instruction_type instruction_type;
-    // Number of opcodes' descriptions.
+    /* Number of opcodes' descriptions.*/
     fcml_uint8_t opcode_desc_count;
-    // Opcodes' descriptions.
+    /* Opcodes' descriptions.*/
     fcml_st_def_addr_mode_desc *addr_modes;
 } fcml_st_def_instruction_desc;
 
@@ -1378,42 +1378,42 @@ typedef struct fcml_st_def_instruction_desc {
  * Addressing modes.
  *********************************/
 
-// Operand access mode (source/destination).
+/* Operand access mode (source/destination).*/
 #define FCML_OA_R		0x80000000
 #define FCML_OA_W		0x40000000
 #define FCML_OA_RW		( FCML_OA_R | FCML_OA_W )
 
 #define FCML_NA			0x00000000
 
-// Immediate data.
+/* Immediate data.*/
 #define FCML_OP_IMM_BASE											0x01000000
 #define FCML_OP_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OP_IMM_BASE | ( encoded_imm_size ) << 8 | ( encoded_ex_imm_size ) )
 #define FCML_OP_IMM_64												( FCML_OP_IMM_BASE | ( 1 << 16 ) | ( FCML_EOS_EOSA ) << 8 | ( FCML_EOS_UNDEFINED ) )
 
-// Register explicitly set.
+/* Register explicitly set.*/
 #define FCML_OP_EXPLICIT_REG_BASE									0x02000000
 #define FCML_OP_EXPLICIT_REG(reg_type, reg_num, encoded_reg_size)	( FCML_OP_EXPLICIT_REG_BASE | ( reg_type ) << 12 | ( reg_num ) << 8 | encoded_reg_size )
 
-// Register field in opcode byte.
+/* Register field in opcode byte.*/
 #define FCML_OP_OPCODE_REG_BASE										0x03000000
 #define FCML_OP_OPCODE_REG(reg_type, encoded_reg_size)				( FCML_OP_OPCODE_REG_BASE | ( reg_type ) << 8 | encoded_reg_size )
 
-// Relative addressing.
+/* Relative addressing.*/
 #define FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE							0x04000000
 #define FCML_OP_IMMEDIATE_DIS_RELATIVE( encoded_imm_size )			( FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE | encoded_imm_size )
 
-// Far pointers.
+/* Far pointers.*/
 #define FCML_OP_FAR_POINTER											0x05000000
 
-// Addressing by explicit GPR register. (Used by CMPS for instance.)
+/* Addressing by explicit GPR register. (Used by CMPS for instance.)*/
 #define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE					0x06000000
 #define FCML_OP_EXPLICIT_GPS_REG_ADDRESSING(reg_num, encoded_operand_size, encoded_segment_register)	( FCML_OP_EXPLICIT_GPS_REG_ADDRESSING_BASE | ( reg_num ) << 16 | ( encoded_operand_size ) << 8 | ( encoded_segment_register ) )
 
-// It allows defining explicit IMM8 operand type. See INT instruction.
+/* It allows defining explicit IMM8 operand type. See INT instruction.*/
 #define FCML_OP_EXPLICIT_IB_BASE									0x07000000
 #define FCML_OP_EXPLICIT_IB(value)									( FCML_OP_EXPLICIT_IB_BASE | value )
 
-// Segment relative addressing.
+/* Segment relative addressing.*/
 #define FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE						0x08000000
 #define FCML_OP_SEGMENT_RELATIVE_OFFSET( operand_size, encoded_segment_register )	( FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE | ( operand_size ) << 8 | ( encoded_segment_register ) )
 
@@ -1421,14 +1421,14 @@ typedef struct fcml_st_def_instruction_desc {
 /*      ModR/M encoding.        */
 /********************************/
 
-// Allows to encode all common ModR/M based addressing modes using only one macro.
-// Only register addressing is allowed.
+/* Allows to encode all common ModR/M based addressing modes using only one macro.*/
+/* Only register addressing is allowed.*/
 #define FCML_RMF_R		0x01
-// Only memory addressing is allowed.
+/* Only memory addressing is allowed.*/
 #define FCML_RMF_M		0x02
-// Indirect addressing.
+/* Indirect addressing.*/
 #define FCML_RMF_I		0x04
-// Shortcut, operand acts as source and destination.
+/* Shortcut, operand acts as source and destination.*/
 #define FCML_RMF_RM		( FCML_RMF_R | FCML_RMF_M )
 
 #define FCML_OP_RM_BASE								0x09000000
@@ -1462,7 +1462,7 @@ typedef struct fcml_st_def_instruction_desc {
 /* VSIB operand decoding. */
 /**************************/
 
-// Vector index register.
+/* Vector index register.*/
 #define FCML_VSIB_XMM	0x01
 #define FCML_VSIB_YMM	0x02
 
@@ -1486,11 +1486,11 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_SEG_DECODE_IS_OVERRIDE_ALLOWED( encoded )		( FCML_SEG_ALLOW_OVERRIDE & encoded )
 #define FCML_SEG_DECODE_REGISTER( encoded )					( encoded & ~FCML_SEG_ALLOW_OVERRIDE )
 
-// Useful macros related to addressing modes.
+/* Useful macros related to addressing modes.*/
 
 #define FCMP_DEF_IS_ADDR_MODE( x, y )						( ( x ) == ( ( y ) >> 24 ) )
 
-// Shorthands
+/* Shorthands*/
 
 #define FCML_OP_MODRM_RM_8              FCML_OP_RM(FCML_REG_GPR, FCML_EOS_BYTE, FCML_EOS_BYTE, FCML_RMF_RM )
 #define FCML_OP_MODRM_RM_8_W            ( FCML_OP_MODRM_RM_8 | FCML_OA_W )
@@ -1787,18 +1787,18 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_MODRM_M_SIMD_OPE_W		( FCML_OP_MODRM_M_SIMD_OPE | FCML_OA_W )
 #define FCML_OP_MODRM_M_SIMD_OPE_RW		( FCML_OP_MODRM_M_SIMD_OPE | FCML_OA_RW )
 
-// Shorthands for relative addressing.
+/* Shorthands for relative addressing.*/
 
 #define FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA		FCML_OP_IMMEDIATE_DIS_RELATIVE( FCML_EOS_UNDEFINED )
 #define FCML_OP_IMMEDIATE_DIS_RELATIVE_R_8		FCML_OP_IMMEDIATE_DIS_RELATIVE( FCML_EOS_BYTE )
 
-// Shorthands for VVVV addressing.
+/* Shorthands for VVVV addressing.*/
 
 #define FCML_OP_VEX_VVVV_SIMD_REG		FCML_OP_VEX_VVVV_REG( FCML_REG_SIMD, FCML_EOS_L )
 #define FCML_OP_VEX_VVVV_XMM_REG		FCML_OP_VEX_VVVV_REG( FCML_REG_SIMD, FCML_EOS_OWORD )
 #define FCML_OP_VEX_VVVV_YMM_REG		FCML_OP_VEX_VVVV_REG( FCML_REG_SIMD, FCML_EOS_YWORD )
 
-// Shorthands for IMM.
+/* Shorthands for IMM.*/
 
 #define FCML_OP_IB						FCML_OP_IMM( FCML_EOS_BYTE, FCML_EOS_UNDEFINED )
 #define FCML_OP_IB_EX_EOSA				FCML_OP_IMM( FCML_EOS_BYTE, FCML_EOS_EOSA )
@@ -1818,10 +1818,10 @@ extern struct fcml_st_def_instruction_desc fcml_ext_instructions_def[];
 /* Addressing modes arguments encoders. */
 
 typedef struct fcml_st_def_decoded_addr_mode {
-    // Code of the addressing mode.
+    /* Code of the addressing mode.*/
     fcml_uint8_t addr_mode;
     fcml_en_access_mode access_mode;
-    // Decoded arguments.
+    /* Decoded arguments.*/
     fcml_ptr addr_mode_args;
 } fcml_st_def_decoded_addr_mode;
 

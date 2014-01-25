@@ -143,7 +143,7 @@ void fcml_tf_mnemonic_parser_test_parse_mnemonics_3(void) {
         fcml_st_mp_mnemonic_set *mnemonics_set = NULL;
         fcml_string mnemonic = fcml_itb_bad_formatted_mnemonics[i];
         fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( mnemonic, &mnemonics_set );
-       // printf("%d:%d\n", i, error);
+       /* printf("%d:%d\n", i, error);*/
         STF_ASSERT_EQUAL( error, FCML_CEH_GEC_INVALID_INPUT );
         STF_ASSERT_PTR_NULL( mnemonics_set );
     }

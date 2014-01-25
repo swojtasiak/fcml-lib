@@ -51,10 +51,10 @@ void fcml_tf_coll_test_put_different_keys(void) {
 	if( map == NULL || error ) {
 		STF_FAIL( "Can not create hash map." );
 	} else {
-		// index 1.
+		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
-		// Conflict, both of the following keys are conflicted, but take into account
-		// that it depends on default builtin implementation of hashing function.
+		/* Conflict, both of the following keys are conflicted, but take into account*/
+		/* that it depends on default builtin implementation of hashing function.*/
 		fcml_fn_coll_map_put( map, "KEY_B", "VALUE_B", &error );
 		fcml_fn_coll_map_put( map, "KEY_R", "VALUE_R", &error );
 		fcml_fn_coll_map_put( map, "KEY_C", "VALUE_C", &error );
@@ -88,10 +88,10 @@ void fcml_tf_coll_test_remove_keys(void) {
 	if( map == NULL || error ) {
 		STF_FAIL( "Can not create hash map." );
 	} else {
-		// index 1.
+		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
-		// Conflict, both of the following keys are conflicted, but take into account
-		// that it depends on default builtin implementation of hashing function.
+		/* Conflict, both of the following keys are conflicted, but take into account*/
+		/* that it depends on default builtin implementation of hashing function.*/
 		fcml_fn_coll_map_put( map, "KEY_B", "VALUE_B", &error );
 		fcml_fn_coll_map_put( map, "KEY_R", "VALUE_R", &error );
 		fcml_fn_coll_map_put( map, "KEY_C", "VALUE_C", &error );
@@ -109,9 +109,9 @@ void fcml_tf_coll_test_remove_keys(void) {
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_E" ), "VALUE_E" );
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
-		// Remove KEY_A
+		/* Remove KEY_A*/
 		fcml_fn_coll_map_remove( map, "KEY_A" );
-		// Check if memory was freed.
+		/* Check if memory was freed.*/
 		STF_ASSERT_PTR_NOT_NULL( last_free_key );
 		STF_ASSERT_PTR_NOT_NULL( last_free_value );
 		if( last_free_key != NULL ) {
@@ -120,10 +120,10 @@ void fcml_tf_coll_test_remove_keys(void) {
 		if( last_free_value != NULL ) {
 			STF_ASSERT_STRING_EQUAL( last_free_value, "VALUE_A" );
 		}
-		// Check if KEY_A has been sucesfully removed.
+		/* Check if KEY_A has been sucesfully removed.*/
 		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_A" ) );
 		STF_ASSERT( fcml_fn_coll_map_size( map ) == 8 );
-		// Check if the rest of keys are still there.
+		/* Check if the rest of keys are still there.*/
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_B" ), "VALUE_B" );
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_R" ), "VALUE_R" );
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_C" ), "VALUE_C" );
@@ -132,7 +132,7 @@ void fcml_tf_coll_test_remove_keys(void) {
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_F" ), "VALUE_F" );
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_G" ), "VALUE_G" );
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_H" ), "VALUE_H" );
-		// Remove all keys.
+		/* Remove all keys.*/
 		fcml_fn_coll_map_remove( map, "KEY_B" );
 		fcml_fn_coll_map_remove( map, "KEY_R" );
 		fcml_fn_coll_map_remove( map, "KEY_C" );
@@ -141,7 +141,7 @@ void fcml_tf_coll_test_remove_keys(void) {
 		fcml_fn_coll_map_remove( map, "KEY_F" );
 		fcml_fn_coll_map_remove( map, "KEY_G" );
 		fcml_fn_coll_map_remove( map, "KEY_H" );
-		// And check if they have been removed as well.
+		/* And check if they have been removed as well.*/
 		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_B" ) );
 		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_R" ) );
 		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_C" ) );
@@ -167,10 +167,10 @@ void fcml_tf_coll_test_clear(void) {
 	if( map == NULL || error ) {
 		STF_FAIL( "Can not create hash map." );
 	} else {
-		// index 1.
+		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
-		// Conflict, both of the following keys are conflicted, but take into account
-		// that it depends on default builtin implementation of hashing function.
+		/* Conflict, both of the following keys are conflicted, but take into account*/
+		/* that it depends on default builtin implementation of hashing function.*/
 		fcml_fn_coll_map_put( map, "KEY_B", "VALUE_B", &error );
 		fcml_fn_coll_map_put( map, "KEY_R", "VALUE_R", &error );
 		fcml_fn_coll_map_put( map, "KEY_C", "VALUE_C", &error );
@@ -185,7 +185,7 @@ void fcml_tf_coll_test_clear(void) {
 		fcml_fn_coll_map_clear( map );
 		STF_ASSERT_PTR_NOT_NULL( last_free_key );
 		STF_ASSERT_PTR_NOT_NULL( last_free_value );
-		// And check if they have been removed.
+		/* And check if they have been removed.*/
 		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_A" ) );
 		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_B" ) );
 		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_R" ) );
@@ -218,10 +218,10 @@ void fcml_tf_coll_test_iterate(void) {
 	if( map == NULL || error ) {
 		STF_FAIL( "Can not create hash map." );
 	} else {
-		// index 1.
+		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
-		// Conflict, both of the following keys are conflicted, but take into account
-		// that it depends on default builtin implementation of hashing function.
+		/* Conflict, both of the following keys are conflicted, but take into account*/
+		/* that it depends on default builtin implementation of hashing function.*/
 		fcml_fn_coll_map_put( map, "KEY_B", "VALUE_B", &error );
 		fcml_fn_coll_map_put( map, "KEY_R", "VALUE_R", &error );
 		fcml_fn_coll_map_put( map, "KEY_C", "VALUE_C", &error );
@@ -251,7 +251,7 @@ void fcml_tf_coll_test_extend(void) {
 	if( map == NULL || error ) {
 		STF_FAIL( "Can not create hash map." );
 	} else {
-		// index 1.
+		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
 		fcml_fn_coll_map_put( map, "KEY_B", "VALUE_B", &error );
 		fcml_fn_coll_map_put( map, "KEY_R", "VALUE_R", &error );

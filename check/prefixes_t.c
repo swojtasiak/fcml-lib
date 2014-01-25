@@ -22,7 +22,7 @@ void fcml_tf_prefixes_suite_cleanup(void) {
 
 void fcml_fn_prefixes_66(void) {
 
-	// Prefixes aren't needed.
+	/* Prefixes aren't needed.*/
 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
@@ -52,7 +52,7 @@ void fcml_fn_prefixes_66(void) {
 		STF_FAIL("Can not assemble instruction.");
 	}
 
-	// Prefixes 0x66 is needed to change default operand size attribute back to 16 bits.
+	/* Prefixes 0x66 is needed to change default operand size attribute back to 16 bits.*/
 
 	context.operand_size_attribute = FCML_DS_32;
 	context.addr_form = FCML_AF_16_BIT;
@@ -79,7 +79,7 @@ void fcml_fn_prefixes_66(void) {
 		STF_FAIL("Can not assemble instruction.");
 	}
 
-	// Prefixes 0x66 is needed to change default operand size attribute to 32 bits.
+	/* Prefixes 0x66 is needed to change default operand size attribute to 32 bits.*/
 
 	context.operand_size_attribute = FCML_DS_16;
 	context.addr_form = FCML_AF_16_BIT;
@@ -108,7 +108,7 @@ void fcml_fn_prefixes_66(void) {
 		STF_FAIL("Can not assemble instruction.");
 	}
 
-	// Prefixes 0x66 is needed to change default operand size attribute back to 32 bits.
+	/* Prefixes 0x66 is needed to change default operand size attribute back to 32 bits.*/
 
 	context.operand_size_attribute = FCML_DS_16;
 	context.addr_form = FCML_AF_32_BIT;

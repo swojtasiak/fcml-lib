@@ -17,9 +17,9 @@
 #include "fcml_intel_parser.h"
 #include "fcml_common_dialect.h"
 
-// *************
-// * MNEMONICS *
-// *************
+/* **************/
+/* * MNEMONICS **/
+/* **************/
 
 fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
 	{ FCML_TEXT("aaa"), FCML_ASM_DIALECT_INSTRUCTION( F_AAA, FCML_AM_ALL ), 0 },
@@ -1051,9 +1051,9 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
 	{ NULL, 0, 0 }
 };
 
-// ********************
-// * END OF MNEMONICS *
-// ********************
+/* *********************/
+/* * END OF MNEMONICS **/
+/* *********************/
 
 #define FCML_ASM_DIALECT_INTEL_GROUPS 3
 
@@ -1108,7 +1108,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_register_intel( const fcml_st_register *
 }
 
 void fcml_fnp_asm_dialect_free_mnemonic_intel( fcml_st_mp_mnemonic *mnemonic ) {
-    // Do nothing.
+    /* Do nothing.*/
     if( mnemonic ) {
         fcml_fn_asm_dialect_free_mnemonic( mnemonic );
     }
@@ -1134,7 +1134,7 @@ fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_intel( const fcml_st_dia
 	}
 
 	if( !mnemonic_pattern ) {
-		// Choose best mnemonic for instruction.
+		/* Choose best mnemonic for instruction.*/
 		if( addr_mode->mnemonic_override ) {
 			mnemonic_pattern = addr_mode->mnemonic_override;
 		} else {
@@ -1164,7 +1164,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
         fcml_st_mp_mnemonic *mnemonic_def = (fcml_st_mp_mnemonic*)element->item;
 
         if( condition != NULL ) {
-            // Conditional instructions.
+            /* Conditional instructions.*/
 
             fcml_uint32_t suffix_nr = condition->condition_type * 2 + ( condition->is_negation ? 1 : 0 );
 
@@ -1174,7 +1174,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
                 if( suffix ) {
                     mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( mnemonic_def, suffix );
                     if( !mnemonics[counter] ) {
-                        // Out of memory.
+                        /* Out of memory.*/
                         error = FCML_CEH_GEC_OUT_OF_MEMORY;
                         break;
                     }
@@ -1183,7 +1183,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
             }
 
         } else {
-            // Allocate new instance of mnemonic.
+            /* Allocate new instance of mnemonic.*/
             mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic( mnemonic_def );
             if( mnemonics[counter] ) {
                 counter++;
@@ -1197,7 +1197,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
     }
 
     if( error ) {
-        // Free all prepared mnemonics.
+        /* Free all prepared mnemonics.*/
         int i;
         for( i = 0; i < counter; i++ ) {
             fcml_fnp_asm_dialect_free_mnemonic_intel( mnemonics[i] );
@@ -1223,7 +1223,7 @@ fcml_ceh_error fcml_fn_intel_dialect_init( fcml_uint32_t config_flags, fcml_st_d
         return error;
     }
 
-    // Prepares dialect instance.
+    /* Prepares dialect instance.*/
     dialect_context_intel->get_mnemonic = &fcml_fnp_asm_dialect_get_mnemonic_intel;
     dialect_context_intel->render_mnemonic = &fcml_fnp_asm_dialect_render_mnemonic_intel;
     dialect_context_intel->get_parsed_mnemonics = &fcml_fn_asm_dialect_get_parsed_mnemonics_intel;

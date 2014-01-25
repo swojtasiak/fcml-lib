@@ -161,16 +161,16 @@ fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t
 
 		addr_mode->addr_mode = FCML_GET_ADDR_MODE( encoded_addr_mode );
 
-		// Store access mode for this operand decoding.
+		/* Store access mode for this operand decoding.*/
 		fcml_en_access_mode access_mode = FCML_AM_ACCESS_MODE_UNDEFINED;
 		if( encoded_addr_mode & FCML_OA_W ) {
-			// Destination operands for some instructions can be also a source operands. In such case "READ" dlag has to be set for such operands.
+			/* Destination operands for some instructions can be also a source operands. In such case "READ" dlag has to be set for such operands.*/
 			access_mode |= FCML_AM_WRITE;
 			if( encoded_addr_mode & FCML_OA_R ) {
 				access_mode |= FCML_AM_READ;
 			}
 		} else {
-			// All operands but destination ones have access mode automatically set to "READ".
+			/* All operands but destination ones have access mode automatically set to "READ".*/
 			access_mode |= FCML_AM_READ;
 		}
 

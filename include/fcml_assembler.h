@@ -42,44 +42,44 @@ typedef struct fcml_st_assembler_conf {
 
 /* Encoded instruction. */
 typedef struct fcml_st_assembled_instruction {
-    // Next assembled instruction in the chain.
+    /* Next assembled instruction in the chain.*/
     struct fcml_st_assembled_instruction *next;
-	// Error and warning messages related to assembled instruction.
+	/* Error and warning messages related to assembled instruction.*/
 	fcml_st_ceh_error_container errors;
-	// Instruction machine code.
+	/* Instruction machine code.*/
 	fcml_uint8_t *code;
-	// Instruction code length in bytes.
+	/* Instruction code length in bytes.*/
 	fcml_usize code_length;
 #ifdef FCML_DEBUG
-	// Index of addressing mode used to assemble instruction.
+	/* Index of addressing mode used to assemble instruction.*/
 	fcml_uint8_t __def_index;
 #endif
 } fcml_st_assembled_instruction;
 
 /* Assembler result. */
 typedef struct fcml_st_assembler_result {
-    // Error and warnign messages from assembler.
+    /* Error and warnign messages from assembler.*/
 	fcml_st_ceh_error_container errors;
-	// List of assembled instructions.
+	/* List of assembled instructions.*/
 	fcml_st_assembled_instruction *instructions;
-	// Instruction chosen by used instruction chooser; otherwise null.
+	/* Instruction chosen by used instruction chooser; otherwise null.*/
 	fcml_st_assembled_instruction *chosen_instruction;
-	// Number of assembled instructions.
+	/* Number of assembled instructions.*/
 	fcml_usize number_of_instructions;
 } fcml_st_assembler_result;
 
 /* Assembler runtime context. */
 typedef struct fcml_st_assembler_context {
-    // Assembler instance that should be used to assemble instructions.
+    /* Assembler instance that should be used to assemble instructions.*/
     fcml_st_assembler *assembler;
-    // Assembler behavior can be configured here.
+    /* Assembler behavior can be configured here.*/
 	fcml_st_assembler_conf configuration;
-	// Processor addressing mode 16/32/64-bit.
+	/* Processor addressing mode 16/32/64-bit.*/
 	fcml_en_addr_form addr_form;
-	// Default address/operand size attribute (See 'D' flag of segment descriptor.)
+	/* Default address/operand size attribute (See 'D' flag of segment descriptor.)*/
 	fcml_data_size address_size_attribute;
 	fcml_data_size operand_size_attribute;
-	// Instruction pointer used for relative addressing address calculation.
+	/* Instruction pointer used for relative addressing address calculation.*/
 	fcml_st_instruction_pointer ip;
 } fcml_st_assembler_context;
 

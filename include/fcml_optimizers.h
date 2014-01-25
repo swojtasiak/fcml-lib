@@ -14,30 +14,30 @@
 
 /* Optimizer context used to contact with environemnt. */
 typedef struct fcml_st_asm_optimizer_context {
-    // Optimizer flags specified defined by assembler context.
+    /* Optimizer flags specified defined by assembler context.*/
     fcml_uint16_t optimizer_flags;
-    // Processor addressing mode 16/32/64-bit.
+    /* Processor addressing mode 16/32/64-bit.*/
     fcml_en_addr_form addr_form;
-    // Default address size attribute not modified by prefixes yet. (See 'D' flag of segment descriptor.)
+    /* Default address size attribute not modified by prefixes yet. (See 'D' flag of segment descriptor.)*/
     fcml_data_size asa;
-    // Default operand size attribute not modified by prefixes yet. (See 'D' flag of segment descriptor.)
+    /* Default operand size attribute not modified by prefixes yet. (See 'D' flag of segment descriptor.)*/
     fcml_data_size osa;
 } fcml_st_asm_optimizer_context;
 
-// Processing details for optimizers.
+/* Processing details for optimizers.*/
 typedef struct fcml_st_asm_optimizer_processing_details {
-    // Flags describing all EOSa sizes available for given addressing mode, these flags are calculated
-    // basing on instruction encoding and choosen mnemonic.
+    /* Flags describing all EOSa sizes available for given addressing mode, these flags are calculated*/
+    /* basing on instruction encoding and choosen mnemonic.*/
     fcml_st_nullable_size_flags allowed_eosa;
     fcml_st_nullable_size_flags allowed_easa;
-    // Effective address/operand size chosen for currently processed address mode. If they are set, they can not be changed anymore.
-    // It has higher priority than flags above. Take into account that these are effective attribute sizes, so they can be overriden
-    // by attribute size prefixes.
+    /* Effective address/operand size chosen for currently processed address mode. If they are set, they can not be changed anymore.*/
+    /* It has higher priority than flags above. Take into account that these are effective attribute sizes, so they can be overriden*/
+    /* by attribute size prefixes.*/
     fcml_data_size easa;
     fcml_data_size eosa;
-    // L bit from VEX like prefixes set for encoded instruction.
+    /* L bit from VEX like prefixes set for encoded instruction.*/
     fcml_nuint8_t l;
-    // Set to true in order to break optimization process.
+    /* Set to true in order to break optimization process.*/
     fcml_bool break_optimization;
 } fcml_st_asm_optimizer_processing_details;
 

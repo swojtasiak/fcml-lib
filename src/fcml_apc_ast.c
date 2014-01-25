@@ -171,7 +171,7 @@ fcml_st_ast_node *fcml_fn_ast_set_effective_address_details( fcml_st_register *s
 		effective_address->segment_selector = *segment_selector;
 	}
 
-	// Size operator is optional because not all assembler dialects allows to specify it here.
+	/* Size operator is optional because not all assembler dialects allows to specify it here.*/
 	if( size_operator ) {
 		effective_address->size_operator = size_operator->size;
 		if( size_operator->multimedia ) {
@@ -223,7 +223,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_uminus( fcml_st_ast_node *exp ) {
 	fcml_st_ast_node *node;
 	fcml_st_ast_node_uminus *uminus_node;
 
-	// Two unary minuses, so they can be reduced here.
+	/* Two unary minuses, so they can be reduced here.*/
 	if( exp->type == FCML_EN_TN_UMINUS ) {
 		uminus_node = (fcml_st_ast_node_uminus*)exp->node;
 		node = uminus_node->exp;
@@ -464,7 +464,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate( fcml_st_ast_node_va
 		fcml_uint64_t imm = value->integer_value.value;
 		fcml_bool is_signed = value->integer_value.is_signed;
 		if( is_signed ) {
-			// Optimized for 32 bit processors.
+			/* Optimized for 32 bit processors.*/
 			if( ( imm & 0xFFFFFFFF80000000UL ) == 0xFFFFFFFF80000000UL || ( imm & 0xFFFFFFFF00000000UL ) == 0x0000000000000000UL ) {
 				fcml_int32_t s_imm = (fcml_int32_t)imm;
 				if( ( s_imm & 0xFFFFFF80 ) == 0xFFFFFF80 || ( s_imm & 0xFFFFFF00 ) == 0x00000000 ) {
@@ -499,7 +499,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate( fcml_st_ast_node_va
 		}
 
 	} else {
-		// Unknown value type.
+		/* Unknown value type.*/
 		error = FCML_CEH_GEC_INTERNAL_BUG;
 	}
 	return error;
@@ -513,7 +513,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 	fcml_st_ast_node_value segment_selector_value;
 	fcml_st_ast_node_value offset_value;
 
-	// Evaluate expressions.
+	/* Evaluate expressions.*/
 
 	if( ( error = fcml_ifn_ast_eval_exp( segment_selector_node, error_container, &segment_selector_value ) ) ) {
 		return error;
@@ -523,9 +523,9 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 		return error;
 	}
 
-	// Segment selector and offset have to be integers.
+	/* Segment selector and offset have to be integers.*/
 	if( segment_selector_value.type != FCML_EN_ET_INTEGER || offset_value.type != FCML_EN_ET_INTEGER ) {
-		// Only integer values are supported here.
+		/* Only integer values are supported here.*/
 		if( !fcml_fn_ceh_add_error( error_container, "Segment selector and offset have to be an integer values.", FCML_EN_APC_AST_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
 			error = FCML_CEH_GEC_OUT_OF_MEMORY;
 		} else {
@@ -534,7 +534,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 		return error;
 	}
 
-	// Set segment selector.
+	/* Set segment selector.*/
 	fcml_bool overflow = FCML_FALSE;
 
 	if( segment_selector_value.integer_value.is_signed ) {
@@ -561,7 +561,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
         return error;
 	}
 
-	// Set offset.
+	/* Set offset.*/
 	if( offset_value.integer_value.is_signed ) {
 	    fcml_int64_t offset = (fcml_int64_t)offset_value.integer_value.value;
 	    if( offset <= FCML_INT16_MAX && offset >= FCML_INT16_MIN ) {
@@ -601,7 +601,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
 
     fcml_st_address *address = &(operand->address);
 
-    // Copy operands and instruction hints.
+    /* Copy operands and instruction hints.*/
     operand->hints |= effective_address_node->addressing_hints;
     cif_instruction->hints |= effective_address_node->instruction_hints;
 
@@ -613,7 +613,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
 
     address->address_form = is_combined ? FCML_AF_COMBINED : FCML_AF_OFFSET;
 
-	// Evaluate displacement.
+	/* Evaluate displacement.*/
 	if( effective_address_node->displacement != NULL ) {
 
 		fcml_st_ast_node_value value;
@@ -682,11 +682,11 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 	switch( ast_node->type ) {
 		case FCML_EN_TN_INSTRUCTION: {
 			fcml_st_ast_node_instruction *node_instruction = (fcml_st_ast_node_instruction*)ast_node->node;
-			// Handle mnemonic.
+			/* Handle mnemonic.*/
 			cif_instruction->prefixes = node_instruction->prefixes;
 			cif_instruction->hints |= node_instruction->hints;
 			cif_instruction->mnemonic = fcml_fn_env_str_strdup( node_instruction->mnemonic );
-			// Handle operands.
+			/* Handle operands.*/
 			if( node_instruction->operands ) {
 				error = fcml_ifn_ast_handle_ast_node( cif_instruction, NULL, node_instruction->operands, error_container );
 			}
@@ -721,13 +721,13 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 			error = fcml_ifn_ast_eval_exp( ast_node, error_container, &value );
 			if( !error ) {
 				if( current_operand != NULL ) {
-					// Convert value to immediate operand.
+					/* Convert value to immediate operand.*/
 					error = fcml_ifn_ast_util_convert_value_to_immediate( &value, &(current_operand->immediate) );
 					if( !error ) {
 						current_operand->type = FCML_EOT_IMMEDIATE;
 					}
 				} else {
-					// Operand is mandatory here.
+					/* Operand is mandatory here.*/
 					error = FCML_CEH_GEC_INTERNAL_BUG;
 				}
 			}

@@ -105,7 +105,7 @@ void fcml_tf_parser_gas_parse_test4(void) {
 }
 
 void fcml_tf_parser_gas_parse_test5(void) {
-	// Index only.
+	/* Index only.*/
 	fcml_st_parser_result *result;
 	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:(,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
@@ -127,7 +127,7 @@ void fcml_tf_parser_gas_parse_test5(void) {
 }
 
 void fcml_tf_parser_gas_parse_test6(void) {
-	// Index only.
+	/* Index only.*/
 	fcml_st_parser_result *result;
 	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
@@ -150,14 +150,14 @@ void fcml_tf_parser_gas_parse_test6(void) {
 }
 
 void fcml_tf_parser_gas_parse_test7(void) {
-	// Index only.
+	/* Index only.*/
 	fcml_st_parser_result *result = NULL;
 	STF_ASSERT_NOT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:(,%rbx,)", &result ), FCML_CEH_GEC_NO_ERROR );
 	fcml_fn_parser_result_free( result );
 }
 
 void fcml_tf_parser_gas_parse_test8(void) {
-	// Index only.
+	/* Index only.*/
 	fcml_st_parser_result *result;
 	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:0x100(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
@@ -182,7 +182,7 @@ void fcml_tf_parser_gas_parse_test8(void) {
 }
 
 void fcml_tf_parser_gas_parse_test9(void) {
-	// Index only.
+	/* Index only.*/
 	fcml_st_parser_result *result;
 	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:0x100", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
@@ -202,7 +202,7 @@ void fcml_tf_parser_gas_parse_test9(void) {
 }
 
 void fcml_tf_parser_gas_parse_test10(void) {
-	// Index only.
+	/* Index only.*/
 	fcml_st_parser_result *result;
 	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:0x100(%rax,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {
@@ -227,7 +227,7 @@ void fcml_tf_parser_gas_parse_test10(void) {
 }
 
 void fcml_tf_parser_gas_parse_test11(void) {
-	// RIP only.
+	/* RIP only.*/
 	fcml_st_parser_result *result;
 	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,0x100(%rip)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result->instruction != NULL ) {

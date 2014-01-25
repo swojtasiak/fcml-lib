@@ -77,7 +77,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_ifn_ts_set_ip( &(context.ip), addr_form );
 
-		// Disassemble.
+		/* Disassemble.*/
 		error = fcml_fn_disassemble( &context, &dis_result );
 
 	}
@@ -93,7 +93,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 				printf("Instruction: %s\n", mnemonic);
 			}
 
-			// Looking for 0x67 prefix.
+			/* Looking for 0x67 prefix.*/
 			int i;
 			for( i = 0; i < FCML_DASM_PREFIXES_COUNT; i++ ) {
 				if( dis_result->instruction_details.prefixes_details.prefixes[i].prefix == 0x67 ) {
@@ -104,7 +104,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
                 }
 			}
 
-			// Print.
+			/* Print.*/
 			char buffer[512] = {0};
 
 			fcml_st_memory_stream stream;
@@ -148,7 +148,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		}
 
-		// Parsing.
+		/* Parsing.*/
 
 		fcml_st_parser_result *result;
 		fcml_ceh_error error = fcml_fn_parse( dialect, mnemonic, &result );
@@ -164,7 +164,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_uint16_t opt_flags = 0;
 
-		// Assembling.
+		/* Assembling.*/
 		fcml_st_assembler_context context;
 		context.assembler = assembler;
 		context.address_size_attribute = 0;
@@ -217,7 +217,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
                 assembled_code_index = 0;
 
-                // Fill code array.
+                /* Fill code array.*/
                 fcml_st_assembled_instruction *assembled_instruction = instructions;
                 while( assembled_instruction ) {
                     assembled_code_len[assembled_code_index] = assembled_instruction->code_length;
@@ -230,7 +230,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
                         found = FCML_FALSE;
                         break;
                     }
-                    // Check if number of assembled instructions match.
+                    /* Check if number of assembled instructions match.*/
                     if( (t_flags & FCML_TSF_MULTI_ASM_RESULTS) && asm_result->number_of_instructions != code[0] ) {
 						found = FCML_FALSE;
 						break;
@@ -326,10 +326,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
                 }
             }
 
-            // Prints test code.
+            /* Prints test code.*/
             if( !(t_flags & FCML_TSF_SHOULD_FAIL) && assembled_code_index >= 1 && ( (t_flags & FCML_TSF_PRINT_ONLY) || !found ) ) {
 
-               // Mnemonic.
+               /* Mnemonic.*/
                fcml_string macro;
 			   switch( addr_form ) {
 			   case FCML_AF_16_BIT:
@@ -345,10 +345,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
                printf("%s( \"%s\", ", macro, mnemonic );
 
-               // Code.
+               /* Code.*/
 
                if( assembled_code_index > 1 ) {
-                   // multi.
+                   /* multi.*/
                    printf( "%d, ", assembled_code_index );
                    int i, j;
                    for( i = 0; i < assembled_code_index; i++ ) {
@@ -425,12 +425,12 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 
 	fcml_ifn_ts_set_ip( &(context.ip), addr_form );
 
-	// Disassemble.
+	/* Disassemble.*/
 	error = fcml_fn_disassemble( &context, &dis_result );
 
 	if( !error ) {
 
-		// Print.
+		/* Print.*/
 		char buffer[512] = {0};
 
 		fcml_st_memory_stream stream;
