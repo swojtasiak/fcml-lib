@@ -8,10 +8,10 @@
 #ifndef FCML_PARSER_H_
 #define FCML_PARSER_H_
 
+#include "fcml_types.h"
 #include "fcml_ceh.h"
 #include "fcml_common.h"
 #include "fcml_dialect.h"
-#include "fcml_types.h"
 
 #define FCML_PARSER_MAX_INSTRUCTION_LEN	1024
 

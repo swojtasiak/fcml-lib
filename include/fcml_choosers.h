@@ -8,8 +8,8 @@
 #ifndef FCML_CHOOSER_H_
 #define FCML_CHOOSER_H_
 
-#include <fcml_common.h>
 #include <fcml_types.h>
+#include <fcml_common.h>
 
 /* Gets next instructions basing on the current one. */
 typedef fcml_ptr (*fcml_fnp_chooser_next)( fcml_ptr instruction );

@@ -8,10 +8,10 @@
 #ifndef FCML_DISASSEMBLER_H_
 #define FCML_DISASSEMBLER_H_
 
+#include "fcml_types.h"
 #include "fcml_ceh.h"
 #include "fcml_common.h"
 #include "fcml_dialect.h"
-#include "fcml_types.h"
 
 #define FCML_DASM_PREFIXES_COUNT	12
 

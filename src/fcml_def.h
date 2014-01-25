@@ -14,7 +14,7 @@
 
 /* Constants used to encode operand size on one byte. Used only in instruction descriptions. */
 
-// Take into account that every size is given in a number of bytes.
+/* Take into account that every size is given in a number of bytes. */
 #define FCML_EOS_UNDEFINED	0
 #define FCML_EOS_512B		FCML_EOS_UNDEFINED
 #define FCML_EOS_BYTE		1
@@ -28,16 +28,16 @@
 #define FCML_EOS_XWORD      16
 #define FCML_EOS_YWORD		32
 
-// Dynamic encoded operand sizes calculated at runtime.
+/* Dynamic encoded operand sizes calculated at runtime. */
 
 #define FCML_EOS_DYNAMIC_BASE	0x70
 #define FCML_EOS_OPT			0x80
 
-// Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute.
+/* Operand size calculated by Effective Operand Size Attribute and Effective Address Size Attribute. */
 #define FCML_EOS_EOSA			0x7F
 #define FCML_EOS_EASA			0x7E
 
-// Operand size calculated on L field.
+/* Operand size calculated on L field. */
 #define FCML_EOS_L				0x7D
 
 // Operand sizes that cannot be simply written as number of bytes.

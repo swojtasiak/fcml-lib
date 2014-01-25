@@ -126,8 +126,6 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 
 	fcml_st_effective_address *effective_address = &(address->effective_address);
 
-	fcml_bool first = FCML_TRUE;
-
 	// Adds SIB hints to all instructions where SIB presents.
 
 	/*
@@ -144,8 +142,6 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 
 		// Displacement.
 		if( effective_address->displacement.size > 0 ) {
-
-			first = FCML_FALSE;
 
 			fcml_st_integer integer;
 			error = fcml_fn_utils_displacement_to_integer( &(effective_address->displacement), &integer );
@@ -164,20 +160,16 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 		// Append base register.
 		if( !fcml_fn_utils_is_reg_undef( &(effective_address->base) ) ) {
 			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->base), prefixes->is_rex );
-			first = FCML_FALSE;
 		}
 
 		// Append index register.
 		if( !fcml_fn_utils_is_reg_undef( &(effective_address->index) ) ) {
 			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(",") );
 			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->index), prefixes->is_rex );
-			first = FCML_FALSE;
 		}
 
 		// Append scale.
 		if( effective_address->scale_factor > 0 ) {
-
-			first = FCML_FALSE;
 
 			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(",") );
 

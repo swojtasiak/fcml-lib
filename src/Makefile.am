@@ -1,3 +1,4 @@
+@SET_MAKE@
 BUILT_SOURCES = fcml_intel_parser_def.h fcml_gas_parser_def.h fcml_intel_lexer.h fcml_gas_lexer.h
 AM_YFLAGS = -d
 lib_LTLIBRARIES = libfcml.la

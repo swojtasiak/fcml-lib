@@ -8,9 +8,25 @@
 #ifndef FCML_TYPES_H_
 #define FCML_TYPES_H_
 
+/* If config.h is available, we depend on it; otherwise we give
+ * the responsibility to handle headers appropriately to the compiler runtime.
+ * */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#ifdef HAVE_STDDEF_H
 #include <stddef.h>
-#include <inttypes.h>
+#endif
+#if HAVE_STDINT_H
 #include <stdint.h>
+#endif
+#if HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+#else
+#include <stddef.h>
+#include <stdint.h>
+#include <inttypes.h>
+#endif
 
 #define FCML_TEXT(x)	x
 

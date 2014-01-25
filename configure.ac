@@ -12,11 +12,15 @@ AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_CPP
+AC_PROG_AWK
 AC_PROG_INSTALL
 AM_PROG_LEX
 AC_PROG_YACC
-
 AM_PROG_CC_C_O
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
 
 # Configure options: --enable-debug[=no].
 AC_ARG_ENABLE([debug],
@@ -36,9 +40,7 @@ AC_TYPE_INT16_T
 AC_TYPE_INT32_T
 AC_TYPE_INT64_T
 AC_TYPE_INT8_T
-AC_C_RESTRICT
 AC_TYPE_SIZE_T
-AC_CHECK_HEADER_STDBOOL
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
@@ -47,7 +49,7 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memset pow strtoul strtoull])
+AC_CHECK_FUNCS([memset strtoul strtoull])
 
 # Configure DEBUG source code, if requested.
 AS_IF([test "x$debug" = xyes],
