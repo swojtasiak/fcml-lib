@@ -30,7 +30,7 @@ typedef enum fcml_en_stream_seek_type {
 
 void fcml_fn_stream_seek( fcml_st_memory_stream *stream, fcml_int32_t offset, fcml_en_stream_seek_type type );
 fcml_uint8_t fcml_fn_stream_read( fcml_st_memory_stream *stream, fcml_bool *result );
-fcml_bool fcml_fn_stream_write( fcml_st_memory_stream *stream, uint8_t data );
+fcml_bool fcml_fn_stream_write( fcml_st_memory_stream *stream, fcml_uint8_t data );
 fcml_uint8_t fcml_fn_stream_peek( fcml_st_memory_stream *stream, fcml_bool *result );
 fcml_int32_t fcml_fn_stream_size( const fcml_st_memory_stream *stream );
 int fcml_fn_stream_read_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer, fcml_usize size);

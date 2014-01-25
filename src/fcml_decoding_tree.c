@@ -27,8 +27,8 @@ typedef struct fcml_ist_dt_dts_opcodes {
 typedef fcml_ceh_error ( *fcml_ifp_dt_dts_opcode_callback )( fcml_st_dt_decoding_tree *dec_tree, fcml_st_def_instruction_desc *instruction_desc, fcml_st_def_addr_mode_desc *opcode_desc, fcml_ist_dt_dts_opcodes *opcodes );
 
 /* Sets opcode field into a opcode byte. */
-fcml_uint8_t fcml_ifn_dt_dts_utils_set_opcode_byte_field( uint8_t opcode_byte, int opcode_field_pos, int field_size, uint8_t field_value ) {
-	uint8_t bit_mask = ~( (int)pow( 2, field_size ) - 1 );
+fcml_uint8_t fcml_ifn_dt_dts_utils_set_opcode_byte_field( fcml_uint8_t opcode_byte, int opcode_field_pos, int field_size, fcml_uint8_t field_value ) {
+	fcml_uint8_t bit_mask = ~( (int)pow( 2, field_size ) - 1 );
 	return ( opcode_byte & bit_mask ) | ( field_value << opcode_field_pos );
 }
 
@@ -78,12 +78,12 @@ fcml_ceh_error fcml_ifn_dt_dts_handle_next_opcode_byte( fcml_st_dt_decoding_tree
 		return callback( dec_tree, instruction_desc, opcode_desc, opcodes );
 	}
 
-	uint8_t opcode_byte = opcode_desc->opcode[opcode_byte_num];
+	fcml_uint8_t opcode_byte = opcode_desc->opcode[opcode_byte_num];
 
 	// Check if this is an opcode with opcode fields.
 	if( opcode_byte_num == primary_opcode_byte_num ) {
 
-		uint32_t opcode_flags = opcode_desc->opcode_flags;
+		fcml_uint32_t opcode_flags = opcode_desc->opcode_flags;
 
 		int opcode_flags_pos = FCML_DEF_OPCODE_FLAGS_POS( opcode_flags );
 

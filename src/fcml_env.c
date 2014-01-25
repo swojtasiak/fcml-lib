@@ -13,7 +13,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-static void *fcml_fn_env_default_memory_alloc( uint32_t size ) {
+static void *fcml_fn_env_default_memory_alloc( fcml_usize size ) {
     return malloc(size);
 }
 
@@ -87,7 +87,7 @@ void fcml_fn_env_str_strncpy( fcml_string dst, const fcml_string src, fcml_usize
 }
 
 fcml_string fcml_fn_env_str_strdup( const fcml_string str ) {
-	uint32_t size = strlen( str ) + 1;
+	fcml_usize size = strlen( str ) + 1;
 	fcml_string new_str = fcml_fn_env_memory_alloc( size );
 	if( new_str ) {
 		memcpy( new_str, str, size );

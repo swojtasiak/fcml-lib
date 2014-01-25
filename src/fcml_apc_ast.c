@@ -457,7 +457,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate( fcml_st_ast_node_va
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	immediate->is_signed = FCML_FALSE;
 	if( value->type == FCML_EN_ET_FLOAT ) {
-		fcml_uint32_t ieee754float = *((uint32_t*)&(value->float_value.value));
+		fcml_uint32_t ieee754float = *((fcml_uint32_t*)&(value->float_value.value));
 		immediate->imm32 = ieee754float;
 		immediate->imm_size = FCML_DS_32;
 	} else if( value->type == FCML_EN_ET_INTEGER ) {

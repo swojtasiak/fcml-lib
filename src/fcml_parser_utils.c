@@ -11,7 +11,7 @@
 #include <errno.h>
 
 void fcml_fn_pu_parse_integer( const fcml_char *str, fcml_st_ast_val_integer *integer_value, int base ) {
-	uint64_t value = strtoull( str, NULL, base );
+	fcml_uint64_t value = strtoull( str, NULL, base );
 	if( errno == ERANGE ) {
 		integer_value->overflow = FCML_TRUE;
 	}

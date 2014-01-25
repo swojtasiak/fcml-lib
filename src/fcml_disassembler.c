@@ -124,13 +124,13 @@ typedef struct fcml_ist_dasm_instruction_decoding_def {
 	// Type of the instruction.
 	fcml_uint64_t instruction_group;
 	/* Opcodes. */
-	uint8_t opcodes[FCML_OPCODES_NUM];
+	fcml_uint8_t opcodes[FCML_OPCODES_NUM];
 	/* Instruction mnemonic */
 	fcml_st_mp_mnemonic_set *mnemonics;
 	/* Flags that describe prefixes usage. */
-	uint16_t prefixes_flags;
+	fcml_uint16_t prefixes_flags;
 	/* Flags that describe some details of opcodes. */
-	uint32_t opcode_flags;
+	fcml_uint32_t opcode_flags;
 	/* Instruction decoder. */
 	fcml_ifp_dasm_instruction_decoder instruction_decoder;
 	/* Chain of address mode acceptors registered for given addressing mode. */
@@ -255,8 +255,8 @@ fcml_data_size fcml_ifn_dasm_utils_decode_encoded_size_value( fcml_ist_dasm_deco
 
 int fcml_ifn_dasm_dts_calculate_decoding_order( fcml_ist_dasm_instruction_decoding_def *decoding ) {
 
-	uint16_t prefixes = decoding->prefixes_flags;
-	uint32_t opcodes = decoding->opcode_flags;
+	fcml_uint16_t prefixes = decoding->prefixes_flags;
+	fcml_uint32_t opcodes = decoding->opcode_flags;
 
 	int order = 0;
 
@@ -908,7 +908,7 @@ fcml_st_instruction_prefix* fcml_ifn_dasm_get_prefix_if_available( fcml_ist_dasm
 	return prefix;
 }
 
-fcml_bool fcml_ifn_dasm_is_prefix_available( fcml_ist_dasm_decoding_context *context, uint8_t prefix, fcml_bool mandatory ) {
+fcml_bool fcml_ifn_dasm_is_prefix_available( fcml_ist_dasm_decoding_context *context, fcml_uint8_t prefix, fcml_bool mandatory ) {
 	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 	// Handle VEX mandatory prefixes.
 	if( mandatory && prefixes->is_vex && prefixes->pp ) {
@@ -926,7 +926,7 @@ fcml_bool fcml_ifn_dasm_is_prefix_available( fcml_ist_dasm_decoding_context *con
 	return mandatory ? ( found_prefix != NULL && found_prefix->mandatory_prefix ) : ( found_prefix != NULL );
 }
 
-void fcml_ifn_dasm_clear_mandatory_flag( fcml_ist_dasm_decoding_context *context, uint8_t prefix_code ) {
+void fcml_ifn_dasm_clear_mandatory_flag( fcml_ist_dasm_decoding_context *context, fcml_uint8_t prefix_code ) {
 	fcml_st_instruction_prefix *prefix = fcml_ifn_dasm_get_prefix_if_available( context, prefix_code );
 	if( prefix ) {
 		prefix->mandatory_prefix = FCML_FALSE;
@@ -1095,14 +1095,14 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm( fcml_ist_dasm_decoding_conte
 	// Check addressing mode for ModRM opcodes.
 	if( modrm_details->is_mem_restriction ) {
 		fcml_bool modrm_found = FCML_FALSE;
-		uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found );
+		fcml_uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found );
 		if( !modrm_found || FCML_MODRM_DEC_MOD( modrm ) == 3 ) {
 			return FCML_FALSE;
 		}
 	}
 	if( modrm_details->is_reg_restriction ) {
 		fcml_bool modrm_found = FCML_FALSE;
-		uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found );
+		fcml_uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found );
 		if( !modrm_found || FCML_MODRM_DEC_MOD( modrm ) != 3 ) {
 			return FCML_FALSE;
 		}

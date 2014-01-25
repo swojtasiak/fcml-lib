@@ -1867,7 +1867,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 
 		fcml_bool ignore = FCML_FALSE;
 
-		// Check if there is such instruction is already assembled.
+		// Check if there is such instruction is already assembled. TODO: correct this sentence, its written with mistakes.
 		fcml_st_assembled_instruction *instruction = encoding_result->instructions;
 		while( instruction ) {
 		    int max_code_len = instruction->code_length > assembled_instruction->code_length ? assembled_instruction->code_length : instruction->code_length;
@@ -3075,7 +3075,7 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 
 typedef struct fcml_ist_asm_instruction_part_factory_details {
 	fcml_ifp_asm_instruction_part_processor_factory factory;
-	uint32_t flags;
+	fcml_uint32_t flags;
 } fcml_ist_asm_instruction_part_factory_details;
 
 typedef enum fcml_ist_instruction_part_choice_type {

@@ -660,7 +660,7 @@ fcml_ceh_error fcml_fn_utils_integer_to_imm( const fcml_st_integer *integer, fcm
 fcml_ceh_error fcml_fn_utils_extend_integer( fcml_st_integer *integer, fcml_usize extension ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if( !integer->is_signed ) {
-        uint64_t temp_int = 0;
+        fcml_uint64_t temp_int = 0;
         switch( integer->size ) {
         case 8:
             temp_int = (fcml_uint8_t)integer->int8;
@@ -697,7 +697,7 @@ fcml_ceh_error fcml_fn_utils_extend_integer( fcml_st_integer *integer, fcml_usiz
             integer->size = extension;
         }
 	} else {
-	    int64_t temp_int = 0;
+	    fcml_int64_t temp_int = 0;
         switch( integer->size ) {
         case 8:
             temp_int = integer->int8;

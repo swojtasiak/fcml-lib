@@ -43,10 +43,10 @@ fcml_uint8_t fcml_fn_stream_read( fcml_st_memory_stream *stream, fcml_bool *resu
     return 0;
 }
 
-fcml_bool fcml_fn_stream_write( fcml_st_memory_stream *stream, uint8_t data ) {
+fcml_bool fcml_fn_stream_write( fcml_st_memory_stream *stream, fcml_uint8_t data ) {
     fcml_bool result = FCML_FALSE;
     if( stream->offset < stream->size )  {
-        uint8_t *base_address = (uint8_t *)stream->base_address;
+        fcml_uint8_t *base_address = (fcml_uint8_t *)stream->base_address;
         base_address[stream->offset++] = data;
         result = FCML_TRUE;
     }
@@ -69,8 +69,8 @@ int fcml_fn_stream_read_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer , 
     if( size == 0 ) {
         return 0;
     }
-    uint8_t *destination_buffer = (uint8_t*)buffer;
-    uint8_t *source_buffer = (uint8_t*)stream->base_address;
+    fcml_uint8_t *destination_buffer = (fcml_uint8_t*)buffer;
+    fcml_uint8_t *source_buffer = (fcml_uint8_t*)stream->base_address;
     int i = 0;
     while( stream->offset < stream->size && i < size ) {
         destination_buffer[i++] = source_buffer[stream->offset++];
@@ -93,7 +93,7 @@ int fcml_fn_stream_write_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer ,
 
 fcml_uint16_t fcml_fn_stream_read_word( fcml_st_memory_stream *stream, fcml_bool *result ) {
 	fcml_uint16_t value = 0;
-    if( stream->size - stream->offset >= sizeof(uint16_t) ) {
+    if( stream->size - stream->offset >= sizeof(fcml_uint16_t) ) {
         int offset = stream->offset;
         value |= ((fcml_uint8_t*)stream->base_address)[offset];
         value |= ((fcml_uint8_t*)stream->base_address)[offset + 1] << 8;
@@ -137,7 +137,7 @@ fcml_uint64_t fcml_fn_stream_read_qword( fcml_st_memory_stream *stream, fcml_boo
     return value;
 }
 
-fcml_bool fcml_fn_stream_write_word( fcml_st_memory_stream *stream, uint16_t data ) {
+fcml_bool fcml_fn_stream_write_word( fcml_st_memory_stream *stream, fcml_uint16_t data ) {
     fcml_bool result = FCML_FALSE;
     if( stream->size - stream->offset >= sizeof(fcml_uint16_t) ) {
        int offset = stream->offset;

@@ -8,7 +8,6 @@
 #ifndef FCML_INT_COMMON_H_
 #define FCML_INT_COMMON_H_
 
-#include <stdint.h>
 #include <stddef.h>
 
 #include "fcml_types.h"
@@ -356,10 +355,10 @@ typedef struct fcml_st_displacement {
 	fcml_data_size size;
 	fcml_bool is_signed;
     union {
-        int8_t dis8;
-        int16_t dis16;
-        int32_t dis32;
-        int64_t dis64;
+        fcml_int8_t dis8;
+        fcml_int16_t dis16;
+        fcml_int32_t dis32;
+        fcml_int64_t dis64;
     };
 } fcml_st_displacement;
 
@@ -381,9 +380,9 @@ typedef struct fcml_st_offset {
 	fcml_data_size size;
 	fcml_bool is_signed;
     union {
-        int16_t off16;
-        int32_t off32;
-        int64_t off64;
+        fcml_int16_t off16;
+        fcml_int32_t off32;
+        fcml_int64_t off64;
     };
 } fcml_st_offset;
 

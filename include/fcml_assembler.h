@@ -44,16 +44,16 @@ typedef struct fcml_st_assembler_conf {
 typedef struct fcml_st_assembled_instruction {
     // Next assembled instruction in the chain.
     struct fcml_st_assembled_instruction *next;
-#ifdef FCML_DEBUG
-	// Index of addressing mode used to assemble instruction.
-	fcml_uint8_t __def_index;
-#endif
 	// Error and warning messages related to assembled instruction.
 	fcml_st_ceh_error_container errors;
 	// Instruction machine code.
 	fcml_uint8_t *code;
 	// Instruction code length in bytes.
 	fcml_usize code_length;
+#ifdef FCML_DEBUG
+	// Index of addressing mode used to assemble instruction.
+	fcml_uint8_t __def_index;
+#endif
 } fcml_st_assembled_instruction;
 
 /* Assembler result. */

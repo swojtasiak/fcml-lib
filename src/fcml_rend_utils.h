@@ -16,7 +16,7 @@
 
 void fcml_fn_rend_utils_format_printf(struct fcml_st_memory_stream *stream, const fcml_string format, ...);
 void fcml_fn_rend_utils_format_append_hex_byte( fcml_st_memory_stream *stream, fcml_uint8_t hex_byte );
-void fcml_fn_rend_utils_format_append_code( fcml_st_memory_stream *stream, fcml_uint8_t *instrunction_code, uint8_t instruction_code_size );
+void fcml_fn_rend_utils_format_append_code( fcml_st_memory_stream *stream, fcml_uint8_t *instrunction_code, fcml_uint8_t instruction_code_size );
 void fcml_fn_rend_utils_format_append_str_if( fcml_st_memory_stream *stream, const fcml_string string, fcml_bool condition );
 void fcml_fn_rend_utils_format_finish_str( fcml_st_memory_stream *stream );
 void fcml_fn_rend_utils_format_append_str( fcml_st_memory_stream *stream, const fcml_string source );
