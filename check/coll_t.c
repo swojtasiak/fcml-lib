@@ -202,6 +202,7 @@ void fcml_tf_coll_test_clear(void) {
 }
 
 int iterator_counter;
+
 void fcml_itf_coll_test_iterate_handler( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
 	iterator_counter++;
 }

@@ -34,9 +34,9 @@ void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml
 		part_size = stream->size - stream->offset - 1;
 	}
 
-	strncpy(stream->base_address + stream->offset, local_buffer, part_size);
-	stream->offset += part_size;
+	strncpy( &(((fcml_char*)stream->base_address)[stream->offset]), local_buffer, part_size);
 
+	stream->offset += part_size;
 }
 
 void fcml_fn_rend_utils_format_append_hex_byte( fcml_st_memory_stream *stream, fcml_uint8_t hex_byte ) {
@@ -59,7 +59,7 @@ void fcml_fn_rend_utils_format_append_str_if( fcml_st_memory_stream *stream, con
 void fcml_fn_rend_utils_format_finish_str( fcml_st_memory_stream *stream ) {
     int size = sizeof( FCML_TEXT( "\0" ) );
     if( fcml_fn_stream_size( stream ) >= size ) {
-        strncpy( stream->base_address + stream->offset, FCML_TEXT( "\0" ), size );
+        strncpy( &(((fcml_char*)stream->base_address)[stream->offset]), FCML_TEXT( "\0" ), size );
         stream->offset += size;
     }
 }
@@ -73,7 +73,7 @@ void fcml_fn_rend_utils_format_append_str( fcml_st_memory_stream *stream, const 
 
 	fcml_int destination_size = stream->size - stream->offset;
 	fcml_int n = ( destination_size < source_size ) ? destination_size : source_size;
-	strncpy( stream->base_address + stream->offset, source, n );
+	strncpy( &(((fcml_char*)stream->base_address)[stream->offset]), source, n );
 	stream->offset += n;
 }
 
@@ -83,7 +83,7 @@ void fcml_fn_rend_utils_format_append_stream( fcml_st_memory_stream *destination
 	}
 	fcml_int destination_size = destination_stream->size - destination_stream->offset;
 	fcml_int n = ( destination_size < source_stream->offset ) ? destination_size : source_stream->offset;
-	strncpy( destination_stream->base_address + destination_stream->offset, source_stream->base_address, n );
+	strncpy( &(((fcml_char*)destination_stream->base_address)[destination_stream->offset]), source_stream->base_address, n );
 	destination_stream->offset += n;
 }
 

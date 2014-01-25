@@ -159,12 +159,11 @@ typedef struct fcml_nint64_t {
 typedef struct fcml_st_integer {
     fcml_data_size size;
     fcml_bool is_signed;
-    union {
-        fcml_int8_t int8;
-        fcml_int16_t int16;
-        fcml_int32_t int32;
-        fcml_int64_t int64;
-    };
+    // Data fields.
+	fcml_int8_t int8;
+	fcml_int16_t int16;
+	fcml_int32_t int32;
+	fcml_int64_t int64;
 } fcml_st_integer;
 
 #endif /* FCML_TYPES_H_ */

@@ -9,7 +9,6 @@
 #define FCML_DIALECT_H_
 
 /* Assembler dialect.*/
-typedef struct fcml_st_dialect {
-} fcml_st_dialect;
+typedef struct fcml_st_dialect fcml_st_dialect;
 
 #endif /* FCML_DIALECT_H_ */

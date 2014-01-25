@@ -332,32 +332,29 @@ typedef enum fcml_en_access_mode {
 typedef struct fcml_st_immediate {
 	fcml_data_size imm_size;
 	fcml_bool is_signed;
-    union {
-        fcml_uint8_t imm8;
-        fcml_uint16_t imm16;
-        fcml_uint32_t imm32;
-        fcml_uint64_t imm64;
-    };
+	/* Data fields. */
+	fcml_uint8_t imm8;
+	fcml_uint16_t imm16;
+	fcml_uint32_t imm32;
+	fcml_uint64_t imm64;
 } fcml_st_immediate;
 
 typedef struct fcml_st_far_pointer {
     fcml_uint16_t segment;
     fcml_data_size offset_size;
-    union {
-        fcml_uint16_t offset16;
-        fcml_uint32_t offset32;
-    };
+    /* Data fields. */
+	fcml_uint16_t offset16;
+	fcml_uint32_t offset32;
 } fcml_st_far_pointer;
 
 typedef struct fcml_st_displacement {
 	fcml_data_size size;
 	fcml_bool is_signed;
-    union {
-        fcml_int8_t dis8;
-        fcml_int16_t dis16;
-        fcml_int32_t dis32;
-        fcml_int64_t dis64;
-    };
+	/* Data fields. */
+	fcml_int8_t dis8;
+	fcml_int16_t dis16;
+	fcml_int32_t dis32;
+	fcml_int64_t dis64;
 } fcml_st_displacement;
 
 /* *******************************************/
@@ -377,11 +374,10 @@ typedef enum fcml_en_address_form {
 typedef struct fcml_st_offset {
 	fcml_data_size size;
 	fcml_bool is_signed;
-    union {
-        fcml_int16_t off16;
-        fcml_int32_t off32;
-        fcml_int64_t off64;
-    };
+	/* Data fields. */
+	fcml_int16_t off16;
+	fcml_int32_t off32;
+	fcml_int64_t off64;
 } fcml_st_offset;
 
 typedef struct fcml_st_effective_address {
@@ -429,12 +425,10 @@ typedef enum fcml_en_operand_hints {
 typedef struct fcml_st_operand {
     fcml_en_operand_type type;
     fcml_hints hints;
-    union {
-        fcml_st_immediate immediate;
-        fcml_st_far_pointer far_pointer;
-        fcml_st_address address;
-        fcml_st_register reg;
-    };
+	fcml_st_immediate immediate;
+	fcml_st_far_pointer far_pointer;
+	fcml_st_address address;
+	fcml_st_register reg;
 } fcml_st_operand;
 
 /*********************************

@@ -16,8 +16,7 @@
 #include "fcml_choosers.h"
 
 /* This structure and type definition represents an abstract assembler. */
-typedef struct fcml_st_assembler {
-} fcml_st_assembler;
+typedef struct fcml_st_assembler fcml_st_assembler;
 
 /* Assembler runtime configuration. */
 typedef struct fcml_st_assembler_conf {

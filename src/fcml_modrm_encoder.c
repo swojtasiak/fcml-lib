@@ -21,7 +21,7 @@ fcml_st_memory_stream fcml_ifn_modrm_map_displacement_to_stream( fcml_st_encoded
 	return stream;
 }
 
-inline fcml_ceh_error fcml_ifn_modrm_is_displacement( const fcml_st_address *address ) {
+fcml_ceh_error fcml_ifn_modrm_is_displacement( const fcml_st_address *address ) {
     return address->offset.size || address->effective_address.displacement.size;
 }
 

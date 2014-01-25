@@ -55,7 +55,7 @@ fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_64_bit_optimization
 	{ FCML_EN_ASF_16, FCML_DS_16 }
 };
 
-inline fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_en_attribute_size_flag flags, fcml_int path_length, fcml_ist_asm_opt_optimization_path_element *path, fcml_data_size *attribute_dest ) {
+fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_en_attribute_size_flag flags, fcml_int path_length, fcml_ist_asm_opt_optimization_path_element *path, fcml_data_size *attribute_dest ) {
 	int i, count = 0;
 	for( i = 0; i < path_length; i++ ) {
 		fcml_ist_asm_opt_optimization_path_element *element = &(path[i]);
@@ -66,7 +66,7 @@ inline fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_en_attri
 	return count;
 }
 
-inline fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_en_attribute_size_flag flags, fcml_uint16_t opt_flags, fcml_data_size attribute_size, fcml_data_size *attribute_dest ) {
+fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_en_attribute_size_flag flags, fcml_uint16_t opt_flags, fcml_data_size attribute_size, fcml_data_size *attribute_dest ) {
 	if( ( flags & opt_flags ) || ( flags == FCML_EN_ASF_ANY ) ) {
 		*attribute_dest = attribute_size;
 		return 1;

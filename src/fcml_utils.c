@@ -738,7 +738,7 @@ fcml_ceh_error fcml_fn_utils_extend_integer( fcml_st_integer *integer, fcml_usiz
 	return error;
 }
 
-inline fcml_bool fcml_fn_utils_is_reg_undef( const fcml_st_register *reg ) {
+fcml_bool fcml_fn_utils_is_reg_undef( const fcml_st_register *reg ) {
     return reg->type == FCML_REG_UNDEFINED;
 }
 

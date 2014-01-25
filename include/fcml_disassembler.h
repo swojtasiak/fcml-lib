@@ -19,8 +19,7 @@
 #define FCML_DASM_CONDITIONAL_GROUP_2	0x01
 
 /* This structure and type definition represents an abstract disassembler. */
-typedef struct fcml_st_disassembler {
-} fcml_st_disassembler;
+typedef struct fcml_st_disassembler fcml_st_disassembler;
 
 /* Disassembler configuration. */
 typedef struct fcml_st_disassembler_conf {

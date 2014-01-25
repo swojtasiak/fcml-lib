@@ -356,7 +356,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 		if( operand_size == FCML_DS_16 || operand_size == FCML_DS_32 || operand_size == FCML_DS_64 ) {
 			effective_address_size = operand_size;
 		} else {
-			FCML_TRACE( "Unsupported encoded EOSA size." );
+			FCML_TRACE_MSG( "Unsupported encoded EOSA size." );
 			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 		}
 		break;
@@ -364,7 +364,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 		if( operand_size == FCML_DS_16 || operand_size == FCML_DS_32 || operand_size == FCML_DS_64 ) {
 			effective_operand_size = operand_size;
 		} else {
-			FCML_TRACE( "Unsupported encoded EASA size." );
+			FCML_TRACE_MSG( "Unsupported encoded EASA size." );
 			error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 		}
 		break;
@@ -375,7 +375,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 			break;
 		case 28 * 8:
 			if( context->assembler_context->operand_size_attribute == FCML_DS_16 ) {
-				FCML_TRACE( "Addressing mode not available for 16 bit EOSA." );
+				FCML_TRACE_MSG( "Addressing mode not available for 16 bit EOSA." );
 				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			} else {
 				effective_operand_size = context->assembler_context->operand_size_attribute;
@@ -392,7 +392,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 			break;
 		case 32 * 2:
 			if( context->assembler_context->operand_size_attribute == FCML_DS_16 ) {
-				FCML_TRACE( "Addressing mode not available for 16 bit EOSA." );
+				FCML_TRACE_MSG( "Addressing mode not available for 16 bit EOSA." );
 				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			} else {
 				effective_operand_size = context->assembler_context->operand_size_attribute;
@@ -409,7 +409,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 			break;
 		case 108 * 8:
 			if( context->assembler_context->operand_size_attribute == FCML_DS_16 ) {
-				FCML_TRACE( "Addressing mode not available for 16 bit EOSA." );
+				FCML_TRACE_MSG( "Addressing mode not available for 16 bit EOSA." );
 				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			} else {
 				effective_operand_size = context->assembler_context->operand_size_attribute;
@@ -757,7 +757,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
             }
 
             if( !is_convertable || ( flags && !fcml_ifn_asm_set_size_flag( &(context->optimizer_processing_details.allowed_eosa ), flags ) ) ) {
-                FCML_TRACE("Accept IMM: Can not accept IMM value." );
+            	FCML_TRACE_MSG("Accept IMM: Can not accept IMM value." );
                 error = FCML_EN_UNSUPPORTED_OPPERAND;
             }
 
@@ -798,7 +798,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 		}
 
 		if( ( imm_size == FCML_EOS_EOSA || imm_size_ex == FCML_EOS_EOSA ) && !eosa_size ) {
-			FCML_TRACE("EOSA size not set! Processing failed.");
+			FCML_TRACE_MSG("EOSA size not set! Processing failed.");
 			return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
 		}
 
@@ -1118,7 +1118,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_far_pointer( fcml_ien_asm_part_proce
                 /* Set chosen OSA for next operands.*/
                 context->optimizer_processing_details.eosa = osa;
             } else {
-                FCML_TRACE("Can not calculate best OSA size for far pointer offset.");
+            	FCML_TRACE_MSG("Can not calculate best OSA size for far pointer offset.");
                 error = FCML_EN_UNSUPPORTED_OPPERAND;
             }
         } else {
@@ -1312,7 +1312,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			} else {
 				if( !fcml_ifn_asm_accept_data_size( context, addr_mode_desc, args->encoded_register_operand_size, operand_def->reg.size, FCML_IEN_CT_EQUAL ) ) {
-					FCML_TRACE( "Unsupported register size." );
+					FCML_TRACE_MSG( "Unsupported register size." );
 					error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 				}
 			}
@@ -1321,7 +1321,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 			/* OSA.*/
 			fcml_data_size mem_data_size = fcml_ifn_asm_calculate_operand_size( context, operand_def->address.size_operator, args->encoded_memory_operand_size );
 			if( !fcml_ifn_asm_accept_data_size( context, addr_mode_desc, args->encoded_memory_operand_size, mem_data_size, FCML_IEN_CT_EQUAL ) ) {
-				FCML_TRACE( "Unsupported memory operand size." );
+				FCML_TRACE_MSG( "Unsupported memory operand size." );
 				error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			}
 			if( !error ) {
@@ -1332,11 +1332,11 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 			        if( index->type == FCML_REG_SIMD ) {
 			            fcml_data_size vsib_reg_size = args->vector_index_register == FCML_VSIB_XMM ? FCML_DS_128 : FCML_DS_256;
 			            if( vsib_reg_size != index->size ) {
-			                FCML_TRACE( "Wrong VSIB size." );
+			                FCML_TRACE_MSG( "Wrong VSIB size." );
 			                error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			            }
 			        } else {
-			            FCML_TRACE( "VSIB encoding needs SIMD index register." );
+			            FCML_TRACE_MSG( "VSIB encoding needs SIMD index register." );
 			            error = FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
 			        }
 			    }
@@ -1907,7 +1907,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction( fcml_ptr args ) {
 
 fcml_bool fcml_ifn_asm_accept_instruction_hints( fcml_hints addr_mode_dest_hints, fcml_hints instruction_hints ) {
 	if( ( instruction_hints & FCML_HINT_INDIRECT_POINTER ) && !( addr_mode_dest_hints & FCML_HINT_INDIRECT_POINTER ) ) {
-		FCML_TRACE("Addressing mode doesn't support indirect addressing.");
+		FCML_TRACE_MSG("Addressing mode doesn't support indirect addressing.");
 		return FCML_FALSE;
 	}
 	if( instruction_hints & FCML_HINT_FAR_POINTER ) {
@@ -2184,7 +2184,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_acceptor_operand_encoder_
 	    if( !operand_hints || fcml_ifn_asm_accept_operand_hints( wrapper_args->hints, operand_hints ) ) {
 	        return wrapper_args->operand_acceptor( context, addr_mode_details, addr_mode_desc, wrapper_args->decoded_addr_mode, operand, NULL );
 	    } else {
-	        FCML_TRACE( "Hints do not match." );
+	    	FCML_TRACE_MSG( "Hints do not match." );
 	        return FCML_EN_UNSUPPORTED_OPPERAND;
 	    }
 	} else {
@@ -2308,9 +2308,17 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 
 typedef fcml_uint8_t (*fcml_ifp_asm_primary_opcode_byte_encoder)( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_uint8_t opcode );
 
+struct fcml_ist_opcode_byte_encoder_function_wrapper {
+	fcml_ifp_asm_primary_opcode_byte_encoder opcode_byte_encoder;
+};
+
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_generic_primary_opcode_encoder( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_ist_asm_instruction_part *instruction_part, fcml_ptr args ) {
     if( phase == FCML_IEN_ASM_IPPP_SECOND_PHASE ) {
-    	fcml_ifp_asm_primary_opcode_byte_encoder opcode_byte_encoder = (fcml_ifp_asm_primary_opcode_byte_encoder)args;
+    	fcml_ifp_asm_primary_opcode_byte_encoder opcode_byte_encoder = NULL;
+    	struct fcml_ist_opcode_byte_encoder_function_wrapper *wrapper = (struct fcml_ist_opcode_byte_encoder_function_wrapper*)args;
+    	if( wrapper ) {
+    		opcode_byte_encoder = wrapper->opcode_byte_encoder;
+    	}
         int opcode_bytes = FCML_DEF_OPCODE_FLAGS_OPCODE_NUM( addr_mode_def->opcode_flags );
         int primary_opcode = FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE( addr_mode_def->opcode_flags );
         int i;
@@ -2329,13 +2337,17 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_generic_primary_opcode_en
 
 fcml_uint8_t fcml_ifp_asm_conditional_primary_opcode_byte_encoder( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_uint8_t opcode ) {
 	return ( opcode + addr_mode_details->condition.condition_type * 2 + ( addr_mode_details->condition.is_negation ? 1 : 0 ) );
+}
+
+struct fcml_ist_opcode_byte_encoder_function_wrapper fcml_conditional_opcode_encoder_wrapper = {
+	&fcml_ifp_asm_conditional_primary_opcode_byte_encoder
 };
 
 fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_conditional_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
     fcml_ist_asm_instruction_part_processor_descriptor descriptor = {0};
     if( FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN( addr_mode->opcode_flags ) ) {
         descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
-        descriptor.processor_args = &fcml_ifp_asm_conditional_primary_opcode_byte_encoder;
+        descriptor.processor_args = &fcml_conditional_opcode_encoder_wrapper;
         descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_generic_primary_opcode_encoder;
         descriptor.processor_acceptor = NULL;
     }
@@ -2348,13 +2360,17 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 
 fcml_uint8_t fcml_ifp_asm_reg_primary_opcode_byte_encoder( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_uint8_t opcode ) {
 	return opcode + context->opcode_reg.opcode_reg;
+}
+
+struct fcml_ist_opcode_byte_encoder_function_wrapper fcml_primary_opcode_encoder_wrapper = {
+	&fcml_ifp_asm_reg_primary_opcode_byte_encoder
 };
 
 fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part_processor_factory_reg_opcode_encoder( fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints, fcml_ceh_error *error ) {
 	fcml_ist_asm_instruction_part_processor_descriptor descriptor = {0};
 	if( FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_REG( addr_mode->opcode_flags ) ) {
 		descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
-		descriptor.processor_args = &fcml_ifp_asm_reg_primary_opcode_byte_encoder;
+		descriptor.processor_args = &fcml_primary_opcode_encoder_wrapper;
 		descriptor.processor_encoder = fcml_ifn_asm_instruction_part_processor_generic_primary_opcode_encoder;
 		descriptor.processor_acceptor = NULL;
 	}
