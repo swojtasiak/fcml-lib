@@ -14,6 +14,7 @@
 #include "fcml_encoding.h"
 #include "fcml_env.h"
 #include "fcml_utils.h"
+#include "fcml_trace.h"
 
 typedef struct fcml_ist_asm_enc_assembler {
     fcml_coll_map instructions_map;
@@ -84,6 +85,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const f
 		return error;
 	}
 
+	// TODO: Sanity check podobny jak w przypadku disassemblera, moze nawet wykorzystac ten sam powinno byc ok.
 	if( !asm_context->address_size_attribute ) {
 		asm_context->address_size_attribute = fcml_fn_utils_get_default_ASA(asm_context->addr_form);
 	}
@@ -97,7 +99,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const f
 	}
 
 	/* Execute instruction encoder.*/
-	if( addr_modes != NULL ) {
+	if( addr_modes ) {
 		if( addr_modes->instruction_encoder ) {
 
 			fcml_st_asm_encoder_result enc_result = {{0}};
@@ -113,8 +115,8 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const f
 			asm_result->errors = enc_result.errors;
 
 		} else {
-			/* Unavailable instruction encoder.*/
-			error = FCML_CEH_GEC_INTERNAL_BUG;
+			FCML_TRACE_MSG( "Unavailable instruction encoder." );
+			error = FCML_CEH_GEC_INTERNAL_ERROR;
 		}
 	} else {
 		error = FCML_CEH_GEC_UNKNOWN_MNEMONIC;

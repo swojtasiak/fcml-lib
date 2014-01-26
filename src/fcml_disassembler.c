@@ -9,11 +9,12 @@
 
 #include <stddef.h>
 
+#include <fcml_errors.h>
+
 #include "fcml_coll.h"
 #include "fcml_decoding_tree.h"
 #include "fcml_def.h"
 #include "fcml_env.h"
-#include <fcml_errors.h>
 #include "fcml_hints.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_modrm.h"
@@ -21,6 +22,7 @@
 #include "fcml_stream.h"
 #include "fcml_utils.h"
 #include "fcml_dialect_int.h"
+#include "fcml_trace.h"
 
 /* R,X and B are stored in 1's complement form.*/
 #define FCML_VEX_W(x)				FCML_TP_GET_BIT(x, 7)
@@ -426,6 +428,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	fcml_int16_t offset16;
 
 	if( FCML_IS_EOS_DYNAMIC( rel_args->encoded_imm_size ) ) {
+		// TODO: Czy aby napewno jest to odpowiedni komunikat?
 		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
 	}
 
@@ -434,6 +437,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	} else {
 
 		if( context->effective_operand_size_attribute == FCML_DS_16 && context->disassembler_context->addr_form == FCML_AF_64_BIT ) {
+			// TODO: Czy aby napewno jest to odpowiedni komunikat?
 			return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
 		}
 
@@ -2242,7 +2246,8 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_suffix );
 			} else {
 				/* Mnemonic not found.*/
-				return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+				FCML_TRACE_MSG( "Can not choose mnemonic for disassembled instruction." );
+				return FCML_CEH_GEC_INTERNAL_ERROR;
 			}
 
 			/* Clean operands for short forms.*/

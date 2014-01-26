@@ -6,10 +6,11 @@
  */
 
 #include <string.h>
+#include <fcml_errors.h>
 #include "fcml_env.h"
 #include "fcml_apc_ast.h"
 #include "fcml_utils.h"
-#include <fcml_errors.h>
+#include "fcml_trace.h"
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_integer( fcml_st_ast_val_integer *integer_value ) {
 	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
@@ -364,6 +365,9 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 	switch( exp->type ) {
 	case FCML_EN_TN_VALUE: {
 		*result = *((fcml_st_ast_node_value*)exp->node);
+		if( result->integer_value.overflow ) {
+			fcml_fn_ceh_add_error( error_container, "Value out of range.", FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_WARN );
+		}
 		break;
 	}
 	case FCML_EN_TN_UMINUS: {
@@ -372,9 +376,6 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 			return error;
 		}
 		if( result->type == FCML_EN_ET_INTEGER ) {
-			if( result->integer_value.overflow ) {
-				fcml_fn_ceh_add_error( error_container, "Value out of range.", FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_WARN );
-			}
 			result->integer_value = fcml_ifn_ast_convert_to_val_integer( -((fcml_int64_t)result->integer_value.value) );
 		} else {
 			result->float_value.value = -result->float_value.value;
@@ -442,8 +443,8 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 		break;
 	}
 	default:
-		// Unsupported AST node.
-		error = FCML_CEH_GEC_INTERNAL_BUG;
+		FCML_TRACE( "Unsupported AST node %d.", exp->type );
+		error = FCML_CEH_GEC_INTERNAL_ERROR;
 		break;
 	}
 
@@ -497,7 +498,8 @@ fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate( fcml_st_ast_node_va
 
 	} else {
 		/* Unknown value type.*/
-		error = FCML_CEH_GEC_INTERNAL_BUG;
+		FCML_TRACE( "Unknown value type: %d.", value->type );
+		error = FCML_CEH_GEC_INTERNAL_ERROR;
 	}
 	return error;
 }
@@ -549,6 +551,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
         }
 	}
 
+	/* In case of far poiner calculation such problem is repored as an error. */
 	if( overflow ) {
 	    if( !fcml_fn_ceh_add_error( error_container, "Segment selector out of range.", FCML_CEH_MEC_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
             error = FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -724,8 +727,8 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 						current_operand->type = FCML_EOT_IMMEDIATE;
 					}
 				} else {
-					/* Operand is mandatory here.*/
-					error = FCML_CEH_GEC_INTERNAL_BUG;
+					FCML_TRACE_MSG( "Operand is mandatory here." );
+					error = FCML_CEH_GEC_INTERNAL_ERROR;
 				}
 			}
 			break;

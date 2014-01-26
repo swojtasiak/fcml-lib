@@ -62,20 +62,34 @@ fcml_st_ceh_error_info *fcml_fn_ceh_alloc_error_info( fcml_string message, fcml_
 
 fcml_st_ceh_error_info *fcml_fn_ceh_add_error( fcml_st_ceh_error_container *error_container, const fcml_string message, fcml_ceh_error code, fcml_en_ceh_error_level level ) {
 	fcml_st_ceh_error_info *error_info;
+
 	/* Container is null.*/
 	if( !error_container ) {
 		return NULL;
 	}
+
+	/* Checks if there is already such error reported. */
+	fcml_st_ceh_error_info *current = error_container->errors;
+	while( current ) {
+		if( current->code == code ) {
+			// Already added.
+			return current;
+		}
+		current = current->next_error;
+	}
+
 	error_info = fcml_fn_ceh_alloc_error_info( message, code, level );
 	if( !error_info ) {
 		return NULL;
 	}
+
 	fcml_st_ceh_error_info *last_error = error_container->last_error;
 	if( last_error ) {
 		last_error->next_error = error_info;
 	} else {
 		error_container->errors = error_info;
 	}
+
 	error_container->last_error = error_info;
 	return error_info;
 }

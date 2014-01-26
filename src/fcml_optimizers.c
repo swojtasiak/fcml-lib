@@ -7,10 +7,11 @@
 
 #include "fcml_optimizers.h"
 
-#include <stddef.h>
-
-#include "fcml_common.h"
+#include <fcml_types.h>
 #include <fcml_errors.h>
+#include <fcml_common.h>
+
+#include "fcml_trace.h"
 
 typedef struct fcml_ist_asm_opt_optimization_path_element {
     fcml_en_attribute_size_flag flags;
@@ -88,8 +89,10 @@ fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *con
 
     fcml_uint16_t opt_flags = context->optimizer_flags;
 
+    // Just in case.
     if( ds_flags == NULL ) {
-    	return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+    	FCML_TRACE_MSG("Optimizer details flags haven't been set.");
+    	return FCML_CEH_GEC_INTERNAL_ERROR;
     }
 
 	/* ASA*/

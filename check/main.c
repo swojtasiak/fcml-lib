@@ -15,7 +15,7 @@
 #include <fcml_gas_dialect.h>
 #include <fcml_assembler.h>
 #include <fcml_disassembler.h>
-#include <fcml_rend.h>
+#include <fcml_renderer.h>
 
 /* Tests.*/
 #include "instructions_a_t.h"

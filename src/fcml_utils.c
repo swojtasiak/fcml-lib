@@ -9,6 +9,7 @@
 #include "fcml_utils.h"
 #include "fcml_types.h"
 #include "fcml_coll.h"
+#include "fcml_trace.h"
 
 fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_src_signed, fcml_st_integer *integer, fcml_en_utils_size_flags filter ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -756,7 +757,8 @@ fcml_ceh_error fcml_fn_utils_convert_map_error( fcml_int error ) {
 	case FCML_COLL_ERROR_BAD_ARGS:
 	case FCML_COLL_ERROR_MAP_FULL:
 		// Should never happened in case of FCML.
-		ceh_error = FCML_CEH_GEC_INTERNAL_BUG;
+		FCML_TRACE_MSG( "Map reached its maximal size or something different related to map processing happened." );
+		ceh_error = FCML_CEH_GEC_INTERNAL_ERROR;
 		break;
 	}
 	return ceh_error;

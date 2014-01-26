@@ -13,7 +13,7 @@
 #include <fcml_assembler.h>
 #include <fcml_disassembler.h>
 #include <fcml_intel_dialect.h>
-#include <fcml_rend.h>
+#include <fcml_renderer.h>
 #include <fcml_parser.h>
 
 extern fcml_st_assembler *assembler_intel;

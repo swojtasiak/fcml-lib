@@ -8,15 +8,16 @@
 #ifndef FCML_ASM_DIALECT_INT_H_
 #define FCML_ASM_DIALECT_INT_H_
 
-#include "fcml_dialect.h"
+#include <fcml_dialect.h>
+#include <fcml_common.h>
+#include <fcml_parser.h>
+#include <fcml_renderer.h>
+#include <fcml_assembler.h>
+#include <fcml_disassembler.h>
+
 #include "fcml_def.h"
-#include "fcml_common.h"
 #include "fcml_stream.h"
 #include "fcml_mnemonic_parser.h"
-#include "fcml_parser.h"
-#include <fcml_rend.h>
-#include "fcml_assembler.h"
-#include "fcml_disassembler.h"
 
 #define FCML_ASM_DIALECT_MAX_MNEMONIC_COUNT 50
 

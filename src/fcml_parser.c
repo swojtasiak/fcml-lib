@@ -7,9 +7,11 @@
 
 #include "fcml_parser.h"
 
+#include <fcml_errors.h>
 #include "fcml_dialect_int.h"
 #include "fcml_apc_ast.h"
 #include "fcml_env.h"
+#include "fcml_trace.h"
 
 fcml_ceh_error fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result **result_out ) {
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect;
@@ -18,7 +20,8 @@ fcml_ceh_error fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction,
 		return parser( dialect, instruction, result_out );
 	} else {
 		/* Dialect not initialized correctly.*/
-		return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+		FCML_TRACE_MSG("Parsing not supported by current dialect.");
+		return FCML_CEH_GEC_FEATURE_NOT_SUPPORTED;
 	}
 }
 

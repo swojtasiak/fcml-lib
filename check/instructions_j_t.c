@@ -7,7 +7,7 @@
 
 #include <fcml_env.h>
 #include <fcml_assembler.h>
-#include <fcml_rend.h>
+#include <fcml_renderer.h>
 #include "instructions_i_t.h"
 #include "instructions_base_t.h"
 

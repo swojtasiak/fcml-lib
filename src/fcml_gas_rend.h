@@ -8,12 +8,12 @@
 #ifndef FCML_REND_INTEL_H_
 #define FCML_REND_INTEL_H_
 
+#include <fcml_types.h>
+#include <fcml_dialect.h>
+#include <fcml_disassembler.h>
+
 #include "fcml_ceh.h"
-#include "fcml_dialect.h"
-#include "fcml_disassembler.h"
 #include "fcml_stream.h"
-#include "fcml_types.h"
-#include <fcml_rend.h>
 
 fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
 

@@ -7,17 +7,18 @@
 
 #include "fcml_gas_rend.h"
 
+#include <fcml_types.h>
+#include <fcml_common.h>
+#include <fcml_dialect.h>
+#include <fcml_renderer.h>
+#include <fcml_disassembler.h>
+
 #include "fcml_ceh.h"
-#include "fcml_common.h"
 #include "fcml_common_utils.h"
-#include "fcml_dialect.h"
 #include "fcml_dialect_int.h"
-#include "fcml_disassembler.h"
 #include "fcml_env.h"
-#include <fcml_rend.h>
 #include "fcml_rend_utils.h"
 #include "fcml_stream.h"
-#include "fcml_types.h"
 #include "fcml_utils.h"
 
 #define FCML_REND_LOCAL_BUFFER_SIZE 512

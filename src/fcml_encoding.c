@@ -482,13 +482,17 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *context, fcml_data_size *osa ) {
-    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+fcml_bool fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *context, fcml_data_size *osa ) {
+
+	fcml_bool result = FCML_TRUE;
+
     if( !context->optimizer_processing_details.allowed_eosa.is_set ) {
         /* In order to choose optimal OSA, flags should be set.*/
-        return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+        return FCML_FALSE;
     }
+
     fcml_en_attribute_size_flag flags = context->optimizer_processing_details.allowed_eosa.flags;
+
     switch( context->assembler_context->addr_form ) {
     case FCML_AF_16_BIT:
         if( flags & FCML_EN_ASF_16 ) {
@@ -497,7 +501,7 @@ fcml_ceh_error fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *c
             *osa = FCML_DS_32;
         } else {
             /* Only 16 and 32 bit OSA is available in 16 bit addressing mode.*/
-            error = FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+        	result = FCML_FALSE;
         }
         break;
     case FCML_AF_32_BIT:
@@ -507,7 +511,7 @@ fcml_ceh_error fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *c
             *osa = FCML_DS_16;
         } else {
             /* Only 16 and 32 bit OSA is available in 16 bit addressing mode.*/
-            error = FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+        	result = FCML_FALSE;
         }
         break;
     case FCML_AF_64_BIT:
@@ -519,11 +523,12 @@ fcml_ceh_error fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *c
             *osa = FCML_DS_16;
         } else {
             /* Flags aren't set.*/
-            error = FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+        	result = FCML_FALSE;
         }
         break;
     }
-    return error;
+
+    return result;
 }
 
 fcml_bool fcml_ifn_asm_set_size_flag( fcml_st_nullable_size_flags *nullable_flags, fcml_en_attribute_size_flag flags ) {
@@ -542,7 +547,9 @@ fcml_bool fcml_ifn_asm_set_size_flag( fcml_st_nullable_size_flags *nullable_flag
 }
 
 fcml_bool fcml_ifn_asm_accept_segment_register( fcml_ist_asm_encoding_context *context, fcml_st_register *segment_register, fcml_uint8_t encoded_segment_register ) {
-    fcml_uint8_t reg_num = encoded_segment_register & 0x7F;
+
+	fcml_uint8_t reg_num = encoded_segment_register & 0x7F;
+
     fcml_bool allow_override = encoded_segment_register & FCML_SEG_ALLOW_OVERRIDE;
 
     /* No mater what segment register we have expected, default one has been used.*/
@@ -550,6 +557,7 @@ fcml_bool fcml_ifn_asm_accept_segment_register( fcml_ist_asm_encoding_context *c
         return FCML_TRUE;
     } else if( segment_register->type != FCML_REG_SEG ) {
         /* Wrong register type, segment register should be used.*/
+    	fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_WRONG_REGISTER_TYPE_SEG ), FCML_CEH_MEC_ERROR_WRONG_REGISTER_TYPE_SEG, FCML_EN_CEH_EL_ERROR );
         return FCML_FALSE;
     }
 
@@ -791,7 +799,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 
 		fcml_data_size eosa_size = context->optimizer_processing_details.eosa;
 
-		/* Remeber that only one addressing mode of MOV instruction for 64 bits mode can encode IMM64.*/
+		/* Remember that only one addressing mode of MOV instruction for 64 bits mode can encode IMM64.*/
 		fcml_data_size eosa_imm = eosa_size;
 		if( !args->is_64bit_imm_allowed && eosa_size == FCML_DS_64 ) {
 			eosa_imm = FCML_DS_32;
@@ -799,7 +807,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 
 		if( ( imm_size == FCML_EOS_EOSA || imm_size_ex == FCML_EOS_EOSA ) && !eosa_size ) {
 			FCML_TRACE_MSG("EOSA size not set! Processing failed.");
-			return FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+			return FCML_CEH_GEC_INTERNAL_ERROR;
 		}
 
 		fcml_bool is_converted = FCML_FALSE;
@@ -945,7 +953,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
 
     if( !context->instruction_size.is_not_null ) {
         /* Should never happened.*/
-        error = FCML_CEH_GEC_INTERNAL_BUG;
+    	FCML_TRACE_MSG( "Instruction size can not be here." );
+        error = FCML_CEH_GEC_INTERNAL_ERROR;
     } else {
 
         /* Optimizer is responsible for setting optimal OSA value.*/
@@ -1108,22 +1117,29 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_far_pointer( fcml_ist_asm_encoding_
 }
 
 fcml_ceh_error fcml_ifn_asm_operand_encoder_far_pointer( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_ist_asm_instruction_part *operand_enc ) {
+
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
     if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 
         fcml_data_size osa = 0;
         if( context->optimizer_processing_details.eosa == FCML_DS_UNDEF ) {
-            error = fcml_ifn_asm_choose_optimal_osa( context, &osa );
-            if( !error ) {
-                /* Set chosen OSA for next operands.*/
+
+        	/* If best OSA value hasn't been set yet, try to calculate one. */
+            if( fcml_ifn_asm_choose_optimal_osa( context, &osa ) ) {
+                /* Set chosen OSA for next operands. */
                 context->optimizer_processing_details.eosa = osa;
             } else {
             	FCML_TRACE_MSG("Can not calculate best OSA size for far pointer offset.");
                 error = FCML_CEH_GEC_UNSUPPORTED_OPPERAND;
             }
+
         } else {
+        	// TODO: Wywliczona wartosc nie jest wykorzystywana!
             osa = context->optimizer_processing_details.eosa;
         }
+
+        /* Prepare stream to instruction part's buffer. */
 
         fcml_st_memory_stream stream = fcml_ifn_asm_instruction_part_stream( operand_enc );
 
@@ -1348,28 +1364,33 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 					fcml_st_segment_selector *segment_selector = &(operand_def->address.segment_selector);
 					fcml_st_register *segment_register = &(segment_selector->segment_selector);
 
-					if( segment_register->type == FCML_REG_SEG && segment_register->reg != FCML_REG_UNDEFINED ) {
-						/* Segment register set, so it has to be accepted.*/
-						if( addr_mode_desc->instruction_group & FCML_AMT_BRANCH ) {
-							/* For branch instructions only CS register can be used and override is not acceptable.*/
-							if( segment_register->reg != FCML_REG_CS ) {
-								error = FCML_CEH_GEC_UNSUPPORTED_OPPERAND;
+					if( segment_register->reg != FCML_REG_UNDEFINED ) {
+						if( segment_register->type == FCML_REG_SEG ) {
+							/* Segment register set, so it has to be accepted.*/
+							if( addr_mode_desc->instruction_group & FCML_AMT_BRANCH ) {
+								/* For branch instructions only CS register can be used and override is not acceptable.*/
+								if( segment_register->reg != FCML_REG_CS ) {
+									error = FCML_CEH_GEC_UNSUPPORTED_OPPERAND;
+								}
+							} else if( ( effective_address->base.type == FCML_REG_GPR ) && ( effective_address->base.reg == FCML_REG_BP || effective_address->base.reg == FCML_REG_SP ) ) {
+								/* For SP/BP registers SS segment register has to be used.*/
+								if( segment_register->reg != FCML_REG_SS ) {
+									error = FCML_CEH_GEC_UNSUPPORTED_OPPERAND;
+								}
+							} else {
+								if( segment_register->reg != FCML_REG_DS ) {
+									context->segment_override = *segment_register;
+								}
 							}
-						} else if( ( effective_address->base.type == FCML_REG_GPR ) && ( effective_address->base.reg == FCML_REG_BP || effective_address->base.reg == FCML_REG_SP ) ) {
-							/* For SP/BP registers SS segment register has to be used.*/
-							if( segment_register->reg != FCML_REG_SS ) {
-								error = FCML_CEH_GEC_UNSUPPORTED_OPPERAND;
+							if( error ) {
+								/* Segment register can not be overridden. */
+								fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN ), FCML_CEH_MEC_ERROR_ILLEGAL_SEG_REG_OVERRIDE, FCML_EN_CEH_EL_ERROR );
 							}
 						} else {
-							if( segment_register->reg != FCML_REG_DS ) {
-								context->segment_override = *segment_register;
-							}
-						}
-						if( error ) {
-							fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN ), FCML_CEH_MEC_ERROR_ILLEGAL_SEG_REG_OVERRIDE, FCML_EN_CEH_EL_ERROR );
+							/* Wrong register type. */
+							fcml_fn_ceh_add_error( &(context->global_error_msg), fcml_fn_msg_get_message( FCML_MC_SEGMENT_WRONG_REGISTER_TYPE_SEG ), FCML_CEH_MEC_ERROR_WRONG_REGISTER_TYPE_SEG, FCML_EN_CEH_EL_ERROR );
 						}
 					}
-
 			    }
 
 			    if( !error ) {
@@ -2120,8 +2141,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *a
 			}
 
 		} else {
-			/* There is no addressing mode for given instruction. It should never happened, so it's an internal bug.*/
-			error = FCML_CEH_GEC_INTERNAL_BUG;
+			FCML_TRACE_MSG( "There is no addressing mode for given instruction. It should never happened, so it's an internal bug." );
+			error = FCML_CEH_GEC_INTERNAL_ERROR;
 		}
 	}
 
@@ -2608,8 +2629,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_segment_override_prefix_e
                 instruction_part->code[0] = fcml_iarr_asm_prefix_override_mapping[ seg_reg_num ];
                 instruction_part->code_length = 1;
             } else {
-                /* Unknown segment register.*/
-                error = FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+            	/* Wrong register type. This check is done just is case, this code should never be invoked due to earlier sanity checks. */
+            	FCML_TRACE_MSG( "Unknown segment register found." );
+                error = FCML_CEH_GEC_INTERNAL_ERROR;
             }
         }
     }
@@ -2906,7 +2928,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_rip_post_processor( fcml_ist_asm_en
 
 	if( !context->instruction_size.is_not_null ) {
 		/* Should never happened.*/
-		error = FCML_CEH_GEC_INTERNAL_BUG;
+		FCML_TRACE_MSG( "instruction can not be null here." );
+		error = FCML_CEH_GEC_INTERNAL_ERROR;
 	} else {
 		/* Encode ModR/M and displacement.*/
 		fcml_st_memory_stream stream = fcml_ifn_asm_instruction_part_stream( instruction_part );
@@ -3187,7 +3210,8 @@ fcml_ist_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_pro
 
 				/* Check max number of processors.*/
 				if( processor_counter > FCML_ASM_MAX_PART_PROCESSORS ) {
-					*error = FCML_CEH_GEC_ILLEGAL_STATE_EXCEPTION;
+					FCML_TRACE_MSG("Max number of instructions part processors have been reached.");
+					*error = FCML_CEH_GEC_INTERNAL_ERROR;
 					if( chain ) {
 						fcml_ifn_asm_free_part_processor_chain( chain );
 					}

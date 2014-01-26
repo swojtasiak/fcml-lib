@@ -7,7 +7,7 @@
 
 #include <fcml_env.h>
 #include <fcml_assembler.h>
-#include <fcml_rend.h>
+#include <fcml_renderer.h>
 #include "instructions_c_t.h"
 #include "instructions_base_t.h"
 
@@ -39,6 +39,9 @@ void fcml_tf_instruction_CALL(void) {
     /* RIP addressing.*/
     FCML_A64( "lcallq *0x00000000(%rip)", 0x48, 0xFF, 0x1d, 0x00,0x00,0x00,0x00 );
     /* prt16:16 ptr16:32*/
+    // TODO: Nie dzila liczenie najlpezebo OSA, patrz fcml_ifn_asm_operand_encoder_far_pointer., ddoac
+    // mozliwosc wymuszania przykladowo fasm umozliwia taki zapis: "call dword 4433h:00002211h". At7&t juz obsluguje taki zapis
+    // lcallw $0x4433,$0x2211.
     FCML_I32( "call far 6655h:44332211h", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
     FCML_I32( "call far 4433h:2211h", 0x66, 0x9A, 0x11, 0x22, 0x33, 0x44 );
     FCML_I16( "call far 4433h:2211h", 0x9A, 0x11, 0x22, 0x33, 0x44 );

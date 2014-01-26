@@ -60,7 +60,7 @@ libfcml_la_SOURCES = fcml_intel_lexer.l \
 	fcml_parser_data.h \
 	fcml_parser_utils.c \
 	fcml_parser_utils.h \
-	fcml_rend.c \
+	fcml_renderer.c \
 	fcml_rend_utils.c \
 	fcml_rend_utils.h \
 	fcml_stream.c \
