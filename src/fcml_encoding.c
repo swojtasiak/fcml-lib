@@ -1679,7 +1679,9 @@ fcml_ist_asm_operand_encoder_def fcml_iarr_asm_def_operand_encoders[] = {
  * Instruction encoders.
  *********************************/
 
-fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_ist_asm_encoding_context *context, fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_instruction *instruction ) {
+fcml_ceh_error fcml_ifn_asm_accept_addr_mode( fcml_ist_asm_encoding_context *context, fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode, fcml_st_instruction *instruction ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 #ifdef FCML_DEBUG
 	FCML_TRACE( "Accepting addressing mode: %d", context->__def_index );
@@ -1692,9 +1694,9 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_ist_asm_encoding_context *context,
 		fcml_ist_asm_instruction_part_processor_descriptor *descriptor = &(current_processor->processor_descriptor);
 		context->part_processor_context.part_processor_index = index;
 		if( !context->is_short_form || ( context->is_short_form && descriptor->is_short_form_supported ) ) {
-            if( descriptor->processor_acceptor != NULL && descriptor->processor_acceptor( context, &(addr_mode->addr_mode_details), addr_mode->addr_mode_desc, instruction, descriptor->processor_args ) != FCML_CEH_GEC_NO_ERROR ) {
+            if( descriptor->processor_acceptor != NULL && ( error = descriptor->processor_acceptor( context, &(addr_mode->addr_mode_details), addr_mode->addr_mode_desc, instruction, descriptor->processor_args ) ) != FCML_CEH_GEC_NO_ERROR ) {
                 FCML_TRACE( "Addressing mode not accepted. Acceptor failed: %d", index );
-                return FCML_FALSE;
+                return error;
             }
 		}
 		current_processor = current_processor->next_processor;
@@ -1705,7 +1707,7 @@ fcml_bool fcml_ifn_asm_accept_addr_mode( fcml_ist_asm_encoding_context *context,
 	FCML_TRACE( "Accepted addressing mode %d - prefixes: 0x%04X, opcode: 0x%02X.", context->__def_index, addr_mode->addr_mode_desc->allowed_prefixes, addr_mode->addr_mode_desc->opcode_flags );
 #endif
 
-	return FCML_TRUE;
+	return error;
 }
 
 /* All currently supported encoding phases. */
@@ -2030,7 +2032,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *a
 
 		/* Choose addressing mode.*/
 		if( addr_modes->addr_modes->size ) {
+
 			fcml_st_coll_list_element *addr_mode_element = addr_modes->addr_modes->head;
+
 #ifdef FCML_DEBUG
 			int index = 0;
 #endif
@@ -2081,19 +2085,20 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *a
 
 				fcml_ifn_asm_fill_context_with_addr_mode_details( &context, addr_mode );
 
-				/* Check if addressing mode matches the hints, if there are any.*/
+				/* Check if addressing mode matches the hints, if there are any. */
 				if( !context.instruction->hints || fcml_ifn_asm_accept_instruction_hints( addr_mode->hints, context.instruction->hints ) ) {
-					if( fcml_ifn_asm_accept_addr_mode( &context, addr_mode, context.instruction ) ) {
 
-						/* Currently error is just ignored, because we would like to check every available addressing*/
-						/* mode before we return any errors.*/
+					error = fcml_ifn_asm_accept_addr_mode( &context, addr_mode, context.instruction );
+
+					if( !error ) {
+
 						fcml_ist_asm_enc_optimizer_callback_args args;
 						args.addr_mode = addr_mode;
 						args.context = &context;
 
 						fcml_ifn_prepare_optimizer_context( &optimizer_context, context.assembler_context );
 
-						optimizer( &optimizer_context, &(context.optimizer_processing_details), fcml_ifn_asm_assemble_and_collect_instruction, &args );
+						error = optimizer( &optimizer_context, &(context.optimizer_processing_details), fcml_ifn_asm_assemble_and_collect_instruction, &args );
 					}
 				}
 
@@ -2115,12 +2120,22 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *a
 				/* Copy global errors to result.*/
 				result->errors = context.global_error_msg;
 
-				error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+				/* Instruction has been found but can not be assembled in this form or addressing mode. */
+				if( !error ) {
+					/* Just in case. Use more general error code, but in theory it should
+					 * never happened because acceptors and optimizers should return more
+					 * accurate error codes.
+					 */
+					error = FCML_CEH_GEC_UNSUPPORTED_INSTRUCTION_FORM;
+				}
 
 			} else {
 
 				/* Assemblation succeed, so free global errors.*/
 				fcml_fn_ceh_free_errors_only( &(context.global_error_msg) );
+
+				/* Last error code should be also cleaned. */
+				error = FCML_CEH_GEC_NO_ERROR;
 
 			}
 
@@ -2132,7 +2147,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *a
 
 			if( result->number_of_instructions > 0 ) {
 
-			    /* Prepares chooser context.*/
+			    /* Prepares chooser context. */
 			    fcml_st_chooser_context chooser_context;
 			    fcml_fcml_ifn_prepare_chooser_context( &chooser_context, result->instructions );
 
@@ -3078,23 +3093,23 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_prefixes_acceptor( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_instruction *instruction, fcml_ptr args ) {
 	/* Check if LOCK prefix is allowed for given addressing mode.*/
 	if( ( instruction->prefixes & FCML_PREFIX_LOCK ) && !FCML_DEF_PREFIX_LOCK_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		return FCML_CEH_GEC_UNSUPPORTED_PREFIX;
 	}
 	/* Check if REP prefix is allowed for given addressing mode.*/
 	if( ( instruction->prefixes & FCML_PREFIX_REP ) && !FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		return FCML_CEH_GEC_UNSUPPORTED_PREFIX;
 	}
 	/* Check if REPNE prefix is allowed for given addressing mode.*/
 	if( ( instruction->prefixes & FCML_PREFIX_REPNE ) && !FCML_DEF_PREFIX_REPNE_XACQUIRE_ALLOWED( addr_mode_def->allowed_prefixes ) ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		return FCML_CEH_GEC_UNSUPPORTED_PREFIX;
 	}
 	/* Check if XACQUIRED prefix is allowed for given addressing mode.*/
 	if( ( instruction->prefixes & FCML_PREFIX_XACQUIRE ) && ( !FCML_DEF_PREFIX_HLE_ENABLED( addr_mode_def->allowed_prefixes ) || !FCML_DEF_PREFIX_REPNE_XACQUIRE_ALLOWED( addr_mode_def->allowed_prefixes ) ) ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		return FCML_CEH_GEC_UNSUPPORTED_PREFIX;
 	}
 	/* Check if XRELEASE prefix is allowed for given addressing mode.*/
 	if( ( instruction->prefixes & FCML_PREFIX_XRELEASE ) && ( !FCML_DEF_PREFIX_HLE_ENABLED( addr_mode_def->allowed_prefixes ) || !FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED( addr_mode_def->allowed_prefixes ) ) ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		return FCML_CEH_GEC_UNSUPPORTED_PREFIX;
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }

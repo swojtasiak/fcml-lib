@@ -205,7 +205,7 @@ void fcml_tf_modrm_decoder_test_5(void) {
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
-	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE );
+	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );
@@ -563,7 +563,7 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 
 	fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source, &decoded_modrm, &details, 0 );
 
-	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE );
+	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.type, FCML_REG_UNDEFINED );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.reg, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.base.size, 0 );

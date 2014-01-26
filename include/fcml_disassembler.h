@@ -23,6 +23,8 @@ typedef struct fcml_st_disassembler fcml_st_disassembler;
 
 /* Disassembler configuration. */
 typedef struct fcml_st_disassembler_conf {
+	/* True if optional error and warning messages should be collected during processing. */
+	fcml_bool enable_error_messages;
     /* True if suffixes for carry flag has to be used by disassembler.*/
 	fcml_bool carry_flag_conditional_suffix;
 	/* There are two groups of suffixes for conditional instructions, you can choose which one should be used.*/

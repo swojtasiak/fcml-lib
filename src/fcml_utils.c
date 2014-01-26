@@ -10,6 +10,7 @@
 #include "fcml_types.h"
 #include "fcml_coll.h"
 #include "fcml_trace.h"
+#include "fcml_messages.h"
 
 fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_src_signed, fcml_st_integer *integer, fcml_en_utils_size_flags filter ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -762,4 +763,65 @@ fcml_ceh_error fcml_fn_utils_convert_map_error( fcml_int error ) {
 		break;
 	}
 	return ceh_error;
+}
+
+void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_error_container *error_container, fcml_ceh_error code ) {
+
+	if( enabled ) {
+
+		// Prepare standard description of the error code, but only if there is no other error on the list.
+		fcml_st_ceh_error_info *current = error_container->errors;
+		while( current ) {
+			if( current->level == FCML_EN_CEH_EL_ERROR ) {
+				return;
+			}
+			current = current->next_error;
+		}
+
+		fcml_en_msg_message_code mc = 0;
+		switch( code ) {
+			/* Syntax error or instruction exceeds max length. */
+		case FCML_CEH_GEC_INVALID_INPUT:
+			mc = FCML_MC_GEC_INVALID_INPUT;
+			break;
+			/* Used mainly in case of integers and offsets. */
+		case FCML_CEH_GEC_VALUE_OUT_OF_RANGE:
+			mc = FCML_MC_GEC_VALUE_OUT_OF_RANGE;
+			break;
+			/* It's very generic error used always when used addressing mode can not be identified. */
+		case FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE:
+			mc = FCML_MC_GEC_UNSUPPORTED_ADDRESSING_MODE;
+			break;
+			/* Instruction do not support one of the defined operands. */
+		case FCML_CEH_GEC_UNSUPPORTED_OPPERAND:
+			mc = FCML_MC_GEC_UNSUPPORTED_OPPERAND;
+			break;
+			/* Unknown mnemonic. */
+		case FCML_CEH_GEC_UNKNOWN_MNEMONIC:
+			mc = FCML_MC_GEC_UNKNOWN_MNEMONIC;
+			break;
+			/* Operand size (Operand size attribute) is not allowed in given context. */
+		case FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE:
+			mc = FCML_MC_GEC_UNSUPPORTED_OPPERAND_SIZE;
+			break;
+			/* Address size (Address size attribute) is not allowed in given context. */
+		case FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE:
+			mc = FCML_MC_GEC_UNSUPPORTED_ADDRESS_SIZE;
+			break;
+			// User chosen unsupported addressing form.
+		case FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM:
+			mc = FCML_MC_GEC_UNSUPPORTED_ADDRESSING_FORM;
+			break;
+			/* Assembler can return this error code if there is not allowed prefix defined for given instruction. */
+		case FCML_CEH_GEC_UNSUPPORTED_PREFIX:
+			mc = FCML_MC_GEC_UNSUPPORTED_PREFIX;
+			break;
+		}
+		if( mc ) {
+			if( !fcml_fn_ceh_add_error( error_container, fcml_fn_msg_get_message( mc ), code, FCML_EN_CEH_EL_ERROR ) ) {
+				FCML_TRACE_MSG( "Out of memory, can not allocate space for error info." );
+			}
+		}
+
+	}
 }

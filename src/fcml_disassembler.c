@@ -427,9 +427,10 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	fcml_int32_t offset32;
 	fcml_int16_t offset16;
 
+	// Just in case.
 	if( FCML_IS_EOS_DYNAMIC( rel_args->encoded_imm_size ) ) {
-		// TODO: Czy aby napewno jest to odpowiedni komunikat?
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		FCML_TRACE_MSG("Currently dynamically calculated IMM size is not supported here.");
+		return FCML_CEH_GEC_INTERNAL_ERROR;
 	}
 
 	if( rel_args->encoded_imm_size != FCML_EOS_UNDEFINED ) {
@@ -437,8 +438,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	} else {
 
 		if( context->effective_operand_size_attribute == FCML_DS_16 && context->disassembler_context->addr_form == FCML_AF_64_BIT ) {
-			// TODO: Czy aby napewno jest to odpowiedni komunikat?
-			return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+			// TODO: Dlaczego w przypadku disassemblera rzucamy blad? Sprawdzic czy to sprawdzenie ma sens.
+			return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
 		}
 
 		int_size = FCML_DS_32;
@@ -681,7 +682,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		}
 
 	} else {
-		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
 	}
 
 	return error;
@@ -1745,7 +1746,7 @@ fcml_ceh_error fcml_ifn_dasm_validate_and_prepare_context( fcml_st_disassembler_
 
 	/* Mode has to be set. */
     if( context->addr_form != FCML_AF_16_BIT && context->addr_form != FCML_AF_32_BIT && context->addr_form != FCML_AF_64_BIT ) {
-        return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+        return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
     }
 
     /* 16 bit address size attribute is not supported in 64bit mode. */
@@ -2271,6 +2272,10 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 			dis_res->errors = decoding_context.errors;
 		}
 		*result = dis_res;
+	}
+
+	if( error && *result ) {
+		fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &((*result)->errors), error );
 	}
 
 	return error;

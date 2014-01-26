@@ -20,6 +20,8 @@ typedef struct fcml_st_assembler fcml_st_assembler;
 
 /* Assembler runtime configuration. */
 typedef struct fcml_st_assembler_conf {
+	/* True if optional error and warning messages should be collected during processing. */
+	fcml_bool enable_error_messages;
     /* If there is SIB and ModR/M only encoding available, choose the SIB based one. */
     fcml_bool choose_sib_encoding;
     /* If memory addressing can be encoded as relative and absolute one,
@@ -73,6 +75,7 @@ typedef struct fcml_st_assembler_context {
     fcml_st_assembler *assembler;
     /* Assembler behavior can be configured here.*/
 	fcml_st_assembler_conf configuration;
+	// TODO: Przeniesc ponizsze pola i uwspolnic z assemblrem, pozniej do jakeigos wspolnego commona przeniesc sanity check tych informacji.
 	/* Processor addressing mode 16/32/64-bit.*/
 	fcml_en_addr_form addr_form;
 	/* Default address/operand size attribute (See 'D' flag of segment descriptor.)*/

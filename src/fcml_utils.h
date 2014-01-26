@@ -8,6 +8,7 @@
 #ifndef FCML_UTILS_H_
 #define FCML_UTILS_H_
 
+#include <fcml_errors.h>
 #include "fcml_ceh.h"
 #include "fcml_common.h"
 #include "fcml_stream.h"
@@ -43,5 +44,6 @@ fcml_ceh_error fcml_fn_utils_integer_to_imm( const fcml_st_integer *integer, fcm
 fcml_ceh_error fcml_fn_utils_extend_integer( fcml_st_integer *integer, fcml_usize extension );
 fcml_bool fcml_fn_utils_is_reg_undef( const fcml_st_register *reg );
 fcml_ceh_error fcml_fn_utils_convert_map_error( fcml_int error );
+void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_error_container *error_container, fcml_ceh_error code );
 
 #endif /* FCML_UTILS_H_ */
