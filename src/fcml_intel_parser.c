@@ -9,7 +9,7 @@
 #include "fcml_ceh.h"
 #include "fcml_env.h"
 #include "fcml_common.h"
-#include "fcml_errors.h"
+#include <fcml_errors.h>
 #include "fcml_parser_data.h"
 #include "fcml_intel_parser_def.h"
 #include "fcml_intel_lexer.h"
@@ -18,7 +18,7 @@
 
 void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
 	/* Stores parser error into standard container.*/
-	fcml_fn_ceh_add_error( &(pd->errors), (const fcml_string)error, FCML_EN_X64IP_ERROR_INV_SYNTAX, FCML_EN_CEH_EL_ERROR );
+	fcml_fn_ceh_add_error( &(pd->errors), (const fcml_string)error, FCML_CEH_MEC_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR );
 }
 
 fcml_ceh_error fcml_intel_parse( fcml_st_dialect *dialect, fcml_string asm_code, fcml_st_parser_result **result ) {

@@ -9,10 +9,10 @@
 
 #include <stddef.h>
 
+#include <fcml_errors.h>
 #include "fcml_dialect_int.h"
 #include "fcml_encoding.h"
 #include "fcml_env.h"
-#include "fcml_errors.h"
 #include "fcml_utils.h"
 
 typedef struct fcml_ist_asm_enc_assembler {
@@ -117,7 +117,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const f
 			error = FCML_CEH_GEC_INTERNAL_BUG;
 		}
 	} else {
-		error = FCML_EN_UNKNOWN_MNEMONIC;
+		error = FCML_CEH_GEC_UNKNOWN_MNEMONIC;
 	}
 
 	/* Free results but only if there is no error messages.*/

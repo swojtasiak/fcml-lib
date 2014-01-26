@@ -12,6 +12,7 @@ libfcml_la_SOURCES = fcml_intel_lexer.l \
 	fcml_apc_ast.h \
 	fcml_assembler.c \
 	fcml_ceh.c \
+	fcml_ceh.h \
 	fcml_choosers.c \
 	fcml_coll.c \
 	fcml_coll.h \

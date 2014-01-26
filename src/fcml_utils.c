@@ -5,8 +5,10 @@
  *      Author: tAs
  */
 
+#include <fcml_errors.h>
 #include "fcml_utils.h"
 #include "fcml_types.h"
+#include "fcml_coll.h"
 
 fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_src_signed, fcml_st_integer *integer, fcml_en_utils_size_flags filter ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -742,3 +744,20 @@ fcml_bool fcml_fn_utils_is_reg_undef( const fcml_st_register *reg ) {
     return reg->type == FCML_REG_UNDEFINED;
 }
 
+fcml_ceh_error fcml_fn_utils_convert_map_error( fcml_int error ) {
+	fcml_ceh_error ceh_error = FCML_CEH_GEC_NO_ERROR;
+	switch( error ) {
+	case FCML_COLL_ERROR_NO_ERROR:
+		ceh_error = FCML_CEH_GEC_NO_ERROR;
+		break;
+	case FCML_COLL_ERROR_OUT_OF_MEMORY:
+		ceh_error = FCML_CEH_GEC_OUT_OF_MEMORY;
+		break;
+	case FCML_COLL_ERROR_BAD_ARGS:
+	case FCML_COLL_ERROR_MAP_FULL:
+		// Should never happened in case of FCML.
+		ceh_error = FCML_CEH_GEC_INTERNAL_BUG;
+		break;
+	}
+	return ceh_error;
+}

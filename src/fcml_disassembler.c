@@ -13,7 +13,7 @@
 #include "fcml_decoding_tree.h"
 #include "fcml_def.h"
 #include "fcml_env.h"
-#include "fcml_errors.h"
+#include <fcml_errors.h>
 #include "fcml_hints.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_modrm.h"
@@ -426,7 +426,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	fcml_int16_t offset16;
 
 	if( FCML_IS_EOS_DYNAMIC( rel_args->encoded_imm_size ) ) {
-		return FCML_EN_UNSUPPORTED_ADDRESSING_FORM;
+		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
 	}
 
 	if( rel_args->encoded_imm_size != FCML_EOS_UNDEFINED ) {
@@ -434,7 +434,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	} else {
 
 		if( context->effective_operand_size_attribute == FCML_DS_16 && context->disassembler_context->addr_form == FCML_AF_64_BIT ) {
-			return FCML_EN_UNSUPPORTED_ADDRESSING_FORM;
+			return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
 		}
 
 		int_size = FCML_DS_32;
@@ -523,7 +523,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer( fcml_ist_dasm_decoding
 		far_pointer->offset32 = fcml_fn_stream_read_dword( context->stream, &result );
 		break;
 	default:
-		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
 		break;
 	}
 
@@ -596,7 +596,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset( fcml_ist_d
 		offset->off64 = fcml_fn_stream_read_qword( context->stream, &result );
 		break;
 	default:
-		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
 		break;
 	}
 
@@ -677,7 +677,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		}
 
 	} else {
-		error = FCML_EN_UNSUPPORTED_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
 	}
 
 	return error;
@@ -1723,11 +1723,11 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 
 	} else {
 		/* Unknown instruction.*/
-		error = FCML_EN_UNKNOWN_INSTRUCTION;
+		error = FCML_CEH_GEC_UNKNOWN_INSTRUCTION;
 	}
 
 	if( !found ) {
-		error = FCML_EN_UNKNOWN_INSTRUCTION;
+		error = FCML_CEH_GEC_UNKNOWN_INSTRUCTION;
 	}
 
 	return error;
@@ -1741,12 +1741,12 @@ fcml_ceh_error fcml_ifn_dasm_validate_and_prepare_context( fcml_st_disassembler_
 
 	/* Mode has to be set. */
     if( context->addr_form != FCML_AF_16_BIT && context->addr_form != FCML_AF_32_BIT && context->addr_form != FCML_AF_64_BIT ) {
-        return FCML_EN_UNSUPPORTED_ADDRESSING_FORM;
+        return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
     }
 
     /* 16 bit address size attribute is not supported in 64bit mode. */
     if( context->addr_form == FCML_AF_64_BIT && context->address_size_attribute == FCML_DS_16 ) {
-        return FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+        return FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
     }
 
     /* Check if attributes are valid and set them to default values. */
@@ -1781,13 +1781,13 @@ fcml_ceh_error fcml_ifn_dasm_validate_and_prepare_context( fcml_st_disassembler_
     /* Check if ASA is value.*/
     fcml_data_size asa = context->address_size_attribute;
     if( asa != FCML_DS_16 && asa != FCML_DS_32 && asa != FCML_DS_64 ) {
-		return FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+		return FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
 	}
 
     /* Check if OSA is value.*/
     fcml_data_size osa = context->operand_size_attribute;
     if( osa != FCML_DS_16 && osa != FCML_DS_32 && osa != FCML_DS_64 ) {
-   		return FCML_EN_UNSUPPORTED_OPPERAND_SIZE;
+   		return FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE;
    	}
 
     return FCML_CEH_GEC_NO_ERROR;

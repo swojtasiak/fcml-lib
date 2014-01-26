@@ -473,7 +473,7 @@ void fcml_tf_parser_int_parse_test32(void) {
 	} else if( result->errors.errors ){
 		fcml_st_ceh_error_container *cont = &(result->errors);
 		STF_ASSERT_EQUAL( cont->errors->level, FCML_EN_CEH_EL_ERROR );
-		STF_ASSERT_EQUAL( cont->errors->code, ( FCML_EN_X64IP_ERROR_INV_SYNTAX ) );
+		STF_ASSERT_EQUAL( cont->errors->code, ( FCML_CEH_MEC_ERROR_INVALID_SYNTAX ) );
 		STF_ASSERT_STRING_EQUAL( "Doubled prefixes.", cont->errors->message );
     } else {
     	STF_FAIL("Errors can not be null here.");

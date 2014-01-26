@@ -675,7 +675,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_7(void) {
 
 	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
 
-	STF_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
+	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE );
 }
 
 /* Encode [BX]*/
@@ -989,7 +989,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_4(void) {
 
 	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
 
-	STF_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
+	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE );
 }
 
 /* Encode [R12D], EDI (failed, because 32 bit addressing is used.)*/
@@ -1013,7 +1013,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_5(void) {
 
 	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
 
-	STF_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
+	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE );
 }
 
 /* Encode [01020304], ECX*/
@@ -1272,7 +1272,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_10(void) {
 
 	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
 
-	STF_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
+	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE );
 }
 
 /* Encode [R12D], EDI*/
@@ -1325,7 +1325,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_12(void) {
 
 	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
 
-	STF_ASSERT_EQUAL( error, FCML_EN_UNSUPPORTED_ADDRESSING_MODE );
+	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE );
 }
 
 /* Encode [EAX+EBX], ESP*/

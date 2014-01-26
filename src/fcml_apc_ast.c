@@ -9,7 +9,7 @@
 #include "fcml_env.h"
 #include "fcml_apc_ast.h"
 #include "fcml_utils.h"
-#include "fcml_errors.h"
+#include <fcml_errors.h>
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_integer( fcml_st_ast_val_integer *integer_value ) {
 	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
@@ -373,7 +373,7 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 		}
 		if( result->type == FCML_EN_ET_INTEGER ) {
 			if( result->integer_value.overflow ) {
-				fcml_fn_ceh_add_error( error_container, "Value out of range.", FCML_EN_APC_AST_WARN_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_WARN );
+				fcml_fn_ceh_add_error( error_container, "Value out of range.", FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_WARN );
 			}
 			result->integer_value = fcml_ifn_ast_convert_to_val_integer( -((fcml_int64_t)result->integer_value.value) );
 		} else {
@@ -428,8 +428,8 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 			} else {
 				fcml_int64_t divisor = fcml_ifn_ast_get_integer_value( &rval );
 				if( divisor == 0 ) {
-					if( fcml_fn_ceh_add_error( error_container, "Division by zero.", FCML_EN_APC_AST_ERROR_UNSUPPORTED_NODE_IN_EXPRESSION, FCML_EN_CEH_EL_ERROR ) ) {
-						error = FCML_CEH_GEC_DATA_ERROR;
+					if( fcml_fn_ceh_add_error( error_container, "Division by zero.", FCML_CEH_MEC_ERROR_DIVISION_BY_0, FCML_EN_CEH_EL_ERROR ) ) {
+						error = FCML_CEH_GEC_INVALID_INPUT;
 					} else {
 						error = FCML_CEH_GEC_OUT_OF_MEMORY;
 					}
@@ -442,11 +442,8 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 		break;
 	}
 	default:
-		if( fcml_fn_ceh_add_error( error_container, "Unsupported node in expression.", FCML_EN_APC_AST_ERROR_UNSUPPORTED_NODE_IN_EXPRESSION, FCML_EN_CEH_EL_ERROR ) ) {
-			error = FCML_CEH_GEC_INTERNAL_BUG;
-		} else {
-			error = FCML_CEH_GEC_OUT_OF_MEMORY;
-		}
+		// Unsupported AST node.
+		error = FCML_CEH_GEC_INTERNAL_BUG;
 		break;
 	}
 
@@ -526,10 +523,10 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 	/* Segment selector and offset have to be integers.*/
 	if( segment_selector_value.type != FCML_EN_ET_INTEGER || offset_value.type != FCML_EN_ET_INTEGER ) {
 		/* Only integer values are supported here.*/
-		if( !fcml_fn_ceh_add_error( error_container, "Segment selector and offset have to be an integer values.", FCML_EN_APC_AST_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
+		if( !fcml_fn_ceh_add_error( error_container, "Segment selector and offset have to be an integer values.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
 			error = FCML_CEH_GEC_OUT_OF_MEMORY;
 		} else {
-			error = FCML_CEH_GEC_DATA_ERROR;
+			error = FCML_CEH_GEC_INVALID_INPUT;
 		}
 		return error;
 	}
@@ -553,7 +550,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 	}
 
 	if( overflow ) {
-	    if( !fcml_fn_ceh_add_error( error_container, "Segment selector out of range.", FCML_EN_APC_AST_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
+	    if( !fcml_fn_ceh_add_error( error_container, "Segment selector out of range.", FCML_CEH_MEC_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
             error = FCML_CEH_GEC_OUT_OF_MEMORY;
         } else {
             error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -587,7 +584,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 	}
 
 	if( overflow ) {
-        if( !fcml_fn_ceh_add_error( error_container, "Offset out of range.", FCML_EN_APC_AST_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
+        if( !fcml_fn_ceh_add_error( error_container, "Offset out of range.", FCML_CEH_MEC_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
             error = FCML_CEH_GEC_OUT_OF_MEMORY;
         } else {
             error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -623,10 +620,10 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
 		}
 
 		if( value.type != FCML_EN_ET_INTEGER ) {
-			if( !fcml_fn_ceh_add_error( error_container, "Displacement has to be an integer value.", FCML_EN_APC_AST_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
+			if( !fcml_fn_ceh_add_error( error_container, "Displacement has to be an integer value.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
 				error = FCML_CEH_GEC_OUT_OF_MEMORY;
 			} else {
-				error = FCML_CEH_GEC_DATA_ERROR;
+				error = FCML_CEH_GEC_INVALID_INPUT;
 			}
 			return error;
 		}
@@ -661,10 +658,10 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
         if( (scale_factor == 0 || scale_factor == 1 || scale_factor == 2 || scale_factor == 4 || scale_factor == 8 ) ) {
             effective_address->scale_factor = (fcml_uint8_t)scale_factor;
         } else {
-            if( !fcml_fn_ceh_add_error( error_container, "Wrong scale factor value.", FCML_EN_APC_AST_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
+            if( !fcml_fn_ceh_add_error( error_container, "Wrong scale factor value.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
             } else {
-                error = FCML_CEH_GEC_DATA_ERROR;
+                error = FCML_CEH_GEC_INVALID_INPUT;
             }
             return error;
         }
@@ -695,10 +692,10 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 		case FCML_EN_TN_OPERAND_LIST: {
 			fcml_st_ast_node_operand_list *operand_list = (fcml_st_ast_node_operand_list*)ast_node->node;
 			if( operand_list->operands->size > FCML_OPERANDS_COUNT ) {
-				if( !fcml_fn_ceh_add_error( error_container, "To many operands.", FCML_EN_APC_AST_ERROR_TO_MANY_OPERANDS, FCML_EN_CEH_EL_ERROR ) ) {
+				if( !fcml_fn_ceh_add_error( error_container, "To many operands.", FCML_CEH_MEC_ERROR_TO_MANY_OPERANDS, FCML_EN_CEH_EL_ERROR ) ) {
 					error = FCML_CEH_GEC_OUT_OF_MEMORY;
 				} else {
-					error = FCML_CEH_GEC_DATA_ERROR;
+					error = FCML_CEH_GEC_INVALID_INPUT;
 				}
 			} else {
 				fcml_st_coll_list_element *current = operand_list->operands->head;

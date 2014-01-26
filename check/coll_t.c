@@ -25,7 +25,7 @@ void fcml_tf_coll_suite_cleanup(void) {
 
 void fcml_tf_coll_test_put_the_same_key(void) {
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 10, &error );
 	if( map == NULL || error ) {
@@ -45,7 +45,7 @@ void fcml_tf_coll_test_put_the_same_key(void) {
 
 void fcml_tf_coll_test_put_different_keys(void) {
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 10, &error );
 	if( map == NULL || error ) {
@@ -80,7 +80,7 @@ void fcml_tf_coll_test_put_different_keys(void) {
 
 void fcml_tf_coll_test_remove_keys(void) {
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
 
 	fcml_st_coll_map_descriptor descriptor = fcml_coll_map_descriptor_string;
 	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
@@ -159,7 +159,7 @@ void fcml_tf_coll_test_remove_keys(void) {
 
 void fcml_tf_coll_test_clear(void) {
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
 
 	fcml_st_coll_map_descriptor descriptor = fcml_coll_map_descriptor_string;
 	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
@@ -211,7 +211,7 @@ void fcml_tf_coll_test_iterate(void) {
 
 	iterator_counter = 0;
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
 
 	fcml_st_coll_map_descriptor descriptor = fcml_coll_map_descriptor_string;
 	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
@@ -246,7 +246,7 @@ void fcml_tf_coll_test_extend(void) {
 
 	iterator_counter = 0;
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 2, &error );
 	if( map == NULL || error ) {

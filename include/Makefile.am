@@ -1,5 +1,5 @@
 pkginclude_HEADERS = fcml_assembler.h \
-	fcml_ceh.h \
+	fcml_errors.h \
 	fcml_choosers.h \
 	fcml_common.h \
 	fcml_common_utils.h \

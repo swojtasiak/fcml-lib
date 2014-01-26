@@ -134,14 +134,16 @@ struct fcml_ist_coll_map {
 fcml_st_coll_map_descriptor fcml_coll_map_descriptor_string = { fcml_fnp_coll_map_key_hash_string, fcml_fnp_coll_map_key_equals_string, NULL, NULL };
 fcml_st_coll_map_descriptor fcml_coll_map_descriptor_uint32 = { fcml_fnp_coll_map_key_hash_uint32, fcml_fnp_coll_map_key_equals_uint32, NULL, NULL };
 
-fcml_coll_map *fcml_fn_coll_map_alloc( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, fcml_ceh_error *error ) {
+fcml_coll_map *fcml_fn_coll_map_alloc( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, fcml_int *error ) {
 	return fcml_fn_coll_map_alloc_factor( descriptor, capacity, FCML_COLL_MAP_DEFAULT_FACTOR, error );
 }
 
-fcml_coll_map *fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, float load_factor, fcml_ceh_error *error ) {
+fcml_coll_map *fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, float load_factor, fcml_int *error ) {
+
+	*error = FCML_COLL_ERROR_NO_ERROR;
 
 	if( capacity > ( 1<< 31 ) ) {
-		*error = FCML_CEH_GEC_INVALID_INPUT;
+		*error = FCML_COLL_ERROR_BAD_ARGS;
 		return NULL;
 	}
 
@@ -152,7 +154,7 @@ fcml_coll_map *fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descr
 
 	struct fcml_ist_coll_map *map = fcml_fn_env_memory_alloc( sizeof( struct fcml_ist_coll_map ) );
 	if( map == NULL ) {
-		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
+		*error = FCML_COLL_ERROR_OUT_OF_MEMORY;
 		return NULL;
 	}
 
@@ -169,7 +171,7 @@ fcml_coll_map *fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descr
 	map->map_entries = (struct fcml_ist_coll_map_entry**)fcml_fn_env_memory_alloc_clear( sizeof( struct fcml_ist_coll_map_entry* ) * real_capacity );
 	if( !map->map_entries ) {
 		fcml_fn_env_memory_free(map);
-		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
+		*error = FCML_COLL_ERROR_OUT_OF_MEMORY;
 		return NULL;
 	}
 
@@ -183,9 +185,11 @@ fcml_uint32_t fcml_fn_coll_map_size( fcml_coll_map *map_int ) {
 
 fcml_bool fcml_ifn_coll_map_expand( struct fcml_ist_coll_map *map, fcml_ceh_error *error ) {
 
+	*error = FCML_COLL_ERROR_NO_ERROR;
+
 	if( map->capacity > FCML_INT32_MAX ) {
 		/* Map reached its maximum capacity.*/
-		*error = FCML_CEH_GEC_NO_SPACE_LEFT;
+		*error = FCML_COLL_ERROR_MAP_FULL;
 		return FCML_FALSE;
 	}
 
@@ -195,7 +199,7 @@ fcml_bool fcml_ifn_coll_map_expand( struct fcml_ist_coll_map *map, fcml_ceh_erro
 	struct fcml_ist_coll_map_entry** new_map_entries = fcml_fn_env_memory_alloc( new_capacity * sizeof( struct fcml_ist_coll_map_entry* ) );
 	if( !new_map_entries ) {
 		/* Can not*/
-		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
+		*error = FCML_COLL_ERROR_OUT_OF_MEMORY;
 		return FCML_FALSE;
 	}
 
@@ -226,11 +230,11 @@ fcml_bool fcml_ifn_coll_map_expand( struct fcml_ist_coll_map *map, fcml_ceh_erro
 	return FCML_TRUE;
 }
 
-void fcml_fn_coll_map_put( fcml_coll_map *map_int, fcml_ptr key, fcml_ptr value, fcml_ceh_error *error ) {
+void fcml_fn_coll_map_put( fcml_coll_map *map_int, fcml_ptr key, fcml_ptr value, fcml_int *error ) {
+
+	*error = FCML_COLL_ERROR_NO_ERROR;
 
 	struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*)map_int;
-
-	*error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_st_coll_map_descriptor *descriptor = &(map->descriptor);
 	fcml_uint32_t hash = descriptor->hash_function( key );
@@ -265,7 +269,7 @@ void fcml_fn_coll_map_put( fcml_coll_map *map_int, fcml_ptr key, fcml_ptr value,
 
 	struct fcml_ist_coll_map_entry *newEntry = fcml_fn_env_memory_alloc( sizeof( struct fcml_ist_coll_map_entry ) );
 	if( !newEntry ) {
-		*error = FCML_CEH_GEC_NO_ERROR;
+		*error = FCML_COLL_ERROR_OUT_OF_MEMORY;
 		return;
 	}
 

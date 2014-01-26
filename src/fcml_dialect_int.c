@@ -13,6 +13,7 @@
 #include "fcml_coll.h"
 #include "fcml_env.h"
 #include "fcml_types.h"
+#include "fcml_utils.h"
 
 fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_mnemonic *mnemonic, fcml_string suffix ) {
 
@@ -85,19 +86,20 @@ fcml_ceh_error fcml_fn_asm_dialect_alloc_mnemonic_lookup( fcml_st_dialect_contex
     }
 
     /* Prepare mnemonic lookup.*/
-    dialect_context->dialect_mnemonics_lookup = fcml_fn_coll_map_alloc( &fcml_coll_map_descriptor_uint32, capacity, &error );
-    if( error ) {
+    fcml_int map_error;
+    dialect_context->dialect_mnemonics_lookup = fcml_fn_coll_map_alloc( &fcml_coll_map_descriptor_uint32, capacity, &map_error );
+    if( map_error ) {
         fcml_fn_env_memory_free( dialect_context );
-        return FCML_CEH_GEC_OUT_OF_MEMORY;
+        return fcml_fn_utils_convert_map_error( map_error );
     }
 
     fcml_st_dialect_mnemonic *current = mnemonic;
     while( current->mnemonic ) {
-        fcml_fn_coll_map_put( dialect_context->dialect_mnemonics_lookup, &(current->instruction), current, &error );
-        if( error ) {
+        fcml_fn_coll_map_put( dialect_context->dialect_mnemonics_lookup, &(current->instruction), current, &map_error );
+        if( map_error ) {
             fcml_fn_coll_map_free( dialect_context->dialect_mnemonics_lookup );
             fcml_fn_env_memory_free( dialect_context );
-            return error;
+            return fcml_fn_utils_convert_map_error( map_error );
         }
         current++;
     }

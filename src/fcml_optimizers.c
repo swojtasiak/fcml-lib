@@ -10,7 +10,7 @@
 #include <stddef.h>
 
 #include "fcml_common.h"
-#include "fcml_errors.h"
+#include <fcml_errors.h>
 
 typedef struct fcml_ist_asm_opt_optimization_path_element {
     fcml_en_attribute_size_flag flags;
@@ -76,7 +76,7 @@ fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_en_attribute_size_fla
 
 fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
 
-	fcml_ceh_error error = FCML_EN_UNSUPPORTED_ADDRESS_SIZE;
+	fcml_ceh_error error = FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
 
 	fcml_data_size easa[2];
 	fcml_data_size eosa[3];
