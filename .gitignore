@@ -21,5 +21,4 @@
 /config.h
 config.h.in~
 compile
-/configure_cflags.sh
 /valgrind-result.txt
