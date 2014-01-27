@@ -466,6 +466,9 @@ typedef struct fcml_st_instruction_code {
  * Instruction entry point.
  ****************************/
 
+/*
+ * Describes address of an instruction code.
+ */
 typedef struct fcml_st_entry_point {
 	/* Processor addressing mode 16/32/64-bit.*/
 	fcml_en_addr_form addr_form;
