@@ -306,7 +306,7 @@ fcml_data_size fcml_ifn_asm_get_effective_address_size( fcml_ist_asm_encoding_co
 	if(context->optimizer_processing_details.easa ) {
 		return context->optimizer_processing_details.easa;
 	}
-	return context->assembler_context->address_size_attribute;
+	return context->assembler_context->entry_point.address_size_attribute;
 }
 
 fcml_data_size fcml_ifn_asm_calculate_operand_size( fcml_ist_asm_encoding_context *context, fcml_data_size size_operator, fcml_uint8_t encoded_size_operator ) {
@@ -322,6 +322,7 @@ fcml_data_size fcml_ifn_asm_calculate_operand_size( fcml_ist_asm_encoding_contex
 }
 
 fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_context *context, fcml_uint8_t encoded_operand_size, fcml_data_size operand_size, fcml_data_size *encoded_data_size, enum fcml_ien_asm_comparator_type comparator ) {
+	fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
 	fcml_st_asm_optimizer_processing_details *flags = &(context->optimizer_processing_details);
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_data_size effective_address_size = 0;
@@ -374,11 +375,11 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 			effective_operand_size = 16;
 			break;
 		case 28 * 8:
-			if( context->assembler_context->operand_size_attribute == FCML_DS_16 ) {
+			if( entry_point->operand_size_attribute == FCML_DS_16 ) {
 				FCML_TRACE_MSG( "Addressing mode not available for 16 bit EOSA." );
 				error = FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE;
 			} else {
-				effective_operand_size = context->assembler_context->operand_size_attribute;
+				effective_operand_size = entry_point->operand_size_attribute;
 			}
 			break;
 		default:
@@ -391,11 +392,11 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 			effective_operand_size = 16;
 			break;
 		case 32 * 2:
-			if( context->assembler_context->operand_size_attribute == FCML_DS_16 ) {
+			if( entry_point->operand_size_attribute == FCML_DS_16 ) {
 				FCML_TRACE_MSG( "Addressing mode not available for 16 bit EOSA." );
 				error = FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE;
 			} else {
-				effective_operand_size = context->assembler_context->operand_size_attribute;
+				effective_operand_size = entry_point->operand_size_attribute;
 			}
 			break;
 		default:
@@ -408,11 +409,11 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 			effective_operand_size = 16;
 			break;
 		case 108 * 8:
-			if( context->assembler_context->operand_size_attribute == FCML_DS_16 ) {
+			if( entry_point->operand_size_attribute == FCML_DS_16 ) {
 				FCML_TRACE_MSG( "Addressing mode not available for 16 bit EOSA." );
 				error = FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE;
 			} else {
-				effective_operand_size = context->assembler_context->operand_size_attribute;
+				effective_operand_size = entry_point->operand_size_attribute;
 			}
 			break;
 		default:
@@ -486,6 +487,8 @@ fcml_bool fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *contex
 
 	fcml_bool result = FCML_TRUE;
 
+	fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
+
     if( !context->optimizer_processing_details.allowed_eosa.is_set ) {
         /* In order to choose optimal OSA, flags should be set.*/
         return FCML_FALSE;
@@ -493,7 +496,7 @@ fcml_bool fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *contex
 
     fcml_en_attribute_size_flag flags = context->optimizer_processing_details.allowed_eosa.flags;
 
-    switch( context->assembler_context->addr_form ) {
+    switch( entry_point->addr_form ) {
     case FCML_AF_16_BIT:
         if( flags & FCML_EN_ASF_16 ) {
             *osa = FCML_DS_16;
@@ -576,6 +579,7 @@ fcml_bool fcml_ifn_asm_accept_segment_register( fcml_ist_asm_encoding_context *c
 }
 
 fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_uint8_t encoded_operand_size, fcml_data_size operand_size, enum fcml_ien_asm_comparator_type comparator ) {
+	fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
 	fcml_st_asm_optimizer_processing_details *data_size_flags = &(context->optimizer_processing_details);
 	fcml_en_attribute_size_flag osa_flags = FCML_EN_ASF_ANY;
 	fcml_en_attribute_size_flag asa_flags = FCML_EN_ASF_ANY;
@@ -589,13 +593,13 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 		break;
 	case FCML_EOS_L:
 		if( FCML_DEF_PREFIX_L_IGNORE_OS( addr_mode_desc->allowed_prefixes ) ) {
-			result = ( operand_size == context->assembler_context->operand_size_attribute );
+			result = ( operand_size == entry_point->operand_size_attribute );
 		} else {
 			result = ( ( operand_size == FCML_DS_128 ) || ( operand_size == FCML_DS_256 ) );
 		}
 		break;
 	case FCML_EOS_EASA:
-		if( context->assembler_context->addr_form == FCML_AF_32_BIT ) {
+		if( entry_point->addr_form == FCML_AF_32_BIT ) {
 			result = ( ( operand_size == FCML_DS_16 ) || ( operand_size == FCML_DS_32 ) );
 		} else {
 			result = ( ( operand_size == FCML_DS_32 ) || ( operand_size == FCML_DS_64 ) );
@@ -605,7 +609,7 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 		}
 		break;
 	case FCML_EOS_EOSA:
-		if( context->assembler_context->addr_form == FCML_AF_32_BIT ) {
+		if( entry_point->addr_form == FCML_AF_32_BIT ) {
 			result = ( ( operand_size == FCML_DS_16 ) || ( operand_size == FCML_DS_32 ) );
 		} else {
 			result = ( ( operand_size == FCML_DS_16 ) || ( operand_size == FCML_DS_32 ) || ( operand_size == FCML_DS_64 ) );
@@ -720,7 +724,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
 		fcml_uint8_t imm_size = args->encoded_imm_size;
 		fcml_uint8_t imm_size_ex = args->encoded_ex_imm_size;
 		fcml_st_immediate *immediate = &(operand_def->immediate);
-		fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+		fcml_en_addr_form addr_form = context->assembler_context->entry_point.addr_form;
 		fcml_bool is_convertable = FCML_FALSE;
 
 		fcml_en_attribute_size_flag osa_flags = context->optimizer_processing_details.allowed_eosa.flags;
@@ -891,7 +895,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_proces
 		} else {
 			context->opcode_reg.opcode_reg = operand_def->reg.reg;
 		}
-		if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+		if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
 		    context->reg_opcode_needs_rex = operand_def->reg.x64_exp;
 		}
 	}
@@ -906,7 +910,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_immediate_dis_relative( fcml_ist_as
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if ( ( operand_def->type == FCML_EOT_IMMEDIATE ) || ( operand_def->type == FCML_EOT_ADDRESS && operand_def->address.address_form == FCML_AF_OFFSET ) ) {
         fcml_en_attribute_size_flag flags = 0;
-	    if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+	    if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
             /* 64 bit OSA forced. Just in case, addressing mode acceptor is responsible for interpreting FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA*/
 	        /* flag and forcing appropriate OSA size.*/
 	        /* TODO: Pzeanalizowac to czy napewno jest poprawne, jezeli nie ma ustawionego FORCE 64 EOA in 64bit mode, dziala chyba nie tak.*/
@@ -957,6 +961,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
         error = FCML_CEH_GEC_INTERNAL_ERROR;
     } else {
 
+    	fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
+
         /* Optimizer is responsible for setting optimal OSA value.*/
         fcml_data_size osa = context->optimizer_processing_details.eosa;
 
@@ -991,7 +997,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
                     case FCML_DS_16: {
 
                         fcml_int16_t offset = destination.int16;
-                        fcml_int16_t ip = (fcml_int16_t)( ( context->assembler_context->ip.eip + context->instruction_size.value + rel_size ) & 0x0000FFFF);
+                        fcml_int16_t ip = (fcml_int16_t)( ( entry_point->ip.eip + context->instruction_size.value + rel_size ) & 0x0000FFFF);
                         fcml_int16_t rel16 = offset - ip;
 
                         displacement.int16 = rel16;
@@ -1004,7 +1010,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
                     case FCML_DS_32: {
 
                         fcml_int32_t offset = destination.int32;
-                        fcml_int32_t eip = (fcml_int32_t)( context->assembler_context->ip.eip + context->instruction_size.value + rel_size );
+                        fcml_int32_t eip = (fcml_int32_t)( entry_point->ip.eip + context->instruction_size.value + rel_size );
                         fcml_int32_t rel32 = offset - eip;
 
                         displacement.int32 = rel32;
@@ -1017,7 +1023,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
                     case FCML_DS_64: {
 
                         fcml_int64_t offset = (fcml_int64_t)destination.int64;
-                        fcml_int64_t rip = (fcml_int64_t)( context->assembler_context->ip.rip + context->instruction_size.value + rel_size );
+                        fcml_int64_t rip = (fcml_int64_t)( entry_point->ip.rip + context->instruction_size.value + rel_size );
                         fcml_int64_t rel32 = offset - rip;
 
                         displacement.int32 = (fcml_int32_t)rel32;
@@ -1091,7 +1097,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_far_pointer( fcml_ist_asm_encoding_
     if( operand_def->type != FCML_EOT_FAR_POINTER ) {
         return FCML_CEH_GEC_UNSUPPORTED_OPPERAND;
     }
-    switch( context->assembler_context->addr_form ) {
+    switch( context->assembler_context->entry_point.addr_form ) {
     case FCML_AF_16_BIT:
         if( operand_def->far_pointer.offset_size == FCML_DS_16 ) {
             if( !fcml_ifn_asm_set_size_flag( &(context->optimizer_processing_details.allowed_eosa), FCML_EN_ASF_16 ) ) {
@@ -1253,7 +1259,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_segment_relative_offset( fcml_ist_a
         source_address.is_signed = FCML_TRUE;
 
         is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
-        if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+        if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
            is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags );
         } else {
            is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
@@ -1396,7 +1402,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 			    if( !error ) {
 
                     /* ASA.*/
-                    fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+                    fcml_en_addr_form addr_form = context->assembler_context->entry_point.addr_form;
 
                     fcml_st_modrm mod_rm = {0};
                     mod_rm.address = operand_def->address;
@@ -1426,6 +1432,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 }
 
 fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phase phase, fcml_ist_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_ist_asm_instruction_part *operand_enc ) {
+	fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_sf_def_tma_rm *args = (fcml_sf_def_tma_rm*)addr_mode->addr_mode_args;
 	switch( phase ) {
@@ -1433,7 +1440,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		if( operand_def->type == FCML_EOT_REGISTER ) {
 			context->mod_rm.reg.is_not_null = FCML_TRUE;
 			context->mod_rm.reg.value = operand_def->reg.reg;
-			if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+			if( entry_point->addr_form == FCML_AF_64_BIT ) {
 			    context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
 			}
 			/* Modify data size flags if there is such need.*/
@@ -1441,7 +1448,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		} else {
 			/* Set hints for ModR/M instruction part encoder.*/
 			context->is_sib_alternative_hint = ( operand_def->hints & FCML_OP_HINT_SIB_ENCODING );
-			if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+			if( entry_point->addr_form == FCML_AF_64_BIT ) {
 				context->is_abs_alternative_hint = ( operand_def->hints & FCML_OP_HINT_ABSOLUTE_ADDRESSING );
 				context->is_rel_alternative_hint = ( operand_def->hints & FCML_OP_HINT_RELATIVE_ADDRESSING );
 			} else {
@@ -1484,7 +1491,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 	    fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
 		context->mod_rm.reg_opcode = operand_def->reg.reg;
-		if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+		if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
 		    context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
 		}
 		if( ( operand_def->reg.type != FCML_REG_DR && operand_def->reg.type != FCML_REG_CR ) && operand_def->reg.size != FCML_DS_UNDEF ) {
@@ -1967,10 +1974,11 @@ void fcml_ifn_asm_set_attribute_size_flag_for_size( fcml_data_size attribute_siz
 }
 
 void fcml_ifn_prepare_optimizer_context( fcml_st_asm_optimizer_context *optimizer_context, fcml_st_assembler_context *assembler_context ) {
-    optimizer_context->addr_form = assembler_context->addr_form;
+	fcml_st_entry_point *entry_point = &(assembler_context->entry_point);
+    optimizer_context->addr_form = entry_point->addr_form;
     optimizer_context->optimizer_flags = assembler_context->configuration.optimizer_flags;
-    optimizer_context->asa = assembler_context->address_size_attribute;
-    optimizer_context->osa = assembler_context->operand_size_attribute;
+    optimizer_context->asa = entry_point->address_size_attribute;
+    optimizer_context->osa = entry_point->operand_size_attribute;
 }
 
 void fcml_ifn_chooser_extract( fcml_ptr instruction_ptr, fcml_st_instruction_code *instruction_code ) {
@@ -2703,10 +2711,11 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_66_prefix_encoder( fcml_i
                 encode = FCML_TRUE;
             } else if ( !( addr_type & FCML_AMT_SIMD ) ) {
                 /* SIMD instructions do not need 0x66 to change EOSA.*/
+            	fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
             	encode =
-					( context->assembler_context->operand_size_attribute == FCML_DS_16 && context->optimizer_processing_details.eosa == FCML_DS_32 ) ||
-					( context->assembler_context->operand_size_attribute == FCML_DS_32 && context->optimizer_processing_details.eosa == FCML_DS_16 ) ||
-					( context->assembler_context->operand_size_attribute == FCML_DS_64 && context->optimizer_processing_details.eosa == FCML_DS_32 );
+					( entry_point->operand_size_attribute == FCML_DS_16 && context->optimizer_processing_details.eosa == FCML_DS_32 ) ||
+					( entry_point->operand_size_attribute == FCML_DS_32 && context->optimizer_processing_details.eosa == FCML_DS_16 ) ||
+					( entry_point->operand_size_attribute == FCML_DS_64 && context->optimizer_processing_details.eosa == FCML_DS_32 );
             }
             if( encode ) {
                 instruction_part->code[0] = 0x66;
@@ -2737,11 +2746,12 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_67_prefix_encoder( fcml_i
 
 	if( phase == FCML_IEN_ASM_IPPP_THIRD_PHASE ) {
 	    /* If effective address size is not set, it means that instruction is not interested in ASA and just doesn't use it.*/
-		if( context->optimizer_processing_details.easa && ( context->assembler_context->address_size_attribute != context->optimizer_processing_details.easa ) ) {
+		fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
+		if( context->optimizer_processing_details.easa && ( entry_point->address_size_attribute != context->optimizer_processing_details.easa ) ) {
 			fcml_bool encode =
-				( context->assembler_context->address_size_attribute == FCML_DS_16 && context->optimizer_processing_details.easa == FCML_DS_32 ) ||
-				( context->assembler_context->address_size_attribute == FCML_DS_32 && context->optimizer_processing_details.easa == FCML_DS_16 ) ||
-				( context->assembler_context->address_size_attribute == FCML_DS_64 && context->optimizer_processing_details.easa == FCML_DS_32 );
+				( entry_point->address_size_attribute == FCML_DS_16 && context->optimizer_processing_details.easa == FCML_DS_32 ) ||
+				( entry_point->address_size_attribute == FCML_DS_32 && context->optimizer_processing_details.easa == FCML_DS_16 ) ||
+				( entry_point->address_size_attribute == FCML_DS_64 && context->optimizer_processing_details.easa == FCML_DS_32 );
 			if( encode ) {
 				instruction_part->code[0] = 0x67;
 				instruction_part->code_length = 1;
@@ -2876,7 +2886,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 
 		/* REX prefix is only available in 64 bit mode. Neither VEX nor XOP are allowed here,*/
 		/* but it's checked before this encoder is registered for*/
-		if( context->assembler_context->addr_form == FCML_AF_64_BIT ) {
+		if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
 
 			fcml_uint8_t rex = FCML_ENCODE_REX_BASE;
 
@@ -2949,7 +2959,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_rip_post_processor( fcml_ist_asm_en
 		/* Encode ModR/M and displacement.*/
 		fcml_st_memory_stream stream = fcml_ifn_asm_instruction_part_stream( instruction_part );
 		fcml_fn_stream_write( &stream, encoded_mod_rm->modrm );
-		error = fcml_fn_modrm_encode_rip_offset( &stream, assembler_context->ip.rip, context->instruction_size.value, encoded_mod_rm );
+		error = fcml_fn_modrm_encode_rip_offset( &stream, assembler_context->entry_point.ip.rip, context->instruction_size.value, encoded_mod_rm );
 	}
 
 	return error;
@@ -2964,7 +2974,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 	if( phase == FCML_IEN_ASM_IPPP_SECOND_PHASE ) {
 
 		fcml_st_modrm_encoder_context ctx;
-		ctx.addr_form = assembler_context->addr_form;
+		ctx.addr_form = assembler_context->entry_point.addr_form;
 
 		/* Hints have higher precedence than configuration.*/
 
@@ -3048,7 +3058,7 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 /*******************************/
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_addr_mode_acceptor( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_instruction *instruction, fcml_ptr args ) {
-	fcml_en_addr_form addr_form = context->assembler_context->addr_form;
+	fcml_en_addr_form addr_form = context->assembler_context->entry_point.addr_form;
 	if( !FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( addr_mode_def->opcode_flags ) && addr_form == FCML_AF_64_BIT ) {
 		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
 	} else if ( !FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( addr_mode_def->opcode_flags ) && ( addr_form == FCML_AF_16_BIT || addr_form == FCML_AF_32_BIT ) ) {

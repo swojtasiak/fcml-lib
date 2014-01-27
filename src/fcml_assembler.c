@@ -64,11 +64,11 @@ void fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) {
 		// Free all available instructions in the chain.
         fcml_ifn_asm_free_instruction_chain( result->instructions );
         // Prepare for next usage.
-        fcml_fn_assemble_prepare_result( result );
+        fcml_fn_assembler_prepare_result( result );
 	}
 }
 
-void fcml_fn_assemble_prepare_result( fcml_st_assembler_result *result ) {
+void fcml_fn_assembler_prepare_result( fcml_st_assembler_result *result ) {
 	// Clean assember result container before it's first used.
 	if( result ) {
 		fcml_fn_env_memory_clear( result, sizeof( fcml_st_assembler_result ) );
@@ -79,30 +79,30 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	/* Take into account that dialect can modify source instruction by preparing it for assembler, so we have to use local copy.*/
+	/* Validate and prepare entry point. */
+	error = fcml_fn_prepare_entry_point( &(asm_context->entry_point ) );
+	if( error ) {
+		return error;
+	}
+
+	/* Take into account that dialect can modify source instruction by
+	 * preparing it for assembler, so we have to use local copy.
+	 */
 	fcml_st_instruction tmp_instruction = *instruction;
 
 	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)asm_context->assembler;
 
-	/* First place where dialect can ingerate instruction definition.*/
+	/* First place where dialect can ingerate instruction definition. */
 	fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = enc_asm->dialect_context->assembler_preprocessor;
 	if( assembler_preprocessor ) {
 		assembler_preprocessor( (fcml_st_dialect*)enc_asm->dialect_context, &tmp_instruction, NULL, NULL, NULL );
 	}
 
-	/* Find instruction addressing modes.*/
+	/* Find instruction addressing modes. */
 	fcml_st_asm_instruction_addr_modes *addr_modes = NULL;
 	error = fcml_fn_asm_get_instruction_encodings( enc_asm->instructions_map, tmp_instruction.mnemonic, &addr_modes );
 	if( error ) {
 		return error;
-	}
-
-	// TODO: Sanity check podobny jak w przypadku disassemblera, moze nawet wykorzystac ten sam powinno byc ok.
-	if( !asm_context->address_size_attribute ) {
-		asm_context->address_size_attribute = fcml_fn_utils_get_default_ASA(asm_context->addr_form);
-	}
-	if( !asm_context->operand_size_attribute ) {
-		asm_context->operand_size_attribute = fcml_fn_utils_get_default_OSA(asm_context->addr_form);
 	}
 
 	/* Execute instruction encoder. */
@@ -131,9 +131,9 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 		error = FCML_CEH_GEC_UNKNOWN_MNEMONIC;
 	}
 
-	/* Free results but only if there is no error messages.*/
+	/* Free results but only if there is no error messages. */
 	if( error ) {
-		/* Free only instructions, error messages should be returned to user.*/
+		/* Free only instructions, error messages should be returned to user. */
 		fcml_ifn_asm_free_instruction_chain( result->instructions );
 		result->instructions = NULL;
 		result->chosen_instruction = NULL;
@@ -143,7 +143,7 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 	return error;
 }
 
-fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
+fcml_ceh_error fcml_fn_assembler( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
 
 	// Sanity check.
 	if( !result || !instruction || !context ) {

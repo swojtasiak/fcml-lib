@@ -433,11 +433,13 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 		return FCML_CEH_GEC_INTERNAL_ERROR;
 	}
 
+	fcml_st_entry_point *entry_point = &(context->disassembler_context->entry_point);
+
 	if( rel_args->encoded_imm_size != FCML_EOS_UNDEFINED ) {
 		int_size = rel_args->encoded_imm_size * 8;
 	} else {
 
-		if( context->effective_operand_size_attribute == FCML_DS_16 && context->disassembler_context->addr_form == FCML_AF_64_BIT ) {
+		if( context->effective_operand_size_attribute == FCML_DS_16 && entry_point->addr_form == FCML_AF_64_BIT ) {
 			// TODO: Dlaczego w przypadku disassemblera rzucamy blad? Sprawdzic czy to sprawdzenie ma sens.
 			return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
 		}
@@ -468,7 +470,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	offset->is_signed = FCML_TRUE;
 
 	/* Calculate offset relative to IP.*/
-	fcml_st_instruction_pointer *ip = &(context->disassembler_context->ip);
+	fcml_st_instruction_pointer *ip = &(entry_point->ip);
 
 	switch( context->effective_operand_size_attribute ) {
 	case FCML_DS_16:
@@ -651,7 +653,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 
 		if( decoded_modrm->is_rip ) {
 			/* We known instruction size, so post processing is not needed and RIP can be calculated now.*/
-			error = fcml_fn_modrm_decode_rip( context->disassembler_context->ip.rip + context->calculated_instruction_size, context->effective_address_size_attribute, &(address->offset), &(address->offset) );
+			error = fcml_fn_modrm_decode_rip( context->disassembler_context->entry_point.ip.rip + context->calculated_instruction_size, context->effective_address_size_attribute, &(address->offset), &(address->offset) );
 		}
 
 		/* Segment registers.*/
@@ -677,7 +679,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		}
 
 		/* These hints aren't used in 32 bit addressing mode.*/
-		if( context->disassembler_context->addr_form == FCML_AF_64_BIT ) {
+		if( context->disassembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
 			operand->hints |= context->decoded_modrm.is_rip ? FCML_OP_HINT_RELATIVE_ADDRESSING : FCML_OP_HINT_ABSOLUTE_ADDRESSING;
 		}
 
@@ -765,7 +767,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_isX( fcml_ist_dasm_decoding_context
 		operand_wrapper->operand.type = FCML_EOT_REGISTER;
 		fcml_st_register *reg = &(operand_wrapper->operand.reg);
 
-		reg->reg = ( ( context->disassembler_context->addr_form == FCML_AF_32_BIT ) ? ( 0x70 & isX ) : ( 0xF0 & isX ) ) >> 4;
+		reg->reg = ( ( context->disassembler_context->entry_point.addr_form == FCML_AF_32_BIT ) ? ( 0x70 & isX ) : ( 0xF0 & isX ) ) >> 4;
 		reg->type = FCML_REG_SIMD;
 		reg->size = context->prefixes.l ? FCML_OS_YWORD : FCML_OS_XWORD;
 		reg->x64_exp = FCML_FALSE;
@@ -944,12 +946,13 @@ void fcml_ifn_dasm_clear_mandatory_flag( fcml_ist_dasm_decoding_context *context
 
 fcml_data_size fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_context *context ) {
 
-	fcml_st_disassembler_context *disassembler_context = context->disassembler_context;
-	fcml_data_size effective_asa = disassembler_context->address_size_attribute;
+	fcml_st_entry_point *entry_point = &(context->disassembler_context->entry_point);
+
+	fcml_data_size effective_asa = entry_point->address_size_attribute;
 
 	/* Checks if address size attribute is overridden.*/
 	if( fcml_ifn_dasm_is_prefix_available( context, 0x67, FCML_FALSE ) ) {
-		switch( disassembler_context->addr_form ) {
+		switch( entry_point->addr_form ) {
 		case FCML_AF_16_BIT:
 		case FCML_AF_32_BIT:
 			effective_asa = ( effective_asa == FCML_DS_32 ) ? FCML_DS_16 : FCML_DS_32;
@@ -967,12 +970,13 @@ fcml_data_size fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_con
 
 	fcml_st_instruction_prefix *prefix;
 
-	fcml_st_disassembler_context *disassembler_context = context->disassembler_context;
+	fcml_st_entry_point *entry_point = &(context->disassembler_context->entry_point);
 	fcml_st_prefixes_details *prefixes = &(context->prefixes);
-	fcml_data_size osa = disassembler_context->operand_size_attribute;
+
+	fcml_data_size osa = entry_point->operand_size_attribute;
 
 	/* Gets effective address-size attribute for used mode.*/
-	switch( disassembler_context->addr_form ) {
+	switch( entry_point->addr_form ) {
 	case FCML_AF_16_BIT:
 	case FCML_AF_32_BIT:
 		/* In 16 and 32 bit mode only prefixes can change address-size attribute.*/
@@ -1198,10 +1202,12 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_addr_mode( fcml_ist_dasm_decoding_c
 
 	fcml_st_disassembler_context *disassembler_context = context->disassembler_context;
 
-	fcml_en_addr_form addr_form = disassembler_context->addr_form;
+	fcml_en_addr_form addr_form = disassembler_context->entry_point.addr_form;
 
-	return ( ( addr_form == FCML_AF_16_BIT || addr_form == FCML_AF_32_BIT ) && FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( instruction_decoding_def->opcode_flags ) )
-				|| ( addr_form == FCML_AF_64_BIT && FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( instruction_decoding_def->opcode_flags ) );
+	return ( ( addr_form == FCML_AF_16_BIT || addr_form == FCML_AF_32_BIT )
+			&& FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( instruction_decoding_def->opcode_flags ) )
+				|| ( addr_form == FCML_AF_64_BIT
+						&& FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( instruction_decoding_def->opcode_flags ) );
 }
 
 fcml_ifp_dasm_instruction_acceptor fcml_ifn_dasm_instruction_acceptor_factory_addr_mode( fcml_st_def_addr_mode_desc *addr_mode_desc ) {
@@ -1567,7 +1573,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 		fcml_uint32_t offset = stream->offset;
 
 		fcml_st_modrm_decoder_context modrm_context;
-		modrm_context.addr_form = decoding_context->disassembler_context->addr_form;
+		modrm_context.addr_form = decoding_context->disassembler_context->entry_point.addr_form;
 		modrm_context.effective_address_size = decoding_context->effective_address_size_attribute;
 
 		fcml_st_modrm_source modrm_source;
@@ -1738,66 +1744,6 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 	return error;
 }
 
-/**************************
- * Input validation
- **************************/
-
-fcml_ceh_error fcml_ifn_dasm_validate_and_prepare_context( fcml_st_disassembler_context *context ) {
-
-	/* Mode has to be set. */
-    if( context->addr_form != FCML_AF_16_BIT && context->addr_form != FCML_AF_32_BIT && context->addr_form != FCML_AF_64_BIT ) {
-        return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
-    }
-
-    /* 16 bit address size attribute is not supported in 64bit mode. */
-    if( context->addr_form == FCML_AF_64_BIT && context->address_size_attribute == FCML_DS_16 ) {
-        return FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
-    }
-
-    /* Check if attributes are valid and set them to default values. */
-    if( !context->address_size_attribute ) {
-        switch( context->addr_form ) {
-		case FCML_AF_16_BIT:
-			context->address_size_attribute = FCML_DS_16;
-			break;
-		case FCML_AF_32_BIT:
-			context->address_size_attribute = FCML_DS_32;
-			break;
-		case FCML_AF_64_BIT:
-			context->address_size_attribute = FCML_DS_64;
-			break;
-        }
-    }
-
-    if( !context->operand_size_attribute ) {
-        switch( context->addr_form ) {
-		case FCML_AF_16_BIT:
-			context->operand_size_attribute = FCML_DS_16;
-			break;
-		case FCML_AF_32_BIT:
-			context->operand_size_attribute = FCML_DS_32;
-			break;
-		case FCML_AF_64_BIT:
-			context->operand_size_attribute = FCML_DS_32;
-			break;
-        }
-    }
-
-    /* Check if ASA is value.*/
-    fcml_data_size asa = context->address_size_attribute;
-    if( asa != FCML_DS_16 && asa != FCML_DS_32 && asa != FCML_DS_64 ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
-	}
-
-    /* Check if OSA is value.*/
-    fcml_data_size osa = context->operand_size_attribute;
-    if( osa != FCML_DS_16 && osa != FCML_DS_32 && osa != FCML_DS_64 ) {
-   		return FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE;
-   	}
-
-    return FCML_CEH_GEC_NO_ERROR;
-}
-
 /****************************
  * Prefixes decoding.
  ****************************/
@@ -1818,11 +1764,11 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 
 	fcml_st_prefixes_details *prefixes = &(decoding_context->prefixes);
 	fcml_st_memory_stream *stream = decoding_context->stream;
-	fcml_en_addr_form addr_form = decoding_context->disassembler_context->addr_form;
+	fcml_en_addr_form addr_form = decoding_context->disassembler_context->entry_point.addr_form;
 	fcml_st_prefixes_details *prefixes_details = &(decoding_context->prefixes);
 
-	fcml_uint16_t p_flags;
-	fcml_st_prefix_types prefix_type;
+	fcml_uint16_t p_flags = 0;
+	fcml_st_prefix_types prefix_type = 0;
 	fcml_int prefix_index = 0;
 	fcml_int prefix_size = 0;
 	fcml_int xop_vex_prefix_size = 0;
@@ -1831,7 +1777,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_bool is_last_prefix = FCML_FALSE;
 
 	/* VEX like prefixes are not allowed in 16 bit mode.*/
-	if( decoding_context->disassembler_context->addr_form == FCML_AF_16_BIT ) {
+	if( addr_form == FCML_AF_16_BIT ) {
 		is_xop_vex_allowed = FCML_FALSE;
 	}
 
@@ -2148,7 +2094,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 
 	fcml_ist_dasm_disassembler *int_disasm = (fcml_ist_dasm_disassembler *)context->disassembler;
 
-	error = fcml_ifn_dasm_validate_and_prepare_context( context );
+	error = fcml_fn_prepare_entry_point( &(context->entry_point) );
 	if( error ) {
 		return error;
 	}
@@ -2162,8 +2108,8 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 	/* Prepare disassemble context.*/
 	fcml_ist_dasm_decoding_context decoding_context = {0};
 	decoding_context.disassembler_context = context;
-	decoding_context.effective_address_size_attribute = context->address_size_attribute;
-	decoding_context.effective_operand_size_attribute = context->operand_size_attribute;
+	decoding_context.effective_address_size_attribute = context->entry_point.address_size_attribute;
+	decoding_context.effective_operand_size_attribute = context->entry_point.operand_size_attribute;
 
 	decoding_context.stream = &stream;
 
@@ -2273,7 +2219,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 	return error;
 }
 
-fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result ) {
+fcml_ceh_error fcml_fn_disassembler( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result ) {
 
 	// Sanity check.
 	if( !context || !result ) {
@@ -2281,7 +2227,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 	}
 
 	// Check if there is something already available in result, and free it in such cache.
-	fcml_fn_disassemble_result_free( result );
+	fcml_fn_disassembler_result_free( result );
 
 	fcml_ceh_error error = fcml_ifn_disassemble_core( context, result );
 	if( error ) {
@@ -2292,7 +2238,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 	return error;
 }
 
-void fcml_fn_disassemble_result_free( fcml_st_disassembler_result *result ) {
+void fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result ) {
 
 	if( result ) {
 

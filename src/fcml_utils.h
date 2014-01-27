@@ -31,8 +31,6 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_int8( const fcml_st_integer *int
 fcml_ceh_error fcml_fn_utils_convert_integer_to_int16( const fcml_st_integer *integer, fcml_int16_t *value );
 fcml_ceh_error fcml_fn_utils_convert_integer_to_int32( const fcml_st_integer *integer, fcml_int32_t *value );
 fcml_ceh_error fcml_fn_utils_convert_integer_to_int64( const fcml_st_integer *integer, fcml_int64_t *value );
-fcml_data_size fcml_fn_utils_get_default_ASA(fcml_en_addr_form addr_form);
-fcml_data_size fcml_fn_utils_get_default_OSA(fcml_en_addr_form addr_form);
 fcml_ceh_error fcml_fn_utils_decode_integer( fcml_st_memory_stream *stream, fcml_st_integer *integer, fcml_usize size );
 fcml_ceh_error fcml_fn_utils_encode_integer( fcml_st_memory_stream *stream, const fcml_st_integer *integer );
 fcml_ceh_error fcml_fn_utils_displacement_to_integer( const fcml_st_displacement *displacement, fcml_st_integer *integer );
@@ -45,5 +43,6 @@ fcml_ceh_error fcml_fn_utils_extend_integer( fcml_st_integer *integer, fcml_usiz
 fcml_bool fcml_fn_utils_is_reg_undef( const fcml_st_register *reg );
 fcml_ceh_error fcml_fn_utils_convert_map_error( fcml_int error );
 void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_error_container *error_container, fcml_ceh_error code );
+fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point );
 
 #endif /* FCML_UTILS_H_ */

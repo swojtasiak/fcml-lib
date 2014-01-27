@@ -75,19 +75,13 @@ typedef struct fcml_st_assembler_context {
     fcml_st_assembler *assembler;
     /* Assembler behavior can be configured here.*/
 	fcml_st_assembler_conf configuration;
-	// TODO: Przeniesc ponizsze pola i uwspolnic z assemblrem, pozniej do jakeigos wspolnego commona przeniesc sanity check tych informacji.
-	/* Processor addressing mode 16/32/64-bit.*/
-	fcml_en_addr_form addr_form;
-	/* Default address/operand size attribute (See 'D' flag of segment descriptor.)*/
-	fcml_data_size address_size_attribute;
-	fcml_data_size operand_size_attribute;
-	/* Instruction pointer used for relative addressing address calculation.*/
-	fcml_st_instruction_pointer ip;
+	/* Instruction entry point configuration. */
+	fcml_st_entry_point entry_point;
 } fcml_st_assembler_context;
 
 fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler );
-void fcml_fn_assemble_prepare_result( fcml_st_assembler_result *result );
-fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
+fcml_ceh_error fcml_fn_assembler( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
+void fcml_fn_assembler_prepare_result( fcml_st_assembler_result *result );
 void fcml_fn_assembler_result_free( fcml_st_assembler_result *result );
 void fcml_fn_assembler_free( fcml_st_assembler *assembler );
 

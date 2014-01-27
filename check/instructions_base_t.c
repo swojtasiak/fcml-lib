@@ -60,15 +60,16 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 	if( !(t_flags & FCML_TSF_ASM_ONLY) ) {
 
 		fcml_st_disassembler_context context;
+		context.configuration.enable_error_messages = FCML_TRUE;
 		context.configuration.short_forms = FCML_FALSE;
 		context.configuration.extend_disp_to_asa = FCML_TRUE;
 		context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
 		context.configuration.carry_flag_conditional_suffix = FCML_TRUE;
 		context.configuration.extend_disp_to_asa = FCML_TRUE;
 		context.disassembler = disassembler;
-		context.addr_form = addr_form;
-		context.address_size_attribute = 0;
-		context.operand_size_attribute = 0;
+		context.entry_point.addr_form = addr_form;
+		context.entry_point.address_size_attribute = 0;
+		context.entry_point.operand_size_attribute = 0;
 		if( !(t_flags & FCML_TSF_MULTI_ASM_RESULTS) ) {
 			context.code = code;
 			context.code_length = size;
@@ -77,10 +78,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 			context.code_length = code[1];
 		}
 
-		fcml_ifn_ts_set_ip( &(context.ip), addr_form );
+		fcml_ifn_ts_set_ip( &(context.entry_point.ip), addr_form );
 
 		/* Disassemble.*/
-		error = fcml_fn_disassemble( &context, &dis_result );
+		error = fcml_fn_disassembler( &context, &dis_result );
 
 	}
 
@@ -120,20 +121,20 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 					success = FCML_FALSE;
 				}
-				fcml_fn_disassemble_result_free( &dis_result );
+				fcml_fn_disassembler_result_free( &dis_result );
 				return success;
 			}
 
 			if( strcmp( buffer, mnemonic ) != 0 ) {
 				if( t_flags & FCML_TSF_SHOULD_FAIL ) {
-				    fcml_fn_disassemble_result_free( &dis_result );
+				    fcml_fn_disassembler_result_free( &dis_result );
 					return FCML_TRUE;
 				}
 				printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 					success = FCML_FALSE;
 				}
-				fcml_fn_disassemble_result_free( &dis_result );
+				fcml_fn_disassembler_result_free( &dis_result );
 				return success;
 			} else {
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
@@ -144,7 +145,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 			if( t_flags & FCML_TSF_SHOULD_FAIL ) {
 				printf("Should fail: %s\n", mnemonic);
 				success = FCML_FALSE;
-				fcml_fn_disassemble_result_free( &dis_result );
+				fcml_fn_disassembler_result_free( &dis_result );
 				return success;
 			}
 
@@ -160,7 +161,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 				success = FCML_FALSE;
 			}
 			fcml_fn_parser_result_free( result );
-			fcml_fn_disassemble_result_free( &dis_result );
+			fcml_fn_disassembler_result_free( &dis_result );
 			return success;
 		}
 
@@ -169,9 +170,9 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 		/* Assembling.*/
 		fcml_st_assembler_context context;
 		context.assembler = assembler;
-		context.address_size_attribute = 0;
-		context.operand_size_attribute = 0;
-		context.addr_form = addr_form;
+		context.entry_point.address_size_attribute = 0;
+		context.entry_point.operand_size_attribute = 0;
+		context.entry_point.addr_form = addr_form;
 
 		if( is_67 ) {
 			if( addr_form == FCML_AF_64_BIT ) {
@@ -184,6 +185,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
             opt_flags |= FCML_OPTF_OSA_16;
         }
 
+		context.configuration.enable_error_messages = FCML_TRUE;
 		context.configuration.choose_sib_encoding = FCML_FALSE;
 		context.configuration.choose_abs_encoding = !(t_flags & FCML_TSF_ENABLE_RIP);
 		context.configuration.chooser = NULL;
@@ -192,13 +194,13 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 		context.configuration.force_rex_prefix = FCML_FALSE;
 		context.configuration.force_three_byte_VEX = FCML_FALSE;
 
-		fcml_ifn_ts_set_ip( &(context.ip), addr_form );
+		fcml_ifn_ts_set_ip( &(context.entry_point.ip), addr_form );
 
 		fcml_st_assembler_result asm_result;
 
-		fcml_fn_assemble_prepare_result( &asm_result );
+		fcml_fn_assembler_prepare_result( &asm_result );
 
-		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
+		error = fcml_fn_assembler( &context, result->instruction, &asm_result );
 		if( error ) {
 		    if( !t_flags & FCML_TSF_SHOULD_FAIL ) {
 		        printf("Can not assemble: %s\n", mnemonic );
@@ -395,7 +397,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 	}
 
-	fcml_fn_disassemble_result_free( &dis_result );
+	fcml_fn_disassembler_result_free( &dis_result );
 
 	return success;
 }
@@ -419,21 +421,22 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_st_disassembler_context context;
+	context.configuration.enable_error_messages = FCML_TRUE;
 	context.configuration.short_forms = ( t_flags & FCML_TSF_SHORT ) ? FCML_TRUE : FCML_FALSE;
 	context.configuration.extend_disp_to_asa = FCML_TRUE;
 	context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
 	context.configuration.carry_flag_conditional_suffix = FCML_TRUE;
 	context.disassembler = disassembler;
-	context.addr_form = addr_form;
-	context.address_size_attribute = 0;
-	context.operand_size_attribute = 0;
+	context.entry_point.addr_form = addr_form;
+	context.entry_point.address_size_attribute = 0;
+	context.entry_point.operand_size_attribute = 0;
 	context.code = code;
 	context.code_length = size;
 
-	fcml_ifn_ts_set_ip( &(context.ip), addr_form );
+	fcml_ifn_ts_set_ip( &(context.entry_point.ip), addr_form );
 
 	/* Disassemble.*/
-	error = fcml_fn_disassemble( &context, &dis_result );
+	error = fcml_fn_disassembler( &context, &dis_result );
 
 	if( !error ) {
 
@@ -487,7 +490,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 		}
 	}
 
-	fcml_fn_disassemble_result_free( &dis_result );
+	fcml_fn_disassembler_result_free( &dis_result );
 
 	return success;
 }

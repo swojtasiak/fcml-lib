@@ -421,41 +421,6 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_int64( const fcml_st_integer *in
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_data_size fcml_fn_utils_get_default_ASA(fcml_en_addr_form addr_form) {
-	fcml_data_size result = 0;
-	if (addr_form) {
-		switch (addr_form) {
-		case FCML_AF_16_BIT:
-			result = FCML_DS_16;
-			break;
-		case FCML_AF_32_BIT:
-			result = FCML_DS_32;
-			break;
-		case FCML_AF_64_BIT:
-			result = FCML_DS_64;
-			break;
-
-		}
-	}
-	return result;
-}
-
-fcml_data_size fcml_fn_utils_get_default_OSA(fcml_en_addr_form addr_form) {
-	fcml_data_size result = 0;
-	switch (addr_form) {
-	case FCML_AF_16_BIT:
-		result = FCML_DS_16;
-		break;
-	case FCML_AF_32_BIT:
-		result = FCML_DS_32;
-		break;
-	case FCML_AF_64_BIT:
-		result = FCML_DS_32;
-		break;
-	}
-	return result;
-}
-
 fcml_ceh_error fcml_fn_utils_decode_integer( fcml_st_memory_stream *stream, fcml_st_integer *integer, fcml_usize size ) {
 	fcml_bool result = FCML_FALSE;
 	switch(size) {
@@ -483,7 +448,6 @@ fcml_ceh_error fcml_fn_utils_decode_integer( fcml_st_memory_stream *stream, fcml
 	}
 	return FCML_CEH_GEC_NO_ERROR;
 }
-
 
 fcml_ceh_error fcml_fn_utils_encode_integer( fcml_st_memory_stream *stream, const fcml_st_integer *integer ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -822,6 +786,61 @@ void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_err
 				FCML_TRACE_MSG( "Out of memory, can not allocate space for error info." );
 			}
 		}
-
 	}
+}
+
+fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point ) {
+
+	/* Mode has to be set. */
+	if( entry_point->addr_form != FCML_AF_16_BIT && entry_point->addr_form != FCML_AF_32_BIT && entry_point->addr_form != FCML_AF_64_BIT ) {
+		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+	}
+
+	/* 16 bit address size attribute is not supported in 64bit mode. */
+	if( entry_point->addr_form == FCML_AF_64_BIT && entry_point->address_size_attribute == FCML_DS_16 ) {
+		return FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
+	}
+
+	/* Check if attributes are valid and set them to default values. */
+	if( !entry_point->address_size_attribute ) {
+		switch( entry_point->addr_form ) {
+		case FCML_AF_16_BIT:
+			entry_point->address_size_attribute = FCML_DS_16;
+			break;
+		case FCML_AF_32_BIT:
+			entry_point->address_size_attribute = FCML_DS_32;
+			break;
+		case FCML_AF_64_BIT:
+			entry_point->address_size_attribute = FCML_DS_64;
+			break;
+		}
+	}
+
+	if( !entry_point->operand_size_attribute ) {
+		switch( entry_point->addr_form ) {
+		case FCML_AF_16_BIT:
+			entry_point->operand_size_attribute = FCML_DS_16;
+			break;
+		case FCML_AF_32_BIT:
+			entry_point->operand_size_attribute = FCML_DS_32;
+			break;
+		case FCML_AF_64_BIT:
+			entry_point->operand_size_attribute = FCML_DS_32;
+			break;
+		}
+	}
+
+	/* Check if ASA is value.*/
+	fcml_data_size asa = entry_point->address_size_attribute;
+	if( asa != FCML_DS_16 && asa != FCML_DS_32 && asa != FCML_DS_64 ) {
+		return FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
+	}
+
+	/* Check if OSA is value.*/
+	fcml_data_size osa = entry_point->operand_size_attribute;
+	if( osa != FCML_DS_16 && osa != FCML_DS_32 && osa != FCML_DS_64 ) {
+		return FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE;
+	}
+
+	return FCML_CEH_GEC_NO_ERROR;
 }

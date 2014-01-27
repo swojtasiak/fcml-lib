@@ -39,8 +39,8 @@ void fcml_fn_chooser_default(void) {
 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
-	context.addr_form = FCML_AF_32_BIT;
-	context.ip.eip = 0x00401000;
+	context.entry_point.addr_form = FCML_AF_32_BIT;
+	context.entry_point.ip.eip = 0x00401000;
 
 	fcml_st_instruction instruction = {0};
 	instruction.mnemonic = "adc";
@@ -49,9 +49,9 @@ void fcml_fn_chooser_default(void) {
 
 	fcml_st_assembler_result result;
 
-	fcml_fn_assemble_prepare_result( &result );
+	fcml_fn_assembler_prepare_result( &result );
 
-	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
 		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
 		if( result.chosen_instruction ) {
 			STF_ASSERT_EQUAL( 4, result.chosen_instruction->code_length );
@@ -82,8 +82,8 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
     context.configuration.optimizer_flags = FCML_OPTF_ALL_FORMS;
     context.configuration.chooser = &fcml_fn_asm_no_instruction_chooser;
     context.assembler = assembler_intel;
-    context.addr_form = FCML_AF_32_BIT;
-    context.ip.eip = 0x00401000;
+    context.entry_point.addr_form = FCML_AF_32_BIT;
+    context.entry_point.ip.eip = 0x00401000;
 
     fcml_st_instruction instruction = {0};
     instruction.mnemonic = "adc";
@@ -92,18 +92,18 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
     fcml_st_assembler_result result;
 
-    fcml_fn_assemble_prepare_result( &result );
+    fcml_fn_assembler_prepare_result( &result );
 
-    if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
+    if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
 
         STF_ASSERT_PTR_NULL( result.chosen_instruction );
 
         /* Disassemble and render every instruction available.*/
 
         fcml_st_disassembler_context d_context = {0};
-        d_context.addr_form = FCML_AF_32_BIT;
+        d_context.entry_point.addr_form = FCML_AF_32_BIT;
+        d_context.entry_point.ip.eip = 0x00401000;
         d_context.disassembler = disassembler_intel;
-        d_context.ip.eip = 0x00401000;
 
         fcml_int flags = 0;
 
@@ -122,7 +122,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             fcml_fn_disassembler_prepare_result( &dasm_result );
 
-            error = fcml_fn_disassemble( &d_context, &dasm_result );
+            error = fcml_fn_disassembler( &d_context, &dasm_result );
             if( error ) {
                 break;
             }
@@ -136,11 +136,11 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
             error = fcml_fn_render( dialect_intel, &buffer_stream, &dasm_result, FCML_REND_FLAG_RENDER_CODE );
             if( error ) {
                 /* Free disassemblation result.*/
-                fcml_fn_disassemble_result_free( &dasm_result );
+                fcml_fn_disassembler_result_free( &dasm_result );
                 break;
             }
 
-            fcml_fn_disassemble_result_free( &dasm_result );
+            fcml_fn_disassembler_result_free( &dasm_result );
 
             if( fcml_fn_env_str_strcmp( FCML_TEXT( "666781d04280 adc ax,32834" ), buffer ) ) {
                 flags |= 0x01;

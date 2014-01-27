@@ -26,8 +26,8 @@ void fcml_fn_segment_reg(void) {
 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
-	context.addr_form = FCML_AF_32_BIT;
-	context.ip.eip = 0x00401000;
+	context.entry_point.addr_form = FCML_AF_32_BIT;
+	context.entry_point.ip.eip = 0x00401000;
 
 	fcml_st_instruction instruction = {0};
 	instruction.mnemonic = "cmps";
@@ -44,9 +44,9 @@ void fcml_fn_segment_reg(void) {
 
 	fcml_st_assembler_result result;
 
-	fcml_fn_assemble_prepare_result( &result );
+	fcml_fn_assembler_prepare_result( &result );
 
-	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
 		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
 		if( result.chosen_instruction ) {
 			STF_ASSERT_EQUAL( 1, result.chosen_instruction->code_length );
@@ -64,7 +64,7 @@ void fcml_fn_segment_reg(void) {
 
 	instruction.operands[1].address.segment_selector.segment_selector = fcml_reg_CS;
 
-	if( fcml_fn_assemble( &context, &instruction, &result ) ) {
+	if( fcml_fn_assembler( &context, &instruction, &result ) ) {
 
 		STF_ASSERT_PTR_NOT_NULL( result.errors.last_error );
 		if( result.errors.last_error ) {

@@ -38,22 +38,16 @@ typedef struct fcml_st_disassembler_conf {
 
 /* Disassembler context. */
 typedef struct fcml_st_disassembler_context {
-    /* Disassembler used to decode instructions.*/
+    /* Disassembler used to decode instructions. */
 	fcml_st_disassembler *disassembler;
-	/* Disassembler configuration.*/
+	/* Disassembler configuration. */
 	fcml_st_disassembler_conf configuration;
-	/* Addressing mode: 16, 32 or 64 bit.*/
-	fcml_en_addr_form addr_form;
-	/* Default address size attribute.*/
-	fcml_data_size address_size_attribute;
-	/* Default operand size attribute.*/
-	fcml_data_size operand_size_attribute;
-	/* Pointer to the encoded instruction.*/
+	/* Instruction entry point configuration. */
+	fcml_st_entry_point entry_point;
+	/* Pointer to the encoded instruction. */
 	fcml_ptr code;
-	/* Size of the code in the buffer above.*/
+	/* Size of the code in the buffer above. */
 	fcml_data_size code_length;
-	/* Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.*/
-	fcml_st_instruction_pointer ip;
 } fcml_st_disassembler_context;
 
 /* Prefixes */
@@ -132,7 +126,8 @@ typedef struct fcml_st_decoded_modrm_details {
 typedef struct fcml_st_instruction_details {
     /* True if this is a shortcut. Shortcuts do not have any operands decoded. A good example of
      * such instruction is 'cmpsb' as opposed to 'cmps byte ptr [si],byte ptr [di]'. It's very important
-     * to take this information into consideration because there is no operadns for such instruction. */
+     * to take this information into consideration because there is no operadns for such instruction.
+     */
 	fcml_bool is_shortcut;
 	/* True if given instruction is a short form of pseudo-ops instructions. See 'vcmpunordsd' for instance. */
 	fcml_bool is_pseudo_op_shortcut;
@@ -165,9 +160,9 @@ typedef struct fcml_st_dasm_disassembler_result {
 } fcml_st_disassembler_result;
 
 fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
-fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
+fcml_ceh_error fcml_fn_disassembler( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
 void fcml_fn_disassembler_prepare_result( fcml_st_disassembler_result *result );
-void fcml_fn_disassemble_result_free( fcml_st_disassembler_result *result );
+void fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result );
 void fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
 
 #endif /* FCML_DISASSEMBLER_H_ */

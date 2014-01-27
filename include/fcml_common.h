@@ -462,4 +462,18 @@ typedef struct fcml_st_instruction_code {
     fcml_usize code_length;
 } fcml_st_instruction_code;
 
+/****************************
+ * Instruction entry point.
+ ****************************/
+
+typedef struct fcml_st_entry_point {
+	/* Processor addressing mode 16/32/64-bit.*/
+	fcml_en_addr_form addr_form;
+	/* Default address/operand size attribute (See 'D' flag of segment descriptor.)*/
+	fcml_data_size address_size_attribute;
+	fcml_data_size operand_size_attribute;
+	/* Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.*/
+	fcml_st_instruction_pointer ip;
+} fcml_st_entry_point;
+
 #endif /* FCML_INT_COMMON_H_ */
