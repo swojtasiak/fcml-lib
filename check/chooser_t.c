@@ -118,7 +118,9 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
             d_context.code = instruction->code;
             d_context.code_length = instruction->code_length;
 
-            fcml_st_disassembler_result *dasm_result;
+            fcml_st_disassembler_result dasm_result;
+
+            fcml_fn_disassembler_prepare_result( &dasm_result );
 
             error = fcml_fn_disassemble( &d_context, &dasm_result );
             if( error ) {
@@ -131,14 +133,14 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             fcml_st_memory_stream buffer_stream = fcml_fn_stream_wrap( buffer, sizeof( buffer ) );
 
-            error = fcml_fn_render( dialect_intel, &buffer_stream, dasm_result, FCML_REND_FLAG_RENDER_CODE );
+            error = fcml_fn_render( dialect_intel, &buffer_stream, &dasm_result, FCML_REND_FLAG_RENDER_CODE );
             if( error ) {
                 /* Free disassemblation result.*/
-                fcml_fn_disassemble_result_free( dasm_result );
+                fcml_fn_disassemble_result_free( &dasm_result );
                 break;
             }
 
-            fcml_fn_disassemble_result_free( dasm_result );
+            fcml_fn_disassemble_result_free( &dasm_result );
 
             if( fcml_fn_env_str_strcmp( FCML_TEXT( "666781d04280 adc ax,32834" ), buffer ) ) {
                 flags |= 0x01;

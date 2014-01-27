@@ -2135,13 +2135,18 @@ void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruct
 	}
 }
 
-fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result **result ) {
+void fcml_fn_disassembler_prepare_result( fcml_st_disassembler_result *result ) {
+	if( result ) {
+		/* Clean result container. */
+		fcml_fn_env_memory_clear( result, sizeof( fcml_st_disassembler_result ) );
+	}
+}
+
+fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	fcml_ist_dasm_disassembler *int_disasm = (fcml_ist_dasm_disassembler *)context->disassembler;
-
-	*result = NULL;
 
 	error = fcml_ifn_dasm_validate_and_prepare_context( context );
 	if( error ) {
@@ -2170,128 +2175,140 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 	error =  fcml_ifn_dasm_decode_instruction( &decoding_context );
 
 	if( !error ) {
-		fcml_st_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_disassembler_result ) );
-		if( dis_res ) {
 
-			/* Copy potential errors.*/
-			dis_res->errors = decoding_context.errors;
+		/* Copy potential errors.*/
+		result->errors = decoding_context.errors;
 
-			fcml_st_instruction *instruction = &(dis_res->instruction);
-			fcml_st_instruction_details *instruction_details = &(dis_res->instruction_details);
+		fcml_st_instruction *instruction = &(result->instruction);
+		fcml_st_instruction_details *instruction_details = &(result->instruction_details);
 
-			fcml_data_size memory_data_size = 0;
+		fcml_data_size memory_data_size = 0;
 
-			/* Prepare operands.*/
-			fcml_int i;
-			for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-				fcml_ist_dasm_operand_wrapper *operand_wrapper = &(decoding_context.operand_wrappers[i]);
-				if( operand_wrapper->operand.type != FCML_EOT_NONE ) {
-					if( operand_wrapper->operand.type == FCML_EOT_ADDRESS ) {
-						memory_data_size = operand_wrapper->operand.address.size_operator;
-					}
-					instruction->operands[i] = operand_wrapper->operand;
-					instruction_details->operand_details[i].access_mode = operand_wrapper->access_mode;
-				} else {
-					break;
+		/* Prepare operands.*/
+		fcml_int i;
+		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+			fcml_ist_dasm_operand_wrapper *operand_wrapper = &(decoding_context.operand_wrappers[i]);
+			if( operand_wrapper->operand.type != FCML_EOT_NONE ) {
+				if( operand_wrapper->operand.type == FCML_EOT_ADDRESS ) {
+					memory_data_size = operand_wrapper->operand.address.size_operator;
 				}
-			}
-
-			instruction->operands_count = i;
-
-			/* ModR/M details.*/
-			fcml_st_decoded_modrm_details *modrm_details = &(instruction_details->modrm_details);
-			modrm_details->modrm = decoding_context.decoded_modrm_details.modrm;
-			modrm_details->sib = decoding_context.decoded_modrm_details.sib;
-			modrm_details->is_rip = decoding_context.decoded_modrm.is_rip;
-
-			/* Prefixes.*/
-			instruction_details->prefixes_details = decoding_context.prefixes;
-
-			instruction->prefixes = fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( &(decoding_context.prefixes) );
-
-			/* Copy instruction hints.*/
-			instruction->hints = decoding_context.instruction_hints;
-
-			/* Instruction code.*/
-			instruction_details->instruction_size = decoding_context.calculated_instruction_size;
-			fcml_fn_env_memory_copy( &instruction_details->instruction_code, context->code, instruction_details->instruction_size > FCML_INSTRUCTION_SIZE ? FCML_INSTRUCTION_SIZE : instruction_details->instruction_size );
-
-			/* Conditions.*/
-			if( decoding_context.is_conditional ) {
-				instruction->is_conditional = FCML_TRUE;
-				instruction->condition = decoding_context.condition;
+				instruction->operands[i] = operand_wrapper->operand;
+				instruction_details->operand_details[i].access_mode = operand_wrapper->access_mode;
 			} else {
-				instruction->is_conditional = FCML_FALSE;
+				break;
 			}
+		}
 
-			/* Opcode fields.*/
-			instruction_details->opcode_field_s_bit = decoding_context.opcode_field_s_bit;
-			instruction_details->opcode_field_w_bit = decoding_context.opcode_field_w_bit;
+		instruction->operands_count = i;
 
-			/* L flag for mnoemonic chooser.*/
-			fcml_nuint8_t l;
-			l.is_not_null = FCML_FALSE;
-			if( instruction_details->prefixes_details.is_vex || instruction_details->prefixes_details.is_xop ) {
-				l.is_not_null = FCML_TRUE;
-				l.value = instruction_details->prefixes_details.l;
-			}
+		/* ModR/M details.*/
+		fcml_st_decoded_modrm_details *modrm_details = &(instruction_details->modrm_details);
+		modrm_details->modrm = decoding_context.decoded_modrm_details.modrm;
+		modrm_details->sib = decoding_context.decoded_modrm_details.sib;
+		modrm_details->is_rip = decoding_context.decoded_modrm.is_rip;
 
-			/* Mnemonic.*/
-			fcml_bool shortform = decoding_context.disassembler_context->configuration.short_forms;
-			fcml_bool is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
-			fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.suffix, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, memory_data_size, l );
-			if( mnemonic ) {
-				instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
-				instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
-				/* Render mnemonic using provided dialect.*/
-				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_suffix );
-			} else {
-				/* Mnemonic not found.*/
-				FCML_TRACE_MSG( "Can not choose mnemonic for disassembled instruction." );
-				return FCML_CEH_GEC_INTERNAL_ERROR;
-			}
+		/* Prefixes.*/
+		instruction_details->prefixes_details = decoding_context.prefixes;
 
-			/* Clean operands for short forms.*/
-			fcml_ifn_dasm_clean_operands_for_short_forms( instruction, instruction_details );
+		instruction->prefixes = fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( &(decoding_context.prefixes) );
 
-			/* Execute disassembler post processor if needed.*/
-			fcml_fnp_asm_dialect_prepare_disassembler_postprocessor post_processor = int_disasm->dialect_context->disassembler_postprocessor;
-			if( post_processor ) {
-				post_processor( mnemonic, dis_res );
-			}
+		/* Copy instruction hints.*/
+		instruction->hints = decoding_context.instruction_hints;
 
-			*result = dis_res;
+		/* Instruction code.*/
+		instruction_details->instruction_size = decoding_context.calculated_instruction_size;
+		fcml_fn_env_memory_copy( &instruction_details->instruction_code, context->code, instruction_details->instruction_size > FCML_INSTRUCTION_SIZE ? FCML_INSTRUCTION_SIZE : instruction_details->instruction_size );
 
+		/* Conditions.*/
+		if( decoding_context.is_conditional ) {
+			instruction->is_conditional = FCML_TRUE;
+			instruction->condition = decoding_context.condition;
 		} else {
-			error = FCML_CEH_GEC_OUT_OF_MEMORY;
+			instruction->is_conditional = FCML_FALSE;
 		}
+
+		/* Opcode fields.*/
+		instruction_details->opcode_field_s_bit = decoding_context.opcode_field_s_bit;
+		instruction_details->opcode_field_w_bit = decoding_context.opcode_field_w_bit;
+
+		/* L flag for mnoemonic chooser.*/
+		fcml_nuint8_t l;
+		l.is_not_null = FCML_FALSE;
+		if( instruction_details->prefixes_details.is_vex || instruction_details->prefixes_details.is_xop ) {
+			l.is_not_null = FCML_TRUE;
+			l.value = instruction_details->prefixes_details.l;
+		}
+
+		/* Mnemonic.*/
+		fcml_bool shortform = decoding_context.disassembler_context->configuration.short_forms;
+		fcml_bool is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
+		fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.suffix, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, memory_data_size, l );
+		if( mnemonic ) {
+			instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
+			instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
+			/* Render mnemonic using provided dialect.*/
+			instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_suffix );
+		} else {
+			/* Mnemonic not found.*/
+			FCML_TRACE_MSG( "Can not choose mnemonic for disassembled instruction." );
+			return FCML_CEH_GEC_INTERNAL_ERROR;
+		}
+
+		/* Clean operands for short forms.*/
+		fcml_ifn_dasm_clean_operands_for_short_forms( instruction, instruction_details );
+
+		/* Execute disassembler post processor if needed.*/
+		fcml_fnp_asm_dialect_prepare_disassembler_postprocessor post_processor = int_disasm->dialect_context->disassembler_postprocessor;
+		if( post_processor ) {
+			post_processor( mnemonic, result );
+		}
+
 	} else if( decoding_context.errors.errors ) {
+
 		/* If there are any errors, return them back to the user.*/
-		fcml_st_disassembler_result *dis_res = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_disassembler_result ) );
-		if( dis_res ) {
-			dis_res->errors = decoding_context.errors;
-		}
-		*result = dis_res;
+		result->errors = decoding_context.errors;
+
 	}
 
-	if( error && *result ) {
-		fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &((*result)->errors), error );
+	return error;
+}
+
+fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result ) {
+
+	// Sanity check.
+	if( !context || !result ) {
+		return FCML_CEH_GEC_INVALID_INPUT;
+	}
+
+	// Check if there is something already available in result, and free it in such cache.
+	fcml_fn_disassemble_result_free( result );
+
+	fcml_ceh_error error = fcml_ifn_disassemble_core( context, result );
+	if( error ) {
+		// Try to convert error code to error message if there is such need.
+		fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &(result->errors), error );
 	}
 
 	return error;
 }
 
 void fcml_fn_disassemble_result_free( fcml_st_disassembler_result *result ) {
+
 	if( result ) {
+
+		/* Free all error messages. */
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
+
+		/* Mnemonic is allocated by dialect and has to be also free'd. */
 		if( result->instruction.mnemonic ) {
 			fcml_fn_env_str_strfree( result->instruction.mnemonic );
 		}
-		fcml_fn_env_memory_free( result );
 	}
+
 }
 
 void fcml_fn_disassembler_free( fcml_st_disassembler *disassembler ) {
+
 	fcml_ist_dasm_disassembler *dec_disasm = (fcml_ist_dasm_disassembler*)disassembler;
 	if( dec_disasm ) {
 		if( dec_disasm->decoding_tree ) {
@@ -2299,4 +2316,5 @@ void fcml_fn_disassembler_free( fcml_st_disassembler *disassembler ) {
 		}
 		fcml_fn_env_memory_free( dec_disasm );
 	}
+
 }

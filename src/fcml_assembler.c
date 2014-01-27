@@ -143,20 +143,20 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 	return error;
 }
 
-fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *asm_context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
+fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
 
 	// Sanity check.
-	if( !result || !instruction ) {
+	if( !result || !instruction || !context ) {
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
 	// Check if there is something already available in result, and free it in such cache.
 	fcml_fn_assembler_result_free( result );
 
-	fcml_ceh_error error = fcml_ifn_assemble_core( asm_context, instruction, result );
+	fcml_ceh_error error = fcml_ifn_assemble_core( context, instruction, result );
 	if( error ) {
 		// Try to convert error code to error message if there is such need.
-		fcml_fn_utils_convert_gec_to_error_info( asm_context->configuration.enable_error_messages, &(result->errors), error );
+		fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &(result->errors), error );
 	}
 
 	return error;
