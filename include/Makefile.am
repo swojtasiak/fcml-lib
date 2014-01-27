@@ -10,6 +10,5 @@ pkginclude_HEADERS = fcml_assembler.h \
 	fcml_optimizers.h \
 	fcml_parser.h \
 	fcml_renderer.h \
-	fcml_stream.h \
 	fcml_types.h
 

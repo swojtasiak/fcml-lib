@@ -8,7 +8,7 @@
 #ifndef FCML_STREAMING_H_
 #define FCML_STREAMING_H_
 
-#include "fcml_types.h"
+#include <fcml_types.h>
 
 /* Structures used to store information about memory. */
 
