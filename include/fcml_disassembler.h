@@ -161,7 +161,7 @@ typedef struct fcml_st_dasm_disassembler_result {
 
 fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
 fcml_ceh_error fcml_fn_disassembler( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
-void fcml_fn_disassembler_prepare_result( fcml_st_disassembler_result *result );
+void fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result );
 void fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result );
 void fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
 

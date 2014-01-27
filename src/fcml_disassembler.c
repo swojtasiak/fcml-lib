@@ -2081,7 +2081,7 @@ void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruct
 	}
 }
 
-void fcml_fn_disassembler_prepare_result( fcml_st_disassembler_result *result ) {
+void fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result ) {
 	if( result ) {
 		/* Clean result container. */
 		fcml_fn_env_memory_clear( result, sizeof( fcml_st_disassembler_result ) );

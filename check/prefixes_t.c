@@ -36,7 +36,7 @@ void fcml_fn_prefixes_66(void) {
 
 	fcml_st_assembler_result result;
 
-	fcml_fn_assembler_prepare_result( &result );
+	fcml_fn_assembler_result_prepare( &result );
 
 	if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
 		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );

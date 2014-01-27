@@ -53,7 +53,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 	fcml_st_disassembler_result dis_result;
 
-	fcml_fn_disassembler_prepare_result( &dis_result );
+	fcml_fn_disassembler_result_prepare( &dis_result );
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -198,7 +198,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_st_assembler_result asm_result;
 
-		fcml_fn_assembler_prepare_result( &asm_result );
+		fcml_fn_assembler_result_prepare( &asm_result );
 
 		error = fcml_fn_assembler( &context, result->instruction, &asm_result );
 		if( error ) {
@@ -416,7 +416,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 
 	fcml_st_disassembler_result dis_result;
 
-	fcml_fn_disassembler_prepare_result( &dis_result );
+	fcml_fn_disassembler_result_prepare( &dis_result );
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

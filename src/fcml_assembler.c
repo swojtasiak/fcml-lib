@@ -64,11 +64,11 @@ void fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) {
 		// Free all available instructions in the chain.
         fcml_ifn_asm_free_instruction_chain( result->instructions );
         // Prepare for next usage.
-        fcml_fn_assembler_prepare_result( result );
+        fcml_fn_assembler_result_prepare( result );
 	}
 }
 
-void fcml_fn_assembler_prepare_result( fcml_st_assembler_result *result ) {
+void fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result ) {
 	// Clean assember result container before it's first used.
 	if( result ) {
 		fcml_fn_env_memory_clear( result, sizeof( fcml_st_assembler_result ) );
