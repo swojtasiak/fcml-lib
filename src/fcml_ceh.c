@@ -29,14 +29,37 @@ fcml_st_ceh_error_container *fcml_fn_ceh_alloc_error_container() {
 }
 
 void fcml_fn_ceh_free_errors_only( fcml_st_ceh_error_container *error_container ) {
-	fcml_st_ceh_error_info* next = error_container->errors ;
-	while( next ) {
-		fcml_st_ceh_error_info* curr = next;
-		next = next->next_error;
-		fcml_fn_ceh_free_error_info( curr );
+	if( error_container ) {
+		fcml_st_ceh_error_info* next = error_container->errors ;
+		while( next ) {
+			fcml_st_ceh_error_info* curr = next;
+			next = next->next_error;
+			fcml_fn_ceh_free_error_info( curr );
+		}
+		error_container->errors = NULL;
+		error_container->last_error = NULL;
 	}
-	error_container->errors = NULL;
-	error_container->last_error = NULL;
+}
+
+void fcml_fn_ceh_free_errors_only_with_level( fcml_st_ceh_error_container *error_container, fcml_en_ceh_error_level level ) {
+	// TODO: Przetestowac!
+	if( error_container ) {
+		fcml_st_ceh_error_info **prev = &(error_container->errors);
+		fcml_st_ceh_error_info *next = error_container->errors;
+		while( next ) {
+			fcml_st_ceh_error_info *curr = next;
+			next = next->next_error;
+			if( curr->level == level ) {
+				*prev = curr->next_error;
+				fcml_fn_ceh_free_error_info( curr );
+			} else {
+				prev = &(curr->next_error);
+			}
+		}
+		if( *prev == NULL ) {
+			error_container->last_error = NULL;
+		}
+	}
 }
 
 void fcml_fn_ceh_free_error_container( fcml_st_ceh_error_container *error_container ) {

@@ -192,7 +192,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_ifn_ts_set_ip( &(context.ip), addr_form );
 
-		fcml_st_assembler_result *asm_result = NULL;
+		fcml_st_assembler_result asm_result;
+
+		fcml_fn_assemble_prepare_result( &asm_result );
+
 		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
 		if( error ) {
 		    if( !t_flags & FCML_TSF_SHOULD_FAIL ) {
@@ -213,7 +216,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
             int j = 0;
             for( j = 0; j < 2; j++ ) {
 
-                fcml_st_assembled_instruction *instructions = asm_result->instructions;
+                fcml_st_assembled_instruction *instructions = asm_result.instructions;
 
                 assembled_code_index = 0;
 
@@ -226,12 +229,12 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
                 }
 
                 if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
-                    if( !(t_flags & FCML_TSF_MULTI_ASM_RESULTS) && asm_result->number_of_instructions != 1 ) {
+                    if( !(t_flags & FCML_TSF_MULTI_ASM_RESULTS) && asm_result.number_of_instructions != 1 ) {
                         found = FCML_FALSE;
                         break;
                     }
                     /* Check if number of assembled instructions match.*/
-                    if( (t_flags & FCML_TSF_MULTI_ASM_RESULTS) && asm_result->number_of_instructions != code[0] ) {
+                    if( (t_flags & FCML_TSF_MULTI_ASM_RESULTS) && asm_result.number_of_instructions != code[0] ) {
 						found = FCML_FALSE;
 						break;
 					}
@@ -379,7 +382,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		}
 
-		fcml_fn_assembler_result_free( asm_result );
+		fcml_fn_assembler_result_free( &asm_result );
 
 		fcml_fn_parser_result_free( result );
 

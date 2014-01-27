@@ -47,20 +47,22 @@ void fcml_fn_chooser_default(void) {
 	instruction.operands[0] = FCML_REG( fcml_reg_AX );
 	instruction.operands[1] = FCML_IMM16( 0x8042 );
 
-	fcml_st_assembler_result *result;
+	fcml_st_assembler_result result;
+
+	fcml_fn_assemble_prepare_result( &result );
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
-		if( result->chosen_instruction ) {
-			STF_ASSERT_EQUAL( 4, result->chosen_instruction->code_length );
-			if( result->chosen_instruction->code_length == 4 ) {
-				STF_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
-				STF_ASSERT_EQUAL( 0x15, result->chosen_instruction->code[1] );
-				STF_ASSERT_EQUAL( 0x42, result->chosen_instruction->code[2] );
-				STF_ASSERT_EQUAL( 0x80, result->chosen_instruction->code[3] );
+		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
+		if( result.chosen_instruction ) {
+			STF_ASSERT_EQUAL( 4, result.chosen_instruction->code_length );
+			if( result.chosen_instruction->code_length == 4 ) {
+				STF_ASSERT_EQUAL( 0x66, result.chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x15, result.chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0x42, result.chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x80, result.chosen_instruction->code[3] );
 			}
 		}
-		fcml_fn_assembler_result_free( result );
+		fcml_fn_assembler_result_free( &result );
 	} else {
 		STF_FAIL("Can not assemble instruction.");
 	}
@@ -88,11 +90,13 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
     instruction.operands[0] = FCML_REG( fcml_reg_AX );
     instruction.operands[1] = FCML_IMM16( 0x8042 );
 
-    fcml_st_assembler_result *result;
+    fcml_st_assembler_result result;
+
+    fcml_fn_assemble_prepare_result( &result );
 
     if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 
-        STF_ASSERT_PTR_NULL( result->chosen_instruction );
+        STF_ASSERT_PTR_NULL( result.chosen_instruction );
 
         /* Disassemble and render every instruction available.*/
 
@@ -105,7 +109,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
         /* Iterate over all instructions.*/
 
-        fcml_st_assembled_instruction *instruction = result->instructions;
+        fcml_st_assembled_instruction *instruction = result.instructions;
 
         while( instruction ) {
 
@@ -155,7 +159,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
             instruction = instruction->next;
         }
 
-        fcml_fn_assembler_result_free( result );
+        fcml_fn_assembler_result_free( &result );
 
         STF_ASSERT_EQUAL( error, 0 );
         STF_ASSERT_EQUAL( flags, 0x0000000F );

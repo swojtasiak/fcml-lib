@@ -34,20 +34,22 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[0] = FCML_REG( fcml_reg_BP );
 	instruction.operands[1] = FCML_IMM16( 0x0201 );
 
-	fcml_st_assembler_result *result;
+	fcml_st_assembler_result result;
+
+	fcml_fn_assemble_prepare_result( &result );
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
-		if( result->chosen_instruction ) {
-			STF_ASSERT_EQUAL( 4, result->chosen_instruction->code_length );
-			if( result->chosen_instruction->code_length == 4 ) {
-				STF_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[0] );
-				STF_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[1] );
-				STF_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[2] );
-				STF_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[3] );
+		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
+		if( result.chosen_instruction ) {
+			STF_ASSERT_EQUAL( 4, result.chosen_instruction->code_length );
+			if( result.chosen_instruction->code_length == 4 ) {
+				STF_ASSERT_EQUAL( 0x81, result.chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0xD5, result.chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0x01, result.chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x02, result.chosen_instruction->code[3] );
 			}
 		}
-		fcml_fn_assembler_result_free( result );
+		fcml_fn_assembler_result_free( &result );
 	} else {
 		STF_FAIL("Can not assemble instruction.");
 	}
@@ -63,18 +65,18 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[1] = FCML_IMM16( 0x0201 );
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
-		if( result->chosen_instruction ) {
-			STF_ASSERT_EQUAL( 5, result->chosen_instruction->code_length );
-			if( result->chosen_instruction->code_length == 5 ) {
-				STF_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
-				STF_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
-				STF_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
-				STF_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
-				STF_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
+		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
+		if( result.chosen_instruction ) {
+			STF_ASSERT_EQUAL( 5, result.chosen_instruction->code_length );
+			if( result.chosen_instruction->code_length == 5 ) {
+				STF_ASSERT_EQUAL( 0x66, result.chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x81, result.chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0xD5, result.chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x01, result.chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x02, result.chosen_instruction->code[4] );
 			}
 		}
-		fcml_fn_assembler_result_free( result );
+		fcml_fn_assembler_result_free( &result );
 	} else {
 		STF_FAIL("Can not assemble instruction.");
 	}
@@ -90,20 +92,20 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[1] = FCML_IMM32( 0x02010000 );
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
-		if( result->chosen_instruction ) {
-			STF_ASSERT_EQUAL( 7, result->chosen_instruction->code_length );
-			if( result->chosen_instruction->code_length == 5 ) {
-				STF_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
-				STF_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
-				STF_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
-				STF_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[3] );
-				STF_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[4] );
-				STF_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
-				STF_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
+		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
+		if( result.chosen_instruction ) {
+			STF_ASSERT_EQUAL( 7, result.chosen_instruction->code_length );
+			if( result.chosen_instruction->code_length == 5 ) {
+				STF_ASSERT_EQUAL( 0x66, result.chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x81, result.chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0xD5, result.chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x00, result.chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x00, result.chosen_instruction->code[4] );
+				STF_ASSERT_EQUAL( 0x01, result.chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x02, result.chosen_instruction->code[4] );
 			}
 		}
-		fcml_fn_assembler_result_free( result );
+		fcml_fn_assembler_result_free( &result );
 	} else {
 		STF_FAIL("Can not assemble instruction.");
 	}
@@ -119,20 +121,20 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[1] = FCML_IMM32( 0x02010000 );
 
 	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
-		STF_ASSERT_PTR_NOT_NULL( result->chosen_instruction );
-		if( result->chosen_instruction ) {
-			STF_ASSERT_EQUAL( 7, result->chosen_instruction->code_length );
-			if( result->chosen_instruction->code_length == 5 ) {
-				STF_ASSERT_EQUAL( 0x66, result->chosen_instruction->code[0] );
-				STF_ASSERT_EQUAL( 0x81, result->chosen_instruction->code[1] );
-				STF_ASSERT_EQUAL( 0xD5, result->chosen_instruction->code[2] );
-				STF_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[3] );
-				STF_ASSERT_EQUAL( 0x00, result->chosen_instruction->code[4] );
-				STF_ASSERT_EQUAL( 0x01, result->chosen_instruction->code[3] );
-				STF_ASSERT_EQUAL( 0x02, result->chosen_instruction->code[4] );
+		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
+		if( result.chosen_instruction ) {
+			STF_ASSERT_EQUAL( 7, result.chosen_instruction->code_length );
+			if( result.chosen_instruction->code_length == 5 ) {
+				STF_ASSERT_EQUAL( 0x66, result.chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x81, result.chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0xD5, result.chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x00, result.chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x00, result.chosen_instruction->code[4] );
+				STF_ASSERT_EQUAL( 0x01, result.chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x02, result.chosen_instruction->code[4] );
 			}
 		}
-		fcml_fn_assembler_result_free( result );
+		fcml_fn_assembler_result_free( &result );
 	} else {
 		STF_FAIL("Can not assemble instruction.");
 	}
