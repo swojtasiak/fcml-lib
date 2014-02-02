@@ -742,50 +742,10 @@ void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_err
 			current = current->next_error;
 		}
 
-		fcml_en_msg_message_code mc = 0;
-		switch( code ) {
-			/* Syntax error or instruction exceeds max length. */
-		case FCML_CEH_GEC_INVALID_INPUT:
-			mc = FCML_MC_GEC_INVALID_INPUT;
-			break;
-			/* Used mainly in case of integers and offsets. */
-		case FCML_CEH_GEC_VALUE_OUT_OF_RANGE:
-			mc = FCML_MC_GEC_VALUE_OUT_OF_RANGE;
-			break;
-			/* It's very generic error used always when used addressing mode can not be identified. */
-		case FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE:
-			mc = FCML_MC_GEC_UNSUPPORTED_ADDRESSING_MODE;
-			break;
-			/* Instruction do not support one of the defined operands. */
-		case FCML_CEH_GEC_UNSUPPORTED_OPPERAND:
-			mc = FCML_MC_GEC_UNSUPPORTED_OPPERAND;
-			break;
-			/* Unknown mnemonic. */
-		case FCML_CEH_GEC_UNKNOWN_MNEMONIC:
-			mc = FCML_MC_GEC_UNKNOWN_MNEMONIC;
-			break;
-			/* Operand size (Operand size attribute) is not allowed in given context. */
-		case FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE:
-			mc = FCML_MC_GEC_UNSUPPORTED_OPPERAND_SIZE;
-			break;
-			/* Address size (Address size attribute) is not allowed in given context. */
-		case FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE:
-			mc = FCML_MC_GEC_UNSUPPORTED_ADDRESS_SIZE;
-			break;
-			// User chosen unsupported addressing form.
-		case FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM:
-			mc = FCML_MC_GEC_UNSUPPORTED_ADDRESSING_FORM;
-			break;
-			/* Assembler can return this error code if there is not allowed prefix defined for given instruction. */
-		case FCML_CEH_GEC_UNSUPPORTED_PREFIX:
-			mc = FCML_MC_GEC_UNSUPPORTED_PREFIX;
-			break;
+		if( !fcml_fn_ceh_add_error( error_container, fcml_fn_msg_get_message( code ), code, FCML_EN_CEH_EL_ERROR ) ) {
+			FCML_TRACE_MSG( "Out of memory, can not allocate space for error info." );
 		}
-		if( mc ) {
-			if( !fcml_fn_ceh_add_error( error_container, fcml_fn_msg_get_message( mc ), code, FCML_EN_CEH_EL_ERROR ) ) {
-				FCML_TRACE_MSG( "Out of memory, can not allocate space for error info." );
-			}
-		}
+
 	}
 }
 
@@ -793,12 +753,12 @@ fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point ) {
 
 	/* Mode has to be set. */
 	if( entry_point->addr_form != FCML_AF_16_BIT && entry_point->addr_form != FCML_AF_32_BIT && entry_point->addr_form != FCML_AF_64_BIT ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 	}
 
 	/* 16 bit address size attribute is not supported in 64bit mode. */
 	if( entry_point->addr_form == FCML_AF_64_BIT && entry_point->address_size_attribute == FCML_DS_16 ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
+		return FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 	}
 
 	/* Check if attributes are valid and set them to default values. */
@@ -833,13 +793,13 @@ fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point ) {
 	/* Check if ASA is value.*/
 	fcml_data_size asa = entry_point->address_size_attribute;
 	if( asa != FCML_DS_16 && asa != FCML_DS_32 && asa != FCML_DS_64 ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
+		return FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 	}
 
 	/* Check if OSA is value.*/
 	fcml_data_size osa = entry_point->operand_size_attribute;
 	if( osa != FCML_DS_16 && osa != FCML_DS_32 && osa != FCML_DS_64 ) {
-		return FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE;
+		return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
 	}
 
 	return FCML_CEH_GEC_NO_ERROR;

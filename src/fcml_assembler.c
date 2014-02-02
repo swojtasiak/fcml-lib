@@ -143,7 +143,7 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 	return error;
 }
 
-fcml_ceh_error fcml_fn_assembler( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
+fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
 
 	// Sanity check.
 	if( !result || !instruction || !context ) {

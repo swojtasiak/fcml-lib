@@ -1,5 +1,7 @@
 noinst_PROGRAMS = fcml_check
 fcml_check_SOURCES = main.c \
+	error_handling_t.c \
+	error_handling_t.h \
 	chooser_t.c \
 	chooser_t.h \
 	coll_t.c \

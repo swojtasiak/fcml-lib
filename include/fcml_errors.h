@@ -13,7 +13,7 @@
 enum fcml_en_ceh_error_globals {
 	/* Operation succeed. */
 	FCML_CEH_GEC_NO_ERROR = 0,
-	/* There is no enough memory to complete operation. */
+	/* There is not enough memory to complete operation. */
 	FCML_CEH_GEC_OUT_OF_MEMORY = 1,
 	/* Syntax error or instruction exceeds max length. */
 	FCML_CEH_GEC_INVALID_INPUT = 2,
@@ -21,7 +21,7 @@ enum fcml_en_ceh_error_globals {
 	FCML_CEH_GEC_INTERNAL_ERROR = 3,
 	/* Component hasn't been initialized yet. */
 	FCML_CEH_GEC_NOT_INITIALIZED = 4,
-	// Incomplete instruction.
+	/* Incomplete instruction. */
 	FCML_CEH_GEC_EOF = 5,
 	/* Used mainly in case of integers and offsets. */
 	FCML_CEH_GEC_VALUE_OUT_OF_RANGE = 6,
@@ -29,23 +29,27 @@ enum fcml_en_ceh_error_globals {
 	FCML_CEH_GEC_FEATURE_NOT_SUPPORTED = 7,
 	/* Unsupported addressing mode. For instance encoded instruction
 	 * needs 16 bit addressing mode, but we are in 64 bit mode. */
-	FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE = 8,
+	FCML_CEH_GEC_INVALID_ADDRESSING_MODE = 8,
 	/* Chosen addressing form can not be encoded as for example ModR/M field. */
-	FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM = 9,
+	FCML_CEH_GEC_INVALID_ADDRESSING_FORM = 9,
 	/* Unsupported instruction form (Instruction may be supported, but not with given set of operands). */
-	FCML_CEH_GEC_UNSUPPORTED_INSTRUCTION_FORM = 10,
+	FCML_CEH_GEC_INVALID_INSTRUCTION_FORM = 10,
 	/* Instruction do not support one of the defined operands. */
-	FCML_CEH_GEC_UNSUPPORTED_OPPERAND = 11,
+	FCML_CEH_GEC_INVALID_OPPERAND = 11,
 	/* Unknown mnemonic. */
 	FCML_CEH_GEC_UNKNOWN_MNEMONIC = 12,
 	/* Operand size (Operand size attribute) is not allowed in given context. */
-	FCML_CEH_GEC_UNSUPPORTED_OPPERAND_SIZE = 13,
+	FCML_CEH_GEC_INVALID_OPPERAND_SIZE = 13,
 	/* Address size (Address size attribute) is not allowed in given context. */
-	FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE = 14,
+	FCML_CEH_GEC_INVALID_ADDRESS_SIZE = 14,
 	/* User chosen unsupported addressing form */
 	FCML_CEH_GEC_UNKNOWN_INSTRUCTION = 15,
 	/* Assembler can return this error code if there is not allowed prefix defined for given instruction. */
-	FCML_CEH_GEC_UNSUPPORTED_PREFIX = 16
+	FCML_CEH_GEC_INVALID_PREFIX = 16,
+	/* Wrong register type. */
+	FCML_CEH_GEC_INVALID_REGISTER_TYPE = 17,
+	/* Wrong register. */
+	FCML_CEH_GEC_INVALID_REGISTER = 18
 };
 
 enum fcml_en_ceh_message_errors {
@@ -68,7 +72,7 @@ enum fcml_en_ceh_message_errors {
 	/* Syntax error from parser. */
 	FCML_CEH_MEC_ERROR_INVALID_SYNTAX = 1008,
 	/* Wrong register type used in place of segment register. */
-	FCML_CEH_MEC_ERROR_WRONG_REGISTER_TYPE_SEG = 1009,
+	FCML_CEH_MEC_ERROR_INVALID_REGISTER_TYPE_SEG = 1009,
 };
 
 enum fcml_en_ceh_message_warnings {

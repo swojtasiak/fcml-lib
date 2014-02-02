@@ -441,7 +441,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 
 		if( context->effective_operand_size_attribute == FCML_DS_16 && entry_point->addr_form == FCML_AF_64_BIT ) {
 			// TODO: Dlaczego w przypadku disassemblera rzucamy blad? Sprawdzic czy to sprawdzenie ma sens.
-			return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+			return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 		}
 
 		int_size = FCML_DS_32;
@@ -530,7 +530,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer( fcml_ist_dasm_decoding
 		far_pointer->offset32 = fcml_fn_stream_read_dword( context->stream, &result );
 		break;
 	default:
-		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 		break;
 	}
 
@@ -603,7 +603,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset( fcml_ist_d
 		offset->off64 = fcml_fn_stream_read_qword( context->stream, &result );
 		break;
 	default:
-		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 		break;
 	}
 
@@ -684,7 +684,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		}
 
 	} else {
-		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		error = FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	return error;
@@ -2219,7 +2219,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 	return error;
 }
 
-fcml_ceh_error fcml_fn_disassembler( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result ) {
+fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result ) {
 
 	// Sanity check.
 	if( !context || !result ) {

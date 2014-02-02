@@ -38,7 +38,7 @@ void fcml_fn_prefixes_66(void) {
 
 	fcml_fn_assembler_result_prepare( &result );
 
-	if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
 		if( result.chosen_instruction ) {
 			STF_ASSERT_EQUAL( 4, result.chosen_instruction->code_length );
@@ -64,7 +64,7 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[0] = FCML_REG( fcml_reg_BP );
 	instruction.operands[1] = FCML_IMM16( 0x0201 );
 
-	if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
 		if( result.chosen_instruction ) {
 			STF_ASSERT_EQUAL( 5, result.chosen_instruction->code_length );
@@ -91,7 +91,7 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[0] = FCML_REG( fcml_reg_EBP );
 	instruction.operands[1] = FCML_IMM32( 0x02010000 );
 
-	if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
 		if( result.chosen_instruction ) {
 			STF_ASSERT_EQUAL( 7, result.chosen_instruction->code_length );
@@ -120,7 +120,7 @@ void fcml_fn_prefixes_66(void) {
 	instruction.operands[0] = FCML_REG( fcml_reg_EBP );
 	instruction.operands[1] = FCML_IMM32( 0x02010000 );
 
-	if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
 		if( result.chosen_instruction ) {
 			STF_ASSERT_EQUAL( 7, result.chosen_instruction->code_length );

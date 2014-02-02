@@ -18,6 +18,7 @@
 #include <fcml_renderer.h>
 
 /* Tests.*/
+#include "error_handling.h"
 #include "instructions_a_t.h"
 #include "instructions_b_t.h"
 #include "instructions_c_t.h"
@@ -56,6 +57,7 @@
 #include "instructions_base_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
+	&fcml_si_error_handling,
 	&fctl_si_instructions_a,
 	&fctl_si_instructions_b,
 	&fctl_si_instructions_c,

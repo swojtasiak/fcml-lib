@@ -58,7 +58,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_displacement( fcml_st_memory_stream *stream
 
         error = fcml_fn_utils_integer_to_offset( &integer, offset );
         if( error ) {
-            return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+            return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
         }
 
     }
@@ -77,7 +77,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_16bit( fcml_st_modrm_decoder_context *conte
 
 	/* Just in case.*/
 	if( context->addr_form == FCML_AF_64_BIT ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	fcml_st_address *address = &(decoded_modrm->address);
@@ -97,7 +97,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_16bit( fcml_st_modrm_decoder_context *conte
 	fcml_uint8_t f_reg_opcode = FCML_MODRM_DEC_REG_OPCODE(mod_rm);
 
 	if( modrm_source->is_vsib ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	address->address_form = FCML_AF_COMBINED;
@@ -232,7 +232,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *con
 	f_rm = FCML_MODRM_DEC_RM(mod_rm) | ( modrm_source->ext_b << 3 );
 
 	if( modrm_source->is_vsib && FCML_MODRM_DEC_RM( mod_rm ) != 4 ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	address->address_form = FCML_AF_COMBINED;
@@ -291,7 +291,7 @@ fcml_ceh_error fcml_fn_modrm_decode_rip( fcml_uint64_t rip, fcml_data_size effec
 	if( effective_address_size == FCML_DS_32 ) {
 		effective_address &= 0x00000000FFFFFFFFUL;
 	} else if( effective_address_size == FCML_DS_16 ) {
-		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESS_SIZE;
+		error = FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 	}
 
 	if( !error ) {
@@ -311,7 +311,7 @@ fcml_ceh_error fcml_fn_modrm_decode( fcml_st_modrm_decoder_context *context, fcm
 		error = fcml_ifn_modrm_decode_3264bit( context, modrm_source, decoded_modrm, modrm_details, flags );
 	} else {
 		/* Unknown addressing mode.*/
-		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 	}
 	return error;
 }

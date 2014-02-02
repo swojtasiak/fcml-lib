@@ -51,7 +51,7 @@ void fcml_fn_chooser_default(void) {
 
 	fcml_fn_assembler_result_prepare( &result );
 
-	if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
+	if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
 		if( result.chosen_instruction ) {
 			STF_ASSERT_EQUAL( 4, result.chosen_instruction->code_length );
@@ -94,7 +94,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
     fcml_fn_assembler_result_prepare( &result );
 
-    if( !fcml_fn_assembler( &context, &instruction, &result ) ) {
+    if( !fcml_fn_assemble( &context, &instruction, &result ) ) {
 
         STF_ASSERT_PTR_NULL( result.chosen_instruction );
 
@@ -122,7 +122,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             fcml_fn_disassembler_result_prepare( &dasm_result );
 
-            error = fcml_fn_disassembler( &d_context, &dasm_result );
+            error = fcml_fn_disassemble( &d_context, &dasm_result );
             if( error ) {
                 break;
             }

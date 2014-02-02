@@ -81,7 +81,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 		fcml_ifn_ts_set_ip( &(context.entry_point.ip), addr_form );
 
 		/* Disassemble.*/
-		error = fcml_fn_disassembler( &context, &dis_result );
+		error = fcml_fn_disassemble( &context, &dis_result );
 
 	}
 
@@ -200,7 +200,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_fn_assembler_result_prepare( &asm_result );
 
-		error = fcml_fn_assembler( &context, result->instruction, &asm_result );
+		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
 		if( error ) {
 		    if( !t_flags & FCML_TSF_SHOULD_FAIL ) {
 		        printf("Can not assemble: %s\n", mnemonic );
@@ -436,7 +436,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_e
 	fcml_ifn_ts_set_ip( &(context.entry_point.ip), addr_form );
 
 	/* Disassemble.*/
-	error = fcml_fn_disassembler( &context, &dis_result );
+	error = fcml_fn_disassemble( &context, &dis_result );
 
 	if( !error ) {
 

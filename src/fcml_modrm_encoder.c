@@ -101,7 +101,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit( fcml_st_modrm_encoder_context *conte
 	fcml_data_size disp_size = FCML_DS_UNDEF;
 
 	if( context->addr_form == FCML_AF_64_BIT ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	/* Check if there is disp16 addressing mode encoded.*/
@@ -127,11 +127,11 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit( fcml_st_modrm_encoder_context *conte
 	    }
 
 		if( effective_address->base.type && effective_address->base.size != FCML_DS_16 ) {
-			error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+			error = FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 		}
 
 		if( effective_address->index.type && effective_address->index.size != FCML_DS_16 ) {
-			error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+			error = FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 		}
 
 		if( !error ) {
@@ -159,7 +159,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit( fcml_st_modrm_encoder_context *conte
 					}
 				} else if( !effective_address->displacement.size ) {
 					/* BP is not allowed without displacement.*/
-					error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+					error = FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 				} else {
 					f_rm = 0x06;
 				}
@@ -197,7 +197,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit( fcml_st_modrm_encoder_context *conte
                         break;
                     default:
                         /* Only disp8 and disp16 is supported in 16 bit addressing mode.*/
-                        error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+                        error = FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
                         break;
                     }
 			    }
@@ -211,7 +211,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit( fcml_st_modrm_encoder_context *conte
 		f_rm = decoded_modrm->reg.value;
 	} else {
 		/* There is no base register and displacement, so*/
-		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		error = FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	if( !error ) {
@@ -244,7 +244,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 	/* Check if addressing mode and effective address size are compatible.*/
 	if( ( context->chosen_effective_address_size == FCML_DS_64 && context->addr_form != FCML_AF_64_BIT ) || ( context->addr_form == FCML_AF_64_BIT && context->chosen_effective_address_size == FCML_DS_16 ) ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	fcml_bool is_displacement = fcml_ifn_modrm_is_displacement( address );
@@ -256,7 +256,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 	/* Sanity check.*/
 	if( ( is_base || is_index ) && address->address_form != FCML_AF_COMBINED )  {
-	    return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+	    return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	fcml_bool is_rip = FCML_FALSE;
@@ -279,7 +279,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 				if( address->address_form == FCML_AF_OFFSET && !context->addr_form == FCML_AF_64_BIT ) {
 					/* User chooses address displacement, but RIP addressing can not be used.*/
-					return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+					return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 				}
 
 				if( choose_rip ) {
@@ -320,7 +320,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 		if( is_base ) {
 			if( context->chosen_effective_address_size != effective_address->base.size ) {
 				/* Wrong size of base register, it has to be equal to EASA.*/
-				return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+				return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 			}
 			f_base = effective_address->base.reg;
 			if( f_base > 7 ) {
@@ -331,7 +331,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 			/* SIB without base register, there is only one addressing mode with this combination*/
 			/* and it needs disp32.*/
 			if( !is_displacement ) {
-				return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+				return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 			}
 			disp_size = FCML_DS_32;
 			f_base = 0x05;
@@ -342,11 +342,11 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 			/* Check if index register size is correct.*/
 			if( effective_address->index.type != FCML_REG_SIMD && context->chosen_effective_address_size != effective_address->index.size ) {
 				/* Wrong size of index register, it has to be equal to EASA.*/
-				return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+				return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 			}
 			/* ESP is not allowed as index register.*/
 			if( effective_address->index.reg == FCML_REG_ESP ) {
-				return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+				return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 			}
 			f_index = effective_address->index.reg;
 			if( f_index > 7 ) {
@@ -383,14 +383,14 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 		if ( is_base && !is_rip_disp ) {
 			if( context->chosen_effective_address_size != effective_address->base.size ) {
-				return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+				return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 			}
 			f_rm = effective_address->base.reg;
 		} else if ( decoded_modrm->reg.is_not_null ) {
 			f_mod = 0x03;
 			f_rm = decoded_modrm->reg.value;
 			if( effective_address->displacement.size ) {
-				return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+				return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 			}
 		} else if ( is_displacement ) {
 		    /* Absolute address or RIP.*/
@@ -415,7 +415,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 	    /* Offset is not available, so displacement was used instead.*/
 	    if( !address->offset.size ) {
-	        return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+	        return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	    }
 
 	    fcml_ceh_error error = fcml_fn_utils_offset_to_integer( &(address->offset), &rip_address );
@@ -514,7 +514,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 	}
 
 	if( context->addr_form != FCML_AF_64_BIT && ( f_ext_r || f_ext_x || f_ext_b ) ) {
-		return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+		return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
 	encoded_modrm->modrm = FCML_MODRM_ENC( f_mod, f_reg, f_rm );
@@ -538,13 +538,13 @@ fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, con
 	if( effective_address->base.size == FCML_DS_16 || effective_address->index.size == FCML_DS_16 ) {
 		if( addr_form == FCML_AF_64_BIT ) {
 			/* 16 bit addressing is not supported in 64 bit mode.*/
-			return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+			return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 		}
 		easa = FCML_DS_16;
 	} else if( effective_address->base.size == FCML_DS_64 || effective_address->index.size == FCML_DS_64 ) {
 		if( addr_form == FCML_AF_16_BIT ) {
 			/* 64 bit addressing is not supported in 16 bit mode.*/
-			return FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_FORM;
+			return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 		}
 		easa = FCML_DS_64;
 	}
@@ -557,7 +557,7 @@ fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, con
 		error = fcml_ifn_modrm_encode_3264bit( context, decoded_modrm, encoded_modrm );
 	} else {
 		/* Unknown addressing mode.*/
-		error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 	}
 	return error;
 }
@@ -617,7 +617,7 @@ fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_mod
 			easa = FCML_EN_ASF_32 | FCML_EN_ASF_64;
 			break;
 		default:
-			error = FCML_CEH_GEC_UNSUPPORTED_ADDRESSING_MODE;
+			error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 			break;
 		}
 	} else  {
