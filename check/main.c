@@ -18,7 +18,7 @@
 #include <fcml_renderer.h>
 
 /* Tests.*/
-#include "error_handling.h"
+#include "error_handling_t.h"
 #include "instructions_a_t.h"
 #include "instructions_b_t.h"
 #include "instructions_c_t.h"
