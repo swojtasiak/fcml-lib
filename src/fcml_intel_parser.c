@@ -21,11 +21,12 @@ void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
 	fcml_fn_ceh_add_error( &(pd->errors), (const fcml_string)error, FCML_CEH_MEC_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR );
 }
 
-fcml_ceh_error fcml_intel_parse( fcml_st_dialect *dialect, fcml_string asm_code, fcml_st_parser_result **result ) {
+fcml_ceh_error fcml_intel_parse( fcml_st_dialect *dialect, fcml_string asm_code, fcml_st_parser_result *result ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	*result = NULL;
+	/* Free previous parser results. */
+	fcml_fn_parser_result_free( result );
 
 	fcml_st_parser_data parser = {0};
 
@@ -42,22 +43,14 @@ fcml_ceh_error fcml_intel_parse( fcml_st_dialect *dialect, fcml_string asm_code,
 
 	intel__scan_string( asm_code, parser.scannerInfo );
 
-	fcml_st_parser_result *tmp_result = (fcml_st_parser_result*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_parser_result ) );
-	if( tmp_result == NULL ) {
-		return FCML_CEH_GEC_OUT_OF_MEMORY;
-	}
-
-	memset( tmp_result, 0, sizeof( fcml_st_parser_result ) );
-
 	int yyresult = intel_parse(&parser);
 
 	intel_lex_destroy( parser.scannerInfo );
 
 	/* Copy errors from parser.*/
-	tmp_result->errors = parser.errors;
+	result->errors = parser.errors;
 
 	if( yyresult ) {
-		*result = tmp_result;
 		switch( yyresult ) {
 		case 1: /*Syntax error.*/
 			error = FCML_CEH_GEC_INVALID_INPUT;
@@ -69,16 +62,14 @@ fcml_ceh_error fcml_intel_parse( fcml_st_dialect *dialect, fcml_string asm_code,
 		return error;
 	}
 
-	error = fcml_fn_ast_to_cif_converter( parser.tree, &(tmp_result->errors), &(tmp_result->instruction) );
+	error = fcml_fn_ast_to_cif_converter( parser.tree, &(result->errors), &(result->instruction) );
 	if( error ) {
 		/* Free instruction, because it might haven't been fully parsed.*/
-		fcml_fn_ast_free_converted_cif( tmp_result->instruction );
-		tmp_result->instruction = NULL;
+		fcml_fn_ast_free_converted_cif( result->instruction );
+		result->instruction = NULL;
 	}
 
 	fcml_fn_ast_free_node( parser.tree );
-
-	*result = tmp_result;
 
 	return error;
 }

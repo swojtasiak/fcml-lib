@@ -13,7 +13,7 @@
 #include "fcml_env.h"
 #include "fcml_trace.h"
 
-fcml_ceh_error fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result **result_out ) {
+fcml_ceh_error fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result *result_out ) {
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect;
 	if( dialect_context_int->instruction_parser ) {
 		fcml_fnp_parse_instruction parser = (fcml_fnp_parse_instruction)dialect_context_int->instruction_parser;
@@ -30,8 +30,16 @@ void fcml_fn_parser_result_free( fcml_st_parser_result *result ) {
 		/* Frees parsed instruction, potential errors and warnings and result structure itself.*/
 		if( result->instruction ) {
 			fcml_fn_ast_free_converted_cif( result->instruction );
+			result->instruction = NULL;
 		}
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
-		fcml_fn_env_memory_free( result );
+	}
+}
+
+void fcml_fn_parser_result_prepare( fcml_st_parser_result *result ) {
+	if( result ) {
+		result->errors.errors = NULL;
+		result->errors.last_error = NULL;
+		result->instruction = NULL;
 	}
 }

@@ -153,14 +153,15 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		/* Parsing.*/
 
-		fcml_st_parser_result *result;
+		fcml_st_parser_result result;
+		fcml_fn_parser_result_prepare( &result );
 		fcml_ceh_error error = fcml_fn_parse( dialect, mnemonic, &result );
 		if( error ) {
 			printf("Can not parse: %s\n", mnemonic );
 			if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 				success = FCML_FALSE;
 			}
-			fcml_fn_parser_result_free( result );
+			fcml_fn_parser_result_free( &result );
 			fcml_fn_disassembler_result_free( &dis_result );
 			return success;
 		}
@@ -200,7 +201,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_fn_assembler_result_prepare( &asm_result );
 
-		error = fcml_fn_assemble( &context, result->instruction, &asm_result );
+		error = fcml_fn_assemble( &context, result.instruction, &asm_result );
 		if( error ) {
 		    if( !t_flags & FCML_TSF_SHOULD_FAIL ) {
 		        printf("Can not assemble: %s\n", mnemonic );
@@ -388,7 +389,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 
 		fcml_fn_assembler_result_free( &asm_result );
 
-		fcml_fn_parser_result_free( result );
+		fcml_fn_parser_result_free( &result );
 
 
 	} else {
