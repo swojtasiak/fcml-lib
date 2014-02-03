@@ -9,7 +9,7 @@
 #define FCML_OPTIMIZERS_H_
 
 #include "fcml_types.h"
-#include "fcml_ceh.h"
+#include "fcml_errors.h"
 #include "fcml_common.h"
 
 /* Optimizer context used to contact with environemnt. */

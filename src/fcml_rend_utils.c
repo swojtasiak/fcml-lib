@@ -43,10 +43,16 @@ void fcml_fn_rend_utils_format_append_hex_byte( fcml_st_memory_stream *stream, f
 	fcml_fn_rend_utils_format_printf( stream, FCML_PRI_INT8_HEX, hex_byte );
 }
 
-void fcml_fn_rend_utils_format_append_code( fcml_st_memory_stream *stream, fcml_uint8_t *instrunction_code, fcml_uint8_t instruction_code_size ) {
+void fcml_fn_rend_utils_format_append_code( fcml_st_memory_stream *stream, fcml_uint8_t *instrunction_code, fcml_uint8_t instruction_code_size, fcml_bool is_padding ) {
 	fcml_int i;
 	for( i = 0; i < instruction_code_size; i++ ) {
 		fcml_fn_rend_utils_format_append_hex_byte( stream, instrunction_code[i] );
+	}
+	if( is_padding ) {
+		int padding = FCML_INSTRUCTION_SIZE - instruction_code_size + 1;
+		for( int i = 0; i < padding; i++ ) {
+			fcml_fn_rend_utils_format_append_str( stream, FCML_TEXT("  ") );
+		}
 	}
 }
 

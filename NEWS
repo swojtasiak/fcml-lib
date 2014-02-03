@@ -1,0 +1,6 @@
+  0x00007fe397ff15c0: 448b5608 mov r10d,dword ptr ds:[abs rsi+8]
+  nie powinno byc abs!
+  
+  
+  fcml_data_size code_len = disassembler_result.instruction_details.instruction_size;
+  // Code len powinien być fcml_usize, poniewaz nie moze byc ujemny.

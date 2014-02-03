@@ -9,10 +9,11 @@
 #define FCML_REND_H_
 
 #include "fcml_types.h"
-#include "fcml_ceh.h"
+#include "fcml_errors.h"
 #include "fcml_dialect.h"
 #include "fcml_disassembler.h"
-#include "fcml_stream.h"
+
+#define FCML_REND_MAX_BUFF_LEN					512
 
 #define FCML_REND_FLAG_RENDER_CODE				0x00000001
 #define FCML_REND_FLAG_HEX_IMM					0x00000002
@@ -27,9 +28,11 @@
 #define FCML_REND_FLAG_RENDER_INDIRECT_HINT		0x00000400
 #define FCML_REND_FLAG_REP_PREFIX_GROUP_1		0x00000800
 #define FCML_REND_FLAG_REP_PREFIX_GROUP_2		0x00001000
+#define FCML_REND_FLAG_CODE_PADDING				0x00002000
 
 #define RCML_REND_DEFAULT_FLAGS		0
 
-fcml_ceh_error fcml_fn_render( fcml_st_dialect *dialect, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
+void fcml_fn_render_clean_buffer( fcml_char *buffer, fcml_usize buffer_len );
+fcml_ceh_error fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
 
 #endif /* FCML_REND_H_ */

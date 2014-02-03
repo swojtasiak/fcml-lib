@@ -804,3 +804,24 @@ fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point ) {
 
 	return FCML_CEH_GEC_NO_ERROR;
 }
+
+fcml_bool fcml_fn_utils_is_displacement_negative( const fcml_st_displacement *displacement ) {
+
+	if( !displacement->is_signed ) {
+		return FCML_FALSE;
+	}
+
+	switch( displacement->size ) {
+	case FCML_DS_8:
+	    return displacement->dis8 < 0;
+	case FCML_DS_16:
+		return displacement->dis16 < 0;
+	case FCML_DS_32:
+		return displacement->dis32 < 0;
+	case FCML_DS_64:
+		return displacement->dis64 < 0;
+	default:
+		return FCML_FALSE;
+	}
+
+}

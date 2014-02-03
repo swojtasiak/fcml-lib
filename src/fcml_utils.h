@@ -44,5 +44,6 @@ fcml_bool fcml_fn_utils_is_reg_undef( const fcml_st_register *reg );
 fcml_ceh_error fcml_fn_utils_convert_map_error( fcml_int error );
 void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_error_container *error_container, fcml_ceh_error code );
 fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point );
+fcml_bool fcml_fn_utils_is_displacement_negative( const fcml_st_displacement *displacement );
 
 #endif /* FCML_UTILS_H_ */

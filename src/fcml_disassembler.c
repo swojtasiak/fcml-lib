@@ -621,7 +621,7 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_segment_relative_offset( fcml_ist
 }
 
 /* -----------*/
-/* ModRM - RM*/
+/* ModRM - RM */
 /* -----------*/
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -679,7 +679,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		}
 
 		/* These hints aren't used in 32 bit addressing mode.*/
-		if( context->disassembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
+		if( ( context->disassembler_context->entry_point.addr_form == FCML_AF_64_BIT ) && ( address->address_form == FCML_AF_OFFSET ) ) {
 			operand->hints |= context->decoded_modrm.is_rip ? FCML_OP_HINT_RELATIVE_ADDRESSING : FCML_OP_HINT_ABSOLUTE_ADDRESSING;
 		}
 
@@ -2249,6 +2249,9 @@ void fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result ) {
 		if( result->instruction.mnemonic ) {
 			fcml_fn_env_str_strfree( result->instruction.mnemonic );
 		}
+
+		/* Clean all information inside result. */
+		fcml_fn_disassembler_result_prepare( result );
 	}
 
 }

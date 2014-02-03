@@ -8,7 +8,7 @@
 #ifndef FCML_ASM_DIALECT_INTEL_H_
 #define FCML_ASM_DIALECT_INTEL_H_
 
-#include "fcml_ceh.h"
+#include "fcml_errors.h"
 #include "fcml_dialect.h"
 
 /* Default combination of configuration flags.*/

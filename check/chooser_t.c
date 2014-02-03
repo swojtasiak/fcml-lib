@@ -129,11 +129,9 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             /* Render instructions one by one.*/
 
-            fcml_char buffer[512];
+            fcml_char buffer[FCML_REND_MAX_BUFF_LEN];
 
-            fcml_st_memory_stream buffer_stream = fcml_fn_stream_wrap( buffer, sizeof( buffer ) );
-
-            error = fcml_fn_render( dialect_intel, &buffer_stream, &dasm_result, FCML_REND_FLAG_RENDER_CODE );
+            error = fcml_fn_render( dialect_intel, buffer, sizeof( buffer ), &dasm_result, FCML_REND_FLAG_RENDER_CODE );
             if( error ) {
                 /* Free disassemblation result.*/
                 fcml_fn_disassembler_result_free( &dasm_result );

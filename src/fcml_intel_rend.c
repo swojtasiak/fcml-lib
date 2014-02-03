@@ -223,8 +223,10 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_dialect_con
 		/* Displacement.*/
 		if( effective_address->displacement.size > 0 ) {
 
-			fcml_fn_rend_utils_format_append_str_if( output_stream, FCML_TEXT("+"), !first );
-			first = FCML_FALSE;
+			if( ( render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT ) || !fcml_fn_utils_is_displacement_negative( &(effective_address->displacement) ) ) {
+				fcml_fn_rend_utils_format_append_str_if( output_stream, FCML_TEXT("+"), !first );
+				first = FCML_FALSE;
+			}
 
 			fcml_st_integer integer;
 			error = fcml_fn_utils_displacement_to_integer( &(effective_address->displacement), &integer );
@@ -333,7 +335,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 
 	/* Instruction code.*/
 	if( render_flags & FCML_REND_FLAG_RENDER_CODE ) {
-		fcml_fn_rend_utils_format_append_code( output_stream, result->instruction_details.instruction_code, result->instruction_details.instruction_size );
+		fcml_fn_rend_utils_format_append_code( output_stream, result->instruction_details.instruction_code, result->instruction_details.instruction_size, render_flags & FCML_REND_FLAG_CODE_PADDING );
 		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(" ") );
 	}
 

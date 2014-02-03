@@ -8,7 +8,7 @@
 #ifndef FCML_ASM_DIALECT_GAS_H_
 #define FCML_ASM_DIALECT_GAS_H_
 
-#include "fcml_ceh.h"
+#include "fcml_errors.h"
 #include "fcml_dialect.h"
 
 /* Disables "SystemV/386 SVR3.2" compatibility for the non-commutative arithmetic floating point operations with two register operands.*/
