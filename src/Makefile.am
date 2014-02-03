@@ -73,6 +73,7 @@ libfcml_la_SOURCES = fcml_intel_lexer.l \
 	fcml_stream.h
 
 libfcml_la_CPPFLAGS = -I$(top_srcdir)/include
+libfcml_la_LDFLAGS = -no-undefined
 
 fcml_intel_lexer.h: fcml_intel_lexer.c
 	@if test ! -f $@; then rm -f fcml_intel_lexer.c; else :; fi

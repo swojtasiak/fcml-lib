@@ -8,10 +8,16 @@
 #ifndef FCML_REND_H_
 #define FCML_REND_H_
 
+#include "fcml_lib_export.h"
+
 #include "fcml_types.h"
 #include "fcml_errors.h"
 #include "fcml_dialect.h"
 #include "fcml_disassembler.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define FCML_REND_MAX_BUFF_LEN					512
 
@@ -32,7 +38,11 @@
 
 #define RCML_REND_DEFAULT_FLAGS		0
 
-void fcml_fn_render_clean_buffer( fcml_char *buffer, fcml_usize buffer_len );
-fcml_ceh_error fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
+void LIB_EXPORT fcml_fn_render_clean_buffer( fcml_char *buffer, fcml_usize buffer_len );
+fcml_ceh_error LIB_EXPORT fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FCML_REND_H_ */

@@ -8,6 +8,8 @@
 #ifndef FCML_INT_COMMON_H_
 #define FCML_INT_COMMON_H_
 
+#include "fcml_lib_export.h"
+
 #include "fcml_types.h"
 
 #define FCML_OPERANDS_COUNT			5

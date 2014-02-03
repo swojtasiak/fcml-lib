@@ -8,203 +8,209 @@
 #ifndef FCML_COMMON_UTILS_H_
 #define FCML_COMMON_UTILS_H_
 
+#include "fcml_lib_export.h"
+
 #include "fcml_common.h"
 
-extern fcml_st_register fcml_reg_AL;
-extern fcml_st_register fcml_reg_AX;
-extern fcml_st_register fcml_reg_EAX;
-extern fcml_st_register fcml_reg_RAX;
-extern fcml_st_register fcml_reg_MM0;
-extern fcml_st_register fcml_reg_XMM0;
-extern fcml_st_register fcml_reg_YMM0;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-extern fcml_st_register fcml_reg_CL;
-extern fcml_st_register fcml_reg_CX;
-extern fcml_st_register fcml_reg_ECX;
-extern fcml_st_register fcml_reg_RCX;
-extern fcml_st_register fcml_reg_MM1;
-extern fcml_st_register fcml_reg_XMM1;
-extern fcml_st_register fcml_reg_YMM1;
+extern LIB_EXPORT fcml_st_register fcml_reg_AL;
+extern LIB_EXPORT fcml_st_register fcml_reg_AX;
+extern LIB_EXPORT fcml_st_register fcml_reg_EAX;
+extern LIB_EXPORT fcml_st_register fcml_reg_RAX;
+extern LIB_EXPORT fcml_st_register fcml_reg_MM0;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM0;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM0;
 
-extern fcml_st_register fcml_reg_DL;
-extern fcml_st_register fcml_reg_DX;
-extern fcml_st_register fcml_reg_EDX;
-extern fcml_st_register fcml_reg_RDX;
-extern fcml_st_register fcml_reg_MM2;
-extern fcml_st_register fcml_reg_XMM2;
-extern fcml_st_register fcml_reg_YMM2;
+extern LIB_EXPORT fcml_st_register fcml_reg_CL;
+extern LIB_EXPORT fcml_st_register fcml_reg_CX;
+extern LIB_EXPORT fcml_st_register fcml_reg_ECX;
+extern LIB_EXPORT fcml_st_register fcml_reg_RCX;
+extern LIB_EXPORT fcml_st_register fcml_reg_MM1;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM1;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM1;
 
-extern fcml_st_register fcml_reg_BL;
-extern fcml_st_register fcml_reg_BX;
-extern fcml_st_register fcml_reg_EBX;
-extern fcml_st_register fcml_reg_RBX;
-extern fcml_st_register fcml_reg_MM3;
-extern fcml_st_register fcml_reg_XMM3;
-extern fcml_st_register fcml_reg_YMM3;
+extern LIB_EXPORT fcml_st_register fcml_reg_DL;
+extern LIB_EXPORT fcml_st_register fcml_reg_DX;
+extern LIB_EXPORT fcml_st_register fcml_reg_EDX;
+extern LIB_EXPORT fcml_st_register fcml_reg_RDX;
+extern LIB_EXPORT fcml_st_register fcml_reg_MM2;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM2;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM2;
 
-extern fcml_st_register fcml_reg_AH;
-extern fcml_st_register fcml_reg_SPL;
-extern fcml_st_register fcml_reg_SP;
-extern fcml_st_register fcml_reg_ESP;
-extern fcml_st_register fcml_reg_RSP;
-extern fcml_st_register fcml_reg_MM4;
-extern fcml_st_register fcml_reg_XMM4;
-extern fcml_st_register fcml_reg_YMM4;
+extern LIB_EXPORT fcml_st_register fcml_reg_BL;
+extern LIB_EXPORT fcml_st_register fcml_reg_BX;
+extern LIB_EXPORT fcml_st_register fcml_reg_EBX;
+extern LIB_EXPORT fcml_st_register fcml_reg_RBX;
+extern LIB_EXPORT fcml_st_register fcml_reg_MM3;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM3;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM3;
 
-extern fcml_st_register fcml_reg_CH;
-extern fcml_st_register fcml_reg_BPL;
-extern fcml_st_register fcml_reg_BP;
-extern fcml_st_register fcml_reg_EBP;
-extern fcml_st_register fcml_reg_RBP;
-extern fcml_st_register fcml_reg_MM5;
-extern fcml_st_register fcml_reg_XMM5;
-extern fcml_st_register fcml_reg_YMM5;
+extern LIB_EXPORT fcml_st_register fcml_reg_AH;
+extern LIB_EXPORT fcml_st_register fcml_reg_SPL;
+extern LIB_EXPORT fcml_st_register fcml_reg_SP;
+extern LIB_EXPORT fcml_st_register fcml_reg_ESP;
+extern LIB_EXPORT fcml_st_register fcml_reg_RSP;
+extern LIB_EXPORT fcml_st_register fcml_reg_MM4;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM4;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM4;
 
-extern fcml_st_register fcml_reg_DH;
-extern fcml_st_register fcml_reg_SIL;
-extern fcml_st_register fcml_reg_SI;
-extern fcml_st_register fcml_reg_ESI;
-extern fcml_st_register fcml_reg_RSI;
-extern fcml_st_register fcml_reg_MM6;
-extern fcml_st_register fcml_reg_XMM6;
-extern fcml_st_register fcml_reg_YMM6;
+extern LIB_EXPORT fcml_st_register fcml_reg_CH;
+extern LIB_EXPORT fcml_st_register fcml_reg_BPL;
+extern LIB_EXPORT fcml_st_register fcml_reg_BP;
+extern LIB_EXPORT fcml_st_register fcml_reg_EBP;
+extern LIB_EXPORT fcml_st_register fcml_reg_RBP;
+extern LIB_EXPORT fcml_st_register fcml_reg_MM5;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM5;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM5;
 
-extern fcml_st_register fcml_reg_BH;
-extern fcml_st_register fcml_reg_DIL;
-extern fcml_st_register fcml_reg_DI;
-extern fcml_st_register fcml_reg_EDI;
-extern fcml_st_register fcml_reg_RDI;
-extern fcml_st_register fcml_reg_MM7;
-extern fcml_st_register fcml_reg_XMM7;
-extern fcml_st_register fcml_reg_YMM7;
+extern LIB_EXPORT fcml_st_register fcml_reg_DH;
+extern LIB_EXPORT fcml_st_register fcml_reg_SIL;
+extern LIB_EXPORT fcml_st_register fcml_reg_SI;
+extern LIB_EXPORT fcml_st_register fcml_reg_ESI;
+extern LIB_EXPORT fcml_st_register fcml_reg_RSI;
+extern LIB_EXPORT fcml_st_register fcml_reg_MM6;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM6;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM6;
 
-extern fcml_st_register fcml_reg_R8L;
-extern fcml_st_register fcml_reg_R8W;
-extern fcml_st_register fcml_reg_R8D;
-extern fcml_st_register fcml_reg_R8;
-extern fcml_st_register fcml_reg_XMM8;
-extern fcml_st_register fcml_reg_YMM8;
+extern LIB_EXPORT fcml_st_register fcml_reg_BH;
+extern LIB_EXPORT fcml_st_register fcml_reg_DIL;
+extern LIB_EXPORT fcml_st_register fcml_reg_DI;
+extern LIB_EXPORT fcml_st_register fcml_reg_EDI;
+extern LIB_EXPORT fcml_st_register fcml_reg_RDI;
+extern LIB_EXPORT fcml_st_register fcml_reg_MM7;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM7;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM7;
 
-extern fcml_st_register fcml_reg_R9L;
-extern fcml_st_register fcml_reg_R9W;
-extern fcml_st_register fcml_reg_R9D;
-extern fcml_st_register fcml_reg_R9;
-extern fcml_st_register fcml_reg_XMM9;
-extern fcml_st_register fcml_reg_YMM9;
+extern LIB_EXPORT fcml_st_register fcml_reg_R8L;
+extern LIB_EXPORT fcml_st_register fcml_reg_R8W;
+extern LIB_EXPORT fcml_st_register fcml_reg_R8D;
+extern LIB_EXPORT fcml_st_register fcml_reg_R8;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM8;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM8;
 
-extern fcml_st_register fcml_reg_R10L;
-extern fcml_st_register fcml_reg_R10W;
-extern fcml_st_register fcml_reg_R10D;
-extern fcml_st_register fcml_reg_R10;
-extern fcml_st_register fcml_reg_XMM10;
-extern fcml_st_register fcml_reg_YMM10;
+extern LIB_EXPORT fcml_st_register fcml_reg_R9L;
+extern LIB_EXPORT fcml_st_register fcml_reg_R9W;
+extern LIB_EXPORT fcml_st_register fcml_reg_R9D;
+extern LIB_EXPORT fcml_st_register fcml_reg_R9;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM9;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM9;
 
-extern fcml_st_register fcml_reg_R11L;
-extern fcml_st_register fcml_reg_R11W;
-extern fcml_st_register fcml_reg_R11D;
-extern fcml_st_register fcml_reg_R11;
-extern fcml_st_register fcml_reg_XMM11;
-extern fcml_st_register fcml_reg_YMM11;
+extern LIB_EXPORT fcml_st_register fcml_reg_R10L;
+extern LIB_EXPORT fcml_st_register fcml_reg_R10W;
+extern LIB_EXPORT fcml_st_register fcml_reg_R10D;
+extern LIB_EXPORT fcml_st_register fcml_reg_R10;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM10;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM10;
 
-extern fcml_st_register fcml_reg_R12L;
-extern fcml_st_register fcml_reg_R12W;
-extern fcml_st_register fcml_reg_R12D;
-extern fcml_st_register fcml_reg_R12;
-extern fcml_st_register fcml_reg_XMM12;
-extern fcml_st_register fcml_reg_YMM12;
+extern LIB_EXPORT fcml_st_register fcml_reg_R11L;
+extern LIB_EXPORT fcml_st_register fcml_reg_R11W;
+extern LIB_EXPORT fcml_st_register fcml_reg_R11D;
+extern LIB_EXPORT fcml_st_register fcml_reg_R11;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM11;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM11;
 
-extern fcml_st_register fcml_reg_R13L;
-extern fcml_st_register fcml_reg_R13W;
-extern fcml_st_register fcml_reg_R13D;
-extern fcml_st_register fcml_reg_R13;
-extern fcml_st_register fcml_reg_XMM13;
-extern fcml_st_register fcml_reg_YMM13;
+extern LIB_EXPORT fcml_st_register fcml_reg_R12L;
+extern LIB_EXPORT fcml_st_register fcml_reg_R12W;
+extern LIB_EXPORT fcml_st_register fcml_reg_R12D;
+extern LIB_EXPORT fcml_st_register fcml_reg_R12;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM12;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM12;
 
-extern fcml_st_register fcml_reg_R14L;
-extern fcml_st_register fcml_reg_R14W;
-extern fcml_st_register fcml_reg_R14D;
-extern fcml_st_register fcml_reg_R14;
-extern fcml_st_register fcml_reg_XMM14;
-extern fcml_st_register fcml_reg_YMM14;
+extern LIB_EXPORT fcml_st_register fcml_reg_R13L;
+extern LIB_EXPORT fcml_st_register fcml_reg_R13W;
+extern LIB_EXPORT fcml_st_register fcml_reg_R13D;
+extern LIB_EXPORT fcml_st_register fcml_reg_R13;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM13;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM13;
 
-extern fcml_st_register fcml_reg_R15L;
-extern fcml_st_register fcml_reg_R15W;
-extern fcml_st_register fcml_reg_R15D;
-extern fcml_st_register fcml_reg_R15;
-extern fcml_st_register fcml_reg_XMM15;
-extern fcml_st_register fcml_reg_YMM15;
+extern LIB_EXPORT fcml_st_register fcml_reg_R14L;
+extern LIB_EXPORT fcml_st_register fcml_reg_R14W;
+extern LIB_EXPORT fcml_st_register fcml_reg_R14D;
+extern LIB_EXPORT fcml_st_register fcml_reg_R14;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM14;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM14;
 
-extern fcml_st_register fcml_reg_ES;
-extern fcml_st_register fcml_reg_CS;
-extern fcml_st_register fcml_reg_SS;
-extern fcml_st_register fcml_reg_DS;
-extern fcml_st_register fcml_reg_FS;
-extern fcml_st_register fcml_reg_GS;
+extern LIB_EXPORT fcml_st_register fcml_reg_R15L;
+extern LIB_EXPORT fcml_st_register fcml_reg_R15W;
+extern LIB_EXPORT fcml_st_register fcml_reg_R15D;
+extern LIB_EXPORT fcml_st_register fcml_reg_R15;
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM15;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM15;
 
-extern fcml_st_register fcml_reg_ST0;
-extern fcml_st_register fcml_reg_ST1;
-extern fcml_st_register fcml_reg_ST2;
-extern fcml_st_register fcml_reg_ST3;
-extern fcml_st_register fcml_reg_ST4;
-extern fcml_st_register fcml_reg_ST5;
-extern fcml_st_register fcml_reg_ST6;
-extern fcml_st_register fcml_reg_ST7;
+extern LIB_EXPORT fcml_st_register fcml_reg_ES;
+extern LIB_EXPORT fcml_st_register fcml_reg_CS;
+extern LIB_EXPORT fcml_st_register fcml_reg_SS;
+extern LIB_EXPORT fcml_st_register fcml_reg_DS;
+extern LIB_EXPORT fcml_st_register fcml_reg_FS;
+extern LIB_EXPORT fcml_st_register fcml_reg_GS;
 
-extern fcml_st_register fcml_reg_CR0;
-extern fcml_st_register fcml_reg_CR2;
-extern fcml_st_register fcml_reg_CR3;
-extern fcml_st_register fcml_reg_CR4;
-extern fcml_st_register fcml_reg_CR8;
+extern LIB_EXPORT fcml_st_register fcml_reg_ST0;
+extern LIB_EXPORT fcml_st_register fcml_reg_ST1;
+extern LIB_EXPORT fcml_st_register fcml_reg_ST2;
+extern LIB_EXPORT fcml_st_register fcml_reg_ST3;
+extern LIB_EXPORT fcml_st_register fcml_reg_ST4;
+extern LIB_EXPORT fcml_st_register fcml_reg_ST5;
+extern LIB_EXPORT fcml_st_register fcml_reg_ST6;
+extern LIB_EXPORT fcml_st_register fcml_reg_ST7;
 
-extern fcml_st_register fcml_reg_DR0;
-extern fcml_st_register fcml_reg_DR1;
-extern fcml_st_register fcml_reg_DR2;
-extern fcml_st_register fcml_reg_DR3;
-extern fcml_st_register fcml_reg_DR4;
-extern fcml_st_register fcml_reg_DR5;
-extern fcml_st_register fcml_reg_DR6;
-extern fcml_st_register fcml_reg_DR7;
+extern LIB_EXPORT fcml_st_register fcml_reg_CR0;
+extern LIB_EXPORT fcml_st_register fcml_reg_CR2;
+extern LIB_EXPORT fcml_st_register fcml_reg_CR3;
+extern LIB_EXPORT fcml_st_register fcml_reg_CR4;
+extern LIB_EXPORT fcml_st_register fcml_reg_CR8;
 
-extern fcml_st_register fcml_reg_IP;
-extern fcml_st_register fcml_reg_EIP;
-extern fcml_st_register fcml_reg_RIP;
+extern LIB_EXPORT fcml_st_register fcml_reg_DR0;
+extern LIB_EXPORT fcml_st_register fcml_reg_DR1;
+extern LIB_EXPORT fcml_st_register fcml_reg_DR2;
+extern LIB_EXPORT fcml_st_register fcml_reg_DR3;
+extern LIB_EXPORT fcml_st_register fcml_reg_DR4;
+extern LIB_EXPORT fcml_st_register fcml_reg_DR5;
+extern LIB_EXPORT fcml_st_register fcml_reg_DR6;
+extern LIB_EXPORT fcml_st_register fcml_reg_DR7;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_IP;
+extern LIB_EXPORT fcml_st_register fcml_reg_EIP;
+extern LIB_EXPORT fcml_st_register fcml_reg_RIP;
 
 /* REG.*/
-fcml_st_operand fcml_fn_cu_operand_reg( fcml_st_register *reg );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_reg( fcml_st_register *reg );
 
 /* IMM.*/
-fcml_st_operand fcml_fn_cu_operand_unsigned_imm_8( fcml_uint8_t value );
-fcml_st_operand fcml_fn_cu_operand_signed_imm_8( fcml_int8_t value );
-fcml_st_operand fcml_fn_cu_operand_unsigned_imm_16( fcml_uint16_t value );
-fcml_st_operand fcml_fn_cu_operand_signed_imm_16( fcml_int16_t value );
-fcml_st_operand fcml_fn_cu_operand_unsigned_imm_32( fcml_uint32_t value );
-fcml_st_operand fcml_fn_cu_operand_signed_imm_32( fcml_int32_t value );
-fcml_st_operand fcml_fn_cu_operand_unsigned_imm_64( fcml_uint64_t value );
-fcml_st_operand fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_unsigned_imm_8( fcml_uint8_t value );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_signed_imm_8( fcml_int8_t value );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_unsigned_imm_16( fcml_uint16_t value );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_signed_imm_16( fcml_int16_t value );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_unsigned_imm_32( fcml_uint32_t value );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_signed_imm_32( fcml_int32_t value );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_unsigned_imm_64( fcml_uint64_t value );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value );
 
 /* Memory addressing.*/
-fcml_st_operand fcml_fn_cu_operand_addr_far_pointer_offset16( fcml_int16_t seg, fcml_int16_t offset );
-fcml_st_operand fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset );
-fcml_st_operand fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset );
-fcml_st_operand fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset );
-fcml_st_operand fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset );
-fcml_st_operand fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset );
-fcml_st_operand fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
-fcml_st_operand fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_far_pointer_offset16( fcml_int16_t seg, fcml_int16_t offset );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
 
 /* Hints*/
-fcml_st_operand fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints );
+fcml_st_operand LIB_EXPORT fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints );
 
 /* Some shortcuts for these who prefer to use macros instead of functions.*/
 
@@ -255,6 +261,10 @@ fcml_st_operand fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hint
 #define FCML_BIS_DISP_8( base, index, scale, offset )   fcml_fn_cu_operand_addr_bis_disp_8( &base, &index, scale, offset )
 #define FCML_BIS_DISP_16( base, index, scale, offset )  fcml_fn_cu_operand_addr_bis_disp_32( &base, &index, scale, offset )
 #define FCML_BIS_DISP_32( base, index, scale, offset )  fcml_fn_cu_operand_addr_bis_disp_64( &base, &index, scale, offset )
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* FCML_COMMON_UTILS_H_ */

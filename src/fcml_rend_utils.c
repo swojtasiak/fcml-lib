@@ -50,7 +50,8 @@ void fcml_fn_rend_utils_format_append_code( fcml_st_memory_stream *stream, fcml_
 	}
 	if( is_padding ) {
 		int padding = FCML_INSTRUCTION_SIZE - instruction_code_size + 1;
-		for( int i = 0; i < padding; i++ ) {
+		int i;
+		for( i = 0; i < padding; i++ ) {
 			fcml_fn_rend_utils_format_append_str( stream, FCML_TEXT("  ") );
 		}
 	}

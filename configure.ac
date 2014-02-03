@@ -5,13 +5,16 @@ AC_PREREQ([2.69])
 AC_INIT([fcml], [0.0.1], [fcml-bugs@swksoftware.pl])
 AM_INIT_AUTOMAKE
 LT_PREREQ([2.2])
-LT_INIT
+LT_INIT[win32-dll]
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([include/fcml_common.h])
 AC_CONFIG_HEADERS([config.h])
 
+AC_DEFINE([FCML_BUILD_LIB], [1], [Description])
+
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CC_STDC
 AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_AWK

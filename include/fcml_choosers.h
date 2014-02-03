@@ -8,8 +8,14 @@
 #ifndef FCML_CHOOSER_H_
 #define FCML_CHOOSER_H_
 
+#include "fcml_lib_export.h"
+
 #include <fcml_types.h>
 #include <fcml_common.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Gets next instructions basing on the current one. */
 typedef fcml_ptr (*fcml_fnp_chooser_next)( fcml_ptr instruction );
@@ -31,9 +37,13 @@ typedef struct fcml_st_chooser_context {
 typedef fcml_ptr (*fcml_fnp_asm_instruction_chooser)( fcml_st_chooser_context *chooser_context );
 
 /* Default instruction chooser which chooses the shortest instruction available. */
-fcml_ptr fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *chooser_context );
+fcml_ptr LIB_EXPORT fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *chooser_context );
 
 /* NULL chooser which do not chose anything. */
-fcml_ptr fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *chooser_context );
+fcml_ptr LIB_EXPORT fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *chooser_context );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FCML_CHOOSER_H_ */

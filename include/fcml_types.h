@@ -28,6 +28,8 @@
 #include <inttypes.h>
 #endif
 
+#include "fcml_lib_export.h"
+
 #define FCML_TEXT(x)	x
 
 #ifdef PRId8

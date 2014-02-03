@@ -8,12 +8,18 @@
 #ifndef FCML_ASSEMBLER_H_
 #define FCML_ASSEMBLER_H_
 
+#include "fcml_lib_export.h"
+
 #include "fcml_types.h"
 #include "fcml_errors.h"
 #include "fcml_common.h"
 #include "fcml_dialect.h"
 #include "fcml_optimizers.h"
 #include "fcml_choosers.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* This structure and type definition represents an abstract assembler. */
 typedef struct fcml_st_assembler fcml_st_assembler;
@@ -79,10 +85,14 @@ typedef struct fcml_st_assembler_context {
 	fcml_st_entry_point entry_point;
 } fcml_st_assembler_context;
 
-fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler );
-fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
-void fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result );
-void fcml_fn_assembler_result_free( fcml_st_assembler_result *result );
-void fcml_fn_assembler_free( fcml_st_assembler *assembler );
+fcml_ceh_error LIB_EXPORT fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler );
+fcml_ceh_error LIB_EXPORT fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
+void LIB_EXPORT fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result );
+void LIB_EXPORT fcml_fn_assembler_result_free( fcml_st_assembler_result *result );
+void LIB_EXPORT fcml_fn_assembler_free( fcml_st_assembler *assembler );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FCML_ASSEMBLER_H_ */

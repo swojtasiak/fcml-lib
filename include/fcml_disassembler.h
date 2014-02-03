@@ -8,10 +8,16 @@
 #ifndef FCML_DISASSEMBLER_H_
 #define FCML_DISASSEMBLER_H_
 
+#include "fcml_lib_export.h"
+
 #include "fcml_types.h"
 #include "fcml_errors.h"
 #include "fcml_common.h"
 #include "fcml_dialect.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define FCML_DASM_PREFIXES_COUNT	12
 
@@ -159,10 +165,14 @@ typedef struct fcml_st_dasm_disassembler_result {
 	fcml_st_instruction instruction;
 } fcml_st_disassembler_result;
 
-fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
-fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
-void fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result );
-void fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result );
-void fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
+fcml_ceh_error LIB_EXPORT fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
+fcml_ceh_error LIB_EXPORT fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
+void LIB_EXPORT fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result );
+void LIB_EXPORT fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result );
+void LIB_EXPORT fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FCML_DISASSEMBLER_H_ */

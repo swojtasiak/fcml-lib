@@ -8,6 +8,8 @@
 #ifndef FCML_ASM_ERRORS_H_
 #define FCML_ASM_ERRORS_H_
 
+#include "fcml_lib_export.h"
+
 #include "fcml_types.h"
 
 enum fcml_en_ceh_error_globals {
