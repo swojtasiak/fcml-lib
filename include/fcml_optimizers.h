@@ -63,7 +63,7 @@ typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_asm_optimizer_context 
 #define FCML_OPTF_ALL_FORMS     0xFF
 
 /* Default optimizer implementation. */
-fcml_ceh_error LIB_EXPORT fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args );
+fcml_ceh_error LIB_CALL LIB_EXPORT fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args );
 
 #ifdef __cplusplus
 }

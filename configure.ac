@@ -10,8 +10,6 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([include/fcml_common.h])
 AC_CONFIG_HEADERS([config.h])
 
-AC_DEFINE([FCML_BUILD_LIB], [1], [Description])
-
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CC_STDC

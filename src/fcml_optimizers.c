@@ -75,7 +75,7 @@ fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_en_attribute_size_fla
 	return 0;
 }
 
-fcml_ceh_error fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
+fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 

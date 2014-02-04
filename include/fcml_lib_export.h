@@ -12,14 +12,20 @@
 #include <config.h>
 #endif
 
-#ifdef _WIN32 || __CYGWIN__
-#if FCML_BUILD_LIB
-#define LIB_EXPORT __stdcall __declspec(dllexport)
+#if _WIN32 || __CYGWIN__
+#define LIB_CALL   __stdcall
+#ifdef DLL_EXPORT
+#define LIB_EXPORT __declspec(dllexport)
 #else
-#define LIB_EXPORT __stdcall __declspec(dllimport)
+#ifdef LIBFCML_DLL_IMPORT
+#define LIB_EXPORT extern __declspec(dllimport)
 #endif
-#else
-#define LIB_EXPORT
+#endif
+#endif
+
+#ifndef LIB_EXPORT
+#define LIB_EXPORT extern
+#define LIB_CALL
 #endif
 
 #endif /* FCML_LIB_EXPORT_H_ */

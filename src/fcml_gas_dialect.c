@@ -1546,7 +1546,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_s
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
+fcml_ceh_error LIB_CALL fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1577,7 +1577,7 @@ fcml_ceh_error fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dia
 
 }
 
-void fcml_fn_gas_dialect_free(fcml_st_dialect *dialect) {
+void LIB_CALL fcml_fn_gas_dialect_free(fcml_st_dialect *dialect) {
     fcml_fn_cmn_dialect_free( dialect );
 }
 

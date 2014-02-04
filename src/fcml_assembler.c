@@ -24,7 +24,7 @@ typedef struct fcml_ist_asm_enc_assembler {
     fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_enc_assembler;
 
-fcml_ceh_error fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler ) {
+fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler ) {
 
 	/* Allocate assembler instance.*/
 	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
@@ -57,7 +57,7 @@ void fcml_ifn_asm_free_instruction_chain( fcml_st_assembled_instruction *chain )
 
 }
 
-void fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) {
+void LIB_CALL fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) {
 	if( result ) {
 		// Free errors but leave container as is.
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
@@ -68,7 +68,7 @@ void fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) {
 	}
 }
 
-void fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result ) {
+void LIB_CALL fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result ) {
 	// Clean assember result container before it's first used.
 	if( result ) {
 		fcml_fn_env_memory_clear( result, sizeof( fcml_st_assembler_result ) );
@@ -143,7 +143,7 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 	return error;
 }
 
-fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
+fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
 
 	// Sanity check.
 	if( !result || !instruction || !context ) {
@@ -162,7 +162,7 @@ fcml_ceh_error fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_
 	return error;
 }
 
-void fcml_fn_assembler_free( fcml_st_assembler *assembler ) {
+void LIB_CALL fcml_fn_assembler_free( fcml_st_assembler *assembler ) {
 
 	if( assembler ) {
 

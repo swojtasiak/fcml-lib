@@ -2040,7 +2040,7 @@ fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_prefix
  * API.
  ****************************/
 
-fcml_ceh_error fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler ) {
+fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2081,7 +2081,7 @@ void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruct
 	}
 }
 
-void fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result ) {
+void LIB_CALL fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result ) {
 	if( result ) {
 		/* Clean result container. */
 		fcml_fn_env_memory_clear( result, sizeof( fcml_st_disassembler_result ) );
@@ -2219,7 +2219,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 	return error;
 }
 
-fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result ) {
+fcml_ceh_error LIB_CALL fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result ) {
 
 	// Sanity check.
 	if( !context || !result ) {
@@ -2238,7 +2238,7 @@ fcml_ceh_error fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_
 	return error;
 }
 
-void fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result ) {
+void LIB_CALL fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result ) {
 
 	if( result ) {
 
@@ -2256,7 +2256,7 @@ void fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result ) {
 
 }
 
-void fcml_fn_disassembler_free( fcml_st_disassembler *disassembler ) {
+void LIB_CALL fcml_fn_disassembler_free( fcml_st_disassembler *disassembler ) {
 
 	fcml_ist_dasm_disassembler *dec_disasm = (fcml_ist_dasm_disassembler*)disassembler;
 	if( dec_disasm ) {

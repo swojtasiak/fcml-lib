@@ -11,11 +11,11 @@
 #include <fcml_choosers.h>
 #include "fcml_coll.h"
 
-fcml_ptr fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *context ) {
+fcml_ptr LIB_CALL fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *context ) {
     return NULL;
 }
 
-fcml_ptr fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *context ) {
+fcml_ptr LIB_CALL fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *context ) {
 	fcml_st_instruction_code instruction_code;
 	fcml_ptr instruction = context->instruction;
 	fcml_ptr *shortest = NULL;

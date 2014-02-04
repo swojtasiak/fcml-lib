@@ -85,11 +85,11 @@ typedef struct fcml_st_assembler_context {
 	fcml_st_entry_point entry_point;
 } fcml_st_assembler_context;
 
-fcml_ceh_error LIB_EXPORT fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler );
-fcml_ceh_error LIB_EXPORT fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
-void LIB_EXPORT fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result );
-void LIB_EXPORT fcml_fn_assembler_result_free( fcml_st_assembler_result *result );
-void LIB_EXPORT fcml_fn_assembler_free( fcml_st_assembler *assembler );
+fcml_ceh_error LIB_CALL LIB_EXPORT fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler );
+fcml_ceh_error LIB_CALL LIB_EXPORT fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
+void LIB_CALL LIB_EXPORT fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result );
+void LIB_CALL LIB_EXPORT fcml_fn_assembler_result_free( fcml_st_assembler_result *result );
+void LIB_CALL LIB_EXPORT fcml_fn_assembler_free( fcml_st_assembler *assembler );
 
 #ifdef __cplusplus
 }

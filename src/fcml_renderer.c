@@ -11,13 +11,13 @@
 #include "fcml_trace.h"
 #include "fcml_env.h"
 
-void fcml_fn_render_clean_buffer( fcml_char *buffer, fcml_usize buffer_len ) {
+void LIB_CALL fcml_fn_render_clean_buffer( fcml_char *buffer, fcml_usize buffer_len ) {
 	if( buffer ) {
 		fcml_fn_env_memory_clear( buffer, buffer_len );
 	}
 }
 
-fcml_ceh_error fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result, fcml_uint32_t render_flags ) {
+fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result, fcml_uint32_t render_flags ) {
 
 	fcml_st_memory_stream output_stream;
 	output_stream.base_address = buffer;

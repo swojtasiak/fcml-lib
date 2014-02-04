@@ -13,7 +13,7 @@
 #include "fcml_env.h"
 #include "fcml_trace.h"
 
-fcml_ceh_error fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result *result_out ) {
+fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result *result_out ) {
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect;
 	if( dialect_context_int->instruction_parser ) {
 		fcml_fnp_parse_instruction parser = (fcml_fnp_parse_instruction)dialect_context_int->instruction_parser;
@@ -25,7 +25,7 @@ fcml_ceh_error fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction,
 	}
 }
 
-void fcml_fn_parser_result_free( fcml_st_parser_result *result ) {
+void LIB_CALL fcml_fn_parser_result_free( fcml_st_parser_result *result ) {
 	if( result ) {
 		/* Frees parsed instruction, potential errors and warnings and result structure itself.*/
 		if( result->instruction ) {
@@ -36,7 +36,7 @@ void fcml_fn_parser_result_free( fcml_st_parser_result *result ) {
 	}
 }
 
-void fcml_fn_parser_result_prepare( fcml_st_parser_result *result ) {
+void LIB_CALL fcml_fn_parser_result_prepare( fcml_st_parser_result *result ) {
 	if( result ) {
 		result->errors.errors = NULL;
 		result->errors.last_error = NULL;
