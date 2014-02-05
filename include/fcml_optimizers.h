@@ -51,7 +51,7 @@ typedef struct fcml_st_asm_optimizer_processing_details {
 typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_ptr args );
 
 /* Function pointer declaration for optimizers. */
-typedef fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
+typedef LIB_CALL fcml_ceh_error (*fcml_fnp_asm_optimizer)( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
 
 /* Optimizers flags that can be used to configure optimization process. */
 #define FCML_OPTF_ASA_16        0x01

@@ -57,7 +57,7 @@ void fcml_str_run_assert( fcml_bool condition, fcml_string file, fcml_int line, 
 
 }
 
-fcml_bool fcml_stf_run_tests( fcml_stf_test_suite **suite ) {
+fcml_bool fcml_stf_run_tests( fcml_string test_name, fcml_stf_test_suite **suite ) {
 
 	/* Execute suites one by one.*/
 
@@ -130,6 +130,8 @@ fcml_bool fcml_stf_run_tests( fcml_stf_test_suite **suite ) {
 	}
 
 	/* Report first 100 asserts errors.*/
+
+	printf("\nTest [%s]:", test_name );
 
 	current_suite = NULL;
 	current_test = NULL;

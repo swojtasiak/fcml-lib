@@ -85,6 +85,6 @@ void fcml_str_run_assert( fcml_bool condition, fcml_string file, fcml_int line, 
 #define STF_ASSERT_STRING_EQUAL(actual, expected)		\
 	fcml_str_run_assert( (strcmp(actual,expected)==0), __FILE__, __LINE__, ("STF_ASSERT_STRING_EQUAL(" #actual "," #expected ")") )
 
-fcml_bool fcml_stf_run_tests( fcml_stf_test_suite **suite );
+fcml_bool fcml_stf_run_tests( fcml_string test_name, fcml_stf_test_suite **suite );
 
 #endif /* FCML_STF_H_ */

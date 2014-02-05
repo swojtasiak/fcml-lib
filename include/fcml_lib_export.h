@@ -18,13 +18,16 @@
 #define LIB_EXPORT __declspec(dllexport)
 #else
 #ifdef LIBFCML_DLL_IMPORT
-#define LIB_EXPORT extern __declspec(dllimport)
+#define LIB_EXPORT __declspec(dllimport)
 #endif
 #endif
 #endif
 
 #ifndef LIB_EXPORT
-#define LIB_EXPORT extern
+#define LIB_EXPORT
+#endif
+
+#ifndef LIB_CALL
 #define LIB_CALL
 #endif
 

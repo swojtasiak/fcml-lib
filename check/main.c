@@ -155,7 +155,7 @@ int main(int argc, char **argv) {
 	}
 
 	/* Run tests.*/
-	fcml_bool result = fcml_stf_run_tests( fcml_arr_suites );
+	fcml_bool result = fcml_stf_run_tests( "FCML public API tests.", fcml_arr_suites );
 
     fcml_fn_disassembler_free( disassembler_intel );
     fcml_fn_disassembler_free( disassembler_gas );
