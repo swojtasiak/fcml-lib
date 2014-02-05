@@ -22,3 +22,4 @@
 config.h.in~
 compile
 /valgrind-result.txt
+/fcml-0.0.1.tar.gz

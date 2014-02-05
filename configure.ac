@@ -52,6 +52,16 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset strtoul strtoull])
 
+AC_CANONICAL_HOST
+
+AS_CASE(
+	[$host_cpu], [i?86],
+	[AS_CASE(
+		[$host_os], [cygwin*|mingw*],
+		[LDFLAGS="-Wl,--kill-at"]
+	)]
+)
+
 # Configure DEBUG source code, if requested.
 AS_IF([test "x$debug" = xyes],
 	[AC_DEFINE([FCML_DEBUG], [1], [Define to enable FCML debug features])])
@@ -59,7 +69,10 @@ AS_IF([test "x$debug" = xyes],
 # Configuration files.
 AC_CONFIG_FILES([Makefile
                  src/Makefile
-				 check/Makefile                 
+				 check/Makefile
+				 check/stf/Makefile                 
+				 check/internal-tests/Makefile
+				 check/public-tests/Makefile
                  include/Makefile])
 
 AC_OUTPUT
