@@ -58,7 +58,7 @@ fcml_public_check_SOURCES = main.c \
 	chooser_t.c \
 	chooser_t.h 
 	
-fcml_public_check_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/check/stf
+fcml_public_check_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/check/stf @FCML_IMPORT_LIB@
 
 fcml_public_check_LDADD = $(top_srcdir)/src/libfcml.la $(top_srcdir)/check/stf/libstf.la
 

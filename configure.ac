@@ -52,16 +52,6 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset strtoul strtoull])
 
-AC_CANONICAL_HOST
-
-AS_CASE(
-	[$host_cpu], [i?86],
-	[AS_CASE(
-		[$host_os], [cygwin*|mingw*],
-		[LDFLAGS="-Wl,--kill-at"]
-	)]
-)
-
 # Configure DEBUG source code, if requested.
 AS_IF([test "x$debug" = xyes],
 	[AC_DEFINE([FCML_DEBUG], [1], [Define to enable FCML debug features])])
@@ -75,12 +65,27 @@ AC_CONFIG_FILES([Makefile
 				 check/public-tests/Makefile
                  include/Makefile])
 
+# Enable __declspec(dllimport) for linking public tests with shared DLL.
+AC_CANONICAL_HOST
+
+AS_CASE(
+	[$enable_shared], [yes],
+	[AS_CASE(
+		[$host_os], [cygwin*|mingw*],
+		[FCML_IMPORT_LIB="-DLIBFCML_DLL_IMPORT"
+			AC_SUBST([FCML_IMPORT_LIB])]
+	)]
+)
+
 AC_OUTPUT
 echo "***************************************************
 ${PACKAGE_NAME} version ${PACKAGE_VERSION}
-Prefix:........: ${prefix}
-Debug Build....: $debug
-Compiler.......: ${CC} ${CFLAGS} ${CPPFLAGS}
-Linker.........: $LD $LDFLAGS $LIBS
+Host CPU.........: $host_cpu
+Host OS:.........: $host_os
+Prefix:..........: ${prefix}
+Debug Build......: $debug
+Shared Library...: $enable_shared
+Compiler.........: ${CC} ${CFLAGS} ${CPPFLAGS}
+Linker...........: $LD $LDFLAGS $LIBS
 ***************************************************
 "
