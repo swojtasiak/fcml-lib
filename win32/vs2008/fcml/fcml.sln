@@ -8,6 +8,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fcml-check", "fcml-check\fc
 		{759BCBFA-3A75-47D2-8DF3-8440D8E9C752} = {759BCBFA-3A75-47D2-8DF3-8440D8E9C752}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{BBE0AA04-8E2A-4ECC-BB7E-3541022740EC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hsdis", "examples\hsdis\hsdis.vcproj", "{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}"
+	ProjectSection(ProjectDependencies) = postProject
+		{759BCBFA-3A75-47D2-8DF3-8440D8E9C752} = {759BCBFA-3A75-47D2-8DF3-8440D8E9C752}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug-dll|Win32 = Debug-dll|Win32
@@ -32,8 +39,19 @@ Global
 		{73008BA6-43CF-41C8-8C49-B60D8DEDC069}.Release-dll|Win32.Build.0 = Release-dll|Win32
 		{73008BA6-43CF-41C8-8C49-B60D8DEDC069}.Release-lib|Win32.ActiveCfg = Release-lib|Win32
 		{73008BA6-43CF-41C8-8C49-B60D8DEDC069}.Release-lib|Win32.Build.0 = Release-lib|Win32
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Debug-dll|Win32.ActiveCfg = Debug-dll|Win32
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Debug-dll|Win32.Build.0 = Debug-dll|Win32
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Debug-lib|Win32.ActiveCfg = Debug-lib|Win32
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Debug-lib|Win32.Build.0 = Debug-lib|Win32
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-dll|Win32.ActiveCfg = Release-dll|Win32
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-dll|Win32.Build.0 = Release-dll|Win32
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-lib|Win32.ActiveCfg = Release-lib|Win32
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-lib|Win32.Build.0 = Release-lib|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900} = {BBE0AA04-8E2A-4ECC-BB7E-3541022740EC}
 	EndGlobalSection
 EndGlobal

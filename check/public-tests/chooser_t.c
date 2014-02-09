@@ -128,7 +128,10 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             fcml_char buffer[FCML_REND_MAX_BUFF_LEN];
 
-            error = fcml_fn_render( dialect_intel, buffer, sizeof( buffer ), &dasm_result, FCML_REND_FLAG_RENDER_CODE );
+            fcml_st_render_config config = {0};
+            config.render_flags = FCML_REND_FLAG_RENDER_CODE;
+
+            error = fcml_fn_render( dialect_intel, &config, buffer, sizeof( buffer ), &dasm_result );
             if( error ) {
                 /* Free disassemblation result.*/
                 fcml_fn_disassembler_result_free( &dasm_result );

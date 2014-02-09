@@ -57,6 +57,11 @@
 #define FCML_PRI_INT32_HEX	"%08x"
 #define FCML_PRI_INT64_HEX	"%016llx"
 
+#define FCML_PRI_INT8_HEX_NO_ZEROS	"%x"
+#define FCML_PRI_INT16_HEX_NO_ZEROS	"%x"
+#define FCML_PRI_INT32_HEX_NO_ZEROS	"%x"
+#define FCML_PRI_INT64_HEX_NO_ZEROS	"%llx"
+
 typedef int fcml_int;
 typedef int fcml_bool;
 typedef __int8 fcml_int8_t;
@@ -123,6 +128,19 @@ typedef unsigned __int64 fcml_uint64_t;
 #endif
 #ifdef PRIx64
 #define FCML_PRI_INT64_HEX	"%016"PRIx64
+#endif
+
+#ifdef PRIx8
+#define FCML_PRI_INT8_HEX_NO_ZEROS	"%"PRIx8
+#endif
+#ifdef PRIx16
+#define FCML_PRI_INT16_HEX_NO_ZEROS	"%"PRIx16
+#endif
+#ifdef PRIx32
+#define FCML_PRI_INT32_HEX_NO_ZEROS	"%"PRIx32
+#endif
+#ifdef PRIx64
+#define FCML_PRI_INT64_HEX_NO_ZEROS	"%"PRIx64
 #endif
 
 typedef int fcml_int;

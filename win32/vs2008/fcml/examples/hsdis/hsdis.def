@@ -1,0 +1,3 @@
+LIBRARY	"hsdis"
+EXPORTS
+	decode_instructions		@1

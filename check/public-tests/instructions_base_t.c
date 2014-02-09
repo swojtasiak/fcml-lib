@@ -124,7 +124,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 			/* Print.*/
 			fcml_char buffer[FCML_REND_MAX_BUFF_LEN] = {0};
 
-			error = fcml_fn_render( dialect, buffer, sizeof( buffer ), &dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | rend_flags);
+			fcml_st_render_config config = {0};
+			config.render_flags = FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | rend_flags;
+
+			error = fcml_fn_render( dialect, &config, buffer, sizeof( buffer ), &dis_result );
 			if( error ) {
 				printf("Disassemblation failed, with error code: %d\n", error );
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
@@ -449,7 +452,10 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, fcml_int size, f
 		/* Print.*/
 		char buffer[FCML_REND_MAX_BUFF_LEN] = {0};
 
-		error = fcml_fn_render( dialect, buffer, sizeof( buffer ), &dis_result, FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | ren_flags );
+		fcml_st_render_config config = {0};
+		config.render_flags = FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_COND_SHOW_CARRY | FCML_REND_FLAG_HEX_DISPLACEMENT | ren_flags;
+
+		error = fcml_fn_render( dialect, &config, buffer, sizeof( buffer ), &dis_result );
 
 		if( t_flags & FCML_TSF_PRINT_ONLY ) {
 			printf("Disassembled instruction: %s Renderer error code: %d\n", buffer, error);

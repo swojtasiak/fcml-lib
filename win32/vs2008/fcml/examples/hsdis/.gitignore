@@ -1,6 +1,5 @@
-fcml.ncb
+/Debug-lib
+/hsdis.*user
 /Release-lib
 /Release-dll
-/Debug-lib
 /Debug-dll
-fcml.suo

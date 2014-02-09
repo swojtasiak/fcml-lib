@@ -11,13 +11,7 @@
 #include "fcml_trace.h"
 #include "fcml_env.h"
 
-void LIB_CALL fcml_fn_render_clean_buffer( fcml_char *buffer, fcml_usize buffer_len ) {
-	if( buffer ) {
-		fcml_fn_env_memory_clear( buffer, buffer_len );
-	}
-}
-
-fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result, fcml_uint32_t render_flags ) {
+fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result ) {
 
 	fcml_st_memory_stream output_stream;
 	output_stream.base_address = buffer;
@@ -27,7 +21,7 @@ fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buf
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect;
 	if( dialect_context_int->instruction_renderer ) {
 		fcml_fnp_render_instruction renderer = (fcml_fnp_render_instruction)dialect_context_int->instruction_renderer;
-		return renderer( dialect, &output_stream, result, render_flags );
+		return renderer( dialect, config, &output_stream, result );
 	} else {
 		/* Dialect not initialized correctly.*/
 		FCML_TRACE_MSG("Rendering not supported by current dialect.");

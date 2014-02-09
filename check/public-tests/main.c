@@ -45,10 +45,12 @@
 #include "prefixes_t.h"
 #include "segment_reg_t.h"
 #include "chooser_t.h"
+#include "render_t.h"
 
 #include "instructions_base_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
+	&fcml_si_render,
 	&fctl_si_instructions_a,
 	&fctl_si_instructions_b,
 	&fctl_si_instructions_c,

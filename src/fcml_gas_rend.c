@@ -23,7 +23,7 @@
 
 #define FCML_REND_LOCAL_BUFFER_SIZE 512
 
-fcml_string fcml_iarr_rend_utils_integer_formats_gas[4][4] = {
+fcml_string fcml_iarr_rend_utils_integer_formats_gas[6][4] = {
 	/* Signed integer values.*/
 	{FCML_PRI_INT8_DEC, FCML_PRI_INT16_DEC, FCML_PRI_INT32_DEC, FCML_PRI_INT64_DEC},
 	/* Unsigned integer values.*/
@@ -31,7 +31,11 @@ fcml_string fcml_iarr_rend_utils_integer_formats_gas[4][4] = {
 	/* Signed hex values.*/
 	{FCML_TEXT("0x") FCML_PRI_INT8_HEX, FCML_TEXT("0x") FCML_PRI_INT16_HEX, FCML_TEXT("0x") FCML_PRI_INT32_HEX, FCML_TEXT("0x") FCML_PRI_INT64_HEX},
 	/* Unsigned hex values.*/
-	{FCML_TEXT("0x") FCML_PRI_INT8_HEX, FCML_TEXT("0x") FCML_PRI_INT16_HEX, FCML_TEXT("0x") FCML_PRI_INT32_HEX, FCML_TEXT("0x") FCML_PRI_INT64_HEX}
+	{FCML_TEXT("0x") FCML_PRI_INT8_HEX, FCML_TEXT("0x") FCML_PRI_INT16_HEX, FCML_TEXT("0x") FCML_PRI_INT32_HEX, FCML_TEXT("0x") FCML_PRI_INT64_HEX},
+	/* Signed hex values without leading zeros. */
+	{FCML_TEXT("0x") FCML_PRI_INT8_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT16_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT32_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT64_HEX_NO_ZEROS},
+	/* Unsigned hex values without leading zeros. */
+	{FCML_TEXT("0x") FCML_PRI_INT8_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT16_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT32_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT64_HEX_NO_ZEROS}
 };
 
 fcml_string fcml_iarr_rend_conditional_suffixes_gas[2][16] = {
@@ -39,41 +43,7 @@ fcml_string fcml_iarr_rend_conditional_suffixes_gas[2][16] = {
 	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("nae"), FCML_TEXT("ae"), FCML_TEXT("z"), FCML_TEXT("nz"), FCML_TEXT("na"), FCML_TEXT("a"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("pe"), FCML_TEXT("po"), FCML_TEXT("nge"), FCML_TEXT("ge"), FCML_TEXT("ng"), FCML_TEXT("g") }
 };
 
-void fcml_ifn_rend_print_prefixes_gas( fcml_st_memory_stream *output_stream, fcml_st_prefixes_details *prefixes, fcml_uint32_t flags ) {
-	if( prefixes->is_xacquire ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("xacquire ") );
-	}
-	if( prefixes->is_xrelease ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("xrelease ") );
-	}
-	if( prefixes->is_lock ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("lock ") );
-	}
-	if( prefixes->is_branch ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("branch ") );
-	}
-	if( prefixes->is_nobranch ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("nobranch ") );
-	}
-	if( prefixes->is_rep ) {
-		if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_1 ) {
-			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("repe ") );
-		} else if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_2 ) {
-			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("repz ") );
-		} else {
-			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("rep ") );
-		}
-	}
-	if( prefixes->is_repne ) {
-		if( flags & FCML_REND_FLAG_REP_PREFIX_GROUP_2 ) {
-			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("repnz ") );
-		} else {
-			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("repne ") );
-		}
-	}
-}
-
-fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_gas( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
 
 	/* Do not render pseudo opcodes if shortcut is used.*/
 	if( ( operand->hints & FCML_OP_HINT_PSEUDO_OPCODE ) && result->instruction_details.is_pseudo_op_shortcut ) {
@@ -90,15 +60,15 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_gas( fcml_st_dialect_con
 
 	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("$") );
 
-	return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_IMM );
+	return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, config->render_flags & FCML_REND_FLAG_HEX_IMM, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_gas( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
 	fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(operand->reg), result->instruction_details.prefixes_details.is_rex );
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -115,12 +85,12 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 			return error;
 		}
 
-		error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE );
+		error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 
 		return error;
 	}
 
-	if( !address->segment_selector.is_default_reg || ( render_flags & FCML_REND_FLAG_RENDER_DEFAULT_SEG ) ) {
+	if( !address->segment_selector.is_default_reg || ( config->render_flags & FCML_REND_FLAG_RENDER_DEFAULT_SEG ) ) {
 		fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(address->segment_selector.segment_selector), prefixes->is_rex );
 		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(":") );
 	}
@@ -128,7 +98,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 	fcml_st_effective_address *effective_address = &(address->effective_address);
 
 	/* Adds SIB hints to all instructions where SIB presents.*/
-
+	// TODO: Wywalic, albo oddac support.
 	/*
 	if( ( render_flags & FCML_REND_FLAG_RENDER_SIB_HINT ) && ( result->instruction_details.modrm_details.sib.is_not_null ) ) {
 		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("sib ") );
@@ -150,7 +120,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 				return error;
 			}
 
-			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT );
+			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, config->render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 			if( error ) {
 				return error;
 			}
@@ -179,7 +149,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 			scale_value.size = 8;
 			scale_value.int8 = (fcml_int8_t)effective_address->scale_factor;
 
-			fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &scale_value, FCML_FALSE );
+			fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &scale_value, FCML_FALSE, FCML_FALSE );
 		}
 
 		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(")") );
@@ -197,7 +167,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 				if( error ) {
 					return error;
 				}
-				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE );
+				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 				if( !error ) {
 					fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("(") );
 					fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(fcml_reg_RIP), FCML_FALSE );
@@ -209,7 +179,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 				if( error ) {
 					return error;
 				}
-				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE );
+				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 			}
 
 		}
@@ -219,7 +189,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_dialect_conte
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_gas( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -229,7 +199,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_gas( fcml_st_dialect_c
 	integer.int16 = operand->far_pointer.segment;
 
 	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("$") );
-	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE );
+	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 
 	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(",") );
 
@@ -244,26 +214,26 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_gas( fcml_st_dialect_c
 	}
 
 	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("$") );
-	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE );
+	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_rend_print_operand_gas( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_int operand_index, fcml_uint32_t render_flags, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_print_operand_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_int operand_index, fcml_bool *do_not_render ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_operand *operand = &(result->instruction.operands[operand_index]);
 	switch( operand->type ) {
 	case FCML_EOT_IMMEDIATE:
-		error = fcml_ifn_rend_operand_renderer_immediate_gas( dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), render_flags, do_not_render );
+		error = fcml_ifn_rend_operand_renderer_immediate_gas( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
 		break;
 	case FCML_EOT_FAR_POINTER:
-		error = fcml_ifn_rend_operand_renderer_far_pointer_gas( dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), render_flags, do_not_render );
+		error = fcml_ifn_rend_operand_renderer_far_pointer_gas( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
 		break;
 	case FCML_EOT_ADDRESS:
-		error = fcml_ifn_rend_operand_renderer_address_gas( dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), render_flags, do_not_render );
+		error = fcml_ifn_rend_operand_renderer_address_gas( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
 		break;
 	case FCML_EOT_REGISTER:
-		error = fcml_ifn_rend_operand_renderer_reg_gas( dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), render_flags, do_not_render );
+		error = fcml_ifn_rend_operand_renderer_reg_gas( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
 		break;
 	case FCML_EOT_NONE:
 		break;
@@ -285,7 +255,7 @@ fcml_string fcml_ifn_rend_get_conditional_suffix_gas( fcml_int condition, fcml_u
 	return fcml_iarr_rend_conditional_suffixes_gas[group][condition];
 }
 
-fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_uint32_t render_flags ) {
+fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_context, fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result ) {
 
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect_context;
 
@@ -293,23 +263,26 @@ fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_con
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
+	fcml_uint32_t render_flags = config->render_flags;
+
 	/* Local stream.*/
 	fcml_st_memory_stream local_stream;
 	local_stream.base_address = local_buffer;
 	local_stream.size = sizeof( local_buffer );
 	local_stream.offset = 0;
 
-	/* Instruction code.*/
+	/* Instruction code. */
 	if( render_flags & FCML_REND_FLAG_RENDER_CODE ) {
-		fcml_fn_rend_utils_format_append_code( output_stream, result->instruction_details.instruction_code, result->instruction_details.instruction_size, render_flags & FCML_REND_FLAG_CODE_PADDING );
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(" ") );
+		fcml_fn_rend_utils_format_append_code( config, output_stream, result->instruction_details.instruction_code, result->instruction_details.instruction_size );
 	}
 
-	/* Instruction prefixes like LOCK.*/
-	fcml_ifn_rend_print_prefixes_gas( output_stream, &(result->instruction_details.prefixes_details), render_flags );
+	fcml_int len = 0;
+
+	/* Instruction prefixes like LOCK. */
+	len += fcml_ifn_rend_utils_print_prefixes( output_stream, &(result->instruction_details.prefixes_details), render_flags );
 
 	/* Mnemonic.*/
-	fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
+	len += fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
 
 	/* Short form, so operands should be ignored.*/
 	if( result->instruction_details.is_shortcut ) {
@@ -317,14 +290,15 @@ fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_con
 	}
 
 	/* Add all operands.*/
+	fcml_bool first_render = FCML_TRUE;
 	fcml_int i;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 		if( result->instruction.operands[i].type != FCML_EOT_NONE ) {
 			fcml_bool do_not_render = FCML_FALSE;
-			error = fcml_ifn_rend_print_operand_gas( dialect_context_int, &local_stream, result, i, render_flags, &do_not_render );
+			error = fcml_ifn_rend_print_operand_gas( config, dialect_context_int, &local_stream, result, i, &do_not_render );
 			if( !error ) {
 				if( !do_not_render ) {
-					fcml_fn_rend_utils_format_append_str( output_stream, ( i > 0 )  ? FCML_TEXT(",") : FCML_TEXT(" ") );
+					first_render = fcml_fn_rend_utils_render_operand_separator( config, output_stream, len, first_render );
 					fcml_fn_rend_utils_format_append_stream( output_stream, &local_stream );
 					fcml_fn_stream_clean( &local_stream );
 				}
