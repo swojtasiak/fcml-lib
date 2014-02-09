@@ -64,15 +64,15 @@ typedef struct fcml_st_coll_map_descriptor {
 
 typedef fcml_ptr fcml_coll_map;
 
-fcml_coll_map *fcml_fn_coll_map_alloc( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, fcml_int *error );
-fcml_coll_map *fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, float load_factor, fcml_int *error );
-void fcml_fn_coll_map_put( fcml_coll_map *map, fcml_ptr key, fcml_ptr value, fcml_int *error );
-fcml_ptr fcml_fn_coll_map_get( fcml_coll_map *map, fcml_ptr key );
-fcml_uint32_t fcml_fn_coll_map_size( fcml_coll_map *map );
-void fcml_fn_coll_map_iterate( fcml_coll_map *map, fcml_fnp_coll_map_entry_handler item_handler );
-void fcml_fn_coll_map_clear( fcml_coll_map *map );
-void fcml_fn_coll_map_remove( fcml_coll_map *map, fcml_ptr key );
-void fcml_fn_coll_map_free( fcml_coll_map *map );
+fcml_coll_map fcml_fn_coll_map_alloc( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, fcml_int *error );
+fcml_coll_map fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, float load_factor, fcml_int *error );
+void fcml_fn_coll_map_put( fcml_coll_map map, fcml_ptr key, fcml_ptr value, fcml_int *error );
+fcml_ptr fcml_fn_coll_map_get( fcml_coll_map map, fcml_ptr key );
+fcml_uint32_t fcml_fn_coll_map_size( fcml_coll_map map );
+void fcml_fn_coll_map_iterate( fcml_coll_map map, fcml_fnp_coll_map_entry_handler item_handler );
+void fcml_fn_coll_map_clear( fcml_coll_map map );
+void fcml_fn_coll_map_remove( fcml_coll_map map, fcml_ptr key );
+void fcml_fn_coll_map_free( fcml_coll_map map );
 
 /* Built-in hash code and equals implementations.*/
 

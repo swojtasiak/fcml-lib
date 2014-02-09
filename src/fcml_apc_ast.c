@@ -13,11 +13,12 @@
 #include "fcml_trace.h"
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_integer( fcml_st_ast_val_integer *integer_value ) {
-	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
+	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	fcml_st_ast_node_value *value_node = malloc( sizeof( fcml_st_ast_node_value ) );
+
+	fcml_st_ast_node_value *value_node = (fcml_st_ast_node_value*)malloc( sizeof( fcml_st_ast_node_value ) );
 	if( !value_node ) {
 		free(node);
 		return NULL;
@@ -30,11 +31,11 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_integer( fcml_st_ast_val_integer *integ
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_float( fcml_st_ast_val_float *float_value ) {
-	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
+	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	fcml_st_ast_node_value *exp_node = malloc( sizeof( fcml_st_ast_node_value ) );
+	fcml_st_ast_node_value *exp_node = (fcml_st_ast_node_value*)malloc( sizeof( fcml_st_ast_node_value ) );
 	if( !exp_node ) {
 		free(node);
 		return NULL;
@@ -50,11 +51,11 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list( fcml_st_ast_node *operand
 	fcml_st_ast_node *operand_list_node = NULL;
 	fcml_st_ast_node_operand_list *operand_list = NULL;
 	if( operand_l->type != FCML_EN_TN_OPERAND_LIST ) {
-		operand_list_node = malloc( sizeof( fcml_st_ast_node ) );
+		operand_list_node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 		if( !operand_list_node ) {
 			return NULL;
 		}
-		operand_list = malloc( sizeof( fcml_st_ast_node_operand_list ) );
+		operand_list = (fcml_st_ast_node_operand_list*)malloc( sizeof( fcml_st_ast_node_operand_list ) );
 		if( !operand_list ) {
 			free(operand_list_node);
 			return NULL;
@@ -84,11 +85,11 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list( fcml_st_ast_node *operand
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fcml_string mnemonic, fcml_usize length, fcml_hints hints, fcml_st_ast_node *operands_list ) {
-	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
+	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	fcml_st_ast_node_instruction *instruction_node = malloc( sizeof( fcml_st_ast_node_instruction ) );
+	fcml_st_ast_node_instruction *instruction_node = (fcml_st_ast_node_instruction*)malloc( sizeof( fcml_st_ast_node_instruction ) );
 	if( !instruction_node ) {
 		free(node);
 		return NULL;
@@ -108,11 +109,11 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fc
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register( fcml_st_register *reg ) {
-	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
+	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	fcml_st_ast_node_register *reg_node = malloc( sizeof( fcml_st_ast_node_register ) );
+	fcml_st_ast_node_register *reg_node = (fcml_st_ast_node_register*)malloc( sizeof( fcml_st_ast_node_register ) );
 	if( !reg_node ) {
 		free(node);
 		return NULL;
@@ -123,30 +124,30 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_register( fcml_st_register *reg ) {
 	return node;
 }
 
-fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator operator, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right ) {
-	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
+fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator op, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right ) {
+	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	fcml_st_ast_node_exp *exp_node = malloc( sizeof( fcml_st_ast_node_exp ) );
+	fcml_st_ast_node_exp *exp_node = (fcml_st_ast_node_exp*)malloc( sizeof( fcml_st_ast_node_exp ) );
 	if( !exp_node ) {
 		free(node);
 		return NULL;
 	}
 	exp_node->l = exp_left;
 	exp_node->r = exp_right;
-	exp_node->operator = operator;
+	exp_node->op = op;
 	node->type = FCML_EN_TN_EXP;
 	node->node = exp_node;
 	return node;
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer( fcml_st_ast_node *segment_selector, fcml_st_ast_node *offset ) {
-	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
+	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	fcml_st_ast_node_far_pointer *fp_node = malloc( sizeof( fcml_st_ast_node_far_pointer ) );
+	fcml_st_ast_node_far_pointer *fp_node = (fcml_st_ast_node_far_pointer*)malloc( sizeof( fcml_st_ast_node_far_pointer ) );
 	if( !fp_node ) {
 		free(node);
 		return NULL;
@@ -192,11 +193,11 @@ fcml_st_ast_node *fcml_fn_ast_set_displacemnt( fcml_st_ast_node *displacement, f
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( fcml_st_register *base, fcml_st_register *index, fcml_st_ast_val_integer *scale_factor, fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints ) {
-	fcml_st_ast_node *node = malloc( sizeof( fcml_st_ast_node ) );
+	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	fcml_st_ast_node_effective_address *ea_node = fcml_fn_env_memory_alloc_clear(sizeof( fcml_st_ast_node_effective_address ) );
+	fcml_st_ast_node_effective_address *ea_node = (fcml_st_ast_node_effective_address*)fcml_fn_env_memory_alloc_clear(sizeof( fcml_st_ast_node_effective_address ) );
 	if( !ea_node ) {
 		free(node);
 		return NULL;
@@ -233,11 +234,11 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_uminus( fcml_st_ast_node *exp ) {
 		return node;
 	}
 
-	node = malloc( sizeof( fcml_st_ast_node ) );
+	node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	uminus_node = malloc( sizeof( fcml_st_ast_node_uminus ) );
+	uminus_node = (fcml_st_ast_node_uminus*)malloc( sizeof( fcml_st_ast_node_uminus ) );
 	if( !uminus_node ) {
 		free(node);
 		return NULL;
@@ -384,8 +385,8 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 	}
 	case FCML_EN_TN_EXP: {
 		fcml_st_ast_node_exp *exp_node = (fcml_st_ast_node_exp*)exp->node;
-		fcml_st_ast_node_value lval = { 0 };
-		fcml_st_ast_node_value rval = { 0 };
+		fcml_st_ast_node_value lval = { (fcml_st_ast_value_node_type)0 };
+		fcml_st_ast_node_value rval = { (fcml_st_ast_value_node_type)0 };
 		fcml_ceh_error error;
 		error = fcml_ifn_ast_eval_exp( exp_node->l, error_container, &lval );
 		if( error ) {
@@ -401,7 +402,7 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 			result->type = FCML_EN_ET_FLOAT;
 			is_float = FCML_TRUE;
 		}
-		switch( exp_node->operator ) {
+		switch( exp_node->op ) {
 		case FCML_EN_EXN_SUB:
 			if( is_float ) {
 				result->float_value.value = fcml_ifn_ast_get_float_value( &lval ) - fcml_ifn_ast_get_float_value( &rval );
@@ -633,7 +634,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
 
 		fcml_st_integer disp_value;
 
-		error = fcml_fn_utils_int64_to_integer( value.integer_value.value, value.integer_value.is_signed, &disp_value, is_combined ? FCML_ENUSF_ALL : ( FCML_ENUSF_16 | FCML_ENUSF_32 | FCML_ENUSF_64 ) );
+		error = fcml_fn_utils_int64_to_integer( value.integer_value.value, value.integer_value.is_signed, &disp_value, is_combined ? FCML_ENUSF_ALL : (fcml_en_utils_size_flags)( FCML_ENUSF_16 | FCML_ENUSF_32 | FCML_ENUSF_64 ) );
 		if( error ) {
 		    return error;
 		}
@@ -657,7 +658,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
         effective_address->base = effective_address_node->base;
         effective_address->index = effective_address_node->index;
 
-        fcml_uint32_t scale_factor = effective_address_node->scale_factor.value;
+        fcml_uint32_t scale_factor = (fcml_uint32_t)effective_address_node->scale_factor.value;
         if( (scale_factor == 0 || scale_factor == 1 || scale_factor == 2 || scale_factor == 4 || scale_factor == 8 ) ) {
             effective_address->scale_factor = (fcml_uint8_t)scale_factor;
         } else {

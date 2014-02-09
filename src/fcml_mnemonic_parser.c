@@ -61,7 +61,7 @@ fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, f
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     /* Allocate space for new mnemonic.*/
-    fcml_st_mp_mnemonic *new_mnemonic =  fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_mp_mnemonic ) );
+    fcml_st_mp_mnemonic *new_mnemonic = (fcml_st_mp_mnemonic*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_mp_mnemonic ) );
     if( new_mnemonic == NULL ) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -192,7 +192,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
     fcml_char mnemonic_buff[FCML_IDF_MP_BUFF_LEN];
     int mnemonic_index = 0;
 
-    fcml_st_mp_mnemonic_set *mnemonics = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_mp_mnemonic_set ) );
+    fcml_st_mp_mnemonic_set *mnemonics = (fcml_st_mp_mnemonic_set*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_mp_mnemonic_set ) );
     if( !mnemonics ) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -344,7 +344,7 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemon
         fcml_st_coll_list_element *next = mnemonics->mnemonics->head;
         while( next ) {
 
-            fcml_st_mp_mnemonic *mnemonic = next->item;
+            fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)next->item;
 
         	/* Set default mnemonic only if there is no mnemonic yet. Default mnemonics can not have any attributes defined, so we do not*/
             /* need to check anything.*/

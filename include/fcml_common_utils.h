@@ -176,41 +176,41 @@ extern LIB_EXPORT fcml_st_register fcml_reg_EIP;
 extern LIB_EXPORT fcml_st_register fcml_reg_RIP;
 
 /* REG.*/
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_reg( fcml_st_register *reg );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_reg( fcml_st_register *reg );
 
 /* IMM.*/
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_unsigned_imm_8( fcml_uint8_t value );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_signed_imm_8( fcml_int8_t value );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_unsigned_imm_16( fcml_uint16_t value );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_signed_imm_16( fcml_int16_t value );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_unsigned_imm_32( fcml_uint32_t value );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_signed_imm_32( fcml_int32_t value );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_unsigned_imm_64( fcml_uint64_t value );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_8( fcml_uint8_t value );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_8( fcml_int8_t value );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_16( fcml_uint16_t value );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_16( fcml_int16_t value );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_32( fcml_uint32_t value );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_32( fcml_int32_t value );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_64( fcml_uint64_t value );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value );
 
 /* Memory addressing.*/
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_far_pointer_offset16( fcml_int16_t seg, fcml_int16_t offset );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_far_pointer_offset16( fcml_int16_t seg, fcml_int16_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
 
 /* Hints*/
-fcml_st_operand LIB_CALL LIB_EXPORT fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints );
 
 /* Some shortcuts for these who prefer to use macros instead of functions.*/
 

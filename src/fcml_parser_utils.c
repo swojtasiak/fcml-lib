@@ -11,7 +11,11 @@
 #include <errno.h>
 
 void fcml_fn_pu_parse_integer( const fcml_char *str, fcml_st_ast_val_integer *integer_value, int base ) {
+#ifdef FCML_MSCC
+	fcml_uint64_t value = _strtoui64( str, NULL, base );
+#else
 	fcml_uint64_t value = strtoull( str, NULL, base );
+#endif
 	if( errno == ERANGE ) {
 		integer_value->overflow = FCML_TRUE;
 	}
@@ -20,7 +24,8 @@ void fcml_fn_pu_parse_integer( const fcml_char *str, fcml_st_ast_val_integer *in
 }
 
 void fcml_fn_pu_parse_float( const fcml_char *str, fcml_st_ast_val_float *float_value ) {
-	float_value->value = strtof( str, NULL );
+	// TODO: Usunac, nie wspieramy aktualnie floatow.
+	//float_value->value = strtof( str, NULL );
 	float_value->overflow = ( errno == ERANGE ) ? FCML_TRUE : FCML_FALSE;
 }
 

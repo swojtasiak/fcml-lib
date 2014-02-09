@@ -15,13 +15,13 @@
 #include <fcml_disassembler.h>
 #include <fcml_assembler.h>
 
-fcml_st_dialect *dialect_intel;
-fcml_st_assembler *assembler_intel;
-fcml_st_disassembler *disassembler_intel;
+extern fcml_st_dialect *dialect_intel;
+extern fcml_st_assembler *assembler_intel;
+extern fcml_st_disassembler *disassembler_intel;
 
-fcml_st_dialect *dialect_gas;
-fcml_st_assembler *assembler_gas;
-fcml_st_disassembler *disassembler_gas;
+extern fcml_st_dialect *dialect_gas;
+extern fcml_st_assembler *assembler_gas;
+extern fcml_st_disassembler *disassembler_gas;
 
 #define FCML_TSF_SHOULD_FAIL		0x00000001
 #define FCML_TSF_SHORT				0x00000002
@@ -31,7 +31,15 @@ fcml_st_disassembler *disassembler_gas;
 #define FCML_TSF_ASM_ONLY			0x00000020
 #define FCML_TSF_GAS_DIALECT		0x00000040
 
+#ifdef FCML_MSCC
+
+int fcml_fn_test_number_of_arguments( fcml_string code );
+
+#define FCML_MI(...) 				fcml_fn_test_number_of_arguments(#__VA_ARGS__), __VA_ARGS__
+
+#else
 #define FCML_MI(...) 				( sizeof( ( fcml_uint8_t[] ) { __VA_ARGS__ } ) / sizeof( fcml_uint8_t ) ), __VA_ARGS__
+#endif
 
 #define FCML_I32_M(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT( fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_MULTI_ASM_RESULTS, 0 ) ); }
 #define FCML_A32_M(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT( fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_MULTI_ASM_RESULTS | FCML_TSF_GAS_DIALECT, 0 ) ); }
@@ -127,7 +135,7 @@ fcml_st_disassembler *disassembler_gas;
 #define FCML_A64_A_P(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_PRINT_ONLY | FCML_TSF_ASM_ONLY | FCML_TSF_GAS_DIALECT, 0); }
 #define FCML_I64_A_FAILED_P(x,...)	{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_SHOULD_FAIL | FCML_TSF_PRINT_ONLY | FCML_TSF_ASM_ONLY, 0); }
 
-fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_addr_form addr_mode, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t rend_flags );
-fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_en_addr_form addr_mode, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t ren_flags );
+fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_en_addr_form addr_mode, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t rend_flags );
+fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, fcml_int size, fcml_en_addr_form addr_mode, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t ren_flags );
 
 #endif /* INSTRUCTIONS_BASE_T_H_ */

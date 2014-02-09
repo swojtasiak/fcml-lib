@@ -23,8 +23,8 @@ extern "C" {
 /* Default combination of configuration flags.*/
 #define FCML_GAS_DIALECT_CF_DEFAULT                       0
 
-fcml_ceh_error LIB_CALL LIB_EXPORT fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dialect **dialect );
-void LIB_CALL LIB_EXPORT fcml_fn_gas_dialect_free(fcml_st_dialect *dialect);
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dialect **dialect );
+LIB_EXPORT void LIB_CALL fcml_fn_gas_dialect_free(fcml_st_dialect *dialect);
 
 #ifdef __cplusplus
 }

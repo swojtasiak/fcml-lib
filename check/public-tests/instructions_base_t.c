@@ -16,13 +16,27 @@
 #include <fcml_renderer.h>
 #include <fcml_parser.h>
 
-extern fcml_st_assembler *assembler_intel;
-extern fcml_st_disassembler *disassembler_intel;
-extern fcml_st_dialect *dialect_intel;
+fcml_st_assembler *assembler_intel;
+fcml_st_disassembler *disassembler_intel;
+fcml_st_dialect *dialect_intel;
 
-extern fcml_st_assembler *assembler_gas;
-extern fcml_st_disassembler *disassembler_gas;
-extern fcml_st_dialect *dialect_gas;
+fcml_st_assembler *assembler_gas;
+fcml_st_disassembler *disassembler_gas;
+fcml_st_dialect *dialect_gas;
+
+#ifdef FCML_MSCC
+
+int fcml_fn_test_number_of_arguments( fcml_string code ) {
+	int count = 1;
+	for( int i = 0; code[i] != '\0'; i++ ) {
+		if( code[i] == ',' ) {
+			count++;
+		}
+	}
+	return count;
+}
+
+#endif
 
 void fcml_ifn_ts_set_ip( fcml_st_instruction_pointer *ip, fcml_en_addr_form addr_form ) {
 	switch( addr_form ) {
@@ -36,7 +50,7 @@ void fcml_ifn_ts_set_ip( fcml_st_instruction_pointer *ip, fcml_en_addr_form addr
 	}
 }
 
-fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_addr_form addr_form, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t rend_flags ) {
+fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_en_addr_form addr_form, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t rend_flags ) {
 
 	fcml_st_assembler *assembler = assembler_intel;
 	fcml_st_disassembler *disassembler = disassembler_intel;
@@ -131,11 +145,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 				}
 				fcml_fn_disassembler_result_free( &dis_result );
 				return success;
-			} else {
-				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
-					STF_ASSERT(FCML_TRUE);
-				}
-			}
+			} 
 
 			if( t_flags & FCML_TSF_SHOULD_FAIL ) {
 				printf("Should fail: %s\n", mnemonic);
@@ -294,13 +304,13 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 #else
                         printf( "Original code : " );
 #endif
-                        int i;
+                        fcml_int i;
                         for( i = 0; i < size; i++ ) {
                             printf( FCML_PRI_INT8_HEX, code[i] );
                         }
 
                         printf( "\nAssembled code: " );
-                        for( i = 0; i < assembled_instruction->code_length; i++ ) {
+                        for( i = 0; i < (fcml_int)assembled_instruction->code_length; i++ ) {
                             printf( FCML_PRI_INT8_HEX, assembled_instruction->code[i] );
                         }
 
@@ -398,7 +408,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, int size, fcml_en_add
 	return success;
 }
 
-fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, int size, fcml_en_addr_form addr_form, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t ren_flags ) {
+fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, fcml_int size, fcml_en_addr_form addr_form, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t ren_flags ) {
 
 	fcml_bool success = FCML_TRUE;
 

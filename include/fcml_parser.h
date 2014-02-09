@@ -26,9 +26,9 @@ typedef struct fcml_st_parser_result {
 	fcml_st_instruction *instruction;
 } fcml_st_parser_result;
 
-fcml_ceh_error LIB_CALL LIB_EXPORT fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result *result );
-void LIB_CALL LIB_EXPORT fcml_fn_parser_result_prepare( fcml_st_parser_result *result );
-void LIB_CALL LIB_EXPORT fcml_fn_parser_result_free( fcml_st_parser_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_parser_result_prepare( fcml_st_parser_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_parser_result_free( fcml_st_parser_result *result );
 
 #ifdef __cplusplus
 }

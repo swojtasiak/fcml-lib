@@ -38,8 +38,8 @@ extern "C" {
 
 #define RCML_REND_DEFAULT_FLAGS		0
 
-void LIB_CALL LIB_EXPORT fcml_fn_render_clean_buffer( fcml_char *buffer, fcml_usize buffer_len );
-fcml_ceh_error LIB_CALL LIB_EXPORT fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
+LIB_EXPORT void LIB_CALL fcml_fn_render_clean_buffer( fcml_char *buffer, fcml_usize buffer_len );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result, fcml_uint32_t render_flags );
 
 #ifdef __cplusplus
 }

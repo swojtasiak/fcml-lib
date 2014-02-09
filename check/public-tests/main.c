@@ -49,7 +49,6 @@
 #include "instructions_base_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
-	&fcml_si_error_handling,
 	&fctl_si_instructions_a,
 	&fctl_si_instructions_b,
 	&fctl_si_instructions_c,
@@ -72,6 +71,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fctl_si_instructions_v,
 	&fctl_si_instructions_w,
 	&fctl_si_instructions_x,
+	&fcml_si_error_handling,
 	&fcml_si_hints,
 	&fcml_si_chooser,
 	&fcml_si_prefixes,
@@ -82,6 +82,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 int main(int argc, char **argv) {
 
 	fcml_ceh_error error;
+	fcml_bool result = FCML_TRUE;
 
  	error = fcml_fn_intel_dialect_init( FCML_INTEL_DIALECT_CF_DEFAULT, &dialect_intel );
 	if( error ) {
@@ -138,7 +139,7 @@ int main(int argc, char **argv) {
 	}
 
 	/* Run tests.*/
-	fcml_bool result = fcml_stf_run_tests( "FCML public API tests.", fcml_arr_suites );
+	result = fcml_stf_run_tests( "FCML public API tests.", fcml_arr_suites );
 
     fcml_fn_disassembler_free( disassembler_intel );
     fcml_fn_disassembler_free( disassembler_gas );

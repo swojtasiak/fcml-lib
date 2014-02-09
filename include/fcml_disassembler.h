@@ -165,11 +165,11 @@ typedef struct fcml_st_dasm_disassembler_result {
 	fcml_st_instruction instruction;
 } fcml_st_disassembler_result;
 
-fcml_ceh_error LIB_CALL LIB_EXPORT fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
-fcml_ceh_error LIB_CALL LIB_EXPORT fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
-void LIB_CALL LIB_EXPORT fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result );
-void LIB_CALL LIB_EXPORT fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result );
-void LIB_CALL LIB_EXPORT fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
 
 #ifdef __cplusplus
 }

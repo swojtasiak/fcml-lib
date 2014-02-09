@@ -98,7 +98,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm( fcml_uint32_t encoded_addr_mode
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_r( fcml_uint32_t encoded_addr_mode ) {
 	fcml_sf_def_tma_r *r_args = (fcml_sf_def_tma_r*)fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_r));
 	if( r_args ) {
-		r_args->reg_type =  encoded_addr_mode & 0x0000000F;
+		r_args->reg_type = (fcml_en_register)(encoded_addr_mode & 0x0000000F);
 		r_args->encoded_register_operand_size = (encoded_addr_mode & 0x00000FF0) >> 4;
 	}
 	return r_args;
@@ -165,13 +165,13 @@ fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t
 		fcml_en_access_mode access_mode = FCML_AM_ACCESS_MODE_UNDEFINED;
 		if( encoded_addr_mode & FCML_OA_W ) {
 			/* Destination operands for some instructions can be also a source operands. In such case "READ" dlag has to be set for such operands.*/
-			access_mode |= FCML_AM_WRITE;
+			access_mode = (fcml_en_access_mode)((int)access_mode | (int)FCML_AM_WRITE);
 			if( encoded_addr_mode & FCML_OA_R ) {
-				access_mode |= FCML_AM_READ;
+				access_mode = (fcml_en_access_mode)((int)access_mode | (int)FCML_AM_READ);
 			}
 		} else {
 			/* All operands but destination ones have access mode automatically set to "READ".*/
-			access_mode |= FCML_AM_READ;
+			access_mode = (fcml_en_access_mode)((int)access_mode | (int)FCML_AM_READ);
 		}
 
 		addr_mode->access_mode = access_mode;

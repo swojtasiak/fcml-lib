@@ -8,7 +8,6 @@
 #include "fcml_rend_utils.h"
 
 #include <ctype.h>
-#include <inttypes.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -43,7 +42,7 @@ void fcml_fn_rend_utils_format_append_hex_byte( fcml_st_memory_stream *stream, f
 	fcml_fn_rend_utils_format_printf( stream, FCML_PRI_INT8_HEX, hex_byte );
 }
 
-void fcml_fn_rend_utils_format_append_code( fcml_st_memory_stream *stream, fcml_uint8_t *instrunction_code, fcml_uint8_t instruction_code_size, fcml_bool is_padding ) {
+void fcml_fn_rend_utils_format_append_code( fcml_st_memory_stream *stream, fcml_uint8_t *instrunction_code, fcml_data_size instruction_code_size, fcml_bool is_padding ) {
 	fcml_int i;
 	for( i = 0; i < instruction_code_size; i++ ) {
 		fcml_fn_rend_utils_format_append_hex_byte( stream, instrunction_code[i] );
@@ -90,7 +89,7 @@ void fcml_fn_rend_utils_format_append_stream( fcml_st_memory_stream *destination
 	}
 	fcml_int destination_size = destination_stream->size - destination_stream->offset;
 	fcml_int n = ( destination_size < source_stream->offset ) ? destination_size : source_stream->offset;
-	strncpy( &(((fcml_char*)destination_stream->base_address)[destination_stream->offset]), source_stream->base_address, n );
+	strncpy( (fcml_string)&(((fcml_char*)destination_stream->base_address)[destination_stream->offset]), (fcml_string)source_stream->base_address, n );
 	destination_stream->offset += n;
 }
 
@@ -107,16 +106,32 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[4]
 
 	switch( integer->size ) {
 	case 8:
+#ifdef FCML_MSCC
+		_snprintf( local_buffer, sizeof( local_buffer ), format[0], (fcml_uint8_t)integer->int8 );
+#else
 		snprintf( local_buffer, sizeof( local_buffer ), format[0], (fcml_uint8_t)integer->int8 );
+#endif
 		break;
 	case 16:
+#ifdef FCML_MSCC
+		_snprintf( local_buffer, sizeof( local_buffer ), format[1], (fcml_uint16_t)integer->int16 );
+#else
 		snprintf( local_buffer, sizeof( local_buffer ), format[1], (fcml_uint16_t)integer->int16 );
+#endif
 		break;
 	case 32:
+#ifdef FCML_MSCC
+		_snprintf( local_buffer, sizeof( local_buffer ), format[2], (fcml_uint32_t)integer->int32 );
+#else
 		snprintf( local_buffer, sizeof( local_buffer ), format[2], (fcml_uint32_t)integer->int32 );
+#endif
 		break;
 	case 64:
+#ifdef FCML_MSCC
+		_snprintf( local_buffer, sizeof( local_buffer ), format[3], (fcml_uint64_t)integer->int64 );
+#else
 		snprintf( local_buffer, sizeof( local_buffer ), format[3], (fcml_uint64_t)integer->int64 );
+#endif
 		break;
 	default:
 		return FCML_CEH_GEC_INVALID_INPUT;

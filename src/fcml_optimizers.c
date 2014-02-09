@@ -14,7 +14,7 @@
 #include "fcml_trace.h"
 
 typedef struct fcml_ist_asm_opt_optimization_path_element {
-    fcml_en_attribute_size_flag flags;
+    fcml_flags flags;
 	fcml_data_size attribute_size;
 } fcml_ist_asm_opt_optimization_path_element;
 
@@ -56,7 +56,7 @@ fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_64_bit_optimization
 	{ FCML_EN_ASF_16, FCML_DS_16 }
 };
 
-fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_en_attribute_size_flag flags, fcml_int path_length, fcml_ist_asm_opt_optimization_path_element *path, fcml_data_size *attribute_dest ) {
+fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_flags flags, fcml_int path_length, fcml_ist_asm_opt_optimization_path_element *path, fcml_data_size *attribute_dest ) {
 	int i, count = 0;
 	for( i = 0; i < path_length; i++ ) {
 		fcml_ist_asm_opt_optimization_path_element *element = &(path[i]);
@@ -67,7 +67,7 @@ fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_en_attribute_si
 	return count;
 }
 
-fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_en_attribute_size_flag flags, fcml_uint16_t opt_flags, fcml_data_size attribute_size, fcml_data_size *attribute_dest ) {
+fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_flags flags, fcml_uint16_t opt_flags, fcml_data_size attribute_size, fcml_data_size *attribute_dest ) {
 	if( ( flags & opt_flags ) || ( flags == FCML_EN_ASF_ANY ) ) {
 		*attribute_dest = attribute_size;
 		return 1;
@@ -103,7 +103,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
     } else {
     	/* Maybe user has already forced any address size attribute to be chosen?*/
     	fcml_data_size attr_size = 0;
-    	fcml_en_attribute_size_flag attr_size_flag = 0;
+    	fcml_flags attr_size_flag = 0;
 		switch( opt_flags & 0x000F ) {
 		case FCML_OPTF_ASA_16:
 			attr_size = FCML_DS_16;
@@ -131,7 +131,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
 	} else {
 		/* Maybe user has already forced any address size attribute to be chosen?*/
 		fcml_data_size attr_size = 0;
-		fcml_en_attribute_size_flag attr_size_flag = 0;
+		fcml_flags attr_size_flag = 0;
 		switch( opt_flags & 0x00F0 ) {
 		case FCML_OPTF_OSA_16:
 			attr_size = FCML_DS_16;

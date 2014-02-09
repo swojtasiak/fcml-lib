@@ -271,15 +271,10 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 				/* disp32 or RIP*/
 
-				fcml_bool choose_rip = context->choose_rip_encoding && context->addr_form == FCML_AF_64_BIT;
+				fcml_bool choose_rip = context->choose_rip_encoding && ( context->addr_form == FCML_AF_64_BIT );
 
 				if( address->address_form != FCML_AF_OFFSET ) {
 					choose_rip = FCML_FALSE;
-				}
-
-				if( address->address_form == FCML_AF_OFFSET && !context->addr_form == FCML_AF_64_BIT ) {
-					/* User chooses address displacement, but RIP addressing can not be used.*/
-					return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 				}
 
 				if( choose_rip ) {
@@ -588,7 +583,7 @@ fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, f
 	return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_en_attribute_size_flag *effective_address_size ) {
+fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_flags *effective_address_size ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -597,7 +592,7 @@ fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_mod
 	const fcml_st_address *address = &(decoded_modrm->address);
     const fcml_st_effective_address *effective_address = &(address->effective_address);
 
-    fcml_en_attribute_size_flag easa;
+    fcml_flags easa;
 
 	fcml_st_register reg;
 	if( effective_address->base.type ) {

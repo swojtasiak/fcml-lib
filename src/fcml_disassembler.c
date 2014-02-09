@@ -368,7 +368,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg( fcml_ist_dasm_decodin
 
 	operand->type = FCML_EOT_REGISTER;
 	operand->reg.reg = reg_args->reg_num;
-	operand->reg.type = reg_args->reg_type;
+	operand->reg.type = (fcml_en_register)reg_args->reg_type;
 	operand->reg.size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, reg_args->encoded_reg_size );
 
 	return FCML_CEH_GEC_NO_ERROR;
@@ -413,7 +413,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_opcode_reg( fcml_ist_dasm_decoding_
 
 	/* Base register.*/
 	reg->size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, reg_args->encoded_reg_size );
-	reg->type = reg_args->reg_type;
+	reg->type = (fcml_en_register)reg_args->reg_type;
 	reg->reg = reg_num;
 
 	return FCML_CEH_GEC_NO_ERROR;
@@ -637,7 +637,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 
 		operand->type = FCML_EOT_REGISTER;
 		operand->reg.reg = decoded_modrm->reg.value;
-		operand->reg.type = rm_args->reg_type;
+		operand->reg.type = (fcml_en_register)rm_args->reg_type;
 		operand->reg.size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, rm_args->encoded_register_operand_size );
 
 		fcml_ifn_dasm_utils_set_x64_exp( &(operand->reg), context->prefixes.is_rex );
@@ -736,7 +736,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_vex_vvvv( fcml_ist_dasm_decoding_co
 	fcml_st_register *reg = &(operand_wrapper->operand.reg);
 
 	reg->reg = context->prefixes.vvvv;
-	reg->type = v_args->reg_type;
+	reg->type = (fcml_en_register)v_args->reg_type;
 	reg->size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, v_args->encoded_register_size );
 
 	return error;
@@ -1243,7 +1243,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain( fcml_st_def_addr_mode
 	while( *factory ) {
 		fcml_ifp_dasm_instruction_acceptor acceptor = (*factory)( addr_mode_desc );
 		if( acceptor ) {
-			fcml_ist_dasm_addr_mode_acceptor_chain *chain_element = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_addr_mode_acceptor_chain ) );
+			fcml_ist_dasm_addr_mode_acceptor_chain *chain_element = (fcml_ist_dasm_addr_mode_acceptor_chain*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_addr_mode_acceptor_chain ) );
 			if( !chain_element ) {
 				/* Free already allocated chain.*/
 				if( chain_root ) {
@@ -1310,7 +1310,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	/* Prepare instruction decoding structure.*/
-	fcml_ist_dasm_instruction_decoding_def *decoding = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_instruction_decoding_def ) );
+	fcml_ist_dasm_instruction_decoding_def *decoding = (fcml_ist_dasm_instruction_decoding_def*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_instruction_decoding_def ) );
 	if( !decoding ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
@@ -1493,7 +1493,7 @@ void fcml_ifn_dasm_decode_opcode_fields( fcml_ist_dasm_decoding_context *decodin
 	if( FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN( instruction_decoding_def->opcode_flags ) ) {
 		fcml_uint8_t condition = primary_opcode_byte & 0x0F;
 		decoding_context->is_conditional = FCML_TRUE;
-		decoding_context->condition.condition_type = ( condition >> 1 );
+		decoding_context->condition.condition_type = (fcml_en_condition_type)( condition >> 1 );
 		decoding_context->condition.is_negation = primary_opcode_byte & 0x01;
 	} else {
 		decoding_context->is_conditional = FCML_FALSE;
@@ -1768,7 +1768,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_st_prefixes_details *prefixes_details = &(decoding_context->prefixes);
 
 	fcml_uint16_t p_flags = 0;
-	fcml_st_prefix_types prefix_type = 0;
+	fcml_st_prefix_types prefix_type = FCML_PT_GROUP_UNKNOWN;
 	fcml_int prefix_index = 0;
 	fcml_int prefix_size = 0;
 	fcml_int xop_vex_prefix_size = 0;
@@ -1903,7 +1903,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 								/* XOP is encoded like 3 bytes VEX prefix.*/
 							case 0xC4:
 								if( prefix_type == FCML_PT_XOP && FCML_VEX_MMMM( prefix_details->vex_xop_bytes[0] ) < 0x08 ) {
-									prefix_type = 0;
+									prefix_type = FCML_PT_GROUP_UNKNOWN;
 									break;
 								}
 								prefixes_details->r = FCML_VEX_R(prefix_details->vex_xop_bytes[0]);
@@ -1930,7 +1930,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 							}
 
 							if( addr_form == FCML_AF_32_BIT && prefixes_details->vvvv > 7 ) {
-								prefix_type = 0;
+								prefix_type = FCML_PT_GROUP_UNKNOWN;
 							}
 
 							prefixes_details->vex_xop_first_byte = prefix;
@@ -2044,7 +2044,7 @@ fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcm
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_ist_dasm_disassembler *int_disasm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_disassembler ) );
+	fcml_ist_dasm_disassembler *int_disasm = (fcml_ist_dasm_disassembler*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_disassembler ) );
 	if( int_disasm ) {
 
 		int_disasm->dialect_context = (fcml_st_dialect_context_int*)dialect;

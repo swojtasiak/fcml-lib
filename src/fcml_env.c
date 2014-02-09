@@ -54,7 +54,7 @@ void fcml_fn_env_memory_clear( fcml_ptr src, fcml_usize len ) {
 }
 
 fcml_bool fcml_fn_env_memory_cmp( const fcml_ptr src1, const fcml_ptr src2, fcml_usize len ) {
-    return strncmp( src1, src2, len ) == 0 ? FCML_TRUE : FCML_FALSE;
+    return strncmp( (char *)src1, (char *)src2, len ) == 0 ? FCML_TRUE : FCML_FALSE;
 }
 
 void fcml_fn_env_memory_free( fcml_ptr ptr ) {
@@ -62,7 +62,7 @@ void fcml_fn_env_memory_free( fcml_ptr ptr ) {
 }
 
 fcml_string fcml_fn_env_str_strldup( const fcml_string str, fcml_usize size ) {
-	fcml_string new_str = fcml_fn_env_memory_alloc( size + 1 );
+	fcml_string new_str = (fcml_string)fcml_fn_env_memory_alloc( size + 1 );
 	if( new_str ) {
 		memcpy( new_str, str, size );
 		new_str[size] = '\0';
@@ -75,7 +75,7 @@ fcml_usize fcml_fn_env_str_strlen( const fcml_string str ) {
 }
 
 void fcml_fn_env_str_strcpy( fcml_string dst, const fcml_string src ) {
-    strcpy( dst, src );
+	strcpy( dst, src );
 }
 
 fcml_bool fcml_fn_env_str_strcmp( const fcml_string src1, const fcml_string src2 ) {
@@ -88,7 +88,7 @@ void fcml_fn_env_str_strncpy( fcml_string dst, const fcml_string src, fcml_usize
 
 fcml_string fcml_fn_env_str_strdup( const fcml_string str ) {
 	fcml_usize size = strlen( str ) + 1;
-	fcml_string new_str = fcml_fn_env_memory_alloc( size );
+	fcml_string new_str = (fcml_string)fcml_fn_env_memory_alloc( size );
 	if( new_str ) {
 		memcpy( new_str, str, size );
 	}

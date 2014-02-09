@@ -10,6 +10,7 @@
 #include <stddef.h>
 
 #include <fcml_errors.h>
+
 #include "fcml_dialect_int.h"
 #include "fcml_encoding.h"
 #include "fcml_env.h"
@@ -27,7 +28,7 @@ typedef struct fcml_ist_asm_enc_assembler {
 fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler ) {
 
 	/* Allocate assembler instance.*/
-	fcml_ist_asm_enc_assembler *enc_asm = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
+	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
 	if( !enc_asm ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}

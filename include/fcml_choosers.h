@@ -34,13 +34,13 @@ typedef struct fcml_st_chooser_context {
 } fcml_st_chooser_context;
 
 /* Chooser function declaration. */
-typedef LIB_CALL fcml_ptr (*fcml_fnp_asm_instruction_chooser)( fcml_st_chooser_context *chooser_context );
+typedef fcml_ptr (LIB_CALL *fcml_fnp_asm_instruction_chooser)( fcml_st_chooser_context *chooser_context );
 
 /* Default instruction chooser which chooses the shortest instruction available. */
-fcml_ptr LIB_CALL LIB_EXPORT fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *chooser_context );
+fcml_ptr LIB_EXPORT LIB_CALL fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *chooser_context );
 
 /* NULL chooser which do not chose anything. */
-fcml_ptr LIB_CALL LIB_EXPORT fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *chooser_context );
+fcml_ptr LIB_EXPORT LIB_CALL fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *chooser_context );
 
 #ifdef __cplusplus
 }

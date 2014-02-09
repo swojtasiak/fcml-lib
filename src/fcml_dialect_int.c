@@ -21,7 +21,7 @@ fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_
         return fcml_fn_asm_dialect_alloc_mnemonic( mnemonic );
     }
 
-    fcml_st_mp_mnemonic *new_mnemonic = fcml_fn_env_memory_alloc( sizeof( fcml_st_mp_mnemonic ) );
+    fcml_st_mp_mnemonic *new_mnemonic = (fcml_st_mp_mnemonic*)fcml_fn_env_memory_alloc( sizeof( fcml_st_mp_mnemonic ) );
     if( !new_mnemonic ) {
         /* Out of memory.*/
         return NULL;
@@ -47,7 +47,7 @@ fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_
 
 fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
 
-    fcml_st_mp_mnemonic *new_mnemonic = fcml_fn_env_memory_alloc( sizeof( fcml_st_mp_mnemonic ) );
+    fcml_st_mp_mnemonic *new_mnemonic = (fcml_st_mp_mnemonic*)fcml_fn_env_memory_alloc( sizeof( fcml_st_mp_mnemonic ) );
     if( !new_mnemonic ) {
         /* Out of memory.*/
         return NULL;
@@ -80,7 +80,7 @@ fcml_ceh_error fcml_fn_asm_dialect_alloc_mnemonic_lookup( fcml_st_dialect_contex
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_st_dialect_context_int *dialect_context = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dialect_context_int ) );
+    fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dialect_context_int ) );
     if( !dialect_context ) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }

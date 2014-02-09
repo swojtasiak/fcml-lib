@@ -142,7 +142,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib( fcml_st_modrm_decoder_context *context
     fcml_st_effective_address *effective_address = &(address->effective_address);
 
 	/* Effective address size affects index register.*/
-	fcml_uint8_t effective_address_size = context->effective_address_size;
+	fcml_data_size effective_address_size = context->effective_address_size;
 
 	/* ModR/M fields.*/
 	fcml_uint8_t f_base;
@@ -216,7 +216,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *con
 	fcml_uint8_t f_mod;
 	fcml_uint8_t f_rm;
 
-	fcml_uint8_t effective_address_size = context->effective_address_size;
+	fcml_data_size effective_address_size = context->effective_address_size;
 
 	/* Gets ModR/M byte from stream.*/
 	fcml_bool result;

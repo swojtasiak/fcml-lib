@@ -77,8 +77,8 @@ typedef fcml_data_size (*fcml_ifp_asm_memory_data_size_calculator)( fcml_st_inst
 
 typedef struct fcml_ist_asm_addr_mode_desc_details {
 	/* Precalculated flags describing which ASA and OSA values are available for addressing mode.*/
-    fcml_en_attribute_size_flag allowed_osa;
-    fcml_en_attribute_size_flag allowed_asa;
+    fcml_flags allowed_osa;
+    fcml_flags allowed_asa;
 	fcml_bool is_conditional;
 	fcml_st_condition condition;
 	fcml_ifp_asm_memory_data_size_calculator ds_calculator;
@@ -99,9 +99,6 @@ typedef struct fcml_ist_asm_part_processor_context {
 } fcml_ist_asm_part_processor_context;
 
 typedef struct fcml_ist_asm_encoding_context {
-#ifdef FCML_DEBUG
-	int __def_index;
-#endif
 	fcml_st_assembler_context *assembler_context;
 	fcml_st_instruction *instruction;
 	fcml_st_asm_encoder_result *result;
@@ -130,6 +127,9 @@ typedef struct fcml_ist_asm_encoding_context {
 	fcml_st_ceh_error_container *error_container;
 	/* Number of lastly proceeded instruction part processor. */
 	fcml_int last_ipp;
+#ifdef FCML_DEBUG
+	int __def_index;
+#endif
 } fcml_ist_asm_encoding_context;
 
 struct fcml_ist_asm_instruction_part;
@@ -229,7 +229,7 @@ typedef struct fcml_ist_asm_instruction_addr_mode_encoding_details {
 
 fcml_char fcml_idarr_asm_data_attr_flags_buff[64];
 
-fcml_string fcml_idfn_asm_print_attr_size_flags( fcml_en_attribute_size_flag flags ) {
+fcml_string fcml_idfn_asm_print_attr_size_flags( fcml_flags flags ) {
 	int index = 0;
 	if( flags == FCML_EN_ASF_ANY ) {
 		sprintf( fcml_idarr_asm_data_attr_flags_buff, "ANY" );
@@ -324,9 +324,9 @@ void fcml_ifn_asm_clean_context( fcml_ist_asm_encoding_context *context ) {
 	data_size_flags->eosa = FCML_DS_UNDEF;
 	data_size_flags->l.is_not_null = FCML_FALSE;
 	data_size_flags->l.value = 0;
-	data_size_flags->allowed_easa.flags = 0;
+	data_size_flags->allowed_easa.flags = FCML_EN_ASF_ANY;
 	data_size_flags->allowed_easa.is_set = FCML_FALSE;
-	data_size_flags->allowed_eosa.flags = 0;
+	data_size_flags->allowed_eosa.flags = FCML_EN_ASF_ANY;
 	data_size_flags->allowed_eosa.is_set = FCML_FALSE;
 	/* Clears segment override set by acceptor functions.*/
 	context->segment_override.reg = 0;
@@ -499,7 +499,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 		}
 		if( effective_address_size ) {
 			if( flags->easa && effective_address_size != flags->easa ) {
-				FCML_TRACE( "Wrong encoded EASA size. Expected %d got %d.", flags->easa, easa );
+				FCML_TRACE( "Wrong encoded EASA size. Expected %d got %d.", flags->easa, effective_address_size );
 				error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
 			} else {
 				flags->easa = effective_address_size;
@@ -510,7 +510,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size( fcml_ist_asm_encoding_c
 		}
 		if( effective_operand_size ) {
 			if( flags->eosa && effective_operand_size != flags->eosa ) {
-				FCML_TRACE( "Wrong encoded EOSA size. Expected %d got %d.", flags->eosa, eosa );
+				FCML_TRACE( "Wrong encoded EOSA size. Expected %d got %d.", flags->eosa, effective_operand_size );
 				error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
 			} else {
 				flags->eosa = effective_operand_size;
@@ -535,7 +535,7 @@ fcml_bool fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *contex
         return FCML_FALSE;
     }
 
-    fcml_en_attribute_size_flag flags = context->optimizer_processing_details.allowed_eosa.flags;
+    fcml_flags flags = context->optimizer_processing_details.allowed_eosa.flags;
 
     switch( entry_point->addr_form ) {
     case FCML_AF_16_BIT:
@@ -575,7 +575,7 @@ fcml_bool fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *contex
     return result;
 }
 
-fcml_bool fcml_ifn_asm_set_size_flag( fcml_st_nullable_size_flags *nullable_flags, fcml_en_attribute_size_flag flags ) {
+fcml_bool fcml_ifn_asm_set_size_flag( fcml_st_nullable_size_flags *nullable_flags, fcml_flags flags ) {
 	if( nullable_flags->is_set ) {
 		if( ( nullable_flags->flags & flags ) == 0 ) {
 			/* We need flags that weren't allowed by previous operands or IPPs.*/
@@ -621,8 +621,8 @@ fcml_ceh_error fcml_ifn_asm_accept_segment_register( fcml_ist_asm_encoding_conte
 fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_uint8_t encoded_operand_size, fcml_data_size operand_size, enum fcml_ien_asm_comparator_type comparator ) {
 	fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
 	fcml_st_asm_optimizer_processing_details *data_size_flags = &(context->optimizer_processing_details);
-	fcml_en_attribute_size_flag osa_flags = FCML_EN_ASF_ANY;
-	fcml_en_attribute_size_flag asa_flags = FCML_EN_ASF_ANY;
+	fcml_flags osa_flags = FCML_EN_ASF_ANY;
+	fcml_flags asa_flags = FCML_EN_ASF_ANY;
 	fcml_bool result = FCML_TRUE;
 	if( ( operand_size == FCML_OS_UNDEFINED ) && FCML_IS_EOS_OPT( encoded_operand_size ) ) {
 		/* If operand size is optional, we do not need to accept it.*/
@@ -645,7 +645,7 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 			result = ( ( operand_size == FCML_DS_32 ) || ( operand_size == FCML_DS_64 ) );
 		}
 		if( result ) {
-			asa_flags = operand_size / FCML_ASM_FCF;
+			asa_flags = (operand_size / FCML_ASM_FCF);
 		}
 		break;
 	case FCML_EOS_EOSA:
@@ -655,7 +655,7 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 			result = ( ( operand_size == FCML_DS_16 ) || ( operand_size == FCML_DS_32 ) || ( operand_size == FCML_DS_64 ) );
 		}
 		if( result ) {
-			osa_flags = operand_size / FCML_ASM_FCF;
+			osa_flags = (operand_size / FCML_ASM_FCF);
 		}
 		break;
 	case FCML_EOS_14_28:
@@ -728,7 +728,7 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
  * Operand encoders.
  *********************************/
 
-fcml_bool fcml_ifn_asm_try_to_convert_integer_and_set_flag( const fcml_st_integer *source, fcml_st_integer *destination, fcml_data_size expected_size, fcml_data_size size, fcml_en_attribute_size_flag flag, fcml_en_attribute_size_flag *flags ) {
+fcml_bool fcml_ifn_asm_try_to_convert_integer_and_set_flag( const fcml_st_integer *source, fcml_st_integer *destination, fcml_data_size expected_size, fcml_data_size size, fcml_flags flag, fcml_flags *flags ) {
 
     /* We expect signed integers here, but of course user is not forced to provide values that match expected size. In such cases values are converted to*/
     /* appropriate size using sign set by user. Anyway sometimes user is not able to guess if values are signed or not in given context.*/
@@ -758,7 +758,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
 
 		fcml_st_integer destination = {0};
 
-		fcml_en_attribute_size_flag flags = 0;
+		fcml_flags flags = 0;
 
 		fcml_sf_def_tma_imm *args = (fcml_sf_def_tma_imm*)addr_mode->addr_mode_args;
 		fcml_uint8_t imm_size = args->encoded_imm_size;
@@ -767,7 +767,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
 		fcml_en_addr_form addr_form = context->assembler_context->entry_point.addr_form;
 		fcml_bool is_convertable = FCML_FALSE;
 
-		fcml_en_attribute_size_flag osa_flags = context->optimizer_processing_details.allowed_eosa.flags;
+		fcml_flags osa_flags = context->optimizer_processing_details.allowed_eosa.flags;
 		if( !osa_flags ) {
 			osa_flags = FCML_EN_ASF_ALL;
 		}
@@ -949,7 +949,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_proces
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_immediate_dis_relative( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def, fcml_ist_asm_instruction_part *operand_enc ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if ( ( operand_def->type == FCML_EOT_IMMEDIATE ) || ( operand_def->type == FCML_EOT_ADDRESS && operand_def->address.address_form == FCML_AF_OFFSET ) ) {
-        fcml_en_attribute_size_flag flags = 0;
+        fcml_flags flags = 0;
 	    if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
             /* 64 bit OSA forced. Just in case, addressing mode acceptor is responsible for interpreting FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA*/
 	        /* flag and forcing appropriate OSA size.*/
@@ -1293,7 +1293,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_segment_relative_offset( fcml_ist_a
         }
 
         fcml_bool is_convertable = FCML_FALSE;
-        fcml_en_attribute_size_flag flags = FCML_EN_ASF_ANY;
+        fcml_flags flags = FCML_EN_ASF_ANY;
         fcml_st_integer source_address = {0}, converted_address = {0};
 
         /* Convert IMM value to address.*/
@@ -1454,7 +1454,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
                     fcml_st_modrm mod_rm = {0};
                     mod_rm.address = operand_def->address;
 
-                    fcml_en_attribute_size_flag esa;
+                    fcml_flags esa;
                     fcml_fn_modrm_calculate_effective_address_size( &mod_rm, &esa );
 
                     if( ( esa & FCML_EN_ASF_16 ) && addr_form != FCML_AF_64_BIT ) {
@@ -1891,7 +1891,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction( fcml_ist_asm_encoding_context 
 		}
 
 		/* Allocate memory block for assembled code.*/
-		fcml_st_assembled_instruction *asm_inst = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_assembled_instruction ) );
+		fcml_st_assembled_instruction *asm_inst = (fcml_st_assembled_instruction*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_assembled_instruction ) );
 		if( !asm_inst ) {
 			error = FCML_CEH_GEC_NO_ERROR;
 		} else {
@@ -1988,7 +1988,7 @@ fcml_bool fcml_ifn_asm_accept_instruction_hints( fcml_hints addr_mode_dest_hints
 }
 
 void fcml_ifn_asm_set_attribute_size_flag_for_size( fcml_data_size attribute_size, fcml_st_nullable_size_flags *flags ) {
-    fcml_en_attribute_size_flag flag = 0;
+    fcml_flags flag = 0;
     switch( attribute_size ) {
     case FCML_DS_16:
         flag = FCML_EN_ASF_16;
@@ -2161,7 +2161,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *a
 	fcml_st_instruction tmp_instruction = *instruction;
 
 	/* Container for errors related to addressing mode processing. */
-	fcml_ist_asm_addr_mode_error addr_mode_errors = {0};
+	fcml_ist_asm_addr_mode_error addr_mode_errors = {FCML_AMPP_UNDEFINED};
 
 	fcml_ist_asm_encoding_context context = {0};
 	context.assembler_context = asm_context;
@@ -2402,7 +2402,7 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 
 	fcml_ist_asm_instruction_part_processor_descriptor descriptor = {0};
 
-	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = fcml_fn_env_memory_alloc_clear( sizeof( struct fcml_ist_asm_operand_encoder_wrapper_args ) );
+	struct fcml_ist_asm_operand_encoder_wrapper_args *wrapper_args = (struct fcml_ist_asm_operand_encoder_wrapper_args*)fcml_fn_env_memory_alloc_clear( sizeof( struct fcml_ist_asm_operand_encoder_wrapper_args ) );
 	if( !wrapper_args ) {
 		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
 		return descriptor;
@@ -3392,7 +3392,7 @@ fcml_ist_asm_instruction_part_processor_chain* fcml_ifn_asm_instruction_part_pro
 				}
 
 				/* Allocate chain element for new instruction part encoder.*/
-				fcml_ist_asm_instruction_part_processor_chain *new_chain = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_instruction_part_processor_chain ) );
+				fcml_ist_asm_instruction_part_processor_chain *new_chain = (fcml_ist_asm_instruction_part_processor_chain*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_instruction_part_processor_chain ) );
 				if( !new_chain ) {
 					*error = FCML_CEH_GEC_OUT_OF_MEMORY;
 					fcml_ifn_asm_free_part_processor_chain( chain );
@@ -3501,7 +3501,7 @@ fcml_ceh_error fcml_ifn_asm_prepare_mem_data_size_calculator( fcml_st_def_addr_m
 	}
 
 	if( mem_index != -1 && reg_index != -1 ) {
-		fcml_ist_asm_def_data_size_calc_args *args = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_def_data_size_calc_args ) );
+		fcml_ist_asm_def_data_size_calc_args *args = (fcml_ist_asm_def_data_size_calc_args*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_def_data_size_calc_args ) );
 		if( !args ) {
 			return FCML_CEH_GEC_OUT_OF_MEMORY;
 		}
@@ -3526,8 +3526,8 @@ fcml_ceh_error fcml_ifn_asm_precalculate_addr_mode( fcml_st_def_addr_mode_desc *
 
 	/* Calculate OSA and ASA flags.*/
 
-	fcml_en_attribute_size_flag osa_flags = FCML_EN_ASF_ANY;
-	fcml_en_attribute_size_flag asa_flags = FCML_EN_ASF_ANY;
+	fcml_flags osa_flags = FCML_EN_ASF_ANY;
+	fcml_flags asa_flags = FCML_EN_ASF_ANY;
 
 	if( !( addr_mode_desc->instruction_group & FCML_AMT_SIMD ) ) {
 		if( FCML_DEF_PREFIX_W_1( allowed_prefixes ) ) {
@@ -3540,7 +3540,7 @@ fcml_ceh_error fcml_ifn_asm_precalculate_addr_mode( fcml_st_def_addr_mode_desc *
 	}
 
 	if( FCML_DEF_OPCODE_FLAGS_IS_EOSA_RESTRICTION( opcode_flags ) ) {
-		fcml_en_attribute_size_flag osa_restriction_flags = FCML_EN_ASF_ANY;
+		fcml_flags osa_restriction_flags = FCML_EN_ASF_ANY;
 		if( FCML_DEF_OPCODE_FLAGS_EOSA_16( opcode_flags ) ) {
 			osa_restriction_flags |= FCML_EN_ASF_16;
 		}
@@ -3554,7 +3554,7 @@ fcml_ceh_error fcml_ifn_asm_precalculate_addr_mode( fcml_st_def_addr_mode_desc *
 	}
 
 	if( FCML_DEF_OPCODE_FLAGS_IS_EASA_RESTRICTION( opcode_flags ) ) {
-		fcml_en_attribute_size_flag asa_restriction_flags = FCML_EN_ASF_ANY;
+		fcml_flags asa_restriction_flags = FCML_EN_ASF_ANY;
 		if( FCML_DEF_OPCODE_FLAGS_EASA_16( opcode_flags ) ) {
 			asa_restriction_flags |= FCML_EN_ASF_16;
 		}
@@ -3653,7 +3653,7 @@ fcml_ceh_error fcml_ifn_asm_conditional_instruction_addr_mode_encoding_details_b
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details = &(addr_mode->addr_mode_details);
         addr_mode_details->is_conditional = FCML_TRUE;
         addr_mode_details->condition.is_negation = ( i % 2 == 1 );
-        addr_mode_details->condition.condition_type = i / 2;
+        addr_mode_details->condition.condition_type = (fcml_en_condition_type)( i / 2 );
 
         int instruction_parts;
 
@@ -3754,7 +3754,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
         if( !addr_modes ) {
 
             /* Allocate space for new mnemonic.*/
-            addr_modes = fcml_fn_env_memory_alloc( sizeof(fcml_st_asm_instruction_addr_modes) );
+            addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_env_memory_alloc( sizeof(fcml_st_asm_instruction_addr_modes) );
             if( addr_modes ) {
 
                 /* Allocate list for addressing modes.*/
@@ -3793,7 +3793,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
             if( is_cloned ) {
 
                 /* Clone encoding details for secondary mnemonics.*/
-                fcml_ist_asm_instruction_addr_mode_encoding_details *clone_addr_mode_enc_details = fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_instruction_addr_mode_encoding_details ) );
+                fcml_ist_asm_instruction_addr_mode_encoding_details *clone_addr_mode_enc_details = (fcml_ist_asm_instruction_addr_mode_encoding_details*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_instruction_addr_mode_encoding_details ) );
                 if( clone_addr_mode_enc_details ) {
                     *clone_addr_mode_enc_details = *addr_mode_encoding_details;
                     clone_addr_mode_enc_details->is_cloned = FCML_TRUE;

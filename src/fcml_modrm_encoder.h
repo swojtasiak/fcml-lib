@@ -58,6 +58,6 @@ typedef struct fcml_st_modrm_encoder_context {
 
 fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm );
 fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, fcml_uint64_t rip, fcml_uint8_t instruction_size, const fcml_st_encoded_modrm *encoded_modrm );
-fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_en_attribute_size_flag *effective_address_size );
+fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_flags *effective_address_size );
 
 #endif /* FCML_MODRM_ENCODER_H_ */

@@ -129,7 +129,11 @@ fcml_ceh_error fcml_ifn_rend_size_operator_intel( fcml_data_size size_operator, 
         size_operator_printable = is_media_instruction ? FCML_TEXT("ymmword ptr ") : FCML_TEXT("qqword ");
         break;
     default:
+#ifdef FCML_MSCC
+		_snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
+#else
         snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
+#endif
     }
 
     if( size_operator_printable ) {

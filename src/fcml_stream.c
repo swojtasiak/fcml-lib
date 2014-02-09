@@ -71,7 +71,7 @@ int fcml_fn_stream_read_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer , 
     }
     fcml_uint8_t *destination_buffer = (fcml_uint8_t*)buffer;
     fcml_uint8_t *source_buffer = (fcml_uint8_t*)stream->base_address;
-    int i = 0;
+    fcml_usize i = 0;
     while( stream->offset < stream->size && i < size ) {
         destination_buffer[i++] = source_buffer[stream->offset++];
     }
@@ -84,7 +84,7 @@ int fcml_fn_stream_write_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer ,
     }
     fcml_uint8_t *source_buffer = (fcml_uint8_t*)buffer;
     fcml_uint8_t *destination_buffer = (fcml_uint8_t*)stream->base_address;
-    int i = 0;
+    fcml_usize i = 0;
     while( stream->offset < stream->size && i < size ) {
         destination_buffer[stream->offset++] = source_buffer[i++];
     }
@@ -171,7 +171,7 @@ fcml_bool fcml_fn_stream_write_qword( fcml_st_memory_stream *stream, fcml_uint64
        int offset = stream->offset;
        fcml_uint8_t *buffer = (fcml_uint8_t*)stream->base_address;
        for( i = 0; i < sizeof(fcml_uint64_t); i++ ) {
-           buffer[offset + i] = data >> ( i << 3 );
+           buffer[offset + i] = (fcml_uint8_t)( data >> ( i << 3 ) );
        }
        stream->offset += sizeof(fcml_uint64_t);
        result = FCML_TRUE;

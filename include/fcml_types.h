@@ -10,7 +10,7 @@
 
 /* If config.h is available, we depend on it; otherwise we give
  * the responsibility to handle headers appropriately to the compiler runtime.
- * */
+ **/
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #ifdef HAVE_STDDEF_H
@@ -23,14 +23,68 @@
 #include <inttypes.h>
 #endif
 #else
+#if defined(_MSC_VER) && defined(_WIN32)
+#include <windows.h>
+#define FCML_MSCC
+/* Disable unit specific lexer features. */
+#define YY_NO_INPUT 1
+#define YY_NO_UNISTD_H 1
+#else
 #include <stddef.h>
 #include <stdint.h>
 #include <inttypes.h>
+#endif
 #endif
 
 #include "fcml_lib_export.h"
 
 #define FCML_TEXT(x)	x
+
+#ifdef FCML_MSCC
+
+#define FCML_PRI_INT8_DEC	"%d"
+#define FCML_PRI_INT16_DEC	"%d"
+#define FCML_PRI_INT32_DEC	"%d"
+#define FCML_PRI_INT64_DEC	"%lld"
+
+#define FCML_PRI_UINT8_DEC	"%u"
+#define FCML_PRI_UINT16_DEC	"%u"
+#define FCML_PRI_UINT32_DEC	"%u"
+#define FCML_PRI_UINT64_DEC	"%llu"
+
+#define FCML_PRI_INT8_HEX	"%02x"
+#define FCML_PRI_INT16_HEX	"%04x"
+#define FCML_PRI_INT32_HEX	"%08x"
+#define FCML_PRI_INT64_HEX	"%016llx"
+
+typedef int fcml_int;
+typedef int fcml_bool;
+typedef __int8 fcml_int8_t;
+typedef unsigned __int8 fcml_uint8_t;
+typedef __int16 fcml_int16_t;
+typedef unsigned __int16 fcml_uint16_t;
+typedef __int32 fcml_int32_t;
+typedef unsigned __int32 fcml_uint32_t;
+typedef __int64 fcml_int64_t;
+typedef unsigned __int64 fcml_uint64_t;
+
+/* Signed integers. */
+#define FCML_INT64_MAX	_I64_MAX
+#define FCML_INT64_MIN	_I64_MIN
+#define FCML_INT32_MAX	INT_MAX
+#define FCML_INT32_MIN	INT_MIN
+#define FCML_INT16_MAX	SHRT_MAX
+#define FCML_INT16_MIN	SHRT_MIN
+#define FCML_INT8_MAX	SCHAR_MAX
+#define FCML_INT8_MIN	SCHAR_MIN
+
+/* Unsigned integers. */
+#define FCML_UINT8_MAX	UCHAR_MAX
+#define FCML_UINT16_MAX	USHRT_MAX
+#define FCML_UINT32_MAX	UINT_MAX
+#define FCML_UINT64_MAX	_UI64_MAX
+
+#else
 
 #ifdef PRId8
 #define FCML_PRI_INT8_DEC	"%"PRId8
@@ -82,18 +136,6 @@ typedef uint32_t fcml_uint32_t;
 typedef int64_t fcml_int64_t;
 typedef uint64_t fcml_uint64_t;
 
-typedef char fcml_char;
-typedef char* fcml_string;
-typedef float fcml_float;
-typedef fcml_uint16_t fcml_data_size;
-typedef void* fcml_ptr;
-
-typedef unsigned int fcml_usize;
-typedef int fcml_size;
-
-#define FCML_TRUE		1
-#define FCML_FALSE		0
-
 /* Signed integers. */
 #define FCML_INT64_MAX	INT64_MAX
 #define FCML_INT64_MIN	INT64_MIN
@@ -109,6 +151,21 @@ typedef int fcml_size;
 #define FCML_UINT16_MAX	UINT16_MAX
 #define FCML_UINT32_MAX	UINT32_MAX
 #define FCML_UINT64_MAX	UINT64_MAX
+
+#endif
+
+typedef char fcml_char;
+typedef char* fcml_string;
+typedef float fcml_float;
+typedef fcml_uint16_t fcml_data_size;
+typedef void* fcml_ptr;
+typedef fcml_uint32_t fcml_flags;
+
+typedef unsigned int fcml_usize;
+typedef int fcml_size;
+
+#define FCML_TRUE		1
+#define FCML_FALSE		0
 
 /* Macro for bit manipulations. */
 

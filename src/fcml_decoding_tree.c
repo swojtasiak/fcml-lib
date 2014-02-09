@@ -180,7 +180,7 @@ void fcml_ifn_dt_dts_free_instruction_decoding_element_handler( fcml_ptr item_va
 fcml_ceh_error fcml_fn_dt_dts_tree_init( fcml_st_dialect_context_int *dialect_context, fcml_st_dt_decoding_tree **tree, fcml_fp_dt_prepare_instruction_decoding_callback prepare_callback, fcml_fp_dt_dispose_instruction_decoding_callback dispose_callback ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_dt_decoding_tree *dec_tree = fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dt_decoding_tree ) );
+	fcml_st_dt_decoding_tree *dec_tree = (fcml_st_dt_decoding_tree*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_dt_decoding_tree ) );
 	if( dec_tree ) {
 		dec_tree->dialect_context = dialect_context;
 		dec_tree->prepare_callback = prepare_callback;

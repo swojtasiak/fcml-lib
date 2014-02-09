@@ -742,7 +742,7 @@ void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_err
 			current = current->next_error;
 		}
 
-		if( !fcml_fn_ceh_add_error( error_container, fcml_fn_msg_get_message( code ), code, FCML_EN_CEH_EL_ERROR ) ) {
+		if( !fcml_fn_ceh_add_error( error_container, fcml_fn_msg_get_message( (fcml_en_msg_message_code)code ), code, FCML_EN_CEH_EL_ERROR ) ) {
 			FCML_TRACE_MSG( "Out of memory, can not allocate space for error info." );
 		}
 
