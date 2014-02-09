@@ -28,7 +28,7 @@ void LIB_CALL_STF fcml_str_run_assert( fcml_bool condition, fcml_string file, fc
 	if( !condition ) {
 
 		/* Assert failed, so allocate and save some information about this event.*/
-		fcml_stf_result_element *element = malloc( sizeof( fcml_stf_result_element ) );
+		fcml_stf_result_element *element = (fcml_stf_result_element*)malloc( sizeof( fcml_stf_result_element ) );
 		if( !element ) {
 			printf("Can not allocate memory for assert result.");
 			return;
