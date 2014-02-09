@@ -517,6 +517,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\check\public-tests\render_t.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\check\public-tests\render_t.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\check\public-tests\segment_reg_t.c"
 				>
 			</File>
