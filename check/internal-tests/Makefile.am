@@ -48,6 +48,7 @@ nodist_fcml_internal_check_SOURCES = ../../src/fcml_intel_lexer.h \
 	../../src/fcml_def.c \
 	../../src/fcml_def_enc.c \
 	../../src/fcml_def.h \
+	../../src/fcml_dialect.c \
 	../../src/fcml_dialect_int.c \
 	../../src/fcml_dialect_int.h \
 	../../src/fcml_disassembler.c \

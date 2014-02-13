@@ -1211,7 +1211,7 @@ fcml_ceh_error fcml_fnp_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
     return error;
 }
 
-fcml_ceh_error LIB_CALL fcml_fn_intel_dialect_init( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
+fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1231,6 +1231,7 @@ fcml_ceh_error LIB_CALL fcml_fn_intel_dialect_init( fcml_uint32_t config_flags, 
     dialect_context_intel->instruction_renderer = &fcml_fn_rend_render_instruction_intel;
     dialect_context_intel->instruction_parser = &fcml_intel_parse;
     dialect_context_intel->get_register = &fcml_fnp_asm_dialect_get_register_intel;
+    dialect_context_intel->free_dialect = &fcml_fn_cmn_dialect_free;
     dialect_context_intel->assembler_preprocessor = NULL;
     dialect_context_intel->disassembler_postprocessor = NULL;
 
@@ -1238,8 +1239,4 @@ fcml_ceh_error LIB_CALL fcml_fn_intel_dialect_init( fcml_uint32_t config_flags, 
 
     return error;
 
-}
-
-void LIB_CALL fcml_fn_intel_dialect_free( fcml_st_dialect *dialect ) {
-    fcml_fn_cmn_dialect_free( dialect );
 }

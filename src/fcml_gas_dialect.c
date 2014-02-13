@@ -1546,7 +1546,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_s
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error LIB_CALL fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
+fcml_ceh_error LIB_CALL fcml_fn_dialect_init_gas( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1565,6 +1565,7 @@ fcml_ceh_error LIB_CALL fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fc
     dialect_context_gas->free_mnemonic = &fcml_ifn_asm_dialect_free_mnemonic_gas;
     dialect_context_gas->instruction_renderer = &fcml_fn_rend_render_instruction_gas;
     dialect_context_gas->instruction_parser = &fcml_gas_parse;
+    dialect_context_gas->free_dialect = &fcml_fn_cmn_dialect_free;
     /* This method should be available in renderer, but having it here can be useful in the future.*/
     dialect_context_gas->get_register = &fcml_ifn_asm_dialect_get_register_gas;
     dialect_context_gas->assembler_preprocessor = &fcml_ifn_asm_dialect_assembler_preprocessor_gas;
@@ -1577,7 +1578,5 @@ fcml_ceh_error LIB_CALL fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fc
 
 }
 
-void LIB_CALL fcml_fn_gas_dialect_free(fcml_st_dialect *dialect) {
-    fcml_fn_cmn_dialect_free( dialect );
-}
+
 

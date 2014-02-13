@@ -86,14 +86,14 @@ int main(int argc, char **argv) {
 	fcml_ceh_error error;
 	fcml_bool result = FCML_TRUE;
 
- 	error = fcml_fn_intel_dialect_init( FCML_INTEL_DIALECT_CF_DEFAULT, &dialect_intel );
+ 	error = fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT, &dialect_intel );
 	if( error ) {
 		exit(1);
 	}
 
-	error = fcml_fn_gas_dialect_init( FCML_GAS_DIALECT_CF_DEFAULT, &dialect_gas );
+	error = fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT, &dialect_gas );
 	if( error ) {
-		fcml_fn_intel_dialect_free( dialect_intel );
+		fcml_fn_dialect_free( dialect_intel );
 		exit(1);
 	}
 
@@ -102,8 +102,8 @@ int main(int argc, char **argv) {
 
 	error = fcml_fn_assembler_init( dialect_intel, &assembler_intel );
 	if( error ) {
-		fcml_fn_intel_dialect_free( dialect_intel );
-		fcml_fn_gas_dialect_free( dialect_gas );
+		fcml_fn_dialect_free( dialect_intel );
+		fcml_fn_dialect_free( dialect_gas );
 		printf("Can not initialize INTEL assembler.\n");
 		exit(1);
 	}
@@ -111,8 +111,8 @@ int main(int argc, char **argv) {
 	error = fcml_fn_assembler_init( dialect_gas, &assembler_gas );
 	if( error ) {
 		fcml_fn_assembler_free( assembler_intel );
-		fcml_fn_intel_dialect_free( dialect_intel );
-		fcml_fn_gas_dialect_free( dialect_gas );
+		fcml_fn_dialect_free( dialect_intel );
+		fcml_fn_dialect_free( dialect_gas );
 		printf("Can not initialize AT&T assembler.\n");
 		exit(1);
 	}
@@ -122,8 +122,8 @@ int main(int argc, char **argv) {
 		/* Error.*/
 		fcml_fn_assembler_free( assembler_intel );
 		fcml_fn_assembler_free( assembler_gas );
-		fcml_fn_intel_dialect_free( dialect_intel );
-		fcml_fn_gas_dialect_free( dialect_gas );
+		fcml_fn_dialect_free( dialect_intel );
+		fcml_fn_dialect_free( dialect_gas );
 		printf( "Can not allocate INTEL disassembler.\n" );
 		exit(1);
 	}
@@ -134,8 +134,8 @@ int main(int argc, char **argv) {
 		fcml_fn_disassembler_free( disassembler_intel );
 		fcml_fn_assembler_free( assembler_intel );
 		fcml_fn_assembler_free( assembler_gas );
-		fcml_fn_intel_dialect_free( dialect_intel );
-		fcml_fn_gas_dialect_free( dialect_gas );
+		fcml_fn_dialect_free( dialect_intel );
+		fcml_fn_dialect_free( dialect_gas );
 		printf( "Can not allocate AT&T disassembler.\n" );
 		exit(1);
 	}
@@ -147,8 +147,8 @@ int main(int argc, char **argv) {
     fcml_fn_disassembler_free( disassembler_gas );
     fcml_fn_assembler_free( assembler_intel );
     fcml_fn_assembler_free( assembler_gas );
-    fcml_fn_intel_dialect_free( dialect_intel );
-    fcml_fn_gas_dialect_free( dialect_gas );
+    fcml_fn_dialect_free( dialect_intel );
+    fcml_fn_dialect_free( dialect_gas );
 
     exit( result ? 0 : 1 );
 }

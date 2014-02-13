@@ -19,11 +19,11 @@
 fcml_st_dialect *internal_dialect_intel = NULL;
 
 void fcml_tf_parser_suite_init(void) {
-	fcml_fn_intel_dialect_init( FCML_INTEL_DIALECT_CF_DEFAULT, &internal_dialect_intel );
+	fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT, &internal_dialect_intel );
 }
 
 void fcml_tf_parser_suite_cleanup(void) {
-    fcml_fn_intel_dialect_free( internal_dialect_intel );
+    fcml_fn_dialect_free( internal_dialect_intel );
 }
 
 void fcml_tf_parser_int_parse_test1(void) {

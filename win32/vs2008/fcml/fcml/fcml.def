@@ -1,5 +1,8 @@
 LIBRARY	"fcml"
 EXPORTS
+    fcml_fn_dialect_init_gas
+    fcml_fn_dialect_init_intel
+    fcml_fn_dialect_free
     fcml_fn_assemble
     fcml_fn_assembler_free
     fcml_fn_assembler_init
@@ -10,10 +13,6 @@ EXPORTS
     fcml_fn_disassembler_init
     fcml_fn_disassembler_result_free
     fcml_fn_disassembler_result_prepare
-    fcml_fn_gas_dialect_free
-    fcml_fn_gas_dialect_init
-    fcml_fn_intel_dialect_free
-    fcml_fn_intel_dialect_init
     fcml_fn_parse
     fcml_fn_parser_result_free
     fcml_fn_parser_result_prepare

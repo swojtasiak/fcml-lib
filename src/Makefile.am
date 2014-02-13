@@ -30,6 +30,7 @@ libfcml_la_SOURCES = fcml_intel_lexer.l \
 	fcml_def.c \
 	fcml_def_enc.c \
 	fcml_def.h \
+	fcml_dialect.c \
 	fcml_dialect_int.c \
 	fcml_dialect_int.h \
 	fcml_disassembler.c \

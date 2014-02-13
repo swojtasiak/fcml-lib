@@ -39,7 +39,8 @@ typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_register)( const fcml_st_regis
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_assembler_preprocessor)( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed );
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_disassembler_postprocessor)( const fcml_st_mp_mnemonic *mnemonic, fcml_st_disassembler_result *disassembler_result );
 typedef fcml_ceh_error (*fcml_fnp_parse_instruction)( fcml_st_dialect *dialect, fcml_string instruction, fcml_st_parser_result *result_out );
-typedef fcml_ceh_error (*fcml_fnp_render_instruction)( fcml_st_dialect *dialect_context, fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result );
+typedef fcml_ceh_error (*fcml_fnp_render_instruction)( fcml_st_dialect *dialect, fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result );
+typedef void (*fcml_fnp_asm_dialect_free)( fcml_st_dialect *dialect );
 
 /* Internal representation of dialect context.*/
 typedef struct fcml_st_dialect_context_int {
@@ -51,6 +52,7 @@ typedef struct fcml_st_dialect_context_int {
     fcml_fnp_asm_dialect_get_register get_register;
     fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor;
     fcml_fnp_asm_dialect_prepare_disassembler_postprocessor disassembler_postprocessor;
+    fcml_fnp_asm_dialect_free free_dialect;
     fcml_fnp_render_instruction instruction_renderer;
     fcml_fnp_parse_instruction instruction_parser;
     fcml_uint32_t config_flags;

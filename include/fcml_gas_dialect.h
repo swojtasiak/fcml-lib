@@ -17,16 +17,15 @@
 extern "C" {
 #endif
 
-/* Disables "SystemV/386 SVR3.2" compatibility for the non-commutative arithmetic floating point operations with two register operands.*/
+/* Disables "SystemV/386 SVR3.2" compatibility for the non-commutative
+ * arithmetic floating point operations with two register operands.
+ */
 #define FCML_GAS_DIALECT_CF_SYSV_SVR32_INCOMPATIBLE       0x00000001
 
-/* Default combination of configuration flags.*/
+/* Default combination of configuration flags. */
 #define FCML_GAS_DIALECT_CF_DEFAULT                       0
 
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_gas_dialect_init( fcml_uint32_t config_flags, fcml_st_dialect **dialect );
-// TODO: Free zrobic bardziej niezalezne, przykladowo moze byc funckja do zwalniania
-// trzymana w dialekcie i wyorszystywana przez generyczna metode free
-LIB_EXPORT void LIB_CALL fcml_fn_gas_dialect_free(fcml_st_dialect *dialect);
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_dialect_init_gas( fcml_uint32_t config_flags, fcml_st_dialect **dialect );
 
 #ifdef __cplusplus
 }

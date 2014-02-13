@@ -27,12 +27,12 @@
 fcml_st_dialect *internal_dialect_gas = NULL;
 
 void fcml_tf_gas_parser_suite_init(void) {
-	fcml_fn_gas_dialect_init( FCML_GAS_DIALECT_CF_DEFAULT, &internal_dialect_gas );
+	fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT, &internal_dialect_gas );
 }
 
 void fcml_tf_gas_parser_suite_cleanup(void) {
     if( internal_dialect_gas ) {
-        fcml_fn_gas_dialect_free( internal_dialect_gas );
+        fcml_fn_dialect_free( internal_dialect_gas );
     }
 }
 
