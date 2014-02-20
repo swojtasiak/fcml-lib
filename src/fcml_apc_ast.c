@@ -124,21 +124,72 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_register( fcml_st_register *reg ) {
 	return node;
 }
 
-fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator op, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right ) {
-	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
+fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol( fcml_parser_ip ip, fcml_string symbol_name, fcml_usize length ) {
+
+	fcml_st_symbol *symbol = (fcml_st_symbol*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_symbol ) );
+	if( !symbol ) {
+		return FCML_FALSE;
+	}
+
+	/* Allocate symbol. */
+	symbol->symbol = (fcml_string)fcml_fn_env_str_strldup( symbol_name, length );
+	if( !symbol->symbol ) {
+		fcml_fn_env_memory_free( symbol );
+		return NULL;
+	}
+
+	symbol->value = (fcml_int64_t)ip;
+
+	return symbol;
+}
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol( fcml_string symbol_name, fcml_usize length ) {
+
+	fcml_st_ast_node *node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	fcml_st_ast_node_exp *exp_node = (fcml_st_ast_node_exp*)malloc( sizeof( fcml_st_ast_node_exp ) );
-	if( !exp_node ) {
-		free(node);
+
+	fcml_st_ast_node_use_symbol *symbol_node = (fcml_st_ast_node_use_symbol*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_ast_node_use_symbol ) );
+	if( !symbol_node ) {
+		fcml_fn_env_memory_free( node );
 		return NULL;
 	}
+
+	/* Allocate symbol name. */
+	symbol_node->symbol = (fcml_string)fcml_fn_env_str_strldup( symbol_name, length );
+	if( !symbol_node->symbol ) {
+		fcml_fn_env_memory_free( symbol_node );
+		fcml_fn_env_memory_free( node );
+		return NULL;
+	}
+
+	node->node = symbol_name;
+	node->type = FCML_EN_TN_USE_SYMBOL;
+
+	return node;
+}
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator op, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right ) {
+
+	fcml_st_ast_node *node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_ast_node ) );
+	if( !node ) {
+		return NULL;
+	}
+
+	fcml_st_ast_node_exp *exp_node = (fcml_st_ast_node_exp*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_ast_node_exp ) );
+	if( !exp_node ) {
+		fcml_fn_env_memory_free(node);
+		return NULL;
+	}
+
 	exp_node->l = exp_left;
 	exp_node->r = exp_right;
 	exp_node->op = op;
+
 	node->type = FCML_EN_TN_EXP;
 	node->node = exp_node;
+
 	return node;
 }
 
@@ -234,11 +285,11 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_uminus( fcml_st_ast_node *exp ) {
 		return node;
 	}
 
-	node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
+	node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_ast_node ) );
 	if( !node ) {
 		return NULL;
 	}
-	uminus_node = (fcml_st_ast_node_uminus*)malloc( sizeof( fcml_st_ast_node_uminus ) );
+	uminus_node = (fcml_st_ast_node_uminus*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_ast_node_uminus ) );
 	if( !uminus_node ) {
 		free(node);
 		return NULL;

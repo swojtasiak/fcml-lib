@@ -75,6 +75,8 @@ enum fcml_en_ceh_message_errors {
 	FCML_CEH_MEC_ERROR_INVALID_SYNTAX = 1008,
 	/* Wrong register type used in place of segment register. */
 	FCML_CEH_MEC_ERROR_INVALID_REGISTER_TYPE_SEG = 1009,
+	/* Symbol is already defined in parser's symbol table. */
+	FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED = 1010,
 };
 
 enum fcml_en_ceh_message_warnings {

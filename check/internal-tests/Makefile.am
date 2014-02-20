@@ -82,6 +82,8 @@ nodist_fcml_internal_check_SOURCES = ../../src/fcml_intel_lexer.h \
 	../../src/fcml_parser_data.h \
 	../../src/fcml_parser_utils.c \
 	../../src/fcml_parser_utils.h \
+	../../src/fcml_parser_int.c \
+	../../src/fcml_parser_int.h \
 	../../src/fcml_renderer.c \
 	../../src/fcml_rend_utils.c \
 	../../src/fcml_rend_utils.h \

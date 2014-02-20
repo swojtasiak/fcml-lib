@@ -32,7 +32,6 @@ fcml_ceh_error fcml_intel_parse( fcml_st_parser_context *ctx, fcml_string asm_co
 	fcml_fn_parser_result_free( result );
 
 	fcml_st_parser_data parser = {0};
-	parser.symbols = context->symbols;
 	parser.ip = context->context.ip;
 
 	/* Set up scanner. */
@@ -67,11 +66,23 @@ fcml_ceh_error fcml_intel_parse( fcml_st_parser_context *ctx, fcml_string asm_co
 		return error;
 	}
 
-	error = fcml_fn_ast_to_cif_converter( parser.tree, &(result->errors), &(result->instruction) );
-	if( error ) {
-		/* Free instruction, because it might haven't been fully parsed.*/
-		fcml_fn_ast_free_converted_cif( result->instruction );
-		result->instruction = NULL;
+	/* Symbol */
+	if( parser.symbol ) {
+		/* This method frees symbol in case of any error. */
+		error = fcml_fn_parser_add_symbol_to_symbol_table( &(result->errors), context->symbols, parser.symbol, context->context.config.override_labels );
+		if( !error ) {
+			result->symbol = parser.symbol;
+		}
+	}
+
+	/* Instruction. */
+	if( !error && parser.tree ) {
+		error = fcml_fn_ast_to_cif_converter( parser.tree, &(result->errors), &(result->instruction) );
+		if( error ) {
+			/* Free instruction, because it might haven't been fully parsed.*/
+			fcml_fn_ast_free_converted_cif( result->instruction );
+			result->instruction = NULL;
+		}
 	}
 
 	fcml_fn_ast_free_node( parser.tree );

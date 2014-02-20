@@ -34,7 +34,6 @@ fcml_ceh_error fcml_gas_parse( fcml_st_parser_context *ctx, fcml_string asm_code
 	fcml_st_parser_context_int *context = (fcml_st_parser_context_int*)ctx;
 
 	fcml_st_parser_data parser = {0};
-	parser.symbols = context->symbols;
 	parser.ip = context->context.ip;
 
 	/* Set up scanner. */

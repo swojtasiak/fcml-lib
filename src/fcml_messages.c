@@ -34,6 +34,7 @@ fcml_string fcml_iarr_messages[] = {
 	FCML_TEXT("HLA prefixes are not allowed for instruction."),
 	FCML_TEXT("More than one HLA prefix."),
 	FCML_TEXT("Segment register expected."),
+	FCML_TEXT("Symbol already defined: %s."),
 	/* Messages for warnings. */
 };
 

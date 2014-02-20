@@ -520,6 +520,98 @@ void fcml_tf_parser_int_parse_test32(void) {
 	fcml_fn_parser_result_free( &result );
 }
 
+void fcml_tf_parser_int_parse_test_symbols_1(void) {
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+	context->ip = 0x401000;
+
+	STF_ASSERT_EQUAL( fcml_intel_parse( context, FCML_TEXT( "label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
+
+	STF_ASSERT_EQUAL( fcml_intel_parse( context, FCML_TEXT( "_label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "_label" ) );
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+void fcml_tf_parser_int_parse_test_symbols_2(void) {
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+	context->config.override_labels = FCML_FALSE;
+	context->ip = 0x401000;
+
+	STF_ASSERT_EQUAL( fcml_intel_parse( context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "mov" );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+void fcml_tf_parser_int_parse_test_symbols_3(void) {
+
+	fcml_st_parser_result result;
+
+	fcml_fn_parser_result_prepare( &result );
+
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+
+	context->config.override_labels = FCML_FALSE;
+	context->ip = 0x401000;
+
+	STF_ASSERT_EQUAL( fcml_intel_parse( context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "mov" );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
+
+	STF_ASSERT_EQUAL( fcml_intel_parse( context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_INVALID_INPUT );
+
+	fcml_st_ceh_error_info *error = result.errors.errors;
+	STF_ASSERT_PTR_NOT_NULL( error );
+	if( error ) {
+		STF_ASSERT_EQUAL( error->code, FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED );
+		STF_ASSERT_STRING_EQUAL( error->message, FCML_TEXT( "Symbol already defined: label." ) );
+	}
+
+	context->config.override_labels = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_intel_parse( context, FCML_TEXT( "label: add eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "add" );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
 fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test1", fcml_tf_parser_int_parse_test1 },
 	{ "fcml_tf_parser_int_parse_test2", fcml_tf_parser_int_parse_test2 },
@@ -553,6 +645,9 @@ fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test30", fcml_tf_parser_int_parse_test30 },
 	{ "fcml_tf_parser_int_parse_test31", fcml_tf_parser_int_parse_test31 },
 	{ "fcml_tf_parser_int_parse_test32", fcml_tf_parser_int_parse_test32 },
+	{ "fcml_tf_parser_int_parse_test_symbols_1", fcml_tf_parser_int_parse_test_symbols_1 },
+	{ "fcml_tf_parser_int_parse_test_symbols_2", fcml_tf_parser_int_parse_test_symbols_2 },
+	{ "fcml_tf_parser_int_parse_test_symbols_3", fcml_tf_parser_int_parse_test_symbols_3 },
 	FCML_STF_NULL_TEST
 };
 

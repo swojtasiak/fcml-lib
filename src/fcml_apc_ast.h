@@ -40,6 +40,8 @@ typedef enum fcml_en_ast_node_type {
 	FCML_EN_TN_REG,
 	FCML_EN_TN_FAR_POINTER,
 	FCML_EN_TN_EFFECTIVE_ADDRESS,
+	FCML_EN_TN_DEFINE_SYMBOL,
+	FCML_EN_TN_USE_SYMBOL
 } fcml_en_ast_node_type;
 
 typedef struct fcml_st_ast_node {
@@ -78,6 +80,14 @@ typedef struct fcml_st_ast_node_exp {
 typedef struct fcml_st_ast_node_uminus {
 	fcml_st_ast_node *exp;
 } fcml_st_ast_node_uminus;
+
+typedef struct fcml_st_ast_node_define_symbol {
+	fcml_st_symbol *symbol;
+} fcml_st_ast_node_define_symbol;
+
+typedef struct fcml_st_ast_node_use_symbol {
+	fcml_string symbol;
+} fcml_st_ast_node_use_symbol;
 
 typedef struct fcml_st_ast_node_far_pointer {
 	fcml_st_ast_node *segment_selector;
@@ -119,6 +129,8 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_float( fcml_st_ast_val_float *float_val
 fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list( fcml_st_ast_node *operand_l, fcml_st_ast_node *operand_r );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fcml_string mnemonic, fcml_usize length, fcml_hints hints, fcml_st_ast_node *operand_list );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register( fcml_st_register *reg );
+fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol( fcml_parser_ip ip, fcml_string symbol, fcml_usize length );
+fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol( fcml_string symbol_name, fcml_usize length );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator op, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer( fcml_st_ast_node *segment_selector, fcml_st_ast_node *offset );
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins( fcml_st_ast_node *effective_address_node, fcml_hints hints );

@@ -26,6 +26,11 @@ typedef struct fcml_st_parser_config {
 	 * In such case every unknown symbol is treated as 0.
 	 */
 	fcml_bool ignore_unknown_symbols;
+	/* Set to true in order to allow overriding existing labels.
+	 * If set to false, parser returns "Symbol already exists"
+	 * in such cases.
+	 */
+	fcml_bool override_labels;
 } fcml_st_parser_config;
 
 typedef struct fcml_st_parser_context {
@@ -33,12 +38,18 @@ typedef struct fcml_st_parser_context {
 	fcml_st_parser_config config;
 	/* Dialect to be used by parser. */
 	fcml_st_dialect *dialect;
-	/* RIP/EIP used as a value for newly declared symbols. */
-	const fcml_parser_ip ip;
+	/* RIP/EIP used as a value for newly declared symbols.
+	 * This value is never changed by parser.
+	 */
+	fcml_parser_ip ip;
 } fcml_st_parser_context;
 
 typedef struct fcml_st_parser_result {
 	fcml_st_ceh_error_container errors;
+	/* Defined symbol if there is any. Remember, this symbol is also stored in the context
+	 * and it is context that is responsible for de-allocating it.
+	 */
+	fcml_st_symbol *symbol;
 	fcml_st_instruction *instruction;
 } fcml_st_parser_result;
 

@@ -61,6 +61,7 @@ libfcml_la_SOURCES = fcml_intel_lexer.l \
 	fcml_modrm.h \
 	fcml_optimizers.c \
 	fcml_parser.c \
+	fcml_parser_int.c \
 	fcml_parser_int.h \
 	fcml_parser_data.h \
 	fcml_parser_utils.c \

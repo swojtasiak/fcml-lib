@@ -115,7 +115,9 @@
 %%
 
 start: 
-| instruction { pd->tree = $1; }
+| instruction { pd->tree = $1; pd->symbol = NULL; }
+| FCML_TK_SYMBOL ':' { pd->tree = NULL; pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, $1.text, $1.length ); HANDLE_ERRORS( pd->symbol ); }
+| FCML_TK_SYMBOL ':' instruction { pd->tree = $3; pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, $1.text, $1.length ); HANDLE_ERRORS( pd->symbol ); }
 ;
 
 instruction: mnemonic { $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, 0, NULL ); HANDLE_ERRORS($$); }
@@ -184,6 +186,7 @@ exp: FCML_TK_INTEGER { $$ = fcml_fn_ast_alloc_node_integer( &$1 ); HANDLE_ERRORS
 | exp '+' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_ADD, $1, $3 ); HANDLE_ERRORS($$); }
 | exp '/' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_DIV, $1, $3 ); HANDLE_ERRORS($$); }
 | exp '*' exp { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_MUL, $1, $3 ); HANDLE_ERRORS($$); }
+| FCML_TK_SYMBOL { $$ = fcml_fn_ast_alloc_node_use_symbol( $1.text, $1.length ); HANDLE_ERRORS($$); }
 | '-' exp %prec FCML_OP_UMINUS { $$ = fcml_fn_ast_alloc_node_uminus( $2 ); HANDLE_ERRORS($$); }
 | '(' exp ')' { $$ = $2; }
 ;

@@ -17,8 +17,8 @@ typedef struct fcml_st_parser_data {
 	void *scannerInfo;
 	/* Instruction pointer used to declare symbols. */
 	fcml_parser_ip ip;
-	/* Symbol table. */
-	fcml_coll_map symbols;
+	/* Defined symbol. */
+	fcml_st_symbol *symbol;
 	/* Abstract syntax tree of parsed isntruction. */
 	fcml_st_ast_node *tree;
 	/* All potential errors going here. */
