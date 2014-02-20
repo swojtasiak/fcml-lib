@@ -163,7 +163,15 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 
 		fcml_st_parser_result result;
 		fcml_fn_parser_result_prepare( &result );
-		fcml_ceh_error error = fcml_fn_parse( dialect, mnemonic, &result );
+		fcml_st_parser_context *parser_context = fcml_fn_parser_allocate_context( dialect );
+		if( !parser_context ) {
+			printf("Can not allocate parser context: %s\n", mnemonic );
+			fcml_fn_parser_result_free( &result );
+			fcml_fn_disassembler_result_free( &dis_result );
+			return FCML_FALSE;
+		}
+
+		fcml_ceh_error error = fcml_fn_parse( parser_context, mnemonic, &result );
 		if( error ) {
 			printf("Can not parse: %s\n", mnemonic );
 			if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
@@ -173,6 +181,8 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 			fcml_fn_disassembler_result_free( &dis_result );
 			return success;
 		}
+
+		fcml_fn_parser_free_context( parser_context );
 
 		fcml_uint16_t opt_flags = 0;
 

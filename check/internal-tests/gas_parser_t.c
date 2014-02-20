@@ -25,21 +25,26 @@
 #include <fcml_gas_dialect.h>
 
 fcml_st_dialect *internal_dialect_gas = NULL;
+fcml_st_parser_context *internal_gas_context = NULL;
 
 void fcml_tf_gas_parser_suite_init(void) {
 	fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT, &internal_dialect_gas );
+	internal_gas_context = fcml_fn_parser_allocate_context( internal_dialect_gas );
 }
 
 void fcml_tf_gas_parser_suite_cleanup(void) {
     if( internal_dialect_gas ) {
         fcml_fn_dialect_free( internal_dialect_gas );
     }
+    if( internal_gas_context ) {
+    	fcml_fn_parser_free_context( internal_gas_context );
+    }
 }
 
 void fcml_tf_parser_gas_parse_test1(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "mov $80-90", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "mov $80-90", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -54,7 +59,7 @@ void fcml_tf_parser_gas_parse_test1(void) {
 void fcml_tf_parser_gas_parse_test2(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "mov (%eax)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "mov (%eax)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].address.address_form, FCML_AF_COMBINED );
@@ -69,7 +74,7 @@ void fcml_tf_parser_gas_parse_test2(void) {
 void fcml_tf_parser_gas_parse_test3(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:(%rax)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(%rax)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -89,7 +94,7 @@ void fcml_tf_parser_gas_parse_test3(void) {
 void fcml_tf_parser_gas_parse_test4(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:(%rax,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(%rax,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -112,7 +117,7 @@ void fcml_tf_parser_gas_parse_test5(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:(,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -135,7 +140,7 @@ void fcml_tf_parser_gas_parse_test6(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -159,7 +164,7 @@ void fcml_tf_parser_gas_parse_test7(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_NOT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:(,%rbx,)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_NOT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(,%rbx,)", &result ), FCML_CEH_GEC_NO_ERROR );
 	fcml_fn_parser_result_free( &result );
 }
 
@@ -167,7 +172,7 @@ void fcml_tf_parser_gas_parse_test8(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:0x100(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:0x100(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -193,7 +198,7 @@ void fcml_tf_parser_gas_parse_test9(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:0x100", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:0x100", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -214,7 +219,7 @@ void fcml_tf_parser_gas_parse_test10(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,%cs:0x100(%rax,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:0x100(%rax,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -240,7 +245,7 @@ void fcml_tf_parser_gas_parse_test11(void) {
 	/* RIP only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "movq $1,0x100(%rip)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,0x100(%rip)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -262,7 +267,7 @@ void fcml_tf_parser_gas_parse_test11(void) {
 void fcml_tf_parser_gas_parse_test12(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_dialect_gas, "mov *0x80", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "mov *0x80", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->hints, FCML_HINT_INDIRECT_POINTER );

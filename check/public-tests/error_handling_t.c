@@ -52,9 +52,11 @@ fcml_bool fcml_tf_check_errors( fcml_string mnemonic, fcml_string message, fcml_
 
 	fcml_fn_assembler_result_prepare( &assembler_result );
 
+	fcml_st_parser_context *parser_context = fcml_fn_parser_allocate_context( dialect_intel );
+
 	while( FCML_TRUE ) {
 
-		if( fcml_fn_parse( dialect_intel, mnemonic, &parsed_instruction ) ) {
+		if( fcml_fn_parse( parser_context, mnemonic, &parsed_instruction ) ) {
 			STF_FAIL("Parsing failed.");
 			break;
 		}
@@ -73,6 +75,8 @@ fcml_bool fcml_tf_check_errors( fcml_string mnemonic, fcml_string message, fcml_
 	fcml_fn_parser_result_free( &parsed_instruction );
 
 	fcml_fn_assembler_result_free( &assembler_result );
+
+	fcml_fn_parser_free_context( parser_context );
 
 	return result;
 }
