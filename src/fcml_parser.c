@@ -19,8 +19,7 @@ fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *ctx, fcml_string 
 	fcml_st_parser_context_int *context = (fcml_st_parser_context_int*)ctx;
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)context->context.dialect;
 	if( dialect_context_int->instruction_parser ) {
-		fcml_fnp_parse_instruction parser = (fcml_fnp_parse_instruction)dialect_context_int->instruction_parser;
-		return parser( ctx, instruction, result_out );
+		return fcml_fn_parse_to_cif( ctx, instruction, result_out );
 	} else {
 		/* Dialect not initialized correctly.*/
 		FCML_TRACE_MSG("Parsing not supported by current dialect.");
@@ -35,6 +34,10 @@ void LIB_CALL fcml_fn_parser_result_free( fcml_st_parser_result *result ) {
 			fcml_fn_ast_free_converted_cif( result->instruction );
 			result->instruction = NULL;
 		}
+		/* Symbol can not be free, because it is managed by symbols
+		 * table, but of course we have to zero it.
+		 */
+		result->symbol = NULL;
 		fcml_fn_ceh_free_errors_only( &(result->errors) );
 	}
 }
@@ -52,8 +55,7 @@ void fcml_itf_eff_parser_free_symbol( fcml_ptr key, fcml_ptr value, fcml_ptr arg
 	if( value ) {
 		/* Free symbol structure. */
 		fcml_st_symbol *symbol = (fcml_st_symbol*)value;
-		fcml_fn_env_str_strfree( symbol->symbol );
-		fcml_fn_env_memory_free( value );
+		fcml_fn_parser_free_symbol( symbol );
 	}
 }
 

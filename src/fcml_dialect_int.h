@@ -11,6 +11,7 @@
 #include <fcml_dialect.h>
 #include <fcml_common.h>
 #include <fcml_parser.h>
+#include <fcml_parser_int.h>
 #include <fcml_renderer.h>
 #include <fcml_assembler.h>
 #include <fcml_disassembler.h>
@@ -38,7 +39,7 @@ typedef fcml_string    (*fcml_fnp_asm_dialect_render_mnemonic)( fcml_string mnem
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_register)( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex );
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_assembler_preprocessor)( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed );
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_disassembler_postprocessor)( const fcml_st_mp_mnemonic *mnemonic, fcml_st_disassembler_result *disassembler_result );
-typedef fcml_ceh_error (*fcml_fnp_parse_instruction)( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result_out );
+typedef fcml_ceh_error (*fcml_fnp_parse_instruction)( fcml_parser_ip ip, fcml_string asm_mnemonic, fcml_st_parser_ast *ast );
 typedef fcml_ceh_error (*fcml_fnp_render_instruction)( fcml_st_dialect *dialect, fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result );
 typedef void (*fcml_fnp_asm_dialect_free)( fcml_st_dialect *dialect );
 

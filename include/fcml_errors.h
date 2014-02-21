@@ -51,7 +51,9 @@ enum fcml_en_ceh_error_globals {
 	/* Wrong register type. */
 	FCML_CEH_GEC_INVALID_REGISTER_TYPE = 17,
 	/* Wrong register. */
-	FCML_CEH_GEC_INVALID_REGISTER = 18
+	FCML_CEH_GEC_INVALID_REGISTER = 18,
+	/* Error returned by parsers when there is undefined symbol used. */
+	FCML_CEH_GEC_UNDEFINED_SYMBOL = 19,
 };
 
 enum fcml_en_ceh_message_errors {
@@ -77,6 +79,8 @@ enum fcml_en_ceh_message_errors {
 	FCML_CEH_MEC_ERROR_INVALID_REGISTER_TYPE_SEG = 1009,
 	/* Symbol is already defined in parser's symbol table. */
 	FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED = 1010,
+	/* Symbol is undefined. */
+	FCML_CEH_MEC_ERROR_UNDEFINED_SYMBOL = 1011,
 };
 
 enum fcml_en_ceh_message_warnings {

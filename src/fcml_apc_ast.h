@@ -23,7 +23,6 @@ typedef struct fcml_st_ast_val_integer {
 	fcml_uint64_t value;
 	fcml_bool overflow;
 	fcml_bool is_signed;
-	fcml_uint16_t flags;
 } fcml_st_ast_val_integer;
 
 typedef struct fcml_st_ast_val_float {
@@ -40,7 +39,6 @@ typedef enum fcml_en_ast_node_type {
 	FCML_EN_TN_REG,
 	FCML_EN_TN_FAR_POINTER,
 	FCML_EN_TN_EFFECTIVE_ADDRESS,
-	FCML_EN_TN_DEFINE_SYMBOL,
 	FCML_EN_TN_USE_SYMBOL
 } fcml_en_ast_node_type;
 
@@ -122,6 +120,17 @@ typedef struct fcml_st_ast_node_instruction {
 	fcml_st_ast_node *operands;
 } fcml_st_ast_node_instruction;
 
+typedef struct fcml_st_sif_converter_context {
+	/* Set to true in order to ignore all undefined symbols.
+	 * In such case every unknown symbol is treated as 0.
+	 */
+	fcml_bool ignore_unknown_symbols;
+	/* Container for errors. */
+	fcml_st_ceh_error_container *errors;
+	/* Symbols table. */
+	fcml_coll_map symbols;
+} fcml_st_sif_converter_context;
+
 /* Operations */
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_integer( fcml_st_ast_val_integer *integer_value );
@@ -140,7 +149,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( fcml_st_register *ba
 fcml_st_ast_node *fcml_fn_ast_alloc_node_uminus( fcml_st_ast_node *exp );
 void fcml_fn_ast_free_node( fcml_st_ast_node *exp );
 
-fcml_ceh_error fcml_fn_ast_to_cif_converter( fcml_st_ast_node *ast_instruction_node, fcml_st_ceh_error_container *error_container, fcml_st_instruction **instruction );
+fcml_ceh_error fcml_fn_ast_to_cif_converter( fcml_st_sif_converter_context *context, fcml_st_ast_node *ast_instruction_node, fcml_st_instruction **instruction );
 void fcml_fn_ast_free_converted_cif( fcml_st_instruction *cif_instruction );
 
 #endif /* FCML_APC_AST_H_ */

@@ -1229,7 +1229,7 @@ fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel( fcml_uint32_t config_flags, 
     dialect_context_intel->get_parsed_mnemonics = &fcml_fn_asm_dialect_get_parsed_mnemonics_intel;
     dialect_context_intel->free_mnemonic = &fcml_fnp_asm_dialect_free_mnemonic_intel;
     dialect_context_intel->instruction_renderer = &fcml_fn_rend_render_instruction_intel;
-    dialect_context_intel->instruction_parser = &fcml_intel_parse;
+    dialect_context_intel->instruction_parser = &fcml_fn_intel_parse_instruction_to_ast;
     dialect_context_intel->get_register = &fcml_fnp_asm_dialect_get_register_intel;
     dialect_context_intel->free_dialect = &fcml_fn_cmn_dialect_free;
     dialect_context_intel->assembler_preprocessor = NULL;

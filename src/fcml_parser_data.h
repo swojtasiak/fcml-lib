@@ -14,6 +14,7 @@
 #include "fcml_coll.h"
 
 typedef struct fcml_st_parser_data {
+	/* Lexer context. */
 	void *scannerInfo;
 	/* Instruction pointer used to declare symbols. */
 	fcml_parser_ip ip;

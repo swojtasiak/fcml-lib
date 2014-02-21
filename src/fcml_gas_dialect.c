@@ -1564,7 +1564,7 @@ fcml_ceh_error LIB_CALL fcml_fn_dialect_init_gas( fcml_uint32_t config_flags, fc
     dialect_context_gas->render_mnemonic = &fcml_ifn_asm_dialect_render_mnemonic_gas;
     dialect_context_gas->free_mnemonic = &fcml_ifn_asm_dialect_free_mnemonic_gas;
     dialect_context_gas->instruction_renderer = &fcml_fn_rend_render_instruction_gas;
-    dialect_context_gas->instruction_parser = &fcml_gas_parse;
+    dialect_context_gas->instruction_parser = &fcml_fn_gas_parse_instruction_to_ast;
     dialect_context_gas->free_dialect = &fcml_fn_cmn_dialect_free;
     /* This method should be available in renderer, but having it here can be useful in the future.*/
     dialect_context_gas->get_register = &fcml_ifn_asm_dialect_get_register_gas;

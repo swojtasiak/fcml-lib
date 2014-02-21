@@ -1,5 +1,5 @@
 /*
- * fcml_gas_parser_t.c
+ * fcml_fn_parser_t.c
  *
  *  Created on: Nov 16, 2013
  *      Author: tas
@@ -21,7 +21,7 @@
 #include <fcml_common.h>
 #include <fcml_types.h>
 #include <fcml_errors.h>
-#include <fcml_gas_parser.h>
+#include <fcml_parser.h>
 #include <fcml_gas_dialect.h>
 
 fcml_st_dialect *internal_dialect_gas = NULL;
@@ -44,7 +44,7 @@ void fcml_tf_gas_parser_suite_cleanup(void) {
 void fcml_tf_parser_gas_parse_test1(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "mov $80-90", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "mov $80-90", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -59,7 +59,7 @@ void fcml_tf_parser_gas_parse_test1(void) {
 void fcml_tf_parser_gas_parse_test2(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "mov (%eax)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "mov (%eax)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].address.address_form, FCML_AF_COMBINED );
@@ -74,7 +74,7 @@ void fcml_tf_parser_gas_parse_test2(void) {
 void fcml_tf_parser_gas_parse_test3(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(%rax)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,%cs:(%rax)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -94,7 +94,7 @@ void fcml_tf_parser_gas_parse_test3(void) {
 void fcml_tf_parser_gas_parse_test4(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(%rax,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,%cs:(%rax,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -117,7 +117,7 @@ void fcml_tf_parser_gas_parse_test5(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,%cs:(,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -140,7 +140,7 @@ void fcml_tf_parser_gas_parse_test6(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,%cs:(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -164,7 +164,7 @@ void fcml_tf_parser_gas_parse_test7(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_NOT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:(,%rbx,)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_NOT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,%cs:(,%rbx,)", &result ), FCML_CEH_GEC_NO_ERROR );
 	fcml_fn_parser_result_free( &result );
 }
 
@@ -172,7 +172,7 @@ void fcml_tf_parser_gas_parse_test8(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:0x100(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,%cs:0x100(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -198,7 +198,7 @@ void fcml_tf_parser_gas_parse_test9(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:0x100", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,%cs:0x100", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -219,7 +219,7 @@ void fcml_tf_parser_gas_parse_test10(void) {
 	/* Index only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,%cs:0x100(%rax,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,%cs:0x100(%rax,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -245,7 +245,7 @@ void fcml_tf_parser_gas_parse_test11(void) {
 	/* RIP only.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "movq $1,0x100(%rip)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "movq $1,0x100(%rip)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -267,7 +267,7 @@ void fcml_tf_parser_gas_parse_test11(void) {
 void fcml_tf_parser_gas_parse_test12(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_gas_parse( internal_gas_context, "mov *0x80", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( internal_gas_context, "mov *0x80", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->hints, FCML_HINT_INDIRECT_POINTER );
@@ -276,6 +276,212 @@ void fcml_tf_parser_gas_parse_test12(void) {
     }
 	fcml_fn_parser_result_free( &result );
 }
+
+void fcml_tf_parser_gas_parse_test_symbols_1(void) {
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_gas );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+	context->ip = 0x401000;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	if( result.symbol ) {
+		STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+		STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
+	}
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "_label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	if( result.symbol ) {
+		STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+		STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "_label" ) );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+void fcml_tf_parser_gas_parse_test_symbols_2(void) {
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_gas );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+	context->config.override_labels = FCML_FALSE;
+	context->ip = 0x401000;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	if( result.instruction ) {
+		STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "mov" );
+	}
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	if( result.symbol ) {
+		STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+		STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+void fcml_tf_parser_gas_parse_test_symbols_3(void) {
+
+	fcml_st_parser_result result;
+
+	fcml_fn_parser_result_prepare( &result );
+
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_gas );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+
+	context->config.override_labels = FCML_FALSE;
+	context->ip = 0x401000;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	if( result.instruction ) {
+		STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "mov" );
+	}
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	if( result.symbol ) {
+		STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+		STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
+	}
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax,1" ), &result ), FCML_CEH_GEC_INVALID_INPUT );
+
+	fcml_st_ceh_error_info *error = result.errors.errors;
+	STF_ASSERT_PTR_NOT_NULL( error );
+	if( error ) {
+		STF_ASSERT_EQUAL( error->code, FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED );
+		STF_ASSERT_STRING_EQUAL( error->message, FCML_TEXT( "Symbol already defined: label." ) );
+	}
+
+	context->config.override_labels = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: add %eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	if( result.instruction ) {
+		STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "add" );
+	}
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	if( result.symbol ) {
+		STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
+		STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+/* Undefined symbol. */
+void fcml_tf_parser_gas_parse_test_symbols_4(void) {
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_gas );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+	context->ip = 0x401000;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax, symbol" ), &result ), FCML_CEH_GEC_UNDEFINED_SYMBOL );
+	STF_ASSERT_PTR_NULL( result.instruction );
+	STF_ASSERT_PTR_NULL( result.symbol );
+
+	fcml_st_ceh_error_info *error = result.errors.errors;
+	STF_ASSERT_PTR_NOT_NULL( error );
+	if( error ) {
+		STF_ASSERT_EQUAL( error->code, FCML_CEH_MEC_ERROR_UNDEFINED_SYMBOL );
+		STF_ASSERT_STRING_EQUAL( error->message, FCML_TEXT( "Undefined symbol: symbol." ) );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+/* Ignore symbols. */
+void fcml_tf_parser_gas_parse_test_symbols_5(void) {
+
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_gas );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+	context->ip = 0x401000;
+	context->config.ignore_unknown_symbols = FCML_TRUE;
+	context->config.override_labels = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax, $symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+
+	if( result.instruction ) {
+		fcml_st_instruction *instruction = result.instruction;
+		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm8, 0 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_TRUE );
+	}
+
+	/* Label will be overriden. */
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax, symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+
+	if( result.instruction ) {
+		fcml_st_instruction *instruction = result.instruction;
+		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_ADDRESS );
+		STF_ASSERT_EQUAL( instruction->operands[1].address.address_form, FCML_AF_OFFSET );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+/* Use defined symbol in the instruction. */
+void fcml_tf_parser_gas_parse_test_symbols_6(void) {
+
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_gas );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+	context->ip = 0x401000;
+	context->config.ignore_unknown_symbols = FCML_TRUE;
+	context->config.override_labels = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax, $label" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+
+	if( result.instruction ) {
+		fcml_st_instruction *instruction = result.instruction;
+		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm32, 0x401000 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_TRUE );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
 
 fcml_stf_test_case fcml_ti_parser_gas[] = {
 	{ "fcml_tf_parser_gas_parse_test1", fcml_tf_parser_gas_parse_test1 },
@@ -290,6 +496,12 @@ fcml_stf_test_case fcml_ti_parser_gas[] = {
 	{ "fcml_tf_parser_gas_parse_test10", fcml_tf_parser_gas_parse_test10 },
 	{ "fcml_tf_parser_gas_parse_test11", fcml_tf_parser_gas_parse_test11 },
 	{ "fcml_tf_parser_gas_parse_test12", fcml_tf_parser_gas_parse_test12 },
+	{ "fcml_tf_parser_gas_parse_test_symbols_1", fcml_tf_parser_gas_parse_test_symbols_1 },
+	{ "fcml_tf_parser_gas_parse_test_symbols_2", fcml_tf_parser_gas_parse_test_symbols_2 },
+	{ "fcml_tf_parser_gas_parse_test_symbols_3", fcml_tf_parser_gas_parse_test_symbols_3 },
+	{ "fcml_tf_parser_gas_parse_test_symbols_4", fcml_tf_parser_gas_parse_test_symbols_4 },
+	{ "fcml_tf_parser_gas_parse_test_symbols_5", fcml_tf_parser_gas_parse_test_symbols_5 },
+	{ "fcml_tf_parser_gas_parse_test_symbols_6", fcml_tf_parser_gas_parse_test_symbols_6 },
 	FCML_STF_NULL_TEST
 };
 

@@ -22,17 +22,13 @@ void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
 	fcml_fn_ceh_add_error( &(pd->errors), (const fcml_string)error, FCML_CEH_MEC_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR );
 }
 
-fcml_ceh_error fcml_intel_parse( fcml_st_parser_context *ctx, fcml_string asm_code, fcml_st_parser_result *result ) {
+fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_parser_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_parser_context_int *context = (fcml_st_parser_context_int*)ctx;
-
-	/* Free previous parser results. */
-	fcml_fn_parser_result_free( result );
-
+	/* Fill instruction pointer. */
 	fcml_st_parser_data parser = {0};
-	parser.ip = context->context.ip;
+	parser.ip = ip;
 
 	/* Set up scanner. */
 	if ( intel_lex_init_extra( &parser, &(parser.scannerInfo) ) ) {
@@ -40,19 +36,20 @@ fcml_ceh_error fcml_intel_parse( fcml_st_parser_context *ctx, fcml_string asm_co
 	}
 
 	/*Instruction size is limited to prevent from parser's stack and buffer overflow.*/
-	if( strlen( asm_code ) > FCML_PARSER_MAX_INSTRUCTION_LEN ) {
+	if( fcml_fn_env_str_strlen( mnemonic ) > FCML_PARSER_MAX_INSTRUCTION_LEN ) {
 		intel_lex_destroy( parser.scannerInfo );
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
-	intel__scan_string( asm_code, parser.scannerInfo );
+	intel__scan_string( mnemonic, parser.scannerInfo );
 
 	int yyresult = intel_parse(&parser);
 
 	intel_lex_destroy( parser.scannerInfo );
 
-	/* Copy errors from parser.*/
-	result->errors = parser.errors;
+	ast->errors = parser.errors;
+	ast->symbol = parser.symbol;
+	ast->tree = parser.tree;
 
 	if( yyresult ) {
 		switch( yyresult ) {
@@ -63,29 +60,8 @@ fcml_ceh_error fcml_intel_parse( fcml_st_parser_context *ctx, fcml_string asm_co
 			error = FCML_CEH_GEC_OUT_OF_MEMORY;
 			break;
 		}
-		return error;
 	}
-
-	/* Symbol */
-	if( parser.symbol ) {
-		/* This method frees symbol in case of any error. */
-		error = fcml_fn_parser_add_symbol_to_symbol_table( &(result->errors), context->symbols, parser.symbol, context->context.config.override_labels );
-		if( !error ) {
-			result->symbol = parser.symbol;
-		}
-	}
-
-	/* Instruction. */
-	if( !error && parser.tree ) {
-		error = fcml_fn_ast_to_cif_converter( parser.tree, &(result->errors), &(result->instruction) );
-		if( error ) {
-			/* Free instruction, because it might haven't been fully parsed.*/
-			fcml_fn_ast_free_converted_cif( result->instruction );
-			result->instruction = NULL;
-		}
-	}
-
-	fcml_fn_ast_free_node( parser.tree );
 
 	return error;
 }
+

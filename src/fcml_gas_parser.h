@@ -10,9 +10,9 @@
 
 #include "fcml_ceh.h"
 #include "fcml_dialect.h"
-#include "fcml_parser.h"
+#include "fcml_parser_int.h"
 #include "fcml_types.h"
 
-fcml_ceh_error fcml_gas_parse( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result_out );
+fcml_ceh_error fcml_fn_gas_parse_instruction_to_ast( fcml_parser_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast );
 
 #endif /* FCML_X64INTEL_ASM_PARSER_H_ */

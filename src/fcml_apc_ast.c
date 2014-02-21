@@ -11,6 +11,7 @@
 #include "fcml_apc_ast.h"
 #include "fcml_utils.h"
 #include "fcml_trace.h"
+#include "fcml_messages.h"
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_integer( fcml_st_ast_val_integer *integer_value ) {
 	fcml_st_ast_node *node = (fcml_st_ast_node*)malloc( sizeof( fcml_st_ast_node ) );
@@ -164,7 +165,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol( fcml_string symbol_name, fc
 		return NULL;
 	}
 
-	node->node = symbol_name;
+	node->node = symbol_node;
 	node->type = FCML_EN_TN_USE_SYMBOL;
 
 	return node;
@@ -307,6 +308,9 @@ void fcml_ifn_ast_free_operand_node_list_action( fcml_ptr item_value, fcml_ptr a
 }
 
 void fcml_fn_ast_free_node( fcml_st_ast_node *exp ) {
+	if( !exp ) {
+		return;
+	}
 	if( exp ) {
 		switch( exp->type ) {
 			case FCML_EN_TN_INSTRUCTION: {
@@ -315,58 +319,60 @@ void fcml_fn_ast_free_node( fcml_st_ast_node *exp ) {
 						fcml_fn_env_str_strfree( instruction->mnemonic );
 					}
 					fcml_fn_ast_free_node( instruction->operands );
-					break;
 				}
+				break;
 			case FCML_EN_TN_OPERAND_LIST: {
 					fcml_st_ast_node_operand_list *operand_list = (fcml_st_ast_node_operand_list*)exp->node;
 					fcml_fn_coll_list_free( operand_list->operands, fcml_ifn_ast_free_operand_node_list_action, NULL );
-					break;
 				}
-			break;
+				break;
 			case FCML_EN_TN_EXP: {
 					fcml_st_ast_node_exp *expr = (fcml_st_ast_node_exp*)exp->node;
 					fcml_fn_ast_free_node( expr->l );
 					fcml_fn_ast_free_node( expr->r );
-					break;
 				}
-			break;
+				break;
 			case FCML_EN_TN_UMINUS: {
 					fcml_st_ast_node_uminus *uminus = (fcml_st_ast_node_uminus*)exp->node;
 					fcml_fn_ast_free_node( uminus->exp );
-					break;
 				}
-			break;
+				break;
 			case FCML_EN_TN_FAR_POINTER: {
 					fcml_st_ast_node_far_pointer *far_pointer = (fcml_st_ast_node_far_pointer*)exp->node;
 					fcml_fn_ast_free_node( far_pointer->offset );
 					fcml_fn_ast_free_node( far_pointer->segment_selector );
-					break;
 				}
 				break;
 			case FCML_EN_TN_EFFECTIVE_ADDRESS: {
 					fcml_st_ast_node_effective_address *effective_address = (fcml_st_ast_node_effective_address*)exp->node;
 					fcml_fn_ast_free_node( effective_address->displacement );
-					break;
+				}
+				break;
+			case FCML_EN_TN_USE_SYMBOL: {
+					fcml_st_ast_node_use_symbol *symbol_node = (fcml_st_ast_node_use_symbol*)exp->node;
+					if( symbol_node->symbol ) {
+						fcml_fn_env_str_strfree( symbol_node->symbol );
+					}
 				}
 				break;
 			default:
 				break;
 		}
 		if( exp->node ) {
-			free(exp->node);
+			fcml_fn_env_memory_free( exp->node );
 		}
-		free(exp);
+		fcml_fn_env_memory_free( exp );
 	}
 }
 
-fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instruction, fcml_st_operand *current_operand, fcml_st_ast_node *ast_node, fcml_st_ceh_error_container *error_container );
+fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_sif_converter_context *context, fcml_st_instruction *cif_instruction, fcml_st_operand *current_operand, fcml_st_ast_node *ast_node );
 
-fcml_ceh_error fcml_fn_ast_to_cif_converter( fcml_st_ast_node *ast_instruction_node, fcml_st_ceh_error_container *out_error_container, fcml_st_instruction **out_instruction ) {
+fcml_ceh_error fcml_fn_ast_to_cif_converter( fcml_st_sif_converter_context *context, fcml_st_ast_node *ast_instruction_node, fcml_st_instruction **out_instruction ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_instruction *instruction = (fcml_st_instruction*)fcml_fn_env_memory_alloc( sizeof( fcml_st_instruction ) );
 	if( instruction ) {
 		memset( instruction, 0, sizeof( fcml_st_instruction ) );
-		error =  fcml_ifn_ast_handle_ast_node( instruction, NULL, ast_instruction_node, out_error_container );
+		error =  fcml_ifn_ast_handle_ast_node( context, instruction, NULL, ast_instruction_node );
 		if( error ) {
 			fcml_fn_ast_free_converted_cif( instruction );
 		} else {
@@ -412,18 +418,50 @@ fcml_st_ast_val_integer fcml_ifn_ast_convert_to_val_integer( fcml_int64_t val ) 
 	return int_value;
 }
 
-fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_container *error_container, fcml_st_ast_node_value *result ) {
+fcml_ceh_error fcml_ifn_ast_eval_symbol( fcml_st_sif_converter_context *context, fcml_st_ast_node_use_symbol *symbol_node, fcml_st_ast_node_value *result ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	/* Get symbol definition from symbol table. */
+	fcml_st_symbol *symbol_def = (fcml_st_symbol*)fcml_fn_coll_map_get( context->symbols, symbol_node->symbol );
+
+	if( !symbol_def && !context->ignore_unknown_symbols ) {
+
+		/* Symbol is undefined. */
+		fcml_char msg_buffer[FCML_MESSAGE_MAX];
+		fcml_string msg_pattern = fcml_fn_msg_get_message( FCML_MC_SEGMENT_UNDEFINED_SYMBOL );
+		fcml_fn_env_str_snprintf( msg_buffer, sizeof( msg_buffer ), msg_pattern, symbol_node->symbol );
+		fcml_fn_ceh_add_error( context->errors, (const fcml_string)msg_buffer, FCML_CEH_MEC_ERROR_UNDEFINED_SYMBOL, FCML_EN_CEH_EL_ERROR );
+		error = FCML_CEH_GEC_UNDEFINED_SYMBOL;
+
+	} else {
+
+		/* Ignored symbols are treated as 0. Possibility to ignore
+		 * symbols is used in case of load-and-go assembler.
+		 */
+
+		result->type = FCML_EN_ET_INTEGER;
+		result->integer_value.is_signed = FCML_TRUE;
+		result->integer_value.overflow = FCML_FALSE;
+		result->integer_value.value = symbol_def ? symbol_def->value : 0L;
+
+	}
+
+	return error;
+}
+
+fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_sif_converter_context *context, fcml_st_ast_node *exp, fcml_st_ast_node_value *result ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	switch( exp->type ) {
 	case FCML_EN_TN_VALUE: {
 		*result = *((fcml_st_ast_node_value*)exp->node);
 		if( result->integer_value.overflow ) {
-			fcml_fn_ceh_add_error( error_container, "Value out of range.", FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_WARN );
+			fcml_fn_ceh_add_error( context->errors, "Value out of range.", FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_WARN );
 		}
 		break;
 	}
 	case FCML_EN_TN_UMINUS: {
-		error = fcml_ifn_ast_eval_exp( ((fcml_st_ast_node_uminus*)exp->node)->exp, error_container, result );
+		error = fcml_ifn_ast_eval_exp( context, ((fcml_st_ast_node_uminus*)exp->node)->exp, result );
 		if( error ) {
 			return error;
 		}
@@ -434,16 +472,21 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 		}
 		break;
 	}
+	case FCML_EN_TN_USE_SYMBOL: {
+		fcml_st_ast_node_use_symbol *symbol_node = (fcml_st_ast_node_use_symbol*)exp->node;
+		error = fcml_ifn_ast_eval_symbol( context, symbol_node, result );
+		break;
+	}
 	case FCML_EN_TN_EXP: {
 		fcml_st_ast_node_exp *exp_node = (fcml_st_ast_node_exp*)exp->node;
 		fcml_st_ast_node_value lval = { (fcml_st_ast_value_node_type)0 };
 		fcml_st_ast_node_value rval = { (fcml_st_ast_value_node_type)0 };
 		fcml_ceh_error error;
-		error = fcml_ifn_ast_eval_exp( exp_node->l, error_container, &lval );
+		error = fcml_ifn_ast_eval_exp( context, exp_node->l, &lval );
 		if( error ) {
 			return error;
 		}
-		error = fcml_ifn_ast_eval_exp( exp_node->r, error_container, &rval );
+		error = fcml_ifn_ast_eval_exp( context, exp_node->r, &rval );
 		if( error ) {
 			return error;
 		}
@@ -481,7 +524,7 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_ast_node *exp, fcml_st_ceh_error_c
 			} else {
 				fcml_int64_t divisor = fcml_ifn_ast_get_integer_value( &rval );
 				if( divisor == 0 ) {
-					if( fcml_fn_ceh_add_error( error_container, "Division by zero.", FCML_CEH_MEC_ERROR_DIVISION_BY_0, FCML_EN_CEH_EL_ERROR ) ) {
+					if( fcml_fn_ceh_add_error( context->errors, "Division by zero.", FCML_CEH_MEC_ERROR_DIVISION_BY_0, FCML_EN_CEH_EL_ERROR ) ) {
 						error = FCML_CEH_GEC_INVALID_INPUT;
 					} else {
 						error = FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -556,7 +599,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate( fcml_st_ast_node_va
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_ast_node_far_pointer *far_pointer_node, fcml_st_far_pointer *far_pointer_operand, fcml_st_ceh_error_container *error_container ) {
+fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_sif_converter_context *context, fcml_st_ast_node_far_pointer *far_pointer_node, fcml_st_far_pointer *far_pointer_operand ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_ast_node *segment_selector_node = far_pointer_node->segment_selector;
@@ -566,18 +609,18 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 
 	/* Evaluate expressions.*/
 
-	if( ( error = fcml_ifn_ast_eval_exp( segment_selector_node, error_container, &segment_selector_value ) ) ) {
+	if( ( error = fcml_ifn_ast_eval_exp( context, segment_selector_node, &segment_selector_value ) ) ) {
 		return error;
 	}
 
-	if( ( error = fcml_ifn_ast_eval_exp( offset_node, error_container, &offset_value ) ) ) {
+	if( ( error = fcml_ifn_ast_eval_exp( context, offset_node, &offset_value ) ) ) {
 		return error;
 	}
 
 	/* Segment selector and offset have to be integers.*/
 	if( segment_selector_value.type != FCML_EN_ET_INTEGER || offset_value.type != FCML_EN_ET_INTEGER ) {
 		/* Only integer values are supported here.*/
-		if( !fcml_fn_ceh_add_error( error_container, "Segment selector and offset have to be an integer values.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
+		if( !fcml_fn_ceh_add_error( context->errors, "Segment selector and offset have to be an integer values.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
 			error = FCML_CEH_GEC_OUT_OF_MEMORY;
 		} else {
 			error = FCML_CEH_GEC_INVALID_INPUT;
@@ -605,7 +648,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 
 	/* In case of far poiner calculation such problem is repored as an error. */
 	if( overflow ) {
-	    if( !fcml_fn_ceh_add_error( error_container, "Segment selector out of range.", FCML_CEH_MEC_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
+	    if( !fcml_fn_ceh_add_error( context->errors, "Segment selector out of range.", FCML_CEH_MEC_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
             error = FCML_CEH_GEC_OUT_OF_MEMORY;
         } else {
             error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -639,7 +682,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 	}
 
 	if( overflow ) {
-        if( !fcml_fn_ceh_add_error( error_container, "Offset out of range.", FCML_CEH_MEC_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
+        if( !fcml_fn_ceh_add_error( context->errors, "Offset out of range.", FCML_CEH_MEC_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
             error = FCML_CEH_GEC_OUT_OF_MEMORY;
         } else {
             error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -649,7 +692,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_as
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml_st_instruction *cif_instruction, fcml_st_ast_node_effective_address *effective_address_node, fcml_en_effective_address_form address_form, fcml_st_operand *operand, fcml_st_ceh_error_container *error_container ) {
+fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml_st_sif_converter_context *context, fcml_st_instruction *cif_instruction, fcml_st_ast_node_effective_address *effective_address_node, fcml_en_effective_address_form address_form, fcml_st_operand *operand ) {
 
     fcml_st_address *address = &(operand->address);
 
@@ -670,12 +713,12 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
 
 		fcml_st_ast_node_value value;
 
-		if( ( error = fcml_ifn_ast_eval_exp( effective_address_node->displacement, error_container, &value ) ) ) {
+		if( ( error = fcml_ifn_ast_eval_exp( context, effective_address_node->displacement, &value ) ) ) {
 			return error;
 		}
 
 		if( value.type != FCML_EN_ET_INTEGER ) {
-			if( !fcml_fn_ceh_add_error( error_container, "Displacement has to be an integer value.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
+			if( !fcml_fn_ceh_add_error( context->errors, "Displacement has to be an integer value.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
 				error = FCML_CEH_GEC_OUT_OF_MEMORY;
 			} else {
 				error = FCML_CEH_GEC_INVALID_INPUT;
@@ -713,7 +756,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
         if( (scale_factor == 0 || scale_factor == 1 || scale_factor == 2 || scale_factor == 4 || scale_factor == 8 ) ) {
             effective_address->scale_factor = (fcml_uint8_t)scale_factor;
         } else {
-            if( !fcml_fn_ceh_add_error( error_container, "Wrong scale factor value.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
+            if( !fcml_fn_ceh_add_error( context->errors, "Wrong scale factor value.", FCML_CEH_MEC_ERROR_WRONG_VALUE_FORMAT, FCML_EN_CEH_EL_ERROR ) ) {
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
             } else {
                 error = FCML_CEH_GEC_INVALID_INPUT;
@@ -729,7 +772,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instruction, fcml_st_operand *current_operand, fcml_st_ast_node *ast_node, fcml_st_ceh_error_container *error_container ) {
+fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_sif_converter_context *context, fcml_st_instruction *cif_instruction, fcml_st_operand *current_operand, fcml_st_ast_node *ast_node ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	switch( ast_node->type ) {
 		case FCML_EN_TN_INSTRUCTION: {
@@ -740,14 +783,14 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 			cif_instruction->mnemonic = fcml_fn_env_str_strdup( node_instruction->mnemonic );
 			/* Handle operands.*/
 			if( node_instruction->operands ) {
-				error = fcml_ifn_ast_handle_ast_node( cif_instruction, NULL, node_instruction->operands, error_container );
+				error = fcml_ifn_ast_handle_ast_node( context, cif_instruction, NULL, node_instruction->operands );
 			}
 			break;
 		}
 		case FCML_EN_TN_OPERAND_LIST: {
 			fcml_st_ast_node_operand_list *operand_list = (fcml_st_ast_node_operand_list*)ast_node->node;
 			if( operand_list->operands->size > FCML_OPERANDS_COUNT ) {
-				if( !fcml_fn_ceh_add_error( error_container, "To many operands.", FCML_CEH_MEC_ERROR_TO_MANY_OPERANDS, FCML_EN_CEH_EL_ERROR ) ) {
+				if( !fcml_fn_ceh_add_error( context->errors, "To many operands.", FCML_CEH_MEC_ERROR_TO_MANY_OPERANDS, FCML_EN_CEH_EL_ERROR ) ) {
 					error = FCML_CEH_GEC_OUT_OF_MEMORY;
 				} else {
 					error = FCML_CEH_GEC_INVALID_INPUT;
@@ -756,7 +799,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 				fcml_st_coll_list_element *current = operand_list->operands->head;
 				int i = 0;
 				while( current && i < FCML_OPERANDS_COUNT ) {
-					error = fcml_ifn_ast_handle_ast_node( cif_instruction, &(cif_instruction->operands[i++]), (fcml_st_ast_node*)current->item, error_container );
+					error = fcml_ifn_ast_handle_ast_node( context, cif_instruction, &(cif_instruction->operands[i++]), (fcml_st_ast_node*)current->item );
 					if( error ) {
 						return error;
 					}
@@ -766,11 +809,12 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 			}
 			break;
 		}
+		case FCML_EN_TN_USE_SYMBOL:
 		case FCML_EN_TN_EXP:
 		case FCML_EN_TN_VALUE:
 		case FCML_EN_TN_UMINUS: {
 			fcml_st_ast_node_value value;
-			error = fcml_ifn_ast_eval_exp( ast_node, error_container, &value );
+			error = fcml_ifn_ast_eval_exp( context, ast_node, &value );
 			if( !error ) {
 				if( current_operand != NULL ) {
 					/* Convert value to immediate operand.*/
@@ -793,13 +837,13 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_instruction *cif_instructio
 		}
 		case FCML_EN_TN_FAR_POINTER: {
 			fcml_st_ast_node_far_pointer *far_pointer_node = (fcml_st_ast_node_far_pointer*)ast_node->node;
-			error = fcml_ifn_ast_util_convert_far_pointer_node_to_operand( far_pointer_node, &(current_operand->far_pointer), error_container );
+			error = fcml_ifn_ast_util_convert_far_pointer_node_to_operand( context, far_pointer_node, &(current_operand->far_pointer) );
 			current_operand->type = FCML_EOT_FAR_POINTER;
 			break;
 		}
 		case FCML_EN_TN_EFFECTIVE_ADDRESS: {
 			fcml_st_ast_node_effective_address *effective_address_node = (fcml_st_ast_node_effective_address*)ast_node->node;
-			error = fcml_ifn_ast_util_convert_effective_address_node_to_operand( cif_instruction, effective_address_node, effective_address_node->address_form, current_operand, error_container );
+			error = fcml_ifn_ast_util_convert_effective_address_node_to_operand( context, cif_instruction, effective_address_node, effective_address_node->address_form, current_operand );
 			current_operand->type = FCML_EOT_ADDRESS;
 			break;
 		}
