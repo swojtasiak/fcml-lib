@@ -52,6 +52,7 @@ typedef struct fcml_st_assembled_instruction {
     /* Next assembled instruction in the chain.*/
     struct fcml_st_assembled_instruction *next;
 	/* Error and warning messages related to assembled instruction.*/
+    // TODO: Dlaczego tu sa bledy jezeli sa globalnie dostepne w assembler_result?
 	fcml_st_ceh_error_container errors;
 	/* Instruction machine code.*/
 	fcml_uint8_t *code;

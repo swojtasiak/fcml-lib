@@ -18,7 +18,9 @@ fcml_internal_check_SOURCES = main.c \
 	stream_t.c \
 	stream_t.h \
 	utils_t.c \
-	utils_t.h
+	utils_t.h \
+	lag_assembler_t.c \
+	lag_assembler_t.h
 
 # Include all tested units directly to the executable. 
 
@@ -91,7 +93,9 @@ nodist_fcml_internal_check_SOURCES = ../../src/fcml_intel_lexer.h \
 	../../src/fcml_trace.h \
 	../../src/fcml_utils.c \
 	../../src/fcml_utils.h \
-	../../src/fcml_stream.h
+	../../src/fcml_stream.h \
+	../../src/fcml_lag_assembler.h \
+	../../src/fcml_lag_assembler.c
 
 fcml_internal_check_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_srcdir)/check/stf
 

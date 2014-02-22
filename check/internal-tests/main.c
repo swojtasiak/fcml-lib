@@ -19,6 +19,7 @@
 #include "intel_parser_t.h"
 #include "gas_parser_t.h"
 #include "mnemonic_parser_t.h"
+#include "lag_assembler_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fctl_si_modrm_encoder,
@@ -29,6 +30,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fcml_si_intel_parser,
 	&fcml_si_gas_parser,
 	&fcml_si_mnemonic_parser,
+	&fcml_si_lag_assembler,
 	FCML_STF_NULL_SUITE
 };
 

@@ -11,5 +11,6 @@ pkginclude_HEADERS = fcml_assembler.h \
 	fcml_parser.h \
 	fcml_renderer.h \
 	fcml_types.h \
-	fcml_lib_export.h
+	fcml_lib_export.h \
+	fcml_lag_assembler.h
 

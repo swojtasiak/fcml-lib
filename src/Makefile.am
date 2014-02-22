@@ -73,7 +73,8 @@ libfcml_la_SOURCES = fcml_intel_lexer.l \
 	fcml_trace.h \
 	fcml_utils.c \
 	fcml_utils.h \
-	fcml_stream.h
+	fcml_stream.h \
+	fcml_lag_assembler.c
 
 libfcml_la_CPPFLAGS = -I$(top_srcdir)/include
 libfcml_la_LDFLAGS = -no-undefined
