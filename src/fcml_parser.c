@@ -91,7 +91,7 @@ void LIB_CALL fcml_fn_parser_free_context( fcml_st_parser_context *ctx ) {
 
 fcml_ceh_error LIB_CALL fcml_fn_parser_add_symbol( fcml_st_parser_context *ctx, fcml_string symbol, fcml_int64_t value ) {
 	fcml_st_parser_context_int *context = (fcml_st_parser_context_int*)ctx;
-	fcml_st_symbol *sym = (fcml_st_symbol*)fcml_fn_env_memory_alloc( sizeof( fcml_st_symbol* ) );
+	fcml_st_symbol *sym = (fcml_st_symbol*)fcml_fn_env_memory_alloc( sizeof( fcml_st_symbol ) );
 	if( !sym ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}

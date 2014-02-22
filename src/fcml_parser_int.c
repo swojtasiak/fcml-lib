@@ -87,10 +87,10 @@ fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *ctx, fcml_string mn
 	/* Instruction. */
 	if( !error && ast.tree ) {
 
-		fcml_st_sif_converter_context cif_ctx;
+		fcml_st_cif_converter_context cif_ctx;
 		cif_ctx.errors = &(result->errors);
 		cif_ctx.symbols = context->symbols;
-		cif_ctx.ignore_unknown_symbols = context->context.config.ignore_unknown_symbols;
+		cif_ctx.ignore_undefined_symbols = context->context.config.ignore_undefined_symbols;
 
 		error = fcml_fn_ast_to_cif_converter( &cif_ctx, ast.tree, &(result->instruction) );
 		if( error ) {

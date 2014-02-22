@@ -14,6 +14,18 @@
 
 #define FCML_AST_INT_FLAG_IMMEDIATE		0x0001
 
+typedef enum fcml_en_ast_node_type {
+	FCML_EN_TN_INSTRUCTION,
+	FCML_EN_TN_OPERAND_LIST,
+	FCML_EN_TN_EXP,
+	FCML_EN_TN_UMINUS,
+	FCML_EN_TN_VALUE,
+	FCML_EN_TN_REG,
+	FCML_EN_TN_FAR_POINTER,
+	FCML_EN_TN_EFFECTIVE_ADDRESS,
+	FCML_EN_TN_USE_SYMBOL
+} fcml_en_ast_node_type;
+
 typedef struct fcml_st_ast_size_operator {
     fcml_uint16_t size;
     fcml_bool multimedia;
@@ -29,18 +41,6 @@ typedef struct fcml_st_ast_val_float {
 	fcml_float value;
 	fcml_bool overflow;
 } fcml_st_ast_val_float;
-
-typedef enum fcml_en_ast_node_type {
-	FCML_EN_TN_INSTRUCTION,
-	FCML_EN_TN_OPERAND_LIST,
-	FCML_EN_TN_EXP,
-	FCML_EN_TN_UMINUS,
-	FCML_EN_TN_VALUE,
-	FCML_EN_TN_REG,
-	FCML_EN_TN_FAR_POINTER,
-	FCML_EN_TN_EFFECTIVE_ADDRESS,
-	FCML_EN_TN_USE_SYMBOL
-} fcml_en_ast_node_type;
 
 typedef struct fcml_st_ast_node {
 	fcml_en_ast_node_type type;
@@ -104,11 +104,6 @@ typedef struct fcml_st_ast_node_effective_address {
     fcml_en_effective_address_form address_form;
 } fcml_st_ast_node_effective_address;
 
-typedef struct fcml_st_ast_node_offset {
-    fcml_hints hints;
-    fcml_st_ast_node *offset;
-} fcml_st_ast_node_offset;
-
 typedef struct fcml_st_ast_node_operand_list {
 	fcml_st_coll_list *operands;
 } fcml_st_ast_node_operand_list;
@@ -120,16 +115,21 @@ typedef struct fcml_st_ast_node_instruction {
 	fcml_st_ast_node *operands;
 } fcml_st_ast_node_instruction;
 
-typedef struct fcml_st_sif_converter_context {
+typedef struct fcml_st_cif_converter_context {
 	/* Set to true in order to ignore all undefined symbols.
 	 * In such case every unknown symbol is treated as 0.
 	 */
-	fcml_bool ignore_unknown_symbols;
+	fcml_bool ignore_undefined_symbols;
 	/* Container for errors. */
 	fcml_st_ceh_error_container *errors;
 	/* Symbols table. */
 	fcml_coll_map symbols;
-} fcml_st_sif_converter_context;
+	/* Number of evaluated symbols. */
+	fcml_int evaluated_symbols;
+} fcml_st_cif_converter_context;
+
+/* Function pointer for node visitor. */
+typedef fcml_ceh_error (*fcml_fnp_ast_node_visitor)( fcml_st_ast_node *node, fcml_ptr visitor_args );
 
 /* Operations */
 
@@ -148,8 +148,9 @@ fcml_st_ast_node *fcml_fn_ast_set_displacemnt( fcml_st_ast_node *displacement, f
 fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( fcml_st_register *base, fcml_st_register *index, fcml_st_ast_val_integer *scale_factor, fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_uminus( fcml_st_ast_node *exp );
 void fcml_fn_ast_free_node( fcml_st_ast_node *exp );
-
-fcml_ceh_error fcml_fn_ast_to_cif_converter( fcml_st_sif_converter_context *context, fcml_st_ast_node *ast_instruction_node, fcml_st_instruction **instruction );
+fcml_ceh_error fcml_fn_ast_visit_nodes( fcml_st_ast_node *ast_tree, fcml_fnp_ast_node_visitor visitor, fcml_ptr visitor_args );
+fcml_ceh_error fcml_fn_ast_extract_used_symbols( fcml_st_ast_node *ast_tree, fcml_st_coll_list **extracted_symbols );
+fcml_ceh_error fcml_fn_ast_to_cif_converter( fcml_st_cif_converter_context *context, fcml_st_ast_node *ast_tree, fcml_st_instruction **instruction );
 void fcml_fn_ast_free_converted_cif( fcml_st_instruction *cif_instruction );
 
 #endif /* FCML_APC_AST_H_ */

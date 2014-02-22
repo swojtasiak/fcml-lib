@@ -422,7 +422,7 @@ void fcml_tf_parser_gas_parse_test_symbols_5(void) {
 		return;
 	}
 	context->ip = 0x401000;
-	context->config.ignore_unknown_symbols = FCML_TRUE;
+	context->config.ignore_undefined_symbols = FCML_TRUE;
 	context->config.override_labels = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax, $symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -463,7 +463,7 @@ void fcml_tf_parser_gas_parse_test_symbols_6(void) {
 		return;
 	}
 	context->ip = 0x401000;
-	context->config.ignore_unknown_symbols = FCML_TRUE;
+	context->config.ignore_undefined_symbols = FCML_TRUE;
 	context->config.override_labels = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov %eax, $label" ), &result ), FCML_CEH_GEC_NO_ERROR );

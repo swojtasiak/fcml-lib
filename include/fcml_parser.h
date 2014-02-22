@@ -25,7 +25,7 @@ typedef struct fcml_st_parser_config {
 	/* Set to true in order to ignore all undefined symbols.
 	 * In such case every unknown symbol is treated as 0.
 	 */
-	fcml_bool ignore_unknown_symbols;
+	fcml_bool ignore_undefined_symbols;
 	/* Set to true in order to allow overriding existing labels.
 	 * If set to false, parser returns "Symbol already exists"
 	 * in such cases.

@@ -102,7 +102,9 @@ void fcml_fn_coll_list_remove( fcml_st_coll_list *list, fcml_st_coll_list_elemen
 void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, fcml_ptr item_handler_args ) {
 	fcml_st_coll_list_element *current = list->head;
 	while( current ) {
-		(item_handler)( current->item, item_handler_args );
+		if( item_handler ) {
+			(item_handler)( current->item, item_handler_args );
+		}
 		fcml_st_coll_list_element *tmp = current;
 		current = current->next;
 		fcml_fn_env_memory_free( tmp );

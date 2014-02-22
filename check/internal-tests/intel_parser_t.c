@@ -14,6 +14,7 @@
 #include <fcml_types.h>
 #include <fcml_errors.h>
 #include <fcml_parser.h>
+#include <fcml_parser_int.h>
 #include <fcml_intel_dialect.h>
 
 fcml_st_dialect *internal_dialect_intel = NULL;
@@ -650,7 +651,7 @@ void fcml_tf_parser_int_parse_test_symbols_5(void) {
 		return;
 	}
 	context->ip = 0x401000;
-	context->config.ignore_unknown_symbols = FCML_TRUE;
+	context->config.ignore_undefined_symbols = FCML_TRUE;
 	context->config.override_labels = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax, symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -680,7 +681,7 @@ void fcml_tf_parser_int_parse_test_symbols_6(void) {
 		return;
 	}
 	context->ip = 0x401000;
-	context->config.ignore_unknown_symbols = FCML_TRUE;
+	context->config.ignore_undefined_symbols = FCML_TRUE;
 	context->config.override_labels = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax, label" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -692,10 +693,90 @@ void fcml_tf_parser_int_parse_test_symbols_6(void) {
 		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_32 );
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm32, 0x401000 );
+		// TODO: Why always TRUE if expression evaluates to signed value only if the result of mathematical formula is negative.
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_TRUE );
 	}
 
 	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+/* Multpile symbols in expression. */
+void fcml_tf_parser_int_parse_test_symbols_7(void) {
+
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+	context->ip = 0x401000;
+	context->config.ignore_undefined_symbols = FCML_TRUE;
+	context->config.override_labels = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_1"), 10 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_2"), 5 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_3"), 2 ), FCML_CEH_GEC_NO_ERROR );
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax, label + ( ( symbol_1 * symbol_2 ) / symbol_3 )" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+
+	if( result.instruction ) {
+		fcml_st_instruction *instruction = result.instruction;
+		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm32, 0x401000 + 25 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_FALSE );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_parser_free_context( context );
+}
+
+/* Extracting symbols. */
+void fcml_tf_parser_int_parse_test_symbols_8(void) {
+
+	fcml_st_parser_result result;
+
+	fcml_fn_parser_result_prepare( &result );
+
+	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
+	if( !context ) {
+		STF_FAIL();
+		return;
+	}
+
+	context->ip = 0x401000;
+	context->config.ignore_undefined_symbols = FCML_TRUE;
+	context->config.override_labels = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_1"), 10 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_2"), 5 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_3"), 2 ), FCML_CEH_GEC_NO_ERROR );
+
+	fcml_st_parser_ast ast = {0};
+	fcml_ceh_error error = fcml_fn_parse_to_ast( context, FCML_TEXT( "label: mov eax, label + ( ( symbol_1 * symbol_2 ) / symbol_3 )" ), &ast );
+
+	if( !error ) {
+
+		STF_ASSERT_PTR_NOT_NULL( ast.symbol );
+		STF_ASSERT_PTR_NOT_NULL( ast.tree );
+
+		if( ast.tree ) {
+			fcml_st_coll_list *list = NULL;
+			error = fcml_fn_ast_extract_used_symbols( ast.tree, &list );
+			if( !error ) {
+				STF_ASSERT_EQUAL( list->size, 4 );
+				fcml_fn_coll_list_free( list, NULL, NULL );
+			}
+
+		}
+
+	}
+
+	fcml_fn_parser_free_ast( &ast );
 	fcml_fn_parser_free_context( context );
 }
 
@@ -738,6 +819,8 @@ fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test_symbols_4", fcml_tf_parser_int_parse_test_symbols_4 },
 	{ "fcml_tf_parser_int_parse_test_symbols_5", fcml_tf_parser_int_parse_test_symbols_5 },
 	{ "fcml_tf_parser_int_parse_test_symbols_6", fcml_tf_parser_int_parse_test_symbols_6 },
+	{ "fcml_tf_parser_int_parse_test_symbols_7", fcml_tf_parser_int_parse_test_symbols_7 },
+	{ "fcml_tf_parser_int_parse_test_symbols_8", fcml_tf_parser_int_parse_test_symbols_8 },
 	FCML_STF_NULL_TEST
 };
 
