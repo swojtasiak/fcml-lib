@@ -59,6 +59,7 @@ void fcml_itf_eff_parser_free_symbol( fcml_ptr key, fcml_ptr value, fcml_ptr arg
 	}
 }
 
+/* Wywalic ta inicjalizacja kontekstu, alokacje, nigdzie tak nie robimy, niekonsekwencja. */
 fcml_st_parser_context* LIB_CALL fcml_fn_parser_allocate_context( fcml_st_dialect *dialect ) {
 	fcml_st_parser_context_int *context = (fcml_st_parser_context_int*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_parser_context_int ) );
 	if( !context ) {

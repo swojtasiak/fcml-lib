@@ -59,6 +59,8 @@ void fcml_tf_lag_assembler_test(void) {
 	context.entry_point.addr_form = FCML_AF_32_BIT;
 	context.entry_point.ip.eip = 0x00401000;
 
+
+
 	error = fcml_fn_lag_assemble( &context, fcml_iarr_lag_assembler_code, &result );
 	if( error ) {
 		STF_FAIL("Failed to assemble code.");
