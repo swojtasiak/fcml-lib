@@ -9,6 +9,8 @@
 #define FCML_APC_AST_H_
 
 #include <stdlib.h>
+#include <fcml_symbols.h>
+#include <fcml_parser.h>
 #include "fcml_common.h"
 #include "fcml_coll.h"
 
@@ -123,7 +125,7 @@ typedef struct fcml_st_cif_converter_context {
 	/* Container for errors. */
 	fcml_st_ceh_error_container *errors;
 	/* Symbols table. */
-	fcml_coll_map symbols;
+	fcml_st_symbol_table symbol_table;
 	/* Number of evaluated symbols. */
 	fcml_int evaluated_symbols;
 } fcml_st_cif_converter_context;

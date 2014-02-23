@@ -1,48 +1,48 @@
-==10109== Memcheck, a memory error detector
-==10109== Copyright (C) 2002-2012, and GNU GPL'd, by Julian Seward et al.
-==10109== Using Valgrind-3.8.1 and LibVEX; rerun with -h for copyright info
-==10109== Command: check/internal-tests/fcml_internal_check
-==10109== 
-==10109== Conditional jump or move depends on uninitialised value(s)
-==10109==    at 0x4017AA6: index (strchr.S:55)
-==10109==    by 0x4007A12: expand_dynamic_string_token (dl-load.c:431)
-==10109==    by 0x4008304: _dl_map_object (dl-load.c:2299)
-==10109==    by 0x400181D: map_doit (rtld.c:626)
-==10109==    by 0x400E985: _dl_catch_error (dl-error.c:177)
-==10109==    by 0x40010EF: do_preload (rtld.c:815)
-==10109==    by 0x40039D7: dl_main (rtld.c:1629)
-==10109==    by 0x40152B7: _dl_sysdep_start (dl-sysdep.c:241)
-==10109==    by 0x4004E94: _dl_start (rtld.c:331)
-==10109==    by 0x4001637: ??? (in /lib64/ld-2.17.so)
-==10109==  Uninitialised value was created by a stack allocation
-==10109==    at 0x4003961: dl_main (rtld.c:1619)
-==10109== 
-==10109== Conditional jump or move depends on uninitialised value(s)
-==10109==    at 0x4017AAB: index (strchr.S:58)
-==10109==    by 0x4007A12: expand_dynamic_string_token (dl-load.c:431)
-==10109==    by 0x4008304: _dl_map_object (dl-load.c:2299)
-==10109==    by 0x400181D: map_doit (rtld.c:626)
-==10109==    by 0x400E985: _dl_catch_error (dl-error.c:177)
-==10109==    by 0x40010EF: do_preload (rtld.c:815)
-==10109==    by 0x40039D7: dl_main (rtld.c:1629)
-==10109==    by 0x40152B7: _dl_sysdep_start (dl-sysdep.c:241)
-==10109==    by 0x4004E94: _dl_start (rtld.c:331)
-==10109==    by 0x4001637: ??? (in /lib64/ld-2.17.so)
-==10109==  Uninitialised value was created by a stack allocation
-==10109==    at 0x4003961: dl_main (rtld.c:1619)
-==10109== 
+==24342== Memcheck, a memory error detector
+==24342== Copyright (C) 2002-2012, and GNU GPL'd, by Julian Seward et al.
+==24342== Using Valgrind-3.8.1 and LibVEX; rerun with -h for copyright info
+==24342== Command: check/internal-tests/fcml_internal_check
+==24342== 
+==24342== Conditional jump or move depends on uninitialised value(s)
+==24342==    at 0x4017AA6: index (strchr.S:55)
+==24342==    by 0x4007A12: expand_dynamic_string_token (dl-load.c:431)
+==24342==    by 0x4008304: _dl_map_object (dl-load.c:2299)
+==24342==    by 0x400181D: map_doit (rtld.c:626)
+==24342==    by 0x400E985: _dl_catch_error (dl-error.c:177)
+==24342==    by 0x40010EF: do_preload (rtld.c:815)
+==24342==    by 0x40039D7: dl_main (rtld.c:1629)
+==24342==    by 0x40152B7: _dl_sysdep_start (dl-sysdep.c:241)
+==24342==    by 0x4004E94: _dl_start (rtld.c:331)
+==24342==    by 0x4001637: ??? (in /lib64/ld-2.17.so)
+==24342==  Uninitialised value was created by a stack allocation
+==24342==    at 0x4003961: dl_main (rtld.c:1619)
+==24342== 
+==24342== Conditional jump or move depends on uninitialised value(s)
+==24342==    at 0x4017AAB: index (strchr.S:58)
+==24342==    by 0x4007A12: expand_dynamic_string_token (dl-load.c:431)
+==24342==    by 0x4008304: _dl_map_object (dl-load.c:2299)
+==24342==    by 0x400181D: map_doit (rtld.c:626)
+==24342==    by 0x400E985: _dl_catch_error (dl-error.c:177)
+==24342==    by 0x40010EF: do_preload (rtld.c:815)
+==24342==    by 0x40039D7: dl_main (rtld.c:1629)
+==24342==    by 0x40152B7: _dl_sysdep_start (dl-sysdep.c:241)
+==24342==    by 0x4004E94: _dl_start (rtld.c:331)
+==24342==    by 0x4001637: ??? (in /lib64/ld-2.17.so)
+==24342==  Uninitialised value was created by a stack allocation
+==24342==    at 0x4003961: dl_main (rtld.c:1619)
+==24342== 
 
 Test [Internal unit tests]:
 Run Summary:      Type         Ran     Passed     Failed
-                suites           8          8          0
-                 tests         172        172          0
+                suites           9          9          0
+                 tests         173        173          0
                asserts        1696       1696          0
-==10109== 
-==10109== HEAP SUMMARY:
-==10109==     in use at exit: 0 bytes in 0 blocks
-==10109==   total heap usage: 3,647 allocs, 3,647 frees, 192,759 bytes allocated
-==10109== 
-==10109== All heap blocks were freed -- no leaks are possible
-==10109== 
-==10109== For counts of detected and suppressed errors, rerun with: -v
-==10109== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==24342== 
+==24342== HEAP SUMMARY:
+==24342==     in use at exit: 0 bytes in 0 blocks
+==24342==   total heap usage: 66,278 allocs, 66,278 frees, 2,572,330 bytes allocated
+==24342== 
+==24342== All heap blocks were freed -- no leaks are possible
+==24342== 
+==24342== For counts of detected and suppressed errors, rerun with: -v
+==24342== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)

@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <fcml_errors.h>
+#include <fcml_symbols.h>
 #include "fcml_env.h"
 #include "fcml_apc_ast.h"
 #include "fcml_utils.h"
@@ -520,7 +521,7 @@ fcml_ceh_error fcml_ifn_ast_eval_symbol( fcml_st_cif_converter_context *context,
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	/* Get symbol definition from symbol table. */
-	fcml_st_symbol *symbol_def = (fcml_st_symbol*)fcml_fn_coll_map_get( context->symbols, symbol_node->symbol );
+	fcml_st_symbol *symbol_def = fcml_fn_symbol_get( context->symbol_table, symbol_node->symbol );
 
 	if( !symbol_def && !context->ignore_undefined_symbols ) {
 

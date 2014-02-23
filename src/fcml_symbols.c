@@ -9,10 +9,6 @@
 #include "fcml_coll.h"
 #include "fcml_env.h"
 
-typedef struct fcml_st_symbol_table_int {
-	fcml_coll_map symbol_table;
-} fcml_st_symbol_table_int;
-
 void fcml_fn_symbol_free( fcml_st_symbol *symbol ) {
 	if( symbol ) {
 		if( symbol->symbol ) {
@@ -39,8 +35,17 @@ fcml_st_symbol_table LIB_CALL fcml_fn_symbol_table_alloc() {
 	return symbol_table;
 }
 
-fcml_ceh_error LIB_CALL fcml_fn_symbol_add( fcml_st_symbol_table symbol_table, fcml_string symbol, fcml_int64_t value ) {
-	fcml_st_symbol_table_int *symbol_table_int = (fcml_st_symbol_table_int*)symbol_table;
+fcml_ceh_error LIB_CALL fcml_fn_symbol_add( fcml_st_symbol_table symbol_table, fcml_st_symbol *symbol ) {
+	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
+	fcml_fn_coll_map_put( (fcml_coll_map)symbol_table, symbol->symbol, symbol, &error );
+	if( error ) {
+		return FCML_CEH_GEC_OUT_OF_MEMORY;
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ceh_error LIB_CALL fcml_fn_symbol_add_raw( fcml_st_symbol_table symbol_table, fcml_string symbol, fcml_int64_t value ) {
+	fcml_coll_map symbol_map = (fcml_coll_map)symbol_table;
 	fcml_st_symbol *sym = (fcml_st_symbol*)fcml_fn_env_memory_alloc( sizeof( fcml_st_symbol ) );
 	if( !sym ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -52,7 +57,7 @@ fcml_ceh_error LIB_CALL fcml_fn_symbol_add( fcml_st_symbol_table symbol_table, f
 	}
 	sym->value = value;
 	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
-	fcml_fn_coll_map_put( symbol_table_int->symbol_table, sym->symbol, sym, &error );
+	fcml_fn_coll_map_put( symbol_map, sym->symbol, sym, &error );
 	if( error ) {
 		fcml_fn_env_str_strfree( sym->symbol );
 		fcml_fn_env_memory_free( sym );
@@ -62,31 +67,31 @@ fcml_ceh_error LIB_CALL fcml_fn_symbol_add( fcml_st_symbol_table symbol_table, f
 }
 
 void LIB_CALL fcml_fn_symbol_remove( fcml_st_symbol_table symbol_table, fcml_string symbol ) {
-	fcml_st_symbol_table_int *symbol_table_int = (fcml_st_symbol_table_int*)symbol_table;
+	fcml_coll_map symbol_map = (fcml_coll_map)symbol_table;
 	if( symbol_table && symbol ) {
-		fcml_fn_coll_map_remove( symbol_table_int->symbol_table, symbol );
+		fcml_fn_coll_map_remove( symbol_map, symbol );
 	}
 }
 
 fcml_st_symbol* LIB_CALL fcml_fn_symbol_get( fcml_st_symbol_table symbol_table, fcml_string symbol ) {
-	fcml_st_symbol_table_int *symbol_table_int = (fcml_st_symbol_table_int*)symbol_table;
-	if( symbol_table_int && symbol ) {
-		return (fcml_st_symbol*)fcml_fn_coll_map_get(symbol_table_int->symbol_table, symbol );
+	fcml_coll_map symbol_map = (fcml_coll_map)symbol_table;
+	if( symbol_map && symbol ) {
+		return (fcml_st_symbol*)fcml_fn_coll_map_get(symbol_map, symbol );
 	}
 	return NULL;
 }
 
 void LIB_CALL fcml_fn_symbol_remove_all( fcml_st_symbol_table symbol_table ) {
-	fcml_st_symbol_table_int *symbol_table_int = (fcml_st_symbol_table_int*)symbol_table;
-	if( symbol_table_int ) {
-		fcml_fn_coll_map_clear( symbol_table_int->symbol_table );
+	fcml_coll_map symbol_map = (fcml_coll_map)symbol_table;
+	if( symbol_map ) {
+		fcml_fn_coll_map_clear( symbol_map );
 	}
 }
 
 void LIB_CALL fcml_fn_symbol_table_free( fcml_st_symbol_table symbol_table ) {
-	fcml_st_symbol_table_int *symbol_table_int = (fcml_st_symbol_table_int*)symbol_table;
-	if( symbol_table_int ) {
-		fcml_fn_coll_map_free( symbol_table_int->symbol_table );
+	fcml_coll_map symbol_map = (fcml_coll_map)symbol_table;
+	if( symbol_map ) {
+		fcml_fn_coll_map_free( symbol_map );
 	}
 }
 

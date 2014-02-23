@@ -319,21 +319,6 @@ typedef struct fcml_st_nullable_size_flags {
 } fcml_st_nullable_size_flags;
 
 /*********************************
- * Symbols.
- *********************************/
-
-/* EIP/RIP is always represent as 64 bit value in parsing environment. */
-typedef fcml_int64_t fcml_parser_ip;
-
-/* Represents one symbol which defines named value used by parsers. */
-typedef struct fcml_st_symbol {
-	/* Symbol name. */
-	fcml_string symbol;
-	/* Symbol value. */
-	fcml_int64_t value;
-} fcml_st_symbol;
-
-/*********************************
  * Operands.
  *********************************/
 

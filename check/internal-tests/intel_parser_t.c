@@ -18,26 +18,24 @@
 #include <fcml_intel_dialect.h>
 
 fcml_st_dialect *internal_dialect_intel = NULL;
-fcml_st_parser_context *internal_intel_context = NULL;
+fcml_st_parser_context internal_intel_context = {0};
 
 void fcml_tf_parser_suite_init(void) {
 	fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT, &internal_dialect_intel );
-	internal_intel_context = fcml_fn_parser_allocate_context( internal_dialect_intel );
+	internal_intel_context.dialect = internal_dialect_intel;
 }
 
 void fcml_tf_parser_suite_cleanup(void) {
 	if( internal_dialect_intel ) {
 		fcml_fn_dialect_free( internal_dialect_intel );
 	}
-    if( internal_intel_context ) {
-		fcml_fn_parser_free_context( internal_intel_context );
-	}
+	fcml_fn_symbol_table_free( internal_intel_context.symbol_table );
 }
 
 void fcml_tf_parser_int_parse_test1(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 80-90", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 80-90", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -52,7 +50,7 @@ void fcml_tf_parser_int_parse_test1(void) {
 void fcml_tf_parser_int_parse_test2(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -67,7 +65,7 @@ void fcml_tf_parser_int_parse_test2(void) {
 void fcml_tf_parser_int_parse_test3(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 0xFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -82,7 +80,7 @@ void fcml_tf_parser_int_parse_test3(void) {
 void fcml_tf_parser_int_parse_test4(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 0xFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -97,7 +95,7 @@ void fcml_tf_parser_int_parse_test4(void) {
 void fcml_tf_parser_int_parse_test5(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 0xFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
@@ -112,7 +110,7 @@ void fcml_tf_parser_int_parse_test5(void) {
 void fcml_tf_parser_int_parse_test6(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
@@ -127,7 +125,7 @@ void fcml_tf_parser_int_parse_test6(void) {
 void fcml_tf_parser_int_parse_test7(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -142,7 +140,7 @@ void fcml_tf_parser_int_parse_test7(void) {
 void fcml_tf_parser_int_parse_test8(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov -0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov -0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -157,7 +155,7 @@ void fcml_tf_parser_int_parse_test8(void) {
 void fcml_tf_parser_int_parse_test9(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov -0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov -0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -172,7 +170,7 @@ void fcml_tf_parser_int_parse_test9(void) {
 void fcml_tf_parser_int_parse_test10(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 1+2", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 1+2", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -187,7 +185,7 @@ void fcml_tf_parser_int_parse_test10(void) {
 void fcml_tf_parser_int_parse_test11(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 1+2*8/(15-13)-1", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 1+2*8/(15-13)-1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -202,7 +200,7 @@ void fcml_tf_parser_int_parse_test11(void) {
 void fcml_tf_parser_int_parse_test12(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 65535", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 65535", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -217,7 +215,7 @@ void fcml_tf_parser_int_parse_test12(void) {
 void fcml_tf_parser_int_parse_test13(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov -32768", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov -32768", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -232,7 +230,7 @@ void fcml_tf_parser_int_parse_test13(void) {
 void fcml_tf_parser_int_parse_test14(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov (-2147483647 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov (-2147483647 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 	STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
 	STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_TRUE );
@@ -243,7 +241,7 @@ void fcml_tf_parser_int_parse_test14(void) {
 void fcml_tf_parser_int_parse_test15(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov (-9223372036854775807 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov (-9223372036854775807 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -258,7 +256,7 @@ void fcml_tf_parser_int_parse_test15(void) {
 void fcml_tf_parser_int_parse_test16(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 18446744073709551615", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 18446744073709551615", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -273,7 +271,7 @@ void fcml_tf_parser_int_parse_test16(void) {
 void fcml_tf_parser_int_parse_test17(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 5675", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 5675", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
@@ -288,7 +286,7 @@ void fcml_tf_parser_int_parse_test17(void) {
 void fcml_tf_parser_int_parse_test18(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 2147483647", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 2147483647", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
@@ -303,7 +301,7 @@ void fcml_tf_parser_int_parse_test18(void) {
 void fcml_tf_parser_int_parse_test19(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 4294967295", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 4294967295", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
@@ -318,7 +316,7 @@ void fcml_tf_parser_int_parse_test19(void) {
 void fcml_tf_parser_int_parse_test20(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 4294967296", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 4294967296", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -333,7 +331,7 @@ void fcml_tf_parser_int_parse_test20(void) {
 void fcml_tf_parser_int_parse_test21(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov -0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov -0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
@@ -348,7 +346,7 @@ void fcml_tf_parser_int_parse_test21(void) {
 void fcml_tf_parser_int_parse_test22(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 255", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 255", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -363,7 +361,7 @@ void fcml_tf_parser_int_parse_test22(void) {
 void fcml_tf_parser_int_parse_test23(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -378,7 +376,7 @@ void fcml_tf_parser_int_parse_test23(void) {
 void fcml_tf_parser_int_parse_test24(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-    STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov dword ptr [0x0000FFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov dword ptr [0x0000FFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result.instruction != NULL ) {
         STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.address_form, FCML_AF_OFFSET );
@@ -393,7 +391,7 @@ void fcml_tf_parser_int_parse_test24(void) {
 void fcml_tf_parser_int_parse_test25(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-    STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov dword ptr [0xFF-1]", &result ), FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov dword ptr [0xFF-1]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result.instruction != NULL ) {
         STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.address_form, FCML_AF_OFFSET );
@@ -408,7 +406,7 @@ void fcml_tf_parser_int_parse_test25(void) {
 void fcml_tf_parser_int_parse_test26(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-    STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov dword ptr [-1]", &result ), FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov dword ptr [-1]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result.instruction != NULL ) {
         STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.address_form, FCML_AF_OFFSET );
@@ -423,7 +421,7 @@ void fcml_tf_parser_int_parse_test26(void) {
 void fcml_tf_parser_int_parse_test27(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-    STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov dword ptr [0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov dword ptr [0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result.instruction != NULL ) {
         STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.address_form, FCML_AF_OFFSET );
@@ -438,7 +436,7 @@ void fcml_tf_parser_int_parse_test27(void) {
 void fcml_tf_parser_int_parse_test28(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-    STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov dword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov dword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result.instruction != NULL ) {
         STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.address_form, FCML_AF_COMBINED );
@@ -455,7 +453,7 @@ void fcml_tf_parser_int_parse_test28(void) {
 void fcml_tf_parser_int_parse_test29(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-    STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "mov xmmword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov xmmword ptr [eax+0xFFFFFFFFFFFFFFFF]", &result ), FCML_CEH_GEC_NO_ERROR );
     if( result.instruction != NULL ) {
         STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_ADDRESS );
         STF_ASSERT_EQUAL( result.instruction->operands[0].hints, FCML_OP_HINT_MULTIMEDIA_INSTRUCTION );
@@ -473,7 +471,7 @@ void fcml_tf_parser_int_parse_test29(void) {
 void fcml_tf_parser_int_parse_test30(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "lock mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "lock mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -490,7 +488,7 @@ void fcml_tf_parser_int_parse_test31(void) {
 	/* Check if multiple prefixes are allowed.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "lock repne repe mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "lock repne repe mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
@@ -507,7 +505,7 @@ void fcml_tf_parser_int_parse_test32(void) {
 	/* Duplicated prefixes aren't allowed.*/
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	STF_ASSERT_EQUAL( fcml_fn_parse( internal_intel_context, "lock lock mov 1", &result ), FCML_CEH_GEC_INVALID_INPUT );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "lock lock mov 1", &result ), FCML_CEH_GEC_INVALID_INPUT );
 	if( result.instruction != NULL ) {
         STF_FAIL("Instruction should be NULL.");
 	} else if( result.errors.errors ){
@@ -524,41 +522,35 @@ void fcml_tf_parser_int_parse_test32(void) {
 void fcml_tf_parser_int_parse_test_symbols_1(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
-	if( !context ) {
-		STF_FAIL();
-		return;
-	}
-	context->ip = 0x401000;
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.ip = 0x401000;
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NULL( result.instruction );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
 	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
 	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "_label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "_label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NULL( result.instruction );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
 	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
 	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "_label" ) );
 
 	fcml_fn_parser_result_free( &result );
-	fcml_fn_parser_free_context( context );
+	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
 void fcml_tf_parser_int_parse_test_symbols_2(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
-	if( !context ) {
-		STF_FAIL();
-		return;
-	}
-	context->config.override_labels = FCML_FALSE;
-	context->ip = 0x401000;
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.config.override_labels = FCML_FALSE;
+	context.ip = 0x401000;
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
 	STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "mov" );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
@@ -566,7 +558,7 @@ void fcml_tf_parser_int_parse_test_symbols_2(void) {
 	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
 
 	fcml_fn_parser_result_free( &result );
-	fcml_fn_parser_free_context( context );
+	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
 void fcml_tf_parser_int_parse_test_symbols_3(void) {
@@ -575,23 +567,20 @@ void fcml_tf_parser_int_parse_test_symbols_3(void) {
 
 	fcml_fn_parser_result_prepare( &result );
 
-	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
-	if( !context ) {
-		STF_FAIL();
-		return;
-	}
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.config.override_labels = FCML_FALSE;
+	context.ip = 0x401000;
 
-	context->config.override_labels = FCML_FALSE;
-	context->ip = 0x401000;
-
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
 	STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "mov" );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
 	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
 	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_INVALID_INPUT );
+	/* Can not override symbol. */
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_INVALID_INPUT );
 
 	fcml_st_ceh_error_info *error = result.errors.errors;
 	STF_ASSERT_PTR_NOT_NULL( error );
@@ -600,9 +589,9 @@ void fcml_tf_parser_int_parse_test_symbols_3(void) {
 		STF_ASSERT_STRING_EQUAL( error->message, FCML_TEXT( "Symbol already defined: label." ) );
 	}
 
-	context->config.override_labels = FCML_TRUE;
+	context.config.override_labels = FCML_TRUE;
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: add eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: add eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
 	STF_ASSERT_STRING_EQUAL( result.instruction->mnemonic, "add" );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
@@ -610,7 +599,7 @@ void fcml_tf_parser_int_parse_test_symbols_3(void) {
 	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
 
 	fcml_fn_parser_result_free( &result );
-	fcml_fn_parser_free_context( context );
+	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
 
@@ -618,14 +607,11 @@ void fcml_tf_parser_int_parse_test_symbols_3(void) {
 void fcml_tf_parser_int_parse_test_symbols_4(void) {
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
-	if( !context ) {
-		STF_FAIL();
-		return;
-	}
-	context->ip = 0x401000;
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.ip = 0x401000;
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax, symbol" ), &result ), FCML_CEH_GEC_UNDEFINED_SYMBOL );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax, symbol" ), &result ), FCML_CEH_GEC_UNDEFINED_SYMBOL );
 	STF_ASSERT_PTR_NULL( result.instruction );
 	STF_ASSERT_PTR_NULL( result.symbol );
 
@@ -637,7 +623,7 @@ void fcml_tf_parser_int_parse_test_symbols_4(void) {
 	}
 
 	fcml_fn_parser_result_free( &result );
-	fcml_fn_parser_free_context( context );
+	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
 /* Ignore symbols. */
@@ -645,16 +631,13 @@ void fcml_tf_parser_int_parse_test_symbols_5(void) {
 
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
-	if( !context ) {
-		STF_FAIL();
-		return;
-	}
-	context->ip = 0x401000;
-	context->config.ignore_undefined_symbols = FCML_TRUE;
-	context->config.override_labels = FCML_TRUE;
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.ip = 0x401000;
+	context.config.ignore_undefined_symbols = FCML_TRUE;
+	context.config.override_labels = FCML_TRUE;
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax, symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax, symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
 
@@ -667,7 +650,7 @@ void fcml_tf_parser_int_parse_test_symbols_5(void) {
 	}
 
 	fcml_fn_parser_result_free( &result );
-	fcml_fn_parser_free_context( context );
+	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
 /* Use defined symbol in the instruction. */
@@ -675,16 +658,13 @@ void fcml_tf_parser_int_parse_test_symbols_6(void) {
 
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
-	if( !context ) {
-		STF_FAIL();
-		return;
-	}
-	context->ip = 0x401000;
-	context->config.ignore_undefined_symbols = FCML_TRUE;
-	context->config.override_labels = FCML_TRUE;
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.ip = 0x401000;
+	context.config.ignore_undefined_symbols = FCML_TRUE;
+	context.config.override_labels = FCML_TRUE;
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax, label" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax, label" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
 
@@ -698,7 +678,7 @@ void fcml_tf_parser_int_parse_test_symbols_6(void) {
 	}
 
 	fcml_fn_parser_result_free( &result );
-	fcml_fn_parser_free_context( context );
+	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
 /* Multpile symbols in expression. */
@@ -706,20 +686,23 @@ void fcml_tf_parser_int_parse_test_symbols_7(void) {
 
 	fcml_st_parser_result result;
 	fcml_fn_parser_result_prepare( &result );
-	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
-	if( !context ) {
-		STF_FAIL();
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.ip = 0x401000;
+	context.config.ignore_undefined_symbols = FCML_TRUE;
+	context.config.override_labels = FCML_TRUE;
+
+	context.symbol_table = fcml_fn_symbol_table_alloc();
+	if( !context.symbol_table ) {
+		STF_FAIL("Out of memory.");
 		return;
 	}
-	context->ip = 0x401000;
-	context->config.ignore_undefined_symbols = FCML_TRUE;
-	context->config.override_labels = FCML_TRUE;
 
-	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_1"), 10 ), FCML_CEH_GEC_NO_ERROR );
-	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_2"), 5 ), FCML_CEH_GEC_NO_ERROR );
-	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_3"), 2 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_symbol_add_raw( context.symbol_table, FCML_TEXT("symbol_1"), 10 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_symbol_add_raw( context.symbol_table, FCML_TEXT("symbol_2"), 5 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_symbol_add_raw( context.symbol_table, FCML_TEXT("symbol_3"), 2 ), FCML_CEH_GEC_NO_ERROR );
 
-	STF_ASSERT_EQUAL( fcml_fn_parse( context, FCML_TEXT( "label: mov eax, label + ( ( symbol_1 * symbol_2 ) / symbol_3 )" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax, label + ( ( symbol_1 * symbol_2 ) / symbol_3 )" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
 
@@ -732,7 +715,7 @@ void fcml_tf_parser_int_parse_test_symbols_7(void) {
 	}
 
 	fcml_fn_parser_result_free( &result );
-	fcml_fn_parser_free_context( context );
+	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
 /* Extracting symbols. */
@@ -742,22 +725,23 @@ void fcml_tf_parser_int_parse_test_symbols_8(void) {
 
 	fcml_fn_parser_result_prepare( &result );
 
-	fcml_st_parser_context *context = fcml_fn_parser_allocate_context( internal_dialect_intel );
-	if( !context ) {
-		STF_FAIL();
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.ip = 0x401000;
+	context.config.ignore_undefined_symbols = FCML_TRUE;
+	context.config.override_labels = FCML_TRUE;
+	context.symbol_table = fcml_fn_symbol_table_alloc();
+	if( !context.symbol_table ) {
+		STF_FAIL("Out of memory.");
 		return;
 	}
 
-	context->ip = 0x401000;
-	context->config.ignore_undefined_symbols = FCML_TRUE;
-	context->config.override_labels = FCML_TRUE;
-
-	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_1"), 10 ), FCML_CEH_GEC_NO_ERROR );
-	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_2"), 5 ), FCML_CEH_GEC_NO_ERROR );
-	STF_ASSERT_EQUAL( fcml_fn_parser_add_symbol( context, FCML_TEXT("symbol_3"), 2 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_symbol_add_raw( context.symbol_table, FCML_TEXT("symbol_1"), 10 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_symbol_add_raw( context.symbol_table, FCML_TEXT("symbol_2"), 5 ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_EQUAL( fcml_fn_symbol_add_raw( context.symbol_table, FCML_TEXT("symbol_3"), 2 ), FCML_CEH_GEC_NO_ERROR );
 
 	fcml_st_parser_ast ast = {0};
-	fcml_ceh_error error = fcml_fn_parse_to_ast( context, FCML_TEXT( "label: mov eax, label + ( ( symbol_1 * symbol_2 ) / symbol_3 )" ), &ast );
+	fcml_ceh_error error = fcml_fn_parse_to_ast( &context, FCML_TEXT( "label: mov eax, label + ( ( symbol_1 * symbol_2 ) / symbol_3 )" ), &ast );
 
 	if( !error ) {
 
@@ -777,7 +761,7 @@ void fcml_tf_parser_int_parse_test_symbols_8(void) {
 	}
 
 	fcml_fn_parser_free_ast( &ast );
-	fcml_fn_parser_free_context( context );
+	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
 fcml_stf_test_case fcml_ti_parser[] = {

@@ -95,7 +95,8 @@ nodist_fcml_internal_check_SOURCES = ../../src/fcml_intel_lexer.h \
 	../../src/fcml_utils.h \
 	../../src/fcml_stream.h \
 	../../src/fcml_lag_assembler.h \
-	../../src/fcml_lag_assembler.c
+	../../src/fcml_lag_assembler.c \
+	../../src/fcml_symbols.c
 
 fcml_internal_check_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_srcdir)/check/stf
 

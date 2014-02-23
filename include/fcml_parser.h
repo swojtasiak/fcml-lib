@@ -14,6 +14,7 @@
 #include "fcml_errors.h"
 #include "fcml_common.h"
 #include "fcml_dialect.h"
+#include "fcml_symbols.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,15 +34,28 @@ typedef struct fcml_st_parser_config {
 	fcml_bool override_labels;
 } fcml_st_parser_config;
 
+/* EIP/RIP is always represent as 64 bit value in parsing environment. */
+typedef fcml_int64_t fcml_parser_ip;
+
 typedef struct fcml_st_parser_context {
-	/* Pserser configuration. */
-	fcml_st_parser_config config;
 	/* Dialect to be used by parser. */
 	fcml_st_dialect *dialect;
+	/* Pserser configuration. */
+	fcml_st_parser_config config;
 	/* RIP/EIP used as a value for newly declared symbols.
 	 * This value is never changed by parser.
 	 */
 	fcml_parser_ip ip;
+	/* Symbol table. It holds symbols added by user as
+	 * well as symbols allocated by parsers (labels). It is
+	 * very important to free this container on your own
+	 * because even if is not allocated by the user, it can be
+	 * set by the parser when the first symbol definition is found.
+	 * So the most safe way to manage it, is to always use
+	 * "fcml_fn_symbol_table_free" function as soon as context
+	 * if going to be freed.
+	 */
+	fcml_st_symbol_table symbol_table;
 } fcml_st_parser_context;
 
 typedef struct fcml_st_parser_result {
@@ -53,15 +67,9 @@ typedef struct fcml_st_parser_result {
 	fcml_st_instruction *instruction;
 } fcml_st_parser_result;
 
-LIB_EXPORT fcml_st_parser_context* LIB_CALL fcml_fn_parser_allocate_context( fcml_st_dialect *dialect );
 LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result );
 LIB_EXPORT void LIB_CALL fcml_fn_parser_result_prepare( fcml_st_parser_result *result );
 LIB_EXPORT void LIB_CALL fcml_fn_parser_result_free( fcml_st_parser_result *result );
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_parser_add_symbol( fcml_st_parser_context *context, fcml_string symbol, fcml_int64_t value );
-LIB_EXPORT void LIB_CALL fcml_fn_parser_remove_symbol( fcml_st_parser_context *context, fcml_string symbol );
-LIB_EXPORT fcml_st_symbol* LIB_CALL fcml_fn_parser_get_symbol( fcml_st_parser_context *context, fcml_string symbol );
-LIB_EXPORT void LIB_CALL fcml_fn_parser_remove_all_symbols( fcml_st_parser_context *context );
-LIB_EXPORT void LIB_CALL fcml_fn_parser_free_context( fcml_st_parser_context *context );
 
 #ifdef __cplusplus
 }
