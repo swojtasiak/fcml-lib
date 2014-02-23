@@ -128,6 +128,8 @@ typedef struct fcml_st_cif_converter_context {
 	fcml_st_symbol_table symbol_table;
 	/* Number of evaluated symbols. */
 	fcml_int evaluated_symbols;
+	/* Number of ignored undefined symbols. */
+	fcml_int ignored_symbols;
 } fcml_st_cif_converter_context;
 
 /* Function pointer for node visitor. */

@@ -538,6 +538,10 @@ fcml_ceh_error fcml_ifn_ast_eval_symbol( fcml_st_cif_converter_context *context,
 		 * symbols is used in case of load-and-go assembler.
 		 */
 
+		if( !symbol_def ) {
+			context->ignored_symbols++;
+		}
+
 		context->evaluated_symbols++;
 
 		result->type = FCML_EN_ET_INTEGER;

@@ -8,6 +8,7 @@
 #include "lag_assembler_t.h"
 
 #include <fcml_stf.h>
+#include <fcml_gas_dialect.h>
 #include <fcml_intel_dialect.h>
 #include <fcml_lag_assembler.h>
 
@@ -30,6 +31,24 @@ fcml_string fcml_iarr_lag_assembler_code[] = {
 	NULL
 };
 
+fcml_string fcml_iarr_lag_assembler_code_1[] = {
+	"start:      mov ebx, 1",
+	"loop_big:   inc ebx",
+	"            cmp ebx, 10",
+	"            je  finish",
+	"loop_small: mov eax, 1",
+	"increment:  inc eax",
+	"            cmp eax, 10",
+	"            je  finish_small",
+	"            jmp increment",
+	"finish_small:",
+	"            jmp loop_big",
+	"finish:     ret",
+	NULL
+};
+
+
+
 void fcml_tf_lag_assembler_test(void) {
 
 	fcml_ceh_error error;
@@ -40,6 +59,7 @@ void fcml_tf_lag_assembler_test(void) {
 
 	fcml_st_dialect *dialect;
 
+	//error = fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT, &dialect );
 	error = fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT, &dialect );
 	if( error ) {
 		STF_FAIL("Can not initialize dialect.");
@@ -54,20 +74,21 @@ void fcml_tf_lag_assembler_test(void) {
 		return;
 	}
 
-	fcml_st_assembler_context context = {0};
+	fcml_st_lag_assembler_context context = {0};
 	context.assembler = assembler;
 	context.entry_point.addr_form = FCML_AF_32_BIT;
 	context.entry_point.ip.eip = 0x00401000;
+	context.dialect = dialect;
 
-
-
-	error = fcml_fn_lag_assemble( &context, fcml_iarr_lag_assembler_code, &result );
+	error = fcml_fn_lag_assemble( &context, fcml_iarr_lag_assembler_code_1, &result );
 	if( error ) {
 		STF_FAIL("Failed to assemble code.");
 		return;
 	}
 
 	fcml_fn_assembler_free( assembler );
+
+	fcml_fn_symbol_table_free( context.symbol_table );
 
 	fcml_fn_dialect_free( dialect );
 

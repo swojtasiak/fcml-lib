@@ -26,6 +26,7 @@ fcml_bool fcml_fn_env_memory_cmp( const fcml_ptr src1, const fcml_ptr src2, fcml
 void fcml_fn_env_memory_free( fcml_ptr ptr );
 
 /* Strings. */
+fcml_bool fcml_fn_env_str_strblank( const fcml_string str );
 fcml_usize fcml_fn_env_str_strlen( const fcml_string str );
 fcml_string fcml_fn_env_str_stralloc( fcml_usize len );
 fcml_string fcml_fn_env_str_strdup( const fcml_string str );

@@ -70,6 +70,17 @@ fcml_string fcml_fn_env_str_strldup( const fcml_string str, fcml_usize size ) {
 	return new_str;
 }
 
+fcml_bool fcml_fn_env_str_strblank( const fcml_string str ) {
+	fcml_usize len = fcml_fn_env_str_strlen( str );
+	fcml_int i;
+	for( i = 0; i < len; i++ ) {
+		if( !isspace( str[i] ) ) {
+			return FCML_FALSE;
+		}
+	}
+	return FCML_TRUE;
+}
+
 fcml_usize fcml_fn_env_str_strlen( const fcml_string str ) {
     return (fcml_usize)strlen( str );
 }

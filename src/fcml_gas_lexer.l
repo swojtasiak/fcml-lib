@@ -26,7 +26,7 @@
 /*White spaces.*/
 WS				[ \t]*
 /*Dec and hex values.*/
-DEC				[1-9][0-9]*
+DEC				([1-9][0-9]*|0+)
 HEX				0x[0-9a-f]+
 
 %%
