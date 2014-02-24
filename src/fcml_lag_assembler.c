@@ -66,9 +66,23 @@ typedef struct fcml_ist_lag_instruction {
 	fcml_int size_guard;
 } fcml_ist_lag_instruction;
 
-typedef struct fcml_ist_log_asseblation_context {
+/* Details about processing errors. */
+typedef struct fcml_ist_lag_error_details {
+	/* Errors. */
+	fcml_st_ceh_error_container errors;
+	/* Line where assembling failed. */
+	fcml_int line;
+} fcml_ist_lag_error_details;
+
+/* Context shared between multiple passes. */
+typedef struct fcml_ist_lag_processing_context {
+	/* Parsed/Converted/Assembled instructions. */
 	fcml_ist_lag_instruction *first_instruction;
 	fcml_ist_lag_instruction *last_instruction;
+	/* One line assembler used to assemble code. */
+	fcml_st_assembler_context assembler_context;
+	/* Global errors going here. */
+	fcml_ist_lag_error_details error_details;
 } fcml_ist_log_asseblation_context;
 
 fcml_ceh_error fcml_ifn_lag_copy_instruction_code( fcml_ist_lag_instruction_code *instruction, fcml_st_assembled_instruction *chosen_instruction ) {
@@ -211,56 +225,35 @@ fcml_ceh_error fcml_ifn_choose_instruction( fcml_ist_lag_instruction *lag_instru
 
 }
 
-fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *context, const fcml_string *source_code, fcml_st_lag_assembler_result *result ) {
+fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *context, const fcml_string *source_code, fcml_ist_log_asseblation_context *processing_ctx, fcml_bool *invoke_next_pass ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_ist_log_asseblation_context processing_ctx = {0};
+	fcml_st_assembler_context *assembler_context = &(processing_ctx->assembler_context);
 
-	/* Allocate symbol table, if it hasn't been defined yet. */
-	if( !context->symbol_table ) {
-		context->symbol_table = fcml_fn_symbol_table_alloc();
-		if( !context->symbol_table ) {
-			return FCML_CEH_GEC_OUT_OF_MEMORY;
-		}
-	}
-
-	fcml_st_assembler_context assembler_context = {0};
-	assembler_context.assembler = context->assembler;
-	assembler_context.configuration = context->configuration;
-	/* Default optimizer ans chosoer has to be used here. */
-	assembler_context.configuration.optimizer = NULL;
-	assembler_context.configuration.chooser = NULL;
-	assembler_context.entry_point = context->entry_point;
+	/* Parses instructions one by one. Every parsed instruction is then converted to CIF and assembled.
+	 * Assembler should return all allowed forms of assembled instruction. If all symbols were known, the
+	 * shortest instruction for is chooen; otherwise the longest one.
+	 */
+	fcml_st_assembler_result assembler_result;
+	fcml_fn_assembler_result_prepare( &assembler_result );
 
 	fcml_st_parser_context parser_context = {0};
 	parser_context.config.ignore_undefined_symbols = FCML_TRUE;
 	parser_context.config.override_labels = FCML_FALSE;
-	parser_context.ip = ( assembler_context.entry_point.addr_form == FCML_AF_64_BIT ) ? assembler_context.entry_point.ip.rip : assembler_context.entry_point.ip.eip;
+	parser_context.ip = ( assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) ? assembler_context->entry_point.ip.rip : assembler_context->entry_point.ip.eip;
 	parser_context.dialect = context->dialect;
 
 	fcml_st_parser_result parser_result;
 	fcml_fn_parser_result_prepare( &parser_result );
-
-	fcml_st_assembler_result assembler_result;
-	fcml_fn_assembler_result_prepare( &assembler_result );
-
-	/*************/
-	/*  Stage 1  */
-	/*************/
-
-	// Stage 1.
-	// - Parses instructions one by one. Every parsed instruction is then converted to CIF and assembled.
-	//   Assembler should return all allowed forms of assembled instruction. If all symbols were known, the
-	//   shortest instruction for is chooen; otherwise the longest one.
-
-	fcml_bool invoke_next_phase = FCML_FALSE;
 
 	fcml_int line = 0;
 
 	fcml_string instruction;
 
 	while( ( instruction = source_code[line] ) ) {
+
+		processing_ctx->error_details.line = line;
 
 		/* Check if line is blank. */
 
@@ -288,7 +281,7 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 					fcml_char msg_buffer[FCML_MESSAGE_MAX];
 					fcml_string msg_pattern = fcml_fn_msg_get_message( FCML_MC_SEGMENT_SYMBOL_ALREADY_DEFINED );
 					fcml_fn_env_str_snprintf( msg_buffer, sizeof( msg_buffer ), msg_pattern, ast.symbol->symbol );
-					fcml_fn_ceh_add_error( &(result->errors), (const fcml_string)msg_buffer, FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED, FCML_EN_CEH_EL_ERROR );
+					fcml_fn_ceh_add_error( &(processing_ctx->error_details.errors), (const fcml_string)msg_buffer, FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED, FCML_EN_CEH_EL_ERROR );
 					error = FCML_CEH_GEC_INVALID_INPUT;
 					break;
 				}
@@ -328,13 +321,13 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 
 				/* Assemble instruction. */
 
-				if( assembler_context.entry_point.addr_form == FCML_AF_64_BIT ) {
-					assembler_context.entry_point.ip.rip = (fcml_uint64_t)parser_context.ip;
+				if( assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
+					assembler_context->entry_point.ip.rip = (fcml_uint64_t)parser_context.ip;
 				} else {
-					assembler_context.entry_point.ip.eip = (fcml_uint32_t)parser_context.ip;
+					assembler_context->entry_point.ip.eip = (fcml_uint32_t)parser_context.ip;
 				}
 
-				error = fcml_fn_assemble( &assembler_context, cif_instruction, &assembler_result );
+				error = fcml_fn_assemble( assembler_context, cif_instruction, &assembler_result );
 				if( error ) {
 					break;
 				}
@@ -354,7 +347,7 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 						current = current->next;
 					}
 					/* At last one forward symbol, so next phase is needed. */
-					invoke_next_phase = FCML_TRUE;
+					*invoke_next_pass = FCML_TRUE;
 				} else {
 					/* Default chooser chooses the shortest for for us. */
 					chosen_instruction = assembler_result.chosen_instruction;
@@ -383,12 +376,12 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 			lag_instruction->line = line;
 			lag_instruction->ast = ast;
 
-			if( !processing_ctx.first_instruction ) {
-				processing_ctx.first_instruction = lag_instruction;
-				processing_ctx.last_instruction = lag_instruction;
+			if( !processing_ctx->first_instruction ) {
+				processing_ctx->first_instruction = lag_instruction;
+				processing_ctx->last_instruction = lag_instruction;
 			} else {
-				processing_ctx.last_instruction->next = lag_instruction;
-				processing_ctx.last_instruction = lag_instruction;
+				processing_ctx->last_instruction->next = lag_instruction;
+				processing_ctx->last_instruction = lag_instruction;
 			}
 
 			/* Increment instruction pointer. */
@@ -399,18 +392,20 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 		line++;
 	}
 
-	if( error ) {
+	fcml_fn_assembler_result_free( &assembler_result );
 
-		result->error_line = line;
+	return error;
+}
 
-		/* Free environment. */
 
-		return error;
-	}
+fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n( fcml_st_lag_assembler_context *context, fcml_ist_log_asseblation_context *processing_ctx ) {
 
-	/*****************/
-	/*  Stages 2..n  */
-	/*****************/
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_st_assembler_context *assembler_context = &(processing_ctx->assembler_context);
+
+	fcml_st_assembler_result assembler_result;
+	fcml_fn_assembler_result_prepare( &assembler_result );
 
 	/* Allocate map for information about symbols modifications. */
 	fcml_coll_map symbol_state_map = fcml_ifn_lag_alloc_symbol_state_map();
@@ -420,10 +415,12 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 
 	fcml_int pass = 2;
 
+	fcml_bool invoke_next_phase = FCML_TRUE;
+
 	/* Main loop of second and furher passes. */
 	while( !error && invoke_next_phase ) {
 
-		fcml_ist_lag_instruction *lag_instruction = processing_ctx.first_instruction;
+		fcml_ist_lag_instruction *lag_instruction = processing_ctx->first_instruction;
 
 		fcml_parser_ip ip_disp = 0;
 
@@ -475,13 +472,13 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 
 				/* Assemble instruction. */
 
-				if( assembler_context.entry_point.addr_form == FCML_AF_64_BIT ) {
-					assembler_context.entry_point.ip.rip = (fcml_uint64_t)lag_instruction->ip;
+				if( assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
+					assembler_context->entry_point.ip.rip = (fcml_uint64_t)lag_instruction->ip;
 				} else {
-					assembler_context.entry_point.ip.eip = (fcml_uint32_t)lag_instruction->ip;
+					assembler_context->entry_point.ip.eip = (fcml_uint32_t)lag_instruction->ip;
 				}
 
-				error = fcml_fn_assemble( &assembler_context, cif_instruction, &assembler_result );
+				error = fcml_fn_assemble( assembler_context, cif_instruction, &assembler_result );
 				if( error ) {
 					break;
 				}
@@ -515,6 +512,50 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 	 * account that map should be already empty here.
 	 */
 	fcml_fn_coll_map_free( symbol_state_map );
+
+	fcml_fn_assembler_result_free( &assembler_result );
+
+	return error;
+}
+
+fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *context, const fcml_string *source_code, fcml_st_lag_assembler_result *result ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_ist_log_asseblation_context processing_ctx = {0};
+
+	/* Allocate symbol table, if it hasn't been defined yet. */
+	if( !context->symbol_table ) {
+		context->symbol_table = fcml_fn_symbol_table_alloc();
+		if( !context->symbol_table ) {
+			return FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+	}
+
+	fcml_st_assembler_context *assembler_context = &(processing_ctx.assembler_context);
+
+	/* Default optimizer ans chosoer has to be used here. */
+	assembler_context->assembler = context->assembler;
+	assembler_context->configuration = context->configuration;
+	assembler_context->configuration.optimizer = NULL;
+	assembler_context->configuration.chooser = NULL;
+	assembler_context->entry_point = context->entry_point;
+
+	/*************/
+	/*  Stage 1  */
+	/*************/
+
+	fcml_bool invoke_next_phase = FCML_FALSE;
+
+	error = fcml_ifn_lag_assembler_pass_1( context, source_code, &processing_ctx, &invoke_next_phase );
+
+	/*****************/
+	/*  Stages 2..n  */
+	/*****************/
+
+	if( !error && invoke_next_phase ) {
+		fcml_ifn_lag_assembler_pass_2_to_n( context, &processing_ctx );
+	}
 
 	return error;
 
