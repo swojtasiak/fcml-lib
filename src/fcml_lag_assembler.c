@@ -231,9 +231,11 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 
 	fcml_st_assembler_context *assembler_context = &(processing_ctx->assembler_context);
 
-	/* Parses instructions one by one. Every parsed instruction is then converted to CIF and assembled.
-	 * Assembler should return all allowed forms of assembled instruction. If all symbols were known, the
-	 * shortest instruction for is chooen; otherwise the longest one.
+	/* Parses instructions one by one. Every parsed instruction is
+	 * then converted to CIF and assembled. Assembler should return
+	 * all allowed forms of assembled instruction. If all symbols
+	 * were known, the shortest instruction for is chosen; otherwise
+	 * the longest one.
 	 */
 	fcml_st_assembler_result assembler_result;
 	fcml_fn_assembler_result_prepare( &assembler_result );
@@ -251,6 +253,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 
 	fcml_string instruction;
 
+	/* Parse source code, line by line. */
 	while( ( instruction = source_code[line] ) ) {
 
 		processing_ctx->error_details.line = line;
@@ -426,6 +429,8 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n( fcml_st_lag_assembler_context
 
 		while( lag_instruction ) {
 
+			processing_ctx->error_details.line = lag_instruction->line;
+
 			lag_instruction->ip += ip_disp;
 
 			fcml_st_symbol *def_symbol = lag_instruction->ast.symbol;
@@ -524,6 +529,9 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 
 	fcml_ist_log_asseblation_context processing_ctx = {0};
 
+	/* Just in case. */
+	fcml_fn_env_memory_clear( result, sizeof( fcml_st_lag_assembler_result ) );
+
 	/* Allocate symbol table, if it hasn't been defined yet. */
 	if( !context->symbol_table ) {
 		context->symbol_table = fcml_fn_symbol_table_alloc();
@@ -534,28 +542,27 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 
 	fcml_st_assembler_context *assembler_context = &(processing_ctx.assembler_context);
 
-	/* Default optimizer ans chosoer has to be used here. */
+	/* It's really important to use default implementations of optimizer and chooser here. */
+
 	assembler_context->assembler = context->assembler;
 	assembler_context->configuration = context->configuration;
-	assembler_context->configuration.optimizer = NULL;
-	assembler_context->configuration.chooser = NULL;
+	assembler_context->configuration.optimizer = &fcml_fn_asm_default_optimizer;
+	assembler_context->configuration.chooser = &fcml_fn_asm_default_instruction_chooser;
 	assembler_context->entry_point = context->entry_point;
 
-	/*************/
-	/*  Stage 1  */
-	/*************/
+	/* Pass 1 */
 
-	fcml_bool invoke_next_phase = FCML_FALSE;
+	fcml_bool invoke_next_pass = FCML_FALSE;
 
-	error = fcml_ifn_lag_assembler_pass_1( context, source_code, &processing_ctx, &invoke_next_phase );
+	error = fcml_ifn_lag_assembler_pass_1( context, source_code, &processing_ctx, &invoke_next_pass );
 
-	/*****************/
-	/*  Stages 2..n  */
-	/*****************/
+	/* Pass 2 */
 
-	if( !error && invoke_next_phase ) {
+	if( !error && invoke_next_pass ) {
 		fcml_ifn_lag_assembler_pass_2_to_n( context, &processing_ctx );
 	}
+
+	fcml_fn_symbol_table_free( context->symbol_table );
 
 	return error;
 
