@@ -22,6 +22,19 @@ second: jmp 249-(finish-start)
 finish: ret
  */
 
+typedef struct fcml_ist_lag_pass_holder {
+	/* Pass number. */
+	fcml_int pass;
+} fcml_ist_lag_pass_holder;
+
+/* Holds information about last symbol value modification. */
+typedef struct fcml_ist_symbol_state {
+	/* Name of the symbol. */
+	fcml_string symbol_name;
+	/* Pass which modified symbol. */
+	fcml_int pass;
+} fcml_ist_symbol_state;
+
 typedef struct fcml_ist_lag_instruction_code {
 	/* Warnings from last pass. */
 	fcml_st_ceh_error_container warnings;
@@ -86,6 +99,82 @@ fcml_int fcml_ifn_lag_count_instructions( fcml_st_assembled_instruction *instruc
 		instruction = instruction->next;
 	}
 	return counter;
+}
+
+/* Returns true if any of the symbols from given list exists in the state map. */
+fcml_bool fcml_ifn_lag_is_any_symbol_modified( fcml_coll_map symbol_state_map, fcml_st_coll_list *symbol_names ) {
+	if( symbol_names ) {
+		fcml_st_coll_list_element *element = symbol_names->head;
+		while( element ) {
+			fcml_string symbol_name = (fcml_string)element->item;
+			if( fcml_fn_coll_map_get( symbol_state_map, symbol_name ) ) {
+				return FCML_TRUE;
+			}
+			element = element->next;
+		}
+	}
+	return FCML_FALSE;
+}
+
+/* Frees symbol state structure used by secod pass and laters. */
+void fcml_ifn_lag_map_symbol_state_free( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
+	if( value ) {
+		/* Symbol name is managed by parser context, so it can not be free'd here. */
+		fcml_ist_symbol_state *symbol = (fcml_ist_symbol_state*)value;
+		fcml_fn_env_memory_free( symbol );
+	}
+}
+
+/* Decides if symbol state has to be removed from state stable. */
+fcml_bool fcml_ifn_lag_map_prev_pass_symbol_if( fcml_ptr key, fcml_ptr value, fcml_ptr args ) {
+	fcml_bool remove = FCML_FALSE;
+	fcml_ist_lag_pass_holder *pass_holder = (fcml_ist_lag_pass_holder*)args;
+	if( value && pass_holder ) {
+		fcml_ist_symbol_state *symbol = (fcml_ist_symbol_state*)value;
+		if( symbol->pass < pass_holder->pass ) {
+			remove = FCML_TRUE;
+		}
+	}
+	return remove;
+}
+
+/* Adds symbol status to the map. */
+fcml_ceh_error fcml_ifn_lag_add_symbol_state( fcml_coll_map symbol_state_map, fcml_string symbol, fcml_int pass ) {
+	fcml_ist_symbol_state *state = (fcml_ist_symbol_state*)fcml_fn_coll_map_get( symbol_state_map, symbol );
+	if( state ) {
+		state->pass = pass;
+	} else {
+		state = (fcml_ist_symbol_state*)fcml_fn_env_memory_alloc( sizeof( fcml_ist_symbol_state* ) );
+		if( !state ) {
+			return FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+		state->pass = pass;
+		state->symbol_name = symbol;
+		fcml_int map_error = 0;
+		fcml_fn_coll_map_put( symbol_state_map, symbol, state, &map_error );
+		if( map_error ) {
+			/* Can not add symbol to the map. */
+			fcml_fn_env_memory_free( state );
+			return FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+	}
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
+
+/* Allocates map used as fast-access storage for symbols statuses. */
+fcml_coll_map fcml_ifn_lag_alloc_symbol_state_map() {
+	fcml_st_coll_map_descriptor map_descriptor = fcml_coll_map_descriptor_string;
+	map_descriptor.entry_free_function = &fcml_ifn_lag_map_symbol_state_free;
+	fcml_int map_error = 0;
+	return fcml_fn_coll_map_alloc( &map_descriptor, 10, &map_error );
+}
+
+/* Removes all symbols from previous passes. */
+void fcml_ifn_lag_clean_symbol_state_map( fcml_coll_map symbol_state_map, fcml_int pass ) {
+	fcml_ist_lag_pass_holder holder;
+	holder.pass = pass;
+	fcml_fn_coll_map_remove_if( symbol_state_map, &fcml_ifn_lag_map_prev_pass_symbol_if, &holder );
 }
 
 void LIB_CALL fcml_fn_lag_assembler_result_prepare( fcml_st_lag_assembler_result *result ) {
@@ -155,6 +244,10 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 
 	fcml_st_assembler_result assembler_result;
 	fcml_fn_assembler_result_prepare( &assembler_result );
+
+	/*************/
+	/*  Stage 1  */
+	/*************/
 
 	// Stage 1.
 	// - Parses instructions one by one. Every parsed instruction is then converted to CIF and assembled.
@@ -315,54 +408,77 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 		return error;
 	}
 
-	// Stage 2.
+	/*****************/
+	/*  Stages 2..n  */
+	/*****************/
 
-	while( invoke_next_phase ) {
+	/* Allocate map for information about symbols modifications. */
+	fcml_coll_map symbol_state_map = fcml_ifn_lag_alloc_symbol_state_map();
+	if( !symbol_state_map ) {
+		return FCML_CEH_GEC_OUT_OF_MEMORY;
+	}
 
-		invoke_next_phase = FCML_FALSE;
+	fcml_int pass = 2;
+
+	/* Main loop of second and furher passes. */
+	while( !error && invoke_next_phase ) {
 
 		fcml_ist_lag_instruction *lag_instruction = processing_ctx.first_instruction;
 
-		fcml_parser_ip ip_delta = 0;
+		fcml_parser_ip ip_disp = 0;
 
 		while( lag_instruction ) {
 
-			lag_instruction->ip += ip_delta;
+			lag_instruction->ip += ip_disp;
 
 			fcml_st_symbol *def_symbol = lag_instruction->ast.symbol;
 
 			/* Update defined symbol if there is such need. */
 
-			if( def_symbol && ip_delta != 0 ) {
+			if( def_symbol && ip_disp != 0 ) {
 
-				def_symbol->value += ip_delta;
+				def_symbol->value += ip_disp;
 
-				invoke_next_phase = FCML_TRUE;
+				/* Adds symbol to the map of recently modified symbols. */
+				error = fcml_ifn_lag_add_symbol_state( symbol_state_map, def_symbol->symbol, pass );
+				if( error ) {
+					break;
+				}
 
 			}
 
-			/* Check if there are any symbols used by instructions. */
-			if( lag_instruction->used_symbols ) {
+			/* Instruction has to be reassembled in three cases. If it ignored
+			 * any undefined symbol in the first phase, if it uses any symbol
+			 * which is marked as recently modified and the last case if instruction
+			 * IP has been modified and instruction uses symbols.
+			 */
+			if( lag_instruction->undefined_symbols || ( lag_instruction->used_symbols && ip_disp ) || fcml_ifn_lag_is_any_symbol_modified( symbol_state_map, lag_instruction->used_symbols ) ) {
 
 				fcml_st_instruction *cif_instruction;
-
-				/* Regenerate instruction with symbols. */
 
 				fcml_st_cif_converter_context cif_context = {0};
 				cif_context.ignore_undefined_symbols = FCML_TRUE;
 				cif_context.symbol_table = context->symbol_table;
+
+				/* Regenerate instruction with new/modified symbols. */
 
 				error = fcml_fn_ast_to_cif_converter( &cif_context, lag_instruction->ast.tree, &cif_instruction );
 				if( error ) {
 					break;
 				}
 
+				lag_instruction->undefined_symbols = cif_context.ignored_symbols;
+				if( lag_instruction->undefined_symbols ) {
+					/* Undefined symbol. */
+					break;
+				}
+
 				/* Assemble instruction. */
 
 				if( assembler_context.entry_point.addr_form == FCML_AF_64_BIT ) {
-					assembler_context.entry_point.ip.rip = (fcml_uint64_t)parser_context.ip;
+					assembler_context.entry_point.ip.rip = (fcml_uint64_t)lag_instruction->ip;
 				} else {
-					assembler_context.entry_point.ip.eip = (fcml_uint32_t)parser_context.ip;
+					assembler_context.entry_point.ip.eip = (fcml_uint32_t)lag_instruction->ip;
 				}
 
 				error = fcml_fn_assemble( &assembler_context, cif_instruction, &assembler_result );
@@ -379,16 +495,26 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
 					break;
 				}
 
-				fcml_int code_diff = ( lag_instruction->instruction.code_length - code_length );
-
-				ip_delta += code_diff;
+				ip_disp += ( (fcml_int)lag_instruction->instruction.code_length - code_length );
 
 			}
 
 			lag_instruction = lag_instruction->next;
 		}
 
+		/* Remove symbols from previous passes. */
+		fcml_ifn_lag_clean_symbol_state_map( symbol_state_map, pass );
+
+		/* Invoke next phase if and only if current phase modified any symbols. */
+		invoke_next_phase = fcml_fn_coll_map_size( symbol_state_map ) > 0;
+
+		pass++;
 	}
+
+	/* Free all symbol states stored in the map. Take into
+	 * account that map should be already empty here.
+	 */
+	fcml_fn_coll_map_free( symbol_state_map );
 
 	return error;
 

@@ -325,6 +325,29 @@ void fcml_fn_coll_map_iterate( fcml_coll_map map_int, fcml_fnp_coll_map_entry_ha
 	}
 }
 
+void fcml_fn_coll_map_remove_if( fcml_coll_map map_int, fcml_fnp_coll_map_entry_handler_if item_handler, fcml_ptr item_handler_args ) {
+	struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*)map_int;
+	fcml_uint32_t i;
+	for( i = 0; i < map->capacity; i++ ) {
+		struct fcml_ist_coll_map_entry **entry = &(map->map_entries[i]);
+		struct fcml_ist_coll_map_entry **next_entry;
+		while( *entry ) {
+			next_entry = &((*entry)->next);
+			if( item_handler( (*entry)->key, (*entry)->value, item_handler_args ) ) {
+				if( map->descriptor.entry_free_function ) {
+					map->descriptor.entry_free_function( (*entry)->key, (*entry)->value, map->descriptor.entry_free_args );
+				}
+				struct fcml_ist_coll_map_entry *current = *entry;
+				*entry = *next_entry;
+				fcml_fn_env_memory_free( current );
+				map->size--;
+			} else {
+				entry = next_entry;
+			}
+		}
+	}
+}
+
 void fcml_fn_coll_map_clear( fcml_coll_map map_int ) {
 	struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*)map_int;
 	fcml_uint32_t i;
