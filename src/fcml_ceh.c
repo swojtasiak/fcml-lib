@@ -28,6 +28,17 @@ fcml_st_ceh_error_container *fcml_fn_ceh_alloc_error_container() {
 	return error_container;
 }
 
+void fcml_fn_ceh_move_errors( fcml_st_ceh_error_container *destination, fcml_st_ceh_error_container *source ) {
+	if( source != NULL && destination != NULL ) {
+		/* Clean destination if there are any errors. */
+		fcml_fn_ceh_free_errors_only( destination );
+		destination->errors = source->errors;
+		destination->last_error = source->last_error;
+		source->errors = NULL;
+		source->last_error = NULL;
+	}
+}
+
 void fcml_fn_ceh_free_errors_only( fcml_st_ceh_error_container *error_container ) {
 	if( error_container ) {
 		fcml_st_ceh_error_info* next = error_container->errors ;

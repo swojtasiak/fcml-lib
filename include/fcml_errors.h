@@ -57,7 +57,7 @@ enum fcml_en_ceh_error_globals {
 };
 
 enum fcml_en_ceh_message_errors {
-	/* Segment register can not be overriden. */
+	/* Segment register can not be overridden. */
 	FCML_CEH_MEC_ERROR_ILLEGAL_SEG_REG_OVERRIDE = 1000,
 	/* To many operands passed to parser. */
 	FCML_CEH_MEC_ERROR_TO_MANY_OPERANDS = 1001,
@@ -81,6 +81,8 @@ enum fcml_en_ceh_message_errors {
 	FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED = 1010,
 	/* Symbol is undefined. */
 	FCML_CEH_MEC_ERROR_UNDEFINED_SYMBOL = 1011,
+	/* Parsed line exceed maximal allowed length. */
+	FCML_CEH_MEC_ERROR_PARSED_LINE_TOO_LONG = 1012,
 };
 
 enum fcml_en_ceh_message_warnings {

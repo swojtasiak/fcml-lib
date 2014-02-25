@@ -12,6 +12,7 @@
 #include <fcml_errors.h>
 
 fcml_st_ceh_error_container *fcml_fn_ceh_alloc_error_container();
+void fcml_fn_ceh_move_errors( fcml_st_ceh_error_container *destination, fcml_st_ceh_error_container *source );
 void fcml_fn_ceh_free_errors_only( fcml_st_ceh_error_container *error_container );
 void fcml_fn_ceh_free_errors_only_with_level( fcml_st_ceh_error_container *error_container, fcml_en_ceh_error_level level );
 void fcml_fn_ceh_free_error_container( fcml_st_ceh_error_container *error_container );
