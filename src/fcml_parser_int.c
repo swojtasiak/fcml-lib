@@ -127,7 +127,9 @@ void fcml_fn_parser_free_ast( fcml_st_parser_ast *ast ) {
 		/* Free errors and warnings. */
 		fcml_fn_ceh_free_errors_only( &(ast->errors) );
 		/* Free AST tree. */
-		fcml_fn_ast_free_node( ast->tree );
+		if( ast->tree ) {
+			fcml_fn_ast_free_node( ast->tree );
+		}
 		ast->tree = NULL;
 	}
 

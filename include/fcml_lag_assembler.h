@@ -24,9 +24,7 @@ typedef struct fcml_st_lag_assembled_instruction {
 } fcml_st_lag_assembled_instruction;
 
 typedef struct fcml_st_lag_assembler_result {
-	/* Error and warnign messages from assembler
-	 * for instruction which failed.
-	 */
+	/* Error and warning messages from assembler for instruction which failed. */
 	fcml_st_ceh_error_container errors;
 	/* Number of line where assembler failed. */
 	fcml_int error_line;

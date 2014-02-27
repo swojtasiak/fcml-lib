@@ -66,7 +66,7 @@ typedef struct fcml_st_assembled_instruction {
 
 /* Assembler result. */
 typedef struct fcml_st_assembler_result {
-    /* Error and warnign messages from assembler.*/
+    /* Error and warning messages from assembler.*/
 	fcml_st_ceh_error_container errors;
 	/* List of assembled instructions.*/
 	fcml_st_assembled_instruction *instructions;
@@ -90,6 +90,7 @@ LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *cont
 LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
 LIB_EXPORT void LIB_CALL fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result );
 LIB_EXPORT void LIB_CALL fcml_fn_assembler_result_free( fcml_st_assembler_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_assembler_instruction_free( fcml_st_assembled_instruction *instruction );
 LIB_EXPORT void LIB_CALL fcml_fn_assembler_free( fcml_st_assembler *assembler );
 
 #ifdef __cplusplus

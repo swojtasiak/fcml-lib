@@ -101,7 +101,7 @@ typedef enum fcml_en_ceh_error_level {
 	FCML_EN_CEH_EL_ERROR
 } fcml_en_ceh_error_level;
 
-/* Information about one particulat event. */
+/* Information about one particular event. */
 typedef struct fcml_st_ceh_error_info {
 	/* Next event on the list. */
 	struct fcml_st_ceh_error_info *next_error;

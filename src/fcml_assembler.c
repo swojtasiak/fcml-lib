@@ -58,6 +58,17 @@ void fcml_ifn_asm_free_instruction_chain( fcml_st_assembled_instruction *chain )
 
 }
 
+/* Free's assembled instruction instance. */
+void LIB_CALL fcml_fn_assembler_instruction_free( fcml_st_assembled_instruction *instruction ) {
+	if( instruction ) {
+		if( instruction->code ) {
+			fcml_fn_env_memory_free( instruction->code );
+		}
+		fcml_fn_ceh_free_errors_only( &(instruction->errors ) );
+		fcml_fn_env_memory_free( instruction );
+	}
+}
+
 void LIB_CALL fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) {
 	if( result ) {
 		// Free errors but leave container as is.
@@ -70,7 +81,7 @@ void LIB_CALL fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) 
 }
 
 void LIB_CALL fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result ) {
-	// Clean assember result container before it's first used.
+	// Clean assembler result container before it's first used.
 	if( result ) {
 		fcml_fn_env_memory_clear( result, sizeof( fcml_st_assembler_result ) );
 	}
