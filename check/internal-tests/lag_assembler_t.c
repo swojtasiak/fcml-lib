@@ -18,6 +18,15 @@ void fcml_tf_lag_assembler_suite_init(void) {
 void fcml_tf_lag_assembler_suite_cleanup(void) {
 }
 
+/*
+ *         jmp second
+start:  jmp finish
+        rb  124
+second: jmp 249-(finish-start)
+finish: ret
+ */
+
+
 fcml_string fcml_iarr_lag_assembler_code[] = {
 	"movl   $4, %eax",
 	"movl   $2, %ebx",
@@ -85,6 +94,8 @@ void fcml_tf_lag_assembler_test(void) {
 		STF_FAIL("Failed to assemble code.");
 		return;
 	}
+
+	fcml_fn_lag_assembler_result_free( &result );
 
 	fcml_fn_assembler_free( assembler );
 
