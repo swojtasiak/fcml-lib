@@ -120,6 +120,10 @@ void fcml_fn_env_str_strfree( fcml_string str ) {
 	}
 }
 
+void fcml_fn_env_str_vsnprintf( fcml_string buffer, fcml_usize maxlen, fcml_string format, va_list args ) {
+	vsnprintf( buffer, maxlen, format, args );
+}
+
 void fcml_fn_env_str_snprintf( fcml_string buffer, fcml_usize maxlen, fcml_string format, ... ) {
 	va_list args;
 	va_start( args, format );

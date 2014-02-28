@@ -523,7 +523,18 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n( fcml_st_lag_assembler_context
 				lag_instruction->undefined_symbols = cif_context.ignored_symbols;
 				if( lag_instruction->undefined_symbols ) {
 					fcml_fn_ast_free_converted_cif( cif_instruction );
+					/* Find undefined symbol. */
+					fcml_st_coll_list_element *element = lag_instruction->used_symbols->head;
+					while( element ) {
+						fcml_string symbol = element->item;
+						if( fcml_fn_symbol_get( context->symbol_table, symbol ) == NULL ) {
+							fcml_fn_msg_add_error_message( &(processing_ctx->error_details.errors), FCML_MC_SEGMENT_UNDEFINED_SYMBOL,
+									FCML_CEH_MEC_ERROR_UNDEFINED_SYMBOL, FCML_EN_CEH_EL_ERROR, symbol );
+						}
+						element = element->next;
+					}
 					/* Undefined symbol. */
+					error = FCML_CEH_GEC_UNDEFINED_SYMBOL;
 					break;
 				}
 
@@ -642,7 +653,7 @@ fcml_ceh_error LIB_CALL fcml_ifn_lag_assemble_core( fcml_st_lag_assembler_contex
 	/* Pass 2 */
 
 	if( !error && invoke_next_pass ) {
-		fcml_ifn_lag_assembler_pass_2_to_n( context, &processing_ctx );
+		error = fcml_ifn_lag_assembler_pass_2_to_n( context, &processing_ctx );
 	}
 
 	/* Prepare result. */
@@ -663,6 +674,8 @@ fcml_ceh_error LIB_CALL fcml_ifn_lag_assemble_core( fcml_st_lag_assembler_contex
 		fcml_fn_symbol_table_free( context->symbol_table );
 		context->symbol_table = NULL;
 	}
+
+	fcml_fn_ceh_move_errors( &(result->errors), &(processing_ctx.error_details.errors ) );
 
 	return error;
 

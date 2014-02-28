@@ -8,6 +8,8 @@
 #ifndef FCML_ENVIRONMENT_H_
 #define FCML_ENVIRONMENT_H_
 
+#include <stdarg.h>
+
 #include "fcml_types.h"
 
 /* Memory allocator function pointer. */
@@ -36,6 +38,7 @@ void fcml_fn_env_str_strncpy( fcml_string dst, const fcml_string src, fcml_usize
 void fcml_fn_env_str_strclr( fcml_string str );
 fcml_string fcml_fn_env_str_strldup( const fcml_string str, fcml_usize size );
 void fcml_fn_env_str_strfree( fcml_string str );
+void fcml_fn_env_str_vsnprintf( fcml_string buffer, fcml_usize maxlen, fcml_string format, va_list args );
 void fcml_fn_env_str_snprintf( fcml_string buffer, fcml_usize maxlen, fcml_string format, ... );
 
 /* Characters. */

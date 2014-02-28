@@ -526,6 +526,7 @@ fcml_ceh_error fcml_ifn_ast_eval_symbol( fcml_st_cif_converter_context *context,
 	if( !symbol_def && !context->ignore_undefined_symbols ) {
 
 		/* Symbol is undefined. */
+		// TODO: Zmienic na nowa meotde z argumentami.
 		fcml_char msg_buffer[FCML_MESSAGE_MAX];
 		fcml_string msg_pattern = fcml_fn_msg_get_message( FCML_MC_SEGMENT_UNDEFINED_SYMBOL );
 		fcml_fn_env_str_snprintf( msg_buffer, sizeof( msg_buffer ), msg_pattern, symbol_node->symbol );

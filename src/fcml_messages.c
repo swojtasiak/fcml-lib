@@ -34,6 +34,7 @@ fcml_string fcml_iarr_messages[] = {
 	FCML_TEXT("Invalid prefix."),
 	FCML_TEXT("Invalid register type."),
 	FCML_TEXT("Invalid register."),
+	FCML_TEXT("Undefined symbol."),
 	/* Messages for message error codes. */
 	FCML_TEXT("Segment register can not be overridden."),
 	FCML_TEXT("Invalid pseudo opcode value."),
@@ -54,7 +55,7 @@ void fcml_fn_msg_add_error_message( fcml_st_ceh_error_container *errors, fcml_en
 	fcml_char buffer[FCML_MAX_MESSAGE_LENGTH];
 	va_list args;
 	va_start( args, level );
-	fcml_fn_env_str_snprintf( buffer, sizeof( buffer ), fcml_fn_msg_get_message( msg_code ), args );
+	fcml_fn_env_str_vsnprintf( buffer, sizeof( buffer ), fcml_fn_msg_get_message( msg_code ), args );
 	va_end( args );
 	fcml_fn_ceh_add_error( errors, (const fcml_string)buffer, code, level );
 }
