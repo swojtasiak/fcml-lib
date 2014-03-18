@@ -63,6 +63,9 @@ AC_CONFIG_FILES([Makefile
 				 check/stf/Makefile                 
 				 check/internal-tests/Makefile
 				 check/public-tests/Makefile
+				 example/Makefile
+				 example/fcml-disasm/Makefile
+				 example/fcml-asm/Makefile
                  include/Makefile])
 
 # Enable __declspec(dllimport) for linking public tests with shared DLL.

@@ -20,4 +20,4 @@ EXTRA_DIST = win32/vs2008/fcml/fcml-check/fcml-check.vcproj \
 	win32/vs2008/fcml/examples/hsdis/stdafx.h \
 	win32/vs2008/fcml/examples/hsdis/targetver.h
 
-SUBDIRS = include src check
+SUBDIRS = include src check example

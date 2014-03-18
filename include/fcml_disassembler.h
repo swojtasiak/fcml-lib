@@ -36,9 +36,9 @@ typedef struct fcml_st_disassembler_conf {
 	/* There are two groups of suffixes for conditional instructions, you can choose which one should be used.*/
 	fcml_uint8_t conditional_group;
 	/* Set to true in order to use short forms of encoded instructions.
-	 * For insatnce 'cmpsb' will be used instead of 'cmps byte ptr [si],byte ptr [di]' */
+	 * For instance 'cmpsb' will be used instead of 'cmps byte ptr [si],byte ptr [di]' */
 	fcml_bool short_forms;
-	/* True if disaplacement should be sign extended to effective address size; otherwise false. */
+	/* True if displacement should be sign extended to effective address size; otherwise false. */
 	fcml_bool extend_disp_to_asa;
 } fcml_st_disassembler_conf;
 
