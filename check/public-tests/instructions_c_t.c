@@ -339,7 +339,7 @@ void fcml_tf_instruction_CMPSD(void) {
     FCML_I3264_A( "cmpnltsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x05 );
     FCML_I3264_A( "cmpnlesd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x06 );
     FCML_I3264_A( "cmpordsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x07 );
-    /* Disassemblation.*/
+    /* Disassembling. */
     FCML_I32_D_SHORT( "cmpeqsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x00 );
     /* VEX.NDS.128.F2.0F C2 /r ib VCMPSD xmm1, xmm2, xmm3/m64, imm8*/
     FCML_I32_A_FAILED( "vcmpsd xmm2,xmm7,mmword ptr [ecx+eax],20h", 0xc5, 0xc3, 0xc2, 0x14, 0x01, 0x20 );

@@ -29,7 +29,7 @@ fcml_bool fcml_ifn_render_test_disassemble_intel( fcml_st_disassembler_result *d
 
 	fcml_ceh_error error = fcml_fn_disassemble( &d_context, dasm_result );
 	if( error ) {
-		STF_FAIL("Disassemblation failed.");
+		STF_FAIL("Disassembling failed.");
 		return FCML_FALSE;
 	}
 
@@ -49,7 +49,7 @@ fcml_bool fcml_ifn_render_test_disassemble_gas( fcml_st_disassembler_result *das
 
 	fcml_ceh_error error = fcml_fn_disassemble( &d_context, dasm_result );
 	if( error ) {
-		STF_FAIL("Disassemblation failed.");
+		STF_FAIL("Disassembling failed.");
 		return FCML_FALSE;
 	}
 

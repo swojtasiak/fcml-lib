@@ -133,7 +133,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             error = fcml_fn_render( dialect_intel, &config, buffer, sizeof( buffer ), &dasm_result );
             if( error ) {
-                /* Free disassemblation result.*/
+                /* Free disassembling result.*/
                 fcml_fn_disassembler_result_free( &dasm_result );
                 break;
             }

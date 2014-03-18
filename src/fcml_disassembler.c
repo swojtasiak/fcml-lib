@@ -83,13 +83,13 @@ typedef struct fcml_ist_dasm_disassembler {
     fcml_st_dt_decoding_tree *decoding_tree;
 } fcml_ist_dasm_disassembler;
 
-/* Decoders responsible for operand disassemblation. */
+/* Decoders responsible for operand disassembling. */
 typedef fcml_ceh_error ( *fcml_ifp_dasm_operand_decoder )( struct fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand, fcml_ptr args );
 
 /* Calculates size of the encoded operand in bytes. */
 typedef fcml_int ( *fcml_ifp_dasm_operand_size_calculator )( struct fcml_ist_dasm_decoding_context *context, fcml_ptr args );
 
-/* Decoders responsible for instruction disassemblation. */
+/* Decoders responsible for instruction disassembling. */
 typedef fcml_ceh_error (*fcml_ifp_dasm_instruction_decoder)( fcml_ist_dasm_decoding_context *context, struct fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def );
 typedef fcml_bool (*fcml_ifp_dasm_instruction_acceptor)( fcml_ist_dasm_decoding_context *context, struct fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def );
 
@@ -1702,7 +1702,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 
 	fcml_bool found = FCML_FALSE;
 
-	/* Disassemble instruction using most appropriate addressing mode from disassemblation tree.*/
+	/* Disassemble instruction using most appropriate addressing mode from disassembling tree.*/
 	if( tree_element ) {
 
 		fcml_st_coll_list_element *current = tree_element->instruction_decoding_defs->head;

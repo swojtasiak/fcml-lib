@@ -13,7 +13,7 @@
 #include "fcml_def.h"
 
 /*********************************
- * Disassemblation tree support. *
+ *  Disassembling tree support.  *
  *********************************/
 
 #define FCML_IDF_REG_FIELD_SIZE								3
@@ -145,7 +145,7 @@ fcml_ceh_error fcml_ifn_dt_dts_iterate_through_all_opcodes( fcml_st_dt_decoding_
 	return fcml_ifn_dt_dts_handle_next_opcode_byte( dec_tree, instruction_desc, opcode_desc, &opcode, callback, opcode_bytes_count, 0, primary_opcode_byte_num );
 }
 
-int fcml_ifn_dt_dts_update_disassemblation_tree( fcml_st_def_instruction_desc *instruction_desc_src, fcml_st_dt_decoding_tree *dec_tree ) {
+int fcml_ifn_dt_dts_update_disassembling_tree( fcml_st_def_instruction_desc *instruction_desc_src, fcml_st_dt_decoding_tree *dec_tree ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -185,7 +185,7 @@ fcml_ceh_error fcml_fn_dt_dts_tree_init( fcml_st_dialect_context_int *dialect_co
 		dec_tree->dialect_context = dialect_context;
 		dec_tree->prepare_callback = prepare_callback;
 		dec_tree->dispose_callback = dispose_callback;
-		error = fcml_ifn_dt_dts_update_disassemblation_tree( fcml_ext_instructions_def, dec_tree );
+		error = fcml_ifn_dt_dts_update_disassembling_tree( fcml_ext_instructions_def, dec_tree );
 		if( !error ) {
 			*tree = dec_tree;
 		} else {

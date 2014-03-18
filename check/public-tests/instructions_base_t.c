@@ -129,7 +129,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 
 			error = fcml_fn_render( dialect, &config, buffer, sizeof( buffer ), &dis_result );
 			if( error ) {
-				printf("Disassemblation failed, with error code: %d\n", error );
+				printf("Disassembling failed, with error code: %d\n", error );
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 					success = FCML_FALSE;
 				}
@@ -142,7 +142,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 				    fcml_fn_disassembler_result_free( &dis_result );
 					return FCML_TRUE;
 				}
-				printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
+				printf("Disassembling failed, should be: %s (Was: %s)\n", mnemonic, buffer);
 				if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 					success = FCML_FALSE;
 				}
@@ -467,7 +467,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, fcml_int size, f
 		} else {
 			if( error || strcmp( buffer, mnemonic ) != 0 ) {
 				if( !(t_flags & FCML_TSF_SHOULD_FAIL) ) {
-					printf("Disassemblation failed, should be: %s (Was: %s)\n", mnemonic, buffer);
+					printf("Disassembling failed, should be: %s (Was: %s)\n", mnemonic, buffer);
 				}
 				success = (t_flags & FCML_TSF_SHOULD_FAIL) ? FCML_TRUE : FCML_FALSE;
 			} else {
