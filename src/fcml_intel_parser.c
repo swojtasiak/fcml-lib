@@ -22,7 +22,7 @@ void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
 	fcml_fn_ceh_add_error( &(pd->errors), (const fcml_string)error, FCML_CEH_MEC_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR );
 }
 
-fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_parser_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast ) {
+fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

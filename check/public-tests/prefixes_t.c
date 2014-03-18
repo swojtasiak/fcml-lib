@@ -27,7 +27,7 @@ void fcml_fn_prefixes_66(void) {
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
 	context.entry_point.addr_form = FCML_AF_16_BIT;
-	context.entry_point.ip.eip = 0x00401000;
+	context.entry_point.ip = 0x00401000;
 
 	fcml_st_instruction instruction = {0};
 	instruction.mnemonic = "adc";
@@ -58,7 +58,7 @@ void fcml_fn_prefixes_66(void) {
 
 	context.entry_point.operand_size_attribute = FCML_DS_32;
 	context.entry_point.addr_form = FCML_AF_16_BIT;
-	context.entry_point.ip.eip = 0x00401000;
+	context.entry_point.ip = 0x00401000;
 
 	instruction.mnemonic = "adc";
 	instruction.operands[0] = FCML_REG( fcml_reg_BP );
@@ -85,7 +85,7 @@ void fcml_fn_prefixes_66(void) {
 
 	context.entry_point.operand_size_attribute = FCML_DS_16;
 	context.entry_point.addr_form = FCML_AF_16_BIT;
-	context.entry_point.ip.eip = 0x00401000;
+	context.entry_point.ip = 0x00401000;
 
 	instruction.mnemonic = "adc";
 	instruction.operands[0] = FCML_REG( fcml_reg_EBP );
@@ -114,7 +114,7 @@ void fcml_fn_prefixes_66(void) {
 
 	context.entry_point.operand_size_attribute = FCML_DS_16;
 	context.entry_point.addr_form = FCML_AF_32_BIT;
-	context.entry_point.ip.eip = 0x00401000;
+	context.entry_point.ip = 0x00401000;
 
 	instruction.mnemonic = "adc";
 	instruction.operands[0] = FCML_REG( fcml_reg_EBP );

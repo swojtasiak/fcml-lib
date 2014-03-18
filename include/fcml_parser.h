@@ -34,9 +34,6 @@ typedef struct fcml_st_parser_config {
 	fcml_bool override_labels;
 } fcml_st_parser_config;
 
-/* EIP/RIP is always represent as 64 bit value in parsing environment. */
-typedef fcml_int64_t fcml_parser_ip;
-
 typedef struct fcml_st_parser_context {
 	/* Dialect to be used by parser. */
 	fcml_st_dialect *dialect;
@@ -45,7 +42,7 @@ typedef struct fcml_st_parser_context {
 	/* RIP/EIP used as a value for newly declared symbols.
 	 * This value is never changed by parser.
 	 */
-	fcml_parser_ip ip;
+	fcml_ip ip;
 	/* Symbol table. It holds symbols added by user as
 	 * well as symbols allocated by parsers (labels). It is
 	 * very important to free this container on your own

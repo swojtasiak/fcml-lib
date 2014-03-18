@@ -37,7 +37,7 @@ void fcml_fn_chooser_default(void) {
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
 	context.entry_point.addr_form = FCML_AF_32_BIT;
-	context.entry_point.ip.eip = 0x00401000;
+	context.entry_point.ip = 0x00401000;
 
 	fcml_st_instruction instruction = {0};
 	instruction.mnemonic = "adc";
@@ -80,7 +80,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
     context.configuration.chooser = &fcml_fn_asm_no_instruction_chooser;
     context.assembler = assembler_intel;
     context.entry_point.addr_form = FCML_AF_32_BIT;
-    context.entry_point.ip.eip = 0x00401000;
+    context.entry_point.ip = 0x00401000;
 
     fcml_st_instruction instruction = {0};
     instruction.mnemonic = "adc";
@@ -99,7 +99,7 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
         fcml_st_disassembler_context d_context = {0};
         d_context.entry_point.addr_form = FCML_AF_32_BIT;
-        d_context.entry_point.ip.eip = 0x00401000;
+        d_context.entry_point.ip = 0x00401000;
         d_context.disassembler = disassembler_intel;
 
         fcml_int flags = 0;

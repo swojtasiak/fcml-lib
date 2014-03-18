@@ -29,7 +29,7 @@ typedef struct fcml_ist_lag_symbol_state {
 } fcml_ist_symbol_state;
 
 typedef struct fcml_ist_lag_instruction {
-	fcml_parser_ip ip;
+	fcml_ip ip;
 	/* Next instruction. */
 	struct fcml_ist_lag_instruction *next;
 	/* If instruction has symbols, we have its AST just to reassemble it when needed. */
@@ -282,7 +282,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 	fcml_st_parser_context parser_context = {0};
 	parser_context.config.ignore_undefined_symbols = FCML_TRUE;
 	parser_context.config.override_labels = FCML_FALSE;
-	parser_context.ip = ( assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) ? assembler_context->entry_point.ip.rip : assembler_context->entry_point.ip.eip;
+	parser_context.ip = assembler_context->entry_point.ip;
 	parser_context.dialect = context->dialect;
 
 	fcml_st_assembler_result assembler_result;
@@ -401,12 +401,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 				}
 
 				/* Assemble instruction. */
-
-				if( assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
-					assembler_context->entry_point.ip.rip = (fcml_uint64_t)parser_context.ip;
-				} else {
-					assembler_context->entry_point.ip.eip = (fcml_uint32_t)parser_context.ip;
-				}
+				assembler_context->entry_point.ip = parser_context.ip;
 
 				/* In case of first pass even if instruction fails, we will try again in the
 				 * next pass, because it might fail because of some calculations that take
@@ -474,7 +469,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n( fcml_st_lag_assembler_context
 
 		fcml_ist_lag_instruction *lag_instruction = processing_ctx->first_instruction;
 
-		fcml_parser_ip ip_disp = 0;
+		fcml_ip ip_disp = 0;
 
 		while( lag_instruction ) {
 
@@ -539,12 +534,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n( fcml_st_lag_assembler_context
 				}
 
 				/* Assemble instruction. */
-
-				if( assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
-					assembler_context->entry_point.ip.rip = (fcml_uint64_t)lag_instruction->ip;
-				} else {
-					assembler_context->entry_point.ip.eip = (fcml_uint32_t)lag_instruction->ip;
-				}
+				assembler_context->entry_point.ip = (fcml_ip)lag_instruction->ip;
 
 				error = fcml_fn_assemble( assembler_context, cif_instruction, &assembler_result );
 				if( error ) {

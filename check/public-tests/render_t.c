@@ -20,7 +20,7 @@ fcml_bool fcml_ifn_render_test_disassemble_intel( fcml_st_disassembler_result *d
 
 	fcml_st_disassembler_context d_context = {0};
 	d_context.entry_point.addr_form = FCML_AF_32_BIT;
-	d_context.entry_point.ip.eip = 0x00401000;
+	d_context.entry_point.ip = 0x00401000;
 	d_context.disassembler = disassembler_intel;
 	d_context.code = code;
 	d_context.code_length = code_size;
@@ -40,7 +40,7 @@ fcml_bool fcml_ifn_render_test_disassemble_gas( fcml_st_disassembler_result *das
 
 	fcml_st_disassembler_context d_context = {0};
 	d_context.entry_point.addr_form = FCML_AF_32_BIT;
-	d_context.entry_point.ip.eip = 0x00401000;
+	d_context.entry_point.ip = 0x00401000;
 	d_context.disassembler = disassembler_gas;
 	d_context.code = code;
 	d_context.code_length = code_size;

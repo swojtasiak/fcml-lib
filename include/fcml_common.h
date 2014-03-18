@@ -41,13 +41,7 @@ typedef enum fcml_en_addr_form {
 
 typedef fcml_uint16_t fcml_hints;
 typedef fcml_uint16_t fcml_prefixes;
-
-/* Instruction pointer.*/
-
-typedef union fcml_st_instruction_pointer {
-	fcml_uint32_t eip;
-	fcml_uint64_t rip;
-} fcml_st_instruction_pointer;
+typedef fcml_int64_t fcml_ip;
 
 /* Effective Operand-Size Attributes.*/
 
@@ -476,7 +470,7 @@ typedef struct fcml_st_entry_point {
 	fcml_data_size address_size_attribute;
 	fcml_data_size operand_size_attribute;
 	/* Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.*/
-	fcml_st_instruction_pointer ip;
+	fcml_ip ip;
 } fcml_st_entry_point;
 
 #endif /* FCML_INT_COMMON_H_ */

@@ -1037,7 +1037,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
                     case FCML_DS_16: {
 
                         fcml_int16_t offset = destination.int16;
-                        fcml_int16_t ip = (fcml_int16_t)( ( entry_point->ip.eip + context->instruction_size.value + rel_size ) & 0x0000FFFF);
+                        fcml_int16_t ip = (fcml_int16_t)( ( entry_point->ip + context->instruction_size.value + rel_size ) & 0x0000FFFF);
                         fcml_int16_t rel16 = offset - ip;
 
                         displacement.int16 = rel16;
@@ -1050,7 +1050,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
                     case FCML_DS_32: {
 
                         fcml_int32_t offset = destination.int32;
-                        fcml_int32_t eip = (fcml_int32_t)( entry_point->ip.eip + context->instruction_size.value + rel_size );
+                        fcml_int32_t eip = (fcml_int32_t)( entry_point->ip + context->instruction_size.value + rel_size );
                         fcml_int32_t rel32 = offset - eip;
 
                         displacement.int32 = rel32;
@@ -1063,7 +1063,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
                     case FCML_DS_64: {
 
                         fcml_int64_t offset = (fcml_int64_t)destination.int64;
-                        fcml_int64_t rip = (fcml_int64_t)( entry_point->ip.rip + context->instruction_size.value + rel_size );
+                        fcml_int64_t rip = (fcml_int64_t)( entry_point->ip + context->instruction_size.value + rel_size );
                         fcml_int64_t rel32 = offset - rip;
 
                         displacement.int32 = (fcml_int32_t)rel32;
@@ -3107,7 +3107,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_rip_post_processor( fcml_ist_asm_en
 		/* Encode ModR/M and displacement.*/
 		fcml_st_memory_stream stream = fcml_ifn_asm_instruction_part_stream( instruction_part );
 		fcml_fn_stream_write( &stream, encoded_mod_rm->modrm );
-		error = fcml_fn_modrm_encode_rip_offset( &stream, assembler_context->entry_point.ip.rip, context->instruction_size.value, encoded_mod_rm );
+		error = fcml_fn_modrm_encode_rip_offset( &stream, assembler_context->entry_point.ip, context->instruction_size.value, encoded_mod_rm );
 	}
 
 	return error;

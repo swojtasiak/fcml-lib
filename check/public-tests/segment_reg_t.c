@@ -26,7 +26,7 @@ void fcml_fn_segment_reg(void) {
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
 	context.entry_point.addr_form = FCML_AF_32_BIT;
-	context.entry_point.ip.eip = 0x00401000;
+	context.entry_point.ip = 0x00401000;
 	context.configuration.enable_error_messages = FCML_TRUE;
 
 	fcml_st_instruction instruction = {0};

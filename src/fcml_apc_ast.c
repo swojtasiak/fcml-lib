@@ -126,7 +126,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_register( fcml_st_register *reg ) {
 	return node;
 }
 
-fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol( fcml_parser_ip ip, fcml_string symbol_name, fcml_usize length ) {
+fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol( fcml_ip ip, fcml_string symbol_name, fcml_usize length ) {
 
 	fcml_st_symbol *symbol = (fcml_st_symbol*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_symbol ) );
 	if( !symbol ) {

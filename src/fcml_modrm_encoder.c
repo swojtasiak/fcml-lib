@@ -557,7 +557,7 @@ fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, con
 	return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, fcml_uint64_t rip, fcml_uint8_t instruction_size, const fcml_st_encoded_modrm *encoded_modrm ) {
+fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, fcml_int64_t rip, fcml_uint8_t instruction_size, const fcml_st_encoded_modrm *encoded_modrm ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

@@ -470,27 +470,27 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	offset->is_signed = FCML_TRUE;
 
 	/* Calculate offset relative to IP.*/
-	fcml_st_instruction_pointer *ip = &(entry_point->ip);
+	fcml_ip ip = entry_point->ip;
 
 	switch( context->effective_operand_size_attribute ) {
 	case FCML_DS_16:
 		error = fcml_fn_utils_convert_integer_to_int16( &integer, &offset16 );
 		if( !error ) {
-			offset->off32 = ( (fcml_int32_t)ip->eip + context->calculated_instruction_size + offset16 ) & 0x0000FFFF;
+			offset->off32 = ( (fcml_int32_t)ip + context->calculated_instruction_size + offset16 ) & 0x0000FFFF;
 			offset->size = FCML_DS_32;
 		}
 		break;
 	case FCML_DS_32:
 		error = fcml_fn_utils_convert_integer_to_int32( &integer, &offset32 );
 		if( !error ) {
-			offset->off32 = ( (fcml_int32_t)ip->eip + context->calculated_instruction_size + offset32 );
+			offset->off32 = ( (fcml_int32_t)ip + context->calculated_instruction_size + offset32 );
 			offset->size = FCML_DS_32;
 		}
 		break;
 	case FCML_DS_64:
 		error = fcml_fn_utils_convert_integer_to_int32( &integer, &offset32 );
 		if( !error ) {
-			offset->off64 = ( (fcml_int64_t)ip->rip + context->calculated_instruction_size + offset32 );
+			offset->off64 = ( (fcml_int64_t)ip + context->calculated_instruction_size + offset32 );
 			offset->size = FCML_DS_64;
 		}
 		break;
@@ -653,7 +653,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 
 		if( decoded_modrm->is_rip ) {
 			/* We known instruction size, so post processing is not needed and RIP can be calculated now.*/
-			error = fcml_fn_modrm_decode_rip( context->disassembler_context->entry_point.ip.rip + context->calculated_instruction_size, context->effective_address_size_attribute, &(address->offset), &(address->offset) );
+			error = fcml_fn_modrm_decode_rip( (fcml_uint64_t)context->disassembler_context->entry_point.ip + context->calculated_instruction_size, context->effective_address_size_attribute, &(address->offset), &(address->offset) );
 		}
 
 		/* Segment registers.*/

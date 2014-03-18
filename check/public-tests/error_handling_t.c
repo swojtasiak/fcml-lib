@@ -20,7 +20,7 @@ fcml_st_assembler_context fcml_ifn_prepare_context( fcml_en_addr_form addr_form 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
 	context.entry_point.addr_form = addr_form;
-	context.entry_point.ip.eip = 0x00401000;
+	context.entry_point.ip = 0x00401000;
 	context.configuration.enable_error_messages = FCML_TRUE;
 	return context;
 }
@@ -52,7 +52,7 @@ fcml_bool fcml_tf_check_errors( fcml_string mnemonic, fcml_string message, fcml_
 
 	fcml_fn_assembler_result_prepare( &assembler_result );
 
-	fcml_st_parser_context parser_context;
+	fcml_st_parser_context parser_context = {0};
 	parser_context.dialect = dialect_intel;
 
 	while( FCML_TRUE ) {

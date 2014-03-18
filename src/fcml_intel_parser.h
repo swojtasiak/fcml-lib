@@ -14,6 +14,6 @@
 #include "fcml_types.h"
 #include "fcml_dialect.h"
 
-fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_parser_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast );
+fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast );
 
 #endif /* FCML_X64INTEL_ASM_PARSER_H_ */

@@ -38,14 +38,14 @@ int fcml_fn_test_number_of_arguments( fcml_string code ) {
 
 #endif
 
-void fcml_ifn_ts_set_ip( fcml_st_instruction_pointer *ip, fcml_en_addr_form addr_form ) {
+void fcml_ifn_ts_set_ip( fcml_ip *ip, fcml_en_addr_form addr_form ) {
 	switch( addr_form ) {
 	case FCML_AF_16_BIT:
 	case FCML_AF_32_BIT:
-		ip->eip = 0x00401000;
+		*ip = 0x00401000;
 		break;
 	case FCML_AF_64_BIT:
-		ip->rip = 0x0000800000401000;
+		*ip = 0x0000800000401000;
 		break;
 	}
 }
@@ -163,7 +163,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 
 		fcml_st_parser_result result;
 		fcml_fn_parser_result_prepare( &result );
-		fcml_st_parser_context parser_context;
+		fcml_st_parser_context parser_context = {0};
 		parser_context.dialect = dialect;
 
 		fcml_ceh_error error = fcml_fn_parse( &parser_context, mnemonic, &result );

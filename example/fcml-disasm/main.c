@@ -35,8 +35,8 @@ int main(int argc, char **argv) {
 			if( ++i < argc ) {
 				char *res;
 				errno = 0;
-				context.entry_point.ip.rip = strtoll( argv[i], &res, 16 );
-				if ((errno == ERANGE && (context.entry_point.ip.rip == FCML_INT64_MAX || context.entry_point.ip.rip == FCML_INT64_MIN)) || (errno != 0 && context.entry_point.ip.rip == 0) || (argv[i] == res) ) {
+				context.entry_point.ip = strtoll( argv[i], &res, 16 );
+				if ((errno == ERANGE && (context.entry_point.ip == FCML_INT64_MAX || context.entry_point.ip == FCML_INT64_MIN)) || (errno != 0 && context.entry_point.ip == 0) || (argv[i] == res) ) {
 				   perror("Wrong instruction pointer.");
 				   exit(EXIT_FAILURE);
 			   }
