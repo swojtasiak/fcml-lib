@@ -47,7 +47,7 @@ fcml_string fcml_iarr_rend_conditional_suffixes_intel[2][16] = {
 fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
 
 	/* Do not render pseudo opcodes if shortcut is used.*/
-	if( ( operand->hints & FCML_OP_HINT_PSEUDO_OPCODE ) && result->instruction_details.is_pseudo_op_shortcut ) {
+	if( ( operand->hints & FCML_OP_HINT_PSEUDO_OPCODE ) && result->instruction_details.is_pseudo_op ) {
 		*do_not_render = FCML_TRUE;
 		return FCML_CEH_GEC_NO_ERROR;
 	}

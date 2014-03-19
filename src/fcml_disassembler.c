@@ -2066,7 +2066,7 @@ void fcml_ifn_dasm_clean_operands_for_short_forms( fcml_st_instruction *instruct
 		instruction->operands_count = 0;
 		fcml_fn_env_memory_clear( &(instruction->operands[0]), sizeof( fcml_st_operand[FCML_OPERANDS_COUNT] ) );
 		fcml_fn_env_memory_clear( &(instruction_details->operand_details[0]), sizeof( fcml_st_operand_details[FCML_OPERANDS_COUNT] ) );
-	} else if( instruction_details->is_pseudo_op_shortcut ) {
+	} else if( instruction_details->is_pseudo_op ) {
 		int i;
 		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 			/* Clean IMM pseudo opcode operand.*/
@@ -2190,7 +2190,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 		fcml_bool is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
 		fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.suffix, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, memory_data_size, l );
 		if( mnemonic ) {
-			instruction_details->is_pseudo_op_shortcut = mnemonic->pseudo_op.is_not_null;
+			instruction_details->is_pseudo_op = mnemonic->pseudo_op.is_not_null;
 			instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
 			/* Render mnemonic using provided dialect.*/
 			instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_suffix );

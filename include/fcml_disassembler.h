@@ -136,7 +136,7 @@ typedef struct fcml_st_instruction_details {
      */
 	fcml_bool is_shortcut;
 	/* True if given instruction is a short form of pseudo-ops instructions. See 'vcmpunordsd' for instance. */
-	fcml_bool is_pseudo_op_shortcut;
+	fcml_bool is_pseudo_op;
 	/* Code of disassembled instruction. */
 	fcml_uint8_t instruction_code[FCML_INSTRUCTION_SIZE];
 	/* Instruction size in bytes. */

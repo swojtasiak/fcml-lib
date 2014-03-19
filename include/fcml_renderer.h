@@ -46,9 +46,9 @@ extern "C" {
 typedef struct fcml_st_render_config {
 	/* Flags which allows to control rendering process. */
 	fcml_uint32_t render_flags;
-	/* Prefered mnemonic padding in characters. */
+	/* Preferred mnemonic padding in characters. */
 	fcml_uint16_t prefered_mnemonic_padding;
-	/* Prefered code padding in HEX bytes (2 characters on one byte.). */
+	/* Preferred code padding in HEX bytes (2 characters on one byte.). */
 	fcml_uint16_t prefered_code_padding;
 } fcml_st_render_config;
 
