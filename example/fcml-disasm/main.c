@@ -38,6 +38,115 @@ fcml_string operand_types[] = {
 	"FCML_EOT_REGISTER"
 };
 
+fcml_string register_type[] = {
+	"FCML_REG_UNDEFINED",
+    "FCML_REG_GPR",
+    "FCML_REG_SIMD",
+    "FCML_REG_FPU",
+    "FCML_REG_SEG",
+    "FCML_REG_CR",
+    "FCML_REG_DR",
+    "FCML_REG_IP"
+};
+
+fcml_string fcml_reg_symbol_table[7][16] = {
+	{ "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>" },
+	{ "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>" },
+	{ "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>" },
+	{ "st(0)", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>" },
+	{ "es", "cs", "ss", "ds", "fs", "gs", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>" },
+	{ "cr0", "<unknown CR>", "cr2", "cr3", "cr4", "<unknown CR>", "<unknown CR>", "<unknown CR>", "cr8", "<unknown CR>", "<unknown CR>", "<unknown CR>", "<unknown CR>", "<unknown CR>", "<unknown CR>", "<unknown CR>" },
+	{ "dr0", "dr1", "dr2", "dr3", "dr4", "dr5", "dr6", "dr7", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>" }
+};
+
+fcml_string fcml_reg_gpr_symbol_table[4][16] = {
+	{ "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
+	{ "ax", "cx", "dx", "bx", "sp", "bp", "si", "di", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w" },
+	{ "eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d" },
+	{ "rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15" }
+};
+
+fcml_string fcml_reg_symbol_table_rex[7][16] = {
+	{ "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>" },
+	{ "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>" },
+	{ "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>", "<unknown SIMD>" },
+	{ "st(0)", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>", "<unknown fpu>" },
+	{ "es", "cs", "ss", "ds", "fs", "gs", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>", "<unknown SR>" },
+	{ "cr0", "<unknown CR>", "cr2", "cr3", "cr4", "<unknown CR>", "<unknown CR>", "<unknown CR>", "cr8", "<unknown CR>", "<unknown CR>", "<unknown CR>", "<unknown CR>", "<unknown CR>", "<unknown CR>", "<unknown CR>" },
+	{ "dr0", "dr1", "dr2", "dr3", "dr4", "dr5", "dr6", "dr7", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>", "<unknown DR>" }
+};
+
+fcml_string fcml_reg_gpr_symbol_table_ip[4] = {
+	"<unknown ip>", "ip", "eip", "rip"
+};
+
+fcml_string fcml_reg_gpr_symbol_table_rex[4][16] = {
+	{ "al", "cl", "dl", "bl", "spl", "bpl", "sil", "dil", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
+	{ "ax", "cx", "dx", "bx", "sp", "bp", "si", "di", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w" },
+	{ "eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d" },
+	{ "rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15" }
+};
+
+fcml_string fcml_reg_sidm_symbol_table[3][16] = {
+	{ "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>" },
+	{ "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15" },
+	{ "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15" }
+};
+
+fcml_string get_register( const fcml_st_register *reg, fcml_bool is_rex ) {
+	fcml_string printable_reg;
+	fcml_int rs = 0;
+	if (reg->type != FCML_REG_SIMD) {
+		switch (reg->size) {
+		case 8:
+			rs = 0;
+			break;
+		case 16:
+			rs = 1;
+			break;
+		case 32:
+			rs = 2;
+			break;
+		case 64:
+			rs = 3;
+			break;
+		}
+		if ( reg->type == FCML_REG_IP ) {
+			printable_reg = fcml_reg_gpr_symbol_table_ip[rs];
+		} else {
+			if (is_rex) {
+				if (reg->type == FCML_REG_GPR) {
+					printable_reg = fcml_reg_gpr_symbol_table_rex[rs][reg->reg];
+				} else {
+					printable_reg = fcml_reg_symbol_table_rex[reg->type][reg->reg];
+				}
+			} else {
+				if (reg->type == FCML_REG_GPR) {
+					printable_reg = fcml_reg_gpr_symbol_table[rs][reg->reg];
+				} else {
+					printable_reg = fcml_reg_symbol_table[reg->type][reg->reg];
+				}
+			}
+		}
+	} else {
+		switch (reg->size) {
+		case 64:
+			rs = 0;
+			break;
+		case 128:
+			rs = 1;
+			break;
+		case 256:
+			rs = 2;
+			break;
+		default:
+			return "Invalid register";
+		}
+		printable_reg = fcml_reg_sidm_symbol_table[rs][reg->reg];
+	}
+	return printable_reg;
+}
+
 void print_error_msg( fcml_st_ceh_error_container *errors ) {
 	fcml_st_ceh_error_info *error = errors->errors;
 	while( error ) {
@@ -54,6 +163,97 @@ void print_error_msg( fcml_st_ceh_error_container *errors ) {
 
 fcml_string get_boolean( fcml_bool b ) {
 	return b ? "true" : "false";
+}
+
+void print_address( fcml_st_address *address, fcml_bool is_rex ) {
+
+	printf("    Address form: ");
+	switch( address->address_form ) {
+	case FCML_AF_UNDEFINED:
+		printf("Undefined.\n");
+		break;
+	case FCML_AF_OFFSET:
+		printf("Offset.\n");
+		break;
+	case FCML_AF_COMBINED:
+		printf("Combined (Effective address).\n");
+		break;
+	default:
+		printf("Unknown.\n");
+	}
+	printf("    Segment register: %s (default: %s)\n", get_register( &(address->segment_selector.segment_selector), is_rex ), get_boolean( address->segment_selector.is_default_reg ) );
+	printf("    Size operator: %d\n", address->size_operator );
+	if( address->address_form == FCML_AF_OFFSET ) {
+		printf("    Offset:\n" );
+		printf("     Size: %d\n", address->offset.size );
+		printf("     Signed: %d\n", get_boolean( address->offset.is_signed ) );
+		switch( address->offset.size ) {
+		case FCML_DS_16:
+			printf("     Value: 0x%04x\n", address->offset.off16 );
+			break;
+		case FCML_DS_32:
+			printf("     Value: 0x%08x\n", address->offset.off32 );
+			break;
+		case FCML_DS_64:
+			printf("     Value: 0x%016llx\n", address->offset.off64 );
+			break;
+		}
+	} else if( address->address_form == FCML_AF_COMBINED ) {
+		printf("    Effective address:\n" );
+		printf("     Base: %s\n", get_register( &(address->effective_address.base), is_rex ) );
+		printf("     Index: %s\n", get_register( &(address->effective_address.index), is_rex ) );
+		printf("     Scale factor: %d\n", address->effective_address.scale_factor );
+		fcml_st_displacement *displacement = &(address->effective_address.displacement);
+		printf("     Displacement:\n" );
+		printf("      Size: %d\n", displacement->size );
+		printf("      Signed: %s\n", get_boolean( displacement->is_signed ) );
+		switch( displacement->size ) {
+		case FCML_DS_8:
+			printf("      Value: 0x%02x\n", displacement->dis8 );
+			break;
+		case FCML_DS_16:
+			printf("      Value: 0x%04x\n", displacement->dis16 );
+			break;
+		case FCML_DS_32:
+			printf("      Value: 0x%08x\n", displacement->dis32 );
+			break;
+		case FCML_DS_64:
+			printf("      Value: 0x%016llx\n", displacement->dis64 );
+			break;
+		}
+	}
+
+}
+
+void print_immediate( fcml_st_immediate *immediate ) {
+	printf("    Signed: %s\n", get_boolean( immediate->is_signed ) );
+	printf("    Size: %d\n", immediate->imm_size );
+	printf("    Value: " );
+	switch( immediate->imm_size ) {
+	case FCML_DS_8:
+		printf("0x%02x\n", immediate->imm8);
+		break;
+	case FCML_DS_16:
+		printf("0x%04x\n", immediate->imm16);
+		break;
+	case FCML_DS_32:
+		printf("0x%08x\n", immediate->imm32);
+		break;
+	case FCML_DS_64:
+		printf("0x%016llx\n", immediate->imm64);
+		break;
+	}
+}
+
+void print_far_pointer( fcml_st_far_pointer *far_pointer ) {
+	printf("     Segment: 0x%04x\n", far_pointer->segment );
+	printf("     Offset size: %d\n", far_pointer->offset_size );
+	if( far_pointer->offset_size == FCML_DS_16 ) {
+		printf("     Offset: 0x%04x\n", far_pointer->offset16 );
+	}
+	if( far_pointer->offset_size == FCML_DS_32 ) {
+		printf("     Offset: 0x%08x\n", far_pointer->offset32 );
+	}
 }
 
 void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_result *result, fcml_st_render_config *render_config ) {
@@ -146,31 +346,19 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		printf("    Type: %s\n", operand_types[ operand->type ] );
 		switch( operand->type ) {
 		case FCML_EOT_IMMEDIATE: {
-			fcml_st_immediate *immediate = &(operand->immediate);
-			printf("    Signed: %s\n", get_boolean( immediate->is_signed ) );
-			printf("    Size: %d\n", immediate->imm_size );
-			printf("    Value: " );
-			switch( immediate->imm_size ) {
-			case FCML_DS_8:
-				printf("0x%02x\n", immediate->imm8);
-				break;
-			case FCML_DS_16:
-				printf("0x%04x\n", immediate->imm16);
-				break;
-			case FCML_DS_32:
-				printf("0x%08x\n", immediate->imm32);
-				break;
-			case FCML_DS_64:
-				printf("0x%016llx\n", immediate->imm64);
-				break;
-			}
+			print_immediate( &(operand->immediate) );
 			break;
 		}
-		case FCML_EOT_FAR_POINTER:
+		case FCML_EOT_FAR_POINTER: {
+			print_far_pointer( &(operand->far_pointer) );
 			break;
-		case FCML_EOT_ADDRESS:
+		}
+		case FCML_EOT_ADDRESS: {
+			print_address( &(operand->address), result->instruction_details.prefixes_details.is_rex );
 			break;
+		}
 		case FCML_EOT_REGISTER:
+			printf( "    Register: %s (Type: %s, Size: %d)\n", get_register( &(operand->reg), result->instruction_details.prefixes_details.is_rex ), register_type[operand->reg.type], operand->reg.size );
 			break;
 		}
 	}
