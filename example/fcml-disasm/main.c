@@ -152,9 +152,9 @@ void print_error_msg( fcml_st_ceh_error_container *errors ) {
 	while( error ) {
 		// Print error message.
 		if( error->level == FCML_EN_CEH_EL_WARN ) {
-			puts("WARN: ");
+			printf("WARN: ");
 		} else if( error->level == FCML_EN_CEH_EL_ERROR ) {
-			puts("ERROR: ");
+			printf("ERROR: ");
 		}
 		printf("%3d: %s\n", error->code, error->message );
 		error = error->next_error;
@@ -591,6 +591,8 @@ int main(int argc, char **argv) {
 			code_length = index;
 		}
 	}
+
+	context.configuration.enable_error_messages = FCML_TRUE;
 
 	if( !context.entry_point.addr_form ) {
 		printf("Addressing mode not specified.\n");
