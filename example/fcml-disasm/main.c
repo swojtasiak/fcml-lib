@@ -461,12 +461,12 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 	for( i = 0; i < instruction->operands_count; i++ ) {
 		printf("  Operand: %d\n", i + 1 );
 		fcml_st_operand_details *operand_details = &(details->operand_details[i]);
-		printf("   Access mode: " );
+		printf("   Access mode:" );
 		if( operand_details->access_mode & FCML_AM_READ ) {
-			printf( "FCML_AM_READ" );
+			printf( " FCML_AM_READ" );
 		}
 		if( operand_details->access_mode & FCML_AM_WRITE ) {
-			printf( "FCML_AM_WRITE" );
+			printf( " FCML_AM_WRITE" );
 		}
 		printf("\n");
 	}
@@ -542,6 +542,28 @@ int main(int argc, char **argv) {
 			render_config.render_flags |= FCML_REND_FLAG_RENDER_DEFAULT_SEG;
 		} else if( strcmp( argv[i], "-gas" ) == 0 ) {
 			gas_dialect = FCML_TRUE;
+		} else if( strcmp( argv[i], "--help" ) == 0 ) {
+			printf("usage: fcml_disasm [-s] [-e] [-rc] [-rh] [-rz] [-rs] [-gas] \n" \
+                   "       [-asa<size>] [-osa<size>] <-m<size>> <-ip address> <code>\n\n" \
+                   "       -m16      16 bit addressing mode\n" \
+                   "       -m32      32 bit addressing mode\n" \
+                   "       -m64      64 bit addressing mode\n" \
+                   "       -asa16    16 bit address size attribute\n" \
+                   "       -asa32    32 bit address size attribute\n" \
+                   "       -asa64    63 bit address size attribute\n" \
+                   "       -osa16    16 bit operand size attribute\n" \
+                   "       -osa32    32 bit operand size attribute\n" \
+                   "       -osa64    63 bit operand size attribute\n" \
+                   "       -ip       Instruction pointer address\n" \
+                   "       -s        Prefer short instruction forms\n" \
+                   "       -e        Extend displacement size to address size attribute\n" \
+                   "       -rc       Render instruction code\n" \
+                   "       -rh       Render immediate values and displacement as HEX\n" \
+                   "       -rz       Remove leading zeros\n" \
+                   "       -gas      Use GNU assembler/AT&T dialect (Intel dialect is used by default)\n\n" \
+                   "example: fcml_disasm -m32 -ip 0x4001000 0x678316010203\n\n" \
+                   );
+			exit(0);
 		} else if( i + 1 == argc ) {
 			/* Parse instruction code. */
 			char buff[3] = {0};

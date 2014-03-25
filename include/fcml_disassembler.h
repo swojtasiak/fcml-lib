@@ -120,7 +120,7 @@ typedef struct fcml_st_operand_details {
 
 /* Some basic information about decoded ModR/M and SIB bytes. */
 typedef struct fcml_st_decoded_modrm_details {
-    /* ModR/M byte is exists.*/
+    /* ModR/M byte if exists.*/
 	fcml_uint8_t modrm;
 	/* SIB byte if exists.*/
 	fcml_nuint8_t sib;
