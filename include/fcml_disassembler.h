@@ -128,6 +128,9 @@ typedef struct fcml_st_decoded_modrm_details {
 	fcml_bool is_rip;
 } fcml_st_decoded_modrm_details;
 
+// TODO:Dodac mozliwosc sprawdzenia czy jest modrm.
+
+
 /* Additional details provided by disassembler. */
 typedef struct fcml_st_instruction_details {
     /* True if this is a shortcut. Shortcuts do not have any operands decoded. A good example of
