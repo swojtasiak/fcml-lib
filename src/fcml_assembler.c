@@ -104,7 +104,7 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 
 	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)asm_context->assembler;
 
-	/* First place where dialect can ingerate instruction definition. */
+	/* First place where dialect can interfere with instruction definition. */
 	fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = enc_asm->dialect_context->assembler_preprocessor;
 	if( assembler_preprocessor ) {
 		assembler_preprocessor( (fcml_st_dialect*)enc_asm->dialect_context, &tmp_instruction, NULL, NULL, NULL );
@@ -129,6 +129,11 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 				result->instructions = enc_result.instructions;
 				result->number_of_instructions = enc_result.number_of_instructions;
 				result->chosen_instruction = enc_result.chosen_instruction;
+
+				/* Increment IP by chosen instruction length. */
+				if( result->chosen_instruction && asm_context->configuration.increment_ip ) {
+					asm_context->entry_point.ip += result->chosen_instruction->code_length;
+				}
 			}
 
 			/* Convert encoding result to assembler result. */

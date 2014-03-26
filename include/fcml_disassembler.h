@@ -10,6 +10,7 @@
 
 #include "fcml_lib_export.h"
 
+#include "fcml_instructions.h"
 #include "fcml_types.h"
 #include "fcml_errors.h"
 #include "fcml_common.h"
@@ -29,6 +30,8 @@ typedef struct fcml_st_disassembler fcml_st_disassembler;
 
 /* Disassembler configuration. */
 typedef struct fcml_st_disassembler_conf {
+	/* Set to true in order to make disassembler to increment IP address by length of the disassembled instruction. */
+	fcml_bool increment_ip;
 	/* True if optional error and warning messages should be collected during processing. */
 	fcml_bool enable_error_messages;
     /* True if suffixes for carry flag has to be used by disassembler.*/
@@ -156,6 +159,8 @@ typedef struct fcml_st_instruction_details {
 	/* Opcode field 'w'. This is set only for informational purpose only,
 	 * you should not use it for any critical functionality.*/
 	fcml_bool opcode_field_w_bit;
+	/* Instruction code. */
+	fcml_en_instruction instruction;
 } fcml_st_instruction_details;
 
 /* Disassembler result. */

@@ -53,6 +53,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_ceh_error_container errors;
 	fcml_st_memory_stream *stream;
 	fcml_st_mp_mnemonic_set *mnemonics;
+	fcml_en_instruction instruction;
 	fcml_data_size effective_address_size_attribute;
 	fcml_data_size effective_operand_size_attribute;
 	fcml_int calculated_instruction_size;
@@ -122,7 +123,7 @@ typedef struct fcml_ist_dasm_modrm_decoding_details {
 
 typedef struct fcml_ist_dasm_instruction_decoding_def {
 	/* Instruction code. */
-	fcml_uint16_t instruction;
+	fcml_en_instruction instruction;
 	/* Type of the instruction.*/
 	fcml_uint64_t instruction_group;
 	/* Opcodes. */
@@ -1610,6 +1611,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 
 	decoding_context->calculated_instruction_size += operands_size;
 	decoding_context->mnemonics = instruction_decoding_def->mnemonics;
+	decoding_context->instruction = instruction_decoding_def->instruction;
 
 	/* Store primary opcode byte.*/
 	fcml_int opcode_num = FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE( instruction_decoding_def->opcode_flags );
@@ -2177,7 +2179,10 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 		instruction_details->opcode_field_s_bit = decoding_context.opcode_field_s_bit;
 		instruction_details->opcode_field_w_bit = decoding_context.opcode_field_w_bit;
 
-		/* L flag for mnoemonic chooser.*/
+		/* Instruction code. */
+		instruction_details->instruction = decoding_context.instruction;
+
+		/* L flag for mnemonic chooser.*/
 		fcml_nuint8_t l;
 		l.is_not_null = FCML_FALSE;
 		if( instruction_details->prefixes_details.is_vex || instruction_details->prefixes_details.is_xop ) {
@@ -2202,6 +2207,11 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 
 		/* Clean operands for short forms.*/
 		fcml_ifn_dasm_clean_operands_for_short_forms( instruction, instruction_details );
+
+		/* Increment IP */
+		if( context->configuration.increment_ip ) {
+			context->entry_point.ip += result->instruction_details.instruction_size;
+		}
 
 		/* Execute disassembler post processor if needed.*/
 		fcml_fnp_asm_dialect_prepare_disassembler_postprocessor post_processor = int_disasm->dialect_context->disassembler_postprocessor;

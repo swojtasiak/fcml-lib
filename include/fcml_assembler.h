@@ -26,6 +26,8 @@ typedef struct fcml_st_assembler fcml_st_assembler;
 
 /* Assembler runtime configuration. */
 typedef struct fcml_st_assembler_conf {
+	/* Set to true in order to make assembler to increment IP address by length of the chosen instruction. */
+	fcml_bool increment_ip;
 	/* True if optional error and warning messages should be collected during processing. */
 	fcml_bool enable_error_messages;
     /* If there is SIB and ModR/M only encoding available, choose the SIB based one. */
