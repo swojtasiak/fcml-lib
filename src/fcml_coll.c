@@ -261,7 +261,7 @@ void fcml_fn_coll_map_put( fcml_coll_map map_int, fcml_ptr key, fcml_ptr value, 
 
 	/* Check if map should be already extended.*/
 	if( entry && map->size > map->boundary ) {
-		/* Currently we ignore errors, beacuse it really doesn't matter if*/
+		/* Currently we ignore errors, because it really doesn't matter if*/
 		/* there is no space in the map or on the heap.*/
 		fcml_ceh_error error;
 		if( fcml_ifn_coll_map_expand( map, &error ) ) {
