@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
 	}
 
 	fcml_st_assembler_context context = {0};
+	context.configuration.enable_error_messages = FCML_TRUE;
 
 	fcml_bool gas_dialect = 0;
 
