@@ -434,7 +434,7 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, fcml_int size, f
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_disassembler_context context;
+	fcml_st_disassembler_context context = {0};
 	context.configuration.enable_error_messages = FCML_TRUE;
 	context.configuration.short_forms = ( t_flags & FCML_TSF_SHORT ) ? FCML_TRUE : FCML_FALSE;
 	context.configuration.extend_disp_to_asa = FCML_TRUE;
