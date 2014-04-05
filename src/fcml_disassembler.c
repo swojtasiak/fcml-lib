@@ -590,6 +590,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset( fcml_ist_d
 	}
 
 	address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, seg_args->encoded_operand_size );
+	address->address_form = FCML_AF_OFFSET;
 
 	operand->type = FCML_EOT_ADDRESS;
 

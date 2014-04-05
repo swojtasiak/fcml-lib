@@ -343,8 +343,11 @@ typedef struct fcml_st_far_pointer {
 	fcml_uint32_t offset32;
 } fcml_st_far_pointer;
 
+// TODO: Zastanowic sie czy nie zastapic immediate value i displacement jednym typem, chyba tylko offset sie rozni. Monza by wtedy zrobic je
+// domysklnie ze znakiem.
 typedef struct fcml_st_displacement {
 	fcml_data_size size;
+	// TODO: Czy to jest gdzies wykorzystwyane? Niby dispalcement jest zawsze ze znakiem.
 	fcml_bool is_signed;
 	/* Data fields. */
 	fcml_int8_t dis8;
@@ -466,7 +469,7 @@ typedef struct fcml_st_instruction_code {
  * Describes address of an instruction code.
  */
 typedef struct fcml_st_entry_point {
-	/* Processor addressing mode 16/32/64-bit.*/
+	/* Processor operating mode 16/32/64-bit.*/
 	fcml_en_addr_form addr_form;
 	/* Default address/operand size attribute (See 'D' flag of segment descriptor.)*/
 	fcml_data_size address_size_attribute;
