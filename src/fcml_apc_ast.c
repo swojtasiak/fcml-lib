@@ -751,7 +751,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_ci
         }
 	}
 
-	/* In case of far poiner calculation such problem is repored as an error. */
+	/* In case of far pointer calculation such problem is reported as an error. */
 	if( overflow ) {
 	    if( !fcml_fn_ceh_add_error( context->errors, "Segment selector out of range.", FCML_CEH_MEC_ERROR_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_ERROR ) ) {
             error = FCML_CEH_GEC_OUT_OF_MEMORY;

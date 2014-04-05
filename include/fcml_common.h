@@ -337,6 +337,8 @@ typedef struct fcml_st_far_pointer {
     fcml_uint16_t segment;
     fcml_data_size offset_size;
     /* Data fields. */
+    // TODO: dlaczego nie signed i co jezeli podamy 16 bit w miejscu gdzie 32 bit jest wymagany jak zostanie
+    // rozszerzony ze znakiem czy bez, offsety geenralnie powinny byc zapisane ze znakiem.
 	fcml_uint16_t offset16;
 	fcml_uint32_t offset32;
 } fcml_st_far_pointer;

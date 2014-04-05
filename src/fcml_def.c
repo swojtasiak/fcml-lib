@@ -6539,23 +6539,23 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_TZMSK[] = {
 /* TODO: Przyklaad instrukcji bez operandow ktora modyfikuje EAX, jako argument dlaczego wartosci R/W nie powinny byc uzywane.*/
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_XABORT[] = {
 	/* C6 F8 ib XABORT imm8*/
-	{ NULL, FCML_AMT_HLE, 0x0000, 0x00D80000, { 0xC6, 0xF8, 0x00 }, { FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_RTM, 0x0000, 0x00D80000, { 0xC6, 0xF8, 0x00 }, { FCML_OP_IB, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_XBEGIN[] = {
 	/* C7 F8 XBEGIN rel16*/
 	/* C7 F8 XBEGIN rel32*/
-	{ NULL, FCML_AMT_HLE, 0x0000, 0x40D80000, { 0xC7, 0xF8, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_RTM, 0x0000, 0x40D80000, { 0xC7, 0xF8, 0x00 }, { FCML_OP_IMMEDIATE_DIS_RELATIVE_EOSA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_XEND[] = {
 	/* 0F 01 D5 XEND*/
-	{ NULL, FCML_AMT_HLE, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD5 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_RTM, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD5 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_XTEST[] = {
 	/* 0F 01 D6 XTEST*/
-	{ NULL, FCML_AMT_HLE, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD6 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
+	{ NULL, FCML_AMT_HLE | FCML_AMT_RTM, 0x0000, 0x00EC0000, { 0x0F, 0x01, 0xD6 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN }
 };
 
 /* END OF HLE */
