@@ -139,6 +139,7 @@ void fcml_tf_instruction_ADC(void) {
 	FCML_I32_A( "adc [di+0201h],esp", 0x67, 0x11, 0xa5, 0x01, 0x02 );
 	FCML_A32( "adc %eax,0x0201(%bp,%di)", 0x67, 0x11, 0x83, 0x01, 0x02 );
 	FCML_I64( "adc qword ptr [r9+rcx*4+0000000000000001h],r12", 0x4D, 0x11, 0x64, 0x89, 0x01 );
+	FCML_A64( "adc %r12,0x0000000000000001(%r9,%rcx,4)", 0x4D, 0x11, 0x64, 0x89, 0x01 );
 	/* 12 /r ADC r8, r/m8 A Valid Valid Add with carry r/m8 to byte register.*/
 	/* REX + 12 /r ADC r8*, r/m8* A Valid N.E. Add with carry r/m64 to byte register.*/
 	FCML_I32( "adc ah,byte ptr [ebp+04030201h]", 0x12, 0xa5, 0x01, 0x02, 0x03, 04 );

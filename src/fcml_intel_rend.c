@@ -306,26 +306,26 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 
 	fcml_uint32_t render_flags = config->render_flags;
 
-	/* Local stream.*/
+	/* Local stream. */
 	fcml_st_memory_stream local_stream;
 	local_stream.base_address = local_buffer;
 	local_stream.size = sizeof( local_buffer );
 	local_stream.offset = 0;
 
-	/* Instruction code.*/
+	/* Instruction code. */
 	if( render_flags & FCML_REND_FLAG_RENDER_CODE ) {
 		fcml_fn_rend_utils_format_append_code( config, output_stream, result->instruction_details.instruction_code, result->instruction_details.instruction_size );
 	}
 
 	fcml_int len = 0;
 
-	/* Instruction prefixes like LOCK.*/
+	/* Instruction prefixes like LOCK. */
 	len += fcml_ifn_rend_utils_print_prefixes( output_stream, &(result->instruction_details.prefixes_details), render_flags );
 
 	/* Mnemonic.*/
 	len += fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
 
-	/* Short form, so operands should be ignored.*/
+	/* Short form, so operands should be ignored. */
 	if( result->instruction_details.is_shortcut ) {
 		return error;
 	}
