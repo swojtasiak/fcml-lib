@@ -35,8 +35,10 @@ typedef struct fcml_st_assembler_conf {
     /* If memory addressing can be encoded as relative and absolute one,
      * choose absolute addressing. It works in 64 bit mode only. */
     fcml_bool choose_abs_encoding;
-    /* Sometimes REX prefix is useless so it is just omited in the final machine code. By setting this
-     * flag to true you can forse this prefix to be added anyway. */
+    /**
+     * Sometimes REX prefix is useless so it is just omitted in the final machine code.
+     * By setting this flag to true you can force this prefix to be added anyway.
+     */
     fcml_bool force_rex_prefix;
     /* Every 2 byte VEX/XOP prefix can be encoded using three byte form. Setting this flag to true forces it. */
     fcml_bool force_three_byte_VEX;
@@ -82,7 +84,7 @@ typedef struct fcml_st_assembler_result {
 typedef struct fcml_st_assembler_context {
     /* Assembler instance that should be used to assemble instructions.*/
     fcml_st_assembler *assembler;
-    /* Assembler behavior can be configured here.*/
+    /* Assembler behaviour can be configured here.*/
 	fcml_st_assembler_conf configuration;
 	/* Instruction entry point configuration. */
 	fcml_st_entry_point entry_point;

@@ -23,13 +23,13 @@ typedef fcml_ptr (*fcml_fnp_chooser_next)( fcml_ptr instruction );
 /* Gets instruction code from current abstract instruction pointer. */
 typedef void (*fcml_fnp_chooser_extract)( fcml_ptr instruction, fcml_st_instruction_code *instruction_code );
 
-/* Instruction chooser context used to communicate with environemnt. */
+/* Instruction chooser context used to communicate with environment. */
 typedef struct fcml_st_chooser_context {
     /* First instruction.*/
     fcml_ptr instruction;
     /* Gets next instruction  code from iterator.*/
     fcml_fnp_chooser_next next;
-    /* Extracts instruction code from abstract intruction pointer.*/
+    /* Extracts instruction code from abstract instruction pointer.*/
     fcml_fnp_chooser_extract extract;
 } fcml_st_chooser_context;
 
