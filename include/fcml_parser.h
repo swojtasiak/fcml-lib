@@ -37,7 +37,7 @@ typedef struct fcml_st_parser_config {
 typedef struct fcml_st_parser_context {
 	/* Dialect to be used by parser. */
 	fcml_st_dialect *dialect;
-	/* Pserser configuration. */
+	/* Parser configuration. */
 	fcml_st_parser_config config;
 	/* RIP/EIP used as a value for newly declared symbols.
 	 * This value is never changed by parser.

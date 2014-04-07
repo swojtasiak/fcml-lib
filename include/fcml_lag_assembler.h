@@ -32,6 +32,8 @@ typedef struct fcml_st_lag_assembler_result {
 	fcml_st_assembled_instruction *instructions;
 } fcml_st_lag_assembler_result;
 
+// TODO: Dlaczego dialekt jest tu zdefiniowany?
+
 /* Assembler runtime context. */
 typedef struct fcml_st_lag_assembler_context {
 	/* Dialect used to assemble instructions. It should be the same dialect
