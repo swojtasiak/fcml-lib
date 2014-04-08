@@ -212,6 +212,13 @@ LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_64( fcml_st
 /* Hints*/
 LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints );
 
+/* Cloning. */
+
+// TODO: Add implementation.
+
+fcml_st_instruction *fcml_fn_cu_clone_instruction( fcml_st_instruction *instruction );
+void fcml_fn_cu_free_instruction( fcml_st_instruction *instruction );
+
 /* Some shortcuts for these who prefer to use macros instead of functions.*/
 
 #define FCML_IMM8_S( x )		fcml_fn_cu_operand_signed_imm_8( x )
