@@ -16,9 +16,7 @@ void fcml_fn_pu_parse_integer( const fcml_char *str, fcml_st_ast_val_integer *in
 #else
 	fcml_uint64_t value = strtoull( str, NULL, base );
 #endif
-	if( errno == ERANGE ) {
-		integer_value->overflow = FCML_TRUE;
-	}
+	integer_value->overflow = ( errno == ERANGE );
 	integer_value->value = value;
 	integer_value->is_signed = FCML_FALSE;
 }

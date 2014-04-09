@@ -513,6 +513,7 @@ fcml_st_ast_val_integer fcml_ifn_ast_convert_to_val_integer( fcml_int64_t val ) 
 	fcml_st_ast_val_integer int_value;
 	int_value.value = (fcml_uint64_t)val;
 	int_value.is_signed = val < 0;
+	int_value.overflow = FCML_FALSE;
 	return int_value;
 }
 
