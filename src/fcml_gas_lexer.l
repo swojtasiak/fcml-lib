@@ -223,7 +223,7 @@ fcml_fn_pu_parse_intege_flags
 					yylval->prefixes = FCML_PREFIX_XRELEASE;
 					return FCML_TK_PREFIX;
 				}
-				
+
 "branch"		{
 					yylval->hints = FCML_PREFIX_BRANCH_HINT;
 					return FCML_TK_PREFIX;
