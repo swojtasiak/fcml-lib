@@ -69,6 +69,7 @@ void fcml_tf_instruction_MAXSD(void) {
     /* VEX.NDS.128.F2.0F 5F /r VMAXSD xmm1,xmm2,xmm3/m64*/
     FCML_I64( "vmaxsd xmm3,xmm3,xmm0", 0xc5, 0xe3, 0x5f, 0xd8 );
     FCML_I32( "vmaxsd xmm3,xmm7,xmm0", 0xc5, 0xc3, 0x5f, 0xd8 );
+    FCML_I32_A( "vmaxsd long_form xmm3,xmm7,xmm0", 0xc4, 0xe1, 0x43, 0x5f, 0xd8 );
     FCML_I32( "vmaxsd xmm3,xmm0,mmword ptr [eax]", 0xc5, 0xfb, 0x5f, 0x18 );
     /* GAS*/
     FCML_A64( "maxsd 0x0000000000000020(%rax),%xmm0", 0xf2, 0x0f, 0x5f, 0x40, 0x20 );
@@ -459,10 +460,10 @@ void fcml_tf_instruction_MOVBE(void) {
 }
 
 void fcml_tf_instruction_MOVQ(void) {
-	/* TODO: Opisac ambigous rozwiazywan w przypadku intela za pomoca typu size oeprandu, a w przypadku GAS niestety nie ma jak.*/
 	/* 0F 6F /r MOVQ mm, mm/m64 A Valid Valid Move quadword from mm/m64 to mm.*/
 	FCML_I32( "movq mm0,mmword ptr [eax]", 0x0F, 0x6F, 0x00 );
 	FCML_I64( "movq mm0,mmword ptr [rax]", 0x0F, 0x6F, 0x00 );
+	FCML_I64_M_A( "movq mm0,[rax]", 2, FCML_MI( 0x0f, 0x6f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x00 ) );
 	FCML_I32_D( "movq mm0,mm2", 0x0f, 0x6f, 0xc2 );
 	FCML_I64_M( "movq mm2,mm0", 2, FCML_MI( 0x0f, 0x6f, 0xd0 ), FCML_MI( 0x0f, 0x7f, 0xc2 ) );
 	/* GAS (ambigous syntax)*/
