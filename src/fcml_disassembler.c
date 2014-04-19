@@ -889,7 +889,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding( fcml_st_def_addr_mode
  * Prefixes.
  *********************/
 
-fcml_st_instruction_prefix* fcml_ifn_dasm_get_prefix_by_type( fcml_ist_dasm_decoding_context *context, fcml_st_prefix_types prefix_type ) {
+fcml_st_instruction_prefix* fcml_ifn_dasm_get_prefix_by_type( fcml_ist_dasm_decoding_context *context, fcml_en_prefix_types prefix_type ) {
 	fcml_st_instruction_prefix* prefix = NULL;
 	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 	fcml_int prefix_count = prefixes->prefixes_count;
@@ -1771,7 +1771,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_st_prefixes_details *prefixes_details = &(decoding_context->prefixes);
 
 	fcml_uint16_t p_flags = 0;
-	fcml_st_prefix_types prefix_type = FCML_PT_GROUP_UNKNOWN;
+	fcml_en_prefix_types prefix_type = FCML_PT_GROUP_UNKNOWN;
 	fcml_int prefix_index = 0;
 	fcml_int prefix_size = 0;
 	fcml_int xop_vex_prefix_size = 0;

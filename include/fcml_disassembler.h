@@ -62,7 +62,7 @@ typedef struct fcml_st_disassembler_context {
 /* Prefixes */
 
 /* Available types of instruction prefixes. */
-typedef enum fcml_st_prefix_types {
+typedef enum fcml_en_prefix_types {
 	FCML_PT_GROUP_UNKNOWN = 0,
 	FCML_PT_GROUP_1 = 1,
 	FCML_PT_GROUP_2,
@@ -71,14 +71,14 @@ typedef enum fcml_st_prefix_types {
 	FCML_PT_REX,
 	FCML_PT_VEX,
 	FCML_PT_XOP,
-} fcml_st_prefix_types;
+} fcml_en_prefix_types;
 
 /* Describes one decoded prefix. */
 typedef struct fcml_st_instruction_prefix {
 	/* Prefix itself. */
 	fcml_uint8_t prefix;
 	/* Type of prefix, see enumeration above. */
-	fcml_st_prefix_types prefix_type;
+	fcml_en_prefix_types prefix_type;
 	/* 1 if prefix can be treated as mandatory one. */
 	fcml_bool mandatory_prefix;
 	/* Place for additional bytes of VEX prefix. */
