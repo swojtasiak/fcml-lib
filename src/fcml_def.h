@@ -233,8 +233,6 @@ enum fcml_en_instruction_addr_mode_codes {
 
 /* Structures used to describe instructions with they all allowed addressing modes. */
 typedef struct fcml_st_def_addr_mode_desc {
-    /* Mnemonic, if there is another mnemonic available for this opcode.*/
-    fcml_string mnemonic_override;
     /* Addressing mode type.*/
     fcml_uint64_t instruction_group;
     /* Flags describing allowed prefixes.*/

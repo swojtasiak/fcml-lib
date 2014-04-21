@@ -1286,11 +1286,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_dial
 
     if( !mnemonic_pattern ) {
         /* Choose best mnemonic for instruction.*/
-        if( addr_mode->mnemonic_override ) {
-            mnemonic_pattern = addr_mode->mnemonic_override;
-        } else {
-            mnemonic_pattern = instruction->mnemonic;
-        }
+		mnemonic_pattern = instruction->mnemonic;
     }
 
     fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
@@ -1453,7 +1449,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
 
     } else {
 
-        /* For bound and enter instructions operands should be provided in the same order as for intel assembler, so*/
+        /* For bound and enter instructions operands should be provided in the same order as for Intel assembler, so*/
         /* they should be reverted one more time. We can gain some performance by doubling this operation for*/
         /* these two instructions instead of reverting operands for any checked addressing mode.*/
         if( mnemonic->flags & FCML_GAS_DF_DO_NOT_REVERT_OPERANDS ) {

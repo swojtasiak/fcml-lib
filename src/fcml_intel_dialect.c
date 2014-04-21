@@ -1135,11 +1135,7 @@ fcml_ceh_error fcml_fn_asm_dialect_get_parsed_mnemonics_intel( const fcml_st_dia
 
 	if( !mnemonic_pattern ) {
 		/* Choose best mnemonic for instruction.*/
-		if( addr_mode->mnemonic_override ) {
-			mnemonic_pattern = addr_mode->mnemonic_override;
-		} else {
-			mnemonic_pattern = instruction->mnemonic;
-		}
+		mnemonic_pattern = instruction->mnemonic;
 	}
 
 	return fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
