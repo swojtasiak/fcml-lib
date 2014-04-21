@@ -56,6 +56,9 @@ void fcml_tf_instruction_JMP(void) {
     FCML_I32( "jmp 90d11004h", 0xe9, 0xff,0xff, 0x90, 0x90 );
     FCML_A64( "jmpq 0x00007fff90d11004", 0xe9, 0xff,0xff, 0x90, 0x90 );
     FCML_I32( "jmp 0000a103h", 0x66, 0xe9, 0xff, 0x90 );
+    // TODO: To chyba nie jest do konca poprawnie: 0x000000000040052b <main+0>:	66 ff 25 03 a1 00 00	jmpw   *0xa103(%rip)
+    // 0x000000000040052b <main+0>:	66 e9 ff 90	jmpw   0x962e
+    // 0x000000000040052f <main+4>:	66 ff 25 03 a1 00 00	jmpw   *0xa103(%rip)
     FCML_A32_M_A( "jmpw 0x0000a103", 2, FCML_MI( 0x66, 0xe9, 0xff, 0x90 ), FCML_MI( 0x66, 0xff, 0x25, 0x03, 0xa1, 0x00, 0x00 ) );
     /* FF /4 JMP r/m16 B N.S. Valid Jump near, absolute indirect, address = zero-extended r/m16. Not supported in 64- bit mode.*/
     /* FF /4 JMP r/m32 B N.S. Valid Jump near, absolute indirect, address given in r/m32. Not supported in 64-bit mode.*/
