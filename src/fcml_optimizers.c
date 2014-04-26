@@ -154,7 +154,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
 	/* Choosing best optimization path for ASA.*/
 
 	if( !easa_count ) {
-		switch( context->addr_form ) {
+		switch( context->op_mode ) {
 		case FCML_AF_16_BIT:
 		case FCML_AF_32_BIT:
 			path = ( context->asa == FCML_DS_16 ) ? fcml_iarr_asm_opt_16_32_bit_optimization_path_16 : fcml_iarr_asm_opt_16_32_bit_optimization_path_32;
@@ -170,7 +170,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
 	/* Choosing best optimization path for OSA.*/
 
 	if( !eosa_count ) {
-		switch( context->addr_form ) {
+		switch( context->op_mode ) {
 		case FCML_AF_16_BIT:
 		case FCML_AF_32_BIT:
 			path = ( context->osa == FCML_DS_16 ) ? fcml_iarr_asm_opt_16_32_bit_optimization_path_16 : fcml_iarr_asm_opt_16_32_bit_optimization_path_32;

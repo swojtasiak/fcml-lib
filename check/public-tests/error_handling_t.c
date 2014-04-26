@@ -16,10 +16,10 @@
 
 /* Helper methods */
 
-fcml_st_assembler_context fcml_ifn_prepare_context( fcml_en_addr_form addr_form ) {
+fcml_st_assembler_context fcml_ifn_prepare_context( fcml_en_operating_mode op_mode ) {
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
-	context.entry_point.addr_form = addr_form;
+	context.entry_point.op_mode = op_mode;
 	context.entry_point.ip = 0x00401000;
 	context.configuration.enable_error_messages = FCML_TRUE;
 	return context;

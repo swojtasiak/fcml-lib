@@ -537,7 +537,7 @@ fcml_bool fcml_ifn_asm_choose_optimal_osa( fcml_ist_asm_encoding_context *contex
 
     fcml_flags flags = context->optimizer_processing_details.allowed_eosa.flags;
 
-    switch( entry_point->addr_form ) {
+    switch( entry_point->op_mode ) {
     case FCML_AF_16_BIT:
         if( flags & FCML_EN_ASF_16 ) {
             *osa = FCML_DS_16;
@@ -639,7 +639,7 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 		}
 		break;
 	case FCML_EOS_EASA:
-		if( entry_point->addr_form == FCML_AF_32_BIT ) {
+		if( entry_point->op_mode == FCML_AF_32_BIT ) {
 			result = ( ( operand_size == FCML_DS_16 ) || ( operand_size == FCML_DS_32 ) );
 		} else {
 			result = ( ( operand_size == FCML_DS_32 ) || ( operand_size == FCML_DS_64 ) );
@@ -649,7 +649,7 @@ fcml_bool fcml_ifn_asm_accept_data_size( fcml_ist_asm_encoding_context *context,
 		}
 		break;
 	case FCML_EOS_EOSA:
-		if( entry_point->addr_form == FCML_AF_32_BIT ) {
+		if( entry_point->op_mode == FCML_AF_32_BIT ) {
 			result = ( ( operand_size == FCML_DS_16 ) || ( operand_size == FCML_DS_32 ) );
 		} else {
 			result = ( ( operand_size == FCML_DS_16 ) || ( operand_size == FCML_DS_32 ) || ( operand_size == FCML_DS_64 ) );
@@ -764,7 +764,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
 		fcml_uint8_t imm_size = args->encoded_imm_size;
 		fcml_uint8_t imm_size_ex = args->encoded_ex_imm_size;
 		fcml_st_immediate *immediate = &(operand_def->immediate);
-		fcml_en_addr_form addr_form = context->assembler_context->entry_point.addr_form;
+		fcml_en_operating_mode op_mode = context->assembler_context->entry_point.op_mode;
 		fcml_bool is_convertable = FCML_FALSE;
 
 		fcml_flags osa_flags = context->optimizer_processing_details.allowed_eosa.flags;
@@ -786,7 +786,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
-                if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
+                if( ( osa_flags & FCML_EN_ASF_64 ) && op_mode == FCML_AF_64_BIT ) {
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, ( args->is_64bit_imm_allowed ) ? FCML_DS_64 : FCML_DS_32, FCML_EN_ASF_64, &flags );
                 }
             } else if( imm_size == FCML_EOS_EOSA ) {
@@ -794,7 +794,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_16, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_32, FCML_EN_ASF_32, &flags );
-                if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
+                if( ( osa_flags & FCML_EN_ASF_64 ) && op_mode == FCML_AF_64_BIT ) {
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, args->is_64bit_imm_allowed ? FCML_DS_64 : FCML_DS_32, FCML_EN_ASF_64, &flags );
                 }
             } else {
@@ -803,7 +803,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_32, &flags );
-                if( ( osa_flags & FCML_EN_ASF_64 ) && addr_form == FCML_AF_64_BIT ) {
+                if( ( osa_flags & FCML_EN_ASF_64 ) && op_mode == FCML_AF_64_BIT ) {
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_64, &flags );
                 }
             }
@@ -935,7 +935,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_opcode_reg( fcml_ien_asm_part_proces
 		} else {
 			context->opcode_reg.opcode_reg = operand_def->reg.reg;
 		}
-		if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
+		if( context->assembler_context->entry_point.op_mode == FCML_AF_64_BIT ) {
 		    context->reg_opcode_needs_rex = operand_def->reg.x64_exp;
 		}
 	}
@@ -950,7 +950,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_immediate_dis_relative( fcml_ist_as
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	if ( ( operand_def->type == FCML_EOT_IMMEDIATE ) || ( operand_def->type == FCML_EOT_ADDRESS && operand_def->address.address_form == FCML_AF_OFFSET ) ) {
         fcml_flags flags = 0;
-	    if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
+	    if( context->assembler_context->entry_point.op_mode == FCML_AF_64_BIT ) {
             /* 64 bit OSA forced. Just in case, addressing mode acceptor is responsible for interpreting FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA*/
 	        /* flag and forcing appropriate OSA size.*/
 	        /* TODO: Pzeanalizowac to czy napewno jest poprawne, jezeli nie ma ustawionego FORCE 64 EOA in 64bit mode, dziala chyba nie tak.*/
@@ -1137,7 +1137,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_far_pointer( fcml_ist_asm_encoding_
     if( operand_def->type != FCML_EOT_FAR_POINTER ) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
-    switch( context->assembler_context->entry_point.addr_form ) {
+    switch( context->assembler_context->entry_point.op_mode ) {
     case FCML_AF_16_BIT:
         if( operand_def->far_pointer.offset_size == FCML_DS_16 ) {
             if( !fcml_ifn_asm_set_size_flag( &(context->optimizer_processing_details.allowed_eosa), FCML_EN_ASF_16 ) ) {
@@ -1192,7 +1192,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_far_pointer( fcml_ien_asm_part_proce
         /* Write offset.*/
 
         if( operand_def->far_pointer.offset_size == FCML_DS_16 ) {
-            fcml_fn_stream_write_word( &stream, operand_def->far_pointer.offset16 );
+            fcml_fn_stream_write_word( &stream, (fcml_uint16_t)operand_def->far_pointer.offset16 );
             operand_enc->code_length = 4;
         } else {
             fcml_fn_stream_write_dword( &stream, operand_def->far_pointer.offset32 );
@@ -1306,7 +1306,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_segment_relative_offset( fcml_ist_a
         source_address.is_signed = FCML_TRUE;
 
         is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags );
-        if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
+        if( context->assembler_context->entry_point.op_mode == FCML_AF_64_BIT ) {
            is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags );
         } else {
            is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source_address, &converted_address, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
@@ -1449,7 +1449,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
 			    if( !error ) {
 
                     /* ASA.*/
-                    fcml_en_addr_form addr_form = context->assembler_context->entry_point.addr_form;
+                    fcml_en_operating_mode op_mode = context->assembler_context->entry_point.op_mode;
 
                     fcml_st_modrm mod_rm = {0};
                     mod_rm.address = operand_def->address;
@@ -1457,7 +1457,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
                     fcml_flags esa;
                     fcml_fn_modrm_calculate_effective_address_size( &mod_rm, &esa );
 
-                    if( ( esa & FCML_EN_ASF_16 ) && addr_form != FCML_AF_64_BIT ) {
+                    if( ( esa & FCML_EN_ASF_16 ) && op_mode != FCML_AF_64_BIT ) {
                         context->optimizer_processing_details.allowed_easa.flags |= FCML_EN_ASF_16;
                     }
 
@@ -1465,7 +1465,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm( fcml_ist_asm_encoding_context *
                         context->optimizer_processing_details.allowed_easa.flags |= FCML_EN_ASF_32;
                     }
 
-                    if( ( esa & FCML_EN_ASF_64 ) && addr_form != FCML_AF_16_BIT ) {
+                    if( ( esa & FCML_EN_ASF_64 ) && op_mode != FCML_AF_16_BIT ) {
                         context->optimizer_processing_details.allowed_easa.flags |= FCML_EN_ASF_64;
                     }
 			    }
@@ -1487,7 +1487,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		if( operand_def->type == FCML_EOT_REGISTER ) {
 			context->mod_rm.reg.is_not_null = FCML_TRUE;
 			context->mod_rm.reg.value = operand_def->reg.reg;
-			if( entry_point->addr_form == FCML_AF_64_BIT ) {
+			if( entry_point->op_mode == FCML_AF_64_BIT ) {
 			    context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
 			}
 			/* Modify data size flags if there is such need.*/
@@ -1495,7 +1495,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm( fcml_ien_asm_part_processor_phas
 		} else {
 			/* Set hints for ModR/M instruction part encoder.*/
 			context->is_sib_alternative_hint = ( operand_def->hints & FCML_OP_HINT_SIB_ENCODING );
-			if( entry_point->addr_form == FCML_AF_64_BIT ) {
+			if( entry_point->op_mode == FCML_AF_64_BIT ) {
 				context->is_abs_alternative_hint = ( operand_def->hints & FCML_OP_HINT_ABSOLUTE_ADDRESSING );
 				context->is_rel_alternative_hint = ( operand_def->hints & FCML_OP_HINT_RELATIVE_ADDRESSING );
 			} else {
@@ -1538,7 +1538,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_r( fcml_ien_asm_part_processor_phase
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 	    fcml_sf_def_tma_r *args = (fcml_sf_def_tma_r*)addr_mode->addr_mode_args;
 		context->mod_rm.reg_opcode = operand_def->reg.reg;
-		if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
+		if( context->assembler_context->entry_point.op_mode == FCML_AF_64_BIT ) {
 		    context->mod_rm.reg_opcode_needs_rex = operand_def->reg.x64_exp;
 		}
 		if( ( operand_def->reg.type != FCML_REG_DR && operand_def->reg.type != FCML_REG_CR ) && operand_def->reg.size != FCML_DS_UNDEF ) {
@@ -2008,7 +2008,7 @@ void fcml_ifn_asm_set_attribute_size_flag_for_size( fcml_data_size attribute_siz
 
 void fcml_ifn_prepare_optimizer_context( fcml_st_asm_optimizer_context *optimizer_context, fcml_st_assembler_context *assembler_context ) {
 	fcml_st_entry_point *entry_point = &(assembler_context->entry_point);
-    optimizer_context->addr_form = entry_point->addr_form;
+    optimizer_context->op_mode = entry_point->op_mode;
     optimizer_context->optimizer_flags = assembler_context->configuration.optimizer_flags;
     optimizer_context->asa = entry_point->address_size_attribute;
     optimizer_context->osa = entry_point->operand_size_attribute;
@@ -3034,7 +3034,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder( fcml_
 
 		/* REX prefix is only available in 64 bit mode. Neither VEX nor XOP are allowed here,*/
 		/* but it's checked before this encoder is registered for*/
-		if( context->assembler_context->entry_point.addr_form == FCML_AF_64_BIT ) {
+		if( context->assembler_context->entry_point.op_mode == FCML_AF_64_BIT ) {
 
 			fcml_uint8_t rex = FCML_ENCODE_REX_BASE;
 
@@ -3122,7 +3122,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder( fcml_ien_a
 	if( phase == FCML_IEN_ASM_IPPP_SECOND_PHASE ) {
 
 		fcml_st_modrm_encoder_context ctx;
-		ctx.addr_form = assembler_context->entry_point.addr_form;
+		ctx.op_mode = assembler_context->entry_point.op_mode;
 
 		/* Hints have higher precedence than configuration.*/
 
@@ -3206,10 +3206,10 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
 /*******************************/
 
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_addr_mode_acceptor( fcml_ist_asm_encoding_context *context, fcml_ist_asm_addr_mode_desc_details *addr_mode_details, fcml_st_def_addr_mode_desc *addr_mode_def, fcml_st_instruction *instruction, fcml_ptr args ) {
-	fcml_en_addr_form addr_form = context->assembler_context->entry_point.addr_form;
-	if( !FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( addr_mode_def->opcode_flags ) && addr_form == FCML_AF_64_BIT ) {
+	fcml_en_operating_mode op_mode = context->assembler_context->entry_point.op_mode;
+	if( !FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( addr_mode_def->opcode_flags ) && op_mode == FCML_AF_64_BIT ) {
 		return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
-	} else if ( !FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( addr_mode_def->opcode_flags ) && ( addr_form == FCML_AF_16_BIT || addr_form == FCML_AF_32_BIT ) ) {
+	} else if ( !FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( addr_mode_def->opcode_flags ) && ( op_mode == FCML_AF_16_BIT || op_mode == FCML_AF_32_BIT ) ) {
 		return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 	}
 	/* Set restrictions if there are any.*/
@@ -3222,7 +3222,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_addr_mode_acceptor( fcml_
 		context->optimizer_processing_details.allowed_easa.is_set = FCML_TRUE;
 	}
 	/* Force 64 bit OSA in 64 bit addressing mode.*/
-	if( addr_form == FCML_AF_64_BIT ) {
+	if( op_mode == FCML_AF_64_BIT ) {
 		if( FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA( addr_mode_def->opcode_flags ) ) {
 			context->optimizer_processing_details.allowed_eosa.flags = FCML_EN_ASF_64;
 			context->optimizer_processing_details.allowed_eosa.is_set = FCML_TRUE;

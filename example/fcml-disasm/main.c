@@ -498,11 +498,11 @@ int main(int argc, char **argv) {
 	int i;
 	for( i = 1; i < argc; i++ ) {
 		if( strcmp( argv[i], "-m16" ) == 0 ) {
-			context.entry_point.addr_form = FCML_AF_16_BIT;
+			context.entry_point.op_mode = FCML_AF_16_BIT;
 		} else if( strcmp( argv[i], "-m32" ) == 0 ) {
-			context.entry_point.addr_form = FCML_AF_32_BIT;
+			context.entry_point.op_mode = FCML_AF_32_BIT;
 		} else if( strcmp( argv[i], "-m64" ) == 0 ) {
-			context.entry_point.addr_form = FCML_AF_64_BIT;
+			context.entry_point.op_mode = FCML_AF_64_BIT;
 		} else if( strcmp( argv[i], "-asa16" ) == 0 ) {
 			context.entry_point.address_size_attribute = FCML_DS_16;
 		} else if( strcmp( argv[i], "-asa32" ) == 0 ) {
@@ -594,7 +594,7 @@ int main(int argc, char **argv) {
 
 	context.configuration.enable_error_messages = FCML_TRUE;
 
-	if( !context.entry_point.addr_form ) {
+	if( !context.entry_point.op_mode ) {
 		printf("Addressing mode not specified.\n");
 		exit(1);
 	}

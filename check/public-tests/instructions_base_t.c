@@ -38,8 +38,8 @@ int fcml_fn_test_number_of_arguments( fcml_string code ) {
 
 #endif
 
-void fcml_ifn_ts_set_ip( fcml_ip *ip, fcml_en_addr_form addr_form ) {
-	switch( addr_form ) {
+void fcml_ifn_ts_set_ip( fcml_ip *ip, fcml_en_operating_mode op_mode ) {
+	switch( op_mode ) {
 	case FCML_AF_16_BIT:
 	case FCML_AF_32_BIT:
 		*ip = 0x00401000;
@@ -50,7 +50,7 @@ void fcml_ifn_ts_set_ip( fcml_ip *ip, fcml_en_addr_form addr_form ) {
 	}
 }
 
-fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_en_addr_form addr_form, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t rend_flags ) {
+fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_en_operating_mode op_mode, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t rend_flags ) {
 
 	fcml_st_assembler *assembler = assembler_intel;
 	fcml_st_disassembler *disassembler = disassembler_intel;
@@ -81,7 +81,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		context.configuration.carry_flag_conditional_suffix = FCML_TRUE;
 		context.configuration.extend_disp_to_asa = FCML_TRUE;
 		context.disassembler = disassembler;
-		context.entry_point.addr_form = addr_form;
+		context.entry_point.op_mode = op_mode;
 		context.entry_point.address_size_attribute = 0;
 		context.entry_point.operand_size_attribute = 0;
 		if( !(t_flags & FCML_TSF_MULTI_ASM_RESULTS) ) {
@@ -92,7 +92,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 			context.code_length = code[1];
 		}
 
-		fcml_ifn_ts_set_ip( &(context.entry_point.ip), addr_form );
+		fcml_ifn_ts_set_ip( &(context.entry_point.ip), op_mode );
 
 		/* Disassemble.*/
 		error = fcml_fn_disassemble( &context, &dis_result );
@@ -186,10 +186,10 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		context.assembler = assembler;
 		context.entry_point.address_size_attribute = 0;
 		context.entry_point.operand_size_attribute = 0;
-		context.entry_point.addr_form = addr_form;
+		context.entry_point.op_mode = op_mode;
 
 		if( is_67 ) {
-			if( addr_form == FCML_AF_64_BIT ) {
+			if( op_mode == FCML_AF_64_BIT ) {
 				opt_flags = FCML_OPTF_ASA_32;
 			} else {
 				opt_flags = FCML_OPTF_ASA_16;
@@ -208,7 +208,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		context.configuration.force_rex_prefix = FCML_FALSE;
 		context.configuration.force_three_byte_VEX = FCML_FALSE;
 
-		fcml_ifn_ts_set_ip( &(context.entry_point.ip), addr_form );
+		fcml_ifn_ts_set_ip( &(context.entry_point.ip), op_mode );
 
 		fcml_st_assembler_result asm_result;
 
@@ -352,7 +352,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 
                /* Mnemonic.*/
                fcml_string macro;
-			   switch( addr_form ) {
+			   switch( op_mode ) {
 			   case FCML_AF_16_BIT:
 				   macro = ( assembled_code_index > 1 ) ? (is_gas ? "FCML_A16_M" : "FCML_I16_M") : (is_gas ? "FCML_A16" : "FCML_I16");
 			   break;
@@ -416,7 +416,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 	return success;
 }
 
-fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, fcml_int size, fcml_en_addr_form addr_form, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t ren_flags ) {
+fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, fcml_int size, fcml_en_operating_mode op_mode, fcml_string mnemonic, fcml_uint32_t t_flags, fcml_uint32_t ren_flags ) {
 
 	fcml_bool success = FCML_TRUE;
 
@@ -441,13 +441,13 @@ fcml_bool fcml_fn_ts_instruction_test_diss( fcml_uint8_t *code, fcml_int size, f
 	context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
 	context.configuration.carry_flag_conditional_suffix = FCML_TRUE;
 	context.disassembler = disassembler;
-	context.entry_point.addr_form = addr_form;
+	context.entry_point.op_mode = op_mode;
 	context.entry_point.address_size_attribute = 0;
 	context.entry_point.operand_size_attribute = 0;
 	context.code = code;
 	context.code_length = size;
 
-	fcml_ifn_ts_set_ip( &(context.entry_point.ip), addr_form );
+	fcml_ifn_ts_set_ip( &(context.entry_point.ip), op_mode );
 
 	/* Disassemble.*/
 	error = fcml_fn_disassemble( &context, &dis_result );

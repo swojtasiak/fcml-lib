@@ -752,18 +752,18 @@ void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_err
 fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point ) {
 
 	/* Mode has to be set. */
-	if( entry_point->addr_form != FCML_AF_16_BIT && entry_point->addr_form != FCML_AF_32_BIT && entry_point->addr_form != FCML_AF_64_BIT ) {
+	if( entry_point->op_mode != FCML_AF_16_BIT && entry_point->op_mode != FCML_AF_32_BIT && entry_point->op_mode != FCML_AF_64_BIT ) {
 		return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 	}
 
 	/* 16 bit address size attribute is not supported in 64bit mode. */
-	if( entry_point->addr_form == FCML_AF_64_BIT && entry_point->address_size_attribute == FCML_DS_16 ) {
+	if( entry_point->op_mode == FCML_AF_64_BIT && entry_point->address_size_attribute == FCML_DS_16 ) {
 		return FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 	}
 
 	/* Check if attributes are valid and set them to default values. */
 	if( !entry_point->address_size_attribute ) {
-		switch( entry_point->addr_form ) {
+		switch( entry_point->op_mode ) {
 		case FCML_AF_16_BIT:
 			entry_point->address_size_attribute = FCML_DS_16;
 			break;
@@ -777,7 +777,7 @@ fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point ) {
 	}
 
 	if( !entry_point->operand_size_attribute ) {
-		switch( entry_point->addr_form ) {
+		switch( entry_point->op_mode ) {
 		case FCML_AF_16_BIT:
 			entry_point->operand_size_attribute = FCML_DS_16;
 			break;

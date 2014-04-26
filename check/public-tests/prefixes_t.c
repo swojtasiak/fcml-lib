@@ -26,7 +26,7 @@ void fcml_fn_prefixes_66(void) {
 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
-	context.entry_point.addr_form = FCML_AF_16_BIT;
+	context.entry_point.op_mode = FCML_AF_16_BIT;
 	context.entry_point.ip = 0x00401000;
 
 	fcml_st_instruction instruction = {0};
@@ -57,7 +57,7 @@ void fcml_fn_prefixes_66(void) {
 	/* Prefixes 0x66 is needed to change default operand size attribute back to 16 bits.*/
 
 	context.entry_point.operand_size_attribute = FCML_DS_32;
-	context.entry_point.addr_form = FCML_AF_16_BIT;
+	context.entry_point.op_mode = FCML_AF_16_BIT;
 	context.entry_point.ip = 0x00401000;
 
 	instruction.mnemonic = "adc";
@@ -84,7 +84,7 @@ void fcml_fn_prefixes_66(void) {
 	/* Prefixes 0x66 is needed to change default operand size attribute to 32 bits.*/
 
 	context.entry_point.operand_size_attribute = FCML_DS_16;
-	context.entry_point.addr_form = FCML_AF_16_BIT;
+	context.entry_point.op_mode = FCML_AF_16_BIT;
 	context.entry_point.ip = 0x00401000;
 
 	instruction.mnemonic = "adc";
@@ -113,7 +113,7 @@ void fcml_fn_prefixes_66(void) {
 	/* Prefixes 0x66 is needed to change default operand size attribute back to 32 bits.*/
 
 	context.entry_point.operand_size_attribute = FCML_DS_16;
-	context.entry_point.addr_form = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_AF_32_BIT;
 	context.entry_point.ip = 0x00401000;
 
 	instruction.mnemonic = "adc";

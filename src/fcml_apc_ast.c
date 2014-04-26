@@ -777,7 +777,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand( fcml_st_ci
 	} else {
 	    fcml_uint64_t offset = offset_value.integer_value.value;
         if( offset <= FCML_UINT16_MAX ) {
-            far_pointer_operand->offset16 = (fcml_uint16_t)offset_value.integer_value.value;
+            far_pointer_operand->offset16 = (fcml_int16_t)offset_value.integer_value.value;
             far_pointer_operand->offset_size = FCML_DS_16;
         } else if( offset <= FCML_UINT32_MAX ) {
             far_pointer_operand->offset32 = (fcml_uint32_t)offset_value.integer_value.value;

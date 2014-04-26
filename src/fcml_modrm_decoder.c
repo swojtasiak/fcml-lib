@@ -76,7 +76,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_16bit( fcml_st_modrm_decoder_context *conte
 	fcml_st_memory_stream *stream = modrm_source->stream;
 
 	/* Just in case.*/
-	if( context->addr_form == FCML_AF_64_BIT ) {
+	if( context->op_mode == FCML_AF_64_BIT ) {
 		return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
 	}
 
@@ -249,7 +249,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *con
 	    address->address_form = FCML_AF_OFFSET;
 
 		/* disp32.*/
-		if( context->addr_form == FCML_AF_64_BIT ) {
+		if( context->op_mode == FCML_AF_64_BIT ) {
 			decoded_modrm->is_rip = FCML_TRUE;
 			/* In case of RIP we also set base register to IP.*/
 			decoded_modrm->address.effective_address.base.type = FCML_REG_IP;

@@ -443,7 +443,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 		int_size = rel_args->encoded_imm_size * 8;
 	} else {
 
-		if( context->effective_operand_size_attribute == FCML_DS_16 && entry_point->addr_form == FCML_AF_64_BIT ) {
+		if( context->effective_operand_size_attribute == FCML_DS_16 && entry_point->op_mode == FCML_AF_64_BIT ) {
 			// TODO: Dlaczego w przypadku disassemblera rzucamy blad? Sprawdzic czy to sprawdzenie ma sens.
 			return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
 		}
@@ -528,10 +528,10 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer( fcml_ist_dasm_decoding
 
 	switch( context->effective_operand_size_attribute ) {
 	case FCML_DS_16:
-		far_pointer->offset16 = fcml_fn_stream_read_word( context->stream, &result );
+		far_pointer->offset16 = (fcml_int16_t)fcml_fn_stream_read_word( context->stream, &result );
 		break;
 	case FCML_DS_32:
-		far_pointer->offset32 = fcml_fn_stream_read_dword( context->stream, &result );
+		far_pointer->offset32 = (fcml_int32_t)fcml_fn_stream_read_dword( context->stream, &result );
 		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
@@ -684,7 +684,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		}
 
 		/* These hints aren't used in 32 bit addressing mode.*/
-		if( ( context->disassembler_context->entry_point.addr_form == FCML_AF_64_BIT ) && ( address->address_form == FCML_AF_OFFSET ) ) {
+		if( ( context->disassembler_context->entry_point.op_mode == FCML_AF_64_BIT ) && ( address->address_form == FCML_AF_OFFSET ) ) {
 			operand->hints |= context->decoded_modrm.is_rip ? FCML_OP_HINT_RELATIVE_ADDRESSING : FCML_OP_HINT_ABSOLUTE_ADDRESSING;
 		}
 
@@ -772,7 +772,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_isX( fcml_ist_dasm_decoding_context
 		operand_wrapper->operand.type = FCML_EOT_REGISTER;
 		fcml_st_register *reg = &(operand_wrapper->operand.reg);
 
-		reg->reg = ( ( context->disassembler_context->entry_point.addr_form == FCML_AF_32_BIT ) ? ( 0x70 & isX ) : ( 0xF0 & isX ) ) >> 4;
+		reg->reg = ( ( context->disassembler_context->entry_point.op_mode == FCML_AF_32_BIT ) ? ( 0x70 & isX ) : ( 0xF0 & isX ) ) >> 4;
 		reg->type = FCML_REG_SIMD;
 		reg->size = context->prefixes.l ? FCML_OS_YWORD : FCML_OS_XWORD;
 		reg->x64_exp = FCML_FALSE;
@@ -957,7 +957,7 @@ fcml_data_size fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_con
 
 	/* Checks if address size attribute is overridden.*/
 	if( fcml_ifn_dasm_is_prefix_available( context, 0x67, FCML_FALSE ) ) {
-		switch( entry_point->addr_form ) {
+		switch( entry_point->op_mode ) {
 		case FCML_AF_16_BIT:
 		case FCML_AF_32_BIT:
 			effective_asa = ( effective_asa == FCML_DS_32 ) ? FCML_DS_16 : FCML_DS_32;
@@ -981,7 +981,7 @@ fcml_data_size fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_con
 	fcml_data_size osa = entry_point->operand_size_attribute;
 
 	/* Gets effective address-size attribute for used mode.*/
-	switch( entry_point->addr_form ) {
+	switch( entry_point->op_mode ) {
 	case FCML_AF_16_BIT:
 	case FCML_AF_32_BIT:
 		/* In 16 and 32 bit mode only prefixes can change address-size attribute.*/
@@ -1207,11 +1207,11 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_addr_mode( fcml_ist_dasm_decoding_c
 
 	fcml_st_disassembler_context *disassembler_context = context->disassembler_context;
 
-	fcml_en_addr_form addr_form = disassembler_context->entry_point.addr_form;
+	fcml_en_operating_mode op_mode = disassembler_context->entry_point.op_mode;
 
-	return ( ( addr_form == FCML_AF_16_BIT || addr_form == FCML_AF_32_BIT )
+	return ( ( op_mode == FCML_AF_16_BIT || op_mode == FCML_AF_32_BIT )
 			&& FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( instruction_decoding_def->opcode_flags ) )
-				|| ( addr_form == FCML_AF_64_BIT
+				|| ( op_mode == FCML_AF_64_BIT
 						&& FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( instruction_decoding_def->opcode_flags ) );
 }
 
@@ -1579,7 +1579,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 		fcml_uint32_t offset = stream->offset;
 
 		fcml_st_modrm_decoder_context modrm_context;
-		modrm_context.addr_form = decoding_context->disassembler_context->entry_point.addr_form;
+		modrm_context.op_mode = decoding_context->disassembler_context->entry_point.op_mode;
 		modrm_context.effective_address_size = decoding_context->effective_address_size_attribute;
 
 		fcml_st_modrm_source modrm_source;
@@ -1772,7 +1772,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 
 	fcml_st_prefixes_details *prefixes = &(decoding_context->prefixes);
 	fcml_st_memory_stream *stream = decoding_context->stream;
-	fcml_en_addr_form addr_form = decoding_context->disassembler_context->entry_point.addr_form;
+	fcml_en_operating_mode op_mode = decoding_context->disassembler_context->entry_point.op_mode;
 	fcml_st_prefixes_details *prefixes_details = &(decoding_context->prefixes);
 
 	fcml_uint16_t p_flags = 0;
@@ -1785,7 +1785,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_bool is_last_prefix = FCML_FALSE;
 
 	/* VEX like prefixes are not allowed in 16 bit mode.*/
-	if( addr_form == FCML_AF_16_BIT ) {
+	if( op_mode == FCML_AF_16_BIT ) {
 		is_xop_vex_allowed = FCML_FALSE;
 	}
 
@@ -1856,7 +1856,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 					break;
 				default:
 					/* REX prefix is the last one, so we have to break this loop after finding one.*/
-					if( addr_form == FCML_AF_64_BIT && prefix >= 0x40 && prefix <= 0x4F ) {
+					if( op_mode == FCML_AF_64_BIT && prefix >= 0x40 && prefix <= 0x4F ) {
 						/* REX prefix found.*/
 						prefix_type = FCML_PT_REX;
 						/* Decode fields.*/
@@ -1882,7 +1882,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 					/* Skip to the second byte of VEX prefix.*/
 					fcml_fn_stream_seek(stream, 1, FCML_EN_ST_CURRENT);
 
-					if( addr_form == FCML_AF_32_BIT ) {
+					if( op_mode == FCML_AF_32_BIT ) {
 						/* Check if it is really a VEX/XOP prefix.*/
 						fcml_uint8_t second_byte = fcml_fn_stream_peek(stream, &result);
 						/* VEX.R/XOP.R and VEX.X/XOP.X has to be set to 11 in 32bit mode.*/
@@ -1916,7 +1916,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 								}
 								prefixes_details->r = FCML_VEX_R(prefix_details->vex_xop_bytes[0]);
 								prefixes_details->x = FCML_VEX_X(prefix_details->vex_xop_bytes[0]);
-								if( addr_form == FCML_AF_64_BIT ) {
+								if( op_mode == FCML_AF_64_BIT ) {
 									prefixes_details->b = FCML_VEX_B(prefix_details->vex_xop_bytes[0]);
 									prefixes_details->w = FCML_VEX_W(prefix_details->vex_xop_bytes[1]);
 								} else {
@@ -1937,7 +1937,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 								break;
 							}
 
-							if( addr_form == FCML_AF_32_BIT && prefixes_details->vvvv > 7 ) {
+							if( op_mode == FCML_AF_32_BIT && prefixes_details->vvvv > 7 ) {
 								prefix_type = FCML_PT_GROUP_UNKNOWN;
 							}
 

@@ -23,7 +23,7 @@ typedef struct fcml_st_asm_optimizer_context {
     /* Optimizer flags specified defined by assembler context.*/
     fcml_uint16_t optimizer_flags;
     /* Processor addressing mode 16/32/64-bit.*/
-    fcml_en_addr_form addr_form;
+    fcml_en_operating_mode op_mode;
     /* Default address size attribute not modified by prefixes yet. (See 'D' flag of segment descriptor.)*/
     fcml_data_size asa;
     /* Default operand size attribute not modified by prefixes yet. (See 'D' flag of segment descriptor.)*/

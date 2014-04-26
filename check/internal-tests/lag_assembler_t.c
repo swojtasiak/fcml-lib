@@ -266,7 +266,7 @@ void fcml_tf_lag_assembler_test(void) {
 
 		fcml_st_lag_assembler_context context = {0};
 		context.assembler = assembler;
-		context.entry_point.addr_form = FCML_AF_32_BIT;
+		context.entry_point.op_mode = FCML_AF_32_BIT;
 		context.entry_point.ip = 0x00401000;
 		context.dialect = dialect;
 
@@ -325,7 +325,7 @@ void fcml_tf_lag_assembler_test_1(void) {
 	fcml_st_lag_assembler_context context = {0};
 	context.configuration.enable_error_messages = FCML_TRUE;
 	context.assembler = assembler;
-	context.entry_point.addr_form = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_AF_32_BIT;
 	context.entry_point.ip = 0x00401000;
 	context.dialect = dialect;
 

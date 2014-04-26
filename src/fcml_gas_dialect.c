@@ -1409,9 +1409,9 @@ fcml_bool fcml_ifn_asm_dialect_gas_far_pointer_correction( fcml_st_instruction *
         error = fcml_fn_utils_convert_integer_to_uint16( &segment, &(far_pointer.segment) );
         if( !error ) {
 
-            error = fcml_fn_utils_convert_integer_to_uint16( &offset, &(far_pointer.offset16) );
+            error = fcml_fn_utils_convert_integer_to_int16( &offset, &(far_pointer.offset16) );
             if( error ) {
-                error = fcml_fn_utils_convert_integer_to_uint32( &offset, &(far_pointer.offset32) );
+                error = fcml_fn_utils_convert_integer_to_int32( &offset, &(far_pointer.offset32) );
                 if( !error ) {
                     far_pointer.offset_size = FCML_DS_32;
                 }

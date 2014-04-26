@@ -56,6 +56,15 @@ AC_CHECK_FUNCS([memset strtoul strtoull])
 AS_IF([test "x$debug" = xyes],
 	[AC_DEFINE([FCML_DEBUG], [1], [Define to enable FCML debug features])])
 
+# Doxygen
+AC_CHECK_PROG([DOXYGEN], [doxygen], [doxygen])
+if test -z "$DOXYGEN"; then 
+    AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
+fi
+
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/doxygen/doxyfile])])
+
 # Configuration files.
 AC_CONFIG_FILES([Makefile
                  src/Makefile
@@ -66,7 +75,8 @@ AC_CONFIG_FILES([Makefile
 				 example/Makefile
 				 example/fcml-disasm/Makefile
 				 example/fcml-asm/Makefile
-                 include/Makefile])
+                 include/Makefile
+                 docs/doxygen/Makefile])
 
 # Enable __declspec(dllimport) for linking public tests with shared DLL.
 AC_CANONICAL_HOST
@@ -90,5 +100,6 @@ Debug Build......: $debug
 Shared Library...: $enable_shared
 Compiler.........: ${CC} ${CFLAGS} ${CPPFLAGS}
 Linker...........: $LD $LDFLAGS $LIBS
+Doxygen..........: ${DOXYGEN:-NONE}
 ***************************************************
 "

@@ -42,7 +42,7 @@ typedef struct fcml_st_modrm_details {
 
 typedef struct fcml_st_modrm_decoder_context {
 	/* Sets 32 or 64 bit addressing mode.*/
-	fcml_en_addr_form addr_form;
+	fcml_en_operating_mode op_mode;
 	/* Effective address size using to decode/encode ModR/M. It's very important to set this value properly,*/
 	/* because 16 and 32/64 addressing forms*/
 	fcml_data_size effective_address_size;

@@ -237,7 +237,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
 	modrm.address.address_form = FCML_AF_OFFSET;
 
 	fcml_st_modrm_encoder_context context;
-	context.addr_form = FCML_AF_16_BIT;
+	context.op_mode = FCML_AF_16_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_st_encoded_modrm encoded_modrm;
@@ -357,7 +357,7 @@ void fcml_tf_modrm_encoder_test_13(void) {
 	modrm.address.address_form = FCML_AF_OFFSET;
 
 	fcml_st_modrm_encoder_context context;
-	context.addr_form = FCML_AF_16_BIT;
+	context.op_mode = FCML_AF_16_BIT;
 	context.effective_address_size = FCML_DS_16;
 
 	fcml_st_encoded_modrm encoded_modrm;
@@ -387,7 +387,7 @@ void fcml_tf_modrm_encoder_test_14(void) {
     modrm.address.address_form = FCML_AF_OFFSET;
 
     fcml_st_modrm_encoder_context context;
-    context.addr_form = FCML_AF_16_BIT;
+    context.op_mode = FCML_AF_16_BIT;
     context.effective_address_size = FCML_DS_16;
 
     fcml_st_encoded_modrm encoded_modrm;
@@ -948,7 +948,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_3(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_64;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_RCX;
@@ -999,7 +999,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_5(void) {
 	fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
 	fcml_st_modrm_encoder_context context;
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_32_BIT;
+	context.op_mode = FCML_AF_32_BIT;
 	context.choose_sib_encoding = FCML_TRUE;
 	context.chosen_effective_address_size = FCML_DS_32;
 
@@ -1100,7 +1100,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_7(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_EDI;
@@ -1232,7 +1232,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_9(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 
 	modrm.reg.is_not_null = FCML_TRUE;
 	modrm.reg.value = FCML_REG_EBP;
@@ -1283,7 +1283,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_11(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_R12D;
@@ -1313,7 +1313,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_12(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_64;
-	context.addr_form = FCML_AF_32_BIT;
+	context.op_mode = FCML_AF_32_BIT;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_RAX;
@@ -1465,7 +1465,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_5(void) {
 	fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
 	fcml_st_modrm_encoder_context context = {0};
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_32_BIT;
+	context.op_mode = FCML_AF_32_BIT;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_EBP;
@@ -1694,7 +1694,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_10(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 	context.choose_sib_encoding = FCML_TRUE;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
@@ -1726,7 +1726,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_11(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 	context.choose_sib_encoding = FCML_TRUE;
 
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
@@ -1762,7 +1762,7 @@ void fcml_tf_modrm_rip_encoder_3264_bit_encoding_1(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 	context.choose_sib_encoding = FCML_TRUE;
 	context.choose_rip_encoding = FCML_TRUE;
 
@@ -1816,7 +1816,7 @@ void fcml_tf_modrm_rip_encoder_3264_bit_encoding_2(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 	context.choose_sib_encoding = FCML_TRUE;
 	context.choose_rip_encoding = FCML_TRUE;
 
@@ -1872,7 +1872,7 @@ void fcml_tf_modrm_rip_encoder_3264_bit_encoding_3(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 	context.choose_sib_encoding = FCML_TRUE;
 	context.choose_rip_encoding = FCML_TRUE;
 
@@ -1926,7 +1926,7 @@ void fcml_tf_modrm_rip_encoder_3264_bit_encoding_4(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_32;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 	context.choose_sib_encoding = FCML_TRUE;
 	context.choose_rip_encoding = FCML_TRUE;
 
@@ -1981,7 +1981,7 @@ void fcml_tf_modrm_rip_encoder_3264_bit_encoding_5(void) {
 	fcml_st_modrm_encoder_context context;
 	fcml_fn_env_memory_clear( &context, sizeof( context ) );
 	context.effective_address_size = FCML_DS_64;
-	context.addr_form = FCML_AF_64_BIT;
+	context.op_mode = FCML_AF_64_BIT;
 	context.choose_rip_encoding = FCML_FALSE;
 
 	modrm.address.effective_address.base.type = FCML_REG_IP;
