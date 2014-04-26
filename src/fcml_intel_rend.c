@@ -15,6 +15,7 @@
 #include <fcml_dialect.h>
 #include <fcml_disassembler.h>
 
+#include "fcml_mnemonic_parser.h"
 #include "fcml_ceh.h"
 #include "fcml_dialect_int.h"
 #include "fcml_env.h"
@@ -296,6 +297,20 @@ fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml
 	return fcml_iarr_rend_conditional_suffixes_intel[group][condition];
 }
 
+fcml_string fcml_ifn_rend_resolve_mnemonic_intel( fcml_st_disassembler_result *result ) {
+
+	fcml_st_instruction *instruction = &(result->instruction);
+	fcml_st_instruction_details *details = &(result->instruction);
+
+	if( instruction->mnemonic ) {
+		// If there is mnemonic already available use it instead on resolving it again.
+		return instruction->mnemonic;
+	} else {
+		return NULL;
+	}
+
+}
+
 fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_context, fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result ) {
 
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect_context;
@@ -323,7 +338,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 	len += fcml_ifn_rend_utils_print_prefixes( output_stream, &(result->instruction_details.prefixes_details), render_flags );
 
 	/* Mnemonic.*/
-	len += fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
+	len += fcml_fn_rend_utils_format_append_str( output_stream, fcml_ifn_rend_resolve_mnemonic_intel( result ) );
 
 	/* Short form, so operands should be ignored. */
 	if( result->instruction_details.is_shortcut ) {

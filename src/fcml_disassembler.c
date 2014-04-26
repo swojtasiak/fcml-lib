@@ -54,6 +54,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_memory_stream *stream;
 	fcml_st_mp_mnemonic_set *mnemonics;
 	fcml_en_instruction instruction;
+	fcml_uint16_t addr_mode;
 	fcml_data_size effective_address_size_attribute;
 	fcml_data_size effective_operand_size_attribute;
 	fcml_int calculated_instruction_size;
@@ -124,6 +125,8 @@ typedef struct fcml_ist_dasm_modrm_decoding_details {
 typedef struct fcml_ist_dasm_instruction_decoding_def {
 	/* Instruction code. */
 	fcml_en_instruction instruction;
+	/* Addressing mode.*/
+	fcml_uint16_t addr_mode;
 	/* Type of the instruction.*/
 	fcml_uint64_t instruction_group;
 	/* Opcodes. */
@@ -1334,6 +1337,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 	decoding->opcode_flags = addr_mode_desc->opcode_flags;
 	decoding->instruction_group = addr_mode_desc->instruction_group;
 	decoding->instruction = instruction_desc->instruction;
+	decoding->addr_mode = addr_mode_desc->addr_mode;
 
 	error = fcml_ifn_dasm_dts_allocate_acceptors_chain( addr_mode_desc, &(decoding->instruction_acceptors_chain) );
 	if( error ) {
@@ -1613,6 +1617,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 	decoding_context->calculated_instruction_size += operands_size;
 	decoding_context->mnemonics = instruction_decoding_def->mnemonics;
 	decoding_context->instruction = instruction_decoding_def->instruction;
+	decoding_context->addr_mode = instruction_decoding_def->addr_mode;
 
 	/* Store primary opcode byte.*/
 	fcml_int opcode_num = FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE( instruction_decoding_def->opcode_flags );
@@ -2182,6 +2187,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 
 		/* Instruction code. */
 		instruction_details->instruction = decoding_context.instruction;
+		instruction_details->addr_mode = decoding_context.addr_mode;
 
 		/* L flag for mnemonic chooser.*/
 		fcml_nuint8_t l;
@@ -2193,8 +2199,18 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 
 		/* Mnemonic.*/
 		fcml_bool shortform = decoding_context.disassembler_context->configuration.short_forms;
-		fcml_bool is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
-		fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, shortform, decoding_context.pseudo_opcode, decoding_context.suffix, decoding_context.effective_operand_size_attribute, decoding_context.effective_address_size_attribute, is_memory, memory_data_size, l );
+
+		fcml_st_mp_config mp_config;
+		mp_config.effective_asa = decoding_context.effective_address_size_attribute;
+		mp_config.effective_osa = decoding_context.effective_operand_size_attribute;
+		mp_config.is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
+		mp_config.memory_data_size = memory_data_size;
+		mp_config.use_shortcut = shortform;
+		mp_config.pseudo_opcode = decoding_context.pseudo_opcode;
+		mp_config.suffix = decoding_context.suffix;
+		mp_config.l = l;
+
+		fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, &mp_config );
 		if( mnemonic ) {
 			instruction_details->is_pseudo_op = mnemonic->pseudo_op.is_not_null;
 			instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;

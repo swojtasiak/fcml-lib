@@ -161,6 +161,8 @@ typedef struct fcml_st_instruction_details {
 	fcml_bool opcode_field_w_bit;
 	/* Instruction code. */
 	fcml_en_instruction instruction;
+	/*  Addressing form of the instruction above. */
+	fcml_uint16_t addr_mode;
 } fcml_st_instruction_details;
 
 /* Disassembler result. */

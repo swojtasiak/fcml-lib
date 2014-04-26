@@ -11,6 +11,7 @@
 #include "fcml_lib_export.h"
 
 #include "fcml_types.h"
+#include "fcml_instructions.h"
 
 #define FCML_OPERANDS_COUNT			5
 #define FCML_INSTRUCTION_SIZE 		15
