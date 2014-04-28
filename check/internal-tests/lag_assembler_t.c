@@ -268,7 +268,6 @@ void fcml_tf_lag_assembler_test(void) {
 		context.assembler = assembler;
 		context.entry_point.op_mode = FCML_AF_32_BIT;
 		context.entry_point.ip = 0x00401000;
-		context.dialect = dialect;
 
 		error = fcml_fn_lag_assemble( &context, test_cases->code_str, &result );
 		if( error ) {
@@ -327,7 +326,6 @@ void fcml_tf_lag_assembler_test_1(void) {
 	context.assembler = assembler;
 	context.entry_point.op_mode = FCML_AF_32_BIT;
 	context.entry_point.ip = 0x00401000;
-	context.dialect = dialect;
 
 	error = fcml_fn_lag_assemble( &context, fcml_iarr_lag_assembler_code_3_src, &result );
 	STF_ASSERT_EQUAL( error, FCML_CEH_GEC_UNDEFINED_SYMBOL );

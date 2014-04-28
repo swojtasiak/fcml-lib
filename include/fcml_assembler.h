@@ -110,9 +110,10 @@ typedef struct fcml_st_assembler_context {
 
 /**
  * Initializes assembler for given dialect.
- * Initializes assembler instance for given dialect (Intel, AT&T). Assembler initialized in such a way is dialect dependent
- * and supports GIM with the syntax supported by it. Every assembler instance has to be freed using fcml_fn_assembler_free() function
- * as soon as it is not needed anymore.
+ * Initializes assembler instance for given dialect (Intel, AT&T). Assembler
+ * initialized in such a way is dialect dependent and supports GIM with the
+ * syntax supported by it. Every assembler instance has to be freed using
+ * fcml_fn_assembler_free() function as soon as it is not needed anymore.
  *
  * @param dialect Dialect instance.
  * @param[out] assembler Initialized assembler instance.
@@ -146,9 +147,10 @@ LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *
  * point of view, so it has to be prepared in the right way in order to allow assembler to
  * reuse it correctly. It is up to the library user to allocate space for the holder itself.
  * This function is only responsible for cleaning the structure correctly and preparing it
- * for first assembling process. Notice that assembler has to clean it at the beginning so
- * you can not pass an uninitialized memory block because it can even cause a crash in
- * due to illegal memory access.
+ * for first assembling process. Notice that assembler has to clean the result holder at the
+ * beginning so you can not pass an uninitialized memory block because it can even cause
+ * a crash due to illegal memory access.
+ *
  * @param result Result holder instance to be prepared.
  */
 LIB_EXPORT void LIB_CALL fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result );

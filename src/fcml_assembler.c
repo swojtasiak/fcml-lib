@@ -25,7 +25,7 @@ typedef struct fcml_ist_asm_enc_assembler {
     fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_enc_assembler;
 
-fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *context, fcml_st_assembler **assembler ) {
+fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *dialect, fcml_st_assembler **assembler ) {
 
 	/* Allocate assembler instance.*/
 	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_asm_enc_assembler ) );
@@ -33,13 +33,13 @@ fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *context, fcml_s
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
-	fcml_ceh_error error = fcml_fn_asm_init_instruction_encodings( (fcml_st_dialect_context_int*)context, &(enc_asm->instructions_map) );
+	fcml_ceh_error error = fcml_fn_asm_init_instruction_encodings( (fcml_st_dialect_context_int*)dialect, &(enc_asm->instructions_map) );
 	if( error ) {
 		fcml_fn_env_memory_free( enc_asm );
 		return error;
 	}
 
-	enc_asm->dialect_context = (fcml_st_dialect_context_int*)context;
+	enc_asm->dialect_context = (fcml_st_dialect_context_int*)dialect;
 
 	*assembler = (fcml_st_assembler *)enc_asm;
 
@@ -210,4 +210,12 @@ void LIB_CALL fcml_fn_assembler_free( fcml_st_assembler *assembler ) {
 
 }
 
+fcml_st_dialect *fcml_fn_assembler_extract_dialect( fcml_st_assembler *assembler ) {
+	fcml_st_dialect *dialect = NULL;
+	if( assembler != NULL ) {
+		fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)assembler;
+		dialect = (fcml_st_dialect*)enc_asm->dialect_context;
+	}
+	return dialect;
+}
 

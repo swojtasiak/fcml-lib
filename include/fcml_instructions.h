@@ -1,14 +1,32 @@
 /*
- * fcml_instructions.h
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Mar 26, 2014
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/** @file fcml_instructions.h
+ * Instruction codes and addressing modes/instruction forms.
+ * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
+ * @license This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_INSTRUCTIONS_H_
 #define FCML_INSTRUCTIONS_H_
 
-/* Instruction forms. */
+/** Instruction forms. */
 enum fcml_en_instruction_addr_mode_codes {
     FCML_AM_UNKNOWN = 0, FCML_AM_NO_OPERANS,
     FCML_AM_IMM8,
@@ -45,47 +63,54 @@ enum fcml_en_instruction_addr_mode_codes {
     FCML_AM_CR_R64,
     FCML_AM_RO_RMO_IMM8,
     FCML_AM_RO_RMO_IMMO,
-    R32A_RM32_R32B,
-    R64A_RM64_R64B,
-    FCML_R32_RM32,
-    FCML_R64_RM64,
-    FCML_R32_RM32_R32,
-    FCML_R64_RM64_R64,
-    FCML_REL16,
-    FCML_PTR16_O,
-    FCML_M16_O,
-    FCML_M8_M8,
-    FCML_MO_MO,
-    FCML_M8,
-    FCML_M16,
-    FCML_M32,
-    FCML_M64,
-    FCML_M80,
-    FCML_M128,
-    FCML_RX_RM32,
-    FCML_RX_RM64,
-    FCML_RX_RX_RM32,
-    FCML_RX_RX_RM64,
-    FCML_R32_RXM64,
-    FCML_R64_RXM64,
-    FCML_RM8,
-    FCML_RMO,
-    FCML_RO,
-    FCML_SRO,
-    FCML_SR_FSGSO,
-    FCML_ST0_ST,
-    FCML_ST_ST0,
-    FCML_ST,
-    FCML_M2BYTE,
-    FCML_AX,
-    FCML_R64_M128,
-    FCML_R32_M128,
-    FCML_RX_RX_I8_I8,
-    FCML_RX_RX,
-    FCML_REL8,
-    FCML_REL0
+    FCML_AM_R32A_RM32_R32B,
+    FCML_AM_R64A_RM64_R64B,
+    FCML_AM_R32_RM32,
+    FCML_AM_R64_RM64,
+    FCML_AM_R32_RM32_R32,
+    FCML_AM_R64_RM64_R64,
+    FCML_AM_REL16,
+    FCML_AM_PTR16_O,
+    FCML_AM_M16_O,
+    FCML_AM_M8_M8,
+    FCML_AM_MO_MO,
+    FCML_AM_M8,
+    FCML_AM_M16,
+    FCML_AM_M32,
+    FCML_AM_M64,
+    FCML_AM_M80,
+    FCML_AM_M128,
+    FCML_AM_RX_RM32,
+    FCML_AM_RX_RM64,
+    FCML_AM_RX_RX_RM32,
+    FCML_AM_RX_RX_RM64,
+    FCML_AM_R32_RXM64,
+    FCML_AM_R64_RXM64,
+    FCML_AM_RM8,
+    FCML_AM_RMO,
+    FCML_AM_RO,
+    FCML_AM_SRO,
+    FCML_AM_SR_FSGSO,
+    FCML_AM_ST0_ST,
+    FCML_AM_ST_ST0,
+    FCML_AM_ST,
+    FCML_AM_M2BYTE,
+    FCML_AM_AX,
+    FCML_AM_R64_M128,
+    FCML_AM_R32_M128,
+    FCML_AM_RX_RX_I8_I8,
+    FCML_AM_RX_RX,
+    FCML_AM_REL8,
+    FCML_AM_REL0
 };
 
+/**
+ * @defgroup INSTRUCTION_GROUP Supported instructions codes.
+ * Set of all supported instructions. Names are based on Intel syntax.
+ * @{
+ */
+
+/** Instruction codes. */
 typedef enum fcml_en_instruction {
     F_UNKNOWN,
     F_AAA,
@@ -1135,5 +1160,7 @@ typedef enum fcml_en_instruction {
     F_CLAC,
     F_STAC
 } fcml_en_instruction;
+
+/** @} */
 
 #endif /* FCML_INSTRUCTIONS_H_ */

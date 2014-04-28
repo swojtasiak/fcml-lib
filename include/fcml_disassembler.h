@@ -217,10 +217,70 @@ typedef struct fcml_st_dasm_disassembler_result {
 	fcml_st_instruction instruction;
 } fcml_st_disassembler_result;
 
+/**
+ * Initializes disassembler instance.
+ * Initializes disassembler instance for given dialect. Disassembler initialized in
+ * such a way is dialect dependent and generates generic instruction models compliant
+ * to the syntax supported by the dialect (Intel, AT&T). Every disassembler instance has
+ * to be freed using fcml_fn_disassembler_free() function as soon as it is not needed anymore.
+ *
+ * @param dialect Dialect for newly created disassembler.
+ * @param[out] disassembler Initialized disassembler instance.
+ * @return Error code or FCML_CEH_GEC_NO_ERROR.
+ * @see fcml_fn_disassembler_free
+ */
 LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
+
+/**
+ * Disassembles one instruction from provided code buffer.
+ * Disassembles the first instruction available in the provided code buffer
+ * using disassembler instance, configuration and entry point accessible through
+ * the disassembler context. Disassembled instruction model as well as potential
+ * errors are returned in reusable result holder given in the second parameter.
+ * Result holder has to be allocated by the user and appropriately prepared
+ * using fcml_fn_disassembler_result_prepare() function. As long as the
+ * instruction context and the result holder are not shared across multiple
+ * function calls disassembling process is thread safe.
+ *
+ * @param context Disassembler context.
+ * @param result Appropriately prepared result holder.
+ * @return Error code or FCML_CEH_GEC_NO_ERROR.
+ * @see fcml_fn_disassembler_result_free
+ */
 LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
+
+/**
+ * Prepares reusable result holder for disassembler.
+ * Every instance of fcml_st_disassembler_result structure is reusable from the disassembler's
+ * point of view, so it has to be prepared in the right way in order to allow disassembler to
+ * reuse it correctly. It is up to the library user to allocate space for the holder itself.
+ * This function is only responsible for cleaning the structure correctly and preparing it
+ * for first disassembling process. Notice that disassembler has to clean the result holder
+ * at the beginning so you can not pass an uninitialized memory block because it can even
+ * cause a crash due to illegal memory access.
+ *
+ * @param result Result holder instance to be prepared.
+ * @see fcml_fn_disassembler_result_free
+ */
 LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result );
+
+/**
+ * Cleans result holder.
+ * Frees all memory blocks allocated by the disassembler and held inside the result holder
+ * (Instructions, errors etc.). Notice that result holder itself is not freed and can be
+ * even safety reused after calling this function. In fact this function is also called
+ * internally by assembler in order to clean result holder before reusing it.
+ *
+ * @param result Result holder to clean.
+ */
 LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result );
+
+/**
+ * Frees disassembler instance.
+ * Every disassembler instance manages some resources internally and as such it has
+ * to be deallocated as soon as it is not needed anymore.
+ * @param assembler Disassembler to be freed.
+ */
 LIB_EXPORT void LIB_CALL fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
 
 #ifdef __cplusplus

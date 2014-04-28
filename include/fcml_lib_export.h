@@ -1,8 +1,36 @@
 /*
- * fcml_lib_export.h
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Feb 3, 2014
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/** @file fcml_lib_export.h
+ * Handles Win32 DLL symbols importing/exporting.
+ * The only interesting thing here is the LIBFCML_DLL_IMPORT symbol which has to
+ * be always defined in order to use dynamic DLL under Windows. You can achieve it
+ * by declaring the symbol before this header file is included. For example:
+ * @code
+ *     #define LIBFCML_DLL_IMPORT
+ *     #include <fcml_lib_export.h>
+ * @endcode
+ * Take into account that this header file is included by every FCML public header, so
+ * in fact you should define the symbol before including anything from the FCML library.
+ *
+ * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
+ * @license This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_LIB_EXPORT_H_

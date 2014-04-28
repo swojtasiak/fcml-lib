@@ -7,11 +7,12 @@
 
 #include <fcml_lag_assembler.h>
 #include <fcml_parser.h>
-#include <fcml_parser_int.h>
+#include <fcml_errors.h>
+#include "fcml_parser_int.h"
+#include "fcml_assembler_int.h"
 #include "fcml_env.h"
 #include "fcml_coll.h"
 #include "fcml_apc_ast.h"
-#include "fcml_errors.h"
 #include "fcml_messages.h"
 #include "fcml_utils.h"
 
@@ -271,7 +272,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 	parser_context.config.ignore_undefined_symbols = FCML_TRUE;
 	parser_context.config.override_labels = FCML_FALSE;
 	parser_context.ip = assembler_context->entry_point.ip;
-	parser_context.dialect = context->dialect;
+	parser_context.dialect = fcml_fn_assembler_extract_dialect( assembler_context->assembler );
 
 	fcml_st_assembler_result assembler_result;
 	fcml_fn_assembler_result_prepare( &assembler_result );

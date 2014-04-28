@@ -37,7 +37,7 @@ extern "C" {
 #endif
 
 /**
- * @defgroup REG_STRUCTURES_GROUP Explicit prefixes
+ * @defgroup REG_STRUCTURES_GROUP Registers
  * Declarations of structures describing all available registers.
  * @{
  */
