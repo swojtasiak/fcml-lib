@@ -47,9 +47,9 @@ void fcml_tf_parser_gas_parse_test1(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "mov $80-90", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_TRUE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)-10 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)-10 );
 	} else {
         STF_FAIL();
     }
@@ -77,9 +77,9 @@ void fcml_tf_parser_gas_parse_test3(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "movq $1,%cs:(%rax)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.address_form, FCML_AF_COMBINED );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.size, FCML_DS_64 );
@@ -97,9 +97,9 @@ void fcml_tf_parser_gas_parse_test4(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "movq $1,%cs:(%rax,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.address_form, FCML_AF_COMBINED );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.size, FCML_DS_64 );
@@ -120,9 +120,9 @@ void fcml_tf_parser_gas_parse_test5(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "movq $1,%cs:(,%rbx)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.address_form, FCML_AF_COMBINED );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.size, FCML_DS_UNDEF );
@@ -143,9 +143,9 @@ void fcml_tf_parser_gas_parse_test6(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "movq $1,%cs:(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.address_form, FCML_AF_COMBINED );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.size, FCML_DS_UNDEF );
@@ -175,9 +175,9 @@ void fcml_tf_parser_gas_parse_test8(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "movq $1,%cs:0x100(,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.address_form, FCML_AF_COMBINED );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.size, FCML_DS_UNDEF );
@@ -186,7 +186,7 @@ void fcml_tf_parser_gas_parse_test8(void) {
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.index.reg, FCML_REG_RBX );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.scale_factor, 4 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.size, FCML_DS_16 );
-		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.dis16, (fcml_uint16_t)0x100 );
+		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.int16, (fcml_uint16_t)0x100 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.segment_selector.segment_selector.reg, FCML_REG_CS );
 	} else {
         STF_FAIL();
@@ -201,9 +201,9 @@ void fcml_tf_parser_gas_parse_test9(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "movq $1,%cs:0x100", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.address_form, FCML_AF_OFFSET );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.offset.size, FCML_DS_16 );
@@ -222,9 +222,9 @@ void fcml_tf_parser_gas_parse_test10(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "movq $1,%cs:0x100(%rax,%rbx,4)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.address_form, FCML_AF_COMBINED );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.size, FCML_DS_64 );
@@ -233,7 +233,7 @@ void fcml_tf_parser_gas_parse_test10(void) {
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.index.reg, FCML_REG_RBX );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.scale_factor, 4 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.size, FCML_DS_16 );
-		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.dis16, (fcml_uint16_t)0x100 );
+		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.int16, (fcml_uint16_t)0x100 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.segment_selector.segment_selector.reg, FCML_REG_CS );
 	} else {
 		STF_FAIL();
@@ -248,16 +248,16 @@ void fcml_tf_parser_gas_parse_test11(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_gas_context, "movq $1,0x100(%rip)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].type, FCML_EOT_ADDRESS );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.address_form, FCML_AF_COMBINED );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.reg, FCML_REG_UNDEFINED );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.size, FCML_DS_64 );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.base.type, FCML_REG_IP );
 		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.size, FCML_DS_16 );
-		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.dis16, (fcml_uint16_t)0x100 );
+		STF_ASSERT_EQUAL( result.instruction->operands[1].address.effective_address.displacement.int16, (fcml_uint16_t)0x100 );
 	} else {
 		STF_FAIL();
 	}
@@ -417,8 +417,8 @@ void fcml_tf_parser_gas_parse_test_symbols_5(void) {
 	if( result.instruction ) {
 		fcml_st_instruction *instruction = result.instruction;
 		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_8 );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm8, 0 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.int8, 0 );
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_TRUE );
 	}
 
@@ -455,8 +455,8 @@ void fcml_tf_parser_gas_parse_test_symbols_6(void) {
 	if( result.instruction ) {
 		fcml_st_instruction *instruction = result.instruction;
 		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_32 );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm32, 0x401000 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.int32, 0x401000 );
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_TRUE );
 	}
 

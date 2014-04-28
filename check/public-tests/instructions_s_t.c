@@ -40,8 +40,8 @@ void fcml_tf_instruction_SHL(void) {
     /* GAS*/
     FCML_A64( "shlb %cl,(%rax)", 0xd2, 0x20 );
     FCML_A64( "shl %cl,%al", 0xd2, 0xe0 );
-    /* C0 /4 ib SHL r/m8, imm8 MI Valid Valid Multiply r/m8 by 2, imm8 times.*/
-    /* REX + C0 /4 ib SHL r/m8**, imm8 MI Valid N.E. Multiply r/m8 by 2, imm8 times.*/
+    /* C0 /4 ib SHL r/m8, int8 MI Valid Valid Multiply r/m8 by 2, int8 times.*/
+    /* REX + C0 /4 ib SHL r/m8**, int8 MI Valid N.E. Multiply r/m8 by 2, int8 times.*/
     FCML_I32( "shl byte ptr [eax],0ffh", 0xC0, 0x20, 0xFF );
     FCML_I32( "shl al,0ffh", 0xC0, 0xE0, 0xFF );
     FCML_I64_D( "shl al,0ffh", 0x48, 0xC0, 0xE0, 0xFF );
@@ -72,9 +72,9 @@ void fcml_tf_instruction_SHL(void) {
     FCML_A64( "shll %cl,(%rax)", 0xd3, 0x20 );
     FCML_A64( "shl %cl,%eax", 0xd3, 0xe0 );
     FCML_A64( "shl %cl,%rax", 0x48, 0xd3, 0xe0 );
-    /* C1 /4 ib SHL r/m16, imm8 MI Valid Valid Multiply r/m16 by 2, imm8 times.*/
-    /* C1 /4 ib SHL r/m32, imm8 MI Valid Valid Multiply r/m32 by 2, imm8 times.*/
-    /* REX.W + C1 /4 ib SHL r/m64, imm8 MI Valid N.E. Multiply r/m64 by 2, imm8 times.*/
+    /* C1 /4 ib SHL r/m16, int8 MI Valid Valid Multiply r/m16 by 2, int8 times.*/
+    /* C1 /4 ib SHL r/m32, int8 MI Valid Valid Multiply r/m32 by 2, int8 times.*/
+    /* REX.W + C1 /4 ib SHL r/m64, int8 MI Valid N.E. Multiply r/m64 by 2, int8 times.*/
     FCML_I32( "shl dword ptr [eax],0ffh", 0xC1, 0x20, 0xff );
     FCML_I32( "shl eax,0ffh", 0xC1, 0xE0, 0xff );
     FCML_I64( "shl rax,0ffh", 0x48, 0xC1, 0xE0, 0xff );
@@ -99,8 +99,8 @@ void fcml_tf_instruction_SAL(void) {
     /* GAS*/
     FCML_A64( "shlb %cl,(%rax)", 0xd2, 0x20 );
     FCML_A64( "shl %cl,%al", 0xd2, 0xe0 );
-    /* C0 /4 ib SAL r/m8, imm8 MI Valid Valid Multiply r/m8 by 2, imm8 times.*/
-    /* REX + C0 /4 ib SAL r/m8**, imm8 MI Valid N.E. Multiply r/m8 by 2, imm8 times.*/
+    /* C0 /4 ib SAL r/m8, int8 MI Valid Valid Multiply r/m8 by 2, int8 times.*/
+    /* REX + C0 /4 ib SAL r/m8**, int8 MI Valid N.E. Multiply r/m8 by 2, int8 times.*/
     FCML_I32_A( "sal byte ptr [eax],0ffh", 0xC0, 0x20, 0xFF );
     FCML_I32_A( "sal al,0ffh", 0xC0, 0xE0, 0xFF );
     /* GAS*/
@@ -124,9 +124,9 @@ void fcml_tf_instruction_SAL(void) {
     FCML_A64( "shll %cl,(%rax)", 0xd3, 0x20 );
     FCML_A64( "shl %cl,%eax", 0xd3, 0xe0 );
     FCML_A64( "shl %cl,%rax", 0x48, 0xd3, 0xe0 );
-    /* C1 /4 ib SAL r/m16, imm8 MI Valid Valid Multiply r/m16 by 2, imm8 times.*/
-    /* C1 /4 ib SAL r/m32, imm8 MI Valid Valid Multiply r/m32 by 2, imm8 times.*/
-    /* REX.W + C1 /4 ib SAL r/m64, imm8 MI Valid N.E. Multiply r/m64 by 2, imm8 times.*/
+    /* C1 /4 ib SAL r/m16, int8 MI Valid Valid Multiply r/m16 by 2, int8 times.*/
+    /* C1 /4 ib SAL r/m32, int8 MI Valid Valid Multiply r/m32 by 2, int8 times.*/
+    /* REX.W + C1 /4 ib SAL r/m64, int8 MI Valid N.E. Multiply r/m64 by 2, int8 times.*/
     FCML_I32_A( "sal dword ptr [eax],0ffh", 0xC1, 0x20, 0xff );
     FCML_I32_A( "sal eax,0ffh", 0xC1, 0xE0, 0xff );
     FCML_I64_A( "sal rax,0ffh", 0x48, 0xC1, 0xE0, 0xff );
@@ -153,8 +153,8 @@ void fcml_tf_instruction_SAR(void) {
     /* GAS*/
     FCML_A64( "sarb %cl,(%rax)", 0xd2, 0x38 );
     FCML_A64( "sar %cl,%al", 0xd2, 0xf8 );
-    /* C0 /7 ib SAR r/m8, imm8 MI Valid Valid Signed divide* r/m8 by 2, imm8 time.*/
-    /* REX + C0 /7 ib SAR r/m8**, imm8 MI Valid N.E. Signed divide* r/m8 by 2, imm8 times.*/
+    /* C0 /7 ib SAR r/m8, int8 MI Valid Valid Signed divide* r/m8 by 2, int8 time.*/
+    /* REX + C0 /7 ib SAR r/m8**, int8 MI Valid N.E. Signed divide* r/m8 by 2, int8 times.*/
     FCML_I32( "sar byte ptr [eax],0ffh", 0xC0, 0x38, 0xFF );
     FCML_I32( "sar al,0ffh", 0xC0, 0xF8, 0xFF );
     FCML_I64_D( "sar al,0ffh", 0x48, 0xC0, 0xF8, 0xFF );
@@ -181,9 +181,9 @@ void fcml_tf_instruction_SAR(void) {
     FCML_A64( "sarl %cl,(%rax)", 0xd3, 0x38 );
     FCML_A64( "sar %cl,%eax", 0xd3, 0xf8 );
     FCML_A64( "sar %cl,%rax", 0x48, 0xd3, 0xf8 );
-    /* C1 /7 ib SAR r/m16, imm8 MI Valid Valid Signed divide* r/m16 by 2, imm8 times.*/
-    /* C1 /7 ib SAR r/m32, imm8 MI Valid Valid Signed divide* r/m32 by 2, imm8 times.*/
-    /* REX.W + C1 /7 ib SAR r/m64, imm8 MI Valid N.E. Signed divide* r/m64 by 2, imm8 times*/
+    /* C1 /7 ib SAR r/m16, int8 MI Valid Valid Signed divide* r/m16 by 2, int8 times.*/
+    /* C1 /7 ib SAR r/m32, int8 MI Valid Valid Signed divide* r/m32 by 2, int8 times.*/
+    /* REX.W + C1 /7 ib SAR r/m64, int8 MI Valid N.E. Signed divide* r/m64 by 2, int8 times*/
     FCML_I32( "sar dword ptr [eax],0ffh", 0xC1, 0x38, 0xff );
     FCML_I32( "sar eax,0ffh", 0xC1, 0xF8, 0xff );
     FCML_I64( "sar rax,0ffh", 0x48, 0xC1, 0xF8, 0xff );
@@ -210,8 +210,8 @@ void fcml_tf_instruction_SHR(void) {
     /* GAS*/
     FCML_A64( "shrb %cl,(%rax)", 0xd2, 0x28 );
     FCML_A64( "shr %cl,%al", 0xd2, 0xe8 );
-    /* C0 /5 ib SHR r/m8, imm8 MI Valid Valid Unsigned divide r/m8 by 2, imm8 times.*/
-    /* REX + C0 /5 ib SHR r/m8**, imm8 MI Valid N.E. Unsigned divide r/m8 by 2, imm8 times.*/
+    /* C0 /5 ib SHR r/m8, int8 MI Valid Valid Unsigned divide r/m8 by 2, int8 times.*/
+    /* REX + C0 /5 ib SHR r/m8**, int8 MI Valid N.E. Unsigned divide r/m8 by 2, int8 times.*/
     FCML_I32( "shr byte ptr [eax],0ffh", 0xC0, 0x28, 0xFF );
     FCML_I32( "shr al,0ffh", 0xC0, 0xE8, 0xFF );
     FCML_I64_D( "shr al,0ffh", 0x48, 0xC0, 0xE8, 0xFF );
@@ -239,9 +239,9 @@ void fcml_tf_instruction_SHR(void) {
     FCML_A64( "shrw %cl,(%rax)", 0x66, 0xd3, 0x28 );
     FCML_A64( "shr %cl,%eax", 0xd3, 0xe8 );
     FCML_A64( "shr %cl,%rax", 0x48, 0xd3, 0xe8 );
-    /* C1 /5 ib SHR r/m16, imm8 MI Valid Valid Unsigned divide r/m16 by 2, imm8 times.*/
-    /* C1 /5 ib SHR r/m32, imm8 MI Valid Valid Unsigned divide r/m32 by 2, imm8 times.*/
-    /* REX.W + C1 /5 ib SHR r/m64, imm8 MI Valid N.E. Unsigned divide r/m64 by 2, imm8 times.*/
+    /* C1 /5 ib SHR r/m16, int8 MI Valid Valid Unsigned divide r/m16 by 2, int8 times.*/
+    /* C1 /5 ib SHR r/m32, int8 MI Valid Valid Unsigned divide r/m32 by 2, int8 times.*/
+    /* REX.W + C1 /5 ib SHR r/m64, int8 MI Valid N.E. Unsigned divide r/m64 by 2, int8 times.*/
     FCML_I32( "shr dword ptr [eax],0ffh", 0xC1, 0x28, 0xff );
     FCML_I32( "shr eax,0ffh", 0xC1, 0xE8, 0xff );
     FCML_I64( "shr rax,0ffh", 0x48, 0xC1, 0xE8, 0xff );
@@ -251,39 +251,39 @@ void fcml_tf_instruction_SHR(void) {
 }
 
 void fcml_tf_instruction_SBB(void) {
-    /* 1C ib SBB AL,imm8*/
+    /* 1C ib SBB AL,int8*/
     FCML_I32_M( "sbb al,42h", 2, FCML_MI( 0x80, 0xd8, 0x42 ), FCML_MI( 0x1c, 0x42 ) );
     FCML_I32_A_FAILED( "sbb al,42h", 0xF0, 0x80, 0xd8, 0x42 );
-    /* 1D iw SBB AX,imm16*/
-    /* 1D id SBB EAX,imm32*/
+    /* 1D iw SBB AX,int16*/
+    /* 1D id SBB EAX,int32*/
     FCML_I32_M( "sbb ax,8042h", 2, FCML_MI( 0x66, 0x81, 0xd8, 0x42, 0x80 ), FCML_MI( 0x66, 0x1d, 0x42, 0x80 ) );
     FCML_I32_M( "sbb eax,42806521h", 2, FCML_MI( 0x81, 0xd8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x1d, 0x21, 0x65, 0x80, 0x42 ) );
     FCML_I64_M( "sbb ax,6521h", 2, FCML_MI( 0x66, 0x81, 0xd8, 0x21, 0x65 ), FCML_MI( 0x66, 0x1d, 0x21, 0x65 ) );
-    /* REX.W + 1D id SBB RAX,imm32X.*/
+    /* REX.W + 1D id SBB RAX,int32X.*/
     FCML_I64_M( "sbb rax,0000000042806521h", 2, FCML_MI( 0x48, 0x81, 0xd8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x1d, 0x21, 0x65, 0x80, 0x42 ) );
-    /* 80 /3 ib SBB r/m8,imm8*/
-    /* REX + 80 /3 ib SBB r/m8,imm8*/
+    /* 80 /3 ib SBB r/m8,int8*/
+    /* REX + 80 /3 ib SBB r/m8,int8*/
     FCML_I32( "lock sbb byte ptr [eax],0ffh", 0xF0, 0x80, 0x18, 0xff );
     FCML_I32( "xacquire lock sbb byte ptr [eax],0ffh", 0xF2, 0xF0, 0x80, 0x18, 0xff );
     FCML_I32( "xrelease lock sbb byte ptr [eax],0ffh", 0xF3, 0xF0, 0x80, 0x18, 0xff );
     FCML_I32_M( "sbb al,0ffh", 2, FCML_MI( 0x80, 0xd8, 0xff ), FCML_MI( 0x1c, 0xff ) );
     FCML_I64_D( "sbb byte ptr [rax],0ffh", 0x48, 0x80, 0x18, 0xff );
     FCML_I64( "sbb byte ptr [rax],0ffh", 0x80, 0x18, 0xff );
-    /* 81 /3 iw SBB r/m16,imm16*/
-    /* 81 /3 id SBB r/m32,imm32*/
+    /* 81 /3 iw SBB r/m16,int16*/
+    /* 81 /3 id SBB r/m32,int32*/
     FCML_I32( "sbb ebp,04030201h", 0x81, 0xDD, 0x01, 0x02, 0x03, 0x04 );
     FCML_I32( "sbb bp,0201h", 0x66, 0x81, 0xDD, 0x01, 0x02 );
     FCML_I64_D( "sbb bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xDD, 0x01, 0x02 ); /* 32 bit mode doesn't not allow REX.*/
-    /* REX.W + 81 /3 id SBB r/m64,imm32*/
+    /* REX.W + 81 /3 id SBB r/m64,int32*/
     FCML_I64( "sbb rbp,0000000004030201h", 0x48, 0x81, 0xDD, 0x01, 0x02, 0x03, 0x04 );
-    /* 83 /3 ib SBB r/m16,imm8*/
-    /* 83 /3 ib SBB r/m32,imm8*/
+    /* 83 /3 ib SBB r/m16,int8*/
+    /* 83 /3 ib SBB r/m32,int8*/
     FCML_I32_M( "lock sbb dword ptr [eax],0ffffffffh", 2, FCML_MI( 0xF0, 0x83, 0x18, 0xff ), FCML_MI( 0xF0, 0x81, 0x18, 0xff, 0xff, 0xff, 0xff ) );
     FCML_I32_M( "xacquire lock sbb dword ptr [eax],0ffffffffh", 2, FCML_MI( 0xF2, 0xF0, 0x83, 0x18, 0xff ), FCML_MI( 0xF2, 0xF0, 0x81, 0x18, 0xff, 0xff, 0xff, 0xff ) );
     FCML_I32_M( "xrelease lock sbb dword ptr [eax],0ffffffffh", 2, FCML_MI( 0xF3, 0xF0, 0x83, 0x18, 0xff ), FCML_MI( 0xF3, 0xF0, 0x81, 0x18, 0xff, 0xff, 0xff, 0xff ) );
     FCML_I32_M( "sbb word ptr [eax],0ffffh", 2, FCML_MI( 0x66, 0x83, 0x18, 0xff ), FCML_MI( 0x66, 0x81, 0x18, 0xff, 0xff ) );
     FCML_I32_M( "sbb eax,0ffffffffh", 3, FCML_MI( 0x83, 0xd8, 0xff ), FCML_MI( 0x81, 0xd8, 0xff, 0xff, 0xff, 0xff ), FCML_MI( 0x1d, 0xff, 0xff, 0xff, 0xff ) );
-    /* REX.W + 83 /3 ib SBB r/m64,imm8*/
+    /* REX.W + 83 /3 ib SBB r/m64,int8*/
     FCML_I64_M( "lock sbb qword ptr [rdi+0000000004030201h],0000000000000005h", 2, FCML_MI( 0xF0, 0x48, 0x83, 0x9f, 0x01, 0x02, 0x03, 0x04, 0x05 ), FCML_MI( 0xF0, 0x48, 0x81, 0x9f, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00, 0x00, 0x00 ) );
     FCML_I64_M( "xacquire lock sbb qword ptr [rdi+0000000004030201h],0000000000000005h", 2, FCML_MI( 0xF2, 0xF0, 0x48, 0x83, 0x9f, 0x01, 0x02, 0x03, 0x04, 0x05 ), FCML_MI( 0xF2, 0xF0, 0x48, 0x81, 0x9f, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00, 0x00, 0x00 ) );
     FCML_I64_M( "xrelease lock sbb qword ptr [rdi+0000000004030201h],0000000000000005h", 2, FCML_MI( 0xF3, 0xF0, 0x48, 0x83, 0x9f, 0x01, 0x02, 0x03, 0x04, 0x05 ), FCML_MI( 0xF3, 0xF0, 0x48, 0x81, 0x9f, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00, 0x00, 0x00 ) );
@@ -386,9 +386,9 @@ void fcml_tf_instruction_SGDT(void) {
 }
 
 void fcml_tf_instruction_SHLD(void) {
-    /* 0F A4 SHLD r/m16,r16,imm8*/
-    /* 0F A4 SHLD r/m32,r32,imm8*/
-    /* REX.W + 0F A4 SHLD r/m64,r64,imm8*/
+    /* 0F A4 SHLD r/m16,r16,int8*/
+    /* 0F A4 SHLD r/m32,r32,int8*/
+    /* REX.W + 0F A4 SHLD r/m64,r64,int8*/
     FCML_I32( "shld dword ptr [eax],eax,0ffh", 0x0f, 0xA4, 0x00, 0xFF );
     FCML_I32( "shld word ptr [eax],ax,0ffh", 0x66, 0x0f, 0xA4, 0x00, 0xFF );
     FCML_I64( "shld qword ptr [rax],rax,0ffh", 0x48, 0x0f, 0xA4, 0x00, 0xFF );
@@ -408,9 +408,9 @@ void fcml_tf_instruction_SHLD(void) {
 }
 
 void fcml_tf_instruction_SHRD(void) {
-    /* 0F AC SHRD r/m16, r16, imm8 MRI Valid Valid Shift r/m16 to right imm8 places while shifting bits from r16 in from the left.*/
-    /* 0F AC SHRD r/m32, r32, imm8 MRI Valid Valid Shift r/m32 to right imm8 places while shifting bits from r32 in from the left.*/
-    /* REX.W + 0F AC SHRD r/m64, r64, imm8 MRI Valid N.E. Shift r/m64 to right imm8 places while shifting bits from r64 in from the left.*/
+    /* 0F AC SHRD r/m16, r16, int8 MRI Valid Valid Shift r/m16 to right int8 places while shifting bits from r16 in from the left.*/
+    /* 0F AC SHRD r/m32, r32, int8 MRI Valid Valid Shift r/m32 to right int8 places while shifting bits from r32 in from the left.*/
+    /* REX.W + 0F AC SHRD r/m64, r64, int8 MRI Valid N.E. Shift r/m64 to right int8 places while shifting bits from r64 in from the left.*/
     FCML_I32( "shrd dword ptr [eax],eax,0ffh", 0x0f, 0xAC, 0x00, 0xFF );
     FCML_I32( "shrd word ptr [eax],ax,0ffh", 0x66, 0x0f, 0xAC, 0x00, 0xFF );
     FCML_I64( "shrd qword ptr [rax],rax,0ffh", 0x48, 0x0f, 0xAC, 0x00, 0xFF );
@@ -451,11 +451,11 @@ void fcml_tf_instruction_SLWPCB(void) {
 }
 
 void fcml_tf_instruction_SHUFPD(void) {
-    /* 66 0F C6 /r ib SHUFPD xmm1,xmm2/m128,imm8*/
+    /* 66 0F C6 /r ib SHUFPD xmm1,xmm2/m128,int8*/
     FCML_I32( "shufpd xmm2,xmmword ptr [ecx+eax],0ffh", 0x66, 0x0F, 0xC6, 0x14, 0x01, 0xFF );
     FCML_I64( "shufpd xmm2,xmmword ptr [rcx+rax],0ffh", 0x66, 0x0F, 0xC6, 0x14, 0x01, 0xFF );
-    /* VEX.NDS.128.66.0F.WIG C6 /r ib VSHUFPD xmm1,xmm2,xmm3/m128,imm8*/
-    /* VEX.NDS.256.66.0F.WIG C6 /r ib VSHUFPD ymm1,ymm2,ymm3/m256,imm8*/
+    /* VEX.NDS.128.66.0F.WIG C6 /r ib VSHUFPD xmm1,xmm2,xmm3/m128,int8*/
+    /* VEX.NDS.256.66.0F.WIG C6 /r ib VSHUFPD ymm1,ymm2,ymm3/m256,int8*/
     FCML_I32( "vshufpd xmm2,xmm6,xmmword ptr [ecx+eax],20h", 0xc5, 0xc9, 0xc6, 0x14, 0x01, 0x20 );
     FCML_I64( "vshufpd xmm2,xmm6,xmmword ptr [rcx+rax],20h", 0xc5, 0xc9, 0xc6, 0x14, 0x01, 0x20 );
     /* GAS*/
@@ -466,11 +466,11 @@ void fcml_tf_instruction_SHUFPD(void) {
 }
 
 void fcml_tf_instruction_SHUFPS(void) {
-    /* 0F C6 /r ib SHUFPS xmm1, xmm2/m128, imm8 RMI V/V SSE Shuffle packed single-precision floating-point values selected by imm8 from xmm1 and xmm1/m128 to xmm1.*/
+    /* 0F C6 /r ib SHUFPS xmm1, xmm2/m128, int8 RMI V/V SSE Shuffle packed single-precision floating-point values selected by int8 from xmm1 and xmm1/m128 to xmm1.*/
     FCML_I32( "shufps xmm2,xmmword ptr [ecx+eax],0ffh", 0x0F, 0xC6, 0x14, 0x01, 0xFF );
     FCML_I64( "shufps xmm2,xmmword ptr [rcx+rax],0ffh", 0x0F, 0xC6, 0x14, 0x01, 0xFF );
-    /* VEX.NDS.128.0F.WIG C6 /r ib VSHUFPS xmm1, xmm2, xmm3/m128, imm8 RVMI V/V AVX Shuffle Packed single-precision floating-point values selected by imm8 from xmm2 and xmm3/mem.*/
-    /* VEX.NDS.256.0F.WIG C6 /r ib VSHUFPS ymm1, ymm2, ymm3/m256, imm8 RVMI V/V AVX Shuffle Packed single-precision floating-point values selected by imm8 from ymm2 and ymm3/mem.*/
+    /* VEX.NDS.128.0F.WIG C6 /r ib VSHUFPS xmm1, xmm2, xmm3/m128, int8 RVMI V/V AVX Shuffle Packed single-precision floating-point values selected by int8 from xmm2 and xmm3/mem.*/
+    /* VEX.NDS.256.0F.WIG C6 /r ib VSHUFPS ymm1, ymm2, ymm3/m256, int8 RVMI V/V AVX Shuffle Packed single-precision floating-point values selected by int8 from ymm2 and ymm3/mem.*/
     FCML_I32( "vshufps xmm2,xmm6,xmmword ptr [ecx+eax],20h", 0xc5, 0xc8, 0xc6, 0x14, 0x01, 0x20 );
     FCML_I64( "vshufps xmm2,xmm6,xmmword ptr [rcx+rax],20h", 0xc5, 0xc8, 0xc6, 0x14, 0x01, 0x20 );
     /* GAS*/
@@ -678,41 +678,41 @@ void fcml_tf_instruction_STR(void) {
 }
 
 void fcml_tf_instruction_SUB(void) {
-    /* 2C ib SUB AL, imm8 I Valid Valid Subtract imm8 from AL.*/
+    /* 2C ib SUB AL, int8 I Valid Valid Subtract int8 from AL.*/
     FCML_I32_M( "sub al,42h", 2, FCML_MI( 0x80, 0xe8, 0x42 ), FCML_MI( 0x2c, 0x42 ) );
     FCML_I32_A_FAILED( "lock sub al,42h", 0xF0, 0x80, 0xe8, 0x42 );
-    /* 2D iw SUB AX, imm16 I Valid Valid Subtract imm16 from AX.*/
-    /* 2D id SUB EAX, imm32 I Valid Valid Subtract imm32 from EAX.*/
+    /* 2D iw SUB AX, int16 I Valid Valid Subtract int16 from AX.*/
+    /* 2D id SUB EAX, int32 I Valid Valid Subtract int32 from EAX.*/
     FCML_I32_M( "sub ax,8042h", 2, FCML_MI( 0x66, 0x81, 0xe8, 0x42, 0x80 ), FCML_MI( 0x66, 0x2d, 0x42, 0x80 ) );
     FCML_I32_M( "sub eax,42806521h", 2, FCML_MI( 0x81, 0xe8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x2d, 0x21, 0x65, 0x80, 0x42 ) );
     FCML_I64_M( "sub eax,42806521h", 2, FCML_MI( 0x81, 0xe8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x2d, 0x21, 0x65, 0x80, 0x42 ) );
     FCML_I64_M( "sub ax,6521h", 2, FCML_MI( 0x66, 0x81, 0xe8, 0x21, 0x65 ), FCML_MI( 0x66, 0x2d, 0x21, 0x65 ) );
-    /* REX.W + 2D id SUB RAX, imm32 I Valid N.E. Subtract imm32 sign-extended to 64-bits from RAX.*/
+    /* REX.W + 2D id SUB RAX, int32 I Valid N.E. Subtract int32 sign-extended to 64-bits from RAX.*/
     FCML_I64_M( "sub rax,0000000042806521h", 2, FCML_MI( 0x48, 0x81, 0xe8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x2d, 0x21, 0x65, 0x80, 0x42 ) );
     FCML_I64_M( "sub rax,0ffffffffffffffffh", 3, FCML_MI( 0x48, 0x83, 0xe8, 0xff ), FCML_MI( 0x48, 0x81, 0xe8, 0xff, 0xff, 0xff, 0xff ), FCML_MI( 0x48, 0x2d, 0xff, 0xff, 0xff, 0xff ) );
-    /* 80 /5 ib SUB r/m8, imm8 MI Valid Valid Subtract imm8 from r/m8.*/
-    /* REX + 80 /5 ib SUB r/m8*, imm8 MI Valid N.E. Subtract imm8 from r/m8.*/
+    /* 80 /5 ib SUB r/m8, int8 MI Valid Valid Subtract int8 from r/m8.*/
+    /* REX + 80 /5 ib SUB r/m8*, int8 MI Valid N.E. Subtract int8 from r/m8.*/
     FCML_I32( "lock sub byte ptr [04030201h],0ffh", 0xF0, 0x80, 0x2D, 0x01, 0x02, 0x03, 0x04, 0xff );
     FCML_I32( "xacquire lock sub byte ptr [04030201h],0ffh", 0xF2, 0xF0, 0x80, 0x2D, 0x01, 0x02, 0x03, 0x04, 0xff );
     FCML_I32( "xrelease lock sub byte ptr [04030201h],0ffh", 0xF3, 0xF0, 0x80, 0x2D, 0x01, 0x02, 0x03, 0x04, 0xff );
     FCML_I32( "sub byte ptr [esi+04030201h],0ffh", 0x80, 0xae, 0x01, 0x02, 0x03, 0x04, 0xff );
     FCML_I32( "sub byte ptr [ecx+eax+00000002h],03h", 0x80, 0x6C, 0x01, 0x02, 0x03 );
-    /* 81 /5 iw SUB r/m16, imm16 MI Valid Valid Subtract imm16 from r/m16.*/
-    /* 81 /5 id SUB r/m32, imm32 MI Valid Valid Subtract imm32 from r/m32.*/
+    /* 81 /5 iw SUB r/m16, int16 MI Valid Valid Subtract int16 from r/m16.*/
+    /* 81 /5 id SUB r/m32, int32 MI Valid Valid Subtract int32 from r/m32.*/
     FCML_I32( "sub ebp,04030201h", 0x81, 0xED, 0x01, 0x02, 0x03, 0x04 );
     FCML_I32( "sub bp,0201h", 0x66, 0x81, 0xED, 0x01, 0x02 );
     FCML_I64_D( "sub bp,0201h", 0x67, 0x66, 0x40, 0x81, 0xED, 0x01, 0x02 ); /* 32 bit mode doesn't not allow REX.*/
-    /* REX.W + 81 /5 id SUB r/m64, imm32 MI Valid N.E. Subtract imm32 sign-extended to 64-bits from r/m64.*/
+    /* REX.W + 81 /5 id SUB r/m64, int32 MI Valid N.E. Subtract int32 sign-extended to 64-bits from r/m64.*/
     FCML_I64( "sub rbp,0000000004030201h", 0x48, 0x81, 0xed, 0x01, 0x02, 0x03, 0x04 );
     FCML_I64_M( "sub rbp,0ffffffffffffffffh", 2, FCML_MI( 0x48, 0x83, 0xed, 0xff ), FCML_MI( 0x48, 0x81, 0xed, 0xff, 0xff, 0xff, 0xff ) );
-    /* 83 /5 ib SUB r/m16, imm8 MI Valid Valid Subtract sign-extended imm8 from r/m16.*/
-    /* 83 /5 ib SUB r/m32, imm8 MI Valid Valid Subtract sign-extended imm8 from r/m32.*/
+    /* 83 /5 ib SUB r/m16, int8 MI Valid Valid Subtract sign-extended int8 from r/m16.*/
+    /* 83 /5 ib SUB r/m32, int8 MI Valid Valid Subtract sign-extended int8 from r/m32.*/
     FCML_I32_M( "lock sub dword ptr [esi],00000001h", 2, FCML_MI( 0xF0, 0x83, 0x2e, 0x01 ), FCML_MI( 0xF0, 0x81, 0x2e, 0x01, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "xacquire lock sub dword ptr [esi],00000001h", 2, FCML_MI( 0xF2, 0xF0, 0x83, 0x2e, 0x01 ), FCML_MI( 0xF2, 0xF0, 0x81, 0x2e, 0x01, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "xrelease lock sub dword ptr [esi],00000001h", 2, FCML_MI( 0xF3, 0xF0, 0x83, 0x2e, 0x01 ), FCML_MI( 0xF3, 0xF0, 0x81, 0x2e, 0x01, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "sub word ptr [esi],0001h", 2, FCML_MI( 0x66, 0x83, 0x2e, 0x01 ), FCML_MI( 0x66, 0x81, 0x2e, 0x01, 0x00 ) );
     FCML_I32_M( "sub dword ptr [0201h],00000003h", 2, FCML_MI( 0x67, 0x83, 0x2e, 0x01, 0x02, 0x03 ), FCML_MI( 0x67, 0x81, 0x2e, 0x01, 0x02, 0x03, 0x00, 0x00, 0x00 ) );
-    /* REX.W + 83 /5 ib SUB r/m64, imm8 MI Valid N.E. Subtract sign-extended imm8 from r/m64.*/
+    /* REX.W + 83 /5 ib SUB r/m64, int8 MI Valid N.E. Subtract sign-extended int8 from r/m64.*/
     FCML_I64_M( "lock sub qword ptr [rdi+0000000004030201h],0000000000000005h", 2, FCML_MI( 0xF0, 0x48, 0x83, 0xaf, 0x01, 0x02, 0x03, 0x04, 0x05 ), FCML_MI( 0xF0, 0x48, 0x81, 0xaf, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00, 0x00, 0x00 ) );
     FCML_I64_M( "xacquire lock sub qword ptr [rdi+0000000004030201h],0000000000000005h", 2, FCML_MI( 0xF2, 0xF0, 0x48, 0x83, 0xaf, 0x01, 0x02, 0x03, 0x04, 0x05 ), FCML_MI( 0xF2, 0xF0, 0x48, 0x81, 0xaf, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00, 0x00, 0x00 ) );
     FCML_I64_M( "xrelease lock sub qword ptr [rdi+0000000004030201h],0000000000000005h", 2, FCML_MI( 0xF3, 0xF0, 0x48, 0x83, 0xaf, 0x01, 0x02, 0x03, 0x04, 0x05 ), FCML_MI( 0xF3, 0xF0, 0x48, 0x81, 0xaf, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00, 0x00, 0x00 ) );

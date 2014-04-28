@@ -71,18 +71,18 @@ void fcml_tf_instruction_IMUL(void) {
     FCML_A64_A( "imul 0x0000000000000020(%rax),%ebp", 0x0f, 0xaf, 0x68, 0x20 );
 	FCML_A64_A( "imul 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xaf, 0x68, 0x20 );
 	FCML_A64_A( "imul 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xaf, 0x68, 0x20 );
-    /* 6B /r ib IMUL r16, r/m16, imm8 C Valid Valid word register r/m16 sign-extended immediate byte.*/
-    /* 6B /r ib IMUL r32, r/m32, imm8 C Valid Valid doubleword register r/m32 sign-extended immediate byte.*/
-    /* REX.W + 6B /r ib IMUL r64, r/m64, imm8 C Valid N.E. Quadword register r/m64 sign-extended immediate byte.*/
+    /* 6B /r ib IMUL r16, r/m16, int8 C Valid Valid word register r/m16 sign-extended immediate byte.*/
+    /* 6B /r ib IMUL r32, r/m32, int8 C Valid Valid doubleword register r/m32 sign-extended immediate byte.*/
+    /* REX.W + 6B /r ib IMUL r64, r/m64, int8 C Valid N.E. Quadword register r/m64 sign-extended immediate byte.*/
     FCML_I32_M( "imul ebp,dword ptr [eax+00000020h],00000040h", 2, FCML_MI( 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x69, 0x68, 0x20, 0x40, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "imul bp,word ptr [eax+00000020h],0040h", 2, FCML_MI( 0x66, 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x66, 0x69, 0x68, 0x20, 0x40, 0x00  ) );
     FCML_I64_M( "imul ebp,dword ptr [rax+0000000000000020h],00000040h", 2, FCML_MI( 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x69, 0x68, 0x20, 0x40, 0x00, 0x00, 0x00 ) );
     FCML_I64_M( "imul bp,word ptr [rax+0000000000000020h],0040h", 2, FCML_MI( 0x66, 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x66, 0x69, 0x68, 0x20, 0x40, 0x00 ) );
     FCML_I64_M( "imul rbp,qword ptr [rax+0000000000000020h],0000000000000040h", 2, FCML_MI( 0x48, 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x48, 0x69, 0x68, 0x20, 0x40, 0x00, 0x00, 0x00 ) );
     FCML_A64_M( "imulq $0x0000000000000040,0x0000000000000020(%rax),%rbp", 2, FCML_MI( 0x48, 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x48, 0x69, 0x68, 0x20, 0x40, 0x00, 0x00, 0x00 ) );
-    /* 69 /r iw IMUL r16, r/m16, imm16 C Valid Valid word register r/m16 immediate word.*/
-    /* 69 /r id IMUL r32, r/m32, imm32 C Valid Valid doubleword register r/m32 immediate doubleword.*/
-    /* REX.W + 69 /r id IMUL r64, r/m64, imm32 C Valid N.E. Quadword register r/m64 immediate doubleword.*/
+    /* 69 /r iw IMUL r16, r/m16, int16 C Valid Valid word register r/m16 immediate word.*/
+    /* 69 /r id IMUL r32, r/m32, int32 C Valid Valid doubleword register r/m32 immediate doubleword.*/
+    /* REX.W + 69 /r id IMUL r64, r/m64, int32 C Valid N.E. Quadword register r/m64 immediate doubleword.*/
     FCML_I32( "imul ebp,dword ptr [eax+00000020h],70605040h", 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0x70 );
     FCML_I32( "imul bp,word ptr [eax+00000020h],5040h", 0x66, 0x69, 0x68, 0x20, 0x40, 0x50 );
     FCML_I64( "imul ebp,dword ptr [rax+0000000000000020h],70605040h", 0x69, 0x68, 0x20, 0x40, 0x50, 0x60, 0x70 );
@@ -96,9 +96,9 @@ void fcml_tf_instruction_IMUL(void) {
 }
 
 void fcml_tf_instruction_IN(void) {
-    /* E4 ib IN AL, imm8 A Valid Valid Input byte from imm8 I/O port address into AL.*/
-    /* E5 ib IN AX, imm8 A Valid Valid Input word from imm8 I/O port address into AX.*/
-    /* E5 ib IN EAX, imm8 A Valid Valid Input dword from imm8 I/O port address into EAX.*/
+    /* E4 ib IN AL, int8 A Valid Valid Input byte from int8 I/O port address into AL.*/
+    /* E5 ib IN AX, int8 A Valid Valid Input word from int8 I/O port address into AX.*/
+    /* E5 ib IN EAX, int8 A Valid Valid Input dword from int8 I/O port address into EAX.*/
     FCML_I32( "in al,20h", 0xE4, 0x20 );
     FCML_I64( "in al,20h", 0x66, 0xE4, 0x20 );
     FCML_I32( "in eax,20h", 0xE5, 0x20 );
@@ -192,7 +192,7 @@ void fcml_tf_instruction_INS(void) {
 void fcml_tf_instruction_INSERTPS(void) {
     FCML_I32( "insertps xmm4,dword ptr [eax],40h", 0x66, 0x0F, 0x3A, 0x21, 0x20, 0x40 );
     FCML_I64( "insertps xmm4,dword ptr [rax],40h", 0x66, 0x0F, 0x3A, 0x21, 0x20, 0x40 );
-    /* VEX.NDS.128.66.0F3A 21 /r ib VINSERTPS xmm1,xmm2,xmm3/m32,imm8*/
+    /* VEX.NDS.128.66.0F3A 21 /r ib VINSERTPS xmm1,xmm2,xmm3/m32,int8*/
     FCML_I64( "vinsertps xmm8,xmm14,dword ptr [r8],20h", 0xC4, 0x43, 0x09, 0x21, 0x00, 0x20 );
     FCML_I32( "vinsertps xmm0,xmm6,dword ptr [eax],20h", 0xC4, 0xE3, 0x49, 0x21, 0x00, 0x20 );
     FCML_I32( "vinsertps xmm0,xmm6,xmm0,20h", 0xC4, 0xE3, 0x49, 0x21, 0xC0, 0x20 );
@@ -202,7 +202,7 @@ void fcml_tf_instruction_INSERTPS(void) {
 }
 
 void fcml_tf_instruction_INSERTQ(void) {
-    /* INSERTQ xmm1, xmm2, imm8, imm8 F2 0F 78 /r ib ib*/
+    /* INSERTQ xmm1, xmm2, int8, int8 F2 0F 78 /r ib ib*/
     FCML_I32( "insertq xmm3,xmm2,01h,02h", 0xF2, 0x0F, 0x78, 0xDA, 0x01, 0x02 );
     FCML_I64( "insertq xmm3,xmm2,01h,02h", 0xF2, 0x0F, 0x78, 0xDA, 0x01, 0x02 );
     /* INSERTQ xmm1, xmm2 F2 0F 79 /r*/

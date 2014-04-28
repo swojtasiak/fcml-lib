@@ -51,7 +51,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_gas( fcml_st_render_conf
 		return FCML_CEH_GEC_NO_ERROR;
 	}
 
-	fcml_st_immediate *immediate = &(operand->immediate);
+	fcml_st_integer *immediate = &(operand->immediate);
 	fcml_st_integer integer;
 	fcml_ceh_error error = fcml_fn_utils_imm_to_integer( immediate, &integer );
 	if( error ) {

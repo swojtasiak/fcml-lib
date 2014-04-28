@@ -190,18 +190,6 @@ void fcml_ifn_lag_free_instruction( fcml_ist_lag_instruction *instruction, fcml_
 	}
 }
 
-void fcml_ifn_lag_detach_instruction( fcml_st_assembled_instruction **instructions, fcml_st_assembled_instruction *choosen_instruction ) {
-	fcml_st_assembled_instruction **current = instructions;
-	fcml_bool found = FCML_FALSE;
-	do {
-		if( *current == choosen_instruction ) {
-			*current = choosen_instruction->next;
-			found = FCML_TRUE;
-		}
-		current = &((*current)->next);
-	} while( !found && *current );
-}
-
 fcml_st_assembled_instruction *fcml_ifn_lag_choose_second_pass_best_instruction( fcml_ist_lag_instruction *lag_instruction, fcml_st_assembler_result *assembler_result ) {
 
 	fcml_st_assembled_instruction **instructions = &(assembler_result->instructions);
@@ -230,7 +218,7 @@ fcml_st_assembled_instruction *fcml_ifn_lag_choose_second_pass_best_instruction(
 	}
 
 	/* Detach chosen instruction. */
-	fcml_ifn_lag_detach_instruction( instructions, choosen_instruction );
+	fcml_fn_assembler_instruction_detach( instructions, choosen_instruction );
 
 	assembler_result->number_of_instructions--;
 
@@ -259,7 +247,7 @@ fcml_st_assembled_instruction *fcml_ifn_lag_choose_first_pass_best_instruction( 
 	}
 
 	/* Detach instruction to avoid its deallocation. */
-	fcml_ifn_lag_detach_instruction( &(assembler_result->instructions ), chosen_instruction );
+	fcml_fn_assembler_instruction_detach( &(assembler_result->instructions ), chosen_instruction );
 
 	assembler_result->number_of_instructions--;
 

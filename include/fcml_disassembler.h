@@ -1,8 +1,26 @@
 /*
- * fcml_disassembler.h
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 08-02-2013
- *      Author: tAs
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/** @file fcml_disassembler.h
+ * Structures and functions declarations related to FCML disassembler.
+ * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
+ * @license This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_DISASSEMBLER_H_
@@ -20,48 +38,52 @@
 extern "C" {
 #endif
 
+/** Maximal number of instruction prefixes. */
 #define FCML_DASM_PREFIXES_COUNT	12
 
+/** First group of conditional suffixes (See FCML manual). */
 #define FCML_DASM_CONDITIONAL_GROUP_1	0x00
+/** Second group of conditional suffixes (See FCML manual). */
 #define FCML_DASM_CONDITIONAL_GROUP_2	0x01
 
-/* This structure and type definition represents an abstract disassembler. */
+/** This structure and type declaration represents an abstract disassembler. */
 typedef struct fcml_st_disassembler fcml_st_disassembler;
 
-/* Disassembler configuration. */
+/** Disassembler configuration. */
 typedef struct fcml_st_disassembler_conf {
-	/* Set to true in order to make disassembler to increment IP address by length of the disassembled instruction. */
+	/** Set to true in order to make disassembler to increment IP address by length of the disassembled instruction. */
 	fcml_bool increment_ip;
-	/* True if optional error and warning messages should be collected during processing. */
+	/** True if optional error and warning messages should be collected during processing. */
 	fcml_bool enable_error_messages;
-    /* True if suffixes for carry flag has to be used by disassembler.*/
+    /** True if suffixes for carry flag has to be used by disassembler.*/
 	fcml_bool carry_flag_conditional_suffix;
-	/* There are two groups of suffixes for conditional instructions, you can choose which one should be used.*/
+	/** There are two groups of suffixes for conditional instructions, you can choose which one should be used. */
 	fcml_uint8_t conditional_group;
-	/* Set to true in order to use short forms of encoded instructions.
-	 * For instance 'cmpsb' will be used instead of 'cmps byte ptr [si],byte ptr [di]' */
+	/** Set to true in order to use short forms.
+	 * For instance 'cmpsb' will be used instead of 'cmps byte ptr [si],byte ptr [di]'
+	 */
 	fcml_bool short_forms;
-	/* True if displacement should be sign extended to effective address size; otherwise false. */
+	/** True if displacement should be sign extended to effective address size; otherwise false. */
 	fcml_bool extend_disp_to_asa;
 } fcml_st_disassembler_conf;
 
-/* Disassembler context. */
+/** Disassembler context. */
 typedef struct fcml_st_disassembler_context {
-    /* Disassembler used to decode instructions. */
+    /** Disassembler used to decode instructions. */
 	fcml_st_disassembler *disassembler;
-	/* Disassembler configuration. */
+	/** Disassembler configuration. */
 	fcml_st_disassembler_conf configuration;
-	/* Instruction entry point configuration. */
+	/** Instruction entry point configuration. */
 	fcml_st_entry_point entry_point;
-	/* Pointer to the encoded instruction. */
+	/** Pointer to the encoded instruction. */
 	fcml_ptr code;
-	/* Size of the code in the buffer above. */
+	/** Size of the code in the buffer above. */
 	fcml_data_size code_length;
 } fcml_st_disassembler_context;
 
 /* Prefixes */
 
-/* Available types of instruction prefixes. */
+/** Available types of instruction prefixes. For more information see Intel/AMD Architecture Manual. */
 typedef enum fcml_en_prefix_types {
 	FCML_PT_GROUP_UNKNOWN = 0,
 	FCML_PT_GROUP_1 = 1,
@@ -73,105 +95,125 @@ typedef enum fcml_en_prefix_types {
 	FCML_PT_XOP,
 } fcml_en_prefix_types;
 
-/* Describes one decoded prefix. */
+/** Describes one decoded prefix. */
 typedef struct fcml_st_instruction_prefix {
-	/* Prefix itself. */
+	/** Prefix itself as raw byte. */
 	fcml_uint8_t prefix;
-	/* Type of prefix, see enumeration above. */
+	/** Type of the prefix. */
 	fcml_en_prefix_types prefix_type;
-	/* 1 if prefix can be treated as mandatory one. */
+	/** FCML_TRUE if prefix is treated as mandatory one. */
 	fcml_bool mandatory_prefix;
-	/* Place for additional bytes of VEX prefix. */
+	/** Place for additional bytes of VEX/XOP prefix. */
 	fcml_uint8_t vex_xop_bytes[2];
 } fcml_st_instruction_prefix;
 
-/* Contains some information about all decoded instruction prefixes. */
+/** Contains some additional information about all decoded instruction prefixes. */
 typedef struct fcml_st_prefixes_details {
-    /* All decoded prefixes are available here as raw bytes.*/
+    /** Array with decoded prefixes. */
 	fcml_st_instruction_prefix prefixes[FCML_DASM_PREFIXES_COUNT];
-	/* Number of decoded prefixes.*/
+	/** Number of decoded prefixes. */
 	fcml_int prefixes_count;
-	/* Number of bytes used by all decoded prefixes.*/
+	/** Number of bytes used by all decoded prefixes. */
 	fcml_int prefixes_bytes_count;
-	/* Some flags indicating existence of prefixes.*/
+	/** FCML_TRUE if branch prefix exists. */
 	fcml_bool is_branch;
+	/** FCML_TRUE if nobranch prefix exists. */
 	fcml_bool is_nobranch;
+	/** FCML_TRUE if lock explicit prefix exists. */
 	fcml_bool is_lock;
+	/** FCML_TRUE if rep explicit prefix exists. */
 	fcml_bool is_rep;
+	/** FCML_TRUE if repne explicit prefix exists. */
 	fcml_bool is_repne;
+	/** FCML_TRUE if xrelease explicit prefix exists. */
 	fcml_bool is_xrelease;
+	/** FCML_TRUE if xacquire explicit prefix exists. */
 	fcml_bool is_xacquire;
+	/** FCML_TRUE if VEX prefix exists. */
 	fcml_bool is_vex;
+	/** FCML_TRUE if XOP prefix exists. */
 	fcml_bool is_xop;
+	/** FCML_TRUE if REX prefix exists. */
 	fcml_bool is_rex;
-	/* Various fields encoded inside decoded prefixes.*/
+	/** Various fields encoded inside decoded prefixes.*/
 	fcml_uint8_t vex_xop_first_byte;
+	/** R field of REX,XOP or VEX prefix. */
 	fcml_uint8_t r;
+	/** X field of REX,XOP or VEX prefix. */
 	fcml_uint8_t x;
+	/** B field of REX,XOP or VEX prefix. */
 	fcml_uint8_t b;
+	/** W field of REX,XOP or VEX prefix. */
 	fcml_uint8_t w;
+	/** L field of XOP or VEX prefix. */
 	fcml_uint8_t l;
+	/** m-mmmm field of XOP or VEX prefix. */
 	fcml_uint8_t mmmm;
+	/** vvvv field of XOP or VEX prefix. */
 	fcml_uint8_t vvvv;
+	/** pp field of XOP or VEX prefix. */
 	fcml_uint8_t pp;
 } fcml_st_prefixes_details;
 
-/* Some disassembler specific information about decoded operands. */
+/** Some additional disassembler specific information about decoded operands. */
 typedef struct fcml_st_operand_details {
+	/** Instruction operand access mode READ, WRITE or both. */
 	fcml_en_access_mode access_mode;
 } fcml_st_operand_details;
 
-/* Some basic information about decoded ModR/M and SIB bytes. */
+/** Some basic information about decoded ModR/M and SIB bytes. */
 typedef struct fcml_st_decoded_modrm_details {
-    /* ModR/M byte if exists.*/
+    /** ModR/M byte if exists.*/
 	fcml_uint8_t modrm;
-	/* SIB byte if exists.*/
+	/** SIB byte if exists.*/
 	fcml_nuint8_t sib;
-	/* True if RIP encoding is used by decoded instruction. This flag is used only in 64 bit mode.*/
+	/** True if RIP encoding is used by decoded instruction. This flag is used only in 64 bit mode. */
 	fcml_bool is_rip;
+	/** True if ModR/M exists. */
+	fcml_bool is_modrm;
 } fcml_st_decoded_modrm_details;
 
-// TODO:Dodac mozliwosc sprawdzenia czy jest modrm.
-
-
-/* Additional details provided by disassembler. */
+/** Additional instruction details provided by disassembler. */
 typedef struct fcml_st_instruction_details {
-    /* True if this is a shortcut. Shortcuts do not have any operands decoded. A good example of
-     * such instruction is 'cmpsb' as opposed to 'cmps byte ptr [si],byte ptr [di]'. It's very important
-     * to take this information into consideration because there is no operadns for such instruction.
+    /** True if this is a shortcut.
+     * A good example of such instruction is 'cmpsb' as opposed to 'cmps byte ptr [si],byte ptr [di]'.
+     * It is very important to take this information into consideration when instruction
+     * models are analyzed because there is no operands in the GIM for shortcuts.
      */
 	fcml_bool is_shortcut;
-	/* True if given instruction is a short form of pseudo-ops instructions. See 'vcmpunordsd' for instance. */
+	/** True if given instruction is a short form of pseudo-ops instructions. See 'vcmpunordsd' for instance. */
 	fcml_bool is_pseudo_op;
-	/* Code of disassembled instruction. */
+	/** Code of the disassembled instruction. */
 	fcml_uint8_t instruction_code[FCML_INSTRUCTION_SIZE];
-	/* Instruction size in bytes. */
+	/** Instruction size in bytes. */
 	fcml_data_size instruction_size;
-	/* Some information about decoded instruction prefixes. */
+	/** Some additional information about decoded instruction prefixes. */
 	fcml_st_prefixes_details prefixes_details;
-	/* All disassembler specific information about opcodes going there. */
+	/** All disassembler specific information about operands going there. */
 	fcml_st_operand_details operand_details[FCML_OPERANDS_COUNT];
-	/* Some useful details about decoded ModR/M and SIB bytes. */
+	/** Details about decoded ModR/M and SIB bytes. */
 	fcml_st_decoded_modrm_details modrm_details;
-	/* Opcode field 's'. This is set only for informational purpose only,
-	 * you should not use it for any critical functionality.*/
+	/** Opcode field 's'.
+	 * This is set only for informational purpose only and you should not use it for any critical functionality.
+	 */
 	fcml_bool opcode_field_s_bit;
-	/* Opcode field 'w'. This is set only for informational purpose only,
-	 * you should not use it for any critical functionality.*/
+	/** Opcode field 'w'.
+	 * This is set only for informational purpose only and you should not use it for any critical functionality.
+	 */
 	fcml_bool opcode_field_w_bit;
-	/* Instruction code. */
+	/** Instruction code/number. @see fcml_instructions.h header file. */
 	fcml_en_instruction instruction;
-	/*  Addressing form of the instruction above. */
+	/** Code of the instruction form/addressing mode of the instruction above. */
 	fcml_uint16_t addr_mode;
 } fcml_st_instruction_details;
 
-/* Disassembler result. */
+/** Reusable disassembler result holder. */
 typedef struct fcml_st_dasm_disassembler_result {
-    /* All errors and warnings messages going there.*/
+    /** All errors and warnings messages going here. */
 	fcml_st_ceh_error_container errors;
-	/* Detailed information about instructions.*/
+	/** Additional disassembler specific information about decoded instruction. */
 	fcml_st_instruction_details instruction_details;
-	/* Decoded instruction in its generic form.*/
+	/** Decoded instruction in its generic form.*/
 	fcml_st_instruction instruction;
 } fcml_st_disassembler_result;
 

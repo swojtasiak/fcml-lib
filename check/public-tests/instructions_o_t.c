@@ -17,44 +17,44 @@ void fcml_tf_instructions_o_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_OR(void) {
-    /* 0C ib OR AL, imm8 I Valid Valid AL OR imm8.*/
+    /* 0C ib OR AL, int8 I Valid Valid AL OR int8.*/
     FCML_I32_M( "or al,42h", 2, FCML_MI( 0x80, 0xc8, 0x42 ), FCML_MI( 0x0c, 0x42 ) );
     FCML_I32_A_FAILED( "lock or al,42h", 0xF0, 0x80, 0xc8, 0x42 );
     FCML_I32_D( "lock or al,42h", 0xF0, 0x80, 0xc8, 0x42 );
-    /* 0D iw OR AX, imm16 I Valid Valid AX OR imm16.*/
-    /* 0D id OR EAX, imm32 I Valid Valid EAX OR imm32.*/
+    /* 0D iw OR AX, int16 I Valid Valid AX OR int16.*/
+    /* 0D id OR EAX, int32 I Valid Valid EAX OR int32.*/
     FCML_I32_M( "or ax,8042h", 2, FCML_MI( 0x66, 0x81, 0xc8, 0x42, 0x80 ), FCML_MI( 0x66, 0x0d, 0x42, 0x80 ) );
     FCML_I32_M( "or eax,42806521h", 2, FCML_MI( 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
     FCML_I64_M( "or rax,0000000042806521h", 2, FCML_MI( 0x48, 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
     FCML_I64_M( "or ax,6521h", 2, FCML_MI( 0x66, 0x81, 0xc8, 0x21, 0x65 ), FCML_MI( 0x66, 0x0d, 0x21, 0x65 ) );
-    /* REX.W + 0D id OR RAX, imm32 I Valid N.E. RAX OR imm32 (sign-extended).*/
+    /* REX.W + 0D id OR RAX, int32 I Valid N.E. RAX OR int32 (sign-extended).*/
     FCML_I64_M( "or rax,0000000042806521h", 2, FCML_MI( 0x48, 0x81, 0xc8, 0x21, 0x65, 0x80, 0x42 ), FCML_MI( 0x48, 0x0d, 0x21, 0x65, 0x80, 0x42 ) );
     FCML_I64_M( "or rax,0ffffffffffffffffh", 3, FCML_MI( 0x67, 0x48, 0x83, 0xc8, 0xff ), FCML_MI( 0x67, 0x48, 0x81, 0xc8, 0xff, 0xff, 0xff, 0xff ), FCML_MI( 0x67, 0x48, 0x0d, 0xff, 0xff, 0xff, 0xff ) );
-    /* 80 /1 ib OR r/m8, imm8 MI Valid Valid r/m8 OR imm8.*/
-    /* REX + 80 /1 ib OR r/m8*, imm8 MI Valid N.E. r/m8 OR imm8.*/
+    /* 80 /1 ib OR r/m8, int8 MI Valid Valid r/m8 OR int8.*/
+    /* REX + 80 /1 ib OR r/m8*, int8 MI Valid N.E. r/m8 OR int8.*/
     FCML_I32( "lock or byte ptr [04030201h],0ffh", 0xF0, 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
     FCML_I32( "xacquire lock or byte ptr [04030201h],0ffh", 0xF2, 0xF0, 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
     FCML_I32( "xrelease lock or byte ptr [04030201h],0ffh", 0xF3, 0xF0, 0x80, 0x0d, 0x01, 0x02, 0x03, 0x04, 0xff );
     FCML_I32( "or byte ptr [esi+04030201h],0ffh", 0x80, 0x8e, 0x01, 0x02, 0x03, 0x04, 0xff );
     FCML_I32( "or byte ptr [ecx+eax+00000002h],03h", 0x80, 0x4c, 0x01, 0x02, 0x03 );
-    /* 81 /1 iw OR r/m16, imm16 MI Valid Valid r/m16 OR imm16.*/
-    /* 81 /1 id OR r/m32, imm32 MI Valid Valid r/m32 OR imm32.*/
+    /* 81 /1 iw OR r/m16, int16 MI Valid Valid r/m16 OR int16.*/
+    /* 81 /1 id OR r/m32, int32 MI Valid Valid r/m32 OR int32.*/
     FCML_I32( "or ebp,04030201h", 0x81, 0xcd, 0x01, 0x02, 0x03, 0x04 );
     FCML_I32( "or bp,0201h", 0x66, 0x81, 0xcd, 0x01, 0x02 );
     FCML_I64( "or bp,0201h", 0x66, 0x67, 0x81, 0xcd, 0x01, 0x02 );
-    /* REX.W + 81 /1 id OR r/m64, imm32 MI Valid N.E. r/m64 OR imm32 (sign-extended).*/
+    /* REX.W + 81 /1 id OR r/m64, int32 MI Valid N.E. r/m64 OR int32 (sign-extended).*/
     FCML_I64( "or rbp,0000000004030201h", 0x48, 0x81, 0xcd, 0x01, 0x02, 0x03, 0x04 );
     FCML_I64_M( "or rbp,0ffffffffffffffffh", 2, FCML_MI( 0x48, 0x83, 0xcd, 0xff ), FCML_MI( 0x48, 0x81, 0xcd, 0xff, 0xff, 0xff, 0xff ) );
     FCML_I64_M( "or rbp,0ffffffffffffffffh", 2, FCML_MI( 0x67, 0x48, 0x83, 0xcd, 0xff ), FCML_MI( 0x67, 0x48, 0x81, 0xcd, 0xff, 0xff, 0xff, 0xff ) );
     FCML_I64_M( "or rbp,0ffffffffffffffffh", 2, FCML_MI( 0x48, 0x83, 0xcd, 0xff ), FCML_MI( 0x48, 0x81, 0xcd, 0xff, 0xff, 0xff, 0xff ) );
-    /* 83 /1 ib OR r/m16, imm8 MI Valid Valid r/m16 OR imm8 (sign-extended).*/
-    /* 83 /1 ib OR r/m32, imm8 MI Valid Valid r/m32 OR imm8 (sign-extended).*/
+    /* 83 /1 ib OR r/m16, int8 MI Valid Valid r/m16 OR int8 (sign-extended).*/
+    /* 83 /1 ib OR r/m32, int8 MI Valid Valid r/m32 OR int8 (sign-extended).*/
     FCML_I32_M( "lock or dword ptr [esi],00000001h", 2, FCML_MI( 0xF0, 0x83, 0x0e, 0x01 ), FCML_MI( 0xF0, 0x81, 0x0e, 0x01, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "xacquire lock or dword ptr [esi],00000001h", 2, FCML_MI( 0xF2, 0xF0, 0x83, 0x0e, 0x01 ), FCML_MI( 0xF2, 0xF0, 0x81, 0x0e, 0x01, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "xrelease lock or dword ptr [esi],00000001h", 2, FCML_MI( 0xF3, 0xF0, 0x83, 0x0e, 0x01 ), FCML_MI( 0xF3, 0xF0, 0x81, 0x0e, 0x01, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "or word ptr [esi],0001h", 2, FCML_MI( 0x66, 0x83, 0x0e, 0x01 ), FCML_MI( 0x66, 0x81, 0x0e, 0x01, 0x00 ) );
     FCML_I32_M( "or dword ptr [0201h],00000003h", 2, FCML_MI( 0x67, 0x83, 0x0e, 0x01, 0x02, 0x03 ), FCML_MI( 0x67, 0x81, 0x0e, 0x01, 0x02, 0x03, 0x00, 0x00, 0x00 ) );
-    /* REX.W + 83 /1 ib OR r/m64, imm8 MI Valid N.E. r/m64 OR imm8 (sign-extended).*/
+    /* REX.W + 83 /1 ib OR r/m64, int8 MI Valid N.E. r/m64 OR int8 (sign-extended).*/
     FCML_I64_M( "or qword ptr [rdi+0000000004030201h],0000000000000005h", 2, FCML_MI( 0x48, 0x83, 0x8f, 0x01, 0x02, 0x03, 0x04, 0x05 ), FCML_MI( 0x48, 0x81, 0x8f, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00, 0x00, 0x00 ) );
     FCML_I64_M( "or qword ptr [rdi+0000000004030201h],0ffffffffffffffffh", 2, FCML_MI( 0x48, 0x83, 0x8f, 0x01, 0x02, 0x03, 0x04, 0xff ), FCML_MI( 0x48, 0x81, 0x8f, 0x01, 0x02, 0x03, 0x04, 0xff, 0xff, 0xff, 0xff ) );
     /* 08 /r OR r/m8, r8 MR Valid Valid r/m8 OR r8.*/
@@ -134,9 +134,9 @@ void fcml_tf_instruction_ORPS(void) {
 }
 
 void fcml_tf_instruction_OUT(void) {
-    /* E6 ib OUT imm8, AL I Valid Valid Output byte in AL to I/O port address imm8.*/
-    /* E7 ib OUT imm8, AX I Valid Valid Output word in AX to I/O port address imm8.*/
-    /* E7 ib OUT imm8, EAX I Valid Valid Output doubleword in EAX to I/O port address imm8.*/
+    /* E6 ib OUT int8, AL I Valid Valid Output byte in AL to I/O port address int8.*/
+    /* E7 ib OUT int8, AX I Valid Valid Output word in AX to I/O port address int8.*/
+    /* E7 ib OUT int8, EAX I Valid Valid Output doubleword in EAX to I/O port address int8.*/
     FCML_I64( "out 20h,al", 0x66, 0xE6, 0x20 );
     FCML_I32( "out 20h,eax", 0xE7, 0x20 );
     FCML_I32( "out 20h,ax", 0x66, 0xE7, 0x20 );

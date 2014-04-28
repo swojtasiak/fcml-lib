@@ -255,7 +255,7 @@ typedef struct fcml_st_def_instruction_desc {
 
 /* Immediate data.*/
 #define FCML_OP_IMM_BASE											0x01000000
-#define FCML_OP_IMM(encoded_imm_size, encoded_ex_imm_size)			( FCML_OP_IMM_BASE | ( encoded_imm_size ) << 8 | ( encoded_ex_imm_size ) )
+#define FCML_OP_IMM(encoded_size, encoded_ex_size)			( FCML_OP_IMM_BASE | ( encoded_size ) << 8 | ( encoded_ex_size ) )
 #define FCML_OP_IMM_64												( FCML_OP_IMM_BASE | ( 1 << 16 ) | ( FCML_EOS_EOSA ) << 8 | ( FCML_EOS_UNDEFINED ) )
 
 /* Register explicitly set.*/
@@ -268,7 +268,7 @@ typedef struct fcml_st_def_instruction_desc {
 
 /* Relative addressing.*/
 #define FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE							0x04000000
-#define FCML_OP_IMMEDIATE_DIS_RELATIVE( encoded_imm_size )			( FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE | encoded_imm_size )
+#define FCML_OP_IMMEDIATE_DIS_RELATIVE( encoded_size )			( FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE | encoded_size )
 
 /* Far pointers.*/
 #define FCML_OP_FAR_POINTER											0x05000000
@@ -704,8 +704,8 @@ void fcml_fnp_def_free_addr_mode(
 #define FCML_GET_ADDR_MODE(x) 	( ( x ) & 0x3F000000 ) >> 24
 
 typedef struct fcml_sf_def_tma_imm {
-    fcml_uint8_t encoded_imm_size;
-    fcml_uint8_t encoded_ex_imm_size;
+    fcml_uint8_t encoded_size;
+    fcml_uint8_t encoded_ex_size;
     fcml_bool is_64bit_imm_allowed;
 } fcml_sf_def_tma_imm;
 
@@ -721,7 +721,7 @@ typedef struct fcml_sf_def_tma_opcode_reg {
 } fcml_sf_def_tma_opcode_reg;
 
 typedef struct fcml_sf_def_tma_immediate_dis_relative {
-    fcml_uint8_t encoded_imm_size;
+    fcml_uint8_t encoded_size;
 } fcml_sf_def_tma_immediate_dis_relative;
 
 typedef struct fcml_sf_def_tma_explicit_gps_reg_addressing {

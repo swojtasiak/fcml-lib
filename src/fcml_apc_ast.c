@@ -652,13 +652,13 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_cif_converter_context *context, fc
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate( fcml_st_ast_node_value *value, fcml_st_immediate *immediate ) {
+fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate( fcml_st_ast_node_value *value, fcml_st_integer *immediate ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	immediate->is_signed = FCML_FALSE;
 	if( value->type == FCML_EN_ET_FLOAT ) {
 		fcml_uint32_t ieee754float = *((fcml_uint32_t*)&(value->float_value.value));
-		immediate->imm32 = ieee754float;
-		immediate->imm_size = FCML_DS_32;
+		immediate->int32 = ieee754float;
+		immediate->size = FCML_DS_32;
 	} else if( value->type == FCML_EN_ET_INTEGER ) {
 		fcml_uint64_t imm = value->integer_value.value;
 		fcml_bool is_signed = value->integer_value.is_signed;
@@ -667,33 +667,33 @@ fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate( fcml_st_ast_node_va
 			if( ( imm & 0xFFFFFFFF80000000UL ) == 0xFFFFFFFF80000000UL || ( imm & 0xFFFFFFFF00000000UL ) == 0x0000000000000000UL ) {
 				fcml_int32_t s_imm = (fcml_int32_t)imm;
 				if( ( s_imm & 0xFFFFFF80 ) == 0xFFFFFF80 || ( s_imm & 0xFFFFFF00 ) == 0x00000000 ) {
-					immediate->imm8 = (fcml_uint8_t)(fcml_int8_t)s_imm;
-					immediate->imm_size = FCML_DS_8;
+					immediate->int8 = (fcml_uint8_t)(fcml_int8_t)s_imm;
+					immediate->size = FCML_DS_8;
 				} else if( ( s_imm & 0xFFFF8000 ) == 0xFFFF8000 || ( s_imm & 0xFFFF0000 ) == 0x00000000 ) {
-					immediate->imm16 = (fcml_uint16_t)(fcml_int16_t)s_imm;
-					immediate->imm_size = FCML_DS_16;
+					immediate->int16 = (fcml_uint16_t)(fcml_int16_t)s_imm;
+					immediate->size = FCML_DS_16;
 				} else {
-					immediate->imm32 = (fcml_uint32_t)(fcml_int32_t)s_imm;
-					immediate->imm_size = FCML_DS_32;
+					immediate->int32 = (fcml_uint32_t)(fcml_int32_t)s_imm;
+					immediate->size = FCML_DS_32;
 				}
 			} else {
-				immediate->imm64 = imm;
-				immediate->imm_size = FCML_DS_64;
+				immediate->int64 = imm;
+				immediate->size = FCML_DS_64;
 			}
 			immediate->is_signed = FCML_TRUE;
 		} else {
 			if( imm <= FCML_UINT8_MAX ) {
-				immediate->imm8 = (fcml_uint8_t)imm;
-				immediate->imm_size = FCML_DS_8;
+				immediate->int8 = (fcml_uint8_t)imm;
+				immediate->size = FCML_DS_8;
 			} else if( imm <= FCML_UINT16_MAX ) {
-				immediate->imm16 = (fcml_uint16_t)imm;
-				immediate->imm_size = FCML_DS_16;
+				immediate->int16 = (fcml_uint16_t)imm;
+				immediate->size = FCML_DS_16;
 			} else if( imm <= FCML_UINT32_MAX ) {
-				immediate->imm32 = (fcml_uint32_t)imm;
-				immediate->imm_size = FCML_DS_32;
+				immediate->int32 = (fcml_uint32_t)imm;
+				immediate->size = FCML_DS_32;
 			} else {
-				immediate->imm64 = imm;
-				immediate->imm_size = FCML_DS_64;
+				immediate->int64 = imm;
+				immediate->size = FCML_DS_64;
 			}
 		}
 

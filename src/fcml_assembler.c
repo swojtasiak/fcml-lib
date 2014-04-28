@@ -58,13 +58,28 @@ void fcml_ifn_asm_free_instruction_chain( fcml_st_assembled_instruction *chain )
 
 }
 
+void LIB_CALL fcml_fn_assembler_instruction_detach( fcml_st_assembled_instruction **chain, fcml_st_assembled_instruction *instruction ) {
+	if( !chain || !instruction ) {
+		return;
+	}
+	fcml_st_assembled_instruction **current = chain;
+	fcml_bool found = FCML_FALSE;
+	do {
+		if( *current == instruction ) {
+			*current = instruction->next;
+			found = FCML_TRUE;
+		}
+		current = &((*current)->next);
+	} while( !found && *current );
+}
+
 /* Free's assembled instruction instance. */
 void LIB_CALL fcml_fn_assembler_instruction_free( fcml_st_assembled_instruction *instruction ) {
 	if( instruction ) {
 		if( instruction->code ) {
 			fcml_fn_env_memory_free( instruction->code );
 		}
-		fcml_fn_ceh_free_errors_only( &(instruction->errors ) );
+		fcml_fn_ceh_free_errors_only( &(instruction->warnings ) );
 		fcml_fn_env_memory_free( instruction );
 	}
 }

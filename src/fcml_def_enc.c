@@ -21,8 +21,8 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_is( fcml_uint32_t encoded_addr_mode
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_imm( fcml_uint32_t encoded_addr_mode ) {
 	fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm*)fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_imm));
 	if( imm_args ) {
-		imm_args->encoded_imm_size = ( encoded_addr_mode & 0x0000FF00) >> 8;
-		imm_args->encoded_ex_imm_size = encoded_addr_mode & 0x000000FF;
+		imm_args->encoded_size = ( encoded_addr_mode & 0x0000FF00) >> 8;
+		imm_args->encoded_ex_size = encoded_addr_mode & 0x000000FF;
 		imm_args->is_64bit_imm_allowed = ( encoded_addr_mode & 0x00FF0000 ) >> 16;
 	}
 	return imm_args;
@@ -50,7 +50,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_opcode_reg( fcml_uint32_t encoded_a
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_immediate_dis_relative( fcml_uint32_t encoded_addr_mode ) {
 	fcml_sf_def_tma_immediate_dis_relative *immediate_dis_relative_args = (fcml_sf_def_tma_immediate_dis_relative*)fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_immediate_dis_relative));
 	if( immediate_dis_relative_args ) {
-		immediate_dis_relative_args->encoded_imm_size = encoded_addr_mode & 0x000000FF;
+		immediate_dis_relative_args->encoded_size = encoded_addr_mode & 0x000000FF;
 	}
 	return immediate_dis_relative_args;
 }

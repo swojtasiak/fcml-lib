@@ -233,7 +233,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
-	modrm.address.effective_address.displacement.dis16 = (fcml_int16_t)0xF2F1;
+	modrm.address.effective_address.displacement.int16 = (fcml_int16_t)0xF2F1;
 	modrm.address.address_form = FCML_AF_OFFSET;
 
 	fcml_st_modrm_encoder_context context;
@@ -255,7 +255,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
     fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 
     modrm.address.effective_address.displacement.size = FCML_DS_8;
-    modrm.address.effective_address.displacement.dis8 = (fcml_int8_t)0xF1;
+    modrm.address.effective_address.displacement.int8 = (fcml_int8_t)0xF1;
     modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
     modrm.address.address_form = FCML_AF_OFFSET;
 
@@ -275,7 +275,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
     fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 
     modrm.address.effective_address.displacement.size = FCML_DS_32;
-    modrm.address.effective_address.displacement.dis32 = 0xFFFFFFF1;
+    modrm.address.effective_address.displacement.int32 = 0xFFFFFFF1;
     modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
     modrm.address.address_form = FCML_AF_OFFSET;
 
@@ -295,7 +295,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
     fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 
     modrm.address.effective_address.displacement.size = FCML_DS_64;
-    modrm.address.effective_address.displacement.dis64 = 0xFFFFFFFFFFFFFFF1ULL;
+    modrm.address.effective_address.displacement.int64 = 0xFFFFFFFFFFFFFFF1ULL;
     modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
     modrm.address.address_form = FCML_AF_OFFSET;
 
@@ -315,7 +315,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
     fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 
     modrm.address.effective_address.displacement.size = FCML_DS_64;
-    modrm.address.effective_address.displacement.dis64 = 0x1FFFFFFFFFFFFFF1ULL;
+    modrm.address.effective_address.displacement.int64 = 0x1FFFFFFFFFFFFFF1ULL;
     modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
     modrm.address.address_form = FCML_AF_OFFSET;
 
@@ -332,7 +332,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
     fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 
     modrm.address.effective_address.displacement.size = FCML_DS_64;
-    modrm.address.effective_address.displacement.dis64 = 0x1FFFFFF1ULL;
+    modrm.address.effective_address.displacement.int64 = 0x1FFFFFF1ULL;
     modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
     modrm.address.address_form = FCML_AF_OFFSET;
 
@@ -352,7 +352,7 @@ void fcml_tf_modrm_encoder_test_13(void) {
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 
 	modrm.address.effective_address.displacement.size = FCML_DS_8;
-	modrm.address.effective_address.displacement.dis8 = (fcml_int8_t)0xF1;
+	modrm.address.effective_address.displacement.int8 = (fcml_int8_t)0xF1;
 	modrm.address.effective_address.displacement.is_signed = FCML_FALSE;
 	modrm.address.address_form = FCML_AF_OFFSET;
 
@@ -723,7 +723,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_9(void) {
 	modrm.address.effective_address.index.size = FCML_DS_16;
 	modrm.address.effective_address.index.reg = FCML_REG_DI;
 	modrm.address.effective_address.displacement.size = FCML_DS_8;
-	modrm.address.effective_address.displacement.dis8 = 0x12;
+	modrm.address.effective_address.displacement.int8 = 0x12;
 	modrm.address.effective_address.displacement.is_signed = FCML_FALSE;
 	modrm.address.address_form = FCML_AF_COMBINED;
 
@@ -740,7 +740,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_9(void) {
 	STF_ASSERT_EQUAL( encoded_modrm.modrm, 0x41 );
 
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
-	modrm.address.effective_address.displacement.dis16 = 0x12;
+	modrm.address.effective_address.displacement.int16 = 0x12;
 
 	error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
 
@@ -764,7 +764,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_10(void) {
 	modrm.address.effective_address.base.size = FCML_DS_16;
 	modrm.address.effective_address.base.reg = FCML_REG_BP;
 	modrm.address.effective_address.displacement.size = FCML_DS_8;
-	modrm.address.effective_address.displacement.dis8 = (fcml_int8_t)0xFF;
+	modrm.address.effective_address.displacement.int8 = (fcml_int8_t)0xFF;
 	modrm.address.address_form = FCML_AF_COMBINED;
 
 	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
@@ -795,7 +795,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_11(void) {
 	modrm.address.effective_address.base.size = FCML_DS_16;
 	modrm.address.effective_address.base.reg = FCML_REG_SI;
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
-	modrm.address.effective_address.displacement.dis16 = 0x0102;
+	modrm.address.effective_address.displacement.int16 = 0x0102;
 	modrm.address.address_form = FCML_AF_COMBINED;
 
 	fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
@@ -827,7 +827,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_12(void) {
 	modrm.address.effective_address.base.size = FCML_DS_16;
 	modrm.address.effective_address.base.reg = FCML_REG_BX;
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
-	modrm.address.effective_address.displacement.dis16 = (fcml_int16_t)0xFFF1;
+	modrm.address.effective_address.displacement.int16 = (fcml_int16_t)0xFFF1;
 	modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
 	modrm.address.address_form = FCML_AF_COMBINED;
 
@@ -843,7 +843,7 @@ void fcml_tf_modrm_encoder_16_bit_encoding_12(void) {
 	STF_ASSERT_EQUAL( encoded_modrm.sib.value, 0 );
 	STF_ASSERT_EQUAL( encoded_modrm.modrm, 0x47 );
 
-	modrm.address.effective_address.displacement.dis16 = 0x1FF1;
+	modrm.address.effective_address.displacement.int16 = 0x1FF1;
 
 	error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
 
@@ -1028,7 +1028,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_6(void) {
 	context.effective_address_size = FCML_DS_32;
 
 	modrm.address.effective_address.displacement.size = FCML_DS_32;
-	modrm.address.effective_address.displacement.dis32 = 0x01020304;
+	modrm.address.effective_address.displacement.int32 = 0x01020304;
 	modrm.address.address_form = FCML_AF_OFFSET;
 	modrm.reg_opcode = FCML_REG_ECX;
 
@@ -1049,7 +1049,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_6(void) {
 	STF_ASSERT_EQUAL( context.is_sib_alternative, FCML_TRUE );
 
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
-	modrm.address.effective_address.displacement.dis16 = 0x0102;
+	modrm.address.effective_address.displacement.int16 = 0x0102;
 	modrm.reg_opcode = FCML_REG_ECX;
 
 	error = fcml_fn_modrm_encode( &context, &modrm, &encoded_modrm );
@@ -1069,7 +1069,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_6(void) {
 	STF_ASSERT_EQUAL( context.is_sib_alternative, FCML_TRUE );
 
 	modrm.address.effective_address.displacement.size = FCML_DS_8;
-	modrm.address.effective_address.displacement.dis8 = 0x01;
+	modrm.address.effective_address.displacement.int8 = 0x01;
 	modrm.address.address_form = FCML_AF_OFFSET;
 	modrm.reg_opcode = FCML_REG_ECX;
 
@@ -1139,7 +1139,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_8(void) {
 	modrm.address.effective_address.base.reg = FCML_REG_EDX;
 	modrm.address.effective_address.base.size = FCML_DS_32;
 	modrm.address.effective_address.displacement.size = FCML_DS_32;
-	modrm.address.effective_address.displacement.dis32 = 0x01020304;
+	modrm.address.effective_address.displacement.int32 = 0x01020304;
 	modrm.address.address_form = FCML_AF_COMBINED;
 	modrm.reg_opcode = FCML_REG_EBP;
 
@@ -1162,7 +1162,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_8(void) {
 	modrm.address.effective_address.base.reg = FCML_REG_EDX;
 	modrm.address.effective_address.base.size = FCML_DS_32;
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
-	modrm.address.effective_address.displacement.dis16 = 0x0102;
+	modrm.address.effective_address.displacement.int16 = 0x0102;
 	modrm.address.address_form = FCML_AF_COMBINED;
 	modrm.reg_opcode = FCML_REG_EBP;
 
@@ -1185,7 +1185,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_8(void) {
 	modrm.address.effective_address.base.reg = FCML_REG_EDX;
 	modrm.address.effective_address.base.size = FCML_DS_32;
 	modrm.address.effective_address.displacement.size = FCML_DS_8;
-	modrm.address.effective_address.displacement.dis8 = 0x01;
+	modrm.address.effective_address.displacement.int8 = 0x01;
 	modrm.address.address_form = FCML_AF_COMBINED;
 	modrm.reg_opcode = FCML_REG_EBP;
 
@@ -1205,7 +1205,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_8(void) {
     modrm.address.effective_address.base.reg = FCML_REG_EDX;
     modrm.address.effective_address.base.size = FCML_DS_32;
     modrm.address.effective_address.displacement.size = FCML_DS_32;
-    modrm.address.effective_address.displacement.dis32 = 0x01;
+    modrm.address.effective_address.displacement.int32 = 0x01;
     modrm.address.address_form = FCML_AF_COMBINED;
     modrm.reg_opcode = FCML_REG_EBP;
 
@@ -1262,7 +1262,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_10(void) {
 	context.effective_address_size = FCML_DS_32;
 
 	modrm.address.effective_address.displacement.size = FCML_DS_8;
-	modrm.address.effective_address.displacement.dis32 = 0x01;
+	modrm.address.effective_address.displacement.int32 = 0x01;
 	modrm.address.address_form = FCML_AF_COMBINED;
 	modrm.reg.is_not_null = FCML_TRUE;
 	modrm.reg.value = FCML_REG_EBP;
@@ -1501,7 +1501,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_6(void) {
 	context.effective_address_size = FCML_DS_32;
 
 	modrm.address.effective_address.displacement.size = FCML_DS_8;
-	modrm.address.effective_address.displacement.dis8 = 0x50;
+	modrm.address.effective_address.displacement.int8 = 0x50;
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_EBP;
 	modrm.address.effective_address.base.size = FCML_DS_32;
@@ -1537,7 +1537,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_7(void) {
 	context.effective_address_size = FCML_DS_32;
 
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
-	modrm.address.effective_address.displacement.dis16 = 0x5051;
+	modrm.address.effective_address.displacement.int16 = 0x5051;
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_EBP;
 	modrm.address.effective_address.base.size = FCML_DS_32;
@@ -1576,7 +1576,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_8(void) {
 	context.effective_address_size = FCML_DS_32;
 
 	modrm.address.effective_address.displacement.size = FCML_DS_32;
-	modrm.address.effective_address.displacement.dis32 = 0x50515253;
+	modrm.address.effective_address.displacement.int32 = 0x50515253;
 	modrm.address.effective_address.base.type = FCML_REG_GPR;
 	modrm.address.effective_address.base.reg = FCML_REG_EBP;
 	modrm.address.effective_address.base.size = FCML_DS_32;
@@ -1621,7 +1621,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_9(void) {
 	modrm.address.effective_address.base.reg = FCML_REG_EDX;
 	modrm.address.effective_address.base.size = FCML_DS_32;
 	modrm.address.effective_address.displacement.size = FCML_DS_32;
-	modrm.address.effective_address.displacement.dis32 = 0x01020304;
+	modrm.address.effective_address.displacement.int32 = 0x01020304;
 	modrm.address.address_form = FCML_AF_COMBINED;
 	modrm.reg_opcode = FCML_REG_EBP;
 
@@ -1644,7 +1644,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_9(void) {
 	modrm.address.effective_address.base.reg = FCML_REG_EDX;
 	modrm.address.effective_address.base.size = FCML_DS_32;
 	modrm.address.effective_address.displacement.size = FCML_DS_16;
-	modrm.address.effective_address.displacement.dis16 = 0x0102;
+	modrm.address.effective_address.displacement.int16 = 0x0102;
 	modrm.address.address_form = FCML_AF_COMBINED;
 	modrm.reg_opcode = FCML_REG_EBP;
 
@@ -1667,7 +1667,7 @@ void fcml_tf_modrm_sib_encoder_3264_bit_encoding_9(void) {
 	modrm.address.effective_address.base.reg = FCML_REG_EDX;
 	modrm.address.effective_address.base.size = FCML_DS_32;
 	modrm.address.effective_address.displacement.size = FCML_DS_8;
-	modrm.address.effective_address.displacement.dis8 = 0x01;
+	modrm.address.effective_address.displacement.int8 = 0x01;
 	modrm.address.address_form = FCML_AF_COMBINED;
 	modrm.reg_opcode = FCML_REG_EBP;
 
@@ -1989,7 +1989,7 @@ void fcml_tf_modrm_rip_encoder_3264_bit_encoding_5(void) {
 	modrm.address.effective_address.base.size = FCML_DS_64;
 	modrm.address.effective_address.scale_factor = 0;
 	modrm.address.effective_address.displacement.size = FCML_DS_32;
-	modrm.address.effective_address.displacement.dis32 = 0x100;
+	modrm.address.effective_address.displacement.int32 = 0x100;
 	modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
 	modrm.address.address_form = FCML_AF_COMBINED;
 

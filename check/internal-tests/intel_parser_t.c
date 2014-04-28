@@ -38,9 +38,9 @@ void fcml_tf_parser_int_parse_test1(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 80-90", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_TRUE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)-10 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)-10 );
 	} else {
         STF_FAIL();
     }
@@ -53,9 +53,9 @@ void fcml_tf_parser_int_parse_test2(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, 0xFF );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, 0xFF );
 	} else {
         STF_FAIL();
     }
@@ -68,9 +68,9 @@ void fcml_tf_parser_int_parse_test3(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_16 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm16, (fcml_uint16_t)0x0FFF );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int16, (fcml_uint16_t)0x0FFF );
 	} else {
         STF_FAIL();
     }
@@ -83,9 +83,9 @@ void fcml_tf_parser_int_parse_test4(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_16 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm16, (fcml_uint16_t)0xFFFF );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int16, (fcml_uint16_t)0xFFFF );
 	} else {
         STF_FAIL();
     }
@@ -98,9 +98,9 @@ void fcml_tf_parser_int_parse_test5(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_32 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm32, (fcml_uint32_t)0x000FFFFF );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int32, (fcml_uint32_t)0x000FFFFF );
 	} else {
         STF_FAIL();
     }
@@ -113,9 +113,9 @@ void fcml_tf_parser_int_parse_test6(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_32 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm32, (fcml_uint32_t)0xFFFFFFFF );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int32, (fcml_uint32_t)0xFFFFFFFF );
 	} else {
 	    STF_FAIL();
     }
@@ -128,9 +128,9 @@ void fcml_tf_parser_int_parse_test7(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_64 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm64, 0xFFFFFFFFFFFFFFFFUL );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int64, 0xFFFFFFFFFFFFFFFFUL );
 	} else {
         STF_FAIL();
     }
@@ -143,9 +143,9 @@ void fcml_tf_parser_int_parse_test8(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov -0xFFFFFFFFFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)1 );
 	} else {
         STF_FAIL();
     }
@@ -158,9 +158,9 @@ void fcml_tf_parser_int_parse_test9(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov -0xFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_16 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_TRUE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm16, (fcml_uint16_t)(fcml_int16_t)-255 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int16, (fcml_uint16_t)(fcml_int16_t)-255 );
 	} else {
         STF_FAIL();
     }
@@ -173,9 +173,9 @@ void fcml_tf_parser_int_parse_test10(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 1+2", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)(fcml_int8_t)3 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)(fcml_int8_t)3 );
 	} else {
         STF_FAIL();
     }
@@ -188,9 +188,9 @@ void fcml_tf_parser_int_parse_test11(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 1+2*8/(15-13)-1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)8 );
 	} else {
         STF_FAIL();
     }
@@ -203,9 +203,9 @@ void fcml_tf_parser_int_parse_test12(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 65535", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_16 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm16, (fcml_uint16_t)0xFFFF );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int16, (fcml_uint16_t)0xFFFF );
 	} else {
         STF_FAIL();
     }
@@ -218,9 +218,9 @@ void fcml_tf_parser_int_parse_test13(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov -32768", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_16 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_TRUE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm16, (fcml_uint16_t)-32768 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int16, (fcml_uint16_t)-32768 );
 	} else {
         STF_FAIL();
     }
@@ -232,9 +232,9 @@ void fcml_tf_parser_int_parse_test14(void) {
 	fcml_fn_parser_result_prepare( &result );
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov (-2147483647 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-	STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
+	STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_32 );
 	STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_TRUE );
-	STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm32, (fcml_uint32_t)(-2147483647 - 1) );
+	STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int32, (fcml_uint32_t)(-2147483647 - 1) );
 	fcml_fn_parser_result_free( &result );
 }
 
@@ -244,9 +244,9 @@ void fcml_tf_parser_int_parse_test15(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov (-9223372036854775807 - 1)", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_64 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_TRUE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm64, (fcml_uint64_t)(-9223372036854775807LL - 1) );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int64, (fcml_uint64_t)(-9223372036854775807LL - 1) );
 	} else {
         STF_FAIL();
     }
@@ -259,9 +259,9 @@ void fcml_tf_parser_int_parse_test16(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 18446744073709551615", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_64 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm64, (fcml_uint64_t)18446744073709551615ULL );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int64, (fcml_uint64_t)18446744073709551615ULL );
 	} else {
         STF_FAIL();
     }
@@ -274,9 +274,9 @@ void fcml_tf_parser_int_parse_test17(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 5675", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_16 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_16 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm16, (fcml_uint16_t)5675 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int16, (fcml_uint16_t)5675 );
 	} else {
         STF_FAIL();
     }
@@ -289,9 +289,9 @@ void fcml_tf_parser_int_parse_test18(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 2147483647", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_32 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm32, (fcml_uint32_t)2147483647 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int32, (fcml_uint32_t)2147483647 );
 	} else {
         STF_FAIL();
     }
@@ -304,9 +304,9 @@ void fcml_tf_parser_int_parse_test19(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 4294967295", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_32 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm32, (fcml_uint32_t)4294967295U );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int32, (fcml_uint32_t)4294967295U );
 	} else {
         STF_FAIL();
     }
@@ -319,9 +319,9 @@ void fcml_tf_parser_int_parse_test20(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 4294967296", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_64 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm64, (fcml_uint64_t)4294967296ULL );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int64, (fcml_uint64_t)4294967296ULL );
 	} else {
         STF_FAIL();
     }
@@ -334,9 +334,9 @@ void fcml_tf_parser_int_parse_test21(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov -0xFFFFFFFF", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_64 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_64 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_TRUE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm64, (fcml_uint64_t)-4294967295LL );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int64, (fcml_uint64_t)-4294967295LL );
 	} else {
         STF_FAIL();
     }
@@ -349,9 +349,9 @@ void fcml_tf_parser_int_parse_test22(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 255", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, 0xFF );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, 0xFF );
 	} else {
         STF_FAIL();
     }
@@ -364,9 +364,9 @@ void fcml_tf_parser_int_parse_test23(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, 1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, 1 );
 	} else {
         STF_FAIL();
     }
@@ -443,7 +443,7 @@ void fcml_tf_parser_int_parse_test28(void) {
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.base.type, FCML_REG_GPR );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.base.reg, FCML_REG_EAX );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.displacement.size, FCML_DS_64 );
-        STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.displacement.dis64, 0xFFFFFFFFFFFFFFFFULL );
+        STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.displacement.int64, 0xFFFFFFFFFFFFFFFFULL );
     } else {
         STF_FAIL();
     }
@@ -461,7 +461,7 @@ void fcml_tf_parser_int_parse_test29(void) {
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.base.type, FCML_REG_GPR );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.base.reg, FCML_REG_EAX );
         STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.displacement.size, FCML_DS_64 );
-        STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.displacement.dis64, 0xFFFFFFFFFFFFFFFFULL );
+        STF_ASSERT_EQUAL( result.instruction->operands[0].address.effective_address.displacement.int64, 0xFFFFFFFFFFFFFFFFULL );
     } else {
         STF_FAIL();
     }
@@ -474,9 +474,9 @@ void fcml_tf_parser_int_parse_test30(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "lock mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->prefixes, FCML_PREFIX_LOCK );
 	} else {
         STF_FAIL();
@@ -491,9 +491,9 @@ void fcml_tf_parser_int_parse_test31(void) {
 	STF_ASSERT_EQUAL( fcml_fn_parse( &internal_intel_context, "lock repne repe mov 1", &result ), FCML_CEH_GEC_NO_ERROR );
 	if( result.instruction != NULL ) {
 		STF_ASSERT_EQUAL( result.instruction->operands[0].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm_size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.size, FCML_DS_8 );
 		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.is_signed, FCML_FALSE );
-		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.imm8, (fcml_uint8_t)1 );
+		STF_ASSERT_EQUAL( result.instruction->operands[0].immediate.int8, (fcml_uint8_t)1 );
 		STF_ASSERT_EQUAL( result.instruction->prefixes, FCML_PREFIX_LOCK | FCML_PREFIX_REPE | FCML_PREFIX_REPNE );
 	} else {
         STF_FAIL();
@@ -644,8 +644,8 @@ void fcml_tf_parser_int_parse_test_symbols_5(void) {
 	if( result.instruction ) {
 		fcml_st_instruction *instruction = result.instruction;
 		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_8 );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm8, 0 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.int8, 0 );
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_TRUE );
 	}
 
@@ -671,8 +671,8 @@ void fcml_tf_parser_int_parse_test_symbols_6(void) {
 	if( result.instruction ) {
 		fcml_st_instruction *instruction = result.instruction;
 		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_32 );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm32, 0x401000 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.int32, 0x401000 );
 		// TODO: Why always TRUE if expression evaluates to signed value only if the result of mathematical formula is negative.
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_TRUE );
 	}
@@ -709,8 +709,8 @@ void fcml_tf_parser_int_parse_test_symbols_7(void) {
 	if( result.instruction ) {
 		fcml_st_instruction *instruction = result.instruction;
 		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm_size, FCML_DS_32 );
-		STF_ASSERT_EQUAL( instruction->operands[1].immediate.imm32, 0x401000 + 25 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.size, FCML_DS_32 );
+		STF_ASSERT_EQUAL( instruction->operands[1].immediate.int32, 0x401000 + 25 );
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_FALSE );
 	}
 

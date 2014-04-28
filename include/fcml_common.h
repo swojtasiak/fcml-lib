@@ -1,6 +1,26 @@
+/*
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 /** @file fcml_common.h
- * A brief file description.
- * A more elaborated file description.
+ * Definitions of common structures used by FCML components.
+ * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
+ * @license This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_INT_COMMON_H_
@@ -354,21 +374,21 @@ typedef struct fcml_st_register {
  * Following enumeration defines all supported types.
  */
 typedef enum fcml_en_condition_type {
-    /* 0 Overflow*/
+    /** 0 Overflow*/
     FCML_CONDITION_O = 0,
-    /* 1 Below*/
+    /** 1 Below*/
     FCML_CONDITION_B,
-    /* 2 Equal*/
+    /** 2 Equal*/
     FCML_CONDITION_E,
-    /* 3 Below or equal*/
+    /** 3 Below or equal*/
     FCML_CONDITION_BE,
-    /* 4 Sign*/
+    /** 4 Sign*/
     FCML_CONDITION_S,
-    /* 5 Parity*/
+    /** 5 Parity*/
     FCML_CONDITION_P,
-    /* 6 Less than*/
+    /** 6 Less than*/
     FCML_CONDITION_L,
-    /* 7 Less than or equal to*/
+    /** 7 Less than or equal to*/
     FCML_CONDITION_LE
 } fcml_en_condition_type;
 
@@ -429,24 +449,6 @@ typedef enum fcml_en_access_mode {
 } fcml_en_access_mode;
 
 /**
- * Representation of immediate operands.
- */
-typedef struct fcml_st_immediate {
-	/** Size of the integer value. @see DATA_SIZE_GROUP*/
-	fcml_data_size imm_size;
-	/** True if value should be treated as signed integer. */
-	fcml_bool is_signed;
-	/** Holder for 8-bit integer value. */
-	fcml_uint8_t imm8;
-	/** Holder for 16-bit integer value. */
-	fcml_uint16_t imm16;
-	/** Holder for 32-bit integer value. */
-	fcml_uint32_t imm32;
-	/** Holder for 64-bit integer value. */
-	fcml_uint64_t imm64;
-} fcml_st_immediate;
-
-/**
  * Representation of far pointer operand.
  */
 typedef struct fcml_st_far_pointer {
@@ -454,96 +456,143 @@ typedef struct fcml_st_far_pointer {
     fcml_uint16_t segment;
     /** Size of the offset. */
     fcml_data_size offset_size;
-    /* 16-bit offset. */
+    /** 16-bit offset. */
 	fcml_int16_t offset16;
-	/* 32-bit offset. */
+	/** 32-bit offset. */
 	fcml_int32_t offset32;
 } fcml_st_far_pointer;
-
-// TODO: Zastanowic sie czy nie zastapic immediate value i displacement jednym typem, chyba tylko offset sie rozni. Monza by wtedy zrobic je
-// domysklnie ze znakiem.
-typedef struct fcml_st_displacement {
-	fcml_data_size size;
-	// TODO: Czy to jest gdzies wykorzystwyane? Niby dispalcement jest zawsze ze znakiem.
-	fcml_bool is_signed;
-	/* Data fields. */
-	fcml_int8_t dis8;
-	fcml_int16_t dis16;
-	fcml_int32_t dis32;
-	fcml_int64_t dis64;
-} fcml_st_displacement;
 
 /* *******************************************/
 /* *  Memory addressing using Mod/RM field  **/
 /* *******************************************/
 
+/**
+ * Addressing form.
+ * Distinguish between two types of addressing forms: effective addressing and explicit absolute offset.
+ */
 typedef enum fcml_en_address_form {
-	/* Default value set if memory addressing hasn't been configured.*/
+	/** Default value set if memory addressing hasn't been configured. */
 	FCML_AF_UNDEFINED,
-    /* Only displacement value interpreted but it's assembler who decides*/
-    /* what addressing should be used absolute or relative.*/
+    /** Absolute offset (address). */
     FCML_AF_OFFSET,
-    /* Effective address combined from more address components.*/
+    /** Effective address combined from address components like base register, index registers, factor, displacement etc... */
     FCML_AF_COMBINED
 } fcml_en_effective_address_form;
 
+/**
+ * Absolute offset.
+ */
 typedef struct fcml_st_offset {
+	/** Offset size 16,32 or 64 bits. */
 	fcml_data_size size;
+	/** True if offset should be treated as signed value. */
 	fcml_bool is_signed;
-	/* Data fields. */
+	/** Place for 16-bit absolute offset. */
 	fcml_int16_t off16;
+	/** Place for 32-bit absolute offset. */
 	fcml_int32_t off32;
+	/** Place for 64-bit absolute offset. */
 	fcml_int64_t off64;
 } fcml_st_offset;
 
+/**
+ * Effective address.
+ */
 typedef struct fcml_st_effective_address {
+	/** GPR base register. @see fcml_st_register*/
     fcml_st_register base;
+    /** GPR index register. @see fcml_st_register*/
     fcml_st_register index;
+    /** Scale factor 1,2,4 or 8. */
     fcml_uint8_t scale_factor;
-    fcml_st_displacement displacement;
+    /** Displacement value. @see fcml_st_integer*/
+    fcml_st_integer displacement;
 } fcml_st_effective_address;
 
+/**
+ * Describes segment register.
+ */
 typedef struct fcml_st_segment_selector {
+	/** Used segment register. @see fcml_st_register*/
 	fcml_st_register segment_selector;
+	/** Set to true if given segment register is a default one in given context. This value is set by disassembler. */
 	fcml_bool is_default_reg;
 } fcml_st_segment_selector;
 
+/**
+ * Generic memory addressing operator.
+ */
 typedef struct fcml_st_address {
-	/* Size of data accessed in memory.*/
+	/** Size of data accessed in memory.*/
 	fcml_data_size size_operator;
-    /* Memory addressing format ABSOLUTE/RELATIVE etc.*/
+    /** Memory addressing format: absolute offset/effective address. @see fcml_en_effective_address_form*/
     fcml_en_effective_address_form address_form;
-    /* Segment register.*/
+    /** Segment register.*/
     fcml_st_segment_selector segment_selector;
-    /* Memory address for FCML_AF_COMBINED form.*/
+    /** Memory address for FCML_AF_COMBINED form.*/
     fcml_st_effective_address effective_address;
-    /* Memory address for FCML_AF_ABSOLUTE and FCML_AF_RELATIVE form.*/
+    /** Memory address for FCML_AF_OFFSET form.*/
     fcml_st_offset offset;
 } fcml_st_address;
 
+/**
+ * Supported  operand types.
+ */
 typedef enum fcml_en_operand_type {
+	/** Operand not used. */
 	FCML_EOT_NONE,
+	/** Immediate integer value. */
     FCML_EOT_IMMEDIATE,
+    /** Direct far pointer. */
     FCML_EOT_FAR_POINTER,
+    /** Memory address. */
     FCML_EOT_ADDRESS,
+    /** Processor register. */
     FCML_EOT_REGISTER
 } fcml_en_operand_type;
 
+/**
+ * Operand hints.
+ * Hints dedicated for instruction operands.
+ */
 typedef enum fcml_en_operand_hints {
+	/** SIMD operand. All operands which uses SIMD registers (mmx, xmm, ymm) have this flag set. It is for instance
+	 * used by Intel syntax renderer for data size operators (mmword ptr, xmmword ptr, ymmword ptr).
+	 */
     FCML_OP_HINT_MULTIMEDIA_INSTRUCTION = 0x0001,
+    /** Relative address. Flags set for all branches which use jumps
+     * calculated by displacement relative to the IP of the next instructions.
+     */
     FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS = 0x0002,
+    /** Pseudo opcode. Hint set for last operand (Intel syntax) which contains comparison predicate of the following instructions:
+     * CMPSD, VCMPSD, CMPSS, VCMPSS, VPCOMB, VPCOMW, VPCOMD, VPCOMQ, VPCOMUB, VPCOMUW, VPCOMUD, VPCOMUQ.
+     */
     FCML_OP_HINT_PSEUDO_OPCODE = 0x0004,
+    /** Offset should be encoded as absolute address.
+	 */
     FCML_OP_HINT_ABSOLUTE_ADDRESSING = 0x0008,
+    /** Offset should be encoded as relative address.
+	 */
     FCML_OP_HINT_RELATIVE_ADDRESSING = 0x0010,
+    /** Encode ModR/M with optional SIB byte if possible. */
     FCML_OP_HINT_SIB_ENCODING = 0x0020
 } fcml_en_operand_hints;
 
+/** Instruction operand.
+ * Structure represents one instruction operand.
+ */
 typedef struct fcml_st_operand {
+	/** Operand type */
     fcml_en_operand_type type;
+    /** Optional operand level hints. */
     fcml_hints hints;
-	fcml_st_immediate immediate;
+    /** Immediate value operand. */
+	fcml_st_integer immediate;
+	/** Far pointer operand. */
 	fcml_st_far_pointer far_pointer;
+	/** Effective address or absolute offset. */
 	fcml_st_address address;
+	/** Register operand. */
 	fcml_st_register reg;
 } fcml_st_operand;
 
@@ -593,8 +642,13 @@ typedef struct fcml_st_instruction {
  * Instruction definition.
  *********************************/
 
+/**
+ * An encoded instruction.
+ */
 typedef struct fcml_st_instruction_code {
+	/** Pointer to the instruction code. */
     fcml_uint8_t *code;
+    /** Instruction code length. */
     fcml_usize code_length;
 } fcml_st_instruction_code;
 

@@ -87,9 +87,9 @@ typedef struct fcml_ist_asm_addr_mode_desc_details {
 
 typedef union fcml_ist_asm_part_processor_cache {
 	/* Cached immediate value. It's for example used by IMM acceptor to pass converted value to encoder.*/
-	fcml_st_immediate imm16;
-	fcml_st_immediate imm32;
-	fcml_st_immediate imm64;
+	fcml_st_integer int16;
+	fcml_st_integer int32;
+	fcml_st_integer int64;
 	fcml_uint8_t is5_m2z;
 } fcml_ist_asm_part_processor_cache;
 
@@ -761,9 +761,9 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
 		fcml_flags flags = 0;
 
 		fcml_sf_def_tma_imm *args = (fcml_sf_def_tma_imm*)addr_mode->addr_mode_args;
-		fcml_uint8_t imm_size = args->encoded_imm_size;
-		fcml_uint8_t imm_size_ex = args->encoded_ex_imm_size;
-		fcml_st_immediate *immediate = &(operand_def->immediate);
+		fcml_uint8_t size = args->encoded_size;
+		fcml_uint8_t size_ex = args->encoded_ex_size;
+		fcml_st_integer *immediate = &(operand_def->immediate);
 		fcml_en_operating_mode op_mode = context->assembler_context->entry_point.op_mode;
 		fcml_bool is_convertable = FCML_FALSE;
 
@@ -778,9 +778,9 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
 
             /* Not all EOSA values are available for every addressing mode. Additional flags can enable or disable some of them.*/
 
-            if( imm_size != FCML_EOS_EOSA && imm_size_ex != FCML_EOS_EOSA ) {
-                is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_GET_OS( imm_size ) * 8, 0, NULL );
-            } else if( imm_size == FCML_EOS_EOSA && imm_size_ex == FCML_EOS_EOSA ) {
+            if( size != FCML_EOS_EOSA && size_ex != FCML_EOS_EOSA ) {
+                is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( size_ex ) * 8, FCML_GET_OS( size ) * 8, 0, NULL );
+            } else if( size == FCML_EOS_EOSA && size_ex == FCML_EOS_EOSA ) {
                 /* Destination size calculated by EOSA.*/
                 if( osa_flags & FCML_EN_ASF_16 )
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags );
@@ -789,22 +789,22 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm( fcml_ist_asm_encoding_context 
                 if( ( osa_flags & FCML_EN_ASF_64 ) && op_mode == FCML_AF_64_BIT ) {
                     is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, ( args->is_64bit_imm_allowed ) ? FCML_DS_64 : FCML_DS_32, FCML_EN_ASF_64, &flags );
                 }
-            } else if( imm_size == FCML_EOS_EOSA ) {
+            } else if( size == FCML_EOS_EOSA ) {
                 if( osa_flags & FCML_EN_ASF_16 )
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_16, FCML_EN_ASF_16, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( size_ex ) * 8, FCML_DS_16, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, FCML_DS_32, FCML_EN_ASF_32, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( size_ex ) * 8, FCML_DS_32, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && op_mode == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( imm_size_ex ) * 8, args->is_64bit_imm_allowed ? FCML_DS_64 : FCML_DS_32, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_GET_OS( size_ex ) * 8, args->is_64bit_imm_allowed ? FCML_DS_64 : FCML_DS_32, FCML_EN_ASF_64, &flags );
                 }
             } else {
                 /* IMM extended to effective address size attribute.*/
                 if( osa_flags & FCML_EN_ASF_16 )
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_16, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_16, FCML_GET_OS( size ) * 8, FCML_EN_ASF_16, &flags );
                 if( osa_flags & FCML_EN_ASF_32 )
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_32, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_32, FCML_GET_OS( size ) * 8, FCML_EN_ASF_32, &flags );
                 if( ( osa_flags & FCML_EN_ASF_64 ) && op_mode == FCML_AF_64_BIT ) {
-                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, FCML_GET_OS( imm_size ) * 8, FCML_EN_ASF_64, &flags );
+                    is_convertable |= fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &destination, FCML_DS_64, FCML_GET_OS( size ) * 8, FCML_EN_ASF_64, &flags );
                 }
             }
 
@@ -829,10 +829,10 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 
 	if( phase == FCML_IEN_ASM_IPPP_FIRST_PHASE ) {
 
-		fcml_uint8_t imm_size = args->encoded_imm_size;
-		fcml_uint8_t imm_size_ex = args->encoded_ex_imm_size;
+		fcml_uint8_t size = args->encoded_size;
+		fcml_uint8_t size_ex = args->encoded_ex_size;
 
-		fcml_st_immediate *source_imm = &(operand_def->immediate);
+		fcml_st_integer *source_imm = &(operand_def->immediate);
 		fcml_st_integer source;
 		fcml_st_integer converted_source;
 
@@ -849,21 +849,21 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
 			eosa_imm = FCML_DS_32;
 		}
 
-		if( ( imm_size == FCML_EOS_EOSA || imm_size_ex == FCML_EOS_EOSA ) && !eosa_size ) {
+		if( ( size == FCML_EOS_EOSA || size_ex == FCML_EOS_EOSA ) && !eosa_size ) {
 			FCML_TRACE_MSG("EOSA size not set! Processing failed.");
 			return FCML_CEH_GEC_INTERNAL_ERROR;
 		}
 
 		fcml_bool is_converted = FCML_FALSE;
 
-		if( imm_size != FCML_EOS_EOSA && imm_size_ex != FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( imm_size_ex ) * 8, FCML_GET_OS( imm_size ) * 8, 0, NULL );
-		} else if( imm_size == FCML_EOS_EOSA && imm_size_ex == FCML_EOS_EOSA ) {
+		if( size != FCML_EOS_EOSA && size_ex != FCML_EOS_EOSA ) {
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( size_ex ) * 8, FCML_GET_OS( size ) * 8, 0, NULL );
+		} else if( size == FCML_EOS_EOSA && size_ex == FCML_EOS_EOSA ) {
 		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, eosa_imm, 0, NULL );
-		} else if( imm_size == FCML_EOS_EOSA ) {
-		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( imm_size_ex ) * 8, eosa_imm, 0, NULL );
+		} else if( size == FCML_EOS_EOSA ) {
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, FCML_GET_OS( size_ex ) * 8, eosa_imm, 0, NULL );
 		} else {
-		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, FCML_GET_OS( imm_size ) * 8, 0, NULL );
+		    is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( &source, &converted_source, eosa_size, FCML_GET_OS( size ) * 8, 0, NULL );
 		}
 
 		if( !is_converted ) {
@@ -978,7 +978,7 @@ fcml_ceh_error fcml_ifn_asm_convert_to_requested_rel( fcml_st_integer *value, fc
     return error;
 }
 
-int fcml_ifn_asm_calculate_imm_size_for_encoded_rel( fcml_data_size osa, fcml_uint8_t encoded_rel_size ) {
+int fcml_ifn_asm_calculate_size_for_encoded_rel( fcml_data_size osa, fcml_uint8_t encoded_rel_size ) {
     if( encoded_rel_size == FCML_EOS_UNDEFINED ) {
         return ( osa == FCML_DS_64 ) ? 4 : osa / 8;
     } else {
@@ -1012,7 +1012,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_immediate_dis_relative_post_process
         fcml_st_integer destination = {0};
         fcml_st_integer displacement = {0};
 
-        int rel_size = fcml_ifn_asm_calculate_imm_size_for_encoded_rel( osa, encoded_rel_size );
+        int rel_size = fcml_ifn_asm_calculate_size_for_encoded_rel( osa, encoded_rel_size );
 
 		if( operand_def->type == FCML_EOT_IMMEDIATE ) {
 			error = fcml_fn_utils_imm_to_integer( &(operand_def->immediate), &source );
@@ -1112,9 +1112,9 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_immediate_dis_relative( fcml_ien_asm
 
         operand_enc->code_length = 0;
 
-        if( args->encoded_imm_size == FCML_EOS_BYTE ) {
+        if( args->encoded_size == FCML_EOS_BYTE ) {
             operand_enc->post_processor = fcml_ifn_asm_instruction_part_immediate_dis_relative_post_processor_8;
-        } else if( args->encoded_imm_size == FCML_EOS_UNDEFINED ) {
+        } else if( args->encoded_size == FCML_EOS_UNDEFINED ) {
             operand_enc->post_processor = fcml_ifn_asm_instruction_part_immediate_dis_relative_post_processor_undef;
         } else {
             /* Unsupported operand size encoded in operand arguments.*/
@@ -1867,7 +1867,7 @@ void fcml_ifn_asm_free_assembled_instruction( fcml_st_assembled_instruction *ass
 		if( assembled_instruction->code ) {
 			fcml_fn_env_memory_free( assembled_instruction->code );
 		}
-		fcml_fn_ceh_free_errors_only( &(assembled_instruction->errors) );
+		fcml_fn_ceh_free_errors_only( &(assembled_instruction->warnings) );
 		fcml_fn_env_memory_free( assembled_instruction );
 	}
 }

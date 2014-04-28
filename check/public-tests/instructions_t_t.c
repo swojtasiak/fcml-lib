@@ -16,29 +16,29 @@ void fcml_tf_instructions_t_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_TEST(void) {
-    /* A8 ib TEST AL, imm8 I Valid Valid AND imm8 with AL; set SF, ZF, PF according to result.*/
+    /* A8 ib TEST AL, int8 I Valid Valid AND int8 with AL; set SF, ZF, PF according to result.*/
     FCML_I32_M( "test al,20h", 2, FCML_MI( 0xf6, 0xc0, 0x20 ), FCML_MI( 0xa8, 0x20 ) );
     FCML_I64_M( "test al,20h", 2, FCML_MI( 0xf6, 0xc0, 0x20 ), FCML_MI( 0xa8, 0x20 ) );
     /* GAS*/
     FCML_A64( "testb $0x20,%al", 0xf6, 0xc0, 0x20 );
-    /* A9 iw TEST AX, imm16 I Valid Valid AND imm16 with AX; set SF, ZF, PF according to result.*/
-    /* A9 id TEST EAX, imm32 I Valid Valid AND imm32 with EAX; set SF, ZF, PF according to result.*/
+    /* A9 iw TEST AX, int16 I Valid Valid AND int16 with AX; set SF, ZF, PF according to result.*/
+    /* A9 id TEST EAX, int32 I Valid Valid AND int32 with EAX; set SF, ZF, PF according to result.*/
     FCML_I32_M( "test eax,00104020h", 2, FCML_MI( 0xf7, 0xc0, 0x20, 0x40, 0x10, 0x00 ), FCML_MI( 0xa9, 0x20, 0x40, 0x10, 0x00 ) );
     FCML_I32_M( "test ax,0020h", 2, FCML_MI( 0x66, 0xf7, 0xc0, 0x20, 0x00 ), FCML_MI( 0x66, 0xa9, 0x20, 0x00 ) );
     /* GAS*/
     FCML_A64_M( "test $0x0000000000104020,%rax", 2, FCML_MI( 0x48, 0xf7, 0xc0, 0x20, 0x40, 0x10, 0x00 ), FCML_MI( 0x48, 0xa9, 0x20, 0x40, 0x10, 0x00 ) );
     FCML_A64_M( "test $0x4020,%ax", 2, FCML_MI( 0x66, 0xf7, 0xc0, 0x20, 0x40 ), FCML_MI( 0x66, 0xa9, 0x20, 0x40 ) );
     FCML_A64_M( "test $0x00104020,%eax", 2, FCML_MI( 0xf7, 0xc0, 0x20, 0x40, 0x10, 0x00 ), FCML_MI( 0xa9, 0x20, 0x40, 0x10, 0x00 ) );
-    /* REX.W + A9 id TEST RAX, imm32 I Valid N.E. AND imm32 sign-extended to 64-bits with RAX; set SF, ZF, PF according to result.*/
+    /* REX.W + A9 id TEST RAX, int32 I Valid N.E. AND int32 sign-extended to 64-bits with RAX; set SF, ZF, PF according to result.*/
     FCML_I64_M( "test rax,0ffffffffff104020h", 2, FCML_MI( 0x48, 0xf7, 0xc0, 0x20, 0x40, 0x10, 0xff ), FCML_MI( 0x48, 0xa9, 0x20, 0x40, 0x10, 0xff ) );
-    /* F6 /0 ib TEST r/m8, imm8 MI Valid Valid AND imm8 with r/m8; set SF, ZF, PF according to result.*/
-    /* REX + F6 /0 ib TEST r/m8*, imm8 MI Valid N.E. AND imm8 with r/m8; set SF, ZF, PF according to result.*/
+    /* F6 /0 ib TEST r/m8, int8 MI Valid Valid AND int8 with r/m8; set SF, ZF, PF according to result.*/
+    /* REX + F6 /0 ib TEST r/m8*, int8 MI Valid N.E. AND int8 with r/m8; set SF, ZF, PF according to result.*/
     FCML_I32( "test byte ptr [eax],0ffh", 0xF6, 0x00, 0xFF );
     FCML_I64_D( "test byte ptr [rax],0ffh", 0x48, 0xF6, 0x00, 0xFF );
     /* GAS*/
     FCML_A64( "testb $0xff,(%rax)", 0xf6, 0x00, 0xff );
-    /* F7 /0 iw TEST r/m16, imm16 MI Valid Valid AND imm16 with r/m16; set SF, ZF, PF according to result.*/
-    /* F7 /0 id TEST r/m32, imm32 MI Valid Valid AND imm32 with r/m32; set SF, ZF, PF according to result.*/
+    /* F7 /0 iw TEST r/m16, int16 MI Valid Valid AND int16 with r/m16; set SF, ZF, PF according to result.*/
+    /* F7 /0 id TEST r/m32, int32 MI Valid Valid AND int32 with r/m32; set SF, ZF, PF according to result.*/
     FCML_I32( "test dword ptr [eax],0ff001040h", 0xF7, 0x00, 0x40, 0x10, 0x00, 0xFF );
     FCML_I32( "test word ptr [eax],0ff00h", 0x66, 0xF7, 0x00, 0x00, 0xff );
     /* GAS*/
@@ -46,7 +46,7 @@ void fcml_tf_instruction_TEST(void) {
     FCML_A64( "testw $0x1040,(%rax)", 0x66, 0xf7, 0x00, 0x40, 0x10 );
     /* GAS*/
     FCML_A64( "testq $0x0000000000001040,(%rax)", 0x48, 0xf7, 0x00, 0x40, 0x10, 0x00, 0x00 );
-    /* REX.W + F7 /0 id TEST r/m64, imm32 MI Valid N.E. AND imm32 sign-extended to 64-bits with r/m64; set SF, ZF, PF according to result.*/
+    /* REX.W + F7 /0 id TEST r/m64, int32 MI Valid N.E. AND int32 sign-extended to 64-bits with r/m64; set SF, ZF, PF according to result.*/
     FCML_I64( "test qword ptr [rax],0000000011ff1040h", 0x48, 0xF7, 0x00, 0x40, 0x10, 0xFF, 0x11 );
     /* 84 /r TEST r/m8, r8 MR Valid Valid AND r8 with r/m8; set SF, ZF, PF according to result.*/
     /* REX + 84 /r TEST r/m8*, r8* MR Valid N.E. AND r8 with r/m8; set SF, ZF, PF according to result.*/

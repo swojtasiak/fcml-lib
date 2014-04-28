@@ -26,7 +26,7 @@ struct fcml_st_register fcml_iarr_modrm_addressing_form_reg_16[8][2] = {
 	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE }, { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } }
 };
 
-fcml_ceh_error fcml_ifn_modrm_decode_displacement( fcml_st_memory_stream *stream, fcml_st_displacement *displacement, fcml_st_offset *offset, fcml_usize size, fcml_data_size offset_extension_size, fcml_data_size displacement_extension_size ) {
+fcml_ceh_error fcml_ifn_modrm_decode_displacement( fcml_st_memory_stream *stream, fcml_st_integer *displacement, fcml_st_offset *offset, fcml_usize size, fcml_data_size offset_extension_size, fcml_data_size displacement_extension_size ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

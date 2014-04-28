@@ -231,10 +231,10 @@ void fcml_tf_instruction_LOOP(void) {
 }
 
 void fcml_tf_instruction_LWPINS(void) {
-    /* LWPINS reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /0 /imm32*/
+    /* LWPINS reg32.vvvv, reg/mem32, int32 8F RXB.0A 0.src1.0.00 12 /0 /int32*/
     FCML_I32( "lwpins ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
     FCML_I32( "lwpins ebx,eax,33221100h", 0x8F, 0xEA, 0x60, 0x12, 0xC0, 0x00, 0x11, 0x22, 0x33 );
-    /* LWPINS reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /0 /imm32*/
+    /* LWPINS reg64.vvvv, reg/mem32, int32 8F RXB.0A 1.src1.0.00 12 /0 /int32*/
     FCML_I64( "lwpins rbx,dword ptr [rax],33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
     FCML_I64( "lwpins rbx,eax,33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0xC0, 0x00, 0x11, 0x22, 0x33 );
     /* GAS*/
@@ -243,10 +243,10 @@ void fcml_tf_instruction_LWPINS(void) {
 }
 
 void fcml_tf_instruction_LWPVAL(void) {
-    /* LWPVAL reg32.vvvv, reg/mem32, imm32 8F RXB.0A 0.src1.0.00 12 /1 /imm32*/
+    /* LWPVAL reg32.vvvv, reg/mem32, int32 8F RXB.0A 0.src1.0.00 12 /1 /int32*/
     FCML_I32( "lwpval ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
     FCML_I32( "lwpval ebx,eax,33221100h", 0x8F, 0xEA, 0x60, 0x12, 0xC8, 0x00, 0x11, 0x22, 0x33 );
-    /* LWPVAL reg64.vvvv, reg/mem32, imm32 8F RXB.0A 1.src1.0.00 12 /1 /imm32*/
+    /* LWPVAL reg64.vvvv, reg/mem32, int32 8F RXB.0A 1.src1.0.00 12 /1 /int32*/
     FCML_I64( "lwpval rbx,dword ptr [rax],33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
     FCML_I64( "lwpval rbx,eax,33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0xC8, 0x00, 0x11, 0x22, 0x33 );
     /* GAS*/

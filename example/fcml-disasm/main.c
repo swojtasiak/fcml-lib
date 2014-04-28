@@ -203,44 +203,44 @@ void print_address( fcml_st_address *address, fcml_bool is_rex ) {
 		printf("     Base: %s\n", get_register( &(address->effective_address.base), is_rex ) );
 		printf("     Index: %s\n", get_register( &(address->effective_address.index), is_rex ) );
 		printf("     Scale factor: %d\n", address->effective_address.scale_factor );
-		fcml_st_displacement *displacement = &(address->effective_address.displacement);
+		fcml_st_integer *displacement = &(address->effective_address.displacement);
 		printf("     Displacement:\n" );
 		printf("      Size: %d\n", displacement->size );
 		printf("      Signed: %s\n", get_boolean( displacement->is_signed ) );
 		switch( displacement->size ) {
 		case FCML_DS_8:
-			printf("      Value: 0x%02x\n", displacement->dis8 );
+			printf("      Value: 0x%02x\n", displacement->int8 );
 			break;
 		case FCML_DS_16:
-			printf("      Value: 0x%04x\n", displacement->dis16 );
+			printf("      Value: 0x%04x\n", displacement->int16 );
 			break;
 		case FCML_DS_32:
-			printf("      Value: 0x%08x\n", displacement->dis32 );
+			printf("      Value: 0x%08x\n", displacement->int32 );
 			break;
 		case FCML_DS_64:
-			printf("      Value: 0x%016llx\n", displacement->dis64 );
+			printf("      Value: 0x%016llx\n", displacement->int64 );
 			break;
 		}
 	}
 
 }
 
-void print_immediate( fcml_st_immediate *immediate ) {
+void print_immediate( fcml_st_integer *immediate ) {
 	printf("    Signed: %s\n", get_boolean( immediate->is_signed ) );
-	printf("    Size: %d\n", immediate->imm_size );
+	printf("    Size: %d\n", immediate->size );
 	printf("    Value: " );
-	switch( immediate->imm_size ) {
+	switch( immediate->size ) {
 	case FCML_DS_8:
-		printf("0x%02x\n", immediate->imm8);
+		printf("0x%02x\n", immediate->int8);
 		break;
 	case FCML_DS_16:
-		printf("0x%04x\n", immediate->imm16);
+		printf("0x%04x\n", immediate->int16);
 		break;
 	case FCML_DS_32:
-		printf("0x%08x\n", immediate->imm32);
+		printf("0x%08x\n", immediate->int32);
 		break;
 	case FCML_DS_64:
-		printf("0x%016llx\n", immediate->imm64);
+		printf("0x%016llx\n", immediate->int64);
 		break;
 	}
 }

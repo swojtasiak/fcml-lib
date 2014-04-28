@@ -29,8 +29,8 @@ void fcml_tf_instruction_RCL(void) {
     FCML_I32( "rcl al,cl", 0xD2, 0xD0 );
     FCML_A64( "rclb %cl,(%rax)", 0xd2, 0x10 );
     FCML_I64_D( "rcl al,cl", 0x48, 0xD2, 0xD0 );
-    /* C0 /2 ib RCL r/m8, imm8*/
-    /* REX + C0 /2 ib RCL r/m8, imm8*/
+    /* C0 /2 ib RCL r/m8, int8*/
+    /* REX + C0 /2 ib RCL r/m8, int8*/
     FCML_I32( "rcl byte ptr [eax],0ffh", 0xc0, 0x10, 0xff );
     FCML_I32( "rcl byte ptr [eax],0ffh", 0xc0, 0x10, 0xff );
     FCML_A64( "rclb $0xff,(%rax)", 0xc0, 0x10, 0xff );
@@ -55,9 +55,9 @@ void fcml_tf_instruction_RCL(void) {
     /* GAS*/
     FCML_A64( "rcl %cl,%eax", 0xd3, 0xd0 );
     FCML_A64( "rcl %cl,%rax", 0x48, 0xd3, 0xd0 );
-    /* C1 /2 ib RCL r/m16, imm8*/
-    /* C1 /2 ib RCL r/m32, imm8*/
-    /* REX.W + C1 /2 ib RCL r/m64, imm8*/
+    /* C1 /2 ib RCL r/m16, int8*/
+    /* C1 /2 ib RCL r/m32, int8*/
+    /* REX.W + C1 /2 ib RCL r/m64, int8*/
     FCML_I32( "rcl dword ptr [eax],0ffh", 0xC1, 0x10, 0xff );
     FCML_I32( "rcl eax,0ffh", 0xC1, 0xD0, 0xff );
     FCML_I64_D( "rcl rax,0ffh", 0x48, 0xC1, 0xD0, 0xff );
@@ -83,8 +83,8 @@ void fcml_tf_instruction_RCR(void) {
     /* GAS*/
     FCML_A64( "rcr %cl,%al", 0xd2, 0xd8 );
     FCML_A64( "rcrb %cl,(%rax)", 0xd2, 0x18 );
-    /* C0 /3 ib RCR r/m8, imm8*/
-    /* REX + C0 /3 ib RCR r/m8, imm8*/
+    /* C0 /3 ib RCR r/m8, int8*/
+    /* REX + C0 /3 ib RCR r/m8, int8*/
     FCML_I32( "rcr byte ptr [eax],0ffh", 0xC0, 0x18, 0xFF );
     FCML_I32( "rcr al,0ffh", 0xC0, 0xD8, 0xFF );
     FCML_I64_D( "rcr al,0ffh", 0x48, 0xC0, 0xD8, 0xFF );
@@ -109,9 +109,9 @@ void fcml_tf_instruction_RCR(void) {
     /* GAS*/
     FCML_A64( "rcrl %cl,(%rax)", 0xd3, 0x18 );
     FCML_A64( "rcr %cl,%eax", 0xd3, 0xd8 );
-    /* C1 /3 ib RCR r/m16, imm8*/
-    /* C1 /3 ib RCR r/m32, imm8*/
-    /* REX.W + C1 /3 ib RCR r/m64, imm8*/
+    /* C1 /3 ib RCR r/m16, int8*/
+    /* C1 /3 ib RCR r/m32, int8*/
+    /* REX.W + C1 /3 ib RCR r/m64, int8*/
     FCML_I32( "rcr dword ptr [eax],0ffh", 0xC1, 0x18, 0xff );
     FCML_I32( "rcr eax,0ffh", 0xC1, 0xD8, 0xff );
     FCML_I64( "rcr rax,0ffh", 0x48, 0xC1, 0xD8, 0xff );
@@ -136,8 +136,8 @@ void fcml_tf_instruction_ROL(void) {
     FCML_I64_D( "rol al,cl", 0x48, 0xD2, 0xC0 );
     /* GAS*/
     FCML_A64( "rolb %cl,(%rax)", 0xd2, 0x00 );
-    /* C0 /0 ib ROL r/m8, imm8*/
-    /* REX + C0 /0 ib ROL r/m8, imm8*/
+    /* C0 /0 ib ROL r/m8, int8*/
+    /* REX + C0 /0 ib ROL r/m8, int8*/
     FCML_I32( "rol byte ptr [eax],0ffh", 0xC0, 0x00, 0xFF );
     FCML_I32( "rol al,0ffh", 0xC0, 0xC0, 0xFF );
     FCML_I64_D( "rol al,0ffh", 0x48, 0xC0, 0xC0, 0xFF );
@@ -161,9 +161,9 @@ void fcml_tf_instruction_ROL(void) {
     /* GAS*/
     FCML_A64( "rol %cl,%eax", 0xd3, 0xc0 );
     FCML_A64( "roll %cl,(%rax)", 0xd3, 0x00 );
-    /* C1 /0 ib ROL r/m16, imm8*/
-    /* C1 /0 ib ROL r/m32, imm8*/
-    /* C1 /0 ib ROL r/m64, imm8*/
+    /* C1 /0 ib ROL r/m16, int8*/
+    /* C1 /0 ib ROL r/m32, int8*/
+    /* C1 /0 ib ROL r/m64, int8*/
     FCML_I32( "rol dword ptr [eax],0ffh", 0xC1, 0x00, 0xff );
     FCML_I32( "rol eax,0ffh", 0xC1, 0xC0, 0xff );
     FCML_I64( "rol rax,0ffh", 0x48, 0xC1, 0xC0, 0xff );
@@ -189,8 +189,8 @@ void fcml_tf_instruction_ROR(void) {
     /* GAS*/
     FCML_A64( "rorb %cl,(%rax)", 0xd2, 0x08 );
     FCML_A64( "ror %cl,%al", 0xd2, 0xc8 );
-    /* C0 /1 ib ROR r/m8, imm8*/
-    /* REX + C0 /1 ib ROR r/m8, imm8*/
+    /* C0 /1 ib ROR r/m8, int8*/
+    /* REX + C0 /1 ib ROR r/m8, int8*/
     FCML_I32( "ror byte ptr [eax],0ffh", 0xC0, 0x08, 0xFF );
     FCML_I32( "ror al,0ffh", 0xC0, 0xC8, 0xFF );
     FCML_I64_D( "ror al,0ffh", 0x48, 0xC0, 0xC8, 0xFF );
@@ -215,9 +215,9 @@ void fcml_tf_instruction_ROR(void) {
     FCML_I64( "ror rax,cl", 0x48, 0xD3, 0xC8 );
     /* GAS*/
     FCML_A64( "rorl %cl,(%rax)", 0xd3, 0x08 );
-    /* C1 /1 ib ROR r/m16, imm8*/
-    /* C1 /1 ib ROR r/m32, imm8*/
-    /* REX.W + C1 /1 ib ROR r/m64, imm8*/
+    /* C1 /1 ib ROR r/m16, int8*/
+    /* C1 /1 ib ROR r/m32, int8*/
+    /* REX.W + C1 /1 ib ROR r/m64, int8*/
     FCML_I32( "ror dword ptr [eax],0ffh", 0xC1, 0x08, 0xff );
     FCML_I32( "ror eax,0ffh", 0xC1, 0xC8, 0xff );
     FCML_I64( "ror rax,0ffh", 0x48, 0xC1, 0xC8, 0xff );
@@ -330,8 +330,8 @@ void fcml_tf_instruction_RET(void) {
     /* CB RET*/
     FCML_I3264( "ret", 0xC3 );
     FCML_I3264( "retf", 0xCB );
-    /* C2 iw RET imm16*/
-    /* CA iw RET imm16*/
+    /* C2 iw RET int16*/
+    /* CA iw RET int16*/
     FCML_I3264( "ret 0ffffh", 0xC2, 0xFF, 0xFF );
     FCML_I3264( "retf 0ffffh", 0xCA, 0xFF, 0xFF );
     /* GAS*/
@@ -350,11 +350,11 @@ void fcml_tf_instruction_RET(void) {
 }
 
 void fcml_tf_instruction_ROUNDPD(void) {
-    /* 66 0F 3A 09 /r ib ROUNDPD xmm1,xmm2/m128,imm8*/
+    /* 66 0F 3A 09 /r ib ROUNDPD xmm1,xmm2/m128,int8*/
     FCML_I64( "roundpd xmm0,xmmword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x09, 0x00, 0xFF );
     FCML_I32( "roundpd xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x09, 0xC1, 0xFF );
-    /* VEX.128.66.0F3A.WIG 09 /r ib VROUNDPD xmm1,xmm2/m128,imm8*/
-    /* VEX.256.66.0F3A.WIG 09 /r ib VROUNDPD ymm1,ymm2/m256,imm8*/
+    /* VEX.128.66.0F3A.WIG 09 /r ib VROUNDPD xmm1,xmm2/m128,int8*/
+    /* VEX.256.66.0F3A.WIG 09 /r ib VROUNDPD ymm1,ymm2/m256,int8*/
     FCML_I64( "vroundpd xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x09, 0xD8, 0xFF );
     FCML_I32( "vroundpd xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x09, 0xD8, 0xFF );
     FCML_I32( "vroundpd ymm0,ymmword ptr [eax],0ffh", 0xC4, 0xE3, 0x7D, 0x09, 0x00, 0xFF );
@@ -367,11 +367,11 @@ void fcml_tf_instruction_ROUNDPD(void) {
 }
 
 void fcml_tf_instruction_ROUNDPS(void) {
-    /* 66 0F 3A 08 /r ib ROUNDPS xmm1,xmm2/m128,imm8*/
+    /* 66 0F 3A 08 /r ib ROUNDPS xmm1,xmm2/m128,int8*/
     FCML_I64( "roundps xmm0,xmmword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x08, 0x00, 0xFF );
     FCML_I32( "roundps xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x08, 0xC1, 0xFF );
-    /* VEX.128.66.0F3A.WIG 08 /r ib VROUNDPS xmm1,xmm2/m128,imm8*/
-    /* VEX.256.66.0F3A.WIG 08 /r ib VROUNDPS ymm1,ymm2/m256,imm8*/
+    /* VEX.128.66.0F3A.WIG 08 /r ib VROUNDPS xmm1,xmm2/m128,int8*/
+    /* VEX.256.66.0F3A.WIG 08 /r ib VROUNDPS ymm1,ymm2/m256,int8*/
     FCML_I64( "vroundps xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x08, 0xD8, 0xFF );
     FCML_I32( "vroundps xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x08, 0xD8, 0xFF );
     FCML_I32( "vroundps ymm0,ymmword ptr [eax],0ffh", 0xC4, 0xE3, 0x7D, 0x08, 0x00, 0xFF );
@@ -384,10 +384,10 @@ void fcml_tf_instruction_ROUNDPS(void) {
 }
 
 void fcml_tf_instruction_ROUNDSD(void) {
-    /* 66 0F 3A 0B /r ib ROUNDSD xmm1,xmm2/m64,imm8*/
+    /* 66 0F 3A 0B /r ib ROUNDSD xmm1,xmm2/m64,int8*/
     FCML_I64( "roundsd xmm0,mmword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x0B, 0x00, 0xFF );
     FCML_I32( "roundsd xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x0B, 0xC1, 0xFF );
-    /* VEX.NDS.LIG.66.0F3A.WIG 0B /r ib VROUNDSD xmm1,xmm2,xmm3/m64,imm8*/
+    /* VEX.NDS.LIG.66.0F3A.WIG 0B /r ib VROUNDSD xmm1,xmm2,xmm3/m64,int8*/
     FCML_I64( "vroundsd xmm3,xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x0B, 0xD8, 0xFF );
     FCML_I32( "vroundsd xmm3,xmm3,xmm0,0ffh", 0xC4, 0xE3, 0x61, 0x0B, 0xD8, 0xFF );
     /* GAS*/
@@ -398,10 +398,10 @@ void fcml_tf_instruction_ROUNDSD(void) {
 }
 
 void fcml_tf_instruction_ROUNDSS(void) {
-    /* 66 0F 3A 0A /r ib ROUNDSS xmm1,xmm2/m32,imm8*/
+    /* 66 0F 3A 0A /r ib ROUNDSS xmm1,xmm2/m32,int8*/
     FCML_I64( "roundss xmm0,dword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x0A, 0x00, 0xFF );
     FCML_I32( "roundss xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x0A, 0xC1, 0xFF );
-    /* VEX.NDS.LIG.66.0F3A.WIG 0A ib VROUNDSS xmm1,xmm2,xmm3/m32,imm8*/
+    /* VEX.NDS.LIG.66.0F3A.WIG 0A ib VROUNDSS xmm1,xmm2,xmm3/m32,int8*/
     FCML_I64( "vroundss xmm3,xmm0,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x0A, 0xD8, 0xFF );
     FCML_I32( "vroundss xmm3,xmm6,xmm0,0ffh", 0xC4, 0xE3, 0x49, 0x0A, 0xD8, 0xFF );
     /* GAS*/
@@ -449,12 +449,12 @@ void fcml_tf_instruction_RSQRTSS(void) {
 }
 
 void fcml_tf_instruction_RORX(void) {
-    /* VEX.LZ.F2.0F3A.W0 F0 /r ib RORX r32, r/m32, imm8*/
+    /* VEX.LZ.F2.0F3A.W0 F0 /r ib RORX r32, r/m32, int8*/
     FCML_I32_D( "rorx eax,dword ptr [eax],01h", 0xC4, 0xE3, 0x43, 0xF0, 0x00, 0x01 );
     FCML_I32( "rorx eax,dword ptr [eax],01h", 0xc4, 0xe3, 0x7b, 0xf0, 0x00, 0x01 );
     FCML_I32_D( "rorx eax,eax,01h", 0xC4, 0xE3, 0x43, 0xF0, 0xC0, 0x01 );
     FCML_I32( "rorx eax,eax,01h", 0xc4, 0xe3, 0x7b, 0xf0, 0xc0, 0x01 );
-    /* VEX.LZ.F2.0F3A.W1 F0 /r ib RORX r64, r/m64, imm8*/
+    /* VEX.LZ.F2.0F3A.W1 F0 /r ib RORX r64, r/m64, int8*/
     FCML_I64_D( "rorx rax,qword ptr [rax],01h", 0xC4, 0xE3, 0xC3, 0xF0, 0x00, 0x01 );
     FCML_I64( "rorx rax,qword ptr [rax],01h", 0xc4, 0xe3, 0xfb, 0xf0, 0x00, 0x01 );
     FCML_I64_D( "rorx rax,rax,01h", 0xC4, 0xE3, 0xC3, 0xF0, 0xC0, 0x01 );

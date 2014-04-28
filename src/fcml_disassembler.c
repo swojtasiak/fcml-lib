@@ -66,6 +66,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_ist_dasm_operand_wrapper operand_wrappers[FCML_OPERANDS_COUNT];
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details decoded_modrm_details;
+	fcml_bool is_modrm;
 	fcml_hints instruction_hints;
 	fcml_nuint8_t pseudo_opcode;
 	fcml_nuint8_t suffix;
@@ -308,25 +309,25 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context
 
 	fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm *)args;
 	fcml_st_operand *operand = &(operand_wrapper->operand);
-	fcml_st_immediate *immediate = &(operand->immediate);
+	fcml_st_integer *immediate = &(operand->immediate);
 	fcml_st_memory_stream *stream = context->stream;
 
 	operand->type = FCML_EOT_IMMEDIATE;
 
-	fcml_data_size imm_size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_imm_size );
+	fcml_data_size size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_size );
 
 	/* Correct calculated IMM size if 64 bit IMM is not supported by addressing mode.*/
-	if( imm_size == FCML_DS_64 && !imm_args->is_64bit_imm_allowed ) {
-		imm_size = FCML_DS_32;
+	if( size == FCML_DS_64 && !imm_args->is_64bit_imm_allowed ) {
+		size = FCML_DS_32;
 	}
 
-	fcml_data_size imm_size_ex = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_ex_imm_size );
-	if( imm_size_ex == FCML_DS_UNDEF ) {
+	fcml_data_size size_ex = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_ex_size );
+	if( size_ex == FCML_DS_UNDEF ) {
 		/* check if S opcode field is set.*/
-		if( imm_size == FCML_DS_8 && context->opcode_field_s_bit ) {
-			imm_size_ex = context->effective_operand_size_attribute;
+		if( size == FCML_DS_8 && context->opcode_field_s_bit ) {
+			size_ex = context->effective_operand_size_attribute;
 		} else {
-			imm_size_ex = imm_size;
+			size_ex = size;
 		}
 	}
 
@@ -335,13 +336,13 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context
 	/* All immediate integers are signed.*/
 	integer.is_signed = FCML_TRUE;
 
-	error = fcml_fn_utils_decode_integer( stream, &integer, imm_size );
+	error = fcml_fn_utils_decode_integer( stream, &integer, size );
 	if( error ) {
 		return error;
 	}
 
-	if( imm_size_ex != imm_size ) {
-		error = fcml_fn_utils_convert_integer_to_integer( &integer, &integer, imm_size, imm_size_ex );
+	if( size_ex != size ) {
+		error = fcml_fn_utils_convert_integer_to_integer( &integer, &integer, size, size_ex );
 		if( error ) {
 			return error;
 		}
@@ -357,12 +358,12 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context
 
 fcml_int fcml_ifn_dasm_operand_size_calculator_imm( fcml_ist_dasm_decoding_context *context, fcml_ptr args ) {
 	fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm *)args;
-	fcml_int imm_size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_imm_size ) / 8;
+	fcml_int size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_size ) / 8;
 	/* 8 bytes IMM size is only supported for instructions with following flag set.*/
-	if( imm_size == 8 && !imm_args->is_64bit_imm_allowed ) {
-		imm_size = 4;
+	if( size == 8 && !imm_args->is_64bit_imm_allowed ) {
+		size = 4;
 	}
-	return imm_size;
+	return size;
 }
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
@@ -432,15 +433,15 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	fcml_int16_t offset16;
 
 	// Just in case.
-	if( FCML_IS_EOS_DYNAMIC( rel_args->encoded_imm_size ) ) {
+	if( FCML_IS_EOS_DYNAMIC( rel_args->encoded_size ) ) {
 		FCML_TRACE_MSG("Currently dynamically calculated IMM size is not supported here.");
 		return FCML_CEH_GEC_INTERNAL_ERROR;
 	}
 
 	fcml_st_entry_point *entry_point = &(context->disassembler_context->entry_point);
 
-	if( rel_args->encoded_imm_size != FCML_EOS_UNDEFINED ) {
-		int_size = rel_args->encoded_imm_size * 8;
+	if( rel_args->encoded_size != FCML_EOS_UNDEFINED ) {
+		int_size = rel_args->encoded_size * 8;
 	} else {
 
 		if( context->effective_operand_size_attribute == FCML_DS_16 && entry_point->op_mode == FCML_AF_64_BIT ) {
@@ -509,8 +510,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 fcml_int fcml_ifn_dasm_operand_size_calculator_immediate_dis_relative( fcml_ist_dasm_decoding_context *context, fcml_ptr args ) {
 	fcml_sf_def_tma_immediate_dis_relative *rel_args = (fcml_sf_def_tma_immediate_dis_relative*)args;
 	fcml_int size;
-	if( rel_args->encoded_imm_size != FCML_EOS_UNDEFINED ) {
-		size = rel_args->encoded_imm_size;;
+	if( rel_args->encoded_size != FCML_EOS_UNDEFINED ) {
+		size = rel_args->encoded_size;;
 	} else {
 		size = ( context->effective_operand_size_attribute == FCML_DS_16 ) ? FCML_DS_16 / 8 : FCML_DS_32 / 8;
 	}
@@ -561,12 +562,12 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_ib( fcml_ist_dasm_decoding
 	fcml_sf_def_tma_explicit_ib *imm_args = (fcml_sf_def_tma_explicit_ib*)args;
 
 	fcml_st_operand *operand = &(operand_wrapper->operand);
-	fcml_st_immediate *immediate = &(operand->immediate);
+	fcml_st_integer *immediate = &(operand->immediate);
 
 	operand->type = FCML_EOT_IMMEDIATE;
 	immediate->is_signed = FCML_TRUE;
-	immediate->imm_size = FCML_DS_8;
-	immediate->imm8 = imm_args->ib;
+	immediate->size = FCML_DS_8;
+	immediate->int8 = imm_args->ib;
 
 	return FCML_CEH_GEC_NO_ERROR;
 }
@@ -782,10 +783,10 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_isX( fcml_ist_dasm_decoding_context
 		/* IS5 - M2Z*/
 
 		operand_wrapper->operand.type = FCML_EOT_IMMEDIATE;
-		fcml_st_immediate *imm = &(operand_wrapper->operand.immediate);
+		fcml_st_integer *imm = &(operand_wrapper->operand.immediate);
 		imm->is_signed = FCML_FALSE;
-		imm->imm8 = isX & 0x03;
-		imm->imm_size = FCML_DS_8;
+		imm->int8 = isX & 0x03;
+		imm->size = FCML_DS_8;
 
 	}
 
@@ -805,12 +806,12 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_pseudo_op( fcml_ist_dasm_decoding_c
 	}
 
 	fcml_st_operand *operand = &(operand_wrapper->operand);
-	fcml_st_immediate *immediate = &(operand->immediate);
+	fcml_st_integer *immediate = &(operand->immediate);
 
 	operand->type = FCML_EOT_IMMEDIATE;
 	immediate->is_signed = FCML_TRUE;
-	immediate->imm_size = FCML_DS_8;
-	immediate->imm8 = pseudo_op;
+	immediate->size = FCML_DS_8;
+	immediate->int8 = pseudo_op;
 
 	context->pseudo_opcode.is_not_null = FCML_TRUE;
 	context->pseudo_opcode.value = pseudo_op;
@@ -1570,9 +1571,11 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 	fcml_ist_dasm_modrm_decoding_details *modrm_details = &(instruction_decoding_def->modrm_details);
 	fcml_st_prefixes_details *prefixes = &(decoding_context->prefixes);
 
-	/* Decode ModRM field if there is any.*/
+	/* Decode ModRM field if there is any. */
 
 	if( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( instruction_decoding_def->opcode_flags ) ) {
+
+		decoding_context->is_modrm = FCML_TRUE;
 
 		fcml_st_memory_stream *stream = decoding_context->stream;
 
@@ -2160,6 +2163,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 		modrm_details->modrm = decoding_context.decoded_modrm_details.modrm;
 		modrm_details->sib = decoding_context.decoded_modrm_details.sib;
 		modrm_details->is_rip = decoding_context.decoded_modrm.is_rip;
+		modrm_details->is_modrm = decoding_context.is_modrm;
 
 		/* Prefixes.*/
 		instruction_details->prefixes_details = decoding_context.prefixes;

@@ -95,7 +95,7 @@ void fcml_tf_modrm_decoder_test_2(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_BX );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_16 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis16, 0x0201 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int16, 0x0201 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
@@ -250,7 +250,7 @@ void fcml_tf_modrm_decoder_test_6(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_16 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_SI );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_8 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis8, 0x01 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int8, 0x01 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
@@ -318,7 +318,7 @@ void fcml_tf_modrm_3264_decoder_test_1(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EBX );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis8, 0 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int8, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 
@@ -449,7 +449,7 @@ void fcml_tf_modrm_3264_decoder_test_4(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EAX );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_8 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis8, 0x66 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int8, 0x66 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
@@ -490,7 +490,7 @@ void fcml_tf_modrm_3264_decoder_test_5(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_EAX );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0x01020304 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
@@ -530,7 +530,7 @@ void fcml_tf_modrm_3264_decoder_test_6(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0x01020304 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.reg.is_not_null, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
@@ -570,7 +570,7 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
     STF_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
@@ -612,7 +612,7 @@ void fcml_tf_modrm_3264_decoder_test_8(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_RBX );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
     STF_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
@@ -653,7 +653,7 @@ void fcml_tf_modrm_3264_decoder_test_9(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R11 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
     STF_ASSERT_EQUAL( decoded_modrm.address.offset.off64, 0 );
@@ -883,7 +883,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 32 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0x01020304 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
@@ -924,7 +924,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
     STF_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
@@ -968,7 +968,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
     STF_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
@@ -1012,7 +1012,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
     STF_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
@@ -1056,7 +1056,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, 0 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_FALSE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.offset.size, 0 );
     STF_ASSERT_EQUAL( decoded_modrm.address.offset.off32, 0 );
@@ -1100,7 +1100,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_8 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis8, 0x55 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int8, 0x55 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
@@ -1141,7 +1141,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_64 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0x01020304 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
@@ -1182,7 +1182,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, 0 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0x01020304 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 0 );
 }
@@ -1225,7 +1225,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_128 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0x01020304 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
@@ -1268,7 +1268,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.index.size, FCML_DS_256 );
 	STF_ASSERT_EQUAL( decoded_modrm.reg_opcode, FCML_REG_R8 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.size, FCML_DS_32 );
-	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.dis32, 0x01020304 );
+	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.int32, 0x01020304 );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.displacement.is_signed, FCML_TRUE );
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
