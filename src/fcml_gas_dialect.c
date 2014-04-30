@@ -1460,7 +1460,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
         /* Mnemonic has been found, check if data size should be corrected for instruction. Take into account that data size specified by*/
         /* mnemonic has greater priority than data size set directly by user.*/
 
-        fcml_data_size data_size = FCML_DS_UNDEF;
+        fcml_usize data_size = FCML_DS_UNDEF;
         if( mnemonic->memory_data.is_not_null ) {
             data_size = mnemonic->memory_data.value * 8;
         } else if( mnemonic->is_byte_ds ) {

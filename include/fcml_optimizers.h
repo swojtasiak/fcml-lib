@@ -43,9 +43,9 @@ typedef struct fcml_st_asm_optimizer_context {
     /** Processor operating mode 16/32/64-bit. */
     fcml_en_operating_mode op_mode;
     /** Default address size attribute not modified by prefixes yet. (See 'D' flag of segment descriptor.)*/
-    fcml_data_size asa;
+    fcml_usize asa;
     /** Default operand size attribute not modified by prefixes yet. (See 'D' flag of segment descriptor.)*/
-    fcml_data_size osa;
+    fcml_usize osa;
 } fcml_st_asm_optimizer_context;
 
 /** Processing details for optimizers. */
@@ -63,13 +63,13 @@ typedef struct fcml_st_asm_optimizer_processing_details {
      * above. Take into account that it is effective attribute size attribute so it can be
      * forced using instruction prefixes to override the default attribute size.
      */
-    fcml_data_size easa;
+    fcml_usize easa;
     /** Effective operand size attribute chosen for currently processed instruction form.
 	 * If it is set it can not be changed anymore. It has higher priority than flags
 	 * above. Take into account that it is effective operand size attribute so it can be
 	 * forced using instruction prefixes to override the default attribute size.
 	 */
-    fcml_data_size eosa;
+    fcml_usize eosa;
     /** L bit from VEX like prefixes set for encoded instruction.*/
     fcml_nuint8_t l;
     /** Set to true in order to break optimization process immediately.*/

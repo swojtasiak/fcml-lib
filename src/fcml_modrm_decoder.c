@@ -26,7 +26,7 @@ struct fcml_st_register fcml_iarr_modrm_addressing_form_reg_16[8][2] = {
 	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE }, { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } }
 };
 
-fcml_ceh_error fcml_ifn_modrm_decode_displacement( fcml_st_memory_stream *stream, fcml_st_integer *displacement, fcml_st_offset *offset, fcml_usize size, fcml_data_size offset_extension_size, fcml_data_size displacement_extension_size ) {
+fcml_ceh_error fcml_ifn_modrm_decode_displacement( fcml_st_memory_stream *stream, fcml_st_integer *displacement, fcml_st_offset *offset, fcml_usize size, fcml_usize offset_extension_size, fcml_usize displacement_extension_size ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -66,7 +66,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_displacement( fcml_st_memory_stream *stream
     return error;
 }
 
-fcml_data_size fcml_ifn_modrm_get_displacement_extension( fcml_st_modrm_decoder_context *context, fcml_uint8_t flags ) {
+fcml_usize fcml_ifn_modrm_get_displacement_extension( fcml_st_modrm_decoder_context *context, fcml_uint8_t flags ) {
 	return flags & FCML_MODRM_DEC_FLAG_EXTEND_DISPLACEMENT_TO_ASA ? context->effective_address_size : 0;
 }
 
@@ -142,7 +142,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib( fcml_st_modrm_decoder_context *context
     fcml_st_effective_address *effective_address = &(address->effective_address);
 
 	/* Effective address size affects index register.*/
-	fcml_data_size effective_address_size = context->effective_address_size;
+	fcml_usize effective_address_size = context->effective_address_size;
 
 	/* ModR/M fields.*/
 	fcml_uint8_t f_base;
@@ -216,7 +216,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *con
 	fcml_uint8_t f_mod;
 	fcml_uint8_t f_rm;
 
-	fcml_data_size effective_address_size = context->effective_address_size;
+	fcml_usize effective_address_size = context->effective_address_size;
 
 	/* Gets ModR/M byte from stream.*/
 	fcml_bool result;
@@ -282,7 +282,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *con
 	return error;
 }
 
-fcml_ceh_error fcml_fn_modrm_decode_rip( fcml_uint64_t rip, fcml_data_size effective_address_size, fcml_st_offset *offset, fcml_st_offset *address ) {
+fcml_ceh_error fcml_fn_modrm_decode_rip( fcml_uint64_t rip, fcml_usize effective_address_size, fcml_st_offset *offset, fcml_st_offset *address ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

@@ -195,8 +195,6 @@ typedef uint64_t fcml_uint64_t;
 typedef char fcml_char;
 typedef char* fcml_string;
 typedef float fcml_float;
-// TODO: usunac albo usize albo to.
-typedef fcml_uint16_t fcml_data_size;
 typedef void* fcml_ptr;
 typedef fcml_uint32_t fcml_flags;
 
@@ -255,7 +253,7 @@ typedef struct fcml_nint64_t {
 } fcml_nint64_t;
 
 typedef struct fcml_st_integer {
-    fcml_data_size size;
+    fcml_usize size;
     fcml_bool is_signed;
     // Data fields.
 	fcml_int8_t int8;

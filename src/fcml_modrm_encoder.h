@@ -43,10 +43,10 @@ typedef struct fcml_st_modrm_encoder_context {
 	/* Sets 32 or 64 bit addressing mode.*/
 	fcml_en_operating_mode op_mode;
 	/* Preferred effective address size that should be used to encode ModR/M.*/
-	fcml_data_size effective_address_size;
+	fcml_usize effective_address_size;
 	/* Effective address size ModR/M was encoded for. For example "effective_address_size" might*/
 	/* be set to 32 bits, but [BX+SI] encoding forces 16 bit encoding.*/
-	fcml_data_size chosen_effective_address_size;
+	fcml_usize chosen_effective_address_size;
 	/* This flag is set by encoder if there is alternative SIB encoding available,*/
 	/* but user chooses ModR/M only encoding.*/
 	fcml_bool is_sib_alternative;

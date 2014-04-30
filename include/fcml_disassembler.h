@@ -78,7 +78,7 @@ typedef struct fcml_st_disassembler_context {
 	/** Pointer to the encoded instruction. */
 	fcml_ptr code;
 	/** Size of the code in the buffer above. */
-	fcml_data_size code_length;
+	fcml_usize code_length;
 } fcml_st_disassembler_context;
 
 /* Prefixes */
@@ -186,7 +186,7 @@ typedef struct fcml_st_instruction_details {
 	/** Code of the disassembled instruction. */
 	fcml_uint8_t instruction_code[FCML_INSTRUCTION_SIZE];
 	/** Instruction size in bytes. */
-	fcml_data_size instruction_size;
+	fcml_usize instruction_size;
 	/** Some additional information about decoded instruction prefixes. */
 	fcml_st_prefixes_details prefixes_details;
 	/** All disassembler specific information about operands going there. */

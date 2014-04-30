@@ -55,8 +55,8 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_mp_mnemonic_set *mnemonics;
 	fcml_en_instruction instruction;
 	fcml_uint16_t addr_mode;
-	fcml_data_size effective_address_size_attribute;
-	fcml_data_size effective_operand_size_attribute;
+	fcml_usize effective_address_size_attribute;
+	fcml_usize effective_operand_size_attribute;
 	fcml_int calculated_instruction_size;
 	fcml_uint8_t opcodes[FCML_OPCODES_NUM];
 	fcml_uint8_t primary_opcode_byte;
@@ -116,7 +116,7 @@ typedef struct fcml_ist_dasm_modrm_decoding_details {
 	/* True if vector-index memory addressing is used.*/
 	fcml_bool is_vsib;
 	/* Vector register size.*/
-	fcml_data_size vsib_index_size;
+	fcml_usize vsib_index_size;
 	/* True if addressing mode is restricted only to register.*/
 	fcml_bool is_reg_restriction;
 	/* True if addressing mode is restricted only to memory.*/
@@ -222,8 +222,8 @@ fcml_ceh_error fcml_ifn_dasm_utils_decode_segment_selector( fcml_ist_dasm_decodi
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_data_size fcml_ifn_dasm_utils_decode_encoded_size_value( fcml_ist_dasm_decoding_context *context, fcml_uint8_t encoded_size ) {
-	fcml_data_size result = 0;
+fcml_usize fcml_ifn_dasm_utils_decode_encoded_size_value( fcml_ist_dasm_decoding_context *context, fcml_uint8_t encoded_size ) {
+	fcml_usize result = 0;
 	fcml_uint8_t size = ( encoded_size & ~FCML_EOS_OPT );
 	if( size >= FCML_EOS_DYNAMIC_BASE ) {
 	switch( size ) {
@@ -314,14 +314,14 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context
 
 	operand->type = FCML_EOT_IMMEDIATE;
 
-	fcml_data_size size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_size );
+	fcml_usize size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_size );
 
 	/* Correct calculated IMM size if 64 bit IMM is not supported by addressing mode.*/
 	if( size == FCML_DS_64 && !imm_args->is_64bit_imm_allowed ) {
 		size = FCML_DS_32;
 	}
 
-	fcml_data_size size_ex = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_ex_size );
+	fcml_usize size_ex = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_ex_size );
 	if( size_ex == FCML_DS_UNDEF ) {
 		/* check if S opcode field is set.*/
 		if( size == FCML_DS_8 && context->opcode_field_s_bit ) {
@@ -428,7 +428,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_sf_def_tma_immediate_dis_relative *rel_args = (fcml_sf_def_tma_immediate_dis_relative*)args;
-	fcml_data_size int_size = 0;
+	fcml_usize int_size = 0;
 	fcml_int32_t offset32;
 	fcml_int16_t offset16;
 
@@ -950,11 +950,11 @@ void fcml_ifn_dasm_clear_mandatory_flag( fcml_ist_dasm_decoding_context *context
  * Effective attributes sizes.
  ******************************/
 
-fcml_data_size fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_context *context ) {
+fcml_usize fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_context *context ) {
 
 	fcml_st_entry_point *entry_point = &(context->disassembler_context->entry_point);
 
-	fcml_data_size effective_asa = entry_point->address_size_attribute;
+	fcml_usize effective_asa = entry_point->address_size_attribute;
 
 	/* Checks if address size attribute is overridden.*/
 	if( fcml_ifn_dasm_is_prefix_available( context, 0x67, FCML_FALSE ) ) {
@@ -972,14 +972,14 @@ fcml_data_size fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_con
 	return effective_asa;
 }
 
-fcml_data_size fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_context *context, fcml_uint32_t opcode_flags ) {
+fcml_usize fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_context *context, fcml_uint32_t opcode_flags ) {
 
 	fcml_st_instruction_prefix *prefix;
 
 	fcml_st_entry_point *entry_point = &(context->disassembler_context->entry_point);
 	fcml_st_prefixes_details *prefixes = &(context->prefixes);
 
-	fcml_data_size osa = entry_point->operand_size_attribute;
+	fcml_usize osa = entry_point->operand_size_attribute;
 
 	/* Gets effective address-size attribute for used mode.*/
 	switch( entry_point->op_mode ) {
@@ -1168,7 +1168,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions( fcml_
 			mandatory_prefix = prefix->mandatory_prefix;
 			prefix->mandatory_prefix = FCML_DEF_PREFIX_MANDATORY_66( instruction_decoding_def->prefixes_flags );
 		}
-		fcml_data_size eosa = fcml_ifn_dasm_calculate_effective_osa( context, instruction_decoding_def->opcode_flags );
+		fcml_usize eosa = fcml_ifn_dasm_calculate_effective_osa( context, instruction_decoding_def->opcode_flags );
 		if( prefix != NULL ) {
 			prefix->mandatory_prefix = mandatory_prefix;
 		}
@@ -1184,7 +1184,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions( fcml_
 	/* to specific effective address sizes. For instance we can define instruction*/
 	/* that can be chosen only if EASA is equal to 16.*/
 	if( FCML_DEF_OPCODE_FLAGS_IS_EASA_RESTRICTION( instruction_decoding_def->opcode_flags ) ) {
-		fcml_data_size easa = fcml_ifn_dasm_calculate_effective_asa( context );
+		fcml_usize easa = fcml_ifn_dasm_calculate_effective_asa( context );
 		if( !( ( FCML_DEF_OPCODE_FLAGS_EASA_16( instruction_decoding_def->opcode_flags ) && easa == FCML_DS_16 ) ||
 			( FCML_DEF_OPCODE_FLAGS_EASA_32( instruction_decoding_def->opcode_flags ) && easa == FCML_DS_32 ) ||
 			( FCML_DEF_OPCODE_FLAGS_EASA_64( instruction_decoding_def->opcode_flags ) && easa == FCML_DS_64 ) ) ) {
@@ -2139,7 +2139,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 		fcml_st_instruction *instruction = &(result->instruction);
 		fcml_st_instruction_details *instruction_details = &(result->instruction_details);
 
-		fcml_data_size memory_data_size = 0;
+		fcml_usize memory_data_size = 0;
 
 		/* Prepare operands.*/
 		fcml_int i;

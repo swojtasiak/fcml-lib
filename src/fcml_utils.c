@@ -59,7 +59,7 @@ fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_s
     return error;
 }
 
-fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *source, fcml_st_integer *destination, fcml_data_size expected_source_size, fcml_data_size destination_size ) {
+fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *source, fcml_st_integer *destination, fcml_usize expected_source_size, fcml_usize destination_size ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -791,13 +791,13 @@ fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point ) {
 	}
 
 	/* Check if ASA is value.*/
-	fcml_data_size asa = entry_point->address_size_attribute;
+	fcml_usize asa = entry_point->address_size_attribute;
 	if( asa != FCML_DS_16 && asa != FCML_DS_32 && asa != FCML_DS_64 ) {
 		return FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 	}
 
 	/* Check if OSA is value.*/
-	fcml_data_size osa = entry_point->operand_size_attribute;
+	fcml_usize osa = entry_point->operand_size_attribute;
 	if( osa != FCML_DS_16 && osa != FCML_DS_32 && osa != FCML_DS_64 ) {
 		return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
 	}

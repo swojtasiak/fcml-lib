@@ -354,7 +354,7 @@ typedef struct fcml_st_register {
 	/** Register type. */
     fcml_en_register type;
     /** Register size in bits. */
-    fcml_data_size size;
+    fcml_usize size;
     /** Register itself as a positive integer. @see REGISTERS_GROUP */
     fcml_uint8_t reg;
     /** In case of SPL,BPL,SIL,DIL GPR registers has to be set to true. */
@@ -455,7 +455,7 @@ typedef struct fcml_st_far_pointer {
 	/** 16-bit Code segment. */
     fcml_uint16_t segment;
     /** Size of the offset. */
-    fcml_data_size offset_size;
+    fcml_usize offset_size;
     /** 16-bit offset. */
 	fcml_int16_t offset16;
 	/** 32-bit offset. */
@@ -484,7 +484,7 @@ typedef enum fcml_en_address_form {
  */
 typedef struct fcml_st_offset {
 	/** Offset size 16,32 or 64 bits. */
-	fcml_data_size size;
+	fcml_usize size;
 	/** True if offset should be treated as signed value. */
 	fcml_bool is_signed;
 	/** Place for 16-bit absolute offset. */
@@ -524,7 +524,7 @@ typedef struct fcml_st_segment_selector {
  */
 typedef struct fcml_st_address {
 	/** Size of data accessed in memory.*/
-	fcml_data_size size_operator;
+	fcml_usize size_operator;
     /** Memory addressing format: absolute offset/effective address. @see fcml_en_effective_address_form*/
     fcml_en_effective_address_form address_form;
     /** Segment register.*/
@@ -663,8 +663,8 @@ typedef struct fcml_st_entry_point {
 	/* Processor operating mode 16/32/64-bit.*/
 	fcml_en_operating_mode op_mode;
 	/* Default address/operand size attribute (See 'D' flag of segment descriptor.)*/
-	fcml_data_size address_size_attribute;
-	fcml_data_size operand_size_attribute;
+	fcml_usize address_size_attribute;
+	fcml_usize operand_size_attribute;
 	/* Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.*/
 	fcml_ip ip;
 } fcml_st_entry_point;

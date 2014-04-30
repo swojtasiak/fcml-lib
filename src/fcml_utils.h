@@ -22,7 +22,7 @@ typedef enum fcml_en_utils_size_flags {
 } fcml_en_utils_size_flags;
 
 fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_src_signed, fcml_st_integer *integer, fcml_en_utils_size_flags filter );
-fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *source, fcml_st_integer *destination, fcml_data_size expected_source_size, fcml_data_size destination_size );
+fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *source, fcml_st_integer *destination, fcml_usize expected_source_size, fcml_usize destination_size );
 fcml_ceh_error fcml_fn_utils_convert_integer_to_uint8( const fcml_st_integer *integer, fcml_uint8_t *value );
 fcml_ceh_error fcml_fn_utils_convert_integer_to_uint16( const fcml_st_integer *integer, fcml_uint16_t *value );
 fcml_ceh_error fcml_fn_utils_convert_integer_to_uint32( const fcml_st_integer *integer, fcml_uint32_t *value );

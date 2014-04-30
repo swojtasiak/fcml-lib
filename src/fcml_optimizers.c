@@ -15,7 +15,7 @@
 
 typedef struct fcml_ist_asm_opt_optimization_path_element {
     fcml_flags flags;
-	fcml_data_size attribute_size;
+	fcml_usize attribute_size;
 } fcml_ist_asm_opt_optimization_path_element;
 
 fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_16_32_bit_optimization_path_16[] = {
@@ -56,7 +56,7 @@ fcml_ist_asm_opt_optimization_path_element fcml_iarr_asm_opt_64_bit_optimization
 	{ FCML_EN_ASF_16, FCML_DS_16 }
 };
 
-fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_flags flags, fcml_int path_length, fcml_ist_asm_opt_optimization_path_element *path, fcml_data_size *attribute_dest ) {
+fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_flags flags, fcml_int path_length, fcml_ist_asm_opt_optimization_path_element *path, fcml_usize *attribute_dest ) {
 	int i, count = 0;
 	for( i = 0; i < path_length; i++ ) {
 		fcml_ist_asm_opt_optimization_path_element *element = &(path[i]);
@@ -67,7 +67,7 @@ fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path( fcml_flags flags, fc
 	return count;
 }
 
-fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_flags flags, fcml_uint16_t opt_flags, fcml_data_size attribute_size, fcml_data_size *attribute_dest ) {
+fcml_int fcml_ifn_asm_opt_try_setting_attribute_size( fcml_flags flags, fcml_uint16_t opt_flags, fcml_usize attribute_size, fcml_usize *attribute_dest ) {
 	if( ( flags & opt_flags ) || ( flags == FCML_EN_ASF_ANY ) ) {
 		*attribute_dest = attribute_size;
 		return 1;
@@ -79,8 +79,8 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
 
 	fcml_ceh_error error = FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 
-	fcml_data_size easa[2];
-	fcml_data_size eosa[3];
+	fcml_usize easa[2];
+	fcml_usize eosa[3];
 
 	fcml_int easa_count = 0;
 	fcml_int eosa_count = 0;
@@ -102,7 +102,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
     	easa[easa_count++] = ds_flags->easa;
     } else {
     	/* Maybe user has already forced any address size attribute to be chosen?*/
-    	fcml_data_size attr_size = 0;
+    	fcml_usize attr_size = 0;
     	fcml_flags attr_size_flag = 0;
 		switch( opt_flags & 0x000F ) {
 		case FCML_OPTF_ASA_16:
@@ -130,7 +130,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
 		eosa[eosa_count++] = ds_flags->eosa;
 	} else {
 		/* Maybe user has already forced any address size attribute to be chosen?*/
-		fcml_data_size attr_size = 0;
+		fcml_usize attr_size = 0;
 		fcml_flags attr_size_flag = 0;
 		switch( opt_flags & 0x00F0 ) {
 		case FCML_OPTF_OSA_16:

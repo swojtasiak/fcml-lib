@@ -27,7 +27,7 @@ void fcml_fn_pu_parse_float( const fcml_char *str, fcml_st_ast_val_float *float_
 	float_value->overflow = ( errno == ERANGE ) ? FCML_TRUE : FCML_FALSE;
 }
 
-void fcml_fn_pu_parse_register( fcml_en_register type, fcml_data_size size, fcml_uint8_t reg, fcml_bool x64_exp, fcml_st_register *reg_dest ) {
+void fcml_fn_pu_parse_register( fcml_en_register type, fcml_usize size, fcml_uint8_t reg, fcml_bool x64_exp, fcml_st_register *reg_dest ) {
 	reg_dest->type = type;
 	reg_dest->size = size;
 	reg_dest->reg = reg;

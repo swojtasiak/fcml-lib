@@ -18,10 +18,10 @@ typedef struct fcml_st_mp_mnemonic {
     fcml_bool is_classic;
     fcml_bool is_mode_mem_only;
     fcml_bool is_mode_reg_only;
-    fcml_data_size is_byte_ds;
-    fcml_data_size is_full_ds;
-    fcml_data_size supported_osa;
-    fcml_data_size supported_asa;
+    fcml_usize is_byte_ds;
+    fcml_usize is_full_ds;
+    fcml_usize supported_osa;
+    fcml_usize supported_asa;
     fcml_nuint8_t suffix;
     fcml_nuint8_t pseudo_op;
     fcml_nuint8_t memory_data;
@@ -38,10 +38,10 @@ typedef struct fcml_st_mp_config {
 	fcml_bool use_shortcut;
 	fcml_nuint8_t pseudo_opcode;
 	fcml_nuint8_t suffix;
-	fcml_data_size effective_osa;
-	fcml_data_size effective_asa;
+	fcml_usize effective_osa;
+	fcml_usize effective_asa;
 	fcml_bool is_memory;
-	fcml_data_size memory_data_size;
+	fcml_usize memory_data_size;
 	fcml_nuint8_t l;
 } fcml_st_mp_config;
 

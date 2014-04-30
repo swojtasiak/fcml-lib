@@ -68,7 +68,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_intel( fcml_st_render_config *
 }
 
 
-fcml_ceh_error fcml_ifn_rend_size_operator_intel( fcml_data_size size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
+fcml_ceh_error fcml_ifn_rend_size_operator_intel( fcml_usize size_operator, fcml_string buffer, fcml_usize buffer_len, fcml_bool is_media_instruction ) {
 
     fcml_string size_operator_printable = NULL;
 

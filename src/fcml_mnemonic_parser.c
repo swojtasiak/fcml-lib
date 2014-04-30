@@ -87,7 +87,7 @@ fcml_ceh_error fcml_ifn_mp_dup_mnemonic( fcml_st_mp_mnemonic *parsed_mnemonic, f
     return error;
 }
 
-fcml_ceh_error fcml_ifn_parse_attribute_size_flag( fcml_char flag_code, fcml_data_size *flags ) {
+fcml_ceh_error fcml_ifn_parse_attribute_size_flag( fcml_char flag_code, fcml_usize *flags ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     switch( flag_code ) {
     case 'w':
@@ -331,7 +331,7 @@ fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_s
     return error;
 }
 
-fcml_bool fcml_ifn_mp_is_attribute_size_supported( fcml_data_size supported_attribute_size, fcml_data_size attribute_size ) {
+fcml_bool fcml_ifn_mp_is_attribute_size_supported( fcml_usize supported_attribute_size, fcml_usize attribute_size ) {
     if( supported_attribute_size == FCML_DS_UNDEF ) {
         return FCML_TRUE;
     }
