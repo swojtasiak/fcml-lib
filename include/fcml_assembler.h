@@ -147,7 +147,7 @@ LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *
  * point of view, so it has to be prepared in the right way in order to allow assembler to
  * reuse it correctly. It is up to the library user to allocate space for the holder itself.
  * This function is only responsible for cleaning the structure correctly and preparing it
- * for first assembling process. Notice that assembler has to clean the result holder at the
+ * for the first assembling process. Notice that assembler has to clean the result holder at the
  * beginning so you can not pass an uninitialized memory block because it can even cause
  * a crash due to illegal memory access.
  *
@@ -159,7 +159,7 @@ LIB_EXPORT void LIB_CALL fcml_fn_assembler_result_prepare( fcml_st_assembler_res
  * Cleans result holder.
  * Frees all memory blocks allocated by the assembler and held inside the result holder (Instructions, errors etc.).
  * Notice that result holder itself is not freed and can be even safety reused after call to this function.
- * In fact this function is also called internally by assembler in order to clean result holder before
+ * In fact this function is also called internally by the assembler in order to clean result holder before
  * reusing it.
  * @param result Result holder to clean.
  */
