@@ -1,8 +1,27 @@
 /*
- * fcml_types.h
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 02-03-2013
- *      Author: tAs
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/** @file fcml_symbols.h
+ * Types declarations.
+ *
+ * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
+ * This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_TYPES_H_
@@ -38,6 +57,7 @@
 
 #include "fcml_lib_export.h"
 
+/** Used to code literal strings. It will be useful if FCML supports UNICODE in the future.  */
 #define FCML_TEXT(x)	x
 
 #ifdef FCML_MSCC

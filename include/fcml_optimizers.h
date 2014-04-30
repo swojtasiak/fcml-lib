@@ -21,7 +21,7 @@
  * API for assembler optimizers. For more details about optimizers see FCML manual.
  *
  * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
- * @license This project is released under the GNU Lesser General Public License.
+ * This project is released under the GNU Lesser General Public License.
  */
 #ifndef FCML_OPTIMIZERS_H_
 #define FCML_OPTIMIZERS_H_

@@ -20,7 +20,7 @@
 /** @file fcml_disassembler.h
  * Structures and functions declarations related to FCML disassembler.
  * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
- * @license This project is released under the GNU Lesser General Public License.
+ * This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_DISASSEMBLER_H_

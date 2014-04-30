@@ -22,7 +22,7 @@
  * Functions and structures used for developing new dialects are not exposed as public API.
  * If you are interested in implementing another dialect you have to use internal headers.
  * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
- * @license This project is released under the GNU Lesser General Public License.
+ * This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_DIALECT_H_

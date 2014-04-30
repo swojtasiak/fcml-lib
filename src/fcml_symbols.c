@@ -35,6 +35,10 @@ fcml_st_symbol_table LIB_CALL fcml_fn_symbol_table_alloc() {
 	return symbol_table;
 }
 
+fcml_st_symbol* LIB_CALL fcml_fn_symbol_alloc() {
+	return (fcml_st_symbol*)fcml_fn_env_memory_alloc( sizeof( fcml_st_symbol ) );
+}
+
 fcml_ceh_error LIB_CALL fcml_fn_symbol_add( fcml_st_symbol_table symbol_table, fcml_st_symbol *symbol ) {
 	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
 	fcml_fn_coll_map_put( (fcml_coll_map)symbol_table, symbol->symbol, symbol, &error );

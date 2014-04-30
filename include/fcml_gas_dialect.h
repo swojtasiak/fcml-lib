@@ -20,7 +20,7 @@
 /** @file fcml_gas_dialect.h
  * AT&T dialect implementation.
  * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
- * @license This project is released under the GNU Lesser General Public License.
+ * This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_ASM_DIALECT_GAS_H_

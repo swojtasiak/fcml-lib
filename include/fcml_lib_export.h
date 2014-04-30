@@ -30,7 +30,7 @@
  * in fact you should define the symbol before including anything from the FCML library.
  *
  * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
- * @license This project is released under the GNU Lesser General Public License.
+ * This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_LIB_EXPORT_H_

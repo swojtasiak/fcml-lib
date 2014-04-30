@@ -22,7 +22,7 @@
  * API for instruction choosers.
  *
  * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
- * @license This project is released under the GNU Lesser General Public License.
+ * This project is released under the GNU Lesser General Public License.
  */
 
 #ifndef FCML_CHOOSER_H_
