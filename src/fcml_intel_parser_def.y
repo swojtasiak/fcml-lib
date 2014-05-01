@@ -13,7 +13,7 @@
     #define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
     
     /* Macro responsible for adding error messages to result. */
-    #define ADD_ERROR_MSG(x) { yyerror(pd, x); }
+    #define ADD_ERROR_MSG(x) { yyerror( pd, x ); }
 	
 %}
 
