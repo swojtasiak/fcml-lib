@@ -14,10 +14,12 @@
 #include <fcml_intel_dialect.h>
 #include <fcml_lag_assembler.h>
 
-void fcml_tf_lag_assembler_suite_init(void) {
+fcml_bool fcml_tf_lag_assembler_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_lag_assembler_suite_cleanup(void) {
+fcml_bool fcml_tf_lag_assembler_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 struct fcml_ist_t_lag_test_case {

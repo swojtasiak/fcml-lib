@@ -9,6 +9,9 @@
 %option noyywrap
 %option nounput
 %option noinput
+%option noyyalloc
+%option noyyrealloc
+%option noyyfree
 %option batch
 %option nodefault
 %option never-interactive

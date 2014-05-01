@@ -56,10 +56,12 @@ fcml_bool fcml_ifn_render_test_disassemble_gas( fcml_st_disassembler_result *das
 	return FCML_TRUE;
 }
 
-void fcml_tf_render_suite_init(void) {
+fcml_bool fcml_tf_render_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_render_suite_cleanup(void) {
+fcml_bool fcml_tf_render_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 void fcml_fn_render_paddings_leading_zeroes_intel(void) {

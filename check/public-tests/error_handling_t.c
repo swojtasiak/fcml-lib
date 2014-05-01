@@ -84,10 +84,12 @@ fcml_bool fcml_tf_check_errors( fcml_string mnemonic, fcml_string message, fcml_
 
 /* Test suite initialization. */
 
-void fcml_tf_error_handling_suite_init(void) {
+fcml_bool fcml_tf_error_handling_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_error_handling_suite_cleanup(void) {
+fcml_bool fcml_tf_error_handling_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 /* Tests. */

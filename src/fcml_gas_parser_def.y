@@ -4,23 +4,16 @@
 
 %{
 	#include <stdio.h>
-	#include <inttypes.h>
-	#include "fcml_parser_data.h"
-	#include "fcml_apc_ast.h"
+	
 	#include "fcml_parser_utils.h"
 	
 	void gas_error( struct fcml_st_parser_data *pd, const char *error );
 	
 	/* Macro responsible for handling 'Out of memory' errors. */
-	#define HANDLE_ERRORS(x) if( !x ) { \
-		yyerror(pd, "Out of memory."); \
-		YYERROR; \
-	}
+	#define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
 	
 	/* Macro responsible for adding error messages to result. */
-	#define ADD_ERROR_MSG(x) { \
-		yyerror(pd, x); \
-	}
+	#define ADD_ERROR_MSG(x) { yyerror(pd, x); }
 	
 %}
 

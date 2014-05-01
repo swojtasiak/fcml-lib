@@ -12,10 +12,12 @@
 
 #include <fcml_common.h>
 
-void fcml_tf_mnemonic_parser_suite_init(void) {
+fcml_bool fcml_tf_mnemonic_parser_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_mnemonic_parser_suite_cleanup(void) {
+fcml_bool fcml_tf_mnemonic_parser_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 void fcml_tf_mnemonic_parser_test_parse_mnemonics(void) {

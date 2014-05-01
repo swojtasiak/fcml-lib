@@ -20,16 +20,18 @@
 fcml_st_dialect *internal_dialect_intel = NULL;
 fcml_st_parser_context internal_intel_context = {0};
 
-void fcml_tf_parser_suite_init(void) {
+fcml_bool fcml_tf_parser_suite_init(void) {
 	fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT, &internal_dialect_intel );
 	internal_intel_context.dialect = internal_dialect_intel;
+	return internal_dialect_intel != NULL;
 }
 
-void fcml_tf_parser_suite_cleanup(void) {
+fcml_bool fcml_tf_parser_suite_cleanup(void) {
 	if( internal_dialect_intel ) {
 		fcml_fn_dialect_free( internal_dialect_intel );
 	}
 	fcml_fn_symbol_table_free( internal_intel_context.symbol_table );
+	return FCML_TRUE;
 }
 
 void fcml_tf_parser_int_parse_test1(void) {

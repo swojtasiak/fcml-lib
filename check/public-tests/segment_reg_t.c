@@ -15,10 +15,12 @@
 
 #include "instructions_base_t.h"
 
-void fcml_tf_prefixes_segment_reg_suite_init(void) {
+fcml_bool fcml_tf_prefixes_segment_reg_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_prefixes_segment_reg_suite_cleanup(void) {
+fcml_bool fcml_tf_prefixes_segment_reg_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 void fcml_fn_segment_reg(void) {

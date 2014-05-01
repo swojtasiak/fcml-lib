@@ -80,7 +80,7 @@ extern int gas_debug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 79 "fcml_gas_parser_def.y"
+#line 72 "fcml_gas_parser_def.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;

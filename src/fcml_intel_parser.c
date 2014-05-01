@@ -10,7 +10,7 @@
 #include "fcml_env_int.h"
 #include "fcml_common.h"
 #include <fcml_errors.h>
-#include "fcml_parser_data.h"
+#include "fcml_parser_utils.h"
 #include "fcml_intel_parser_def.h"
 #include "fcml_intel_lexer.h"
 #include "fcml_intel_parser.h"
@@ -20,6 +20,18 @@
 void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
 	/* Stores parser error into standard container.*/
 	fcml_fn_ceh_add_error( &(pd->errors), (const fcml_string)error, FCML_CEH_MEC_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR );
+}
+
+void *intel_alloc (yy_size_t size ,yyscan_t yyscanner ) {
+	return fcml_fn_env_memory_alloc( size );
+}
+
+void *intel_realloc (void *ptr,yy_size_t size,yyscan_t yyscanner ) {
+	return fcml_fn_env_memory_realloc( ptr, size );
+}
+
+void intel_free (void *ptr ,yyscan_t yyscanner ) {
+	return fcml_fn_env_memory_free( ptr );
 }
 
 fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast ) {

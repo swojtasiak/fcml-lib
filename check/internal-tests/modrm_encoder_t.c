@@ -12,10 +12,12 @@
 #include <fcml_errors.h>
 #include <fcml_common.h>
 
-void fcml_tf_modrm_encoder_suite_init(void) {
+fcml_bool fcml_tf_modrm_encoder_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_modrm_encoder_suite_cleanup(void) {
+fcml_bool fcml_tf_modrm_encoder_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 /* [EAX]*/

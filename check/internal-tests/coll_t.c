@@ -17,10 +17,12 @@ void fcml_itf_coll_map_entry_handler_test( fcml_ptr key, fcml_ptr value, fcml_pt
 	last_free_value = value;
 }
 
-void fcml_tf_coll_suite_init(void) {
+fcml_bool fcml_tf_coll_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_coll_suite_cleanup(void) {
+fcml_bool fcml_tf_coll_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 void fcml_tf_coll_test_put_the_same_key(void) {

@@ -15,6 +15,7 @@
 
 /* Memory. */
 fcml_ptr fcml_fn_env_memory_alloc( fcml_usize size );
+fcml_ptr fcml_fn_env_memory_realloc( fcml_ptr ptr, fcml_usize size );
 fcml_ptr fcml_fn_env_memory_alloc_clear( fcml_usize size );
 void fcml_fn_env_memory_copy( fcml_ptr dest, const fcml_ptr src, fcml_usize len );
 void fcml_fn_env_memory_clear( fcml_ptr src, fcml_usize len );

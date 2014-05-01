@@ -9,10 +9,12 @@
 #include "instructions_i_t.h"
 #include "instructions_base_t.h"
 
-void fcml_tf_instructions_i_suite_init(void) {
+fcml_bool fcml_tf_instructions_i_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_instructions_i_suite_cleanup(void) {
+fcml_bool fcml_tf_instructions_i_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 void fcml_tf_instruction_IDIV(void) {

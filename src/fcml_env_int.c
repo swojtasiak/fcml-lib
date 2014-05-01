@@ -18,22 +18,36 @@ static void *fcml_fn_env_default_memory_alloc( fcml_usize size ) {
     return malloc(size);
 }
 
+static void *fcml_fn_env_default_memory_realloc( fcml_ptr ptr, fcml_usize size ) {
+    return realloc( ptr, size);
+}
+
 static void fcml_fp_env_default_memory_free( void *memory_block ) {
     free( memory_block );
 }
 
 static fcml_fp_env_memory_alloc_handler fcml_gl_fp_memory_alloc = fcml_fn_env_default_memory_alloc;
 
+static fcml_fp_env_memory_realloc_handler fcml_gl_fp_memory_realloc = fcml_fn_env_default_memory_realloc;
+
 static fcml_fp_env_memory_free_handler fcml_gl_fp_memory_free = fcml_fp_env_default_memory_free;
 
-fcml_fp_env_memory_alloc_handler LIB_CALL fcml_fn_env_register_memory_alloc_handler( fcml_fp_env_memory_alloc_handler function_pointer ) {
+fcml_fp_env_memory_alloc_handler LIB_CALL fcml_fn_env_register_memory_alloc_handler( fcml_fp_env_memory_alloc_handler handler ) {
 	fcml_fp_env_memory_alloc_handler tmp = fcml_gl_fp_memory_alloc;
-    fcml_gl_fp_memory_alloc = function_pointer;
+    fcml_gl_fp_memory_alloc = handler;
     return tmp;
 }
 
-void fcml_fn_env_register_memory_free_handler( fcml_fp_env_memory_free_handler function_pointer ) {
-    fcml_gl_fp_memory_free = function_pointer;
+fcml_fp_env_memory_realloc_handler LIB_CALL fcml_fn_env_register_memory_realloc_handler( fcml_fp_env_memory_realloc_handler handler ) {
+	fcml_fp_env_memory_realloc_handler tmp = fcml_gl_fp_memory_realloc;
+	fcml_gl_fp_memory_realloc = handler;
+	return tmp;
+}
+
+fcml_fp_env_memory_free_handler LIB_CALL fcml_fn_env_register_memory_free_handler( fcml_fp_env_memory_free_handler handler ) {
+	fcml_fp_env_memory_free_handler tmp = fcml_gl_fp_memory_free;
+    fcml_gl_fp_memory_free = handler;
+    return tmp;
 }
 
 fcml_ptr fcml_fn_env_memory_alloc_clear( fcml_usize size ) {
@@ -46,6 +60,10 @@ fcml_ptr fcml_fn_env_memory_alloc_clear( fcml_usize size ) {
 
 fcml_ptr fcml_fn_env_memory_alloc( fcml_usize size ) {
     return fcml_gl_fp_memory_alloc(size);
+}
+
+fcml_ptr fcml_fn_env_memory_realloc( fcml_ptr ptr, fcml_usize size ) {
+	return fcml_gl_fp_memory_realloc( ptr, size );
 }
 
 void fcml_fn_env_memory_copy( fcml_ptr dest, const fcml_ptr src, fcml_usize len ) {

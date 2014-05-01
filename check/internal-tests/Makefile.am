@@ -20,7 +20,9 @@ fcml_internal_check_SOURCES = main.c \
 	utils_t.c \
 	utils_t.h \
 	lag_assembler_t.c \
-	lag_assembler_t.h
+	lag_assembler_t.h \
+	env_t.c \
+	env_t.h
 
 # Include all tested units directly to the executable. 
 

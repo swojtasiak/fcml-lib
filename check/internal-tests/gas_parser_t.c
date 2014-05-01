@@ -27,18 +27,20 @@
 fcml_st_dialect *internal_dialect_gas = NULL;
 fcml_st_parser_context internal_gas_context = {0};
 
-void fcml_tf_gas_parser_suite_init(void) {
+fcml_bool fcml_tf_gas_parser_suite_init(void) {
 	fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT, &internal_dialect_gas );
 	internal_gas_context.dialect = internal_dialect_gas;
+	return internal_dialect_gas != NULL;
 }
 
-void fcml_tf_gas_parser_suite_cleanup(void) {
+fcml_bool fcml_tf_gas_parser_suite_cleanup(void) {
     if( internal_dialect_gas ) {
         fcml_fn_dialect_free( internal_dialect_gas );
     }
     if( internal_gas_context.symbol_table ) {
     	fcml_fn_symbol_table_free( internal_gas_context.symbol_table );
     }
+    return FCML_TRUE;
 }
 
 void fcml_tf_parser_gas_parse_test1(void) {

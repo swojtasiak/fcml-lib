@@ -1,6 +1,7 @@
 LIBRARY	"fcml"
 EXPORTS
     fcml_fn_env_register_memory_alloc_handler
+    fcml_fn_env_register_memory_free_handler
     fcml_fn_dialect_init_gas
     fcml_fn_dialect_init_intel
     fcml_fn_dialect_free

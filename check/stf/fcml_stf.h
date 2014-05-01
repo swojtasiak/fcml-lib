@@ -37,17 +37,18 @@
 #include <fcml_types.h>
 #include <string.h>
 
-typedef void (*fcml_stf_test_function)(void);
+typedef fcml_bool (*fcml_stf_test_init_function)(void);
+typedef void (*fcml_stf_test_case_function)(void);
 
 typedef struct fcml_stf_test_case {
 	fcml_string name;
-	fcml_stf_test_function test_function;
+	fcml_stf_test_case_function test_function;
 } fcml_stf_test_case;
 
 typedef struct fcml_stf_test_suite {
 	fcml_string name;
-	fcml_stf_test_function init_function;
-	fcml_stf_test_function cleanup_function;
+	fcml_stf_test_init_function init_function;
+	fcml_stf_test_init_function cleanup_function;
 	fcml_stf_test_case *test_cases;
 } fcml_stf_test_suite;
 

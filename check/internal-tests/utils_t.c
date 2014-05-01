@@ -10,10 +10,12 @@
 
 #include <fcml_utils.h>
 
-void fcml_tf_utils_suite_init(void) {
+fcml_bool fcml_tf_utils_suite_init(void) {
+	return FCML_TRUE;
 }
 
-void fcml_tf_utils_suite_cleanup(void) {
+fcml_bool fcml_tf_utils_suite_cleanup(void) {
+	return FCML_TRUE;
 }
 
 void fcml_fn_utils_test_sign_convert_imm_to_int8(void) {
