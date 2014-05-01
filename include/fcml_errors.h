@@ -42,7 +42,7 @@ enum fcml_en_ceh_error_globals {
 	FCML_CEH_GEC_NO_ERROR = 0,
 	/** There is not enough memory to complete operation. */
 	FCML_CEH_GEC_OUT_OF_MEMORY = 1,
-	/** Syntax error or instruction exceeds max length. */
+	/** Invalid function arguments. */
 	FCML_CEH_GEC_INVALID_INPUT = 2,
 	/** An internal error occurred. Enable tracing in order to get more detailed information. */
 	FCML_CEH_GEC_INTERNAL_ERROR = 3,

@@ -1,8 +1,20 @@
 /*
- * fcml_parser_common.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Nov 14, 2013
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "fcml_parser.h"
@@ -19,6 +31,7 @@
 fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result_out ) {
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)context->dialect;
 	if( dialect_context_int->instruction_parser ) {
+		/* Call parser instance associated with given dialect. */
 		return fcml_fn_parse_to_cif( context, instruction, result_out );
 	} else {
 		/* Dialect not initialized correctly.*/

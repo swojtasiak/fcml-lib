@@ -6,3 +6,5 @@ Makefile.in
 /.libs
 /.deps
 /fcml_internal_check
+/*.log
+/*.trs

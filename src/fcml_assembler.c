@@ -182,7 +182,7 @@ fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *context, co
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
-	// Check if there is something already available in result, and free it in such cache.
+	// Check if there is something already available in the result and free it in such a cache.
 	fcml_fn_assembler_result_free( result );
 
 	fcml_ceh_error error = fcml_ifn_assemble_core( context, instruction, result );

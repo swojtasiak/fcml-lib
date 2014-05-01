@@ -73,13 +73,15 @@ fcml_bool LIB_CALL_STF fcml_stf_run_tests( fcml_string test_name, fcml_stf_test_
 		/* Check if there are any test cases for current suite.*/
 		if( test_case ) {
 
-			/* Initialize test suit.*/
-			if( suite->init_function ) {
-				suite->init_function();
-			}
-
 			/* True if at least one test failed.*/
 			fcml_bool test_failed = FCML_FALSE;
+
+			/* Initialize test suit.*/
+			if( suite->init_function ) {
+				if( !suite->init_function() ) {
+					test_failed = FCML_TRUE;
+				}
+			}
 
 			/* Last test which is also an array guard has NULL name.*/
 			while( test_case->name ) {
@@ -109,16 +111,18 @@ fcml_bool LIB_CALL_STF fcml_stf_run_tests( fcml_string test_name, fcml_stf_test_
 				test_case++;
 			}
 
+			/* Cleanup test suite.*/
+			if( suite->cleanup_function ) {
+				if( !suite->cleanup_function() ) {
+					test_failed = FCML_TRUE;
+				}
+			}
+
 			/* Count suites.*/
 			if( test_failed ) {
 				fcml_gl_stf_test_result.suites.failed++;
 			} else {
 				fcml_gl_stf_test_result.suites.passed++;
-			}
-
-			/* Cleanup test suite.*/
-			if( suite->cleanup_function ) {
-				suite->cleanup_function();
 			}
 
 		} else {
