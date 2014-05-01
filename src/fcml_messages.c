@@ -9,7 +9,7 @@
 
 #include "fcml_messages.h"
 #include "fcml_ceh.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 
 #define FCML_MAX_MESSAGE_LENGTH		512
 

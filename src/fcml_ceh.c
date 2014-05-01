@@ -6,7 +6,7 @@
  */
 
 #include <string.h>
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_ceh.h"
 
 void fcml_fn_ceh_free_error_info( fcml_st_ceh_error_info *error_info ) {

@@ -8,7 +8,7 @@
 #include <fcml_symbols.h>
 #include "fcml_parser_int.h"
 #include "fcml_messages.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_dialect_int.h"
 
 fcml_ceh_error fcml_fn_parser_add_symbol_to_symbol_table( fcml_st_ceh_error_container *errors, fcml_st_symbol_table symbol_table, fcml_st_symbol *symbol, fcml_bool allow_override ) {

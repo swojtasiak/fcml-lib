@@ -9,7 +9,7 @@
 #define FCML_COMMON_LEX_H_
 
 #include "fcml_common.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_types.h"
 #include "fcml_parser_utils.h"
 

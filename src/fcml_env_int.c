@@ -5,8 +5,9 @@
  *      Author: tAs
  */
 
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 
+#include <fcml_env.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,8 +26,10 @@ static fcml_fp_env_memory_alloc_handler fcml_gl_fp_memory_alloc = fcml_fn_env_de
 
 static fcml_fp_env_memory_free_handler fcml_gl_fp_memory_free = fcml_fp_env_default_memory_free;
 
-void fcml_fn_env_register_memory_alloc_handler( fcml_fp_env_memory_alloc_handler function_pointer ) {
+fcml_fp_env_memory_alloc_handler LIB_CALL fcml_fn_env_register_memory_alloc_handler( fcml_fp_env_memory_alloc_handler function_pointer ) {
+	fcml_fp_env_memory_alloc_handler tmp = fcml_gl_fp_memory_alloc;
     fcml_gl_fp_memory_alloc = function_pointer;
+    return tmp;
 }
 
 void fcml_fn_env_register_memory_free_handler( fcml_fp_env_memory_free_handler function_pointer ) {

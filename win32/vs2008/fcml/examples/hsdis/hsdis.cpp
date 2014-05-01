@@ -108,9 +108,9 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 	fcml_ceh_error error;
 	
 	if( app.config.intel ) {
-		error = fcml_fn_intel_dialect_init( FCML_INTEL_DIALECT_CF_DEFAULT, &(app.dialect) );
+		error = fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT, &(app.dialect) );
 	} else {
-		error = fcml_fn_gas_dialect_init( FCML_GAS_DIALECT_CF_DEFAULT, &(app.dialect) );
+		error = fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT, &(app.dialect) );
 	}
 
 	if( error ) {
@@ -122,7 +122,7 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 	error = fcml_fn_disassembler_init( app.dialect, &(app.disassembler) );
 	if( error ) {
 		(*printf_callback)(printf_stream, "Fatal error: Can not initialize disassembler. Error code: %d", error );
-		fcml_fn_intel_dialect_free( app.dialect );
+		fcml_fn_dialect_free( app.dialect );
 		return start;
 	}
 
@@ -139,7 +139,7 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 	context.configuration.short_forms = FCML_FALSE;
 	context.configuration.extend_disp_to_asa = FCML_TRUE;
 	context.disassembler = app.disassembler;
-	context.entry_point.addr_form = ADDR_FORM;
+	context.entry_point.op_mode = ADDR_FORM;
 
 	/* Prepares renderer configuration. */
 
@@ -149,13 +149,9 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 	while ( ip < (uintptr_t) end ) {
 
 		context.code = (fcml_ptr)ip;
-		context.code_length = (fcml_data_size)code_length;
+		context.code_length = (fcml_usize)code_length;
 
-#if __x86_64__
-		context.entry_point.ip.rip = (fcml_uint64_t)ip;
-#else
-		context.entry_point.ip.eip = (fcml_uint32_t)ip;
-#endif
+		context.entry_point.ip = ip;
 
 		/* Inform internal disassembler about newly assembled instruction. */
 		(*event_callback)(event_stream, "insn", (void*) ip);
@@ -166,7 +162,7 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 			break;
 		}
 
-		fcml_data_size code_len = disassembler_result.instruction_details.instruction_size;
+		fcml_usize code_len = disassembler_result.instruction_details.instruction_size;
 
 		// Skip to next instruction.
 		ip += code_len;
@@ -193,11 +189,7 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 
 	fcml_fn_disassembler_free( app.disassembler );
 
-	if( app.config.intel ) {
-		fcml_fn_intel_dialect_free( app.dialect );
-	} else {
-		fcml_fn_gas_dialect_free( app.dialect );
-	}
+	fcml_fn_dialect_free( app.dialect );
 
 	return (void*) ip;
 

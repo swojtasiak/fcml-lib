@@ -6,7 +6,7 @@
  */
 
 #include "fcml_def.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 
 typedef fcml_ptr (*fcml_fnp_def_addr_mode_args_decoder)( fcml_uint32_t encoded_addr_mode );
 

@@ -371,6 +371,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\src\fcml_assembler_int.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\src\fcml_ceh.c"
 					>
 				</File>
@@ -428,6 +432,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\src\fcml_def_enc.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\fcml_dialect.c"
 					>
 				</File>
 				<File
@@ -539,6 +547,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\src\fcml_lag_assembler.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\src\fcml_messages.c"
 					>
 				</File>
@@ -587,6 +599,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\src\fcml_parser_int.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\fcml_parser_int.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\src\fcml_parser_utils.c"
 					>
 				</File>
@@ -612,6 +632,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\src\fcml_stream.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\fcml_symbols.c"
 					>
 				</File>
 				<File
@@ -677,7 +701,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\include\fcml_instructions.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\include\fcml_intel_dialect.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\include\fcml_lag_assembler.h"
 					>
 				</File>
 				<File
@@ -694,6 +726,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\include\fcml_renderer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\include\fcml_symbols.h"
 					>
 				</File>
 				<File

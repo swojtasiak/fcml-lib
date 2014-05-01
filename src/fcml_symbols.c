@@ -7,9 +7,9 @@
 
 #include <fcml_symbols.h>
 #include "fcml_coll.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 
-void fcml_fn_symbol_free( fcml_st_symbol *symbol ) {
+void LIB_CALL fcml_fn_symbol_free( fcml_st_symbol *symbol ) {
 	if( symbol ) {
 		if( symbol->symbol ) {
 			fcml_fn_env_str_strfree( symbol->symbol );

@@ -73,7 +73,6 @@
 #line 5 "fcml_intel_parser_def.y"
 
 	#include <stdio.h>
-	#include <inttypes.h>
 	#include "fcml_parser_data.h"
 	#include "fcml_apc_ast.h"
 	#include "fcml_parser_utils.h"

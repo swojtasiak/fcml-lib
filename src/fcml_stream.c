@@ -7,7 +7,7 @@
 
 #include "fcml_stream.h"
 
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 
 void fcml_fn_stream_seek( fcml_st_memory_stream *stream, fcml_int32_t offset, fcml_en_stream_seek_type type ) {
     switch(type) {

@@ -9,17 +9,11 @@
 #define FCML_ENVIRONMENT_H_
 
 #include <stdarg.h>
+#include <fcml_env.h>
 
 #include "fcml_types.h"
 
-/* Memory allocator function pointer. */
-typedef void *(*fcml_fp_env_memory_alloc_handler)( fcml_usize size );
-/* Memory deallocator function pointer. */
-typedef void (*fcml_fp_env_memory_free_handler)( fcml_ptr memory_block );
-
 /* Memory. */
-void fcml_fn_env_register_memory_alloc_handler( fcml_fp_env_memory_alloc_handler function_pointer );
-void fcml_fn_env_register_memory_free_handler( fcml_fp_env_memory_free_handler function_pointer );
 fcml_ptr fcml_fn_env_memory_alloc( fcml_usize size );
 fcml_ptr fcml_fn_env_memory_alloc_clear( fcml_usize size );
 void fcml_fn_env_memory_copy( fcml_ptr dest, const fcml_ptr src, fcml_usize len );

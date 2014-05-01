@@ -10,7 +10,7 @@
 #include <fcml_errors.h>
 #include "fcml_parser_int.h"
 #include "fcml_assembler_int.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_coll.h"
 #include "fcml_apc_ast.h"
 #include "fcml_messages.h"
@@ -158,7 +158,7 @@ fcml_ist_lag_instruction *fcml_ifn_lag_add_lag_instruction_to_context( fcml_ist_
 }
 
 /* Free lag instruction. */
-void fcml_ifn_lag_free_instruction( fcml_ist_lag_instruction *instruction, fcml_st_symbol_table *symbol_table ) {
+void fcml_ifn_lag_free_instruction( fcml_ist_lag_instruction *instruction, fcml_st_symbol_table symbol_table ) {
 	if( instruction ) {
 		fcml_ist_lag_instruction *current = instruction;
 		while( current ) {
@@ -510,7 +510,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n( fcml_st_lag_assembler_context
 					/* Find undefined symbol. */
 					fcml_st_coll_list_element *element = lag_instruction->used_symbols->head;
 					while( element ) {
-						fcml_string symbol = element->item;
+						fcml_string symbol = (fcml_string)element->item;
 						if( fcml_fn_symbol_get( context->symbol_table, symbol ) == NULL ) {
 							fcml_fn_msg_add_error_message( &(processing_ctx->error_details.errors), FCML_MC_SEGMENT_UNDEFINED_SYMBOL,
 									FCML_CEH_MEC_ERROR_UNDEFINED_SYMBOL, FCML_EN_CEH_EL_ERROR, symbol );

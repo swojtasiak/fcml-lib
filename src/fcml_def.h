@@ -189,7 +189,7 @@ typedef struct fcml_st_def_instruction_desc {
 /* Operands encoding */
 
 #define FCML_IA_INSTRUCTION(i,x,y) 			{ i, NULL, x, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
-#define FCML_IA_MULTI_INSTRUCTION(i,x,y)	{ FCML_MULTI_INSTRUCTION( i ), x, FCML_EMPTY_MNEMONIC, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
+#define FCML_IA_MULTI_INSTRUCTION(i,x,y)	{ (fcml_en_instruction)FCML_MULTI_INSTRUCTION( i ), x, FCML_EMPTY_MNEMONIC, FCML_EN_IT_IA, ( sizeof( y ) / sizeof( struct fcml_st_def_addr_mode_desc ) ), y }
 
 #define FCML_REG_FIELD_NUMBER_OF_REGISTERS				8
 #define FCML_REG_FIELD_NUMBER_OF_CONDITIONS				16

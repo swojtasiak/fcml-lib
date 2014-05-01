@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include "fcml_coll.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_ceh.h"
 
 /* Bidirectional list.*/

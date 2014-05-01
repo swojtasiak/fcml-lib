@@ -8,7 +8,7 @@
 #include <string.h>
 #include <fcml_errors.h>
 #include <fcml_symbols.h>
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_apc_ast.h"
 #include "fcml_utils.h"
 #include "fcml_trace.h"

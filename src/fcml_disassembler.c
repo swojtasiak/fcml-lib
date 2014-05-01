@@ -14,7 +14,7 @@
 #include "fcml_coll.h"
 #include "fcml_decoding_tree.h"
 #include "fcml_def.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_hints.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_modrm.h"

@@ -9,7 +9,7 @@
 #include "fcml_stream.h"
 #include "fcml_dialect_int.h"
 #include "fcml_trace.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 
 fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result ) {
 

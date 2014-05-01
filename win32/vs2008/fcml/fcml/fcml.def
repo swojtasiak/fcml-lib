@@ -1,5 +1,6 @@
 LIBRARY	"fcml"
 EXPORTS
+    fcml_fn_env_register_memory_alloc_handler
     fcml_fn_dialect_init_gas
     fcml_fn_dialect_init_intel
     fcml_fn_dialect_free
@@ -8,6 +9,11 @@ EXPORTS
     fcml_fn_assembler_init
     fcml_fn_assembler_result_free
     fcml_fn_assembler_result_prepare
+    fcml_fn_assembler_instruction_free
+    fcml_fn_assembler_instruction_detach
+    fcml_fn_lag_assemble
+    fcml_fn_lag_assembler_result_prepare
+    fcml_fn_lag_assembler_result_free
     fcml_fn_disassemble
     fcml_fn_disassembler_free
     fcml_fn_disassembler_init
@@ -17,10 +23,21 @@ EXPORTS
     fcml_fn_parser_result_free
     fcml_fn_parser_result_prepare
     fcml_fn_render
+    fcml_fn_symbol_alloc
+    fcml_fn_symbol_free
+    fcml_fn_symbol_table_alloc
+    fcml_fn_symbol_add_raw
+    fcml_fn_symbol_add
+    fcml_fn_symbol_remove
+    fcml_fn_symbol_get
+    fcml_fn_symbol_remove_all
+    fcml_fn_symbol_table_free
     fcml_fn_asm_default_instruction_chooser
     fcml_fn_asm_no_instruction_chooser
     fcml_fn_asm_default_optimizer
     fcml_fn_cu_add_operand_hints
+    fcml_fn_cu_clone_instruction
+    fcml_fn_cu_free_instruction
     fcml_fn_cu_operand_addr_b_disp_16
     fcml_fn_cu_operand_addr_b_disp_32
     fcml_fn_cu_operand_addr_b_disp_64

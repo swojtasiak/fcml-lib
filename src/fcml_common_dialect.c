@@ -13,7 +13,7 @@
 #include "fcml_common.h"
 #include "fcml_dialect.h"
 #include "fcml_dialect_int.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_types.h"
 
 fcml_string fcml_ar_asm_dialect_reg_symbol_table[7][16] = {

@@ -18,7 +18,7 @@
 #include "fcml_mnemonic_parser.h"
 #include "fcml_ceh.h"
 #include "fcml_dialect_int.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_rend_utils.h"
 #include "fcml_stream.h"
 #include "fcml_utils.h"
@@ -300,7 +300,7 @@ fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml
 fcml_string fcml_ifn_rend_resolve_mnemonic_intel( fcml_st_disassembler_result *result ) {
 
 	fcml_st_instruction *instruction = &(result->instruction);
-	fcml_st_instruction_details *details = &(result->instruction);
+	fcml_st_instruction_details *details = (fcml_st_instruction_details*)&(result->instruction);
 
 	if( instruction->mnemonic ) {
 		// If there is mnemonic already available use it instead on resolving it again.

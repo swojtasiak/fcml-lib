@@ -56,8 +56,8 @@ nodist_fcml_internal_check_SOURCES = ../../src/fcml_intel_lexer.h \
 	../../src/fcml_disassembler.c \
 	../../src/fcml_encoding.c \
 	../../src/fcml_encoding.h \
-	../../src/fcml_env.c \
-	../../src/fcml_env.h \
+	../../src/fcml_env_int.c \
+	../../src/fcml_env_int.h \
 	../../src/fcml_gas_dialect.c \
 	../../src/fcml_gas_parser.c \
 	../../src/fcml_gas_parser.h \

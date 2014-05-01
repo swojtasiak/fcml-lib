@@ -279,7 +279,7 @@ LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_free( fcml_st_disassembler_
  * Frees disassembler instance.
  * Every disassembler instance manages some resources internally and as such it has
  * to be deallocated as soon as it is not needed anymore.
- * @param assembler Disassembler to be freed.
+ * @param disassembler Disassembler to be freed.
  */
 LIB_EXPORT void LIB_CALL fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
 

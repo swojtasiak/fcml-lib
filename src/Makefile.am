@@ -37,8 +37,8 @@ libfcml_la_SOURCES = fcml_intel_lexer.l \
 	fcml_disassembler.c \
 	fcml_encoding.c \
 	fcml_encoding.h \
-	fcml_env.c \
-	fcml_env.h \
+	fcml_env_int.c \
+	fcml_env_int.h \
 	fcml_gas_dialect.c \
 	fcml_gas_parser.c \
 	fcml_gas_parser.h \

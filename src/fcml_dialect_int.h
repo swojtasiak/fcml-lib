@@ -11,11 +11,11 @@
 #include <fcml_dialect.h>
 #include <fcml_common.h>
 #include <fcml_parser.h>
-#include <fcml_parser_int.h>
 #include <fcml_renderer.h>
 #include <fcml_assembler.h>
 #include <fcml_disassembler.h>
 
+#include "fcml_parser_int.h"
 #include "fcml_def.h"
 #include "fcml_stream.h"
 #include "fcml_mnemonic_parser.h"

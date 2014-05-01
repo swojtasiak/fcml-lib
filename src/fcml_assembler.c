@@ -13,7 +13,7 @@
 
 #include "fcml_dialect_int.h"
 #include "fcml_encoding.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_utils.h"
 #include "fcml_trace.h"
 

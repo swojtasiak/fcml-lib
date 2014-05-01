@@ -11,7 +11,7 @@
 
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_types.h"
 #include "fcml_utils.h"
 

@@ -19,7 +19,7 @@
 #include "fcml_dialect.h"
 #include "fcml_dialect_int.h"
 #include "fcml_disassembler.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_types.h"
 #include "fcml_utils.h"

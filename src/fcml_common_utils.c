@@ -7,7 +7,7 @@
 
 #include <fcml_common_utils.h>
 
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 
 fcml_st_register fcml_reg_AL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_AL, FCML_FALSE };
 fcml_st_register fcml_reg_AX = { FCML_REG_GPR, FCML_DS_16, FCML_REG_AX, FCML_FALSE };
@@ -434,7 +434,7 @@ fcml_st_operand LIB_CALL fcml_fn_cu_add_operand_hints( fcml_st_operand operand, 
     return operand;
 }
 
-fcml_st_instruction *fcml_fn_cu_clone_instruction( fcml_st_instruction *instruction ) {
+fcml_st_instruction* LIB_CALL fcml_fn_cu_clone_instruction( fcml_st_instruction *instruction ) {
 	if( !instruction ) {
 		return NULL;
 	}
@@ -451,7 +451,7 @@ fcml_st_instruction *fcml_fn_cu_clone_instruction( fcml_st_instruction *instruct
 	return new_inst;
 }
 
-void fcml_fn_cu_free_instruction( fcml_st_instruction *instruction ) {
+void LIB_CALL fcml_fn_cu_free_instruction( fcml_st_instruction *instruction ) {
 	if( instruction ) {
 		if( instruction->mnemonic ) {
 			fcml_fn_env_str_strfree( instruction->mnemonic );

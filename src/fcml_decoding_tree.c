@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_decoding_tree.h"
 #include "fcml_def.h"
 

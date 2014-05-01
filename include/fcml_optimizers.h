@@ -108,7 +108,7 @@ typedef fcml_ceh_error (LIB_CALL *fcml_fnp_asm_optimizer)( fcml_st_asm_optimizer
  * @param context Optimizer context.
  * @param ds_flags Current instruction processing details.
  * @param callback Callback used to continue processing for configuration prepared by optimizer.
- * @param args Arguments that should be passed to the callback.
+ * @param callback_args Arguments that should be passed to the callback.
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  */
 LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args );

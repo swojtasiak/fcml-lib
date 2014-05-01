@@ -9,7 +9,7 @@
 
 #include <stddef.h>
 
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include <fcml_errors.h>
 #include "fcml_utils.h"
 

@@ -8,7 +8,7 @@
 #ifndef FCML_MNEMONIC_PARSER_H_
 #define FCML_MNEMONIC_PARSER_H_
 
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
 

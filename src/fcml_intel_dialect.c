@@ -11,7 +11,7 @@
 #include "fcml_dialect_int.h"
 #include "fcml_intel_dialect.h"
 #include "fcml_mnemonic_parser.h"
-#include "fcml_env.h"
+#include "fcml_env_int.h"
 #include "fcml_coll.h"
 #include "fcml_intel_rend.h"
 #include "fcml_intel_parser.h"

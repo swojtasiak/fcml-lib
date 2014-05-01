@@ -7,7 +7,7 @@
 
 #include "modrm_encoder_t.h"
 
-#include <fcml_env.h>
+#include <fcml_env_int.h>
 #include <fcml_modrm_encoder.h>
 #include <fcml_errors.h>
 #include <fcml_common.h>
