@@ -21,6 +21,7 @@
 #include "mnemonic_parser_t.h"
 #include "lag_assembler_t.h"
 #include "env_t.h"
+#include "ceh_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fctl_si_modrm_encoder,
@@ -33,6 +34,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fcml_si_mnemonic_parser,
 	&fcml_si_lag_assembler,
 	&fcml_si_env,
+	&fcml_si_ceh,
 	FCML_STF_NULL_SUITE
 };
 

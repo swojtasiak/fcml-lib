@@ -1,13 +1,25 @@
 /*
- * fcml_coll.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 10-03-2013
- *      Author: tAs
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <string.h>
-#include "fcml_coll.h"
 #include "fcml_env_int.h"
+#include "fcml_coll.h"
 #include "fcml_ceh.h"
 
 /* Bidirectional list.*/
@@ -136,6 +148,13 @@ struct fcml_ist_coll_map {
 fcml_st_coll_map_descriptor fcml_coll_map_descriptor_string = { fcml_fnp_coll_map_key_hash_string, fcml_fnp_coll_map_key_equals_string, NULL, NULL };
 fcml_st_coll_map_descriptor fcml_coll_map_descriptor_uint32 = { fcml_fnp_coll_map_key_hash_uint32, fcml_fnp_coll_map_key_equals_uint32, NULL, NULL };
 
+fcml_uint32_t fcml_ifn_get_hash( fcml_st_coll_map_descriptor *descriptor, fcml_ptr key ) {
+	fcml_uint32_t hash = descriptor->hash_function( key );
+	hash ^= (hash >> 20) ^ (hash >> 12);
+	hash ^= (hash >> 7) ^ (hash >> 4);
+	return hash;
+}
+
 fcml_coll_map fcml_fn_coll_map_alloc( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, fcml_int *error ) {
 	return fcml_fn_coll_map_alloc_factor( descriptor, capacity, FCML_COLL_MAP_DEFAULT_FACTOR, error );
 }
@@ -239,7 +258,7 @@ void fcml_fn_coll_map_put( fcml_coll_map map_int, fcml_ptr key, fcml_ptr value, 
 	struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*)map_int;
 
 	fcml_st_coll_map_descriptor *descriptor = &(map->descriptor);
-	fcml_uint32_t hash = descriptor->hash_function( key );
+	fcml_uint32_t hash = fcml_ifn_get_hash( descriptor, key );
 	fcml_uint32_t index = map->hash_mask & hash;
 
 	struct fcml_ist_coll_map_entry *entry = map->map_entries[index];
@@ -286,7 +305,7 @@ void fcml_fn_coll_map_put( fcml_coll_map map_int, fcml_ptr key, fcml_ptr value, 
 
 void fcml_fn_coll_map_remove( fcml_coll_map map_int, fcml_ptr key ) {
 	struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*)map_int;
-	fcml_uint32_t hash = map->descriptor.hash_function( key );
+	fcml_uint32_t hash = fcml_ifn_get_hash( &(map->descriptor), key );
 	int index = map->hash_mask & hash;
 	struct fcml_ist_coll_map_entry *entry = map->map_entries[index];
 	struct fcml_ist_coll_map_entry *previous_entry = NULL;
@@ -369,7 +388,7 @@ void fcml_fn_coll_map_clear( fcml_coll_map map_int ) {
 
 fcml_ptr fcml_fn_coll_map_get( fcml_coll_map map_int, fcml_ptr key ) {
 	struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*)map_int;
-	fcml_uint32_t hash = map->descriptor.hash_function( key );
+	fcml_uint32_t hash = fcml_ifn_get_hash( &(map->descriptor), key );
 	fcml_uint32_t index = map->hash_mask & hash;
 	struct fcml_ist_coll_map_entry *entry = map->map_entries[index];
 	/* Checking for entry with the same key.*/

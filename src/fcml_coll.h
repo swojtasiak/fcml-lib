@@ -1,19 +1,32 @@
 /*
- * fcml_coll.h
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 10-03-2013
- *      Author: tAs
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifndef FCML_COLL_H_
 #define FCML_COLL_H_
 
-#include "fcml_types.h"
+#include <fcml_types.h>
+
 #include "fcml_ceh.h"
 
-/*********/
-/* List. */
-/*********/
+/***********************/
+/* Bidirectional List. */
+/***********************/
 
 typedef struct fcml_st_coll_list_element {
 	struct fcml_st_coll_list_element *prev;
@@ -39,7 +52,7 @@ void fcml_fn_coll_list_remove( fcml_st_coll_list *list, fcml_st_coll_list_elemen
 void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, fcml_ptr item_handler_args );
 
 /*************/
-/* Hash map. */
+/* Hash Map. */
 /*************/
 
 #define FCML_COLL_ERROR_NO_ERROR			0x0000

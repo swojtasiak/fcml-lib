@@ -17,10 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <fcml_assembler.h>
-
 #include <stddef.h>
 
+#include <fcml_assembler.h>
 #include <fcml_errors.h>
 
 #include "fcml_dialect_int.h"
@@ -183,7 +182,7 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 		error = FCML_CEH_GEC_UNKNOWN_MNEMONIC;
 	}
 
-	/* Free results but only if there is no error messages. */
+	/* Free results but only if assembling failed. */
 	if( error ) {
 		/* Free only instructions, error messages should be returned to user. */
 		fcml_ifn_asm_free_instruction_chain( result->instructions );

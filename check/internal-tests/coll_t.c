@@ -122,7 +122,7 @@ void fcml_tf_coll_test_remove_keys(void) {
 		if( last_free_value != NULL ) {
 			STF_ASSERT_STRING_EQUAL( last_free_value, "VALUE_A" );
 		}
-		/* Check if KEY_A has been sucesfully removed.*/
+		/* Check if KEY_A has been successfully removed.*/
 		STF_ASSERT_PTR_NULL( fcml_fn_coll_map_get( map, "KEY_A" ) );
 		STF_ASSERT( fcml_fn_coll_map_size( map ) == 8 );
 		/* Check if the rest of keys are still there.*/
@@ -224,7 +224,7 @@ void fcml_tf_coll_test_iterate(void) {
 		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
 		/* Conflict, both of the following keys are conflicted, but take into account*/
-		/* that it depends on default builtin implementation of hashing function.*/
+		/* that it depends on default built-in implementation of hashing function.*/
 		fcml_fn_coll_map_put( map, "KEY_B", "VALUE_B", &error );
 		fcml_fn_coll_map_put( map, "KEY_R", "VALUE_R", &error );
 		fcml_fn_coll_map_put( map, "KEY_C", "VALUE_C", &error );
