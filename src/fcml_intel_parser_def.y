@@ -7,6 +7,8 @@
 	
 	#include "fcml_parser_utils.h"
 	
+	void intel_error( struct fcml_st_parser_data *pd, const char *error );
+	
 	/* Macro responsible for handling 'Out of memory' errors. */
     #define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
     

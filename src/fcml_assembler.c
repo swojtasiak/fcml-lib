@@ -17,11 +17,11 @@
 #include "fcml_utils.h"
 #include "fcml_trace.h"
 
-/* Initialied assembler instance. */
+/** Initialized assembler instance. */
 typedef struct fcml_ist_asm_enc_assembler {
-	/* Map of supported instructions, with mnemonic as key and instructions addressing modes as values. */
+	/** Map of supported instructions, with mnemonic as key and instructions addressing modes as values. */
     fcml_coll_map instructions_map;
-    /* Dialect used to initialize assembler. */
+    /** Dialect used to initialize assembler. */
     fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_enc_assembler;
 
@@ -59,11 +59,14 @@ void fcml_ifn_asm_free_instruction_chain( fcml_st_assembled_instruction *chain )
 }
 
 void LIB_CALL fcml_fn_assembler_instruction_detach( fcml_st_assembled_instruction **chain, fcml_st_assembled_instruction *instruction ) {
+
 	if( !chain || !instruction ) {
 		return;
 	}
+
 	fcml_st_assembled_instruction **current = chain;
 	fcml_bool found = FCML_FALSE;
+
 	do {
 		if( *current == instruction ) {
 			*current = instruction->next;
@@ -71,9 +74,9 @@ void LIB_CALL fcml_fn_assembler_instruction_detach( fcml_st_assembled_instructio
 		}
 		current = &((*current)->next);
 	} while( !found && *current );
+
 }
 
-/* Free's assembled instruction instance. */
 void LIB_CALL fcml_fn_assembler_instruction_free( fcml_st_assembled_instruction *instruction ) {
 	if( instruction ) {
 		if( instruction->code ) {
@@ -96,7 +99,7 @@ void LIB_CALL fcml_fn_assembler_result_free( fcml_st_assembler_result *result ) 
 }
 
 void LIB_CALL fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result ) {
-	// Clean assembler result container before it's first used.
+	// Clean assembler result container before it is first used.
 	if( result ) {
 		fcml_fn_env_memory_clear( result, sizeof( fcml_st_assembler_result ) );
 	}
@@ -106,6 +109,11 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
+	// Sanity check.
+	if( !result || !instruction || !asm_context ) {
+		return FCML_CEH_GEC_INVALID_INPUT;
+	}
+
 	/* Validate and prepare entry point. */
 	error = fcml_fn_prepare_entry_point( &(asm_context->entry_point ) );
 	if( error ) {
@@ -113,19 +121,19 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 	}
 
 	/* Take into account that dialect can modify source instruction by
-	 * preparing it for assembler, so we have to use local copy.
+	 * preparing it for the assembler, so we have to use the local copy here.
 	 */
 	fcml_st_instruction tmp_instruction = *instruction;
 
 	fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)asm_context->assembler;
 
-	/* First place where dialect can interfere with instruction definition. */
+	/* The first place where the dialect can interfere with the instruction definition. */
 	fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = enc_asm->dialect_context->assembler_preprocessor;
 	if( assembler_preprocessor ) {
 		assembler_preprocessor( (fcml_st_dialect*)enc_asm->dialect_context, &tmp_instruction, NULL, NULL, NULL );
 	}
 
-	/* Find instruction addressing modes. */
+	/* Find instruction addressing modes/forms. */
 	fcml_st_asm_instruction_addr_modes *addr_modes = NULL;
 	error = fcml_fn_asm_get_instruction_encodings( enc_asm->instructions_map, tmp_instruction.mnemonic, &addr_modes );
 	if( error ) {
@@ -177,11 +185,6 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 
 fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
 
-	// Sanity check.
-	if( !result || !instruction || !context ) {
-		return FCML_CEH_GEC_INVALID_INPUT;
-	}
-
 	// Check if there is something already available in the result and free it in such a cache.
 	fcml_fn_assembler_result_free( result );
 
@@ -211,11 +214,14 @@ void LIB_CALL fcml_fn_assembler_free( fcml_st_assembler *assembler ) {
 }
 
 fcml_st_dialect *fcml_fn_assembler_extract_dialect( fcml_st_assembler *assembler ) {
+
 	fcml_st_dialect *dialect = NULL;
-	if( assembler != NULL ) {
+
+	if( assembler ) {
 		fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*)assembler;
 		dialect = (fcml_st_dialect*)enc_asm->dialect_context;
 	}
+
 	return dialect;
 }
 
