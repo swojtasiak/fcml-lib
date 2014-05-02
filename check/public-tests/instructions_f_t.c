@@ -1,8 +1,20 @@
 /*
- * instructions.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 01-06-2013
- *      Author: tAs
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <fcml_assembler.h>
@@ -209,23 +221,6 @@ void fcml_tf_instruction_FDECSTP(void) {
     FCML_I3264( "fdecstp", 0xD9, 0xf6 );
     FCML_A64( "fdecstp", 0xd9, 0xf6 );
 }
-
-/*
-
-VS:
-00401000 D8 78 00         fdivr       dword ptr [eax]
-00401003 D8 70 00         fdiv        dword ptr [eax]
-00401006 DA 78 00         fidivr      dword ptr [eax]
-00401009 DA 70 00         fidiv       dword ptr [eax]
-
-GAS:
-fdivrs 0x0(%rax) - 0xd8, 0x78, 0x00
-fdivs 0x0(%rax) - 0xd8, 0x70, 0x00
-fidivrl 0x0(%rax) - 0xda, 0x78, 0x00
-fidivl 0x0(%rax) - 0xda, 0x70, 0x00
-
-
- */
 
 void fcml_tf_instruction_FDIV(void) {
     FCML_I64( "fdiv dword ptr [rax+0000000000000020h]", 0xD8, 0x70, 0x20 );

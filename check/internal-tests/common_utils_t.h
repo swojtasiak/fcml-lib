@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef FCML_ENV_T_H_
-#define FCML_ENV_T_H_
+#ifndef COMMON_UTILS_T_H_
+#define COMMON_UTILS_T_H_
 
 #include <fcml_stf.h>
 
-extern fcml_stf_test_suite fcml_si_env;
+extern fcml_stf_test_suite fcml_si_common_utils;
 
-#endif /* FCML_ENV_T_H_ */
+#endif /* COMMON_UTILS_T_H_ */

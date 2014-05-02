@@ -1,8 +1,20 @@
 /*
- * main.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 04-02-2013
- *      Author: Slawomir Wojtasiak
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <stdio.h>
@@ -22,6 +34,7 @@
 #include "lag_assembler_t.h"
 #include "env_t.h"
 #include "ceh_t.h"
+#include "common_utils_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fctl_si_modrm_encoder,
@@ -35,6 +48,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fcml_si_lag_assembler,
 	&fcml_si_env,
 	&fcml_si_ceh,
+	&fcml_si_common_utils,
 	FCML_STF_NULL_SUITE
 };
 

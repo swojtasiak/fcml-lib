@@ -78,8 +78,8 @@ enum fcml_en_ceh_error_globals {
 	FCML_CEH_GEC_INVALID_REGISTER = 18,
 	/** Error returned by parsers when there is undefined symbol used. */
 	FCML_CEH_GEC_UNDEFINED_SYMBOL = 19,
-	/** Labels are not supported.. */
-	FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION = 20,
+	/** Labels are not supported. */
+	FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION = 20
 };
 
 /** @} */
@@ -122,7 +122,7 @@ enum fcml_en_ceh_message_errors {
 	/** Symbol is undefined. */
 	FCML_CEH_MEC_ERROR_UNDEFINED_SYMBOL = 1011,
 	/** Parsed line exceed maximal allowed length. */
-	FCML_CEH_MEC_ERROR_PARSED_LINE_TOO_LONG = 1012,
+	FCML_CEH_MEC_ERROR_PARSED_LINE_TOO_LONG = 1012
 };
 
 /** Codes for textual warnings. */

@@ -1,8 +1,20 @@
 /*
- * ira_def.h
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 27-12-2012
- *      Author: Slawomir Wojtasiak
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifndef FCML_DEF_H_
@@ -11,6 +23,7 @@
 #include <fcml_instructions.h>
 #include <fcml_types.h>
 #include <fcml_common.h>
+
 #include "fcml_ceh.h"
 
 /* Constants used to encode operand size on one byte. Used only in instruction descriptions. */
@@ -82,66 +95,6 @@ typedef enum fcml_en_def_instruction_type {
 /* Instruction groups.                       */
 /* Bit fields are not compatible with CPUID. */
 /*********************************************/
-
-// TODO: Przeniesc do jakiegos include dostepnego ogolnie.
-
-#define    FCML_AMT_UNDEF      0x0000000000000000UL
-/* Grouping.*/
-#define    FCML_AMT_SSEx       0x0000000000000001UL
-#define    FCML_AMT_VEXx       0x0000000000000002UL
-#define    FCML_AMT_SIMD       0x0000000000000004UL
-/* CPUID.*/
-#define    FCML_AMT_GPI        0x0000000000000008UL
-#define    FCML_AMT_FPU        0x0000000000000010UL
-#define    FCML_AMT_MMX        0x0000000000000020UL | FCML_AMT_SSEx
-#define    FCML_AMT_SSE        0x0000000000000040UL | FCML_AMT_SSEx
-#define    FCML_AMT_SSE2       0x0000000000000080UL | FCML_AMT_SSEx
-#define    FCML_AMT_SSE3       0x0000000000000100UL | FCML_AMT_SSEx
-#define    FCML_AMT_SSSE3      0x0000000000000200UL | FCML_AMT_SSEx
-#define    FCML_AMT_SSE41      0x0000000000000400UL | FCML_AMT_SSEx
-#define    FCML_AMT_SSE42      0x0000000000000800UL | FCML_AMT_SSEx
-#define    FCML_AMT_SSE4A      0x0000000000001000UL | FCML_AMT_SSEx
-#define    FCML_AMT_AVX        0x0000000000002000UL | FCML_AMT_VEXx
-#define    FCML_AMT_AVX2       0x0000000000004000UL | FCML_AMT_VEXx
-#define    FCML_AMT_AES        0x0000000000008000UL
-#define    FCML_AMT_SYSTEM     0x0000000000010000UL
-#define    FCML_AMT_3DNOW      0x0000000000020000UL | FCML_AMT_MMX
-#define    FCML_AMT_TBM        0x0000000000040000UL | FCML_AMT_VEXx
-#define    FCML_AMT_BMI1       0x0000000000080000UL
-#define    FCML_AMT_BMI2       0x0000000000100000UL
-#define    FCML_AMT_HLE        0x0000000000200000UL
-#define    FCML_AMT_ADX        0x0000000000400000UL
-#define    FCML_AMT_CLMUL      0x0000000000800000UL
-#define    FCML_AMT_F16C       0x0000000001000000UL | FCML_AMT_VEXx
-#define    FCML_AMT_RDRAND     0x0000000002000000UL
-#define    FCML_AMT_RDSEED     0x0000000004000000UL
-#define    FCML_AMT_PRFCHW     0x0000000008000000UL
-#define    FCML_AMT_LWP        0x0000000010000000UL | FCML_AMT_SIMD
-#define    FCML_AMT_SVM        0x0000000020000000UL
-#define    FCML_AMT_FSGSBASE   0x0000000040000000UL
-#define    FCML_AMT_FMA        0x0000000080000000UL | FCML_AMT_SIMD
-#define    FCML_AMT_FMA4       0x0000000100000000UL | FCML_AMT_SIMD
-#define    FCML_AMT_XOP        0x0000000200000000UL | FCML_AMT_SIMD
-#define    FCML_AMT_EDX        0x0000000400000000UL
-#define    FCML_AMT_ABM        0x0000000800000000UL
-#define    FCML_AMT_VMX        0x0000001000000000UL
-#define    FCML_AMT_SMX        0x0000002000000000UL
-#define    FCML_AMT_POPCNT     0x0000004000000000UL
-#define    FCML_AMT_RTM        0x0000008000000000UL
-/* Control transfer instructions.*/
-#define    FCML_AMT_CTI        0x0000010000000000UL
-#define    FCML_AMT_BRANCH     0x0000020000000000UL
-/* Shortcuts.*/
-#define    FCML_AMT_MMX_SIMD   FCML_AMT_MMX   | FCML_AMT_SIMD
-#define    FCML_AMT_SSE_SIMD   FCML_AMT_SSE   | FCML_AMT_SIMD
-#define    FCML_AMT_SSE2_SIMD  FCML_AMT_SSE2  | FCML_AMT_SIMD
-#define    FCML_AMT_SSE3_SIMD  FCML_AMT_SSE3  | FCML_AMT_SIMD
-#define    FCML_AMT_SSSE3_SIMD FCML_AMT_SSSE3 | FCML_AMT_SIMD
-#define    FCML_AMT_SSE41_SIMD FCML_AMT_SSE41 | FCML_AMT_SIMD
-#define    FCML_AMT_SSE42_SIMD FCML_AMT_SSE42 | FCML_AMT_SIMD
-#define    FCML_AMT_AVX_SIMD   FCML_AMT_AVX   | FCML_AMT_SIMD
-#define    FCML_AMT_AVX2_SIMD  FCML_AMT_AVX2  | FCML_AMT_SIMD
-#define    FCML_AMT_3DNOW_SIMD FCML_AMT_3DNOW | FCML_AMT_SIMD
 
 #define FCML_IS_MULTI_INSTRUCTION(x)		( 0x8000 & ( x ) )
 #define FCML_MULTI_INSTRUCTION(x)			( 0x8000 | ( x ) )

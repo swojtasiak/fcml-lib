@@ -25,7 +25,6 @@ libfcml_la_SOURCES = fcml_intel_lexer.l \
 	fcml_common_dialect.h \
 	fcml_common_lex.h \
 	fcml_common_utils.c \
-	fcml_debug.h \
 	fcml_decoding_tree.c \
 	fcml_decoding_tree.h \
 	fcml_def.c \
