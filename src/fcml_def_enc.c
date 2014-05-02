@@ -155,29 +155,37 @@ fcml_fnp_def_addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
 };
 
 fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error ) {
+
 	*error = FCML_CEH_GEC_NO_ERROR;
+
 	fcml_st_def_decoded_addr_mode *addr_mode = (fcml_st_def_decoded_addr_mode*)fcml_fn_env_memory_alloc(sizeof(fcml_st_def_decoded_addr_mode));
+
 	if( addr_mode ) {
 
 		addr_mode->addr_mode = FCML_GET_ADDR_MODE( encoded_addr_mode );
 
 		/* Store access mode for this operand decoding.*/
-		fcml_en_access_mode access_mode = FCML_AM_ACCESS_MODE_UNDEFINED;
+		fcml_int access_mode = FCML_AM_ACCESS_MODE_UNDEFINED;
 		if( encoded_addr_mode & FCML_OA_W ) {
-			/* Destination operands for some instructions can be also a source operands. In such case "READ" dlag has to be set for such operands.*/
-			access_mode = (fcml_en_access_mode)((int)access_mode | (int)FCML_AM_WRITE);
+
+			/* Destination operands for some instructions can be also a source operands.
+			 * In such a case "READ" flag has to be set for such operands.
+			 */
+			access_mode |= (fcml_int)FCML_AM_WRITE;
 			if( encoded_addr_mode & FCML_OA_R ) {
-				access_mode = (fcml_en_access_mode)((int)access_mode | (int)FCML_AM_READ);
+				access_mode |= (fcml_int)FCML_AM_READ;
 			}
+
 		} else {
-			/* All operands but destination ones have access mode automatically set to "READ".*/
-			access_mode = (fcml_en_access_mode)((int)access_mode | (int)FCML_AM_READ);
+			/* All operands but destination ones have the access mode automatically set to "READ". */
+			access_mode |= (fcml_int)FCML_AM_READ;
 		}
 
-		addr_mode->access_mode = access_mode;
+		addr_mode->access_mode = (fcml_en_access_mode)access_mode;
 
 		if( addr_mode->addr_mode > FCML_DEF_DECODERS_COUNT ) {
-			*error = FCML_CEH_GEC_INVALID_INPUT;
+			/* Corrupted instruction model. */
+			*error = FCML_CEH_GEC_INTERNAL_ERROR;
 			fcml_fn_env_memory_free( addr_mode );
 			return NULL;
 		}
@@ -186,8 +194,17 @@ fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t
 		fcml_fnp_def_addr_mode_args_decoder args_decoder = fcml_def_addr_mode_args_decoders[addr_mode->addr_mode];
 		if( args_decoder ) {
 			addr_mode->addr_mode_args = args_decoder( encoded_addr_mode & 0x00FFFFFF );
+			if( !addr_mode->addr_mode_args ) {
+				fcml_fn_env_memory_free( addr_mode );
+				addr_mode = NULL;
+				*error = FCML_CEH_GEC_OUT_OF_MEMORY;
+			}
 		}
+
+	} else {
+		*error = FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
+
 	return addr_mode;
 }
 

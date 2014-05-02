@@ -572,31 +572,6 @@ fcml_ceh_error fcml_fn_utils_integer_to_offset( const fcml_st_integer *integer, 
     return error;
 }
 
-fcml_ceh_error fcml_fn_utils_imm_to_integer( const fcml_st_integer *imm, fcml_st_integer *integer ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	integer->int64 = 0;
-	switch( imm->size ) {
-	case FCML_DS_8:
-	    integer->int8 = imm->int8;
-		break;
-	case FCML_DS_16:
-	    integer->int16 = imm->int16;
-		break;
-	case FCML_DS_32:
-	    integer->int32 = imm->int32;
-		break;
-	case FCML_DS_64:
-	    integer->int64 = imm->int64;
-		break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-		break;
-	}
-	integer->size = imm->size;
-	integer->is_signed = imm->is_signed;
-	return error;
-}
-
 fcml_ceh_error fcml_fn_utils_integer_to_imm( const fcml_st_integer *integer, fcml_st_integer *imm ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	imm->int64 = 0;

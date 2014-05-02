@@ -52,14 +52,8 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_render_co
 		*do_not_render = FCML_TRUE;
 		return FCML_CEH_GEC_NO_ERROR;
 	}
-
 	fcml_st_integer *immediate = &(operand->immediate);
-	fcml_st_integer integer;
-	fcml_ceh_error error = fcml_fn_utils_imm_to_integer( immediate, &integer );
-	if( error ) {
-		return error;
-	}
-	return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, config->render_flags & FCML_REND_FLAG_HEX_IMM, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+	return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, immediate, config->render_flags & FCML_REND_FLAG_HEX_IMM, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 }
 
 fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_intel( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {

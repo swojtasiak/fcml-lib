@@ -1387,31 +1387,19 @@ fcml_bool fcml_ifn_asm_dialect_gas_far_pointer_correction( fcml_st_instruction *
     /* Correction for ambiguous FAR_POINTER addressing mode. Unfortunately we can not treat it as two IMM operands.*/
     if( instruction->operands_count == 2 && instruction->operands[0].type == FCML_EOT_IMMEDIATE && instruction->operands[1].type == FCML_EOT_IMMEDIATE ) {
 
-        fcml_st_integer segment = {0};
-        fcml_st_integer offset = {0};
-
         /* Remember that operands are reverted for GAS!*/
 
-        error = fcml_fn_utils_imm_to_integer( &(instruction->operands[1].immediate), &segment );
-        if( error ) {
-            /* Should never happened, because parser is responsible for setting appropriate IMM size.*/
-            return FCML_FALSE;
-        }
-
-        error = fcml_fn_utils_imm_to_integer( &(instruction->operands[0].immediate), &offset );
-        if( error ) {
-            /* Should never happened, because parser is responsible for setting appropriate IMM size.*/
-            return FCML_FALSE;
-        }
+        fcml_st_integer *segment = &(instruction->operands[1].immediate);
+        fcml_st_integer *offset = &(instruction->operands[0].immediate);
 
         fcml_st_far_pointer far_pointer = {0};
 
-        error = fcml_fn_utils_convert_integer_to_uint16( &segment, &(far_pointer.segment) );
+        error = fcml_fn_utils_convert_integer_to_uint16( segment, &(far_pointer.segment) );
         if( !error ) {
 
-            error = fcml_fn_utils_convert_integer_to_int16( &offset, &(far_pointer.offset16) );
+            error = fcml_fn_utils_convert_integer_to_int16( offset, &(far_pointer.offset16) );
             if( error ) {
-                error = fcml_fn_utils_convert_integer_to_int32( &offset, &(far_pointer.offset32) );
+                error = fcml_fn_utils_convert_integer_to_int32( offset, &(far_pointer.offset32) );
                 if( !error ) {
                     far_pointer.offset_size = FCML_DS_32;
                 }

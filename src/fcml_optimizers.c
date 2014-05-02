@@ -101,7 +101,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
     	/* Effective address size has been already chosen and cannot be changed.*/
     	easa[easa_count++] = ds_flags->easa;
     } else {
-    	/* Maybe user has already forced any address size attribute to be chosen?*/
+    	/* Maybe user has already forced any address size attribute to be chosen? */
     	fcml_usize attr_size = 0;
     	fcml_flags attr_size_flag = 0;
 		switch( opt_flags & 0x000F ) {
