@@ -48,6 +48,10 @@ typedef struct fcml_st_parser_config {
 	 * In such a case every unknown symbol is treated as 0.
 	 */
 	fcml_bool ignore_undefined_symbols;
+	/** Disables symbols support.
+	 * It set to true every defined label will cause an error.
+	 */
+	fcml_bool disable_symbols_declaration;
 	/** Set to true in order to allow overriding existing labels.
 	 * If set to false parser returns "Symbol already exists" error when symbol already exists.
 	 */

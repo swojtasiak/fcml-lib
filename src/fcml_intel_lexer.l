@@ -37,19 +37,21 @@ PTR	(" ptr")?
 
 %%
 
- /*Decimal integers.*/
+ /* Decimal integers. */
 [0-9]+d? 				{ fcml_fn_pu_parse_integer( yytext, &(yylval->integer_value), 10 ); return FCML_TK_INTEGER; }
 
- /*HEX integers.*/
+ /* HEX integers. */
 0x[0-9a-f]+ 			|
 0[a-f][0-9a-f]+h		|
 [0-9][0-9a-f]*h			{ fcml_fn_pu_parse_integer( yytext, &(yylval->integer_value), 16 ); return FCML_TK_INTEGER; }
 
- /*Floating-points in IEEE 754.*/
+ /* Floating-points in IEEE 754.
+ Floats are not supported yet.
 ([0-9]*\.[0-9]+|[0-9]+\.)(e[-+]?[0-9]+)?f? |
 [0-9]+(e[-+]?[0-9]+)f?	{ fcml_fn_pu_parse_float( yytext, &(yylval->float_value) ); return FCML_TK_FLOAT; }
+ */
 
- /*GPR.*/
+ /* GPR. */
 "al"					FCML_FM_GPRS_8_REG(FCML_REG_AL)
 "cl"					FCML_FM_GPRS_8_REG(FCML_REG_CL)
 "dl"					FCML_FM_GPRS_8_REG(FCML_REG_DL)
@@ -123,7 +125,7 @@ PTR	(" ptr")?
 "r14"                   FCML_FM_GPRS_64_REG(FCML_REG_R14)
 "r15"                   FCML_FM_GPRS_64_REG(FCML_REG_R15)
 
- /*SIMD-MMX*/
+ /* SIMD-MMX */
 "mm0"					FCML_FM_SIMD_64_REG(FCML_REG_MM0)
 "mm1"					FCML_FM_SIMD_64_REG(FCML_REG_MM1)
 "mm2"					FCML_FM_SIMD_64_REG(FCML_REG_MM2)
@@ -133,7 +135,7 @@ PTR	(" ptr")?
 "mm6"					FCML_FM_SIMD_64_REG(FCML_REG_MM6)
 "mm7"					FCML_FM_SIMD_64_REG(FCML_REG_MM7)
 
- /*SIMD-XMM*/
+ /* SIMD-XMM */
 "xmm0"					FCML_FM_SIMD_128_REG(FCML_REG_XMM0)
 "xmm1"					FCML_FM_SIMD_128_REG(FCML_REG_XMM1)
 "xmm2"					FCML_FM_SIMD_128_REG(FCML_REG_XMM2)
@@ -151,7 +153,7 @@ PTR	(" ptr")?
 "xmm14"					FCML_FM_SIMD_128_REG(FCML_REG_XMM14)
 "xmm15"					FCML_FM_SIMD_128_REG(FCML_REG_XMM15)
 
- /*SIMD-YMM*/
+ /* SIMD-YMM */
 "ymm0"                  FCML_FM_SIMD_256_REG(FCML_REG_YMM0)
 "ymm1"                  FCML_FM_SIMD_256_REG(FCML_REG_YMM1)
 "ymm2"                  FCML_FM_SIMD_256_REG(FCML_REG_YMM2)
@@ -169,7 +171,7 @@ PTR	(" ptr")?
 "ymm14"                 FCML_FM_SIMD_256_REG(FCML_REG_YMM14)
 "ymm15"                 FCML_FM_SIMD_256_REG(FCML_REG_YMM15)
 
- /*FPU*/
+ /* FPU */
 st{WS}("("{WS}0{WS}")"|0)	FCML_FM_FPU_REG(FCML_REG_ST0)				
 st{WS}("("{WS}1{WS}")"|1)	FCML_FM_FPU_REG(FCML_REG_ST1)
 st{WS}("("{WS}2{WS}")"|2)	FCML_FM_FPU_REG(FCML_REG_ST2)
@@ -179,14 +181,14 @@ st{WS}("("{WS}5{WS}")"|5)	FCML_FM_FPU_REG(FCML_REG_ST5)
 st{WS}("("{WS}6{WS}")"|6)	FCML_FM_FPU_REG(FCML_REG_ST6)
 st{WS}("("{WS}7{WS}")"|7)	FCML_FM_FPU_REG(FCML_REG_ST7)
 
- /*Control registers.*/
+ /* Control registers. */
 "cr0"			FCML_FM_CR_REG(FCML_REG_CR0)
 "cr2"			FCML_FM_CR_REG(FCML_REG_CR2)
 "cr3"			FCML_FM_CR_REG(FCML_REG_CR3)
 "cr4"			FCML_FM_CR_REG(FCML_REG_CR4)
 "cr8"			FCML_FM_CR_REG(FCML_REG_CR8)
 
- /*Debug registers.*/
+ /* Debug registers. */
 "dr0"			FCML_FM_DR_REG(FCML_REG_DR0)
 "dr1"			FCML_FM_DR_REG(FCML_REG_DR1)
 "dr2"			FCML_FM_DR_REG(FCML_REG_DR2)
@@ -196,7 +198,7 @@ st{WS}("("{WS}7{WS}")"|7)	FCML_FM_FPU_REG(FCML_REG_ST7)
 "dr6"			FCML_FM_DR_REG(FCML_REG_DR6)
 "dr7"			FCML_FM_DR_REG(FCML_REG_DR7)
 
- /*Segment registers.*/
+ /* Segment registers. */
 "es"			FCML_FM_SEG_REG(FCML_REG_ES)
 "cs"			FCML_FM_SEG_REG(FCML_REG_CS)
 "ss"			FCML_FM_SEG_REG(FCML_REG_SS)
@@ -204,10 +206,10 @@ st{WS}("("{WS}7{WS}")"|7)	FCML_FM_FPU_REG(FCML_REG_ST7)
 "fs"			FCML_FM_SEG_REG(FCML_REG_FS)
 "gs"			FCML_FM_SEG_REG(FCML_REG_GS)
 
- /*RIP*/
+ /* RIP */
 "rip"			FCML_FM_RIP
 
- /*Size operators.*/
+ /* Size operators. */
 "byte"{PTR}						FCML_FM_SIZE_OPERAND( 8 )
 "word"{PTR}						FCML_FM_SIZE_OPERAND( 16 )
 "dword"{PTR}					FCML_FM_SIZE_OPERAND( 32 )
@@ -320,10 +322,10 @@ st{WS}("("{WS}7{WS}")"|7)	FCML_FM_FPU_REG(FCML_REG_ST7)
  /* Ignore white spaces. */
 {WS}	
 
- /*Anything else is not expected.*/
+ /* Anything else is not expected. */
 .		{ return FCML_TK_UNEXPECTED; }
 
- /*Ignore like white spaces.*/
+ /* Ignore like white spaces. */
 \n		
 
 %%

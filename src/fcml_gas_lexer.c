@@ -676,7 +676,7 @@ static yyconst flex_int16_t yy_chk[654] =
 	#include "fcml_gas_parser_def.h"
 #define YY_NO_INPUT 1
 #define YY_NO_UNISTD_H 1
-/*White spaces.*/
+/* White spaces. */
 /*Dec and hex values.*/
 #line 682 "fcml_gas_lexer.c"
 
@@ -914,7 +914,7 @@ YY_DECL
 #line 35 "fcml_gas_lexer.l"
 
 
- /*Decimal integers.*/
+ /* Decimal integers. */
 #line 919 "fcml_gas_lexer.c"
 
     yylval = yylval_param;
@@ -1001,7 +1001,7 @@ YY_RULE_SETUP
 #line 38 "fcml_gas_lexer.l"
 { fcml_fn_pu_parse_integer( yytext, &(yylval->integer_value), 10 ); return FCML_TK_INTEGER; }
 	YY_BREAK
-/*HEX integers.*/
+/* HEX integers. */
 case 2:
 YY_RULE_SETUP
 #line 41 "fcml_gas_lexer.l"
@@ -1012,7 +1012,7 @@ YY_RULE_SETUP
 #line 43 "fcml_gas_lexer.l"
 
 	YY_BREAK
-/*GPR.*/
+/* GPR. */
 case 4:
 YY_RULE_SETUP
 #line 46 "fcml_gas_lexer.l"
@@ -1353,7 +1353,7 @@ YY_RULE_SETUP
 #line 117 "fcml_gas_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R15)
 	YY_BREAK
-/*SIMD-MMX*/
+/* SIMD-MMX */
 case 72:
 YY_RULE_SETUP
 #line 120 "fcml_gas_lexer.l"
@@ -1394,7 +1394,7 @@ YY_RULE_SETUP
 #line 127 "fcml_gas_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM7)
 	YY_BREAK
-/*SIMD-XMM*/
+/* SIMD-XMM */
 case 80:
 YY_RULE_SETUP
 #line 130 "fcml_gas_lexer.l"
@@ -1475,7 +1475,7 @@ YY_RULE_SETUP
 #line 145 "fcml_gas_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM15)
 	YY_BREAK
-/*SIMD-YMM*/
+/* SIMD-YMM */
 case 96:
 YY_RULE_SETUP
 #line 148 "fcml_gas_lexer.l"
@@ -1556,7 +1556,7 @@ YY_RULE_SETUP
 #line 163 "fcml_gas_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM15) 
 	YY_BREAK
-/*FPU*/
+/* FPU */
 case 112:
 YY_RULE_SETUP
 #line 166 "fcml_gas_lexer.l"
@@ -1597,7 +1597,7 @@ YY_RULE_SETUP
 #line 173 "fcml_gas_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST7)
 	YY_BREAK
-/*Control registers.*/
+/* Control registers. */
 case 120:
 YY_RULE_SETUP
 #line 176 "fcml_gas_lexer.l"
@@ -1623,7 +1623,7 @@ YY_RULE_SETUP
 #line 180 "fcml_gas_lexer.l"
 FCML_FM_CR_REG(FCML_REG_CR8)
 	YY_BREAK
-/*Debug registers.*/
+/* Debug registers. */
 case 125:
 YY_RULE_SETUP
 #line 183 "fcml_gas_lexer.l"
@@ -1664,7 +1664,7 @@ YY_RULE_SETUP
 #line 190 "fcml_gas_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR7)
 	YY_BREAK
-/*Segment registers.*/
+/* Segment registers. */
 case 133:
 YY_RULE_SETUP
 #line 193 "fcml_gas_lexer.l"
@@ -1695,7 +1695,7 @@ YY_RULE_SETUP
 #line 198 "fcml_gas_lexer.l"
 FCML_FM_SEG_REG(FCML_REG_GS)
 	YY_BREAK
-/*IP*/
+/* RIP */
 case 139:
 YY_RULE_SETUP
 #line 201 "fcml_gas_lexer.l"

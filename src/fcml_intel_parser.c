@@ -38,6 +38,11 @@ fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_ip ip, fcml_string m
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
+	/* Instruction size is limited to prevent from parser's stack and buffer overflow. */
+	if( !mnemonic || !ast || fcml_fn_env_str_strlen( mnemonic ) > FCML_PARSER_MAX_INSTRUCTION_LEN ) {
+		return FCML_CEH_GEC_INVALID_INPUT;
+	}
+
 	/* Fill instruction pointer. */
 	fcml_st_parser_data parser = {0};
 	parser.ip = ip;
@@ -45,12 +50,6 @@ fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_ip ip, fcml_string m
 	/* Set up scanner. */
 	if ( intel_lex_init_extra( &parser, &(parser.scannerInfo) ) ) {
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
-	}
-
-	/*Instruction size is limited to prevent from parser's stack and buffer overflow.*/
-	if( fcml_fn_env_str_strlen( mnemonic ) > FCML_PARSER_MAX_INSTRUCTION_LEN ) {
-		intel_lex_destroy( parser.scannerInfo );
-		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
 	intel__scan_string( mnemonic, parser.scannerInfo );
@@ -61,7 +60,7 @@ fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_ip ip, fcml_string m
 
 	ast->errors = parser.errors;
 	ast->symbol = parser.symbol;
-	ast->tree = parser.tree;
+	ast->tree   = parser.tree;
 
 	if( yyresult ) {
 		switch( yyresult ) {

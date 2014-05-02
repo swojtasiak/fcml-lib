@@ -18,10 +18,7 @@ fcml_ceh_error fcml_fn_parser_add_symbol_to_symbol_table( fcml_st_ceh_error_cont
 	if( !allow_override ) {
 		if( fcml_fn_symbol_get( symbol_table, symbol->symbol ) ) {
 			/* Symbol already defined. */
-			fcml_char msg_buffer[FCML_MESSAGE_MAX];
-			fcml_string msg_pattern = fcml_fn_msg_get_message( FCML_MC_SEGMENT_SYMBOL_ALREADY_DEFINED );
-			fcml_fn_env_str_snprintf( msg_buffer, sizeof( msg_buffer ), msg_pattern, symbol->symbol );
-			fcml_fn_ceh_add_error( errors, (const fcml_string)msg_buffer, FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED, FCML_EN_CEH_EL_ERROR );
+			fcml_fn_msg_add_error_message( errors, FCML_MC_SEGMENT_SYMBOL_ALREADY_DEFINED, FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED, FCML_EN_CEH_EL_ERROR, symbol->symbol );
 			error = FCML_CEH_GEC_INVALID_INPUT;
 		}
 	}
@@ -53,31 +50,48 @@ fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, fcml_strin
 
 		/* Just in case. */
 		fcml_fn_symbol_free( ast.symbol );
+		ast.symbol = NULL;
 		fcml_fn_ast_free_node( ast.tree );
+		ast.tree = NULL;
+
 		return error;
 	}
 
 	/* Symbol */
 	if( ast.symbol ) {
 
-		/* If there is no symbol table yet, allocate it. */
-		if( !context->symbol_table ) {
-			context->symbol_table = fcml_fn_symbol_table_alloc();
+		if( !context->config.disable_symbols_declaration ) {
+
+			/* If there is no symbol table yet, allocate it. */
 			if( !context->symbol_table ) {
+				context->symbol_table = fcml_fn_symbol_table_alloc();
+				if( !context->symbol_table ) {
+					fcml_fn_symbol_free( ast.symbol );
+					fcml_fn_ast_free_node( ast.tree );
+					return FCML_CEH_GEC_OUT_OF_MEMORY;
+				}
+			}
+
+			error = fcml_fn_parser_add_symbol_to_symbol_table( &(result->errors), context->symbol_table, ast.symbol, context->config.override_labels );
+			if( error ) {
 				fcml_fn_symbol_free( ast.symbol );
 				fcml_fn_ast_free_node( ast.tree );
-				return FCML_CEH_GEC_OUT_OF_MEMORY;
+				return error;
 			}
-		}
 
-		error = fcml_fn_parser_add_symbol_to_symbol_table( &(result->errors), context->symbol_table, ast.symbol, context->config.override_labels );
-		if( error ) {
+			result->symbol = ast.symbol;
+
+		} else {
+
+			/* We haven't expected any symbols so error has to be returned. */
+
 			fcml_fn_symbol_free( ast.symbol );
+			ast.symbol = NULL;
 			fcml_fn_ast_free_node( ast.tree );
-			return error;
-		}
+			ast.tree = NULL;
 
-		result->symbol = ast.symbol;
+			return FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION;
+		}
 
 	}
 

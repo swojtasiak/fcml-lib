@@ -78,6 +78,8 @@ enum fcml_en_ceh_error_globals {
 	FCML_CEH_GEC_INVALID_REGISTER = 18,
 	/** Error returned by parsers when there is undefined symbol used. */
 	FCML_CEH_GEC_UNDEFINED_SYMBOL = 19,
+	/** Labels are not supported.. */
+	FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION = 20,
 };
 
 /** @} */

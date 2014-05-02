@@ -527,10 +527,12 @@ void fcml_tf_parser_int_parse_test_symbols_1(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
+	context.symbol_table = NULL;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NULL( result.instruction );
 	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+	STF_ASSERT_PTR_NOT_NULL( context.symbol_table );
 	STF_ASSERT_EQUAL( result.symbol->value, 0x401000 );
 	STF_ASSERT_STRING_EQUAL( result.symbol->symbol, FCML_TEXT( "label" ) );
 
@@ -766,6 +768,24 @@ void fcml_tf_parser_int_parse_test_symbols_8(void) {
 	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
+void fcml_tf_parser_int_parse_test_symbols_9(void) {
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.ip = 0x401000;
+	context.symbol_table = NULL;
+	context.config.disable_symbols_declaration = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label:" ), &result ), FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION );
+	STF_ASSERT_PTR_NULL( result.instruction );
+	STF_ASSERT_PTR_NULL( result.symbol );
+	STF_ASSERT_PTR_NULL( result.errors.errors );
+	STF_ASSERT_PTR_NULL( result.errors.last_error );
+
+	fcml_fn_parser_result_free( &result );
+}
+
 fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test1", fcml_tf_parser_int_parse_test1 },
 	{ "fcml_tf_parser_int_parse_test2", fcml_tf_parser_int_parse_test2 },
@@ -807,6 +827,7 @@ fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test_symbols_6", fcml_tf_parser_int_parse_test_symbols_6 },
 	{ "fcml_tf_parser_int_parse_test_symbols_7", fcml_tf_parser_int_parse_test_symbols_7 },
 	{ "fcml_tf_parser_int_parse_test_symbols_8", fcml_tf_parser_int_parse_test_symbols_8 },
+	{ "fcml_tf_parser_int_parse_test_symbols_9", fcml_tf_parser_int_parse_test_symbols_9 },
 	FCML_STF_NULL_TEST
 };
 

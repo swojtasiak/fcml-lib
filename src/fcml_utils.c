@@ -12,32 +12,28 @@
 #include "fcml_trace.h"
 #include "fcml_messages.h"
 
+
 fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_src_signed, fcml_st_integer *integer, fcml_en_utils_size_flags filter ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     if( is_src_signed ) {
-        /* Optimized for 32 bit processors.*/
-        if( ( src & 0xFFFFFFFF80000000UL ) == 0xFFFFFFFF80000000UL || ( src & 0xFFFFFFFF00000000UL ) == 0x0000000000000000UL ) {
-            fcml_int32_t s_imm = (fcml_int32_t)src;
-            if( ( filter & FCML_ENUSF_8 ) && ( ( s_imm & 0xFFFFFF80 ) == 0xFFFFFF80 || ( s_imm & 0xFFFFFF00 ) == 0x00000000 ) ) {
-                integer->int8 = (fcml_int8_t)s_imm;
-                integer->size = FCML_DS_8;
-            } else if( ( filter & FCML_ENUSF_16 ) && ( ( s_imm & 0xFFFF8000 ) == 0xFFFF8000 || ( s_imm & 0xFFFF0000 ) == 0x00000000 ) ) {
-                integer->int16 = (fcml_int16_t)s_imm;
-                integer->size = FCML_DS_16;
-            } else if ( filter & FCML_ENUSF_32 ) {
-                integer->int32 = (fcml_int32_t)s_imm;
-                integer->size = FCML_DS_32;
-            } else {
-                error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
-            }
-        } else {
-            if( filter & FCML_ENUSF_64 ) {
-                integer->int64 = src;
-                integer->size = FCML_DS_64;
-            } else {
-                error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
-            }
-        }
+    	fcml_int64_t imm = (fcml_int64_t)src;
+    	if( ( filter & FCML_ENUSF_8 ) && imm <= FCML_INT8_MAX && imm >= FCML_INT8_MIN ) {
+    		integer->int8 = (fcml_int8_t)imm;
+			integer->size = FCML_DS_8;
+		} else if( ( filter & FCML_ENUSF_16 ) && imm <= FCML_INT16_MAX && imm >= FCML_INT16_MIN ) {
+			integer->int16 = (fcml_int16_t)imm;
+			integer->size = FCML_DS_16;
+		} else if( ( filter & FCML_ENUSF_32 ) && imm <= FCML_INT32_MAX && imm >= FCML_INT32_MIN ) {
+			integer->int32 = (fcml_int32_t)imm;
+			integer->size = FCML_DS_32;
+		} else {
+			if( filter & FCML_ENUSF_64 ) {
+				integer->int64 = src;
+				integer->size = FCML_DS_64;
+			} else {
+				error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+			}
+		}
     } else {
         if( ( filter & FCML_ENUSF_8 ) && ( src <= FCML_UINT8_MAX ) ) {
             integer->int8 = (fcml_uint8_t)src;
@@ -58,6 +54,7 @@ fcml_ceh_error fcml_fn_utils_int64_to_integer( fcml_uint64_t src, fcml_bool is_s
     integer->is_signed = is_src_signed;
     return error;
 }
+
 
 fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *source, fcml_st_integer *destination, fcml_usize expected_source_size, fcml_usize destination_size ) {
 

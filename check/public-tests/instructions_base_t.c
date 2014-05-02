@@ -80,6 +80,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		context.configuration.conditional_group = FCML_DASM_CONDITIONAL_GROUP_1;
 		context.configuration.carry_flag_conditional_suffix = FCML_TRUE;
 		context.configuration.extend_disp_to_asa = FCML_TRUE;
+		context.configuration.increment_ip = FCML_FALSE;
 		context.disassembler = disassembler;
 		context.entry_point.op_mode = op_mode;
 		context.entry_point.address_size_attribute = 0;
@@ -207,6 +208,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		context.configuration.optimizer_flags = opt_flags;
 		context.configuration.force_rex_prefix = FCML_FALSE;
 		context.configuration.force_three_byte_VEX = FCML_FALSE;
+		context.configuration.increment_ip = FCML_FALSE;
 
 		fcml_ifn_ts_set_ip( &(context.entry_point.ip), op_mode );
 

@@ -19,7 +19,7 @@ static void *fcml_fn_env_default_memory_alloc( fcml_usize size ) {
 }
 
 static void *fcml_fn_env_default_memory_realloc( fcml_ptr ptr, fcml_usize size ) {
-    return realloc( ptr, size);
+    return realloc( ptr, size );
 }
 
 static void fcml_fp_env_default_memory_free( void *memory_block ) {

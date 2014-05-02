@@ -69,9 +69,10 @@ void fcml_fn_env_test_memory_realloc(void) {
 	if( block ) {
 		STF_ASSERT_EQUAL( counter, 1 );
 		fcml_ptr block_realloc = fcml_fn_env_memory_realloc( block, 200 );
+		fcml_fn_env_memory_clear( block_realloc, 200 );
 		STF_ASSERT_PTR_NOT_NULL( block_realloc );
 		STF_ASSERT_EQUAL( realloc_counter, 1 );
-		fcml_fn_symbol_free( block );
+		fcml_fn_symbol_free( block_realloc );
 		STF_ASSERT_EQUAL( counter, 0 );
 	}
 

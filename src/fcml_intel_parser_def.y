@@ -7,8 +7,6 @@
 	
 	#include "fcml_parser_utils.h"
 	
-	void yyerror( struct fcml_st_parser_data *pd, const char *error );
-	
 	/* Macro responsible for handling 'Out of memory' errors. */
     #define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
     
@@ -17,11 +15,12 @@
 	
 %}
 
+/* Uncomment it in order to enable debugging */
 /* %debug */
 
-/*Terminal symbols.*/
+/* Terminal symbols. */
 
-/* Uexpected tokeens goes here. */
+/* Uexpected tokens goes here. */
 %token FCML_TK_UNEXPECTED
 
 /* Registers. */
@@ -102,7 +101,8 @@
 %}
 
 %initial-action { 
-	/*yydebug = 1;*/
+    /* Uncomment it in order to enable debugging */
+	/* yydebug = 1; */
 }
 
 %%

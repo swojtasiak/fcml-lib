@@ -26,7 +26,7 @@
 
 %option extra-type="struct fcml_st_parser_data *"
 
-/*White spaces.*/
+/* White spaces. */
 WS				[ \t]*
 /*Dec and hex values.*/
 DEC				([1-9][0-9]*|0+)
@@ -34,15 +34,15 @@ HEX				0x[0-9a-f]+
 
 %%
 
- /*Decimal integers.*/
+ /* Decimal integers. */
 {DEC}				{ fcml_fn_pu_parse_integer( yytext, &(yylval->integer_value), 10 ); return FCML_TK_INTEGER; }
 
- /*HEX integers.*/
+ /* HEX integers. */
 {HEX}	 			{ fcml_fn_pu_parse_integer( yytext, &(yylval->integer_value), 16 ); return FCML_TK_INTEGER; }
 
 fcml_fn_pu_parse_intege_flags
 
- /*GPR.*/
+ /* GPR. */
 "%al"					FCML_FM_GPRS_8_REG(FCML_REG_AL)
 "%cl"					FCML_FM_GPRS_8_REG(FCML_REG_CL)
 "%dl"					FCML_FM_GPRS_8_REG(FCML_REG_DL)
@@ -116,7 +116,7 @@ fcml_fn_pu_parse_intege_flags
 "%r14"                  FCML_FM_GPRS_64_REG(FCML_REG_R14)
 "%r15"                  FCML_FM_GPRS_64_REG(FCML_REG_R15)
 
- /*SIMD-MMX*/
+ /* SIMD-MMX */
 "%mm0"					FCML_FM_SIMD_64_REG(FCML_REG_MM0)
 "%mm1"					FCML_FM_SIMD_64_REG(FCML_REG_MM1)
 "%mm2"					FCML_FM_SIMD_64_REG(FCML_REG_MM2)
@@ -126,7 +126,7 @@ fcml_fn_pu_parse_intege_flags
 "%mm6"					FCML_FM_SIMD_64_REG(FCML_REG_MM6)
 "%mm7"					FCML_FM_SIMD_64_REG(FCML_REG_MM7)
 
- /*SIMD-XMM*/
+ /* SIMD-XMM */
 "%xmm0"					FCML_FM_SIMD_128_REG(FCML_REG_XMM0)
 "%xmm1"					FCML_FM_SIMD_128_REG(FCML_REG_XMM1)
 "%xmm2"					FCML_FM_SIMD_128_REG(FCML_REG_XMM2)
@@ -144,7 +144,7 @@ fcml_fn_pu_parse_intege_flags
 "%xmm14"			    FCML_FM_SIMD_128_REG(FCML_REG_XMM14)
 "%xmm15"			    FCML_FM_SIMD_128_REG(FCML_REG_XMM15)
 
- /*SIMD-YMM*/
+ /* SIMD-YMM */
 "%ymm0"                 FCML_FM_SIMD_256_REG(FCML_REG_YMM0)
 "%ymm1"                 FCML_FM_SIMD_256_REG(FCML_REG_YMM1)
 "%ymm2"                 FCML_FM_SIMD_256_REG(FCML_REG_YMM2)
@@ -162,7 +162,7 @@ fcml_fn_pu_parse_intege_flags
 "%ymm14"                FCML_FM_SIMD_256_REG(FCML_REG_YMM14) 
 "%ymm15"                FCML_FM_SIMD_256_REG(FCML_REG_YMM15) 
 
- /*FPU*/
+ /* FPU */
 %st{WS}("("{WS}0{WS}")"|0)	FCML_FM_FPU_REG(FCML_REG_ST0)			
 %st{WS}("("{WS}1{WS}")"|1)	FCML_FM_FPU_REG(FCML_REG_ST1)
 %st{WS}("("{WS}2{WS}")"|2)	FCML_FM_FPU_REG(FCML_REG_ST2)
@@ -172,14 +172,14 @@ fcml_fn_pu_parse_intege_flags
 %st{WS}("("{WS}6{WS}")"|6)	FCML_FM_FPU_REG(FCML_REG_ST6)
 %st{WS}("("{WS}7{WS}")"|7)	FCML_FM_FPU_REG(FCML_REG_ST7)
 
- /*Control registers.*/
+ /* Control registers. */
 "%cr0"				FCML_FM_CR_REG(FCML_REG_CR0)
 "%cr2"				FCML_FM_CR_REG(FCML_REG_CR2)
 "%cr3"				FCML_FM_CR_REG(FCML_REG_CR3)
 "%cr4"				FCML_FM_CR_REG(FCML_REG_CR4)
 "%cr8"				FCML_FM_CR_REG(FCML_REG_CR8)
 
- /*Debug registers.*/
+ /* Debug registers. */
 "%db0"				FCML_FM_DR_REG(FCML_REG_DR0)
 "%db1"				FCML_FM_DR_REG(FCML_REG_DR1)
 "%db2"				FCML_FM_DR_REG(FCML_REG_DR2)
@@ -189,7 +189,7 @@ fcml_fn_pu_parse_intege_flags
 "%db6"				FCML_FM_DR_REG(FCML_REG_DR6)
 "%db7"				FCML_FM_DR_REG(FCML_REG_DR7)
 
- /*Segment registers.*/
+ /* Segment registers. */
 "%es"				FCML_FM_SEG_REG(FCML_REG_ES)
 "%cs"				FCML_FM_SEG_REG(FCML_REG_CS)
 "%ss"				FCML_FM_SEG_REG(FCML_REG_SS)
@@ -197,7 +197,7 @@ fcml_fn_pu_parse_intege_flags
 "%fs"				FCML_FM_SEG_REG(FCML_REG_FS)
 "%gs"				FCML_FM_SEG_REG(FCML_REG_GS)
 
- /*IP*/
+ /* RIP */
  "%rip"				FCML_FM_RIP
 
  /* Prefixes */

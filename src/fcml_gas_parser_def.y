@@ -7,17 +7,16 @@
 	
 	#include "fcml_parser_utils.h"
 	
-	void gas_error( struct fcml_st_parser_data *pd, const char *error );
-	
 	/* Macro responsible for handling 'Out of memory' errors. */
 	#define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
 	
 	/* Macro responsible for adding error messages to result. */
-	#define ADD_ERROR_MSG(x) { yyerror(pd, x); }
+	#define ADD_ERROR_MSG(x) { yyerror( pd, x ); }
 	
 %}
 
-/*%debug*/
+/* Uncomment it in order to enable debugging */
+/* %debug */
 
 /*Terminal symbols.*/
 
@@ -88,7 +87,8 @@
 %}
 
 %initial-action { 
-	/*gas_debug = 1;*/
+    /* Uncomment it in order to enable debugging */
+	/* gas_debug = 1; */
 }
 
 %%
