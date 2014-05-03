@@ -1,29 +1,40 @@
 /*
- * fcml_asm_dialect_intel.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 1 wrz 2013
- *      Author: tAs
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * Dialect specific data field values for mnemonics:
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * D01 - Mnemonic is used only if compatibility with SystemV/386 SVR3.2 assembler is enabled for GAS dialect.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
  */
+
+#include "fcml_gas_dialect.h"
 
 #include <stdio.h>
 
+#include <fcml_common.h>
+#include <fcml_dialect.h>
+#include <fcml_disassembler.h>
+#include <fcml_types.h>
+
 #include "fcml_ceh.h"
 #include "fcml_coll.h"
-#include "fcml_common.h"
 #include "fcml_common_dialect.h"
 #include "fcml_def.h"
-#include "fcml_dialect.h"
 #include "fcml_dialect_int.h"
-#include "fcml_disassembler.h"
 #include "fcml_env_int.h"
 #include "fcml_mnemonic_parser.h"
-#include "fcml_types.h"
 #include "fcml_utils.h"
-#include "fcml_gas_dialect.h"
 #include "fcml_gas_rend.h"
 #include "fcml_gas_parser.h"
 
@@ -264,7 +275,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("fdecstp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDECSTP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdiv;fdivs[d04];fdivl[d08]"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIV, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdivr"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIV, FCML_AM_ST_ST0 ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
-    /* In this case order of following two definitions really matters, do not change it.*/
+    /* In this case order of the following two definitions really matters, so do not change it. */
     { FCML_TEXT("fdivp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("fdivrp"), FCML_ASM_DIALECT_INSTRUCTION( F_FDIVP, FCML_AM_ALL ), FCML_GAS_DF_SYSV_SVR32_COMPATIBLE },
     { FCML_TEXT("fidiv[d02];fidivl[d04]"), FCML_ASM_DIALECT_INSTRUCTION( F_FIDIV, FCML_AM_ALL ), 0 },
@@ -1183,11 +1194,11 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { NULL, 0, 0 }
 };
 
-/* *********************/
-/* * END OF MNEMONICS **/
-/* *********************/
+/**********************/
+/** END OF MNEMONICS **/
+/**********************/
 
-#define FCML_ASM_DIALECT_gas_GROUPS 3
+#define FCML_ASM_DIALECT_GAS_GROUPS 3
 
 fcml_string fcml_ar_asm_dialect_reg_symbol_table_gas[16] = {
     FCML_TEXT("db0"), FCML_TEXT("db1"), FCML_TEXT("db2"), FCML_TEXT("db3"), FCML_TEXT("db4"), FCML_TEXT("db5"), FCML_TEXT("db6"), FCML_TEXT("db7"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>"), FCML_TEXT("<unknown DB>")
@@ -1206,9 +1217,12 @@ fcml_string fcml_itb_gas_conditional_suffixes_render[2][16] = {
 
 fcml_string fcml_ifn_asm_dialect_render_mnemonic_gas( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry ) {
     fcml_string rendered_mnemonic = NULL;
+
     if( condition ) {
-        fcml_string suffix = NULL;
+
+    	fcml_string suffix = NULL;
         fcml_int cond = ( condition->condition_type << 1 ) | ( ( condition->is_negation ) ? 1 : 0 );
+
         if( show_carry ) {
             if( cond == 2 ) {
                 suffix = FCML_TEXT("c");
@@ -1216,16 +1230,20 @@ fcml_string fcml_ifn_asm_dialect_render_mnemonic_gas( fcml_string mnemonic, fcml
                 suffix = FCML_TEXT("nc");
             }
         }
+
         if( !suffix ) {
             suffix = fcml_itb_gas_conditional_suffixes_render[conditional_group][cond];
         }
+
         fcml_usize mnemonic_len = fcml_fn_env_str_strlen( mnemonic );
         fcml_usize len = mnemonic_len + fcml_fn_env_str_strlen( suffix ) ;
         rendered_mnemonic = fcml_fn_env_str_stralloc( len + 1 );
+
         if( rendered_mnemonic ) {
             fcml_fn_env_str_strcpy(rendered_mnemonic, mnemonic);
             fcml_fn_env_str_strcpy(rendered_mnemonic + mnemonic_len, suffix);
         }
+
     } else {
         rendered_mnemonic = fcml_fn_env_str_strdup( mnemonic );
     }
@@ -1233,17 +1251,22 @@ fcml_string fcml_ifn_asm_dialect_render_mnemonic_gas( fcml_string mnemonic, fcml
 }
 
 fcml_ceh_error fcml_ifn_asm_dialect_get_register_gas( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex) {
-    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_string printable_reg;
+
     if( reg->type == FCML_REG_DR ) {
         printable_reg = fcml_ar_asm_dialect_reg_symbol_table_gas[reg->reg];
     } else {
         error = fcml_fn_cmn_dialect_get_register( reg, &printable_reg, is_rex );
     }
+
     if( error ) {
         return error;
     }
+
     fcml_fn_env_str_snprintf( buffer, buffer_length, FCML_TEXT("%%%s"), printable_reg );
+
     return error;
 }
 
@@ -1269,12 +1292,14 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_dial
 
     int i;
     for( i = 0; i < sizeof( keys ) / sizeof( fcml_uint32_t ) && !mnemonic_pattern; i++ ) {
-        fcml_st_dialect_mnemonic *dialect_mnemonic = (fcml_st_dialect_mnemonic*)fcml_fn_coll_map_get( dialect_context->dialect_mnemonics_lookup, &(keys[i]) );
+
+    	fcml_st_dialect_mnemonic *dialect_mnemonic = (fcml_st_dialect_mnemonic*)fcml_fn_coll_map_get( dialect_context->dialect_mnemonics_lookup, &(keys[i]) );
+
         if( dialect_mnemonic ) {
 
             fcml_bool ignore = FCML_FALSE;
 
-            /* Check if this mnemonics set is available for current dialect configuration.*/
+            /* Check if this mnemonics set is available for current dialect configuration. */
             ignore |= ( dialect_context->config_flags & FCML_GAS_DIALECT_CF_SYSV_SVR32_INCOMPATIBLE ) && ( dialect_mnemonic->flags & FCML_GAS_DF_SYSV_SVR32_COMPATIBLE );
 
             if( !ignore ) {
@@ -1291,7 +1316,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_gas( const fcml_st_dial
 
     fcml_ceh_error error = fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
 
-    /* Set flags for every parsed mnemonic.*/
+    /* Set flags for every parsed mnemonic. */
     if( *mnemonics ) {
         fcml_st_mp_mnemonic_set *m_set = *mnemonics;
         fcml_st_coll_list_element *current = m_set->mnemonics->head;
@@ -1328,7 +1353,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_gas( const fcml_st_dialect *dia
             fcml_uint32_t suffix_nr = condition->condition_type * 2 + ( condition->is_negation ? 1 : 0 );
 
             int i;
-            for( i = 0; i < FCML_ASM_DIALECT_gas_GROUPS; i++ ) {
+            for( i = 0; i < FCML_ASM_DIALECT_GAS_GROUPS; i++ ) {
                 fcml_string suffix = fcml_itb_gas_conditional_suffixes[i][suffix_nr];
                 if( suffix ) {
                     mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( mnemonic_def, suffix );
