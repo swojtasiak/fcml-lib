@@ -149,37 +149,36 @@ void fcml_tf_instruction_FCMOV(void) {
 }
 
 void fcml_tf_instruction_FCOM(void) {
-    /* D8 /2 FCOM m32fp*/
+    /* D8 /2 FCOM */
     FCML_I64( "fcom dword ptr [rax]", 0xD8, 0x10 );
     FCML_I32( "fcom dword ptr [eax]", 0xD8, 0x10 );
-    /* D8 /3 FCOMP m32fp*/
+    /* D8 /3 FCOMP */
     FCML_I64( "fcomp dword ptr [rax]", 0xD8, 0x18 );
     FCML_I32( "fcomp dword ptr [eax]", 0xD8, 0x18 );
-    /* DC /2 FCOM m64fp*/
+    /* DC /2 FCOM */
     FCML_I64( "fcom qword ptr [rax]", 0xDC, 0x10 );
     FCML_I32( "fcom qword ptr [eax]", 0xDC, 0x10 );
-    /* DC /3 FCOMP m64fp*/
+    /* DC /3 FCOMP */
     FCML_I64( "fcomp qword ptr [rax]", 0xDC, 0x18 );
     FCML_I32( "fcomp qword ptr [eax]", 0xDC, 0x18 );
-    /* D8 D0+i FCOM ST(i)*/
+    /* D8 D0 FCOM */
     FCML_I64( "fcom st(0)", 0xD8, 0xD0 );
     FCML_I64( "fcom st(1)", 0xD8, 0xD1 );
     FCML_I32( "fcom st(0)", 0xD8, 0xD0 );
     FCML_I32( "fcom st(1)", 0xD8, 0xD1 );
-    /* D8 D8+i FCOMP ST(i)*/
+    /* D8 D8 FCOMP */
     FCML_I64( "fcomp st(0)", 0xD8, 0xD8 );
     FCML_I64( "fcomp st(1)", 0xD8, 0xD9 );
     FCML_I32( "fcomp st(0)", 0xD8, 0xD8 );
     FCML_I32( "fcomp st(1)", 0xD8, 0xD9 );
-    /* DE D9 FCOMPP*/
+    /* DE D9 FCOMPP */
     FCML_I32( "fcompp", 0xDE, 0xD9 );
     FCML_I64( "fcompp", 0xDE, 0xD9 );
-    /* D8 D1 FCOM*/
-    /* D8 D9 FCOMP*/
+    /* D8 D1 FCOM */
+    /* D8 D9 FCOMP */
     FCML_I32_A( "fcom", 0xD8, 0xD1 );
     FCML_I32_A( "fcomp", 0xD8, 0xD9 );
-
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fcoms (%rax)", 0xd8, 0x10 );
     FCML_A64( "fcomps (%rax)", 0xd8, 0x18 );
     FCML_A64( "fcoml (%rax)", 0xdc, 0x10 );
@@ -193,16 +192,16 @@ void fcml_tf_instruction_FCOM(void) {
 }
 
 void fcml_tf_instruction_FCOMI(void) {
-    /* FCOMI*/
+    /* FCOMI */
     FCML_I64( "fcomi st(0),st(1)", 0xDB, 0xF1 );
     FCML_I32( "fcomi st(0),st(1)", 0xDB, 0xF1 );
-    /* FCOMIP*/
+    /* FCOMIP */
     FCML_I64( "fcomip st(0),st(1)", 0xDF, 0xF1 );
     FCML_I32( "fcomip st(0),st(1)", 0xDF, 0xF1 );
-    /* FUCOMI*/
+    /* FUCOMI */
     FCML_I64( "fucomi st(0),st(1)", 0xDB, 0xE9 );
     FCML_I32( "fucomi st(0),st(1)", 0xDB, 0xE9 );
-    /* FUCOMIP*/
+    /* FUCOMIP */
     FCML_I64( "fucomip st(0),st(1)", 0xDF, 0xE9 );
     FCML_I32( "fucomip st(0),st(1)", 0xDF, 0xE9 );
 
@@ -235,9 +234,9 @@ void fcml_tf_instruction_FDIV(void) {
     FCML_I32( "fidiv dword ptr [eax+00000020h]", 0xDA, 0x70, 0x20 );
     FCML_I64( "fidiv word ptr [rax+0000000000000020h]", 0xDE, 0x70, 0x20 );
     FCML_I32( "fidiv word ptr [eax+00000020h]", 0xDE, 0x70, 0x20 );
-    /* DE F9 FDIVP*/
+    /* DE F9 FDIVP */
     FCML_I3264_A( "fdivp", 0xDE, 0xF9 );
-    /*GAC*/
+    /* GAC */
     FCML_A64( "fdivs 0x0000000000000020(%rax)", 0xd8, 0x70, 0x20 );
     FCML_A64( "fdivl 0x0000000000000020(%rax)", 0xdc, 0x70, 0x20 );
     FCML_A64( "fdiv %st(1),%st(0)", 0xd8, 0xf1 );
@@ -263,9 +262,9 @@ void fcml_tf_instruction_FDIVR(void) {
     FCML_I32( "fidivr dword ptr [eax+00000020h]", 0xDA, 0x78, 0x20 );
     FCML_I64( "fidivr word ptr [rax+0000000000000020h]", 0xDE, 0x78, 0x20 );
     FCML_I32( "fidivr word ptr [eax+00000020h]", 0xDE, 0x78, 0x20 );
-    /* DE F1 FDIVRP*/
+    /* DE F1 FDIVRP */
     FCML_I3264_A( "fdivrp", 0xDE, 0xF1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fdivrs 0x0000000000000020(%rax)", 0xd8, 0x78, 0x20 );
     FCML_A64( "fdivrl 0x0000000000000020(%rax)", 0xdc, 0x78, 0x20 );
     FCML_A64( "fdivr %st(1),%st(0)", 0xd8, 0xf9 );
@@ -290,7 +289,7 @@ void fcml_tf_instruction_FICOM(void) {
     FCML_I64( "ficomp word ptr [rax+0000000000000040h]", 0xDE, 0x58, 0x40 );
     FCML_I32( "ficomp dword ptr [eax+00000040h]", 0xDA, 0x58, 0x40 );
     FCML_I64( "ficomp dword ptr [rax+0000000000000040h]", 0xDA, 0x58, 0x40 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "ficom 0x0000000000000040(%rax)", 0xde, 0x50, 0x40 );
     FCML_A64( "ficoml 0x0000000000000040(%rax)", 0xda, 0x50, 0x40 );
     FCML_A64( "ficomp 0x0000000000000040(%rax)", 0xde, 0x58, 0x40 );
@@ -304,7 +303,7 @@ void fcml_tf_instruction_FILD(void) {
     FCML_I64( "fild dword ptr [rax+0000000000000040h]", 0xDB, 0x40, 0x40 );
     FCML_I32( "fild qword ptr [eax+00000040h]", 0xDF, 0x68, 0x40 );
     FCML_I64( "fild qword ptr [rax+0000000000000040h]", 0xDF, 0x68, 0x40 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fild 0x0000000000000040(%rax)", 0xdf, 0x40, 0x40 );
     FCML_A64( "fildl 0x0000000000000040(%rax)", 0xdb, 0x40, 0x40 );
     FCML_A64( "fildll 0x0000000000000040(%rax)", 0xdf, 0x68, 0x40 );
@@ -334,7 +333,7 @@ void fcml_tf_instruction_FIST_FISTP(void) {
     FCML_I64( "fistp dword ptr [rax+0000000000000020h]", 0xDB, 0x58, 0x20 );
     FCML_I32( "fistp qword ptr [eax+00000020h]", 0xDF, 0x78, 0x20 );
     FCML_I64( "fistp qword ptr [rax+0000000000000020h]", 0xDF, 0x78, 0x20 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fist 0x0000000000000020(%rax)", 0xdf, 0x50, 0x20 );
     FCML_A64( "fistl 0x0000000000000020(%rax)", 0xdb, 0x50, 0x20 );
     FCML_A64( "fistp 0x0000000000000020(%rax)", 0xdf, 0x58, 0x20 );
@@ -350,7 +349,7 @@ void fcml_tf_instruction_FLD(void) {
     FCML_I64( "fld tbyte ptr [rax+0000000000000020h]", 0xDB, 0x68, 0x20 );
     FCML_I32( "fld st(1)", 0xD9, 0xC1 );
     FCML_I64( "fld st(1)", 0xD9, 0xC1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "flds 0x0000000000000020(%rax)", 0xd9, 0x40, 0x20 );
     FCML_A64( "fldl 0x0000000000000020(%rax)", 0xdd, 0x40, 0x20 );
     FCML_A64( "fldt 0x0000000000000020(%rax)", 0xdb, 0x68, 0x20 );
@@ -372,7 +371,7 @@ void fcml_tf_instruction_FLDx(void) {
     FCML_I64( "fldln2", 0xD9, 0xED );
     FCML_I32( "fldz", 0xD9, 0xEE );
     FCML_I64( "fldz", 0xD9, 0xEE );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fld1", 0xd9, 0xe8 );
     FCML_A64( "fldl2t", 0xd9, 0xe9 );
     FCML_A64( "fldl2e", 0xd9, 0xea );
@@ -411,9 +410,9 @@ void fcml_tf_instruction_FMUL_FMULP_FIMUL(void) {
     FCML_I32( "fimul dword ptr [eax+00000020h]", 0xDA, 0x48, 0x20 );
     FCML_I64( "fimul word ptr [rax+0000000000000020h]", 0xDE, 0x48, 0x20 );
     FCML_I32( "fimul word ptr [eax+00000020h]", 0xDE, 0x48, 0x20 );
-    /* DE C9 FMULP*/
+    /* DE C9 FMULP */
     FCML_I32_A( "fmulp", 0xDE, 0xC9 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fmuls 0x0000000000000020(%rax)", 0xd8, 0x48, 0x20 );
     FCML_A64( "fmull 0x0000000000000020(%rax)", 0xdc, 0x48, 0x20 );
     FCML_A64( "fmul %st(1),%st(0)", 0xd8, 0xc9 );
@@ -469,7 +468,7 @@ void fcml_tf_instruction_FSAVE_FNSAVE(void) {
     FCML_I64( "fnsave 108byte ptr [rax+0000000000000020h]", 0xDD, 0x70, 0x20 );
     FCML_I64( "fnsave 94byte ptr [rax+0000000000000020h]", 0x66, 0xDD, 0x70, 0x20 );
     FCML_I32( "fnsave 108byte ptr [eax+00000020h]", 0xDD, 0x70, 0x20 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fsave 0x0000000000000020(%rax)", 0x9b, 0xdd, 0x70, 0x20 );
     FCML_A64( "fsaves 0x0000000000000020(%rax)", 0x66, 0x9b, 0xdd, 0x70, 0x20 );
     FCML_A64( "fnsave 0x0000000000000020(%rax)", 0xdd, 0x70, 0x20 );
@@ -511,7 +510,7 @@ void fcml_tf_instruction_FST_FSTP(void) {
     FCML_I32( "fstp tbyte ptr [eax+00000020h]", 0xDB, 0x78, 0x20 );
     FCML_I64( "fstp st(1)", 0xDD, 0xD9 );
     FCML_I32( "fstp st(1)", 0xDD, 0xD9 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fsts 0x0000000000000020(%rax)", 0xd9, 0x50, 0x20 );
     FCML_A64( "fstl 0x0000000000000020(%rax)", 0xdd, 0x50, 0x20 );
     FCML_A64( "fst %st(1)", 0xdd, 0xd1 );
@@ -528,7 +527,7 @@ void fcml_tf_instruction_FSTENV_FNSTENV(void) {
 	FCML_I64( "fnstenv 28byte ptr [rax+0000000000000020h]", 0xD9, 0x70, 0x20 );
 	FCML_I64( "fnstenv 14byte ptr [rax+0000000000000020h]", 0x66, 0xD9, 0x70, 0x20 );
 	FCML_I32( "fnstenv 28byte ptr [eax+00000020h]", 0xD9, 0x70, 0x20 );
-	/* GAS*/
+	/* GAS */
 	FCML_A64( "fstenv 0x0000000000000020(%rax)", 0x9b, 0xd9, 0x70, 0x20 );
 	FCML_A64( "fstenvs 0x0000000000000020(%rax)", 0x66, 0x9b, 0xd9, 0x70, 0x20 );
 	FCML_A64( "fnstenv 0x0000000000000020(%rax)", 0xd9, 0x70, 0x20 );
@@ -553,7 +552,7 @@ void fcml_tf_instruction_FSTSW_FNSTSW(void) {
     FCML_I32( "fnstsw word ptr [eax+00000020h]", 0xDD, 0x78, 0x20  );
     FCML_I64( "fnstsw ax", 0xDF, 0xE0 );
     FCML_I32( "fnstsw ax", 0xDF, 0xE0  );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fstsw 0x0000000000000020(%rax)", 0x9b, 0xdd, 0x78, 0x20 );
     FCML_A64( "fstsw %ax", 0x9b, 0xdf, 0xe0 );
     FCML_A64( "fnstsw 0x0000000000000020(%rax)", 0xdd, 0x78, 0x20 );
@@ -575,13 +574,13 @@ void fcml_tf_instruction_FSUB_FSUBP_FISUB(void) {
     FCML_I32( "fisub dword ptr [eax+00000020h]", 0xDA, 0x60, 0x20 );
     FCML_I64( "fisub word ptr [rax+0000000000000020h]", 0xDE, 0x60, 0x20 );
     FCML_I32( "fisub word ptr [eax+00000020h]", 0xDE, 0x60, 0x20 );
-    /* DE E9 FSUBP*/
+    /* DE E9 FSUBP */
     FCML_I3264_A( "fsubp", 0xDE, 0xE9 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fsubs 0x0000000000000020(%rax)", 0xd8, 0x60, 0x20 );
     FCML_A64( "fsubl 0x0000000000000020(%rax)", 0xdc, 0x60, 0x20 );
     FCML_A64( "fsub %st(1),%st(0)", 0xd8, 0xe1 );
-    /* FCML_A64( "fsub %st(0),%st(1)", 0xdc, 0xe9 );*/
+    /* FCML_A64( "fsub %st(0),%st(1)", 0xdc, 0xe9 ); */
     /* SVR3.2 compatible by default.*/
     FCML_A64( "fsubr %st(0),%st(1)", 0xdc, 0xe9 );
     FCML_A64( "fsubrp %st(0),%st(1)", 0xde, 0xe9 );
@@ -604,9 +603,9 @@ void fcml_tf_instruction_FSUBR_FSUBRP_FISUBR(void) {
     FCML_I32( "fisubr dword ptr [eax+00000020h]", 0xDA, 0x68, 0x20 );
     FCML_I64( "fisubr word ptr [rax+0000000000000020h]", 0xDE, 0x68, 0x20 );
     FCML_I32( "fisubr word ptr [eax+00000020h]", 0xDE, 0x68, 0x20 );
-    /* DE E1 FSUBRP*/
+    /* DE E1 FSUBRP */
     FCML_I3264_A( "fsubrp", 0xDE, 0xE1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fsubrs 0x0000000000000020(%rax)", 0xd8, 0x68, 0x20 );
     FCML_A64( "fsubrl 0x0000000000000020(%rax)", 0xdc, 0x68, 0x20 );
     FCML_A64( "fsubr %st(1),%st(0)", 0xd8, 0xe9 );
@@ -625,13 +624,13 @@ void fcml_tf_instruction_FTST(void) {
 void fcml_tf_instruction_FUCOM_FUCOMP_FUCOMPP(void) {
     FCML_I3264( "fucom st(1)", 0xDD, 0xE1 );
     FCML_I3264( "fucomp st(1)", 0xDD, 0xE9 );
-    /* DD E1 FUCOM*/
+    /* DD E1 FUCOM */
     FCML_I3264_A( "fucom", 0xDD, 0xE1 );
-    /* DD E9 FUCOMP*/
+    /* DD E9 FUCOMP */
     FCML_I3264_A( "fucomp", 0xDD, 0xE9 );
-    /* DA E9 FUCOMPP*/
+    /* DA E9 FUCOMPP */
     FCML_I3264( "fucompp", 0xDA, 0xE9 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fucom %st(1)", 0xdd, 0xe1 );
     FCML_A64( "fucomp %st(1)", 0xdd, 0xe9 );
     FCML_A64( "fucompp", 0xda, 0xe9 );
@@ -646,23 +645,23 @@ void fcml_tf_instruction_FXAM(void) {
 void fcml_tf_instruction_FXCH(void) {
     FCML_I3264( "fxch st(1)", 0xD9, 0xC9 );
     FCML_I3264( "fxch st(2)", 0xD9, 0xCA );
-    /* D9 C9 FXCH*/
+    /* D9 C9 FXCH */
     FCML_I3264_A( "fxch", 0xD9, 0xC9 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fxch %st(1)", 0xd9, 0xc9 );
     FCML_A64( "fxch %st(2)", 0xd9, 0xca );
     FCML_A64_A( "fxch", 0xD9, 0xC9 );
 }
 
 void fcml_tf_instruction_FXRSTOR(void) {
-    /* 0F AE /5 XRSTOR mem M Valid Valid Restore processor extended states from memory. The states are specified by EDX:EAX*/
-    /* REX.W+ 0F AE /5 XRSTOR64 mem M Valid N.E. Restore processor extended states from memory. The states are specified by EDX:EAX*/
+    /* 0F AE */
+    /* REX.W + 0F AE */
     FCML_I64( "xrstor [rax]", 0x0F, 0xAE, 0x28 );
     FCML_I32( "xrstor [eax]", 0x0F, 0xAE, 0x28 );
     FCML_I64( "xrstor [rax]", 0x66, 0x0F, 0xAE, 0x28 );
     FCML_I32( "xrstor [eax]", 0x66, 0x0F, 0xAE, 0x28 );
     FCML_I64( "xrstor64 [rax]", 0x48, 0x0F, 0xAE, 0x28 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "xrstor (%rax)", 0x0f, 0xae, 0x28 );
     FCML_A64( "xrstor64 (%rax)", 0x48, 0x0f, 0xae, 0x28 );
 }
@@ -673,7 +672,7 @@ void fcml_tf_instruction_FXRSAVE(void) {
     FCML_I64_D( "fxsave [rax+0000000000000020h]", 0x66, 0x0F, 0xAE, 0x40, 0x20 );
     FCML_I32_D( "fxsave [eax+00000020h]", 0x66, 0x0F, 0xAE, 0x40, 0x20 );
     FCML_I64( "fxsave64 [rax+0000000000000020h]", 0x48, 0x0F, 0xAE, 0x40, 0x20 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "fxsave 0x0000000000000020(%rax)", 0x0f, 0xae, 0x40, 0x20 );
     FCML_A64( "fxsave64 0x0000000000000020(%rax)", 0x48, 0x0f, 0xae, 0x40, 0x20 );
 }
@@ -705,7 +704,7 @@ void fcml_tf_instruction_FISTTP(void) {
 	FCML_I64( "fisttp dword ptr [rax+0000000000000020h]", 0xDB, 0x48, 0x20 );
 	FCML_I32( "fisttp qword ptr [eax+00000020h]", 0xDD, 0x48, 0x20 );
 	FCML_I64( "fisttp qword ptr [rax+0000000000000020h]", 0xDD, 0x48, 0x20 );
-	/* GAS*/
+	/* GAS */
 	FCML_A64( "fisttp 0x0000000000000020(%rax)", 0xdf, 0x48, 0x20 );
 	FCML_A64( "fisttpl 0x0000000000000020(%rax)", 0xdb, 0x48, 0x20 );
 	FCML_A64( "fisttpll 0x0000000000000020(%rax)", 0xdd, 0x48, 0x20 );
