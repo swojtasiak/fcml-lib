@@ -617,7 +617,7 @@ fcml_ceh_error fcml_ifn_ast_eval_exp( fcml_st_cif_converter_context *context, fc
 	case FCML_EN_TN_VALUE: {
 		*result = *((fcml_st_ast_node_value*)exp->node);
 		if( result->integer_value.overflow ) {
-			fcml_fn_ceh_add_error( context->errors, "Value out of range.", FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_WARN );
+			fcml_fn_ceh_add_error( context->errors, fcml_fn_msg_get_message( FCML_MC_CEH_GEC_VALUE_OUT_OF_RANGE ), FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE, FCML_EN_CEH_EL_WARN );
 		}
 		break;
 	}

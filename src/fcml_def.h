@@ -646,11 +646,9 @@ typedef struct fcml_st_def_decoded_addr_mode {
     fcml_ptr addr_mode_args;
 } fcml_st_def_decoded_addr_mode;
 
-fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args(
-        fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error);
+fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args( fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error );
 
-void fcml_fnp_def_free_addr_mode(
-        fcml_st_def_decoded_addr_mode *decoded_addr_mode);
+void fcml_fnp_def_free_addr_mode( fcml_st_def_decoded_addr_mode *decoded_addr_mode );
 
 /* Addressing modes arguments. */
 

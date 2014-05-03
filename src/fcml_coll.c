@@ -22,7 +22,9 @@
 #include "fcml_coll.h"
 #include "fcml_ceh.h"
 
-/* Bidirectional list.*/
+/***********************/
+/* Bidirectional list. */
+/***********************/
 
 fcml_st_coll_list *fcml_fn_coll_list_alloc() {
     fcml_st_coll_list *list =  (fcml_st_coll_list*)fcml_fn_env_memory_alloc( sizeof( fcml_st_coll_list ) );
@@ -124,7 +126,9 @@ void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action i
 	fcml_fn_env_memory_free(list);
 }
 
+/*************/
 /* Hash map. */
+/*************/
 
 /* Internal data types dedicated for given implementation of the map.*/
 
@@ -219,7 +223,6 @@ fcml_bool fcml_ifn_coll_map_expand( struct fcml_ist_coll_map *map, fcml_ceh_erro
 	/* Allocate new map entries.*/
 	struct fcml_ist_coll_map_entry** new_map_entries = (struct fcml_ist_coll_map_entry**)fcml_fn_env_memory_alloc( new_capacity * sizeof( struct fcml_ist_coll_map_entry* ) );
 	if( !new_map_entries ) {
-		/* Can not*/
 		*error = FCML_COLL_ERROR_OUT_OF_MEMORY;
 		return FCML_FALSE;
 	}
@@ -264,10 +267,10 @@ void fcml_fn_coll_map_put( fcml_coll_map map_int, fcml_ptr key, fcml_ptr value, 
 	struct fcml_ist_coll_map_entry *entry = map->map_entries[index];
 	struct fcml_ist_coll_map_entry *current_entry = entry;
 
-	/* Checking for entry with the same key.*/
+	/* Checking for entry with the same key. */
 	while( current_entry ) {
 		if( current_entry->hash == hash && ( key == current_entry->key || descriptor->equals_function( key, current_entry->key ) ) ) {
-			/* We found element with same key, so replace key and value.*/
+			/* We found element with same key, so replace key and value. */
 			if( descriptor->entry_free_function ) {
 				descriptor->entry_free_function( current_entry->key, current_entry->value, map->descriptor.entry_free_args );
 			}
@@ -278,10 +281,11 @@ void fcml_fn_coll_map_put( fcml_coll_map map_int, fcml_ptr key, fcml_ptr value, 
 		current_entry = current_entry->next;
 	}
 
-	/* Check if map should be already extended.*/
+	/* Check if map should be already extended. */
 	if( entry && map->size > map->boundary ) {
-		/* Currently we ignore errors, because it really doesn't matter if*/
-		/* there is no space in the map or on the heap.*/
+		/* Currently we ignore errors, because it really doesn't matter if
+		/* there is no space in the map or on the heap.
+		 */
 		fcml_ceh_error error;
 		if( fcml_ifn_coll_map_expand( map, &error ) ) {
 			index = map->hash_mask & hash;
@@ -311,7 +315,7 @@ void fcml_fn_coll_map_remove( fcml_coll_map map_int, fcml_ptr key ) {
 	struct fcml_ist_coll_map_entry *previous_entry = NULL;
 	while( entry ) {
 		if( entry->hash == hash && ( key == entry->key || map->descriptor.equals_function( key, entry->key ) ) ) {
-			/* We found entry, so remove it.*/
+			/* We found entry, so remove it. */
 			if( map->descriptor.entry_free_function ) {
 				map->descriptor.entry_free_function( entry->key, entry->value, map->descriptor.entry_free_args );
 			}
@@ -412,14 +416,14 @@ void fcml_fn_coll_map_free( fcml_coll_map map_int ) {
 	}
 }
 
-/* Build-in Hash & Equals implementations.*/
+/* Build-in Hash & Equals implementations. */
 
 fcml_uint32_t fcml_fnp_coll_map_key_hash_string ( fcml_ptr key ) {
 	fcml_uint32_t hash = 0;
 	fcml_string str_key = (fcml_string)key;
 	int i;
 	for (i = 0; str_key[i] != '\0'; i++) {
-		hash = (hash << 6) | (hash >> 26);
+		hash = ( hash << 6 ) | ( hash >> 26 );
 		hash += (fcml_uint32_t) str_key[i];
 	}
 	return hash;

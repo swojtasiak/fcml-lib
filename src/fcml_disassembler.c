@@ -1,8 +1,20 @@
 /*
- * fcml_disassembler.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Oct 13, 2013
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "fcml_disassembler.h"
@@ -23,6 +35,7 @@
 #include "fcml_utils.h"
 #include "fcml_dialect_int.h"
 #include "fcml_trace.h"
+#include "fcml_messages.h"
 
 /* R,X and B are stored in 1's complement form.*/
 #define FCML_VEX_W(x)				FCML_TP_GET_BIT(x, 7)
@@ -89,7 +102,7 @@ typedef struct fcml_ist_dasm_disassembler {
 /* Decoders responsible for operand disassembling. */
 typedef fcml_ceh_error ( *fcml_ifp_dasm_operand_decoder )( struct fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand, fcml_ptr args );
 
-/* Calculates size of the encoded operand in bytes. */
+/* Calculates the size of the encoded operand in bytes. */
 typedef fcml_int ( *fcml_ifp_dasm_operand_size_calculator )( struct fcml_ist_dasm_decoding_context *context, fcml_ptr args );
 
 /* Decoders responsible for instruction disassembling. */
@@ -267,22 +280,22 @@ int fcml_ifn_dasm_dts_calculate_decoding_order( fcml_ist_dasm_instruction_decodi
 
 	int order = 0;
 
-	/* Mandatory prefix.*/
+	/* Mandatory prefix. */
 	if( FCML_DEF_PREFIX_MANDATORY_66( prefixes ) | FCML_DEF_PREFIX_MANDATORY_F2( prefixes ) | FCML_DEF_PREFIX_MANDATORY_F3( prefixes ) ) {
 		order += 3;
 	}
 
-	/* Opcode extension.*/
+	/* Opcode extension. */
 	if( FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT(opcodes) ) {
 		order++;
 	}
 
-	/* VEX and XOP prefixes.*/
+	/* VEX and XOP prefixes. */
 	if( FCML_DEF_PREFIX_VEX_REQ( prefixes ) || FCML_DEF_PREFIX_XOP_REQ( prefixes ) ) {
 		order++;
 	}
 
-	/* REX prefix.*/
+	/* REX prefix. */
 	if( FCML_DEF_PREFIX_W_1( prefixes ) || FCML_DEF_PREFIX_W_0( prefixes ) || FCML_DEF_PREFIX_L_1( prefixes ) || FCML_DEF_PREFIX_L_0( prefixes ) ) {
 		order += 2;
 	}
@@ -293,15 +306,19 @@ int fcml_ifn_dasm_dts_calculate_decoding_order( fcml_ist_dasm_instruction_decodi
 fcml_ifp_dasm_instruction_decoder fcml_ifn_dasm_dts_choose_instruction_decoder( fcml_uint8_t instruction_type ) {
 	switch( instruction_type ) {
 	case FCML_EN_IT_IA:
-		/* Currently only IA decoder is supported.*/
+		/* Currently only IA decoder is supported. */
 		return &fcml_ifn_dasm_instruction_decoder_IA;
 	}
 	return NULL;
 }
 
-/* **********************/
-/* * Operand decoders. **/
-/* **********************/
+/***********************/
+/** Operand decoders. **/
+/***********************/
+
+/********************/
+/* Immediate value. */
+/********************/
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
@@ -331,26 +348,19 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context
 		}
 	}
 
-	fcml_st_integer integer;
-
 	/* All immediate integers are signed.*/
-	integer.is_signed = FCML_TRUE;
+	immediate->is_signed = FCML_TRUE;
 
-	error = fcml_fn_utils_decode_integer( stream, &integer, size );
+	error = fcml_fn_utils_decode_integer( stream, immediate, size );
 	if( error ) {
 		return error;
 	}
 
 	if( size_ex != size ) {
-		error = fcml_fn_utils_convert_integer_to_integer( &integer, &integer, size, size_ex );
+		error = fcml_fn_utils_convert_integer_to_integer( immediate, immediate, size, size_ex );
 		if( error ) {
 			return error;
 		}
-	}
-
-	error = fcml_fn_utils_integer_to_imm( &integer, immediate );
-	if( error ) {
-		return error;
 	}
 
 	return error;
@@ -366,6 +376,10 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_imm( fcml_ist_dasm_decoding_conte
 	return size;
 }
 
+/**********************/
+/* Explicit register. */
+/**********************/
+
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
 	fcml_st_operand *operand = &(operand_wrapper->operand);
@@ -378,6 +392,10 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg( fcml_ist_dasm_decodin
 
 	return FCML_CEH_GEC_NO_ERROR;
 }
+
+/**************************************/
+/* Explicit register base addressing. */
+/**************************************/
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
@@ -402,6 +420,10 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing( fcml_i
 	return fcml_ifn_dasm_utils_decode_segment_selector( context, &(address->segment_selector), reg_addr_args->encoded_segment_register );
 }
 
+/********************/
+/* Opcode register. */
+/********************/
+
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_opcode_reg( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
 	fcml_sf_def_tma_opcode_reg *reg_args = (fcml_sf_def_tma_opcode_reg*)args;
@@ -424,6 +446,10 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_opcode_reg( fcml_ist_dasm_decoding_
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
+/************************************/
+/* Immediate displacement relative. */
+/************************************/
+
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -445,8 +471,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	} else {
 
 		if( context->effective_operand_size_attribute == FCML_DS_16 && entry_point->op_mode == FCML_AF_64_BIT ) {
-			// TODO: Dlaczego w przypadku disassemblera rzucamy blad? Sprawdzic czy to sprawdzenie ma sens.
-			return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+			fcml_fn_ceh_add_error( &(context->errors), fcml_fn_msg_get_message( FCML_MC_CEH_GEC_INVALID_ADDRESSING_MODE ), FCML_CEH_MEW_WARN_INVALID_ADDRESSING_MODE, FCML_EN_CEH_EL_WARN );
 		}
 
 		int_size = FCML_DS_32;
@@ -518,6 +543,10 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_immediate_dis_relative( fcml_ist_
 	return size;
 }
 
+/***************/
+/* Far pointer */
+/***************/
+
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -557,6 +586,10 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_far_pointer( fcml_ist_dasm_decodi
 	return context->effective_operand_size_attribute / 8 + 2;
 }
 
+/****************************/
+/* Explicit 8-bits integer. */
+/****************************/
+
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_ib( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
 	fcml_sf_def_tma_explicit_ib *imm_args = (fcml_sf_def_tma_explicit_ib*)args;
@@ -572,9 +605,9 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_ib( fcml_ist_dasm_decoding
 	return FCML_CEH_GEC_NO_ERROR;
 }
 
-/* -----------------------*/
-/* Segment relative offset*/
-/* -----------------------*/
+/***************************/
+/* Segment relative offset */
+/***************************/
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
@@ -626,9 +659,9 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_segment_relative_offset( fcml_ist
 	return context->effective_address_size_attribute / 8;
 }
 
-/* -----------*/
+/**************/
 /* ModRM - RM */
-/* -----------*/
+/**************/
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
@@ -658,7 +691,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, rm_args->encoded_memory_operand_size );
 
 		if( decoded_modrm->is_rip ) {
-			/* We known instruction size, so post processing is not needed and RIP can be calculated now.*/
+			/* We known the instruction size, so post processing is not needed and RIP can be calculated now.*/
 			error = fcml_fn_modrm_decode_rip( (fcml_uint64_t)context->disassembler_context->entry_point.ip + context->calculated_instruction_size, context->effective_address_size_attribute, &(address->offset), &(address->offset) );
 		}
 
@@ -696,9 +729,9 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 	return error;
 }
 
-/* --------------------*/
-/* Far pointer indirect*/
-/* --------------------*/
+/************************/
+/* Far pointer indirect */
+/************************/
 
 fcml_sf_def_tma_rm  fcml_isst_dasm_far_pointer_indirect_args = { FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_FPI, FCML_RMF_M, 0, FCML_FALSE };
 
@@ -707,9 +740,9 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer_indirect( fcml_ist_dasm
 	return fcml_ifn_dasm_operand_decoder_rm( context, operand_wrapper, &rm_args );
 }
 
-/* ----------*/
-/* ModRM - R*/
-/* ----------*/
+/*************/
+/* ModRM - R */
+/*************/
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_r( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
@@ -728,9 +761,9 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_r( fcml_ist_dasm_decoding_context *
 	return error;
 }
 
-/* ----*/
-/* VVVV*/
-/* ----*/
+/********/
+/* VVVV */
+/********/
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_vex_vvvv( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args ) {
 
@@ -857,6 +890,28 @@ void fcml_ifn_dasm_dts_free_operand_decoding( fcml_ist_dasm_operand_decoding *op
 	}
 }
 
+void fcml_ifn_dasm_dts_free_acceptors_chain( fcml_ist_dasm_addr_mode_acceptor_chain *chain ) {
+	if( !chain ) {
+		return;
+	}
+	if( chain->next ) {
+		fcml_ifn_dasm_dts_free_acceptors_chain( chain->next );
+	}
+	fcml_fn_env_memory_free( chain );
+}
+
+void fcml_ifn_dasm_dts_free_decoding_def( fcml_ist_dasm_instruction_decoding_def *decoding ) {
+	if( decoding->mnemonics ) {
+		fcml_fn_mp_free_mnemonics( decoding->mnemonics );
+	}
+	int i;
+	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+		fcml_ifn_dasm_dts_free_operand_decoding( &(decoding->operand_decodings[i]) );
+	}
+	fcml_ifn_dasm_dts_free_acceptors_chain( decoding->instruction_acceptors_chain );
+	fcml_fn_env_memory_free( decoding );
+}
+
 fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding( fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ist_dasm_operand_decoding *operand_decoding, fcml_uint32_t operand_def, fcml_hints *instruction_hints ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -867,7 +922,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding( fcml_st_def_addr_mode
 
 	operand_decoding->hints = 0;
 
-	fcml_st_def_decoded_addr_mode *decoded_addr_mode = fcml_fnp_def_decode_addr_mode_args( operand_def, &error );
+	fcml_st_def_decoded_addr_mode *decoded_addr_mode = fcml_fn_def_decode_addr_mode_args( operand_def, &error );
 	if( error ) {
 		return error;
 	}
@@ -888,24 +943,9 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding( fcml_st_def_addr_mode
 	return error;
 }
 
-
 /*********************
  * Prefixes.
  *********************/
-
-fcml_st_instruction_prefix* fcml_ifn_dasm_get_prefix_by_type( fcml_ist_dasm_decoding_context *context, fcml_en_prefix_types prefix_type ) {
-	fcml_st_instruction_prefix* prefix = NULL;
-	fcml_st_prefixes_details *prefixes = &(context->prefixes);
-	fcml_int prefix_count = prefixes->prefixes_count;
-	fcml_int i;
-	for( i = 0; i < prefix_count; i++ ) {
-		if( prefixes->prefixes[i].prefix_type == prefix_type ) {
-			prefix = &(prefixes->prefixes[i]);
-			break;
-		}
-	}
-	return prefix;
-}
 
 fcml_st_instruction_prefix* fcml_ifn_dasm_get_prefix_if_available( fcml_ist_dasm_decoding_context *context, fcml_uint8_t prefix_value ) {
 	fcml_st_instruction_prefix* prefix = NULL;
@@ -946,9 +986,9 @@ void fcml_ifn_dasm_clear_mandatory_flag( fcml_ist_dasm_decoding_context *context
 	}
 }
 
-/******************************
- * Effective attributes sizes.
- ******************************/
+/*******************************
+ * Effective attributes sizes. *
+ *******************************/
 
 fcml_usize fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_context *context ) {
 
@@ -1018,15 +1058,15 @@ fcml_usize fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_context
 	return osa;
 }
 
-/*********************
- * Acceptors.
- *********************/
+/**************
+ * Acceptors. *
+ **************/
 
 typedef fcml_ifp_dasm_instruction_acceptor (*fcml_ifp_dasm_instruction_acceptor_factory)( fcml_st_def_addr_mode_desc *addr_mode_desc );
 
-/* ---------*/
-/* Prefixes.*/
-/* ---------*/
+/**************/
+/* Prefixes.  */
+/**************/
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def ) {
 
@@ -1050,11 +1090,6 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes( fcml_ist_dasm_decoding_co
 	if( ( FCML_DEF_PREFIX_XOP_REQ( instruction_decoding_def->prefixes_flags ) && !prefixes->is_xop )
 			|| ( !FCML_DEF_PREFIX_XOP_REQ( instruction_decoding_def->prefixes_flags ) && prefixes->is_xop ) ) {
 		/* VEX prefix is required.*/
-		return FCML_FALSE;
-	}
-	/*TODO: powaznie sie nad tym zastanowic, moze jakies poziomy ignorowania bledow, ewentualnie warning, o to bedzie dobre.*/
-	/* Check if VVVV is set to 1111 if needed.*/
-	if( FCML_DEF_PREFIX_VEXOP_VVVV( instruction_decoding_def->prefixes_flags ) && prefixes->vvvv != 0 ) {
 		return FCML_FALSE;
 	}
 
@@ -1095,9 +1130,9 @@ fcml_ifp_dasm_instruction_acceptor fcml_ifn_dasm_instruction_acceptor_factory_pr
 	return fcml_ifn_dasm_instruction_acceptor_prefixes;
 }
 
-/* ---------*/
-/* ModRM.*/
-/* ---------*/
+/**********/
+/* ModRM. */
+/**********/
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def ) {
 
@@ -1148,22 +1183,25 @@ fcml_ifp_dasm_instruction_acceptor fcml_ifn_dasm_instruction_acceptor_factory_mo
 	return FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM( addr_mode_desc->opcode_flags ) ? fcml_ifn_dasm_instruction_acceptor_modrm : NULL;
 }
 
-/* ----------------*/
-/* Size attributes.*/
-/* ----------------*/
+/********************/
+/* Size attributes. */
+/********************/
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def ) {
 
-	/* Check EOSA. These fields allow us to restrict instruction decoding only*/
-	/* to specific effective operand sizes. For instance we can define instruction*/
-	/* that can be chosen only if EOSA is equal to 16.*/
+	/* Check EOSA. These fields allow us to restrict instruction decoding only
+	 * to specific effective operand sizes. For instance we can define instruction
+	 * that can be chosen only if EOSA is equal to 16.
+	 */
 	if( FCML_DEF_OPCODE_FLAGS_IS_EOSA_RESTRICTION( instruction_decoding_def->opcode_flags ) ) {
 		fcml_bool mandatory_prefix = FCML_FALSE;
-		/* Ignore 0x66 prefix if this instruction uses it as mandatory prefix. This correction is also*/
-		/* done in the next phase for already chosen instruction.*/
+		/* Ignore 0x66 prefix if this instruction uses it as mandatory prefix. This correction is also
+		/* done in the next phase for already chosen instruction.
+		 */
 		fcml_st_instruction_prefix *prefix = fcml_ifn_dasm_get_prefix_if_available( context, 0x66 );
-		/* Set this prefix as a mandatory one if this instruction defines 66 as mandatory.*/
-		/* This is set temporarily, only to calculate correct EOSA for instruction.*/
+		/* Set this prefix as a mandatory one if this instruction defines 66 as mandatory.
+		/* This is set temporarily only to calculate correct EOSA for instruction.
+		 */
 		if( prefix != NULL ) {
 			mandatory_prefix = prefix->mandatory_prefix;
 			prefix->mandatory_prefix = FCML_DEF_PREFIX_MANDATORY_66( instruction_decoding_def->prefixes_flags );
@@ -1175,14 +1213,15 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions( fcml_
 		if( !( ( FCML_DEF_OPCODE_FLAGS_EOSA_16( instruction_decoding_def->opcode_flags ) && eosa == FCML_DS_16 ) ||
 			( FCML_DEF_OPCODE_FLAGS_EOSA_32( instruction_decoding_def->opcode_flags ) && eosa == FCML_DS_32 ) ||
 			( FCML_DEF_OPCODE_FLAGS_EOSA_64( instruction_decoding_def->opcode_flags ) && eosa == FCML_DS_64 ) ) ) {
-			/* Wrong EOSA, ignore instruction.*/
+			/* Wrong EOSA, ignore instruction. */
 			return FCML_FALSE;
 		}
 	}
 
-	/* Check EASA. These fields allow us to restrict instruction decoding only*/
-	/* to specific effective address sizes. For instance we can define instruction*/
-	/* that can be chosen only if EASA is equal to 16.*/
+	/* Check EASA. These fields allow us to restrict instruction only
+	/* to specific effective address sizes. For instance we can define
+	 * instruction that can be chosen only if EASA is equal to 16.
+	 */
 	if( FCML_DEF_OPCODE_FLAGS_IS_EASA_RESTRICTION( instruction_decoding_def->opcode_flags ) ) {
 		fcml_usize easa = fcml_ifn_dasm_calculate_effective_asa( context );
 		if( !( ( FCML_DEF_OPCODE_FLAGS_EASA_16( instruction_decoding_def->opcode_flags ) && easa == FCML_DS_16 ) ||
@@ -1200,9 +1239,9 @@ fcml_ifp_dasm_instruction_acceptor fcml_ifn_dasm_instruction_acceptor_factory_si
 	return ( FCML_DEF_OPCODE_FLAGS_IS_EOSA_RESTRICTION( addr_mode_desc->opcode_flags ) || FCML_DEF_OPCODE_FLAGS_IS_EASA_RESTRICTION( addr_mode_desc->opcode_flags ) ) ? fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions : NULL;
 }
 
-/* ----------------*/
-/* Addressing mode.*/
-/* ----------------*/
+/********************/
+/* Addressing mode. */
+/********************/
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_addr_mode( fcml_ist_dasm_decoding_context *context, fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def ) {
 
@@ -1228,16 +1267,6 @@ fcml_ifp_dasm_instruction_acceptor_factory fcml_iarr_dasm_dts_acceptor_factories
 	NULL
 };
 
-void fcml_ifn_dasm_dts_free_acceptors_chain( fcml_ist_dasm_addr_mode_acceptor_chain *chain ) {
-	if( !chain ) {
-		return;
-	}
-	if( chain->next ) {
-		fcml_ifn_dasm_dts_free_acceptors_chain( chain->next );
-	}
-	fcml_fn_env_memory_free( chain );
-}
-
 fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain( fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_ist_dasm_addr_mode_acceptor_chain **chain ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1247,6 +1276,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain( fcml_st_def_addr_mode
 	fcml_ifp_dasm_instruction_acceptor_factory *factory = &(fcml_iarr_dasm_dts_acceptor_factories[0]);
 
 	while( *factory ) {
+		/* Asks every factory for acceptor dedicated to the provided addressing mode description. */
 		fcml_ifp_dasm_instruction_acceptor acceptor = (*factory)( addr_mode_desc );
 		if( acceptor ) {
 			fcml_ist_dasm_addr_mode_acceptor_chain *chain_element = (fcml_ist_dasm_addr_mode_acceptor_chain*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_ist_dasm_addr_mode_acceptor_chain ) );
@@ -1274,26 +1304,12 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain( fcml_st_def_addr_mode
 	return error;
 }
 
-/*********************
- * Decoding callbacks.
- *********************/
+/**********************
+ * Decoding callback. *
+ **********************/
 
 void fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default( fcml_st_dialect_context_int *dialect, fcml_ptr decoding_ptr ) {
-
-	fcml_ist_dasm_instruction_decoding_def *decoding = (fcml_ist_dasm_instruction_decoding_def *)decoding_ptr;
-
-	if( decoding->mnemonics ) {
-		fcml_fn_mp_free_mnemonics( decoding->mnemonics );
-	}
-
-	int i;
-	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-		fcml_ifn_dasm_dts_free_operand_decoding( &(decoding->operand_decodings[i]) );
-	}
-
-	fcml_ifn_dasm_dts_free_acceptors_chain( decoding->instruction_acceptors_chain );
-
-	fcml_fn_env_memory_free( decoding );
+	fcml_ifn_dasm_dts_free_decoding_def( (fcml_ist_dasm_instruction_decoding_def *)decoding_ptr );
 }
 
 void fcml_ifn_dasm_dts_prepare_modrm_decoding_details( fcml_st_def_decoded_addr_mode *decoded_addr_mode, fcml_ist_dasm_modrm_decoding_details *modrm_details ) {
@@ -1329,7 +1345,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 
 	error = dialect->get_parsed_mnemonics( (fcml_st_dialect*)dialect, instruction_desc, addr_mode_desc, &(decoding->mnemonics) );
 	if( error ) {
-		fcml_fn_env_memory_free( decoding );
+		fcml_ifn_dasm_dts_free_decoding_def( decoding );
 	    return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
@@ -1342,8 +1358,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 
 	error = fcml_ifn_dasm_dts_allocate_acceptors_chain( addr_mode_desc, &(decoding->instruction_acceptors_chain) );
 	if( error ) {
-		fcml_fn_mp_free_mnemonics( decoding->mnemonics );
-		fcml_fn_env_memory_free( decoding );
+		fcml_ifn_dasm_dts_free_decoding_def( decoding );
 		return error;
 	}
 
@@ -1359,9 +1374,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 		if( !error ) {
 			fcml_ifn_dasm_dts_prepare_modrm_decoding_details( decoding->operand_decodings[i].decoded_addr_mode, &(decoding->modrm_details) );
 		} else {
-			fcml_ifn_dasm_dts_free_acceptors_chain( decoding->instruction_acceptors_chain );
-			fcml_fn_mp_free_mnemonics( decoding->mnemonics );
-			fcml_fn_env_memory_free( decoding );
+			fcml_ifn_dasm_dts_free_decoding_def( decoding );
 			return error;
 		}
 	}
@@ -1386,20 +1399,18 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 	}
 
 	if( !fcml_fn_coll_list_insert( instruction_decoding_defs, prev, decoding ) ) {
-		fcml_ifn_dasm_dts_free_acceptors_chain( decoding->instruction_acceptors_chain );
-		fcml_fn_mp_free_mnemonics( decoding->mnemonics );
-		fcml_fn_env_memory_free( decoding );
+		fcml_ifn_dasm_dts_free_decoding_def( decoding );
 		error = FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
 	return error;
 }
 
-/*****************************
- * Opcode iterator.
- *****************************/
+/********************
+ * Opcode iterator. *
+ ********************/
 
-fcml_uint8_t fcml_iarr_dasm_escape_0f[] = { 0x0F };
+fcml_uint8_t fcml_iarr_dasm_escape_0f[]   = { 0x0F };
 fcml_uint8_t fcml_iarr_dasm_escape_0f38[] = { 0x0F, 0x38 };
 fcml_uint8_t fcml_iarr_dasm_escape_0f3A[] = { 0x0F, 0x3A };
 
@@ -1490,9 +1501,9 @@ void fcml_ifn_dasm_opcode_iterator_free( struct fcml_ist_dasm_opcode_iterator *i
 	}
 }
 
-/************************************
- * Instructions decoding.
- ************************************/
+/**************************
+ * Instructions decoding. *
+ **************************/
 
 void fcml_ifn_dasm_decode_opcode_fields( fcml_ist_dasm_decoding_context *decoding_context, fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def, fcml_uint8_t primary_opcode_byte ) {
 
@@ -1543,13 +1554,13 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 		decoding_context->prefixes.is_rep = FCML_FALSE;
 	}
 
-	/* Branches, take into account that this condition do not colide with multi instructions.*/
+	/* Branches, take into account that this condition do not collide with multi-instructions.*/
 	if( instruction_decoding_def->instruction != F_JCC ) {
 		decoding_context->prefixes.is_branch = FCML_FALSE;
 		decoding_context->prefixes.is_nobranch = FCML_FALSE;
 	}
 
-	/* Change REP/REPNE prefixes to XACQUIRE/XRELEASE if instruction support them.*/
+	/* Change REP/REPNE prefixes to XACQUIRE/XRELEASE if instruction support them. */
 	if( FCML_DEF_PREFIX_HLE_ENABLED( instruction_decoding_def->prefixes_flags ) ) {
 		if( decoding_context->prefixes.is_rep ) {
 			decoding_context->prefixes.is_xrelease = FCML_TRUE;
@@ -1607,7 +1618,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 
 	}
 
-	/* Calculate operands size.*/
+	/* Calculate operands size. */
 	fcml_int i, operands_size = 0;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 		fcml_ist_dasm_operand_decoding *operand_decoding = &(instruction_decoding_def->operand_decodings[i]);
@@ -1683,10 +1694,10 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 
 	while( fcml_ifn_dasm_opcode_iterator_has_next( iterator ) ) {
 
-		/* Get next instructions opcode.*/
+		/* Get next instructions opcode. */
 		fcml_uint8_t opcode_byte = fcml_ifn_dasm_opcode_iterator_next( iterator );
 
-		/* Get instruction for given opcode.*/
+		/* Get instruction for given opcode. */
 		fcml_st_dt_diss_tree_element *current = opcodes[opcode_byte];
 
 		if( current ) {
@@ -1713,7 +1724,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 
 	fcml_bool found = FCML_FALSE;
 
-	/* Disassemble instruction using most appropriate addressing mode from disassembling tree.*/
+	/* Disassemble instruction using most appropriate addressing mode from disassembling tree. */
 	if( tree_element ) {
 
 		fcml_st_coll_list_element *current = tree_element->instruction_decoding_defs->head;
@@ -2167,7 +2178,6 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 
 		/* Prefixes.*/
 		instruction_details->prefixes_details = decoding_context.prefixes;
-
 		instruction->prefixes = fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( &(decoding_context.prefixes) );
 
 		/* Copy instruction hints.*/

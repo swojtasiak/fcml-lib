@@ -167,7 +167,7 @@ fcml_fnp_def_addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
 	fcml_fnp_def_addr_mode_args_decoder_pseudo_op
 };
 
-fcml_st_def_decoded_addr_mode* fcml_fnp_def_decode_addr_mode_args( fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error ) {
+fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args( fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error ) {
 
 	*error = FCML_CEH_GEC_NO_ERROR;
 

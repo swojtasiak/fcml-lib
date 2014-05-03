@@ -128,7 +128,9 @@ enum fcml_en_ceh_message_errors {
 /** Codes for textual warnings. */
 enum fcml_en_ceh_message_warnings {
 	/** Value out of range  */
-	FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE = 2000
+	FCML_CEH_MEW_WARN_VALUE_OUT_OF_RANGE = 2000,
+	/** Invalid addressing mode. */
+	FCML_CEH_MEW_WARN_INVALID_ADDRESSING_MODE = 2001
 };
 
 /** @} */
