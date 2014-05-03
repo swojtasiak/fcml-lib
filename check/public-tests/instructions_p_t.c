@@ -30,43 +30,35 @@ fcml_bool fcml_tf_instructions_p_suite_cleanup(void) {
 }
 
 void fcml_tf_instruction_PABS(void) {
-    /* 0F 38 1C */
-    /* 0F 38 1D */
-    /* 0F 38 1E */
+
     FCML_I64( "pabsb mm0,mmword ptr [rax]", 0x0F, 0x38, 0x1C, 0x00 );
     FCML_I32( "pabsb mm0,mm1", 0x0F, 0x38, 0x1C, 0xC1 );
     FCML_I64( "pabsw mm0,mmword ptr [rax]", 0x0F, 0x38, 0x1D, 0x00 );
     FCML_I32( "pabsw mm0,mm1", 0x0F, 0x38, 0x1D, 0xC1 );
     FCML_I64( "pabsd mm0,mmword ptr [rax]", 0x0F, 0x38, 0x1E, 0x00 );
     FCML_I32( "pabsd mm0,mm1", 0x0F, 0x38, 0x1E, 0xC1 );
-    /* 66 0F 38 1C */
-    /* 66 0F 38 1D */
-    /* 66 0F 38 1E */
+
     FCML_I64( "pabsb xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x1C, 0x00 );
     FCML_I32( "pabsb xmm0,xmm1", 0x66, 0x0F, 0x38, 0x1C, 0xC1 );
     FCML_I64( "pabsw xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x1D, 0x00 );
     FCML_I32( "pabsw xmm0,xmm1", 0x66, 0x0F, 0x38, 0x1D, 0xC1 );
     FCML_I64( "pabsd xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x1E, 0x00 );
     FCML_I32( "pabsd xmm0,xmm1", 0x66, 0x0F, 0x38, 0x1E, 0xC1 );
-    /* 66.0F38 1C /r */
-    /* 66.0F38 1D /r */
-    /* 66.0F38 1E /r */
+
     FCML_I64( "vpabsb xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x1C, 0x00 );
     FCML_I32( "vpabsb xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x1C, 0xC1 );
     FCML_I64( "vpabsw xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x1D, 0x00 );
     FCML_I32( "vpabsw xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x1D, 0xC1 );
     FCML_I64( "vpabsd xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x1E, 0x00 );
     FCML_I32( "vpabsd xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x1E, 0xC1 );
-    /* 66.0F38.WIG 1C /r */
-    /* 66.0F38.WIG 1D /r */
-    /* 66.0F38.WIG 1E /r */
+
     FCML_I64( "vpabsb ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x1C, 0x00 );
     FCML_I32( "vpabsb ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x1C, 0xC1 );
     FCML_I64( "vpabsw ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x1D, 0x00 );
     FCML_I32( "vpabsw ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x1D, 0xC1 );
     FCML_I64( "vpabsd ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x1E, 0x00 );
     FCML_I32( "vpabsd ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x1E, 0xC1 );
-    /* GAS */
+
     FCML_A64( "pabsb (%rax),%mm0", 0x0f, 0x38, 0x1c, 0x00 );
     FCML_A64( "pabsb %mm1,%mm0", 0x0f, 0x38, 0x1c, 0xc1 );
     FCML_A64( "pabsw (%rax),%mm0", 0x0f, 0x38, 0x1d, 0x00 );
@@ -102,20 +94,18 @@ void fcml_tf_instruction_PABS(void) {
 }
 
 void fcml_tf_instruction_PACKSS(void) {
-    /* 0F 63 /r1 */
+
     FCML_I64( "packsswb mm0,mmword ptr [rax]", 0x0F, 0x63, 0x00 );
     FCML_I32( "packsswb mm0,mm1", 0x0F, 0x63, 0xC1 );
-    /* 0F 6B /r1 */
+
     FCML_I64( "packssdw mm0,mmword ptr [rax]", 0x0F, 0x6B, 0x00 );
     FCML_I32( "packssdw mm0,mm1", 0x0F, 0x6B, 0xC1 );
-    /* 66 0F 63 /r */
-    /* 66 0F 6B /r */
+
     FCML_I64( "packsswb xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x63, 0x00 );
     FCML_I32( "packsswb xmm0,xmm1", 0x66, 0x0F, 0x63, 0xC1 );
     FCML_I64( "packssdw xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x6b, 0x00 );
     FCML_I32( "packssdw xmm0,xmm1", 0x66, 0x0F, 0x6b, 0xC1 );
-    /* 66.0F.WIG 63 /r */
-    /* 66.0F.WIG 6B /r */
+
     FCML_I64( "vpacksswb xmm0,xmm3,xmmword ptr [rax]", 0xc5, 0xe1, 0x63, 0x00 );
     FCML_I32( "vpacksswb xmm0,xmm3,xmm1", 0xc5, 0xe1, 0x63, 0xc1 );
     FCML_I64( "vpackssdw xmm0,xmm3,xmmword ptr [rax]", 0xc5, 0xe1, 0x6b, 0x00 );
@@ -644,43 +634,43 @@ void fcml_tf_instruction_PCMPESTRM(void) {
 }
 
 void fcml_tf_instruction_PCMPGT(void) {
-    /* 0F 64 /r1 PCMPGTB mm,mm/m64*/
-    /* 0F 65 /r1 PCMPGTW mm,mm/m64*/
-    /* 0F 66 /r1 PCMPGTD mm,mm/m64*/
+    /* 0F 64*/
+    /* 0F 65*/
+    /* 0F 66*/
     FCML_I64( "pcmpgtb mm0,mmword ptr [rax]", 0x0F, 0x64, 0x00 );
     FCML_I32( "pcmpgtb mm0,mm1", 0x0F, 0x64, 0xC1 );
     FCML_I64( "pcmpgtw mm0,mmword ptr [rax]", 0x0F, 0x65, 0x00 );
     FCML_I32( "pcmpgtw mm0,mm1", 0x0F, 0x65, 0xC1 );
     FCML_I64( "pcmpgtd mm0,mmword ptr [rax]", 0x0F, 0x66, 0x00 );
     FCML_I32( "pcmpgtd mm0,mm1", 0x0F, 0x66, 0xC1 );
-    /* 66 0F 64 /r PCMPGTB xmm1,xmm2/m128*/
-    /* 66 0F 65 /r PCMPGTW xmm1,xmm2/m128*/
-    /* 66 0F 66 /r PCMPGTD xmm1,xmm2/m128*/
+    /* 66 0F 64*/
+    /* 66 0F 65*/
+    /* 66 0F 66*/
     FCML_I64( "pcmpgtb xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x64, 0x00 );
     FCML_I32( "pcmpgtb xmm0,xmm1", 0x66, 0x0F, 0x64, 0xC1 );
     FCML_I64( "pcmpgtw xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x65, 0x00 );
     FCML_I32( "pcmpgtw xmm0,xmm1", 0x66, 0x0F, 0x65, 0xC1 );
     FCML_I64( "pcmpgtd xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x66, 0x00 );
     FCML_I32( "pcmpgtd xmm0,xmm1", 0x66, 0x0F, 0x66, 0xC1 );
-    /* VEX.NDS.128.66.0F.WIG 64 /r VPCMPGTB xmm1,xmm2,xmm3/m128*/
-    /* VEX.NDS.128.66.0F.WIG 65 /r VPCMPGTW xmm1,xmm2,xmm3/m128*/
-    /* VEX.NDS.128.66.0F.WIG 66 /r VPCMPGTD xmm1,xmm2,xmm3/m128*/
+    /* 66.0F.WIG 64 */
+    /* 66.0F.WIG 65 */
+    /* 66.0F.WIG 66 */
     FCML_I64( "vpcmpgtb xmm0,xmm0,xmmword ptr [rax]", 0xc5, 0xf9, 0x64, 0x00 );
     FCML_I32( "vpcmpgtb xmm0,xmm0,xmm1", 0xc5, 0xf9, 0x64, 0xc1 );
     FCML_I64( "vpcmpgtw xmm0,xmm0,xmmword ptr [rax]", 0xc5, 0xf9, 0x65, 0x00 );
     FCML_I32( "vpcmpgtw xmm0,xmm0,xmm1", 0xc5, 0xf9, 0x65, 0xc1 );
     FCML_I64( "vpcmpgtd xmm0,xmm0,xmmword ptr [rax]", 0xc5, 0xf9, 0x66, 0x00 );
     FCML_I32( "vpcmpgtd xmm0,xmm0,xmm1", 0xc5, 0xf9, 0x66, 0xc1 );
-    /* VEX.NDS.256.66.0F.WIG 64 /r VPCMPGTB ymm1,ymm2,ymm3/m256*/
-    /* VEX.NDS.256.66.0F.WIG 65 /r VPCMPGTW ymm1,ymm2,ymm3/m256*/
-    /* VEX.NDS.256.66.0F.WIG 66 /r VPCMPGTD ymm1,ymm2,ymm3/m256*/
+    /* 66.0F.WIG 64 */
+    /* 66.0F.WIG 65 */
+    /* 66.0F.WIG 66 */
     FCML_I64( "vpcmpgtb ymm0,ymm0,ymmword ptr [rax]", 0xc5, 0xfd, 0x64, 0x00 );
     FCML_I32( "vpcmpgtb ymm0,ymm0,ymm1", 0xc5, 0xfd, 0x64, 0xc1 );
     FCML_I64( "vpcmpgtw ymm0,ymm0,ymmword ptr [rax]", 0xc5, 0xfd, 0x65, 0x00 );
     FCML_I32( "vpcmpgtw ymm0,ymm0,ymm1", 0xc5, 0xfd, 0x65, 0xc1 );
     FCML_I64( "vpcmpgtd ymm0,ymm0,ymmword ptr [rax]", 0xc5, 0xfd, 0x66, 0x00 );
     FCML_I32( "vpcmpgtd ymm0,ymm0,ymm1", 0xc5, 0xfd, 0x66, 0xc1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "pcmpgtb (%rax),%mm0", 0x0f, 0x64, 0x00 );
     FCML_A64( "pcmpgtb %mm1,%mm0", 0x0f, 0x64, 0xc1 );
     FCML_A64( "pcmpgtw (%rax),%mm0", 0x0f, 0x65, 0x00 );
@@ -708,16 +698,16 @@ void fcml_tf_instruction_PCMPGT(void) {
 }
 
 void fcml_tf_instruction_PCMPGTQ(void) {
-    /* 66 0F 38 37 /r PCMPGTQ xmm1,xmm2/m128*/
+    /* 66 0F 38 37 */
     FCML_I64( "pcmpgtq xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x37, 0x00 );
     FCML_I32( "pcmpgtq xmm0,xmm1", 0x66, 0x0F, 0x38, 0x37, 0xC1 );
-    /* VEX.NDS.128.66.0F38.WIG 37 /r VPCMPGTQ xmm1,xmm2,xmm3/m128*/
+    /* 66.0F38.WIG 37 */
     FCML_I64( "vpcmpgtq xmm0,xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x37, 0x00 );
     FCML_I32( "vpcmpgtq xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x37, 0xC1 );
-    /* VEX.NDS.256.66.0F38.WIG 37 /r VPCMPGTQ ymm1,ymm2,ymm3/m256*/
+    /* 66.0F38.WIG 37 */
     FCML_I64( "vpcmpgtq ymm0,ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x37, 0x00 );
     FCML_I32( "vpcmpgtq ymm0,ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x37, 0xC1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "pcmpgtq (%rax),%xmm0", 0x66, 0x0f, 0x38, 0x37, 0x00 );
     FCML_A64( "pcmpgtq %xmm1,%xmm0", 0x66, 0x0f, 0x38, 0x37, 0xc1 );
     FCML_A64( "vpcmpgtq (%rax),%xmm0,%xmm0", 0xc4, 0xe2, 0x79, 0x37, 0x00 );
@@ -727,13 +717,13 @@ void fcml_tf_instruction_PCMPGTQ(void) {
 }
 
 void fcml_tf_instruction_PCMPISTRI(void) {
-    /* 66 0F 3A 63 /r int8 PCMPISTRI xmm1,xmm2/m128,int8*/
+    /* 66 0F 3A 63 */
     FCML_I64( "pcmpistri xmm0,xmmword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x63, 0x00, 0xFF );
     FCML_I32( "pcmpistri xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x63, 0xC1, 0xFF );
-    /* VEX.128.66.0F3A.WIG 63 /r ib VPCMPISTRI xmm1,xmm2/m128,int8*/
+    /* 66.0F3A.WIG 63 */
     FCML_I64( "vpcmpistri xmm0,xmmword ptr [rax],0ffh", 0xC4, 0xE3, 0x79, 0x63, 0x00, 0xFF );
     FCML_I32( "vpcmpistri xmm0,xmm1,0ffh", 0xC4, 0xE3, 0x79, 0x63, 0xC1, 0xFF );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "pcmpistri $0xff,(%rax),%xmm0", 0x66, 0x0f, 0x3a, 0x63, 0x00, 0xff );
     FCML_A64( "pcmpistri $0xff,%xmm1,%xmm0", 0x66, 0x0f, 0x3a, 0x63, 0xc1, 0xff );
     FCML_A64( "vpcmpistri $0xff,(%rax),%xmm0", 0xc4, 0xe3, 0x79, 0x63, 0x00, 0xff );
@@ -741,13 +731,13 @@ void fcml_tf_instruction_PCMPISTRI(void) {
 }
 
 void fcml_tf_instruction_PCMPISTRM(void) {
-    /* 66 0F 3A 62 /r int8 PCMPISTRM xmm1,xmm2/m128,int8*/
+    /* 66 0F 3A 62 */
     FCML_I64( "pcmpistrm xmm0,xmmword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x62, 0x00, 0xFF );
     FCML_I32( "pcmpistrm xmm0,xmm1,0ffh", 0x66, 0x0F, 0x3A, 0x62, 0xC1, 0xFF );
-    /* VEX.128.66.0F3A.WIG 62 /r ib VPCMPISTRM xmm1,xmm2/m128,int8*/
+    /* 66.0F3A.WIG 62 */
     FCML_I64( "vpcmpistrm xmm0,xmmword ptr [rax],0ffh", 0xC4, 0xE3, 0x79, 0x62, 0x00, 0xFF );
     FCML_I32( "vpcmpistrm xmm0,xmm1,0ffh", 0xC4, 0xE3, 0x79, 0x62, 0xC1, 0xFF );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "pcmpistrm $0xff,(%rax),%xmm0", 0x66, 0x0f, 0x3a, 0x62, 0x00, 0xff );
     FCML_A64( "pcmpistrm $0xff,%xmm1,%xmm0", 0x66, 0x0f, 0x3a, 0x62, 0xc1, 0xff );
     FCML_A64( "vpcmpistrm $0xff,(%rax),%xmm0", 0xc4, 0xe3, 0x79, 0x62, 0x00, 0xff );
@@ -755,33 +745,33 @@ void fcml_tf_instruction_PCMPISTRM(void) {
 }
 
 void fcml_tf_instruction_PEXTRB(void) {
-    /* 66 0F 3A 14 /r ib PEXTRB reg/m8,xmm2,int8*/
+    /* 66 0F 3A 14 */
     FCML_I64( "pextrb byte ptr [rax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x14, 0x00, 0xFF );
     FCML_I64( "pextrb rcx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x14, 0xC1, 0xFF );
     FCML_I32( "pextrb byte ptr [eax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x14, 0x00, 0xFF );
     FCML_I32( "pextrb ecx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x14, 0xC1, 0xFF );
-    /* 66 0F 3A 16 /r ib PEXTRD r/m32, xmm2, int8*/
+    /* 66 0F 3A 16 */
     FCML_I64( "pextrd dword ptr [rax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x16, 0x00, 0xFF );
     FCML_I64( "pextrd rcx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x16, 0xC1, 0xFF );
     FCML_I32( "pextrd dword ptr [eax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x16, 0x00, 0xFF );
     FCML_I32( "pextrd ecx,xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x16, 0xC1, 0xFF );
-    /* 66 REX.W 0F 3A 16 /r ib PEXTRQ r/m64, xmm2, int8*/
+    /* 66 REX.W 0F 3A 16 */
     FCML_I64( "pextrq qword ptr [rax],xmm0,0ffh", 0x66, 0x48, 0x0F, 0x3A, 0x16, 0x00, 0xFF );
     FCML_I64( "pextrq rcx,xmm0,0ffh", 0x66, 0x48, 0x0F, 0x3A, 0x16, 0xC1, 0xFF );
-    /* VEX.128.66.0F3A.W0 14 /r ib VPEXTRB reg/m8, xmm2, int8*/
+    /* 66.0F3A.W0 14 */
     FCML_I64( "vpextrb byte ptr [rax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x14, 0x00, 0xFF );
     FCML_I64( "vpextrb rcx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x14, 0xC1, 0xFF );
     FCML_I32( "vpextrb byte ptr [eax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x14, 0x00, 0xFF );
     FCML_I32( "vpextrb ecx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x14, 0xC1, 0xFF );
-    /* VEX.128.66.0F3A.W0 16 /r ib VPEXTRD r32/m32, xmm2, int8*/
+    /* 66.0F3A.W0 16 */
     FCML_I64( "vpextrd dword ptr [rax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x16, 0x00, 0xFF );
     FCML_I64( "vpextrd rcx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x16, 0xC1, 0xFF );
     FCML_I32( "vpextrd dword ptr [eax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x16, 0x00, 0xFF );
     FCML_I32( "vpextrd ecx,xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x16, 0xC1, 0xFF );
-    /* VEX.128.66.0F3A.W1 16 /r ib VPEXTRQ r64/m64, xmm2, int8*/
+    /* 66.0F3A.W1 16 */
     FCML_I64( "vpextrq qword ptr [rax],xmm0,0ffh", 0xC4, 0xE3, 0xF9, 0x16, 0x00, 0xFF );
     FCML_I64( "vpextrq rcx,xmm0,0ffh", 0xC4, 0xE3, 0xF9, 0x16, 0xC1, 0xFF );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "pextrb $0xff,%xmm0,(%rax)", 0x66, 0x0f, 0x3a, 0x14, 0x00, 0xff );
     FCML_A64( "pextrb $0xff,%xmm0,%rcx", 0x66, 0x0f, 0x3a, 0x14, 0xc1, 0xff );
     FCML_A64( "pextrd $0xff,%xmm0,(%rax)", 0x66, 0x0f, 0x3a, 0x16, 0x00, 0xff );
@@ -797,26 +787,26 @@ void fcml_tf_instruction_PEXTRB(void) {
 }
 
 void fcml_tf_instruction_PEXTRW(void) {
-    /* 0F C5 /r ib PEXTRW reg,mm,int8*/
+    /* 0F C5 */
     FCML_I64( "pextrw rax,mm1,0ffh", 0x0F, 0xC5, 0xC1, 0xFF );
     FCML_I32( "pextrw eax,mm1,0ffh", 0x0F, 0xC5, 0xC1, 0xFF );
-    /* 66 0F C5 /r ib PEXTRW reg,xmm,int8*/
+    /* 66 0F C5 */
     FCML_I64_M( "pextrw rax,xmm1,0ffh", 2, FCML_MI( 0x66, 0x0f, 0x3a, 0x15, 0xc8, 0xff ), FCML_MI( 0x66, 0x0f, 0xc5, 0xc1, 0xff ) );
     FCML_I32_M( "pextrw eax,xmm1,0ffh", 2, FCML_MI( 0x66, 0x0f, 0x3a, 0x15, 0xc8, 0xff ), FCML_MI( 0x66, 0x0f, 0xc5, 0xc1, 0xff ) );
-    /* 66 0F 3A 15 /r ib PEXTRW reg/m16,xmm,int8*/
+    /* 66 0F 3A 15 */
     FCML_I64( "pextrw word ptr [rax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x15, 0x00, 0xFF );
     FCML_I64_M( "pextrw rcx,xmm0,0ffh", 2, FCML_MI( 0x66, 0x0f, 0x3a, 0x15, 0xc1, 0xff ), FCML_MI( 0x66, 0x0f, 0xc5, 0xc8, 0xff ) );
     FCML_I32( "pextrw word ptr [eax],xmm0,0ffh", 0x66, 0x0F, 0x3A, 0x15, 0x00, 0xFF );
     FCML_I32_M( "pextrw ecx,xmm0,0ffh", 2, FCML_MI( 0x66, 0x0f, 0x3a, 0x15, 0xc1, 0xff ), FCML_MI( 0x66, 0x0f, 0xc5, 0xc8, 0xff ) );
-    /* VEX.128.66.0F.W0 C5 /r ib VPEXTRW reg,xmm1,int8*/
+    /* 66.0F.W0 C5 */
     FCML_I64_M( "vpextrw rax,xmm1,0ffh", 2, FCML_MI( 0xc4, 0xe3, 0x79, 0x15, 0xc8, 0xff ), FCML_MI( 0xc5, 0xf9, 0xc5, 0xc1, 0xff ) );
     FCML_I32_M( "vpextrw eax,xmm1,0ffh", 2, FCML_MI( 0xc4, 0xe3, 0x79, 0x15, 0xc8, 0xff ), FCML_MI( 0xc5, 0xf9, 0xc5, 0xc1, 0xff ) );
-    /* VEX.128.66.0F3A.W0 15 /r ib VPEXTRW reg/m16,xmm2,int8*/
+    /* 66.0F3A.W0 15 */
     FCML_I64( "vpextrw word ptr [rax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x15, 0x00, 0xFF );
     FCML_I64_M( "vpextrw rcx,xmm0,0ffh", 2, FCML_MI( 0xc4, 0xe3, 0x79, 0x15, 0xc1, 0xff ), FCML_MI( 0xc5, 0xf9, 0xc5, 0xc8, 0xff ) );
     FCML_I32( "vpextrw word ptr [eax],xmm0,0ffh", 0xC4, 0xE3, 0x79, 0x15, 0x00, 0xFF );
     FCML_I32_M( "vpextrw ecx,xmm0,0ffh", 2, FCML_MI( 0xc4, 0xe3, 0x79, 0x15, 0xc1, 0xff ), FCML_MI( 0xc5, 0xf9, 0xc5, 0xc8, 0xff ) );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "pextrw $0xff,%mm1,%rax", 0x0f, 0xc5, 0xc1, 0xff );
     FCML_A64( "pextrw $0xff,%mm1,%rax", 0x0f, 0xc5, 0xc1, 0xff );
     FCML_A64( "pextrw $0xff,%xmm0,(%rax)", 0x66, 0x0f, 0x3a, 0x15, 0x00, 0xff );
@@ -831,31 +821,31 @@ void fcml_tf_instruction_PEXTRW(void) {
 }
 
 void fcml_tf_instruction_PHADDW(void) {
-    /* 0F 38 01 /r PHADDW mm1, mm2/m64*/
-    /* 0F 38 02 /r PHADDD mm1, mm2/m64*/
+    /* 0F 38 01 */
+    /* 0F 38 02 */
     FCML_I64( "phaddw mm0,mmword ptr [rax]", 0x0F, 0x38, 0x01, 0x00 );
     FCML_I32( "phaddw mm0,mm1", 0x0F, 0x38, 0x01, 0xC1 );
     FCML_I64( "phaddd mm0,mmword ptr [rax]", 0x0F, 0x38, 0x02, 0x00 );
     FCML_I32( "phaddd mm0,mm1", 0x0F, 0x38, 0x02, 0xC1 );
-    /* 66 0F 38 01 /r PHADDW xmm1, xmm2/m128*/
-    /* 66 0F 38 02 /r PHADDD xmm1, xmm2/m128*/
+    /* 66 0F 38 01 */
+    /* 66 0F 38 02 */
     FCML_I64( "phaddw xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x01, 0x00 );
     FCML_I32( "phaddw xmm0,xmm1", 0x66, 0x0F, 0x38, 0x01, 0xC1 );
     FCML_I64( "phaddd xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x02, 0x00 );
     FCML_I32( "phaddd xmm0,xmm1", 0x66, 0x0F, 0x38, 0x02, 0xC1 );
-    /* VEX.NDS.128.66.0F38.WIG 01 /r VPHADDW xmm1,xmm2,xmm3/m128*/
-    /* VEX.NDS.128.66.0F38.WIG 02 /r VPHADDD xmm1,xmm2,xmm3/m128*/
+    /* 66.0F38.WIG 01 */
+    /* 66.0F38.WIG 02 */
     FCML_I64( "vphaddw xmm0,xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x01, 0x00 );
     FCML_I32( "vphaddw xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x01, 0xC1 );
     FCML_I64( "vphaddd xmm0,xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x02, 0x00 );
     FCML_I32( "vphaddd xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x02, 0xC1 );
-    /* VEX.NDS.256.66.0F38.WIG 01 /r VPHADDW ymm1,ymm2,ymm3/m256*/
-    /* VEX.NDS.256.66.0F38.WIG 02 /r VPHADDD ymm1,ymm2,ymm3/m256*/
+    /* 66.0F38.WIG 01 */
+    /* 66.0F38.WIG 02 */
     FCML_I64( "vphaddw ymm0,ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x01, 0x00 );
     FCML_I32( "vphaddw ymm0,ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x01, 0xC1 );
     FCML_I64( "vphaddd ymm0,ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x02, 0x00 );
     FCML_I32( "vphaddd ymm0,ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x02, 0xC1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "phaddw (%rax),%mm0", 0x0f, 0x38, 0x01, 0x00 );
     FCML_A64( "phaddw %mm1,%mm0", 0x0f, 0x38, 0x01, 0xc1 );
     FCML_A64( "phaddd (%rax),%mm0", 0x0f, 0x38, 0x02, 0x00 );
@@ -875,19 +865,19 @@ void fcml_tf_instruction_PHADDW(void) {
 }
 
 void fcml_tf_instruction_PHADDSW(void) {
-    /* 0F 38 03 /r PHADDSW mm1,mm2/m64*/
+    /* 0F 38 03 */
     FCML_I64( "phaddsw mm0,mmword ptr [rax]", 0x0F, 0x38, 0x03, 0x00 );
     FCML_I32( "phaddsw mm0,mm1", 0x0F, 0x38, 0x03, 0xC1 );
-    /* 66 0F 38 03 /r PHADDSW xmm1,xmm2/m128*/
+    /* 66 0F 38 03 */
     FCML_I64( "phaddsw xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x03, 0x00 );
     FCML_I32( "phaddsw xmm0,xmm1", 0x66, 0x0F, 0x38, 0x03, 0xC1 );
-    /* VEX.NDS.128.66.0F38.WIG 03 /r VPHADDSW xmm1,xmm2,xmm3/m128*/
+    /* 66.0F38.WIG 03 */
     FCML_I64( "vphaddsw xmm0,xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x03, 0x00 );
     FCML_I32( "vphaddsw xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x03, 0xC1 );
-    /* VEX.NDS.256.66.0F38.WIG 03 /r VPHADDSW ymm1,ymm2,ymm3/m256*/
+    /* 66.0F38.WIG 03 */
     FCML_I64( "vphaddsw ymm0,ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x03, 0x00 );
     FCML_I32( "vphaddsw ymm0,ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x03, 0xC1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "phaddsw (%rax),%mm0", 0x0f, 0x38, 0x03, 0x00 );
     FCML_A64( "phaddsw %mm1,%mm0", 0x0f, 0x38, 0x03, 0xc1 );
     FCML_A64( "phaddsw (%rax),%xmm0", 0x66, 0x0f, 0x38, 0x03, 0x00 );
@@ -899,13 +889,13 @@ void fcml_tf_instruction_PHADDSW(void) {
 }
 
 void fcml_tf_instruction_PHMINPOSUW(void) {
-    /* 66 0F 38 41 /r PHMINPOSUW xmm1,xmm2/m128*/
+    /* 66 0F 38 41 */
     FCML_I64( "phminposuw xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x41, 0x00 );
     FCML_I32( "phminposuw xmm0,xmm1", 0x66, 0x0F, 0x38, 0x41, 0xC1 );
-    /* VEX.128.66.0F38.WIG 41 /r VPHMINPOSUW xmm1,xmm2/m128*/
+    /* 66.0F38.WIG 41 */
     FCML_I64( "vphminposuw xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x41, 0x00 );
     FCML_I32( "vphminposuw xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x41, 0xC1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "phminposuw (%rax),%xmm0", 0x66, 0x0f, 0x38, 0x41, 0x00 );
     FCML_A64( "phminposuw %xmm1,%xmm0", 0x66, 0x0f, 0x38, 0x41, 0xc1 );
     FCML_A64( "vphminposuw (%rax),%xmm0", 0xc4, 0xe2, 0x79, 0x41, 0x00 );
@@ -913,31 +903,31 @@ void fcml_tf_instruction_PHMINPOSUW(void) {
 }
 
 void fcml_tf_instruction_PHSUBW(void) {
-    /* 0F 38 05 /r1 PHSUBW mm1,mm2/m64*/
-    /* 0F 38 06 /r PHSUBD mm1,mm2/m64*/
+    /* 0F 38 05 */
+    /* 0F 38 06 */
     FCML_I64( "phsubw mm0,mmword ptr [rax]", 0x0F, 0x38, 0x05, 0x00 );
     FCML_I32( "phsubw mm0,mm1", 0x0F, 0x38, 0x05, 0xC1 );
     FCML_I64( "phsubd mm0,mmword ptr [rax]", 0x0F, 0x38, 0x06, 0x00 );
     FCML_I32( "phsubd mm0,mm1", 0x0F, 0x38, 0x06, 0xC1 );
-    /* 66 0F 38 05 /r PHSUBW xmm1,xmm2/m128*/
-    /* 66 0F 38 06 /r PHSUBD xmm1,xmm2/m128*/
+    /* 66 0F 38 05 */
+    /* 66 0F 38 06 */
     FCML_I64( "phsubw xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x05, 0x00 );
     FCML_I32( "phsubw xmm0,xmm1", 0x66, 0x0F, 0x38, 0x05, 0xC1 );
     FCML_I64( "phsubd xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x06, 0x00 );
     FCML_I32( "phsubd xmm0,xmm1", 0x66, 0x0F, 0x38, 0x06, 0xC1 );
-    /* VEX.NDS.128.66.0F38.WIG 05 /r VPHSUBW xmm1,xmm2,xmm3/m128*/
-    /* VEX.NDS.128.66.0F38.WIG 06 /r VPHSUBD xmm1,xmm2,xmm3/m128*/
+    /* 66.0F38.WIG 05 */
+    /* 66.0F38.WIG 06 */
     FCML_I64( "vphsubw xmm0,xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x05, 0x00 );
     FCML_I32( "vphsubw xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x05, 0xC1 );
     FCML_I64( "vphsubd xmm0,xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x06, 0x00 );
     FCML_I32( "vphsubd xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x06, 0xC1 );
-    /* VEX.NDS.256.66.0F38.WIG 05 /r VPHSUBW ymm1,ymm2,ymm3/m256*/
-    /* VEX.NDS.256.66.0F38.WIG 06 /r VPHSUBD ymm1,ymm2,ymm3/m256*/
+    /* 66.0F38.WIG 05 */
+    /* 66.0F38.WIG 06 */
     FCML_I64( "vphsubw ymm0,ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x05, 0x00 );
     FCML_I32( "vphsubw ymm0,ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x05, 0xC1 );
     FCML_I64( "vphsubd ymm0,ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x06, 0x00 );
     FCML_I32( "vphsubd ymm0,ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x06, 0xC1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "phsubw (%rax),%mm0", 0x0f, 0x38, 0x05, 0x00 );
     FCML_A64( "phsubw %mm1,%mm0", 0x0f, 0x38, 0x05, 0xc1 );
     FCML_A64( "phsubd (%rax),%mm0", 0x0f, 0x38, 0x06, 0x00 );
@@ -957,19 +947,19 @@ void fcml_tf_instruction_PHSUBW(void) {
 }
 
 void fcml_tf_instruction_PHSUBSW(void) {
-    /* 0F 38 07 /r1 PHSUBSW mm1,mm2/m64*/
+    /* 0F 38 07 */
     FCML_I64( "phsubsw mm0,mmword ptr [rax]", 0x0F, 0x38, 0x07, 0x00 );
     FCML_I32( "phsubsw mm0,mm1", 0x0F, 0x38, 0x07, 0xC1 );
-    /* 66 0F 38 07 /r PHSUBSW xmm1,xmm2/m128*/
+    /* 66 0F 38 07 */
     FCML_I64( "phsubsw xmm0,xmmword ptr [rax]", 0x66, 0x0F, 0x38, 0x07, 0x00 );
     FCML_I32( "phsubsw xmm0,xmm1", 0x66, 0x0F, 0x38, 0x07, 0xC1 );
-    /* VEX.NDS.128.66.0F38.WIG 07 /r VPHSUBSW xmm1,xmm2,xmm3/m128*/
+    /* 128.66.0F38.WIG 07 */
     FCML_I64( "vphsubsw xmm0,xmm0,xmmword ptr [rax]", 0xC4, 0xE2, 0x79, 0x07, 0x00 );
     FCML_I32( "vphsubsw xmm0,xmm0,xmm1", 0xC4, 0xE2, 0x79, 0x07, 0xC1 );
-    /* VEX.NDS.256.66.0F38.WIG 07 /r VPHSUBSW ymm1,ymm2,ymm3/m256*/
+    /* 256.66.0F38.WIG 07 */
     FCML_I64( "vphsubsw ymm0,ymm0,ymmword ptr [rax]", 0xC4, 0xE2, 0x7D, 0x07, 0x00 );
     FCML_I32( "vphsubsw ymm0,ymm0,ymm1", 0xC4, 0xE2, 0x7D, 0x07, 0xC1 );
-    /* GAS*/
+    /* GAS */
     FCML_A64( "phsubsw (%rax),%mm0", 0x0f, 0x38, 0x07, 0x00 );
     FCML_A64( "phsubsw %mm1,%mm0", 0x0f, 0x38, 0x07, 0xc1 );
     FCML_A64( "phsubsw (%rax),%xmm0", 0x66, 0x0f, 0x38, 0x07, 0x00 );
@@ -981,17 +971,17 @@ void fcml_tf_instruction_PHSUBSW(void) {
 }
 
 void fcml_tf_instruction_PINSR(void) {
-    /* 66 0F 3A 20 /r ib PINSRB xmm1,r32/m8,int8*/
+    /* 66 0F 3A 20 */
     FCML_I64( "pinsrb xmm0,byte ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x20, 0x00, 0xFF );
     FCML_I32( "pinsrb xmm0,ecx,0ffh", 0x66, 0x0F, 0x3A, 0x20, 0xC1, 0xFF );
-    /* 66 0F 3A 22 /r ib PINSRD xmm1,r/m32,int8*/
+    /* 66 0F 3A 22 */
     FCML_I64( "pinsrd xmm0,dword ptr [rax],0ffh", 0x66, 0x0F, 0x3A, 0x22, 0x00, 0xFF );
     FCML_I32( "pinsrd xmm0,ecx,0ffh", 0x66, 0x0F, 0x3A, 0x22, 0xC1, 0xFF );
-    /* 66 REX.W 0F 3A 22 /r ib PINSRQ xmm1,r/m64,int8*/
+    /* 66 REX.W 0F 3A 22 */
     FCML_I64( "pinsrq xmm0,qword ptr [rax],0ffh", 0x66, 0x48, 0x0F, 0x3A, 0x22, 0x00, 0xFF );
-    /* VEX.NDS.128.66.0F3A.W0 20 /r ib VPINSRB xmm1,xmm2,r32/m8,int8*/
-    /* VEX.NDS.128.66.0F3A.W0 22 /r ib VPINSRD xmm1,xmm2,r32/m32,int8*/
-    /* VEX.NDS.128.66.0F3A.W1 22 /r ib VPINSRQ xmm1,xmm2,r64/m64,int8*/
+    /* 128.66.0F3A.W0 20 */
+    /* 128.66.0F3A.W0 22 */
+    /* 128.66.0F3A.W1 22 */
     FCML_I64( "vpinsrb xmm0,xmm0,byte ptr [rax],0ffh", 0xC4, 0xE3, 0x79, 0x20, 0x00, 0xFF );
     FCML_I32( "vpinsrb xmm0,xmm0,ecx,0ffh", 0xC4, 0xE3, 0x79, 0x20, 0xC1, 0xFF );
     FCML_I64( "vpinsrd xmm0,xmm0,dword ptr [rax],0ffh", 0xC4, 0xE3, 0x79, 0x22, 0x00, 0xFF );

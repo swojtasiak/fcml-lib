@@ -42,15 +42,13 @@ void fcml_tf_instruction_DAS(void) {
 }
 
 void fcml_tf_instruction_DEC(void) {
-    /* 48+rw */
-    /* 48+rd */
+
     FCML_I32_M( "dec eax", 2, FCML_MI( 0x48 ), FCML_MI( 0xFF, 0xC8 ) );
     FCML_A32_M( "dec %eax", 2, FCML_MI( 0x48 ), FCML_MI( 0xFF, 0xC8 ) );
     FCML_I32_M( "dec ax", 2, FCML_MI( 0x66, 0x48 ), FCML_MI( 0x66, 0xff, 0xc8 ) );
     FCML_I64_FAILED( "dec eax", 0x48 );
     FCML_I64_FAILED( "dec spl", 0x48 );
-    /* FE /1 */
-    /* REX + FE /1 */
+
     FCML_I32( "dec byte ptr [ebx]", 0xFE, 0x0B );
     FCML_A32( "decb (%ebx)", 0xFE, 0x0B );
     FCML_A32_D( "decb %dl", 0xFE, 0xca );
@@ -63,8 +61,7 @@ void fcml_tf_instruction_DEC(void) {
     FCML_A64( "decb (%rbx)", 0xFE, 0x0B );
     FCML_I64_D( "dec byte ptr [rbx]", 0x48, 0xFE, 0x0B );
     FCML_I64( "dec spl", 0x40, 0xFE, 0xCC );
-    /* FF /1 */
-    /* REX.W + FF /1 */
+
     FCML_I32( "dec dword ptr [ebx]", 0xFF, 0x0B );
     FCML_A32( "decl (%ebx)", 0xFF, 0x0B );
     FCML_I32( "lock dec dword ptr [ebx]", 0xF0, 0xFF, 0x0B );
@@ -82,8 +79,7 @@ void fcml_tf_instruction_DEC(void) {
 }
 
 void fcml_tf_instruction_DIV(void) {
-    /* F6 */
-    /* REX + F6 */
+
     FCML_I32( "div ax,byte ptr [ebx]", 0xF6, 0x33 );
     FCML_A32( "divb (%ebx),%ax", 0xF6, 0x33 );
     FCML_A32( "divb %bl,%ax", 0xF6, 0xF3 );
@@ -91,8 +87,7 @@ void fcml_tf_instruction_DIV(void) {
     FCML_I32( "div ax,byte ptr [ebx]", 0x66, 0xF6, 0x33 );
     FCML_I64( "div ax,sil", 0x40, 0xF6, 0xF6 );
     FCML_I64( "div ax,dh", 0xF6, 0xF6 );
-    /* F7 */
-    /* REX.W + F7 */
+
     FCML_I32( "div eax,dword ptr [ebx]", 0xF7, 0x33 );
     FCML_A32( "divl (%ebx),%eax", 0xF7, 0x33 );
     FCML_I32( "div ax,word ptr [ebx]", 0x66, 0xF7, 0x33 );
