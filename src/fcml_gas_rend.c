@@ -109,13 +109,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_render_config
 		/* Displacement.*/
 		if( effective_address->displacement.size > 0 ) {
 
-			fcml_st_integer integer;
-			error = fcml_fn_utils_displacement_to_integer( &(effective_address->displacement), &integer );
-			if( error ) {
-				return error;
-			}
-
-			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, config->render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &(effective_address->displacement), config->render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 			if( error ) {
 				return error;
 			}
@@ -158,11 +152,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_render_config
 			fcml_st_integer integer;
 			if( address->effective_address.base.type == FCML_REG_IP ) {
 				/* IP relative addressing.*/
-				fcml_ceh_error error = fcml_fn_utils_displacement_to_integer( &(address->effective_address.displacement), &integer );
-				if( error ) {
-					return error;
-				}
-				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &(address->effective_address.displacement), FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 				if( !error ) {
 					fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("(") );
 					fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(fcml_reg_RIP), FCML_FALSE );

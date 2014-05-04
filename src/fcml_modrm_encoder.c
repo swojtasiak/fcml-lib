@@ -44,7 +44,7 @@ fcml_ceh_error fcml_ifn_modrm_convert_absolute_address_to_integer( const fcml_st
         if( address->offset.size ) {
             error = fcml_fn_utils_offset_to_integer( &(address->offset ), integer );
         } else {
-            error = fcml_fn_utils_displacement_to_integer( &(address->effective_address.displacement ), integer );
+        	*integer = address->effective_address.displacement;
         }
     } else {
         /* Combined effective address can not be treated as absolute offset.*/
@@ -189,11 +189,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit( fcml_st_modrm_encoder_context *conte
 
 			    /* Encode displacement if there is any.*/
 			    if( effective_address->displacement.size ) {
-                    fcml_st_integer displacement;
-                    error = fcml_fn_utils_displacement_to_integer( &(effective_address->displacement), &displacement );
-                    if( !error ) {
-                        error = fcml_ifn_modrm_encode_displacement( context, &displacement, encoded_modrm, FCML_DS_16, &disp_size );
-                    }
+					error = fcml_ifn_modrm_encode_displacement( context, &(effective_address->displacement), encoded_modrm, FCML_DS_16, &disp_size );
 			    }
 
 			    if( !error ) {
@@ -463,16 +459,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit( fcml_st_modrm_encoder_context *con
 
 		if( is_base || is_index ) {
 
-            /* Complex effective address.*/
-            fcml_st_integer displacement;
-
-            /* Convert absolute address to generic integer value in order to convert it to ASA size.*/
-            fcml_usize error = fcml_fn_utils_displacement_to_integer( &(effective_address->displacement), &displacement );
-            if( error ) {
-                return error;
-            }
-
-            error = fcml_ifn_modrm_encode_displacement( context, &displacement, encoded_modrm, context->chosen_effective_address_size, &disp_size );
+            fcml_ceh_error error = fcml_ifn_modrm_encode_displacement( context, &(effective_address->displacement), encoded_modrm, context->chosen_effective_address_size, &disp_size );
             if( error ) {
                 return error;
             }

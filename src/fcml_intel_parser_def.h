@@ -90,7 +90,7 @@ extern int intel_debug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 85 "fcml_intel_parser_def.y"
+#line 104 "fcml_intel_parser_def.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;

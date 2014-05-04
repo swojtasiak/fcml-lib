@@ -482,56 +482,6 @@ fcml_ceh_error fcml_fn_utils_encode_integer( fcml_st_memory_stream *stream, cons
     return error;
 }
 
-fcml_ceh_error fcml_fn_utils_displacement_to_integer( const fcml_st_integer *displacement, fcml_st_integer *integer ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	integer->int64 = 0;
-	switch( displacement->size ) {
-	case FCML_DS_8:
-	    integer->int8 = displacement->int8;
-		break;
-	case FCML_DS_16:
-	    integer->int16 = displacement->int16;
-		break;
-	case FCML_DS_32:
-	    integer->int32 = displacement->int32;
-		break;
-	case FCML_DS_64:
-        integer->int64 = displacement->int64;
-        break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-		break;
-	}
-	integer->size = displacement->size;
-	integer->is_signed = displacement->is_signed;
-	return error;
-}
-
-fcml_ceh_error fcml_fn_utils_integer_to_displacement( const fcml_st_integer *integer, fcml_st_integer *displacement ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	displacement->int64 = 0;
-	switch( integer->size ) {
-	case FCML_DS_8:
-		displacement->int8 = integer->int8;
-		break;
-	case FCML_DS_16:
-		displacement->int16 = integer->int16;
-		break;
-	case FCML_DS_32:
-		displacement->int32 = integer->int32;
-		break;
-	case FCML_DS_64:
-		displacement->int64 = integer->int64;
-		break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-		break;
-	}
-	displacement->size = integer->size;
-	displacement->is_signed = integer->is_signed;
-	return error;
-}
-
 fcml_ceh_error fcml_fn_utils_offset_to_integer( const fcml_st_offset *offset, fcml_st_integer *integer ) {
    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
    integer->int64 = 0;

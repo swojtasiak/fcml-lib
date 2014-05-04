@@ -53,12 +53,9 @@ fcml_ceh_error fcml_ifn_modrm_decode_displacement( fcml_st_memory_stream *stream
     if( displacement_extension_size ) {
    		fcml_fn_utils_extend_integer( &integer, displacement_extension_size );
    	}
-
-    if( displacement ) {
-        error = fcml_fn_utils_integer_to_displacement( &integer, displacement );
-        if( error ) {
-            return error;
-        }
+   	
+	if( displacement ) {
+		*displacement = integer;
     }
 
     if( offset ) {

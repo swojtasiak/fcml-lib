@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([fcml], [0.0.1], [fcml-bugs@swksoftware.pl])
+AC_INIT([fcml], [1.0.0], [fcml-bugs@swksoftware.pl])
 AM_INIT_AUTOMAKE
 LT_PREREQ([2.2])
 LT_INIT[win32-dll]
@@ -50,7 +50,7 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memset strtoul strtoull])
+AC_CHECK_FUNCS([memset strtoul strtoull vsnprintf memcpy])
 
 # Configure DEBUG source code, if requested.
 AS_IF([test "x$debug" = xyes],

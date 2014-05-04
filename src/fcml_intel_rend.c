@@ -205,13 +205,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( fcml_st_render_conf
 				first = FCML_FALSE;
 			}
 
-			fcml_st_integer integer;
-			error = fcml_fn_utils_displacement_to_integer( &(effective_address->displacement), &integer );
-			if( error ) {
-				return error;
-			}
-
-			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, config->render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &(effective_address->displacement), config->render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 		}
 
 	} else {

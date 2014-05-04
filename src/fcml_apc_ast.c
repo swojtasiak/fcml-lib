@@ -852,10 +852,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand( fcml
 		}
 
 		if( is_combined ) {
-            error = fcml_fn_utils_integer_to_displacement( &disp_value, &(effective_address->displacement ) );
-            if( error ) {
-                return error;
-            }
+			effective_address->displacement = disp_value;
 		} else {
 		    error = fcml_fn_utils_integer_to_offset( &disp_value, &(address->offset ) );
             if( error ) {
