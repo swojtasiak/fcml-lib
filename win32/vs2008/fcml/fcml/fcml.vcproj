@@ -459,11 +459,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\fcml_env.c"
+					RelativePath="..\..\..\..\src\fcml_env_int.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\fcml_env.h"
+					RelativePath="..\..\..\..\src\fcml_env_int.h"
 					>
 				</File>
 				<File
@@ -690,6 +690,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\include\fcml_disassembler.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\include\fcml_env.h"
 					>
 				</File>
 				<File
