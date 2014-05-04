@@ -33,7 +33,7 @@ AC_ARG_ENABLE([debug],
 
 # Checks for header files.
 AC_FUNC_ALLOCA
-AC_CHECK_HEADERS([inttypes.h libintl.h malloc.h stddef.h stdint.h stdlib.h string.h unistd.h])
+AC_CHECK_HEADERS([inttypes.h libintl.h malloc.h stddef.h stdint.h stdlib.h string.h unistd.h limits.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -50,7 +50,7 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memset strtoul strtoull vsnprintf memcpy])
+AC_CHECK_FUNCS([memset strtoul strtoull vsnprintf memcpy strchr strtol])
 
 # Configure DEBUG source code, if requested.
 AS_IF([test "x$debug" = xyes],
