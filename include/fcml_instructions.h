@@ -644,7 +644,6 @@ typedef enum fcml_en_instruction {
     F_VPADDQ,
     F_POP,
     F_PUSH,
-    /* TODO: Opisac konflikt nazewnictwa pomiedzy GAS i Intel, inne kodowanie a ta sama mnemonika :/ byc moze uda sie zrobic z tego jedna instukcje.*/
     F_POPA,
     F_POPAD,
     F_POPF,

@@ -54,9 +54,7 @@ void fcml_tf_instruction_CALL(void) {
     FCML_A64( "lcallq *0x00000000(%rip)", 0x48, 0xFF, 0x1d, 0x00,0x00,0x00,0x00 );
     /* prt16:16 ptr16:32
      */
-    // TODO: Nie dzila liczenie najlpezebo OSA, patrz fcml_ifn_asm_operand_encoder_far_pointer., ddoac
-    // mozliwosc wymuszania przykladowo fasm umozliwia taki zapis: "call dword 4433h:00002211h". At7&t juz obsluguje taki zapis
-    // lcallw $0x4433,$0x2211.
+    // TODO: Support for "call dword 4433h:00002211h" counterpart to: lcallw $0x4433,$0x2211.
     FCML_I32( "call far 6655h:44332211h", 0x9A, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 );
     FCML_I32( "call far 4433h:2211h", 0x66, 0x9A, 0x11, 0x22, 0x33, 0x44 );
     FCML_I16( "call far 4433h:2211h", 0x9A, 0x11, 0x22, 0x33, 0x44 );

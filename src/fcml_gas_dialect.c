@@ -40,9 +40,6 @@
 
 /* Dialect flags.*/
 
-/* Dialect flags fields stores addressing mode hints.*/
-#define FCML_GAS_DF_HINTS                   0x00010000
-
 /* Dialect incompatible with srange encoding of SVR3.2 assembler.*/
 #define FCML_GAS_DF_SYSV_SVR32_COMPATIBLE   0x00020000
 
@@ -142,7 +139,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("call[sf,od];callw[sf,ow];callq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_AM_REL0 ), 0 },
     { FCML_TEXT("call[sf,od];callw[sf,ow];callq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_AM_RMO ), 0 },
     { FCML_TEXT("lcall[sf,od];lcallw[sf,ow];lcall[sf,od]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_AM_PTR16_O ), 0 },
-    { FCML_TEXT("lcall[sf,od,d06];lcallw[sf,ow,d04];lcallq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_AM_M16_O ), FCML_GAS_DF_HINTS | FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER },
+    { FCML_TEXT("lcall[sf,od,d06];lcallw[sf,ow,d04];lcallq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_CALL, FCML_AM_M16_O ), 0 },
     { FCML_TEXT("cbtw[ow];cwtl[od];cltq[oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_CBW, FCML_AM_ALL ), 0 },
     { FCML_TEXT("clc"), FCML_ASM_DIALECT_INSTRUCTION( F_CLC, FCML_AM_ALL ), 0 },
     { FCML_TEXT("cld"), FCML_ASM_DIALECT_INSTRUCTION( F_CLD, FCML_AM_ALL ), 0 },
@@ -392,10 +389,9 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("j"), FCML_ASM_DIALECT_INSTRUCTION( F_JCC, FCML_AM_ALL ), 0 },
     { FCML_TEXT("jmp"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_REL0 ), 0 },
-    { FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_RMO ), /*FCML_GAS_DF_HINTS | FCML_HINT_INDIRECT_POINTER*/ 0 },
+    { FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_RMO ), 0 },
     { FCML_TEXT("ljmpl[sf,od];ljmpw[sf,ow];ljmp[sf,od]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_PTR16_O ), 0 },
-    /* TODO: Opisac w dokumentacji jak sa kodowane jmpy. Nie udało mi sie w przypadku GAS zassemblowac far indirect jmp dla REX.W.*/
-    { FCML_TEXT("ljmpl[sf,od,d06];ljmpw[sf,ow,d04];ljmpq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_M16_O ), FCML_GAS_DF_HINTS | FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER },
+    { FCML_TEXT("ljmpl[sf,od,d06];ljmpw[sf,ow,d04];ljmpq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_M16_O ), 0 },
     { FCML_TEXT("lar"), FCML_ASM_DIALECT_INSTRUCTION( F_LAR, FCML_AM_ALL ), 0 },
     { FCML_TEXT("lahf"), FCML_ASM_DIALECT_INSTRUCTION( F_LAHF, FCML_AM_ALL ), 0 },
     { FCML_TEXT("lddqu"), FCML_ASM_DIALECT_INSTRUCTION( F_LDDQU, FCML_AM_ALL ), 0 },
@@ -1402,12 +1398,6 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
                     changed = FCML_TRUE;
                 }
             }
-        }
-
-        /* In GAS mode, from time to time mnemonic flags are treated as instruction hints. */
-        if( mnemonic->flags & FCML_GAS_DF_HINTS ) {
-            instrunction->hints |= ( mnemonic->flags & ~FCML_GAS_DF_HINTS );
-            changed = FCML_TRUE;
         }
 
         /* Check if addressing mode expects FAR_POINTER addressing mode. */
