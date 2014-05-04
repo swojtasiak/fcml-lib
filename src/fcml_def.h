@@ -113,6 +113,8 @@ typedef struct fcml_st_def_addr_mode_desc {
     fcml_uint32_t opperands[FCML_OPERANDS_COUNT];
     /* Addressing mode.*/
     fcml_uint16_t addr_mode;
+    /* Instruction hints. */
+    fcml_hints instruction_hints;
 } fcml_st_def_addr_mode_desc;
 
 /* Instruction code definition for multi instructions. Currently only  the instructions with suffixes uses this mechanism.*/

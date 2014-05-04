@@ -92,7 +92,7 @@ void fcml_fn_rend_utils_format_finish_str( fcml_st_memory_stream *stream ) {
 fcml_int fcml_fn_rend_utils_format_append_str( fcml_st_memory_stream *stream, const fcml_string source ) {
 
 	fcml_int source_size;
-	if( source == NULL || ( source_size = strlen( source ) ) == 0 ) {
+	if( source == NULL || ( source_size = fcml_fn_env_str_strlen( source ) ) == 0 ) {
 		return 0;
 	}
 

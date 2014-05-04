@@ -303,6 +303,11 @@ st{WS}("("{WS}7{WS}")"|7)	FCML_FM_FPU_REG(FCML_REG_ST7)
 					yylval->hints = FCML_HINT_INDIRECT_POINTER;
 					return FCML_TK_HINTS;
 				}
+				
+"direct"        {
+                    yylval->hints = FCML_HINT_DIRECT_POINTER;
+                    return FCML_TK_HINTS;
+                }
 
 "rel"			{
 					yylval->hints = FCML_OP_HINT_RELATIVE_ADDRESSING;

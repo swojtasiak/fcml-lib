@@ -36,12 +36,9 @@ fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_
 			hints.operand_hints |= FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
     	}
     	if( FCML_GET_OS( rm_args->encoded_memory_operand_size ) == FCML_EOS_FP ) {
-    		/* Far pointer.*/
+    		/* Far pointer. */
 			hints.instruction_hints |= FCML_HINT_FAR_POINTER;
-    	} else if( FCML_GET_OS( rm_args->encoded_memory_operand_size ) == FCML_EOS_FPI ) {
-    		/* Far pointer indirect.*/
-    		hints.instruction_hints |= ( FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER );
-    	} else {
+    	} else if( FCML_GET_OS( rm_args->encoded_memory_operand_size ) != FCML_EOS_FPI ) {
     		/* If not far, then near :) */
     		hints.instruction_hints |= FCML_HINT_NEAR_POINTER;
     	}

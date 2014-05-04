@@ -392,7 +392,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("j"), FCML_ASM_DIALECT_INSTRUCTION( F_JCC, FCML_AM_ALL ), 0 },
     { FCML_TEXT("jmp"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_ALL ), 0 },
     { FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_REL0 ), 0 },
-    { FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_RMO ), 0 },
+    { FCML_TEXT("jmp[sf,od];jmpw[sf,ow];jmpq[sf,oq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_RMO ), /*FCML_GAS_DF_HINTS | FCML_HINT_INDIRECT_POINTER*/ 0 },
     { FCML_TEXT("ljmpl[sf,od];ljmpw[sf,ow];ljmp[sf,od]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_PTR16_O ), 0 },
     /* TODO: Opisac w dokumentacji jak sa kodowane jmpy. Nie udało mi sie w przypadku GAS zassemblowac far indirect jmp dla REX.W.*/
     { FCML_TEXT("ljmpl[sf,od,d06];ljmpw[sf,ow,d04];ljmpq[sf,oq,d0a]"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_M16_O ), FCML_GAS_DF_HINTS | FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER },
@@ -1345,7 +1345,7 @@ fcml_bool fcml_ifn_asm_dialect_gas_far_pointer_correction( fcml_st_instruction *
     return FCML_FALSE;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_en_instruction instruction_code, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1422,6 +1422,15 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
                     }
                 }
             }
+        }
+
+        /* JMP and CALL needs hint FCML_HINT_DIRECT_POINTER explicitly set if
+         * absolute offsets are used instead of immediate values.
+         */
+        if( instruction_code == F_JMP || instruction_code == F_CALL ) {
+        	if( !( instrunction->hints & FCML_HINT_INDIRECT_POINTER ) ) {
+        		instrunction->hints = FCML_HINT_DIRECT_POINTER;
+        	}
         }
 
     }

@@ -212,6 +212,8 @@ typedef struct fcml_ist_asm_instruction_part_processor_chain {
 typedef fcml_ist_asm_instruction_part_processor_chain* (*fcml_ifp_asm_instruction_part_processor_factory_dispatcher)( fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, int *parts, fcml_hints *hints, fcml_ceh_error *error );
 
 typedef struct fcml_ist_asm_instruction_addr_mode_encoding_details {
+	/* Instruction code. */
+	fcml_en_instruction instruction;
     /* Mnemonic configuration chosen for given addressing mode.*/
     fcml_st_mp_mnemonic *mnemonic;
 	/* Instruction definition.*/
@@ -1896,6 +1898,10 @@ fcml_bool fcml_ifn_asm_accept_instruction_hints( fcml_hints addr_mode_dest_hints
 		FCML_TRACE_MSG("Addressing mode doesn't support indirect addressing.");
 		return FCML_FALSE;
 	}
+	if( ( instruction_hints & FCML_HINT_DIRECT_POINTER ) && !( addr_mode_dest_hints & FCML_HINT_DIRECT_POINTER ) ) {
+		FCML_TRACE_MSG("Addressing mode doesn't support direct addressing.");
+		return FCML_FALSE;
+	}
 	if( instruction_hints & FCML_HINT_FAR_POINTER ) {
 		return addr_mode_dest_hints & FCML_HINT_FAR_POINTER;
 	}
@@ -2067,7 +2073,7 @@ fcml_ceh_error fcml_ifn_asm_encode_addressing_mode_core( fcml_ist_asm_encoding_c
 	return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *asm_context, fcml_st_dialect_context_int *dialect_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, struct fcml_st_asm_instruction_addr_modes *addr_modes ) {
+fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *asm_context, fcml_st_dialect_context_int *dialect_context, fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result, fcml_st_asm_instruction_addr_modes *addr_modes ) {
 
 	/* Make a local copy of instruction because it still can be changed by preprocessor.*/
 	fcml_st_instruction tmp_instruction = *instruction;
@@ -2120,7 +2126,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *a
 				 */
 				fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = dialect_context->assembler_preprocessor;
 				if( assembler_preprocessor ) {
-					assembler_preprocessor( (fcml_st_dialect*)dialect_context, &tmp_instruction, addr_mode->addr_mode_desc, addr_mode->mnemonic, &instruction_has_been_changed );
+					assembler_preprocessor( (fcml_st_dialect*)dialect_context, &tmp_instruction, addr_mode->addr_mode_desc, addr_mode->instruction, addr_mode->mnemonic, &instruction_has_been_changed );
 				}
 
 				/* This information is necessary to ignore operands encoding process.*/
@@ -3584,6 +3590,9 @@ fcml_ceh_error fcml_ifn_asm_generic_addr_mode_encoding_details_builder( fcml_ist
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
+	/* Copy instruction hints from instruction form definition. */
+	addr_mode->hints = addr_mode_desc->instruction_hints;
+
 	addr_mode->addr_mode_desc = addr_mode_desc;
 
 	/* Prepare addressing mode details.*/
@@ -3693,7 +3702,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
         fcml_st_asm_instruction_addr_modes *addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_coll_map_get( init_context->instructions_map, mnemonics[i]->mnemonic );
         if( !addr_modes ) {
 
-            /* Allocate space for new mnemonic.*/
+            /* Allocate space for new mnemonic. */
             addr_modes = (fcml_st_asm_instruction_addr_modes*)fcml_fn_env_memory_alloc( sizeof(fcml_st_asm_instruction_addr_modes) );
             if( addr_modes ) {
 
@@ -3729,6 +3738,8 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
             fcml_bool is_cloned = ( i > 0 );
 
             fcml_ist_asm_instruction_addr_mode_encoding_details *addr_mode_encoding_details = addr_mode;
+
+            addr_mode_encoding_details->instruction = instruction->instruction;
 
             if( is_cloned ) {
 

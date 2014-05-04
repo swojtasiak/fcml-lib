@@ -336,7 +336,7 @@ extern int intel_lex \
 #undef YY_DECL
 #endif
 
-#line 350 "fcml_intel_lexer.l"
+#line 355 "fcml_intel_lexer.l"
 
 
 #line 343 "fcml_intel_lexer.h"

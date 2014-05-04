@@ -695,7 +695,7 @@ void fcml_tf_parser_int_parse_test_symbols_6(void) {
 		STF_ASSERT_EQUAL( instruction->operands[1].type, FCML_EOT_IMMEDIATE );
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.size, FCML_DS_32 );
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.int32, 0x401000 );
-		// TODO: Why always TRUE if expression evaluates to signed value only if the result of mathematical formula is negative.
+		// Symbols are always defined as signed values.
 		STF_ASSERT_EQUAL( instruction->operands[1].immediate.is_signed, FCML_TRUE );
 	}
 

@@ -1365,8 +1365,8 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default( 
 	/* Choose function used to disassemble instruction.*/
 	decoding->instruction_decoder = fcml_ifn_dasm_dts_choose_instruction_decoder( instruction_desc->instruction_type );
 
-	/* Clear instruction level hints. Just to be sure.*/
-	decoding->hints = 0;
+	/* Copy instruction hints from instruction definition.*/
+	decoding->hints = addr_mode_desc->instruction_hints;
 
 	/* Prepare operand decoders.*/
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {

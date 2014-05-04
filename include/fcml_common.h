@@ -607,6 +607,8 @@ typedef struct fcml_st_operand {
  * with operands.
  */
 typedef enum fcml_en_instruction_hints {
+	/** No hints defined. */
+	FCML_HINT_NO_HINTS,
 	/** Hints instruction to use FAR pointer to address the memory. */
     FCML_HINT_FAR_POINTER = 0x0001,
     /** Hints instruction to use NEAR pointer to address the memory. */
@@ -614,7 +616,9 @@ typedef enum fcml_en_instruction_hints {
     /** This hint is used only by assembler in order to force it to generate three byte VEX/XOP prefix even if prefix fields fits into two bytes. */
     FCML_HINT_LONG_FORM_POINTER = 0x0004,
     /** Hints instruction to use INDIRECT pointer to address the memory. */
-	FCML_HINT_INDIRECT_POINTER = 0x0008
+	FCML_HINT_INDIRECT_POINTER = 0x0008,
+	/** Hints instruction to use DIRECT memory addressing. */
+	FCML_HINT_DIRECT_POINTER = 0x0010
 } fcml_en_instruction_hints;
 
 /**
