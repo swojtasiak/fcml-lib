@@ -1,8 +1,26 @@
 /*
- * fcml_rend_intel.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Oct 20, 2013
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/* There is a bit of code duplication between GAS and Intel instruction renderers.
+ * It evaluated up to this point due to historical reasons and it will be probably fixed in
+ * the near future by providing one generic customizable rendering template as a base for
+ * instruction renderers.
  */
 
 #include "fcml_gas_rend.h"
@@ -276,15 +294,15 @@ fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_con
 	/* Instruction prefixes like LOCK. */
 	len += fcml_ifn_rend_utils_print_prefixes( output_stream, &(result->instruction_details.prefixes_details), render_flags );
 
-	/* Mnemonic.*/
+	/* Mnemonic. */
 	len += fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
 
-	/* Short form, so operands should be ignored.*/
+	/* Short form, so operands should be ignored. */
 	if( result->instruction_details.is_shortcut ) {
 		return error;
 	}
 
-	/* Add all operands.*/
+	/* Add all operands. */
 	fcml_bool first_render = FCML_TRUE;
 	fcml_int i;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {

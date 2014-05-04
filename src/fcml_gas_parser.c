@@ -1,22 +1,34 @@
 /*
- * fcml_intel_asm_parser.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: 20-03-2013
- *      Author: tAs
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <string.h>
+#include <fcml_errors.h>
+#include <fcml_common.h>
+#include <fcml_parser.h>
+
+#include "fcml_gas_parser.h"
 #include "fcml_ceh.h"
 #include "fcml_env_int.h"
-#include "fcml_common.h"
-#include <fcml_errors.h>
 #include "fcml_parser_utils.h"
 #include "fcml_gas_parser_def.h"
 #include "fcml_gas_lexer.h"
-#include "fcml_gas_parser.h"
 #include "fcml_utils.h"
 #include "fcml_messages.h"
-#include "fcml_parser.h"
 #include "fcml_parser_int.h"
 
 void gas_error( struct fcml_st_parser_data *pd, const char *error ) {
@@ -40,7 +52,7 @@ fcml_ceh_error fcml_fn_gas_parse_instruction_to_ast( fcml_ip ip, fcml_string mne
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	/*Instruction size is limited to prevent from parser's stack and buffer overflow.*/
+	/* Instruction size is limited to prevent from parser's stack and buffer overflows. */
 	if( !mnemonic || !ast || fcml_fn_env_str_strlen( mnemonic ) > FCML_PARSER_MAX_INSTRUCTION_LEN ) {
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}

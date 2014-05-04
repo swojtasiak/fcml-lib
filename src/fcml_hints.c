@@ -1,8 +1,20 @@
 /*
- * fcml_hints.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Nov 2, 2013
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "fcml_hints.h"
@@ -20,6 +32,7 @@ fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_
     if( rm_args->flags & FCML_RMF_M ) {
     	hints.operand_hints = 0;
     	if( rm_args->reg_type == FCML_REG_SIMD ) {
+    		/* SIMD media instruction. */
 			hints.operand_hints |= FCML_OP_HINT_MULTIMEDIA_INSTRUCTION;
     	}
     	if( FCML_GET_OS( rm_args->encoded_memory_operand_size ) == FCML_EOS_FP ) {
@@ -29,13 +42,13 @@ fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_
     		/* Far pointer indirect.*/
     		hints.instruction_hints |= ( FCML_HINT_FAR_POINTER | FCML_HINT_INDIRECT_POINTER );
     	} else {
-    		/* If not far, then near :)*/
+    		/* If not far, then near :) */
     		hints.instruction_hints |= FCML_HINT_NEAR_POINTER;
     	}
     	if( rm_args->flags & FCML_RMF_I ) {
     		hints.instruction_hints |= FCML_HINT_INDIRECT_POINTER;
     	}
-    	/* Every ModR/M encoded operand supports SIB hint.*/
+    	/* Every ModR/M encoded operand supports SIB hint. */
     	hints.operand_hints |= FCML_OP_HINT_SIB_ENCODING;
     } else {
     	hints.operand_hints = 0;

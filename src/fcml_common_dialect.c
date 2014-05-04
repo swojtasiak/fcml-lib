@@ -27,6 +27,19 @@
 #include "fcml_dialect_int.h"
 #include "fcml_env_int.h"
 
+#define FCML_CMN_DIALECT_CND_GROUPS 3
+
+fcml_string fcml_ar_asm_conditional_suffixes[3][16] = {
+    { FCML_TEXT("o"), FCML_TEXT("no"),  FCML_TEXT("b"),   FCML_TEXT("nb"), FCML_TEXT("e"), FCML_TEXT("ne"), FCML_TEXT("be"), FCML_TEXT("nbe"), FCML_TEXT("s"),  FCML_TEXT("ns"), FCML_TEXT("p"),  FCML_TEXT("np"), FCML_TEXT("l"),   FCML_TEXT("nl"), FCML_TEXT("le"), FCML_TEXT("nle") },
+    { NULL, NULL, FCML_TEXT("nae"), FCML_TEXT("ae"), FCML_TEXT("z"), FCML_TEXT("nz"), FCML_TEXT("na"), FCML_TEXT("a"),   NULL, NULL, FCML_TEXT("pe"), FCML_TEXT("po"), FCML_TEXT("nge"), FCML_TEXT("ge"), FCML_TEXT("ng"), FCML_TEXT("g")   },
+    { NULL, NULL, FCML_TEXT("c"),   FCML_TEXT("nc"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  NULL, NULL, NULL  }
+};
+
+fcml_string fcml_ar_asm_conditional_suffixes_render[2][16] = {
+	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("b"), FCML_TEXT("nb"), FCML_TEXT("e"), FCML_TEXT("ne"), FCML_TEXT("be"), FCML_TEXT("nbe"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("p"), FCML_TEXT("np"), FCML_TEXT("l"), FCML_TEXT("nl"), FCML_TEXT("le"), FCML_TEXT("nle") },
+	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("nae"), FCML_TEXT("ae"), FCML_TEXT("z"), FCML_TEXT("nz"), FCML_TEXT("na"), FCML_TEXT("a"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("pe"), FCML_TEXT("po"), FCML_TEXT("nge"), FCML_TEXT("ge"), FCML_TEXT("ng"), FCML_TEXT("g") }
+};
+
 fcml_string fcml_ar_asm_dialect_reg_symbol_table[7][16] = {
 	{ "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>" },
 	{ "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>", "<unknown GPR>" },
@@ -70,6 +83,100 @@ fcml_string fcml_ar_asm_dialect_reg_sidm_symbol_table[3][16] = {
 	{ "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15" },
 	{ "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15" }
 };
+
+fcml_string fcml_fn_cmn_dialect_render_mnemonic( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry ) {
+
+    fcml_string rendered_mnemonic = NULL;
+
+    if( condition ) {
+
+    	fcml_string suffix = NULL;
+        fcml_int cond = ( condition->condition_type << 1 ) | ( ( condition->is_negation ) ? 1 : 0 );
+
+        if( show_carry ) {
+            if( cond == 2 ) {
+                suffix = FCML_TEXT("c");
+            } else if( cond == 3 ) {
+                suffix = FCML_TEXT("nc");
+            }
+        }
+
+        if( !suffix ) {
+            suffix = fcml_ar_asm_conditional_suffixes_render[conditional_group][cond];
+        }
+
+        fcml_usize mnemonic_len = fcml_fn_env_str_strlen( mnemonic );
+        fcml_usize len = mnemonic_len + fcml_fn_env_str_strlen( suffix ) ;
+        rendered_mnemonic = fcml_fn_env_str_stralloc( len + 1 );
+
+        if( rendered_mnemonic ) {
+            fcml_fn_env_str_strcpy(rendered_mnemonic, mnemonic);
+            fcml_fn_env_str_strcpy(rendered_mnemonic + mnemonic_len, suffix);
+        }
+
+    } else {
+        rendered_mnemonic = fcml_fn_env_str_strdup( mnemonic );
+    }
+
+    return rendered_mnemonic;
+}
+
+fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic( const fcml_st_dialect *dialect, fcml_st_mp_mnemonic_set *mnemonic_set, fcml_st_mp_mnemonic **mnemonics, fcml_st_condition *condition, int *mnemonics_counter ) {
+
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    fcml_int counter = 0;
+
+    fcml_st_coll_list_element *element = mnemonic_set->mnemonics->head;
+    while( element ) {
+
+        fcml_st_mp_mnemonic *mnemonic_def = (fcml_st_mp_mnemonic*)element->item;
+
+        if( condition != NULL ) {
+            /* Conditional instructions.*/
+
+            fcml_uint32_t suffix_nr = condition->condition_type * 2 + ( condition->is_negation ? 1 : 0 );
+
+            int i;
+            for( i = 0; i < FCML_CMN_DIALECT_CND_GROUPS; i++ ) {
+                fcml_string suffix = fcml_ar_asm_conditional_suffixes[i][suffix_nr];
+                if( suffix ) {
+                    mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( mnemonic_def, suffix );
+                    if( !mnemonics[counter] ) {
+                        /* Out of memory.*/
+                        error = FCML_CEH_GEC_OUT_OF_MEMORY;
+                        break;
+                    }
+                    counter++;
+                }
+            }
+
+        } else {
+            /* Allocate new instance of mnemonic.*/
+            mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic( mnemonic_def );
+            if( mnemonics[counter] ) {
+                counter++;
+            } else {
+                error = FCML_CEH_GEC_OUT_OF_MEMORY;
+            }
+        }
+
+        element = element->next;
+
+    }
+
+    if( error ) {
+        /* Free all prepared mnemonics.*/
+        int i;
+        for( i = 0; i < counter; i++ ) {
+        	fcml_fn_asm_dialect_free_mnemonic( mnemonics[i] );
+        }
+    }
+
+    *mnemonics_counter = counter;
+
+    return error;
+}
 
 fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex) {
 	fcml_int rs = 0;
