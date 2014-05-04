@@ -20,7 +20,8 @@
 #ifndef FCML_HINTS_H_
 #define FCML_HINTS_H_
 
-#include "fcml_common.h"
+#include <fcml_common.h>
+
 #include "fcml_def.h"
 
 typedef struct fcml_st_hts_calculated_hints {

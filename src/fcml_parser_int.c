@@ -1,11 +1,24 @@
 /*
- * fcml_parser_int.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Feb 20, 2014
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <fcml_symbols.h>
+
 #include "fcml_parser_int.h"
 #include "fcml_messages.h"
 #include "fcml_env_int.h"
@@ -57,29 +70,46 @@ fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, fcml_strin
 		return error;
 	}
 
+	fcml_bool new_symbol_table = FCML_FALSE;
+
 	/* Symbol */
 	if( ast.symbol ) {
 
 		if( !context->config.disable_symbols_declaration ) {
 
-			/* If there is no symbol table yet, allocate it. */
-			if( !context->symbol_table ) {
-				context->symbol_table = fcml_fn_symbol_table_alloc();
+			if( context->symbol_table || context->config.alloc_symbol_table_if_needed ) {
+
+				/* If there is no symbol table yet, allocate it. */
 				if( !context->symbol_table ) {
+					context->symbol_table = fcml_fn_symbol_table_alloc();
+					if( !context->symbol_table ) {
+						fcml_fn_symbol_free( ast.symbol );
+						fcml_fn_ast_free_node( ast.tree );
+						return FCML_CEH_GEC_OUT_OF_MEMORY;
+					}
+					new_symbol_table = FCML_TRUE;
+				}
+
+				error = fcml_fn_parser_add_symbol_to_symbol_table( &(result->errors), context->symbol_table, ast.symbol, context->config.override_labels );
+				if( error ) {
 					fcml_fn_symbol_free( ast.symbol );
 					fcml_fn_ast_free_node( ast.tree );
-					return FCML_CEH_GEC_OUT_OF_MEMORY;
+					if( new_symbol_table ) {
+						fcml_fn_symbol_table_free( context->symbol_table );
+						context->symbol_table = NULL;
+					}
+					return error;
 				}
-			}
 
-			error = fcml_fn_parser_add_symbol_to_symbol_table( &(result->errors), context->symbol_table, ast.symbol, context->config.override_labels );
-			if( error ) {
+				result->symbol = ast.symbol;
+
+			} else {
+
+				/* Free found symbol. */
 				fcml_fn_symbol_free( ast.symbol );
-				fcml_fn_ast_free_node( ast.tree );
-				return error;
-			}
+				ast.symbol = NULL;
 
-			result->symbol = ast.symbol;
+			}
 
 		} else {
 
@@ -118,6 +148,11 @@ fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, fcml_strin
 			if( result->symbol ) {
 				fcml_fn_symbol_remove( context->symbol_table, result->symbol->symbol );
 				result->symbol = NULL;
+				/* Free symbol table if it has been just allocated. */
+				if( new_symbol_table ) {
+					fcml_fn_symbol_table_free( context->symbol_table );
+					context->symbol_table = NULL;
+				}
 			}
 		}
 

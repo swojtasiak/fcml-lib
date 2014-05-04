@@ -1,23 +1,34 @@
 /*
- * fcml_rend_utils.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Oct 20, 2013
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "fcml_rend_utils.h"
 
 #include <ctype.h>
 #include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
+
+#include <fcml_types.h>
+#include <fcml_common.h>
+#include <fcml_dialect.h>
 
 #include "fcml_env_int.h"
 #include "fcml_ceh.h"
-#include "fcml_common.h"
-#include "fcml_dialect.h"
 #include "fcml_stream.h"
-#include "fcml_types.h"
 
 void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml_string format, ...) {
 
@@ -27,13 +38,13 @@ void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml
 	va_list arg_list;
 	va_start(arg_list, format);
 
-	vsnprintf(local_buffer, sizeof( local_buffer ), format, arg_list);
-	int part_size = strlen(local_buffer);
+	fcml_fn_env_str_vsnprintf( local_buffer, sizeof( local_buffer ), format, arg_list );
+	int part_size = fcml_fn_env_str_strlen( local_buffer );
 	if (part_size > stream->size - stream->offset - 1) {
 		part_size = stream->size - stream->offset - 1;
 	}
 
-	strncpy( &(((fcml_char*)stream->base_address)[stream->offset]), local_buffer, part_size);
+	fcml_fn_env_memory_copy( &(((fcml_char*)stream->base_address)[stream->offset]), local_buffer, part_size );
 
 	stream->offset += part_size;
 }
@@ -88,7 +99,7 @@ fcml_int fcml_fn_rend_utils_format_append_str( fcml_st_memory_stream *stream, co
 	fcml_int destination_size = stream->size - stream->offset;
 	fcml_int n = ( destination_size < source_size ) ? destination_size : source_size;
 	if( n > 0 ) {
-		strncpy( &(((fcml_char*)stream->base_address)[stream->offset]), source, n );
+		fcml_fn_env_str_strncpy( &(((fcml_char*)stream->base_address)[stream->offset]), source, n );
 		stream->offset += n;
 	} else {
 		n = 0;
@@ -147,32 +158,16 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[6]
 
 	switch( integer->size ) {
 	case 8:
-#ifdef FCML_MSCC
-		_snprintf( local_buffer, sizeof( local_buffer ), format[0], (fcml_uint8_t)integer->int8 );
-#else
-		snprintf( local_buffer, sizeof( local_buffer ), format[0], (fcml_uint8_t)integer->int8 );
-#endif
+		fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[0], (fcml_uint8_t)integer->int8 );
 		break;
 	case 16:
-#ifdef FCML_MSCC
-		_snprintf( local_buffer, sizeof( local_buffer ), format[1], (fcml_uint16_t)integer->int16 );
-#else
-		snprintf( local_buffer, sizeof( local_buffer ), format[1], (fcml_uint16_t)integer->int16 );
-#endif
+		fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[1], (fcml_uint16_t)integer->int16 );
 		break;
 	case 32:
-#ifdef FCML_MSCC
-		_snprintf( local_buffer, sizeof( local_buffer ), format[2], (fcml_uint32_t)integer->int32 );
-#else
-		snprintf( local_buffer, sizeof( local_buffer ), format[2], (fcml_uint32_t)integer->int32 );
-#endif
+		fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[2], (fcml_uint32_t)integer->int32 );
 		break;
 	case 64:
-#ifdef FCML_MSCC
-		_snprintf( local_buffer, sizeof( local_buffer ), format[3], (fcml_uint64_t)integer->int64 );
-#else
-		snprintf( local_buffer, sizeof( local_buffer ), format[3], (fcml_uint64_t)integer->int64 );
-#endif
+		fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[3], (fcml_uint64_t)integer->int64 );
 		break;
 	default:
 		return FCML_CEH_GEC_INVALID_INPUT;

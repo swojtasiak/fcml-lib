@@ -33,6 +33,7 @@
 #include <fcml_dialect.h>
 #include <fcml_disassembler.h>
 
+#include "fcml_common_dialect.h"
 #include "fcml_mnemonic_parser.h"
 #include "fcml_ceh.h"
 #include "fcml_dialect_int.h"
@@ -58,18 +59,7 @@ fcml_string fcml_iarr_rend_utils_integer_formats_intel[6][4] = {
 	{FCML_PRI_INT8_HEX_NO_ZEROS FCML_TEXT("h"), FCML_PRI_INT16_HEX_NO_ZEROS FCML_TEXT("h"), FCML_PRI_INT32_HEX_NO_ZEROS FCML_TEXT("h"), FCML_PRI_INT64_HEX_NO_ZEROS FCML_TEXT("h")}
 };
 
-fcml_string fcml_iarr_rend_conditional_suffixes_intel[2][16] = {
-	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("b"), FCML_TEXT("nb"), FCML_TEXT("e"), FCML_TEXT("ne"), FCML_TEXT("be"), FCML_TEXT("nbe"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("p"), FCML_TEXT("np"), FCML_TEXT("l"), FCML_TEXT("nl"), FCML_TEXT("le"), FCML_TEXT("nle") },
-	{ FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("nae"), FCML_TEXT("ae"), FCML_TEXT("z"), FCML_TEXT("nz"), FCML_TEXT("na"), FCML_TEXT("a"), FCML_TEXT("s"), FCML_TEXT("ns"), FCML_TEXT("pe"), FCML_TEXT("po"), FCML_TEXT("nge"), FCML_TEXT("ge"), FCML_TEXT("ng"), FCML_TEXT("g") }
-};
-
 fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_intel( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
-	// TODO: usunac poniewaz ten operand jest usuwany na etapie disassemblacji.
-	/* Do not render pseudo opcodes if shortcut is used.*/
-	if( ( operand->hints & FCML_OP_HINT_PSEUDO_OPCODE ) && result->instruction_details.is_pseudo_op ) {
-		*do_not_render = FCML_TRUE;
-		return FCML_CEH_GEC_NO_ERROR;
-	}
 	fcml_st_integer *immediate = &(operand->immediate);
 	return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, immediate, config->render_flags & FCML_REND_FLAG_HEX_IMM, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 }
@@ -112,11 +102,8 @@ fcml_ceh_error fcml_ifn_rend_size_operator_intel( fcml_usize size_operator, fcml
         size_operator_printable = is_media_instruction ? FCML_TEXT("ymmword ptr ") : FCML_TEXT("qqword ");
         break;
     default:
-#ifdef FCML_MSCC
-		_snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
-#else
-        snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
-#endif
+		fcml_fn_env_str_snprintf( buffer, buffer_len, FCML_TEXT("%dbyte ptr "), size_operator / 8 );
+		break;
     }
 
     if( size_operator_printable ) {
@@ -306,7 +293,7 @@ fcml_string fcml_ifn_rend_get_conditional_suffix_intel( fcml_int condition, fcml
 		}
 	}
 	fcml_int group = ( render_flags & FCML_REND_FLAG_COND_GROUP_2 ) ? 1 : 0;
-	return fcml_iarr_rend_conditional_suffixes_intel[group][condition];
+	return fcml_ar_asm_conditional_suffixes[group][condition];
 }
 
 fcml_string fcml_ifn_rend_resolve_mnemonic_intel( fcml_st_disassembler_result *result ) {

@@ -288,6 +288,7 @@ void fcml_tf_parser_gas_parse_test_symbols_1(void) {
 	fcml_fn_parser_result_prepare( &result );
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
+	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	context.ip = 0x401000;
 
@@ -317,6 +318,7 @@ void fcml_tf_parser_gas_parse_test_symbols_2(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
 	context.config.override_labels = FCML_FALSE;
+	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
 	context.ip = 0x401000;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -343,6 +345,7 @@ void fcml_tf_parser_gas_parse_test_symbols_3(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
 	context.config.override_labels = FCML_FALSE;
+	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
 	context.ip = 0x401000;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -388,6 +391,7 @@ void fcml_tf_parser_gas_parse_test_symbols_4(void) {
 	fcml_fn_parser_result_prepare( &result );
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
+	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
 	context.ip = 0x401000;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax, symbol" ), &result ), FCML_CEH_GEC_UNDEFINED_SYMBOL );
@@ -414,6 +418,7 @@ void fcml_tf_parser_gas_parse_test_symbols_5(void) {
 	context.dialect = internal_dialect_gas;
 	context.ip = 0x401000;
 	context.config.ignore_undefined_symbols = FCML_TRUE;
+	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
 	context.config.override_labels = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax, $symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -453,6 +458,7 @@ void fcml_tf_parser_gas_parse_test_symbols_6(void) {
 	context.ip = 0x401000;
 	context.config.ignore_undefined_symbols = FCML_TRUE;
 	context.config.override_labels = FCML_TRUE;
+	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax, $label" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );

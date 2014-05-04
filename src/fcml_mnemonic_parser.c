@@ -1,6 +1,23 @@
 /*
- * fcml_mnemonic_parser.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/*
  * mm - Mnemonic for addressing mode using memory addressing.
  * mr - Mnemonic for addressing mode without memory addressing.
  * sb - Sets memory data size to one byte.
@@ -15,16 +32,14 @@
  * l1 - Mnemonic for L flag set to 1.
  * Sxx - One byte instruction suffix, used by AMD 3DNow for instance.
  *
- *  Created on: 5 wrz 2013
- *      Author: tAs
  */
 
 #include "fcml_mnemonic_parser.h"
 
 #include <stdlib.h>
 
-#include "fcml_common.h"
-#include "fcml_types.h"
+#include <fcml_common.h>
+#include <fcml_types.h>
 
 enum fcml_ien_mp_parser_state {
     FCML_MP_PS_MNEMONIC,
@@ -110,7 +125,7 @@ fcml_ceh_error fcml_ifn_parse_attribute_size_flag( fcml_char flag_code, fcml_usi
 
 fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *attr_value, int attr_value_len, fcml_st_mp_mnemonic *mnemonic ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    /* Handle attributes.*/
+    /* Handle attributes. */
     switch( attr_key ) {
     case 'l':
 		if( attr_value[0] == '0' ) {
@@ -339,15 +354,20 @@ fcml_bool fcml_ifn_mp_is_attribute_size_supported( fcml_usize supported_attribut
 }
 
 fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_st_mp_config *config ) {
-    fcml_st_mp_mnemonic *chosen_mnemonic = NULL;
+
+	fcml_st_mp_mnemonic *chosen_mnemonic = NULL;
+
     if( mnemonics->mnemonics ) {
-        fcml_st_coll_list_element *next = mnemonics->mnemonics->head;
+
+    	fcml_st_coll_list_element *next = mnemonics->mnemonics->head;
+
         while( next ) {
 
             fcml_st_mp_mnemonic *mnemonic = (fcml_st_mp_mnemonic*)next->item;
 
-        	/* Set default mnemonic only if there is no mnemonic yet. Default mnemonics can not have any attributes defined, so we do not*/
-            /* need to check anything.*/
+        	/* Set default mnemonic only if there is no mnemonic yet. Default mnemonics
+        	 * can not have any attributes defined, so we do not need to check anything.
+        	 */
             if( !chosen_mnemonic && !mnemonic->is_shortcut && mnemonic->is_default ) {
                 chosen_mnemonic = mnemonic;
             }
@@ -355,24 +375,30 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemon
 			/* Size attributes.*/
 			if( fcml_ifn_mp_is_attribute_size_supported( mnemonic->supported_asa, config->effective_asa )
 					&& fcml_ifn_mp_is_attribute_size_supported( mnemonic->supported_osa, config->effective_osa ) ) {
+
 				/* Memory data size.*/
 				if( !mnemonic->memory_data.is_not_null || ( mnemonic->memory_data.value == ( config->memory_data_size / 8 ) ) ) {
+
 					/* Suffix.*/
 					if( ( mnemonic->suffix.is_not_null == config->suffix.is_not_null ) && ( !config->suffix.is_not_null || ( config->suffix.value == mnemonic->suffix.value ) ) ) {
+
 						/* L flag.*/
 						if( ( !config->l.is_not_null && !mnemonic->l.is_not_null ) || ( config->l.value == mnemonic->l.value ) ) {
+
 							/* Shortcuts. Pseudo opcode mnemonic is also treated as a shortcut by disassembler.*/
 							if( ( config->use_shortcut && ( ( mnemonic->pseudo_op.is_not_null && mnemonic->pseudo_op.value == config->pseudo_opcode.value ) || mnemonic->is_shortcut ) )
 								|| ( !config->use_shortcut && !mnemonic->pseudo_op.is_not_null && ( !mnemonic->is_shortcut || mnemonic->is_classic ) ) ) {
-								/* Addressing mode.*/
-								/* See "mm","mr" mnemonic attribute.*/
+
+								/* Addressing mode: See "mm","mr" mnemonic attribute. */
 								fcml_bool is_mode_ok = ( ( !mnemonic->is_mode_mem_only && !mnemonic->is_mode_reg_only) || ( mnemonic->is_mode_mem_only && config->is_memory ) || ( mnemonic->is_mode_reg_only && !config->is_memory ) );
 								if( is_mode_ok ) {
+
 									/* Default mnemonic can not be overridden by another default.*/
 									if( !chosen_mnemonic || !mnemonic->is_default ) {
 										chosen_mnemonic = mnemonic;
 										break;
 									}
+
 								}
 							}
 						}

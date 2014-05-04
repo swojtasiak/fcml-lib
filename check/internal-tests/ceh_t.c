@@ -129,6 +129,8 @@ void fcml_tf_ceh_test_move(void) {
 	error = error->next_error;
 	STF_ASSERT_PTR_NULL( error );
 
+	fcml_fn_ceh_free_errors_only( &conteiner_next );
+
 }
 
 fcml_stf_test_case fcml_ti_ceh[] = {

@@ -56,6 +56,16 @@ typedef struct fcml_st_parser_config {
 	 * If set to false parser returns "Symbol already exists" error when symbol already exists.
 	 */
 	fcml_bool override_labels;
+	/** By default parser ignores all symbol declarations
+	 * if there is no symbol table provided in the parser
+	 * context. By setting this value to true you can force
+	 * the parser to allocate new symbol table when needed.
+	 * Remember that you are then responsible for freeing it,
+	 * so this functionality can be a bit dangerous because
+	 * you have to check the existence of the symbol table
+	 * every time it should be deallocated.
+	 */
+	fcml_bool alloc_symbol_table_if_needed;
 } fcml_st_parser_config;
 
 /** Parser runtime context. */

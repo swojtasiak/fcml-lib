@@ -1,13 +1,26 @@
 /*
- * fcml_lag_assembler.c
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- *  Created on: Feb 22, 2014
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <fcml_lag_assembler.h>
 #include <fcml_parser.h>
 #include <fcml_errors.h>
+
 #include "fcml_parser_int.h"
 #include "fcml_assembler_int.h"
 #include "fcml_env_int.h"
@@ -271,6 +284,8 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 	fcml_st_parser_context parser_context = {0};
 	parser_context.config.ignore_undefined_symbols = FCML_TRUE;
 	parser_context.config.override_labels = FCML_FALSE;
+	parser_context.config.disable_symbols_declaration = FCML_FALSE;
+	parser_context.config.alloc_symbol_table_if_needed = FCML_FALSE;
 	parser_context.ip = assembler_context->entry_point.ip;
 	parser_context.dialect = fcml_fn_assembler_extract_dialect( assembler_context->assembler );
 
