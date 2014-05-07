@@ -536,7 +536,7 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_immediate_dis_relative( fcml_ist_
 	fcml_sf_def_tma_immediate_dis_relative *rel_args = (fcml_sf_def_tma_immediate_dis_relative*)args;
 	fcml_int size;
 	if( rel_args->encoded_size != FCML_EOS_UNDEFINED ) {
-		size = rel_args->encoded_size;;
+		size = rel_args->encoded_size;
 	} else {
 		size = ( context->effective_operand_size_attribute == FCML_DS_16 ) ? FCML_DS_16 / 8 : FCML_DS_32 / 8;
 	}
