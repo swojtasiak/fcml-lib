@@ -1122,6 +1122,42 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
     return error;
 }
 
+
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_en_instruction instruction_code, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
+
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    fcml_bool changed = FCML_FALSE;
+
+    if( mnemonic ) {
+
+        /* JMP and CALL needs hint FCML_HINT_INDIRECT_POINTER explicitly set if
+         * absolute offsets are used instead of immediate values. It has to be done
+         * in order to make a difference between operands encoded as absolute offsets,
+         * because without hints they would be assembled to indirect and direct branches.
+         */
+        if( ( instruction_code == F_JMP || instruction_code == F_CALL )
+        		&& instrunction->operands_count == 1
+        		&& instrunction->operands[0].type == FCML_EOT_ADDRESS
+        		&& instrunction->operands[0].address.address_form == FCML_AF_OFFSET ) {
+
+        	if( !( instrunction->hints & ( FCML_HINT_DIRECT_POINTER | FCML_HINT_FAR_POINTER ) ) ) {
+        		instrunction->hints = FCML_HINT_INDIRECT_POINTER;
+        		changed = FCML_TRUE;
+        	}
+
+        }
+
+		if( has_been_changed ) {
+			*has_been_changed = changed;
+		}
+
+    }
+
+    return error;
+}
+
+
 fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1143,7 +1179,7 @@ fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel( fcml_uint32_t config_flags, 
     dialect_context_intel->instruction_parser = &fcml_fn_intel_parse_instruction_to_ast;
     dialect_context_intel->get_register = &fcml_ifn_asm_dialect_get_register_intel;
     dialect_context_intel->free_dialect = &fcml_fn_cmn_dialect_free;
-    dialect_context_intel->assembler_preprocessor = NULL;
+    dialect_context_intel->assembler_preprocessor = &fcml_ifn_asm_dialect_assembler_preprocessor_intel;
     dialect_context_intel->disassembler_postprocessor = NULL;
 
     *dialect = (fcml_st_dialect*)dialect_context_intel;

@@ -1420,6 +1420,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
         if( instruction_code == F_JMP || instruction_code == F_CALL ) {
         	if( !( instrunction->hints & FCML_HINT_INDIRECT_POINTER ) ) {
         		instrunction->hints = FCML_HINT_DIRECT_POINTER;
+        		changed = FCML_TRUE;
         	}
         }
 
