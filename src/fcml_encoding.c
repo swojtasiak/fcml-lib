@@ -902,6 +902,9 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_immediate_dis_relative( fcml_ist_as
 	    	} else {
 	    		fcml_usize size_operator = operand_def->address.size_operator;
 	    		switch( size_operator ) {
+	    		case FCML_DS_UNDEF:
+	    			flags = FCML_EN_ASF_32 | FCML_EN_ASF_16;
+	    			break;
 	    		case FCML_DS_16:
 	    			flags = FCML_EN_ASF_16;
 	    			break;

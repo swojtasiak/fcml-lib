@@ -63,9 +63,98 @@ void fcml_fn_hints_rip(void) {
 	FCML_I64_RF( "rcl byte ptr [abs 0000000000401007h],03h", FCML_REND_FLAG_RENDER_ABS_HINT, 0xc0, 0x14, 0x25, 0x07, 0x10, 0x40, 0x00, 0x03 );
 }
 
+void fcml_fn_hints_indirect_addressing(void) {
+
+	/* 1: 0xFF, 0x25, 0x01, 0x10, 0x40, 0x00 (jmp dword [00401001h])
+	 * By default indirect addressing is chosen.
+	 */
+
+	fcml_st_assembler_context context = {0};
+	context.assembler = assembler_intel;
+	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.ip = 0x00401000;
+
+	fcml_st_instruction instruction = {0};
+	instruction.mnemonic = "jmp";
+	instruction.operands[0].type = FCML_EOT_ADDRESS;
+	instruction.operands[0].address.address_form = FCML_AF_OFFSET;
+	instruction.operands[0].address.size_operator = FCML_DS_32;
+	instruction.operands[0].address.offset.off32 = 0x00401001;
+	instruction.operands[0].address.offset.size = FCML_DS_32;
+	instruction.operands_count = 1;
+
+	fcml_st_assembler_result result;
+
+	fcml_fn_assembler_result_prepare( &result );
+
+	fcml_ceh_error error;
+	if( !( error = fcml_fn_assemble( &context, &instruction, &result ) ) ) {
+		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
+		if( result.chosen_instruction ) {
+			STF_ASSERT_EQUAL( 6, result.chosen_instruction->code_length );
+			if( result.chosen_instruction->code_length == 6 ) {
+				STF_ASSERT_EQUAL( 0xFF, result.chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0x25, result.chosen_instruction->code[1] );
+				STF_ASSERT_EQUAL( 0x01, result.chosen_instruction->code[2] );
+				STF_ASSERT_EQUAL( 0x10, result.chosen_instruction->code[3] );
+				STF_ASSERT_EQUAL( 0x40, result.chosen_instruction->code[4] );
+				STF_ASSERT_EQUAL( 0x00, result.chosen_instruction->code[5] );
+			}
+		}
+		fcml_fn_assembler_result_free( &result );
+	} else {
+		STF_FAIL("Can not assemble instruction.");
+	}
+}
+
+
+void fcml_fn_hints_direct_addressing(void) {
+
+	/* 1: 0xeb, 0xff (jmp 00401001h)
+	 * Forcing indirect addressing.
+	 */
+
+	fcml_st_assembler_context context = {0};
+	context.assembler = assembler_intel;
+	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.ip = 0x00401000;
+
+	fcml_st_instruction instruction = {0};
+	instruction.mnemonic = "jmp";
+	instruction.operands[0].type = FCML_EOT_ADDRESS;
+	instruction.operands[0].address.address_form = FCML_AF_OFFSET;
+	instruction.operands[0].address.offset.off32 = 0x00401001;
+	instruction.operands[0].address.offset.size = FCML_DS_32;
+	instruction.hints |= FCML_HINT_DIRECT_POINTER;
+	instruction.operands_count = 1;
+
+	fcml_st_assembler_result result;
+
+	fcml_fn_assembler_result_prepare( &result );
+
+	fcml_ceh_error error;
+	if( !( error = fcml_fn_assemble( &context, &instruction, &result ) ) ) {
+		STF_ASSERT_PTR_NOT_NULL( result.chosen_instruction );
+		if( result.chosen_instruction ) {
+			STF_ASSERT_EQUAL( 2, result.chosen_instruction->code_length );
+			if( result.chosen_instruction->code_length == 2 ) {
+				STF_ASSERT_EQUAL( 0xEB, result.chosen_instruction->code[0] );
+				STF_ASSERT_EQUAL( 0xFF, result.chosen_instruction->code[1] );
+			}
+		}
+		fcml_fn_assembler_result_free( &result );
+	} else {
+		STF_FAIL("Can not assemble instruction.");
+	}
+
+}
+
+
 fcml_stf_test_case fcml_ti_hints[] = {
 	{ "fcml_fn_hints_sib", fcml_fn_hints_sib },
 	{ "fcml_fn_hints_rip", fcml_fn_hints_rip },
+	{ "fcml_fn_hints_indirect_addressing", fcml_fn_hints_indirect_addressing },
+	{ "fcml_fn_hints_direct_addressing", fcml_fn_hints_direct_addressing },
 	FCML_STF_NULL_TEST
 };
 

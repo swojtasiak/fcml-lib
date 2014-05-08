@@ -1142,9 +1142,14 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_
         		&& instrunction->operands[0].address.address_form == FCML_AF_OFFSET ) {
 
         	if( !( instrunction->hints & ( FCML_HINT_DIRECT_POINTER | FCML_HINT_FAR_POINTER ) ) ) {
-        		instrunction->hints = FCML_HINT_INDIRECT_POINTER;
+        		instrunction->hints |= FCML_HINT_INDIRECT_POINTER;
         		changed = FCML_TRUE;
         	}
+
+        	if( !( instrunction->hints & FCML_HINT_FAR_POINTER ) ) {
+				instrunction->hints |= FCML_HINT_NEAR_POINTER;
+				changed = FCML_TRUE;
+			}
 
         }
 

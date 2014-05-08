@@ -257,7 +257,6 @@ void fcml_tf_lag_assembler_test(void) {
 
 	fcml_st_dialect *dialect;
 
-	//error = fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT, &dialect );
 	error = fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT, &dialect );
 	if( error ) {
 		STF_FAIL("Can not initialize dialect.");
