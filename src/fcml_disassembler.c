@@ -506,8 +506,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 	case FCML_DS_16:
 		error = fcml_fn_utils_convert_integer_to_int16( &integer, &offset16 );
 		if( !error ) {
-			offset->off32 = ( (fcml_int32_t)ip + context->calculated_instruction_size + offset16 ) & 0x0000FFFF;
-			offset->size = FCML_DS_32;
+			offset->off16 = ( (fcml_int32_t)ip + context->calculated_instruction_size + offset16 ) & 0x0000FFFF;
+			offset->size = FCML_DS_16;
 		}
 		break;
 	case FCML_DS_32:

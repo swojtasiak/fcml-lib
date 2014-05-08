@@ -152,9 +152,6 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	//FCML_I32_A_P( "jmp word ptr [0000a103h]", 0x66, 0xff, 0x25, 0x03, 0xa1, 0x00, 0x00 );
-	//return 0;
-
 	/* Run tests.*/
 	result = fcml_stf_run_tests( "FCML public API tests.", fcml_arr_suites );
 

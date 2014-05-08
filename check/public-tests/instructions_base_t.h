@@ -53,6 +53,7 @@ int fcml_fn_test_number_of_arguments( fcml_string code );
 #define FCML_MI(...) 				( sizeof( ( fcml_uint8_t[] ) { __VA_ARGS__ } ) / sizeof( fcml_uint8_t ) ), __VA_ARGS__
 #endif
 
+#define FCML_I16_M(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT( fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_16_BIT, x, FCML_TSF_MULTI_ASM_RESULTS, 0 ) ); }
 #define FCML_I32_M(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT( fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_MULTI_ASM_RESULTS, 0 ) ); }
 #define FCML_A32_M(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT( fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_MULTI_ASM_RESULTS | FCML_TSF_GAS_DIALECT, 0 ) ); }
 #define FCML_I64_M(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT( fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_MULTI_ASM_RESULTS, 0 ) ); }
@@ -62,6 +63,7 @@ int fcml_fn_test_number_of_arguments( fcml_string code );
 #define FCML_I3264_M(x,...)			{ FCML_I32_M( x, __VA_ARGS__ ); FCML_I64_M( x, __VA_ARGS__ ); }
 #define FCML_A3264_M(x,...)			{ FCML_A32_M( x, __VA_ARGS__ ); FCML_A64_M( x, __VA_ARGS__ ); }
 
+#define FCML_I16_M_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_16_BIT, x, FCML_TSF_MULTI_ASM_RESULTS | FCML_TSF_ASM_ONLY, 0)); }
 #define FCML_I32_M_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_MULTI_ASM_RESULTS | FCML_TSF_ASM_ONLY, 0)); }
 #define FCML_A32_M_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_MULTI_ASM_RESULTS | FCML_TSF_ASM_ONLY | FCML_TSF_GAS_DIALECT, 0)); }
 #define FCML_I64_M_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_MULTI_ASM_RESULTS | FCML_TSF_ASM_ONLY, 0)); }
@@ -104,7 +106,9 @@ int fcml_fn_test_number_of_arguments( fcml_string code );
 #define FCML_I16_D(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_16_BIT, x, 0, 0)); }
 #define FCML_I32_D(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, 0, 0)); }
 #define FCML_A32_D(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_GAS_DIALECT, 0)); }
+#define FCML_I16_D_P(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_16_BIT, x, FCML_TSF_PRINT_ONLY, 0 ); }
 #define FCML_I32_D_P(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_PRINT_ONLY, 0 ); }
+#define FCML_A16_D_P(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_16_BIT, x, FCML_TSF_PRINT_ONLY | FCML_TSF_GAS_DIALECT, 0 ); }
 #define FCML_A32_D_P(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_PRINT_ONLY | FCML_TSF_GAS_DIALECT, 0 ); }
 #define FCML_I32_D_RF(x,ren,...)	{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, 0, ren)); }
 #define FCML_I32_D_RF_P(x,ren,...)	{ fcml_uint8_t code[] = {__VA_ARGS__}; fcml_fn_ts_instruction_test_diss( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_PRINT_ONLY, ren); }
@@ -130,7 +134,9 @@ int fcml_fn_test_number_of_arguments( fcml_string code );
 #define FCML_A3264_A(x,...)			{ FCML_A32_A(x,__VA_ARGS__); FCML_A64_A(x,__VA_ARGS__); }
 #define FCML_I3264_A_FAILED(x,...)	{ FCML_I32_A_FAILED(x,__VA_ARGS__); FCML_I64_A_FAILED(x,__VA_ARGS__); }
 #define FCML_I32_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_ASM_ONLY, 0)); }
+#define FCML_I16_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_16_BIT, x, FCML_TSF_ASM_ONLY, 0)); }
 #define FCML_A32_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_ASM_ONLY | FCML_TSF_GAS_DIALECT, 0)); }
+#define FCML_A16_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_16_BIT, x, FCML_TSF_ASM_ONLY | FCML_TSF_GAS_DIALECT, 0)); }
 #define FCML_I32_A_RF(x,ren,...)	{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_ASM_ONLY, ren)); }
 #define FCML_I32_A_FAILED(x,...)	{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_32_BIT, x, FCML_TSF_SHOULD_FAIL | FCML_TSF_ASM_ONLY, 0)); }
 #define FCML_I64_A(x,...)			{ fcml_uint8_t code[] = {__VA_ARGS__}; STF_ASSERT(fcml_fn_ts_instruction_test( code, sizeof( code ), FCML_AF_64_BIT, x, FCML_TSF_ASM_ONLY, 0)); }
