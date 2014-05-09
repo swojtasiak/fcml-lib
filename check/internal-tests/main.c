@@ -35,6 +35,7 @@
 #include "env_t.h"
 #include "ceh_t.h"
 #include "common_utils_t.h"
+#include "symbols_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fctl_si_modrm_encoder,
@@ -49,6 +50,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fcml_si_env,
 	&fcml_si_ceh,
 	&fcml_si_common_utils,
+	&fctl_si_symbols,
 	FCML_STF_NULL_SUITE
 };
 

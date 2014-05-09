@@ -26,7 +26,9 @@ fcml_internal_check_SOURCES = main.c \
 	ceh_t.c \
 	ceh_t.h \
 	common_utils_t.c \
-	common_utils_t.h
+	common_utils_t.h \
+	symbols_t.h \
+	symbols_t.c
 
 # Include all tested units directly to the executable. 
 

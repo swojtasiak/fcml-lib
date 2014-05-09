@@ -52,7 +52,7 @@ typedef struct fcml_st_symbol {
  * are added using fcml_fn_symbol_add() function.
  * @return Allocated symbol or NULL if allocation failed.
  */
-LIB_EXPORT fcml_st_symbol* LIB_CALL fcml_fn_symbol_alloc();
+LIB_EXPORT fcml_st_symbol* LIB_CALL fcml_fn_symbol_alloc( fcml_string symbol, fcml_int64_t value );
 
 /**
  * Frees symbol allocated by FCML library.

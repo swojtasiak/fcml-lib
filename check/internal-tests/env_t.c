@@ -65,10 +65,10 @@ fcml_bool fcml_tf_env_suite_cleanup(void) {
 }
 
 void fcml_fn_env_test_memory_alloc(void) {
-	fcml_st_symbol *symbol = (fcml_st_symbol*)fcml_fn_symbol_alloc();
+	fcml_st_symbol *symbol = (fcml_st_symbol*)fcml_fn_symbol_alloc( "TEST", 1 );
 	STF_ASSERT_PTR_NOT_NULL( symbol );
 	if( symbol ) {
-		STF_ASSERT_EQUAL( counter, 1 );
+		STF_ASSERT_EQUAL( counter, 2 ); // symbol+symbol_name string
 		fcml_fn_symbol_free( symbol );
 		STF_ASSERT_EQUAL( counter, 0 );
 	}
