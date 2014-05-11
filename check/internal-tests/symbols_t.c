@@ -38,8 +38,9 @@ void fcml_tf_symbols_alloc() {
 		fcml_st_symbol *symbol = fcml_fn_symbol_alloc( "MAX_PATH", 256 );
 		STF_ASSERT_PTR_NOT_NULL( symbol );
 		if( symbol ) {
-			fcml_fn_symbol_free( symbol );
+			STF_ASSERT_EQUAL( fcml_fn_symbol_add( table, symbol ), FCML_CEH_GEC_NO_ERROR );
 		}
+		fcml_fn_symbol_table_free( table );
 	}
 }
 
