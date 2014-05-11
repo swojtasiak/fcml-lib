@@ -1782,7 +1782,7 @@ YY_RULE_SETUP
 #line 260 "fcml_gas_lexer.l"
 {
 					yylval->symbol.text = (fcml_string)yytext;
-					yylval->symbol.length = yyleng;
+					yylval->symbol.length = (fcml_usize)yyleng;
 					return FCML_TK_SYMBOL; 
 				}
 	YY_BREAK

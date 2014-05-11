@@ -327,7 +327,7 @@ st{WS}("("{WS}7{WS}")"|7)	FCML_FM_FPU_REG(FCML_REG_ST7)
  /* Identifiers. */
 [a-z_][0-9a-z_]*	{
 					yylval->symbol.text = (fcml_string)yytext;
-					yylval->symbol.length = yyleng;
+					yylval->symbol.length = (fcml_usize)yyleng;
 					return FCML_TK_SYMBOL; 
 				}
 

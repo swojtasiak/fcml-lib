@@ -259,7 +259,7 @@ fcml_fn_pu_parse_intege_flags
  /* Identifiers. */
 [a-z\._][0-9a-z\._]*	{
 					yylval->symbol.text = (fcml_string)yytext;
-					yylval->symbol.length = yyleng;
+					yylval->symbol.length = (fcml_usize)yyleng;
 					return FCML_TK_SYMBOL; 
 				}
 

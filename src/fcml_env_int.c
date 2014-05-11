@@ -131,7 +131,7 @@ void fcml_fn_env_str_strncpy( fcml_string dst, const fcml_string src, fcml_usize
 }
 
 fcml_string fcml_fn_env_str_strdup( const fcml_string str ) {
-	fcml_usize size = strlen( str ) + 1;
+	fcml_usize size = (fcml_usize)(strlen( str ) + 1);
 	fcml_string new_str = (fcml_string)fcml_fn_env_memory_alloc( size );
 	if( new_str ) {
 		memcpy( new_str, str, (fcml_usize)size );
