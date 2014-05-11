@@ -198,8 +198,8 @@ typedef float fcml_float;
 typedef void* fcml_ptr;
 typedef fcml_uint32_t fcml_flags;
 
-typedef unsigned int fcml_usize;
-typedef int fcml_size;
+typedef fcml_uint32_t fcml_usize;
+typedef fcml_int32_t  fcml_size;
 
 #define FCML_TRUE		1
 #define FCML_FALSE		0

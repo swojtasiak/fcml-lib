@@ -2,20 +2,19 @@
  * FCML - Free Code Manipulation Library.
  * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include <fcml_errors.h>
@@ -36,11 +35,11 @@ void intel_error( struct fcml_st_parser_data *pd, const char *error ) {
 }
 
 void *intel_alloc (yy_size_t size ,yyscan_t yyscanner ) {
-	return fcml_fn_env_memory_alloc( size );
+	return fcml_fn_env_memory_alloc( (fcml_usize)size );
 }
 
 void *intel_realloc (void *ptr,yy_size_t size,yyscan_t yyscanner ) {
-	return fcml_fn_env_memory_realloc( ptr, size );
+	return fcml_fn_env_memory_realloc( ptr, (fcml_usize)size );
 }
 
 void intel_free (void *ptr ,yyscan_t yyscanner ) {

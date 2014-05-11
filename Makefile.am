@@ -16,6 +16,9 @@ EXTRA_DIST = win32/vs2008/fcml/fcml-check/fcml-check.vcproj \
 	win32/vs2008/fcml/examples/hsdis/hsdis.cpp \
 	win32/vs2008/fcml/examples/hsdis/hsdis.def \
 	win32/vs2008/fcml/examples/hsdis/hsdis.h \
+	win32/vs2008/fcml/examples/hsdis/hsdis.aps \
+	win32/vs2008/fcml/examples/hsdis/hsdis.rc \
+	win32/vs2008/fcml/examples/hsdis/resource.h \
 	win32/vs2008/fcml/examples/hsdis/hsdis.vcproj \
 	win32/vs2008/fcml/examples/hsdis/stdafx.cpp \
 	win32/vs2008/fcml/examples/hsdis/stdafx.h \

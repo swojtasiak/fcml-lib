@@ -37,11 +37,11 @@ void gas_error( struct fcml_st_parser_data *pd, const char *error ) {
 }
 
 void *gas_alloc (yy_size_t size ,yyscan_t yyscanner ) {
-	return fcml_fn_env_memory_alloc( size );
+	return fcml_fn_env_memory_alloc( (fcml_usize)size );
 }
 
 void *gas_realloc (void *ptr,yy_size_t size,yyscan_t yyscanner ) {
-	return fcml_fn_env_memory_realloc( ptr, size );
+	return fcml_fn_env_memory_realloc( ptr, (fcml_usize)size );
 }
 
 void gas_free (void *ptr ,yyscan_t yyscanner ) {
