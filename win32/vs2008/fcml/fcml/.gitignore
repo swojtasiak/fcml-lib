@@ -2,3 +2,6 @@
 /Debug-lib
 /Release-dll
 /Release-lib
+/x64
+/*.aps
+/*.user

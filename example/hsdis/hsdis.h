@@ -20,7 +20,7 @@
 #ifndef FCML_HSDIS_H_
 #define FCML_HSDIS_H_
 
-#include <fcml/fcml_types.h>
+#include <fcml_types.h>
 
 #ifdef FCML_MSCC
 #ifdef HSDIS_EXPORTS

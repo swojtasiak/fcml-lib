@@ -19,10 +19,6 @@
 
 #include <fcml_types.h>
 
-#ifdef FCML_MSCC
-#include "stdafx.h"
-#endif
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

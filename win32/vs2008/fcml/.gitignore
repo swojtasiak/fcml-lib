@@ -3,4 +3,5 @@ fcml.ncb
 /Release-dll
 /Debug-lib
 /Debug-dll
+/x64
 fcml.suo

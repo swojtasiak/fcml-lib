@@ -1,5 +1,7 @@
 /Debug-lib
-/hsdis.*user
 /Release-lib
 /Release-dll
 /Debug-dll
+/x64
+/*.aps
+/*.user
