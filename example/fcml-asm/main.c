@@ -1,4 +1,4 @@
-/*
+/**
  * FCML - Free Code Manipulation Library.
  * Copyright (C) 2010-2014 Slawomir Wojtasiak
  *

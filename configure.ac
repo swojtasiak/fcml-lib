@@ -75,6 +75,7 @@ AC_CONFIG_FILES([Makefile
 				 example/Makefile
 				 example/fcml-disasm/Makefile
 				 example/fcml-asm/Makefile
+				 example/hsdis/Makefile
                  include/Makefile
                  docs/doxygen/Makefile])
 
