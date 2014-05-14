@@ -57,7 +57,7 @@ fcml_st_assembled_instruction *fcml_ifn_asm_allock_assembled_instruction( fcml_u
 		return NULL;
 	}
 
-	instruction->code = fcml_fn_env_memory_alloc_clear( size );
+	instruction->code = (fcml_uint8_t*)fcml_fn_env_memory_alloc_clear( size );
 	if( !instruction->code ) {
 		fcml_fn_env_memory_free( instruction );
 		return NULL;
@@ -122,7 +122,6 @@ fcml_ceh_error fcml_fn_asm_init_pseudo_operation_encodings( fcml_st_dialect_cont
 
 	fcml_st_dialect_pseudpo_operation_mnemonic *mnemonics_map = dialect->get_pseudo_operation_mnemonics();
 	if( mnemonics_map ) {
-		int i;
 		while( mnemonics_map->mnemonic ) {
 			fcml_ist_enc_pseudo_operation_desc *desc = fcml_ifn_asm_prepare_pseudo_operation_encoding( mnemonics_map->pseudo_operation );
 			if( desc ) {
