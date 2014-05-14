@@ -58,7 +58,11 @@ fcml_public_check_SOURCES = main.c \
 	chooser_t.c \
 	chooser_t.h \
 	render_t.h \
-	render_t.c
+	render_t.c \
+	disassembler_t.c \
+	disassembler_t.h \
+	assembler_t.c \
+	assembler_t.h
 	
 fcml_public_check_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/check/stf @FCML_IMPORT_LIB@
 

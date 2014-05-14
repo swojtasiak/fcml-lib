@@ -65,6 +65,10 @@ typedef struct fcml_st_disassembler_conf {
 	fcml_bool short_forms;
 	/** True if displacement should be sign extended to effective address size; otherwise false. */
 	fcml_bool extend_disp_to_asa;
+	/** If set to true assembler will return FCML_CEH_GEC_UNKNOWN_INSTRUCTION
+	 * error code if instruction is not known.
+	 */
+	fcml_bool fail_if_unknown_instruction;
 } fcml_st_disassembler_conf;
 
 /** Disassembler context. */
@@ -203,6 +207,8 @@ typedef struct fcml_st_instruction_details {
 	fcml_bool opcode_field_w_bit;
 	/** Instruction code/number. @see fcml_instructions.h header file. */
 	fcml_en_instruction instruction;
+	/** Pseudo operation code. */
+	fcml_en_pseudo_operations pseudo_op;
 	/** Code of the instruction form/addressing mode of the instruction above. */
 	fcml_uint16_t addr_mode;
 } fcml_st_instruction_details;

@@ -93,7 +93,7 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 	fcml_char buffer[FCML_REND_MAX_BUFF_LEN] = {0};
 
 	/* Current instruction pointer. */
-	uintptr_t ip = (uintptr_t) start;
+	fcml_ip ip = (fcml_ip) start;
 
 	intptr_t code_length = (intptr_t)end - (intptr_t)start;
 
@@ -148,7 +148,7 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 	fcml_st_render_config config = {0};
 	prepare_render_config( &config, &app ); 
 
-	while ( ip < (uintptr_t) end ) {
+	while ( ip < (fcml_ip) end ) {
 
 		context.code = (fcml_ptr)ip;
 		context.code_length = (fcml_usize)code_length;
@@ -180,7 +180,6 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 		/* End current instruction. */
 		(*event_callback)(event_stream, "/insn", (void*) ip);
 
-		/* follow each complete insn by a nice newline */
 		(*printf_callback)(printf_stream, "\n");
 
 		code_length -= code_len;

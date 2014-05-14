@@ -66,6 +66,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_ceh_error_container errors;
 	fcml_st_memory_stream *stream;
 	fcml_st_mp_mnemonic_set *mnemonics;
+	fcml_en_pseudo_operations pseudo_op;
 	fcml_en_instruction instruction;
 	fcml_uint16_t addr_mode;
 	fcml_usize effective_address_size_attribute;
@@ -1672,6 +1673,41 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 	return error;
 }
 
+
+fcml_ceh_error fcml_ifn_prepare_pseudo_operation( fcml_ist_dasm_decoding_context *context ) {
+
+	/* Seek to the beginning of the stream. */
+	fcml_int prefixes_count = context->prefixes.prefixes_count;
+	if( prefixes_count ) {
+		fcml_fn_stream_seek( context->stream, -prefixes_count, FCML_EN_ST_CURRENT );
+	}
+
+	/* Clean whole decoding context, because there might be
+	 * remains of the previous processing.
+	 */
+	fcml_fn_env_memory_clear( &(context->prefixes), sizeof( fcml_st_prefixes_details ) );
+
+	/* Get first instruction byte. */
+	fcml_bool result;
+	fcml_uint8_t po_byte = fcml_fn_stream_read( context->stream, &result );
+	if( !result ) {
+		return FCML_CEH_GEC_EOF;
+	}
+
+	context->pseudo_op = FP_DB;
+
+	/* Prepare operand with immediate value. */
+	fcml_st_operand *operand = &(context->operand_wrappers[0].operand);
+	operand->type = FCML_EOT_IMMEDIATE;
+	operand->immediate.int8 = po_byte;
+	operand->immediate.size = FCML_DS_8;
+
+	context->opcodes_count = 1;
+	context->calculated_instruction_size = 1;
+
+	return FCML_CEH_GEC_NO_ERROR;
+}
+
 fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context *context ) {
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1755,8 +1791,15 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
 		}
 
 	} else {
-		/* Unknown instruction.*/
-		error = FCML_CEH_GEC_UNKNOWN_INSTRUCTION;
+		if( !context->disassembler_context->configuration.fail_if_unknown_instruction ) {
+			error = fcml_ifn_prepare_pseudo_operation( context );
+			if( !error ) {
+				found = FCML_TRUE;
+			}
+		} else {
+			/* Unknown instruction.*/
+			error = FCML_CEH_GEC_UNKNOWN_INSTRUCTION;
+		}
 	}
 
 	if( !found ) {
@@ -2211,29 +2254,41 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 			l.value = instruction_details->prefixes_details.l;
 		}
 
-		/* Mnemonic.*/
-		fcml_bool shortform = decoding_context.disassembler_context->configuration.short_forms;
+		fcml_st_mp_mnemonic *mnemonic = NULL;
 
-		fcml_st_mp_config mp_config;
-		mp_config.effective_asa = decoding_context.effective_address_size_attribute;
-		mp_config.effective_osa = decoding_context.effective_operand_size_attribute;
-		mp_config.is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
-		mp_config.memory_data_size = memory_data_size;
-		mp_config.use_shortcut = shortform;
-		mp_config.pseudo_opcode = decoding_context.pseudo_opcode;
-		mp_config.suffix = decoding_context.suffix;
-		mp_config.l = l;
+		if( decoding_context.pseudo_op ) {
 
-		fcml_st_mp_mnemonic *mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, &mp_config );
-		if( mnemonic ) {
-			instruction_details->is_pseudo_op = mnemonic->pseudo_op.is_not_null;
-			instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
-			/* Render mnemonic using provided dialect.*/
-			instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_suffix );
+			/* Gets mnemonic for pseudo operation. */
+			instruction->mnemonic = int_disasm->dialect_context->get_pseudo_operation_mnemonic( decoding_context.pseudo_op );
+			instruction_details->pseudo_op = decoding_context.pseudo_op;
+
 		} else {
-			/* Mnemonic not found.*/
-			FCML_TRACE_MSG( "Can not choose mnemonic for disassembled instruction." );
-			return FCML_CEH_GEC_INTERNAL_ERROR;
+
+			/* Mnemonic for real assembler instruction. */
+			fcml_bool shortform = decoding_context.disassembler_context->configuration.short_forms;
+
+			fcml_st_mp_config mp_config;
+			mp_config.effective_asa = decoding_context.effective_address_size_attribute;
+			mp_config.effective_osa = decoding_context.effective_operand_size_attribute;
+			mp_config.is_memory = ( decoding_context.decoded_modrm.address.address_form != FCML_AF_UNDEFINED && !decoding_context.decoded_modrm.reg.is_not_null );
+			mp_config.memory_data_size = memory_data_size;
+			mp_config.use_shortcut = shortform;
+			mp_config.pseudo_opcode = decoding_context.pseudo_opcode;
+			mp_config.suffix = decoding_context.suffix;
+			mp_config.l = l;
+
+			mnemonic = fcml_fn_mp_choose_mnemonic( decoding_context.mnemonics, &mp_config );
+			if( mnemonic ) {
+				instruction_details->is_pseudo_op = mnemonic->pseudo_op.is_not_null;
+				instruction_details->is_shortcut = mnemonic->is_shortcut && shortform;
+				/* Render mnemonic using provided dialect.*/
+				instruction->mnemonic = int_disasm->dialect_context->render_mnemonic( mnemonic->mnemonic, decoding_context.is_conditional ? &(decoding_context.condition) : NULL, context->configuration.conditional_group, context->configuration.carry_flag_conditional_suffix );
+			} else {
+				/* Mnemonic not found.*/
+				FCML_TRACE_MSG( "Can not choose mnemonic for disassembled instruction." );
+				return FCML_CEH_GEC_INTERNAL_ERROR;
+			}
+
 		}
 
 		/* Clean operands for short forms.*/

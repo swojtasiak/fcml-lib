@@ -58,6 +58,8 @@
 #include "segment_reg_t.h"
 #include "chooser_t.h"
 #include "render_t.h"
+#include "disassembler_t.h"
+#include "assembler_t.h"
 
 #include "instructions_base_t.h"
 
@@ -90,6 +92,8 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fcml_si_chooser,
 	&fcml_si_prefixes,
 	&fcml_si_segment_reg,
+	&fcml_si_disassembler,
+	&fcml_si_assembler,
 	FCML_STF_NULL_SUITE
 };
 

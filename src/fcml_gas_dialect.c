@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 
+#include <fcml_instructions.h>
 #include <fcml_common.h>
 #include <fcml_dialect.h>
 #include <fcml_disassembler.h>
@@ -1461,6 +1462,27 @@ fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_s
     return FCML_CEH_GEC_NO_ERROR;
 }
 
+fcml_string fcml_ifn_asm_dialect_get_pseudo_operation_mnemonic_gas( fcml_en_pseudo_operations pseudo_operation ) {
+	fcml_string mnemonic = NULL;
+	switch( pseudo_operation ) {
+	case FP_DB:
+		mnemonic = fcml_fn_env_str_strdup( FCML_TEXT( "db" ) );
+		break;
+	default:
+		break;
+	}
+	return mnemonic;
+}
+
+fcml_st_dialect_pseudpo_operation_mnemonic fcml_iarr_dialect_pseudpo_operation_mnemonic_gas[] = {
+	{ ".byte", FP_DB },
+	{ NULL, FP_NO_PSEUDO_OP }
+};
+
+fcml_st_dialect_pseudpo_operation_mnemonic *fcml_ifn_asm_get_pseudo_operation_mnemonics_gas( void ) {
+	return &fcml_iarr_dialect_pseudpo_operation_mnemonic_gas[0];
+}
+
 fcml_ceh_error LIB_CALL fcml_fn_dialect_init_gas( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1475,6 +1497,8 @@ fcml_ceh_error LIB_CALL fcml_fn_dialect_init_gas( fcml_uint32_t config_flags, fc
 
     /* Prepares dialect instance.*/
     dialect_context_gas->get_mnemonic = &fcml_ifn_asm_dialect_get_mnemonic_gas;
+    dialect_context_gas->get_pseudo_operation_mnemonics = &fcml_ifn_asm_get_pseudo_operation_mnemonics_gas;
+    dialect_context_gas->get_pseudo_operation_mnemonic = &fcml_ifn_asm_dialect_get_pseudo_operation_mnemonic_gas;
     dialect_context_gas->get_parsed_mnemonics = &fcml_ifn_asm_dialect_get_parsed_mnemonics_gas;
     dialect_context_gas->render_mnemonic = &fcml_fn_cmn_dialect_render_mnemonic;
     dialect_context_gas->free_mnemonic = &fcml_fn_asm_dialect_free_mnemonic;

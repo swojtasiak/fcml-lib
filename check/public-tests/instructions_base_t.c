@@ -85,7 +85,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 
 	if( !(t_flags & FCML_TSF_ASM_ONLY) ) {
 
-		fcml_st_disassembler_context context;
+		fcml_st_disassembler_context context = {0};
 		context.configuration.enable_error_messages = FCML_TRUE;
 		context.configuration.short_forms = FCML_FALSE;
 		context.configuration.extend_disp_to_asa = FCML_TRUE;
@@ -93,6 +93,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		context.configuration.carry_flag_conditional_suffix = FCML_TRUE;
 		context.configuration.extend_disp_to_asa = FCML_TRUE;
 		context.configuration.increment_ip = FCML_FALSE;
+		context.configuration.fail_if_unknown_instruction = FCML_TRUE;
 		context.disassembler = disassembler;
 		context.entry_point.op_mode = op_mode;
 		context.entry_point.address_size_attribute = 0;

@@ -27,14 +27,140 @@
 #include "fcml_env_int.h"
 #include "fcml_utils.h"
 #include "fcml_trace.h"
+#include "fcml_coll.h"
 
 /** Initialized assembler instance. */
 typedef struct fcml_ist_asm_enc_assembler {
 	/** Map of supported instructions, with mnemonic as key and instructions addressing modes as values. */
-    fcml_coll_map instructions_map;
+	fcml_coll_map instructions_map;
+    /** Map of supported pseudo operations */
+	fcml_coll_map pseudo_operations_map;
     /** Dialect used to initialize assembler. */
     fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_enc_assembler;
+
+typedef fcml_ceh_error (*fcml_ifnp_encode_pseudo_operation)( const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
+
+typedef struct fcml_ist_enc_pseudo_operation_desc {
+	fcml_en_pseudo_operations pseudo_operation;
+	fcml_ifnp_encode_pseudo_operation pseudo_operation_encoder;
+} fcml_ist_enc_pseudo_operation_desc;
+
+/**********************
+ * Pseudo operations. *
+ **********************/
+
+fcml_st_assembled_instruction *fcml_ifn_asm_allock_assembled_instruction( fcml_usize size ) {
+
+	fcml_st_assembled_instruction *instruction = (fcml_st_assembled_instruction*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_assembled_instruction ) );
+	if( !instruction ) {
+		return NULL;
+	}
+
+	instruction->code = fcml_fn_env_memory_alloc_clear( size );
+	if( !instruction->code ) {
+		fcml_fn_env_memory_free( instruction );
+		return NULL;
+	}
+
+	instruction->code_length = size;
+
+	return instruction;
+}
+
+fcml_ceh_error fcml_ifp_encode_pseudo_operation_db_encoder( const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	if( instruction->operands_count == 1 && instruction->operands[0].type == FCML_EOT_IMMEDIATE ) {
+
+		fcml_uint8_t value;
+		error = fcml_fn_utils_convert_integer_to_uint8( &(instruction->operands[0].immediate), &value );
+		if( error ) {
+			return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
+		}
+
+		result->instructions = fcml_ifn_asm_allock_assembled_instruction( 1 );
+		if( !result->instructions ) {
+			return FCML_CEH_GEC_OUT_OF_MEMORY;
+		}
+
+		result->instructions->code[0] = value;
+
+	} else {
+		error = FCML_CEH_GEC_INVALID_OPPERAND;
+	}
+
+	return error;
+
+}
+
+fcml_ist_enc_pseudo_operation_desc fcml_iarr_supported_pseudo_operations[] = {
+	{ FP_DB, &fcml_ifp_encode_pseudo_operation_db_encoder },
+	{ FP_NO_PSEUDO_OP, NULL }
+};
+
+fcml_ist_enc_pseudo_operation_desc *fcml_ifn_asm_prepare_pseudo_operation_encoding( fcml_en_pseudo_operations pseudo_operation ) {
+	fcml_ist_enc_pseudo_operation_desc *desc = fcml_iarr_supported_pseudo_operations;
+	while( desc->pseudo_operation != FP_NO_PSEUDO_OP ) {
+		if( desc->pseudo_operation == pseudo_operation ) {
+			return desc;
+		}
+	}
+	return NULL;
+}
+
+fcml_ceh_error fcml_fn_asm_init_pseudo_operation_encodings( fcml_st_dialect_context_int *dialect, fcml_coll_map *pseudo_operations_map ) {
+
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+	fcml_int map_error;
+	fcml_coll_map po_map = fcml_fn_coll_map_alloc( &fcml_coll_map_descriptor_string, 10, &map_error );
+	if( map_error ) {
+		return fcml_fn_utils_convert_map_error( map_error );
+	}
+
+	fcml_st_dialect_pseudpo_operation_mnemonic *mnemonics_map = dialect->get_pseudo_operation_mnemonics();
+	if( mnemonics_map ) {
+		int i;
+		while( mnemonics_map->mnemonic ) {
+			fcml_ist_enc_pseudo_operation_desc *desc = fcml_ifn_asm_prepare_pseudo_operation_encoding( mnemonics_map->pseudo_operation );
+			if( desc ) {
+				fcml_fn_coll_map_put( po_map, mnemonics_map->mnemonic, desc, &map_error );
+				if( map_error ) {
+					fcml_fn_coll_map_free( po_map );
+					return fcml_fn_utils_convert_map_error( map_error );
+				}
+			} else {
+				FCML_TRACE( "Unsupported pseudo operation code: %d.", mnemonics_map->pseudo_operation );
+			}
+			mnemonics_map++;
+		}
+	}
+
+	*pseudo_operations_map = po_map;
+
+	return error;
+}
+
+fcml_ceh_error fcml_fn_asm_handle_pseudo_operations( fcml_st_assembler_context *asm_context, fcml_coll_map pseudo_operations_map, const fcml_st_instruction *instruction, fcml_st_assembler_result *result ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+	fcml_ist_enc_pseudo_operation_desc *desc = (fcml_ist_enc_pseudo_operation_desc*)fcml_fn_coll_map_get( pseudo_operations_map, instruction->mnemonic );
+	if( desc ) {
+		error = desc->pseudo_operation_encoder( instruction, result );
+		if( !error ) {
+			result->chosen_instruction = result->instructions;
+			result->number_of_instructions = 1;
+		}
+	} else {
+		error = FCML_CEH_GEC_UNKNOWN_MNEMONIC;
+	}
+	return error;
+}
+
+/*****************************
+ * Assembler initialization. *
+ *****************************/
 
 fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *dialect, fcml_st_assembler **assembler ) {
 
@@ -44,8 +170,17 @@ fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *dialect, fcml_s
 		return FCML_CEH_GEC_OUT_OF_MEMORY;
 	}
 
+	/* Initializes classic processor instructions encoding. */
 	fcml_ceh_error error = fcml_fn_asm_init_instruction_encodings( (fcml_st_dialect_context_int*)dialect, &(enc_asm->instructions_map) );
 	if( error ) {
+		fcml_fn_env_memory_free( enc_asm );
+		return error;
+	}
+
+	/* Initialize pseudo operations encoding. */
+	error = fcml_fn_asm_init_pseudo_operation_encodings( (fcml_st_dialect_context_int*)dialect, &(enc_asm->pseudo_operations_map) );
+	if( error ) {
+		fcml_fn_asm_free_instruction_encodings( enc_asm->instructions_map );
 		fcml_fn_env_memory_free( enc_asm );
 		return error;
 	}
@@ -121,7 +256,7 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 	// Sanity check.
-	if( !result || !instruction || !asm_context ) {
+	if( !result || !instruction || !instruction->mnemonic || !asm_context ) {
 		return FCML_CEH_GEC_INVALID_INPUT;
 	}
 
@@ -148,7 +283,11 @@ fcml_ceh_error fcml_ifn_assemble_core( fcml_st_assembler_context *asm_context, c
 	fcml_st_asm_instruction_addr_modes *addr_modes = NULL;
 	error = fcml_fn_asm_get_instruction_encodings( enc_asm->instructions_map, tmp_instruction.mnemonic, &addr_modes );
 	if( error ) {
-		return error;
+		if( error == FCML_CEH_GEC_UNKNOWN_MNEMONIC ) {
+			return fcml_fn_asm_handle_pseudo_operations( asm_context, enc_asm->pseudo_operations_map, instruction, result );
+		} else {
+			return error;
+		}
 	}
 
 	/* Execute instruction encoder. */
@@ -216,6 +355,11 @@ void LIB_CALL fcml_fn_assembler_free( fcml_st_assembler *assembler ) {
 
 		if( enc_asm->instructions_map ) {
 			fcml_fn_asm_free_instruction_encodings( enc_asm->instructions_map );
+		}
+
+		/* Frees pseudo operations encoding. */
+		if( enc_asm->pseudo_operations_map ) {
+			fcml_fn_coll_map_free( enc_asm->pseudo_operations_map );
 		}
 
 		/* Assembler is not the owner of the dialect context. */

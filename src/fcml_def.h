@@ -135,9 +135,9 @@ typedef struct fcml_st_def_instruction_desc {
     fcml_string mnemonic;
     /* Type of the instruction.*/
     fcml_en_def_instruction_type instruction_type;
-    /* Number of opcodes' descriptions.*/
+    /* Number of opcodes descriptions.*/
     fcml_uint8_t opcode_desc_count;
-    /* Opcodes' descriptions.*/
+    /* Opcodes descriptions.*/
     fcml_st_def_addr_mode_desc *addr_modes;
 } fcml_st_def_instruction_desc;
 

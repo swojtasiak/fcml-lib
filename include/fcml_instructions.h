@@ -1228,4 +1228,19 @@ typedef enum fcml_en_instruction {
 
 /** @} */
 
+/**
+ * @defgroup PSEUDO_OPERATIONS_GROUP Supported pseudo operations.
+ * @{
+ */
+
+/** Pseudo operations. */
+typedef enum fcml_en_pseudo_operations {
+	/** Set if there is no pseudo operation. */
+	FP_NO_PSEUDO_OP,
+	/** db / .byte */
+	FP_DB
+} fcml_en_pseudo_operations;
+
+/** @} */
+
 #endif /* FCML_INSTRUCTIONS_H_ */
