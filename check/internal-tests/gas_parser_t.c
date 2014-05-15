@@ -288,7 +288,7 @@ void fcml_tf_parser_gas_parse_test_symbols_1(void) {
 	fcml_fn_parser_result_prepare( &result );
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	context.ip = 0x401000;
 
@@ -317,8 +317,8 @@ void fcml_tf_parser_gas_parse_test_symbols_2(void) {
 	fcml_fn_parser_result_prepare( &result );
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
-	context.config.override_labels = FCML_FALSE;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.override_labels = FCML_FALSE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 	context.ip = 0x401000;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -344,8 +344,8 @@ void fcml_tf_parser_gas_parse_test_symbols_3(void) {
 
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
-	context.config.override_labels = FCML_FALSE;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.override_labels = FCML_FALSE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 	context.ip = 0x401000;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -368,7 +368,7 @@ void fcml_tf_parser_gas_parse_test_symbols_3(void) {
 		STF_ASSERT_STRING_EQUAL( error->message, FCML_TEXT( "Symbol already defined: label." ) );
 	}
 
-	context.config.override_labels = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: add %eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
@@ -391,7 +391,7 @@ void fcml_tf_parser_gas_parse_test_symbols_4(void) {
 	fcml_fn_parser_result_prepare( &result );
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 	context.ip = 0x401000;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax, symbol" ), &result ), FCML_CEH_GEC_UNDEFINED_SYMBOL );
@@ -417,9 +417,9 @@ void fcml_tf_parser_gas_parse_test_symbols_5(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
 	context.ip = 0x401000;
-	context.config.ignore_undefined_symbols = FCML_TRUE;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
-	context.config.override_labels = FCML_TRUE;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax, $symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
@@ -456,9 +456,9 @@ void fcml_tf_parser_gas_parse_test_symbols_6(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_gas;
 	context.ip = 0x401000;
-	context.config.ignore_undefined_symbols = FCML_TRUE;
-	context.config.override_labels = FCML_TRUE;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov %eax, $label" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
@@ -476,6 +476,56 @@ void fcml_tf_parser_gas_parse_test_symbols_6(void) {
 	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
+
+/* Pseudo operations operands parsing. */
+void fcml_tf_parser_gas_parse_test_pseudo_operation_1(void) {
+
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_gas;
+	context.ip = 0x401000;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: .byte 0x12" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+
+	if( result.instruction ) {
+		fcml_st_instruction *instruction = result.instruction;
+		STF_ASSERT_STRING_EQUAL( ".byte", result.instruction->mnemonic );
+		STF_ASSERT_EQUAL( 1, instruction->operands_count );
+		STF_ASSERT_EQUAL( instruction->operands[0].type, FCML_EOT_IMMEDIATE );
+		STF_ASSERT_EQUAL( instruction->operands[0].immediate.size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( instruction->operands[0].immediate.int8, 0x12 );
+		STF_ASSERT_EQUAL( instruction->operands[0].immediate.is_signed, FCML_FALSE );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_symbol_table_free( context.symbol_table );
+}
+
+/* Pseudo operations operands parsing. */
+void fcml_tf_parser_gas_parse_test_pseudo_operation_2(void) {
+
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_gas;
+	context.ip = 0x401000;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: .byte %rax" ), &result ), FCML_CEH_GEC_INVALID_INPUT );
+	STF_ASSERT_PTR_NULL( result.instruction );
+	STF_ASSERT_PTR_NULL( result.symbol );
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_symbol_table_free( context.symbol_table );
+}
 
 fcml_stf_test_case fcml_ti_parser_gas[] = {
 	{ "fcml_tf_parser_gas_parse_test1", fcml_tf_parser_gas_parse_test1 },
@@ -496,6 +546,8 @@ fcml_stf_test_case fcml_ti_parser_gas[] = {
 	{ "fcml_tf_parser_gas_parse_test_symbols_4", fcml_tf_parser_gas_parse_test_symbols_4 },
 	{ "fcml_tf_parser_gas_parse_test_symbols_5", fcml_tf_parser_gas_parse_test_symbols_5 },
 	{ "fcml_tf_parser_gas_parse_test_symbols_6", fcml_tf_parser_gas_parse_test_symbols_6 },
+	{ "fcml_tf_parser_gas_parse_test_pseudo_operation_1", fcml_tf_parser_gas_parse_test_pseudo_operation_1 },
+	{ "fcml_tf_parser_gas_parse_test_pseudo_operation_2", fcml_tf_parser_gas_parse_test_pseudo_operation_2 },
 	FCML_STF_NULL_TEST
 };
 

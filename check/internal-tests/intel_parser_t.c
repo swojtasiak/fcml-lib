@@ -540,7 +540,7 @@ void fcml_tf_parser_int_parse_test_symbols_1(void) {
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
 	context.symbol_table = NULL;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label:" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NULL( result.instruction );
@@ -564,8 +564,8 @@ void fcml_tf_parser_int_parse_test_symbols_2(void) {
 	fcml_fn_parser_result_prepare( &result );
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
-	context.config.override_labels = FCML_FALSE;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.override_labels = FCML_FALSE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 	context.ip = 0x401000;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
@@ -587,9 +587,9 @@ void fcml_tf_parser_int_parse_test_symbols_3(void) {
 
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
-	context.config.override_labels = FCML_FALSE;
+	context.configuration.override_labels = FCML_FALSE;
 	context.ip = 0x401000;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
@@ -608,7 +608,7 @@ void fcml_tf_parser_int_parse_test_symbols_3(void) {
 		STF_ASSERT_STRING_EQUAL( error->message, FCML_TEXT( "Symbol already defined: label." ) );
 	}
 
-	context.config.override_labels = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: add eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
@@ -629,7 +629,7 @@ void fcml_tf_parser_int_parse_test_symbols_4(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax, symbol" ), &result ), FCML_CEH_GEC_UNDEFINED_SYMBOL );
 	STF_ASSERT_PTR_NULL( result.instruction );
@@ -654,9 +654,9 @@ void fcml_tf_parser_int_parse_test_symbols_5(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
-	context.config.ignore_undefined_symbols = FCML_TRUE;
-	context.config.override_labels = FCML_TRUE;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax, symbol" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
@@ -682,9 +682,9 @@ void fcml_tf_parser_int_parse_test_symbols_6(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
-	context.config.ignore_undefined_symbols = FCML_TRUE;
-	context.config.override_labels = FCML_TRUE;
-	context.config.alloc_symbol_table_if_needed = FCML_TRUE;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax, label" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
@@ -711,8 +711,8 @@ void fcml_tf_parser_int_parse_test_symbols_7(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
-	context.config.ignore_undefined_symbols = FCML_TRUE;
-	context.config.override_labels = FCML_TRUE;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
 	context.symbol_table = fcml_fn_symbol_table_alloc();
 	if( !context.symbol_table ) {
 		STF_FAIL("Out of memory.");
@@ -749,8 +749,8 @@ void fcml_tf_parser_int_parse_test_symbols_8(void) {
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
-	context.config.ignore_undefined_symbols = FCML_TRUE;
-	context.config.override_labels = FCML_TRUE;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
 	context.symbol_table = fcml_fn_symbol_table_alloc();
 	if( !context.symbol_table ) {
 		STF_FAIL("Out of memory.");
@@ -792,7 +792,7 @@ void fcml_tf_parser_int_parse_test_symbols_9(void) {
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
 	context.symbol_table = NULL;
-	context.config.disable_symbols_declaration = FCML_TRUE;
+	context.configuration.disable_symbols_declaration = FCML_TRUE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label:" ), &result ), FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION );
 	STF_ASSERT_PTR_NULL( result.instruction );
@@ -811,8 +811,8 @@ void fcml_tf_parser_int_parse_test_symbols_10(void) {
 	context.dialect = internal_dialect_intel;
 	context.ip = 0x401000;
 	context.symbol_table = NULL;
-	context.config.disable_symbols_declaration = FCML_FALSE;
-	context.config.alloc_symbol_table_if_needed = FCML_FALSE;
+	context.configuration.disable_symbols_declaration = FCML_FALSE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_FALSE;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax, 1" ), &result ), FCML_CEH_GEC_NO_ERROR );
 	STF_ASSERT_PTR_NOT_NULL( result.instruction );
@@ -831,8 +831,8 @@ void fcml_tf_parser_int_parse_test_symbols_11(void) {
 	fcml_fn_parser_result_prepare( &result );
 	fcml_st_parser_context context = {0};
 	context.dialect = internal_dialect_intel;
-	context.config.override_labels = FCML_FALSE;
-	context.config.alloc_symbol_table_if_needed = FCML_FALSE;
+	context.configuration.override_labels = FCML_FALSE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_FALSE;
 	context.ip = 0x401000;
 
 	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: mov eax,1" ), &result ), FCML_CEH_GEC_NO_ERROR );

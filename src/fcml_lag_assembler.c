@@ -282,10 +282,10 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 	 * the longest one.
 	 */
 	fcml_st_parser_context parser_context = {0};
-	parser_context.config.ignore_undefined_symbols = FCML_TRUE;
-	parser_context.config.override_labels = FCML_FALSE;
-	parser_context.config.disable_symbols_declaration = FCML_FALSE;
-	parser_context.config.alloc_symbol_table_if_needed = FCML_FALSE;
+	parser_context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	parser_context.configuration.override_labels = FCML_FALSE;
+	parser_context.configuration.disable_symbols_declaration = FCML_FALSE;
+	parser_context.configuration.alloc_symbol_table_if_needed = FCML_FALSE;
 	parser_context.ip = assembler_context->entry_point.ip;
 	parser_context.dialect = fcml_fn_assembler_extract_dialect( assembler_context->assembler );
 

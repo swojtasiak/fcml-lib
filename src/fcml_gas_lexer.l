@@ -255,6 +255,13 @@ fcml_fn_pu_parse_intege_flags
 					yylval->hints = FCML_PREFIX_NOBRANCH_HINT;
 					return FCML_TK_PREFIX;
 				}
+
+ /* Identifiers. */
+".byte"         {
+                    yylval->symbol.text = (fcml_string)yytext;
+                    yylval->symbol.length = (fcml_usize)yyleng;
+                    return FCML_TK_PO_BYTE; 
+                }
 				
  /* Identifiers. */
 [a-z\._][0-9a-z\._]*	{

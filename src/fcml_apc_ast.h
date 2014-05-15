@@ -153,6 +153,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_integer( fcml_st_ast_val_integer *integ
 fcml_st_ast_node *fcml_fn_ast_alloc_node_float( fcml_st_ast_val_float *float_value );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list( fcml_st_ast_node *operand_l, fcml_st_ast_node *operand_r );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fcml_string mnemonic, fcml_usize length, fcml_hints hints, fcml_st_ast_node *operand_list );
+fcml_st_ast_node *fcml_fn_ast_alloc_node_pseudo_operation( fcml_string mnemonic, fcml_usize length, fcml_st_ast_node *exp );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register( fcml_st_register *reg );
 fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol( fcml_ip ip, fcml_string symbol, fcml_usize length );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol( fcml_string symbol_name, fcml_usize length );

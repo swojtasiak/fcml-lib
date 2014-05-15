@@ -76,6 +76,22 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_float( fcml_st_ast_val_float *float_val
 	return node;
 }
 
+fcml_st_ast_node *fcml_fn_ast_alloc_node_pseudo_operation( fcml_string mnemonic, fcml_usize length, fcml_st_ast_node *exp ) {
+
+	fcml_st_ast_node *operand_list = fcml_fn_ast_alloc_node_operand_list( exp, NULL );
+	if( !operand_list ) {
+		return NULL;
+	}
+
+	fcml_st_ast_node *pseudo_operation = fcml_fn_ast_alloc_node_instruction( 0, mnemonic, length, 0, operand_list );
+	if( !pseudo_operation ) {
+		fcml_fn_ast_free_node( operand_list );
+		return NULL;
+	}
+
+	return pseudo_operation;
+}
+
 fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fcml_string mnemonic, fcml_usize length, fcml_hints hints, fcml_st_ast_node *operands_list ) {
 
 	fcml_st_ast_node *node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear( sizeof( fcml_st_ast_node ) );

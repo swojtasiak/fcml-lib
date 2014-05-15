@@ -66,6 +66,9 @@ typedef struct fcml_st_parser_config {
 	 * every time it should be deallocated.
 	 */
 	fcml_bool alloc_symbol_table_if_needed;
+	// TODO: Dodać do konfiguracji.
+	/** Enables textual error messages. */
+	fcml_bool enable_error_messages;
 } fcml_st_parser_config;
 
 /** Parser runtime context. */
@@ -73,7 +76,7 @@ typedef struct fcml_st_parser_context {
 	/** Dialect to be used by parser. Defines supported instructions syntax. */
 	fcml_st_dialect *dialect;
 	/** Parser configuration. */
-	fcml_st_parser_config config;
+	fcml_st_parser_config configuration;
 	/** Instruction pointer. RIP/EIP register value used as a value for newly declared symbols.
 	 * This value is never changed by the parser.
 	 */

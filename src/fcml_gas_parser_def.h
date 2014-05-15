@@ -57,7 +57,8 @@ extern int gas_debug;
      FCML_TK_INTEGER = 266,
      FCML_TK_SYMBOL = 267,
      FCML_TK_PREFIX = 268,
-     FCML_OP_UMINUS = 269
+     FCML_TK_PO_BYTE = 269,
+     FCML_OP_UMINUS = 270
    };
 #endif
 /* Tokens.  */
@@ -72,7 +73,8 @@ extern int gas_debug;
 #define FCML_TK_INTEGER 266
 #define FCML_TK_SYMBOL 267
 #define FCML_TK_PREFIX 268
-#define FCML_OP_UMINUS 269
+#define FCML_TK_PO_BYTE 269
+#define FCML_OP_UMINUS 270
 
 
 
@@ -80,7 +82,7 @@ extern int gas_debug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 92 "fcml_gas_parser_def.y"
+#line 97 "fcml_gas_parser_def.y"
 
 	/*Complex values.*/
 	fcml_st_ast_val_integer integer_value;
@@ -95,7 +97,7 @@ typedef union YYSTYPE
 
 
 /* Line 2053 of yacc.c  */
-#line 99 "fcml_gas_parser_def.h"
+#line 101 "fcml_gas_parser_def.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

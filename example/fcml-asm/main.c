@@ -159,7 +159,7 @@ int main(int argc, char **argv) {
 	parser_context.dialect = dialect;
 	parser_context.ip = ip;
 	parser_context.symbol_table = NULL; /* We do not use symbols in case of one line assembler. */
-	parser_context.config.ignore_undefined_symbols = FCML_FALSE;
+	parser_context.configuration.ignore_undefined_symbols = FCML_FALSE;
 
 	/* Parse instruction mnemonic. */
 

@@ -30,15 +30,21 @@
 #include "fcml_parser_int.h"
 
 fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result_out ) {
+	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)context->dialect;
 	if( dialect_context_int->instruction_parser ) {
 		/* Call parser instance associated with given dialect. */
-		return fcml_fn_parse_to_cif( context, instruction, result_out );
+		error = fcml_fn_parse_to_cif( context, instruction, result_out );
 	} else {
 		/* Dialect not initialized correctly.*/
 		FCML_TRACE_MSG("Parsing not supported by current dialect.");
-		return FCML_CEH_GEC_FEATURE_NOT_SUPPORTED;
+		error = FCML_CEH_GEC_FEATURE_NOT_SUPPORTED;
 	}
+	if( error ) {
+		// Try to convert error code to error message if there is such need.
+		fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &(result_out->errors), error );
+	}
+	return error;
 }
 
 void LIB_CALL fcml_fn_parser_result_free( fcml_st_parser_result *result ) {

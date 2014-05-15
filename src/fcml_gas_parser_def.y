@@ -62,6 +62,10 @@
 /* Prefixes */
 %token <prefixes> FCML_TK_PREFIX
 
+/* Pseudo operations */
+
+%token <symbol> FCML_TK_PO_BYTE
+
 /*Non-terminal symbols.*/
 %type <reg_value> reg
 %type <reg_value> segment_selector
@@ -72,6 +76,7 @@
 %type <ast> effective_address
 %type <ast> effective_address_components_without_dis
 %type <ast> effective_address_components
+%type <ast> pseudo_operation
 %type <symbol> mnemonic
 %type <prefixes> inst_prefixes
 
@@ -115,9 +120,11 @@
 %%
 
 start: 
-| instruction { pd->tree = $1; pd->symbol = NULL; }
-| FCML_TK_SYMBOL ':' { pd->tree = NULL; pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, $1.text, $1.length ); HANDLE_ERRORS( pd->symbol ); }
-| FCML_TK_SYMBOL ':' instruction { pd->tree = $3; pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, $1.text, $1.length ); HANDLE_ERRORS( pd->symbol ); }
+| instruction                         { pd->tree = $1;   pd->symbol = NULL; }
+| pseudo_operation                    { pd->tree = $1;   pd->symbol = NULL; }
+| FCML_TK_SYMBOL ':'                  { pd->tree = NULL; pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, $1.text, $1.length ); HANDLE_ERRORS( pd->symbol ); }
+| FCML_TK_SYMBOL ':' instruction      { pd->tree = $3;   pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, $1.text, $1.length ); HANDLE_ERRORS( pd->symbol ); }
+| FCML_TK_SYMBOL ':' pseudo_operation { pd->tree = $3;   pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, $1.text, $1.length ); HANDLE_ERRORS( pd->symbol ); }
 ;
 
 instruction: mnemonic					{ $$ = fcml_fn_ast_alloc_node_instruction( 0, $1.text, $1.length, 0, NULL ); HANDLE_ERRORS($$); }
@@ -130,7 +137,7 @@ inst_prefixes: FCML_TK_PREFIX
 | inst_prefixes FCML_TK_PREFIX	{ if( $1 & $2 ) { ADD_ERROR_MSG( "Doubled prefixes." ); YYERROR; } else { $$ = $1 | $2; } }
 ;
 
-mnemonic: FCML_TK_SYMBOL 
+mnemonic: FCML_TK_SYMBOL
 ;
 
 operand_list: operand 			{ $$ = fcml_fn_ast_alloc_node_operand_list( $1, NULL ); HANDLE_ERRORS($$); }
@@ -183,6 +190,11 @@ reg: FCML_TK_REG_GPR
 | FCML_TK_REG_SEG
 | FCML_TK_REG_CR
 | FCML_TK_REG_DR
+;
+
+/* Pseudo operations. */
+
+pseudo_operation: FCML_TK_PO_BYTE exp { $$ = fcml_fn_ast_alloc_node_pseudo_operation( $1.text, $1.length, $2 ); HANDLE_ERRORS($$); } 
 ;
 
 %%

@@ -75,9 +75,9 @@ fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, fcml_strin
 	/* Symbol */
 	if( ast.symbol ) {
 
-		if( !context->config.disable_symbols_declaration ) {
+		if( !context->configuration.disable_symbols_declaration ) {
 
-			if( context->symbol_table || context->config.alloc_symbol_table_if_needed ) {
+			if( context->symbol_table || context->configuration.alloc_symbol_table_if_needed ) {
 
 				/* If there is no symbol table yet, allocate it. */
 				if( !context->symbol_table ) {
@@ -90,7 +90,7 @@ fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, fcml_strin
 					new_symbol_table = FCML_TRUE;
 				}
 
-				error = fcml_fn_parser_add_symbol_to_symbol_table( &(result->errors), context->symbol_table, ast.symbol, context->config.override_labels );
+				error = fcml_fn_parser_add_symbol_to_symbol_table( &(result->errors), context->symbol_table, ast.symbol, context->configuration.override_labels );
 				if( error ) {
 					fcml_fn_symbol_free( ast.symbol );
 					fcml_fn_ast_free_node( ast.tree );
@@ -131,7 +131,7 @@ fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, fcml_strin
 		fcml_st_cif_converter_context cif_ctx;
 		cif_ctx.errors = &(result->errors);
 		cif_ctx.symbol_table = context->symbol_table;
-		cif_ctx.ignore_undefined_symbols = context->config.ignore_undefined_symbols;
+		cif_ctx.ignore_undefined_symbols = context->configuration.ignore_undefined_symbols;
 
 		error = fcml_fn_ast_to_cif_converter( &cif_ctx, ast.tree, &(result->instruction) );
 		if( error ) {
