@@ -565,7 +565,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer( fcml_ist_dasm_decoding
 		far_pointer->offset32 = (fcml_int32_t)fcml_fn_stream_read_dword( context->stream, &result );
 		break;
 	default:
-		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_INVALID_OPERATING_MODE;
 		break;
 	}
 
@@ -643,7 +643,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset( fcml_ist_d
 		offset->off64 = fcml_fn_stream_read_qword( context->stream, &result );
 		break;
 	default:
-		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_INVALID_OPERATING_MODE;
 		break;
 	}
 

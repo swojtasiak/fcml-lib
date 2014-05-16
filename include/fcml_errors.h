@@ -54,8 +54,8 @@ enum fcml_en_ceh_error_globals {
 	FCML_CEH_GEC_VALUE_OUT_OF_RANGE = 6,
 	/** Chosen operation is not supported in case of given configuration. */
 	FCML_CEH_GEC_FEATURE_NOT_SUPPORTED = 7,
-	/** Unsupported addressing mode. For instance encoded instruction needs 16 bit addressing mode, but we are in 64 bit mode. */
-	FCML_CEH_GEC_INVALID_ADDRESSING_MODE = 8,
+	/** Unsupported operating mode. For instance encoded instruction needs 16 bit operating mode, but we are in 64 bit mode. */
+	FCML_CEH_GEC_INVALID_OPERATING_MODE = 8,
 	/** Chosen addressing form can not be encoded as for example ModR/M field. */
 	FCML_CEH_GEC_INVALID_ADDRESSING_FORM = 9,
 	/** Unsupported instruction form (Instruction may be supported, but not with given set of operands). */

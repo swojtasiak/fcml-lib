@@ -3170,9 +3170,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_addr_mode_acceptor( fcml_
 	fcml_en_operating_mode op_mode = context->assembler_context->entry_point.op_mode;
 
 	if( !FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( addr_mode_def->opcode_flags ) && op_mode == FCML_AF_64_BIT ) {
-		return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+		return FCML_CEH_GEC_INVALID_OPERATING_MODE;
 	} else if ( !FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( addr_mode_def->opcode_flags ) && ( op_mode == FCML_AF_16_BIT || op_mode == FCML_AF_32_BIT ) ) {
-		return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+		return FCML_CEH_GEC_INVALID_OPERATING_MODE;
 	}
 
 	/* Set restrictions if there are any.*/

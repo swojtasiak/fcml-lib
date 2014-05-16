@@ -844,6 +844,37 @@ void fcml_tf_parser_int_parse_test_symbols_11(void) {
 	fcml_fn_parser_result_free( &result );
 }
 
+
+/* Pseudo operations operands parsing. */
+void fcml_tf_parser_intel_parse_test_pseudo_operation_1(void) {
+
+	fcml_st_parser_result result;
+	fcml_fn_parser_result_prepare( &result );
+	fcml_st_parser_context context = {0};
+	context.dialect = internal_dialect_intel;
+	context.ip = 0x401000;
+	context.configuration.ignore_undefined_symbols = FCML_TRUE;
+	context.configuration.override_labels = FCML_TRUE;
+	context.configuration.alloc_symbol_table_if_needed = FCML_TRUE;
+
+	STF_ASSERT_EQUAL( fcml_fn_parse( &context, FCML_TEXT( "label: db 0x12" ), &result ), FCML_CEH_GEC_NO_ERROR );
+	STF_ASSERT_PTR_NOT_NULL( result.instruction );
+	STF_ASSERT_PTR_NOT_NULL( result.symbol );
+
+	if( result.instruction ) {
+		fcml_st_instruction *instruction = result.instruction;
+		STF_ASSERT_STRING_EQUAL( "db", result.instruction->mnemonic );
+		STF_ASSERT_EQUAL( 1, instruction->operands_count );
+		STF_ASSERT_EQUAL( instruction->operands[0].type, FCML_EOT_IMMEDIATE );
+		STF_ASSERT_EQUAL( instruction->operands[0].immediate.size, FCML_DS_8 );
+		STF_ASSERT_EQUAL( instruction->operands[0].immediate.int8, 0x12 );
+		STF_ASSERT_EQUAL( instruction->operands[0].immediate.is_signed, FCML_FALSE );
+	}
+
+	fcml_fn_parser_result_free( &result );
+	fcml_fn_symbol_table_free( context.symbol_table );
+}
+
 fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test1", fcml_tf_parser_int_parse_test1 },
 	{ "fcml_tf_parser_int_parse_test2", fcml_tf_parser_int_parse_test2 },
@@ -888,6 +919,7 @@ fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test_symbols_9", fcml_tf_parser_int_parse_test_symbols_9 },
 	{ "fcml_tf_parser_int_parse_test_symbols_10", fcml_tf_parser_int_parse_test_symbols_10 },
 	{ "fcml_tf_parser_int_parse_test_symbols_11", fcml_tf_parser_int_parse_test_symbols_11 },
+	{ "fcml_tf_parser_intel_parse_test_pseudo_operation_1", fcml_tf_parser_intel_parse_test_pseudo_operation_1 },
 	FCML_STF_NULL_TEST
 };
 

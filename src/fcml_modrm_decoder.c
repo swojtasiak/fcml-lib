@@ -319,7 +319,7 @@ fcml_ceh_error fcml_fn_modrm_decode( fcml_st_modrm_decoder_context *context, fcm
 		error = fcml_ifn_modrm_decode_3264bit( context, modrm_source, decoded_modrm, modrm_details, flags );
 	} else {
 		/* Unknown addressing mode.*/
-		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_INVALID_OPERATING_MODE;
 	}
 	return error;
 }

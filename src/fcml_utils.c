@@ -662,7 +662,7 @@ fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point ) {
 
 	/* Mode has to be set. */
 	if( entry_point->op_mode != FCML_AF_16_BIT && entry_point->op_mode != FCML_AF_32_BIT && entry_point->op_mode != FCML_AF_64_BIT ) {
-		return FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+		return FCML_CEH_GEC_INVALID_OPERATING_MODE;
 	}
 
 	/* 16 bit address size attribute is not supported in 64bit mode. */

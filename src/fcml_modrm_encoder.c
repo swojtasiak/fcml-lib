@@ -552,7 +552,7 @@ fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, con
 		error = fcml_ifn_modrm_encode_3264bit( context, decoded_modrm, encoded_modrm );
 	} else {
 		/* Unknown addressing mode.*/
-		error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+		error = FCML_CEH_GEC_INVALID_OPERATING_MODE;
 	}
 	return error;
 }
@@ -612,7 +612,7 @@ fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_mod
 			easa = FCML_EN_ASF_32 | FCML_EN_ASF_64;
 			break;
 		default:
-			error = FCML_CEH_GEC_INVALID_ADDRESSING_MODE;
+			error = FCML_CEH_GEC_INVALID_OPERATING_MODE;
 			break;
 		}
 	} else  {

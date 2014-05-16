@@ -476,7 +476,6 @@ void fcml_tf_parser_gas_parse_test_symbols_6(void) {
 	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
-
 /* Pseudo operations operands parsing. */
 void fcml_tf_parser_gas_parse_test_pseudo_operation_1(void) {
 
