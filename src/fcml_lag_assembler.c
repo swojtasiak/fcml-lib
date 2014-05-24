@@ -332,10 +332,10 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 				break;
 			}
 
-			/* There is symbol definition, so store it in symbol table. */
+			/* There is a symbol definition, so store it in the symbol table. */
 			if( ast->symbol ) {
 
-				/* Check if symbol is already defined. */
+				/* Check if the symbol is already defined. */
 				if( fcml_fn_symbol_get( context->symbol_table, ast->symbol->symbol ) ) {
 					fcml_fn_msg_add_error_message( &(processing_ctx->error_details.errors), FCML_MC_SEGMENT_SYMBOL_ALREADY_DEFINED,
 							FCML_CEH_MEC_ERROR_SYMBOL_ALREADY_DEFINED, FCML_EN_CEH_EL_ERROR, ast->symbol->symbol );
@@ -542,6 +542,8 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n( fcml_st_lag_assembler_context
 
 				error = fcml_fn_assemble( assembler_context, cif_instruction, &assembler_result );
 				if( error ) {
+					/* Copy potential error messages. */
+					fcml_fn_ceh_move_errors( &(processing_ctx->error_details.errors ), &(assembler_result.errors) );
 					fcml_fn_ast_free_converted_cif( cif_instruction );
 					break;
 				}
@@ -653,6 +655,11 @@ fcml_ceh_error LIB_CALL fcml_ifn_lag_assemble_core( fcml_st_lag_assembler_contex
 	/* Prepare result. */
 	if( !error ) {
 		fcml_ifn_lag_convert_instructions( &processing_ctx, result );
+	}
+
+	/* Copy line number in case of errors. */
+	if( error ) {
+		result->error_line = processing_ctx.error_details.line;
 	}
 
 	/* Free all assembled instructions. In case of error clean symbol table as well. */
