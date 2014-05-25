@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
 	}
 
 	if( error ) {
-		printf( "Can not initialize dialect, error: %d\n", error );
+		printf( "Can not initialize a dialect, error: %d\n", error );
 		exit(EXIT_FAILURE);
 	}
 
@@ -170,7 +170,7 @@ int main(int argc, char **argv) {
 	error = fcml_fn_parse( &parser_context, instruction, &parser_result );
 	if( error ) {
 		fcml_fn_dialect_free( dialect );
-		printf( "Can not parse instruction mnemonic, error: %d\n", error );
+		printf( "Can not parse the instruction mnemonic, error: %d\n", error );
 		print_error_msg( &(parser_result.errors) );
 		exit(EXIT_FAILURE);
 	}
@@ -183,7 +183,7 @@ int main(int argc, char **argv) {
 	if( error ) {
 		fcml_fn_parser_result_free( &parser_result );
 		fcml_fn_dialect_free( dialect );
-		printf( "Can not initialize assembler, error: %d\n", error );
+		printf( "Can not initialize the assembler, error: %d\n", error );
 		print_error_msg( &(parser_result.errors) );
 		exit(EXIT_FAILURE);
 	}
@@ -199,14 +199,14 @@ int main(int argc, char **argv) {
 		fcml_fn_assembler_free( assembler );
 		fcml_fn_parser_result_free( &parser_result );
 		fcml_fn_dialect_free( dialect );
-		printf( "Can not assemble instruction, error: %d\n", error );
+		printf( "Can not assemble the instruction, error: %d\n", error );
 		print_error_msg( &(parser_result.errors) );
 		exit(EXIT_FAILURE);
 	}
 
 	/* Print result. */
 
-	printf("Number of assembled instructions: %d\n", asm_result.number_of_instructions );
+	printf("Number of the assembled instructions: %d\n", asm_result.number_of_instructions );
 
 	fcml_st_assembled_instruction *assembled_instruction = asm_result.instructions;
 
@@ -227,7 +227,7 @@ int main(int argc, char **argv) {
 	}
 
 	if( chosen ) {
-		printf("Best instruction chosen by assembler: %d\n", chosen );
+		printf("Best instruction chosen by the assembler: %d\n", chosen );
 	}
 
 	fcml_fn_assembler_result_free( &asm_result );

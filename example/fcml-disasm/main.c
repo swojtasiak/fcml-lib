@@ -198,7 +198,7 @@ void print_address( fcml_st_address *address, fcml_bool is_rex ) {
 	if( address->address_form == FCML_AF_OFFSET ) {
 		printf("    Offset:\n" );
 		printf("     Size: %d\n", address->offset.size );
-		printf("     Signed: %d\n", get_boolean( address->offset.is_signed ) );
+		printf("     Signed: %s\n", get_boolean( address->offset.is_signed ) );
 		switch( address->offset.size ) {
 		case FCML_DS_16:
 			printf("     Value: 0x%04x\n", address->offset.off16 );
