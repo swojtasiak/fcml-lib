@@ -117,6 +117,9 @@
     <ClCompile Include="..\..\..\..\check\stf\fcml_stf.c">
       <Filter>stf</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\check\public-tests\general_usage_t.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\check\public-tests\assembler_t.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\check\stf\fcml_stf.h">
       <Filter>stf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\check\public-tests\general_usage_t.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

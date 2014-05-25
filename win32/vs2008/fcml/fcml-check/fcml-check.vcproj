@@ -609,6 +609,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\check\public-tests\general_usage_t.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\check\public-tests\general_usage_t.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\check\public-tests\hints_t.c"
 				>
 			</File>

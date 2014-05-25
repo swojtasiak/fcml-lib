@@ -280,6 +280,7 @@
     <ClCompile Include="..\..\..\..\check\public-tests\chooser_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\disassembler_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\error_handling_t.c" />
+    <ClCompile Include="..\..\..\..\check\public-tests\general_usage_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\hints_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\instructions_a_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\instructions_b_t.c" />
@@ -315,6 +316,7 @@
     <ClInclude Include="..\..\..\..\check\public-tests\chooser_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\disassembler_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\error_handling_t.h" />
+    <ClInclude Include="..\..\..\..\check\public-tests\general_usage_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\hints_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\instructions_a_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\instructions_b_t.h" />

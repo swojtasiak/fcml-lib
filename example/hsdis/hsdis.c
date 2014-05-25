@@ -36,11 +36,11 @@
 
 #if _M_X64 || __x86_64__
 #define MACH_ARCH	"amd64"
-#define ADDR_FORM	FCML_AF_64_BIT
+#define ADDR_FORM	FCML_OM_64_BIT
 /* 64-bit */
 #else
 #define MACH_ARCH	"i386"
-#define ADDR_FORM	FCML_AF_32_BIT
+#define ADDR_FORM	FCML_OM_32_BIT
 #endif
 
 char HELP[] = "Optional arguments:\n" \

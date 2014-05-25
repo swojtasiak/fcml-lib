@@ -68,6 +68,7 @@ EXPORTS
     fcml_fn_cu_operand_unsigned_imm_32
     fcml_fn_cu_operand_unsigned_imm_64
     fcml_fn_cu_operand_unsigned_imm_8
+    fcml_fn_cu_find_operand
     fcml_reg_AH
     fcml_reg_AL
     fcml_reg_AX
