@@ -36,7 +36,7 @@ fcml_bool fcml_tf_disassembler_suite_cleanup(void) {
 
 void fcml_tf_disassembler_no_instruction_found(void) {
 
-	fcml_int8_t code[] = { 0x48, 0x66, 0xFF, 0x57, 0x01 };
+	fcml_uint8_t code[] = { 0x48, 0x66, 0xFF, 0x57, 0x01 };
 
 	fcml_ceh_error error;
 

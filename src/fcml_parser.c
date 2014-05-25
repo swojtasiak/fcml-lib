@@ -28,6 +28,7 @@
 #include "fcml_env_int.h"
 #include "fcml_trace.h"
 #include "fcml_parser_int.h"
+#include "fcml_utils.h"
 
 fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result_out ) {
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
