@@ -60,6 +60,7 @@
 #include "render_t.h"
 #include "disassembler_t.h"
 #include "assembler_t.h"
+#include "general_usage_t.h"
 
 #include "instructions_base_t.h"
 
@@ -94,6 +95,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fcml_si_segment_reg,
 	&fcml_si_disassembler,
 	&fcml_si_assembler,
+	&fcml_si_general_usage,
 	FCML_STF_NULL_SUITE
 };
 

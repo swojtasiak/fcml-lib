@@ -72,7 +72,7 @@ fcml_ceh_error fcml_ifp_encode_pseudo_operation_db_encoder( const fcml_st_instru
 
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	if( instruction->operands_count == 1 && instruction->operands[0].type == FCML_EOT_IMMEDIATE ) {
+	if( instruction->operands_count == 1 && instruction->operands[0].type == FCML_OT_IMMEDIATE ) {
 
 		fcml_uint8_t value;
 		error = fcml_fn_utils_convert_integer_to_uint8( &(instruction->operands[0].immediate), &value );

@@ -357,19 +357,19 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		fcml_st_operand *operand = &(instruction->operands[i]);
 		printf("    Type: %s\n", operand_types[ operand->type ] );
 		switch( operand->type ) {
-		case FCML_EOT_IMMEDIATE: {
+		case FCML_OT_IMMEDIATE: {
 			print_immediate( &(operand->immediate) );
 			break;
 		}
-		case FCML_EOT_FAR_POINTER: {
+		case FCML_OT_FAR_POINTER: {
 			print_far_pointer( &(operand->far_pointer) );
 			break;
 		}
-		case FCML_EOT_ADDRESS: {
+		case FCML_OT_ADDRESS: {
 			print_address( &(operand->address), result->instruction_details.prefixes_details.is_rex );
 			break;
 		}
-		case FCML_EOT_REGISTER:
+		case FCML_OT_REGISTER:
 			printf( "    Register: %s (Type: %s, Size: %d)\n", get_register( &(operand->reg), result->instruction_details.prefixes_details.is_rex ), register_type[operand->reg.type], operand->reg.size );
 			break;
 		}
@@ -510,11 +510,11 @@ int main(int argc, char **argv) {
 	int i;
 	for( i = 1; i < argc; i++ ) {
 		if( strcmp( argv[i], "-m16" ) == 0 ) {
-			context.entry_point.op_mode = FCML_AF_16_BIT;
+			context.entry_point.op_mode = FCML_OM_16_BIT;
 		} else if( strcmp( argv[i], "-m32" ) == 0 ) {
-			context.entry_point.op_mode = FCML_AF_32_BIT;
+			context.entry_point.op_mode = FCML_OM_32_BIT;
 		} else if( strcmp( argv[i], "-m64" ) == 0 ) {
-			context.entry_point.op_mode = FCML_AF_64_BIT;
+			context.entry_point.op_mode = FCML_OM_64_BIT;
 		} else if( strcmp( argv[i], "-asa16" ) == 0 ) {
 			context.entry_point.address_size_attribute = FCML_DS_16;
 		} else if( strcmp( argv[i], "-asa32" ) == 0 ) {

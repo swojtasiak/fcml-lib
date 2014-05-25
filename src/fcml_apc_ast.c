@@ -948,7 +948,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_cif_converter_context *cont
 					/* Convert value to immediate operand.*/
 					error = fcml_ifn_ast_util_convert_value_to_immediate( &value, &(current_operand->immediate) );
 					if( !error ) {
-						current_operand->type = FCML_EOT_IMMEDIATE;
+						current_operand->type = FCML_OT_IMMEDIATE;
 					}
 				} else {
 					FCML_TRACE_MSG( "Operand is mandatory here." );
@@ -960,19 +960,19 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node( fcml_st_cif_converter_context *cont
 		case FCML_EN_TN_REG: {
 			fcml_st_ast_node_register *node_register = (fcml_st_ast_node_register*)ast_node->node;
 			current_operand->reg = node_register->reg;
-			current_operand->type = FCML_EOT_REGISTER;
+			current_operand->type = FCML_OT_REGISTER;
 			break;
 		}
 		case FCML_EN_TN_FAR_POINTER: {
 			fcml_st_ast_node_far_pointer *far_pointer_node = (fcml_st_ast_node_far_pointer*)ast_node->node;
 			error = fcml_ifn_ast_util_convert_far_pointer_node_to_operand( context, far_pointer_node, &(current_operand->far_pointer) );
-			current_operand->type = FCML_EOT_FAR_POINTER;
+			current_operand->type = FCML_OT_FAR_POINTER;
 			break;
 		}
 		case FCML_EN_TN_EFFECTIVE_ADDRESS: {
 			fcml_st_ast_node_effective_address *effective_address_node = (fcml_st_ast_node_effective_address*)ast_node->node;
 			error = fcml_ifn_ast_util_convert_effective_address_node_to_operand( context, cif_instruction, effective_address_node, effective_address_node->address_form, current_operand );
-			current_operand->type = FCML_EOT_ADDRESS;
+			current_operand->type = FCML_OT_ADDRESS;
 			break;
 		}
 		default:

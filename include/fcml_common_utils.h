@@ -31,6 +31,9 @@
 #include "fcml_lib_export.h"
 
 #include "fcml_common.h"
+#include "fcml_assembler.h"
+#include "fcml_disassembler.h"
+#include "fcml_instructions.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -268,110 +271,126 @@ LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_far_pointer_offset16
 LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset );
 /** Prepares memory addressing operand for 16-bit absolute offset.
  * @param offset 16-bit absolute offset.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset, fcml_usize size_operator );
 /** Prepares memory addressing operand for 32-bit absolute offset.
  * @param offset 32-bit absolute offset.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset, fcml_usize size_operator );
 /** Prepares memory addressing operand for 64-bit absolute offset. Function sets operand level hint: FCML_OP_HINT_ABSOLUTE_ADDRESSING.
  * @param offset 64-bit absolute offset.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  * @see RIP addressing.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset, fcml_usize size_operator );
 /** Prepares memory addressing operand for 64-bit absolute offset. Function sets operand level hint: FCML_OP_HINT_RELATIVE_ADDRESSING.
  * @param offset 64-bit absolute offset.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  * @see RIP addressing.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 16-bit displacement.
  * @param disp 16-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 32-bit displacement.
  * @param disp 32-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 64-bit displacement.
  * @param disp 64-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 8-bit displacement and base register.
  * @param base Base register.
  * @param disp 8-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 16-bit displacement and base register.
  * @param base Base register.
  * @param disp 16-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 32-bit displacement and base register.
  * @param base Base register.
  * @param disp 32-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 64-bit displacement and base register.
  * @param base Base register.
  * @param disp 64-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 8-bit displacement, scale factor and index register.
  * @param index Index register.
  * @param scale_factor Scale factor.
  * @param disp 8-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 16-bit displacement, scale factor and index register.
  * @param index Index register.
  * @param scale_factor Scale factor.
  * @param disp 16-bit displacement.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 32-bit displacement, scale factor and index register.
  * @param index Index register.
  * @param scale_factor Scale factor.
  * @param disp 32-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 8-bit displacement, base register, scale factor and index register.
  * @param base Base register.
  * @param index Index register.
  * @param scale_factor Scale factor.
  * @param disp 8-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 16-bit displacement, base register, scale factor and index register.
  * @param base Base register.
  * @param index Index register.
  * @param scale_factor Scale factor.
  * @param disp 16-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp, fcml_usize size_operator );
 /** Prepares effective memory addressing operand for 32-bit displacement, base register, scale factor and index register.
  * @param base Base register.
  * @param index Index register.
  * @param scale_factor Scale factor.
  * @param disp 32-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
-LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp );
+LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp, fcml_usize size_operator );
 
 /** Adds hints to the operand.
  * @param operand Operand for hints.
@@ -396,6 +415,13 @@ LIB_EXPORT fcml_st_instruction* LIB_CALL fcml_fn_cu_clone_instruction( fcml_st_i
  * @param instruction Instruction to be freed.
  */
 LIB_EXPORT void LIB_CALL fcml_fn_cu_free_instruction( fcml_st_instruction *instruction );
+
+/** Gets operand of given type or NULL if there is no such operand.
+ * If more than one operand of given type exist, the first one is returned.
+ * @param operand_type Operand type.
+ * @return Pointer to the operand of given type.
+ */
+LIB_EXPORT fcml_st_operand *fcml_fn_cu_find_operand( fcml_st_instruction *instruction, fcml_en_operand_type operand_type );
 
 /* Some shortcuts for those who prefer to use macros instead of functions.*/
 
@@ -447,6 +473,9 @@ LIB_EXPORT void LIB_CALL fcml_fn_cu_free_instruction( fcml_st_instruction *instr
 #define FCML_BIS_DISP_16( base, index, scale, offset )  fcml_fn_cu_operand_addr_bis_disp_32( &base, &index, scale, offset )
 #define FCML_BIS_DISP_32( base, index, scale, offset )  fcml_fn_cu_operand_addr_bis_disp_64( &base, &index, scale, offset )
 #endif
+
+#define FCML_IS_INSTRUCTION_GROUP( result, group )		( result.instruction_details.instruction_group & ( group ) )
+#define FCML_IS_INSTRUCTION_CODE( result, _ins )		( result.instruction_details.instruction == _ins )
 
 #ifdef __cplusplus
 }

@@ -1138,7 +1138,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_
          */
         if( ( instruction_code == F_JMP || instruction_code == F_CALL )
         		&& instrunction->operands_count == 1
-        		&& instrunction->operands[0].type == FCML_EOT_ADDRESS
+        		&& instrunction->operands[0].type == FCML_OT_ADDRESS
         		&& instrunction->operands[0].address.address_form == FCML_AF_OFFSET ) {
 
         	if( !( instrunction->hints & ( FCML_HINT_DIRECT_POINTER | FCML_HINT_FAR_POINTER ) ) ) {

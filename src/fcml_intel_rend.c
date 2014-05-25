@@ -258,19 +258,19 @@ fcml_ceh_error fcml_ifn_rend_print_operand_intel( fcml_st_render_config *config,
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_st_operand *operand = &(result->instruction.operands[operand_index]);
 	switch( operand->type ) {
-	case FCML_EOT_IMMEDIATE:
+	case FCML_OT_IMMEDIATE:
 		error = fcml_ifn_rend_operand_renderer_immediate_intel( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
 		break;
-	case FCML_EOT_FAR_POINTER:
+	case FCML_OT_FAR_POINTER:
 		error = fcml_ifn_rend_operand_renderer_far_pointer_intel( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
 		break;
-	case FCML_EOT_ADDRESS:
+	case FCML_OT_ADDRESS:
 		error = fcml_ifn_rend_operand_renderer_address_intel( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
 		break;
-	case FCML_EOT_REGISTER:
+	case FCML_OT_REGISTER:
 		error = fcml_ifn_rend_operand_renderer_reg_intel( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
 		break;
-	case FCML_EOT_NONE:
+	case FCML_OT_NONE:
 		break;
 	default:
 		error = FCML_CEH_GEC_INVALID_INPUT;
@@ -350,7 +350,7 @@ fcml_ceh_error fcml_fn_rend_render_instruction_intel( fcml_st_dialect *dialect_c
 	fcml_bool first_render = FCML_TRUE;
 	fcml_int i;
 	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-		if( result->instruction.operands[i].type != FCML_EOT_NONE ) {
+		if( result->instruction.operands[i].type != FCML_OT_NONE ) {
 			fcml_bool do_not_render = FCML_FALSE;
 			error = fcml_ifn_rend_print_operand_intel( config, dialect_context_int, &local_stream, result, i, &do_not_render );
 			if( !error ) {

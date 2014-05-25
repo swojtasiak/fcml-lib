@@ -72,11 +72,11 @@
  */
 typedef enum fcml_en_operating_mode {
 	/** Real-addressing mode, virtual 8086 mode. */
-	FCML_AF_16_BIT = 1,
+	FCML_OM_16_BIT = 1,
 	/** Protected/Compatibility mode when 'D' segment descriptor flag is set to 1. */
-	FCML_AF_32_BIT,
+	FCML_OM_32_BIT,
 	/** 64-bit mode. ('L' flag of segment descriptor set to 1.) */
-	FCML_AF_64_BIT,
+	FCML_OM_64_BIT,
 } fcml_en_operating_mode;
 
 /* Simple types. */
@@ -540,15 +540,15 @@ typedef struct fcml_st_address {
  */
 typedef enum fcml_en_operand_type {
 	/** Operand not used. */
-	FCML_EOT_NONE,
+	FCML_OT_NONE,
 	/** Immediate integer value. */
-    FCML_EOT_IMMEDIATE,
+    FCML_OT_IMMEDIATE,
     /** Direct far pointer. */
-    FCML_EOT_FAR_POINTER,
+    FCML_OT_FAR_POINTER,
     /** Memory address. */
-    FCML_EOT_ADDRESS,
+    FCML_OT_ADDRESS,
     /** Processor register. */
-    FCML_EOT_REGISTER
+    FCML_OT_REGISTER
 } fcml_en_operand_type;
 
 /**

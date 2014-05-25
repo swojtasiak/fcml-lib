@@ -64,7 +64,7 @@ void fcml_tf_disassembler_no_instruction_found(void) {
 	context.disassembler = disassembler;
 	context.configuration.fail_if_unknown_instruction = FCML_FALSE;
 	context.entry_point.ip = 0x401000;
-	context.entry_point.op_mode = FCML_AF_64_BIT;
+	context.entry_point.op_mode = FCML_OM_64_BIT;
 	context.code = code;
 	context.code_length = sizeof( code );
 
@@ -76,11 +76,11 @@ void fcml_tf_disassembler_no_instruction_found(void) {
 	}
 
 	STF_ASSERT_EQUAL( 1, dis_result.instruction.operands_count );
-	STF_ASSERT_EQUAL( FCML_EOT_IMMEDIATE, dis_result.instruction.operands[0].type );
+	STF_ASSERT_EQUAL( FCML_OT_IMMEDIATE, dis_result.instruction.operands[0].type );
 	STF_ASSERT_EQUAL( FCML_DS_8, dis_result.instruction.operands[0].immediate.size );
 	STF_ASSERT_EQUAL( 0x48, dis_result.instruction.operands[0].immediate.int8 );
 	STF_ASSERT_EQUAL( FCML_FALSE, dis_result.instruction.operands[0].immediate.is_signed );
-	STF_ASSERT_EQUAL( FCML_EOT_IMMEDIATE, dis_result.instruction.operands[0].type );
+	STF_ASSERT_EQUAL( FCML_OT_IMMEDIATE, dis_result.instruction.operands[0].type );
 	STF_ASSERT_EQUAL( FP_DB, dis_result.instruction_details.pseudo_op );
 	STF_ASSERT_EQUAL( FCML_FALSE, dis_result.instruction.is_conditional );
 	STF_ASSERT_EQUAL( 0, dis_result.instruction.hints );
@@ -98,7 +98,7 @@ void fcml_tf_disassembler_no_instruction_found(void) {
 	STF_ASSERT_EQUAL( 0, dis_result.instruction_details.prefixes_details.prefixes_count );
 
 	STF_ASSERT_STRING_EQUAL( "db", dis_result.instruction.mnemonic );
-	STF_ASSERT_PTR_NULL( dis_result.instruction_details.instruction );
+	STF_ASSERT_EQUAL( F_UNKNOWN, dis_result.instruction_details.instruction );
 
 	/* Free everything. */
 	fcml_fn_disassembler_result_free( &dis_result );

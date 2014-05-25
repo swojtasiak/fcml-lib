@@ -52,11 +52,11 @@ int fcml_fn_test_number_of_arguments( fcml_string code ) {
 
 void fcml_ifn_ts_set_ip( fcml_ip *ip, fcml_en_operating_mode op_mode ) {
 	switch( op_mode ) {
-	case FCML_AF_16_BIT:
-	case FCML_AF_32_BIT:
+	case FCML_OM_16_BIT:
+	case FCML_OM_32_BIT:
 		*ip = 0x00401000;
 		break;
-	case FCML_AF_64_BIT:
+	case FCML_OM_64_BIT:
 		*ip = 0x0000800000401000;
 		break;
 	}
@@ -203,7 +203,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		context.entry_point.op_mode = op_mode;
 
 		if( is_67 ) {
-			if( op_mode == FCML_AF_64_BIT ) {
+			if( op_mode == FCML_OM_64_BIT ) {
 				opt_flags = FCML_OPTF_ASA_32;
 			} else {
 				opt_flags = FCML_OPTF_ASA_16;
@@ -368,13 +368,13 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
                /* Mnemonic.*/
                fcml_string macro;
 			   switch( op_mode ) {
-			   case FCML_AF_16_BIT:
+			   case FCML_OM_16_BIT:
 				   macro = ( assembled_code_index > 1 ) ? (is_gas ? "FCML_A16_M" : "FCML_I16_M") : (is_gas ? "FCML_A16" : "FCML_I16");
 			   break;
-			   case FCML_AF_32_BIT:
+			   case FCML_OM_32_BIT:
 				   macro = ( assembled_code_index > 1 ) ? (is_gas ? "FCML_A32_M" : "FCML_I32_M") : (is_gas ? "FCML_A32" : "FCML_I32");
 			   break;
-			   case FCML_AF_64_BIT:
+			   case FCML_OM_64_BIT:
 				   macro = ( assembled_code_index > 1 ) ? (is_gas ? "FCML_A64_M" : "FCML_I64_M") : (is_gas ? "FCML_A64" : "FCML_I64");
 			   break;
 			   }

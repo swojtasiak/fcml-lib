@@ -54,7 +54,7 @@ fcml_bool fcml_tf_check_errors( fcml_string mnemonic, fcml_string message, fcml_
 
 	fcml_bool result = FCML_TRUE;
 
-	fcml_st_assembler_context context = fcml_ifn_prepare_context( FCML_AF_32_BIT );
+	fcml_st_assembler_context context = fcml_ifn_prepare_context( FCML_OM_32_BIT );
 
 	fcml_st_parser_result parsed_instruction;
 

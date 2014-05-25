@@ -66,7 +66,7 @@ void fcml_tf_assembler_db_imm8(void) {
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler;
 	context.entry_point.ip = 0x401000;
-	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_OM_32_BIT;
 
 	/* Assembles the given instruction. */
 	if( ( error = fcml_fn_assemble( &context, &instruction, &asm_result ) ) ) {
@@ -125,7 +125,7 @@ void fcml_tf_assembler_byte_imm8(void) {
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler;
 	context.entry_point.ip = 0x401000;
-	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_OM_32_BIT;
 
 	/* Assembles the given instruction. */
 	if( ( error = fcml_fn_assemble( &context, &instruction, &asm_result ) ) ) {
@@ -184,7 +184,7 @@ void fcml_tf_assembler_db_imm32(void) {
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler;
 	context.entry_point.ip = 0x401000;
-	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_OM_32_BIT;
 
 	/* Assembles the given instruction. */
 	if( ( error = fcml_fn_assemble( &context, &instruction, &asm_result ) ) ) {
@@ -243,7 +243,7 @@ void fcml_tf_assembler_db_imm32_value_out_of_bound(void) {
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler;
 	context.entry_point.ip = 0x401000;
-	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_OM_32_BIT;
 
 	/* Assembles the given instruction. */
 	error = fcml_fn_assemble( &context, &instruction, &asm_result );

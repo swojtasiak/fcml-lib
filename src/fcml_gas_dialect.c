@@ -1306,7 +1306,7 @@ fcml_bool fcml_ifn_asm_dialect_gas_far_pointer_correction( fcml_st_instruction *
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     /* Correction for ambiguous FAR_POINTER addressing mode. Unfortunately we can not treat it as two IMM operands.*/
-    if( instruction->operands_count == 2 && instruction->operands[0].type == FCML_EOT_IMMEDIATE && instruction->operands[1].type == FCML_EOT_IMMEDIATE ) {
+    if( instruction->operands_count == 2 && instruction->operands[0].type == FCML_OT_IMMEDIATE && instruction->operands[1].type == FCML_OT_IMMEDIATE ) {
 
         /* Remember that operands are reverted for GAS!*/
 
@@ -1331,7 +1331,7 @@ fcml_bool fcml_ifn_asm_dialect_gas_far_pointer_correction( fcml_st_instruction *
             if( !error ) {
                 /* Clean operands.*/
                 fcml_fn_env_memory_clear( instruction->operands, sizeof( instruction->operands ) );
-                instruction->operands[0].type = FCML_EOT_FAR_POINTER;
+                instruction->operands[0].type = FCML_OT_FAR_POINTER;
                 instruction->operands[0].far_pointer = far_pointer;
                 instruction->operands_count = 1;
                 return FCML_TRUE;
@@ -1394,7 +1394,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
             int i;
             for( i = 0; i < instrunction->operands_count; i++ ) {
                 fcml_st_operand *operand = &(instrunction->operands[i]);
-                if( operand->type == FCML_EOT_ADDRESS ) {
+                if( operand->type == FCML_OT_ADDRESS ) {
                     operand->address.size_operator = data_size;
                     changed = FCML_TRUE;
                 }
@@ -1406,8 +1406,8 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
             if( addr_mode_desc->opperands[0] == FCML_OP_FAR_POINTER ) {
                 /* Prepare operands. */
                 if( instrunction->operands_count == 2
-                        && instrunction->operands[0].type == FCML_EOT_IMMEDIATE
-                        && instrunction->operands[1].type == FCML_EOT_IMMEDIATE ) {
+                        && instrunction->operands[0].type == FCML_OT_IMMEDIATE
+                        && instrunction->operands[1].type == FCML_OT_IMMEDIATE ) {
                     if( fcml_ifn_asm_dialect_gas_far_pointer_correction( instrunction ) ) {
                         changed = FCML_TRUE;
                     }

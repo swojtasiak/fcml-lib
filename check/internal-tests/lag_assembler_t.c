@@ -279,7 +279,7 @@ void fcml_tf_lag_assembler_test(void) {
 
 		fcml_st_lag_assembler_context context = {0};
 		context.assembler = assembler;
-		context.entry_point.op_mode = FCML_AF_32_BIT;
+		context.entry_point.op_mode = FCML_OM_32_BIT;
 		context.entry_point.ip = 0x00401000;
 
 		error = fcml_fn_lag_assemble( &context, test_cases->code_str, &result );
@@ -337,7 +337,7 @@ void fcml_tf_lag_assembler_test_1(void) {
 	fcml_st_lag_assembler_context context = {0};
 	context.configuration.enable_error_messages = FCML_TRUE;
 	context.assembler = assembler;
-	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_OM_32_BIT;
 	context.entry_point.ip = 0x00401000;
 
 	error = fcml_fn_lag_assemble( &context, fcml_iarr_lag_assembler_code_3_src, &result );

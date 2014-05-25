@@ -167,12 +167,12 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
 
 	if( !easa_count ) {
 		switch( context->op_mode ) {
-		case FCML_AF_16_BIT:
-		case FCML_AF_32_BIT:
+		case FCML_OM_16_BIT:
+		case FCML_OM_32_BIT:
 			path = ( context->asa == FCML_DS_16 ) ? fcml_iarr_asm_opt_16_32_bit_optimization_path_16 : fcml_iarr_asm_opt_16_32_bit_optimization_path_32;
 			easa_count = fcml_ifn_asm_opt_go_through_the_optimization_path( ds_flags->allowed_easa.flags, 2, path, easa );
 			break;
-		case FCML_AF_64_BIT:
+		case FCML_OM_64_BIT:
 			path = ( context->asa == FCML_DS_32 ) ? fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_32 : fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_64;
 			easa_count = fcml_ifn_asm_opt_go_through_the_optimization_path( ds_flags->allowed_easa.flags, 2, path, easa );
 			break;
@@ -183,12 +183,12 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_con
 
 	if( !eosa_count ) {
 		switch( context->op_mode ) {
-		case FCML_AF_16_BIT:
-		case FCML_AF_32_BIT:
+		case FCML_OM_16_BIT:
+		case FCML_OM_32_BIT:
 			path = ( context->osa == FCML_DS_16 ) ? fcml_iarr_asm_opt_16_32_bit_optimization_path_16 : fcml_iarr_asm_opt_16_32_bit_optimization_path_32;
 			eosa_count = fcml_ifn_asm_opt_go_through_the_optimization_path( ds_flags->allowed_eosa.flags, 2, path, eosa );
 			break;
-		case FCML_AF_64_BIT:
+		case FCML_OM_64_BIT:
 			switch( context->osa ) {
 			case FCML_DS_16:
 				path = &fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_16[0];

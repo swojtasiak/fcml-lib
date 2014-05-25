@@ -67,6 +67,7 @@ typedef struct fcml_ist_dasm_decoding_context {
 	fcml_st_memory_stream *stream;
 	fcml_st_mp_mnemonic_set *mnemonics;
 	fcml_en_pseudo_operations pseudo_op;
+	fcml_uint64_t instruction_group;
 	fcml_en_instruction instruction;
 	fcml_uint16_t addr_mode;
 	fcml_usize effective_address_size_attribute;
@@ -330,7 +331,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm( fcml_ist_dasm_decoding_context
 	fcml_st_integer *immediate = &(operand->immediate);
 	fcml_st_memory_stream *stream = context->stream;
 
-	operand->type = FCML_EOT_IMMEDIATE;
+	operand->type = FCML_OT_IMMEDIATE;
 
 	fcml_usize size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, imm_args->encoded_size );
 
@@ -386,7 +387,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg( fcml_ist_dasm_decodin
 	fcml_st_operand *operand = &(operand_wrapper->operand);
 	fcml_sf_def_tma_explicit_reg *reg_args = (fcml_sf_def_tma_explicit_reg*)args;
 
-	operand->type = FCML_EOT_REGISTER;
+	operand->type = FCML_OT_REGISTER;
 	operand->reg.reg = reg_args->reg_num;
 	operand->reg.type = (fcml_en_register)reg_args->reg_type;
 	operand->reg.size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, reg_args->encoded_reg_size );
@@ -404,7 +405,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing( fcml_i
 	fcml_st_address *address = &(operand->address);
 	fcml_st_effective_address *effective_address = &(address->effective_address);
 
-	operand->type = FCML_EOT_ADDRESS;
+	operand->type = FCML_OT_ADDRESS;
 	address->address_form = FCML_AF_COMBINED;
 
 	fcml_sf_def_tma_explicit_gps_reg_addressing *reg_addr_args = (fcml_sf_def_tma_explicit_gps_reg_addressing*)args;
@@ -436,7 +437,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_opcode_reg( fcml_ist_dasm_decoding_
 	}
 
 	/* Size operator.*/
-	operand_wrapper->operand.type = FCML_EOT_REGISTER;
+	operand_wrapper->operand.type = FCML_OT_REGISTER;
 	fcml_st_register *reg = &(operand_wrapper->operand.reg);
 
 	/* Base register.*/
@@ -471,7 +472,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 		int_size = rel_args->encoded_size * 8;
 	} else {
 
-		if( context->effective_operand_size_attribute == FCML_DS_16 && entry_point->op_mode == FCML_AF_64_BIT ) {
+		if( context->effective_operand_size_attribute == FCML_DS_16 && entry_point->op_mode == FCML_OM_64_BIT ) {
 			fcml_fn_ceh_add_error( &(context->errors), fcml_fn_msg_get_message( FCML_MC_CEH_GEC_INVALID_ADDRESSING_MODE ), FCML_CEH_MEW_WARN_INVALID_ADDRESSING_MODE, FCML_EN_CEH_EL_WARN );
 		}
 
@@ -494,7 +495,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative( fcml_ist_da
 		return error;
 	}
 
-	operand_wrapper->operand.type = FCML_EOT_ADDRESS;
+	operand_wrapper->operand.type = FCML_OT_ADDRESS;
 	operand_wrapper->operand.address.address_form = FCML_AF_OFFSET;
 
 	fcml_st_offset *offset = &(operand_wrapper->operand.address.offset);
@@ -555,7 +556,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer( fcml_ist_dasm_decoding
 	fcml_st_far_pointer *far_pointer = &(operand->far_pointer);
 	fcml_bool result;
 
-	operand->type = FCML_EOT_FAR_POINTER;
+	operand->type = FCML_OT_FAR_POINTER;
 
 	switch( context->effective_operand_size_attribute ) {
 	case FCML_DS_16:
@@ -598,7 +599,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_ib( fcml_ist_dasm_decoding
 	fcml_st_operand *operand = &(operand_wrapper->operand);
 	fcml_st_integer *immediate = &(operand->immediate);
 
-	operand->type = FCML_EOT_IMMEDIATE;
+	operand->type = FCML_OT_IMMEDIATE;
 	immediate->is_signed = FCML_TRUE;
 	immediate->size = FCML_DS_8;
 	immediate->int8 = imm_args->ib;
@@ -630,7 +631,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset( fcml_ist_d
 	address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value( context, seg_args->encoded_operand_size );
 	address->address_form = FCML_AF_OFFSET;
 
-	operand->type = FCML_EOT_ADDRESS;
+	operand->type = FCML_OT_ADDRESS;
 
 	switch( context->effective_address_size_attribute ) {
 	case FCML_DS_16:
@@ -675,7 +676,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 
 	if( ( rm_args->flags & FCML_RMF_R ) && decoded_modrm->reg.is_not_null ) {
 
-		operand->type = FCML_EOT_REGISTER;
+		operand->type = FCML_OT_REGISTER;
 		operand->reg.reg = decoded_modrm->reg.value;
 		operand->reg.type = (fcml_en_register)rm_args->reg_type;
 		operand->reg.size = fcml_ifn_dasm_utils_decode_encoded_size_value( context, rm_args->encoded_register_operand_size );
@@ -684,7 +685,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 
 	} else if ( rm_args->flags & FCML_RMF_M ) {
 
-		operand->type = FCML_EOT_ADDRESS;
+		operand->type = FCML_OT_ADDRESS;
 
 		fcml_st_address *address = &(operand->address);
 		*address = decoded_modrm->address;
@@ -719,7 +720,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm( fcml_ist_dasm_decoding_context 
 		}
 
 		/* These hints aren't used in 32 bit addressing mode.*/
-		if( ( context->disassembler_context->entry_point.op_mode == FCML_AF_64_BIT ) && ( address->address_form == FCML_AF_OFFSET ) ) {
+		if( ( context->disassembler_context->entry_point.op_mode == FCML_OM_64_BIT ) && ( address->address_form == FCML_AF_OFFSET ) ) {
 			operand->hints |= context->decoded_modrm.is_rip ? FCML_OP_HINT_RELATIVE_ADDRESSING : FCML_OP_HINT_ABSOLUTE_ADDRESSING;
 		}
 
@@ -750,7 +751,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_r( fcml_ist_dasm_decoding_context *
 	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 	fcml_sf_def_tma_r *r_args = (fcml_sf_def_tma_r*)args;
 
-	operand_wrapper->operand.type = FCML_EOT_REGISTER;
+	operand_wrapper->operand.type = FCML_OT_REGISTER;
 	fcml_st_register *reg = &(operand_wrapper->operand.reg);
 
 	reg->reg = context->decoded_modrm.reg_opcode;
@@ -772,7 +773,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_vex_vvvv( fcml_ist_dasm_decoding_co
 
 	fcml_sf_def_tma_vex_vvvv_reg *v_args = (fcml_sf_def_tma_vex_vvvv_reg*)args;
 
-	operand_wrapper->operand.type = FCML_EOT_REGISTER;
+	operand_wrapper->operand.type = FCML_OT_REGISTER;
 	fcml_st_register *reg = &(operand_wrapper->operand.reg);
 
 	reg->reg = context->prefixes.vvvv;
@@ -804,10 +805,10 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_isX( fcml_ist_dasm_decoding_context
 	/* IS4.*/
 	if( ( is_args->flags & FCML_ISF_IS4 ) || ( is_args->flags & FCML_ISF_IS5_SRC ) ) {
 
-		operand_wrapper->operand.type = FCML_EOT_REGISTER;
+		operand_wrapper->operand.type = FCML_OT_REGISTER;
 		fcml_st_register *reg = &(operand_wrapper->operand.reg);
 
-		reg->reg = ( ( context->disassembler_context->entry_point.op_mode == FCML_AF_32_BIT ) ? ( 0x70 & isX ) : ( 0xF0 & isX ) ) >> 4;
+		reg->reg = ( ( context->disassembler_context->entry_point.op_mode == FCML_OM_32_BIT ) ? ( 0x70 & isX ) : ( 0xF0 & isX ) ) >> 4;
 		reg->type = FCML_REG_SIMD;
 		reg->size = context->prefixes.l ? FCML_OS_YWORD : FCML_OS_XWORD;
 		reg->x64_exp = FCML_FALSE;
@@ -816,7 +817,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_isX( fcml_ist_dasm_decoding_context
 
 		/* IS5 - M2Z*/
 
-		operand_wrapper->operand.type = FCML_EOT_IMMEDIATE;
+		operand_wrapper->operand.type = FCML_OT_IMMEDIATE;
 		fcml_st_integer *imm = &(operand_wrapper->operand.immediate);
 		imm->is_signed = FCML_FALSE;
 		imm->int8 = isX & 0x03;
@@ -842,7 +843,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_pseudo_op( fcml_ist_dasm_decoding_c
 	fcml_st_operand *operand = &(operand_wrapper->operand);
 	fcml_st_integer *immediate = &(operand->immediate);
 
-	operand->type = FCML_EOT_IMMEDIATE;
+	operand->type = FCML_OT_IMMEDIATE;
 	immediate->is_signed = FCML_TRUE;
 	immediate->size = FCML_DS_8;
 	immediate->int8 = pseudo_op;
@@ -1000,11 +1001,11 @@ fcml_usize fcml_ifn_dasm_calculate_effective_asa( fcml_ist_dasm_decoding_context
 	/* Checks if address size attribute is overridden.*/
 	if( fcml_ifn_dasm_is_prefix_available( context, 0x67, FCML_FALSE ) ) {
 		switch( entry_point->op_mode ) {
-		case FCML_AF_16_BIT:
-		case FCML_AF_32_BIT:
+		case FCML_OM_16_BIT:
+		case FCML_OM_32_BIT:
 			effective_asa = ( effective_asa == FCML_DS_32 ) ? FCML_DS_16 : FCML_DS_32;
 			break;
-		case FCML_AF_64_BIT:
+		case FCML_OM_64_BIT:
 			effective_asa = ( effective_asa == FCML_DS_32 ) ? FCML_DS_64 : FCML_DS_32;
 			break;
 		}
@@ -1024,15 +1025,15 @@ fcml_usize fcml_ifn_dasm_calculate_effective_osa( fcml_ist_dasm_decoding_context
 
 	/* Gets effective address-size attribute for used mode.*/
 	switch( entry_point->op_mode ) {
-	case FCML_AF_16_BIT:
-	case FCML_AF_32_BIT:
+	case FCML_OM_16_BIT:
+	case FCML_OM_32_BIT:
 		/* In 16 and 32 bit mode only prefixes can change address-size attribute.*/
 		prefix = fcml_ifn_dasm_get_prefix_if_available( context, 0x66 );
 		if( prefix != NULL && !prefix->mandatory_prefix ) {
 			osa = ( osa == FCML_DS_16 ) ? FCML_DS_32 : FCML_DS_16;
 		}
 		break;
-	case FCML_AF_64_BIT:
+	case FCML_OM_64_BIT:
 		/* For some instructions EOSA can be forced to 64 bits.*/
 		if( FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA( opcode_flags ) ) {
 			osa = FCML_DS_64;
@@ -1250,9 +1251,9 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_addr_mode( fcml_ist_dasm_decoding_c
 
 	fcml_en_operating_mode op_mode = disassembler_context->entry_point.op_mode;
 
-	return ( ( op_mode == FCML_AF_16_BIT || op_mode == FCML_AF_32_BIT )
+	return ( ( op_mode == FCML_OM_16_BIT || op_mode == FCML_OM_32_BIT )
 			&& FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED( instruction_decoding_def->opcode_flags ) )
-				|| ( op_mode == FCML_AF_64_BIT
+				|| ( op_mode == FCML_OM_64_BIT
 						&& FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED( instruction_decoding_def->opcode_flags ) );
 }
 
@@ -1632,6 +1633,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 	decoding_context->calculated_instruction_size += operands_size;
 	decoding_context->mnemonics = instruction_decoding_def->mnemonics;
 	decoding_context->instruction = instruction_decoding_def->instruction;
+	decoding_context->instruction_group = instruction_decoding_def->instruction_group;
 	decoding_context->addr_mode = instruction_decoding_def->addr_mode;
 
 	/* Store primary opcode byte.*/
@@ -1698,7 +1700,7 @@ fcml_ceh_error fcml_ifn_prepare_pseudo_operation( fcml_ist_dasm_decoding_context
 
 	/* Prepare operand with immediate value. */
 	fcml_st_operand *operand = &(context->operand_wrappers[0].operand);
-	operand->type = FCML_EOT_IMMEDIATE;
+	operand->type = FCML_OT_IMMEDIATE;
 	operand->immediate.int8 = po_byte;
 	operand->immediate.size = FCML_DS_8;
 
@@ -1842,7 +1844,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 	fcml_bool is_last_prefix = FCML_FALSE;
 
 	/* VEX like prefixes are not allowed in 16 bit mode.*/
-	if( op_mode == FCML_AF_16_BIT ) {
+	if( op_mode == FCML_OM_16_BIT ) {
 		is_xop_vex_allowed = FCML_FALSE;
 	}
 
@@ -1913,7 +1915,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 					break;
 				default:
 					/* REX prefix is the last one, so we have to break this loop after finding one.*/
-					if( op_mode == FCML_AF_64_BIT && prefix >= 0x40 && prefix <= 0x4F ) {
+					if( op_mode == FCML_OM_64_BIT && prefix >= 0x40 && prefix <= 0x4F ) {
 						/* REX prefix found.*/
 						prefix_type = FCML_PT_REX;
 						/* Decode fields.*/
@@ -1939,7 +1941,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 					/* Skip to the second byte of VEX prefix.*/
 					fcml_fn_stream_seek(stream, 1, FCML_EN_ST_CURRENT);
 
-					if( op_mode == FCML_AF_32_BIT ) {
+					if( op_mode == FCML_OM_32_BIT ) {
 						/* Check if it is really a VEX/XOP prefix.*/
 						fcml_uint8_t second_byte = fcml_fn_stream_peek(stream, &result);
 						/* VEX.R/XOP.R and VEX.X/XOP.X has to be set to 11 in 32bit mode.*/
@@ -1973,7 +1975,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 								}
 								prefixes_details->r = FCML_VEX_R(prefix_details->vex_xop_bytes[0]);
 								prefixes_details->x = FCML_VEX_X(prefix_details->vex_xop_bytes[0]);
-								if( op_mode == FCML_AF_64_BIT ) {
+								if( op_mode == FCML_OM_64_BIT ) {
 									prefixes_details->b = FCML_VEX_B(prefix_details->vex_xop_bytes[0]);
 									prefixes_details->w = FCML_VEX_W(prefix_details->vex_xop_bytes[1]);
 								} else {
@@ -1994,7 +1996,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *de
 								break;
 							}
 
-							if( op_mode == FCML_AF_32_BIT && prefixes_details->vvvv > 7 ) {
+							if( op_mode == FCML_OM_32_BIT && prefixes_details->vvvv > 7 ) {
 								prefix_type = FCML_PT_GROUP_UNKNOWN;
 							}
 
@@ -2199,8 +2201,8 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 		fcml_int i;
 		for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
 			fcml_ist_dasm_operand_wrapper *operand_wrapper = &(decoding_context.operand_wrappers[i]);
-			if( operand_wrapper->operand.type != FCML_EOT_NONE ) {
-				if( operand_wrapper->operand.type == FCML_EOT_ADDRESS ) {
+			if( operand_wrapper->operand.type != FCML_OT_NONE ) {
+				if( operand_wrapper->operand.type == FCML_OT_ADDRESS ) {
 					memory_data_size = operand_wrapper->operand.address.size_operator;
 				}
 				instruction->operands[i] = operand_wrapper->operand;
@@ -2245,6 +2247,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 		/* Instruction code. */
 		instruction_details->instruction = decoding_context.instruction;
 		instruction_details->addr_mode = decoding_context.addr_mode;
+		instruction_details->instruction_group = decoding_context.instruction_group;
 
 		/* L flag for mnemonic chooser.*/
 		fcml_nuint8_t l;

@@ -211,6 +211,8 @@ typedef struct fcml_st_instruction_details {
 	fcml_en_pseudo_operations pseudo_op;
 	/** Code of the instruction form/addressing mode of the instruction above. */
 	fcml_uint16_t addr_mode;
+	/** Instruction group. */
+	fcml_uint64_t instruction_group;
 } fcml_st_instruction_details;
 
 /** Reusable disassembler result holder. */

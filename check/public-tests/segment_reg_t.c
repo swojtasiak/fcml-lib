@@ -39,18 +39,18 @@ void fcml_fn_segment_reg(void) {
 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
-	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_OM_32_BIT;
 	context.entry_point.ip = 0x00401000;
 	context.configuration.enable_error_messages = FCML_TRUE;
 
 	fcml_st_instruction instruction = {0};
 	instruction.mnemonic = "cmps";
-	instruction.operands[0].type = FCML_EOT_ADDRESS;
+	instruction.operands[0].type = FCML_OT_ADDRESS;
 	instruction.operands[0].address.segment_selector.segment_selector = fcml_reg_DS;
 	instruction.operands[0].address.address_form = FCML_AF_COMBINED;
 	instruction.operands[0].address.size_operator = FCML_DS_32;
 	instruction.operands[0].address.effective_address.base = fcml_reg_ESI;
-	instruction.operands[1].type = FCML_EOT_ADDRESS;
+	instruction.operands[1].type = FCML_OT_ADDRESS;
 	instruction.operands[1].address.segment_selector.segment_selector = fcml_reg_ES;
 	instruction.operands[1].address.address_form = FCML_AF_COMBINED;
 	instruction.operands[1].address.size_operator = FCML_DS_32;

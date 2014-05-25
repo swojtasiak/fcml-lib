@@ -71,12 +71,12 @@ void fcml_fn_hints_indirect_addressing(void) {
 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
-	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_OM_32_BIT;
 	context.entry_point.ip = 0x00401000;
 
 	fcml_st_instruction instruction = {0};
 	instruction.mnemonic = "jmp";
-	instruction.operands[0].type = FCML_EOT_ADDRESS;
+	instruction.operands[0].type = FCML_OT_ADDRESS;
 	instruction.operands[0].address.address_form = FCML_AF_OFFSET;
 	instruction.operands[0].address.size_operator = FCML_DS_32;
 	instruction.operands[0].address.offset.off32 = 0x00401001;
@@ -116,12 +116,12 @@ void fcml_fn_hints_direct_addressing(void) {
 
 	fcml_st_assembler_context context = {0};
 	context.assembler = assembler_intel;
-	context.entry_point.op_mode = FCML_AF_32_BIT;
+	context.entry_point.op_mode = FCML_OM_32_BIT;
 	context.entry_point.ip = 0x00401000;
 
 	fcml_st_instruction instruction = {0};
 	instruction.mnemonic = "jmp";
-	instruction.operands[0].type = FCML_EOT_ADDRESS;
+	instruction.operands[0].type = FCML_OT_ADDRESS;
 	instruction.operands[0].address.address_form = FCML_AF_OFFSET;
 	instruction.operands[0].address.offset.off32 = 0x00401001;
 	instruction.operands[0].address.offset.size = FCML_DS_32;
