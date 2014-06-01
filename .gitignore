@@ -21,7 +21,8 @@
 /config.h
 config.h.in~
 compile
-/valgrind-result.txt
+/valgrind*
 /fcml-*.tar.gz
 autoscan-*.log
 configure.scan
+test-driver
