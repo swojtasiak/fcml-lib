@@ -216,7 +216,7 @@ typedef struct fcml_st_instruction_details {
 } fcml_st_instruction_details;
 
 /** Reusable disassembler result holder. */
-typedef struct fcml_st_dasm_disassembler_result {
+typedef struct fcml_st_disassembler_result {
     /** All errors and warnings messages going here. */
 	fcml_st_ceh_error_container errors;
 	/** Additional disassembler specific information about decoded instruction. */

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/** @file fcml_symbols.h
+/** @file fcml_types.h
  * Types declarations.
  *
  * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
