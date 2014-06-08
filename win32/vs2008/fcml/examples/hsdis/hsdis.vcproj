@@ -65,6 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\hsdis-i386.dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="hsdis.def"
 				GenerateDebugInformation="false"
@@ -140,6 +141,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\hsdis-amd64.dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="hsdis.def"
 				GenerateDebugInformation="false"
@@ -215,6 +217,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\hsdis-i386.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="hsdis.def"
 				GenerateDebugInformation="false"
@@ -293,6 +296,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\hsdis-amd64.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="hsdis.def"
 				GenerateDebugInformation="false"
@@ -369,6 +373,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\hsdis-i386.dll"
 				LinkIncremental="0"
 				ModuleDefinitionFile="hsdis.def"
 				GenerateDebugInformation="false"
@@ -444,6 +449,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\hsdis-amd64.dll"
 				LinkIncremental="0"
 				ModuleDefinitionFile="hsdis.def"
 				GenerateDebugInformation="false"
@@ -519,6 +525,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\hsdis-i386.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="hsdis.def"
 				GenerateDebugInformation="false"
@@ -597,6 +604,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\hsdis-amd64.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="hsdis.def"
 				GenerateDebugInformation="false"

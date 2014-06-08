@@ -2323,7 +2323,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
             fcml_usize size = result->instruction_details.instruction_size;
             context->entry_point.ip += size;
             // Skip to the next instruction.
-            fcml_uint8_t *instruction_code = context->code;
+            fcml_uint8_t *instruction_code = (fcml_uint8_t *)context->code;
             instruction_code += size;
             context->code = instruction_code;
             context->code_length -= ( context->code_length >= size ) ? size : context->code_length;
