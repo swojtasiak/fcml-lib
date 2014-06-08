@@ -36,7 +36,7 @@ fcml_st_coll_list *fcml_fn_coll_list_alloc() {
     return list;
 }
 
-fcml_st_coll_list_element *fcml_fn_coll_list_add_front( fcml_st_coll_list *list, fcml_ptr item ) {
+fcml_st_coll_list_element *fcml_fn_coll_list_add_front( fcml_st_coll_list *list, const fcml_ptr item ) {
     fcml_st_coll_list_element *element = (fcml_st_coll_list_element*) fcml_fn_env_memory_alloc( sizeof(fcml_st_coll_list_element) );
     if (element) {
         element->next = list->head;
@@ -54,7 +54,7 @@ fcml_st_coll_list_element *fcml_fn_coll_list_add_front( fcml_st_coll_list *list,
     return element;
 }
 
-fcml_st_coll_list_element *fcml_fn_coll_list_add_back( fcml_st_coll_list *list, fcml_ptr item ) {
+fcml_st_coll_list_element *fcml_fn_coll_list_add_back( fcml_st_coll_list *list, const fcml_ptr item ) {
     fcml_st_coll_list_element *element = (fcml_st_coll_list_element*) fcml_fn_env_memory_alloc( sizeof(fcml_st_coll_list_element) );
     if (element) {
         element->next = NULL;
@@ -72,7 +72,7 @@ fcml_st_coll_list_element *fcml_fn_coll_list_add_back( fcml_st_coll_list *list, 
     return element;
 }
 
-fcml_st_coll_list_element *fcml_fn_coll_list_insert( fcml_st_coll_list *list, fcml_st_coll_list_element *prev_element, fcml_ptr item ) {
+fcml_st_coll_list_element *fcml_fn_coll_list_insert( fcml_st_coll_list *list, fcml_st_coll_list_element *prev_element, const fcml_ptr item ) {
     fcml_st_coll_list_element *element;
     if (prev_element) {
         element = (fcml_st_coll_list_element*) fcml_fn_env_memory_alloc( sizeof(fcml_st_coll_list_element) );
@@ -88,7 +88,7 @@ fcml_st_coll_list_element *fcml_fn_coll_list_insert( fcml_st_coll_list *list, fc
     return element;
 }
 
-void fcml_fn_coll_list_traverse( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, fcml_ptr item_handler_args ) {
+void fcml_fn_coll_list_traverse( const fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, fcml_ptr item_handler_args ) {
     fcml_st_coll_list_element *current = list->head;
     while ( current ) {
         ( item_handler )( current->item, item_handler_args );
@@ -113,7 +113,7 @@ void fcml_fn_coll_list_remove( fcml_st_coll_list *list, fcml_st_coll_list_elemen
     fcml_fn_env_memory_free( element );
 }
 
-void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, fcml_ptr item_handler_args ) {
+void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, const fcml_ptr item_handler_args ) {
     fcml_st_coll_list_element *current = list->head;
     while ( current ) {
         if (item_handler) {
@@ -159,11 +159,11 @@ fcml_uint32_t fcml_ifn_get_hash( fcml_st_coll_map_descriptor *descriptor, fcml_p
     return hash;
 }
 
-fcml_coll_map fcml_fn_coll_map_alloc( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, fcml_int *error ) {
+fcml_coll_map fcml_fn_coll_map_alloc( const fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, fcml_int *error ) {
     return fcml_fn_coll_map_alloc_factor( descriptor, capacity, FCML_COLL_MAP_DEFAULT_FACTOR, error );
 }
 
-fcml_coll_map fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, float load_factor, fcml_int *error ) {
+fcml_coll_map fcml_fn_coll_map_alloc_factor( const fcml_st_coll_map_descriptor *descriptor, fcml_uint32_t capacity, float load_factor, fcml_int *error ) {
 
     *error = FCML_COLL_ERROR_NO_ERROR;
 
@@ -203,7 +203,7 @@ fcml_coll_map fcml_fn_coll_map_alloc_factor( fcml_st_coll_map_descriptor *descri
     return map;
 }
 
-fcml_uint32_t fcml_fn_coll_map_size( fcml_coll_map map_int ) {
+fcml_uint32_t fcml_fn_coll_map_size( const fcml_coll_map map_int ) {
     struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*) map_int;
     return map->size;
 }
@@ -255,7 +255,7 @@ fcml_bool fcml_ifn_coll_map_expand( struct fcml_ist_coll_map *map, fcml_ceh_erro
     return FCML_TRUE;
 }
 
-void fcml_fn_coll_map_put( fcml_coll_map map_int, fcml_ptr key, fcml_ptr value, fcml_int *error ) {
+void fcml_fn_coll_map_put( fcml_coll_map map_int, const fcml_ptr key, const fcml_ptr value, fcml_int *error ) {
 
     *error = FCML_COLL_ERROR_NO_ERROR;
 
@@ -308,7 +308,7 @@ void fcml_fn_coll_map_put( fcml_coll_map map_int, fcml_ptr key, fcml_ptr value, 
 
 }
 
-void fcml_fn_coll_map_remove( fcml_coll_map map_int, fcml_ptr key ) {
+void fcml_fn_coll_map_remove( fcml_coll_map map_int, const fcml_ptr key ) {
     struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*) map_int;
     fcml_uint32_t hash = fcml_ifn_get_hash( &( map->descriptor ), key );
     int index = map->hash_mask & hash;
@@ -335,7 +335,7 @@ void fcml_fn_coll_map_remove( fcml_coll_map map_int, fcml_ptr key ) {
     return;
 }
 
-void fcml_fn_coll_map_iterate( fcml_coll_map map_int, fcml_fnp_coll_map_entry_handler item_handler ) {
+void fcml_fn_coll_map_iterate( const fcml_coll_map map_int, fcml_fnp_coll_map_entry_handler item_handler ) {
     if (item_handler) {
         struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*) map_int;
         fcml_uint32_t i;
@@ -391,7 +391,7 @@ void fcml_fn_coll_map_clear( fcml_coll_map map_int ) {
     map->size = 0;
 }
 
-fcml_ptr fcml_fn_coll_map_get( fcml_coll_map map_int, fcml_ptr key ) {
+fcml_ptr fcml_fn_coll_map_get( fcml_coll_map map_int, const fcml_ptr key ) {
     struct fcml_ist_coll_map *map = (struct fcml_ist_coll_map*) map_int;
     fcml_uint32_t hash = fcml_ifn_get_hash( &( map->descriptor ), key );
     fcml_uint32_t index = map->hash_mask & hash;

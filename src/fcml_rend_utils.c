@@ -53,8 +53,8 @@ void fcml_fn_rend_utils_format_append_hex_byte( fcml_st_memory_stream *stream, f
     fcml_fn_rend_utils_format_printf( stream, FCML_PRI_INT8_HEX, hex_byte );
 }
 
-void fcml_fn_rend_utils_format_append_code( fcml_st_render_config *config, fcml_st_memory_stream *stream, fcml_uint8_t *instrunction_code,
-        fcml_usize instruction_code_size ) {
+void fcml_fn_rend_utils_format_append_code( const fcml_st_render_config *config, fcml_st_memory_stream *stream, const fcml_uint8_t *instrunction_code,
+        const fcml_usize instruction_code_size ) {
     fcml_int c_pad = 0;
     fcml_int i;
     for ( i = 0; i < instruction_code_size; i++ ) {
@@ -186,7 +186,7 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[6]
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-void fcml_fn_rend_utils_format_append_reg( fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, const fcml_st_register *reg,
+void fcml_fn_rend_utils_format_append_reg( const fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, const fcml_st_register *reg,
         fcml_bool is_rex ) {
     fcml_char printable_reg[64];
     dialect_context->get_register( reg, printable_reg, sizeof( printable_reg ), is_rex );
@@ -220,7 +220,7 @@ fcml_int fcml_fn_rend_utils_format_repeat_char( fcml_st_memory_stream *stream, f
     return repeats;
 }
 
-fcml_int fcml_ifn_rend_utils_print_prefixes( fcml_st_memory_stream *output_stream, fcml_st_prefixes_details *prefixes, fcml_uint32_t flags ) {
+fcml_int fcml_ifn_rend_utils_print_prefixes( fcml_st_memory_stream *output_stream, const fcml_st_prefixes_details *prefixes, fcml_uint32_t flags ) {
     fcml_int len = 0;
     if ( prefixes->is_xacquire ) {
         len += fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "xacquire " ) );
@@ -256,7 +256,7 @@ fcml_int fcml_ifn_rend_utils_print_prefixes( fcml_st_memory_stream *output_strea
     return len;
 }
 
-fcml_bool fcml_fn_rend_utils_render_operand_separator( fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_int mnemonic_length,
+fcml_bool fcml_fn_rend_utils_render_operand_separator( const fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_int mnemonic_length,
         fcml_bool first_operand ) {
     if ( !first_operand ) {
         fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "," ) );

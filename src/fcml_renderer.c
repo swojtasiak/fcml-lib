@@ -24,8 +24,8 @@
 #include "fcml_trace.h"
 #include "fcml_env_int.h"
 
-fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len,
-        fcml_st_disassembler_result *result ) {
+fcml_ceh_error LIB_CALL fcml_fn_render( const fcml_st_dialect *dialect, const fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len,
+        const fcml_st_disassembler_result *result ) {
 
     fcml_st_memory_stream output_stream;
     output_stream.base_address = buffer;

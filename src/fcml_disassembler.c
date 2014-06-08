@@ -1820,7 +1820,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
         }
     }
 
-    if ( !found ) {
+    if ( !found && !error ) {
         error = FCML_CEH_GEC_UNKNOWN_INSTRUCTION;
     }
 
@@ -2123,7 +2123,7 @@ fcml_prefixes fcml_ifn_dasm_convert_prefixes_to_generic_prefixes( fcml_st_prefix
  * API.
  ****************************/
 
-fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler ) {
+fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( const fcml_st_dialect *dialect, fcml_st_disassembler **disassembler ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2320,7 +2320,13 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
 
         /* Increment IP */
         if ( context->configuration.increment_ip ) {
-            context->entry_point.ip += result->instruction_details.instruction_size;
+            fcml_usize size = result->instruction_details.instruction_size;
+            context->entry_point.ip += size;
+            // Skip to the next instruction.
+            fcml_uint8_t *instruction_code = context->code;
+            instruction_code += size;
+            context->code = instruction_code;
+            context->code_length -= ( context->code_length >= size ) ? size : context->code_length;
         }
 
         /* Execute disassembler post processor if needed.*/
@@ -2344,6 +2350,10 @@ fcml_ceh_error LIB_CALL fcml_fn_disassemble( fcml_st_disassembler_context *conte
     // Sanity check.
     if ( !context || !result ) {
         return FCML_CEH_GEC_INVALID_INPUT;
+    }
+
+    if( !context->code_length ) {
+        return FCML_CEH_GEC_EOF;
     }
 
     // Check if there is something already available in result, and free it in such cache.

@@ -94,34 +94,6 @@ typedef fcml_uint16_t fcml_prefixes;
  */
 typedef fcml_int64_t fcml_ip;
 
-/* Effective Operand-Size Attributes.*/
-
-/**
- * @defgroup OSA_SIZE_GROUP Allowed address size attribute sizes.
- * @{
- */
-
-#define FCML_EOSA_UNDEF	0
-#define FCML_EOSA_16	16
-#define FCML_EOSA_32	32
-#define FCML_EOSA_64	64
-
-/** @} */
-
-/* Effective Address-Size Attributes.*/
-
-/**
- * @defgroup ASA_SIZE_GROUP Allowed operand size attribute sizes.
- * @{
- */
-
-#define FCML_EASA_UNDEF	16
-#define FCML_EASA_16	16
-#define FCML_EASA_32	32
-#define FCML_EASA_64	64
-
-/** @} */
-
 /* Register numbers.*/
 
 /**

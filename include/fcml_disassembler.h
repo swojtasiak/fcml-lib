@@ -237,7 +237,7 @@ typedef struct fcml_st_disassembler_result {
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  * @see fcml_fn_disassembler_free
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( const fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
 
 /**
  * Disassembles one instruction from provided code buffer.

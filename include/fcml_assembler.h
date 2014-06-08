@@ -120,7 +120,7 @@ typedef struct fcml_st_assembler_context {
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  * @see fcml_fn_assembler_free
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *dialect, fcml_st_assembler **assembler );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assembler_init( const fcml_st_dialect *dialect, fcml_st_assembler **assembler );
 
 /**
  * Assembles one instruction encoded in the generic instruction model.

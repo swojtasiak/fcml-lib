@@ -52,7 +52,7 @@ typedef struct fcml_st_symbol {
  * are added using fcml_fn_symbol_add() function.
  * @return Allocated symbol or NULL if allocation failed.
  */
-LIB_EXPORT fcml_st_symbol* LIB_CALL fcml_fn_symbol_alloc( fcml_string symbol, fcml_int64_t value );
+LIB_EXPORT fcml_st_symbol* LIB_CALL fcml_fn_symbol_alloc( const fcml_string symbol, fcml_int64_t value );
 
 /**
  * Frees symbol allocated by FCML library.
@@ -82,7 +82,7 @@ LIB_EXPORT fcml_st_symbol_table LIB_CALL fcml_fn_symbol_table_alloc();
  * @param value The symbol value.
  * @see fcml_fn_symbol_table_free
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_symbol_add_raw( fcml_st_symbol_table symbol_table, fcml_string symbol, fcml_int64_t value );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_symbol_add_raw( fcml_st_symbol_table symbol_table, const fcml_string symbol, fcml_int64_t value );
 
 /**
  * Adds existing symbol to the symbol table.
@@ -96,7 +96,7 @@ LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_symbol_add_raw( fcml_st_symbol_table 
  * @param symbol The symbol to be added.
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_symbol_add( fcml_st_symbol_table symbol_table, fcml_st_symbol *symbol );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_symbol_add( fcml_st_symbol_table symbol_table, const fcml_st_symbol *symbol );
 
 /**
  * Removes the symbol from the symbol table.
@@ -104,7 +104,7 @@ LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_symbol_add( fcml_st_symbol_table symb
  * @param symbol_table The symbol table.
  * @param symbol The name of the symbol to remove.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_symbol_remove( fcml_st_symbol_table symbol_table, fcml_string symbol );
+LIB_EXPORT void LIB_CALL fcml_fn_symbol_remove( fcml_st_symbol_table symbol_table, const fcml_string symbol );
 
 /**
  * Gets the symbol with the given name from the symbol table.
@@ -112,7 +112,7 @@ LIB_EXPORT void LIB_CALL fcml_fn_symbol_remove( fcml_st_symbol_table symbol_tabl
  * @param symbol The name of the symbol to get from the table.
  * @return The pointer to the symbol or NULL if there is no such symbol in the symbol table.
  */
-LIB_EXPORT fcml_st_symbol* LIB_CALL fcml_fn_symbol_get( fcml_st_symbol_table symbol_table, fcml_string symbol );
+LIB_EXPORT fcml_st_symbol* LIB_CALL fcml_fn_symbol_get( fcml_st_symbol_table symbol_table, const fcml_string symbol );
 
 /**
  * Removes all symbols from the symbol table.

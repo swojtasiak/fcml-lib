@@ -125,7 +125,7 @@ typedef struct fcml_st_parser_result {
  * @param result Reusable result holder.
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, const fcml_string instruction, fcml_st_parser_result *result );
 
 /**
  * Prepares reusable result holder for parser.

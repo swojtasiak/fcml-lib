@@ -111,8 +111,8 @@ typedef struct fcml_st_render_config {
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  *
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len,
-        fcml_st_disassembler_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_render( const fcml_st_dialect *dialect, const fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len,
+        const fcml_st_disassembler_result *result );
 
 #ifdef __cplusplus
 }

@@ -207,7 +207,7 @@ void print_address( fcml_st_address *address, fcml_bool is_rex ) {
 			printf("     Value: 0x%08x\n", address->offset.off32 );
 			break;
 		case FCML_DS_64:
-			printf("     Value: 0x%016llx\n", address->offset.off64 );
+			printf("     Value: 0x%016lx\n", (uint64_t)address->offset.off64 );
 			break;
 		}
 	} else if( address->address_form == FCML_AF_COMBINED ) {
@@ -230,7 +230,7 @@ void print_address( fcml_st_address *address, fcml_bool is_rex ) {
 			printf("      Value: 0x%08x\n", displacement->int32 );
 			break;
 		case FCML_DS_64:
-			printf("      Value: 0x%016llx\n", displacement->int64 );
+			printf("      Value: 0x%016lx\n", displacement->int64 );
 			break;
 		}
 	}
@@ -252,7 +252,7 @@ void print_immediate( fcml_st_integer *immediate ) {
 		printf("0x%08x\n", immediate->int32);
 		break;
 	case FCML_DS_64:
-		printf("0x%016llx\n", immediate->int64);
+		printf("0x%016lx\n", immediate->int64);
 		break;
 	}
 }
@@ -397,7 +397,7 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		printf( "  Is RIP: %s\n", get_boolean( modrm_details->is_rip ) );
 		printf( "  ModR/M byte: 0x%02x\n", modrm_details->modrm );
 		if( modrm_details->sib.is_not_null ) {
-			printf( "  SIB byte: 0x%02x\n", modrm_details->sib );
+			printf( "  SIB byte: 0x%02x\n", modrm_details->sib.value );
 		}
 	}
 

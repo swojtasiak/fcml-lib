@@ -160,7 +160,7 @@ fcml_ceh_error fcml_fn_asm_handle_pseudo_operations( fcml_st_assembler_context *
  * Assembler initialization. *
  *****************************/
 
-fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *dialect, fcml_st_assembler **assembler ) {
+fcml_ceh_error LIB_CALL fcml_fn_assembler_init( const fcml_st_dialect *dialect, fcml_st_assembler **assembler ) {
 
     /* Allocate assembler instance.*/
     fcml_ist_asm_enc_assembler *enc_asm = (fcml_ist_asm_enc_assembler*) fcml_fn_env_memory_alloc_clear( sizeof(fcml_ist_asm_enc_assembler) );

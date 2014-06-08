@@ -353,6 +353,7 @@ LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_8( fcml_st_r
  * @param index Index register.
  * @param scale_factor Scale factor.
  * @param disp 16-bit displacement.
+ * @param size_operator Size operator.
  * @return Prepared operand.
  */
 LIB_EXPORT fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp, fcml_usize size_operator );
@@ -418,6 +419,7 @@ LIB_EXPORT void LIB_CALL fcml_fn_cu_free_instruction( fcml_st_instruction *instr
 
 /** Gets operand of given type or NULL if there is no such operand.
  * If more than one operand of given type exist, the first one is returned.
+ * @param instruction Finds an operand of the given type for for given instruction.
  * @param operand_type Operand type.
  * @return Pointer to the operand of given type.
  */

@@ -30,7 +30,7 @@
 #include "fcml_parser_int.h"
 #include "fcml_utils.h"
 
-fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result_out ) {
+fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, const fcml_string instruction, fcml_st_parser_result *result_out ) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*) context->dialect;
     if ( dialect_context_int->instruction_parser ) {
