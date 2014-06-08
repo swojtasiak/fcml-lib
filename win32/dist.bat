@@ -1,3 +1,4 @@
+rem In order to build the project use VS directly. This file is here for internal purpose only ans houldn't be used.
 set base=%1
 rd /s /q %base%\dist
 mkdir %base%\dist
