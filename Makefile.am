@@ -1,7 +1,8 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = win32/vs2008/fcml/fcml-check/fcml-check.vcproj \
+EXTRA_DIST = win32/dist.bat \
+	win32/vs2008/fcml/fcml-check/fcml-check.vcproj \
 	win32/vs2008/fcml/fcml.sln \
 	win32/vs2008/fcml/fcml/dllmain.c \
 	win32/vs2008/fcml/fcml/fcml.def \
