@@ -23,12 +23,15 @@
 #include <fcml_types.h>
 
 #ifdef FCML_MSCC
-#ifdef HSDIS_EXPORTS
+#ifdef HSDIS_EXPORT_DLL
 #define HSDIS_API __declspec(dllexport)
-#else
+#endif
+#ifdef HSDIS_IMPORT_DLL
 #define HSDIS_API __declspec(dllimport)
 #endif
-#else
+#endif
+
+#ifndef HSDIS_API
 #define HSDIS_API
 #endif
 
