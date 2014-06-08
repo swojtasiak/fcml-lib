@@ -47,14 +47,14 @@ typedef struct fcml_st_mp_mnemonic_set {
 } fcml_st_mp_mnemonic_set;
 
 typedef struct fcml_st_mp_config {
-	fcml_bool use_shortcut;
-	fcml_nuint8_t pseudo_opcode;
-	fcml_nuint8_t suffix;
-	fcml_usize effective_osa;
-	fcml_usize effective_asa;
-	fcml_bool is_memory;
-	fcml_usize memory_data_size;
-	fcml_nuint8_t l;
+    fcml_bool use_shortcut;
+    fcml_nuint8_t pseudo_opcode;
+    fcml_nuint8_t suffix;
+    fcml_usize effective_osa;
+    fcml_usize effective_asa;
+    fcml_bool is_memory;
+    fcml_usize memory_data_size;
+    fcml_nuint8_t l;
 } fcml_st_mp_config;
 
 fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_st_mp_mnemonic_set **mnemonics );

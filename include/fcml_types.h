@@ -199,7 +199,7 @@ typedef void* fcml_ptr;
 typedef fcml_uint32_t fcml_flags;
 
 typedef fcml_uint32_t fcml_usize;
-typedef fcml_int32_t  fcml_size;
+typedef fcml_int32_t fcml_size;
 
 #define FCML_TRUE		1
 #define FCML_FALSE		0
@@ -213,53 +213,53 @@ typedef fcml_int32_t  fcml_size;
 /* Nulleable types. */
 
 typedef struct fcml_nuint8_t {
-	fcml_uint8_t value;
-	fcml_bool is_not_null;
+    fcml_uint8_t value;
+    fcml_bool is_not_null;
 } fcml_nuint8_t;
 
 typedef struct fcml_nuint16_t {
-	fcml_uint16_t value;
-	fcml_bool is_not_null;
+    fcml_uint16_t value;
+    fcml_bool is_not_null;
 } fcml_nuint16_t;
 
 typedef struct fcml_nuint32_t {
-	fcml_uint32_t value;
-	fcml_bool is_not_null;
+    fcml_uint32_t value;
+    fcml_bool is_not_null;
 } fcml_nuint32_t;
 
 typedef struct fcml_nuint64_t {
-	fcml_uint64_t value;
-	fcml_bool is_not_null;
+    fcml_uint64_t value;
+    fcml_bool is_not_null;
 } fcml_nuint64_t;
 
 typedef struct fcml_nint8_t {
-	fcml_int8_t value;
-	fcml_bool is_not_null;
+    fcml_int8_t value;
+    fcml_bool is_not_null;
 } fcml_nint8_t;
 
 typedef struct fcml_nint16_t {
-	fcml_int16_t value;
-	fcml_bool is_not_null;
+    fcml_int16_t value;
+    fcml_bool is_not_null;
 } fcml_nint16_t;
 
 typedef struct fcml_nint32_t {
-	fcml_int32_t value;
-	fcml_bool is_not_null;
+    fcml_int32_t value;
+    fcml_bool is_not_null;
 } fcml_nint32_t;
 
 typedef struct fcml_nint64_t {
-	fcml_int64_t value;
-	fcml_bool is_not_null;
+    fcml_int64_t value;
+    fcml_bool is_not_null;
 } fcml_nint64_t;
 
 typedef struct fcml_st_integer {
     fcml_usize size;
     fcml_bool is_signed;
     // Data fields.
-	fcml_int8_t int8;
-	fcml_int16_t int16;
-	fcml_int32_t int32;
-	fcml_int64_t int64;
+    fcml_int8_t int8;
+    fcml_int16_t int16;
+    fcml_int32_t int32;
+    fcml_int64_t int64;
 } fcml_st_integer;
 
 #endif /* FCML_TYPES_H_ */

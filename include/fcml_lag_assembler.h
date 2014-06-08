@@ -31,12 +31,12 @@
 
 /** Result holder for load-and-go assembler. */
 typedef struct fcml_st_lag_assembler_result {
-	/** Error and warning messages from one-line assembler. */
-	fcml_st_ceh_error_container errors;
-	/** Number of line where assembler failed. */
-	fcml_int error_line;
-	/** Chain of assembled instructions.*/
-	fcml_st_assembled_instruction *instructions;
+    /** Error and warning messages from one-line assembler. */
+    fcml_st_ceh_error_container errors;
+    /** Number of line where assembler failed. */
+    fcml_int error_line;
+    /** Chain of assembled instructions.*/
+    fcml_st_assembled_instruction *instructions;
 } fcml_st_lag_assembler_result;
 
 /** Load-and-go assembler runtime context. */
@@ -44,11 +44,11 @@ typedef struct fcml_st_lag_assembler_context {
     /** Assembler instance that should be used to assemble instructions. */
     fcml_st_assembler *assembler;
     /** Assembler behavior can be configured here.*/
-	fcml_st_assembler_conf configuration;
-	/** Instruction entry point configuration. */
-	fcml_st_entry_point entry_point;
-	/** Symbols table. */
-	fcml_st_symbol_table symbol_table;
+    fcml_st_assembler_conf configuration;
+    /** Instruction entry point configuration. */
+    fcml_st_entry_point entry_point;
+    /** Symbols table. */
+    fcml_st_symbol_table symbol_table;
 } fcml_st_lag_assembler_context;
 
 /**
@@ -72,7 +72,8 @@ typedef struct fcml_st_lag_assembler_context {
  * @see fcml_fn_lag_assembler_result_prepare
  * @see fcml_fn_symbol_table_alloc
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *context, const fcml_string *source_code, fcml_st_lag_assembler_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *context, const fcml_string *source_code,
+        fcml_st_lag_assembler_result *result );
 
 /**
  * Prepares reusable result holder for assembler.

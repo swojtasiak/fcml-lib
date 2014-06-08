@@ -45,8 +45,8 @@ fcml_uint8_t fcml_fn_stream_read( fcml_st_memory_stream *stream, fcml_bool *resu
 fcml_bool fcml_fn_stream_write( fcml_st_memory_stream *stream, fcml_uint8_t data );
 fcml_uint8_t fcml_fn_stream_peek( fcml_st_memory_stream *stream, fcml_bool *result );
 fcml_int32_t fcml_fn_stream_size( const fcml_st_memory_stream *stream );
-int fcml_fn_stream_read_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer, fcml_usize size);
-int fcml_fn_stream_write_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer, fcml_usize size);
+int fcml_fn_stream_read_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer, fcml_usize size );
+int fcml_fn_stream_write_bytes( fcml_st_memory_stream *stream, fcml_ptr buffer, fcml_usize size );
 fcml_uint16_t fcml_fn_stream_read_word( fcml_st_memory_stream *stream, fcml_bool *result );
 fcml_uint32_t fcml_fn_stream_read_dword( fcml_st_memory_stream *stream, fcml_bool *result );
 fcml_uint64_t fcml_fn_stream_read_qword( fcml_st_memory_stream *stream, fcml_bool *result );

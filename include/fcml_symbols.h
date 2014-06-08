@@ -40,10 +40,10 @@ typedef fcml_ptr fcml_st_symbol_table;
 
 /** Represents one named symbol with associated value. */
 typedef struct fcml_st_symbol {
-	/* The symbol name. */
-	fcml_string symbol;
-	/* The symbol value. */
-	fcml_int64_t value;
+    /* The symbol name. */
+    fcml_string symbol;
+    /* The symbol value. */
+    fcml_int64_t value;
 } fcml_st_symbol;
 
 /**

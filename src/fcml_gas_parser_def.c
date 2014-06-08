@@ -72,18 +72,18 @@
 /* Line 371 of yacc.c  */
 #line 24 "fcml_gas_parser_def.y"
 
-	#include <stdio.h>
-	
-	#include "fcml_parser_utils.h"
-	
-	void gas_error( struct fcml_st_parser_data *pd, const char *error );
-	
-	/* Macro responsible for handling 'Out of memory' errors. */
-	#define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
-	
-	/* Macro responsible for adding error messages to result. */
-	#define ADD_ERROR_MSG(x) { yyerror( pd, x ); }
-	
+    #include <stdio.h>
+    
+    #include "fcml_parser_utils.h"
+    
+    void gas_error( struct fcml_st_parser_data *pd, const char *error );
+    
+    /* Macro responsible for handling 'Out of memory' errors. */
+    #define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
+    
+    /* Macro responsible for adding error messages to result. */
+    #define ADD_ERROR_MSG(x) { yyerror( pd, x ); }
+    
 
 /* Line 371 of yacc.c  */
 #line 90 "fcml_gas_parser_def.c"
@@ -160,16 +160,16 @@ typedef union YYSTYPE
 /* Line 387 of yacc.c  */
 #line 97 "fcml_gas_parser_def.y"
 
-	/*Complex values.*/
-	fcml_st_ast_val_integer integer_value;
-	fcml_st_register reg_value;
-	fcml_st_ast_node *ast;
-	struct {
-		fcml_string text;
-		int length;
-	} symbol;
-	fcml_hints hints;
-	fcml_prefixes prefixes;
+    /*Complex values.*/
+    fcml_st_ast_val_integer integer_value;
+    fcml_st_register reg_value;
+    fcml_st_ast_node *ast;
+    struct {
+        fcml_string text;
+        int length;
+    } symbol;
+    fcml_hints hints;
+    fcml_prefixes prefixes;
 
 
 /* Line 387 of yacc.c  */
@@ -201,8 +201,8 @@ int gas_parse ();
 /* Line 390 of yacc.c  */
 #line 110 "fcml_gas_parser_def.y"
 
-	#include "fcml_gas_lexer.h"
-	#define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
+    #include "fcml_gas_lexer.h"
+    #define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
 
 /* Line 390 of yacc.c  */
 #line 209 "fcml_gas_parser_def.c"
@@ -1504,7 +1504,7 @@ YYSTYPE yylval YY_INITIAL_VALUE(yyval_default);
 #line 115 "fcml_gas_parser_def.y"
 { 
     /* Uncomment it in order to enable debugging */
-	/* gas_debug = 1; */
+    /* gas_debug = 1; */
 }
 /* Line 1570 of yacc.c  */
 #line 1511 "fcml_gas_parser_def.c"

@@ -92,18 +92,18 @@ typedef union YYSTYPE
 /* Line 2053 of yacc.c  */
 #line 104 "fcml_intel_parser_def.y"
 
-	/*Complex values.*/
-	fcml_st_ast_val_integer integer_value;
-	fcml_st_ast_val_float float_value;
-	fcml_st_register reg_value;
-	fcml_st_ast_node *ast;
-	struct {
-		fcml_string text;
-		int length;
-	} symbol;
-	fcml_st_size_operator size_operator;
-	fcml_hints hints;
-	fcml_prefixes prefixes;
+    /*Complex values.*/
+    fcml_st_ast_val_integer integer_value;
+    fcml_st_ast_val_float float_value;
+    fcml_st_register reg_value;
+    fcml_st_ast_node *ast;
+    struct {
+        fcml_string text;
+        int length;
+    } symbol;
+    fcml_st_size_operator size_operator;
+    fcml_hints hints;
+    fcml_prefixes prefixes;
 
 
 /* Line 2053 of yacc.c  */

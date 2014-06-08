@@ -1066,96 +1066,95 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
 /* * END OF MNEMONICS **/
 /* *********************/
 
-fcml_ceh_error fcml_ifn_asm_dialect_get_register_intel( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_string printable_reg;
-	error = fcml_fn_cmn_dialect_get_register( reg, &printable_reg, is_rex );
-	if( error ) {
-		return error;
-	}
-	fcml_fn_env_str_strncpy( buffer, printable_reg, buffer_length );
-	return error;
+fcml_ceh_error fcml_ifn_asm_dialect_get_register_intel( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_string printable_reg;
+    error = fcml_fn_cmn_dialect_get_register( reg, &printable_reg, is_rex );
+    if ( error ) {
+        return error;
+    }
+    fcml_fn_env_str_strncpy( buffer, printable_reg, buffer_length );
+    return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_intel( const fcml_st_dialect *dialect, fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_mp_mnemonic_set **mnemonics ) {
+fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_intel( const fcml_st_dialect *dialect, fcml_st_def_instruction_desc *instruction,
+        fcml_st_def_addr_mode_desc *addr_mode, fcml_st_mp_mnemonic_set **mnemonics ) {
 
-	fcml_string mnemonic_pattern = NULL;
+    fcml_string mnemonic_pattern = NULL;
 
-	fcml_uint32_t keys[] = {
-		FCML_ASM_DIALECT_INSTRUCTION( instruction->instruction, addr_mode->addr_mode ),
-		FCML_ASM_DIALECT_INSTRUCTION( instruction->instruction, FCML_AM_ALL )
-	};
+    fcml_uint32_t keys[] = { FCML_ASM_DIALECT_INSTRUCTION( instruction->instruction, addr_mode->addr_mode ), FCML_ASM_DIALECT_INSTRUCTION(
+            instruction->instruction, FCML_AM_ALL ) };
 
-	fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*)dialect;
+    fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*) dialect;
 
-	int i;
-	for( i = 0; i < sizeof( keys ) / sizeof( fcml_uint32_t ) && !mnemonic_pattern; i++ ) {
-		fcml_st_dialect_mnemonic *dialect_mnemonic = (fcml_st_dialect_mnemonic*)fcml_fn_coll_map_get( dialect_context->dialect_mnemonics_lookup, &(keys[i]) );
-		if( dialect_mnemonic ) {
-			mnemonic_pattern = dialect_mnemonic->mnemonic;
-		}
-	}
+    int i;
+    for ( i = 0; i < sizeof( keys ) / sizeof(fcml_uint32_t) && !mnemonic_pattern; i++ ) {
+        fcml_st_dialect_mnemonic *dialect_mnemonic = (fcml_st_dialect_mnemonic*) fcml_fn_coll_map_get( dialect_context->dialect_mnemonics_lookup,
+                &( keys[i] ) );
+        if ( dialect_mnemonic ) {
+            mnemonic_pattern = dialect_mnemonic->mnemonic;
+        }
+    }
 
-	if( !mnemonic_pattern ) {
-		/* Choose best mnemonic for instruction.*/
-		mnemonic_pattern = instruction->mnemonic;
-	}
+    if ( !mnemonic_pattern ) {
+        /* Choose best mnemonic for instruction.*/
+        mnemonic_pattern = instruction->mnemonic;
+    }
 
-	return fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
+    return fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *dialect, fcml_st_def_instruction_desc *instruction, fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonics_counter ) {
+fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *dialect, fcml_st_def_instruction_desc *instruction,
+        fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonics_counter ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     fcml_st_mp_mnemonic_set *mnemonic_set;
 
     error = fcml_ifn_asm_dialect_get_parsed_mnemonics_intel( dialect, instruction, addr_mode, &mnemonic_set );
-    if( !error ) {
+    if ( !error ) {
 
-		error = fcml_fn_cmn_dialect_get_mnemonic( dialect, mnemonic_set, mnemonics, condition, mnemonics_counter );
+        error = fcml_fn_cmn_dialect_get_mnemonic( dialect, mnemonic_set, mnemonics, condition, mnemonics_counter );
 
-		fcml_fn_mp_free_mnemonics( mnemonic_set );
+        fcml_fn_mp_free_mnemonics( mnemonic_set );
 
     }
 
     return error;
 }
 
-
-fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction, fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_en_instruction instruction_code, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction,
+        fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_en_instruction instruction_code, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     fcml_bool changed = FCML_FALSE;
 
-    if( mnemonic ) {
+    if ( mnemonic ) {
 
         /* JMP and CALL needs hint FCML_HINT_INDIRECT_POINTER explicitly set if
          * absolute offsets are used instead of immediate values. It has to be done
          * in order to make a difference between operands encoded as absolute offsets,
          * because without hints they would be assembled to indirect and direct branches.
          */
-        if( ( instruction_code == F_JMP || instruction_code == F_CALL )
-        		&& instrunction->operands_count == 1
-        		&& instrunction->operands[0].type == FCML_OT_ADDRESS
-        		&& instrunction->operands[0].address.address_form == FCML_AF_OFFSET ) {
+        if ( ( instruction_code == F_JMP || instruction_code == F_CALL ) && instrunction->operands_count == 1
+                && instrunction->operands[0].type == FCML_OT_ADDRESS && instrunction->operands[0].address.address_form == FCML_AF_OFFSET ) {
 
-        	if( !( instrunction->hints & ( FCML_HINT_DIRECT_POINTER | FCML_HINT_FAR_POINTER ) ) ) {
-        		instrunction->hints |= FCML_HINT_INDIRECT_POINTER;
-        		changed = FCML_TRUE;
-        	}
+            if ( !( instrunction->hints & ( FCML_HINT_DIRECT_POINTER | FCML_HINT_FAR_POINTER ) ) ) {
+                instrunction->hints |= FCML_HINT_INDIRECT_POINTER;
+                changed = FCML_TRUE;
+            }
 
-        	if( !( instrunction->hints & FCML_HINT_FAR_POINTER ) ) {
-				instrunction->hints |= FCML_HINT_NEAR_POINTER;
-				changed = FCML_TRUE;
-			}
+            if ( !( instrunction->hints & FCML_HINT_FAR_POINTER ) ) {
+                instrunction->hints |= FCML_HINT_NEAR_POINTER;
+                changed = FCML_TRUE;
+            }
 
         }
 
-		if( has_been_changed ) {
-			*has_been_changed = changed;
-		}
+        if ( has_been_changed ) {
+            *has_been_changed = changed;
+        }
 
     }
 
@@ -1163,24 +1162,21 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_
 }
 
 fcml_string fcml_fnp_asm_dialect_get_pseudo_operation_mnemonic_intel( fcml_en_pseudo_operations pseudo_operation ) {
-	fcml_string mnemonic = NULL;
-	switch( pseudo_operation ) {
-	case FP_DB:
-		mnemonic = fcml_fn_env_str_strdup( FCML_TEXT( "db" ) );
-		break;
-	default:
-		break;
-	}
-	return mnemonic;
+    fcml_string mnemonic = NULL;
+    switch ( pseudo_operation ) {
+    case FP_DB:
+        mnemonic = fcml_fn_env_str_strdup( FCML_TEXT( "db" ) );
+        break;
+    default:
+        break;
+    }
+    return mnemonic;
 }
 
-fcml_st_dialect_pseudpo_operation_mnemonic fcml_iarr_dialect_pseudpo_operation_mnemonic_intel[] = {
-	{ "db", FP_DB },
-	{ NULL, FP_NO_PSEUDO_OP }
-};
+fcml_st_dialect_pseudpo_operation_mnemonic fcml_iarr_dialect_pseudpo_operation_mnemonic_intel[] = { { "db", FP_DB }, { NULL, FP_NO_PSEUDO_OP } };
 
 fcml_st_dialect_pseudpo_operation_mnemonic *fcml_ifn_asm_get_pseudo_operation_mnemonics_intel( void ) {
-	return &fcml_iarr_dialect_pseudpo_operation_mnemonic_intel[0];
+    return &fcml_iarr_dialect_pseudpo_operation_mnemonic_intel[0];
 }
 
 fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel( fcml_uint32_t config_flags, fcml_st_dialect **dialect ) {
@@ -1189,8 +1185,9 @@ fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel( fcml_uint32_t config_flags, 
 
     fcml_st_dialect_context_int *dialect_context_intel = NULL;
 
-    error = fcml_fn_asm_dialect_alloc_mnemonic_lookup( &dialect_context_intel, fcml_arr_dialect_intel_mnemonics, sizeof( fcml_arr_dialect_intel_mnemonics ) / sizeof( fcml_st_dialect_mnemonic ) );
-    if( error ) {
+    error = fcml_fn_asm_dialect_alloc_mnemonic_lookup( &dialect_context_intel, fcml_arr_dialect_intel_mnemonics,
+            sizeof( fcml_arr_dialect_intel_mnemonics ) / sizeof(fcml_st_dialect_mnemonic) );
+    if ( error ) {
         fcml_fn_env_memory_free( dialect_context_intel );
         return error;
     }
@@ -1209,7 +1206,7 @@ fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel( fcml_uint32_t config_flags, 
     dialect_context_intel->assembler_preprocessor = &fcml_ifn_asm_dialect_assembler_preprocessor_intel;
     dialect_context_intel->disassembler_postprocessor = NULL;
 
-    *dialect = (fcml_st_dialect*)dialect_context_intel;
+    *dialect = (fcml_st_dialect*) dialect_context_intel;
 
     return error;
 

@@ -50,9 +50,9 @@ typedef struct fcml_st_asm_optimizer_context {
 
 /** Processing details for optimizers. */
 typedef struct fcml_st_asm_optimizer_processing_details {
-	/** Allowed values of the operand size attribute calculated by the assembler engine.
-	 * It is optimizer who decides which one should be finally used.
-	 */
+    /** Allowed values of the operand size attribute calculated by the assembler engine.
+     * It is optimizer who decides which one should be finally used.
+     */
     fcml_st_nullable_size_flags allowed_eosa;
     /** Allowed values of the address size attribute calculated by the assembler engine.
      * It is optimizer who decides which one should be finally used.
@@ -65,10 +65,10 @@ typedef struct fcml_st_asm_optimizer_processing_details {
      */
     fcml_usize easa;
     /** Effective operand size attribute chosen for currently processed instruction form.
-	 * If it is set it can not be changed anymore. It has higher priority than flags
-	 * above. Take into account that it is effective operand size attribute so it can be
-	 * forced using instruction prefixes to override the default attribute size.
-	 */
+     * If it is set it can not be changed anymore. It has higher priority than flags
+     * above. Take into account that it is effective operand size attribute so it can be
+     * forced using instruction prefixes to override the default attribute size.
+     */
     fcml_usize eosa;
     /** L bit from VEX like prefixes set for encoded instruction.*/
     fcml_nuint8_t l;
@@ -91,7 +91,8 @@ typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)( fcml_ptr args );
  * @param args Arguments that should be passed to the callback.
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  */
-typedef fcml_ceh_error (LIB_CALL *fcml_fnp_asm_optimizer)( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
+typedef fcml_ceh_error (LIB_CALL *fcml_fnp_asm_optimizer)( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags,
+        fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
 
 /* Optimizers flags that can be used to configure optimization process. */
 #define FCML_OPTF_ASA_16        0x01
@@ -111,7 +112,8 @@ typedef fcml_ceh_error (LIB_CALL *fcml_fnp_asm_optimizer)( fcml_st_asm_optimizer
  * @param callback_args Arguments that should be passed to the callback.
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags, fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer( fcml_st_asm_optimizer_context *context, fcml_st_asm_optimizer_processing_details *ds_flags,
+        fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args );
 
 #ifdef __cplusplus
 }

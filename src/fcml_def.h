@@ -128,7 +128,7 @@ typedef struct fcml_st_def_instruction_code_desc {
 /* Describes one addressing mode of instruction. */
 typedef struct fcml_st_def_instruction_desc {
     /* Instruction code.*/
-	fcml_en_instruction instruction;
+    fcml_en_instruction instruction;
     /* Optional array of multi-instruction codes.*/
     fcml_st_def_instruction_code_desc *multi_instruction;
     /* Mnemonic.*/

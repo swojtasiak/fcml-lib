@@ -29,15 +29,15 @@
 /***********************/
 
 typedef struct fcml_st_coll_list_element {
-	struct fcml_st_coll_list_element *prev;
-	struct fcml_st_coll_list_element *next;
-	fcml_ptr item;
+    struct fcml_st_coll_list_element *prev;
+    struct fcml_st_coll_list_element *next;
+    fcml_ptr item;
 } fcml_st_coll_list_element;
 
 typedef struct fcml_st_coll_list {
-	struct fcml_st_coll_list_element *head;
-	struct fcml_st_coll_list_element *tail;
-	fcml_int32_t size;
+    struct fcml_st_coll_list_element *head;
+    struct fcml_st_coll_list_element *tail;
+    fcml_int32_t size;
 } fcml_st_coll_list;
 
 typedef void (*fcml_fp_coll_list_action)( fcml_ptr item_value, fcml_ptr args );
@@ -46,7 +46,7 @@ fcml_st_coll_list *fcml_fn_coll_list_alloc_with_args( fcml_ptr handler_args );
 fcml_st_coll_list *fcml_fn_coll_list_alloc();
 fcml_st_coll_list_element *fcml_fn_coll_list_add_front( fcml_st_coll_list *list, fcml_ptr item );
 fcml_st_coll_list_element *fcml_fn_coll_list_add_back( fcml_st_coll_list *list, fcml_ptr item );
-fcml_st_coll_list_element *fcml_fn_coll_list_insert(  fcml_st_coll_list *list, fcml_st_coll_list_element *prev_element, fcml_ptr item );
+fcml_st_coll_list_element *fcml_fn_coll_list_insert( fcml_st_coll_list *list, fcml_st_coll_list_element *prev_element, fcml_ptr item );
 void fcml_fn_coll_list_traverse( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, fcml_ptr item_handler_args );
 void fcml_fn_coll_list_remove( fcml_st_coll_list *list, fcml_st_coll_list_element *element );
 void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action item_handler, fcml_ptr item_handler_args );
@@ -64,16 +64,16 @@ void fcml_fn_coll_list_free( fcml_st_coll_list *list, fcml_fp_coll_list_action i
 
 /* Hash & Equals for strings.*/
 
-typedef void (*fcml_fnp_coll_map_entry_handler) ( fcml_ptr key, fcml_ptr value, fcml_ptr args );
-typedef fcml_bool (*fcml_fnp_coll_map_entry_handler_if) ( fcml_ptr key, fcml_ptr value, fcml_ptr args );
-typedef fcml_uint32_t (*fcml_fnp_coll_map_key_hash) ( fcml_ptr key );
-typedef fcml_bool (*fcml_fnp_coll_map_key_equals) ( fcml_ptr key1, fcml_ptr key2 );
+typedef void (*fcml_fnp_coll_map_entry_handler)( fcml_ptr key, fcml_ptr value, fcml_ptr args );
+typedef fcml_bool (*fcml_fnp_coll_map_entry_handler_if)( fcml_ptr key, fcml_ptr value, fcml_ptr args );
+typedef fcml_uint32_t (*fcml_fnp_coll_map_key_hash)( fcml_ptr key );
+typedef fcml_bool (*fcml_fnp_coll_map_key_equals)( fcml_ptr key1, fcml_ptr key2 );
 
 typedef struct fcml_st_coll_map_descriptor {
-	fcml_fnp_coll_map_key_hash hash_function;
-	fcml_fnp_coll_map_key_equals equals_function;
-	fcml_fnp_coll_map_entry_handler entry_free_function;
-	fcml_ptr entry_free_args;
+    fcml_fnp_coll_map_key_hash hash_function;
+    fcml_fnp_coll_map_key_equals equals_function;
+    fcml_fnp_coll_map_entry_handler entry_free_function;
+    fcml_ptr entry_free_args;
 } fcml_st_coll_map_descriptor;
 
 typedef fcml_ptr fcml_coll_map;

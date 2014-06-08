@@ -44,67 +44,67 @@ extern "C" {
 
 /** Parser configuration. */
 typedef struct fcml_st_parser_config {
-	/** Set to true in order to ignore all undefined symbols.
-	 * In such a case every unknown symbol is treated as 0.
-	 */
-	fcml_bool ignore_undefined_symbols;
-	/** Disables symbols support.
-	 * It set to true every defined label will cause an error.
-	 */
-	fcml_bool disable_symbols_declaration;
-	/** Set to true in order to allow overriding existing labels.
-	 * If set to false parser returns "Symbol already exists" error when symbol already exists.
-	 */
-	fcml_bool override_labels;
-	/** By default parser ignores all symbol declarations
-	 * if there is no symbol table provided in the parser
-	 * context. By setting this value to true you can force
-	 * the parser to allocate new symbol table when needed.
-	 * Remember that you are then responsible for freeing it,
-	 * so this functionality can be a bit dangerous because
-	 * you have to check the existence of the symbol table
-	 * every time it should be deallocated.
-	 */
-	fcml_bool alloc_symbol_table_if_needed;
-	// TODO: Dodać do konfiguracji.
-	/** Enables textual error messages. */
-	fcml_bool enable_error_messages;
+    /** Set to true in order to ignore all undefined symbols.
+     * In such a case every unknown symbol is treated as 0.
+     */
+    fcml_bool ignore_undefined_symbols;
+    /** Disables symbols support.
+     * It set to true every defined label will cause an error.
+     */
+    fcml_bool disable_symbols_declaration;
+    /** Set to true in order to allow overriding existing labels.
+     * If set to false parser returns "Symbol already exists" error when symbol already exists.
+     */
+    fcml_bool override_labels;
+    /** By default parser ignores all symbol declarations
+     * if there is no symbol table provided in the parser
+     * context. By setting this value to true you can force
+     * the parser to allocate new symbol table when needed.
+     * Remember that you are then responsible for freeing it,
+     * so this functionality can be a bit dangerous because
+     * you have to check the existence of the symbol table
+     * every time it should be deallocated.
+     */
+    fcml_bool alloc_symbol_table_if_needed;
+    // TODO: Dodać do konfiguracji.
+    /** Enables textual error messages. */
+    fcml_bool enable_error_messages;
 } fcml_st_parser_config;
 
 /** Parser runtime context. */
 typedef struct fcml_st_parser_context {
-	/** Dialect to be used by parser. Defines supported instructions syntax. */
-	fcml_st_dialect *dialect;
-	/** Parser configuration. */
-	fcml_st_parser_config configuration;
-	/** Instruction pointer. RIP/EIP register value used as a value for newly declared symbols.
-	 * This value is never changed by the parser.
-	 */
-	fcml_ip ip;
-	/** Symbol table. It holds symbols added by the user as
-	 * well as symbols allocated by the parsers (labels). It is
-	 * very important to free this container on your own
-	 * because even if it is not allocated by the user it can be
-	 * set by the parser when the first symbol definition is found.
-	 * So the most safe way to manage it is to always use
-	 * "fcml_fn_symbol_table_free" function as soon as context
-	 * if going to be freed.
-	 */
-	fcml_st_symbol_table symbol_table;
+    /** Dialect to be used by parser. Defines supported instructions syntax. */
+    fcml_st_dialect *dialect;
+    /** Parser configuration. */
+    fcml_st_parser_config configuration;
+    /** Instruction pointer. RIP/EIP register value used as a value for newly declared symbols.
+     * This value is never changed by the parser.
+     */
+    fcml_ip ip;
+    /** Symbol table. It holds symbols added by the user as
+     * well as symbols allocated by the parsers (labels). It is
+     * very important to free this container on your own
+     * because even if it is not allocated by the user it can be
+     * set by the parser when the first symbol definition is found.
+     * So the most safe way to manage it is to always use
+     * "fcml_fn_symbol_table_free" function as soon as context
+     * if going to be freed.
+     */
+    fcml_st_symbol_table symbol_table;
 } fcml_st_parser_context;
 
 /** Reusable result holder */
 typedef struct fcml_st_parser_result {
-	/** Parsing errors and warnings going here. */
-	fcml_st_ceh_error_container errors;
-	/** Defined symbol if there is any.
-	 * Remember that this symbol is also stored in the context's symbol table.
-	 * It is the symbol table that is the owner and that is responsible
-	 * for freeing it.
-	 */
-	fcml_st_symbol *symbol;
-	/** Parsed instruction as generic instruction model. */
-	fcml_st_instruction *instruction;
+    /** Parsing errors and warnings going here. */
+    fcml_st_ceh_error_container errors;
+    /** Defined symbol if there is any.
+     * Remember that this symbol is also stored in the context's symbol table.
+     * It is the symbol table that is the owner and that is responsible
+     * for freeing it.
+     */
+    fcml_st_symbol *symbol;
+    /** Parsed instruction as generic instruction model. */
+    fcml_st_instruction *instruction;
 } fcml_st_parser_result;
 
 /**

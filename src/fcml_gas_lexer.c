@@ -689,11 +689,11 @@ static yyconst flex_int16_t yy_chk[666] =
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #line 21 "fcml_gas_lexer.l"
-	#include <stdio.h>
-	#include <stdlib.h>
-	
-	#include "fcml_common_lex.h"
-	#include "fcml_gas_parser_def.h"
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    #include "fcml_common_lex.h"
+    #include "fcml_gas_parser_def.h"
 #define YY_NO_INPUT 1
 #define YY_NO_UNISTD_H 1
 /* White spaces. */
@@ -1580,7 +1580,7 @@ FCML_FM_SIMD_256_REG(FCML_REG_YMM15)
 case 112:
 YY_RULE_SETUP
 #line 185 "fcml_gas_lexer.l"
-FCML_FM_FPU_REG(FCML_REG_ST0)			
+FCML_FM_FPU_REG(FCML_REG_ST0)            
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
@@ -1726,57 +1726,57 @@ case 140:
 YY_RULE_SETUP
 #line 224 "fcml_gas_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_LOCK;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_LOCK;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
 #line 229 "fcml_gas_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_REPNE;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_REPNE;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
 #line 234 "fcml_gas_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_REPE;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_REPE;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
 #line 239 "fcml_gas_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_XACQUIRE;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_XACQUIRE;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
 #line 244 "fcml_gas_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_XRELEASE;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_XRELEASE;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
 #line 249 "fcml_gas_lexer.l"
 {
-					yylval->hints = FCML_PREFIX_BRANCH_HINT;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->hints = FCML_PREFIX_BRANCH_HINT;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
 #line 254 "fcml_gas_lexer.l"
 {
-					yylval->hints = FCML_PREFIX_NOBRANCH_HINT;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->hints = FCML_PREFIX_NOBRANCH_HINT;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 /* Identifiers. */
 case 147:
@@ -1793,10 +1793,10 @@ case 148:
 YY_RULE_SETUP
 #line 267 "fcml_gas_lexer.l"
 {
-					yylval->symbol.text = (fcml_string)yytext;
-					yylval->symbol.length = (fcml_usize)yyleng;
-					return FCML_TK_SYMBOL; 
-				}
+                    yylval->symbol.text = (fcml_string)yytext;
+                    yylval->symbol.length = (fcml_usize)yyleng;
+                    return FCML_TK_SYMBOL; 
+                }
 	YY_BREAK
 /* Operators and parentheses. */
 case 149:

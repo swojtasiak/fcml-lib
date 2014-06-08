@@ -71,12 +71,12 @@
  *  Supported processor operating modes.
  */
 typedef enum fcml_en_operating_mode {
-	/** Real-addressing mode, virtual 8086 mode. */
-	FCML_OM_16_BIT = 1,
-	/** Protected/Compatibility mode when 'D' segment descriptor flag is set to 1. */
-	FCML_OM_32_BIT,
-	/** 64-bit mode. ('L' flag of segment descriptor set to 1.) */
-	FCML_OM_64_BIT,
+    /** Real-addressing mode, virtual 8086 mode. */
+    FCML_OM_16_BIT = 1,
+    /** Protected/Compatibility mode when 'D' segment descriptor flag is set to 1. */
+    FCML_OM_32_BIT,
+    /** 64-bit mode. ('L' flag of segment descriptor set to 1.) */
+    FCML_OM_64_BIT,
 } fcml_en_operating_mode;
 
 /* Simple types. */
@@ -329,7 +329,7 @@ typedef fcml_int64_t fcml_ip;
  * Every register is represented as an integer value and it's register type. This enumeration provides all supported register types.
  */
 typedef enum fcml_en_register {
-	/** Undefined register type. */
+    /** Undefined register type. */
     FCML_REG_UNDEFINED = 0,
     /** General purpose register. */
     FCML_REG_GPR,
@@ -351,7 +351,7 @@ typedef enum fcml_en_register {
  * Structure describes x86_64 register.
  */
 typedef struct fcml_st_register {
-	/** Register type. */
+    /** Register type. */
     fcml_en_register type;
     /** Register size in bits. */
     fcml_usize size;
@@ -424,7 +424,7 @@ typedef struct fcml_st_condition {
  * Nullable wrapper for mask of size flags.
  */
 typedef struct fcml_st_nullable_size_flags {
-	/** True if mask is set. */
+    /** True if mask is set. */
     fcml_bool is_set;
     /** Mask of supported size values. */
     fcml_flags flags;
@@ -438,28 +438,28 @@ typedef struct fcml_st_nullable_size_flags {
  * Operand access mode.
  */
 typedef enum fcml_en_access_mode {
-	/** Undefined mode. */
-	FCML_AM_ACCESS_MODE_UNDEFINED = 0,
-	/** Operand is read by instruction. */
-	FCML_AM_READ = 0x01,
-	/** Operand is set by instruction */
-	FCML_AM_WRITE = 0x02,
-	/** Operand is read but can be also set. */
-	FCML_AM_READ_WRITE = FCML_AM_READ | FCML_AM_WRITE
+    /** Undefined mode. */
+    FCML_AM_ACCESS_MODE_UNDEFINED = 0,
+    /** Operand is read by instruction. */
+    FCML_AM_READ = 0x01,
+    /** Operand is set by instruction */
+    FCML_AM_WRITE = 0x02,
+    /** Operand is read but can be also set. */
+    FCML_AM_READ_WRITE = FCML_AM_READ | FCML_AM_WRITE
 } fcml_en_access_mode;
 
 /**
  * Representation of far pointer operand.
  */
 typedef struct fcml_st_far_pointer {
-	/** 16-bit Code segment. */
+    /** 16-bit Code segment. */
     fcml_uint16_t segment;
     /** Size of the offset. */
     fcml_usize offset_size;
     /** 16-bit offset. */
-	fcml_int16_t offset16;
-	/** 32-bit offset. */
-	fcml_int32_t offset32;
+    fcml_int16_t offset16;
+    /** 32-bit offset. */
+    fcml_int32_t offset32;
 } fcml_st_far_pointer;
 
 /* *******************************************/
@@ -471,8 +471,8 @@ typedef struct fcml_st_far_pointer {
  * Distinguish between two types of addressing forms: effective addressing and explicit absolute offset.
  */
 typedef enum fcml_en_address_form {
-	/** Default value set if memory addressing hasn't been configured. */
-	FCML_AF_UNDEFINED,
+    /** Default value set if memory addressing hasn't been configured. */
+    FCML_AF_UNDEFINED,
     /** Absolute offset (address). */
     FCML_AF_OFFSET,
     /** Effective address combined from address components like base register, index registers, factor, displacement etc... */
@@ -483,23 +483,23 @@ typedef enum fcml_en_address_form {
  * Absolute offset.
  */
 typedef struct fcml_st_offset {
-	/** Offset size 16,32 or 64 bits. */
-	fcml_usize size;
-	/** True if offset should be treated as signed value. */
-	fcml_bool is_signed;
-	/** Place for 16-bit absolute offset. */
-	fcml_int16_t off16;
-	/** Place for 32-bit absolute offset. */
-	fcml_int32_t off32;
-	/** Place for 64-bit absolute offset. */
-	fcml_int64_t off64;
+    /** Offset size 16,32 or 64 bits. */
+    fcml_usize size;
+    /** True if offset should be treated as signed value. */
+    fcml_bool is_signed;
+    /** Place for 16-bit absolute offset. */
+    fcml_int16_t off16;
+    /** Place for 32-bit absolute offset. */
+    fcml_int32_t off32;
+    /** Place for 64-bit absolute offset. */
+    fcml_int64_t off64;
 } fcml_st_offset;
 
 /**
  * Effective address.
  */
 typedef struct fcml_st_effective_address {
-	/** GPR base register. @see fcml_st_register*/
+    /** GPR base register. @see fcml_st_register*/
     fcml_st_register base;
     /** GPR index register. @see fcml_st_register*/
     fcml_st_register index;
@@ -513,18 +513,18 @@ typedef struct fcml_st_effective_address {
  * Describes segment register.
  */
 typedef struct fcml_st_segment_selector {
-	/** Used segment register. @see fcml_st_register*/
-	fcml_st_register segment_selector;
-	/** Set to true if given segment register is a default one in given context. This value is set by disassembler. */
-	fcml_bool is_default_reg;
+    /** Used segment register. @see fcml_st_register*/
+    fcml_st_register segment_selector;
+    /** Set to true if given segment register is a default one in given context. This value is set by disassembler. */
+    fcml_bool is_default_reg;
 } fcml_st_segment_selector;
 
 /**
  * Generic memory addressing operator.
  */
 typedef struct fcml_st_address {
-	/** Size of data accessed in memory.*/
-	fcml_usize size_operator;
+    /** Size of data accessed in memory.*/
+    fcml_usize size_operator;
     /** Memory addressing format: absolute offset/effective address. @see fcml_en_effective_address_form*/
     fcml_en_effective_address_form address_form;
     /** Segment register.*/
@@ -539,9 +539,9 @@ typedef struct fcml_st_address {
  * Supported  operand types.
  */
 typedef enum fcml_en_operand_type {
-	/** Operand not used. */
-	FCML_OT_NONE,
-	/** Immediate integer value. */
+    /** Operand not used. */
+    FCML_OT_NONE,
+    /** Immediate integer value. */
     FCML_OT_IMMEDIATE,
     /** Direct far pointer. */
     FCML_OT_FAR_POINTER,
@@ -556,9 +556,9 @@ typedef enum fcml_en_operand_type {
  * Hints dedicated for instruction operands.
  */
 typedef enum fcml_en_operand_hints {
-	/** SIMD operand. All operands which uses SIMD registers (mmx, xmm, ymm) have this flag set. It is for instance
-	 * used by Intel syntax renderer for data size operators (mmword ptr, xmmword ptr, ymmword ptr).
-	 */
+    /** SIMD operand. All operands which uses SIMD registers (mmx, xmm, ymm) have this flag set. It is for instance
+     * used by Intel syntax renderer for data size operators (mmword ptr, xmmword ptr, ymmword ptr).
+     */
     FCML_OP_HINT_MULTIMEDIA_INSTRUCTION = 0x0001,
     /** Relative address. Flags set for all branches which use jumps
      * calculated by displacement relative to the IP of the next instructions.
@@ -569,10 +569,10 @@ typedef enum fcml_en_operand_hints {
      */
     FCML_OP_HINT_PSEUDO_OPCODE = 0x0004,
     /** Offset should be encoded as absolute address.
-	 */
+     */
     FCML_OP_HINT_ABSOLUTE_ADDRESSING = 0x0008,
     /** Offset should be encoded as relative address.
-	 */
+     */
     FCML_OP_HINT_RELATIVE_ADDRESSING = 0x0010,
     /** Encode ModR/M with optional SIB byte if possible. */
     FCML_OP_HINT_SIB_ENCODING = 0x0020
@@ -582,18 +582,18 @@ typedef enum fcml_en_operand_hints {
  * Structure represents one instruction operand.
  */
 typedef struct fcml_st_operand {
-	/** Operand type */
+    /** Operand type */
     fcml_en_operand_type type;
     /** Optional operand level hints. */
     fcml_hints hints;
     /** Immediate value operand. */
-	fcml_st_integer immediate;
-	/** Far pointer operand. */
-	fcml_st_far_pointer far_pointer;
-	/** Effective address or absolute offset. */
-	fcml_st_address address;
-	/** Register operand. */
-	fcml_st_register reg;
+    fcml_st_integer immediate;
+    /** Far pointer operand. */
+    fcml_st_far_pointer far_pointer;
+    /** Effective address or absolute offset. */
+    fcml_st_address address;
+    /** Register operand. */
+    fcml_st_register reg;
 } fcml_st_operand;
 
 /*********************************
@@ -607,18 +607,18 @@ typedef struct fcml_st_operand {
  * with operands.
  */
 typedef enum fcml_en_instruction_hints {
-	/** No hints defined. */
-	FCML_HINT_NO_HINTS,
-	/** Hints instruction to use FAR pointer to address the memory. */
+    /** No hints defined. */
+    FCML_HINT_NO_HINTS,
+    /** Hints instruction to use FAR pointer to address the memory. */
     FCML_HINT_FAR_POINTER = 0x0001,
     /** Hints instruction to use NEAR pointer to address the memory. */
     FCML_HINT_NEAR_POINTER = 0x0002,
     /** This hint is used only by assembler in order to force it to generate three byte VEX/XOP prefix even if prefix fields fits into two bytes. */
     FCML_HINT_LONG_FORM_POINTER = 0x0004,
     /** Hints instruction to use INDIRECT pointer to address the memory. */
-	FCML_HINT_INDIRECT_POINTER = 0x0008,
-	/** Hints instruction to use DIRECT memory addressing. */
-	FCML_HINT_DIRECT_POINTER = 0x0010
+    FCML_HINT_INDIRECT_POINTER = 0x0008,
+    /** Hints instruction to use DIRECT memory addressing. */
+    FCML_HINT_DIRECT_POINTER = 0x0010
 } fcml_en_instruction_hints;
 
 /**
@@ -626,9 +626,9 @@ typedef enum fcml_en_instruction_hints {
  * Generic instruction model (GIM) is a common structure used to describe instruction in a common way used by FCML assembler and disassembler.
  */
 typedef struct fcml_st_instruction {
-	/** Describes explicit instruction prefixes. @ref PREFIX_GROUP "List of explicit prefixes." */
-	fcml_prefixes prefixes;
-	/** Holds instruction level hints. */
+    /** Describes explicit instruction prefixes. @ref PREFIX_GROUP "List of explicit prefixes." */
+    fcml_prefixes prefixes;
+    /** Holds instruction level hints. */
     fcml_hints hints;
     /** Dialect-dependent instruction mnemonic. @see fcml_en_instruction_hints */
     fcml_char *mnemonic;
@@ -650,7 +650,7 @@ typedef struct fcml_st_instruction {
  * An encoded instruction.
  */
 typedef struct fcml_st_instruction_code {
-	/** Pointer to the instruction code. */
+    /** Pointer to the instruction code. */
     fcml_uint8_t *code;
     /** Instruction code length. */
     fcml_usize code_length;
@@ -664,14 +664,14 @@ typedef struct fcml_st_instruction_code {
  * Describes address of an instruction code.
  */
 typedef struct fcml_st_entry_point {
-	/** Processor operating mode 16/32/64-bit.*/
-	fcml_en_operating_mode op_mode;
-	/** Default address size attribute (See 'D' flag of segment descriptor.)*/
-	fcml_usize address_size_attribute;
-	/** Default operand size attribute (See 'D' flag of segment descriptor.)*/
-	fcml_usize operand_size_attribute;
-	/** Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.*/
-	fcml_ip ip;
+    /** Processor operating mode 16/32/64-bit.*/
+    fcml_en_operating_mode op_mode;
+    /** Default address size attribute (See 'D' flag of segment descriptor.)*/
+    fcml_usize address_size_attribute;
+    /** Default operand size attribute (See 'D' flag of segment descriptor.)*/
+    fcml_usize operand_size_attribute;
+    /** Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.*/
+    fcml_ip ip;
 } fcml_st_entry_point;
 
 #endif /* FCML_INT_COMMON_H_ */

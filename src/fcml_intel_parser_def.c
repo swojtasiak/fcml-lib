@@ -72,18 +72,18 @@
 /* Line 371 of yacc.c  */
 #line 24 "fcml_intel_parser_def.y"
 
-	#include <stdio.h>
-	
-	#include "fcml_parser_utils.h"
-	
-	void intel_error( struct fcml_st_parser_data *pd, const char *error );
-	
-	/* Macro responsible for handling 'Out of memory' errors. */
+    #include <stdio.h>
+    
+    #include "fcml_parser_utils.h"
+    
+    void intel_error( struct fcml_st_parser_data *pd, const char *error );
+    
+    /* Macro responsible for handling 'Out of memory' errors. */
     #define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
     
     /* Macro responsible for adding error messages to result. */
     #define ADD_ERROR_MSG(x) { yyerror( pd, x ); }
-	
+    
 
 /* Line 371 of yacc.c  */
 #line 90 "fcml_intel_parser_def.c"
@@ -168,18 +168,18 @@ typedef union YYSTYPE
 /* Line 387 of yacc.c  */
 #line 104 "fcml_intel_parser_def.y"
 
-	/*Complex values.*/
-	fcml_st_ast_val_integer integer_value;
-	fcml_st_ast_val_float float_value;
-	fcml_st_register reg_value;
-	fcml_st_ast_node *ast;
-	struct {
-		fcml_string text;
-		int length;
-	} symbol;
-	fcml_st_size_operator size_operator;
-	fcml_hints hints;
-	fcml_prefixes prefixes;
+    /*Complex values.*/
+    fcml_st_ast_val_integer integer_value;
+    fcml_st_ast_val_float float_value;
+    fcml_st_register reg_value;
+    fcml_st_ast_node *ast;
+    struct {
+        fcml_string text;
+        int length;
+    } symbol;
+    fcml_st_size_operator size_operator;
+    fcml_hints hints;
+    fcml_prefixes prefixes;
 
 
 /* Line 387 of yacc.c  */
@@ -211,8 +211,8 @@ int intel_parse ();
 /* Line 390 of yacc.c  */
 #line 119 "fcml_intel_parser_def.y"
 
-	#include "fcml_intel_lexer.h"
-	#define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
+    #include "fcml_intel_lexer.h"
+    #define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
 
 /* Line 390 of yacc.c  */
 #line 219 "fcml_intel_parser_def.c"
@@ -1537,7 +1537,7 @@ YYSTYPE yylval YY_INITIAL_VALUE(yyval_default);
 #line 124 "fcml_intel_parser_def.y"
 { 
     /* Uncomment it in order to enable debugging */
-	/* yydebug = 1; */
+    /* yydebug = 1; */
 }
 /* Line 1570 of yacc.c  */
 #line 1544 "fcml_intel_parser_def.c"
@@ -1776,7 +1776,7 @@ yyreduce:
   case 13:
 /* Line 1787 of yacc.c  */
 #line 146 "fcml_intel_parser_def.y"
-    { if( (yyvsp[(1) - (2)].prefixes) & (yyvsp[(2) - (2)].prefixes) ) { ADD_ERROR_MSG( "Doubled prefixes." ); YYERROR; } else { (yyval.prefixes) = (yyvsp[(1) - (2)].prefixes) | (yyvsp[(2) - (2)].prefixes); } }
+    { if( (yyvsp[(1) - (2)].prefixes) & (yyvsp[(2) - (2)].prefixes) )  { ADD_ERROR_MSG( "Doubled prefixes." ); YYERROR; } else { (yyval.prefixes) = (yyvsp[(1) - (2)].prefixes) | (yyvsp[(2) - (2)].prefixes); } }
     break;
 
   case 16:

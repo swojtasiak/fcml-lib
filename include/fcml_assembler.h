@@ -46,10 +46,10 @@ typedef struct fcml_st_assembler fcml_st_assembler;
  * Assembler runtime configuration.
  */
 typedef struct fcml_st_assembler_conf {
-	/** Set to true in order to force assembler to increment IP address by length of the assembled instruction. */
-	fcml_bool increment_ip;
-	/** True if optional error and warning messages should be collected during processing. */
-	fcml_bool enable_error_messages;
+    /** Set to true in order to force assembler to increment IP address by length of the assembled instruction. */
+    fcml_bool increment_ip;
+    /** True if optional error and warning messages should be collected during processing. */
+    fcml_bool enable_error_messages;
     /** If there are SIB and "ModR/M only" encodings available, choose the SIB based one. */
     fcml_bool choose_sib_encoding;
     /** If memory address can be encoded as relative or absolute value choose the absolute addressing. It works in 64 bit mode only. */
@@ -75,27 +75,27 @@ typedef struct fcml_st_assembler_conf {
 typedef struct fcml_st_assembled_instruction {
     /** Next assembled instruction in the chain. */
     struct fcml_st_assembled_instruction *next;
-	/** Warning messages related to assembled instruction.*/
-	fcml_st_ceh_error_container warnings;
-	/** Instruction machine code.*/
-	fcml_uint8_t *code;
-	/** Instruction code length in bytes.*/
-	fcml_usize code_length;
+    /** Warning messages related to assembled instruction.*/
+    fcml_st_ceh_error_container warnings;
+    /** Instruction machine code.*/
+    fcml_uint8_t *code;
+    /** Instruction code length in bytes.*/
+    fcml_usize code_length;
 #ifdef FCML_DEBUG
-	fcml_uint8_t __def_index;
+    fcml_uint8_t __def_index;
 #endif
 } fcml_st_assembled_instruction;
 
 /** Assembler result. */
 typedef struct fcml_st_assembler_result {
     /** Error and warning messages from assembler.*/
-	fcml_st_ceh_error_container errors;
-	/** Chain of assembled instructions. */
-	fcml_st_assembled_instruction *instructions;
-	/** Instruction chosen by used instruction chooser; otherwise NULL.*/
-	fcml_st_assembled_instruction *chosen_instruction;
-	/** Number of encoded instruction forms. */
-	fcml_usize number_of_instructions;
+    fcml_st_ceh_error_container errors;
+    /** Chain of assembled instructions. */
+    fcml_st_assembled_instruction *instructions;
+    /** Instruction chosen by used instruction chooser; otherwise NULL.*/
+    fcml_st_assembled_instruction *chosen_instruction;
+    /** Number of encoded instruction forms. */
+    fcml_usize number_of_instructions;
 } fcml_st_assembler_result;
 
 /** Assembler runtime context. */
@@ -103,9 +103,9 @@ typedef struct fcml_st_assembler_context {
     /** Assembler instance that should be used to assemble instructions. */
     fcml_st_assembler *assembler;
     /** Assembler behaviour can be configured here.*/
-	fcml_st_assembler_conf configuration;
-	/** Instruction entry point configuration. */
-	fcml_st_entry_point entry_point;
+    fcml_st_assembler_conf configuration;
+    /** Instruction entry point configuration. */
+    fcml_st_entry_point entry_point;
 } fcml_st_assembler_context;
 
 /**
@@ -139,7 +139,8 @@ LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assembler_init( fcml_st_dialect *dial
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  * @see fcml_fn_assembler_result_prepare fcml_fn_assembler_init
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction, fcml_st_assembler_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction,
+        fcml_st_assembler_result *result );
 
 /**
  * Prepares reusable result holder for assembler.

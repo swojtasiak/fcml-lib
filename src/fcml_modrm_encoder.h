@@ -40,37 +40,38 @@
 #define FCML_MODRM_SIB_ENC(ss,index,base)	( FCML_MODRM_ENC_SIB_SS( ss ) | FCML_MODRM_ENC_SIB_INDEX( index ) | FCML_MODRM_ENC_SIB_BASE( base ) )
 
 typedef struct fcml_st_encoded_modrm {
-	fcml_uint8_t modrm;
-	fcml_nuint8_t sib;
-	fcml_uint8_t ext_r;
-	fcml_uint8_t ext_x;
-	fcml_uint8_t ext_b;
-	fcml_uint8_t displacement[4];
-	fcml_uint8_t displacement_size;
-	fcml_bool is_rip;
-	fcml_bool is_rip_encoded;
-	fcml_int64_t rip_address;
+    fcml_uint8_t modrm;
+    fcml_nuint8_t sib;
+    fcml_uint8_t ext_r;
+    fcml_uint8_t ext_x;
+    fcml_uint8_t ext_b;
+    fcml_uint8_t displacement[4];
+    fcml_uint8_t displacement_size;
+    fcml_bool is_rip;
+    fcml_bool is_rip_encoded;
+    fcml_int64_t rip_address;
 } fcml_st_encoded_modrm;
 
 typedef struct fcml_st_modrm_encoder_context {
-	/* Sets 32 or 64 bit addressing mode.*/
-	fcml_en_operating_mode op_mode;
-	/* Preferred effective address size that should be used to encode ModR/M.*/
-	fcml_usize effective_address_size;
-	/* Effective address size ModR/M was encoded for. For example "effective_address_size" might*/
-	/* be set to 32 bits, but [BX+SI] encoding forces 16 bit encoding.*/
-	fcml_usize chosen_effective_address_size;
-	/* This flag is set by encoder if there is alternative SIB encoding available,*/
-	/* but user chooses ModR/M only encoding.*/
-	fcml_bool is_sib_alternative;
-	/* If set to true, encoder chooses SIB encoding instead on ModR/M only alternative.*/
-	fcml_bool choose_sib_encoding;
-	/* If there is alternative, use RIP encoding instead of SIB alternative.*/
-	fcml_bool choose_rip_encoding;
+    /* Sets 32 or 64 bit addressing mode.*/
+    fcml_en_operating_mode op_mode;
+    /* Preferred effective address size that should be used to encode ModR/M.*/
+    fcml_usize effective_address_size;
+    /* Effective address size ModR/M was encoded for. For example "effective_address_size" might*/
+    /* be set to 32 bits, but [BX+SI] encoding forces 16 bit encoding.*/
+    fcml_usize chosen_effective_address_size;
+    /* This flag is set by encoder if there is alternative SIB encoding available,*/
+    /* but user chooses ModR/M only encoding.*/
+    fcml_bool is_sib_alternative;
+    /* If set to true, encoder chooses SIB encoding instead on ModR/M only alternative.*/
+    fcml_bool choose_sib_encoding;
+    /* If there is alternative, use RIP encoding instead of SIB alternative.*/
+    fcml_bool choose_rip_encoding;
 } fcml_st_modrm_encoder_context;
 
 fcml_ceh_error fcml_fn_modrm_encode( fcml_st_modrm_encoder_context *context, const fcml_st_modrm *decoded_modrm, fcml_st_encoded_modrm *encoded_modrm );
-fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, fcml_int64_t rip, fcml_uint8_t instruction_size, const fcml_st_encoded_modrm *encoded_modrm );
+fcml_ceh_error fcml_fn_modrm_encode_rip_offset( fcml_st_memory_stream *stream, fcml_int64_t rip, fcml_uint8_t instruction_size,
+        const fcml_st_encoded_modrm *encoded_modrm );
 fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size( const fcml_st_modrm *decoded_modrm, fcml_flags *effective_address_size );
 
 #endif /* FCML_MODRM_ENCODER_H_ */

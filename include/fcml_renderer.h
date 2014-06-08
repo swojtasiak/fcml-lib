@@ -90,12 +90,12 @@ extern "C" {
 
 /** Renderer configuration. */
 typedef struct fcml_st_render_config {
-	/** Flags which allows to control rendering process. */
-	fcml_uint32_t render_flags;
-	/** Preferred mnemonic padding in characters. */
-	fcml_uint16_t prefered_mnemonic_padding;
-	/** Preferred code padding in HEX bytes (2 characters on one byte.). */
-	fcml_uint16_t prefered_code_padding;
+    /** Flags which allows to control rendering process. */
+    fcml_uint32_t render_flags;
+    /** Preferred mnemonic padding in characters. */
+    fcml_uint16_t prefered_mnemonic_padding;
+    /** Preferred code padding in HEX bytes (2 characters on one byte.). */
+    fcml_uint16_t prefered_code_padding;
 } fcml_st_render_config;
 
 /**
@@ -111,7 +111,8 @@ typedef struct fcml_st_render_config {
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  *
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len, fcml_st_disassembler_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_render( fcml_st_dialect *dialect, fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len,
+        fcml_st_disassembler_result *result );
 
 #ifdef __cplusplus
 }

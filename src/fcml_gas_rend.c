@@ -57,245 +57,267 @@ fcml_string fcml_iarr_rend_utils_integer_formats_gas[6][4] = {
 	{FCML_TEXT("0x") FCML_PRI_INT8_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT16_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT32_HEX_NO_ZEROS, FCML_TEXT("0x") FCML_PRI_INT64_HEX_NO_ZEROS}
 };
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_immediate_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context,
+        fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details,
+        fcml_bool *do_not_render ) {
 
-	fcml_st_integer *immediate = &(operand->immediate);
+    fcml_st_integer *immediate = &( operand->immediate );
 
-	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("$") );
+    fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "$" ) );
 
-	return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, immediate, config->render_flags & FCML_REND_FLAG_HEX_IMM, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+    return fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, immediate,
+            config->render_flags & FCML_REND_FLAG_HEX_IMM, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
-	fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(operand->reg), result->instruction_details.prefixes_details.is_rex );
-	return FCML_CEH_GEC_NO_ERROR;
+fcml_ceh_error fcml_ifn_rend_operand_renderer_reg_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context,
+        fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details,
+        fcml_bool *do_not_render ) {
+    fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( operand->reg ), result->instruction_details.prefixes_details.is_rex );
+    return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context,
+        fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details,
+        fcml_bool *do_not_render ) {
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_address *address = &(operand->address);
-	fcml_st_prefixes_details *prefixes = &(result->instruction_details.prefixes_details);
+    fcml_st_address *address = &( operand->address );
+    fcml_st_prefixes_details *prefixes = &( result->instruction_details.prefixes_details );
 
-	fcml_hints hints = operand->hints;
+    fcml_hints hints = operand->hints;
 
-	if( hints & FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS ) {
+    if ( hints & FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS ) {
 
-		fcml_st_integer integer;
-		fcml_ceh_error error = fcml_fn_utils_offset_to_integer( &(address->offset), &integer );
-		if( error ) {
-			return error;
-		}
+        fcml_st_integer integer;
+        fcml_ceh_error error = fcml_fn_utils_offset_to_integer( &( address->offset ), &integer );
+        if ( error ) {
+            return error;
+        }
 
-		error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+        error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE,
+                config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 
-		return error;
-	}
+        return error;
+    }
 
-	if( !address->segment_selector.is_default_reg || ( config->render_flags & FCML_REND_FLAG_RENDER_DEFAULT_SEG ) ) {
-		fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(address->segment_selector.segment_selector), prefixes->is_rex );
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(":") );
-	}
+    if ( !address->segment_selector.is_default_reg || ( config->render_flags & FCML_REND_FLAG_RENDER_DEFAULT_SEG ) ) {
+        fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( address->segment_selector.segment_selector ), prefixes->is_rex );
+        fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( ":" ) );
+    }
 
-	fcml_st_effective_address *effective_address = &(address->effective_address);
+    fcml_st_effective_address *effective_address = &( address->effective_address );
 
-	if( result->instruction.hints & FCML_HINT_INDIRECT_POINTER  ) {
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("*") );
-	}
+    if ( result->instruction.hints & FCML_HINT_INDIRECT_POINTER ) {
+        fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "*" ) );
+    }
 
-	if( address->address_form == FCML_AF_COMBINED ) {
+    if ( address->address_form == FCML_AF_COMBINED ) {
 
-		/* Displacement.*/
-		if( effective_address->displacement.size > 0 ) {
+        /* Displacement.*/
+        if ( effective_address->displacement.size > 0 ) {
 
-			error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &(effective_address->displacement), config->render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
-			if( error ) {
-				return error;
-			}
-		}
+            error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &( effective_address->displacement ),
+                    config->render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+            if ( error ) {
+                return error;
+            }
+        }
 
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("(") );
+        fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "(" ) );
 
-		/* Append base register.*/
-		if( !fcml_fn_utils_is_reg_undef( &(effective_address->base) ) ) {
-			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->base), prefixes->is_rex );
-		}
+        /* Append base register.*/
+        if ( !fcml_fn_utils_is_reg_undef( &( effective_address->base ) ) ) {
+            fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( effective_address->base ), prefixes->is_rex );
+        }
 
-		/* Append index register.*/
-		if( !fcml_fn_utils_is_reg_undef( &(effective_address->index) ) ) {
-			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(",") );
-			fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(effective_address->index), prefixes->is_rex );
-		}
+        /* Append index register.*/
+        if ( !fcml_fn_utils_is_reg_undef( &( effective_address->index ) ) ) {
+            fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "," ) );
+            fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( effective_address->index ), prefixes->is_rex );
+        }
 
-		/* Append scale.*/
-		if( effective_address->scale_factor > 0 ) {
+        /* Append scale.*/
+        if ( effective_address->scale_factor > 0 ) {
 
-			fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(",") );
+            fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "," ) );
 
-			fcml_st_integer scale_value = {0};
-			scale_value.is_signed = FCML_FALSE;
-			scale_value.size = 8;
-			scale_value.int8 = (fcml_int8_t)effective_address->scale_factor;
+            fcml_st_integer scale_value = { 0 };
+            scale_value.is_signed = FCML_FALSE;
+            scale_value.size = 8;
+            scale_value.int8 = (fcml_int8_t) effective_address->scale_factor;
 
-			fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &scale_value, FCML_FALSE, FCML_FALSE );
-		}
+            fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &scale_value, FCML_FALSE, FCML_FALSE );
+        }
 
-		fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(")") );
+        fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( ")" ) );
 
-	} else {
+    } else {
 
-		/* Absolute offset or RIP.*/
-		if( !error ) {
+        /* Absolute offset or RIP.*/
+        if ( !error ) {
 
-			/* For RIP base register is set to IP. */
-			fcml_st_integer integer;
-			if( address->effective_address.base.type == FCML_REG_IP ) {
-				/* IP relative addressing.*/
-				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &(address->effective_address.displacement), FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
-				if( !error ) {
-					fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("(") );
-					fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &(fcml_reg_RIP), FCML_FALSE );
-					fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(")") );
-				}
-			} else {
-				/* Absolute offset.*/
-				fcml_ceh_error error = fcml_fn_utils_offset_to_integer( &(address->offset), &integer );
-				if( error ) {
-					return error;
-				}
-				error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
-			}
+            /* For RIP base register is set to IP. */
+            fcml_st_integer integer;
+            if ( address->effective_address.base.type == FCML_REG_IP ) {
+                /* IP relative addressing.*/
+                error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream,
+                        &( address->effective_address.displacement ), FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+                if ( !error ) {
+                    fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "(" ) );
+                    fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( fcml_reg_RIP ), FCML_FALSE );
+                    fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( ")" ) );
+                }
+            } else {
+                /* Absolute offset.*/
+                fcml_ceh_error error = fcml_fn_utils_offset_to_integer( &( address->offset ), &integer );
+                if ( error ) {
+                    return error;
+                }
+                error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE,
+                        config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+            }
 
-		}
+        }
 
-	}
+    }
 
-	return error;
+    return error;
 }
 
-fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details, fcml_bool *do_not_render ) {
+fcml_ceh_error fcml_ifn_rend_operand_renderer_far_pointer_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context,
+        fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_st_operand *operand, fcml_st_operand_details *operand_details,
+        fcml_bool *do_not_render ) {
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_st_integer integer = {0};
-	integer.is_signed = FCML_TRUE;
-	integer.size = 16;
-	integer.int16 = operand->far_pointer.segment;
+    fcml_st_integer integer = { 0 };
+    integer.is_signed = FCML_TRUE;
+    integer.size = 16;
+    integer.int16 = operand->far_pointer.segment;
 
-	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("$") );
-	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+    fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "$" ) );
+    fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE,
+            config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 
-	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT(",") );
+    fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "," ) );
 
-	integer.size = operand->far_pointer.offset_size;
-	switch( integer.size ) {
-	case FCML_DS_16:
-		integer.int16 = operand->far_pointer.offset16;
-		break;
-	case FCML_DS_32:
-		integer.int32 = operand->far_pointer.offset32;
-		break;
-	}
+    integer.size = operand->far_pointer.offset_size;
+    switch ( integer.size ) {
+    case FCML_DS_16:
+        integer.int16 = operand->far_pointer.offset16;
+        break;
+    case FCML_DS_32:
+        integer.int32 = operand->far_pointer.offset32;
+        break;
+    }
 
-	fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT("$") );
-	fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+    fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "$" ) );
+    fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_gas, output_stream, &integer, FCML_TRUE,
+            config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
 
-	return error;
+    return error;
 }
 
-fcml_ceh_error fcml_ifn_rend_print_operand_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_int operand_index, fcml_bool *do_not_render ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_st_operand *operand = &(result->instruction.operands[operand_index]);
-	switch( operand->type ) {
-	case FCML_OT_IMMEDIATE:
-		error = fcml_ifn_rend_operand_renderer_immediate_gas( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
-		break;
-	case FCML_OT_FAR_POINTER:
-		error = fcml_ifn_rend_operand_renderer_far_pointer_gas( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
-		break;
-	case FCML_OT_ADDRESS:
-		error = fcml_ifn_rend_operand_renderer_address_gas( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
-		break;
-	case FCML_OT_REGISTER:
-		error = fcml_ifn_rend_operand_renderer_reg_gas( config, dialect_context, output_stream, result, operand, &(result->instruction_details.operand_details[operand_index]), do_not_render );
-		break;
-	case FCML_OT_NONE:
-		break;
-	default:
-		error = FCML_CEH_GEC_INVALID_INPUT;
-	}
-	return error;
+fcml_ceh_error fcml_ifn_rend_print_operand_gas( fcml_st_render_config *config, fcml_st_dialect_context_int *dialect_context,
+        fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result, fcml_int operand_index, fcml_bool *do_not_render ) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_st_operand *operand = &( result->instruction.operands[operand_index] );
+    switch ( operand->type ) {
+    case FCML_OT_IMMEDIATE:
+        error = fcml_ifn_rend_operand_renderer_immediate_gas( config, dialect_context, output_stream, result, operand,
+                &( result->instruction_details.operand_details[operand_index] ), do_not_render );
+        break;
+    case FCML_OT_FAR_POINTER:
+        error = fcml_ifn_rend_operand_renderer_far_pointer_gas( config, dialect_context, output_stream, result, operand,
+                &( result->instruction_details.operand_details[operand_index] ), do_not_render );
+        break;
+    case FCML_OT_ADDRESS:
+        error = fcml_ifn_rend_operand_renderer_address_gas( config, dialect_context, output_stream, result, operand,
+                &( result->instruction_details.operand_details[operand_index] ), do_not_render );
+        break;
+    case FCML_OT_REGISTER:
+        error = fcml_ifn_rend_operand_renderer_reg_gas( config, dialect_context, output_stream, result, operand,
+                &( result->instruction_details.operand_details[operand_index] ), do_not_render );
+        break;
+    case FCML_OT_NONE:
+        break;
+    default:
+        error = FCML_CEH_GEC_INVALID_INPUT;
+    }
+    return error;
 }
 
 fcml_string fcml_ifn_rend_get_conditional_suffix_gas( fcml_int condition, fcml_uint32_t render_flags ) {
-	if( render_flags & FCML_REND_FLAG_COND_SHOW_CARRY ) {
-		if( condition == 2 ) {
-			return FCML_TEXT("c");
-		} else if( condition == 3 ) {
-			return FCML_TEXT("nc");
-		}
-	}
-	fcml_int group = ( render_flags & FCML_REND_FLAG_COND_GROUP_2 ) ? 1 : 0;
-	return fcml_ar_asm_conditional_suffixes_render[group][condition];
+    if ( render_flags & FCML_REND_FLAG_COND_SHOW_CARRY ) {
+        if ( condition == 2 ) {
+            return FCML_TEXT( "c" );
+        } else if ( condition == 3 ) {
+            return FCML_TEXT( "nc" );
+        }
+    }
+    fcml_int group = ( render_flags & FCML_REND_FLAG_COND_GROUP_2 ) ? 1 : 0;
+    return fcml_ar_asm_conditional_suffixes_render[group][condition];
 }
 
-fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_context, fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_st_disassembler_result *result ) {
+fcml_ceh_error fcml_fn_rend_render_instruction_gas( fcml_st_dialect *dialect_context, fcml_st_render_config *config, fcml_st_memory_stream *output_stream,
+        fcml_st_disassembler_result *result ) {
 
-	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)dialect_context;
+    fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*) dialect_context;
 
-	fcml_char local_buffer[FCML_REND_LOCAL_BUFFER_SIZE] = {0};
+    fcml_char local_buffer[FCML_REND_LOCAL_BUFFER_SIZE] = { 0 };
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	fcml_uint32_t render_flags = config->render_flags;
+    fcml_uint32_t render_flags = config->render_flags;
 
-	/* Local stream.*/
-	fcml_st_memory_stream local_stream;
-	local_stream.base_address = local_buffer;
-	local_stream.size = sizeof( local_buffer );
-	local_stream.offset = 0;
+    /* Local stream.*/
+    fcml_st_memory_stream local_stream;
+    local_stream.base_address = local_buffer;
+    local_stream.size = sizeof( local_buffer );
+    local_stream.offset = 0;
 
-	/* Instruction code. */
-	if( render_flags & FCML_REND_FLAG_RENDER_CODE ) {
-		fcml_fn_rend_utils_format_append_code( config, output_stream, result->instruction_details.instruction_code, result->instruction_details.instruction_size );
-	}
+    /* Instruction code. */
+    if ( render_flags & FCML_REND_FLAG_RENDER_CODE ) {
+        fcml_fn_rend_utils_format_append_code( config, output_stream, result->instruction_details.instruction_code,
+                result->instruction_details.instruction_size );
+    }
 
-	fcml_int len = 0;
+    fcml_int len = 0;
 
-	/* Instruction prefixes like LOCK. */
-	len += fcml_ifn_rend_utils_print_prefixes( output_stream, &(result->instruction_details.prefixes_details), render_flags );
+    /* Instruction prefixes like LOCK. */
+    len += fcml_ifn_rend_utils_print_prefixes( output_stream, &( result->instruction_details.prefixes_details ), render_flags );
 
-	/* Mnemonic. */
-	len += fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
+    /* Mnemonic. */
+    len += fcml_fn_rend_utils_format_append_str( output_stream, result->instruction.mnemonic );
 
-	/* Short form, so operands should be ignored. */
-	if( result->instruction_details.is_shortcut ) {
-		return error;
-	}
+    /* Short form, so operands should be ignored. */
+    if ( result->instruction_details.is_shortcut ) {
+        return error;
+    }
 
-	/* Add all operands. */
-	fcml_bool first_render = FCML_TRUE;
-	fcml_int i;
-	for( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-		if( result->instruction.operands[i].type != FCML_OT_NONE ) {
-			fcml_bool do_not_render = FCML_FALSE;
-			error = fcml_ifn_rend_print_operand_gas( config, dialect_context_int, &local_stream, result, i, &do_not_render );
-			if( !error ) {
-				if( !do_not_render ) {
-					first_render = fcml_fn_rend_utils_render_operand_separator( config, output_stream, len, first_render );
-					fcml_fn_rend_utils_format_append_stream( output_stream, &local_stream );
-					fcml_fn_stream_clean( &local_stream );
-				}
-			} else {
-				break;
-			}
-		} else {
-			break;
-		}
-	}
+    /* Add all operands. */
+    fcml_bool first_render = FCML_TRUE;
+    fcml_int i;
+    for ( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+        if ( result->instruction.operands[i].type != FCML_OT_NONE ) {
+            fcml_bool do_not_render = FCML_FALSE;
+            error = fcml_ifn_rend_print_operand_gas( config, dialect_context_int, &local_stream, result, i, &do_not_render );
+            if ( !error ) {
+                if ( !do_not_render ) {
+                    first_render = fcml_fn_rend_utils_render_operand_separator( config, output_stream, len, first_render );
+                    fcml_fn_rend_utils_format_append_stream( output_stream, &local_stream );
+                    fcml_fn_stream_clean( &local_stream );
+                }
+            } else {
+                break;
+            }
+        } else {
+            break;
+        }
+    }
 
-	fcml_fn_rend_utils_format_finish_str( output_stream );
+    fcml_fn_rend_utils_format_finish_str( output_stream );
 
-	return error;
+    return error;
 }

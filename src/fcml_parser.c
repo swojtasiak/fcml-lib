@@ -31,42 +31,42 @@
 #include "fcml_utils.h"
 
 fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, fcml_string instruction, fcml_st_parser_result *result_out ) {
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-	fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*)context->dialect;
-	if( dialect_context_int->instruction_parser ) {
-		/* Call parser instance associated with given dialect. */
-		error = fcml_fn_parse_to_cif( context, instruction, result_out );
-	} else {
-		/* Dialect not initialized correctly.*/
-		FCML_TRACE_MSG("Parsing not supported by current dialect.");
-		error = FCML_CEH_GEC_FEATURE_NOT_SUPPORTED;
-	}
-	if( error ) {
-		// Try to convert error code to error message if there is such need.
-		fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &(result_out->errors), error );
-	}
-	return error;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_st_dialect_context_int *dialect_context_int = (fcml_st_dialect_context_int*) context->dialect;
+    if ( dialect_context_int->instruction_parser ) {
+        /* Call parser instance associated with given dialect. */
+        error = fcml_fn_parse_to_cif( context, instruction, result_out );
+    } else {
+        /* Dialect not initialized correctly.*/
+        FCML_TRACE_MSG("Parsing not supported by current dialect.");
+        error = FCML_CEH_GEC_FEATURE_NOT_SUPPORTED;
+    }
+    if ( error ) {
+        // Try to convert error code to error message if there is such need.
+        fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &( result_out->errors ), error );
+    }
+    return error;
 }
 
 void LIB_CALL fcml_fn_parser_result_free( fcml_st_parser_result *result ) {
-	if( result ) {
-		/* Frees parsed instruction, potential errors and warnings and result structure itself.*/
-		if( result->instruction ) {
-			fcml_fn_ast_free_converted_cif( result->instruction );
-			result->instruction = NULL;
-		}
-		/* Symbol can not be free, because it is managed by symbols
-		 * table, but of course we have to zero it.
-		 */
-		result->symbol = NULL;
-		fcml_fn_ceh_free_errors_only( &(result->errors) );
-	}
+    if ( result ) {
+        /* Frees parsed instruction, potential errors and warnings and result structure itself.*/
+        if ( result->instruction ) {
+            fcml_fn_ast_free_converted_cif( result->instruction );
+            result->instruction = NULL;
+        }
+        /* Symbol can not be free, because it is managed by symbols
+         * table, but of course we have to zero it.
+         */
+        result->symbol = NULL;
+        fcml_fn_ceh_free_errors_only( &( result->errors ) );
+    }
 }
 
 void LIB_CALL fcml_fn_parser_result_prepare( fcml_st_parser_result *result ) {
-	if( result ) {
-		result->errors.errors = NULL;
-		result->errors.last_error = NULL;
-		result->instruction = NULL;
-	}
+    if ( result ) {
+        result->errors.errors = NULL;
+        result->errors.last_error = NULL;
+        result->instruction = NULL;
+    }
 }

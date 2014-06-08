@@ -29,7 +29,8 @@ typedef struct fcml_st_hts_calculated_hints {
     fcml_hints operand_hints;
 } fcml_st_hts_calculated_hints;
 
-typedef fcml_st_hts_calculated_hints (*fcml_fp_hts_instruction_hints_calculator)( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
+typedef fcml_st_hts_calculated_hints (*fcml_fp_hts_instruction_hints_calculator)( fcml_st_def_addr_mode_desc *addr_mode,
+        fcml_st_def_decoded_addr_mode *decoded_addr_mode );
 
 fcml_st_hts_calculated_hints fcml_fn_hts_ihc_far_pointer( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
 fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );

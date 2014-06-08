@@ -94,7 +94,8 @@
 
 /** Instruction forms. */
 enum fcml_en_instruction_addr_mode_codes {
-    FCML_AM_UNKNOWN = 0, FCML_AM_NO_OPERANS,
+    FCML_AM_UNKNOWN = 0,
+    FCML_AM_NO_OPERANS,
     FCML_AM_IMM8,
     FCML_AM_IMMO,
     FCML_AM_ER8_IMM8,
@@ -1235,10 +1236,10 @@ typedef enum fcml_en_instruction {
 
 /** Pseudo operations. */
 typedef enum fcml_en_pseudo_operations {
-	/** Set if there is no pseudo operation. */
-	FP_NO_PSEUDO_OP,
-	/** db / .byte */
-	FP_DB
+    /** Set if there is no pseudo operation. */
+    FP_NO_PSEUDO_OP,
+    /** db / .byte */
+    FP_DB
 } fcml_en_pseudo_operations;
 
 /** @} */

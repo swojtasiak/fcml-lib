@@ -88,30 +88,30 @@ fcml_string fcml_fn_cmn_dialect_render_mnemonic( fcml_string mnemonic, fcml_st_c
 
     fcml_string rendered_mnemonic = NULL;
 
-    if( condition ) {
+    if (condition) {
 
-    	fcml_string suffix = NULL;
+        fcml_string suffix = NULL;
         fcml_int cond = ( condition->condition_type << 1 ) | ( ( condition->is_negation ) ? 1 : 0 );
 
-        if( show_carry ) {
-            if( cond == 2 ) {
-                suffix = FCML_TEXT("c");
-            } else if( cond == 3 ) {
-                suffix = FCML_TEXT("nc");
+        if (show_carry) {
+            if (cond == 2) {
+                suffix = FCML_TEXT( "c" );
+            } else if (cond == 3) {
+                suffix = FCML_TEXT( "nc" );
             }
         }
 
-        if( !suffix ) {
+        if (!suffix) {
             suffix = fcml_ar_asm_conditional_suffixes_render[conditional_group][cond];
         }
 
         fcml_usize mnemonic_len = fcml_fn_env_str_strlen( mnemonic );
-        fcml_usize len = mnemonic_len + fcml_fn_env_str_strlen( suffix ) ;
+        fcml_usize len = mnemonic_len + fcml_fn_env_str_strlen( suffix );
         rendered_mnemonic = fcml_fn_env_str_stralloc( len + 1 );
 
-        if( rendered_mnemonic ) {
-            fcml_fn_env_str_strcpy(rendered_mnemonic, mnemonic);
-            fcml_fn_env_str_strcpy(rendered_mnemonic + mnemonic_len, suffix);
+        if (rendered_mnemonic) {
+            fcml_fn_env_str_strcpy( rendered_mnemonic, mnemonic );
+            fcml_fn_env_str_strcpy( rendered_mnemonic + mnemonic_len, suffix );
         }
 
     } else {
@@ -121,28 +121,29 @@ fcml_string fcml_fn_cmn_dialect_render_mnemonic( fcml_string mnemonic, fcml_st_c
     return rendered_mnemonic;
 }
 
-fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic( const fcml_st_dialect *dialect, fcml_st_mp_mnemonic_set *mnemonic_set, fcml_st_mp_mnemonic **mnemonics, fcml_st_condition *condition, int *mnemonics_counter ) {
+fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic( const fcml_st_dialect *dialect, fcml_st_mp_mnemonic_set *mnemonic_set, fcml_st_mp_mnemonic **mnemonics,
+        fcml_st_condition *condition, int *mnemonics_counter ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     fcml_int counter = 0;
 
     fcml_st_coll_list_element *element = mnemonic_set->mnemonics->head;
-    while( element ) {
+    while ( element ) {
 
-        fcml_st_mp_mnemonic *mnemonic_def = (fcml_st_mp_mnemonic*)element->item;
+        fcml_st_mp_mnemonic *mnemonic_def = (fcml_st_mp_mnemonic*) element->item;
 
-        if( condition != NULL ) {
+        if (condition != NULL) {
             /* Conditional instructions.*/
 
             fcml_uint32_t suffix_nr = condition->condition_type * 2 + ( condition->is_negation ? 1 : 0 );
 
             int i;
-            for( i = 0; i < FCML_CMN_DIALECT_CND_GROUPS; i++ ) {
+            for ( i = 0; i < FCML_CMN_DIALECT_CND_GROUPS; i++ ) {
                 fcml_string suffix = fcml_ar_asm_conditional_suffixes[i][suffix_nr];
-                if( suffix ) {
+                if (suffix) {
                     mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( mnemonic_def, suffix );
-                    if( !mnemonics[counter] ) {
+                    if (!mnemonics[counter]) {
                         /* Out of memory.*/
                         error = FCML_CEH_GEC_OUT_OF_MEMORY;
                         break;
@@ -154,7 +155,7 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic( const fcml_st_dialect *dialect,
         } else {
             /* Allocate new instance of mnemonic.*/
             mnemonics[counter] = fcml_fn_asm_dialect_alloc_mnemonic( mnemonic_def );
-            if( mnemonics[counter] ) {
+            if (mnemonics[counter]) {
                 counter++;
             } else {
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -165,11 +166,11 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic( const fcml_st_dialect *dialect,
 
     }
 
-    if( error ) {
+    if (error) {
         /* Free all prepared mnemonics.*/
         int i;
-        for( i = 0; i < counter; i++ ) {
-        	fcml_fn_asm_dialect_free_mnemonic( mnemonics[i] );
+        for ( i = 0; i < counter; i++ ) {
+            fcml_fn_asm_dialect_free_mnemonic( mnemonics[i] );
         }
     }
 
@@ -178,62 +179,62 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic( const fcml_st_dialect *dialect,
     return error;
 }
 
-fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex) {
-	fcml_int rs = 0;
-	if (reg->type != FCML_REG_SIMD) {
-		switch (reg->size) {
-		case 8:
-			rs = 0;
-			break;
-		case 16:
-			rs = 1;
-			break;
-		case 32:
-			rs = 2;
-			break;
-		case 64:
-			rs = 3;
-			break;
-		}
-		if ( reg->type == FCML_REG_IP ) {
-			*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[rs];
-		} else {
-			if (is_rex) {
-				if (reg->type == FCML_REG_GPR) {
-					*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[rs][reg->reg];
-				} else {
-					*printable_reg = fcml_ar_asm_dialect_reg_symbol_table_rex[reg->type][reg->reg];
-				}
-			} else {
-				if (reg->type == FCML_REG_GPR) {
-					*printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table[rs][reg->reg];
-				} else {
-					*printable_reg = fcml_ar_asm_dialect_reg_symbol_table[reg->type][reg->reg];
-				}
-			}
-		}
-	} else {
-		switch (reg->size) {
-		case 64:
-			rs = 0;
-			break;
-		case 128:
-			rs = 1;
-			break;
-		case 256:
-			rs = 2;
-			break;
-		default:
-			return FCML_CEH_GEC_INVALID_INPUT;
-		}
-		*printable_reg = fcml_ar_asm_dialect_reg_sidm_symbol_table[rs][reg->reg];
-	}
-	return FCML_CEH_GEC_NO_ERROR;
+fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex ) {
+    fcml_int rs = 0;
+    if (reg->type != FCML_REG_SIMD) {
+        switch ( reg->size ) {
+        case 8:
+            rs = 0;
+            break;
+        case 16:
+            rs = 1;
+            break;
+        case 32:
+            rs = 2;
+            break;
+        case 64:
+            rs = 3;
+            break;
+        }
+        if (reg->type == FCML_REG_IP) {
+            *printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[rs];
+        } else {
+            if (is_rex) {
+                if (reg->type == FCML_REG_GPR) {
+                    *printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[rs][reg->reg];
+                } else {
+                    *printable_reg = fcml_ar_asm_dialect_reg_symbol_table_rex[reg->type][reg->reg];
+                }
+            } else {
+                if (reg->type == FCML_REG_GPR) {
+                    *printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table[rs][reg->reg];
+                } else {
+                    *printable_reg = fcml_ar_asm_dialect_reg_symbol_table[reg->type][reg->reg];
+                }
+            }
+        }
+    } else {
+        switch ( reg->size ) {
+        case 64:
+            rs = 0;
+            break;
+        case 128:
+            rs = 1;
+            break;
+        case 256:
+            rs = 2;
+            break;
+        default:
+            return FCML_CEH_GEC_INVALID_INPUT;
+        }
+        *printable_reg = fcml_ar_asm_dialect_reg_sidm_symbol_table[rs][reg->reg];
+    }
+    return FCML_CEH_GEC_NO_ERROR;
 }
 
 void fcml_fn_cmn_dialect_free( fcml_st_dialect *dialect ) {
-    if( dialect ) {
-        fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*)dialect;
+    if (dialect) {
+        fcml_st_dialect_context_int *dialect_context = (fcml_st_dialect_context_int*) dialect;
         fcml_fn_asm_dialect_free_mnemonic_lookup( dialect_context );
         fcml_fn_env_memory_free( dialect_context );
     }

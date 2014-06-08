@@ -823,16 +823,16 @@ static yyconst flex_int16_t yy_chk[1030] =
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #line 21 "fcml_intel_lexer.l"
-	#include <stdio.h>
-	#include <stdlib.h>
-	
-	#include "fcml_common_lex.h"
-	#include "fcml_intel_parser_def.h"
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    #include "fcml_common_lex.h"
+    #include "fcml_intel_parser_def.h"
 #define YY_NO_INPUT 1
 #define YY_NO_UNISTD_H 1
 #line 49 "fcml_intel_lexer.l"
-	#define FCML_FM_SIZE_OPERAND(x) 				{ yylval->size_operator.size = x; yylval->size_operator.multimedia = FCML_FALSE; return FCML_TK_SIZE_OPERATOR;  }
-	#define FCML_FM_MULTIMEDIA_SIZE_OPERAND(x)		{ yylval->size_operator.size = x; yylval->size_operator.multimedia = FCML_TRUE; return FCML_TK_SIZE_OPERATOR; }
+    #define FCML_FM_SIZE_OPERAND(x)                 { yylval->size_operator.size = x; yylval->size_operator.multimedia = FCML_FALSE; return FCML_TK_SIZE_OPERATOR;  }
+    #define FCML_FM_MULTIMEDIA_SIZE_OPERAND(x)        { yylval->size_operator.size = x; yylval->size_operator.multimedia = FCML_TRUE; return FCML_TK_SIZE_OPERATOR; }
 /*White spaces.*/
 #line 838 "fcml_intel_lexer.c"
 
@@ -1170,7 +1170,7 @@ YY_RULE_SETUP
 /* Floating-points in IEEE 754.
  Floats are not supported yet.
 ([0-9]*\.[0-9]+|[0-9]+\.)(e[-+]?[0-9]+)?f? |
-[0-9]+(e[-+]?[0-9]+)f?	{ fcml_fn_pu_parse_float( yytext, &(yylval->float_value) ); return FCML_TK_FLOAT; }
+[0-9]+(e[-+]?[0-9]+)f?    { fcml_fn_pu_parse_float( yytext, &(yylval->float_value) ); return FCML_TK_FLOAT; }
  */
 /* GPR. */
 case 5:
@@ -1720,7 +1720,7 @@ FCML_FM_SIMD_256_REG(FCML_REG_YMM15)
 case 113:
 YY_RULE_SETUP
 #line 194 "fcml_intel_lexer.l"
-FCML_FM_FPU_REG(FCML_REG_ST0)				
+FCML_FM_FPU_REG(FCML_REG_ST0)                
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
@@ -1942,90 +1942,90 @@ case 156:
 YY_RULE_SETUP
 #line 250 "fcml_intel_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_LOCK;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_LOCK;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
 #line 255 "fcml_intel_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_REPNE;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_REPNE;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
 #line 260 "fcml_intel_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_REPE;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_REPE;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
 #line 265 "fcml_intel_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_XACQUIRE;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_XACQUIRE;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
 #line 270 "fcml_intel_lexer.l"
 {
-					yylval->prefixes = FCML_PREFIX_XRELEASE;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->prefixes = FCML_PREFIX_XRELEASE;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
 #line 275 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_PREFIX_BRANCH_HINT;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->hints = FCML_PREFIX_BRANCH_HINT;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
 #line 280 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_PREFIX_NOBRANCH_HINT;
-					return FCML_TK_PREFIX;
-				}
+                    yylval->hints = FCML_PREFIX_NOBRANCH_HINT;
+                    return FCML_TK_PREFIX;
+                }
 	YY_BREAK
 /* Hints */
 case 163:
 YY_RULE_SETUP
 #line 287 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_HINT_FAR_POINTER;
-					return FCML_TK_HINTS;
-				} 
+                    yylval->hints = FCML_HINT_FAR_POINTER;
+                    return FCML_TK_HINTS;
+                } 
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
 #line 292 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_HINT_NEAR_POINTER;
-					return FCML_TK_HINTS;
-				}
+                    yylval->hints = FCML_HINT_NEAR_POINTER;
+                    return FCML_TK_HINTS;
+                }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
 #line 297 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_HINT_LONG_FORM_POINTER;
-					return FCML_TK_HINTS;
-				}
+                    yylval->hints = FCML_HINT_LONG_FORM_POINTER;
+                    return FCML_TK_HINTS;
+                }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
 #line 302 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_HINT_INDIRECT_POINTER;
-					return FCML_TK_HINTS;
-				}
+                    yylval->hints = FCML_HINT_INDIRECT_POINTER;
+                    return FCML_TK_HINTS;
+                }
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
@@ -2039,35 +2039,35 @@ case 168:
 YY_RULE_SETUP
 #line 312 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_OP_HINT_RELATIVE_ADDRESSING;
-					return FCML_TK_EAO_HINTS;
-				}
+                    yylval->hints = FCML_OP_HINT_RELATIVE_ADDRESSING;
+                    return FCML_TK_EAO_HINTS;
+                }
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
 #line 317 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_OP_HINT_ABSOLUTE_ADDRESSING;
-					return FCML_TK_EAO_HINTS;
-				}
+                    yylval->hints = FCML_OP_HINT_ABSOLUTE_ADDRESSING;
+                    return FCML_TK_EAO_HINTS;
+                }
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
 #line 322 "fcml_intel_lexer.l"
 {
-					yylval->hints = FCML_OP_HINT_SIB_ENCODING;
-					return FCML_TK_SIB_HINT;
-				}
+                    yylval->hints = FCML_OP_HINT_SIB_ENCODING;
+                    return FCML_TK_SIB_HINT;
+                }
 	YY_BREAK
 /* Identifiers. */
 case 171:
 YY_RULE_SETUP
 #line 328 "fcml_intel_lexer.l"
 {
-					yylval->symbol.text = (fcml_string)yytext;
-					yylval->symbol.length = (fcml_usize)yyleng;
-					return FCML_TK_SYMBOL; 
-				}
+                    yylval->symbol.text = (fcml_string)yytext;
+                    yylval->symbol.length = (fcml_usize)yyleng;
+                    return FCML_TK_SYMBOL; 
+                }
 	YY_BREAK
 /* Operators and parentheses. */
 case 172:
