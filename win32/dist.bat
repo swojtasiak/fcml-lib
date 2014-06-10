@@ -1,4 +1,5 @@
-rem In order to build the project use VS directly. This file is here for internal purpose only ans houldn't be used.
+rem In order to build the project use VS directly. This file is here 
+rem for internal purpose only and shouldn't be used to build anything.
 set base=%1
 rd /s /q %base%\dist
 mkdir %base%\dist
