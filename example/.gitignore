@@ -1,0 +1,6 @@
+*.Po
+*.o
+*.in
+Makefile
+
+

@@ -1,0 +1,14 @@
+PROJECT_NAME         = @PACKAGE_NAME@
+PROJECT_NUMBER       = @PACKAGE_VERSION@
+STRIP_FROM_PATH      = @top_srcdir@
+INPUT                = @top_srcdir@/include
+INCLUDE_PATH         = @top_srcdir@/include
+EXCLUDE_PATTERNS     = *_parser_def.c *_parser_def.h *_lexer.c *_lexer.h
+FILE_PATTERNS        = *.c *.h
+RECURSIVE            = NO
+GENERATE_LATEX       = YES
+GENERATE_HTML        = YES
+JAVADOC_AUTOBRIEF    = YES
+ENUM_VALUES_PER_LINE = 1
+WARN_IF_UNDOCUMENTED = NO
+

@@ -1,0 +1,12 @@
+*.Po
+*.o
+*.in
+*.la
+*.lai
+*.so
+*.lo
+.libs
+.deps
+Makefile
+
+
