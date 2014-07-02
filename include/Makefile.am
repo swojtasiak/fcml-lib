@@ -15,5 +15,8 @@ pkginclude_HEADERS = fcml_assembler.h \
 	fcml_lag_assembler.h \
 	fcml_symbols.h \
 	fcml_instructions.h \
-	fcml_env.h 
-
+	fcml_env.h \
+	fcml_disassembler.hpp \
+	fcml_assembler.hpp \
+	fcml_common.hpp
+ 
