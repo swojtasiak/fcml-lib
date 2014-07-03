@@ -1,5 +1,5 @@
-#ifndef FCML_INT_COMMON_H_
-#define FCML_INT_COMMON_H_
+#ifndef FCML_INT_COMMON_HPP_
+#define FCML_INT_COMMON_HPP_
 
 #include "fcml_types.h"
 #include "fcml_common.h"
@@ -71,17 +71,35 @@ public:
     }
 };
 
-class IntelDialect {
-public:
-    IntelDialect( fcml_uint32_t flags = FCML_INTEL_DIALECT_CF_DEFAULT ) :
-            _dialect( NULL ) {
-        fcml_ceh_error error = fcml_fn_dialect_init_intel( flags, &_dialect );
-        if ( error ) {
-            throw InitException( FCML_TEXT( "Can not initialize the Intel dialect." ), error );
-        }
+class NonCopyable {
+protected:
+    NonCopyable() {
     }
-    virtual ~IntelDialect() {
-        if ( _dialect ) {
+private:
+    NonCopyable( const NonCopyable &cpy ) {
+        throw OperationNotSupportedException();
+    }
+    NonCopyable& operator=( const NonCopyable &exc ) {
+        throw OperationNotSupportedException();
+    }
+};
+
+struct EntryPoint: public fcml_st_entry_point {
+    EntryPoint( fcml_ip instruction_pointer, fcml_en_operating_mode operating_mode = FCML_OM_32_BIT, fcml_usize asa = FCML_DS_UNDEF, fcml_usize osa = FCML_DS_UNDEF ) {
+        op_mode = operating_mode;
+        address_size_attribute = asa;
+        operand_size_attribute = osa;
+        ip = instruction_pointer;
+    }
+};
+
+class Dialect : public NonCopyable {
+protected:
+    Dialect() {
+        _dialect = NULL;
+    }
+    virtual ~Dialect() {
+        if( _dialect ) {
             fcml_fn_dialect_free( _dialect );
             _dialect = NULL;
         }
@@ -90,19 +108,42 @@ public:
     fcml_st_dialect *GetDialect() {
         return _dialect;
     }
-private:
-    IntelDialect( const IntelDialect &cpy ) :
-            _dialect( cpy._dialect ) {
-        // Not supported.
-        throw OperationNotSupportedException();
-    }
-    IntelDialect& operator=( const BaseException &exc ) {
-        throw OperationNotSupportedException();
+protected:
+    void SetDialect( fcml_st_dialect *dialect ) {
+        this->_dialect = dialect;
     }
 private:
     fcml_st_dialect *_dialect;
 };
 
+class IntelDialect: public Dialect {
+public:
+    IntelDialect( fcml_uint32_t flags = FCML_INTEL_DIALECT_CF_DEFAULT ) {
+        fcml_st_dialect *dialect;
+        fcml_ceh_error error = fcml_fn_dialect_init_intel( flags, &dialect );
+        if ( error ) {
+            throw InitException( FCML_TEXT( "Can not initialize the Intel dialect." ), error );
+        }
+        SetDialect( dialect );
+    }
+    virtual ~IntelDialect() {
+    }
+};
+
+class GASDialect: public Dialect {
+public:
+    GASDialect( fcml_uint32_t flags = FCML_GAS_DIALECT_CF_DEFAULT ) {
+        fcml_st_dialect *dialect;
+        fcml_ceh_error error = fcml_fn_dialect_init_gas( flags, &dialect );
+        if ( error ) {
+            throw InitException( FCML_TEXT( "Can not initialize the Intel dialect." ), error );
+        }
+        SetDialect( dialect );
+    }
+    virtual ~GASDialect() {
+    }
+};
+
 }
 
-#endif //FCML_INT_COMMON_H_
+#endif //FCML_INT_COMMON_HPP_
