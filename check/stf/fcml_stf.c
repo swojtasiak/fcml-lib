@@ -35,7 +35,7 @@ fcml_stf_test_suite *current_suite;
 /* tested test case.*/
 fcml_stf_test_case *current_test;
 
-void LIB_CALL_STF fcml_str_run_assert( fcml_bool condition, fcml_string file, fcml_int line, fcml_string message ) {
+void LIB_CALL_STF fcml_str_run_assert( fcml_bool condition, const fcml_string file, fcml_int line, const fcml_string message ) {
 
 	if( !condition ) {
 

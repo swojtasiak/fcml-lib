@@ -110,68 +110,97 @@ template<class T>
 class StructureWrapper {
 public:
     StructureWrapper() {
-        memset( &_wrapped, 0, sizeof(T) );
+        _owner = FCML_TRUE;
+        _wrapped = new T();
+        // Clean the newly allocated structure.
+        memset( _wrapped, 0, sizeof(T) );
+    }
+    StructureWrapper( T *wrapped ) {
+        // Just wrap the structure instead of copying anything.
+        _owner = FCML_FALSE;
+        _wrapped = wrapped;
+    }
+    StructureWrapper( T &wrapped ) {
+        _owner = FCML_TRUE;
+        _wrapped = new T();
+        *_wrapped = *(&wrapped);
     }
     StructureWrapper( const StructureWrapper &cpy ) {
-        _wrapped = cpy._wrapped;
+        _owner = FCML_TRUE;
+        _wrapped = new T();
+        *_wrapped = *cpy._wrapped;
     }
     StructureWrapper& operator=( const StructureWrapper &wrapper ) {
         if( &wrapper != this ) {
-            this->_wrapped = wrapper._wrapped;
+            if( !_wrapped ) {
+                _wrapped = new T();
+            }
+            *_wrapped = *wrapper._wrapped;
         }
         return *this;
     }
+    virtual ~StructureWrapper() {
+        if( _wrapped && _owner ) {
+            delete _wrapped;
+        }
+        _wrapped = NULL;
+    }
 public:
     T &GetStruct() {
-        return _wrapped;
+        return *_wrapped;
     }
 protected:
-    T _wrapped;
+    fcml_bool _owner;
+    T* _wrapped;
 };
 
 class EntryPoint: public StructureWrapper<fcml_st_entry_point> {
 public:
+
     EntryPoint( fcml_ip instruction_pointer, fcml_en_operating_mode operating_mode = FCML_OM_32_BIT, fcml_usize asa = FCML_DS_UNDEF, fcml_usize osa = FCML_DS_UNDEF ) {
-        _wrapped.op_mode = operating_mode;
-        _wrapped.address_size_attribute = asa;
-        _wrapped.operand_size_attribute = osa;
-        _wrapped.ip = instruction_pointer;
+        _wrapped->op_mode = operating_mode;
+        _wrapped->address_size_attribute = asa;
+        _wrapped->operand_size_attribute = osa;
+        _wrapped->ip = instruction_pointer;
     }
 
+    EntryPoint(fcml_st_entry_point *wrapped) : StructureWrapper(wrapped) {}
+    EntryPoint(fcml_st_entry_point &wrapped) : StructureWrapper(wrapped) {}
+
     fcml_usize getAddressSizeAttribute() const {
-        return _wrapped.address_size_attribute;
+        return _wrapped->address_size_attribute;
     }
 
     void setAddressSizeAttribute( fcml_usize addressSizeAttribute ) {
-        _wrapped.address_size_attribute = addressSizeAttribute;
+        _wrapped->address_size_attribute = addressSizeAttribute;
     }
 
     fcml_ip getIp() const {
-        return _wrapped.ip;
+        return _wrapped->ip;
     }
 
     void setIp( fcml_ip ip ) {
-        this->_wrapped.ip = ip;
+        this->_wrapped->ip = ip;
     }
 
     fcml_en_operating_mode getOpMode() const {
-        return _wrapped.op_mode;
+        return _wrapped->op_mode;
     }
 
     void setOpMode( fcml_en_operating_mode opMode ) {
-        _wrapped.op_mode = opMode;
+        _wrapped->op_mode = opMode;
     }
 
     fcml_usize getOperandSizeAttribute() const {
-        return _wrapped.operand_size_attribute;
+        return _wrapped->operand_size_attribute;
     }
 
     void setOperandSizeAttribute( fcml_usize operandSizeAttribute ) {
-        _wrapped.operand_size_attribute = operandSizeAttribute;
+        _wrapped->operand_size_attribute = operandSizeAttribute;
     }
 
     void incrementIp( fcml_ip value ) {
-        this->_wrapped.ip += value;
+        this->_wrapped->ip += value;
     }
 };
 
@@ -182,7 +211,7 @@ protected:
     }
     virtual ~Dialect() {
         if( _dialect ) {
-            fcml_fn_dialect_free( _dialect );
+            ::fcml_fn_dialect_free( _dialect );
             _dialect = NULL;
         }
     }
@@ -202,7 +231,7 @@ class IntelDialect: public Dialect {
 public:
     IntelDialect( fcml_uint32_t flags = FCML_INTEL_DIALECT_CF_DEFAULT ) {
         fcml_st_dialect *dialect;
-        fcml_ceh_error error = fcml_fn_dialect_init_intel( flags, &dialect );
+        fcml_ceh_error error = ::fcml_fn_dialect_init_intel( flags, &dialect );
         if ( error ) {
             throw InitException( FCML_TEXT( "Can not initialize the Intel dialect." ), error );
         }
@@ -216,7 +245,7 @@ class GASDialect: public Dialect {
 public:
     GASDialect( fcml_uint32_t flags = FCML_GAS_DIALECT_CF_DEFAULT ) {
         fcml_st_dialect *dialect;
-        fcml_ceh_error error = fcml_fn_dialect_init_gas( flags, &dialect );
+        fcml_ceh_error error = ::fcml_fn_dialect_init_gas( flags, &dialect );
         if ( error ) {
             throw InitException( FCML_TEXT( "Can not initialize the AT&T dialect." ), error );
         }

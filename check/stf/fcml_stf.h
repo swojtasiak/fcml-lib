@@ -57,12 +57,12 @@ typedef fcml_bool (*fcml_stf_test_init_function)(void);
 typedef void (*fcml_stf_test_case_function)(void);
 
 typedef struct fcml_stf_test_case {
-	fcml_string name;
+	const fcml_string name;
 	fcml_stf_test_case_function test_function;
 } fcml_stf_test_case;
 
 typedef struct fcml_stf_test_suite {
-	fcml_string name;
+	const fcml_string name;
 	fcml_stf_test_init_function init_function;
 	fcml_stf_test_init_function cleanup_function;
 	fcml_stf_test_case *test_cases;
@@ -95,7 +95,7 @@ extern fcml_stf_test_result fcml_gl_stf_test_result;
 
 /* Asserts */
 
-void LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert( fcml_bool condition, fcml_string file, fcml_int line, fcml_string message );
+void LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert( fcml_bool condition, const fcml_string file, fcml_int line, const fcml_string message );
 
 /* Equals.*/
 #define STF_ASSERT_EQUAL(actual, expected)		\

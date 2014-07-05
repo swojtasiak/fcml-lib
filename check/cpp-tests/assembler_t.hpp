@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef DIALECT_T_HPP_
-#define DIALECT_T_HPP_
+#ifndef ASSEMBLER_T_HPP_
+#define ASSEMBLER_T_HPP_
 
 #include <fcml_stf.h>
 
-extern fcml_stf_test_suite fcml_si_cpp_dialect;
+extern fcml_stf_test_suite fcml_si_cpp_assembler;
 
-#endif /* DIALECT_T_HPP_ */
+#endif /* ASSEMBLER_T_HPP_ */
