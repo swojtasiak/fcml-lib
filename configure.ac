@@ -28,6 +28,12 @@ AC_ARG_ENABLE([debug],
 	[AS_HELP_STRING([--enable-debug],
 	[enable debug code @<:@default=no@:>@])],
 	[debug="$withval"], [debug=no])
+	
+# Configure options: --enable-cpp-wrapper[=yes].
+AC_ARG_ENABLE([cpp_wrapper],
+	[AS_HELP_STRING([--disable-cpp-wrapper],
+	[disables c++ wrapper tests])],
+	[], [cpp_wrapper=yes])
 
 # Checks for libraries.
 
@@ -62,6 +68,7 @@ if test -z "$DOXYGEN"; then
     AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
 fi
 
+AM_CONDITIONAL([CPP_WRAPPER], [ [test -n "$CXX"] && [test "x$cpp_wrapper" = xyes] ])
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/doxygen/doxyfile])])
 
@@ -72,6 +79,7 @@ AC_CONFIG_FILES([Makefile
 				 check/stf/Makefile                 
 				 check/internal-tests/Makefile
 				 check/public-tests/Makefile
+				 check/cpp-tests/Makefile
 				 example/Makefile
 				 example/fcml-disasm/Makefile
 				 example/fcml-asm/Makefile
@@ -94,13 +102,15 @@ AS_CASE(
 AC_OUTPUT
 echo "***************************************************
 ${PACKAGE_NAME} version ${PACKAGE_VERSION}
-Host CPU.........: $host_cpu
-Host OS:.........: $host_os
-Prefix:..........: ${prefix}
-Debug Build......: $debug
-Shared Library...: $enable_shared
-Compiler.........: ${CC} ${CFLAGS} ${CPPFLAGS}
-Linker...........: $LD $LDFLAGS $LIBS
-Doxygen..........: ${DOXYGEN:-NONE}
+Host CPU...........: $host_cpu
+Host OS:...........: $host_os
+Prefix:............: ${prefix}
+Debug Build........: $debug
+CPP wrapper tests..: ${cpp_wrapper:-no}
+Shared Library.....: $enable_shared
+C Compiler.........: ${CC} ${CFLAGS} ${CPPFLAGS}
+CPP Compiler.......: ${CXX} ${CXXFLAGS}
+Linker.............: $LD $LDFLAGS $LIBS
+Doxygen............: ${DOXYGEN:-NONE}
 ***************************************************
 "
