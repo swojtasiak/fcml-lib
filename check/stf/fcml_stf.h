@@ -49,6 +49,10 @@
 #include <fcml_types.h>
 #include <string.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef fcml_bool (*fcml_stf_test_init_function)(void);
 typedef void (*fcml_stf_test_case_function)(void);
 
@@ -121,6 +125,10 @@ void LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert( fcml_bool condition, fcml_
 #define STF_ASSERT_STRING_EQUAL(actual, expected)		\
 	fcml_str_run_assert( (strcmp(actual,expected)==0), __FILE__, __LINE__, ("STF_ASSERT_STRING_EQUAL(" #actual "," #expected ")") )
 
-fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_stf_run_tests( fcml_string test_name, fcml_stf_test_suite **suite );
+fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_stf_run_tests( const fcml_string test_name, fcml_stf_test_suite **suite );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FCML_STF_H_ */

@@ -69,7 +69,7 @@ void LIB_CALL_STF fcml_str_run_assert( fcml_bool condition, fcml_string file, fc
 
 }
 
-fcml_bool LIB_CALL_STF fcml_stf_run_tests( fcml_string test_name, fcml_stf_test_suite **suite ) {
+fcml_bool LIB_CALL_STF fcml_stf_run_tests( const fcml_string test_name, fcml_stf_test_suite **suite ) {
 
 	/* Execute suites one by one.*/
 

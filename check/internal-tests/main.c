@@ -57,7 +57,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 int main(int argc, char **argv) {
 
 	/* Run tests.*/
-	fcml_bool result = fcml_stf_run_tests( "Internal unit tests", fcml_arr_suites );
+	fcml_bool result = fcml_stf_run_tests( FCML_TEXT( "Internal unit tests" ), fcml_arr_suites );
 
 	exit( result ? 0 : 1 );
 }
