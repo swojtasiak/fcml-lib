@@ -1,6 +1,11 @@
 #ifndef FCML_INT_COMMON_HPP_
 #define FCML_INT_COMMON_HPP_
 
+#include <stdlib.h>
+#include <string.h>
+#include <iterator>
+#include <new>
+
 #include "fcml_types.h"
 #include "fcml_common.h"
 #include "fcml_errors.h"
@@ -8,6 +13,23 @@
 #include "fcml_gas_dialect.h"
 
 namespace fcml {
+
+class Env {
+public:
+    static fcml_string StrDup( fcml_string str ) {
+        if( !str ) {
+            return NULL;
+        }
+        fcml_string newStr = strdup(str);
+        if( !newStr ) {
+            throw std::bad_alloc();
+        }
+        return newStr;
+    }
+    static void StrFree( fcml_string str ) {
+        free(str);
+    }
+};
 
 /**
  *  Base exception for all exceptions exposed by FCML library.
@@ -18,7 +40,7 @@ public:
         this->_msg = NULL;
         this->_error = error;
     }
-    BaseException( fcml_string msg, fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) {
+    BaseException( const fcml_string msg, fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) {
         this->_msg = msg;
         this->_error = error;
     }
@@ -34,7 +56,7 @@ public:
         return *this;
     }
 public:
-    fcml_string GetMsg() {
+    const fcml_string GetMsg() {
         return _msg;
     }
     fcml_ceh_error GetError() {
@@ -54,7 +76,7 @@ private:
  */
 class InitException: public BaseException {
 public:
-    InitException( fcml_string msg, fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) :
+    InitException( const fcml_string msg, fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) :
             BaseException( msg, error ) {
     }
 };
@@ -84,12 +106,72 @@ private:
     }
 };
 
-struct EntryPoint: public fcml_st_entry_point {
+template<class T>
+class StructureWrapper {
+public:
+    StructureWrapper() {
+        memset( &_wrapped, 0, sizeof(T) );
+    }
+    StructureWrapper( const StructureWrapper &cpy ) {
+        _wrapped = cpy._wrapped;
+    }
+    StructureWrapper& operator=( const StructureWrapper &wrapper ) {
+        if( &wrapper != this ) {
+            this->_wrapped = wrapper._wrapped;
+        }
+        return *this;
+    }
+public:
+    T &GetStruct() {
+        return _wrapped;
+    }
+protected:
+    T _wrapped;
+};
+
+class EntryPoint: public StructureWrapper<fcml_st_entry_point> {
+public:
     EntryPoint( fcml_ip instruction_pointer, fcml_en_operating_mode operating_mode = FCML_OM_32_BIT, fcml_usize asa = FCML_DS_UNDEF, fcml_usize osa = FCML_DS_UNDEF ) {
-        op_mode = operating_mode;
-        address_size_attribute = asa;
-        operand_size_attribute = osa;
-        ip = instruction_pointer;
+        _wrapped.op_mode = operating_mode;
+        _wrapped.address_size_attribute = asa;
+        _wrapped.operand_size_attribute = osa;
+        _wrapped.ip = instruction_pointer;
+    }
+
+    fcml_usize getAddressSizeAttribute() const {
+        return _wrapped.address_size_attribute;
+    }
+
+    void setAddressSizeAttribute( fcml_usize addressSizeAttribute ) {
+        _wrapped.address_size_attribute = addressSizeAttribute;
+    }
+
+    fcml_ip getIp() const {
+        return _wrapped.ip;
+    }
+
+    void setIp( fcml_ip ip ) {
+        this->_wrapped.ip = ip;
+    }
+
+    fcml_en_operating_mode getOpMode() const {
+        return _wrapped.op_mode;
+    }
+
+    void setOpMode( fcml_en_operating_mode opMode ) {
+        _wrapped.op_mode = opMode;
+    }
+
+    fcml_usize getOperandSizeAttribute() const {
+        return _wrapped.operand_size_attribute;
+    }
+
+    void setOperandSizeAttribute( fcml_usize operandSizeAttribute ) {
+        _wrapped.operand_size_attribute = operandSizeAttribute;
+    }
+
+    void incrementIp( fcml_ip value ) {
+        this->_wrapped.ip += value;
     }
 };
 
@@ -136,7 +218,7 @@ public:
         fcml_st_dialect *dialect;
         fcml_ceh_error error = fcml_fn_dialect_init_gas( flags, &dialect );
         if ( error ) {
-            throw InitException( FCML_TEXT( "Can not initialize the Intel dialect." ), error );
+            throw InitException( FCML_TEXT( "Can not initialize the AT&T dialect." ), error );
         }
         SetDialect( dialect );
     }
