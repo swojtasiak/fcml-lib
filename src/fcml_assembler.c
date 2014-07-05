@@ -50,7 +50,7 @@ typedef struct fcml_ist_enc_pseudo_operation_desc {
  * Pseudo operations. *
  **********************/
 
-fcml_st_assembled_instruction *fcml_ifn_asm_allock_assembled_instruction( fcml_usize size ) {
+fcml_st_assembled_instruction *fcml_ifn_asm_alloc_assembled_instruction( fcml_usize size ) {
 
     fcml_st_assembled_instruction *instruction = (fcml_st_assembled_instruction*) fcml_fn_env_memory_alloc_clear( sizeof(fcml_st_assembled_instruction) );
     if (!instruction) {
@@ -80,7 +80,7 @@ fcml_ceh_error fcml_ifp_encode_pseudo_operation_db_encoder( const fcml_st_instru
             return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
         }
 
-        result->instructions = fcml_ifn_asm_allock_assembled_instruction( 1 );
+        result->instructions = fcml_ifn_asm_alloc_assembled_instruction( 1 );
         if (!result->instructions) {
             return FCML_CEH_GEC_OUT_OF_MEMORY;
         }

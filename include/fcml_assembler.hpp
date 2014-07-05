@@ -12,84 +12,123 @@ namespace fcml {
  */
 struct AssemblerConf: public StructureWrapper<fcml_st_assembler_conf> {
 
-    AssemblerConf() {
-    }
+    AssemblerConf() {}
+
+    /**
+     * Wraps the given structure into the object.
+     */
+    AssemblerConf( fcml_st_assembler_conf *wrapped ) : StructureWrapper(wrapped) { }
+
+    /**
+     * Wraps a copy of the given structure into the object.
+     */
+    AssemblerConf( fcml_st_assembler_conf &wrapped ) : StructureWrapper(wrapped) { }
 
     fcml_bool getChooseAbsEncoding() const {
-        return _wrapped.choose_abs_encoding;
+        return _wrapped->choose_abs_encoding;
     }
 
     void setChooseAbsEncoding( fcml_bool chooseAbsEncoding ) {
-        _wrapped.choose_abs_encoding = chooseAbsEncoding;
+        _wrapped->choose_abs_encoding = chooseAbsEncoding;
     }
 
     fcml_bool getChooseSibEncoding() const {
-        return _wrapped.choose_sib_encoding;
+        return _wrapped->choose_sib_encoding;
     }
 
     void setChooseSibEncoding( fcml_bool chooseSibEncoding ) {
-        _wrapped.choose_sib_encoding = chooseSibEncoding;
+        _wrapped->choose_sib_encoding = chooseSibEncoding;
     }
 
     fcml_fnp_asm_instruction_chooser getChooser() const {
-        return _wrapped.chooser;
+        return _wrapped->chooser;
     }
 
     void setChooser( fcml_fnp_asm_instruction_chooser chooser ) {
-        this->_wrapped.chooser = chooser;
+        this->_wrapped->chooser = chooser;
     }
 
     fcml_bool getEnableErrorMessages() const {
-        return _wrapped.enable_error_messages;
+        return _wrapped->enable_error_messages;
     }
 
     void setEnableErrorMessages( fcml_bool enableErrorMessages ) {
-        _wrapped.enable_error_messages = enableErrorMessages;
+        _wrapped->enable_error_messages = enableErrorMessages;
     }
 
     fcml_bool getForceRexPrefix() const {
-        return _wrapped.force_rex_prefix;
+        return _wrapped->force_rex_prefix;
     }
 
     void setForceRexPrefix( fcml_bool forceRexPrefix ) {
-        _wrapped.force_rex_prefix = forceRexPrefix;
+        _wrapped->force_rex_prefix = forceRexPrefix;
     }
 
     fcml_bool getForceThreeByteVex() const {
-        return _wrapped.force_three_byte_VEX;
+        return _wrapped->force_three_byte_VEX;
     }
 
     void setForceThreeByteVex( fcml_bool forceThreeByteVex ) {
-        _wrapped.force_three_byte_VEX = forceThreeByteVex;
+        _wrapped->force_three_byte_VEX = forceThreeByteVex;
     }
 
     fcml_bool getIncrementIp() const {
-        return _wrapped.increment_ip;
+        return _wrapped->increment_ip;
     }
 
     void setIncrementIp( fcml_bool incrementIp ) {
-        _wrapped.increment_ip = incrementIp;
+        _wrapped->increment_ip = incrementIp;
     }
 
     fcml_fnp_asm_optimizer getOptimizer() const {
-        return _wrapped.optimizer;
+        return _wrapped->optimizer;
     }
 
     void setOptimizer( fcml_fnp_asm_optimizer optimizer ) {
-        this->_wrapped.optimizer = optimizer;
+        this->_wrapped->optimizer = optimizer;
     }
 
     fcml_uint16_t getOptimizerFlags() const {
-        return _wrapped.optimizer_flags;
+        return _wrapped->optimizer_flags;
     }
 
     void setOptimizerFlags( fcml_uint16_t optimizerFlags ) {
-        _wrapped.optimizer_flags = optimizerFlags;
+        _wrapped->optimizer_flags = optimizerFlags;
     }
 
 };
 
-class AssemblerResult : public StructureWrapper<fcml_st_assembler_result> {
+/**
+ * Holds a state used by the assembler to perform the assembling process. Thanks to the
+ * class assemblers are thread-safe and do not need to store any states. take into account
+ * that this class does not manage the assembler instance available in the original structure. It's
+ * because the appropriate assembler is set just before the assembler is being called.
+ */
+struct AssemblerContext: public StructureWrapper<fcml_st_assembler_context> {
+public:
+    AssemblerContext() :
+            _assemblerConfig( &_wrapped->configuration ), _entryPoint( &_wrapped->entry_point ) {
+    }
+    AssemblerContext(EntryPoint &entryPoint) :
+            _assemblerConfig( &_wrapped->configuration ), _entryPoint( &_wrapped->entry_point ) {
+        // Override the default entry point. The structures are copied here.
+        _entryPoint = entryPoint;
+    }
+public:
+    EntryPoint &GetEntryPoint() {
+        return _entryPoint;
+    }
+    AssemblerConf &GetAssemblerConf() {
+        return _assemblerConfig;
+    }
+private:
+    // Configuration wrapper.
+    AssemblerConf _assemblerConfig;
+    // Entry point wrapper.
+    EntryPoint _entryPoint;
+};
+
+class AssemblerResult: public StructureWrapper<fcml_st_assembler_result> {
 public:
     AssemblerResult() {
     }
@@ -101,32 +140,27 @@ public:
  */
 class Assembler: public NonCopyable {
 public:
-    Assembler( Dialect &dialect, EntryPoint &entryPoint ) :
-            _entryPoint( entryPoint ) {
-        _context.assembler = NULL;
-        _context.entry_point = _entryPoint.GetStruct();
-        _context.configuration = _assemblerConf.GetStruct();
-        fcml_ceh_error error = fcml_fn_assembler_init( dialect.GetDialect(), &_context.assembler );
+    Assembler( Dialect &dialect ) : _dialect(dialect) {
+        fcml_ceh_error error = ::fcml_fn_assembler_init( dialect.GetDialect(), &_assembler );
         if ( error ) {
             throw InitException( FCML_TEXT( "Can not initialize the assembler." ), error );
         }
     }
     virtual ~Assembler() {
-        if ( _context.assembler ) {
-            fcml_fn_assembler_free (_context.assembler);
-            _context.assembler = NULL;
+        if ( _assembler ) {
+            ::fcml_fn_assembler_free( _assembler );
+            _assembler = NULL;
         }
     }
 public:
-
-public:
-    AssemblerConf &GetAssemblerConf() {
-        return _assemblerConf;
+    AssemblerResult &assemble( AssemblerContext &ctx, AssemblerResult &result ) {
+        return result;
     }
 private:
-    EntryPoint &_entryPoint;
-    AssemblerConf _assemblerConf;
-    fcml_st_assembler_context _context;
+    // A dialect used by the assembler.
+    Dialect &_dialect;
+    // An initialized assembler instance.
+    fcml_st_assembler *_assembler;
 };
 
 }

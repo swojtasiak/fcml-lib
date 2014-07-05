@@ -29,7 +29,7 @@ AC_ARG_ENABLE([debug],
 	[enable debug code @<:@default=no@:>@])],
 	[debug="$withval"], [debug=no])
 	
-# Configure options: --enable-cpp-wrapper[=yes].
+# Configure options: --disable-cpp-wrapper[=no].
 AC_ARG_ENABLE([cpp_wrapper],
 	[AS_HELP_STRING([--disable-cpp-wrapper],
 	[disables c++ wrapper tests])],
@@ -106,10 +106,10 @@ Host CPU...........: $host_cpu
 Host OS:...........: $host_os
 Prefix:............: ${prefix}
 Debug Build........: $debug
-CPP wrapper tests..: ${cpp_wrapper:-no}
+C++ wrapper tests..: ${cpp_wrapper:-no}
 Shared Library.....: $enable_shared
 C Compiler.........: ${CC} ${CFLAGS} ${CPPFLAGS}
-CPP Compiler.......: ${CXX} ${CXXFLAGS}
+C++ Compiler.......: ${CXX} ${CXXFLAGS}
 Linker.............: $LD $LDFLAGS $LIBS
 Doxygen............: ${DOXYGEN:-NONE}
 ***************************************************
