@@ -5,10 +5,12 @@ noinst_PROGRAMS = fcml_cpp_check
 fcml_cpp_check_SOURCES = main.cpp \
 	dialect_t.cpp \
 	dialect_t.hpp \
-	struct_wrapper_t.cpp \
-	struct_wrapper_t.hpp \
+	common_t.cpp \
+	common_t.hpp \
 	assembler_t.cpp \
-	assembler_t.hpp
+	assembler_t.hpp \
+	errors_t.cpp \
+	errors_t.hpp
 
 fcml_cpp_check_CPPFLAGS = -Wall -Wno-write-strings -I$(top_srcdir)/include -I$(top_srcdir)/check/stf @FCML_IMPORT_LIB@
 

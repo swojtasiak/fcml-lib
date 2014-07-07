@@ -22,6 +22,6 @@
 
 #include <fcml_stf.h>
 
-extern fcml_stf_test_suite fcml_si_cpp_struct_wrapper;
+extern fcml_stf_test_suite fcml_si_cpp_common;
 
 #endif /* STRUCT_WRAPPER_T_HPP_ */

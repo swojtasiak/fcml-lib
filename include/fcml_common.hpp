@@ -5,6 +5,8 @@
 #include <string.h>
 #include <iterator>
 #include <new>
+#include <iostream>
+#include <stdexcept>
 
 #include "fcml_types.h"
 #include "fcml_common.h"
@@ -106,47 +108,121 @@ private:
     }
 };
 
+/**
+ * Wraps a structure by its pointer or holds the deep-copy of the whole structure.
+ * This container is useful when we need to return a wrapped structure but we
+ * do not want to copy anything if it is not necessary yet. For example we can wrap an
+ * assembling result and return the result in the form of C++ object but we still
+ * work on the original structure, nothing is copied there. Doing so we can save space and
+ * time. Notice that object can be still copied when needed and in such a cache a deep-copy
+ * of the whole structure is made anyway.
+ */
 template<class T>
 class StructureWrapper {
 public:
+    /**
+     * It just allocates space for the wrapped structure and cleans it.
+     */
     StructureWrapper() {
         _owner = FCML_TRUE;
         _wrapped = new T();
-        // Clean the newly allocated structure.
         memset( _wrapped, 0, sizeof(T) );
     }
+    /**
+     * Wraps the given structure without copying and allocating anything.
+     * Remember that this rule is not propagated when such an object
+     * is an argument while objects are copied. It means that every obiect
+     * constructed using this one will always deep-copy the wrapped structure.
+     */
     StructureWrapper( T *wrapped ) {
-        // Just wrap the structure instead of copying anything.
+        if( !wrapped ) {
+            throw std::invalid_argument("Pointer to the wrapping structure can not be null!");
+        }
         _owner = FCML_FALSE;
         _wrapped = wrapped;
     }
+    /**
+     * Passing a structure by reference always means that we would like to make a
+     * deep-copy and then wrapp the result, not the source structure itself. Notice that
+     * you have to implement deep-copy logic in the derived class if it is needed.
+     * @param wrapped Structure to be copied and wrapped.
+     */
     StructureWrapper( T &wrapped ) {
         _owner = FCML_TRUE;
         _wrapped = new T();
-        *_wrapped = *(&wrapped);
+        *_wrapped = wrapped;
     }
+    /**
+     * Copy constructor always makes the deep-copy of the source object.
+     * It really doesn't matter if the source object is a reference or
+     * pointer based one.
+     */
     StructureWrapper( const StructureWrapper &cpy ) {
         _owner = FCML_TRUE;
         _wrapped = new T();
         *_wrapped = *cpy._wrapped;
     }
+    /**
+     * Wraps given pointer unallocating the managed structure first,
+     * but only if it holds a copy. This is a conterpart to the pointer
+     * based constructor above.
+     */
+    StructureWrapper& operator=( const T *wrapped ) {
+        if( !wrapped ) {
+            throw std::invalid_argument("Pointer to the wrapping structure can not be null!");
+        }
+        if( wrapped != this->_wrapped ) {
+            if( _owner && _wrapped ) {
+                StructureFree();
+                delete _wrapped;
+            }
+            _wrapped = wrapped;
+            _owner = FCML_FALSE;
+        }
+        return *this;
+    }
+    /**
+     * Make a deep-copy of the given object unallocating
+     * the managed structure, but only if it holds a copy.
+     */
     StructureWrapper& operator=( const StructureWrapper &wrapper ) {
         if( &wrapper != this ) {
             if( !_wrapped ) {
                 _wrapped = new T();
+            } else {
+                StructureFree();
             }
             *_wrapped = *wrapper._wrapped;
+            StructureCopy(wrapper._wrapped);
         }
         return *this;
     }
+    /**
+     * A simple "equal" just by pointers.
+     */
+    bool operator==( const StructureWrapper& other ) {
+        return ( _wrapped == other._wrapped );
+    }
+    /**
+     * A simple "not equal" just by pointers.
+     */
+    bool operator!=( const StructureWrapper& other ) {
+        return ( _wrapped != other._wrapped );
+    }
+    /**
+     * Deep-frees owned structure.
+     */
     virtual ~StructureWrapper() {
         if( _wrapped && _owner ) {
             delete _wrapped;
         }
         _wrapped = NULL;
     }
+protected:
+    virtual void StructureCopy(T *source) { }
+    virtual void StructureFree() { }
 public:
-    T &GetStruct() {
+    T &getStruct() {
         return *_wrapped;
     }
 protected:

@@ -26,3 +26,4 @@ compile
 autoscan-*.log
 configure.scan
 test-driver
+/misc
