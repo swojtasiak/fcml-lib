@@ -1,9 +1,12 @@
 #ifndef FCML_ASSEMBLER_HPP_
 #define FCML_ASSEMBLER_HPP_
 
+#include <vector>
+
 #include "fcml_assembler.h"
 
 #include "fcml_common.hpp"
+#include "fcml_errors.hpp"
 
 namespace fcml {
 
@@ -128,10 +131,90 @@ private:
     EntryPoint _entryPoint;
 };
 
+class AssembledInstruction: public StructureWrapper<fcml_st_assembled_instruction> {
+public:
+    AssembledInstruction( fcml_st_assembled_instruction *wrapped ) : StructureWrapper( wrapped ) {
+    }
+};
+
 class AssemblerResult: public StructureWrapper<fcml_st_assembler_result> {
 public:
-    AssemblerResult() {
+    AssemblerResult() : _errorContainer(&(_wrapped->errors)), _managed(false) {
+        prepareAssembledInstructions();
+        fcml_fn_assembler_result_prepare( _wrapped );
     }
+    ~AssemblerResult() {
+        cleanAssemblerResult();
+        if( _managed ) {
+            fcml_fn_assembler_result_free( _wrapped );
+        }
+    }
+
+    // Assembler is allowed to call setManaged.
+    friend class Assembler;
+
+public:
+
+    AssembledInstruction &operator[](int i) {
+        if( i < 0 || i >= static_cast<int>(_assembledInstructions.size())) {
+            throw std::out_of_range("No such an assembled instruction available.");
+        }
+        WrapperPtr<AssembledInstruction> &wrapperPtr = _assembledInstructions[i];
+        return *wrapperPtr.getWrapped();
+    }
+
+    fcml_usize getNumberOfInstructions() {
+        return _wrapped->number_of_instructions;
+    }
+
+    const AssembledInstruction *getChoosenInstruction() const {
+        return _choosenInstruction;
+    }
+
+    const ErrorContainer &getErrorContainer() const {
+        return _errorContainer;
+    }
+
+    void cleanAssemblerResult() {
+        if( _wrapped && _managed ) {
+            fcml_fn_assembler_result_free( _wrapped );
+        }
+    }
+
+protected:
+
+    void setManaged() {
+        // Update assembled insteruction list.
+        prepareAssembledInstructions();
+        // Update errors container.
+        _errorContainer = &(_wrapped->errors);
+        // Result structure is managed now and have to be freed when needed.
+        _managed = FCML_TRUE;
+    }
+
+private:
+    void prepareAssembledInstructions() {
+        _assembledInstructions.clear();
+        if( _wrapped->number_of_instructions ) {
+            fcml_st_assembled_instruction *instruction = _wrapped->instructions;
+            while( instruction ) {
+                AssembledInstruction *assembledInstruction = new AssembledInstruction(instruction);
+                _assembledInstructions.push_back(assembledInstruction);
+                if( instruction == _wrapped->chosen_instruction ) {
+                    _choosenInstruction = assembledInstruction;
+                }
+            }
+        }
+    }
+private:
+    // Array of assembled instructions.
+    std::vector< WrapperPtr<AssembledInstruction> > _assembledInstructions;
+    // Pointer to the chosen instruction container.
+    AssembledInstruction *_choosenInstruction;
+    // Wraps original errors container.
+    ErrorContainer _errorContainer;
+    // True if it holds managed structure which should be freed when object is destroyed.
+    bool _managed;
 };
 
 /**
@@ -153,8 +236,10 @@ public:
         }
     }
 public:
-    AssemblerResult &assemble( AssemblerContext &ctx, AssemblerResult &result ) {
-        return result;
+    fcml_ceh_error assemble( AssemblerContext &ctx, Instruction &instruction, AssemblerResult &result ) {
+        fcml_ceh_error error =  ::fcml_fn_assemble(&ctx.getStruct(), &instruction.getStruct(), &result.getStruct() );
+        result.setManaged();
+        return error;
     }
 private:
     // A dialect used by the assembler.

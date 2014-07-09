@@ -16,6 +16,43 @@
 
 namespace fcml {
 
+template<typename T>
+class WrapperPtr {
+public:
+    WrapperPtr() {
+        _wrapped = NULL;
+    }
+    WrapperPtr( T *wrapped ) {
+        _wrapped = wrapped;
+    }
+    WrapperPtr( const T &wrapped ) {
+        _wrapped = &wrapped;
+    }
+    WrapperPtr& operator=( const WrapperPtr &ptr ) {
+        if ( &ptr != this ) {
+            // Remove currently managed object.
+            if( _wrapped ) {
+                delete _wrapped;
+            }
+            _wrapped = ptr._wrapped;
+        }
+        return *this;
+    }
+    ~WrapperPtr() {
+        if(_wrapped) {
+            delete _wrapped;
+        }
+    }
+    T *getWrapped() {
+        return _wrapped;
+    }
+    T *operator*() const {
+        return _wrapped;
+    }
+private:
+    T *_wrapped;
+};
+
 class Env {
 public:
     static fcml_string StrDup( fcml_string str ) {
@@ -178,6 +215,8 @@ public:
             }
             _wrapped = wrapped;
             _owner = FCML_FALSE;
+            // Wrapped object has changed, so all related references need to be updated.
+            updateReferences();
         }
         return *this;
     }
@@ -194,6 +233,9 @@ public:
             }
             *_wrapped = *wrapper._wrapped;
             StructureCopy(wrapper._wrapped);
+            // Wrapped object has changed, so all related references need to be updated.
+            updateReferences();
+
         }
         return *this;
     }
@@ -219,6 +261,7 @@ public:
         _wrapped = NULL;
     }
 protected:
+    virtual void updateReferences();
     virtual void StructureCopy(T *source) { }
     virtual void StructureFree() { }
 public:
@@ -278,6 +321,451 @@ public:
     void incrementIp( fcml_ip value ) {
         this->_wrapped->ip += value;
     }
+};
+
+class Integer: public StructureWrapper<fcml_st_integer> {
+public:
+
+    Integer() {
+    }
+    Integer(fcml_st_integer *wrapped) : StructureWrapper(wrapped) {
+    }
+    Integer(fcml_st_integer &wrapped) : StructureWrapper(wrapped) {
+    }
+    Integer(const Integer &cpy) : StructureWrapper(cpy) {
+    }
+
+public:
+
+    fcml_int16_t getInt16() const {
+        return _wrapped->int16;
+    }
+
+    void setInt16( fcml_int16_t int16 ) {
+        this->_wrapped->int16 = int16;
+    }
+
+    fcml_int32_t getInt32() const {
+        return _wrapped->int32;
+    }
+
+    void setInt32( fcml_int32_t int32 ) {
+        this->_wrapped->int32 = int32;
+    }
+
+    fcml_int64_t getInt64() const {
+        return _wrapped->int64;
+    }
+
+    void setInt64( fcml_int64_t int64 ) {
+        this->_wrapped->int64 = int64;
+    }
+
+    fcml_int8_t getInt8() const {
+        return _wrapped->int8;
+    }
+
+    void setInt8( fcml_int8_t int8 ) {
+        this->_wrapped->int8 = int8;
+    }
+
+    fcml_bool getIsSigned() const {
+        return _wrapped->is_signed;
+    }
+
+    void setIsSigned( fcml_bool isSigned ) {
+        _wrapped->is_signed = isSigned;
+    }
+
+    fcml_usize getSize() const {
+        return _wrapped->size;
+    }
+
+    void setSize( fcml_usize size ) {
+        this->_wrapped->size = size;
+    }
+
+};
+
+class Register: public StructureWrapper<fcml_st_register> {
+public:
+
+    Register() {
+    }
+    Register(fcml_st_register *wrapped) : StructureWrapper(wrapped) {
+    }
+    Register(fcml_st_register &wrapped) : StructureWrapper(wrapped) {
+    }
+    Register(const Register &cpy) : StructureWrapper(cpy) {
+    }
+
+public:
+
+    fcml_uint8_t getReg() const {
+        return _wrapped->reg;
+    }
+
+    void setReg( fcml_uint8_t reg ) {
+        this->_wrapped->reg = reg;
+    }
+
+    fcml_usize getSize() const {
+        return _wrapped->size;
+    }
+
+    void setSize( fcml_usize size ) {
+        this->_wrapped->size = size;
+    }
+
+    fcml_en_register getType() const {
+        return _wrapped->type;
+    }
+
+    void setType( fcml_en_register type ) {
+        this->_wrapped->type = type;
+    }
+
+    fcml_bool getX64Exp() const {
+        return _wrapped->x64_exp;
+    }
+
+    void setX64Exp( fcml_bool x64Exp ) {
+        _wrapped->x64_exp = x64Exp;
+    }
+
+};
+
+
+class FarPointer: public StructureWrapper<fcml_st_far_pointer> {
+public:
+
+    FarPointer() {
+    }
+    FarPointer(fcml_st_far_pointer *wrapped) : StructureWrapper(wrapped) {
+    }
+    FarPointer(fcml_st_far_pointer &wrapped) : StructureWrapper(wrapped) {
+    }
+    FarPointer(const FarPointer &cpy) : StructureWrapper(cpy) {
+    }
+
+public:
+
+    fcml_usize getOffsetSize() const {
+        return _wrapped->offset_size;
+    }
+
+    void setOffsetSize( fcml_usize offsetSize ) {
+        _wrapped->offset_size = offsetSize;
+    }
+
+    fcml_int16_t getOffset16() const {
+        return _wrapped->offset16;
+    }
+
+    void setOffset16( fcml_int16_t offset16 ) {
+        this->_wrapped->offset16 = offset16;
+    }
+
+    fcml_int32_t getOffset32() const {
+        return _wrapped->offset32;
+    }
+
+    void setOffset32( fcml_int32_t offset32 ) {
+        this->_wrapped->offset32 = offset32;
+    }
+
+    fcml_uint16_t getSegment() const {
+        return _wrapped->segment;
+    }
+
+    void setSegment( fcml_uint16_t segment ) {
+        this->_wrapped->segment = segment;
+    }
+
+};
+
+class SegmentSelector: public StructureWrapper<fcml_st_segment_selector> {
+public:
+    SegmentSelector() : _segmentSelector(&_wrapped->segment_selector) {
+    }
+    SegmentSelector(fcml_st_segment_selector *wrapped) : StructureWrapper(wrapped), _segmentSelector(&_wrapped->segment_selector) {
+    }
+    SegmentSelector(fcml_st_segment_selector &wrapped) : StructureWrapper(wrapped), _segmentSelector(&_wrapped->segment_selector) {
+    }
+    SegmentSelector(const SegmentSelector &cpy) : StructureWrapper(cpy), _segmentSelector(&_wrapped->segment_selector) {
+    }
+public:
+    fcml_bool getIsDefaultReg() const {
+        return _wrapped->is_default_reg;
+    }
+
+    void setIsDefaultReg( fcml_bool isDefaultReg ) {
+        _wrapped->is_default_reg = isDefaultReg;
+    }
+protected:
+    void updateReferences() {
+        _segmentSelector = &_wrapped->segment_selector;
+    }
+private:
+    Register _segmentSelector;
+};
+
+class EffectiveAddress: public StructureWrapper<fcml_st_effective_address> {
+public:
+    EffectiveAddress() : _baseRegister(&_wrapped->base), _indexRegister(&_wrapped->index), _displacement(&_wrapped->displacement) {
+    }
+    EffectiveAddress(fcml_st_effective_address *wrapped) : StructureWrapper(wrapped), _baseRegister(&_wrapped->base), _indexRegister(&_wrapped->index), _displacement(&_wrapped->displacement) {
+    }
+    EffectiveAddress(fcml_st_effective_address &wrapped) : StructureWrapper(wrapped), _baseRegister(&_wrapped->base), _indexRegister(&_wrapped->index), _displacement(&_wrapped->displacement) {
+    }
+    EffectiveAddress(const EffectiveAddress &cpy) : StructureWrapper(cpy), _baseRegister(&_wrapped->base), _indexRegister(&_wrapped->index), _displacement(&_wrapped->displacement) {
+    }
+public:
+
+    const Register& getBase() const {
+        return _baseRegister;
+    }
+
+    void setBase( const Register& baseRegister ) {
+        _baseRegister = baseRegister;
+    }
+
+    const Integer& getDisplacement() const {
+        return _displacement;
+    }
+
+    void setDisplacement( const Integer& displacement ) {
+        _displacement = displacement;
+    }
+
+    const Register& getIndex() const {
+        return _indexRegister;
+    }
+
+    void setIndex( const Register& indexRegister ) {
+        _indexRegister = indexRegister;
+    }
+
+    fcml_uint8_t getScale() const {
+        return _wrapped->scale_factor;
+    }
+
+    void setScale( fcml_uint8_t scaleFactor ) {
+        _wrapped->scale_factor = scaleFactor;
+    }
+
+protected:
+    void updateReferences() {
+        _baseRegister = &_wrapped->base;
+        _indexRegister = &_wrapped->index;
+        _displacement = &_wrapped->displacement;
+    }
+private:
+    Register _baseRegister;
+    Register _indexRegister;
+    Integer _displacement;
+};
+
+class Offset: public StructureWrapper<fcml_st_offset> {
+public:
+    Offset() {
+    }
+    Offset(fcml_st_offset *wrapped) : StructureWrapper(wrapped) {
+    }
+    Offset(fcml_st_offset &wrapped) : StructureWrapper(wrapped) {
+    }
+    Offset(const Offset &cpy) : StructureWrapper(cpy) {
+    }
+
+public:
+
+    fcml_bool getIsSigned() const {
+        return _wrapped->is_signed;
+    }
+
+    void setIsSigned( fcml_bool isSigned ) {
+        _wrapped->is_signed = isSigned;
+    }
+
+    fcml_int16_t getOff16() const {
+        return _wrapped->off16;
+    }
+
+    void setOff16( fcml_int16_t off16 ) {
+        this->_wrapped->off16 = off16;
+    }
+
+    fcml_int32_t getOff32() const {
+        return _wrapped->off32;
+    }
+
+    void setOff32( fcml_int32_t off32 ) {
+        this->_wrapped->off32 = off32;
+    }
+
+    fcml_int64_t getOff64() const {
+        return _wrapped->off64;
+    }
+
+    void setOff64( fcml_int64_t off64 ) {
+        this->_wrapped->off64 = off64;
+    }
+
+    fcml_usize getSize() const {
+        return _wrapped->size;
+    }
+
+    void setSize( fcml_usize size ) {
+        this->_wrapped->size = size;
+    }
+};
+
+class Address: public StructureWrapper<fcml_st_address> {
+public:
+    Address() : _segmentSelector(&_wrapped->segment_selector), _effectiveAddress(&_wrapped->effective_address), _offset(&_wrapped->offset) {
+    }
+    Address(fcml_st_address *wrapped) : StructureWrapper(wrapped), _segmentSelector(&_wrapped->segment_selector), _effectiveAddress(&_wrapped->effective_address), _offset(&_wrapped->offset) {
+    }
+    Address(fcml_st_address &wrapped) : StructureWrapper(wrapped), _segmentSelector(&_wrapped->segment_selector), _effectiveAddress(&_wrapped->effective_address), _offset(&_wrapped->offset) {
+    }
+    Address(const Address &cpy) : StructureWrapper(cpy), _segmentSelector(&_wrapped->segment_selector), _effectiveAddress(&_wrapped->effective_address), _offset(&_wrapped->offset){
+    }
+protected:
+    void updateReferences() {
+        _segmentSelector = &_wrapped->segment_selector;
+        _effectiveAddress = &_wrapped->effective_address;
+        _offset = &_wrapped->offset;
+    }
+private:
+    SegmentSelector _segmentSelector;
+    EffectiveAddress _effectiveAddress;
+    Offset _offset;
+};
+
+class Operand: public StructureWrapper<fcml_st_operand> {
+public:
+    Operand() : _immediate(&_wrapped->immediate), _farPointer(&_wrapped->far_pointer), _register(&_wrapped->reg) {
+    }
+    Operand(fcml_st_operand *wrapped) : StructureWrapper(wrapped), _immediate(&_wrapped->immediate), _farPointer(&_wrapped->far_pointer), _register(&_wrapped->reg) {
+    }
+    Operand(fcml_st_operand &wrapped) : StructureWrapper(wrapped), _immediate(&_wrapped->immediate), _farPointer(&_wrapped->far_pointer), _register(&_wrapped->reg) {
+    }
+    Operand(const Operand &cpy) : StructureWrapper(cpy), _immediate(&_wrapped->immediate), _farPointer(&_wrapped->far_pointer), _register(&_wrapped->reg) {
+    }
+protected:
+    void updateReferences() {
+        _immediate = &_wrapped->immediate;
+        _farPointer = &_wrapped->far_pointer;
+        _register = &_wrapped->reg;
+    }
+private:
+    Integer _immediate;
+    FarPointer _farPointer;
+    Register _register;
+};
+
+class Instruction: public StructureWrapper<fcml_st_instruction> {
+public:
+    Instruction() {
+        updateReferences();
+    }
+    Instruction(fcml_st_instruction *wrapped) : StructureWrapper(wrapped) {
+        updateReferences();
+    }
+    Instruction(fcml_st_instruction &wrapped) : StructureWrapper(wrapped) {
+        StructureCopy(&wrapped);
+        updateReferences();
+    }
+    Instruction(const Instruction &cpy) : StructureWrapper(cpy) {
+        StructureCopy(cpy._wrapped);
+        updateReferences();
+    }
+    ~Instruction() {
+        StructureFree();
+    }
+public:
+
+    Operand& operator[](int i) {
+        if( i < 0 || i >=  5 ) {
+            throw std::out_of_range("No such error info available.");
+        }
+        return **_operands[i];
+    }
+
+    Operand& getOperand(int i) {
+        return (*this)[i];
+    }
+
+    const fcml_st_condition& getCondition() const {
+        return _wrapped->condition;
+    }
+
+    void setCondition( const fcml_st_condition& condition ) {
+        this->_wrapped->condition = condition;
+    }
+
+    fcml_hints getHints() const {
+        return _wrapped->hints;
+    }
+
+    void setHints( fcml_hints hints ) {
+        this->_wrapped->hints = hints;
+    }
+
+    fcml_bool getIsConditional() const {
+        return _wrapped->is_conditional;
+    }
+
+    void setIsConditional( fcml_bool isConditional ) {
+        _wrapped->is_conditional = isConditional;
+    }
+
+    fcml_char* getMnemonic() const {
+        return _wrapped->mnemonic;
+    }
+
+    void setMnemonic( fcml_char* mnemonic ) {
+        this->_wrapped->mnemonic = mnemonic;
+    }
+
+    fcml_int getOperandsCount() const {
+        return _wrapped->operands_count;
+    }
+
+    void setOperandsCount( fcml_int operandsCount ) {
+        _wrapped->operands_count = operandsCount;
+    }
+
+    fcml_prefixes getPrefixes() const {
+        return _wrapped->prefixes;
+    }
+
+    void setPrefixes( fcml_prefixes prefixes ) {
+        this->_wrapped->prefixes = prefixes;
+    }
+
+protected:
+
+    void updateReferences() {
+        for( int i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+            _operands[i] = new Operand( &_wrapped->operands[i] );
+        }
+    }
+
+    void StructureCopy(fcml_st_instruction *source) {
+        _wrapped->mnemonic = ( source->mnemonic ) ? Env::StrDup(source->mnemonic) : NULL;
+    }
+
+    void StructureFree() {
+        // Free duplicated mnemonic.
+        if( _wrapped->mnemonic ) {
+            Env::StrFree(_wrapped->mnemonic);
+        }
+    }
+
+private:
+    // All operands are stored here.
+    WrapperPtr<Operand> _operands[5];
 };
 
 class Dialect : public NonCopyable {
