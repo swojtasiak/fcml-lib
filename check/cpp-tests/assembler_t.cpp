@@ -36,20 +36,40 @@ fcml_bool fcml_tf_cpp_assembler_suite_cleanup(void) {
 
 void fcml_tf_cpp_assemble(void) {
 
+    // mov eax,dword ptr [40302010h]
+
     try {
 
         IntelDialect intel;
 
         AssemblerContext ctx;
 
-        EntryPoint &entryPoint = ctx.GetEntryPoint();
+        EntryPoint &entryPoint = ctx.getEntryPoint();
         entryPoint.setOpMode(FCML_OM_32_BIT);
         entryPoint.setIp(0x401000);
 
-        AssemblerConf &config = ctx.GetAssemblerConf();
+        AssemblerConf &config = ctx.getAssemblerConf();
         config.setEnableErrorMessages(true);
 
         Assembler assembler(intel);
+
+        Instruction instruction;
+        instruction.setMnemonic(FCML_TEXT("mov"));
+        instruction.setOperandsCount(2);
+        instruction[0].setType(FCML_OT_REGISTER);
+        instruction[0].getRegister().setReg(FCML_REG_EAX);
+        instruction[0].getRegister().setSize(FCML_DS_32);
+        instruction[0].getRegister().setType(FCML_REG_GPR);
+        instruction[1].setType(FCML_OT_ADDRESS);
+        instruction[1].getAddress().setAddressForm(FCML_AF_OFFSET);
+        instruction[1].getAddress().getOffset().setIsSigned(FCML_TRUE);
+        instruction[1].getAddress().getOffset().setOff32(0x401000);
+        instruction[1].getAddress().setSizeOperator(FCML_DS_32);
+
+        AssemblerResult result;
+
+        fcml_ceh_error error = assembler.assemble(ctx, instruction, result);
+
 
     } catch( BaseException &exc ) {
         STF_FAIL("Exception while assembling the code.");

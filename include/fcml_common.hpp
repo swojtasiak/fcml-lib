@@ -17,40 +17,85 @@
 namespace fcml {
 
 template<typename T>
+class WrapperPtr;
+
+template<typename T>
+class PointerHolder {
+public:
+    PointerHolder() : _owner(NULL), _ptr(NULL) {
+    }
+    PointerHolder(WrapperPtr<T> *owner, T *ptr) : _owner(owner), _ptr(ptr) {
+    }
+    void set(T *ptr) {
+        if( _ptr ) {
+            // It really doesn't matter who is the owner if we would like to override the pointer.
+            delete _ptr;
+        }
+        _ptr = ptr;
+    }
+    T *get() {
+        return _ptr;
+    }
+    void reset(WrapperPtr<T> *invoker) {
+        _ptr = NULL;
+    }
+    void release(WrapperPtr<T> *invoker) {
+        if( _ptr && _owner == invoker ) {
+            delete _ptr;
+        }
+    }
+    void setOwner( WrapperPtr<T> *owner ) {
+        _owner = owner;
+    }
+private:
+    WrapperPtr<T> *_owner;
+    T *_ptr;
+};
+
+template<typename T>
 class WrapperPtr {
 public:
-    WrapperPtr() {
-        _wrapped = NULL;
+    WrapperPtr() : _wrapped(NULL) {}
+    WrapperPtr( T *wrapped ) : _wrapped(new PointerHolder<T>(this, wrapped)) { }
+    WrapperPtr( T &wrapped ) : _wrapped(new PointerHolder<T>(this, &wrapped)) { }
+    WrapperPtr( const WrapperPtr<T> &wrapped ) : _wrapped(wrapped._wrapped) {
+        if( _wrapped ) {
+            _wrapped->setOwner(this);
+        }
     }
-    WrapperPtr( T *wrapped ) {
-        _wrapped = wrapped;
+    ~WrapperPtr() {
+        if( _wrapped ) {
+            _wrapped->release(this);
+        }
     }
-    WrapperPtr( const T &wrapped ) {
-        _wrapped = &wrapped;
+    WrapperPtr& operator=( T *ptr ) {
+        if( !_wrapped ) {
+            _wrapped = new PointerHolder<T>(this, ptr);
+        } else if ( _wrapped->get() != ptr ) {
+            _wrapped->set(ptr);
+        }
+        _wrapped->setOwner(this);
+        return *this;
     }
-    WrapperPtr& operator=( const WrapperPtr &ptr ) {
+    WrapperPtr& operator=( WrapperPtr &ptr ) {
         if ( &ptr != this ) {
-            // Remove currently managed object.
             if( _wrapped ) {
+                _wrapped->release(this);
                 delete _wrapped;
             }
             _wrapped = ptr._wrapped;
+            _wrapped->setOwner(this);
         }
         return *this;
     }
-    ~WrapperPtr() {
-        if(_wrapped) {
-            delete _wrapped;
-        }
-    }
     T *getWrapped() {
-        return _wrapped;
+        return _wrapped ? _wrapped->get() : NULL;
     }
     T *operator*() const {
-        return _wrapped;
+        return _wrapped ? _wrapped->get() : NULL;
     }
 private:
-    T *_wrapped;
+    PointerHolder<T> *_wrapped;
 };
 
 class Env {
@@ -261,7 +306,7 @@ public:
         _wrapped = NULL;
     }
 protected:
-    virtual void updateReferences();
+    virtual void updateReferences() {}
     virtual void StructureCopy(T *source) { }
     virtual void StructureFree() { }
 public:
@@ -522,7 +567,7 @@ public:
     }
 public:
 
-    const Register& getBase() const {
+    const Register& getBase() {
         return _baseRegister;
     }
 
@@ -530,7 +575,7 @@ public:
         _baseRegister = baseRegister;
     }
 
-    const Integer& getDisplacement() const {
+    Integer& getDisplacement() {
         return _displacement;
     }
 
@@ -538,7 +583,7 @@ public:
         _displacement = displacement;
     }
 
-    const Register& getIndex() const {
+    Register& getIndex() {
         return _indexRegister;
     }
 
@@ -546,7 +591,7 @@ public:
         _indexRegister = indexRegister;
     }
 
-    fcml_uint8_t getScale() const {
+    fcml_uint8_t getScale() {
         return _wrapped->scale_factor;
     }
 
@@ -622,6 +667,7 @@ public:
 
 class Address: public StructureWrapper<fcml_st_address> {
 public:
+
     Address() : _segmentSelector(&_wrapped->segment_selector), _effectiveAddress(&_wrapped->effective_address), _offset(&_wrapped->offset) {
     }
     Address(fcml_st_address *wrapped) : StructureWrapper(wrapped), _segmentSelector(&_wrapped->segment_selector), _effectiveAddress(&_wrapped->effective_address), _offset(&_wrapped->offset) {
@@ -630,6 +676,47 @@ public:
     }
     Address(const Address &cpy) : StructureWrapper(cpy), _segmentSelector(&_wrapped->segment_selector), _effectiveAddress(&_wrapped->effective_address), _offset(&_wrapped->offset){
     }
+
+    EffectiveAddress& getEffectiveAddress() {
+        return _effectiveAddress;
+    }
+
+    void setEffectiveAddress( EffectiveAddress& effectiveAddress ) {
+        _effectiveAddress = effectiveAddress;
+    }
+
+    Offset& getOffset() {
+        return _offset;
+    }
+
+    void setOffset( Offset& offset ) {
+        _offset = offset;
+    }
+
+    SegmentSelector& getSegmentSelector() {
+        return _segmentSelector;
+    }
+
+    void setSegmentSelector( const SegmentSelector& segmentSelector ) {
+        _segmentSelector = segmentSelector;
+    }
+
+    fcml_en_effective_address_form getAddressForm() {
+        return _wrapped->address_form;
+    }
+
+    void setAddressForm( fcml_en_effective_address_form addressForm ) {
+        _wrapped->address_form = addressForm;
+    }
+
+    fcml_usize getSizeOperator() {
+        return _wrapped->size_operator;
+    }
+
+    void setSizeOperator( fcml_usize sizeOperator ) {
+        _wrapped->size_operator = sizeOperator;
+    }
+
 protected:
     void updateReferences() {
         _segmentSelector = &_wrapped->segment_selector;
@@ -652,15 +739,68 @@ public:
     }
     Operand(const Operand &cpy) : StructureWrapper(cpy), _immediate(&_wrapped->immediate), _farPointer(&_wrapped->far_pointer), _register(&_wrapped->reg) {
     }
+
+public:
+
+    Address& getAddress() {
+        return _address;
+    }
+
+    void setAddress( const Address& address ) {
+        _address = address;
+    }
+
+    FarPointer& getFarPointer() {
+        return _farPointer;
+    }
+
+    void setFarPointer( const FarPointer& farPointer ) {
+        _farPointer = farPointer;
+    }
+
+    Integer& getImmediate() {
+        return _immediate;
+    }
+
+    void setImmediate( const Integer& immediate ) {
+        _immediate = immediate;
+    }
+
+    Register& getRegister() {
+        return _register;
+    }
+
+    void setRegister( const Register& _register ) {
+        this->_register = _register;
+    }
+
+    fcml_hints getHints() const {
+        return _wrapped->hints;
+    }
+
+    void setHints( fcml_hints hints ) {
+        this->_wrapped->hints = hints;
+    }
+
+    fcml_en_operand_type getType() const {
+        return _wrapped->type;
+    }
+
+    void setType( fcml_en_operand_type type ) {
+        this->_wrapped->type = type;
+    }
+
 protected:
     void updateReferences() {
         _immediate = &_wrapped->immediate;
         _farPointer = &_wrapped->far_pointer;
+        _address = &_wrapped->address;
         _register = &_wrapped->reg;
     }
 private:
     Integer _immediate;
     FarPointer _farPointer;
+    Address _address;
     Register _register;
 };
 
@@ -696,7 +836,7 @@ public:
         return (*this)[i];
     }
 
-    const fcml_st_condition& getCondition() const {
+    fcml_st_condition& getCondition() const {
         return _wrapped->condition;
     }
 
@@ -725,7 +865,15 @@ public:
     }
 
     void setMnemonic( fcml_char* mnemonic ) {
-        this->_wrapped->mnemonic = mnemonic;
+        // Duplicate the mnemonic.
+        if( this->_wrapped->mnemonic ) {
+            // TODO: Mnemonics managed by FCML library shpould be appropriatelly handled here.
+            Env::StrFree(_wrapped->mnemonic);
+            _wrapped->mnemonic = NULL;
+        }
+        if( mnemonic ) {
+            this->_wrapped->mnemonic = Env::StrDup( mnemonic );
+        }
     }
 
     fcml_int getOperandsCount() const {

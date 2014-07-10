@@ -101,36 +101,6 @@ struct AssemblerConf: public StructureWrapper<fcml_st_assembler_conf> {
 
 };
 
-/**
- * Holds a state used by the assembler to perform the assembling process. Thanks to the
- * class assemblers are thread-safe and do not need to store any states. take into account
- * that this class does not manage the assembler instance available in the original structure. It's
- * because the appropriate assembler is set just before the assembler is being called.
- */
-struct AssemblerContext: public StructureWrapper<fcml_st_assembler_context> {
-public:
-    AssemblerContext() :
-            _assemblerConfig( &_wrapped->configuration ), _entryPoint( &_wrapped->entry_point ) {
-    }
-    AssemblerContext(EntryPoint &entryPoint) :
-            _assemblerConfig( &_wrapped->configuration ), _entryPoint( &_wrapped->entry_point ) {
-        // Override the default entry point. The structures are copied here.
-        _entryPoint = entryPoint;
-    }
-public:
-    EntryPoint &GetEntryPoint() {
-        return _entryPoint;
-    }
-    AssemblerConf &GetAssemblerConf() {
-        return _assemblerConfig;
-    }
-private:
-    // Configuration wrapper.
-    AssemblerConf _assemblerConfig;
-    // Entry point wrapper.
-    EntryPoint _entryPoint;
-};
-
 class AssembledInstruction: public StructureWrapper<fcml_st_assembled_instruction> {
 public:
     AssembledInstruction( fcml_st_assembled_instruction *wrapped ) : StructureWrapper( wrapped ) {
@@ -140,8 +110,8 @@ public:
 class AssemblerResult: public StructureWrapper<fcml_st_assembler_result> {
 public:
     AssemblerResult() : _errorContainer(&(_wrapped->errors)), _managed(false) {
-        prepareAssembledInstructions();
         fcml_fn_assembler_result_prepare( _wrapped );
+        prepareAssembledInstructions();
     }
     ~AssemblerResult() {
         cleanAssemblerResult();
@@ -198,11 +168,12 @@ private:
         if( _wrapped->number_of_instructions ) {
             fcml_st_assembled_instruction *instruction = _wrapped->instructions;
             while( instruction ) {
-                AssembledInstruction *assembledInstruction = new AssembledInstruction(instruction);
-                _assembledInstructions.push_back(assembledInstruction);
+                AssembledInstruction *current = new AssembledInstruction(instruction);
+                _assembledInstructions.push_back( current );
                 if( instruction == _wrapped->chosen_instruction ) {
-                    _choosenInstruction = assembledInstruction;
+                    _choosenInstruction = current;
                 }
+                instruction = instruction->next;
             }
         }
     }
@@ -215,6 +186,43 @@ private:
     ErrorContainer _errorContainer;
     // True if it holds managed structure which should be freed when object is destroyed.
     bool _managed;
+};
+
+class Assembler;
+
+/**
+ * Holds a state used by the assembler to perform the assembling process. Thanks to the
+ * class assemblers are thread-safe and do not need to store any states. take into account
+ * that this class does not manage the assembler instance available in the original structure. It's
+ * because the appropriate assembler is set just before the assembler is being called.
+ */
+struct AssemblerContext: public StructureWrapper<fcml_st_assembler_context> {
+public:
+    AssemblerContext() :
+            _assemblerConfig( &_wrapped->configuration ), _entryPoint( &_wrapped->entry_point ) {
+    }
+    AssemblerContext(EntryPoint &entryPoint) :
+            _assemblerConfig( &_wrapped->configuration ), _entryPoint( &_wrapped->entry_point ) {
+        // Override the default entry point. The structures are copied here.
+        _entryPoint = entryPoint;
+    }
+public:
+    EntryPoint &getEntryPoint() {
+        return _entryPoint;
+    }
+    AssemblerConf &getAssemblerConf() {
+        return _assemblerConfig;
+    }
+protected:
+    friend class Assembler;
+    void setAssembler( fcml_st_assembler *assembler ) {
+        _wrapped->assembler = assembler;
+    }
+private:
+    // Configuration wrapper.
+    AssemblerConf _assemblerConfig;
+    // Entry point wrapper.
+    EntryPoint _entryPoint;
 };
 
 /**
@@ -237,6 +245,7 @@ public:
     }
 public:
     fcml_ceh_error assemble( AssemblerContext &ctx, Instruction &instruction, AssemblerResult &result ) {
+        ctx.setAssembler(_assembler);
         fcml_ceh_error error =  ::fcml_fn_assemble(&ctx.getStruct(), &instruction.getStruct(), &result.getStruct() );
         result.setManaged();
         return error;
