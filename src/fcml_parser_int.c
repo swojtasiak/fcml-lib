@@ -45,7 +45,7 @@ fcml_ceh_error fcml_fn_parser_add_symbol_to_symbol_table( fcml_st_ceh_error_cont
     return error;
 }
 
-fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, fcml_string mnemonic, fcml_st_parser_result *result ) {
+fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, const fcml_string mnemonic, fcml_st_parser_result *result ) {
 
     if ( !result || !mnemonic || !context ) {
         return FCML_CEH_GEC_INVALID_INPUT;
@@ -166,7 +166,7 @@ fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, fcml_strin
     return error;
 }
 
-fcml_ceh_error fcml_fn_parse_to_ast( fcml_st_parser_context *context, fcml_string mnemonic, fcml_st_parser_ast *ast ) {
+fcml_ceh_error fcml_fn_parse_to_ast( fcml_st_parser_context *context, const fcml_string mnemonic, fcml_st_parser_ast *ast ) {
     fcml_st_dialect_context_int *dialect = (fcml_st_dialect_context_int*) context->dialect;
     return dialect->instruction_parser( context->ip, mnemonic, ast );
 }

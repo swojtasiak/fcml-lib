@@ -89,14 +89,14 @@ fcml_ceh_error LIB_CALL fcml_fn_symbol_add_raw( fcml_st_symbol_table symbol_tabl
 void LIB_CALL fcml_fn_symbol_remove( fcml_st_symbol_table symbol_table, const fcml_string symbol ) {
     fcml_coll_map symbol_map = (fcml_coll_map) symbol_table;
     if ( symbol_table && symbol ) {
-        fcml_fn_coll_map_remove( symbol_map, symbol );
+        fcml_fn_coll_map_remove( symbol_map, (const fcml_ptr)symbol );
     }
 }
 
 fcml_st_symbol* LIB_CALL fcml_fn_symbol_get( fcml_st_symbol_table symbol_table, const fcml_string symbol ) {
     fcml_coll_map symbol_map = (fcml_coll_map) symbol_table;
     if ( symbol_map && symbol ) {
-        return (fcml_st_symbol*) fcml_fn_coll_map_get( symbol_map, symbol );
+        return (fcml_st_symbol*) fcml_fn_coll_map_get( symbol_map, (const fcml_ptr)symbol );
     }
     return NULL;
 }

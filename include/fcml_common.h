@@ -269,7 +269,7 @@ typedef fcml_int64_t fcml_ip;
 
 /**
  * @defgroup DATA_SIZE_GROUP Constants used to describe data size.
- * @{
+ * @{instrunction->hints
  */
 
 #define FCML_DS_UNDEF   0
@@ -508,7 +508,7 @@ typedef struct fcml_st_address {
 } fcml_st_address;
 
 /**
- * Supported  operand types.
+ * Supported operand types.
  */
 typedef enum fcml_en_operand_type {
     /** Operand not used. */
@@ -528,25 +528,36 @@ typedef enum fcml_en_operand_type {
  * Hints dedicated for instruction operands.
  */
 typedef enum fcml_en_operand_hints {
-    /** SIMD operand. All operands which uses SIMD registers (mmx, xmm, ymm) have this flag set. It is for instance
+    /**
+     * Undefined.
+     */
+    FCML_OP_HINT_UNDEFIEND = 0x0000,
+    /**
+     * SIMD operand. All operands which uses SIMD registers (mmx, xmm, ymm) have this flag set. It is for instance
      * used by Intel syntax renderer for data size operators (mmword ptr, xmmword ptr, ymmword ptr).
      */
     FCML_OP_HINT_MULTIMEDIA_INSTRUCTION = 0x0001,
-    /** Relative address. Flags set for all branches which use jumps
+    /**
+     * Relative address. Flags set for all branches which use jumps
      * calculated by displacement relative to the IP of the next instructions.
      */
     FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS = 0x0002,
-    /** Pseudo opcode. Hint set for last operand (Intel syntax) which contains comparison predicate of the following instructions:
+    /**
+     * Pseudo opcode. Hint set for last operand (Intel syntax) which contains comparison predicate of the following instructions:
      * CMPSD, VCMPSD, CMPSS, VCMPSS, VPCOMB, VPCOMW, VPCOMD, VPCOMQ, VPCOMUB, VPCOMUW, VPCOMUD, VPCOMUQ.
      */
     FCML_OP_HINT_PSEUDO_OPCODE = 0x0004,
-    /** Offset should be encoded as absolute address.
+    /**
+     * Offset should be encoded as absolute address.
      */
     FCML_OP_HINT_ABSOLUTE_ADDRESSING = 0x0008,
-    /** Offset should be encoded as relative address.
+    /**
+     * Offset should be encoded as relative address.
      */
     FCML_OP_HINT_RELATIVE_ADDRESSING = 0x0010,
-    /** Encode ModR/M with optional SIB byte if possible. */
+    /**
+     *  Encode ModR/M with optional SIB byte if possible.
+     **/
     FCML_OP_HINT_SIB_ENCODING = 0x0020
 } fcml_en_operand_hints;
 

@@ -35,7 +35,7 @@ fcml_stf_test_suite *current_suite;
 /* tested test case.*/
 fcml_stf_test_case *current_test;
 
-void LIB_CALL_STF fcml_str_run_assert( fcml_bool condition, const fcml_string file, fcml_int line, const fcml_string message ) {
+fcml_bool LIB_CALL_STF fcml_str_run_assert( fcml_bool condition, const fcml_string file, fcml_int line, const fcml_string message ) {
 
 	if( !condition ) {
 
@@ -43,7 +43,7 @@ void LIB_CALL_STF fcml_str_run_assert( fcml_bool condition, const fcml_string fi
 		fcml_stf_result_element *element = (fcml_stf_result_element*)malloc( sizeof( fcml_stf_result_element ) );
 		if( !element ) {
 			printf("Can not allocate memory for assert result.");
-			return;
+			return condition;
 		}
 
 		memset( element, 0, sizeof( fcml_stf_result_element ) );
@@ -63,9 +63,12 @@ void LIB_CALL_STF fcml_str_run_assert( fcml_bool condition, const fcml_string fi
 		fcml_gl_stf_test_result.last = element;
 
 		current_test_counters.failed++;
+
 	} else {
 		current_test_counters.passed++;
 	}
+
+	return condition;
 
 }
 

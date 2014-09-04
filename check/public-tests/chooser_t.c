@@ -154,19 +154,19 @@ void fcml_fn_chooser_null_optimizer_all_forms(void) {
 
             fcml_fn_disassembler_result_free( &dasm_result );
 
-            if( strcmp( FCML_TEXT( "666781d04280 adc ax,32834" ), buffer ) == 0 ) {
+            if( strcmp( FCML_TEXT( "666781d04280 adc ax,-32702" ), buffer ) == 0 ) {
                 flags |= 0x01;
             }
 
-            if( strcmp( FCML_TEXT( "6681d04280 adc ax,32834" ), buffer ) == 0 ) {
+            if( strcmp( FCML_TEXT( "6681d04280 adc ax,-32702" ), buffer ) == 0 ) {
                 flags |= 0x02;
             }
 
-            if( strcmp( FCML_TEXT( "6667154280 adc ax,32834" ), buffer ) == 0 ) {
+            if( strcmp( FCML_TEXT( "6667154280 adc ax,-32702" ), buffer ) == 0 ) {
                 flags |= 0x04;
             }
 
-            if( strcmp( FCML_TEXT( "66154280 adc ax,32834" ), buffer ) == 0) {
+            if( strcmp( FCML_TEXT( "66154280 adc ax,-32702" ), buffer ) == 0) {
                 flags |= 0x08;
             }
 

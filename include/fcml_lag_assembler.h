@@ -29,6 +29,10 @@
 #include "fcml_symbols.h"
 #include "fcml_assembler.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Result holder for load-and-go assembler. */
 typedef struct fcml_st_lag_assembler_result {
     /** Error and warning messages from one-line assembler. */
@@ -98,5 +102,9 @@ LIB_EXPORT void LIB_CALL fcml_fn_lag_assembler_result_prepare( fcml_st_lag_assem
  * @param result Result holder to clean.
  */
 LIB_EXPORT void LIB_CALL fcml_fn_lag_assembler_result_free( fcml_st_lag_assembler_result *result );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FCML_LAG_ASSEMBLER_H_ */

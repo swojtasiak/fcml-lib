@@ -1,22 +1,39 @@
 pkginclude_HEADERS = fcml_assembler.h \
-	fcml_errors.h \
+	fcml_assembler.hpp \
 	fcml_choosers.h \
 	fcml_common.h \
+	fcml_common.hpp \
 	fcml_common_utils.h \
 	fcml_dialect.h \
+	fcml_dialect.hpp \
 	fcml_disassembler.h \
+	fcml_disassembler.hpp \
+	fcml_env.h \
+	fcml_errors.h \
+	fcml_errors.hpp \
 	fcml_gas_dialect.h \
+	fcml_gas_dialect.hpp \
+	fcml_gas_mnemonics.h \
+	fcml_instructions.h \
 	fcml_intel_dialect.h \
+	fcml_intel_dialect.hpp \
+	fcml_intel_mnemonics.h \
+	fcml_lag_assembler.h \
+	fcml_lag_assembler.hpp \
+	fcml_lib_export.h \
 	fcml_optimizers.h \
 	fcml_parser.h \
+	fcml_parser.hpp \
+	fcml_registers.cpp \
+	fcml_registers.hpp \
 	fcml_renderer.h \
-	fcml_types.h \
-	fcml_lib_export.h \
-	fcml_lag_assembler.h \
+	fcml_renderer.hpp \
+	fcml_stateful_assembler.hpp \
+	fcml_stateful_disassembler.hpp \
 	fcml_symbols.h \
-	fcml_instructions.h \
-	fcml_env.h \
-	fcml_disassembler.hpp \
-	fcml_assembler.hpp \
-	fcml_common.hpp
- 
+	fcml_symbols.hpp \
+	fcml_types.h \
+	fcml_gas_mnemonics.hpp \
+	fcml_gas_mnemonics.cpp \
+	fcml_intel_mnemonics.hpp \
+	fcml_intel_mnemonics.cpp

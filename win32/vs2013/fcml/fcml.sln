@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{BBE0AA04-8E2A-4ECC-BB7E-3541022740EC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fcml", "fcml\fcml.vcxproj", "{759BCBFA-3A75-47D2-8DF3-8440D8E9C752}"
@@ -8,6 +10,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fcml-check", "fcml-check\fcml-check.vcxproj", "{73008BA6-43CF-41C8-8C49-B60D8DEDC069}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hsdis", "examples\hsdis\hsdis.vcxproj", "{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fcml-check-cpp", "fcml-check-cpp\fcml-check-cpp.vcxproj", "{8BBBB021-AF54-45B5-B463-9E0C318E71E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{759BCBFA-3A75-47D2-8DF3-8440D8E9C752} = {759BCBFA-3A75-47D2-8DF3-8440D8E9C752}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +76,22 @@ Global
 		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-lib|Win32.Build.0 = Release-lib|Win32
 		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-lib|x64.ActiveCfg = Release-lib|x64
 		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-lib|x64.Build.0 = Release-lib|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-dll|Win32.ActiveCfg = Debug-dll|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-dll|Win32.Build.0 = Debug-dll|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-dll|x64.ActiveCfg = Debug-dll|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-dll|x64.Build.0 = Debug-dll|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-lib|Win32.ActiveCfg = Debug-lib|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-lib|Win32.Build.0 = Debug-lib|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-lib|x64.ActiveCfg = Debug-lib|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-lib|x64.Build.0 = Debug-lib|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-dll|Win32.ActiveCfg = Release-dll|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-dll|Win32.Build.0 = Release-dll|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-dll|x64.ActiveCfg = Release-dll|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-dll|x64.Build.0 = Release-dll|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-lib|Win32.ActiveCfg = Release-lib|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-lib|Win32.Build.0 = Release-lib|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-lib|x64.ActiveCfg = Release-lib|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-lib|x64.Build.0 = Release-lib|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
