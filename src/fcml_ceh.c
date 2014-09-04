@@ -75,7 +75,7 @@ void fcml_fn_ceh_free_errors_only_with_level( fcml_st_ceh_error_container *error
     }
 }
 
-fcml_st_ceh_error_info *fcml_fn_ceh_alloc_error_info( fcml_string message, fcml_ceh_error code, fcml_en_ceh_error_level level ) {
+fcml_st_ceh_error_info *fcml_fn_ceh_alloc_error_info( const fcml_string message, fcml_ceh_error code, fcml_en_ceh_error_level level ) {
     fcml_st_ceh_error_info *error_info = (fcml_st_ceh_error_info*) fcml_fn_env_memory_alloc_clear( sizeof(fcml_st_ceh_error_info) );
     if (error_info) {
         error_info->message = fcml_fn_env_str_strdup( message );

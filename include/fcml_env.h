@@ -28,6 +28,10 @@
 
 #include "fcml_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Memory allocator handler function pointer declaration.
  * Memory allocation handlers are used to allocate requested memory in
  * environment specific way.
@@ -75,5 +79,9 @@ LIB_EXPORT fcml_fp_env_memory_realloc_handler LIB_CALL fcml_fn_env_register_memo
  * @return The replaced memory handler.
  */
 LIB_EXPORT fcml_fp_env_memory_free_handler LIB_CALL fcml_fn_env_register_memory_free_handler( fcml_fp_env_memory_free_handler handler );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FCML_ENV_H_ */

@@ -26,6 +26,6 @@
 
 #include "fcml_parser_int.h"
 
-fcml_ceh_error fcml_fn_gas_parse_instruction_to_ast( fcml_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast );
+fcml_ceh_error fcml_fn_gas_parse_instruction_to_ast( fcml_ip ip, const fcml_string mnemonic, fcml_st_parser_ast *ast );
 
 #endif /* FCML_GAS_PARSER_H_ */

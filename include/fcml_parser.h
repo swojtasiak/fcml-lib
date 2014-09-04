@@ -66,7 +66,7 @@ typedef struct fcml_st_parser_config {
      * every time it should be deallocated.
      */
     fcml_bool alloc_symbol_table_if_needed;
-    // TODO: Dodać do konfiguracji.
+    // TODO: Support has to be implemented yet.
     /** Enables textual error messages. */
     fcml_bool enable_error_messages;
 } fcml_st_parser_config;

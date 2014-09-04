@@ -46,6 +46,10 @@ typedef struct fcml_st_symbol {
     fcml_int64_t value;
 } fcml_st_symbol;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Allocates new symbol on FCML library heap.
  * This function should be always used when symbols
@@ -123,10 +127,14 @@ LIB_EXPORT fcml_st_symbol* LIB_CALL fcml_fn_symbol_get( fcml_st_symbol_table sym
 LIB_EXPORT void LIB_CALL fcml_fn_symbol_remove_all( fcml_st_symbol_table symbol_table );
 
 /**
- * Frees the symbol table.
+ * Frees a symbol table.
  * Frees all symbols as well as the symbol table itself.
- * @param symbol_table The symbol table to be freed.
+ * @param symbol_table A symbol table to be freed.
  */
 LIB_EXPORT void LIB_CALL fcml_fn_symbol_table_free( fcml_st_symbol_table symbol_table );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FCML_SYMBOLS_H_ */

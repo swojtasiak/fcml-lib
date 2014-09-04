@@ -61,78 +61,34 @@ void fcml_tf_cpp_errors(void) {
 
     // Do not copy, just wrap.
 
-    ErrorContainer container(&errors);
+    ErrorContainer container;
 
-    fcml_st_ceh_error_container *errorsPtr = &container.getStruct();
-
-    // Must be the same
-    STF_ASSERT_EQUAL( errorsPtr, &errors );
-    STF_ASSERT_EQUAL( errorsPtr->errors, errors.errors );
-    STF_ASSERT_EQUAL( errorsPtr->last_error, errors.last_error );
+    ErrorTypeConverter::convert( errors, container );
 
     if( !container.isEmpty() ) {
         ErrorInfo &errorInfo = container.getFirstError();
-        STF_ASSERT_EQUAL( &info1, &errorInfo.getStruct() );
-        // We can always copy given error info.
-        ErrorInfo copyPtr(errorInfo);
-        STF_ASSERT_STRING_EQUAL( copyPtr.getMessage(), FCML_TEXT("Some error1") );
-        STF_ASSERT_EQUAL( copyPtr.getLevel(), FCML_EN_CEH_EL_WARN );
-        STF_ASSERT_EQUAL( copyPtr.getCode(), FCML_CEH_GEC_FEATURE_NOT_SUPPORTED );
-        STF_ASSERT_NOT_EQUAL( (void*)copyPtr.getMessage(), (void*)errorInfo.getMessage() );
-        STF_ASSERT_NOT_EQUAL( &copyPtr.getStruct(), &errorInfo.getStruct() );
+        STF_ASSERT_EQUAL( errorInfo.getMessage(), fcml_cstring( FCML_TEXT("Some error1") ) );
+        STF_ASSERT_EQUAL( errorInfo.getLevel(), ErrorInfo::EL_WARN );
+        STF_ASSERT_EQUAL( errorInfo.getCode(), FCML_CEH_GEC_FEATURE_NOT_SUPPORTED );
     }
 
     // Iterating over the errors.
     if( !container.isEmpty() ) {
         STF_ASSERT_EQUAL( container.getSize(), 3 );
         for( fcml_usize i = 0; i < container.getSize(); i++ ) {
-            ErrorInfo &info = container[i];
+            const ErrorInfo &info = container[i];
             switch(i) {
             case 0:
-                STF_ASSERT_STRING_EQUAL( info.getMessage(), FCML_TEXT("Some error1") );
-                STF_ASSERT_EQUAL( &info.getStruct(), &info1 );
+                STF_ASSERT_EQUAL( info.getMessage(), FCML_TEXT("Some error1") );
                 break;
             case 1:
-                STF_ASSERT_STRING_EQUAL( info.getMessage(), FCML_TEXT("Some error2") );
-                STF_ASSERT_EQUAL( &info.getStruct(), &info2 );
+                STF_ASSERT_EQUAL( info.getMessage(), FCML_TEXT("Some error2") );
                 break;
             case 2:
-                STF_ASSERT_STRING_EQUAL( info.getMessage(), FCML_TEXT("Some error3") );
-                STF_ASSERT_EQUAL( &info.getStruct(), &info3 );
+                STF_ASSERT_EQUAL( info.getMessage(), FCML_TEXT("Some error3") );
                 break;
             }
         }
-    }
-
-    // Now build new container using reference to the original structure, so the structure is going to bo copied now.
-    ErrorContainer containerRef(errors);
-
-    errorsPtr = &containerRef.getStruct();
-
-    // Must not be the same
-    STF_ASSERT_NOT_EQUAL( errorsPtr, &errors );
-    STF_ASSERT_NOT_EQUAL( errorsPtr->errors, errors.errors );
-    STF_ASSERT_NOT_EQUAL( errorsPtr->last_error, errors.last_error );
-
-    // Iterate over the error infos.
-    STF_ASSERT( !containerRef.isEmpty() );
-
-    if( !containerRef.isEmpty() ) {
-
-        ErrorInfo &errorInfo = containerRef.getFirstError();
-        STF_ASSERT_STRING_EQUAL( errorInfo.getMessage(), FCML_TEXT("Some error1") );
-        STF_ASSERT_EQUAL( errorInfo.getLevel(), FCML_EN_CEH_EL_WARN );
-        STF_ASSERT_EQUAL( errorInfo.getCode(), FCML_CEH_GEC_FEATURE_NOT_SUPPORTED );
-        // Error message has to be also duplicated in case of reference based container.
-        STF_ASSERT_NOT_EQUAL( (void*)info1.message, (void*)errorInfo.getMessage() );
-
-        // We can always copy given error info.
-        ErrorInfo copy(errorInfo);
-        STF_ASSERT_STRING_EQUAL( copy.getMessage(), FCML_TEXT("Some error1") );
-        STF_ASSERT_EQUAL( copy.getLevel(), FCML_EN_CEH_EL_WARN );
-        STF_ASSERT_EQUAL( copy.getCode(), FCML_CEH_GEC_FEATURE_NOT_SUPPORTED );
-        STF_ASSERT_NOT_EQUAL( (void*)copy.getMessage(), (void*)errorInfo.getMessage() );
-        STF_ASSERT_NOT_EQUAL( &copy.getStruct(), &errorInfo.getStruct() );
     }
 
 }

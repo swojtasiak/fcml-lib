@@ -1344,7 +1344,7 @@ fcml_bool fcml_ifn_asm_dialect_gas_far_pointer_correction( fcml_st_instruction *
     return FCML_FALSE;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction,
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_assembler_conf *conf, const fcml_st_dialect *dialect, fcml_st_instruction *instrunction,
         fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_en_instruction instruction_code, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1417,6 +1417,15 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
             }
         }
 
+        /*
+         * In case of AT&T dialect, offsets encoded as effective addresses of type OFFSET
+         * are always treated as direct pointers. It means that every time you encode
+         * offset as effective address of FCML_AF_OFFSET type it'll be encoded as
+         * an indirect pointer (as long as the instruction level FCML_HINT_INDIRECT_POINTER hint isn't used).
+         * This rule is used to make AT&T parser, where the offset operands are treated as direct pointers
+         * and indirect ones have the appropriate hint always set, works as expected.
+         */
+
         /* JMP and CALL needs hint FCML_HINT_DIRECT_POINTER explicitly set if
          * absolute offsets are used instead of immediate values.
          */
@@ -1436,7 +1445,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_di
     return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_st_mp_mnemonic *mnemonic, fcml_st_disassembler_result *disassembler_result ) {
+fcml_ceh_error fcml_ifn_asm_dialect_disassembler_postprocessor_gas( const fcml_st_disassembler_conf *configuration, const fcml_st_mp_mnemonic *mnemonic, fcml_st_disassembler_result *disassembler_result ) {
 
     fcml_int operands_count = disassembler_result->instruction.operands_count;
 

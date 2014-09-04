@@ -71,8 +71,8 @@ typedef struct fcml_stf_test_suite {
 typedef struct fcml_stf_result_element {
 	struct fcml_stf_result_element *next;
 	fcml_int line;
-	fcml_string file;
-	fcml_string message;
+	const fcml_string file;
+	const fcml_string message;
 	fcml_stf_test_case *test_case;
 	fcml_stf_test_suite *suite;
 } fcml_stf_result_element;
@@ -95,7 +95,7 @@ extern fcml_stf_test_result fcml_gl_stf_test_result;
 
 /* Asserts */
 
-void LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert( fcml_bool condition, const fcml_string file, fcml_int line, const fcml_string message );
+fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert( fcml_bool condition, const fcml_string file, fcml_int line, const fcml_string message );
 
 /* Equals.*/
 #define STF_ASSERT_EQUAL(actual, expected)		\

@@ -2332,7 +2332,7 @@ fcml_ceh_error fcml_ifn_disassemble_core( fcml_st_disassembler_context *context,
         /* Execute disassembler post processor if needed.*/
         fcml_fnp_asm_dialect_prepare_disassembler_postprocessor post_processor = int_disasm->dialect_context->disassembler_postprocessor;
         if ( post_processor ) {
-            post_processor( mnemonic, result );
+            post_processor( &(context->configuration), mnemonic, result );
         }
 
     } else if ( decoding_context.errors.errors ) {

@@ -216,7 +216,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( const fcml_st_rende
                     config->render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT, config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
         }
 
-    } else {
+    } else if ( address->address_form == FCML_AF_OFFSET ) {
 
         /* Offset.*/
 
@@ -228,6 +228,11 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( const fcml_st_rende
 
         error = fcml_fn_rend_utils_format_append_integer( fcml_iarr_rend_utils_integer_formats_intel, output_stream, &integer, FCML_TRUE,
                 config->render_flags & FCML_REND_FLAG_REMOVE_LEADING_ZEROS );
+    } else {
+
+    	/* Unknown address form. */
+
+    	error = FCML_CEH_GEC_INVALID_INPUT;
     }
 
     fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "]" ) );

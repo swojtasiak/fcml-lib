@@ -22,8 +22,12 @@
 #include "dialect_t.hpp"
 
 #include <fcml_common.hpp>
+#include <fcml_intel_dialect.hpp>
 
 using namespace fcml;
+
+class DialectExtractor: public DialectAware {
+};
 
 fcml_bool fcml_tf_cpp_dialect_suite_init(void) {
     return FCML_TRUE;
@@ -35,9 +39,10 @@ fcml_bool fcml_tf_cpp_dialect_suite_cleanup(void) {
 
 void fcml_tf_cpp_init_intel(void) {
     IntelDialect intel;
-    STF_ASSERT_PTR_NOT_NULL( intel.GetDialect() );
+    DialectExtractor extractor;
+    STF_ASSERT_PTR_NOT_NULL( extractor.extractDialect( intel ) );
     IntelDialect *intelPTR = new IntelDialect(FCML_INTEL_DIALECT_CF_DEFAULT);
-    STF_ASSERT_PTR_NOT_NULL( intelPTR->GetDialect() );
+    STF_ASSERT_PTR_NOT_NULL( extractor.extractDialect( *intelPTR ) );
     delete intelPTR;
 }
 

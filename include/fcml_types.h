@@ -59,6 +59,7 @@
 
 /** Used to code literal strings. It will be useful if FCML supports UNICODE in the future.  */
 #define FCML_TEXT(x)	x
+#define _FT(x)			FCML_TEXT(x)
 
 #ifdef FCML_MSCC
 
@@ -164,6 +165,7 @@ typedef unsigned __int64 fcml_uint64_t;
 #endif
 
 typedef int fcml_int;
+typedef unsigned int fcml_uint;
 typedef int fcml_bool;
 typedef int8_t fcml_int8_t;
 typedef uint8_t fcml_uint8_t;
@@ -192,8 +194,8 @@ typedef uint64_t fcml_uint64_t;
 
 #endif
 
-typedef char fcml_char;
-typedef char* fcml_string;
+typedef char  fcml_char;
+#define fcml_string char*
 typedef float fcml_float;
 typedef void* fcml_ptr;
 typedef fcml_uint32_t fcml_flags;

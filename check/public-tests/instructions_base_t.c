@@ -196,7 +196,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		fcml_uint16_t opt_flags = 0;
 
 		/* Assembling.*/
-		fcml_st_assembler_context context;
+		fcml_st_assembler_context context = {0};
 		context.assembler = assembler;
 		context.entry_point.address_size_attribute = 0;
 		context.entry_point.operand_size_attribute = 0;

@@ -817,8 +817,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm( fcml_ien_asm_part_processor_pha
         fcml_bool is_converted = FCML_FALSE;
 
         if ( size != FCML_EOS_EOSA && size_ex != FCML_EOS_EOSA ) {
-            is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( source_imm, &converted_source, FCML_GET_OS( size_ex ) * 8, FCML_GET_OS( size ) * 8,
-                    0, NULL );
+            is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( source_imm, &converted_source, FCML_GET_OS( size_ex ) * 8, FCML_GET_OS( size ) * 8, 0, NULL );
         } else if ( size == FCML_EOS_EOSA && size_ex == FCML_EOS_EOSA ) {
             is_converted = fcml_ifn_asm_try_to_convert_integer_and_set_flag( source_imm, &converted_source, eosa_size, eosa_imm, 0, NULL );
         } else if ( size == FCML_EOS_EOSA ) {
@@ -2251,7 +2250,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA( fcml_st_assembler_context *a
                  */
                 fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor = dialect_context->assembler_preprocessor;
                 if ( assembler_preprocessor ) {
-                    assembler_preprocessor( (fcml_st_dialect*) dialect_context, &tmp_instruction, addr_mode->addr_mode_desc, addr_mode->instruction,
+                    assembler_preprocessor( &(context.assembler_context->configuration), (fcml_st_dialect*) dialect_context, &tmp_instruction, addr_mode->addr_mode_desc, addr_mode->instruction,
                             addr_mode->mnemonic, &instruction_has_been_changed );
                 }
 
@@ -3886,7 +3885,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
         return error;
     }
 
-    /* Prepare addressing mode encoders for every mnemonic.*/
+    /* Prepare addressing mode encoders for every mnemonic. */
     int i;
     for ( i = 0; i < mnemonic_count && !error; i++ ) {
 
@@ -3898,7 +3897,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding( fcml_
             addr_modes = (fcml_st_asm_instruction_addr_modes*) fcml_fn_env_memory_alloc( sizeof(fcml_st_asm_instruction_addr_modes) );
             if ( addr_modes ) {
 
-                /* Allocate list for addressing modes.*/
+                /* Allocate list for addressing modes. */
                 addr_modes->addr_modes = fcml_fn_coll_list_alloc();
                 if ( addr_modes->addr_modes ) {
                     /* Do not care about freeing this piece of memory. Procedure responsible for freeing addressing mode is responsible for it.*/

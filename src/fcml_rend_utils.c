@@ -161,16 +161,16 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[6]
 
     switch ( integer->size ) {
     case 8:
-        fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[0], (fcml_uint8_t) integer->int8 );
+        fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[0], integer->is_signed & !is_hex ? integer->int8 : (fcml_uint8_t) integer->int8 );
         break;
     case 16:
-        fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[1], (fcml_uint16_t) integer->int16 );
+        fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[1], integer->is_signed & !is_hex ? integer->int16 : (fcml_uint16_t) integer->int16 );
         break;
     case 32:
-        fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[2], (fcml_uint32_t) integer->int32 );
+        fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[2], integer->is_signed & !is_hex ? integer->int32 : (fcml_uint32_t) integer->int32 );
         break;
     case 64:
-        fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[3], (fcml_uint64_t) integer->int64 );
+        fcml_fn_env_str_snprintf( local_buffer, sizeof( local_buffer ), format[3], integer->is_signed & !is_hex ? integer->int64 : (fcml_uint64_t) integer->int64 );
         break;
     default:
         return FCML_CEH_GEC_INVALID_INPUT;

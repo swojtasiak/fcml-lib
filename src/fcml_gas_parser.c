@@ -48,7 +48,7 @@ void gas_free( void *ptr, yyscan_t yyscanner ) {
     return fcml_fn_env_memory_free( ptr );
 }
 
-fcml_ceh_error fcml_fn_gas_parse_instruction_to_ast( fcml_ip ip, fcml_string mnemonic, fcml_st_parser_ast *ast ) {
+fcml_ceh_error fcml_fn_gas_parse_instruction_to_ast( fcml_ip ip, const fcml_string mnemonic, fcml_st_parser_ast *ast ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

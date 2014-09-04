@@ -35,12 +35,12 @@ fcml_bool fcml_tf_lag_assembler_suite_cleanup(void) {
 }
 
 struct fcml_ist_t_lag_test_case {
-	fcml_string  *code_str;
-	fcml_uint8_t *code_bin;
-	fcml_int     code_size;
+	const fcml_string  *code_str;
+	const fcml_uint8_t *code_bin;
+	const fcml_int     code_size;
 };
 
-fcml_string fcml_iarr_lag_assembler_code_1_src[] = {
+const fcml_string fcml_iarr_lag_assembler_code_1_src[] = {
 	"start:      mov ebx, 1",
 	"loop_big:   inc ebx",
 	"            cmp ebx, 10",
@@ -56,7 +56,7 @@ fcml_string fcml_iarr_lag_assembler_code_1_src[] = {
 	NULL
 };
 
-fcml_uint8_t fcml_iarr_lag_assembler_code_1_bin[] = {
+const fcml_uint8_t fcml_iarr_lag_assembler_code_1_bin[] = {
 	0xBB, 0x01, 0x00, 0x00, 0x00,
 	0x43,
 	0x83, 0xFB, 0x0A,
@@ -70,7 +70,7 @@ fcml_uint8_t fcml_iarr_lag_assembler_code_1_bin[] = {
 	0xC3
 };
 
-fcml_string fcml_iarr_lag_assembler_code_2_src[] = {
+const fcml_string fcml_iarr_lag_assembler_code_2_src[] = {
 	"jmp second",
 	"start:  jmp finish",
 	"        nop",
@@ -199,10 +199,11 @@ fcml_string fcml_iarr_lag_assembler_code_2_src[] = {
 	"        nop",
 	"        nop",
 	"second: jmp second+249-(finish-start)",
-	"finish: ret"
+	"finish: ret",
+	NULL
 };
 
-fcml_uint8_t fcml_iarr_lag_assembler_code_2_bin[] = {
+const fcml_uint8_t fcml_iarr_lag_assembler_code_2_bin[] = {
 	0xE9, 0x82, 0x00, 0x00, 0x00, 0xE9, 0x7F, 0x00, 0x00, 0x00, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
 	0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
 	0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
@@ -214,7 +215,7 @@ fcml_uint8_t fcml_iarr_lag_assembler_code_2_bin[] = {
 	0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0xEB, 0x73, 0xC3
 };
 
-fcml_string fcml_iarr_lag_assembler_code_3_src[] = {
+const fcml_string fcml_iarr_lag_assembler_code_3_src[] = {
 	"je  finish",
 	"ret",
 	NULL
@@ -226,7 +227,7 @@ struct fcml_ist_t_lag_test_case fcml_iarr_lag_test_cases[] = {
 	{ NULL, NULL, 0 }
 };
 
-fcml_bool fcml_fn_lag_assemble_result_check( fcml_st_lag_assembler_result *result, fcml_uint8_t *code, fcml_int size ) {
+fcml_bool fcml_fn_lag_assemble_result_check( const fcml_st_lag_assembler_result *result, const fcml_uint8_t *code, const fcml_int size ) {
 	fcml_int code_index = 0;
 	fcml_st_assembled_instruction *current = result->instructions;
 	while( current && code_index <= size ) {

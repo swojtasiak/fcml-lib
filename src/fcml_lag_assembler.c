@@ -299,7 +299,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1( fcml_st_lag_assembler_context *con
 
     fcml_int line = 0;
 
-    fcml_string instruction;
+    const fcml_string instruction;
 
     /* Parse source code, line by line. */
     while ( ( instruction = source_code[line] ) ) {

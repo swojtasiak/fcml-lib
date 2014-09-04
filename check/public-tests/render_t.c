@@ -177,7 +177,7 @@ void fcml_fn_render_paddings_intel(void) {
 		return;
 	}
 
-	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280          adc     ax,32834" );
+	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280          adc     ax,-32702" );
 
 	// Padding length equal to code and mnemonic.
 
@@ -190,7 +190,7 @@ void fcml_fn_render_paddings_intel(void) {
 		return;
 	}
 
-	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280 adc ax,32834" );
+	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280 adc ax,-32702" );
 
 	// Paddings less than rendered mnemonic and code.
 
@@ -203,7 +203,7 @@ void fcml_fn_render_paddings_intel(void) {
 		return;
 	}
 
-	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280 adc ax,32834" );
+	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280 adc ax,-32702" );
 
 	fcml_fn_disassembler_result_free( &dasm_result );
 }
@@ -231,7 +231,7 @@ void fcml_fn_render_paddings_intel_lock(void) {
 		return;
 	}
 
-	STF_ASSERT_STRING_EQUAL( buffer, "f0801501020304ff    lock adc byte ptr [04030201h],255" );
+	STF_ASSERT_STRING_EQUAL( buffer, "f0801501020304ff    lock adc byte ptr [04030201h],-1" );
 
 	fcml_fn_disassembler_result_free( &dasm_result );
 }
@@ -259,7 +259,7 @@ void fcml_fn_render_paddings_gas(void) {
 		return;
 	}
 
-	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280          adc     $32834,%ax" );
+	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280          adc     $-32702,%ax" );
 
 	// Padding length equal to code and mnemonic.
 
@@ -272,7 +272,7 @@ void fcml_fn_render_paddings_gas(void) {
 		return;
 	}
 
-	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280 adc $32834,%ax" );
+	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280 adc $-32702,%ax" );
 
 	// Paddings less than rendered mnemonic and code.
 
@@ -285,7 +285,7 @@ void fcml_fn_render_paddings_gas(void) {
 		return;
 	}
 
-	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280 adc $32834,%ax" );
+	STF_ASSERT_STRING_EQUAL( buffer, "6681d04280 adc $-32702,%ax" );
 
 	fcml_fn_disassembler_result_free( &dasm_result );
 }

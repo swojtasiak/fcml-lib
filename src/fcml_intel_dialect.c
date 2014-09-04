@@ -1104,6 +1104,11 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_intel( const fcml_st_di
     return fcml_fn_mp_parse_mnemonics( mnemonic_pattern, mnemonics );
 }
 
+/**
+ * Gets mnemonics for given addressing mode. This method is used by the assembler in order to get all mnemonics
+ * that have to be supported for given addressing mode. Bear in mind that there are addressing modes/instruction forms which
+ * have more than one mnemonics available.
+ */
 fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *dialect, fcml_st_def_instruction_desc *instruction,
         fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics, int *mnemonics_counter ) {
 
@@ -1123,7 +1128,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
     return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_dialect *dialect, fcml_st_instruction *instrunction,
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_disassembler_conf *configuration, const fcml_st_dialect *dialect, fcml_st_instruction *instrunction,
         fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_en_instruction instruction_code, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1131,6 +1136,15 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_
     fcml_bool changed = FCML_FALSE;
 
     if ( mnemonic ) {
+
+        /*
+         * In case of Intel dialect, offsets encoded as effective addresses of type OFFSET
+         * are always treated as indirect pointers. It means that every time you encode
+         * offset as effective address of FCML_AF_OFFSET type it'll be encoded as
+         * an indirect pointer. This rule is used to make Intel parser, where the immediate operands
+         * are treated as direct pointers and offsets are always interpreted as indirect ones, works
+         * as expected. 
+         */
 
         /* JMP and CALL needs hint FCML_HINT_INDIRECT_POINTER explicitly set if
          * absolute offsets are used instead of immediate values. It has to be done

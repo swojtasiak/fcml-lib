@@ -153,7 +153,7 @@ void fcml_fn_env_str_strfree( fcml_string str ) {
     }
 }
 
-void fcml_fn_env_str_vsnprintf( fcml_string buffer, fcml_usize maxlen, fcml_string format, va_list args ) {
+void fcml_fn_env_str_vsnprintf( fcml_string buffer, fcml_usize maxlen, const fcml_string format, va_list args ) {
     vsnprintf( buffer, (fcml_usize) maxlen, format, args );
 }
 

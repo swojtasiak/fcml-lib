@@ -27,3 +27,5 @@ autoscan-*.log
 configure.scan
 test-driver
 /misc
+*.exe
+.libs
