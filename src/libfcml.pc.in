@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+includedir=@includedir@
+libdir=@libdir@
+
+Name: fcml
+Description: A machine code manipulation library for Intel 64 and IA-32. 
+URL: git://git.code.sf.net/p/fcml/code
+Version: @PACKAGE_VERSION@
+Cflags: -I${includedir}
+Libs: -L${libdir} -lfcml
