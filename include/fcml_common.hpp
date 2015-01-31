@@ -301,81 +301,71 @@ public:
      * Creates instruction prefix: LOCK.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& LOCK() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_LOCK);
-        return prefix;
+    static const InstructionPrefix LOCK() {
+        return create(FCML_PREFIX_LOCK);
     }
     /**
      * Creates instruction prefix: REPNE.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& REPNE() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_REPNE);
-        return prefix;
+    static const InstructionPrefix REPNE() {
+        return create(FCML_PREFIX_REPNE);
     }
     /**
      * Creates instruction prefix: REPNZ.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& REPNZ() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_REPNZ);
-        return prefix;
+    static const InstructionPrefix REPNZ() {
+        return create(FCML_PREFIX_REPNZ);
     }
     /**
      * Creates instruction prefix: REP.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& REP() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_REP);
-        return prefix;
+    static const InstructionPrefix REP() {
+        return create(FCML_PREFIX_REP);
     }
     /**
      * Creates instruction prefix: REPE.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& REPE() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_REPE);
-        return prefix;
+    static const InstructionPrefix REPE() {
+        return create(FCML_PREFIX_REPE);
     }
     /**
      * Creates instruction prefix: REPZ.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& REPZ() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_REPZ);
-        return prefix;
+    static const InstructionPrefix REPZ() {
+        return create(FCML_PREFIX_REPZ);
     }
     /**
      * Creates instruction prefix: XACQUIRE.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& XACQUIRE() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_XACQUIRE);
-        return prefix;
+    static const InstructionPrefix XACQUIRE() {
+        return create(FCML_PREFIX_XACQUIRE);
     }
     /**
      * Creates instruction prefix: XRELEASE.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& XRELEASE() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_XRELEASE);
-        return prefix;
+    static const InstructionPrefix XRELEASE() {
+        return create(FCML_PREFIX_XRELEASE);
     }
     /**
      * Creates instruction prefix: BRANCH_HINT.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& BRANCH_HINT() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_BRANCH_HINT);
-        return prefix;
+    static const InstructionPrefix BRANCH_HINT() {
+        return create(FCML_PREFIX_BRANCH_HINT);
     }
     /**
      * Creates instruction prefix: NOBRANCH_HINT.
      * @return Created instruction prefix.
      */
-    static const InstructionPrefix& NOBRANCH_HINT() {
-        static InstructionPrefix prefix = create(FCML_PREFIX_NOBRANCH_HINT);
-        return prefix;
+    static const InstructionPrefix NOBRANCH_HINT() {
+        return create(FCML_PREFIX_NOBRANCH_HINT);
     }
 public:
     fcml_prefixes _prefix;
@@ -398,49 +388,43 @@ public:
      * Creates instruction hint: NO_HINTS.
      * @return Instruction hint.
      */
-    static const InstructionHint& NO_HINTS() {
-        static InstructionHint hint(FCML_HINT_NO_HINTS);
-        return hint;
+    static const InstructionHint NO_HINTS() {
+        return InstructionHint(FCML_HINT_NO_HINTS);
     }
     /**
      * Creates instruction hint: NEAR_POINTER.
      * @return Instruction hint.
      */
-    static const InstructionHint& NEAR_POINTER() {
-        static InstructionHint hint(FCML_HINT_NEAR_POINTER);
-        return hint;
+    static const InstructionHint NEAR_POINTER() {
+        return InstructionHint(FCML_HINT_NEAR_POINTER);
     }
     /**
      * Creates instruction hint: FAR_POINTER.
      * @return Instruction hint.
      */
-    static const InstructionHint& FAR_POINTER() {
-        static InstructionHint hint(FCML_HINT_FAR_POINTER);
-        return hint;
+    static const InstructionHint FAR_POINTER() {
+        return InstructionHint(FCML_HINT_FAR_POINTER);
     }
     /**
      * Creates instruction hint: LONG_FORM_POINTER.
      * @return Instruction hint.
      */
-    static const InstructionHint& LONG_FORM_POINTER() {
-        static InstructionHint hint(FCML_HINT_LONG_FORM_POINTER);
-        return hint;
+    static const InstructionHint LONG_FORM_POINTER() {
+        return InstructionHint(FCML_HINT_LONG_FORM_POINTER);
     }
     /**
      * Creates instruction hint: INDIRECT_POINTER.
      * @return Instruction hint.
      */
-    static const InstructionHint& INDIRECT_POINTER() {
-        static InstructionHint hint(FCML_HINT_INDIRECT_POINTER);
-        return hint;
+    static const InstructionHint INDIRECT_POINTER() {
+        return InstructionHint(FCML_HINT_INDIRECT_POINTER);
     }
     /**
      * Creates instruction hint: DIRECT_POINTER.
      * @return Instruction hint.
      */
-    static const InstructionHint& DIRECT_POINTER() {
-        static InstructionHint hint(FCML_HINT_DIRECT_POINTER);
-        return hint;
+    static const InstructionHint DIRECT_POINTER() {
+        return InstructionHint(FCML_HINT_DIRECT_POINTER);
     }
 public:
     fcml_en_instruction_hints _hint;
@@ -459,57 +443,50 @@ public:
      * Creates operand level hint: UNDEFIEND.
      * @return Operand level hint.
      */
-    static const OperandHint& UNDEFIEND() {
-        static OperandHint hint(FCML_OP_HINT_UNDEFIEND);
-        return hint;
+    static const OperandHint UNDEFIEND() {
+        return OperandHint(FCML_OP_HINT_UNDEFIEND);
     }
     /**
      * Creates operand level hint: MULTIMEDIA_INSTRUCTION.
      * @return Operand level hint.
      */
-    static const OperandHint& MULTIMEDIA() {
-        static OperandHint hint(FCML_OP_HINT_MULTIMEDIA_INSTRUCTION);
-        return hint;
+    static const OperandHint MULTIMEDIA() {
+        return OperandHint(FCML_OP_HINT_MULTIMEDIA_INSTRUCTION);
     }
     /**
      * Creates operand level hint: DISPLACEMENT_RELATIVE_ADDRESS.
      * @return Operand level hint.
      */
-    static const OperandHint& DISPLACEMENT_RELATIVE_ADDRESS() {
-        static OperandHint hint(FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS);
-        return hint;
+    static const OperandHint DISPLACEMENT_RELATIVE_ADDRESS() {
+        return OperandHint(FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS);
     }
     /**
      * Creates operand level hint: PSEUDO_OPCODE.
      * @return Operand level hint.
      */
-    static const OperandHint& PSEUDO_OPCODE() {
-        static OperandHint hint(FCML_OP_HINT_PSEUDO_OPCODE);
-        return hint;
+    static const OperandHint PSEUDO_OPCODE() {
+        return OperandHint(FCML_OP_HINT_PSEUDO_OPCODE);
     }
     /**
      * Creates operand level hint: ABSOLUTE_ADDRESSING.
      * @return Operand level hint.
      */
-    static const OperandHint& ABSOLUTE_ADDRESSING() {
-        static OperandHint hint(FCML_OP_HINT_ABSOLUTE_ADDRESSING);
-        return hint;
+    static const OperandHint ABSOLUTE_ADDRESSING() {
+        return OperandHint(FCML_OP_HINT_ABSOLUTE_ADDRESSING);
     }
     /**
      * Creates operand level hint: RELATIVE_ADDRESSING.
      * @return Operand level hint.
      */
-    static const OperandHint& RELATIVE_ADDRESSING() {
-        static OperandHint hint(FCML_OP_HINT_RELATIVE_ADDRESSING);
-        return hint;
+    static const OperandHint RELATIVE_ADDRESSING() {
+        return OperandHint(FCML_OP_HINT_RELATIVE_ADDRESSING);
     }
     /**
      * Creates operand level hint: SIB_ENCODING.
      * @return Operand level hint.
      */
-    static const OperandHint& SIB_ENCODING() {
-        static OperandHint hint(FCML_OP_HINT_SIB_ENCODING);
-        return hint;
+    static const OperandHint SIB_ENCODING() {
+        return OperandHint(FCML_OP_HINT_SIB_ENCODING);
     }
 public:
     fcml_en_operand_hints _hint;
@@ -1766,8 +1743,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& UNDEF() {
-        static Register reg( 0, 0, Register::REG_UNDEFINED, FCML_FALSE );
+    static const Register UNDEF() {
+        Register reg( 0, 0, Register::REG_UNDEFINED, FCML_FALSE );
         return reg;
     }
 
@@ -1776,8 +1753,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& AL() {
-        static Register reg( ::fcml_reg_AL );
+    static const Register AL() {
+        Register reg( ::fcml_reg_AL );
         return reg;
     }
 
@@ -1786,8 +1763,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& AX() {
-        static Register reg( ::fcml_reg_AX );
+    static const Register AX() {
+        Register reg( ::fcml_reg_AX );
         return reg;
     }
 
@@ -1796,8 +1773,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& EAX() {
-        static Register reg( ::fcml_reg_EAX );
+    static const Register EAX() {
+        Register reg( ::fcml_reg_EAX );
         return reg;
     }
 
@@ -1806,8 +1783,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RAX() {
-        static Register reg( ::fcml_reg_RAX );
+    static const Register RAX() {
+        Register reg( ::fcml_reg_RAX );
         return reg;
     }
 
@@ -1816,8 +1793,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& MM0() {
-        static Register reg( ::fcml_reg_MM0 );
+    static const Register MM0() {
+        Register reg( ::fcml_reg_MM0 );
         return reg;
     }
 
@@ -1826,8 +1803,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM0() {
-        static Register reg( ::fcml_reg_XMM0 );
+    static const Register XMM0() {
+        Register reg( ::fcml_reg_XMM0 );
         return reg;
     }
 
@@ -1836,8 +1813,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM0() {
-        static Register reg( ::fcml_reg_YMM0 );
+    static const Register YMM0() {
+        Register reg( ::fcml_reg_YMM0 );
         return reg;
     }
 
@@ -1846,8 +1823,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CL() {
-        static Register reg( ::fcml_reg_CL );
+    static const Register CL() {
+        Register reg( ::fcml_reg_CL );
         return reg;
     }
 
@@ -1856,8 +1833,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CX() {
-        static Register reg( ::fcml_reg_CX );
+    static const Register CX() {
+        Register reg( ::fcml_reg_CX );
         return reg;
     }
 
@@ -1866,8 +1843,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ECX() {
-        static Register reg( ::fcml_reg_ECX );
+    static const Register ECX() {
+        Register reg( ::fcml_reg_ECX );
         return reg;
     }
 
@@ -1876,8 +1853,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RCX() {
-        static Register reg( ::fcml_reg_RCX );
+    static const Register RCX() {
+        Register reg( ::fcml_reg_RCX );
         return reg;
     }
 
@@ -1886,8 +1863,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& MM1() {
-        static Register reg( ::fcml_reg_MM1 );
+    static const Register MM1() {
+        Register reg( ::fcml_reg_MM1 );
         return reg;
     }
 
@@ -1896,8 +1873,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM1() {
-        static Register reg( ::fcml_reg_XMM1 );
+    static const Register XMM1() {
+        Register reg( ::fcml_reg_XMM1 );
         return reg;
     }
 
@@ -1906,8 +1883,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM1() {
-        static Register reg( ::fcml_reg_YMM1 );
+    static const Register YMM1() {
+        Register reg( ::fcml_reg_YMM1 );
         return reg;
     }
 
@@ -1916,8 +1893,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DL() {
-        static Register reg( ::fcml_reg_DL );
+    static const Register DL() {
+        Register reg( ::fcml_reg_DL );
         return reg;
     }
 
@@ -1926,8 +1903,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DX() {
-        static Register reg( ::fcml_reg_DX );
+    static const Register DX() {
+        Register reg( ::fcml_reg_DX );
         return reg;
     }
 
@@ -1936,8 +1913,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& EDX() {
-        static Register reg( ::fcml_reg_EDX );
+    static const Register EDX() {
+        Register reg( ::fcml_reg_EDX );
         return reg;
     }
 
@@ -1946,8 +1923,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RDX() {
-        static Register reg( ::fcml_reg_RDX );
+    static const Register RDX() {
+        Register reg( ::fcml_reg_RDX );
         return reg;
     }
 
@@ -1956,8 +1933,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& MM2() {
-        static Register reg( ::fcml_reg_MM2 );
+    static const Register MM2() {
+        Register reg( ::fcml_reg_MM2 );
         return reg;
     }
 
@@ -1966,8 +1943,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM2() {
-        static Register reg( ::fcml_reg_XMM2 );
+    static const Register XMM2() {
+        Register reg( ::fcml_reg_XMM2 );
         return reg;
     }
 
@@ -1976,8 +1953,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM2() {
-        static Register reg( ::fcml_reg_YMM2 );
+    static const Register YMM2() {
+        Register reg( ::fcml_reg_YMM2 );
         return reg;
     }
 
@@ -1986,8 +1963,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& BL() {
-        static Register reg( ::fcml_reg_BL );
+    static const Register BL() {
+        Register reg( ::fcml_reg_BL );
         return reg;
     }
 
@@ -1996,8 +1973,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& BX() {
-        static Register reg( ::fcml_reg_BX );
+    static const Register BX() {
+        Register reg( ::fcml_reg_BX );
         return reg;
     }
 
@@ -2006,8 +1983,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& EBX() {
-        static Register reg( ::fcml_reg_EBX );
+    static const Register EBX() {
+        Register reg( ::fcml_reg_EBX );
         return reg;
     }
 
@@ -2016,8 +1993,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RBX() {
-        static Register reg( ::fcml_reg_RBX );
+    static const Register RBX() {
+        Register reg( ::fcml_reg_RBX );
         return reg;
     }
 
@@ -2026,8 +2003,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& MM3() {
-        static Register reg( ::fcml_reg_MM3 );
+    static const Register MM3() {
+        Register reg( ::fcml_reg_MM3 );
         return reg;
     }
 
@@ -2036,8 +2013,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM3() {
-        static Register reg( ::fcml_reg_XMM3 );
+    static const Register XMM3() {
+        Register reg( ::fcml_reg_XMM3 );
         return reg;
     }
 
@@ -2046,8 +2023,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM3() {
-        static Register reg( ::fcml_reg_YMM3 );
+    static const Register YMM3() {
+        Register reg( ::fcml_reg_YMM3 );
         return reg;
     }
 
@@ -2056,8 +2033,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& AH() {
-        static Register reg( ::fcml_reg_AH );
+    static const Register AH() {
+        Register reg( ::fcml_reg_AH );
         return reg;
     }
 
@@ -2066,8 +2043,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& SPL() {
-        static Register reg( ::fcml_reg_SPL );
+    static const Register SPL() {
+        Register reg( ::fcml_reg_SPL );
         return reg;
     }
 
@@ -2076,8 +2053,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& SP() {
-        static Register reg( ::fcml_reg_SP );
+    static const Register SP() {
+        Register reg( ::fcml_reg_SP );
         return reg;
     }
 
@@ -2086,8 +2063,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ESP() {
-        static Register reg( ::fcml_reg_ESP );
+    static const Register ESP() {
+        Register reg( ::fcml_reg_ESP );
         return reg;
     }
 
@@ -2096,8 +2073,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RSP() {
-        static Register reg( ::fcml_reg_RSP );
+    static const Register RSP() {
+        Register reg( ::fcml_reg_RSP );
         return reg;
     }
 
@@ -2106,8 +2083,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& MM4() {
-        static Register reg( ::fcml_reg_MM4 );
+    static const Register MM4() {
+        Register reg( ::fcml_reg_MM4 );
         return reg;
     }
 
@@ -2116,8 +2093,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM4() {
-        static Register reg( ::fcml_reg_XMM4 );
+    static const Register XMM4() {
+        Register reg( ::fcml_reg_XMM4 );
         return reg;
     }
 
@@ -2126,8 +2103,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM4() {
-        static Register reg( ::fcml_reg_YMM4 );
+    static const Register YMM4() {
+        Register reg( ::fcml_reg_YMM4 );
         return reg;
     }
 
@@ -2136,8 +2113,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CH() {
-        static Register reg( ::fcml_reg_CH );
+    static const Register CH() {
+        Register reg( ::fcml_reg_CH );
         return reg;
     }
 
@@ -2146,8 +2123,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& BPL() {
-        static Register reg( ::fcml_reg_BPL );
+    static const Register BPL() {
+        Register reg( ::fcml_reg_BPL );
         return reg;
     }
 
@@ -2156,8 +2133,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& BP() {
-        static Register reg( ::fcml_reg_BP );
+    static const Register BP() {
+        Register reg( ::fcml_reg_BP );
         return reg;
     }
 
@@ -2166,8 +2143,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& EBP() {
-        static Register reg( ::fcml_reg_EBP );
+    static const Register EBP() {
+        Register reg( ::fcml_reg_EBP );
         return reg;
     }
 
@@ -2176,8 +2153,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RBP() {
-        static Register reg( ::fcml_reg_RBP );
+    static const Register RBP() {
+        Register reg( ::fcml_reg_RBP );
         return reg;
     }
 
@@ -2186,8 +2163,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& MM5() {
-        static Register reg( ::fcml_reg_MM5 );
+    static const Register MM5() {
+        Register reg( ::fcml_reg_MM5 );
         return reg;
     }
 
@@ -2196,8 +2173,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM5() {
-        static Register reg( ::fcml_reg_XMM5 );
+    static const Register XMM5() {
+        Register reg( ::fcml_reg_XMM5 );
         return reg;
     }
 
@@ -2206,8 +2183,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM5() {
-        static Register reg( ::fcml_reg_YMM5 );
+    static const Register YMM5() {
+        Register reg( ::fcml_reg_YMM5 );
         return reg;
     }
 
@@ -2216,8 +2193,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DH() {
-        static Register reg( ::fcml_reg_DH );
+    static const Register DH() {
+        Register reg( ::fcml_reg_DH );
         return reg;
     }
 
@@ -2226,8 +2203,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& SIL() {
-        static Register reg( ::fcml_reg_SIL );
+    static const Register SIL() {
+        Register reg( ::fcml_reg_SIL );
         return reg;
     }
 
@@ -2236,8 +2213,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& SI() {
-        static Register reg( ::fcml_reg_SI );
+    static const Register SI() {
+        Register reg( ::fcml_reg_SI );
         return reg;
     }
 
@@ -2246,8 +2223,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ESI() {
-        static Register reg( ::fcml_reg_ESI );
+    static const Register ESI() {
+        Register reg( ::fcml_reg_ESI );
         return reg;
     }
 
@@ -2256,8 +2233,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RSI() {
-        static Register reg( ::fcml_reg_RSI );
+    static const Register RSI() {
+        Register reg( ::fcml_reg_RSI );
         return reg;
     }
 
@@ -2266,8 +2243,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& MM6() {
-        static Register reg( ::fcml_reg_MM6 );
+    static const Register MM6() {
+        Register reg( ::fcml_reg_MM6 );
         return reg;
     }
 
@@ -2276,8 +2253,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM6() {
-        static Register reg( ::fcml_reg_XMM6 );
+    static const Register XMM6() {
+        Register reg( ::fcml_reg_XMM6 );
         return reg;
     }
 
@@ -2286,8 +2263,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM6() {
-        static Register reg( ::fcml_reg_YMM6 );
+    static const Register YMM6() {
+        Register reg( ::fcml_reg_YMM6 );
         return reg;
     }
 
@@ -2296,8 +2273,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& BH() {
-        static Register reg( ::fcml_reg_BH );
+    static const Register BH() {
+        Register reg( ::fcml_reg_BH );
         return reg;
     }
 
@@ -2306,8 +2283,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DIL() {
-        static Register reg( ::fcml_reg_DIL );
+    static const Register DIL() {
+        Register reg( ::fcml_reg_DIL );
         return reg;
     }
 
@@ -2316,8 +2293,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DI() {
-        static Register reg( ::fcml_reg_DI );
+    static const Register DI() {
+        Register reg( ::fcml_reg_DI );
         return reg;
     }
 
@@ -2326,8 +2303,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& EDI() {
-        static Register reg( ::fcml_reg_EDI );
+    static const Register EDI() {
+        Register reg( ::fcml_reg_EDI );
         return reg;
     }
 
@@ -2336,8 +2313,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RDI() {
-        static Register reg( ::fcml_reg_RDI );
+    static const Register RDI() {
+        Register reg( ::fcml_reg_RDI );
         return reg;
     }
 
@@ -2346,8 +2323,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& MM7() {
-        static Register reg( ::fcml_reg_MM7 );
+    static const Register MM7() {
+        Register reg( ::fcml_reg_MM7 );
         return reg;
     }
 
@@ -2356,8 +2333,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM7() {
-        static Register reg( ::fcml_reg_XMM7 );
+    static const Register XMM7() {
+        Register reg( ::fcml_reg_XMM7 );
         return reg;
     }
 
@@ -2366,8 +2343,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM7() {
-        static Register reg( ::fcml_reg_YMM7 );
+    static const Register YMM7() {
+        Register reg( ::fcml_reg_YMM7 );
         return reg;
     }
 
@@ -2376,8 +2353,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R8L() {
-        static Register reg( ::fcml_reg_R8L );
+    static const Register R8L() {
+        Register reg( ::fcml_reg_R8L );
         return reg;
     }
 
@@ -2386,8 +2363,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R8W() {
-        static Register reg( ::fcml_reg_R8W );
+    static const Register R8W() {
+        Register reg( ::fcml_reg_R8W );
         return reg;
     }
 
@@ -2396,8 +2373,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R8D() {
-        static Register reg( ::fcml_reg_R8D );
+    static const Register R8D() {
+        Register reg( ::fcml_reg_R8D );
         return reg;
     }
 
@@ -2406,8 +2383,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R8() {
-        static Register reg( ::fcml_reg_R8 );
+    static const Register R8() {
+        Register reg( ::fcml_reg_R8 );
         return reg;
     }
 
@@ -2416,8 +2393,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM8() {
-        static Register reg( ::fcml_reg_XMM8 );
+    static const Register XMM8() {
+        Register reg( ::fcml_reg_XMM8 );
         return reg;
     }
 
@@ -2426,8 +2403,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM8() {
-        static Register reg( ::fcml_reg_YMM8 );
+    static const Register YMM8() {
+        Register reg( ::fcml_reg_YMM8 );
         return reg;
     }
 
@@ -2436,8 +2413,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R9L() {
-        static Register reg( ::fcml_reg_R9L );
+    static const Register R9L() {
+        Register reg( ::fcml_reg_R9L );
         return reg;
     }
 
@@ -2446,8 +2423,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R9W() {
-        static Register reg( ::fcml_reg_R9W );
+    static const Register R9W() {
+        Register reg( ::fcml_reg_R9W );
         return reg;
     }
 
@@ -2456,8 +2433,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R9D() {
-        static Register reg( ::fcml_reg_R9D );
+    static const Register R9D() {
+        Register reg( ::fcml_reg_R9D );
         return reg;
     }
 
@@ -2466,8 +2443,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R9() {
-        static Register reg( ::fcml_reg_R9 );
+    static const Register R9() {
+        Register reg( ::fcml_reg_R9 );
         return reg;
     }
 
@@ -2476,8 +2453,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM9() {
-        static Register reg( ::fcml_reg_XMM9 );
+    static const Register XMM9() {
+        Register reg( ::fcml_reg_XMM9 );
         return reg;
     }
 
@@ -2486,8 +2463,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM9() {
-        static Register reg( ::fcml_reg_YMM9 );
+    static const Register YMM9() {
+        Register reg( ::fcml_reg_YMM9 );
         return reg;
     }
 
@@ -2496,8 +2473,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R10L() {
-        static Register reg( ::fcml_reg_R10L );
+    static const Register R10L() {
+        Register reg( ::fcml_reg_R10L );
         return reg;
     }
 
@@ -2506,8 +2483,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R10W() {
-        static Register reg( ::fcml_reg_R10W );
+    static const Register R10W() {
+        Register reg( ::fcml_reg_R10W );
         return reg;
     }
 
@@ -2516,8 +2493,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R10D() {
-        static Register reg( ::fcml_reg_R10D );
+    static const Register R10D() {
+        Register reg( ::fcml_reg_R10D );
         return reg;
     }
 
@@ -2526,8 +2503,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R10() {
-        static Register reg( ::fcml_reg_R10 );
+    static const Register R10() {
+        Register reg( ::fcml_reg_R10 );
         return reg;
     }
 
@@ -2536,8 +2513,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM10() {
-        static Register reg( ::fcml_reg_XMM10 );
+    static const Register XMM10() {
+        Register reg( ::fcml_reg_XMM10 );
         return reg;
     }
 
@@ -2546,8 +2523,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM10() {
-        static Register reg( ::fcml_reg_YMM10 );
+    static const Register YMM10() {
+        Register reg( ::fcml_reg_YMM10 );
         return reg;
     }
 
@@ -2556,8 +2533,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R11L() {
-        static Register reg( ::fcml_reg_R11L );
+    static const Register R11L() {
+        Register reg( ::fcml_reg_R11L );
         return reg;
     }
 
@@ -2566,8 +2543,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R11W() {
-        static Register reg( ::fcml_reg_R11W );
+    static const Register R11W() {
+        Register reg( ::fcml_reg_R11W );
         return reg;
     }
 
@@ -2576,8 +2553,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R11D() {
-        static Register reg( ::fcml_reg_R11D );
+    static const Register R11D() {
+        Register reg( ::fcml_reg_R11D );
         return reg;
     }
 
@@ -2586,8 +2563,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R11() {
-        static Register reg( ::fcml_reg_R11 );
+    static const Register R11() {
+        Register reg( ::fcml_reg_R11 );
         return reg;
     }
 
@@ -2596,8 +2573,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM11() {
-        static Register reg( ::fcml_reg_XMM11 );
+    static const Register XMM11() {
+        Register reg( ::fcml_reg_XMM11 );
         return reg;
     }
 
@@ -2606,8 +2583,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM11() {
-        static Register reg( ::fcml_reg_YMM11 );
+    static const Register YMM11() {
+        Register reg( ::fcml_reg_YMM11 );
         return reg;
     }
 
@@ -2616,8 +2593,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R12L() {
-        static Register reg( ::fcml_reg_R12L );
+    static const Register R12L() {
+        Register reg( ::fcml_reg_R12L );
         return reg;
     }
 
@@ -2626,8 +2603,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R12W() {
-        static Register reg( ::fcml_reg_R12W );
+    static const Register R12W() {
+        Register reg( ::fcml_reg_R12W );
         return reg;
     }
 
@@ -2636,8 +2613,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R12D() {
-        static Register reg( ::fcml_reg_R12D );
+    static const Register R12D() {
+        Register reg( ::fcml_reg_R12D );
         return reg;
     }
 
@@ -2646,8 +2623,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R12() {
-        static Register reg( ::fcml_reg_R12 );
+    static const Register R12() {
+        Register reg( ::fcml_reg_R12 );
         return reg;
     }
 
@@ -2656,8 +2633,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM12() {
-        static Register reg( ::fcml_reg_XMM12 );
+    static const Register XMM12() {
+        Register reg( ::fcml_reg_XMM12 );
         return reg;
     }
 
@@ -2666,8 +2643,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM12() {
-        static Register reg( ::fcml_reg_YMM12 );
+    static const Register YMM12() {
+        Register reg( ::fcml_reg_YMM12 );
         return reg;
     }
 
@@ -2676,8 +2653,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R13L() {
-        static Register reg( ::fcml_reg_R13L );
+    static const Register R13L() {
+        Register reg( ::fcml_reg_R13L );
         return reg;
     }
 
@@ -2686,8 +2663,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R13W() {
-        static Register reg( ::fcml_reg_R13W );
+    static const Register R13W() {
+        Register reg( ::fcml_reg_R13W );
         return reg;
     }
 
@@ -2696,8 +2673,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R13D() {
-        static Register reg( ::fcml_reg_R13D );
+    static const Register R13D() {
+        Register reg( ::fcml_reg_R13D );
         return reg;
     }
 
@@ -2706,8 +2683,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R13() {
-        static Register reg( ::fcml_reg_R13 );
+    static const Register R13() {
+        Register reg( ::fcml_reg_R13 );
         return reg;
     }
 
@@ -2716,8 +2693,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM13() {
-        static Register reg( ::fcml_reg_XMM13 );
+    static const Register XMM13() {
+        Register reg( ::fcml_reg_XMM13 );
         return reg;
     }
 
@@ -2726,8 +2703,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM13() {
-        static Register reg( ::fcml_reg_YMM13 );
+    static const Register YMM13() {
+        Register reg( ::fcml_reg_YMM13 );
         return reg;
     }
 
@@ -2736,8 +2713,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R14L() {
-        static Register reg( ::fcml_reg_R14L );
+    static const Register R14L() {
+        Register reg( ::fcml_reg_R14L );
         return reg;
     }
 
@@ -2746,8 +2723,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R14W() {
-        static Register reg( ::fcml_reg_R14W );
+    static const Register R14W() {
+        Register reg( ::fcml_reg_R14W );
         return reg;
     }
 
@@ -2756,8 +2733,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R14D() {
-        static Register reg( ::fcml_reg_R14D );
+    static const Register R14D() {
+        Register reg( ::fcml_reg_R14D );
         return reg;
     }
 
@@ -2766,8 +2743,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R14() {
-        static Register reg( ::fcml_reg_R14 );
+    static const Register R14() {
+        Register reg( ::fcml_reg_R14 );
         return reg;
     }
 
@@ -2776,8 +2753,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM14() {
-        static Register reg( ::fcml_reg_XMM14 );
+    static const Register XMM14() {
+        Register reg( ::fcml_reg_XMM14 );
         return reg;
     }
 
@@ -2786,8 +2763,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM14() {
-        static Register reg( ::fcml_reg_YMM14 );
+    static const Register YMM14() {
+        Register reg( ::fcml_reg_YMM14 );
         return reg;
     }
 
@@ -2796,8 +2773,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R15L() {
-        static Register reg( ::fcml_reg_R15L );
+    static const Register R15L() {
+        Register reg( ::fcml_reg_R15L );
         return reg;
     }
 
@@ -2806,8 +2783,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R15W() {
-        static Register reg( ::fcml_reg_R15W );
+    static const Register R15W() {
+        Register reg( ::fcml_reg_R15W );
         return reg;
     }
 
@@ -2816,8 +2793,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R15D() {
-        static Register reg( ::fcml_reg_R15D );
+    static const Register R15D() {
+        Register reg( ::fcml_reg_R15D );
         return reg;
     }
 
@@ -2826,8 +2803,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& R15() {
-        static Register reg( ::fcml_reg_R15 );
+    static const Register R15() {
+        Register reg( ::fcml_reg_R15 );
         return reg;
     }
 
@@ -2836,8 +2813,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& XMM15() {
-        static Register reg( ::fcml_reg_XMM15 );
+    static const Register XMM15() {
+        Register reg( ::fcml_reg_XMM15 );
         return reg;
     }
 
@@ -2846,8 +2823,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& YMM15() {
-        static Register reg( ::fcml_reg_YMM15 );
+    static const Register YMM15() {
+        Register reg( ::fcml_reg_YMM15 );
         return reg;
     }
 
@@ -2856,8 +2833,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ES() {
-        static Register reg( ::fcml_reg_ES );
+    static const Register ES() {
+        Register reg( ::fcml_reg_ES );
         return reg;
     }
 
@@ -2866,8 +2843,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CS() {
-        static Register reg( ::fcml_reg_CS );
+    static const Register CS() {
+        Register reg( ::fcml_reg_CS );
         return reg;
     }
 
@@ -2876,8 +2853,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& SS() {
-        static Register reg( ::fcml_reg_SS );
+    static const Register SS() {
+        Register reg( ::fcml_reg_SS );
         return reg;
     }
 
@@ -2886,8 +2863,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DS() {
-        static Register reg( ::fcml_reg_DS );
+    static const Register DS() {
+        Register reg( ::fcml_reg_DS );
         return reg;
     }
 
@@ -2896,8 +2873,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& FS() {
-        static Register reg( ::fcml_reg_FS );
+    static const Register FS() {
+        Register reg( ::fcml_reg_FS );
         return reg;
     }
 
@@ -2906,8 +2883,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& GS() {
-        static Register reg( ::fcml_reg_GS );
+    static const Register GS() {
+        Register reg( ::fcml_reg_GS );
         return reg;
     }
 
@@ -2916,8 +2893,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ST0() {
-        static Register reg( ::fcml_reg_ST0 );
+    static const Register ST0() {
+        Register reg( ::fcml_reg_ST0 );
         return reg;
     }
 
@@ -2926,8 +2903,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ST1() {
-        static Register reg( ::fcml_reg_ST1 );
+    static const Register ST1() {
+        Register reg( ::fcml_reg_ST1 );
         return reg;
     }
 
@@ -2936,8 +2913,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ST2() {
-        static Register reg( ::fcml_reg_ST2 );
+    static const Register ST2() {
+        Register reg( ::fcml_reg_ST2 );
         return reg;
     }
 
@@ -2946,8 +2923,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ST3() {
-        static Register reg( ::fcml_reg_ST3 );
+    static const Register ST3() {
+        Register reg( ::fcml_reg_ST3 );
         return reg;
     }
 
@@ -2956,8 +2933,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ST4() {
-        static Register reg( ::fcml_reg_ST4 );
+    static const Register ST4() {
+        Register reg( ::fcml_reg_ST4 );
         return reg;
     }
 
@@ -2966,8 +2943,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ST5() {
-        static Register reg( ::fcml_reg_ST5 );
+    static const Register ST5() {
+        Register reg( ::fcml_reg_ST5 );
         return reg;
     }
 
@@ -2976,8 +2953,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ST6() {
-        static Register reg( ::fcml_reg_ST6 );
+    static const Register ST6() {
+        Register reg( ::fcml_reg_ST6 );
         return reg;
     }
 
@@ -2986,8 +2963,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& ST7() {
-        static Register reg( ::fcml_reg_ST7 );
+    static const Register ST7() {
+        Register reg( ::fcml_reg_ST7 );
         return reg;
     }
 
@@ -2996,8 +2973,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CR0() {
-        static Register reg( ::fcml_reg_CR0 );
+    static const Register CR0() {
+        Register reg( ::fcml_reg_CR0 );
         return reg;
     }
 
@@ -3006,8 +2983,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CR2() {
-        static Register reg( ::fcml_reg_CR2 );
+    static const Register CR2() {
+        Register reg( ::fcml_reg_CR2 );
         return reg;
     }
 
@@ -3016,8 +2993,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CR3() {
-        static Register reg( ::fcml_reg_CR3 );
+    static const Register CR3() {
+        Register reg( ::fcml_reg_CR3 );
         return reg;
     }
 
@@ -3026,8 +3003,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CR4() {
-        static Register reg( ::fcml_reg_CR4 );
+    static const Register CR4() {
+        Register reg( ::fcml_reg_CR4 );
         return reg;
     }
 
@@ -3036,8 +3013,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& CR8() {
-        static Register reg( ::fcml_reg_CR8 );
+    static const Register CR8() {
+        Register reg( ::fcml_reg_CR8 );
         return reg;
     }
 
@@ -3046,8 +3023,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DR0() {
-        static Register reg( ::fcml_reg_DR0 );
+    static const Register DR0() {
+        Register reg( ::fcml_reg_DR0 );
         return reg;
     }
 
@@ -3056,8 +3033,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DR1() {
-        static Register reg( ::fcml_reg_DR1 );
+    static const Register DR1() {
+        Register reg( ::fcml_reg_DR1 );
         return reg;
     }
 
@@ -3066,8 +3043,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DR2() {
-        static Register reg( ::fcml_reg_DR2 );
+    static const Register DR2() {
+        Register reg( ::fcml_reg_DR2 );
         return reg;
     }
 
@@ -3076,8 +3053,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DR3() {
-        static Register reg( ::fcml_reg_DR3 );
+    static const Register DR3() {
+        Register reg( ::fcml_reg_DR3 );
         return reg;
     }
 
@@ -3086,8 +3063,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DR4() {
-        static Register reg( ::fcml_reg_DR4 );
+    static const Register DR4() {
+        Register reg( ::fcml_reg_DR4 );
         return reg;
     }
 
@@ -3096,8 +3073,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DR5() {
-        static Register reg( ::fcml_reg_DR5 );
+    static const Register DR5() {
+        Register reg( ::fcml_reg_DR5 );
         return reg;
     }
 
@@ -3106,8 +3083,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DR6() {
-        static Register reg( ::fcml_reg_DR6 );
+    static const Register DR6() {
+        Register reg( ::fcml_reg_DR6 );
         return reg;
     }
 
@@ -3116,8 +3093,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& DR7() {
-        static Register reg( ::fcml_reg_DR7 );
+    static const Register DR7() {
+        Register reg( ::fcml_reg_DR7 );
         return reg;
     }
 
@@ -3126,8 +3103,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& IP() {
-        static Register reg( ::fcml_reg_IP );
+    static const Register IP() {
+        Register reg( ::fcml_reg_IP );
         return reg;
     }
 
@@ -3136,8 +3113,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& EIP() {
-        static Register reg( ::fcml_reg_EIP );
+    static const Register EIP() {
+        Register reg( ::fcml_reg_EIP );
         return reg;
     }
 
@@ -3146,8 +3123,8 @@ public:
      * @return A register instance.
      * @since 1.1.0
      */
-    static const Register& RIP() {
-        static Register reg( ::fcml_reg_RIP );
+    static const Register RIP() {
+        Register reg( ::fcml_reg_RIP );
         return reg;
     }
 
@@ -5568,8 +5545,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& O() {
-       static const Condition condition( CONDITION_O );
+    static const Condition O() {
+       const Condition condition( CONDITION_O );
        return condition;
     }
 
@@ -5587,8 +5564,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NO() {
-       static const Condition condition( CONDITION_O );
+    static const Condition NO() {
+       const Condition condition( CONDITION_O );
        return condition;
     }
 
@@ -5606,8 +5583,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& B() {
-       static const Condition condition( CONDITION_B );
+    static const Condition B() {
+       const Condition condition( CONDITION_B );
        return condition;
     }
 
@@ -5625,8 +5602,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NB() {
-       static const Condition condition( CONDITION_B, true );
+    static const Condition NB() {
+       const Condition condition( CONDITION_B, true );
        return condition;
     }
 
@@ -5644,8 +5621,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NAE() {
-       static const Condition condition( CONDITION_B );
+    static const Condition NAE() {
+       const Condition condition( CONDITION_B );
        return condition;
     }
 
@@ -5663,8 +5640,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& AE() {
-       static const Condition condition( CONDITION_B, true );
+    static const Condition AE() {
+       const Condition condition( CONDITION_B, true );
        return condition;
     }
 
@@ -5682,8 +5659,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& C() {
-       static const Condition condition( CONDITION_B );
+    static const Condition C() {
+       const Condition condition( CONDITION_B );
        return condition;
     }
 
@@ -5701,8 +5678,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NC() {
-       static const Condition condition( CONDITION_B, true );
+    static const Condition NC() {
+       const Condition condition( CONDITION_B, true );
        return condition;
     }
 
@@ -5720,8 +5697,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& E() {
-       static const Condition condition( CONDITION_E );
+    static const Condition E() {
+       const Condition condition( CONDITION_E );
        return condition;
     }
 
@@ -5739,8 +5716,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& Z() {
-       static const Condition condition( CONDITION_E );
+    static const Condition Z() {
+       const Condition condition( CONDITION_E );
        return condition;
     }
 
@@ -5758,8 +5735,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NE() {
-       static const Condition condition( CONDITION_E, true );
+    static const Condition NE() {
+       const Condition condition( CONDITION_E, true );
        return condition;
     }
 
@@ -5777,8 +5754,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NZ() {
-       static const Condition condition( CONDITION_E, true );
+    static const Condition NZ() {
+       const Condition condition( CONDITION_E, true );
        return condition;
     }
 
@@ -5796,8 +5773,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& BE() {
-       static const Condition condition( CONDITION_BE );
+    static const Condition BE() {
+       const Condition condition( CONDITION_BE );
        return condition;
     }
 
@@ -5815,8 +5792,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NA() {
-       static const Condition condition( CONDITION_BE );
+    static const Condition NA() {
+       const Condition condition( CONDITION_BE );
        return condition;
     }
 
@@ -5834,8 +5811,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NBE() {
-       static const Condition condition( CONDITION_BE, true );
+    static const Condition NBE() {
+       const Condition condition( CONDITION_BE, true );
        return condition;
     }
 
@@ -5853,8 +5830,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& A() {
-       static const Condition condition( CONDITION_BE, true );
+    static const Condition A() {
+       const Condition condition( CONDITION_BE, true );
        return condition;
     }
 
@@ -5872,8 +5849,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& S() {
-       static const Condition condition( CONDITION_S );
+    static const Condition S() {
+       const Condition condition( CONDITION_S );
        return condition;
     }
 
@@ -5891,8 +5868,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NS() {
-       static const Condition condition( CONDITION_S, true );
+    static const Condition NS() {
+       const Condition condition( CONDITION_S, true );
        return condition;
     }
 
@@ -5910,8 +5887,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& P() {
-       static const Condition condition( CONDITION_P );
+    static const Condition P() {
+       const Condition condition( CONDITION_P );
        return condition;
     }
 
@@ -5929,8 +5906,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& PE() {
-       static const Condition condition( CONDITION_P );
+    static const Condition PE() {
+       const Condition condition( CONDITION_P );
        return condition;
     }
 
@@ -5948,8 +5925,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NP() {
-       static const Condition condition( CONDITION_P, true );
+    static const Condition NP() {
+       const Condition condition( CONDITION_P, true );
        return condition;
     }
 
@@ -5967,8 +5944,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& PO() {
-       static const Condition condition( CONDITION_P, true );
+    static const Condition PO() {
+       const Condition condition( CONDITION_P, true );
        return condition;
     }
 
@@ -5986,8 +5963,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& L() {
-       static const Condition condition( CONDITION_L );
+    static const Condition L() {
+       const Condition condition( CONDITION_L );
        return condition;
     }
 
@@ -6005,8 +5982,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NGE() {
-       static const Condition condition( CONDITION_L );
+    static const Condition NGE() {
+       const Condition condition( CONDITION_L );
        return condition;
     }
 
@@ -6024,8 +6001,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NL() {
-       static const Condition condition( CONDITION_L, true );
+    static const Condition NL() {
+       const Condition condition( CONDITION_L, true );
        return condition;
     }
 
@@ -6043,8 +6020,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& GE() {
-       static const Condition condition( CONDITION_L, true );
+    static const Condition GE() {
+       const Condition condition( CONDITION_L, true );
        return condition;
     }
 
@@ -6062,8 +6039,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& LE() {
-       static const Condition condition( CONDITION_LE );
+    static const Condition LE() {
+       const Condition condition( CONDITION_LE );
        return condition;
     }
 
@@ -6081,8 +6058,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NG() {
-       static const Condition condition( CONDITION_LE );
+    static const Condition NG() {
+       const Condition condition( CONDITION_LE );
        return condition;
     }
 
@@ -6100,8 +6077,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& NLE() {
-       static const Condition condition( CONDITION_LE, true );
+    static const Condition NLE() {
+       const Condition condition( CONDITION_LE, true );
        return condition;
     }
 
@@ -6119,8 +6096,8 @@ public:
      * @return The condition with a type described by the method name.
      * @since 1.1.0
      */
-    static const Condition& G() {
-       static const Condition condition( CONDITION_LE, true );
+    static const Condition G() {
+       const Condition condition( CONDITION_LE, true );
        return condition;
     }
 
@@ -6756,7 +6733,7 @@ public:
      * @return The hint indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionHint& FAR_PTR() {
+    static const InstructionHint FAR_PTR() {
         return InstructionHint::FAR_POINTER();
     }
 
@@ -6777,7 +6754,7 @@ public:
      * @return The hint indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionHint& NEAR_PTR() {
+    static const InstructionHint NEAR_PTR() {
         return InstructionHint::NEAR_POINTER();
     }
 
@@ -6798,7 +6775,7 @@ public:
      * @return The hint indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionHint& LONG_FORM_PTR() {
+    static const InstructionHint LONG_FORM_PTR() {
         return InstructionHint::LONG_FORM_POINTER();
     }
 
@@ -6819,7 +6796,7 @@ public:
      * @return The hint indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionHint& INDIRECT_PTR() {
+    static const InstructionHint INDIRECT_PTR() {
         return InstructionHint::INDIRECT_POINTER();
     }
 
@@ -6840,7 +6817,7 @@ public:
      * @return The hint indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionHint& DIRECT_PTR() {
+    static const InstructionHint DIRECT_PTR() {
         return InstructionHint::DIRECT_POINTER();
     }
 
@@ -6863,7 +6840,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& LOCK() {
+    static const InstructionPrefix LOCK() {
         return InstructionPrefix::LOCK();
     }
 
@@ -6884,7 +6861,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& REPNE() {
+    static const InstructionPrefix REPNE() {
         return InstructionPrefix::REPNE();
     }
 
@@ -6905,7 +6882,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& REPNZ() {
+    static const InstructionPrefix REPNZ() {
         return InstructionPrefix::REPNZ();
     }
 
@@ -6926,7 +6903,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& REP() {
+    static const InstructionPrefix REP() {
         return InstructionPrefix::REP();
     }
 
@@ -6947,7 +6924,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& REPE() {
+    static const InstructionPrefix REPE() {
         return InstructionPrefix::REPE();
     }
 
@@ -6968,7 +6945,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& REPZ() {
+    static const InstructionPrefix REPZ() {
         return InstructionPrefix::REPZ();
     }
 
@@ -6989,7 +6966,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& XACQUIRE() {
+    static const InstructionPrefix XACQUIRE() {
         return InstructionPrefix::XACQUIRE();
     }
 
@@ -7010,7 +6987,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& XRELEASE() {
+    static const InstructionPrefix XRELEASE() {
         return InstructionPrefix::XRELEASE();
     }
 
@@ -7031,7 +7008,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& BRANCH() {
+    static const InstructionPrefix BRANCH() {
         return InstructionPrefix::BRANCH_HINT();
     }
 
@@ -7052,7 +7029,7 @@ public:
      * @return The prefix indicator for the builder.
      * @since 1.1.0
      */
-    static const InstructionPrefix& NO_BRANCH() {
+    static const InstructionPrefix NO_BRANCH() {
         return InstructionPrefix::NOBRANCH_HINT();
     }
 
@@ -7070,7 +7047,7 @@ public:
      * Gets multimedia hint for the operand.
      * @return The multimedia hint.
      */
-    static const OperandHint& OP_MULTIMEDIA_HINT() {
+    static const OperandHint OP_MULTIMEDIA_HINT() {
         return OperandHint::MULTIMEDIA();
     }
 
@@ -7078,7 +7055,7 @@ public:
      * Gets relative address hint for the operand.
      * @return The multimedia hint.
      */
-    static const OperandHint& OP_RELATIVE_ADDRESSING() {
+    static const OperandHint OP_RELATIVE_ADDRESSING() {
         return OperandHint::RELATIVE_ADDRESSING();
     }
 
@@ -7086,7 +7063,7 @@ public:
      * Gets absolute hint for the operand.
      * @return The multimedia hint.
      */
-    static const OperandHint& OP_ABSOLUTE_ADDRESSING() {
+    static const OperandHint OP_ABSOLUTE_ADDRESSING() {
         return OperandHint::ABSOLUTE_ADDRESSING();
     }
 
@@ -7094,7 +7071,7 @@ public:
      * Gets SIB encoding hint for the operand.
      * @return The SIB encoding hint.
      */
-    static const OperandHint& OP_SIB_ENCODING() {
+    static const OperandHint OP_SIB_ENCODING() {
         return OperandHint::SIB_ENCODING();
     }
 
