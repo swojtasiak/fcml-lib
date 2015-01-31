@@ -87,3 +87,17 @@ fcml_gas_lexer.h: fcml_gas_lexer.c
 	@if test ! -f $@; then rm -f fcml_gas_lexer.c; else :; fi
 	@if test ! -f $@; then $(MAKE) $(AM_MAKEFLAGS) fcml_gas_lexer.c; else :; fi
 
+EXTRA_DIST = libfcml.pc.in
+
+pkgconfigdir = $(libdir)/pkgconfig
+nodist_pkgconfig_DATA = libfcml.pc
+
+libfcml.pc: libfcml.pc.in
+	@sed -e 's![@]prefix[@]!$(prefix)!g' \
+		-e 's![@]exec_prefix[@]!$(exec_prefix)!g' \
+		-e 's![@]includedir[@]!$(includedir)!g' \
+		-e 's![@]libdir[@]!$(libdir)!g' \
+		-e 's![@]PACKAGE_VERSION[@]!$(PACKAGE_VERSION)!g' \
+		$(srcdir)/libfcml.pc.in > $@
+
+CLEANFILES = *.pc

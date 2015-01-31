@@ -3919,6 +3919,7 @@ public:
     /**
      * Factory method which creates an effective address instance with the displacement only.
      * @param displacement The displacement value.
+     * @param sizeOperator Size operator.
      * @since 1.1.0
      */
     static Address effective( const Integer &displacement, fcml_usize sizeOperator = FCML_DS_UNDEF ) {
@@ -3928,6 +3929,7 @@ public:
     /**
      * Factory method which creates an effective address instance with the base register only.
      * @param base The base register.
+     * @param sizeOperator Size operator.
      * @since 1.1.0
      */
     static Address effective( const Register &base, fcml_usize sizeOperator = FCML_DS_UNDEF ) {
@@ -3938,6 +3940,7 @@ public:
      * Factory method which creates an effective address instance with the base register and displacement.
      * @param base The base register.
      * @param displacement The displacement value.
+     * @param sizeOperator Size operator.
      * @since 1.1.0
      */
     static Address effective( const Register &base, const Integer &displacement, fcml_usize sizeOperator = FCML_DS_UNDEF ) {
@@ -3949,6 +3952,7 @@ public:
      * @param index The index register.
      * @param scaleFactor The scale factor.
      * @param displacement The displacement value.
+     * @param sizeOperator Size operator.
      * @since 1.1.0
      */
     static Address effective( const Register &index, fcml_uint8_t scaleFactor, const Integer &displacement, fcml_usize sizeOperator = FCML_DS_UNDEF ) {
@@ -3959,6 +3963,7 @@ public:
      * Factory method which creates an effective address instance with the base register and index register.
      * @param base The base register.
      * @param index The index register.
+     * @param sizeOperator Size operator.
      * @since 1.1.0
      */
     static Address effective( const Register &base, const Register &index, fcml_usize sizeOperator = FCML_DS_UNDEF ) {
@@ -3970,6 +3975,7 @@ public:
      * @param base The base register.
      * @param index The index register.
      * @param scaleFactor The scale factor.
+     * @param sizeOperator Size operator.
      * @since 1.1.0
      */
     static Address effective( const Register &base, const Register &index, fcml_uint8_t scaleFactor, fcml_usize sizeOperator = FCML_DS_UNDEF ) {
@@ -3982,6 +3988,7 @@ public:
      * @param index The index register.
      * @param scaleFactor The scale factor.
      * @param displacement The displacement value.
+     * @param sizeOperator Size operator.
      * @since 1.1.0
      */
     static Address effective( const Register &base, const Register &index, fcml_uint8_t scaleFactor, const Integer &displacement, fcml_usize sizeOperator = FCML_DS_UNDEF ) {
