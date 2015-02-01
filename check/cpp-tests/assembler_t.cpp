@@ -217,17 +217,6 @@ void fcml_tf_cpp_assemble_instruction_builder_shortest(void) {
 
 }
 
-void fcml_tf_cpp_assemble_instruction_builder_dynamic(void) {
-
-    bool isPositionIndependent;
-
-    IB builder = IB(M_JMP).off(0x404000);
-    if( isPositionIndependent ) {
-    }
-
-
-}
-
 void fcml_tf_cpp_assemble_instruction_builder_hints_prefixes(void) {
 
 	Instruction instruction;
@@ -623,7 +612,6 @@ fcml_stf_test_case fcml_ti_cpp_assembler[] = {
     { "fcml_tf_cpp_assemble", fcml_tf_cpp_assemble },
     { "fcml_tf_cpp_assemble_statefull_assembler", fcml_tf_cpp_assemble_statefull_assembler },
     { "fcml_tf_cpp_assemble_stateful_assembler_with_parser", fcml_tf_cpp_assemble_stateful_assembler_with_parser },
-    { "fcml_tf_cpp_assemble_instruction_builder_dynamic", fcml_tf_cpp_assemble_instruction_builder_dynamic },
     FCML_STF_NULL_TEST
 };
 

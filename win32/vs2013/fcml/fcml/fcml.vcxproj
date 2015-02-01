@@ -185,6 +185,14 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-dll|x64'">
     <Midl>
@@ -213,6 +221,14 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-dll|Win32'">
     <ClCompile>
@@ -239,6 +255,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-dll|x64'">
     <Midl>
@@ -268,6 +292,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-lib|Win32'">
     <ClCompile>
@@ -289,6 +321,14 @@
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
     </Lib>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-lib|x64'">
     <Midl>
@@ -310,6 +350,14 @@
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-lib|Win32'">
     <ClCompile>
@@ -333,6 +381,13 @@
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
     </Lib>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-lib|x64'">
     <Midl>
@@ -356,6 +411,13 @@
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)
+mkdir $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.c">
