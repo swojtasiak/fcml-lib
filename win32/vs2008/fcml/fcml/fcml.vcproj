@@ -94,6 +94,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(SolutionDir)\..\dist&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)"
 			/>
 		</Configuration>
 		<Configuration
@@ -172,6 +173,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(SolutionDir)\..\dist&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)"
 			/>
 		</Configuration>
 		<Configuration
@@ -251,6 +253,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(SolutionDir)\..\dist&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)"
 			/>
 		</Configuration>
 		<Configuration
@@ -331,6 +334,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(SolutionDir)\..\dist&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)"
 			/>
 		</Configuration>
 		<Configuration
@@ -397,6 +401,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(SolutionDir)\..\dist&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)"
 			/>
 		</Configuration>
 		<Configuration
@@ -464,6 +469,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(SolutionDir)\..\dist&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)"
 			/>
 		</Configuration>
 		<Configuration
@@ -532,6 +538,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(SolutionDir)\..\dist&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)"
 			/>
 		</Configuration>
 		<Configuration
@@ -601,6 +608,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(SolutionDir)\..\dist&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)&#x0D;&#x0D;&#x0A;mkdir $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)&#x0D;&#x0D;&#x0A;copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformName)\$(ConfigurationName)"
 			/>
 		</Configuration>
 	</Configurations>
