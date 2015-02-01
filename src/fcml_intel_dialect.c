@@ -1128,7 +1128,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel( const fcml_st_dialect *d
     return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_disassembler_conf *configuration, const fcml_st_dialect *dialect, fcml_st_instruction *instrunction,
+fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel( const fcml_st_assembler_conf *configuration, const fcml_st_dialect *dialect, fcml_st_instruction *instrunction,
         fcml_st_def_addr_mode_desc *addr_mode_desc, fcml_en_instruction instruction_code, fcml_st_mp_mnemonic *mnemonic, fcml_bool *has_been_changed ) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
