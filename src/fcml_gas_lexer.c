@@ -673,7 +673,7 @@ static yyconst flex_int16_t yy_chk[666] =
 #line 1 "fcml_gas_lexer.l"
 /*
 * FCML - Free Code Manipulation Library.
-* Copyright (C) 2010-2014 Slawomir Wojtasiak
+* Copyright (C) 2010-2015 Slawomir Wojtasiak
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
