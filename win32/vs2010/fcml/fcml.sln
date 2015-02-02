@@ -9,6 +9,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fcml-check", "fcml-check\fc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hsdis", "examples\hsdis\hsdis.vcxproj", "{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fcml-check-cpp", "fcml-check-cpp\fcml-check-cpp.vcxproj", "{8BBBB021-AF54-45B5-B463-9E0C318E71E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{759BCBFA-3A75-47D2-8DF3-8440D8E9C752} = {759BCBFA-3A75-47D2-8DF3-8440D8E9C752}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug-dll|Win32 = Debug-dll|Win32
@@ -69,6 +74,22 @@ Global
 		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-lib|Win32.Build.0 = Release-lib|Win32
 		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-lib|x64.ActiveCfg = Release-lib|x64
 		{65E5C6B1-F5A6-47AA-BDA3-E718A255D900}.Release-lib|x64.Build.0 = Release-lib|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-dll|Win32.ActiveCfg = Debug-dll|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-dll|Win32.Build.0 = Debug-dll|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-dll|x64.ActiveCfg = Debug-dll|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-dll|x64.Build.0 = Debug-dll|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-lib|Win32.ActiveCfg = Debug-lib|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-lib|Win32.Build.0 = Debug-lib|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-lib|x64.ActiveCfg = Debug-lib|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Debug-lib|x64.Build.0 = Debug-lib|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-dll|Win32.ActiveCfg = Release-dll|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-dll|Win32.Build.0 = Release-dll|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-dll|x64.ActiveCfg = Release-dll|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-dll|x64.Build.0 = Release-dll|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-lib|Win32.ActiveCfg = Release-lib|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-lib|Win32.Build.0 = Release-lib|Win32
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-lib|x64.ActiveCfg = Release-lib|x64
+		{8BBBB021-AF54-45B5-B463-9E0C318E71E3}.Release-lib|x64.Build.0 = Release-lib|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

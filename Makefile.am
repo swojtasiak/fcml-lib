@@ -20,6 +20,8 @@ EXTRA_DIST = win32/dist.bat \
 	win32/vs2008/fcml/examples/hsdis/COPYING \
 	win32/vs2010/fcml/fcml-check/fcml-check.vcxproj \
 	win32/vs2010/fcml/fcml-check/fcml-check.vcxproj.filters \
+	win32/vs2010/fcml/fcml-check-cpp/fcml-check-cpp.vcxproj \
+	win32/vs2010/fcml/fcml-check-cpp/fcml-check-cpp.vcxproj.filters \
 	win32/vs2010/fcml/fcml.sln \
 	win32/vs2010/fcml/fcml/dllmain.c \
 	win32/vs2010/fcml/fcml/fcml.def \
