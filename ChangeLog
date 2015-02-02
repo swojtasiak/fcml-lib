@@ -1,8 +1,11 @@
 10.06.2014 (1.0.0)
  - First official release.
-(1.1.0)
+03.02.2015 (1.1.0)
  - Wrapper for C++ language.
  - Some minor fixes in unit tests.
  - Multi-pass assembler tests could have failed on some systems due to a bug.
  - Several missing 'extern "C"' declarations added.
  - 'dist' build targed has been fixed.
+ - pkg-config support.
+ - Lexer generated using newer version of flex.
+ 
