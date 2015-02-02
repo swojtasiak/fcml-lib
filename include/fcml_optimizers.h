@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2014 Slawomir Wojtasiak
+ * Copyright (C) 2010-2015 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 /** @file fcml_optimizers.h
  * API for assembler optimizers. For more details about optimizers see FCML manual.
  *
- * @copyright Copyright (C) 2010-2014 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2015 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 #ifndef FCML_OPTIMIZERS_H_
