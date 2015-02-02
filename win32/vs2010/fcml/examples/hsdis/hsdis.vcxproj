@@ -319,6 +319,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformShortName)
+mkdir $(SolutionDir)\..\dist\$(PlatformShortName)\hsdis
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformShortName)\hsdis
+copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformShortName)\hsdis</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-lib|x64'">
     <Midl>
@@ -346,6 +353,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)\..\dist
+mkdir $(SolutionDir)\..\dist\$(PlatformShortName)
+mkdir $(SolutionDir)\..\dist\$(PlatformShortName)\hsdis
+copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformShortName)\hsdis
+copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformShortName)\hsdis</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

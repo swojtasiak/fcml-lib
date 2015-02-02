@@ -1,7 +1,6 @@
 10.06.2014 (1.0.0)
  - First official release.
 (1.1.0)
- - An abbility to disable dialect based branch type prediction. See the new "no_branch_prediction" assembler configuration option.
  - Wrapper for C++ language.
  - Some minor fixes in unit tests.
  - Multi-pass assembler tests could have failed on some systems due to a bug.
