@@ -5,7 +5,7 @@ libdir=@libdir@
 
 Name: fcml
 Description: A machine code manipulation library for Intel 64 and IA-32. 
-URL: git://git.code.sf.net/p/fcml/code
+URL: https://github.com/swojtasiak/fcml-lib.git
 Version: @PACKAGE_VERSION@
 Cflags: -I${includedir}
 Libs: -L${libdir} -lfcml
