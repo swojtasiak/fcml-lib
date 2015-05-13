@@ -70,7 +70,7 @@ fcml_cstring instructionMnemonic;
 renderer.render( config, result, instructionMnemonic );
 cout << instructionMnemonic << endl;
 ```
-This code should prints the following instruction: 
+This code should print the following instruction: 
 >adc byte ptr [ecx+eax+2],3
 
 ## Resources
