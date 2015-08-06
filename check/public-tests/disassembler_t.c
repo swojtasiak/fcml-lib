@@ -39,12 +39,12 @@ struct fcml_st_td_code_sample {
     fcml_size len;
 };
 
-fcml_uint8_t td_sampe_instruction_1[] = {0x48, 0x66, 0xFF, 0x57, 0x01};
-fcml_uint8_t td_sampe_instruction_2[] = {0x0F};
+fcml_uint8_t td_sample_instruction_1[] = {0x48, 0x66, 0xFF, 0x57, 0x01};
+fcml_uint8_t td_sample_instruction_2[] = {0x0F};
 
 struct fcml_st_td_code_sample fcml_td_code_samples[] = {
-    {td_sampe_instruction_1, sizeof(td_sampe_instruction_1)},
-    {td_sampe_instruction_2, sizeof(td_sampe_instruction_2)},
+    {td_sample_instruction_1, sizeof(td_sample_instruction_1)},
+    {td_sample_instruction_2, sizeof(td_sample_instruction_2)},
     {NULL, 0}
 };
 
