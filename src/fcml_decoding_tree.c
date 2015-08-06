@@ -60,8 +60,9 @@ fcml_ceh_error fcml_ifn_dt_dts_default_opcode_callback( fcml_st_dt_decoding_tree
     fcml_st_dt_diss_tree_element **current_elements = &( dec_tree->opcode[0] );
     fcml_st_dt_diss_tree_element *element = NULL;
 
-    /* Looking for a node in the instruction tree where new instruction should be placed. If there is no
-     /* appropriate node a new one is allocated.
+    /* Looking for a node in the instruction tree where new
+     * instruction should be placed. If there is no appropriate
+     * node a new one is allocated.
      */
     int i;
     int opcode_num = FCML_DEF_OPCODE_FLAGS_OPCODE_NUM( opcode_desc->opcode_flags );
@@ -99,7 +100,7 @@ fcml_ceh_error fcml_ifn_dt_dts_handle_next_opcode_byte( fcml_st_dt_decoding_tree
 
     /* Get next opcode byte from instruction.*/
     if (opcode_byte_num == opcode_bytes_count) {
-        /* There is no more opcode bytes available.*/
+        /* There are no more opcode bytes available.*/
         return callback( dec_tree, instruction_desc, opcode_desc, opcodes );
     }
 
@@ -177,7 +178,7 @@ int fcml_ifn_dt_dts_update_disassembling_tree( fcml_st_def_instruction_desc *ins
         for ( opcode_index = 0; opcode_index < instruction_desc->opcode_desc_count; opcode_index++ ) {
             struct fcml_st_def_addr_mode_desc *opcode_desc = &( instruction_desc->addr_modes[opcode_index] );
 
-            /* Iterate through all opcode combination for this instruction form.*/
+            /* Iterate through all opcode combinations for this instruction form.*/
             int error = fcml_ifn_dt_dts_iterate_through_all_opcodes( dec_tree, instruction_desc, opcode_desc, &fcml_ifn_dt_dts_default_opcode_callback );
             if (error) {
                 break;
