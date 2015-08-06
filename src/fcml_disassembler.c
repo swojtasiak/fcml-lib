@@ -38,20 +38,20 @@
 #include "fcml_messages.h"
 
 /* R,X and B are stored in 1's complement form.*/
-#define FCML_VEX_W(x)				FCML_TP_GET_BIT(x, 7)
-#define FCML_VEX_R(x)				!FCML_TP_GET_BIT(x, 7)
-#define FCML_VEX_X(x)				!FCML_TP_GET_BIT(x, 6)
-#define FCML_VEX_B(x)				!FCML_TP_GET_BIT(x, 5)
-#define FCML_VEX_L(x)				FCML_TP_GET_BIT(x, 2)
-#define FCML_VEX_MMMM(x)			( x & 0x1F )
-#define FCML_VEX_VVVV(x)			( ~( ( x & 0x78 ) >> 3 ) & 0x00F )
-#define FCML_VEX_PP(x)				( x & 0x03 )
+#define FCML_VEX_W(x)                FCML_TP_GET_BIT(x, 7)
+#define FCML_VEX_R(x)                !FCML_TP_GET_BIT(x, 7)
+#define FCML_VEX_X(x)                !FCML_TP_GET_BIT(x, 6)
+#define FCML_VEX_B(x)                !FCML_TP_GET_BIT(x, 5)
+#define FCML_VEX_L(x)                FCML_TP_GET_BIT(x, 2)
+#define FCML_VEX_MMMM(x)             ( x & 0x1F )
+#define FCML_VEX_VVVV(x)             ( ~( ( x & 0x78 ) >> 3 ) & 0x00F )
+#define FCML_VEX_PP(x)               ( x & 0x03 )
 
 /* REX prefix fields.*/
-#define FCML_REX_W(x)					FCML_TP_GET_BIT(x, 3)
-#define FCML_REX_R(x)					FCML_TP_GET_BIT(x, 2)
-#define FCML_REX_X(x)					FCML_TP_GET_BIT(x, 1)
-#define FCML_REX_B(x)					FCML_TP_GET_BIT(x, 0)
+#define FCML_REX_W(x)                FCML_TP_GET_BIT(x, 3)
+#define FCML_REX_R(x)                FCML_TP_GET_BIT(x, 2)
+#define FCML_REX_X(x)                FCML_TP_GET_BIT(x, 1)
+#define FCML_REX_B(x)                FCML_TP_GET_BIT(x, 0)
 
 typedef struct fcml_ist_dasm_operand_wrapper {
     fcml_st_operand operand;
@@ -1695,10 +1695,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA( fcml_ist_dasm_decoding_cont
 fcml_ceh_error fcml_ifn_prepare_pseudo_operation( fcml_ist_dasm_decoding_context *context ) {
 
     /* Seek to the beginning of the stream. */
-    fcml_int prefixes_count = context->prefixes.prefixes_count;
-    if ( prefixes_count ) {
-        fcml_fn_stream_seek( context->stream, -prefixes_count, FCML_EN_ST_CURRENT );
-    }
+    fcml_fn_stream_seek( context->stream, 0, FCML_EN_ST_START );
 
     /* Clean whole decoding context, because there might be
      * remains of the previous processing.
@@ -1779,7 +1776,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
     fcml_bool found = FCML_FALSE;
 
     /* Disassemble instruction using most appropriate addressing mode from disassembling tree. */
-    if ( tree_element ) {
+    if ( tree_element && tree_element->instruction_decoding_defs ) {
 
         fcml_st_coll_list_element *current = tree_element->instruction_decoding_defs->head;
         while ( current ) {
@@ -1831,15 +1828,15 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction( fcml_ist_dasm_decoding_context 
  * Prefixes decoding.
  ****************************/
 
-#define FCML_IDFPF_IS_MANDATORY_CANDIDATE		0x0001
-#define FCML_IDFPF_IS_LOCK						0x0002
-#define FCML_IDFPF_IS_REP_XRELEASE				0x0004
-#define FCML_IDFPF_IS_REPNE_XACQUIRE			0x0008
-#define FCML_IDFPF_IS_VEX						0x0010
-#define FCML_IDFPF_IS_XOP						0x0020
-#define FCML_IDFPF_IS_BRANCH					0x0040
-#define FCML_IDFPF_IS_XOP_ALLOWED				0x0080
-#define FCML_IDFPF_IS_NOBRANCH					0x0100
+#define FCML_IDFPF_IS_MANDATORY_CANDIDATE       0x0001
+#define FCML_IDFPF_IS_LOCK                      0x0002
+#define FCML_IDFPF_IS_REP_XRELEASE              0x0004
+#define FCML_IDFPF_IS_REPNE_XACQUIRE            0x0008
+#define FCML_IDFPF_IS_VEX                       0x0010
+#define FCML_IDFPF_IS_XOP                       0x0020
+#define FCML_IDFPF_IS_BRANCH                    0x0040
+#define FCML_IDFPF_IS_XOP_ALLOWED               0x0080
+#define FCML_IDFPF_IS_NOBRANCH                  0x0100
 
 fcml_ceh_error fcml_ifn_dasm_decode_prefixes( fcml_ist_dasm_decoding_context *decoding_context ) {
 
