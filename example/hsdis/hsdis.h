@@ -49,7 +49,8 @@ typedef void* (*jvm_event_callback) (void *env_pv, const char *ev, void *arg);
 typedef int   (*jvm_printf_callback)(void *env_pv, const char *format, ...);
 
 /* Called directly by jvm.so/jvm.dll. */
-HSDIS_API void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback, void* event_stream, jvm_printf_callback, void* printf_stream, const char* options );
+HSDIS_API void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback,
+        void* event_stream, jvm_printf_callback, void* printf_stream, const char* options );
 
 #ifdef __cplusplus
 }

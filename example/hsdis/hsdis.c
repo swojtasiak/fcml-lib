@@ -29,9 +29,9 @@
 #include <fcml_renderer.h>
 
 /*
- * -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:+LogCompilation -XX:PrintAssemblyOptions=intel,mpad=10,cpad=10,code
+ * -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:+LogCompilation \
+ * -XX:PrintAssemblyOptions=intel,mpad=10,cpad=10,code
  */
-
 #include "hsdis.h"
 
 #if _M_X64 || __x86_64__
@@ -78,7 +78,9 @@ typedef struct hsdis_app {
 void parse_options( hsdis_app *app );
 void prepare_render_config( fcml_st_render_config *config, hsdis_app *app );
 
-void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback event_callback, void* event_stream, jvm_printf_callback printf_callback, void* printf_stream, const char* options ) {
+void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback event_callback,
+        void* event_stream, jvm_printf_callback printf_callback,
+        void* printf_stream, const char* options ) {
 
 	hsdis_app app = {0};
 
@@ -166,7 +168,7 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 
 		fcml_usize code_len = disassembler_result.instruction_details.instruction_size;
 
-		/* Skip to next instruction. */
+		/* Skip to the next instruction. */
 		ip += code_len;
 
 		error = fcml_fn_render( app.dialect, &config, buffer, sizeof( buffer ), &disassembler_result );
@@ -198,7 +200,8 @@ void* HSDIS_CALL decode_instructions( void* start, void* end, jvm_event_callback
 
 void prepare_render_config( fcml_st_render_config *config, hsdis_app *app ) {
 
-	config->render_flags = ( FCML_REND_FLAG_RENDER_INDIRECT_HINT | FCML_REND_FLAG_RENDER_ABS_HINT | FCML_REND_FLAG_MNEMONIC_PADDING );
+	config->render_flags = ( FCML_REND_FLAG_RENDER_INDIRECT_HINT | FCML_REND_FLAG_RENDER_ABS_HINT |
+	        FCML_REND_FLAG_MNEMONIC_PADDING );
 
 	/* Remove leading zeros. */
 	if( !app->config.zeros ) {
