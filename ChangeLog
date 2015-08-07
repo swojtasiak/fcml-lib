@@ -8,4 +8,6 @@
  - 'dist' build targed has been fixed.
  - pkg-config support.
  - Lexer generated using newer version of flex.
- 
+ 04.08.2015 (1.1.1)
+ - bug fix #1 - FCML-based HSDIS crashes when used with WinPerfAsmProfiler
+ - some minor build related changes
