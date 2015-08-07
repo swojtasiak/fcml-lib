@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([fcml], [1.1.0], [bugs@fcml-lib.com])
+AC_INIT([fcml], [1.1.1], [bugs@fcml-lib.com])
 AM_INIT_AUTOMAKE
 LT_PREREQ([2.2])
 LT_INIT[win32-dll]
@@ -28,7 +28,7 @@ AC_ARG_ENABLE([debug],
 	[AS_HELP_STRING([--enable-debug],
 	[enable debug code @<:@default=no@:>@])],
 	[debug="$withval"], [debug=no])
-	
+
 # Configure options: --disable-cpp-wrapper[=no].
 AC_ARG_ENABLE([cpp_wrapper],
 	[AS_HELP_STRING([--disable-cpp-wrapper],
