@@ -9,5 +9,7 @@
  - pkg-config support.
  - Lexer generated using newer version of flex.
  04.08.2015 (1.1.1)
- - bug fix #1 - FCML-based HSDIS crashes when used with WinPerfAsmProfiler
- - some minor build related changes
+ - Bug fix #1 - FCML-based HSDIS crashes when used with WinPerfAsmProfiler
+ - Some minor build related changes
+ - Internal unit tests have been disabled for MinGW and Cygwin builds.
+ - \DEBUG option has been added to hsdis (Debug) for VS2013 project.
