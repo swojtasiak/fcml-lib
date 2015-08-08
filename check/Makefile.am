@@ -2,5 +2,8 @@
 if CPP_WRAPPER
 CPPDIR = cpp-tests
 endif
+if ENABLE_INTERNAL_TESTS
+INTERNAL_TESTS_DIR = internal-tests
+endif
 
-SUBDIRS = stf internal-tests public-tests $(CPPDIR)
+SUBDIRS = stf $(INTERNAL_TESTS_DIR) public-tests $(CPPDIR)

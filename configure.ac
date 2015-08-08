@@ -68,7 +68,22 @@ if test -z "$DOXYGEN"; then
     AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
 fi
 
+# Disable the internal part of unit tests for cygwin and mingw, 
+# due to the way Windows exports symbols in shared libraries.
+AS_CASE(
+	[$host_os], [cygwin*|mingw*],
+	[internal_test=no
+# Maybe not the most beatiful way to write it, but as least it doesn't have
+# to be written in one line and Eclipse's parser doesn't complain.
+internal_test_msg="(Don't be afraid of disabled internal unit tests for"
+internal_test_msg="$internal_test_msg"$'\n'"                           this configuration. Integration tests which are"
+internal_test_msg="$internal_test_msg"$'\n'"                           built on top of the public API are still executed.)"
+	],
+	[internal_test=yes]
+)
+
 AM_CONDITIONAL([CPP_WRAPPER], [ [test -n "$CXX"] && [test "x$cpp_wrapper" = xyes] ])
+AM_CONDITIONAL([ENABLE_INTERNAL_TESTS], [test "x$internal_test" = xyes])
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/doxygen/doxyfile])])
 
@@ -102,15 +117,16 @@ AS_CASE(
 AC_OUTPUT
 echo "***************************************************
 ${PACKAGE_NAME} version ${PACKAGE_VERSION}
-Host CPU...........: $host_cpu
-Host OS:...........: $host_os
-Prefix:............: ${prefix}
-Debug Build........: $debug
-C++ wrapper tests..: ${cpp_wrapper:-no}
-Shared Library.....: $enable_shared
-C Compiler.........: ${CC} ${CFLAGS} ${CPPFLAGS}
-C++ Compiler.......: ${CXX} ${CXXFLAGS}
-Linker.............: $LD $LDFLAGS $LIBS
-Doxygen............: ${DOXYGEN:-NONE}
+Host CPU.............: $host_cpu
+Host OS:.............: $host_os
+Prefix:..............: ${prefix}
+Debug Build..........: $debug
+C++ wrapper tests....: ${cpp_wrapper:-no}
+Internal unit tests..: ${internal_test} ${internal_test_msg}
+Shared Library.......: $enable_shared
+C Compiler...........: ${CC} ${CFLAGS} ${CPPFLAGS}
+C++ Compiler.........: ${CXX} ${CXXFLAGS}
+Linker...............: $LD $LDFLAGS $LIBS
+Doxygen..............: ${DOXYGEN:-NONE}
 ***************************************************
 "
