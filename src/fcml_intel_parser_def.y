@@ -19,7 +19,8 @@
   
 %define api.pure
 %parse-param { struct fcml_st_parser_data *pd }
-%name-prefix="intel_"
+%lex-param { yyscan_t yyscanner }
+%name-prefix "intel_"
 
 %{
     #include <stdio.h>
@@ -118,7 +119,7 @@
 
 %{
     #include "fcml_intel_lexer.h"
-    #define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
+    #define yyscanner ((yyscan_t)pd->scannerInfo)
 %}
 
 %initial-action { 

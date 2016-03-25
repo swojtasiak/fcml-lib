@@ -19,7 +19,8 @@
 
 %define api.pure
 %parse-param { struct fcml_st_parser_data *pd }
-%name-prefix="gas_"
+%lex-param { yyscan_t yyscanner }
+%name-prefix "gas_"
 
 %{
     #include <stdio.h>
@@ -90,7 +91,6 @@
 
 /* Printers goes here. */
 %printer { YYFPRINTF(yyoutput, "Integer: %ld Overflow: %d", $$.value, $$.overflow); } <integer_value>
-%printer { YYFPRINTF(yyoutput, "Float: %f Overflow: %d", $$.value, $$.overflow); } <float_value>
 %printer { YYFPRINTF(yyoutput, "AST-Type: %d", $$->type); } <ast>
 %printer { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( $$.type ), $$.size, $$.reg, $$.x64_exp); } <reg_value>
 
@@ -109,7 +109,7 @@
 
 %{
     #include "fcml_gas_lexer.h"
-    #define YYLEX_PARAM ((yyscan_t)pd->scannerInfo)
+    #define yyscanner ((yyscan_t)pd->scannerInfo)
 %}
 
 %initial-action { 
