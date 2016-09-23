@@ -216,7 +216,7 @@ public:
      * @since 1.1.0
      */
     fcml_usize getSize() const {
-        return _assembledInstructions.size();
+		return static_cast<fcml_usize>(_assembledInstructions.size());
     }
 
     /**

@@ -27,6 +27,7 @@
 #include <fcml_intel_dialect.h>
 #include <fcml_renderer.h>
 #include <fcml_parser.h>
+#include <fcml_types.h>
 
 fcml_st_assembler *assembler_intel;
 fcml_st_disassembler *disassembler_intel;
@@ -396,7 +397,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
                            if( j > 0 ) {
                                printf(", ");
                            }
-                           printf( "0x"FCML_PRI_INT8_HEX, assembled_code[i][j] );
+                           printf( "0x" FCML_PRI_INT8_HEX, assembled_code[i][j] );
                        }
                        printf( " )" );
                    }
@@ -406,7 +407,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
                        if( i > 0 ) {
                            printf(", ");
                        }
-                       printf( "0x"FCML_PRI_INT8_HEX, assembled_code[0][i] );
+                       printf( "0x" FCML_PRI_INT8_HEX, assembled_code[0][i] );
                    }
                }
 
