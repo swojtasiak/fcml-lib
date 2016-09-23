@@ -396,7 +396,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
                            if( j > 0 ) {
                                printf(", ");
                            }
-                           printf( "0x"FCML_PRI_INT8_HEX, assembled_code[i][j] );
+                           printf( "0x" FCML_PRI_INT8_HEX, assembled_code[i][j] );
                        }
                        printf( " )" );
                    }
@@ -406,7 +406,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
                        if( i > 0 ) {
                            printf(", ");
                        }
-                       printf( "0x"FCML_PRI_INT8_HEX, assembled_code[0][i] );
+                       printf( "0x" FCML_PRI_INT8_HEX, assembled_code[0][i] );
                    }
                }
 
