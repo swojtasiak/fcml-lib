@@ -27,6 +27,7 @@
 #include <fcml_intel_dialect.h>
 #include <fcml_renderer.h>
 #include <fcml_parser.h>
+#include <fcml_types.h>
 
 fcml_st_assembler *assembler_intel;
 fcml_st_disassembler *disassembler_intel;
