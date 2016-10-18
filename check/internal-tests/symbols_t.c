@@ -46,6 +46,7 @@ void fcml_tf_symbols_alloc() {
 
 fcml_stf_test_case fctl_ti_symbols[] = {
 	{ "fcml_tf_symbols_alloc", fcml_tf_symbols_alloc },
+	FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_symbols = {
