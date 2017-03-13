@@ -79,4 +79,10 @@ This code should print the following instruction:
 
 LICENSE
 ---
+
 LGPL 2.1 (https://www.gnu.org/licenses/lgpl-2.1.txt)
+
+hsdis is dual licensed under LGPL 2.1 or Apache License 2.0
+
+https://www.apache.org/licenses/LICENSE-2.0.txt
+
