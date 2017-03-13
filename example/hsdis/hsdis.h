@@ -1,6 +1,16 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2016 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
+ * 
+ * This piece of software is available under LGPL or Apache License.
+ * 
+ * Linkage exception:
+ *
+ * You are permitted to build hsdis binaries and link them statically
+ * with fcml-lib and still release these binaries under Apache License
+ * without need to distribute the source code.
+ *
+ * LGPL:
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +24,24 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
+ *
+ * Apache License:
+ * 
+ * Copyright 2010-2017 Sławomir Wojtasiak
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 #ifndef FCML_HSDIS_H_
