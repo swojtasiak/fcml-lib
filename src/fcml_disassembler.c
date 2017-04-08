@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -2196,6 +2196,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction(
 #define FCML_IDFPF_IS_BRANCH                    0x0040
 #define FCML_IDFPF_IS_XOP_ALLOWED               0x0080
 #define FCML_IDFPF_IS_NOBRANCH                  0x0100
+#define FCML_IDFPF_IS_EVEX                      0x0200
 
 fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
         fcml_ist_dasm_decoding_context *decoding_context) {
@@ -2215,11 +2216,17 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
     fcml_int xop_vex_prefix_size = 0;
     fcml_bool result = FCML_FALSE;
     fcml_bool is_xop_vex_allowed = FCML_TRUE;
+    fcml_bool is_evex = FCML_TRUE;
     fcml_bool is_last_prefix = FCML_FALSE;
 
     /* VEX like prefixes are not allowed in 16 bit mode.*/
     if (op_mode == FCML_OM_16_BIT) {
         is_xop_vex_allowed = FCML_FALSE;
+    }
+
+    /* EVEX like prefix are not allowed in 16 and 32 bit mode */
+    if (op_mode == FCML_OM_64_BIT) {
+    	is_evex = FCML_FALSE;
     }
 
     do {
@@ -2292,6 +2299,12 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                 p_flags |= FCML_IDFPF_IS_VEX;
                 is_last_prefix = FCML_TRUE;
                 break;
+            case 0x62:
+                xop_vex_prefix_size = 3;
+                prefix_type = FCML_PT_EVEX;
+                p_flags |= FCML_IDFPF_IS_EVEX;
+                is_last_prefix = FCML_TRUE;
+                break;
             default:
                 /* REX prefix is the last one, so we have to break this loop 
                  * after finding one.
@@ -2316,9 +2329,11 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
             }
 
             /* Handle VEX/XOP prefixes.*/
-            if (prefix_type == FCML_PT_VEX || prefix_type == FCML_PT_XOP) {
+            if (prefix_type == FCML_PT_VEX || prefix_type == FCML_PT_XOP || prefix_type == FCML_PT_EVEX) {
 
-                if (is_xop_vex_allowed) {
+            	if (is_evex) {
+
+            	} else if (is_xop_vex_allowed) {
 
                     fcml_stream_pointer sp = fcml_fn_stream_save_point(stream);
 
@@ -2423,7 +2438,8 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
 
                 } else {
                     /* If 0xC5 and 0xC4 can not be treated as a VEX prefix,
-                     * it should be treated just as instruction opcode.
+                     * and 0x62 cannot be treated as EVEX prefix,
+                     * it should be treated just as an instruction opcode.
                      */
                     prefix_type = FCML_PT_GROUP_UNKNOWN;
                 }

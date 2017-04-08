@@ -97,6 +97,7 @@ typedef enum fcml_en_prefix_types {
     FCML_PT_REX,
     FCML_PT_VEX,
     FCML_PT_XOP,
+    FCML_PT_EVEX
 } fcml_en_prefix_types;
 
 /** Describes one decoded prefix. */
