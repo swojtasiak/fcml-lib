@@ -162,8 +162,6 @@ typedef struct fcml_st_prefixes_details {
     fcml_uint8_t L_prim;
     /** m-mmmm field of XOP or VEX prefix. */
     fcml_uint8_t mmmm;
-    /** mm field of EVEX prefix. */
-    fcml_uint8_t mm;
     /** vvvv field of XOP or VEX prefix. */
     fcml_uint8_t vvvv;
     /** pp field of XOP or VEX/EVEX prefix. */

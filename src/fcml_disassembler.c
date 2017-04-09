@@ -2388,8 +2388,8 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                              */
                             prefix_type = FCML_PT_GROUP_UNKNOWN;
                         } else {
-                            /* Decodes VEX/XOP fields.*/
                             switch (prefix) {
+                                /* Decodes VEX/XOP fields.*/
                             case 0x62: {
                             	fcml_uint8_t p0 = prefix_details->vex_xop_bytes[0];
                             	fcml_uint8_t p1 = prefix_details->vex_xop_bytes[1];
@@ -2399,7 +2399,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                                 prefixes_details->X = FCML_EVEX_X(p0);
                                 prefixes_details->B = FCML_EVEX_B(p0);
                                 prefixes_details->R_prim = FCML_EVEX_R_PRIM(p0);
-                                prefixes_details->mm = FCML_EVEX_MM(p0);
+                                prefixes_details->mmmm = FCML_EVEX_MM(p0);
 
                                 prefixes_details->W = FCML_EVEX_W(p1);
                                 prefixes_details->vvvv = FCML_EVEX_VVVV(p1);
