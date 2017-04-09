@@ -2397,9 +2397,9 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
 
                                 prefixes_details->R = FCML_EVEX_R(p0);
                                 prefixes_details->X = FCML_EVEX_X(p0);
-								prefixes_details->B = FCML_EVEX_B(p0);
-								prefixes_details->R_prim = FCML_EVEX_R_PRIM(p0);
-								prefixes_details->mm = FCML_EVEX_MM(p0);
+                                prefixes_details->B = FCML_EVEX_B(p0);
+                                prefixes_details->R_prim = FCML_EVEX_R_PRIM(p0);
+                                prefixes_details->mm = FCML_EVEX_MM(p0);
 
                                 prefixes_details->W = FCML_EVEX_W(p1);
                                 prefixes_details->vvvv = FCML_EVEX_VVVV(p1);
