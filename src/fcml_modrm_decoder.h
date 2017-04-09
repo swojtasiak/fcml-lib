@@ -40,9 +40,9 @@
 #define FCML_MODRM_DEC_FLAG_EXTEND_DISPLACEMENT_TO_ASA		0x01
 
 typedef struct fcml_st_modrm_source {
-    fcml_uint8_t ext_r;
-    fcml_uint8_t ext_x;
-    fcml_uint8_t ext_b;
+    fcml_uint8_t ext_R;
+    fcml_uint8_t ext_X;
+    fcml_uint8_t ext_B;
     fcml_bool is_vsib;
     fcml_usize vsib_index_size;
     fcml_st_memory_stream *stream;

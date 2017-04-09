@@ -174,8 +174,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib( fcml_st_modrm_decoder_context *context
     modrm_details->sib.value = sib;
 
     f_mod = FCML_MODRM_DEC_MOD( mod_rm );
-    f_base = FCML_MODRM_SIB_BASE(sib) | ( modrm_source->ext_b << 3 );
-    f_index = FCML_MODRM_SIB_INDEX(sib) | ( modrm_source->ext_x << 3 );
+    f_base = FCML_MODRM_SIB_BASE(sib) | ( modrm_source->ext_B << 3 );
+    f_index = FCML_MODRM_SIB_INDEX(sib) | ( modrm_source->ext_X << 3 );
     f_scale = FCML_MODRM_SIB_SS( sib );
 
     /* Index register and scale.*/
@@ -244,7 +244,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *con
 
     /* Decode ModRM.*/
     f_mod = FCML_MODRM_DEC_MOD( mod_rm );
-    f_rm = FCML_MODRM_DEC_RM(mod_rm) | ( modrm_source->ext_b << 3 );
+    f_rm = FCML_MODRM_DEC_RM(mod_rm) | ( modrm_source->ext_B << 3 );
 
     if ( modrm_source->is_vsib && FCML_MODRM_DEC_RM( mod_rm ) != 4 ) {
         return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
@@ -294,7 +294,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit( fcml_st_modrm_decoder_context *con
     }
 
     /* Decodes register if something needs it.*/
-    decoded_modrm->reg_opcode = FCML_MODRM_DEC_REG_OPCODE( mod_rm ) | ( modrm_source->ext_r << 3 );
+    decoded_modrm->reg_opcode = FCML_MODRM_DEC_REG_OPCODE( mod_rm ) | ( modrm_source->ext_R << 3 );
 
     return error;
 }

@@ -47,6 +47,22 @@
 #define FCML_VEX_VVVV(x)             (~((x & 0x78) >> 3) & 0x00F)
 #define FCML_VEX_PP(x)               (x & 0x03)
 
+/* EVEX prefix fields. */
+#define FCML_EVEX_R(x)               FCML_TP_GET_BIT(x, 7)
+#define FCML_EVEX_X(x)               FCML_TP_GET_BIT(x, 6)
+#define FCML_EVEX_B(x)               FCML_TP_GET_BIT(x, 5)
+#define FCML_EVEX_R_PRIM(x)          FCML_TP_GET_BIT(x, 4)
+#define FCML_EVEX_MM(x)              (x & 0x03)
+#define FCML_EVEX_W(x)               FCML_TP_GET_BIT(x, 7)
+#define FCML_EVEX_VVVV(x)            (~((x & 0x78) >> 3) & 0x00F)
+#define FCML_EVEX_PP(x)              (x & 0x03)
+#define FCML_EVEX_z(x)               FCML_TP_GET_BIT(x, 7)
+#define FCML_EVEX_L_PRIM(x)          FCML_TP_GET_BIT(x, 6)
+#define FCML_EVEX_L(x)               FCML_TP_GET_BIT(x, 5)
+#define FCML_EVEX_b(x)               FCML_TP_GET_BIT(x, 4)
+#define FCML_EVEX_V_PRIM(x)          FCML_TP_GET_BIT(x, 3)
+#define FCML_EVEX_aaa(x)             (x & 0x07)
+
 /* REX prefix fields.*/
 #define FCML_REX_W(x)                FCML_TP_GET_BIT(x, 3)
 #define FCML_REX_R(x)                FCML_TP_GET_BIT(x, 2)
@@ -272,7 +288,7 @@ fcml_usize fcml_ifn_dasm_utils_decode_encoded_size_value(
             result = context->effective_address_size_attribute;
             break;
         case FCML_EOS_L:
-            result = (context->prefixes.l) ? FCML_DS_256 : FCML_DS_128;
+            result = (context->prefixes.L) ? FCML_DS_256 : FCML_DS_128;
             break;
         case FCML_EOS_14_28:
             result = (context->effective_operand_size_attribute == FCML_DS_16) 
@@ -494,7 +510,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_opcode_reg(
 
     fcml_uint8_t reg_num = context->primary_opcode_byte & 0x07;
 
-    if (context->prefixes.b) {
+    if (context->prefixes.B) {
         reg_num |= 0x08;
     }
 
@@ -958,7 +974,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_isX(
         reg->reg = ((context->disassembler_context->entry_point.op_mode 
                     == FCML_OM_32_BIT) ? (0x70 & isX) : (0xF0 & isX)) >> 4;
         reg->type = FCML_REG_SIMD;
-        reg->size = context->prefixes.l ? FCML_OS_YWORD : FCML_OS_XWORD;
+        reg->size = context->prefixes.L ? FCML_OS_YWORD : FCML_OS_XWORD;
         reg->x64_exp = FCML_FALSE;
 
     } else {
@@ -1229,7 +1245,7 @@ fcml_usize fcml_ifn_dasm_calculate_effective_osa(
         if (FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA(opcode_flags)) {
             osa = FCML_DS_64;
         } else {
-            if (prefixes->w) {
+            if (prefixes->W) {
                 /* Prefixes can not override REX.W.*/
                 osa = FCML_DS_64;
             } else {
@@ -1301,17 +1317,17 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
 
     /* W field.*/
     if ((FCML_DEF_PREFIX_W_0(instruction_decoding_def->prefixes_flags) 
-                && prefixes->w)
+                && prefixes->W)
             || (FCML_DEF_PREFIX_W_1(instruction_decoding_def->prefixes_flags) 
-                && !prefixes->w)) {
+                && !prefixes->W)) {
         return FCML_FALSE;
     }
 
     /* L field.*/
     if ((FCML_DEF_PREFIX_L_1(instruction_decoding_def->prefixes_flags) && 
-                (!(prefixes->is_vex || prefixes->is_xop) || !prefixes->l))
+                (!(prefixes->is_vex || prefixes->is_xop) || !prefixes->L))
             || (FCML_DEF_PREFIX_L_0(instruction_decoding_def->prefixes_flags) 
-                && (!(prefixes->is_vex || prefixes->is_xop) || prefixes->l))) {
+                && (!(prefixes->is_vex || prefixes->is_xop) || prefixes->L))) {
         return FCML_FALSE;
     }
 
@@ -1382,7 +1398,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm(
         fcml_bool modrm_found = FCML_FALSE;
         fcml_uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found);
         if (modrm_found) {
-            fcml_uint8_t ext_reg_opcode = ((prefixes->r << 4) 
+            fcml_uint8_t ext_reg_opcode = ((prefixes->R << 4) 
                     | (FCML_MODRM_DEC_REG_OPCODE(modrm)));
             fcml_uint8_t expected_ext_reg_opcode = 
                 FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(opcode_flags);
@@ -1946,9 +1962,9 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         fcml_st_modrm_source modrm_source;
         modrm_source.is_vsib = modrm_details->is_vsib;
         modrm_source.vsib_index_size = modrm_details->vsib_index_size;
-        modrm_source.ext_b = prefixes->b;
-        modrm_source.ext_r = prefixes->r;
-        modrm_source.ext_x = prefixes->x;
+        modrm_source.ext_B = prefixes->B;
+        modrm_source.ext_R = prefixes->R;
+        modrm_source.ext_X = prefixes->X;
         modrm_source.stream = decoding_context->stream;
 
         fcml_uint8_t flags = 0;
@@ -2216,17 +2232,11 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
     fcml_int xop_vex_prefix_size = 0;
     fcml_bool result = FCML_FALSE;
     fcml_bool is_xop_vex_allowed = FCML_TRUE;
-    fcml_bool is_evex = FCML_TRUE;
     fcml_bool is_last_prefix = FCML_FALSE;
 
     /* VEX like prefixes are not allowed in 16 bit mode.*/
     if (op_mode == FCML_OM_16_BIT) {
         is_xop_vex_allowed = FCML_FALSE;
-    }
-
-    /* EVEX like prefix are not allowed in 16 and 32 bit mode */
-    if (op_mode == FCML_OM_64_BIT) {
-    	is_evex = FCML_FALSE;
     }
 
     do {
@@ -2300,25 +2310,30 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                 is_last_prefix = FCML_TRUE;
                 break;
             case 0x62:
-                xop_vex_prefix_size = 3;
-                prefix_type = FCML_PT_EVEX;
-                p_flags |= FCML_IDFPF_IS_EVEX;
-                is_last_prefix = FCML_TRUE;
+            	if (op_mode == FCML_OM_64_BIT) {
+					xop_vex_prefix_size = 3;
+					prefix_type = FCML_PT_EVEX;
+					p_flags |= FCML_IDFPF_IS_EVEX;
+					is_last_prefix = FCML_TRUE;
+            	} else {
+            		/* EVEX encoding is allowed only in 64-bits mode. */
+					is_xop_vex_allowed = FCML_FALSE;
+            	}
                 break;
             default:
                 /* REX prefix is the last one, so we have to break this loop 
                  * after finding one.
                  */
-                if (op_mode == FCML_OM_64_BIT && prefix >= 0x40 
+                if (op_mode == FCML_OM_64_BIT && prefix >= 0x40
                         && prefix <= 0x4F) {
                     /* REX prefix found.*/
                     prefix_type = FCML_PT_REX;
                     /* Decode fields.*/
                     prefixes_details->is_rex = FCML_TRUE;
-                    prefixes_details->w = FCML_REX_W(prefix);
-                    prefixes_details->r = FCML_REX_R(prefix);
-                    prefixes_details->x = FCML_REX_X(prefix);
-                    prefixes_details->b = FCML_REX_B(prefix);
+                    prefixes_details->W = FCML_REX_W(prefix);
+                    prefixes_details->R = FCML_REX_R(prefix);
+                    prefixes_details->X = FCML_REX_X(prefix);
+                    prefixes_details->B = FCML_REX_B(prefix);
                     /* REX can not be used together with the VEX at the 
                      * moment.
                      */
@@ -2329,11 +2344,10 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
             }
 
             /* Handle VEX/XOP prefixes.*/
-            if (prefix_type == FCML_PT_VEX || prefix_type == FCML_PT_XOP || prefix_type == FCML_PT_EVEX) {
+            if (prefix_type == FCML_PT_VEX || prefix_type == FCML_PT_XOP
+            		|| prefix_type == FCML_PT_EVEX) {
 
-            	if (is_evex) {
-
-            	} else if (is_xop_vex_allowed) {
+            	if (is_xop_vex_allowed) {
 
                     fcml_stream_pointer sp = fcml_fn_stream_save_point(stream);
 
@@ -2366,8 +2380,8 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                     if (prefix_type != FCML_PT_GROUP_UNKNOWN) {
 
                         fcml_int nbytes = fcml_fn_stream_read_bytes(stream, 
-                                &(prefix_details->vex_xop_bytes), 
-                                xop_vex_prefix_size);
+                                &(prefix_details->vex_xop_bytes),
+								xop_vex_prefix_size);
                         if (nbytes != xop_vex_prefix_size) {
                             /* Stream is incomplete, so we can not treat it 
                              * as a VEX/XOP.
@@ -2376,6 +2390,30 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                         } else {
                             /* Decodes VEX/XOP fields.*/
                             switch (prefix) {
+                            case 0x62: {
+                            	fcml_uint8_t p0 = prefix_details->vex_xop_bytes[0];
+                            	fcml_uint8_t p1 = prefix_details->vex_xop_bytes[1];
+                            	fcml_uint8_t p2 = prefix_details->vex_xop_bytes[2];
+
+                                prefixes_details->R = FCML_EVEX_R(p0);
+                                prefixes_details->X = FCML_EVEX_X(p0);
+								prefixes_details->B = FCML_EVEX_B(p0);
+								prefixes_details->R_prim = FCML_EVEX_R_PRIM(p0);
+								prefixes_details->mm = FCML_EVEX_MM(p0);
+
+                                prefixes_details->W = FCML_EVEX_W(p1);
+                                prefixes_details->vvvv = FCML_EVEX_VVVV(p1);
+                                prefixes_details->pp = FCML_EVEX_PP(p1);
+
+                                prefixes_details->z = FCML_EVEX_z(p2);
+                                prefixes_details->L_prim = FCML_EVEX_L_PRIM(p2);
+                                prefixes_details->L = FCML_EVEX_L(p2);
+                                prefixes_details->b = FCML_EVEX_b(p2);
+                                prefixes_details->V_prim = FCML_EVEX_V_PRIM(p2);
+                                prefixes_details->aaa = FCML_EVEX_aaa(p2);
+
+                            	break;
+                            }
                             case 0x8F:
                                 /* XOP is encoded like 3 bytes VEX prefix.*/
                             case 0xC4:
@@ -2386,23 +2424,23 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                                     prefix_type = FCML_PT_GROUP_UNKNOWN;
                                     break;
                                 }
-                                prefixes_details->r = FCML_VEX_R(
+                                prefixes_details->R = FCML_VEX_R(
                                         prefix_details->vex_xop_bytes[0]);
-                                prefixes_details->x = FCML_VEX_X(
+                                prefixes_details->X = FCML_VEX_X(
                                         prefix_details->vex_xop_bytes[0]);
                                 if (op_mode == FCML_OM_64_BIT) {
-                                    prefixes_details->b = FCML_VEX_B(
+                                    prefixes_details->B = FCML_VEX_B(
                                             prefix_details->vex_xop_bytes[0]);
-                                    prefixes_details->w = FCML_VEX_W(
+                                    prefixes_details->W = FCML_VEX_W(
                                             prefix_details->vex_xop_bytes[1]);
                                 } else {
                                     /* These bits should be silently ignored 
                                      * in 32-bit mode.
                                      */
-                                    prefixes_details->b = 0;
-                                    prefixes_details->w = 0;
+                                    prefixes_details->B = 0;
+                                    prefixes_details->W = 0;
                                 }
-                                prefixes_details->l = FCML_VEX_L(
+                                prefixes_details->L = FCML_VEX_L(
                                         prefix_details->vex_xop_bytes[1]);
                                 prefixes_details->pp = FCML_VEX_PP(
                                         prefix_details->vex_xop_bytes[1]);
@@ -2412,9 +2450,9 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                                         prefix_details->vex_xop_bytes[1]);
                                 break;
                             case 0xC5:
-                                prefixes_details->r = FCML_VEX_R(
+                                prefixes_details->R = FCML_VEX_R(
                                         prefix_details->vex_xop_bytes[0]);
-                                prefixes_details->l = FCML_VEX_L(
+                                prefixes_details->L = FCML_VEX_L(
                                         prefix_details->vex_xop_bytes[0]);
                                 prefixes_details->vvvv = FCML_VEX_VVVV(
                                         prefix_details->vex_xop_bytes[0]);
@@ -2451,6 +2489,9 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                 prefix_details->mandatory_prefix = (p_flags 
                         & FCML_IDFPF_IS_MANDATORY_CANDIDATE) 
                     ? FCML_TRUE : FCML_FALSE;
+                if (p_flags & FCML_IDFPF_IS_EVEX) {
+                    prefixes_details->is_evex = FCML_TRUE;
+                }
                 if (p_flags & FCML_IDFPF_IS_VEX) {
                     prefixes_details->is_vex = FCML_TRUE;
                 }
@@ -2737,7 +2778,7 @@ fcml_ceh_error fcml_ifn_disassemble_core(
         if (instruction_details->prefixes_details.is_vex ||
                 instruction_details->prefixes_details.is_xop) {
             l.is_not_null = FCML_TRUE;
-            l.value = instruction_details->prefixes_details.l;
+            l.value = instruction_details->prefixes_details.L;
         }
 
         fcml_st_mp_mnemonic *mnemonic = NULL;

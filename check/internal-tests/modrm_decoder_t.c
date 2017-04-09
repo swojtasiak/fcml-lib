@@ -52,9 +52,9 @@ void fcml_tf_modrm_decoder_test_1(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
@@ -91,9 +91,9 @@ void fcml_tf_modrm_decoder_test_2(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
@@ -130,9 +130,9 @@ void fcml_tf_modrm_decoder_test_3(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
@@ -168,9 +168,9 @@ void fcml_tf_modrm_decoder_test_4(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
@@ -207,9 +207,9 @@ void fcml_tf_modrm_decoder_test_5(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 
@@ -246,9 +246,9 @@ void fcml_tf_modrm_decoder_test_6(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -285,9 +285,9 @@ void fcml_tf_modrm_decoder_test_7(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -314,9 +314,9 @@ void fcml_tf_modrm_3264_decoder_test_1(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -354,9 +354,9 @@ void fcml_tf_modrm_3264_decoder_test_2(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -397,9 +397,9 @@ void fcml_tf_modrm_3264_decoder_test_3(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -445,9 +445,9 @@ void fcml_tf_modrm_3264_decoder_test_4(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -486,9 +486,9 @@ void fcml_tf_modrm_3264_decoder_test_5(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -526,9 +526,9 @@ void fcml_tf_modrm_3264_decoder_test_6(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -566,9 +566,9 @@ void fcml_tf_modrm_3264_decoder_test_7(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -609,9 +609,9 @@ void fcml_tf_modrm_3264_decoder_test_8(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -650,9 +650,9 @@ void fcml_tf_modrm_3264_decoder_test_9(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -692,9 +692,9 @@ void fcml_tf_modrm_3264_decoder_test_10(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -740,9 +740,9 @@ void fcml_tf_modrm_3264_decoder_test_11(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -788,9 +788,9 @@ void fcml_tf_modrm_3264_decoder_test_12(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 0;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 0;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -836,9 +836,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_1(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 0;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 0;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -877,9 +877,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_2(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 0;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 0;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -918,9 +918,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_3(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -962,9 +962,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_4(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -1006,9 +1006,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_5(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -1050,9 +1050,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_6(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -1094,9 +1094,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_7(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -1135,9 +1135,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_8(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -1176,9 +1176,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_9(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	fcml_st_modrm decoded_modrm;
 	fcml_st_modrm_details details;
@@ -1217,9 +1217,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_10(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	modrm_source.is_vsib = FCML_TRUE;
 	modrm_source.vsib_index_size = FCML_DS_128;
@@ -1260,9 +1260,9 @@ void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 	stream.offset = 0;
 
 	fcml_st_modrm_source modrm_source = {0};
-	modrm_source.ext_b = 1;
-	modrm_source.ext_r = 1;
-	modrm_source.ext_x = 1;
+	modrm_source.ext_B = 1;
+	modrm_source.ext_R = 1;
+	modrm_source.ext_X = 1;
 	modrm_source.stream = &stream;
 	modrm_source.is_vsib = FCML_TRUE;
 	modrm_source.vsib_index_size = FCML_DS_256;

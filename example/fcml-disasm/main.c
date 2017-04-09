@@ -445,17 +445,17 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		if( prefixes_details->is_vex || prefixes_details->is_xop )
 			printf( " mmmm:%d", prefixes_details->mmmm );
 		if( prefixes_details->is_vex || prefixes_details->is_xop || prefixes_details->is_rex )
-			printf( " r:%d", prefixes_details->r );
+			printf( " R:%d", prefixes_details->R );
 		if( prefixes_details->is_vex || prefixes_details->is_xop || prefixes_details->is_rex )
-			printf( " x:%d", prefixes_details->x );
+			printf( " X:%d", prefixes_details->X );
 		if( prefixes_details->is_vex || prefixes_details->is_xop || prefixes_details->is_rex )
-			printf( " b:%d", prefixes_details->b );
+			printf( " B:%d", prefixes_details->B );
 		if( prefixes_details->is_vex || prefixes_details->is_xop || prefixes_details->is_rex )
-			printf( " w:%d", prefixes_details->w );
+			printf( " W:%d", prefixes_details->W );
 		if( prefixes_details->is_vex || prefixes_details->is_xop )
 			printf( " vvvv:%d", prefixes_details->vvvv );
 		if( prefixes_details->is_vex || prefixes_details->is_xop )
-			printf( " l:%d", prefixes_details->l );
+			printf( " L:%d", prefixes_details->L );
 		if( prefixes_details->is_vex || prefixes_details->is_xop )
 			printf( " pp:%d", prefixes_details->pp );
 

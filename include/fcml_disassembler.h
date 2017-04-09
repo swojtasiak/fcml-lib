@@ -108,8 +108,8 @@ typedef struct fcml_st_instruction_prefix {
     fcml_en_prefix_types prefix_type;
     /** FCML_TRUE if prefix is treated as mandatory one. */
     fcml_bool mandatory_prefix;
-    /** Place for additional bytes of VEX/XOP prefix. */
-    fcml_uint8_t vex_xop_bytes[2];
+    /** Place for additional bytes of VEX/EVEX/XOP prefix. */
+    fcml_uint8_t vex_xop_bytes[3];
 } fcml_st_instruction_prefix;
 
 /** Contains some additional information about all decoded instruction prefixes. */
@@ -136,6 +136,8 @@ typedef struct fcml_st_prefixes_details {
     fcml_bool is_xacquire;
     /** FCML_TRUE if VEX prefix exists. */
     fcml_bool is_vex;
+    /** FCML TRUE if EVEX prefix exists. */
+    fcml_bool is_evex;
     /** FCML_TRUE if XOP prefix exists. */
     fcml_bool is_xop;
     /** FCML_TRUE if REX prefix exists. */
@@ -143,21 +145,35 @@ typedef struct fcml_st_prefixes_details {
     /** Various fields encoded inside decoded prefixes.*/
     fcml_uint8_t vex_xop_first_byte;
     /** R field of REX,XOP or VEX prefix. */
-    fcml_uint8_t r;
+    fcml_uint8_t R;
+    /** EVEX R’ High-16 register specifier modifier. */
+    fcml_uint8_t R_prim;
     /** X field of REX,XOP or VEX prefix. */
-    fcml_uint8_t x;
+    fcml_uint8_t X;
     /** B field of REX,XOP or VEX prefix. */
+    fcml_uint8_t B;
+    /** b field of EVEX prefix. */
     fcml_uint8_t b;
-    /** W field of REX,XOP or VEX prefix. */
-    fcml_uint8_t w;
+    /** W field of REX,XOP or VEX/EVEX prefix. */
+    fcml_uint8_t W;
     /** L field of XOP or VEX prefix. */
-    fcml_uint8_t l;
+    fcml_uint8_t L;
+    /** L’ field of EVEX prefix. */
+    fcml_uint8_t L_prim;
     /** m-mmmm field of XOP or VEX prefix. */
     fcml_uint8_t mmmm;
+    /** mm field of EVEX prefix. */
+    fcml_uint8_t mm;
     /** vvvv field of XOP or VEX prefix. */
     fcml_uint8_t vvvv;
-    /** pp field of XOP or VEX prefix. */
+    /** pp field of XOP or VEX/EVEX prefix. */
     fcml_uint8_t pp;
+    /** z field of EVEX prefix */
+    fcml_uint8_t z;
+    /** V’ field of EVEX prefix. */
+    fcml_uint8_t V_prim;
+    /** Embedded opmask register specifier. */
+    fcml_uint8_t aaa;
 } fcml_st_prefixes_details;
 
 /** Some additional disassembler specific information about decoded operands. */
