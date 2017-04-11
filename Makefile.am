@@ -73,7 +73,19 @@ EXTRA_DIST = win32/dist.bat \
 	win32/vs2015/fcml/fcml/fcml.vcxproj \
 	win32/vs2015/fcml/fcml/fcml.vcxproj.filters \
 	win32/vs2015/fcml/fcml/resource.h \
-	win32/vs2015/fcml/fcml/resource1.h
+	win32/vs2015/fcml/fcml/resource1.h \
+	dev-tools/fcml-flags-calculator/fcml-flags-calc.csproj \
+	dev-tools/fcml-flags-calculator/fcml-flags-calc.sln \
+	dev-tools/fcml-flags-calculator/fcml-flags-calc.suo \
+	dev-tools/fcml-flags-calculator/FormFCMLFlagCalculator.cs \
+	dev-tools/fcml-flags-calculator/FormFCMLFlagCalculator.Designer.cs \
+	dev-tools/fcml-flags-calculator/FormFCMLFlagCalculator.resx \
+	dev-tools/fcml-flags-calculator/Program.cs \
+	dev-tools/fcml-flags-calculator/Properties/AssemblyInfo.cs \
+	dev-tools/fcml-flags-calculator/Properties/Resources.Designer.cs \
+	dev-tools/fcml-flags-calculator/Properties/Resources.resx \
+	dev-tools/fcml-flags-calculator/Properties/Settings.Designer.cs \
+	dev-tools/fcml-flags-calculator/Properties/Settings.settings
 
 if HAVE_DOXYGEN
 DOXYDIR = docs/doxygen
