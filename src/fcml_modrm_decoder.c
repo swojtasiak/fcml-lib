@@ -288,7 +288,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit(
 
     /* Decode ModRM.*/
     f_mod = FCML_MODRM_DEC_MOD(mod_rm);
-    f_rm = FCML_MODRM_DEC_RM(mod_rm) | (modrm_source->ext_B << 3);
+    f_rm = FCML_MODRM_DEC_RM(mod_rm) | (modrm_source->ext_B << 3) | (modrm_source->ext_X << 4);
 
     if (modrm_source->is_vsib && FCML_MODRM_DEC_RM(mod_rm) != 4) {
         return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
@@ -302,7 +302,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit(
         decoded_modrm->reg.value = f_rm;
     } else if (FCML_MODRM_DEC_RM(mod_rm) == 4) {
         /* Decode SIB addressing format.*/
-        result = fcml_ifn_modrm_decode_sib( context, mod_rm,
+        error = fcml_ifn_modrm_decode_sib( context, mod_rm,
                 modrm_source, decoded_modrm, modrm_details, flags);
     } else if (f_mod == 0 && FCML_MODRM_DEC_RM(mod_rm) == 5) {
 
@@ -347,7 +347,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit(
 
     /* Decodes register if something needs it.*/
     decoded_modrm->reg_opcode = FCML_MODRM_DEC_REG_OPCODE(mod_rm) |
-            (modrm_source->ext_R << 3);
+            (modrm_source->ext_R << 3) | (modrm_source->ext_R_prim << 4);
 
     return error;
 }

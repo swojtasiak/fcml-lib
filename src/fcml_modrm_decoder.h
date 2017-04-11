@@ -41,6 +41,7 @@
 
 typedef struct fcml_st_modrm_source {
     fcml_uint8_t ext_R;
+    fcml_uint8_t ext_R_prim;
     fcml_uint8_t ext_X;
     fcml_uint8_t ext_B;
     fcml_bool is_vsib;

@@ -932,7 +932,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_vex_vvvv(
     operand_wrapper->operand.type = FCML_OT_REGISTER;
     fcml_st_register *reg = &(operand_wrapper->operand.reg);
 
-    reg->reg = context->prefixes.vvvv;
+    reg->reg = context->prefixes.vvvv | context->prefixes.V_prim << 4;
     reg->type = (fcml_en_register) v_args->reg_type;
     reg->size = fcml_ifn_dasm_utils_decode_encoded_size_value(context, 
             v_args->encoded_register_size);
@@ -1964,6 +1964,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         modrm_source.vsib_index_size = modrm_details->vsib_index_size;
         modrm_source.ext_B = prefixes->B;
         modrm_source.ext_R = prefixes->R;
+        modrm_source.ext_R_prim = prefixes->R_prim;
         modrm_source.ext_X = prefixes->X;
         modrm_source.stream = decoding_context->stream;
 
