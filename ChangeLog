@@ -17,4 +17,5 @@
  - hsdis - License changed to LGPL 2.1
  18.10.2016 (1.1.3)
  - bug fix in tests (https://github.com/swojtasiak/fcml-lib/pull/3)
+ - additional Apache 2.0 license added to hsdis
 
