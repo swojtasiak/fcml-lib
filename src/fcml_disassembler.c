@@ -288,7 +288,17 @@ fcml_usize fcml_ifn_dasm_utils_decode_encoded_size_value(
             result = context->effective_address_size_attribute;
             break;
         case FCML_EOS_L:
-            result = (context->prefixes.L) ? FCML_DS_256 : FCML_DS_128;
+            switch (context->prefixes.L | context->prefixes.L_prim << 1) {
+            case 00:
+                result = FCML_DS_128;
+                break;
+            case 01:
+                result = FCML_DS_256;
+                break;
+            case 11:
+                result = FCML_DS_512;
+                break;
+            }
             break;
         case FCML_EOS_14_28:
             result = (context->effective_operand_size_attribute == FCML_DS_16) 

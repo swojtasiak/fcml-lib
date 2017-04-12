@@ -273,28 +273,30 @@ typedef fcml_int64_t fcml_ip;
  */
 
 #define FCML_DS_UNDEF   0
-#define FCML_DS_8    	8
-#define FCML_DS_16   	16
-#define FCML_DS_32   	32
-#define FCML_DS_64   	64
-#define FCML_DS_128  	128
-#define FCML_DS_256  	256
+#define FCML_DS_8       8
+#define FCML_DS_16      16
+#define FCML_DS_32      32
+#define FCML_DS_64      64
+#define FCML_DS_128     128
+#define FCML_DS_256     256
+#define FCML_DS_512     512
 
 /** @} */
 
 /* Size operators. */
 
-#define FCML_OS_UNDEFINED	0
-#define FCML_OS_BYTE		8
-#define FCML_OS_WORD		16
-#define FCML_OS_DWORD		32
-#define FCML_OS_FWORD		48
-#define FCML_OS_QWORD		64
-#define FCML_OS_MWORD		64
-#define FCML_OS_TBYTE		80
-#define FCML_OS_OWORD		128
-#define FCML_OS_XWORD		128
-#define FCML_OS_YWORD		256
+#define FCML_OS_UNDEFINED       0
+#define FCML_OS_BYTE            8
+#define FCML_OS_WORD            16
+#define FCML_OS_DWORD           32
+#define FCML_OS_FWORD           48
+#define FCML_OS_QWORD           64
+#define FCML_OS_MWORD           64
+#define FCML_OS_TBYTE           80
+#define FCML_OS_OWORD           128
+#define FCML_OS_XWORD           128
+#define FCML_OS_YWORD           256
+#define FCML_OS_ZWORD           512
 
 /**
  * Register type.
