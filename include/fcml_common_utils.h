@@ -52,6 +52,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_RAX;
 extern LIB_EXPORT fcml_st_register fcml_reg_MM0;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM0;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM0;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM0;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_CL;
 extern LIB_EXPORT fcml_st_register fcml_reg_CX;
@@ -60,6 +61,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_RCX;
 extern LIB_EXPORT fcml_st_register fcml_reg_MM1;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM1;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM1;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM1;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_DL;
 extern LIB_EXPORT fcml_st_register fcml_reg_DX;
@@ -68,6 +70,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_RDX;
 extern LIB_EXPORT fcml_st_register fcml_reg_MM2;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM2;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM2;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM2;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_BL;
 extern LIB_EXPORT fcml_st_register fcml_reg_BX;
@@ -76,6 +79,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_RBX;
 extern LIB_EXPORT fcml_st_register fcml_reg_MM3;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM3;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM3;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM3;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_AH;
 extern LIB_EXPORT fcml_st_register fcml_reg_SPL;
@@ -85,6 +89,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_RSP;
 extern LIB_EXPORT fcml_st_register fcml_reg_MM4;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM4;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM4;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM4;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_CH;
 extern LIB_EXPORT fcml_st_register fcml_reg_BPL;
@@ -94,6 +99,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_RBP;
 extern LIB_EXPORT fcml_st_register fcml_reg_MM5;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM5;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM5;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM5;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_DH;
 extern LIB_EXPORT fcml_st_register fcml_reg_SIL;
@@ -103,6 +109,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_RSI;
 extern LIB_EXPORT fcml_st_register fcml_reg_MM6;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM6;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM6;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM6;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_BH;
 extern LIB_EXPORT fcml_st_register fcml_reg_DIL;
@@ -112,6 +119,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_RDI;
 extern LIB_EXPORT fcml_st_register fcml_reg_MM7;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM7;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM7;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM7;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_R8L;
 extern LIB_EXPORT fcml_st_register fcml_reg_R8W;
@@ -119,6 +127,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_R8D;
 extern LIB_EXPORT fcml_st_register fcml_reg_R8;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM8;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM8;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM8;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_R9L;
 extern LIB_EXPORT fcml_st_register fcml_reg_R9W;
@@ -126,6 +135,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_R9D;
 extern LIB_EXPORT fcml_st_register fcml_reg_R9;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM9;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM9;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM9;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_R10L;
 extern LIB_EXPORT fcml_st_register fcml_reg_R10W;
@@ -133,6 +143,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_R10D;
 extern LIB_EXPORT fcml_st_register fcml_reg_R10;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM10;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM10;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM10;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_R11L;
 extern LIB_EXPORT fcml_st_register fcml_reg_R11W;
@@ -140,6 +151,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_R11D;
 extern LIB_EXPORT fcml_st_register fcml_reg_R11;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM11;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM11;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM11;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_R12L;
 extern LIB_EXPORT fcml_st_register fcml_reg_R12W;
@@ -147,6 +159,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_R12D;
 extern LIB_EXPORT fcml_st_register fcml_reg_R12;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM12;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM12;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM12;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_R13L;
 extern LIB_EXPORT fcml_st_register fcml_reg_R13W;
@@ -154,6 +167,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_R13D;
 extern LIB_EXPORT fcml_st_register fcml_reg_R13;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM13;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM13;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM13;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_R14L;
 extern LIB_EXPORT fcml_st_register fcml_reg_R14W;
@@ -161,6 +175,7 @@ extern LIB_EXPORT fcml_st_register fcml_reg_R14D;
 extern LIB_EXPORT fcml_st_register fcml_reg_R14;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM14;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM14;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM14;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_R15L;
 extern LIB_EXPORT fcml_st_register fcml_reg_R15W;
@@ -168,6 +183,71 @@ extern LIB_EXPORT fcml_st_register fcml_reg_R15D;
 extern LIB_EXPORT fcml_st_register fcml_reg_R15;
 extern LIB_EXPORT fcml_st_register fcml_reg_XMM15;
 extern LIB_EXPORT fcml_st_register fcml_reg_YMM15;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM15;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM16;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM16;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM16;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM17;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM17;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM17;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM18;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM18;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM18;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM19;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM19;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM19;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM20;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM20;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM20;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM21;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM21;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM21;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM22;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM22;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM22;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM23;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM23;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM23;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM24;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM24;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM24;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM25;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM25;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM25;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM26;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM26;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM26;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM27;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM27;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM27;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM28;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM28;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM28;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM29;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM29;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM29;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM30;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM30;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM30;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_XMM31;
+extern LIB_EXPORT fcml_st_register fcml_reg_YMM31;
+extern LIB_EXPORT fcml_st_register fcml_reg_ZMM31;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_ES;
 extern LIB_EXPORT fcml_st_register fcml_reg_CS;

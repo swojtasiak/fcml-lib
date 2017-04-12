@@ -1821,6 +1821,16 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM0() {
+        Register reg( ::fcml_reg_ZMM0 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register CL() {
@@ -1885,6 +1895,16 @@ public:
      */
     static const Register YMM1() {
         Register reg( ::fcml_reg_YMM1 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM1() {
+        Register reg( ::fcml_reg_ZMM1 );
         return reg;
     }
 
@@ -1961,6 +1981,16 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM2() {
+        Register reg( ::fcml_reg_ZMM2 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register BL() {
@@ -2025,6 +2055,16 @@ public:
      */
     static const Register YMM3() {
         Register reg( ::fcml_reg_YMM3 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM3() {
+        Register reg( ::fcml_reg_ZMM3 );
         return reg;
     }
 
@@ -2111,6 +2151,17 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM4() {
+        Register reg( ::fcml_reg_ZMM4 );
+        return reg;
+    }
+
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register CH() {
@@ -2185,6 +2236,16 @@ public:
      */
     static const Register YMM5() {
         Register reg( ::fcml_reg_YMM5 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM5() {
+        Register reg( ::fcml_reg_ZMM5 );
         return reg;
     }
 
@@ -2271,6 +2332,17 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM6() {
+        Register reg( ::fcml_reg_ZMM6 );
+        return reg;
+    }
+
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register BH() {
@@ -2351,6 +2423,16 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM7() {
+        Register reg( ::fcml_reg_ZMM7 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register R8L() {
@@ -2405,6 +2487,16 @@ public:
      */
     static const Register YMM8() {
         Register reg( ::fcml_reg_YMM8 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM8() {
+        Register reg( ::fcml_reg_ZMM8 );
         return reg;
     }
 
@@ -2471,6 +2563,16 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM9() {
+        Register reg( ::fcml_reg_ZMM9 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register R10L() {
@@ -2525,6 +2627,16 @@ public:
      */
     static const Register YMM10() {
         Register reg( ::fcml_reg_YMM10 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM10() {
+        Register reg( ::fcml_reg_ZMM10 );
         return reg;
     }
 
@@ -2591,6 +2703,16 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM11() {
+        Register reg( ::fcml_reg_ZMM11 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register R12L() {
@@ -2645,6 +2767,16 @@ public:
      */
     static const Register YMM12() {
         Register reg( ::fcml_reg_YMM12 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM12() {
+        Register reg( ::fcml_reg_ZMM12 );
         return reg;
     }
 
@@ -2711,6 +2843,16 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM13() {
+        Register reg( ::fcml_reg_ZMM13 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register R14L() {
@@ -2771,6 +2913,16 @@ public:
     /**
      * Factory method for a register.
      * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM14() {
+        Register reg( ::fcml_reg_ZMM14 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
      * @since 1.1.0
      */
     static const Register R15L() {
@@ -2825,6 +2977,496 @@ public:
      */
     static const Register YMM15() {
         Register reg( ::fcml_reg_YMM15 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM15() {
+        Register reg( ::fcml_reg_ZMM15 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM16() {
+        Register reg( ::fcml_reg_XMM16 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM16() {
+        Register reg( ::fcml_reg_YMM16 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM16() {
+        Register reg( ::fcml_reg_ZMM16 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM17() {
+        Register reg( ::fcml_reg_XMM17 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM17() {
+        Register reg( ::fcml_reg_YMM17 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM17() {
+        Register reg( ::fcml_reg_ZMM17 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM18() {
+        Register reg( ::fcml_reg_XMM18 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM18() {
+        Register reg( ::fcml_reg_YMM18 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM18() {
+        Register reg( ::fcml_reg_ZMM18 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM19() {
+        Register reg( ::fcml_reg_XMM19 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM19() {
+        Register reg( ::fcml_reg_YMM19 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM19() {
+        Register reg( ::fcml_reg_ZMM19 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM20() {
+        Register reg( ::fcml_reg_XMM20 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM20() {
+        Register reg( ::fcml_reg_YMM20 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM20() {
+        Register reg( ::fcml_reg_ZMM20 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM21() {
+        Register reg( ::fcml_reg_XMM21 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM21() {
+        Register reg( ::fcml_reg_YMM21 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM21() {
+        Register reg( ::fcml_reg_ZMM21 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM22() {
+        Register reg( ::fcml_reg_XMM22 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM22() {
+        Register reg( ::fcml_reg_YMM22 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM22() {
+        Register reg( ::fcml_reg_ZMM22 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM23() {
+        Register reg( ::fcml_reg_XMM23 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM23() {
+        Register reg( ::fcml_reg_YMM23 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM23() {
+        Register reg( ::fcml_reg_ZMM23 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM24() {
+        Register reg( ::fcml_reg_XMM24 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM24() {
+        Register reg( ::fcml_reg_YMM24 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM24() {
+        Register reg( ::fcml_reg_ZMM24 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM25() {
+        Register reg( ::fcml_reg_XMM25 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM25() {
+        Register reg( ::fcml_reg_YMM25 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM25() {
+        Register reg( ::fcml_reg_ZMM25 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM26() {
+        Register reg( ::fcml_reg_XMM26 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM26() {
+        Register reg( ::fcml_reg_YMM26 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM26() {
+        Register reg( ::fcml_reg_ZMM26 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM27() {
+        Register reg( ::fcml_reg_XMM27 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM27() {
+        Register reg( ::fcml_reg_YMM27 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM27() {
+        Register reg( ::fcml_reg_ZMM27 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM28() {
+        Register reg( ::fcml_reg_XMM28 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM28() {
+        Register reg( ::fcml_reg_YMM28 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM28() {
+        Register reg( ::fcml_reg_ZMM28 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM29() {
+        Register reg( ::fcml_reg_XMM29 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM29() {
+        Register reg( ::fcml_reg_YMM29 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM29() {
+        Register reg( ::fcml_reg_ZMM29 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM30() {
+        Register reg( ::fcml_reg_XMM30 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM30() {
+        Register reg( ::fcml_reg_YMM30 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM30() {
+        Register reg( ::fcml_reg_ZMM30 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register XMM31() {
+        Register reg( ::fcml_reg_XMM31 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register YMM31() {
+        Register reg( ::fcml_reg_YMM31 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register ZMM31() {
+        Register reg( ::fcml_reg_ZMM31 );
         return reg;
     }
 

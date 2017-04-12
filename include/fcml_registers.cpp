@@ -42,6 +42,7 @@ namespace fcml {
     const Register MM0( ::fcml_reg_MM0 );
     const Register XMM0( ::fcml_reg_XMM0 );
     const Register YMM0( ::fcml_reg_YMM0 );
+    const Register ZMM0( ::fcml_reg_ZMM0 );
 
     const Register CL( ::fcml_reg_CL );
     const Register CX( ::fcml_reg_CX );
@@ -50,6 +51,7 @@ namespace fcml {
     const Register MM1( ::fcml_reg_MM1 );
     const Register XMM1( ::fcml_reg_XMM1 );
     const Register YMM1( ::fcml_reg_YMM1 );
+    const Register ZMM1( ::fcml_reg_ZMM1 );
 
     const Register DL( ::fcml_reg_DL );
     const Register DX( ::fcml_reg_DX );
@@ -58,6 +60,7 @@ namespace fcml {
     const Register MM2( ::fcml_reg_MM2 );
     const Register XMM2( ::fcml_reg_XMM2 );
     const Register YMM2( ::fcml_reg_YMM2 );
+    const Register ZMM2( ::fcml_reg_ZMM2 );
 
     const Register BL( ::fcml_reg_BL );
     const Register BX( ::fcml_reg_BX );
@@ -66,6 +69,7 @@ namespace fcml {
     const Register MM3( ::fcml_reg_MM3 );
     const Register XMM3( ::fcml_reg_XMM3 );
     const Register YMM3( ::fcml_reg_YMM3 );
+    const Register ZMM3( ::fcml_reg_ZMM3 );
 
     const Register AH( ::fcml_reg_AH );
     const Register SPL( ::fcml_reg_SPL );
@@ -75,6 +79,7 @@ namespace fcml {
     const Register MM4( ::fcml_reg_MM4 );
     const Register XMM4( ::fcml_reg_XMM4 );
     const Register YMM4( ::fcml_reg_YMM4 );
+    const Register ZMM4( ::fcml_reg_ZMM4 );
 
     const Register CH( ::fcml_reg_CH );
     const Register BPL( ::fcml_reg_BPL );
@@ -84,6 +89,7 @@ namespace fcml {
     const Register MM5( ::fcml_reg_MM5 );
     const Register XMM5( ::fcml_reg_XMM5 );
     const Register YMM5( ::fcml_reg_YMM5 );
+    const Register ZMM5( ::fcml_reg_ZMM5 );
 
     const Register DH( ::fcml_reg_DH );
     const Register SIL( ::fcml_reg_SIL );
@@ -93,6 +99,7 @@ namespace fcml {
     const Register MM6( ::fcml_reg_MM6 );
     const Register XMM6( ::fcml_reg_XMM6 );
     const Register YMM6( ::fcml_reg_YMM6 );
+    const Register ZMM6( ::fcml_reg_ZMM6 );
 
     const Register BH( ::fcml_reg_BH );
     const Register DIL( ::fcml_reg_DIL );
@@ -102,6 +109,7 @@ namespace fcml {
     const Register MM7( ::fcml_reg_MM7 );
     const Register XMM7( ::fcml_reg_XMM7 );
     const Register YMM7( ::fcml_reg_YMM7 );
+    const Register ZMM7( ::fcml_reg_ZMM7 );
 
     const Register R8L( ::fcml_reg_R8L );
     const Register R8W( ::fcml_reg_R8W );
@@ -109,6 +117,7 @@ namespace fcml {
     const Register R8( ::fcml_reg_R8 );
     const Register XMM8( ::fcml_reg_XMM8 );
     const Register YMM8( ::fcml_reg_YMM8 );
+    const Register ZMM8( ::fcml_reg_ZMM8 );
 
     const Register R9L( ::fcml_reg_R9L );
     const Register R9W( ::fcml_reg_R9W );
@@ -116,6 +125,7 @@ namespace fcml {
     const Register R9( ::fcml_reg_R9 );
     const Register XMM9( ::fcml_reg_XMM9 );
     const Register YMM9( ::fcml_reg_YMM9 );
+    const Register ZMM9( ::fcml_reg_ZMM9 );
 
     const Register R10L( ::fcml_reg_R10L );
     const Register R10W( ::fcml_reg_R10W );
@@ -123,6 +133,7 @@ namespace fcml {
     const Register R10( ::fcml_reg_R10 );
     const Register XMM10( ::fcml_reg_XMM10 );
     const Register YMM10( ::fcml_reg_YMM10 );
+    const Register ZMM10( ::fcml_reg_ZMM10 );
 
     const Register R11L( ::fcml_reg_R11L );
     const Register R11W( ::fcml_reg_R11W );
@@ -130,6 +141,7 @@ namespace fcml {
     const Register R11( ::fcml_reg_R11 );
     const Register XMM11( ::fcml_reg_XMM11 );
     const Register YMM11( ::fcml_reg_YMM11 );
+    const Register ZMM11( ::fcml_reg_ZMM11 );
 
     const Register R12L( ::fcml_reg_R12L );
     const Register R12W( ::fcml_reg_R12W );
@@ -137,6 +149,7 @@ namespace fcml {
     const Register R12( ::fcml_reg_R12 );
     const Register XMM12( ::fcml_reg_XMM12 );
     const Register YMM12( ::fcml_reg_YMM12 );
+    const Register ZMM12( ::fcml_reg_ZMM12 );
 
     const Register R13L( ::fcml_reg_R13L );
     const Register R13W( ::fcml_reg_R13W );
@@ -144,6 +157,7 @@ namespace fcml {
     const Register R13( ::fcml_reg_R13 );
     const Register XMM13( ::fcml_reg_XMM13 );
     const Register YMM13( ::fcml_reg_YMM13 );
+    const Register ZMM13( ::fcml_reg_ZMM13 );
 
     const Register R14L( ::fcml_reg_R14L );
     const Register R14W( ::fcml_reg_R14W );
@@ -151,6 +165,7 @@ namespace fcml {
     const Register R14( ::fcml_reg_R14 );
     const Register XMM14( ::fcml_reg_XMM14 );
     const Register YMM14( ::fcml_reg_YMM14 );
+    const Register ZMM14( ::fcml_reg_ZMM14 );
 
     const Register R15L( ::fcml_reg_R15L );
     const Register R15W( ::fcml_reg_R15W );
@@ -158,6 +173,71 @@ namespace fcml {
     const Register R15( ::fcml_reg_R15 );
     const Register XMM15( ::fcml_reg_XMM15 );
     const Register YMM15( ::fcml_reg_YMM15 );
+    const Register ZMM15( ::fcml_reg_ZMM15 );
+
+    const Register XMM16( ::fcml_reg_XMM16 );
+    const Register YMM16( ::fcml_reg_YMM16 );
+    const Register ZMM16( ::fcml_reg_ZMM16 );
+
+    const Register XMM17( ::fcml_reg_XMM17 );
+    const Register YMM17( ::fcml_reg_YMM17 );
+    const Register ZMM17( ::fcml_reg_ZMM17 );
+
+    const Register XMM18( ::fcml_reg_XMM18 );
+    const Register YMM18( ::fcml_reg_YMM18 );
+    const Register ZMM18( ::fcml_reg_ZMM18 );
+
+    const Register XMM19( ::fcml_reg_XMM19 );
+    const Register YMM19( ::fcml_reg_YMM19 );
+    const Register ZMM19( ::fcml_reg_ZMM19 );
+
+    const Register XMM20( ::fcml_reg_XMM20 );
+    const Register YMM20( ::fcml_reg_YMM20 );
+    const Register ZMM20( ::fcml_reg_ZMM20 );
+
+    const Register XMM21( ::fcml_reg_XMM21 );
+    const Register YMM21( ::fcml_reg_YMM21 );
+    const Register ZMM21( ::fcml_reg_ZMM21 );
+
+    const Register XMM22( ::fcml_reg_XMM22 );
+    const Register YMM22( ::fcml_reg_YMM22 );
+    const Register ZMM22( ::fcml_reg_ZMM22 );
+
+    const Register XMM23( ::fcml_reg_XMM23 );
+    const Register YMM23( ::fcml_reg_YMM23 );
+    const Register ZMM23( ::fcml_reg_ZMM23 );
+
+    const Register XMM24( ::fcml_reg_XMM24 );
+    const Register YMM24( ::fcml_reg_YMM24 );
+    const Register ZMM24( ::fcml_reg_ZMM24 );
+
+    const Register XMM25( ::fcml_reg_XMM25 );
+    const Register YMM25( ::fcml_reg_YMM25 );
+    const Register ZMM25( ::fcml_reg_ZMM25 );
+
+    const Register XMM26( ::fcml_reg_XMM26 );
+    const Register YMM26( ::fcml_reg_YMM26 );
+    const Register ZMM26( ::fcml_reg_ZMM26 );
+
+    const Register XMM27( ::fcml_reg_XMM27 );
+    const Register YMM27( ::fcml_reg_YMM27 );
+    const Register ZMM27( ::fcml_reg_ZMM27 );
+
+    const Register XMM28( ::fcml_reg_XMM28 );
+    const Register YMM28( ::fcml_reg_YMM28 );
+    const Register ZMM28( ::fcml_reg_ZMM28 );
+
+    const Register XMM29( ::fcml_reg_XMM29 );
+    const Register YMM29( ::fcml_reg_YMM29 );
+    const Register ZMM29( ::fcml_reg_ZMM29 );
+
+    const Register XMM30( ::fcml_reg_XMM30 );
+    const Register YMM30( ::fcml_reg_YMM30 );
+    const Register ZMM30( ::fcml_reg_ZMM30 );
+
+    const Register XMM31( ::fcml_reg_XMM31 );
+    const Register YMM31( ::fcml_reg_YMM31 );
+    const Register ZMM31( ::fcml_reg_ZMM31 );
 
     const Register ES( ::fcml_reg_ES );
     const Register CS( ::fcml_reg_CS );

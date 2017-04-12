@@ -109,6 +109,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_MM0	0
 #define FCML_REG_XMM0	0
 #define FCML_REG_YMM0	0
+#define FCML_REG_ZMM0   0
 
 #define FCML_REG_CL		1
 #define FCML_REG_CX		1
@@ -117,6 +118,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_MM1	1
 #define FCML_REG_XMM1	1
 #define FCML_REG_YMM1	1
+#define FCML_REG_ZMM1   1
 
 #define FCML_REG_DL		2
 #define FCML_REG_DX		2
@@ -125,6 +127,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_MM2	2
 #define FCML_REG_XMM2	2
 #define FCML_REG_YMM2	2
+#define FCML_REG_ZMM2   2
 
 #define FCML_REG_BL		3
 #define FCML_REG_BX		3
@@ -133,6 +136,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_MM3	3
 #define FCML_REG_XMM3	3
 #define FCML_REG_YMM3	3
+#define FCML_REG_ZMM3   3
 
 #define FCML_REG_AH		4
 #define FCML_REG_SP		4
@@ -142,6 +146,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_MM4	4
 #define FCML_REG_XMM4	4
 #define FCML_REG_YMM4	4
+#define FCML_REG_ZMM4   4
 
 #define FCML_REG_CH		5
 #define FCML_REG_BP		5
@@ -151,6 +156,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_MM5	5
 #define FCML_REG_XMM5	5
 #define FCML_REG_YMM5	5
+#define FCML_REG_ZMM5   5
 
 #define FCML_REG_DH		6
 #define FCML_REG_SI		6
@@ -160,6 +166,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_MM6	6
 #define FCML_REG_XMM6	6
 #define FCML_REG_YMM6	6
+#define FCML_REG_ZMM6   6
 
 #define FCML_REG_BH		7
 #define FCML_REG_DI		7
@@ -169,6 +176,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_MM7	7
 #define FCML_REG_XMM7	7
 #define FCML_REG_YMM7	7
+#define FCML_REG_ZMM7   7
 
 #define FCML_REG_R8L	8
 #define FCML_REG_R8W	8
@@ -176,6 +184,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_R8		8
 #define FCML_REG_XMM8	8
 #define FCML_REG_YMM8	8
+#define FCML_REG_ZMM8   8
 
 #define FCML_REG_R9L	9
 #define FCML_REG_R9W	9
@@ -183,6 +192,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_R9		9
 #define FCML_REG_XMM9	9
 #define FCML_REG_YMM9	9
+#define FCML_REG_ZMM9   9
 
 #define FCML_REG_R10L	10
 #define FCML_REG_R10W	10
@@ -190,6 +200,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_R10	10
 #define FCML_REG_XMM10	10
 #define FCML_REG_YMM10	10
+#define FCML_REG_ZMM10  10
 
 #define FCML_REG_R11L	11
 #define FCML_REG_R11W	11
@@ -197,6 +208,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_R11	11
 #define FCML_REG_XMM11	11
 #define FCML_REG_YMM11	11
+#define FCML_REG_ZMM11  11
 
 #define FCML_REG_R12L	12
 #define FCML_REG_R12W	12
@@ -204,6 +216,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_R12	12
 #define FCML_REG_XMM12	12
 #define FCML_REG_YMM12	12
+#define FCML_REG_ZMM12  12
 
 #define FCML_REG_R13L	13
 #define FCML_REG_R13W	13
@@ -211,6 +224,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_R13	13
 #define FCML_REG_XMM13	13
 #define FCML_REG_YMM13	13
+#define FCML_REG_ZMM13  13
 
 #define FCML_REG_R14L	14
 #define FCML_REG_R14W	14
@@ -218,6 +232,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_R14	14
 #define FCML_REG_XMM14	14
 #define FCML_REG_YMM14	14
+#define FCML_REG_ZMM14  14
 
 #define FCML_REG_R15L	15
 #define FCML_REG_R15W	15
@@ -225,6 +240,71 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_R15	15
 #define FCML_REG_XMM15	15
 #define FCML_REG_YMM15	15
+#define FCML_REG_ZMM15  15
+
+#define FCML_REG_XMM16  16
+#define FCML_REG_YMM16  16
+#define FCML_REG_ZMM16  16
+
+#define FCML_REG_XMM17  17
+#define FCML_REG_YMM17  17
+#define FCML_REG_ZMM17  17
+
+#define FCML_REG_XMM18  18
+#define FCML_REG_YMM18  18
+#define FCML_REG_ZMM18  18
+
+#define FCML_REG_XMM19  19
+#define FCML_REG_YMM19  19
+#define FCML_REG_ZMM19  19
+
+#define FCML_REG_XMM20  20
+#define FCML_REG_YMM20  20
+#define FCML_REG_ZMM20  20
+
+#define FCML_REG_XMM21  21
+#define FCML_REG_YMM21  21
+#define FCML_REG_ZMM21  21
+
+#define FCML_REG_XMM22  22
+#define FCML_REG_YMM22  22
+#define FCML_REG_ZMM22  22
+
+#define FCML_REG_XMM23  23
+#define FCML_REG_YMM23  23
+#define FCML_REG_ZMM23  23
+
+#define FCML_REG_XMM24  24
+#define FCML_REG_YMM24  24
+#define FCML_REG_ZMM24  24
+
+#define FCML_REG_XMM25  25
+#define FCML_REG_YMM25  25
+#define FCML_REG_ZMM25  25
+
+#define FCML_REG_XMM26  26
+#define FCML_REG_YMM26  26
+#define FCML_REG_ZMM26  26
+
+#define FCML_REG_XMM27  27
+#define FCML_REG_YMM27  27
+#define FCML_REG_ZMM27  27
+
+#define FCML_REG_XMM28  28
+#define FCML_REG_YMM28  28
+#define FCML_REG_ZMM28  28
+
+#define FCML_REG_XMM29  29
+#define FCML_REG_YMM29  29
+#define FCML_REG_ZMM29  29
+
+#define FCML_REG_XMM30  30
+#define FCML_REG_YMM30  30
+#define FCML_REG_ZMM30  30
+
+#define FCML_REG_XMM31  31
+#define FCML_REG_YMM31  31
+#define FCML_REG_ZMM31  31
 
 /* Segment registers. */
 

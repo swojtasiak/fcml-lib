@@ -28,6 +28,7 @@ fcml_st_register fcml_reg_RAX = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RAX, FCML_F
 fcml_st_register fcml_reg_MM0 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM0, FCML_FALSE };
 fcml_st_register fcml_reg_XMM0 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM0, FCML_FALSE };
 fcml_st_register fcml_reg_YMM0 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM0, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM0 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_CL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_CL, FCML_FALSE };
 fcml_st_register fcml_reg_CX = { FCML_REG_GPR, FCML_DS_16, FCML_REG_CX, FCML_FALSE };
@@ -36,6 +37,7 @@ fcml_st_register fcml_reg_RCX = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RCX, FCML_F
 fcml_st_register fcml_reg_MM1 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM1, FCML_FALSE };
 fcml_st_register fcml_reg_XMM1 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM1, FCML_FALSE };
 fcml_st_register fcml_reg_YMM1 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM1, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM1 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_DL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_DL, FCML_FALSE };
 fcml_st_register fcml_reg_DX = { FCML_REG_GPR, FCML_DS_16, FCML_REG_DX, FCML_FALSE };
@@ -44,6 +46,7 @@ fcml_st_register fcml_reg_RDX = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RDX, FCML_F
 fcml_st_register fcml_reg_MM2 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM2, FCML_FALSE };
 fcml_st_register fcml_reg_XMM2 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM2, FCML_FALSE };
 fcml_st_register fcml_reg_YMM2 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM2, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM2 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_BL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_BL, FCML_FALSE };
 fcml_st_register fcml_reg_BX = { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE };
@@ -52,6 +55,7 @@ fcml_st_register fcml_reg_RBX = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RBX, FCML_F
 fcml_st_register fcml_reg_MM3 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM3, FCML_FALSE };
 fcml_st_register fcml_reg_XMM3 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM3, FCML_FALSE };
 fcml_st_register fcml_reg_YMM3 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM3, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM3 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_AH = { FCML_REG_GPR, FCML_DS_8, FCML_REG_AH, FCML_FALSE };
 fcml_st_register fcml_reg_SPL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_SPL, FCML_TRUE };
@@ -61,6 +65,7 @@ fcml_st_register fcml_reg_RSP = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RSP, FCML_F
 fcml_st_register fcml_reg_MM4 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM4, FCML_FALSE };
 fcml_st_register fcml_reg_XMM4 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM4, FCML_FALSE };
 fcml_st_register fcml_reg_YMM4 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM4, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM4 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_CH = { FCML_REG_GPR, FCML_DS_8, FCML_REG_CH, FCML_FALSE };
 fcml_st_register fcml_reg_BPL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_BPL, FCML_TRUE };
@@ -70,6 +75,7 @@ fcml_st_register fcml_reg_RBP = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RBP, FCML_F
 fcml_st_register fcml_reg_MM5 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM5, FCML_FALSE };
 fcml_st_register fcml_reg_XMM5 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM5, FCML_FALSE };
 fcml_st_register fcml_reg_YMM5 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM5, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM5 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_DH = { FCML_REG_GPR, FCML_DS_8, FCML_REG_DH, FCML_FALSE };
 fcml_st_register fcml_reg_SIL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_SIL, FCML_TRUE };
@@ -79,6 +85,7 @@ fcml_st_register fcml_reg_RSI = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RSI, FCML_F
 fcml_st_register fcml_reg_MM6 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM6, FCML_FALSE };
 fcml_st_register fcml_reg_XMM6 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM6, FCML_FALSE };
 fcml_st_register fcml_reg_YMM6 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM6, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM6 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_BH = { FCML_REG_GPR, FCML_DS_8, FCML_REG_BH, FCML_FALSE };
 fcml_st_register fcml_reg_DIL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_DIL, FCML_TRUE };
@@ -88,6 +95,7 @@ fcml_st_register fcml_reg_RDI = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RDI, FCML_F
 fcml_st_register fcml_reg_MM7 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM7, FCML_FALSE };
 fcml_st_register fcml_reg_XMM7 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM7, FCML_FALSE };
 fcml_st_register fcml_reg_YMM7 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM7, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM7 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_R8L = { FCML_REG_GPR, FCML_DS_8, FCML_REG_R8L, FCML_FALSE };
 fcml_st_register fcml_reg_R8W = { FCML_REG_GPR, FCML_DS_16, FCML_REG_R8W, FCML_FALSE };
@@ -95,6 +103,7 @@ fcml_st_register fcml_reg_R8D = { FCML_REG_GPR, FCML_DS_32, FCML_REG_R8D, FCML_F
 fcml_st_register fcml_reg_R8 = { FCML_REG_GPR, FCML_DS_64, FCML_REG_R8, FCML_FALSE };
 fcml_st_register fcml_reg_XMM8 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM8, FCML_FALSE };
 fcml_st_register fcml_reg_YMM8 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM8, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM8 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_R9L = { FCML_REG_GPR, FCML_DS_8, FCML_REG_R9L, FCML_FALSE };
 fcml_st_register fcml_reg_R9W = { FCML_REG_GPR, FCML_DS_16, FCML_REG_R9W, FCML_FALSE };
@@ -102,6 +111,7 @@ fcml_st_register fcml_reg_R9D = { FCML_REG_GPR, FCML_DS_32, FCML_REG_R9D, FCML_F
 fcml_st_register fcml_reg_R9 = { FCML_REG_GPR, FCML_DS_64, FCML_REG_R9, FCML_FALSE };
 fcml_st_register fcml_reg_XMM9 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM9, FCML_FALSE };
 fcml_st_register fcml_reg_YMM9 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM9, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM9 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_R10L = { FCML_REG_GPR, FCML_DS_8, FCML_REG_R10L, FCML_FALSE };
 fcml_st_register fcml_reg_R10W = { FCML_REG_GPR, FCML_DS_16, FCML_REG_R10W, FCML_FALSE };
@@ -109,6 +119,7 @@ fcml_st_register fcml_reg_R10D = { FCML_REG_GPR, FCML_DS_32, FCML_REG_R10D, FCML
 fcml_st_register fcml_reg_R10 = { FCML_REG_GPR, FCML_DS_64, FCML_REG_R10, FCML_FALSE };
 fcml_st_register fcml_reg_XMM10 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM10, FCML_FALSE };
 fcml_st_register fcml_reg_YMM10 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM10, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM10 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_R11L = { FCML_REG_GPR, FCML_DS_8, FCML_REG_R11L, FCML_FALSE };
 fcml_st_register fcml_reg_R11W = { FCML_REG_GPR, FCML_DS_16, FCML_REG_R11W, FCML_FALSE };
@@ -116,6 +127,7 @@ fcml_st_register fcml_reg_R11D = { FCML_REG_GPR, FCML_DS_32, FCML_REG_R11D, FCML
 fcml_st_register fcml_reg_R11 = { FCML_REG_GPR, FCML_DS_64, FCML_REG_R11, FCML_FALSE };
 fcml_st_register fcml_reg_XMM11 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM11, FCML_FALSE };
 fcml_st_register fcml_reg_YMM11 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM11, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM11 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_R12L = { FCML_REG_GPR, FCML_DS_8, FCML_REG_R12L, FCML_FALSE };
 fcml_st_register fcml_reg_R12W = { FCML_REG_GPR, FCML_DS_16, FCML_REG_R12W, FCML_FALSE };
@@ -123,6 +135,7 @@ fcml_st_register fcml_reg_R12D = { FCML_REG_GPR, FCML_DS_32, FCML_REG_R12D, FCML
 fcml_st_register fcml_reg_R12 = { FCML_REG_GPR, FCML_DS_64, FCML_REG_R12, FCML_FALSE };
 fcml_st_register fcml_reg_XMM12 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM12, FCML_FALSE };
 fcml_st_register fcml_reg_YMM12 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM12, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM12 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_R13L = { FCML_REG_GPR, FCML_DS_8, FCML_REG_R13L, FCML_FALSE };
 fcml_st_register fcml_reg_R13W = { FCML_REG_GPR, FCML_DS_16, FCML_REG_R13W, FCML_FALSE };
@@ -130,6 +143,7 @@ fcml_st_register fcml_reg_R13D = { FCML_REG_GPR, FCML_DS_32, FCML_REG_R13D, FCML
 fcml_st_register fcml_reg_R13 = { FCML_REG_GPR, FCML_DS_64, FCML_REG_R13, FCML_FALSE };
 fcml_st_register fcml_reg_XMM13 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM13, FCML_FALSE };
 fcml_st_register fcml_reg_YMM13 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM13, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM13 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_R14L = { FCML_REG_GPR, FCML_DS_8, FCML_REG_R14L, FCML_FALSE };
 fcml_st_register fcml_reg_R14W = { FCML_REG_GPR, FCML_DS_16, FCML_REG_R14W, FCML_FALSE };
@@ -137,6 +151,7 @@ fcml_st_register fcml_reg_R14D = { FCML_REG_GPR, FCML_DS_32, FCML_REG_R14D, FCML
 fcml_st_register fcml_reg_R14 = { FCML_REG_GPR, FCML_DS_64, FCML_REG_R14, FCML_FALSE };
 fcml_st_register fcml_reg_XMM14 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM14, FCML_FALSE };
 fcml_st_register fcml_reg_YMM14 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM14, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM14 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_R15L = { FCML_REG_GPR, FCML_DS_8, FCML_REG_R15L, FCML_FALSE };
 fcml_st_register fcml_reg_R15W = { FCML_REG_GPR, FCML_DS_16, FCML_REG_R15W, FCML_FALSE };
@@ -144,6 +159,71 @@ fcml_st_register fcml_reg_R15D = { FCML_REG_GPR, FCML_DS_32, FCML_REG_R15D, FCML
 fcml_st_register fcml_reg_R15 = { FCML_REG_GPR, FCML_DS_64, FCML_REG_R15, FCML_FALSE };
 fcml_st_register fcml_reg_XMM15 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
 fcml_st_register fcml_reg_YMM15 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM15 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM16 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM16 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM16 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM17 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM17 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM17 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM18 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM18 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM18 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM19 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM19 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM19 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM20 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM20 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM20 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM21 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM21 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM21 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM22 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM22 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM22 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM23 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM23 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM23 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM24 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM24 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM24 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM25 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM25 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM25 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM26 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM26 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM26 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM27 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM27 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM27 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM28 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM28 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM28 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM29 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM29 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM29 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM30 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM30 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM30 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
+
+fcml_st_register fcml_reg_XMM31 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM15, FCML_FALSE };
+fcml_st_register fcml_reg_YMM31 = { FCML_REG_SIMD, FCML_DS_256, FCML_REG_YMM15, FCML_FALSE };
+fcml_st_register fcml_reg_ZMM31 = { FCML_REG_SIMD, FCML_DS_512, FCML_REG_YMM0, FCML_FALSE };
 
 fcml_st_register fcml_reg_ES = { FCML_REG_SEG, FCML_DS_16, FCML_REG_ES, FCML_FALSE };
 fcml_st_register fcml_reg_CS = { FCML_REG_SEG, FCML_DS_16, FCML_REG_CS, FCML_FALSE };

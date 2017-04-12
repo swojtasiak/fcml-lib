@@ -78,10 +78,36 @@ fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[4][16] = {
 	{ "rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15" }
 };
 
-fcml_string fcml_ar_asm_dialect_reg_sidm_symbol_table[3][16] = {
-	{ "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>" },
-	{ "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15" },
-	{ "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15" }
+fcml_string fcml_ar_asm_dialect_reg_sidm_symbol_table[4][32] = {
+	{
+	  "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7",
+	  "<wrong register>", "<wrong register>", "<wrong register>",
+	  "<wrong register>", "<wrong register>", "<wrong register>",
+	  "<wrong register>", "<wrong register>", "<wrong register>",
+	  "<wrong register>", "<wrong register>", "<wrong register>",
+	  "<wrong register>", "<wrong register>", "<wrong register>",
+	  "<wrong register>", "<wrong register>", "<wrong register>",
+	  "<wrong register>", "<wrong register>", "<wrong register>",
+	  "<wrong register>", "<wrong register>", "<wrong register>"
+	},
+	{
+	  "xmm0",  "xmm1",  "xmm2",  "xmm3",  "xmm4",  "xmm5",  "xmm6",  "xmm7",
+	  "xmm8",  "xmm9",  "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15",
+	  "xmm16", "xmm17", "xmm18", "xmm19", "xmm20", "xmm21", "xmm22", "xmm23",
+	  "xmm24", "xmm25", "xmm26", "xmm27", "xmm28", "xmm29", "xmm30", "xmm31"
+	},
+	{
+	  "ymm0",  "ymm1",  "ymm2",  "ymm3",  "ymm4",  "ymm5",  "ymm6",  "ymm7",
+	  "ymm8",  "ymm9",  "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15",
+	  "ymm16", "ymm17", "ymm18", "ymm19", "ymm20", "ymm21", "ymm22", "ymm23",
+	  "ymm24", "ymm25", "ymm26", "ymm27", "ymm28", "ymm29", "ymm30", "ymm31"
+	},
+	{
+      "zmm0",  "zmm1",  "zmm2",  "zmm3",  "zmm4",  "zmm5",  "zmm6",  "zmm7",
+      "zmm8",  "zmm9",  "zmm10", "zmm11", "zmm12", "zmm13", "zmm14", "zmm15",
+      "zmm16", "zmm17", "zmm18", "zmm19", "zmm20", "zmm21", "zmm22", "zmm23",
+      "zmm24", "zmm25", "zmm26", "zmm27", "zmm28", "zmm29", "zmm30", "zmm31"
+    }
 };
 
 fcml_string fcml_fn_cmn_dialect_render_mnemonic( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry ) {
@@ -182,7 +208,7 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic( const fcml_st_dialect *dialect,
 fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex ) {
     fcml_int rs = 0;
     if (reg->type != FCML_REG_SIMD) {
-        switch ( reg->size ) {
+        switch (reg->size) {
         case 8:
             rs = 0;
             break;
@@ -214,7 +240,7 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fc
             }
         }
     } else {
-        switch ( reg->size ) {
+        switch (reg->size) {
         case 64:
             rs = 0;
             break;
@@ -223,6 +249,9 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fc
             break;
         case 256:
             rs = 2;
+            break;
+        case 512:
+            rs = 3;
             break;
         default:
             return FCML_CEH_GEC_INVALID_INPUT;

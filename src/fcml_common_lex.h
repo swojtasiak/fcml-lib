@@ -36,6 +36,7 @@
 #define FCML_FM_SIMD_64_REG(x)					{ fcml_fn_pu_parse_register( FCML_REG_SIMD, FCML_DS_64, x, FCML_FALSE, &(yylval->reg_value) ); return FCML_TK_REG_SIMD; }
 #define FCML_FM_SIMD_128_REG(x)					{ fcml_fn_pu_parse_register( FCML_REG_SIMD, FCML_DS_128, x, FCML_FALSE, &(yylval->reg_value) ); return FCML_TK_REG_SIMD; }
 #define FCML_FM_SIMD_256_REG(x)					{ fcml_fn_pu_parse_register( FCML_REG_SIMD, FCML_DS_256, x, FCML_FALSE, &(yylval->reg_value) ); return FCML_TK_REG_SIMD; }
+#define FCML_FM_SIMD_512_REG(x)                 { fcml_fn_pu_parse_register( FCML_REG_SIMD, FCML_DS_512, x, FCML_FALSE, &(yylval->reg_value) ); return FCML_TK_REG_SIMD; }
 /*FPU*/
 #define FCML_FM_FPU_REG(x)						{ fcml_fn_pu_parse_register( FCML_REG_FPU, FCML_DS_UNDEF, x, FCML_FALSE, &(yylval->reg_value) ); return FCML_TK_REG_FPU; }
 /*Control registers.*/
