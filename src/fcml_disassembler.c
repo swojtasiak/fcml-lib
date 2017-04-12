@@ -2407,6 +2407,12 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                             	    break;
                             	}
 
+                            	// EVEX.mm cannot be set to 0.
+                            	if (FCML_EVEX_MM(p0) == 0) {
+                            	    prefix_type = FCML_PT_GROUP_UNKNOWN;
+                                    break;
+                            	}
+
                             	// In 32-bit mode EVEX.RX has to be set to 11.
                                 // Otherwise it's a BOUND instruction.
                                 if (op_mode == FCML_OM_32_BIT &&
