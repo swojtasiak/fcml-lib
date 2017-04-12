@@ -76,6 +76,11 @@ namespace ira_flags_calc
             comboBoxC4_2_VVVV.SelectedIndex = 0;
             comboBoxC5_PP.SelectedIndex = 0;
             comboBoxC5_VVVV.SelectedIndex = 0;
+            comboBox_EVEX_pp.SelectedIndex = 0;
+            comboBox_EVEX_mm.SelectedIndex = 0;
+            comboBox_EVEX_vvvv.SelectedIndex = 0;
+            comboBox_EVEX_LL.SelectedIndex = 0;
+            comboBox_EVEX_aaa.SelectedIndex = 0;
         }
 
         void MapPrefixesToCheckBoxes()
@@ -291,6 +296,63 @@ namespace ira_flags_calc
             }
         }
 
+        private void updateP0(object sender, EventArgs e)
+        {
+            ignoreEvents = true;
+
+            // P0
+
+            byte p0 = Convert.ToByte(textBox_P0.Text, 16);
+            checkBox_EVEX_R.Checked = (((int)p0 & (1 << (int)7)) != 0);
+            checkBox_EVEX_X.Checked = (((int)p0 & (1 << (int)6)) != 0);
+            checkBox_EVEX_B.Checked = (((int)p0 & (1 << (int)5)) != 0);
+            setMMMM(comboBox_EVEX_mm, (byte)(p0 & 0x03));
+
+            ignoreEvents = false;
+        }
+
+        private void updateP1(object sender, EventArgs e)
+        {
+            ignoreEvents = true;
+
+            // P1
+
+            byte p1 = Convert.ToByte(textBox_P1.Text, 16);
+
+            checkBox_EVEX_W.Checked = (((int)p1 & (1 << (int)7)) != 0);
+            setVVVV(comboBox_EVEX_vvvv, (byte)((p1 & 0x78) >> 3));
+            setPP(comboBox_EVEX_pp, (byte)(p1 & 0x03));
+           
+            ignoreEvents = false;
+        }
+
+        private void EVEX_changed(object sender, EventArgs e) {
+
+            if (ignoreEvents) {
+                return;
+            }
+
+            byte p0 = 0;
+
+            p0 |= (byte)(checkBox_EVEX_R.Checked ? (1 << (byte)7) : 0);
+            p0 |= (byte)(checkBox_EVEX_X.Checked ? (1 << (byte)6) : 0);
+            p0 |= (byte)(checkBox_EVEX_B.Checked ? (1 << (byte)5) : 0);
+            p0 |= (byte)(checkBox_EVEX_R_prim.Checked ? (1 << (byte)4) : 0);
+            p0 |= getMMMM(comboBox_EVEX_mm);
+
+            textBox_P0.Text = "0x" + p0.ToString("X2");
+
+            byte p1 = 0;
+
+            p1 |= (byte)(checkBox_EVEX_W.Checked ? (1 << (byte)7) : 0);
+            p1 |= (byte)(getVVVV(comboBox_EVEX_vvvv) << (byte)3);
+            p1 |= (byte)(1 << (byte)2);
+            p1 |= (byte)(getPP(comboBox_EVEX_pp));
+            
+            textBox_P1.Text = "0x" + p1.ToString("X2");
+
+        }
+
         private void checkBoxVEX(object sender, EventArgs e) {
 
             if (ignoreEvents) {
@@ -331,8 +393,6 @@ namespace ira_flags_calc
             textBoxC5_1.Text = "0x" + value.ToString("X2");
 
         }
-
-        
 
         private byte getVVVV(ComboBox comboBox) {
             string reg = (string)comboBox.SelectedItem;

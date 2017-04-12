@@ -109,6 +109,31 @@ namespace ira_flags_calc
             this.textBoxC5_1 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.checkBox_EVEX_R = new System.Windows.Forms.CheckBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.checkBox_EVEX_X = new System.Windows.Forms.CheckBox();
+            this.checkBox_EVEX_B = new System.Windows.Forms.CheckBox();
+            this.checkBox_EVEX_R_prim = new System.Windows.Forms.CheckBox();
+            this.comboBox_EVEX_mm = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.checkBox_EVEX_W = new System.Windows.Forms.CheckBox();
+            this.textBox_P0 = new System.Windows.Forms.TextBox();
+            this.textBox_P1 = new System.Windows.Forms.TextBox();
+            this.comboBox_EVEX_vvvv = new System.Windows.Forms.ComboBox();
+            this.comboBox_EVEX_LL = new System.Windows.Forms.ComboBox();
+            this.textBox_P2 = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.comboBox_EVEX_aaa = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.checkBox_EVEX_z = new System.Windows.Forms.CheckBox();
+            this.checkBox_EVEX_L_prim = new System.Windows.Forms.CheckBox();
+            this.checkBox_EVEX_L = new System.Windows.Forms.CheckBox();
+            this.checkBox_EVEX_b_lower = new System.Windows.Forms.CheckBox();
+            this.checkBox_EVEX_V_prim = new System.Windows.Forms.CheckBox();
+            this.comboBox_EVEX_pp = new System.Windows.Forms.ComboBox();
             this.groupBoxFPrefixes.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -139,7 +164,7 @@ namespace ira_flags_calc
             this.groupBoxFPrefixes.Controls.Add(this.checkBoxF0);
             this.groupBoxFPrefixes.Location = new System.Drawing.Point(9, 8);
             this.groupBoxFPrefixes.Name = "groupBoxFPrefixes";
-            this.groupBoxFPrefixes.Size = new System.Drawing.Size(222, 426);
+            this.groupBoxFPrefixes.Size = new System.Drawing.Size(222, 559);
             this.groupBoxFPrefixes.TabIndex = 0;
             this.groupBoxFPrefixes.TabStop = false;
             this.groupBoxFPrefixes.Text = "Prefixes";
@@ -374,7 +399,7 @@ namespace ira_flags_calc
             this.groupBox2.Location = new System.Drawing.Point(237, 8);
             this.groupBox2.Name = "groupBox2";
             this.helpProvider.SetShowHelp(this.groupBox2, true);
-            this.groupBox2.Size = new System.Drawing.Size(392, 426);
+            this.groupBox2.Size = new System.Drawing.Size(392, 559);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Opcode";
@@ -766,7 +791,7 @@ namespace ira_flags_calc
             // textBoxPrefixes
             // 
             this.textBoxPrefixes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxPrefixes.Location = new System.Drawing.Point(9, 440);
+            this.textBoxPrefixes.Location = new System.Drawing.Point(9, 573);
             this.textBoxPrefixes.Name = "textBoxPrefixes";
             this.textBoxPrefixes.Size = new System.Drawing.Size(222, 20);
             this.textBoxPrefixes.TabIndex = 2;
@@ -774,8 +799,8 @@ namespace ira_flags_calc
             // 
             // textBoxOpcode
             // 
-            this.textBoxOpcode.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBoxOpcode.Location = new System.Drawing.Point(237, 440);
+            this.textBoxOpcode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBoxOpcode.Location = new System.Drawing.Point(237, 573);
             this.textBoxOpcode.Name = "textBoxOpcode";
             this.textBoxOpcode.Size = new System.Drawing.Size(392, 20);
             this.textBoxOpcode.TabIndex = 3;
@@ -1093,11 +1118,316 @@ namespace ira_flags_calc
             this.label8.TabIndex = 22;
             this.label8.Text = "VEX/XOP";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Nina", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(635, 364);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(54, 25);
+            this.label9.TabIndex = 24;
+            this.label9.Text = "EVEX";
+            // 
+            // checkBox_EVEX_R
+            // 
+            this.checkBox_EVEX_R.AutoSize = true;
+            this.checkBox_EVEX_R.Location = new System.Drawing.Point(666, 420);
+            this.checkBox_EVEX_R.Name = "checkBox_EVEX_R";
+            this.checkBox_EVEX_R.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_R.TabIndex = 25;
+            this.checkBox_EVEX_R.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_R.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_R.CheckedChanged += new System.EventHandler(this.EVEX_changed);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(666, 399);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(133, 13);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "R    X     B    R\'             mm";
+            // 
+            // checkBox_EVEX_X
+            // 
+            this.checkBox_EVEX_X.AutoSize = true;
+            this.checkBox_EVEX_X.Location = new System.Drawing.Point(687, 420);
+            this.checkBox_EVEX_X.Name = "checkBox_EVEX_X";
+            this.checkBox_EVEX_X.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_X.TabIndex = 27;
+            this.checkBox_EVEX_X.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_X.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_X.CheckedChanged += new System.EventHandler(this.EVEX_changed);
+            // 
+            // checkBox_EVEX_B
+            // 
+            this.checkBox_EVEX_B.AutoSize = true;
+            this.checkBox_EVEX_B.Location = new System.Drawing.Point(708, 420);
+            this.checkBox_EVEX_B.Name = "checkBox_EVEX_B";
+            this.checkBox_EVEX_B.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_B.TabIndex = 28;
+            this.checkBox_EVEX_B.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_B.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_B.CheckedChanged += new System.EventHandler(this.EVEX_changed);
+            // 
+            // checkBox_EVEX_R_prim
+            // 
+            this.checkBox_EVEX_R_prim.AutoSize = true;
+            this.checkBox_EVEX_R_prim.Location = new System.Drawing.Point(729, 420);
+            this.checkBox_EVEX_R_prim.Name = "checkBox_EVEX_R_prim";
+            this.checkBox_EVEX_R_prim.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_R_prim.TabIndex = 29;
+            this.checkBox_EVEX_R_prim.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_R_prim.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_R_prim.CheckedChanged += new System.EventHandler(this.EVEX_changed);
+            // 
+            // comboBox_EVEX_mm
+            // 
+            this.comboBox_EVEX_mm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_EVEX_mm.FormattingEnabled = true;
+            this.comboBox_EVEX_mm.Items.AddRange(new object[] {
+            "0F",
+            "0F38",
+            "0F3A"});
+            this.comboBox_EVEX_mm.Location = new System.Drawing.Point(749, 416);
+            this.comboBox_EVEX_mm.Name = "comboBox_EVEX_mm";
+            this.comboBox_EVEX_mm.Size = new System.Drawing.Size(84, 21);
+            this.comboBox_EVEX_mm.TabIndex = 51;
+            this.comboBox_EVEX_mm.SelectedIndexChanged += new System.EventHandler(this.EVEX_changed);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(638, 420);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(20, 13);
+            this.label11.TabIndex = 52;
+            this.label11.Text = "P0";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(638, 475);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(20, 13);
+            this.label12.TabIndex = 59;
+            this.label12.Text = "P1";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(666, 454);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(144, 13);
+            this.label13.TabIndex = 54;
+            this.label13.Text = "W            vvvv                  pp";
+            // 
+            // checkBox_EVEX_W
+            // 
+            this.checkBox_EVEX_W.AutoSize = true;
+            this.checkBox_EVEX_W.Location = new System.Drawing.Point(666, 475);
+            this.checkBox_EVEX_W.Name = "checkBox_EVEX_W";
+            this.checkBox_EVEX_W.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_W.TabIndex = 53;
+            this.checkBox_EVEX_W.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_W.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_W.CheckedChanged += new System.EventHandler(this.EVEX_changed);
+            // 
+            // textBox_P0
+            // 
+            this.textBox_P0.Location = new System.Drawing.Point(848, 416);
+            this.textBox_P0.Name = "textBox_P0";
+            this.textBox_P0.Size = new System.Drawing.Size(37, 20);
+            this.textBox_P0.TabIndex = 60;
+            this.textBox_P0.TextChanged += new System.EventHandler(this.updateP0);
+            // 
+            // textBox_P1
+            // 
+            this.textBox_P1.Location = new System.Drawing.Point(849, 471);
+            this.textBox_P1.Name = "textBox_P1";
+            this.textBox_P1.Size = new System.Drawing.Size(37, 20);
+            this.textBox_P1.TabIndex = 60;
+            this.textBox_P1.TextChanged += new System.EventHandler(this.updateP1);
+            // 
+            // comboBox_EVEX_vvvv
+            // 
+            this.comboBox_EVEX_vvvv.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_EVEX_vvvv.FormattingEnabled = true;
+            this.comboBox_EVEX_vvvv.Items.AddRange(new object[] {
+            "YMM0",
+            "YMM1",
+            "YMM2",
+            "YMM3",
+            "YMM4",
+            "YMM5",
+            "YMM6",
+            "YMM7",
+            "YMM8",
+            "YMM9",
+            "YMM10",
+            "YMM11",
+            "YMM12",
+            "YMM13",
+            "YMM14",
+            "YMM15"});
+            this.comboBox_EVEX_vvvv.Location = new System.Drawing.Point(687, 470);
+            this.comboBox_EVEX_vvvv.Name = "comboBox_EVEX_vvvv";
+            this.comboBox_EVEX_vvvv.Size = new System.Drawing.Size(84, 21);
+            this.comboBox_EVEX_vvvv.TabIndex = 24;
+            this.comboBox_EVEX_vvvv.SelectedIndexChanged += new System.EventHandler(this.EVEX_changed);
+            // 
+            // comboBox_EVEX_LL
+            // 
+            this.comboBox_EVEX_LL.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_EVEX_LL.FormattingEnabled = true;
+            this.comboBox_EVEX_LL.Items.AddRange(new object[] {
+            "SAE + RNE",
+            "SAE + RD",
+            "SAE + RU",
+            "SAE + RZ"});
+            this.comboBox_EVEX_LL.Location = new System.Drawing.Point(687, 549);
+            this.comboBox_EVEX_LL.Name = "comboBox_EVEX_LL";
+            this.comboBox_EVEX_LL.Size = new System.Drawing.Size(78, 21);
+            this.comboBox_EVEX_LL.TabIndex = 61;
+            // 
+            // textBox_P2
+            // 
+            this.textBox_P2.Location = new System.Drawing.Point(849, 525);
+            this.textBox_P2.Name = "textBox_P2";
+            this.textBox_P2.Size = new System.Drawing.Size(37, 20);
+            this.textBox_P2.TabIndex = 66;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(638, 529);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(20, 13);
+            this.label14.TabIndex = 65;
+            this.label14.Text = "P2";
+            // 
+            // comboBox_EVEX_aaa
+            // 
+            this.comboBox_EVEX_aaa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_EVEX_aaa.FormattingEnabled = true;
+            this.comboBox_EVEX_aaa.Items.AddRange(new object[] {
+            "k0",
+            "k1",
+            "k2",
+            "k3",
+            "k4",
+            "k5",
+            "k6",
+            "k7"});
+            this.comboBox_EVEX_aaa.Location = new System.Drawing.Point(777, 525);
+            this.comboBox_EVEX_aaa.Name = "comboBox_EVEX_aaa";
+            this.comboBox_EVEX_aaa.Size = new System.Drawing.Size(56, 21);
+            this.comboBox_EVEX_aaa.TabIndex = 64;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(666, 508);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(149, 13);
+            this.label15.TabIndex = 63;
+            this.label15.Text = "z     L\'     L     b     V\'          aaa";
+            // 
+            // checkBox_EVEX_z
+            // 
+            this.checkBox_EVEX_z.AutoSize = true;
+            this.checkBox_EVEX_z.Location = new System.Drawing.Point(666, 529);
+            this.checkBox_EVEX_z.Name = "checkBox_EVEX_z";
+            this.checkBox_EVEX_z.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_z.TabIndex = 62;
+            this.checkBox_EVEX_z.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_z.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_EVEX_L_prim
+            // 
+            this.checkBox_EVEX_L_prim.AutoSize = true;
+            this.checkBox_EVEX_L_prim.Location = new System.Drawing.Point(687, 529);
+            this.checkBox_EVEX_L_prim.Name = "checkBox_EVEX_L_prim";
+            this.checkBox_EVEX_L_prim.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_L_prim.TabIndex = 67;
+            this.checkBox_EVEX_L_prim.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_L_prim.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_EVEX_L
+            // 
+            this.checkBox_EVEX_L.AutoSize = true;
+            this.checkBox_EVEX_L.Location = new System.Drawing.Point(708, 529);
+            this.checkBox_EVEX_L.Name = "checkBox_EVEX_L";
+            this.checkBox_EVEX_L.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_L.TabIndex = 63;
+            this.checkBox_EVEX_L.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_L.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_EVEX_b_lower
+            // 
+            this.checkBox_EVEX_b_lower.AutoSize = true;
+            this.checkBox_EVEX_b_lower.Location = new System.Drawing.Point(729, 529);
+            this.checkBox_EVEX_b_lower.Name = "checkBox_EVEX_b_lower";
+            this.checkBox_EVEX_b_lower.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_b_lower.TabIndex = 68;
+            this.checkBox_EVEX_b_lower.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_b_lower.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_EVEX_V_prim
+            // 
+            this.checkBox_EVEX_V_prim.AutoSize = true;
+            this.checkBox_EVEX_V_prim.Location = new System.Drawing.Point(750, 529);
+            this.checkBox_EVEX_V_prim.Name = "checkBox_EVEX_V_prim";
+            this.checkBox_EVEX_V_prim.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_EVEX_V_prim.TabIndex = 69;
+            this.checkBox_EVEX_V_prim.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.checkBox_EVEX_V_prim.UseVisualStyleBackColor = true;
+            // 
+            // comboBox_EVEX_pp
+            // 
+            this.comboBox_EVEX_pp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_EVEX_pp.FormattingEnabled = true;
+            this.comboBox_EVEX_pp.Items.AddRange(new object[] {
+            "None",
+            "66",
+            "F3",
+            "F2"});
+            this.comboBox_EVEX_pp.Location = new System.Drawing.Point(777, 470);
+            this.comboBox_EVEX_pp.Name = "comboBox_EVEX_pp";
+            this.comboBox_EVEX_pp.Size = new System.Drawing.Size(56, 21);
+            this.comboBox_EVEX_pp.TabIndex = 70;
+            this.comboBox_EVEX_pp.SelectedIndexChanged += new System.EventHandler(this.EVEX_changed);
+            // 
             // FormCalculator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(922, 467);
+            this.ClientSize = new System.Drawing.Size(922, 600);
+            this.Controls.Add(this.comboBox_EVEX_pp);
+            this.Controls.Add(this.checkBox_EVEX_V_prim);
+            this.Controls.Add(this.checkBox_EVEX_b_lower);
+            this.Controls.Add(this.checkBox_EVEX_L);
+            this.Controls.Add(this.checkBox_EVEX_L_prim);
+            this.Controls.Add(this.comboBox_EVEX_LL);
+            this.Controls.Add(this.textBox_P2);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.comboBox_EVEX_aaa);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.checkBox_EVEX_z);
+            this.Controls.Add(this.comboBox_EVEX_vvvv);
+            this.Controls.Add(this.textBox_P1);
+            this.Controls.Add(this.textBox_P0);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.checkBox_EVEX_W);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.comboBox_EVEX_mm);
+            this.Controls.Add(this.checkBox_EVEX_R_prim);
+            this.Controls.Add(this.checkBox_EVEX_B);
+            this.Controls.Add(this.checkBox_EVEX_X);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.checkBox_EVEX_R);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -1214,6 +1544,31 @@ namespace ira_flags_calc
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button buttonFromClipboardC4;
         private System.Windows.Forms.CheckBox checkBoxDefaultEOSA_64;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_R;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_X;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_B;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_R_prim;
+        private System.Windows.Forms.ComboBox comboBox_EVEX_mm;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_W;
+        private System.Windows.Forms.TextBox textBox_P0;
+        private System.Windows.Forms.TextBox textBox_P1;
+        private System.Windows.Forms.ComboBox comboBox_EVEX_vvvv;
+        private System.Windows.Forms.ComboBox comboBox_EVEX_LL;
+        private System.Windows.Forms.TextBox textBox_P2;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.ComboBox comboBox_EVEX_aaa;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_z;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_L_prim;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_L;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_b_lower;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_V_prim;
+        private System.Windows.Forms.ComboBox comboBox_EVEX_pp;
     }
 }
 
