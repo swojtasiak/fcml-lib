@@ -2321,15 +2321,10 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                 is_last_prefix = FCML_TRUE;
                 break;
             case 0x62:
-            	if (op_mode == FCML_OM_64_BIT) {
-					xop_vex_prefix_size = 3;
-					prefix_type = FCML_PT_EVEX;
-					p_flags |= FCML_IDFPF_IS_EVEX;
-					is_last_prefix = FCML_TRUE;
-            	} else {
-            		/* EVEX encoding is allowed only in 64-bits mode. */
-					is_xop_vex_allowed = FCML_FALSE;
-            	}
+                xop_vex_prefix_size = 3;
+                prefix_type = FCML_PT_EVEX;
+                p_flags |= FCML_IDFPF_IS_EVEX;
+                is_last_prefix = FCML_TRUE;
                 break;
             default:
                 /* REX prefix is the last one, so we have to break this loop 
@@ -2405,6 +2400,20 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                             	fcml_uint8_t p0 = prefix_details->vex_xop_bytes[0];
                             	fcml_uint8_t p1 = prefix_details->vex_xop_bytes[1];
                             	fcml_uint8_t p2 = prefix_details->vex_xop_bytes[2];
+
+                            	// These fields are fixed for EVEX.
+                            	if ((p0 & 0x0C) || !(p1 & 0x04)) {
+                            	    prefix_type = FCML_PT_GROUP_UNKNOWN;
+                            	    break;
+                            	}
+
+                            	// In 32-bit mode EVEX.RX has to be set to 11.
+                                // Otherwise it's a BOUND instruction.
+                                if (op_mode == FCML_OM_32_BIT &&
+                                        (p0 & 0xC0) != 0xC0) {
+                                    prefix_type = FCML_PT_GROUP_UNKNOWN;
+                                    break;
+                                }
 
                                 prefixes_details->R = FCML_EVEX_R(p0);
                                 prefixes_details->X = FCML_EVEX_X(p0);
