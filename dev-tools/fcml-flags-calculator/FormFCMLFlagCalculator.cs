@@ -27,7 +27,13 @@ namespace ira_flags_calc
             _66_Man,
             _F2_Man,
             _F3_Man,
-            Sufix 
+            Sufix,
+            _EVEX,
+            _bcast,
+            _z,
+            _k1,
+            _er,
+            _sae
         }
 
         enum Opcodes : int
@@ -86,7 +92,7 @@ namespace ira_flags_calc
         void MapPrefixesToCheckBoxes()
         {
             string value = textBoxPrefixes.Text;
-            ushort prefixes = (ushort)Convert.ToInt16(value, 16);
+            uint prefixes = (uint)Convert.ToInt32(value, 16);
             checkBoxF0.Checked = ( (int)prefixes & ( 1 << (int)Prefixes._F0 ) ) != 0;
             checkBoxF2.Checked = ((int)prefixes & (1 << (int)Prefixes._F2)) != 0;
             checkBoxF3.Checked = ((int)prefixes & (1 << (int)Prefixes._F3)) != 0;
@@ -103,28 +109,47 @@ namespace ira_flags_calc
             checkBox_F2_Mand.Checked = ((int)prefixes & (1 << (int)Prefixes._F2_Man)) != 0;
             checkBox_F3_Mand.Checked = ((int)prefixes & (1 << (int)Prefixes._F3_Man)) != 0;
             checkBox_Suffix.Checked = ((int)prefixes & (1 << (int)Prefixes.Sufix)) != 0;
+            checkBox_EVEX.Checked = ((int)prefixes & (1 << (int)Prefixes._EVEX)) != 0;
+            checkBox_bcast.Checked = ((int)prefixes & (1 << (int)Prefixes._bcast)) != 0;
+            checkBox_z.Checked = ((int)prefixes & (1 << (int)Prefixes._z)) != 0;
+            checkBox_k1.Checked = ((int)prefixes & (1 << (int)Prefixes._k1)) != 0;
+            checkBox_er.Checked = ((int)prefixes & (1 << (int)Prefixes._er)) != 0;
+            checkBox_sae.Checked = ((int)prefixes & (1 << (int)Prefixes._sae)) != 0;
         }
 
         void MapCheckBoxesToPrefixes()
         {
-            ushort value = 0;
-            value |= (ushort)(checkBoxF0.Checked ? ( 1 << (int)Prefixes._F0 ) : 0 );
-            value |= (ushort)(checkBoxF2.Checked ? (1 << (int)Prefixes._F2) : 0);
-            value |= (ushort)(checkBoxF3.Checked ? (1 << (int)Prefixes._F3) : 0);
-            value |= (ushort)(checkBox_REXW_1.Checked ? (1 << (int)Prefixes._W_1) : 0);
-            value |= (ushort)(checkBox_VEXW_1.Checked ? (1 << (int)Prefixes._W_0) : 0);
-            value |= (ushort)(checkBox_VEXL_1.Checked ? (1 << (int)Prefixes._VEXL_1) : 0);
-            value |= (ushort)(checkBox_VEX_For_Legacy.Checked ? (1 << (int)Prefixes._VEX_LEG) : 0);
-            value |= (ushort)(checkBox_VEX_NEDDED.Checked ? (1 << (int)Prefixes._VEX_Required) : 0);
-            value |= (ushort)(checkBox_VVVV_Unused.Checked ? (1 << (int)Prefixes._VEX_VVVV_Unused) : 0);
-            value |= (ushort)(checkBox_Reserved_3.Checked ? (1 << (int)Prefixes._VEX_L_Ignore_For_Size) : 0);
-            value |= (ushort)(checkBox_XOP_Required.Checked ? (1 << (int)Prefixes._XOP_Required) : 0);
-            value |= (ushort)(checkBox_EanableHAL.Checked ? (1 << (int)Prefixes._HAL) : 0);
-            value |= (ushort)(checkBox66_Mand.Checked ? (1 << (int)Prefixes._66_Man) : 0);
-            value |= (ushort)(checkBox_F2_Mand.Checked ? (1 << (int)Prefixes._F2_Man) : 0);
-            value |= (ushort)(checkBox_F3_Mand.Checked ? (1 << (int)Prefixes._F3_Man) : 0);
-            value |= (ushort)(checkBox_Suffix.Checked ? (1 << (int)Prefixes.Sufix) : 0);
-            textBoxPrefixes.Text = "0x" + value.ToString("X4");
+            uint value = 0;
+            value |= (uint)(checkBoxF0.Checked ? (1 << (int)Prefixes._F0) : 0);
+            value |= (uint)(checkBoxF2.Checked ? (1 << (int)Prefixes._F2) : 0);
+            value |= (uint)(checkBoxF3.Checked ? (1 << (int)Prefixes._F3) : 0);
+            value |= (uint)(checkBox_REXW_1.Checked ? (1 << (int)Prefixes._W_1) : 0);
+            value |= (uint)(checkBox_VEXW_1.Checked ? (1 << (int)Prefixes._W_0) : 0);
+            value |= (uint)(checkBox_VEXL_1.Checked ? (1 << (int)Prefixes._VEXL_1) : 0);
+            value |= (uint)(checkBox_VEX_For_Legacy.Checked ? (1 << (int)Prefixes._VEX_LEG) : 0);
+            value |= (uint)(checkBox_VEX_NEDDED.Checked ? (1 << (int)Prefixes._VEX_Required) : 0);
+            value |= (uint)(checkBox_VVVV_Unused.Checked ? (1 << (int)Prefixes._VEX_VVVV_Unused) : 0);
+            value |= (uint)(checkBox_Reserved_3.Checked ? (1 << (int)Prefixes._VEX_L_Ignore_For_Size) : 0);
+            value |= (uint)(checkBox_XOP_Required.Checked ? (1 << (int)Prefixes._XOP_Required) : 0);
+            value |= (uint)(checkBox_EanableHAL.Checked ? (1 << (int)Prefixes._HAL) : 0);
+            value |= (uint)(checkBox66_Mand.Checked ? (1 << (int)Prefixes._66_Man) : 0);
+            value |= (uint)(checkBox_F2_Mand.Checked ? (1 << (int)Prefixes._F2_Man) : 0);
+            value |= (uint)(checkBox_F3_Mand.Checked ? (1 << (int)Prefixes._F3_Man) : 0);
+            value |= (uint)(checkBox_Suffix.Checked ? (1 << (int)Prefixes.Sufix) : 0);
+            value |= (uint)(checkBox_EVEX.Checked ? (1 << (int)Prefixes._EVEX) : 0);
+            value |= (uint)(checkBox_bcast.Checked ? (1 << (int)Prefixes._bcast) : 0);
+            value |= (uint)(checkBox_z.Checked ? (1 << (int)Prefixes._z) : 0);
+            value |= (uint)(checkBox_k1.Checked ? (1 << (int)Prefixes._k1) : 0);
+            value |= (uint)(checkBox_er.Checked ? (1 << (int)Prefixes._er) : 0);
+            
+            if (checkBox_er.Checked && !checkBox_sae.Checked)
+            {
+                checkBox_sae.Checked = true;
+            }
+
+            value |= (uint)(checkBox_sae.Checked ? (1 << (int)Prefixes._sae) : 0);
+
+            textBoxPrefixes.Text = "0x" + value.ToString("X8");
         }
 
         void MapCheckBoxesToOpcodes()
@@ -283,7 +308,7 @@ namespace ira_flags_calc
         private void FormCalculator_Load(object sender, EventArgs e)
         {
             textBoxOpcode.Text = "0x00000000";
-            textBoxPrefixes.Text = "0x0000";
+            textBoxPrefixes.Text = "0x00000000";
         }
 
         private void textBox_opcodes_bytes_TextChanged(object sender, EventArgs e) {
