@@ -48,19 +48,19 @@
 #define FCML_VEX_PP(x)               (x & 0x03)
 
 /* EVEX prefix fields. */
-#define FCML_EVEX_R(x)               FCML_TP_GET_BIT(x, 7)
-#define FCML_EVEX_X(x)               FCML_TP_GET_BIT(x, 6)
-#define FCML_EVEX_B(x)               FCML_TP_GET_BIT(x, 5)
-#define FCML_EVEX_R_PRIM(x)          FCML_TP_GET_BIT(x, 4)
+#define FCML_EVEX_R(x)               !FCML_TP_GET_BIT(x, 7)
+#define FCML_EVEX_X(x)               !FCML_TP_GET_BIT(x, 6)
+#define FCML_EVEX_B(x)               !FCML_TP_GET_BIT(x, 5)
+#define FCML_EVEX_R_PRIM(x)          !FCML_TP_GET_BIT(x, 4)
 #define FCML_EVEX_MM(x)              (x & 0x03)
 #define FCML_EVEX_W(x)               FCML_TP_GET_BIT(x, 7)
-#define FCML_EVEX_VVVV(x)            (~((x & 0x78) >> 3) & 0x00F)
+#define FCML_EVEX_VVVV(x)            FCML_VEX_VVVV(x)
 #define FCML_EVEX_PP(x)              (x & 0x03)
 #define FCML_EVEX_z(x)               FCML_TP_GET_BIT(x, 7)
 #define FCML_EVEX_L_PRIM(x)          FCML_TP_GET_BIT(x, 6)
 #define FCML_EVEX_L(x)               FCML_TP_GET_BIT(x, 5)
 #define FCML_EVEX_b(x)               FCML_TP_GET_BIT(x, 4)
-#define FCML_EVEX_V_PRIM(x)          FCML_TP_GET_BIT(x, 3)
+#define FCML_EVEX_V_PRIM(x)          !FCML_TP_GET_BIT(x, 3)
 #define FCML_EVEX_aaa(x)             (x & 0x07)
 
 /* REX prefix fields.*/
