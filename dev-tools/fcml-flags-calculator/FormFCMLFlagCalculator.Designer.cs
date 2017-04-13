@@ -850,6 +850,7 @@ namespace ira_flags_calc
             this.comboBoxC4_1_MMMM.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxC4_1_MMMM.FormattingEnabled = true;
             this.comboBoxC4_1_MMMM.Items.AddRange(new object[] {
+            "None",
             "0F",
             "0F38",
             "0F3A",
@@ -1186,6 +1187,7 @@ namespace ira_flags_calc
             this.comboBox_EVEX_mm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_EVEX_mm.FormattingEnabled = true;
             this.comboBox_EVEX_mm.Items.AddRange(new object[] {
+            "None",
             "0F",
             "0F38",
             "0F3A"});
@@ -1289,6 +1291,7 @@ namespace ira_flags_calc
             this.comboBox_EVEX_LL.Name = "comboBox_EVEX_LL";
             this.comboBox_EVEX_LL.Size = new System.Drawing.Size(78, 21);
             this.comboBox_EVEX_LL.TabIndex = 61;
+            this.comboBox_EVEX_LL.SelectedIndexChanged += new System.EventHandler(this.comboBox_EVEX_LL_SelectedIndexChanged);
             // 
             // textBox_P2
             // 
@@ -1296,6 +1299,7 @@ namespace ira_flags_calc
             this.textBox_P2.Name = "textBox_P2";
             this.textBox_P2.Size = new System.Drawing.Size(37, 20);
             this.textBox_P2.TabIndex = 66;
+            this.textBox_P2.TextChanged += new System.EventHandler(this.updateP2);
             // 
             // label14
             // 
@@ -1323,6 +1327,7 @@ namespace ira_flags_calc
             this.comboBox_EVEX_aaa.Name = "comboBox_EVEX_aaa";
             this.comboBox_EVEX_aaa.Size = new System.Drawing.Size(56, 21);
             this.comboBox_EVEX_aaa.TabIndex = 64;
+            this.comboBox_EVEX_aaa.SelectedIndexChanged += new System.EventHandler(this.EVEX_changed);
             // 
             // label15
             // 
@@ -1342,6 +1347,7 @@ namespace ira_flags_calc
             this.checkBox_EVEX_z.TabIndex = 62;
             this.checkBox_EVEX_z.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.checkBox_EVEX_z.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_z.CheckedChanged += new System.EventHandler(this.EVEX_changed);
             // 
             // checkBox_EVEX_L_prim
             // 
@@ -1352,6 +1358,7 @@ namespace ira_flags_calc
             this.checkBox_EVEX_L_prim.TabIndex = 67;
             this.checkBox_EVEX_L_prim.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.checkBox_EVEX_L_prim.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_L_prim.CheckedChanged += new System.EventHandler(this.EVEX_changed);
             // 
             // checkBox_EVEX_L
             // 
@@ -1362,6 +1369,7 @@ namespace ira_flags_calc
             this.checkBox_EVEX_L.TabIndex = 63;
             this.checkBox_EVEX_L.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.checkBox_EVEX_L.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_L.CheckedChanged += new System.EventHandler(this.EVEX_changed);
             // 
             // checkBox_EVEX_b_lower
             // 
@@ -1372,6 +1380,7 @@ namespace ira_flags_calc
             this.checkBox_EVEX_b_lower.TabIndex = 68;
             this.checkBox_EVEX_b_lower.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.checkBox_EVEX_b_lower.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_b_lower.CheckedChanged += new System.EventHandler(this.EVEX_changed);
             // 
             // checkBox_EVEX_V_prim
             // 
@@ -1382,6 +1391,7 @@ namespace ira_flags_calc
             this.checkBox_EVEX_V_prim.TabIndex = 69;
             this.checkBox_EVEX_V_prim.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.checkBox_EVEX_V_prim.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_V_prim.CheckedChanged += new System.EventHandler(this.EVEX_changed);
             // 
             // comboBox_EVEX_pp
             // 
@@ -1442,7 +1452,7 @@ namespace ira_flags_calc
             this.Name = "FormCalculator";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "FCML Flags Calculator 0.0.17";
+            this.Text = "FCML Flags Calculator 0.0.18";
             this.Load += new System.EventHandler(this.FormCalculator_Load);
             this.groupBoxFPrefixes.ResumeLayout(false);
             this.groupBoxFPrefixes.PerformLayout();

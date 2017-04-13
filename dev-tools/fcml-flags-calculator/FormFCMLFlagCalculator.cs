@@ -303,9 +303,10 @@ namespace ira_flags_calc
             // P0
 
             byte p0 = Convert.ToByte(textBox_P0.Text, 16);
-            checkBox_EVEX_R.Checked = (((int)p0 & (1 << (int)7)) != 0);
-            checkBox_EVEX_X.Checked = (((int)p0 & (1 << (int)6)) != 0);
-            checkBox_EVEX_B.Checked = (((int)p0 & (1 << (int)5)) != 0);
+            checkBox_EVEX_R.Checked = !(((int)p0 & (1 << (int)7)) != 0);
+            checkBox_EVEX_X.Checked = !(((int)p0 & (1 << (int)6)) != 0);
+            checkBox_EVEX_B.Checked = !(((int)p0 & (1 << (int)5)) != 0);
+            checkBox_EVEX_R_prim.Checked = !(((int)p0 & (1 << (int)4)) != 0);
             setMMMM(comboBox_EVEX_mm, (byte)(p0 & 0x03));
 
             ignoreEvents = false;
@@ -326,6 +327,24 @@ namespace ira_flags_calc
             ignoreEvents = false;
         }
 
+        private void updateP2(object sender, EventArgs e)
+        {
+            ignoreEvents = true;
+
+            // P2
+
+            byte p2 = Convert.ToByte(textBox_P2.Text, 16);
+
+            checkBox_EVEX_z.Checked = (((int)p2 & (1 << (int)7)) != 0);
+            checkBox_EVEX_L_prim.Checked = (((int)p2 & (1 << (int)6)) != 0);
+            checkBox_EVEX_L.Checked = (((int)p2 & (1 << (int)5)) != 0);
+            checkBox_EVEX_b_lower.Checked = (((int)p2 & (1 << (int)4)) != 0);
+            checkBox_EVEX_V_prim.Checked = !(((int)p2 & (1 << (int)3)) != 0);
+            comboBox_EVEX_aaa.SelectedIndex = p2 & 0x07;
+
+            ignoreEvents = false;
+        }
+
         private void EVEX_changed(object sender, EventArgs e) {
 
             if (ignoreEvents) {
@@ -334,10 +353,10 @@ namespace ira_flags_calc
 
             byte p0 = 0;
 
-            p0 |= (byte)(checkBox_EVEX_R.Checked ? (1 << (byte)7) : 0);
-            p0 |= (byte)(checkBox_EVEX_X.Checked ? (1 << (byte)6) : 0);
-            p0 |= (byte)(checkBox_EVEX_B.Checked ? (1 << (byte)5) : 0);
-            p0 |= (byte)(checkBox_EVEX_R_prim.Checked ? (1 << (byte)4) : 0);
+            p0 |= (byte)(!checkBox_EVEX_R.Checked ? (1 << (byte)7) : 0);
+            p0 |= (byte)(!checkBox_EVEX_X.Checked ? (1 << (byte)6) : 0);
+            p0 |= (byte)(!checkBox_EVEX_B.Checked ? (1 << (byte)5) : 0);
+            p0 |= (byte)(!checkBox_EVEX_R_prim.Checked ? (1 << (byte)4) : 0);
             p0 |= getMMMM(comboBox_EVEX_mm);
 
             textBox_P0.Text = "0x" + p0.ToString("X2");
@@ -351,6 +370,19 @@ namespace ira_flags_calc
             
             textBox_P1.Text = "0x" + p1.ToString("X2");
 
+            byte p2 = 0;
+
+            p2 |= (byte)(checkBox_EVEX_z.Checked ? (1 << (byte)7) : 0);
+            p2 |= (byte)(checkBox_EVEX_L_prim.Checked ? (1 << (byte)6) : 0);
+            p2 |= (byte)(checkBox_EVEX_L.Checked ? (1 << (byte)5) : 0);
+            p2 |= (byte)(checkBox_EVEX_b_lower.Checked ? (1 << (byte)4) : 0);
+            p2 |= (byte)(!checkBox_EVEX_V_prim.Checked ? (1 << (byte)3) : 0);
+            p2 |= (byte)comboBox_EVEX_aaa.SelectedIndex;
+
+            int ll = (checkBox_EVEX_L_prim.Checked ? 2 : 0) | (checkBox_EVEX_L.Checked ? 1 : 0);
+            comboBox_EVEX_LL.SelectedIndex = ll;
+            
+            textBox_P2.Text = "0x" + p2.ToString("X2");
         }
 
         private void checkBoxVEX(object sender, EventArgs e) {
@@ -447,6 +479,8 @@ namespace ira_flags_calc
             string value = (string)comboBox.SelectedItem;
             if (value != null) {
                 switch (value) {
+                    case "None":
+                        return 0x00;
                     case "0F":
                         return 0x01;
                     case "0F38":
@@ -557,6 +591,13 @@ namespace ira_flags_calc
             if (values.Length > 1) {
                 textBoxC4_2.Text = values[1].Trim();
             }
+        }
+
+        private void comboBox_EVEX_LL_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int ll = comboBox_EVEX_LL.SelectedIndex;
+            checkBox_EVEX_L_prim.Checked = (ll & 0x02) == 0x02;
+            checkBox_EVEX_L.Checked = (ll & 0x01) == 0x01;
         }
     }
 }
