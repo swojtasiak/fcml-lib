@@ -65,10 +65,21 @@ typedef void (*fcml_fnp_asm_dialect_free)( fcml_st_dialect *dialect );
 /* Internal representation of dialect context.*/
 typedef struct fcml_st_dialect_context_int {
     fcml_coll_map dialect_mnemonics_lookup;
+    /**
+     * Gets instruction descriptions for mnemonic.
+     */
     fcml_fnp_asm_dialect_get_mnemonic get_mnemonic;
+    /**
+     * Gets mnemonics for pseudo operation.
+     */
     fcml_fnp_asm_get_pseudo_operation_mnemonics get_pseudo_operation_mnemonics;
     fcml_fnp_asm_dialect_get_parsed_mnemonics get_parsed_mnemonics;
     fcml_fnp_asm_dialect_get_pseudo_operation_mnemonic get_pseudo_operation_mnemonic;
+    /**
+     * Used to free mnemonics when assembler is disposed. Some dialect may
+     * use static mnemonic while other may generate them like AT&Tdialect
+     * does. This function givens a way to free them in a proper way.
+     */
     fcml_fnp_asm_dialect_free_mnemonic free_mnemonic;
     fcml_fnp_asm_dialect_render_mnemonic render_mnemonic;
     fcml_fnp_asm_dialect_get_register get_register;

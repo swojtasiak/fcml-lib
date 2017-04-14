@@ -46,4 +46,12 @@ fcml_int fcml_ifn_rend_utils_print_prefixes( fcml_st_memory_stream *output_strea
 fcml_bool fcml_fn_rend_utils_render_operand_separator( const fcml_st_render_config *config, fcml_st_memory_stream *output_stream, fcml_int padding_length,
         fcml_bool first_operand );
 
+void fcml_fn_rend_utils_format_append_printf(
+        fcml_st_memory_stream *stream, fcml_string format, ... );
+
+void fcml_fn_rend_utils_format_append_operand_attr(
+        const fcml_st_dialect_context_int *dialect_context,
+        fcml_st_memory_stream *output_stream,
+        const fcml_st_operand_attributes *attributes);
+
 #endif /* FCML_REND_UTILS_H_ */

@@ -30,6 +30,10 @@
 #include "fcml_ceh.h"
 #include "fcml_stream.h"
 
+fcml_string fcml_iarr_rend_utils_rounding_modes[4] = {
+    "{rn-sae}", "{rd-sae}", "{ru-sae}", "{rz-sae}"
+};
+
 void fcml_fn_rend_utils_format_printf( fcml_st_memory_stream *stream, const fcml_string format, ... ) {
 
     /* We'll never reach this limit.*/
@@ -88,6 +92,16 @@ void fcml_fn_rend_utils_format_finish_str( fcml_st_memory_stream *stream ) {
         fcml_fn_env_str_strncpy( &( ( (fcml_char*) stream->base_address )[stream->offset] ), FCML_TEXT( "\0" ), size );
         stream->offset += size;
     }
+}
+
+void fcml_fn_rend_utils_format_append_printf(
+        fcml_st_memory_stream *stream, fcml_string format, ... ) {
+    fcml_char buffer[256];
+    va_list args;
+    va_start( args, format );
+    fcml_fn_env_str_vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end( args );
+    fcml_fn_rend_utils_format_append_str(stream, buffer);
 }
 
 fcml_int fcml_fn_rend_utils_format_append_str( fcml_st_memory_stream *stream, const fcml_string source ) {
@@ -186,11 +200,50 @@ fcml_ceh_error fcml_fn_rend_utils_format_append_integer( fcml_string patterns[6]
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-void fcml_fn_rend_utils_format_append_reg( const fcml_st_dialect_context_int *dialect_context, fcml_st_memory_stream *output_stream, const fcml_st_register *reg,
+void fcml_fn_rend_utils_format_append_reg(
+        const fcml_st_dialect_context_int *dialect_context,
+        fcml_st_memory_stream *output_stream,
+        const fcml_st_register *reg,
         fcml_bool is_rex ) {
     fcml_char printable_reg[64];
     dialect_context->get_register( reg, printable_reg, sizeof( printable_reg ), is_rex );
     fcml_fn_rend_utils_format_append_str( output_stream, printable_reg );
+}
+
+void fcml_fn_rend_utils_format_append_operand_attr(
+        const fcml_st_dialect_context_int *dialect_context,
+        fcml_st_memory_stream *output_stream,
+        const fcml_st_operand_attributes *attributes) {
+
+    /* Operand mask register attribute. */
+    if (attributes->operand_mask_reg.type != FCML_REG_UNDEFINED) {
+        fcml_fn_rend_utils_format_append_str(output_stream, "{");
+        fcml_fn_rend_utils_format_append_reg(dialect_context, output_stream,
+                &(attributes->operand_mask_reg), FCML_FALSE);
+        fcml_fn_rend_utils_format_append_str(output_stream, "}");
+    }
+
+    /* Broadcasting. */
+    if (attributes->bcast.is_not_null) {
+        fcml_fn_rend_utils_format_append_printf(output_stream, "{1to%d}",
+                (fcml_int32_t)attributes->bcast.value);
+    }
+
+    /* Zeroing. */
+    if (attributes->z) {
+        fcml_fn_rend_utils_format_append_str(output_stream, "{z}");
+    }
+
+    /* Embedded rounding control. */
+    if (attributes->er.is_not_null) {
+        fcml_fn_rend_utils_format_append_str(output_stream,
+                fcml_iarr_rend_utils_rounding_modes[attributes->er.value]);
+    }
+
+    /* Indicates support for SAE (Suppress All Exceptions). */
+    if (attributes->sea) {
+        fcml_fn_rend_utils_format_append_str(output_stream, "{sea}");
+    }
 }
 
 fcml_int fcml_fn_rend_utils_padding( fcml_st_memory_stream *output_stream, fcml_int len, fcml_int padding, fcml_int default_padding ) {

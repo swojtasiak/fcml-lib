@@ -398,7 +398,9 @@ typedef enum fcml_en_register {
     /** Debug register */
     FCML_REG_DR,
     /** Instruction pointer register. Used for relative RIP addressing. */
-    FCML_REG_IP
+    FCML_REG_IP,
+    /** Operand mask register. */
+    FCML_REG_OPERAND_MASK
 } fcml_en_register;
 
 /**
@@ -605,7 +607,7 @@ typedef struct fcml_st_operand_attributes {
     /** Zeroing masking. */
     fcml_bool z;
     /** The 64-bit k registers are: k0 through k7. */
-    fcml_nuint8_t k_reg;
+    fcml_st_register operand_mask_reg;
     /** Embedded rounding control. */
     fcml_nuint8_t er;
     /** Indicates support for SAE (Suppress All Exceptions). */

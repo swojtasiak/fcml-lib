@@ -296,11 +296,20 @@ fcml_ceh_error fcml_ifn_rend_print_operand_intel( const fcml_st_render_config *c
         error = fcml_ifn_rend_operand_renderer_reg_intel( config, dialect_context, output_stream, result, operand,
                 &( result->instruction_details.operand_details[operand_index] ), do_not_render );
         break;
+    case FCML_OT_VIRTUAL:
+        break;
     case FCML_OT_NONE:
         break;
     default:
         error = FCML_CEH_GEC_INVALID_INPUT;
     }
+
+    /* Print operand attributes just after the operand. */
+    if (!error) {
+        fcml_fn_rend_utils_format_append_operand_attr(dialect_context,
+                output_stream, &(operand->attributes));
+    }
+
     return error;
 }
 

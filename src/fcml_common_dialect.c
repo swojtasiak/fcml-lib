@@ -71,6 +71,10 @@ fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[4] = {
 	"<unknown ip>", "ip", "eip", "rip"
 };
 
+fcml_string fcml_ar_asm_dialect_reg_operand_mask_symbol_table[8] = {
+    "k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"
+};
+
 fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[4][16] = {
 	{ "al", "cl", "dl", "bl", "spl", "bpl", "sil", "dil", "r8l", "r9l", "r10l", "r11l", "r12l", "r13l", "r14l", "r15l" },
 	{ "ax", "cx", "dx", "bx", "sp", "bp", "si", "di", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w" },
@@ -222,7 +226,9 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fc
             rs = 3;
             break;
         }
-        if (reg->type == FCML_REG_IP) {
+        if (reg->type == FCML_REG_OPERAND_MASK) {
+            *printable_reg = fcml_ar_asm_dialect_reg_operand_mask_symbol_table[reg->reg];
+        } else if (reg->type == FCML_REG_IP) {
             *printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[rs];
         } else {
             if (is_rex) {
