@@ -2397,9 +2397,12 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                             switch (prefix) {
                                 /* Decodes VEX/XOP fields.*/
                             case 0x62: {
-                            	fcml_uint8_t p0 = prefix_details->vex_xop_bytes[0];
-                            	fcml_uint8_t p1 = prefix_details->vex_xop_bytes[1];
-                            	fcml_uint8_t p2 = prefix_details->vex_xop_bytes[2];
+                             	fcml_uint8_t p0 =
+                            	        prefix_details->vex_xop_bytes[0];
+                            	fcml_uint8_t p1 =
+                            	        prefix_details->vex_xop_bytes[1];
+                            	fcml_uint8_t p2 =
+                            	        prefix_details->vex_xop_bytes[2];
 
                             	// These fields are fixed for EVEX.
                             	if ((p0 & 0x0C) || !(p1 & 0x04)) {

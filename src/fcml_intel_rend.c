@@ -105,6 +105,9 @@ fcml_ceh_error fcml_ifn_rend_size_operator_intel( fcml_usize size_operator, fcml
     case 256:
         size_operator_printable = is_media_instruction ? FCML_TEXT( "ymmword ptr " ) : FCML_TEXT( "qqword " );
         break;
+    case 512:
+        size_operator_printable = FCML_TEXT( "zword ptr " );
+        break;
     default:
         fcml_fn_env_str_snprintf( buffer, buffer_len, FCML_TEXT( "%dbyte ptr " ), size_operator / 8 );
         break;

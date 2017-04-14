@@ -590,6 +590,29 @@ typedef struct fcml_st_address {
 } fcml_st_address;
 
 /**
+ * Rounding mode.
+ */
+typedef enum fcml_en_embeeded_rounding_control {
+    FCML_ERC_RNE,
+    FCML_ERC_RD,
+    FCML_ERC_RU,
+    FCML_ERC_RZ
+} fcml_en_embeeded_rounding_control;
+
+typedef struct fcml_st_operand_attributes {
+    /** Broadcasting: 2, 4, 8, 16, 32, 64. */
+    fcml_nuint8_t bcast;
+    /** Zeroing masking. */
+    fcml_bool z;
+    /** The 64-bit k registers are: k0 through k7. */
+    fcml_nuint8_t k_reg;
+    /** Embedded rounding control. */
+    fcml_nuint8_t er;
+    /** Indicates support for SAE (Suppress All Exceptions). */
+    fcml_bool sea;
+} fcml_st_operand_attributes;
+
+/**
  * Supported operand types.
  */
 typedef enum fcml_en_operand_type {
@@ -602,7 +625,12 @@ typedef enum fcml_en_operand_type {
     /** Memory address. */
     FCML_OT_ADDRESS,
     /** Processor register. */
-    FCML_OT_REGISTER
+    FCML_OT_REGISTER,
+    /**
+     * Not an operand in a strict sense,
+     * only a container for attributes.
+     */
+    FCML_OT_VIRTUAL
 } fcml_en_operand_type;
 
 /**
@@ -659,6 +687,8 @@ typedef struct fcml_st_operand {
     fcml_st_address address;
     /** Register operand. */
     fcml_st_register reg;
+    /** Operand attributes */
+    fcml_st_operand_attributes attributes;
 } fcml_st_operand;
 
 /*********************************
