@@ -187,6 +187,8 @@ public:
         RenderTypeConverter::convert( renderConfig, render_config );
 
         fcml_st_disassembler_result disassembler_result;
+        fcml_fn_disassembler_result_prepare(&disassembler_result);
+
         DisassemblerTypeConverter::convert( assemblerResult, disassembler_result );
 
         fcml_char buffer[FCML_REND_MAX_BUFF_LEN];
