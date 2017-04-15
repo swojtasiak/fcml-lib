@@ -4902,7 +4902,9 @@ public:
         /** Memory address. */
         OT_ADDRESS = FCML_OT_ADDRESS,
         /** Processor register. */
-        OT_REGISTER = FCML_OT_REGISTER
+        OT_REGISTER = FCML_OT_REGISTER,
+        /** Virtual operand */
+        OT_VIRTUAL = FCML_OT_VIRTUAL
     };
 
     /**
