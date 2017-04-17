@@ -601,7 +601,7 @@ typedef enum fcml_en_embeeded_rounding_control {
     FCML_ERC_RZ
 } fcml_en_embeeded_rounding_control;
 
-typedef struct fcml_st_operand_attributes {
+typedef struct fcml_st_operand_decorators {
     /** Broadcasting: 2, 4, 8, 16, 32, 64. */
     fcml_nuint8_t bcast;
     /** Zeroing masking. */
@@ -612,7 +612,7 @@ typedef struct fcml_st_operand_attributes {
     fcml_nuint8_t er;
     /** Indicates support for SAE (Suppress All Exceptions). */
     fcml_bool sea;
-} fcml_st_operand_attributes;
+} fcml_st_operand_decorators;
 
 /**
  * Supported operand types.
@@ -689,8 +689,8 @@ typedef struct fcml_st_operand {
     fcml_st_address address;
     /** Register operand. */
     fcml_st_register reg;
-    /** Operand attributes */
-    fcml_st_operand_attributes attributes;
+    /** Operand decorators. */
+    fcml_st_operand_decorators decorators;
 } fcml_st_operand;
 
 /*********************************

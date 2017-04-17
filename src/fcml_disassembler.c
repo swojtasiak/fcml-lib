@@ -349,7 +349,8 @@ int fcml_ifn_dasm_dts_calculate_decoding_order(
 
     /* VEX and XOP prefixes. */
     if (FCML_DEF_PREFIX_VEX_REQ(prefixes) 
-            || FCML_DEF_PREFIX_XOP_REQ(prefixes)) {
+            || FCML_DEF_PREFIX_XOP_REQ(prefixes)
+            || FCML_DEF_PREFIX_EVEX_REQ(prefixes)) {
         order++;
     }
 
@@ -1049,7 +1050,7 @@ typedef struct fcml_ist_dasm_operand_decoder_def {
 fcml_ist_dasm_operand_decoder_def fcml_iarr_def_operand_decoders[] = { 
     {NULL, NULL}, 
     {fcml_ifn_dasm_operand_decoder_imm, 
-        fcml_ifn_dasm_operand_size_calculator_imm, NULL},
+            fcml_ifn_dasm_operand_size_calculator_imm, NULL},
     {fcml_ifn_dasm_operand_decoder_explicit_reg, NULL, NULL},
     {fcml_ifn_dasm_operand_decoder_opcode_reg, NULL, NULL}, 
     {fcml_ifn_dasm_operand_decoder_immediate_dis_relative,
@@ -1108,19 +1109,19 @@ void fcml_ifn_dasm_dts_free_decoding_def(
 fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding(
         fcml_st_def_addr_mode_desc *addr_mode_desc, 
         fcml_ist_dasm_operand_decoding *operand_decoding,
-        fcml_uint32_t operand_def, 
+        fcml_operand_desc operand_desc,
         fcml_hints *instruction_hints) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    if (operand_def == FCML_NA) {
+    if (operand_desc == FCML_NA) {
         return error;
     }
 
     operand_decoding->hints = 0;
 
     fcml_st_def_decoded_addr_mode *decoded_addr_mode = 
-        fcml_fn_def_decode_addr_mode_args(operand_def, &error);
+        fcml_fn_def_decode_addr_mode_args(operand_desc, &error);
     if (error) {
         return error;
     }
@@ -1295,27 +1296,37 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
         fcml_ist_dasm_decoding_context *context,
         fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def) {
 
-    /* Prefixes.*/
+    /* Prefixes. */
     fcml_st_prefixes_details *prefixes = &(context->prefixes);
 
-    /* LOCK prefix.*/
+    /* LOCK prefix. */
     if (prefixes->is_lock && !FCML_DEF_PREFIX_LOCK_ALLOWED(
                 instruction_decoding_def->prefixes_flags)) {
-        /* Lock prefix is not allowed.*/
+        /* Lock prefix is not allowed. */
         return FCML_FALSE;
     }
 
-    /* VEX required.*/
+    /* VEX required. */
     if ((FCML_DEF_PREFIX_VEX_REQ(instruction_decoding_def->prefixes_flags) 
                 && !prefixes->is_vex)
             || (!FCML_DEF_PREFIX_VEX_REQ(
                     instruction_decoding_def->prefixes_flags) 
                 && prefixes->is_vex)) {
-        /* VEX prefix is required.*/
+        /* VEX prefix is required. */
         return FCML_FALSE;
     }
 
-    /* XOP required.*/
+    /* EVER required. */
+    if ((FCML_DEF_PREFIX_EVEX_REQ(instruction_decoding_def->prefixes_flags)
+                && !prefixes->is_evex)
+            || (!FCML_DEF_PREFIX_EVEX_REQ(
+                    instruction_decoding_def->prefixes_flags)
+                && prefixes->is_evex)) {
+        /* EVEX prefix is required. */
+        return FCML_FALSE;
+    }
+
+    /* XOP required. */
     if ((FCML_DEF_PREFIX_XOP_REQ(instruction_decoding_def->prefixes_flags) 
                 && !prefixes->is_xop)
             || (!FCML_DEF_PREFIX_XOP_REQ(
@@ -1325,7 +1336,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
         return FCML_FALSE;
     }
 
-    /* W field.*/
+    /* W field. */
     if ((FCML_DEF_PREFIX_W_0(instruction_decoding_def->prefixes_flags) 
                 && prefixes->W)
             || (FCML_DEF_PREFIX_W_1(instruction_decoding_def->prefixes_flags) 
@@ -1333,7 +1344,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
         return FCML_FALSE;
     }
 
-    /* L field.*/
+    /* L field. */
     if ((FCML_DEF_PREFIX_L_1(instruction_decoding_def->prefixes_flags) && 
                 (!(prefixes->is_vex || prefixes->is_xop) || !prefixes->L))
             || (FCML_DEF_PREFIX_L_0(instruction_decoding_def->prefixes_flags) 
@@ -1341,7 +1352,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
         return FCML_FALSE;
     }
 
-    /* Mandatory prefixes.*/
+    /* Mandatory prefixes. */
 
     fcml_bool found = FCML_FALSE;
     if (FCML_DEF_PREFIX_MANDATORY_66(
@@ -1354,11 +1365,11 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
                 instruction_decoding_def->prefixes_flags)) {
         found = fcml_ifn_dasm_is_prefix_available(context, 0xF3, FCML_TRUE);
     } else {
-        /* Mandatory prefixes not used.*/
+        /* Mandatory prefixes not used. */
         found = FCML_TRUE;
     }
     if (!found) {
-        /* Mandatory prefixes not found.*/
+        /* Mandatory prefixes not found. */
         return FCML_FALSE;
     }
 
@@ -1686,7 +1697,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default(
     for (i = 0; i < FCML_OPERANDS_COUNT; i++) {
         error = fcml_ifn_dasm_dts_prepare_operand_decoding(addr_mode_desc, 
                 &(decoding->operand_decodings[i]), 
-                addr_mode_desc->opperands[i],
+                addr_mode_desc->operands[i],
                 &(decoding->hints));
         if (!error) {
             fcml_ifn_dasm_dts_prepare_modrm_decoding_details(
@@ -2047,6 +2058,9 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             break;
         }
     }
+
+    /* Decode operand attributes. */
+
 
     /* Decode suffix.*/
     if (FCML_DEF_PREFIX_SUFFIX(instruction_decoding_def->prefixes_flags)) {

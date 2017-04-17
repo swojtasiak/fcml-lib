@@ -306,8 +306,8 @@ fcml_ceh_error fcml_ifn_rend_print_operand_intel( const fcml_st_render_config *c
 
     /* Print operand attributes just after the operand. */
     if (!error) {
-        fcml_fn_rend_utils_format_append_operand_attr(dialect_context,
-                output_stream, &(operand->attributes));
+        fcml_fn_rend_utils_format_append_operand_decorators(dialect_context,
+                output_stream, &(operand->decorators));
     }
 
     return error;

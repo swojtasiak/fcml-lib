@@ -210,38 +210,38 @@ void fcml_fn_rend_utils_format_append_reg(
     fcml_fn_rend_utils_format_append_str( output_stream, printable_reg );
 }
 
-void fcml_fn_rend_utils_format_append_operand_attr(
+void fcml_fn_rend_utils_format_append_operand_decorators(
         const fcml_st_dialect_context_int *dialect_context,
         fcml_st_memory_stream *output_stream,
-        const fcml_st_operand_attributes *attributes) {
+        const fcml_st_operand_decorators *decorators) {
 
     /* Operand mask register attribute. */
-    if (attributes->operand_mask_reg.type != FCML_REG_UNDEFINED) {
+    if (decorators->operand_mask_reg.type != FCML_REG_UNDEFINED) {
         fcml_fn_rend_utils_format_append_str(output_stream, "{");
         fcml_fn_rend_utils_format_append_reg(dialect_context, output_stream,
-                &(attributes->operand_mask_reg), FCML_FALSE);
+                &(decorators->operand_mask_reg), FCML_FALSE);
         fcml_fn_rend_utils_format_append_str(output_stream, "}");
     }
 
     /* Broadcasting. */
-    if (attributes->bcast.is_not_null) {
+    if (decorators->bcast.is_not_null) {
         fcml_fn_rend_utils_format_append_printf(output_stream, "{1to%d}",
-                (fcml_int32_t)attributes->bcast.value);
+                (fcml_int32_t)decorators->bcast.value);
     }
 
     /* Zeroing. */
-    if (attributes->z) {
+    if (decorators->z) {
         fcml_fn_rend_utils_format_append_str(output_stream, "{z}");
     }
 
     /* Embedded rounding control. */
-    if (attributes->er.is_not_null) {
+    if (decorators->er.is_not_null) {
         fcml_fn_rend_utils_format_append_str(output_stream,
-                fcml_iarr_rend_utils_rounding_modes[attributes->er.value]);
+                fcml_iarr_rend_utils_rounding_modes[decorators->er.value]);
     }
 
     /* Indicates support for SAE (Suppress All Exceptions). */
-    if (attributes->sea) {
+    if (decorators->sea) {
         fcml_fn_rend_utils_format_append_str(output_stream, "{sea}");
     }
 }

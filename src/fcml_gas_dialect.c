@@ -1406,7 +1406,8 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_as
 
         /* Check if addressing mode expects FAR_POINTER addressing mode. */
         if ( addr_mode_desc ) {
-            if ( addr_mode_desc->opperands[0] == FCML_OP_FAR_POINTER ) {
+            if (FCML_ADDR_MODE(addr_mode_desc->operands[0]) ==
+                    FCML_OP_FAR_POINTER) {
                 /* Prepare operands. */
                 if ( instrunction->operands_count == 2 && instrunction->operands[0].type == FCML_OT_IMMEDIATE
                         && instrunction->operands[1].type == FCML_OT_IMMEDIATE ) {

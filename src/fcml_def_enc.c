@@ -21,10 +21,10 @@
 #include "fcml_env_int.h"
 
 typedef fcml_ptr (*fcml_fnp_def_addr_mode_args_decoder)
-        (fcml_uint32_t encoded_addr_mode);
+        (fcml_operand_desc encoded_addr_mode);
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_is(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_is *is_args = (fcml_sf_def_tma_is*)
             fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_is));
     if (is_args) {
@@ -34,7 +34,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_is(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_imm(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm*)
             fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_imm));
     if (imm_args) {
@@ -47,7 +47,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_imm(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_reg(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_explicit_reg *explicit_reg_args =
             (fcml_sf_def_tma_explicit_reg*)fcml_fn_env_memory_alloc(
                     sizeof(fcml_sf_def_tma_explicit_reg));
@@ -60,7 +60,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_reg(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_opcode_reg(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_opcode_reg *opcode_reg_args =
             (fcml_sf_def_tma_opcode_reg*)fcml_fn_env_memory_alloc(
                     sizeof(fcml_sf_def_tma_opcode_reg));
@@ -72,7 +72,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_opcode_reg(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_immediate_dis_relative(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_immediate_dis_relative *immediate_dis_relative_args =
             (fcml_sf_def_tma_immediate_dis_relative*)fcml_fn_env_memory_alloc(
                     sizeof(fcml_sf_def_tma_immediate_dis_relative) );
@@ -84,7 +84,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_immediate_dis_relative(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_gps_reg_addressing(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_explicit_gps_reg_addressing *args =
             (fcml_sf_def_tma_explicit_gps_reg_addressing*)
             fcml_fn_env_memory_alloc(sizeof(
@@ -101,7 +101,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_gps_reg_addressing(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_ib(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_explicit_ib *explicit_ib_args =
             (fcml_sf_def_tma_explicit_ib*)
             fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_explicit_ib));
@@ -112,7 +112,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_ib(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_segment_relative_offset(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_segment_relative_offset *segment_relative_offset_args =
             (fcml_sf_def_tma_segment_relative_offset*)fcml_fn_env_memory_alloc(
                     sizeof(fcml_sf_def_tma_segment_relative_offset) );
@@ -126,7 +126,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_segment_relative_offset(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm*)
             fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_rm));
     if (rm_args) {
@@ -143,7 +143,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_r(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_r *r_args = (fcml_sf_def_tma_r*)
             fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_r));
     if (r_args) {
@@ -155,7 +155,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_r(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vex_vvvv(
-    fcml_uint32_t encoded_addr_mode
+        fcml_operand_desc encoded_addr_mode
 ) {
     fcml_sf_def_tma_vex_vvvv_reg *vex_vvvv_args =
             (fcml_sf_def_tma_vex_vvvv_reg*)fcml_fn_env_memory_alloc(
@@ -169,7 +169,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vex_vvvv(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vsib(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_rm *vsib_args = (fcml_sf_def_tma_rm*)
             fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_rm));
     if (vsib_args) {
@@ -185,7 +185,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vsib(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_pseudo_op(
-        fcml_uint32_t encoded_addr_mode) {
+        fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_pseudo_op *pseudo_op_args =
             (fcml_sf_def_tma_pseudo_op*)
             fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_pseudo_op));
@@ -221,7 +221,7 @@ fcml_fnp_def_addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
 };
 
 fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args(
-        fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error) {
+        fcml_operand_desc encoded_addr_mode, fcml_ceh_error *error) {
 
     *error = FCML_CEH_GEC_NO_ERROR;
 
@@ -267,7 +267,7 @@ fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args(
                 fcml_def_addr_mode_args_decoders[addr_mode->addr_mode];
         if (args_decoder) {
             addr_mode->addr_mode_args = args_decoder(
-                    encoded_addr_mode & 0x00FFFFFF);
+                    encoded_addr_mode & 0x00FFFFFFLL);
             if (!addr_mode->addr_mode_args) {
                 fcml_fn_env_memory_free(addr_mode);
                 addr_mode = NULL;

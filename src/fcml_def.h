@@ -43,6 +43,7 @@
 #define FCML_EOS_OWORD        16
 #define FCML_EOS_XWORD        16
 #define FCML_EOS_YWORD        32
+#define FCML_EOS_ZWORD        64
 
 /* Dynamic encoded operand sizes calculated at runtime. */
 
@@ -103,6 +104,15 @@ typedef enum fcml_en_def_instruction_type {
 #define FCML_IS_MULTI_INSTRUCTION(x)        ( 0x8000 & ( x ) )
 #define FCML_MULTI_INSTRUCTION(x)           ( 0x8000 | ( x ) )
 
+/**
+ * Lower 40 bits are used to specify operand addressing mode.
+ * Upper 24 bits are used to specify operand decorators.
+ */
+typedef fcml_uint64_t fcml_operand_desc;
+
+#define FCML_ADDR_MODE(x)    (x & 0x000000FFFFFFFFFFLL)
+#define FCML_DECORATORS(x)   (x & 0xFFFFFF0000000000LL)
+
 /* Structures used to describe instructions with they all allowed addressing
  * modes.
  */
@@ -116,7 +126,7 @@ typedef struct fcml_st_def_addr_mode_desc {
     /* Opcode bytes.*/
     fcml_uint8_t opcode[3];
     /* Addressing of instruction operands.*/
-    fcml_uint32_t opperands[FCML_OPERANDS_COUNT];
+    fcml_operand_desc operands[FCML_OPERANDS_COUNT];
     /* Addressing mode.*/
     fcml_uint16_t addr_mode;
     /* Instruction hints. */
@@ -151,7 +161,7 @@ typedef struct fcml_st_def_instruction_desc {
 
 /* Operands encoding */
 
-#define FCML_IA_INSTRUCTION(i,x,y)             {i, NULL, x, FCML_EN_IT_IA,\
+#define FCML_IA_INSTRUCTION(i,x,y)          {i, NULL, x, FCML_EN_IT_IA, \
     (sizeof(y) / sizeof(struct fcml_st_def_addr_mode_desc)), y}
 
 #define FCML_IA_MULTI_INSTRUCTION(i,x,y)    {(fcml_en_instruction) \
@@ -181,6 +191,12 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_PREFIX_MANDATORY_F2(x)              FCML_TP_GET_BIT(x,13)
 #define FCML_DEF_PREFIX_MANDATORY_F3(x)              FCML_TP_GET_BIT(x,14)
 #define FCML_DEF_PREFIX_SUFFIX(x)                    FCML_TP_GET_BIT(x,15)
+#define FCML_DEF_PREFIX_EVEX_REQ(x)                  FCML_TP_GET_BIT(x,16)
+#define FCML_DEF_PREFIX_BCAST(x)                     FCML_TP_GET_BIT(x,17)
+#define FCML_DEF_PREFIX_Z(x)                         FCML_TP_GET_BIT(x,18)
+#define FCML_DEF_PREFIX_OPERAND_MASK_REG(x)          FCML_TP_GET_BIT(x,19)
+#define FCML_DEF_PREFIX_ER(x)                        FCML_TP_GET_BIT(x,20)
+#define FCML_DEF_PREFIX_SAE(x)                       FCML_TP_GET_BIT(x,21)
 
 /*********************************
  * Opcode fields extractors.
@@ -246,7 +262,7 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_IMMEDIATE_DIS_RELATIVE(encoded_size)       \
     (FCML_OP_IMMEDIATE_DIS_RELATIVE_BASE | encoded_size )
 
-/* Far pointers.*/
+/* Far pointers. */
 #define FCML_OP_FAR_POINTER   0x05000000
 
 /* Addressing by explicit GPR register. (Used by CMPS for instance.)*/
@@ -265,6 +281,17 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_SEGMENT_RELATIVE_OFFSET(operand_size, \
         encoded_segment_register)    (FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE | \
                 (operand_size) << 8 | (encoded_segment_register))
+
+/********************************/
+/*      Operand decorators      */
+/********************************/
+
+#define FCML_DECOR_EVEX    0x0100000000LL
+#define FCML_DECOR_BCAST   0x0200000000LL
+#define FCML_DECOR_Z       0x0400000000LL
+#define FCML_DECOR_K1      0x0800000000LL
+#define FCML_DECOR_ER      0x1000000000LL
+#define FCML_DECOR_SAE     0x2000000000LL
 
 /********************************/
 /*      ModR/M encoding.        */
@@ -749,13 +776,13 @@ typedef struct fcml_st_def_instruction_desc {
 
 #define FCML_OP_MODRM_M_XMM_16_W       (FCML_OP_MODRM_RM_XMM_16 | FCML_OA_W)
 #define FCML_OP_MODRM_M_XMM_16_RW      (FCML_OP_MODRM_RM_XMM_16 | FCML_OA_RW)
-#define FCML_OP_MODRM_R_XMM             FCML_OP_R(FCML_REG_SIMD, FCML_EOS_OWORD)
-#define FCML_OP_MODRM_R_XMM_W           (FCML_OP_MODRM_R_XMM | FCML_OA_W)
-#define FCML_OP_MODRM_R_XMM_RW          (FCML_OP_MODRM_R_XMM | FCML_OA_RW)
-#define FCML_OP_MODRM_R_YMM             FCML_OP_R(FCML_REG_SIMD, FCML_EOS_YWORD)
-#define FCML_OP_MODRM_R_YMM_W           (FCML_OP_MODRM_R_YMM | FCML_OA_W)
-#define FCML_OP_MODRM_R_YMM_RW          (FCML_OP_MODRM_R_YMM | FCML_OA_RW)
-#define FCML_OP_MODRM_RM_SIMD_L         FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, \
+#define FCML_OP_MODRM_R_XMM            FCML_OP_R(FCML_REG_SIMD, FCML_EOS_OWORD)
+#define FCML_OP_MODRM_R_XMM_W          (FCML_OP_MODRM_R_XMM | FCML_OA_W)
+#define FCML_OP_MODRM_R_XMM_RW         (FCML_OP_MODRM_R_XMM | FCML_OA_RW)
+#define FCML_OP_MODRM_R_YMM            FCML_OP_R(FCML_REG_SIMD, FCML_EOS_YWORD)
+#define FCML_OP_MODRM_R_YMM_W          (FCML_OP_MODRM_R_YMM | FCML_OA_W)
+#define FCML_OP_MODRM_R_YMM_RW         (FCML_OP_MODRM_R_YMM | FCML_OA_RW)
+#define FCML_OP_MODRM_RM_SIMD_L        FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, \
         FCML_EOS_L, FCML_RMF_RM)
 #define FCML_OP_MODRM_RM_SIMD_L_W       (FCML_OP_MODRM_RM_SIMD_L | FCML_OA_W)
 #define FCML_OP_MODRM_RM_SIMD_L_RW      (FCML_OP_MODRM_RM_SIMD_L | FCML_OA_RW)
@@ -937,7 +964,7 @@ typedef struct fcml_st_def_decoded_addr_mode {
 } fcml_st_def_decoded_addr_mode;
 
 fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args(
-        fcml_uint32_t encoded_addr_mode, fcml_ceh_error *error);
+        fcml_operand_desc encoded_addr_mode, fcml_ceh_error *error);
 
 void fcml_fnp_def_free_addr_mode(
         fcml_st_def_decoded_addr_mode *decoded_addr_mode);

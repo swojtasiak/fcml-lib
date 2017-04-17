@@ -49,9 +49,9 @@ fcml_bool fcml_fn_rend_utils_render_operand_separator( const fcml_st_render_conf
 void fcml_fn_rend_utils_format_append_printf(
         fcml_st_memory_stream *stream, fcml_string format, ... );
 
-void fcml_fn_rend_utils_format_append_operand_attr(
+void fcml_fn_rend_utils_format_append_operand_decorators(
         const fcml_st_dialect_context_int *dialect_context,
         fcml_st_memory_stream *output_stream,
-        const fcml_st_operand_attributes *attributes);
+        const fcml_st_operand_decorators *decorators);
 
 #endif /* FCML_REND_UTILS_H_ */

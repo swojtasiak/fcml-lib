@@ -2458,9 +2458,9 @@ fcml_ist_asm_instruction_part_processor_descriptor fcml_ifn_asm_instruction_part
         return descriptor;
     }
 
-    if ( addr_mode->opperands[flags] != FCML_NA ) {
+    if ( addr_mode->operands[flags] != FCML_NA ) {
 
-        wrapper_args->decoded_addr_mode = fcml_fn_def_decode_addr_mode_args( addr_mode->opperands[flags], error );
+        wrapper_args->decoded_addr_mode = fcml_fn_def_decode_addr_mode_args( addr_mode->operands[flags], error );
         if ( *error ) {
             fcml_fn_env_memory_free( wrapper_args );
             return descriptor;
@@ -3598,7 +3598,8 @@ fcml_ceh_error fcml_ifn_asm_prepare_mem_data_size_calculator( fcml_st_def_addr_m
 
     fcml_int i;
     for ( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-        fcml_uint32_t addr_mode = addr_mode_desc->opperands[i];
+        fcml_operand_desc operand_desc = addr_mode_desc->operands[i];
+        fcml_uint64_t addr_mode = FCML_ADDR_MODE(operand_desc);
         if ( addr_mode == FCML_NA ) {
             break;
         }
