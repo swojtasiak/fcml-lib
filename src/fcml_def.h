@@ -115,7 +115,8 @@ typedef fcml_uint64_t fcml_operand_desc;
 
 /* Instruction details. */
 
-#define FCML_NO_DETAILS     0x0
+#define FCML_NO_DETAILS             0x0
+#define FCML_GET_SIMD_TUPLETYPE(x)  ((x) & 0x0000000F)
 
 /* Structures used to describe instructions with they all allowed addressing
  * modes.

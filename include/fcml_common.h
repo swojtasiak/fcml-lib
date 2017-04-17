@@ -378,6 +378,23 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_OS_YWORD           256
 #define FCML_OS_ZWORD           512
 
+/* SIMD tuple types. */
+
+#define FCML_TT_NONE            0
+#define FCML_TT_FV              1
+#define FCML_TT_HV              2
+#define FCML_TT_FVM             3
+#define FCML_TT_T1S             4
+#define FCML_TT_T1F             5
+#define FCML_TT_T2              6
+#define FCML_TT_T4              7
+#define FCML_TT_T8              8
+#define FCML_TT_HVM             9
+#define FCML_TT_QVM             10
+#define FCML_TT_OVM             11
+#define FCML_TT_M128            12
+#define FCML_TT_DUP             13
+
 /**
  * Register type.
  * Every register is represented as an integer value and it's register type. This enumeration provides all supported register types.
