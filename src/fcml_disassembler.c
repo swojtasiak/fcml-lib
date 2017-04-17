@@ -176,7 +176,7 @@ typedef struct fcml_ist_dasm_instruction_decoding_def {
     /* Instruction mnemonic */
     fcml_st_mp_mnemonic_set *mnemonics;
     /* Flags that describe prefixes usage. */
-    fcml_uint16_t prefixes_flags;
+    fcml_uint32_t prefixes_flags;
     /* Flags that describe some details of opcodes. */
     fcml_uint32_t opcode_flags;
     /* Instruction decoder. */
@@ -330,7 +330,7 @@ fcml_usize fcml_ifn_dasm_utils_decode_encoded_size_value(
 int fcml_ifn_dasm_dts_calculate_decoding_order(
         fcml_ist_dasm_instruction_decoding_def *decoding) {
 
-    fcml_uint16_t prefixes = decoding->prefixes_flags;
+    fcml_uint32_t prefixes = decoding->prefixes_flags;
     fcml_uint32_t opcodes = decoding->opcode_flags;
 
     int order = 0;
@@ -2059,7 +2059,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         }
     }
 
-    /* Decode operand attributes. */
+    /* Decode operand decorators. */
 
 
     /* Decode suffix.*/

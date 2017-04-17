@@ -120,7 +120,7 @@ typedef struct fcml_st_def_addr_mode_desc {
     /* Addressing mode type.*/
     fcml_uint64_t instruction_group;
     /* Flags describing allowed prefixes.*/
-    fcml_uint16_t allowed_prefixes;
+    fcml_uint32_t allowed_prefixes;
     /* Some flags that contains various information about opcode.*/
     fcml_uint32_t opcode_flags;
     /* Opcode bytes.*/

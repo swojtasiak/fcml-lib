@@ -3647,7 +3647,7 @@ fcml_ceh_error fcml_ifn_asm_precalculate_addr_mode( fcml_st_def_addr_mode_desc *
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_uint16_t allowed_prefixes = addr_mode_desc->allowed_prefixes;
+    fcml_uint32_t allowed_prefixes = addr_mode_desc->allowed_prefixes;
 
     fcml_uint32_t opcode_flags = addr_mode_desc->opcode_flags;
 
