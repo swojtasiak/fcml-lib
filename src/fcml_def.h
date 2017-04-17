@@ -113,12 +113,18 @@ typedef fcml_uint64_t fcml_operand_desc;
 #define FCML_ADDR_MODE(x)    (x & 0x000000FFFFFFFFFFLL)
 #define FCML_DECORATORS(x)   (x & 0xFFFFFF0000000000LL)
 
+/* Instruction details. */
+
+#define FCML_NO_DETAILS     0x0
+
 /* Structures used to describe instructions with they all allowed addressing
  * modes.
  */
 typedef struct fcml_st_def_addr_mode_desc {
-    /* Addressing mode type.*/
+    /* Addressing mode type. */
     fcml_uint64_t instruction_group;
+    /* Additional details dependent on the instruction group. */
+    fcml_uint32_t details;
     /* Flags describing allowed prefixes.*/
     fcml_uint32_t allowed_prefixes;
     /* Some flags that contains various information about opcode.*/
