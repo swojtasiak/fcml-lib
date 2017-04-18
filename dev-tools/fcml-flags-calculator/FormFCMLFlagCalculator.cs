@@ -110,11 +110,6 @@ namespace ira_flags_calc
             checkBox_F3_Mand.Checked = ((int)prefixes & (1 << (int)Prefixes._F3_Man)) != 0;
             checkBox_Suffix.Checked = ((int)prefixes & (1 << (int)Prefixes.Sufix)) != 0;
             checkBox_EVEX.Checked = ((int)prefixes & (1 << (int)Prefixes._EVEX)) != 0;
-            checkBox_bcast.Checked = ((int)prefixes & (1 << (int)Prefixes._bcast)) != 0;
-            checkBox_z.Checked = ((int)prefixes & (1 << (int)Prefixes._z)) != 0;
-            checkBox_k1.Checked = ((int)prefixes & (1 << (int)Prefixes._k1)) != 0;
-            checkBox_er.Checked = ((int)prefixes & (1 << (int)Prefixes._er)) != 0;
-            checkBox_sae.Checked = ((int)prefixes & (1 << (int)Prefixes._sae)) != 0;
         }
 
         void MapCheckBoxesToPrefixes()
@@ -137,17 +132,6 @@ namespace ira_flags_calc
             value |= (uint)(checkBox_F3_Mand.Checked ? (1 << (int)Prefixes._F3_Man) : 0);
             value |= (uint)(checkBox_Suffix.Checked ? (1 << (int)Prefixes.Sufix) : 0);
             value |= (uint)(checkBox_EVEX.Checked ? (1 << (int)Prefixes._EVEX) : 0);
-            value |= (uint)(checkBox_bcast.Checked ? (1 << (int)Prefixes._bcast) : 0);
-            value |= (uint)(checkBox_z.Checked ? (1 << (int)Prefixes._z) : 0);
-            value |= (uint)(checkBox_k1.Checked ? (1 << (int)Prefixes._k1) : 0);
-            value |= (uint)(checkBox_er.Checked ? (1 << (int)Prefixes._er) : 0);
-            
-            if (checkBox_er.Checked && !checkBox_sae.Checked)
-            {
-                checkBox_sae.Checked = true;
-            }
-
-            value |= (uint)(checkBox_sae.Checked ? (1 << (int)Prefixes._sae) : 0);
 
             textBoxPrefixes.Text = "0x" + value.ToString("X8");
         }

@@ -29,6 +29,7 @@ namespace ira_flags_calc
         private void InitializeComponent()
         {
             this.groupBoxFPrefixes = new System.Windows.Forms.GroupBox();
+            this.checkBox_EVEX = new System.Windows.Forms.CheckBox();
             this.checkBox_Suffix = new System.Windows.Forms.CheckBox();
             this.checkBox_F3_Mand = new System.Windows.Forms.CheckBox();
             this.checkBox_F2_Mand = new System.Windows.Forms.CheckBox();
@@ -134,12 +135,6 @@ namespace ira_flags_calc
             this.checkBox_EVEX_b_lower = new System.Windows.Forms.CheckBox();
             this.checkBox_EVEX_V_prim = new System.Windows.Forms.CheckBox();
             this.comboBox_EVEX_pp = new System.Windows.Forms.ComboBox();
-            this.checkBox_bcast = new System.Windows.Forms.CheckBox();
-            this.checkBox_z = new System.Windows.Forms.CheckBox();
-            this.checkBox_k1 = new System.Windows.Forms.CheckBox();
-            this.checkBox_er = new System.Windows.Forms.CheckBox();
-            this.checkBox_sae = new System.Windows.Forms.CheckBox();
-            this.checkBox_EVEX = new System.Windows.Forms.CheckBox();
             this.groupBoxFPrefixes.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -153,11 +148,6 @@ namespace ira_flags_calc
             this.groupBoxFPrefixes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_EVEX);
-            this.groupBoxFPrefixes.Controls.Add(this.checkBox_sae);
-            this.groupBoxFPrefixes.Controls.Add(this.checkBox_er);
-            this.groupBoxFPrefixes.Controls.Add(this.checkBox_k1);
-            this.groupBoxFPrefixes.Controls.Add(this.checkBox_z);
-            this.groupBoxFPrefixes.Controls.Add(this.checkBox_bcast);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_Suffix);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_F3_Mand);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_F2_Mand);
@@ -180,6 +170,17 @@ namespace ira_flags_calc
             this.groupBoxFPrefixes.TabIndex = 0;
             this.groupBoxFPrefixes.TabStop = false;
             this.groupBoxFPrefixes.Text = "Prefixes";
+            // 
+            // checkBox_EVEX
+            // 
+            this.checkBox_EVEX.AutoSize = true;
+            this.checkBox_EVEX.Location = new System.Drawing.Point(7, 387);
+            this.checkBox_EVEX.Name = "checkBox_EVEX";
+            this.checkBox_EVEX.Size = new System.Drawing.Size(100, 17);
+            this.checkBox_EVEX.TabIndex = 21;
+            this.checkBox_EVEX.Text = "EVEX Required";
+            this.checkBox_EVEX.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
             // 
             // checkBox_Suffix
             // 
@@ -1420,72 +1421,6 @@ namespace ira_flags_calc
             this.comboBox_EVEX_pp.TabIndex = 70;
             this.comboBox_EVEX_pp.SelectedIndexChanged += new System.EventHandler(this.EVEX_changed);
             // 
-            // checkBox_bcast
-            // 
-            this.checkBox_bcast.AutoSize = true;
-            this.checkBox_bcast.Location = new System.Drawing.Point(7, 408);
-            this.checkBox_bcast.Name = "checkBox_bcast";
-            this.checkBox_bcast.Size = new System.Drawing.Size(60, 17);
-            this.checkBox_bcast.TabIndex = 16;
-            this.checkBox_bcast.Text = "{bcast}";
-            this.checkBox_bcast.UseVisualStyleBackColor = true;
-            this.checkBox_bcast.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
-            // 
-            // checkBox_z
-            // 
-            this.checkBox_z.AutoSize = true;
-            this.checkBox_z.Location = new System.Drawing.Point(7, 429);
-            this.checkBox_z.Name = "checkBox_z";
-            this.checkBox_z.Size = new System.Drawing.Size(39, 17);
-            this.checkBox_z.TabIndex = 17;
-            this.checkBox_z.Text = "{z}";
-            this.checkBox_z.UseVisualStyleBackColor = true;
-            this.checkBox_z.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
-            // 
-            // checkBox_k1
-            // 
-            this.checkBox_k1.AutoSize = true;
-            this.checkBox_k1.Location = new System.Drawing.Point(6, 452);
-            this.checkBox_k1.Name = "checkBox_k1";
-            this.checkBox_k1.Size = new System.Drawing.Size(46, 17);
-            this.checkBox_k1.TabIndex = 18;
-            this.checkBox_k1.Text = "{k1}";
-            this.checkBox_k1.UseVisualStyleBackColor = true;
-            this.checkBox_k1.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
-            // 
-            // checkBox_er
-            // 
-            this.checkBox_er.AutoSize = true;
-            this.checkBox_er.Location = new System.Drawing.Point(6, 475);
-            this.checkBox_er.Name = "checkBox_er";
-            this.checkBox_er.Size = new System.Drawing.Size(43, 17);
-            this.checkBox_er.TabIndex = 19;
-            this.checkBox_er.Text = "{er}";
-            this.checkBox_er.UseVisualStyleBackColor = true;
-            this.checkBox_er.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
-            // 
-            // checkBox_sae
-            // 
-            this.checkBox_sae.AutoSize = true;
-            this.checkBox_sae.Location = new System.Drawing.Point(6, 498);
-            this.checkBox_sae.Name = "checkBox_sae";
-            this.checkBox_sae.Size = new System.Drawing.Size(51, 17);
-            this.checkBox_sae.TabIndex = 20;
-            this.checkBox_sae.Text = "{sae}";
-            this.checkBox_sae.UseVisualStyleBackColor = true;
-            this.checkBox_sae.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
-            // 
-            // checkBox_EVEX
-            // 
-            this.checkBox_EVEX.AutoSize = true;
-            this.checkBox_EVEX.Location = new System.Drawing.Point(7, 387);
-            this.checkBox_EVEX.Name = "checkBox_EVEX";
-            this.checkBox_EVEX.Size = new System.Drawing.Size(100, 17);
-            this.checkBox_EVEX.TabIndex = 21;
-            this.checkBox_EVEX.Text = "EVEX Required";
-            this.checkBox_EVEX.UseVisualStyleBackColor = true;
-            this.checkBox_EVEX.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
-            // 
             // FormCalculator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1530,7 +1465,7 @@ namespace ira_flags_calc
             this.Name = "FormCalculator";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "FCML Flags Calculator 0.0.18";
+            this.Text = "FCML Flags Calculator 0.0.19";
             this.Load += new System.EventHandler(this.FormCalculator_Load);
             this.groupBoxFPrefixes.ResumeLayout(false);
             this.groupBoxFPrefixes.PerformLayout();
@@ -1657,11 +1592,6 @@ namespace ira_flags_calc
         private System.Windows.Forms.CheckBox checkBox_EVEX_b_lower;
         private System.Windows.Forms.CheckBox checkBox_EVEX_V_prim;
         private System.Windows.Forms.ComboBox comboBox_EVEX_pp;
-        private System.Windows.Forms.CheckBox checkBox_sae;
-        private System.Windows.Forms.CheckBox checkBox_er;
-        private System.Windows.Forms.CheckBox checkBox_k1;
-        private System.Windows.Forms.CheckBox checkBox_z;
-        private System.Windows.Forms.CheckBox checkBox_bcast;
         private System.Windows.Forms.CheckBox checkBox_EVEX;
     }
 }
