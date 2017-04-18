@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
 				   "       -asa64    63 bit address size attribute\n" \
 				   "       -osa16    16 bit operand size attribute\n" \
 				   "       -osa32    32 bit operand size attribute\n" \
-				   "       -osa64    63 bit operand size attribute\n" \
+				   "       -osa64    64 bit operand size attribute\n" \
 				   "       -ip       Instruction pointer address (IP/EIP/RIP register)\n" \
 				   "       -abs      Choose absolute memory addressing if there is any choice\n" \
 				   "                 (Especially useful in 64 bit mode, see RIP addressing.)\n" \

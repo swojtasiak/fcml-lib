@@ -1774,21 +1774,35 @@ typedef struct fcml_ist_dasm_opcode_iterator_impl {
 fcml_int fcml_ifn_dasm_decode_escape_opcode_bytes(
         fcml_ist_dasm_decoding_context *decoding_context, 
         fcml_uint8_t **virtual_opcode) {
+
     fcml_st_prefixes_details *prefixes_fields = &(decoding_context->prefixes);
     fcml_int8_t size = 0;
-    if (prefixes_fields->is_vex || prefixes_fields->is_xop) {
+
+    if (prefixes_fields->is_vex) {
         if (prefixes_fields->vex_xop_first_byte == 0xC4) {
+            /* 3-byte VEX. */
             int index = prefixes_fields->mmmm - 1;
             *virtual_opcode = fcml_iarr_dasm_escape_opcode_table[index];
             size = fcml_iarr_dasm_escape_size_tablee_table[index];
-        } else if (prefixes_fields->vex_xop_first_byte == 0x8F) {
-            *virtual_opcode = &(prefixes_fields->mmmm);
-            size = 1;
         } else {
+            /* The 2-byte VEX implies a leading 0Fh opcode byte. */
             *virtual_opcode = fcml_iarr_dasm_escape_0f;
             size = 1;
         }
     }
+
+    if (prefixes_fields->is_xop) {
+        /* For XOP opcode byte is directly encoded in mmmmm. */
+        *virtual_opcode = &(prefixes_fields->mmmm);
+        size = 1;
+    }
+
+    if (prefixes_fields->is_evex) {
+        int index = prefixes_fields->mmmm - 1;
+        *virtual_opcode = fcml_iarr_dasm_escape_opcode_table[index];
+        size = fcml_iarr_dasm_escape_size_tablee_table[index];
+    }
+
     return size;
 }
 
@@ -1910,7 +1924,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
         fcml_st_operand *operand =
                 &(decoding_context->operand_wrappers[i].operand);
 
-        error = fcml_fn_op_decor_decode(
+        error = fcml_fn_op_decor_decode(decoding_context->prefixes.b,
                 operand_decoding->decorators, &(operand->decorators));
     }
 
@@ -2610,7 +2624,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
     /* VEX and XOP prefixes don't allow any mandatory prefixes, so following*/
     /* code has nothing to do if there is VEX or XOP.*/
     if (prefix_index > 0 && prefix_type != FCML_PT_VEX && 
-            prefix_type != FCML_PT_XOP) {
+            prefix_type != FCML_PT_XOP && prefix_type != FCML_PT_EVEX) {
         fcml_bool found_plain_prefix = FCML_FALSE;
         fcml_int i;
         for (i = prefix_index; i > 0; i--) {

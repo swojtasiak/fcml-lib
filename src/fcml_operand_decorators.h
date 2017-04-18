@@ -27,6 +27,7 @@
  * Decodes operand decorators for one operand.
  */
 fcml_ceh_error fcml_fn_op_decor_decode(
+        fcml_bool evex_b,
         fcml_operand_decorators decorators_def,
         fcml_st_operand_decorators *decorators);
 

@@ -18,12 +18,22 @@
  */
 
 #include "fcml_operand_decorators.h"
+#include "fcml_def.h"
 
 fcml_ceh_error fcml_fn_op_decor_decode(
+        fcml_bool evex_b,
         fcml_operand_decorators decorators_def,
         fcml_st_operand_decorators *decorators) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    /* Sets broadcast decorator, but only if EVEX.b flag is set. */
+    if (FCML_IS_DECOR_BCAST(decorators_def) && evex_b) {
+        fcml_uint8_t bcast_size = FCML_GET_DECOR_BCAST_ELEMENT_SIZE(
+                decorators_def);
+        decorators->bcast.is_not_null = FCML_TRUE;
+        decorators->bcast.value = bcast_size;
+    }
 
     return error;
 
