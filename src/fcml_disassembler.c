@@ -36,6 +36,7 @@
 #include "fcml_dialect_int.h"
 #include "fcml_trace.h"
 #include "fcml_messages.h"
+#include "fcml_operand_decorators.h"
 
 /* R,X and B are stored in 1's complement form.*/
 #define FCML_VEX_W(x)                FCML_TP_GET_BIT(x, 7)
@@ -151,6 +152,8 @@ typedef struct fcml_ist_dasm_operand_decoding {
     fcml_ifp_dasm_operand_size_calculator size_calculator;
     /* Optional hints, if operand has any.*/
     fcml_hints hints;
+    /* Operand decorators.*/
+    fcml_operand_decorators decorators;
 } fcml_ist_dasm_operand_decoding;
 
 typedef struct fcml_ist_dasm_modrm_decoding_details {
@@ -169,6 +172,8 @@ typedef struct fcml_ist_dasm_instruction_decoding_def {
     fcml_en_instruction instruction;
     /* Addressing mode.*/
     fcml_uint16_t addr_mode;
+    /* Additional details for addressing mode. */
+    fcml_uint32_t details;
     /* Type of the instruction.*/
     fcml_uint64_t instruction_group;
     /* Opcodes. */
@@ -1119,6 +1124,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding(
     }
 
     operand_decoding->hints = 0;
+    operand_decoding->decorators = FCML_DECORATORS(operand_desc);
 
     fcml_st_def_decoded_addr_mode *decoded_addr_mode = 
         fcml_fn_def_decode_addr_mode_args(operand_desc, &error);
@@ -1677,6 +1683,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default(
     decoding->instruction_group = addr_mode_desc->instruction_group;
     decoding->instruction = instruction_desc->instruction;
     decoding->addr_mode = addr_mode_desc->addr_mode;
+    decoding->details = addr_mode_desc->details;
 
     error = fcml_ifn_dasm_dts_allocate_acceptors_chain(addr_mode_desc, 
             &(decoding->instruction_acceptors_chain));
@@ -1890,6 +1897,26 @@ void fcml_ifn_dasm_decode_opcode_fields(
     }
 }
 
+fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
+        fcml_ist_dasm_decoding_context *decoding_context) {
+
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    fcml_int i;
+    for (i = 0; i < FCML_OPERANDS_COUNT && !error; i++) {
+
+        fcml_ist_dasm_operand_decoding *operand_decoding =
+                &(decoding_context->decoding_def->operand_decodings[i]);
+        fcml_st_operand *operand =
+                &(decoding_context->operand_wrappers[i].operand);
+
+        error = fcml_fn_op_decor_decode(
+                operand_decoding->decorators, &(operand->decorators));
+    }
+
+    return error;
+}
+
 fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         fcml_ist_dasm_decoding_context *decoding_context,
         fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def) {
@@ -2059,11 +2086,11 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         }
     }
 
-    /* Decode operand decorators. */
-
+    error = fcml_ifn_dasm_decode_operand_decorators(decoding_context);
 
     /* Decode suffix.*/
-    if (FCML_DEF_PREFIX_SUFFIX(instruction_decoding_def->prefixes_flags)) {
+    if (!error &&
+            FCML_DEF_PREFIX_SUFFIX(instruction_decoding_def->prefixes_flags)) {
         fcml_bool result;
         decoding_context->suffix.value = fcml_fn_stream_read(
                 decoding_context->stream, &result);

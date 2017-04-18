@@ -109,9 +109,28 @@ typedef enum fcml_en_def_instruction_type {
  * Upper 24 bits are used to specify operand decorators.
  */
 typedef fcml_uint64_t fcml_operand_desc;
+typedef fcml_uint32_t fcml_operand_decorators;
 
-#define FCML_ADDR_MODE(x)    (x & 0x000000FFFFFFFFFFLL)
-#define FCML_DECORATORS(x)   (x & 0xFFFFFF0000000000LL)
+#define FCML_ADDR_MODE(x)    ((x) & 0x000000FFFFFFFFFFLL)
+#define FCML_DECORATORS(x)   \
+    (fcml_operand_decorators)(((x) & 0xFFFFFF0000000000LL) >> 40)
+
+/* Operand decorators encoders. */
+
+#define FCML_DECOR_BCAST(x)  (0x010000000000LL | (((fcml_uint64_t)x) << 48))
+#define FCML_DECOR_Z          0x020000000000LL
+#define FCML_DECOR_K1         0x040000000000LL
+#define FCML_DECOR_ER         0x080000000000LL
+#define FCML_DECOR_SAE        0x100000000000LL
+
+/* Operand decorators decoders. use only on 'fcml_operand_decorators'. */
+
+#define FCML_GET_DECOR_BCAST_ELEMENT_SIZE(x)  (((x) >> 8) & 0xFF)
+#define FCML_IS_DECOR_BCAST(x)                ((x) & 0x00000001)
+#define FCML_IS_DECOR_Z(x)                    ((x) & 0x00000002)
+#define FCML_IS_DECOR_K1(x)                   ((x) & 0x00000004)
+#define FCML_IS_DECOR_ER(x)                   ((x) & 0x00000008)
+#define FCML_IS_DECOR_SAE(x)                  ((x) & 0x00000010)
 
 /* Instruction details. */
 
@@ -199,11 +218,6 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_PREFIX_MANDATORY_F3(x)              FCML_TP_GET_BIT(x,14)
 #define FCML_DEF_PREFIX_SUFFIX(x)                    FCML_TP_GET_BIT(x,15)
 #define FCML_DEF_PREFIX_EVEX_REQ(x)                  FCML_TP_GET_BIT(x,16)
-#define FCML_DEF_PREFIX_BCAST(x)                     FCML_TP_GET_BIT(x,17)
-#define FCML_DEF_PREFIX_Z(x)                         FCML_TP_GET_BIT(x,18)
-#define FCML_DEF_PREFIX_OPERAND_MASK_REG(x)          FCML_TP_GET_BIT(x,19)
-#define FCML_DEF_PREFIX_ER(x)                        FCML_TP_GET_BIT(x,20)
-#define FCML_DEF_PREFIX_SAE(x)                       FCML_TP_GET_BIT(x,21)
 
 /*********************************
  * Opcode fields extractors.
@@ -289,19 +303,6 @@ typedef struct fcml_st_def_instruction_desc {
         encoded_segment_register)    (FCML_OP_SEGMENT_RELATIVE_OFFSET_BASE | \
                 (operand_size) << 8 | (encoded_segment_register))
 
-/********************************/
-/*      Operand decorators      */
-/********************************/
-
-#define FCML_DECOR_EVEX       0x0100000000LL
-#define FCML_DECOR_BCAST(x)   (0x0200000000LL | (((fcml_uint64_t)x) << 40))
-#define FCML_DECOR_Z          0x0400000000LL
-#define FCML_DECOR_K1         0x0800000000LL
-#define FCML_DECOR_ER         0x1000000000LL
-#define FCML_DECOR_SAE        0x2000000000LL
-
-#define FCML_DECOR_BCAST_GET_ELEMENT_SIZE(x) \
-    ((0xFF000000000000LL & ((fcml_uint_64_t)x)) >> 40)
 
 /********************************/
 /*      ModR/M encoding.        */
@@ -979,6 +980,7 @@ extern struct fcml_st_def_instruction_desc fcml_ext_instructions_def[];
 typedef struct fcml_st_def_decoded_addr_mode {
     /* Code of the addressing mode.*/
     fcml_uint8_t addr_mode;
+    /* Operand access mode R, RW, W. */
     fcml_en_access_mode access_mode;
     /* Decoded arguments.*/
     fcml_ptr addr_mode_args;
