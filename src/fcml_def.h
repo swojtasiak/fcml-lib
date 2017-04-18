@@ -101,8 +101,8 @@ typedef enum fcml_en_def_instruction_type {
 /* Bit fields are not compatible with CPUID. */
 /*********************************************/
 
-#define FCML_IS_MULTI_INSTRUCTION(x)        ( 0x8000 & ( x ) )
-#define FCML_MULTI_INSTRUCTION(x)           ( 0x8000 | ( x ) )
+#define FCML_IS_MULTI_INSTRUCTION(x)        (0x8000 & (x))
+#define FCML_MULTI_INSTRUCTION(x)           (0x8000 | (x))
 
 /**
  * Lower 40 bits are used to specify operand addressing mode.
@@ -293,12 +293,15 @@ typedef struct fcml_st_def_instruction_desc {
 /*      Operand decorators      */
 /********************************/
 
-#define FCML_DECOR_EVEX    0x0100000000LL
-#define FCML_DECOR_BCAST   0x0200000000LL
-#define FCML_DECOR_Z       0x0400000000LL
-#define FCML_DECOR_K1      0x0800000000LL
-#define FCML_DECOR_ER      0x1000000000LL
-#define FCML_DECOR_SAE     0x2000000000LL
+#define FCML_DECOR_EVEX       0x0100000000LL
+#define FCML_DECOR_BCAST(x)   (0x0200000000LL | (((fcml_uint64_t)x) << 40))
+#define FCML_DECOR_Z          0x0400000000LL
+#define FCML_DECOR_K1         0x0800000000LL
+#define FCML_DECOR_ER         0x1000000000LL
+#define FCML_DECOR_SAE        0x2000000000LL
+
+#define FCML_DECOR_BCAST_GET_ELEMENT_SIZE(x) \
+    ((0xFF000000000000LL & ((fcml_uint_64_t)x)) >> 40)
 
 /********************************/
 /*      ModR/M encoding.        */
@@ -823,7 +826,8 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_MODRM_RM_SIMD_L_8_RW    \
     (FCML_OP_MODRM_RM_SIMD_L_8 | FCML_OA_RW)
 #define FCML_OP_MODRM_RM_SIMD_L_OP      \
-    FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, FCML_EOS_L | FCML_EOS_OPT, FCML_RMF_RM)
+    FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, FCML_EOS_L | FCML_EOS_OPT, \
+            FCML_RMF_RM)
 #define FCML_OP_MODRM_RM_SIMD_L_OP_W    \
     (FCML_OP_MODRM_RM_SIMD_L_OP | FCML_OA_W)
 #define FCML_OP_MODRM_RM_SIMD_L_OP_RW   \
@@ -904,6 +908,16 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_MODRM_R_SIMD_E          FCML_OP_R(FCML_REG_SIMD, FCML_EOS_EOSA)
 #define FCML_OP_MODRM_R_SIMD_E_W        (FCML_OP_MODRM_R_SIMD_E | FCML_OA_W)
 #define FCML_OP_MODRM_R_SIMD_E_RW       (FCML_OP_MODRM_R_SIMD_E | FCML_OA_RW)
+
+/* AVX-512 */
+
+#define FCML_OP_MODRM_R_SIMD_L_K1_Z_W   FCML_OP_MODRM_R_SIMD_L_W | \
+    FCML_DECOR_Z | FCML_DECOR_K1
+
+#define FCML_OP_MODRM_RM_SIMD_L_BCAST32_ER_OP  FCML_OP_MODRM_RM_SIMD_L_OP | \
+    FCML_DECOR_BCAST(32) | FCML_DECOR_ER
+
+/* End of AVX-512 */
 
 #define FCML_OP_MODRM_M_SIMD_L          \
     FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_UNDEFINED, FCML_EOS_L, FCML_RMF_M)
