@@ -105,6 +105,10 @@ fcml_string fcml_reg_sidm_symbol_table[3][16] = {
 	{ "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15" }
 };
 
+fcml_string fcml_rounding_modes[4] = {
+    "{rn-sae}", "{rd-sae}", "{ru-sae}", "{rz-sae}"
+};
+
 fcml_string get_register( const fcml_st_register *reg, fcml_bool is_rex ) {
 	fcml_string printable_reg;
 	fcml_int rs = 0;
@@ -372,6 +376,32 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		case FCML_OT_REGISTER:
 			printf( "    Register: %s (Type: %s, Size: %d)\n", get_register( &(operand->reg), result->instruction_details.prefixes_details.is_rex ), register_type[operand->reg.type], operand->reg.size );
 			break;
+		case FCML_OT_VIRTUAL:
+		    /* Do nothing. */
+		    break;
+		case FCML_OT_NONE:
+		    /* Do nothing. */
+		    break;
+		}
+		/* Print operand decorators. */
+		if (operand->decorators.bcast.is_not_null) {
+			printf("    Decorator (BCAST): {1to%d}\n",
+				operand->decorators.bcast.value);
+		}
+		if (operand->decorators.er.is_not_null) {
+			printf("    Decorator (ER): %s\n",
+				fcml_rounding_modes[operand->decorators.er.value]);
+		}
+		if (operand->decorators.operand_mask_reg.type != FCML_REG_UNDEFINED) {
+			printf("    Decorator (Opcode mask register): %s\n",
+			get_register(&(operand->decorators.operand_mask_reg),
+				FCML_FALSE));
+		}
+		if (operand->decorators.sea) {
+			printf("    Decorator (SEA): Enabled\n");
+		}
+		if (operand->decorators.z) {
+			printf("    Decorator (z): Enabled\n");
 		}
 	}
 
@@ -442,28 +472,45 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 
 		printf( "\n  Prefixes fields:");
 
-		if( prefixes_details->is_vex || prefixes_details->is_xop )
-			printf( " mmmm:%d", prefixes_details->mmmm );
-		if( prefixes_details->is_vex || prefixes_details->is_xop || prefixes_details->is_rex )
-			printf( " R:%d", prefixes_details->R );
-		if( prefixes_details->is_vex || prefixes_details->is_xop || prefixes_details->is_rex )
-			printf( " X:%d", prefixes_details->X );
-		if( prefixes_details->is_vex || prefixes_details->is_xop || prefixes_details->is_rex )
-			printf( " B:%d", prefixes_details->B );
-		if( prefixes_details->is_vex || prefixes_details->is_xop || prefixes_details->is_rex )
-			printf( " W:%d", prefixes_details->W );
-		if( prefixes_details->is_vex || prefixes_details->is_xop )
-			printf( " vvvv:%d", prefixes_details->vvvv );
-		if( prefixes_details->is_vex || prefixes_details->is_xop )
-			printf( " L:%d", prefixes_details->L );
-		if( prefixes_details->is_vex || prefixes_details->is_xop )
-			printf( " pp:%d", prefixes_details->pp );
+		fcml_bool is_evex = prefixes_details->is_evex;
+		fcml_bool is_vex = prefixes_details->is_vex;
+		fcml_bool is_xop = prefixes_details->is_xop;
+		fcml_bool is_rex = prefixes_details->is_rex;
+
+		if (is_vex || is_xop || is_evex)
+			printf(" mmmm:%d", prefixes_details->mmmm);
+		if (is_vex || is_xop || is_rex || is_evex)
+			printf(" R:%d", prefixes_details->R);
+		if (is_evex)
+			printf(" R':%d", prefixes_details->R_prim);
+		if (is_evex)
+			printf(" b:%d", prefixes_details->b);
+		if (is_vex || is_xop || is_rex || is_evex)
+			printf(" X:%d", prefixes_details->X);
+		if (is_vex || is_xop || is_rex  || is_evex)
+			printf(" B:%d", prefixes_details->B);
+		if (is_vex || is_xop || is_rex || is_evex)
+			printf(" W:%d", prefixes_details->W);
+		if (is_vex || is_xop || is_evex)
+			printf(" vvvv:%d", prefixes_details->vvvv);
+		if (is_evex)
+			printf(" V':%d", prefixes_details->V_prim);
+		if (is_vex || is_xop || is_evex)
+			printf(" L:%d", prefixes_details->L);
+		if (is_evex )
+			printf(" L':%d", prefixes_details->L_prim);
+		if (is_vex || is_xop || is_evex)
+			printf(" pp:%d", prefixes_details->pp);
+		if (is_evex)
+			printf(" aaa:%d", prefixes_details->aaa);
+		if (is_evex)
+			printf(" z:%d", prefixes_details->z);
 
 		printf( "\n  Available prefixes (details):\n" );
 
 		for( i = 0; i < prefixes_details->prefixes_count; i++ ) {
 			fcml_st_instruction_prefix *prefix = &(prefixes_details->prefixes[i]);
-			printf("   Byte: 0x%02x, Type %s, Mandatory: %s, XOP/VEX bytes: 0x%02x, 0x%02x.\n", prefix->prefix, prefix_types[ prefix->prefix_type ], get_boolean( prefix->mandatory_prefix ), prefix->vex_xop_bytes[0], prefix->vex_xop_bytes[1] );
+			printf("   Byte: 0x%02x, Type %s, Mandatory: %s, XOP/VEX/EVEX bytes: 0x%02x, 0x%02x.\n", prefix->prefix, prefix_types[ prefix->prefix_type ], get_boolean( prefix->mandatory_prefix ), prefix->vex_xop_bytes[0], prefix->vex_xop_bytes[1] );
 		}
 
 	}

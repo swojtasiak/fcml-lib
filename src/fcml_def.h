@@ -56,7 +56,7 @@
 #define FCML_EOS_EOSA           0x7F
 #define FCML_EOS_EASA           0x7E
 
-/* Operand size calculated on L field. */
+/* Operand size calculated on EVEX.L'L/VEX.L/XOP/L fields. */
 #define FCML_EOS_L              0x7D
 
 /* Operand sizes that cannot be simply written as number of bytes.*/

@@ -89,6 +89,8 @@ typedef struct fcml_ist_dasm_decoding_context {
     fcml_uint16_t addr_mode;
     fcml_usize effective_address_size_attribute;
     fcml_usize effective_operand_size_attribute;
+    /* Size of SIMD vector length calculated basing on EVEX.L'L/VEX.L/XOP.L */
+    fcml_usize vector_length;
     fcml_int calculated_instruction_size;
     fcml_uint8_t opcodes[FCML_OPCODES_NUM];
     fcml_uint8_t primary_opcode_byte;
@@ -121,7 +123,9 @@ typedef struct fcml_ist_dasm_disassembler {
 /* Decoders responsible for operand disassembling. */
 typedef fcml_ceh_error (*fcml_ifp_dasm_operand_decoder)(
         struct fcml_ist_dasm_decoding_context *context, 
-        fcml_ist_dasm_operand_wrapper *operand, fcml_ptr args);
+        fcml_ist_dasm_operand_wrapper *operand,
+        fcml_operand_decorators decorators,
+        fcml_ptr args);
 
 /* Calculates the size of the encoded operand in bytes. */
 typedef fcml_int (*fcml_ifp_dasm_operand_size_calculator)(
@@ -280,6 +284,23 @@ fcml_ceh_error fcml_ifn_dasm_utils_decode_segment_selector(
     return FCML_CEH_GEC_NO_ERROR;
 }
 
+fcml_usize fcml_ifn_dasm_calculate_vector_length(
+        fcml_uint8_t encoded_vector_length) {
+    fcml_usize vector_length = 0;
+    switch (encoded_vector_length) {
+    case 0:
+        vector_length = FCML_DS_128;
+    break;
+    case 1:
+        vector_length = FCML_DS_256;
+    break;
+    case 2:
+        vector_length = FCML_DS_512;
+    break;
+    }
+    return vector_length;
+};
+
 fcml_usize fcml_ifn_dasm_utils_decode_encoded_size_value(
         fcml_ist_dasm_decoding_context *context, fcml_uint8_t encoded_size) {
     fcml_usize result = 0;
@@ -293,17 +314,8 @@ fcml_usize fcml_ifn_dasm_utils_decode_encoded_size_value(
             result = context->effective_address_size_attribute;
             break;
         case FCML_EOS_L:
-            switch (context->prefixes.L | context->prefixes.L_prim << 1) {
-            case 00:
-                result = FCML_DS_128;
-                break;
-            case 01:
-                result = FCML_DS_256;
-                break;
-            case 11:
-                result = FCML_DS_512;
-                break;
-            }
+            result = fcml_ifn_dasm_calculate_vector_length(context->prefixes.L |
+                    context->prefixes.L_prim << 1);
             break;
         case FCML_EOS_14_28:
             result = (context->effective_operand_size_attribute == FCML_DS_16) 
@@ -390,7 +402,8 @@ fcml_ifp_dasm_instruction_decoder fcml_ifn_dasm_dts_choose_instruction_decoder(
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm(
         fcml_ist_dasm_decoding_context *context, 
-        fcml_ist_dasm_operand_wrapper *operand_wrapper, 
+        fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -463,6 +476,7 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_imm(
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg(
         fcml_ist_dasm_decoding_context *context, 
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_st_operand *operand = &(operand_wrapper->operand);
@@ -484,7 +498,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg(
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing(
         fcml_ist_dasm_decoding_context *context,
-        fcml_ist_dasm_operand_wrapper *operand_wrapper, 
+        fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_st_operand *operand = &(operand_wrapper->operand);
@@ -520,6 +535,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing(
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_opcode_reg(
         fcml_ist_dasm_decoding_context *context, 
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_sf_def_tma_opcode_reg *reg_args = (fcml_sf_def_tma_opcode_reg*) args;
@@ -550,6 +566,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_opcode_reg(
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative(
         fcml_ist_dasm_decoding_context *context, 
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -669,6 +686,7 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_immediate_dis_relative(
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer(
         fcml_ist_dasm_decoding_context *context, 
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -718,6 +736,7 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_far_pointer(
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_ib(
         fcml_ist_dasm_decoding_context *context, 
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_sf_def_tma_explicit_ib *imm_args = (fcml_sf_def_tma_explicit_ib*)args;
@@ -740,6 +759,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_ib(
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset(
         fcml_ist_dasm_decoding_context *context, 
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -801,6 +821,7 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_segment_relative_offset(
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
         fcml_ist_dasm_decoding_context *context, 
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -828,8 +849,17 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
         fcml_st_address *address = &(operand->address);
         *address = decoded_modrm->address;
 
-        address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value(
-                context, rm_args->encoded_memory_operand_size);
+        /* If AVX-512 broadcast is used, use size operator from broadcast
+         * instead of the one directly encoded in Mod/RM.
+         */
+        if (FCML_IS_DECOR_BCAST(decorators)) {
+            address->size_operator =
+                    FCML_GET_DECOR_BCAST_ELEMENT_SIZE(decorators);
+        } else {
+            address->size_operator =
+                    fcml_ifn_dasm_utils_decode_encoded_size_value(context,
+                            rm_args->encoded_memory_operand_size);
+        }
 
         if (decoded_modrm->is_rip) {
             /* We known the instruction size, so post processing is not needed
@@ -901,10 +931,11 @@ fcml_sf_def_tma_rm fcml_isst_dasm_far_pointer_indirect_args = {
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer_indirect(
         fcml_ist_dasm_decoding_context *context, 
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
     fcml_sf_def_tma_rm rm_args = fcml_isst_dasm_far_pointer_indirect_args;
-    return fcml_ifn_dasm_operand_decoder_rm(context, operand_wrapper, 
-            &rm_args);
+    return fcml_ifn_dasm_operand_decoder_rm(context, operand_wrapper,
+            decorators, &rm_args);
 }
 
 /*************/
@@ -914,6 +945,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer_indirect(
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_r(
         fcml_ist_dasm_decoding_context *context,
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -938,7 +970,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_r(
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_vex_vvvv(
         fcml_ist_dasm_decoding_context *context, 
-        fcml_ist_dasm_operand_wrapper *operand_wrapper, 
+        fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -958,7 +991,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_vex_vvvv(
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_isX(
         fcml_ist_dasm_decoding_context *context, 
-        fcml_ist_dasm_operand_wrapper *operand_wrapper, 
+        fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
         fcml_ptr args) {
 
     /* IS4/IS5 byte is located just after ModR/M field, so it doesn't have 
@@ -1015,7 +1049,9 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_isX(
 
 fcml_ceh_error fcml_ifn_dasm_operand_decoder_pseudo_op(
         fcml_ist_dasm_decoding_context *context, 
-        fcml_ist_dasm_operand_wrapper *operand_wrapper, fcml_ptr args) {
+        fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
+        fcml_ptr args) {
 
     fcml_bool result;
     fcml_uint8_t pseudo_op = fcml_fn_stream_read(context->stream, &result);
@@ -1925,6 +1961,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
                 &(decoding_context->operand_wrappers[i].operand);
 
         error = fcml_fn_op_decor_decode(decoding_context->prefixes.b,
+                decoding_context->vector_length,
                 operand_decoding->decorators, &(operand->decorators));
     }
 
@@ -1997,6 +2034,10 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
     decoding_context->effective_operand_size_attribute = 
         fcml_ifn_dasm_calculate_effective_osa(decoding_context, 
                 instruction_decoding_def->opcode_flags);
+    decoding_context->vector_length =
+            fcml_ifn_dasm_calculate_vector_length(
+                    decoding_context->prefixes.L |
+                    decoding_context->prefixes.L_prim << 1);
 
     fcml_ist_dasm_operand_wrapper *operand_wrappers = 
         &(decoding_context->operand_wrappers[0]);
@@ -2085,8 +2126,8 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         fcml_st_def_decoded_addr_mode *decoded_addr_mode = 
             operand_decoding->decoded_addr_mode;
         if (operand_decoding->decoder) {
-            error = operand_decoding->decoder(
-                    decoding_context, operand_wrappers, 
+            error = operand_decoding->decoder(decoding_context,
+                    operand_wrappers, operand_decoding->decorators,
                     decoded_addr_mode->addr_mode_args);
             if (error) {
                 break;

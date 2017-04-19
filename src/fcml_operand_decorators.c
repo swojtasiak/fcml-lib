@@ -22,6 +22,7 @@
 
 fcml_ceh_error fcml_fn_op_decor_decode(
         fcml_bool evex_b,
+        fcml_usize vector_length,
         fcml_operand_decorators decorators_def,
         fcml_st_operand_decorators *decorators) {
 
@@ -32,7 +33,7 @@ fcml_ceh_error fcml_fn_op_decor_decode(
         fcml_uint8_t bcast_size = FCML_GET_DECOR_BCAST_ELEMENT_SIZE(
                 decorators_def);
         decorators->bcast.is_not_null = FCML_TRUE;
-        decorators->bcast.value = bcast_size;
+        decorators->bcast.value = vector_length / bcast_size;
     }
 
     return error;
