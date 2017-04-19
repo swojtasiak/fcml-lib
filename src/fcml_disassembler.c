@@ -318,6 +318,7 @@ fcml_usize fcml_ifn_dasm_calculate_vector_length(fcml_uint8_t tuple_type,
 fcml_usize fcml_ifn_dasm_utils_decode_encoded_size_value(
         fcml_ist_dasm_decoding_context *context, fcml_uint8_t encoded_size) {
     fcml_usize result = 0;
+    /* Extracts size explicitly encoded in the encoded operand size. */
     fcml_uint8_t size = (encoded_size & ~FCML_EOS_OPT);
     if (size >= FCML_EOS_DYNAMIC_BASE) {
         switch (size) {

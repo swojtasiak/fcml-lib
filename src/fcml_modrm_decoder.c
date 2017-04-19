@@ -26,7 +26,7 @@
 
 /* Register configurations used for 16 bit addressing form decoding */
 
-struct fcml_st_register fcml_iarr_modrm_addressing_form_reg_16[8][2] = {
+struct fcml_st_register fcml_modrm_addressing_form_reg_16[8][2] = {
 	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE },
 	        { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE } },
 	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE },
@@ -148,8 +148,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_16bit(
         address->address_form = FCML_AF_OFFSET;
 
     } else if (f_mod < 3) {
-        effective_address->base = fcml_iarr_modrm_addressing_form_reg_16[f_rm][0];
-        effective_address->index = fcml_iarr_modrm_addressing_form_reg_16[f_rm][1];
+        effective_address->base = fcml_modrm_addressing_form_reg_16[f_rm][0];
+        effective_address->index = fcml_modrm_addressing_form_reg_16[f_rm][1];
         if (f_mod > 0) {
             fcml_ceh_error error = fcml_ifn_modrm_decode_displacement(
                     stream, &(effective_address->displacement), NULL,
@@ -217,12 +217,12 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib(
             effective_address->index.size = modrm_source->vsib_index_size;
         } else {
             effective_address->index.type = FCML_REG_GPR;
-            effective_address->index.size = (effective_address_size == FCML_DS_64 )
-                    ? FCML_DS_64 : FCML_DS_32;
+            effective_address->index.size = (effective_address_size ==
+                    FCML_DS_64 ) ? FCML_DS_64 : FCML_DS_32;
         }
         effective_address->index.reg = f_index;
-        /* Scale.*/
-        effective_address->scale_factor = f_scale ? (1 << f_scale) : 0; /* f_scale * 2*/
+        /* Scale. (f_scale * 2) */
+        effective_address->scale_factor = f_scale ? (1 << f_scale) : 0;
     }
 
     address->address_form = FCML_AF_COMBINED;
@@ -288,7 +288,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit(
 
     /* Decode ModRM.*/
     f_mod = FCML_MODRM_DEC_MOD(mod_rm);
-    f_rm = FCML_MODRM_DEC_RM(mod_rm) | (modrm_source->ext_B << 3) | (modrm_source->ext_X << 4);
+    f_rm = FCML_MODRM_DEC_RM(mod_rm) | (modrm_source->ext_B << 3) |
+            (modrm_source->ext_X << 4);
 
     if (modrm_source->is_vsib && FCML_MODRM_DEC_RM(mod_rm) != 4) {
         return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
