@@ -852,7 +852,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
         /* If AVX-512 broadcast is used, use size operator from broadcast
          * instead of the one directly encoded in Mod/RM.
          */
-        if (FCML_IS_DECOR_BCAST(decorators)) {
+        if (FCML_IS_DECOR_BCAST(decorators) && context->prefixes.b) {
             address->size_operator =
                     FCML_GET_DECOR_BCAST_ELEMENT_SIZE(decorators);
         } else {
