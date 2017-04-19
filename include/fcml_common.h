@@ -535,9 +535,9 @@ typedef struct fcml_st_far_pointer {
     fcml_int32_t offset32;
 } fcml_st_far_pointer;
 
-/* *******************************************/
-/* *  Memory addressing using Mod/RM field  **/
-/* *******************************************/
+/********************************************/
+/**  Memory addressing using ModR/M field  **/
+/********************************************/
 
 /**
  * Addressing form.
@@ -572,13 +572,13 @@ typedef struct fcml_st_offset {
  * Effective address.
  */
 typedef struct fcml_st_effective_address {
-    /** GPR base register. @see fcml_st_register*/
+    /** GPR base register. @see fcml_st_register. */
     fcml_st_register base;
-    /** GPR index register. @see fcml_st_register*/
+    /** GPR index register. @see fcml_st_register. */
     fcml_st_register index;
     /** Scale factor 1,2,4 or 8. */
     fcml_uint8_t scale_factor;
-    /** Displacement value. @see fcml_st_integer*/
+    /** Displacement value. @see fcml_st_integer. */
     fcml_st_integer displacement;
 } fcml_st_effective_address;
 

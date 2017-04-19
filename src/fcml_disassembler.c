@@ -100,9 +100,9 @@ typedef struct fcml_ist_dasm_decoding_context {
     fcml_ist_dasm_operand_wrapper operand_wrappers[FCML_OPERANDS_COUNT];
     fcml_st_modrm decoded_modrm;
     fcml_st_modrm_details decoded_modrm_details;
-    /* True if Mod/RM is available for instruction. */
+    /* True if ModR/M is available for instruction. */
     fcml_bool is_modrm;
-    /* True if Mod/RM is used by register to register operation. */
+    /* True if ModR/M is used by register to register operation. */
     fcml_bool is_modrm_reg_reg;
     fcml_hints instruction_hints;
     fcml_nuint8_t pseudo_opcode;
@@ -864,7 +864,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
         *address = decoded_modrm->address;
 
         /* If AVX-512 broadcast is used, use size operator from broadcast
-         * instead of the one directly encoded in Mod/RM.
+         * instead of the one directly encoded in ModR/M.
          */
         if (FCML_IS_DECOR_BCAST(decorators) && context->prefixes.b) {
             address->size_operator =
@@ -2896,10 +2896,17 @@ fcml_ceh_error fcml_ifn_disassemble_core(
         /* ModR/M details.*/
         fcml_st_decoded_modrm_details *modrm_details = 
             &(instruction_details->modrm_details);
+
         modrm_details->modrm = decoding_context.decoded_modrm_details.modrm;
         modrm_details->sib = decoding_context.decoded_modrm_details.sib;
         modrm_details->is_rip = decoding_context.decoded_modrm.is_rip;
         modrm_details->is_modrm = decoding_context.is_modrm;
+
+        fcml_st_modrm_displacement *displacement =
+                &(decoding_context.decoded_modrm_details.displacement);
+
+        modrm_details->displacement.displacement = displacement->displacement;
+        modrm_details->displacement.N = displacement->N;
 
         /* Prefixes.*/
         instruction_details->prefixes_details = decoding_context.prefixes;

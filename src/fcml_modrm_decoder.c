@@ -48,6 +48,7 @@ struct fcml_st_register fcml_modrm_addressing_form_reg_16[8][2] = {
 fcml_ceh_error fcml_ifn_modrm_decode_displacement(
         fcml_st_memory_stream *stream,
         fcml_st_integer *displacement,
+        fcml_st_modrm_displacement *raw_displacement,
         fcml_st_offset *offset,
         fcml_usize size,
         fcml_usize offset_extension_size,
@@ -60,6 +61,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_displacement(
     if (error) {
         return error;
     }
+
+    raw_displacement->displacement = integer;
 
     /* Offsets and displacement are signed integers.*/
     integer.is_signed = FCML_TRUE;
@@ -138,7 +141,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_16bit(
         /* disp16.*/
         fcml_ceh_error error = fcml_ifn_modrm_decode_displacement(
                 stream, &(effective_address->displacement),
-                &( address->offset), FCML_DS_16,
+                &(modrm_details->displacement), &( address->offset), FCML_DS_16,
                 context->effective_address_size,
                 fcml_ifn_modrm_get_displacement_extension(context, flags));
         if (error) {
@@ -152,7 +155,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_16bit(
         effective_address->index = fcml_modrm_addressing_form_reg_16[f_rm][1];
         if (f_mod > 0) {
             fcml_ceh_error error = fcml_ifn_modrm_decode_displacement(
-                    stream, &(effective_address->displacement), NULL,
+                    stream, &(effective_address->displacement),
+                    &(modrm_details->displacement), NULL,
                     (f_mod == 1) ? FCML_DS_8 : FCML_DS_16, 0,
                     fcml_ifn_modrm_get_displacement_extension(context, flags));
             if ( error ) {
@@ -182,7 +186,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib(
 
     fcml_st_memory_stream *stream = modrm_source->stream;
 
-    fcml_st_address *address = &( decoded_modrm->address );
+    fcml_st_address *address = &(decoded_modrm->address);
     fcml_st_effective_address *effective_address =
             &(address->effective_address);
 
@@ -208,7 +212,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib(
     f_mod = FCML_MODRM_DEC_MOD(mod_rm);
     f_base = FCML_MODRM_SIB_BASE(sib) | (modrm_source->ext_B << 3);
     f_index = FCML_MODRM_SIB_INDEX(sib) | (modrm_source->ext_X << 3);
-    f_scale = FCML_MODRM_SIB_SS( sib );
+    f_scale = FCML_MODRM_SIB_SS(sib);
 
     /* Index register and scale.*/
     if (FCML_MODRM_SIB_INDEX(sib) != 4) {
@@ -235,8 +239,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib(
         /* In this case base register doesn't exist.*/
         error = fcml_ifn_modrm_decode_displacement(
                 stream, &(effective_address->displacement),
-                &(address->offset), FCML_DS_32, effective_address_size, 0
-                );
+                &(modrm_details->displacement), &(address->offset), FCML_DS_32,
+                effective_address_size, 0);
 
     } else {
         /* Effective address size affects base register.*/
@@ -246,9 +250,10 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib(
         effective_address->base.reg = f_base;
 
         /* There is no displacement for mod == 0.*/
-        if ( f_mod > 0 ) {
+        if (f_mod > 0) {
             error = fcml_ifn_modrm_decode_displacement(stream,
-                    &(effective_address->displacement), NULL,
+                    &(effective_address->displacement),
+                    &(modrm_details->displacement), NULL,
                     (f_mod == 1) ? FCML_DS_8 : FCML_DS_32, 0,
                     fcml_ifn_modrm_get_displacement_extension(context, flags));
         }
@@ -321,7 +326,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit(
          * calculated in post processors.
          */
         error = fcml_ifn_modrm_decode_displacement( stream,
-                &(effective_address->displacement), &(address->offset),
+                &(effective_address->displacement),
+                &(modrm_details->displacement), &(address->offset),
                 FCML_DS_32, decoded_modrm->is_rip
                     ? 0 : effective_address_size, 0);
         if (error) {
@@ -337,7 +343,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit(
         /* Displacement.*/
         if (f_mod != 0) {
             error = fcml_ifn_modrm_decode_displacement(
-                    stream, &(effective_address->displacement), NULL,
+                    stream, &(effective_address->displacement),
+                    &(modrm_details->displacement), NULL,
                     (f_mod == 1) ? FCML_DS_8 : FCML_DS_32, 0,
                     fcml_ifn_modrm_get_displacement_extension(context, flags));
             if (error) {

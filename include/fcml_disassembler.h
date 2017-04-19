@@ -112,7 +112,10 @@ typedef struct fcml_st_instruction_prefix {
     fcml_uint8_t vex_xop_bytes[3];
 } fcml_st_instruction_prefix;
 
-/** Contains some additional information about all decoded instruction prefixes. */
+/**
+ * Contains some additional information about all decoded
+ * instruction prefixes.
+ */
 typedef struct fcml_st_prefixes_details {
     /** Array with decoded prefixes. */
     fcml_st_instruction_prefix prefixes[FCML_DASM_PREFIXES_COUNT];
@@ -182,6 +185,16 @@ typedef struct fcml_st_operand_details {
     fcml_en_access_mode access_mode;
 } fcml_st_operand_details;
 
+/**
+ * Displacement in raw form.
+ */
+typedef struct fcml_st_raw_displacement {
+    /** Displacement as encoded in disp8/disp16/disp32/disp8*N. */
+    fcml_st_integer displacement;
+    /** Scaling factor N in EVEX specific compressed disp8*N. */
+    fcml_nuint8_t N;
+} fcml_st_raw_displacement;
+
 /** Some basic information about decoded ModR/M and SIB bytes. */
 typedef struct fcml_st_decoded_modrm_details {
     /** ModR/M byte if exists.*/
@@ -192,6 +205,8 @@ typedef struct fcml_st_decoded_modrm_details {
     fcml_bool is_rip;
     /** True if ModR/M exists. */
     fcml_bool is_modrm;
+    /** Raw displacement */
+    fcml_st_raw_displacement displacement;
 } fcml_st_decoded_modrm_details;
 
 /** Additional instruction details provided by disassembler. */
