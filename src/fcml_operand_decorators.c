@@ -58,5 +58,10 @@ fcml_ceh_error fcml_fn_op_decor_decode(fcml_bool evex_b, fcml_bool evex_z,
         decorators->er.value = evex_ll;
     }
 
+    /* Suppress All Exceptions. */
+    if (FCML_IS_DECOR_SAE(decorators_def) && operand->type == FCML_OT_VIRTUAL) {
+        decorators->sea = FCML_TRUE;
+    }
+
     return error;
 }
