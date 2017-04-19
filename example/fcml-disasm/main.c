@@ -105,6 +105,10 @@ fcml_string fcml_reg_sidm_symbol_table[3][16] = {
 	{ "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15" }
 };
 
+fcml_string fcml_reg_operand_mask_symbol_table[8] = {
+    "k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"
+};
+
 fcml_string fcml_rounding_modes[4] = {
     "{rn-sae}", "{rd-sae}", "{ru-sae}", "{rz-sae}"
 };
@@ -127,7 +131,9 @@ fcml_string get_register( const fcml_st_register *reg, fcml_bool is_rex ) {
 			rs = 3;
 			break;
 		}
-		if ( reg->type == FCML_REG_IP ) {
+		if (reg->type == FCML_REG_OPERAND_MASK) {
+			printable_reg = fcml_reg_operand_mask_symbol_table[reg->reg];
+		} else if (reg->type == FCML_REG_IP ) {
 			printable_reg = fcml_reg_gpr_symbol_table_ip[rs];
 		} else {
 			if (is_rex) {
@@ -393,7 +399,7 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 				fcml_rounding_modes[operand->decorators.er.value]);
 		}
 		if (operand->decorators.operand_mask_reg.type != FCML_REG_UNDEFINED) {
-			printf("    Decorator (Opcode mask register): %s\n",
+			printf("    Decorator (Opmask register): %s\n",
 			get_register(&(operand->decorators.operand_mask_reg),
 				FCML_FALSE));
 		}

@@ -1961,6 +1961,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
                 &(decoding_context->operand_wrappers[i].operand);
 
         error = fcml_fn_op_decor_decode(decoding_context->prefixes.b,
+                decoding_context->prefixes.z, decoding_context->prefixes.aaa,
                 decoding_context->vector_length,
                 operand_decoding->decorators, &(operand->decorators));
     }

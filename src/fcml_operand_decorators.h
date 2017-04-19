@@ -28,6 +28,8 @@
  */
 fcml_ceh_error fcml_fn_op_decor_decode(
         fcml_bool evex_b,
+        fcml_bool evex_z,
+        fcml_uint8_t evex_aaa,
         fcml_usize vector_length,
         fcml_operand_decorators decorators_def,
         fcml_st_operand_decorators *decorators);

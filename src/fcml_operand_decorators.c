@@ -20,9 +20,8 @@
 #include "fcml_operand_decorators.h"
 #include "fcml_def.h"
 
-fcml_ceh_error fcml_fn_op_decor_decode(
-        fcml_bool evex_b,
-        fcml_usize vector_length,
+fcml_ceh_error fcml_fn_op_decor_decode(fcml_bool evex_b, fcml_bool evex_z,
+        fcml_uint8_t evex_aaa, fcml_usize vector_length,
         fcml_operand_decorators decorators_def,
         fcml_st_operand_decorators *decorators) {
 
@@ -36,6 +35,18 @@ fcml_ceh_error fcml_fn_op_decor_decode(
         decorators->bcast.value = vector_length / bcast_size;
     }
 
-    return error;
+    /* Operand mask register. */
+    if (FCML_IS_DECOR_K1(decorators_def) && evex_aaa > 0) {
+        decorators->operand_mask_reg.type = FCML_REG_OPERAND_MASK;
+        decorators->operand_mask_reg.size = FCML_DS_64;
+        decorators->operand_mask_reg.x64_exp = FCML_FALSE;
+        decorators->operand_mask_reg.reg = evex_aaa;
+    }
 
+    /* Zeroying. */
+    if (FCML_IS_DECOR_Z(decorators_def) && evex_z) {
+        decorators->z = FCML_TRUE;
+    }
+
+    return error;
 }
