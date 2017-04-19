@@ -100,7 +100,10 @@ typedef struct fcml_ist_dasm_decoding_context {
     fcml_ist_dasm_operand_wrapper operand_wrappers[FCML_OPERANDS_COUNT];
     fcml_st_modrm decoded_modrm;
     fcml_st_modrm_details decoded_modrm_details;
+    /* True if Mod/RM is available for instruction. */
     fcml_bool is_modrm;
+    /* True if Mod/RM is used by register to register operation. */
+    fcml_bool is_modrm_reg_reg;
     fcml_hints instruction_hints;
     fcml_nuint8_t pseudo_opcode;
     fcml_nuint8_t suffix;
@@ -284,19 +287,30 @@ fcml_ceh_error fcml_ifn_dasm_utils_decode_segment_selector(
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_usize fcml_ifn_dasm_calculate_vector_length(
-        fcml_uint8_t encoded_vector_length) {
+fcml_usize fcml_ifn_dasm_calculate_vector_length(fcml_uint8_t tuple_type,
+        fcml_bool er_enabled, fcml_uint8_t encoded_vector_length) {
     fcml_usize vector_length = 0;
-    switch (encoded_vector_length) {
-    case 0:
-        vector_length = FCML_DS_128;
-    break;
-    case 1:
-        vector_length = FCML_DS_256;
-    break;
-    case 2:
-        vector_length = FCML_DS_512;
-    break;
+    if (er_enabled) {
+        /* Vector length is assumed to be 512-bit in case of AVX-512 packed
+         * vector instructions or 128-bit for scalar instructions.
+         */
+        if(tuple_type == FCML_TT_FV) {
+            vector_length = FCML_DS_512;
+        } else if (tuple_type == FCML_TT_T1S || tuple_type == FCML_TT_T1F) {
+            vector_length = FCML_DS_128;
+        }
+    } else {
+        switch (encoded_vector_length) {
+        case 0:
+            vector_length = FCML_DS_128;
+        break;
+        case 1:
+            vector_length = FCML_DS_256;
+        break;
+        case 2:
+            vector_length = FCML_DS_512;
+        break;
+        }
     }
     return vector_length;
 };
@@ -314,8 +328,7 @@ fcml_usize fcml_ifn_dasm_utils_decode_encoded_size_value(
             result = context->effective_address_size_attribute;
             break;
         case FCML_EOS_L:
-            result = fcml_ifn_dasm_calculate_vector_length(context->prefixes.L |
-                    context->prefixes.L_prim << 1);
+            result = context->vector_length;
             break;
         case FCML_EOS_14_28:
             result = (context->effective_operand_size_attribute == FCML_DS_16) 
@@ -1960,10 +1973,14 @@ fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
         fcml_st_operand *operand =
                 &(decoding_context->operand_wrappers[i].operand);
 
+        fcml_uint8_t ll = decoding_context->prefixes.L_prim << 1 |
+                decoding_context->prefixes.L;
+
         error = fcml_fn_op_decor_decode(decoding_context->prefixes.b,
                 decoding_context->prefixes.z, decoding_context->prefixes.aaa,
+                ll, decoding_context->is_modrm_reg_reg,
                 decoding_context->vector_length,
-                operand_decoding->decorators, &(operand->decorators));
+                operand_decoding->decorators, operand);
     }
 
     return error;
@@ -2035,10 +2052,6 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
     decoding_context->effective_operand_size_attribute = 
         fcml_ifn_dasm_calculate_effective_osa(decoding_context, 
                 instruction_decoding_def->opcode_flags);
-    decoding_context->vector_length =
-            fcml_ifn_dasm_calculate_vector_length(
-                    decoding_context->prefixes.L |
-                    decoding_context->prefixes.L_prim << 1);
 
     fcml_ist_dasm_operand_wrapper *operand_wrappers = 
         &(decoding_context->operand_wrappers[0]);
@@ -2086,8 +2099,27 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             return error;
         }
 
+        decoding_context->is_modrm_reg_reg =
+                decoding_context->decoded_modrm.reg.is_not_null;
+
         decoding_context->calculated_instruction_size += stream->offset - 
             offset;
+    }
+
+    /* Calculate vector length for AVX instructions. */
+    if (prefixes->is_avx) {
+        /* Static Rounding Mode ({er}) is enabled for reg-to-reg instructions
+         * when EXEV.b is set.
+         */
+        fcml_bool er_enabled = prefixes->b &&
+                decoding_context->is_modrm_reg_reg;
+
+        fcml_uint8_t tuple_type =
+                FCML_GET_SIMD_TUPLETYPE(instruction_decoding_def->details);
+
+        decoding_context->vector_length =
+                fcml_ifn_dasm_calculate_vector_length(tuple_type, er_enabled,
+                        prefixes->L | prefixes->L_prim << 1);
     }
 
     /* Calculate operands size. */
@@ -2136,6 +2168,11 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             operand_wrappers->operand.hints |= operand_decoding->hints;
             operand_wrappers->access_mode = decoded_addr_mode->access_mode;
             operand_wrappers++;
+        } else if (operand_decoding->decorators) {
+            /* If given operand doesn't have decoder, but has decorators set
+             * it is a virtual operand.
+             */
+            operand_wrappers->operand.type = FCML_OT_VIRTUAL;
         } else {
             /* First operand without decoder is the last one.*/
             break;
@@ -2649,6 +2686,8 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                         (p_flags & FCML_IDFPF_IS_NOBRANCH) 
                         ? FCML_TRUE : FCML_FALSE;
                 }
+                prefixes_details->is_avx = prefixes_details->is_vex ||
+                        prefixes_details->is_evex || prefixes_details->is_xop;
                 prefixes_details->prefixes_bytes_count += prefix_size;
                 fcml_fn_stream_seek(stream, prefix_size, FCML_EN_ST_CURRENT);
                 prefix_index++;

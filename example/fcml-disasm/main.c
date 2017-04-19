@@ -41,13 +41,15 @@ fcml_string prefix_types[] = {
 	"FCML_PT_REX",
 	"FCML_PT_VEX",
 	"FCML_PT_XOP",
+	"FCML_PT_EVEX"
 };
 fcml_string operand_types[] = {
 	"FCML_EOT_NONE",
 	"FCML_EOT_IMMEDIATE",
 	"FCML_EOT_FAR_POINTER",
 	"FCML_EOT_ADDRESS",
-	"FCML_EOT_REGISTER"
+	"FCML_EOT_REGISTER",
+	"FCML_EOT_VIRTUAL"
 };
 
 fcml_string register_type[] = {
@@ -58,7 +60,8 @@ fcml_string register_type[] = {
     "FCML_REG_SEG",
     "FCML_REG_CR",
     "FCML_REG_DR",
-    "FCML_REG_IP"
+    "FCML_REG_IP",
+    "FCML_REG_OPMASK"
 };
 
 fcml_string fcml_reg_symbol_table[7][16] = {
@@ -99,10 +102,36 @@ fcml_string fcml_reg_gpr_symbol_table_rex[4][16] = {
 	{ "rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15" }
 };
 
-fcml_string fcml_reg_sidm_symbol_table[3][16] = {
-	{ "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>", "<wrong register>" },
-	{ "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15" },
-	{ "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15" }
+fcml_string fcml_reg_sidm_symbol_table[4][32] = {
+    {
+      "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7",
+      "<wrong register>", "<wrong register>", "<wrong register>",
+      "<wrong register>", "<wrong register>", "<wrong register>",
+      "<wrong register>", "<wrong register>", "<wrong register>",
+      "<wrong register>", "<wrong register>", "<wrong register>",
+      "<wrong register>", "<wrong register>", "<wrong register>",
+      "<wrong register>", "<wrong register>", "<wrong register>",
+      "<wrong register>", "<wrong register>", "<wrong register>",
+      "<wrong register>", "<wrong register>", "<wrong register>"
+    },
+    {
+      "xmm0",  "xmm1",  "xmm2",  "xmm3",  "xmm4",  "xmm5",  "xmm6",  "xmm7",
+      "xmm8",  "xmm9",  "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15",
+      "xmm16", "xmm17", "xmm18", "xmm19", "xmm20", "xmm21", "xmm22", "xmm23",
+      "xmm24", "xmm25", "xmm26", "xmm27", "xmm28", "xmm29", "xmm30", "xmm31"
+    },
+    {
+      "ymm0",  "ymm1",  "ymm2",  "ymm3",  "ymm4",  "ymm5",  "ymm6",  "ymm7",
+      "ymm8",  "ymm9",  "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15",
+      "ymm16", "ymm17", "ymm18", "ymm19", "ymm20", "ymm21", "ymm22", "ymm23",
+      "ymm24", "ymm25", "ymm26", "ymm27", "ymm28", "ymm29", "ymm30", "ymm31"
+    },
+    {
+      "zmm0",  "zmm1",  "zmm2",  "zmm3",  "zmm4",  "zmm5",  "zmm6",  "zmm7",
+      "zmm8",  "zmm9",  "zmm10", "zmm11", "zmm12", "zmm13", "zmm14", "zmm15",
+      "zmm16", "zmm17", "zmm18", "zmm19", "zmm20", "zmm21", "zmm22", "zmm23",
+      "zmm24", "zmm25", "zmm26", "zmm27", "zmm28", "zmm29", "zmm30", "zmm31"
+    }
 };
 
 fcml_string fcml_reg_operand_mask_symbol_table[8] = {
@@ -131,7 +160,7 @@ fcml_string get_register( const fcml_st_register *reg, fcml_bool is_rex ) {
 			rs = 3;
 			break;
 		}
-		if (reg->type == FCML_REG_OPERAND_MASK) {
+		if (reg->type == FCML_REG_OPMASK) {
 			printable_reg = fcml_reg_operand_mask_symbol_table[reg->reg];
 		} else if (reg->type == FCML_REG_IP ) {
 			printable_reg = fcml_reg_gpr_symbol_table_ip[rs];
@@ -161,6 +190,9 @@ fcml_string get_register( const fcml_st_register *reg, fcml_bool is_rex ) {
 		case 256:
 			rs = 2;
 			break;
+		case 512:
+		    rs = 3;
+		    break;
 		default:
 			return "Invalid register";
 		}
@@ -515,8 +547,14 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		printf( "\n  Available prefixes (details):\n" );
 
 		for( i = 0; i < prefixes_details->prefixes_count; i++ ) {
-			fcml_st_instruction_prefix *prefix = &(prefixes_details->prefixes[i]);
-			printf("   Byte: 0x%02x, Type %s, Mandatory: %s, XOP/VEX/EVEX bytes: 0x%02x, 0x%02x.\n", prefix->prefix, prefix_types[ prefix->prefix_type ], get_boolean( prefix->mandatory_prefix ), prefix->vex_xop_bytes[0], prefix->vex_xop_bytes[1] );
+			fcml_st_instruction_prefix *prefix =
+				&(prefixes_details->prefixes[i]);
+			printf("   Byte: 0x%02x, Type: %s, Mandatory: %s, XOP/VEX/EVEX " \
+				"bytes: 0x%02x, 0x%02x, 0x%02x.\n", prefix->prefix,
+				prefix_types[prefix->prefix_type],
+				get_boolean(prefix->mandatory_prefix),
+				prefix->vex_xop_bytes[0], prefix->vex_xop_bytes[1],
+				prefix->vex_xop_bytes[2]);
 		}
 
 	}
@@ -533,9 +571,11 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		if( operand_details->access_mode & FCML_AM_WRITE ) {
 			printf( " FCML_AM_WRITE" );
 		}
+		if(!operand_details->access_mode) {
+			printf( " FCML_AM_ACCESS_MODE_UNDEFINED" );
+		}
 		printf("\n");
 	}
-
 
 }
 

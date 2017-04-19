@@ -140,6 +140,8 @@ typedef struct fcml_st_prefixes_details {
     fcml_bool is_evex;
     /** FCML_TRUE if XOP prefix exists. */
     fcml_bool is_xop;
+    /** True if it is an AVX instruction (VEX/XOP/EVEX). */
+    fcml_bool is_avx;
     /** FCML_TRUE if REX prefix exists. */
     fcml_bool is_rex;
     /** Various fields encoded inside decoded prefixes.*/

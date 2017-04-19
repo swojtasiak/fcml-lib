@@ -226,7 +226,7 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fc
             rs = 3;
             break;
         }
-        if (reg->type == FCML_REG_OPERAND_MASK) {
+        if (reg->type == FCML_REG_OPMASK) {
             *printable_reg = fcml_ar_asm_dialect_reg_operand_mask_symbol_table[reg->reg];
         } else if (reg->type == FCML_REG_IP) {
             *printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[rs];

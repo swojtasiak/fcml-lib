@@ -417,7 +417,7 @@ typedef enum fcml_en_register {
     /** Instruction pointer register. Used for relative RIP addressing. */
     FCML_REG_IP,
     /** Operand mask register. */
-    FCML_REG_OPERAND_MASK
+    FCML_REG_OPMASK
 } fcml_en_register;
 
 /**
