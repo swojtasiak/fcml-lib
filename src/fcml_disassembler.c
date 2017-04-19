@@ -2060,6 +2060,9 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         &(instruction_decoding_def->modrm_details);
     fcml_st_prefixes_details *prefixes = &(decoding_context->prefixes);
 
+    fcml_uint8_t tuple_type =
+            FCML_GET_SIMD_TUPLETYPE(instruction_decoding_def->details);
+
     /* Decode ModRM field if there is any. */
 
     if (FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(
@@ -2076,6 +2079,11 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             decoding_context->disassembler_context->entry_point.op_mode;
         modrm_context.effective_address_size = 
             decoding_context->effective_address_size_attribute;
+        modrm_context.effective_operand_size =
+            decoding_context->effective_operand_size_attribute;
+        modrm_context.vector_length = decoding_context->vector_length;
+        modrm_context.tuple_type = tuple_type;
+        modrm_context.b = prefixes->b;
 
         fcml_st_modrm_source modrm_source;
         modrm_source.is_vsib = modrm_details->is_vsib;
@@ -2114,9 +2122,6 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
          */
         fcml_bool er_enabled = prefixes->b &&
                 decoding_context->is_modrm_reg_reg;
-
-        fcml_uint8_t tuple_type =
-                FCML_GET_SIMD_TUPLETYPE(instruction_decoding_def->details);
 
         decoding_context->vector_length =
                 fcml_ifn_dasm_calculate_vector_length(tuple_type, er_enabled,

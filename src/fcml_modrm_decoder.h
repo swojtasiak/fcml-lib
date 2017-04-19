@@ -78,6 +78,16 @@ typedef struct fcml_st_modrm_decoder_context {
      * different way.
      */
     fcml_usize effective_address_size;
+    /**
+     * Used as an input size when N factor for compressed disp8 is calculated.
+     */
+    fcml_usize effective_operand_size;
+    /** Length of the SIMD vector. */
+    fcml_usize vector_length;
+    /** Tuple type needed to calculate N factor for compressed disp8. */
+    fcml_uint32_t tuple_type;
+    /** True if EVEX.b is set. */
+    fcml_bool b;
 } fcml_st_modrm_decoder_context;
 
 fcml_ceh_error fcml_fn_modrm_decode(
