@@ -192,7 +192,7 @@ typedef struct fcml_st_raw_displacement {
     /** Displacement as encoded in disp8/disp16/disp32/disp8*N. */
     fcml_st_integer displacement;
     /** Scaling factor N in EVEX specific compressed disp8*N. */
-    fcml_nuint8_t N;
+    fcml_nuint32_t N;
 } fcml_st_raw_displacement;
 
 /** Some basic information about decoded ModR/M and SIB bytes. */

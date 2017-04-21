@@ -1287,6 +1287,65 @@ void fcml_tf_modrm_3264_decoder_sib_test_11(void) {
 	STF_ASSERT_EQUAL( decoded_modrm.address.effective_address.scale_factor, 8 );
 }
 
+void fcml_tf_modrm_3264_decoder_sib_test_compressed_disp8(void) {
+
+    fcml_st_modrm_decoder_context context = fcml_ifn_modrm_decoder_alloc_ctx();
+
+    context.op_mode = FCML_OM_64_BIT;
+    context.effective_address_size = FCML_DS_64;
+    context.effective_operand_size = FCML_DS_32;
+    context.vector_length = FCML_DS_128;
+    context.is_evex = FCML_TRUE;
+    context.tuple_type = FCML_TT_FV;
+    context.b = FCML_TRUE;
+
+    fcml_uint8_t buffer[] = { 0x4C, 0x24, 0x08 };
+
+    fcml_st_memory_stream stream;
+    stream.base_address = &buffer;
+    stream.size = sizeof( buffer );
+    stream.offset = 0;
+
+    fcml_st_modrm_source modrm_source = {0};
+    modrm_source.ext_B = 0;
+    modrm_source.ext_R = 0;
+    modrm_source.ext_X = 0;
+    modrm_source.stream = &stream;
+
+    fcml_st_modrm decoded_modrm;
+    fcml_st_modrm_details details;
+
+    fcml_ceh_error error = fcml_fn_modrm_decode( &context, &modrm_source,
+            &decoded_modrm, &details, 0 );
+
+    STF_ASSERT_EQUAL(error, FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL(decoded_modrm.reg.value, FCML_REG_UNDEFINED );
+    STF_ASSERT_EQUAL(decoded_modrm.reg.is_not_null, FCML_FALSE );
+    STF_ASSERT_EQUAL(decoded_modrm.address.effective_address.base.type,
+            FCML_REG_GPR );
+    STF_ASSERT_EQUAL(decoded_modrm.address.effective_address.base.reg,
+            FCML_REG_RSP );
+    STF_ASSERT_EQUAL(decoded_modrm.address.effective_address.base.size,
+            FCML_DS_64 );
+    STF_ASSERT_EQUAL(decoded_modrm.address.effective_address.index.type,
+            FCML_REG_UNDEFINED );
+    STF_ASSERT_EQUAL(decoded_modrm.reg_opcode, FCML_REG_XMM1 );
+    STF_ASSERT_EQUAL(decoded_modrm.address.effective_address.displacement.size,
+            FCML_DS_32);
+    STF_ASSERT_EQUAL(decoded_modrm.address.effective_address.displacement.int32,
+            32);
+    STF_ASSERT_EQUAL(decoded_modrm.address.effective_address.displacement
+            .is_signed, FCML_TRUE);
+    STF_ASSERT_EQUAL(decoded_modrm.address.effective_address.scale_factor, 0);
+
+    STF_ASSERT_EQUAL(details.displacement.displacement.int8, 8);
+    STF_ASSERT_EQUAL(details.displacement.displacement.size, FCML_DS_8);
+    STF_ASSERT_EQUAL(details.displacement.displacement.is_signed, FCML_TRUE);
+    STF_ASSERT_EQUAL(details.displacement.N.is_not_null, FCML_TRUE);
+    STF_ASSERT_EQUAL(details.displacement.N.value, 4);
+}
+
+
 fcml_stf_test_case fctl_ti_modrm_decoder[] = {
 	{ "fcml_tf_modrm_decoder_test_1", fcml_tf_modrm_decoder_test_1 },
 	{ "fcml_tf_modrm_decoder_test_2", fcml_tf_modrm_decoder_test_2 },
@@ -1318,6 +1377,8 @@ fcml_stf_test_case fctl_ti_modrm_decoder[] = {
 	{ "fcml_tf_modrm_3264_decoder_sib_test_9", fcml_tf_modrm_3264_decoder_sib_test_9 },
 	{ "fcml_tf_modrm_3264_decoder_sib_test_10", fcml_tf_modrm_3264_decoder_sib_test_10 },
 	{ "fcml_tf_modrm_3264_decoder_sib_test_11", fcml_tf_modrm_3264_decoder_sib_test_11 },
+	{ "fcml_tf_modrm_3264_decoder_sib_test_compressed_disp8",
+	        fcml_tf_modrm_3264_decoder_sib_test_compressed_disp8},
 	FCML_STF_NULL_TEST
 };
 

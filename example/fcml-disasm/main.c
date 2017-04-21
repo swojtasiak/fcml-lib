@@ -219,6 +219,23 @@ fcml_string get_boolean( fcml_bool b ) {
 	return b ? "true" : "false";
 }
 
+void print_integer(fcml_st_integer *integer, fcml_string prefix) {
+    switch(integer->size) {
+    case FCML_DS_8:
+        printf("%s0x%02x\n", prefix, integer->int8);
+        break;
+    case FCML_DS_16:
+        printf("%s0x%04x\n", prefix, integer->int16);
+        break;
+    case FCML_DS_32:
+        printf("%s0x%08x\n", prefix, integer->int32);
+        break;
+    case FCML_DS_64:
+        printf("%s0x%016lx\n", prefix, integer->int64);
+        break;
+    }
+}
+
 void print_address( fcml_st_address *address, fcml_bool is_rex ) {
 
 	printf("    Address form: ");
@@ -261,20 +278,7 @@ void print_address( fcml_st_address *address, fcml_bool is_rex ) {
 		printf("     Displacement:\n" );
 		printf("      Size: %d\n", displacement->size );
 		printf("      Signed: %s\n", get_boolean( displacement->is_signed ) );
-		switch( displacement->size ) {
-		case FCML_DS_8:
-			printf("      Value: 0x%02x\n", displacement->int8 );
-			break;
-		case FCML_DS_16:
-			printf("      Value: 0x%04x\n", displacement->int16 );
-			break;
-		case FCML_DS_32:
-			printf("      Value: 0x%08x\n", displacement->int32 );
-			break;
-		case FCML_DS_64:
-			printf("      Value: 0x%016lx\n", displacement->int64 );
-			break;
-		}
+		print_integer(displacement, "      Value: ");
 	}
 
 }
@@ -466,6 +470,14 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		printf( "  ModR/M byte: 0x%02x\n", modrm_details->modrm );
 		if( modrm_details->sib.is_not_null ) {
 			printf( "  SIB byte: 0x%02x\n", modrm_details->sib.value );
+		}
+		if (modrm_details->displacement.displacement.size > 0) {
+		    fcml_st_integer *disp = &(modrm_details->displacement.displacement);
+		    printf("  Displacement:\n");
+		    print_integer(disp, "   Value: ");
+		    if(modrm_details->displacement.N.is_not_null) {
+		        printf("   N: %d\n", modrm_details->displacement.N.value);
+		    }
 		}
 	}
 

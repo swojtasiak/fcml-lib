@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,7 +44,6 @@ typedef struct fcml_st_modrm_source {
     fcml_uint8_t ext_R_prim;
     fcml_uint8_t ext_X;
     fcml_uint8_t ext_B;
-    fcml_bool is_evex;
     fcml_bool is_vsib;
     fcml_usize vsib_index_size;
     fcml_st_memory_stream *stream;
@@ -57,7 +56,7 @@ typedef struct fcml_st_modrm_displacement {
     /** Displacement as encoded in disp8/disp16/disp32/disp8*N. */
     fcml_st_integer displacement;
     /** Scaling factor N in EVEX specific compressed disp8*N. */
-    fcml_nuint8_t N;
+    fcml_nuint32_t N;
 } fcml_st_modrm_displacement;
 
 typedef struct fcml_st_modrm_details {
@@ -86,6 +85,10 @@ typedef struct fcml_st_modrm_decoder_context {
     fcml_usize vector_length;
     /** Tuple type needed to calculate N factor for compressed disp8. */
     fcml_uint32_t tuple_type;
+    /** True if EVEX prefix is available. Used to handle compressed
+     * disp8 encoding.
+     */
+    fcml_bool is_evex;
     /** True if EVEX.b is set. */
     fcml_bool b;
 } fcml_st_modrm_decoder_context;

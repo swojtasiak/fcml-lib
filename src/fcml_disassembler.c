@@ -2081,7 +2081,9 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             decoding_context->effective_address_size_attribute;
         modrm_context.effective_operand_size =
             decoding_context->effective_operand_size_attribute;
-        modrm_context.vector_length = decoding_context->vector_length;
+        modrm_context.vector_length =
+                fcml_ifn_dasm_calculate_vector_length(FCML_TT_NONE, FCML_FALSE,
+                        prefixes->L | prefixes->L_prim << 1);;
         modrm_context.tuple_type = tuple_type;
         modrm_context.b = prefixes->b;
 
@@ -2115,7 +2117,9 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             offset;
     }
 
-    /* Calculate vector length for AVX instructions. */
+    /* After decoding ModR/M we can calculate vector length in order to
+     * handle static rounding mode correctly. If {er} is enabled vector
+     * length is implied. */
     if (prefixes->is_avx) {
         /* Static Rounding Mode ({er}) is enabled for reg-to-reg instructions
          * when EXEV.b is set.
