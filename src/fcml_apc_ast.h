@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -74,6 +74,7 @@ typedef struct fcml_st_ast_node_value {
 
 typedef struct fcml_st_ast_node_register {
     fcml_st_register reg;
+    fcml_st_operand_decorators decorators;
 } fcml_st_ast_node_register;
 
 typedef enum fcml_en_ast_exp_node_operator {
@@ -116,6 +117,7 @@ typedef struct fcml_st_ast_node_effective_address {
     fcml_st_ast_val_integer scale_factor;
     fcml_st_ast_node *displacement;
     fcml_en_effective_address_form address_form;
+    fcml_st_operand_decorators decorators;
 } fcml_st_ast_node_effective_address;
 
 typedef struct fcml_st_ast_node_operand_list {
@@ -155,14 +157,21 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list( fcml_st_ast_node *operand
 fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fcml_string mnemonic, fcml_usize length, fcml_hints hints,
         fcml_st_ast_node *operand_list );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_pseudo_operation( fcml_string mnemonic, fcml_usize length, fcml_st_ast_node *exp );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_register( fcml_st_register *reg );
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg,
+        fcml_st_register *opmask_reg_decorator, fcml_bool zero_decorator);
+
 fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol( fcml_ip ip, fcml_string symbol, fcml_usize length );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol( fcml_string symbol_name, fcml_usize length );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator op, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer( fcml_st_ast_node *segment_selector, fcml_st_ast_node *offset );
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins( fcml_st_ast_node *effective_address_node, fcml_hints hints );
-fcml_st_ast_node *fcml_fn_ast_set_effective_address_details( fcml_st_register *segment_selector, fcml_st_size_operator *size_operator,
+
+fcml_st_ast_node *fcml_fn_ast_set_effective_address_details(
+        fcml_st_register *segment_selector,
+        fcml_st_size_operator *size_operator, fcml_uint8_t bcast_decorator,
         fcml_st_ast_node *effective_address );
+
 fcml_st_ast_node *fcml_fn_ast_set_displacemnt( fcml_st_ast_node *displacement, fcml_st_ast_node *effective_address );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( fcml_st_register *base, fcml_st_register *index, fcml_st_ast_val_integer *scale_factor,
         fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints );

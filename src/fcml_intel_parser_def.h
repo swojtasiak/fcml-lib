@@ -50,18 +50,20 @@ extern int intel_debug;
     FCML_TK_REG_SIMD = 260,
     FCML_TK_REG_FPU = 261,
     FCML_TK_REG_SEG = 262,
-    FCML_TK_REG_CR = 263,
-    FCML_TK_REG_DR = 264,
-    FCML_TK_REG_RIP = 265,
-    FCML_TK_INTEGER = 266,
-    FCML_TK_FLOAT = 267,
-    FCML_TK_SIZE_OPERATOR = 268,
-    FCML_TK_SYMBOL = 269,
-    FCML_TK_HINTS = 270,
-    FCML_TK_EAO_HINTS = 271,
-    FCML_TK_SIB_HINT = 272,
-    FCML_TK_PREFIX = 273,
-    FCML_OP_UMINUS = 274
+    FCML_TK_REG_OPMASK = 263,
+    FCML_TK_REG_CR = 264,
+    FCML_TK_REG_DR = 265,
+    FCML_TK_REG_RIP = 266,
+    FCML_TK_BCAST = 267,
+    FCML_TK_INTEGER = 268,
+    FCML_TK_FLOAT = 269,
+    FCML_TK_SIZE_OPERATOR = 270,
+    FCML_TK_SYMBOL = 271,
+    FCML_TK_HINTS = 272,
+    FCML_TK_EAO_HINTS = 273,
+    FCML_TK_SIB_HINT = 274,
+    FCML_TK_PREFIX = 275,
+    FCML_OP_UMINUS = 276
   };
 #endif
 /* Tokens.  */
@@ -70,25 +72,27 @@ extern int intel_debug;
 #define FCML_TK_REG_SIMD 260
 #define FCML_TK_REG_FPU 261
 #define FCML_TK_REG_SEG 262
-#define FCML_TK_REG_CR 263
-#define FCML_TK_REG_DR 264
-#define FCML_TK_REG_RIP 265
-#define FCML_TK_INTEGER 266
-#define FCML_TK_FLOAT 267
-#define FCML_TK_SIZE_OPERATOR 268
-#define FCML_TK_SYMBOL 269
-#define FCML_TK_HINTS 270
-#define FCML_TK_EAO_HINTS 271
-#define FCML_TK_SIB_HINT 272
-#define FCML_TK_PREFIX 273
-#define FCML_OP_UMINUS 274
+#define FCML_TK_REG_OPMASK 263
+#define FCML_TK_REG_CR 264
+#define FCML_TK_REG_DR 265
+#define FCML_TK_REG_RIP 266
+#define FCML_TK_BCAST 267
+#define FCML_TK_INTEGER 268
+#define FCML_TK_FLOAT 269
+#define FCML_TK_SIZE_OPERATOR 270
+#define FCML_TK_SYMBOL 271
+#define FCML_TK_HINTS 272
+#define FCML_TK_EAO_HINTS 273
+#define FCML_TK_SIB_HINT 274
+#define FCML_TK_PREFIX 275
+#define FCML_OP_UMINUS 276
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 105 "fcml_intel_parser_def.y" /* yacc.c:1909  */
+#line 112 "fcml_intel_parser_def.y" /* yacc.c:1909  */
 
     /*Complex values.*/
     fcml_st_ast_val_integer integer_value;
@@ -102,8 +106,10 @@ union YYSTYPE
     fcml_st_size_operator size_operator;
     fcml_hints hints;
     fcml_prefixes prefixes;
+    fcml_bool bool_value;
+    fcml_int int_value;
 
-#line 107 "fcml_intel_parser_def.h" /* yacc.c:1909  */
+#line 113 "fcml_intel_parser_def.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

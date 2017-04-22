@@ -337,7 +337,7 @@ extern int gas_lex \
 #undef YY_DECL
 #endif
 
-#line 359 "fcml_gas_lexer.l"
+#line 377 "fcml_gas_lexer.l"
 
 
 #line 344 "fcml_gas_lexer.h"

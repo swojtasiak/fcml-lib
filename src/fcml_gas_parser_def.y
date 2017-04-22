@@ -1,6 +1,6 @@
  /*
   * FCML - Free Code Manipulation Library.
-  * Copyright (C) 2010-2015 Slawomir Wojtasiak
+  * Copyright (C) 2010-2017 Slawomir Wojtasiak
   *
   * This library is free software; you can redistribute it and/or
   * modify it under the terms of the GNU Lesser General Public
@@ -50,9 +50,13 @@
 %token <reg_value> FCML_TK_REG_SIMD
 %token <reg_value> FCML_TK_REG_FPU
 %token <reg_value> FCML_TK_REG_SEG
+%token <reg_value> FCML_TK_REG_OPMASK
 %token <reg_value> FCML_TK_REG_CR
 %token <reg_value> FCML_TK_REG_DR
 %token <reg_value> FCML_TK_REG_RIP
+
+/* AVX-512 broadcast. */
+%token <int_value> FCML_TK_BCAST
 
 /* Integer values. Encoding doesn't matters. */
 %token <integer_value> FCML_TK_INTEGER
@@ -80,6 +84,9 @@
 %type <ast> pseudo_operation
 %type <symbol> mnemonic
 %type <prefixes> inst_prefixes
+%type <reg_value> opmask_reg_decorator
+%type <bool_value> zero_decorator
+%type <int_value> bcast_decorator
 
 /* Precedence levels and associativity. */
 %left '-' '+'
@@ -105,6 +112,8 @@
     } symbol;
     fcml_hints hints;
     fcml_prefixes prefixes;
+    fcml_bool bool_value;
+    fcml_int int_value;
 }
 
 %{
@@ -144,14 +153,17 @@ operand_list: operand                   { $$ = fcml_fn_ast_alloc_node_operand_li
 | operand_list ',' operand              { $$ = fcml_fn_ast_alloc_node_operand_list( $1, $3 ); HANDLE_ERRORS($$); }
 ;
 
-operand: '$' exp                        { $$ = $2; }
+operand: '$' exp                          { $$ = $2; }
 | effective_address
-| '*' effective_address                 { $$ = fcml_fn_ast_set_effective_address_hins( $2, FCML_HINT_INDIRECT_POINTER ); }
-| reg                                   { $$ = fcml_fn_ast_alloc_node_register( &$1 ); HANDLE_ERRORS($$); }
+| '*' effective_address                   { $$ = fcml_fn_ast_set_effective_address_hins( $2, FCML_HINT_INDIRECT_POINTER ); }
+| reg                                     { $$ = fcml_fn_ast_alloc_node_register( &$1, NULL, FCML_FALSE ); HANDLE_ERRORS($$); }
+| reg opmask_reg_decorator                { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_FALSE ); HANDLE_ERRORS($$); }
+| reg opmask_reg_decorator zero_decorator { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, $3 ); HANDLE_ERRORS($$); }
 ;
 
 effective_address:  effective_address_components
-| segment_selector effective_address_components       { $$ = fcml_fn_ast_set_effective_address_details( &$1, FCML_OS_UNDEFINED, $2 ); }
+| segment_selector effective_address_components       { $$ = fcml_fn_ast_set_effective_address_details( &$1, FCML_OS_UNDEFINED, 0, $2 ); }
+| effective_address bcast_decorator                   { $$ = fcml_fn_ast_set_effective_address_details( NULL, FCML_OS_UNDEFINED, $2, $1 ); }
 ;
 
 effective_address_components:
@@ -172,6 +184,10 @@ effective_address_components_without_dis:
 segment_selector: FCML_TK_REG_SEG ':'                 { $$ = $1; }
 ;
 
+opmask_reg_decorator: '{' FCML_TK_REG_OPMASK '}'      { $$ = $2; }
+zero_decorator: '{' 'z' '}'                           { $$ = FCML_TRUE; }
+bcast_decorator: '{' FCML_TK_BCAST '}'                { $$ = $2; }
+
 exp: 
   FCML_TK_INTEGER                                     { $$ = fcml_fn_ast_alloc_node_integer( &$1 ); HANDLE_ERRORS($$); }
 | exp '-' exp                                         { $$ = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_SUB, $1, $3 ); HANDLE_ERRORS($$); }
@@ -188,6 +204,7 @@ reg: FCML_TK_REG_GPR
 | FCML_TK_REG_SIMD
 | FCML_TK_REG_FPU
 | FCML_TK_REG_SEG
+| FCML_TK_REG_OPMASK
 | FCML_TK_REG_CR
 | FCML_TK_REG_DR
 ;

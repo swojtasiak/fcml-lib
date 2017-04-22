@@ -345,6 +345,17 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_REG_DR6	6
 #define FCML_REG_DR7	7
 
+/* Opmask registers. */
+
+#define FCML_REG_K0     0
+#define FCML_REG_K1     1
+#define FCML_REG_K2     2
+#define FCML_REG_K3     3
+#define FCML_REG_K4     4
+#define FCML_REG_K5     5
+#define FCML_REG_K6     6
+#define FCML_REG_K7     7
+
 /** @} */
 
 /**
@@ -588,7 +599,9 @@ typedef struct fcml_st_effective_address {
 typedef struct fcml_st_segment_selector {
     /** Used segment register. @see fcml_st_register*/
     fcml_st_register segment_selector;
-    /** Set to true if given segment register is a default one in given context. This value is set by disassembler. */
+    /** Set to true if given segment register is a default one in given
+     * context. This value is set by disassembler.
+     */
     fcml_bool is_default_reg;
 } fcml_st_segment_selector;
 
@@ -598,7 +611,9 @@ typedef struct fcml_st_segment_selector {
 typedef struct fcml_st_address {
     /** Size of data accessed in memory.*/
     fcml_usize size_operator;
-    /** Memory addressing format: absolute offset/effective address. @see fcml_en_effective_address_form*/
+    /** Memory addressing format: absolute offset/effective address.
+     * @see fcml_en_effective_address_form
+     */
     fcml_en_effective_address_form address_form;
     /** Segment register.*/
     fcml_st_segment_selector segment_selector;

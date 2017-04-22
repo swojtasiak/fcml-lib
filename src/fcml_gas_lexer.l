@@ -1,6 +1,6 @@
  /*
   * FCML - Free Code Manipulation Library.
-  * Copyright (C) 2010-2015 Slawomir Wojtasiak
+  * Copyright (C) 2010-2017 Slawomir Wojtasiak
   *
   * This library is free software; you can redistribute it and/or
   * modify it under the terms of the GNU Lesser General Public
@@ -282,8 +282,26 @@ fcml_fn_pu_parse_intege_flags
 "%fs"                 FCML_FM_SEG_REG(FCML_REG_FS)
 "%gs"                 FCML_FM_SEG_REG(FCML_REG_GS)
 
+ /* Opmask registers. */
+"%k0"                 FCML_FM_OPMASK_REG(FCML_REG_K0)
+"%k1"                 FCML_FM_OPMASK_REG(FCML_REG_K1)
+"%k2"                 FCML_FM_OPMASK_REG(FCML_REG_K2)
+"%k3"                 FCML_FM_OPMASK_REG(FCML_REG_K3)
+"%k4"                 FCML_FM_OPMASK_REG(FCML_REG_K4)
+"%k5"                 FCML_FM_OPMASK_REG(FCML_REG_K5)
+"%k6"                 FCML_FM_OPMASK_REG(FCML_REG_K6)
+"%k7"                 FCML_FM_OPMASK_REG(FCML_REG_K7)
+
  /* RIP */
  "%rip"                FCML_FM_RIP
+
+ /* bcast decorators. */
+1to2                  FCML_FM_BCAST_DECORATOR(2);
+1to4                  FCML_FM_BCAST_DECORATOR(4);
+1to8                  FCML_FM_BCAST_DECORATOR(8);
+1to16                 FCML_FM_BCAST_DECORATOR(16);
+1to32                 FCML_FM_BCAST_DECORATOR(32);
+1to64                 FCML_FM_BCAST_DECORATOR(64);
 
  /* Prefixes */
  

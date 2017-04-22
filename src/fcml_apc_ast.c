@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -150,7 +150,8 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction(
     return node;
 }
 
-fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg) {
+fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg,
+        fcml_st_register *opmask_reg_decorator, fcml_bool zero_decorator) {
 
     fcml_st_ast_node *node = (fcml_st_ast_node*)
         fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node));
@@ -166,6 +167,12 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg) {
         fcml_fn_env_memory_free(node);
         return NULL;
     }
+
+    /* Decorators. */
+    if (opmask_reg_decorator) {
+        reg_node->decorators.operand_mask_reg = *opmask_reg_decorator;
+    }
+    reg_node->decorators.z = zero_decorator;
 
     reg_node->reg = *reg;
     node->type = FCML_EN_TN_REG;
@@ -363,6 +370,7 @@ fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins(
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_details(
     fcml_st_register *segment_selector,
     fcml_st_size_operator *size_operator,
+    fcml_uint8_t bcast_decorator,
     fcml_st_ast_node *effective_address_node)
 {
 
@@ -371,6 +379,11 @@ fcml_st_ast_node *fcml_fn_ast_set_effective_address_details(
 
     if (segment_selector) {
         effective_address->segment_selector = *segment_selector;
+    }
+
+    if (bcast_decorator > 0) {
+        effective_address->decorators.bcast.is_not_null = FCML_TRUE;
+        effective_address->decorators.bcast.value = bcast_decorator;
     }
 
     /* Size operator is optional because not all assembler dialects allows 
