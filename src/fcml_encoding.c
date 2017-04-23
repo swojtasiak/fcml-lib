@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1017,7 +1017,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_explicit_reg(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_sf_def_tma_explicit_reg *args =
-            (fcml_sf_def_tma_explicit_reg*) addr_mode->addr_mode_args;
+            (fcml_sf_def_tma_explicit_reg*)addr_mode->addr_mode_args;
 
     if (operand_def->type != FCML_OT_REGISTER
             || operand_def->reg.type != args->reg_type
@@ -2234,9 +2234,7 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
         fcml_ist_asm_instruction_part_processor_descriptor *descriptor =
                 &(current_processor->processor_descriptor);
         context->part_processor_context.part_processor_index = index;
-        if (!context->is_short_form
-                || (context->is_short_form
-                        && descriptor->is_short_form_supported)) {
+        if (!context->is_short_form || descriptor->is_short_form_supported) {
             if (descriptor->processor_acceptor != NULL
                     && (error = descriptor->processor_acceptor(context,
                             &(addr_mode->addr_mode_details),
@@ -2764,8 +2762,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
         fcml_st_instruction *instruction, fcml_st_asm_encoder_result *result,
         fcml_st_asm_instruction_addr_modes *addr_modes) {
 
-    /* Make a local copy of instruction because it still can be
-     * changed by preprocessor.
+    /* Make a local copy of the instruction, because it still can be
+     * changed by the preprocessor.
      */
     fcml_st_instruction tmp_instruction = *instruction;
 
@@ -2807,7 +2805,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
             int index = 0;
 #endif
             /* This loop iterates through all available addressing
-             * modes one by one.
+             * modes one by one..
              */
             while (addr_mode_element) {
 

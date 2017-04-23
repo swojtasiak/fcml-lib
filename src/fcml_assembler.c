@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -171,7 +171,7 @@ fcml_ceh_error fcml_fn_asm_init_pseudo_operation_encodings(
     return error;
 }
 
-fcml_ceh_error fcml_fn_asm_handle_pseudo_operations(
+fcml_ceh_error fcml_ifn_asm_handle_pseudo_operations(
         fcml_st_assembler_context *asm_context,
         fcml_coll_map pseudo_operations_map,
         const fcml_st_instruction *instruction,
@@ -314,7 +314,7 @@ fcml_ceh_error fcml_ifn_assemble_core(fcml_st_assembler_context *asm_context,
     }
 
     /* Take into account that dialect can modify source instruction by
-     * preparing it for the assembler, so we have to use the local copy here.
+     * preparing it for the assembler, so we have to use a local copy here.
      */
     fcml_st_instruction tmp_instruction = *instruction;
 
@@ -338,7 +338,7 @@ fcml_ceh_error fcml_ifn_assemble_core(fcml_st_assembler_context *asm_context,
             tmp_instruction.mnemonic, &addr_modes);
     if (error) {
         if (error == FCML_CEH_GEC_UNKNOWN_MNEMONIC) {
-            return fcml_fn_asm_handle_pseudo_operations(asm_context,
+            return fcml_ifn_asm_handle_pseudo_operations(asm_context,
                     enc_asm->pseudo_operations_map, instruction, result);
         } else {
             return error;
