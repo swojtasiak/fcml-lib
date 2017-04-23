@@ -875,6 +875,112 @@ void fcml_tf_parser_intel_parse_test_pseudo_operation_1(void) {
 	fcml_fn_symbol_table_free( context.symbol_table );
 }
 
+void fcml_tf_parser_int_parse_test_decorator_bcast(void) {
+    fcml_st_parser_result result;
+    fcml_fn_parser_result_prepare(&result);
+    STF_ASSERT_EQUAL(
+            fcml_fn_parse(&internal_intel_context, "vaddpd [eax]{1to8}",
+                    &result), FCML_CEH_GEC_NO_ERROR);
+    if (result.instruction != NULL) {
+        fcml_st_operand *operand = &(result.instruction->operands[0]);
+        STF_ASSERT_EQUAL(operand->type, FCML_OT_ADDRESS);
+        STF_ASSERT_EQUAL(operand->address.address_form, FCML_AF_COMBINED);
+        STF_ASSERT_EQUAL(operand->address.effective_address.base.type,
+                FCML_REG_GPR);
+        STF_ASSERT_EQUAL(operand->address.effective_address.base.reg,
+                FCML_REG_EAX);
+        STF_ASSERT_EQUAL(operand->decorators.bcast.is_not_null, FCML_TRUE);
+        STF_ASSERT_EQUAL(operand->decorators.bcast.value, 8);
+    } else {
+        STF_FAIL();
+    }
+    fcml_fn_parser_result_free(&result);
+}
+
+void fcml_tf_parser_int_parse_test_decorator_opmask(void) {
+    fcml_st_parser_result result;
+    fcml_fn_parser_result_prepare(&result);
+    STF_ASSERT_EQUAL(
+            fcml_fn_parse(&internal_intel_context, "vaddpd zmm1{k1}",
+                    &result), FCML_CEH_GEC_NO_ERROR);
+    if (result.instruction != NULL) {
+        fcml_st_operand *operand = &(result.instruction->operands[0]);
+        STF_ASSERT_EQUAL(operand->type, FCML_OT_REGISTER);
+        STF_ASSERT_EQUAL(operand->reg.type, FCML_REG_SIMD);
+        STF_ASSERT_EQUAL(operand->reg.reg, FCML_REG_ZMM1);
+        STF_ASSERT_EQUAL(operand->reg.size, FCML_DS_512);
+        STF_ASSERT_EQUAL(operand->decorators.operand_mask_reg.type,
+                FCML_REG_OPMASK);
+        STF_ASSERT_EQUAL(operand->decorators.operand_mask_reg.size,
+                FCML_DS_64);
+        STF_ASSERT_EQUAL(operand->decorators.operand_mask_reg.reg,
+                FCML_REG_K1);
+        STF_ASSERT_EQUAL(operand->decorators.z, FCML_FALSE);
+
+    } else {
+        STF_FAIL();
+    }
+    fcml_fn_parser_result_free(&result);
+}
+
+void fcml_tf_parser_int_parse_test_decorator_opmask_k(void) {
+    fcml_st_parser_result result;
+    fcml_fn_parser_result_prepare(&result);
+    STF_ASSERT_EQUAL(
+            fcml_fn_parse(&internal_intel_context, "vaddpd zmm31{k4}{z}",
+                    &result), FCML_CEH_GEC_NO_ERROR);
+    if (result.instruction != NULL) {
+        fcml_st_operand *operand = &(result.instruction->operands[0]);
+        STF_ASSERT_EQUAL(operand->type, FCML_OT_REGISTER);
+        STF_ASSERT_EQUAL(operand->reg.type, FCML_REG_SIMD);
+        STF_ASSERT_EQUAL(operand->reg.reg, FCML_REG_ZMM31);
+        STF_ASSERT_EQUAL(operand->reg.size, FCML_DS_512);
+        STF_ASSERT_EQUAL(operand->decorators.operand_mask_reg.type,
+                FCML_REG_OPMASK);
+        STF_ASSERT_EQUAL(operand->decorators.operand_mask_reg.size,
+                FCML_DS_64);
+        STF_ASSERT_EQUAL(operand->decorators.operand_mask_reg.reg,
+                FCML_REG_K4);
+        STF_ASSERT_EQUAL(operand->decorators.z, FCML_TRUE);
+    } else {
+        STF_FAIL();
+    }
+    fcml_fn_parser_result_free(&result);
+}
+
+void fcml_tf_parser_int_parse_test_decorator_er(void) {
+    fcml_st_parser_result result;
+    fcml_fn_parser_result_prepare(&result);
+    STF_ASSERT_EQUAL(
+            fcml_fn_parse(&internal_intel_context, "vaddpd {ru-sae}",
+                    &result), FCML_CEH_GEC_NO_ERROR);
+    if (result.instruction != NULL) {
+        fcml_st_operand *operand = &(result.instruction->operands[0]);
+        STF_ASSERT_EQUAL(operand->type, FCML_OT_VIRTUAL);
+        STF_ASSERT_EQUAL(operand->decorators.er.is_not_null, FCML_TRUE);
+        STF_ASSERT_EQUAL(operand->decorators.er.value, FCML_ER_RU_SAE);
+    } else {
+        STF_FAIL();
+    }
+    fcml_fn_parser_result_free(&result);
+}
+
+void fcml_tf_parser_int_parse_test_decorator_sae(void) {
+    fcml_st_parser_result result;
+    fcml_fn_parser_result_prepare(&result);
+    STF_ASSERT_EQUAL(
+            fcml_fn_parse(&internal_intel_context, "vaddpd {sae}",
+                    &result), FCML_CEH_GEC_NO_ERROR);
+    if (result.instruction != NULL) {
+        fcml_st_operand *operand = &(result.instruction->operands[0]);
+        STF_ASSERT_EQUAL(operand->type, FCML_OT_VIRTUAL);
+        STF_ASSERT_EQUAL(operand->decorators.sea, FCML_TRUE);
+    } else {
+        STF_FAIL();
+    }
+    fcml_fn_parser_result_free(&result);
+}
+
 fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test1", fcml_tf_parser_int_parse_test1 },
 	{ "fcml_tf_parser_int_parse_test2", fcml_tf_parser_int_parse_test2 },
@@ -920,6 +1026,16 @@ fcml_stf_test_case fcml_ti_parser[] = {
 	{ "fcml_tf_parser_int_parse_test_symbols_10", fcml_tf_parser_int_parse_test_symbols_10 },
 	{ "fcml_tf_parser_int_parse_test_symbols_11", fcml_tf_parser_int_parse_test_symbols_11 },
 	{ "fcml_tf_parser_intel_parse_test_pseudo_operation_1", fcml_tf_parser_intel_parse_test_pseudo_operation_1 },
+	{ "fcml_tf_parser_int_parse_test_decorator_bcast",
+	        fcml_tf_parser_int_parse_test_decorator_bcast },
+    { "fcml_tf_parser_int_parse_test_decorator_opmask",
+            fcml_tf_parser_int_parse_test_decorator_opmask },
+    { "fcml_tf_parser_int_parse_test_decorator_opmask_k",
+            fcml_tf_parser_int_parse_test_decorator_opmask_k },
+    { "fcml_tf_parser_int_parse_test_decorator_er",
+            fcml_tf_parser_int_parse_test_decorator_er },
+    { "fcml_tf_parser_int_parse_test_decorator_sae",
+            fcml_tf_parser_int_parse_test_decorator_sae },
 	FCML_STF_NULL_TEST
 };
 

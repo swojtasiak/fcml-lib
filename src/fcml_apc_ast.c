@@ -150,6 +150,37 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction(
     return node;
 }
 
+fcml_st_ast_node *fcml_fn_ast_alloc_node_virtual(fcml_bool sae,
+        fcml_bool er_enabled, fcml_uint8_t er_value) {
+
+    fcml_st_ast_node *node = (fcml_st_ast_node*)
+            fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node));
+
+    if (!node) {
+        return NULL;
+    }
+
+    fcml_st_ast_node_virtual *virtual_node = (fcml_st_ast_node_virtual*)
+        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node_virtual));
+
+    if (!virtual_node) {
+        fcml_fn_env_memory_free(node);
+        return NULL;
+    }
+
+    if (er_enabled) {
+        virtual_node->decorators.er.is_not_null = FCML_TRUE;
+        virtual_node->decorators.er.value = er_value;
+    }
+
+    virtual_node->decorators.sea = sae;
+
+    node->type = FCML_EN_TN_VIRTUAL;
+    node->node = virtual_node;
+
+    return node;
+}
+
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg,
         fcml_st_register *opmask_reg_decorator, fcml_bool zero_decorator) {
 
@@ -172,11 +203,13 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg,
     if (opmask_reg_decorator) {
         reg_node->decorators.operand_mask_reg = *opmask_reg_decorator;
     }
-    reg_node->decorators.z = zero_decorator;
 
+    reg_node->decorators.z = zero_decorator;
     reg_node->reg = *reg;
+
     node->type = FCML_EN_TN_REG;
     node->node = reg_node;
+
     return node;
 }
 
@@ -523,7 +556,6 @@ void fcml_fn_ast_free_node(fcml_st_ast_node *exp) {
         case FCML_EN_TN_INSTRUCTION: {
             fcml_st_ast_node_instruction *instruction =
                     (fcml_st_ast_node_instruction*) exp->node;
-
             if (instruction->mnemonic) {
                 fcml_fn_env_str_strfree(instruction->mnemonic);
             }
@@ -921,7 +953,6 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand(
     fcml_st_ast_node_value offset_value;
 
     /* Evaluate expressions.*/
-
     if ((error = fcml_ifn_ast_eval_exp(context, segment_selector_node,
             &segment_selector_value))) {
         return error;
@@ -1031,6 +1062,8 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand(
     /* Copy operands and instruction hints.*/
     operand->hints |= effective_address_node->addressing_hints;
     cif_instruction->hints |= effective_address_node->instruction_hints;
+
+    operand->decorators = effective_address_node->decorators;
 
     fcml_st_effective_address *effective_address =
             &(address->effective_address);
@@ -1179,11 +1212,19 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node(
         }
         break;
     }
+    case FCML_EN_TN_VIRTUAL: {
+        fcml_st_ast_node_virtual *node_virtual =
+                (fcml_st_ast_node_virtual*) ast_node->node;
+        current_operand->type = FCML_OT_VIRTUAL;
+        current_operand->decorators = node_virtual->decorators;
+        break;
+    }
     case FCML_EN_TN_REG: {
         fcml_st_ast_node_register *node_register =
                 (fcml_st_ast_node_register*) ast_node->node;
         current_operand->reg = node_register->reg;
         current_operand->type = FCML_OT_REGISTER;
+        current_operand->decorators = node_register->decorators;
         break;
     }
     case FCML_EN_TN_FAR_POINTER: {

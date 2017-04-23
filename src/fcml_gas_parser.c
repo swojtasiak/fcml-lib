@@ -31,7 +31,8 @@
 #include "fcml_messages.h"
 #include "fcml_parser_int.h"
 
-void gas_error( struct fcml_st_parser_data *pd, const char *error ) {
+void gas_error(YYLTYPE *yylloc, struct fcml_st_parser_data *pd,
+        const char *error) {
     /* Stores parser error into standard container.*/
     fcml_fn_ceh_add_error( &( pd->errors ), (const fcml_string) error, FCML_CEH_MEC_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR );
 }

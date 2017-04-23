@@ -80,8 +80,31 @@
         FCML_DS_64, FCML_REG_UNDEFINED, FCML_FALSE, &(yylval->reg_value) ); \
         return FCML_TK_REG_RIP; }
 
-/* AVX-512 bcast. */
+/* AVX-512 Broadcast. */
 #define FCML_FM_BCAST_DECORATOR(x)     { yylval->int_value = x; \
-    return FCML_TK_BCAST; }
+    return FCML_TK_DECORATOR_BCAST; }
+
+/* AVX-512 Embedded rounding. */
+#define FCML_FM_ER_DECORATOR(x)     { yylval->int_value = x; \
+    return FCML_TK_DECORATOR_ER; }
+
+/* AVX-512 Opmask registers decorators. */
+#define FCML_FM_OPMASK_REG_DECORATOR(x)    { \
+    fcml_fn_pu_parse_register(FCML_REG_OPMASK, \
+            FCML_DS_64, x, FCML_FALSE, &(yylval->reg_value) ); \
+            return FCML_TK_OPMASK_REG_DECORATOR; }
+
+#define YY_USER_ACTION \
+    yylloc->first_line = yylloc->last_line; \
+    yylloc->first_column = yylloc->last_column; \
+    for(int i = 0; yytext[i] != '\0'; i++) { \
+        if(yytext[i] == '\n') { \
+            yylloc->last_line++; \
+            yylloc->last_column = 0; \
+        } \
+        else { \
+            yylloc->last_column++; \
+        } \
+    }
 
 #endif /* FCML_COMMON_LEX_H_ */

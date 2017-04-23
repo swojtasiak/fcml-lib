@@ -271,6 +271,10 @@ YYSTYPE * intel_get_lval (yyscan_t yyscanner );
 
 void intel_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
+       YYLTYPE *intel_get_lloc (yyscan_t yyscanner );
+    
+        void intel_set_lloc (YYLTYPE * yylloc_param ,yyscan_t yyscanner );
+    
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
  */
@@ -317,10 +321,10 @@ static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 #define YY_DECL_IS_OURS 1
 
 extern int intel_lex \
-               (YYSTYPE * yylval_param ,yyscan_t yyscanner);
+               (YYSTYPE * yylval_param,YYLTYPE * yylloc_param ,yyscan_t yyscanner);
 
 #define YY_DECL int intel_lex \
-               (YYSTYPE * yylval_param , yyscan_t yyscanner)
+               (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
 /* yy_get_previous_state - get the state just before the EOB char was reached */
@@ -337,9 +341,9 @@ extern int intel_lex \
 #undef YY_DECL
 #endif
 
-#line 439 "fcml_intel_lexer.l"
+#line 469 "fcml_intel_lexer.l"
 
 
-#line 344 "fcml_intel_lexer.h"
+#line 348 "fcml_intel_lexer.h"
 #undef intel_IN_HEADER
 #endif /* intel_HEADER_H */

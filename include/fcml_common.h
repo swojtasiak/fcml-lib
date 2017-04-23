@@ -406,6 +406,13 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_TT_M128            12
 #define FCML_TT_DUP             13
 
+/* Embedded rounding mode. */
+
+#define FCML_ER_RN_SAE          0
+#define FCML_ER_RD_SAE          1
+#define FCML_ER_RU_SAE          2
+#define FCML_ER_RZ_SAE          3
+
 /**
  * Register type.
  * Every register is represented as an integer value and it's register type. This enumeration provides all supported register types.

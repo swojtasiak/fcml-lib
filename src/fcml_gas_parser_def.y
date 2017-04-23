@@ -18,6 +18,7 @@
   */
 
 %define api.pure
+%locations
 %parse-param { struct fcml_st_parser_data *pd }
 %lex-param { yyscan_t yyscanner }
 %name-prefix "gas_"
@@ -27,13 +28,12 @@
     
     #include "fcml_parser_utils.h"
     
-    void gas_error( struct fcml_st_parser_data *pd, const char *error );
-    
     /* Macro responsible for handling 'Out of memory' errors. */
-    #define HANDLE_ERRORS(x) if( !x ) { yyerror(pd, "Out of memory."); YYERROR; }
+    #define HANDLE_ERRORS(x) if( !x ) { yyerror(&yylloc, pd, \
+        "Out of memory."); YYERROR; }
     
     /* Macro responsible for adding error messages to result. */
-    #define ADD_ERROR_MSG(x) { yyerror( pd, x ); }
+    #define ADD_ERROR_MSG(x) { yyerror(&yylloc, pd, x); }
     
 %}
 
@@ -56,7 +56,19 @@
 %token <reg_value> FCML_TK_REG_RIP
 
 /* AVX-512 broadcast. */
-%token <int_value> FCML_TK_BCAST
+%token <int_value> FCML_TK_DECORATOR_BCAST
+
+/* AVX-512 Embedded rounding. */
+%token <int_value> FCML_TK_DECORATOR_ER
+
+/* AVX-512 zeroying. */
+%token FCML_TK_DECORATOR_Z
+
+/* AVX-512 Suppress all exceptions. */
+%token FCML_TK_DECORATOR_SAE
+
+/* AVX-512 Opmask registers decorators. */
+%token <reg_value> FCML_TK_OPMASK_REG_DECORATOR
 
 /* Integer values. Encoding doesn't matters. */
 %token <integer_value> FCML_TK_INTEGER
@@ -84,9 +96,6 @@
 %type <ast> pseudo_operation
 %type <symbol> mnemonic
 %type <prefixes> inst_prefixes
-%type <reg_value> opmask_reg_decorator
-%type <bool_value> zero_decorator
-%type <int_value> bcast_decorator
 
 /* Precedence levels and associativity. */
 %left '-' '+'
@@ -119,6 +128,8 @@
 %{
     #include "fcml_gas_lexer.h"
     #define yyscanner ((yyscan_t)pd->scannerInfo)
+    void gas_error(YYLTYPE *yyloc, struct fcml_st_parser_data *pd,
+    	const char *error );
 %}
 
 %initial-action { 
@@ -153,17 +164,19 @@ operand_list: operand                   { $$ = fcml_fn_ast_alloc_node_operand_li
 | operand_list ',' operand              { $$ = fcml_fn_ast_alloc_node_operand_list( $1, $3 ); HANDLE_ERRORS($$); }
 ;
 
-operand: '$' exp                          { $$ = $2; }
+operand: '$' exp                                        { $$ = $2; }
 | effective_address
-| '*' effective_address                   { $$ = fcml_fn_ast_set_effective_address_hins( $2, FCML_HINT_INDIRECT_POINTER ); }
-| reg                                     { $$ = fcml_fn_ast_alloc_node_register( &$1, NULL, FCML_FALSE ); HANDLE_ERRORS($$); }
-| reg opmask_reg_decorator                { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_FALSE ); HANDLE_ERRORS($$); }
-| reg opmask_reg_decorator zero_decorator { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, $3 ); HANDLE_ERRORS($$); }
+| '*' effective_address                                 { $$ = fcml_fn_ast_set_effective_address_hins( $2, FCML_HINT_INDIRECT_POINTER ); }
+| reg                                                   { $$ = fcml_fn_ast_alloc_node_register( &$1, NULL, FCML_FALSE ); HANDLE_ERRORS($$); }
+| reg FCML_TK_OPMASK_REG_DECORATOR                      { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_FALSE ); HANDLE_ERRORS($$); }
+| reg FCML_TK_OPMASK_REG_DECORATOR FCML_TK_DECORATOR_Z  { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_TRUE ); HANDLE_ERRORS($$); }
+| FCML_TK_DECORATOR_SAE                                 { $$ = fcml_fn_ast_alloc_node_virtual( FCML_TRUE, FCML_FALSE, 0 ); HANDLE_ERRORS($$); }
+| FCML_TK_DECORATOR_ER                                  { $$ = fcml_fn_ast_alloc_node_virtual( FCML_FALSE, FCML_TRUE, $1 ); HANDLE_ERRORS($$); }
 ;
 
 effective_address:  effective_address_components
 | segment_selector effective_address_components       { $$ = fcml_fn_ast_set_effective_address_details( &$1, FCML_OS_UNDEFINED, 0, $2 ); }
-| effective_address bcast_decorator                   { $$ = fcml_fn_ast_set_effective_address_details( NULL, FCML_OS_UNDEFINED, $2, $1 ); }
+| effective_address FCML_TK_DECORATOR_BCAST           { $$ = fcml_fn_ast_set_effective_address_details( NULL, FCML_OS_UNDEFINED, $2, $1 ); }
 ;
 
 effective_address_components:
@@ -183,10 +196,6 @@ effective_address_components_without_dis:
 
 segment_selector: FCML_TK_REG_SEG ':'                 { $$ = $1; }
 ;
-
-opmask_reg_decorator: '{' FCML_TK_REG_OPMASK '}'      { $$ = $2; }
-zero_decorator: '{' 'z' '}'                           { $$ = FCML_TRUE; }
-bcast_decorator: '{' FCML_TK_BCAST '}'                { $$ = $2; }
 
 exp: 
   FCML_TK_INTEGER                                     { $$ = fcml_fn_ast_alloc_node_integer( &$1 ); HANDLE_ERRORS($$); }

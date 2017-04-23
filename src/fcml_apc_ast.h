@@ -35,6 +35,7 @@ typedef enum fcml_en_ast_node_type {
     FCML_EN_TN_UMINUS,
     FCML_EN_TN_VALUE,
     FCML_EN_TN_REG,
+    FCML_EN_TN_VIRTUAL,
     FCML_EN_TN_FAR_POINTER,
     FCML_EN_TN_EFFECTIVE_ADDRESS,
     FCML_EN_TN_USE_SYMBOL
@@ -76,6 +77,10 @@ typedef struct fcml_st_ast_node_register {
     fcml_st_register reg;
     fcml_st_operand_decorators decorators;
 } fcml_st_ast_node_register;
+
+typedef struct fcml_st_ast_node_virtual {
+    fcml_st_operand_decorators decorators;
+} fcml_st_ast_node_virtual;
 
 typedef enum fcml_en_ast_exp_node_operator {
     FCML_EN_EXN_SUB,
@@ -157,6 +162,9 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list( fcml_st_ast_node *operand
 fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fcml_string mnemonic, fcml_usize length, fcml_hints hints,
         fcml_st_ast_node *operand_list );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_pseudo_operation( fcml_string mnemonic, fcml_usize length, fcml_st_ast_node *exp );
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_virtual(fcml_bool sae,
+        fcml_bool er_enabled, fcml_uint8_t er_value);
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg,
         fcml_st_register *opmask_reg_decorator, fcml_bool zero_decorator);

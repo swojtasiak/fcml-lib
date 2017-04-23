@@ -54,16 +54,20 @@ extern int intel_debug;
     FCML_TK_REG_CR = 264,
     FCML_TK_REG_DR = 265,
     FCML_TK_REG_RIP = 266,
-    FCML_TK_BCAST = 267,
-    FCML_TK_INTEGER = 268,
-    FCML_TK_FLOAT = 269,
-    FCML_TK_SIZE_OPERATOR = 270,
-    FCML_TK_SYMBOL = 271,
-    FCML_TK_HINTS = 272,
-    FCML_TK_EAO_HINTS = 273,
-    FCML_TK_SIB_HINT = 274,
-    FCML_TK_PREFIX = 275,
-    FCML_OP_UMINUS = 276
+    FCML_TK_DECORATOR_BCAST = 267,
+    FCML_TK_DECORATOR_ER = 268,
+    FCML_TK_DECORATOR_Z = 269,
+    FCML_TK_DECORATOR_SAE = 270,
+    FCML_TK_OPMASK_REG_DECORATOR = 271,
+    FCML_TK_INTEGER = 272,
+    FCML_TK_FLOAT = 273,
+    FCML_TK_SIZE_OPERATOR = 274,
+    FCML_TK_SYMBOL = 275,
+    FCML_TK_HINTS = 276,
+    FCML_TK_EAO_HINTS = 277,
+    FCML_TK_SIB_HINT = 278,
+    FCML_TK_PREFIX = 279,
+    FCML_OP_UMINUS = 280
   };
 #endif
 /* Tokens.  */
@@ -76,23 +80,27 @@ extern int intel_debug;
 #define FCML_TK_REG_CR 264
 #define FCML_TK_REG_DR 265
 #define FCML_TK_REG_RIP 266
-#define FCML_TK_BCAST 267
-#define FCML_TK_INTEGER 268
-#define FCML_TK_FLOAT 269
-#define FCML_TK_SIZE_OPERATOR 270
-#define FCML_TK_SYMBOL 271
-#define FCML_TK_HINTS 272
-#define FCML_TK_EAO_HINTS 273
-#define FCML_TK_SIB_HINT 274
-#define FCML_TK_PREFIX 275
-#define FCML_OP_UMINUS 276
+#define FCML_TK_DECORATOR_BCAST 267
+#define FCML_TK_DECORATOR_ER 268
+#define FCML_TK_DECORATOR_Z 269
+#define FCML_TK_DECORATOR_SAE 270
+#define FCML_TK_OPMASK_REG_DECORATOR 271
+#define FCML_TK_INTEGER 272
+#define FCML_TK_FLOAT 273
+#define FCML_TK_SIZE_OPERATOR 274
+#define FCML_TK_SYMBOL 275
+#define FCML_TK_HINTS 276
+#define FCML_TK_EAO_HINTS 277
+#define FCML_TK_SIB_HINT 278
+#define FCML_TK_PREFIX 279
+#define FCML_OP_UMINUS 280
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 112 "fcml_intel_parser_def.y" /* yacc.c:1909  */
+#line 121 "fcml_intel_parser_def.y" /* yacc.c:1909  */
 
     /*Complex values.*/
     fcml_st_ast_val_integer integer_value;
@@ -109,12 +117,26 @@ union YYSTYPE
     fcml_bool bool_value;
     fcml_int int_value;
 
-#line 113 "fcml_intel_parser_def.h" /* yacc.c:1909  */
+#line 121 "fcml_intel_parser_def.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
+#endif
+
+/* Location type.  */
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE YYLTYPE;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+};
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
 #endif
 
 

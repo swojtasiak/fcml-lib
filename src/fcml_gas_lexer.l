@@ -42,6 +42,8 @@
 %option header-file="fcml_gas_lexer.h"
 %option nounistd
 %option prefix="gas_"
+%option bison-locations
+%option yylineno
 
 %option extra-type="struct fcml_st_parser_data *"
 
@@ -293,15 +295,36 @@ fcml_fn_pu_parse_intege_flags
 "%k7"                 FCML_FM_OPMASK_REG(FCML_REG_K7)
 
  /* RIP */
- "%rip"                FCML_FM_RIP
+ "%rip"               FCML_FM_RIP
+
+ /* opmask registers decorators. */
+"{%k1}"                            FCML_FM_OPMASK_REG_DECORATOR(1);
+"{%k2}"                            FCML_FM_OPMASK_REG_DECORATOR(2);
+"{%k3}"                            FCML_FM_OPMASK_REG_DECORATOR(3);
+"{%k4}"                            FCML_FM_OPMASK_REG_DECORATOR(4);
+"{%k5}"                            FCML_FM_OPMASK_REG_DECORATOR(5);
+"{%k6}"                            FCML_FM_OPMASK_REG_DECORATOR(6);
+"{%k7}"                            FCML_FM_OPMASK_REG_DECORATOR(7);
 
  /* bcast decorators. */
-1to2                  FCML_FM_BCAST_DECORATOR(2);
-1to4                  FCML_FM_BCAST_DECORATOR(4);
-1to8                  FCML_FM_BCAST_DECORATOR(8);
-1to16                 FCML_FM_BCAST_DECORATOR(16);
-1to32                 FCML_FM_BCAST_DECORATOR(32);
-1to64                 FCML_FM_BCAST_DECORATOR(64);
+"{1to2}"                           FCML_FM_BCAST_DECORATOR(2);
+"{1to4}"                           FCML_FM_BCAST_DECORATOR(4);
+"{1to8}"                           FCML_FM_BCAST_DECORATOR(8);
+"{1to16}"                          FCML_FM_BCAST_DECORATOR(16);
+"{1to32}"                          FCML_FM_BCAST_DECORATOR(32);
+"{1to64}"                          FCML_FM_BCAST_DECORATOR(64);
+
+ /* embedded rounding. */
+"{rn-sae}"                         FCML_FM_ER_DECORATOR(0);
+"{rd-sae}"                         FCML_FM_ER_DECORATOR(1);
+"{ru-sae}"                         FCML_FM_ER_DECORATOR(2);
+"{rz-sae}"                         FCML_FM_ER_DECORATOR(3);
+
+ /* zeroying. */
+"{z}"                              { return FCML_TK_DECORATOR_Z; }
+
+ /* Suppress all expression. */
+"{sae}"                            { return FCML_TK_DECORATOR_SAE; }
 
  /* Prefixes */
  

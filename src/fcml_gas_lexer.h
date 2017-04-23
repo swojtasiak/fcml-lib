@@ -271,6 +271,10 @@ YYSTYPE * gas_get_lval (yyscan_t yyscanner );
 
 void gas_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
+       YYLTYPE *gas_get_lloc (yyscan_t yyscanner );
+    
+        void gas_set_lloc (YYLTYPE * yylloc_param ,yyscan_t yyscanner );
+    
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
  */
@@ -317,10 +321,10 @@ static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 #define YY_DECL_IS_OURS 1
 
 extern int gas_lex \
-               (YYSTYPE * yylval_param ,yyscan_t yyscanner);
+               (YYSTYPE * yylval_param,YYLTYPE * yylloc_param ,yyscan_t yyscanner);
 
 #define YY_DECL int gas_lex \
-               (YYSTYPE * yylval_param , yyscan_t yyscanner)
+               (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
 /* yy_get_previous_state - get the state just before the EOB char was reached */
@@ -337,9 +341,9 @@ extern int gas_lex \
 #undef YY_DECL
 #endif
 
-#line 377 "fcml_gas_lexer.l"
+#line 400 "fcml_gas_lexer.l"
 
 
-#line 344 "fcml_gas_lexer.h"
+#line 348 "fcml_gas_lexer.h"
 #undef gas_IN_HEADER
 #endif /* gas_HEADER_H */
