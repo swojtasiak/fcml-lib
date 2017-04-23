@@ -50,6 +50,10 @@ typedef struct fcml_ist_asm_enc_pseudo_operation_desc {
     fcml_ifp_asm_encode_pseudo_operation pseudo_operation_encoder;
 } fcml_ist_asm_enc_pseudo_operation_desc;
 
+fcml_ceh_error fcml_ifp_asm_encode_pseudo_operation_db_encoder(
+        const fcml_st_instruction *instruction,
+        fcml_st_assembler_result *result);
+
 fcml_ist_asm_enc_pseudo_operation_desc
 fcml_iarr_asm_supported_pseudo_operations[] = {
     {FP_DB, &fcml_ifp_asm_encode_pseudo_operation_db_encoder},
