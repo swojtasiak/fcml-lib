@@ -41,14 +41,20 @@ typedef struct fcml_ist_asm_enc_assembler {
     fcml_st_dialect_context_int *dialect_context;
 } fcml_ist_asm_enc_assembler;
 
-typedef fcml_ceh_error (*fcml_ifnp_encode_pseudo_operation)(
+typedef fcml_ceh_error (*fcml_ifp_asm_encode_pseudo_operation)(
         const fcml_st_instruction *instruction,
         fcml_st_assembler_result *result);
 
-typedef struct fcml_ist_enc_pseudo_operation_desc {
+typedef struct fcml_ist_asm_enc_pseudo_operation_desc {
     fcml_en_pseudo_operations pseudo_operation;
-    fcml_ifnp_encode_pseudo_operation pseudo_operation_encoder;
-} fcml_ist_enc_pseudo_operation_desc;
+    fcml_ifp_asm_encode_pseudo_operation pseudo_operation_encoder;
+} fcml_ist_asm_enc_pseudo_operation_desc;
+
+fcml_ist_asm_enc_pseudo_operation_desc
+fcml_iarr_asm_supported_pseudo_operations[] = {
+    {FP_DB, &fcml_ifp_asm_encode_pseudo_operation_db_encoder},
+    {FP_NO_PSEUDO_OP, NULL }
+};
 
 /**********************
  * Pseudo operations. *
@@ -75,7 +81,7 @@ fcml_st_assembled_instruction *fcml_ifn_asm_alloc_assembled_instruction(
     return instruction;
 }
 
-fcml_ceh_error fcml_ifp_encode_pseudo_operation_db_encoder(
+fcml_ceh_error fcml_ifp_asm_encode_pseudo_operation_db_encoder(
         const fcml_st_instruction *instruction,
         fcml_st_assembler_result *result) {
 
@@ -106,15 +112,13 @@ fcml_ceh_error fcml_ifp_encode_pseudo_operation_db_encoder(
 
 }
 
-fcml_ist_enc_pseudo_operation_desc fcml_iarr_supported_pseudo_operations[] = {
-        {FP_DB, &fcml_ifp_encode_pseudo_operation_db_encoder},
-        {FP_NO_PSEUDO_OP, NULL } };
 
-fcml_ist_enc_pseudo_operation_desc *
+
+fcml_ist_asm_enc_pseudo_operation_desc *
 fcml_ifn_asm_prepare_pseudo_operation_encoding(
         fcml_en_pseudo_operations pseudo_operation) {
-    fcml_ist_enc_pseudo_operation_desc *desc =
-            fcml_iarr_supported_pseudo_operations;
+    fcml_ist_asm_enc_pseudo_operation_desc *desc =
+            fcml_iarr_asm_supported_pseudo_operations;
     while (desc->pseudo_operation != FP_NO_PSEUDO_OP) {
         if (desc->pseudo_operation == pseudo_operation) {
             return desc;
@@ -140,7 +144,7 @@ fcml_ceh_error fcml_fn_asm_init_pseudo_operation_encodings(
             dialect->get_pseudo_operation_mnemonics();
     if (mnemonics_map) {
         while (mnemonics_map->mnemonic) {
-            fcml_ist_enc_pseudo_operation_desc *desc =
+            fcml_ist_asm_enc_pseudo_operation_desc *desc =
                     fcml_ifn_asm_prepare_pseudo_operation_encoding(
                             mnemonics_map->pseudo_operation);
             if (desc) {
@@ -169,8 +173,8 @@ fcml_ceh_error fcml_fn_asm_handle_pseudo_operations(
         const fcml_st_instruction *instruction,
         fcml_st_assembler_result *result) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    fcml_ist_enc_pseudo_operation_desc *desc =
-            (fcml_ist_enc_pseudo_operation_desc*) fcml_fn_coll_map_get(
+    fcml_ist_asm_enc_pseudo_operation_desc *desc =
+            (fcml_ist_asm_enc_pseudo_operation_desc*) fcml_fn_coll_map_get(
                     pseudo_operations_map, instruction->mnemonic);
     if (desc) {
         error = desc->pseudo_operation_encoder(instruction, result);
