@@ -18,7 +18,8 @@
  */
 
 /** @file fcml_optimizers.h
- * API for assembler optimizers. For more details about optimizers see FCML manual.
+ * API for assembler optimizers. For more details about optimizers see
+ * FCML manual.
  *
  * @copyright Copyright (C) 2010-2017 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
