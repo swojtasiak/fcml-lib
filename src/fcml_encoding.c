@@ -2235,15 +2235,16 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
                 &(current_processor->processor_descriptor);
         context->part_processor_context.part_processor_index = index;
         if (!context->is_short_form || descriptor->is_short_form_supported) {
-            if (descriptor->processor_acceptor != NULL
-                    && (error = descriptor->processor_acceptor(context,
-                            &(addr_mode->addr_mode_details),
-                            addr_mode->addr_mode_desc, instruction,
-                            descriptor->processor_args))
-                            != FCML_CEH_GEC_NO_ERROR) {
-                FCML_TRACE("Addressing mode not accepted. Acceptor " \
-                        "failed: %d", index);
-                return error;
+            if (descriptor->processor_acceptor) {
+                error = descriptor->processor_acceptor(context,
+                        &(addr_mode->addr_mode_details),
+                        addr_mode->addr_mode_desc, instruction,
+                        descriptor->processor_args);
+                if (error != FCML_CEH_GEC_NO_ERROR) {
+                    FCML_TRACE("Addressing mode not accepted. Acceptor "
+                            "failed: %d", index);
+                    break;
+                }
             }
         }
         current_processor = current_processor->next_processor;
