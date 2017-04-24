@@ -57,6 +57,27 @@
 #define FCML_ENCODE_VEXOP_X(vexop,x)    ((vexop) | ((~(x) & 0x01) << 6))
 #define FCML_ENCODE_VEXOP_B(vexop,x)    ((vexop) | ((~(x) & 0x01) << 5))
 
+/* EVEX prefix */
+#define FCML_ENCODE_EVEX_PREFIX_LENGTH      4
+
+#define FCML_ENCODE_EVEX_P0_R(evex,x)       ((evex) | ((~(x) & 0x01) << 7))
+#define FCML_ENCODE_EVEX_P0_X(evex,x)       ((evex) | ((~(x) & 0x01) << 6))
+#define FCML_ENCODE_EVEX_P0_B(evex,x)       ((evex) | ((~(x) & 0x01) << 5))
+#define FCML_ENCODE_EVEX_P0_R_prim(evex,x)  ((evex) | ((~(x) & 0x01) << 4))
+#define FCML_ENCODE_EVEX_P0_mm(evex,x)      ((evex) | ((x) & 0x03))
+
+#define FCML_ENCODE_EVEX_P1_W(evex,x)       ((evex) | (((x) & 0x01) << 7))
+#define FCML_ENCODE_EVEX_P1_vvvv(evex,x)    FCML_ENCODE_VEXOP_VVVV(evex, x)
+#define FCML_ENCODE_EVEX_P1_pp(evex,x)      FCML_ENCODE_VEXOP_PP(evex, x)
+
+#define FCML_ENCODE_EVEX_P2_z(evex,x)       ((evex) | (((x) & 0x01) << 7))
+#define FCML_ENCODE_EVEX_P2_L_prim(evex,x)  ((evex) | (((x) & 0x01) << 6))
+#define FCML_ENCODE_EVEX_P2_L(evex,x)       ((evex) | (((x) & 0x01) << 5))
+#define FCML_ENCODE_EVEX_P2_b(evex,x)       ((evex) | (((x) & 0x01) << 4))
+#define FCML_ENCODE_EVEX_P2_V_prim(evex,x)  ((evex) | ((~(x) & 0x01) << 3))
+#define FCML_ENCODE_EVEX_P2_aaa(evex,x)     ((evex) | ((x) & 0x07))
+#define FCML_ENCODE_EVEX_P2_er(evex,x)      ((evex) | (((x) & 0x03) << 5))
+
 #define FCML_ASM_FCF    16
 
 typedef enum fcml_ien_addr_mode_processing_phase {
@@ -77,8 +98,20 @@ typedef struct fcml_ist_asm_addr_mode_error {
 } fcml_ist_asm_addr_mode_error;
 
 typedef struct fcml_ist_asm_extension_prefixes_fields {
+    /* VEX/XOP/EVEX.vvvv. */
     fcml_uint8_t vvvv;
+    /* EVEX.V'. */
+    fcml_uint8_t V_prim;
+    /* VEX/XOP.mmmmm, EVEX.mm */
     fcml_uint8_t mmmm;
+    /* EVEX.z field. */
+    fcml_bool z;
+    /* EVEX.b field. */
+    fcml_bool b;
+    /* EVEX.aaa. */
+    fcml_uint8_t aaa;
+    /* Embedded rounding mode. */
+    fcml_nuint8_t er;
 } fcml_ist_asm_extension_prefixes_fields;
 
 typedef struct fcml_ist_asm_opcode_reg {
@@ -169,11 +202,11 @@ typedef struct fcml_ist_asm_instruction_part_container {
 struct fcml_ist_asm_instruction_addr_modes;
 
 typedef enum fcml_ien_asm_part_processor_phase {
-    /* ModR/M arguments filling.*/
+    /* ModR/M arguments filling. */
     FCML_IEN_ASM_IPPP_FIRST_PHASE,
-    /* ModR/M encoding.*/
+    /* ModR/M encoding. */
     FCML_IEN_ASM_IPPP_SECOND_PHASE,
-    /* Prefixes are applied in this phase.*/
+    /* Prefixes are applied in this phase. */
     FCML_IEN_ASM_IPPP_THIRD_PHASE
 } fcml_ien_asm_part_processor_phase;
 
@@ -2018,7 +2051,12 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_vex_vvvv(
     if (phase == FCML_IEN_ASM_IPPP_FIRST_PHASE) {
         fcml_ist_asm_extension_prefixes_fields *epf = &(context->epf);
         fcml_st_register *reg = &(operand_def->reg);
-        epf->vvvv = reg->reg;
+        /* Only 16 registers can be encoded using VEX/XOP/EVEX.vvvv field. */
+        epf->vvvv = reg->reg & 0x0F;
+        if (reg->reg > 15) {
+            /* High 16 registers has to be encoded using EVEX.V'. */
+            epf->V_prim = 0x01;
+        }
     }
 
     return FCML_CEH_GEC_NO_ERROR;
@@ -3857,6 +3895,118 @@ fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder(
     return descriptor;
 }
 
+/************/
+/**  EVEX  **/
+/************/
+
+fcml_uint8_t fcml_ifn_asm_encode_pp_prefix_field(
+        fcml_uint32_t allowed_prefixes) {
+    fcml_uint8_t pp = 0;
+    if (FCML_DEF_PREFIX_MANDATORY_66(allowed_prefixes)) {
+        pp = 0x01;
+    } else if (FCML_DEF_PREFIX_MANDATORY_F2(allowed_prefixes)) {
+        pp = 0x03;
+    } else if (FCML_DEF_PREFIX_MANDATORY_F3(allowed_prefixes)) {
+        pp = 0x02;
+    }
+    return pp;
+}
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder(
+        fcml_ien_asm_part_processor_phase phase,
+        fcml_ist_asm_encoding_context *context,
+        fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
+        fcml_st_def_addr_mode_desc *addr_mode_def,
+        fcml_ist_asm_instruction_part *instruction_part, fcml_ptr args) {
+
+    if (phase == FCML_IEN_ASM_IPPP_FIRST_PHASE) {
+
+        if (FCML_DEF_PREFIX_L_1(addr_mode_def->allowed_prefixes)) {
+            context->optimizer_processing_details.l.is_not_null = FCML_TRUE;
+            context->optimizer_processing_details.l.value = 0x01;
+        } else if (FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes)) {
+            context->optimizer_processing_details.l.is_not_null = FCML_TRUE;
+            context->optimizer_processing_details.l.value = 0x00;
+        }
+
+    }
+
+    if (phase == FCML_IEN_ASM_IPPP_THIRD_PHASE) {
+
+        fcml_ist_asm_extension_prefixes_fields *epf = &(context->epf);
+        fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
+
+        fcml_uint8_t evex_bytes[4];
+
+        evex_bytes[0] = 0x62;
+
+        fcml_uint8_t p0 = 0;
+        p0 = FCML_ENCODE_EVEX_P0_R(p0, encoded_mod_rm->ext_R);
+        p0 = FCML_ENCODE_EVEX_P0_X(p0, encoded_mod_rm->ext_X);
+        p0 = FCML_ENCODE_EVEX_P0_B(p0, encoded_mod_rm->ext_B);
+        p0 = FCML_ENCODE_EVEX_P0_R_prim(p0, encoded_mod_rm->ext_R_prim);
+        p0 = FCML_ENCODE_EVEX_P0_mm(p0, epf->mmmm);
+
+        /* Third bit of P1 is always set to 1. */
+        fcml_uint8_t p1 = 0x04;
+        p1 = FCML_ENCODE_EVEX_P1_W(p1,
+                FCML_DEF_PREFIX_W_1(addr_mode_def->allowed_prefixes));
+        p1 = FCML_ENCODE_EVEX_P1_vvvv(p1, epf->vvvv);
+        p1 = FCML_ENCODE_EVEX_P1_pp(p1, fcml_ifn_asm_encode_pp_prefix_field(
+                addr_mode_def->allowed_prefixes));
+
+        fcml_uint8_t p2 = 0;
+        p2 = FCML_ENCODE_EVEX_P2_z(p2, epf->z);
+
+        if (epf->er.is_not_null) {
+            p2 = FCML_ENCODE_EVEX_P2_er(p2, epf->er.value);
+        } else {
+            fcml_nuint8_t *L = &(context->optimizer_processing_details.l);
+            fcml_nuint8_t *L_prim =
+                    &(context->optimizer_processing_details.L_prim);
+            if (L->is_not_null) {
+                p2 = FCML_ENCODE_EVEX_P2_L(p2, L->value);
+            }
+            if (L_prim->is_not_null) {
+                p2 = FCML_ENCODE_EVEX_P2_L_prim(p2, L_prim->value);
+            }
+        }
+
+        p2 = FCML_ENCODE_EVEX_P2_b(p2, epf->b);
+        /* EVEX.V' is used by extended VSIB encoding and direct register
+         * encoding.
+         */
+        p2 = FCML_ENCODE_EVEX_P2_V_prim(p2, encoded_mod_rm->ext_V_prim |
+                epf->V_prim);
+        p2 = FCML_ENCODE_EVEX_P2_aaa(p2, epf->aaa);
+
+        instruction_part->code[1] = p0;
+        instruction_part->code[2] = p1;
+        instruction_part->code[3] = p2;
+
+        instruction_part->code_length = FCML_ENCODE_EVEX_PREFIX_LENGTH;
+
+    }
+
+    return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ist_asm_instruction_part_processor_descriptor
+fcml_ifn_asm_instruction_part_processor_factory_EVEX_prefix_encoder(
+        fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction,
+        fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
+        fcml_ceh_error *error) {
+    fcml_ist_asm_instruction_part_processor_descriptor descriptor = { 0 };
+    if (FCML_DEF_PREFIX_EVEX_REQ(addr_mode->allowed_prefixes)) {
+        descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
+        descriptor.processor_args = NULL;
+        descriptor.processor_encoder =
+                fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder;
+        descriptor.processor_acceptor = NULL;
+    }
+    return descriptor;
+}
+
 /********************/
 /** VEX/XOP Prefix **/
 /********************/
@@ -3901,16 +4051,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder(
         fcml_uint8_t prefix_size = 0;
 
         /* Encode PP.*/
-        fcml_uint8_t pp = 0;
-        if (FCML_DEF_PREFIX_MANDATORY_66(addr_mode_def->allowed_prefixes)) {
-            pp = 0x01;
-        } else if (FCML_DEF_PREFIX_MANDATORY_F2(
-                addr_mode_def->allowed_prefixes)) {
-            pp = 0x03;
-        } else if (FCML_DEF_PREFIX_MANDATORY_F3(
-                addr_mode_def->allowed_prefixes)) {
-            pp = 0x02;
-        }
+        fcml_uint8_t pp = fcml_ifn_asm_encode_pp_prefix_field(
+                addr_mode_def->allowed_prefixes);
 
         fcml_uint8_t prefix = 0;
 
@@ -4439,6 +4581,8 @@ fcml_iarr_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
     { fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder,
             0 },
     { fcml_ifn_asm_instruction_part_processor_factory_VEX_XOP_prefix_encoder,
+            0 },
+    { fcml_ifn_asm_instruction_part_processor_factory_EVEX_prefix_encoder,
             0 },
     { NULL, 0 }
 };
@@ -5037,7 +5181,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding(
                             mnemonics[i]->mnemonic, addr_modes, &map_error);
                     if (map_error) {
                         fcml_fn_coll_list_free(addr_modes->addr_modes,
-                                fcml_ifn_asm_free_instruction_addr_mode_item_handler,
+                          fcml_ifn_asm_free_instruction_addr_mode_item_handler,
                                 &(init_context->dialect_context));
                         fcml_fn_env_memory_free(addr_modes);
                         error = fcml_fn_utils_convert_map_error(map_error);
@@ -5070,7 +5214,7 @@ fcml_ceh_error fcml_ifn_asm_encoded_handle_instruction_addr_mode_decoding(
                 *clone_addr_mode_enc_details =
                         (fcml_ist_asm_instruction_addr_mode_encoding_details*)
                         fcml_fn_env_memory_alloc_clear(
-                                sizeof(fcml_ist_asm_instruction_addr_mode_encoding_details));
+                            sizeof(fcml_ist_asm_instruction_addr_mode_encoding_details));
                 if (clone_addr_mode_enc_details) {
                     *clone_addr_mode_enc_details = *addr_mode_encoding_details;
                     clone_addr_mode_enc_details->is_cloned = FCML_TRUE;

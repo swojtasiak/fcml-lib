@@ -85,6 +85,8 @@ typedef struct fcml_st_asm_optimizer_processing_details {
     fcml_usize eosa;
     /** L bit from VEX like prefixes set for encoded instruction. */
     fcml_nuint8_t l;
+    /** L' bit from EVEX prefix set for encoded instruction. */
+    fcml_nuint8_t L_prim;
     /** Set to true in order to break optimization process immediately. */
     fcml_bool break_optimization;
 } fcml_st_asm_optimizer_processing_details;
