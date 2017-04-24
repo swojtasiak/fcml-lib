@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,8 +57,14 @@ typedef struct fcml_st_mp_config {
     fcml_nuint8_t l;
 } fcml_st_mp_config;
 
-fcml_ceh_error fcml_fn_mp_parse_mnemonics( fcml_string mnemonics_pattern, fcml_st_mp_mnemonic_set **mnemonics );
-void fcml_fn_mp_free_mnemonics( fcml_st_mp_mnemonic_set *mnemonics );
-fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic( fcml_st_mp_mnemonic_set *mnemonics, fcml_st_mp_config *config );
+fcml_ceh_error fcml_fn_mp_parse_mnemonics(fcml_string mnemonics_pattern,
+        fcml_st_mp_mnemonic_set **mnemonics);
+
+void fcml_fn_mp_free_mnemonics(fcml_st_mp_mnemonic_set *mnemonics);
+
+fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic(
+        fcml_st_mp_mnemonic_set *mnemonics, fcml_st_mp_config *config);
+
+fcml_usize fcml_fn_mp_l_to_vector_length(fcml_uint8_t l);
 
 #endif /* FCML_MNEMONIC_PARSER_H_ */

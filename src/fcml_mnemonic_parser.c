@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -132,6 +132,8 @@ fcml_ceh_error fcml_ifn_handle_attribute_value( fcml_char attr_key, fcml_char *a
             mnemonic->l.value = 0;
         } else if ( attr_value[0] == '1' ) {
             mnemonic->l.value = 1;
+        } else if ( attr_value[0] == '2' ) {
+            mnemonic->l.value = 2;
         }
         mnemonic->l.is_not_null = FCML_TRUE;
         break;
@@ -434,4 +436,20 @@ void fcml_fn_mp_free_mnemonics( fcml_st_mp_mnemonic_set *mnemonics ) {
         }
         fcml_fn_env_memory_free( mnemonics );
     }
+}
+
+fcml_usize fcml_fn_mp_l_to_vector_length(fcml_uint8_t l) {
+    fcml_usize vector_length = FCML_DS_UNDEF;
+    switch(l) {
+    case 0x00:
+        vector_length = FCML_DS_128;
+        break;
+    case 0x01:
+        vector_length = FCML_DS_256;
+        break;
+    case 0x02:
+        vector_length = FCML_DS_512;
+        break;
+    }
+    return vector_length;
 }

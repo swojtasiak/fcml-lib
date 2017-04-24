@@ -83,10 +83,8 @@ typedef struct fcml_st_asm_optimizer_processing_details {
      * the default attribute size.
      */
     fcml_usize eosa;
-    /** L bit from VEX like prefixes set for encoded instruction. */
-    fcml_nuint8_t l;
-    /** L' bit from EVEX prefix set for encoded instruction. */
-    fcml_nuint8_t L_prim;
+    /** Vector length of AVX instructions. Set to FCML_DS_UNDEF if not used. */
+    fcml_usize vector_length;
     /** Set to true in order to break optimization process immediately. */
     fcml_bool break_optimization;
 } fcml_st_asm_optimizer_processing_details;

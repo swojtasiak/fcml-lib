@@ -71,12 +71,10 @@
 #define FCML_ENCODE_EVEX_P1_pp(evex,x)      FCML_ENCODE_VEXOP_PP(evex, x)
 
 #define FCML_ENCODE_EVEX_P2_z(evex,x)       ((evex) | (((x) & 0x01) << 7))
-#define FCML_ENCODE_EVEX_P2_L_prim(evex,x)  ((evex) | (((x) & 0x01) << 6))
-#define FCML_ENCODE_EVEX_P2_L(evex,x)       ((evex) | (((x) & 0x01) << 5))
 #define FCML_ENCODE_EVEX_P2_b(evex,x)       ((evex) | (((x) & 0x01) << 4))
 #define FCML_ENCODE_EVEX_P2_V_prim(evex,x)  ((evex) | ((~(x) & 0x01) << 3))
 #define FCML_ENCODE_EVEX_P2_aaa(evex,x)     ((evex) | ((x) & 0x07))
-#define FCML_ENCODE_EVEX_P2_er(evex,x)      ((evex) | (((x) & 0x03) << 5))
+#define FCML_ENCODE_EVEX_P2_LL(evex,x)      ((evex) | (((x) & 0x03) << 5))
 
 #define FCML_ASM_FCF    16
 
@@ -339,10 +337,10 @@ fcml_string fcml_idfn_asm_encode_size_flags(
 
     int index = 0;
 
-    /* L flag.*/
-    if(size_flags->l.is_not_null) {
-        index += sprintf(fcml_idarr_asm_data_flags_buff, "L: %d, ",
-                size_flags->l.value);
+    /* Vector length. */
+    if(size_flags->vector_length) {
+        index += sprintf(fcml_idarr_asm_data_flags_buff, "Vector length: %d, ",
+                size_flags->vector_length);
     } else {
         index += sprintf(fcml_idarr_asm_data_flags_buff, "L: NS, ");
     }
@@ -422,8 +420,7 @@ void fcml_ifn_asm_clean_context(fcml_ist_asm_encoding_context *context) {
             &(context->optimizer_processing_details);
     data_size_flags->easa = FCML_DS_UNDEF;
     data_size_flags->eosa = FCML_DS_UNDEF;
-    data_size_flags->l.is_not_null = FCML_FALSE;
-    data_size_flags->l.value = 0;
+    data_size_flags->vector_length = FCML_DS_UNDEF;
     data_size_flags->allowed_easa.flags = FCML_EN_ASF_ANY;
     data_size_flags->allowed_easa.is_set = FCML_FALSE;
     data_size_flags->allowed_eosa.flags = FCML_EN_ASF_ANY;
@@ -498,11 +495,11 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
     fcml_st_asm_optimizer_processing_details *flags =
             &(context->optimizer_processing_details);
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    fcml_usize effective_address_size = 0;
-    fcml_usize effective_operand_size = 0;
+    fcml_usize effective_address_size = FCML_DS_UNDEF;
+    fcml_usize effective_operand_size = FCML_DS_UNDEF;
+    fcml_usize vector_length = FCML_DS_UNDEF;
     fcml_uint8_t encoded_static_operand_size = FCML_GET_OS(
             encoded_operand_size);
-    fcml_nuint8_t l = { 0, FCML_FALSE };
 
     if ((operand_size == FCML_OS_UNDEFINED)
             && FCML_IS_EOS_OPT(encoded_operand_size)) {
@@ -517,11 +514,9 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
     case FCML_EOS_UNDEFINED:
         break;
     case FCML_EOS_L:
-        l.is_not_null = FCML_TRUE;
-        l.value = 0;
-        if (operand_size == FCML_DS_256) {
-            l.value = 1;
-        } else if (operand_size != FCML_DS_128) {
+        vector_length = operand_size;
+        if (operand_size != FCML_DS_128 &&
+                operand_size != FCML_DS_256 && operand_size != FCML_DS_512 ) {
             error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
         }
         break;
@@ -588,14 +583,20 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
     }
 
     if (!error) {
-        if (l.is_not_null) {
-            if (flags->l.is_not_null && flags->l.value != l.value) {
+
+        /* If size is not set yet it sets it to the calculated
+         * value, but if it's already set it only checks if the newly
+         * calculated one has the same size.
+         */
+
+        if (vector_length) {
+            if (flags->vector_length && flags->vector_length != vector_length) {
                 /* All dynamic operands have to be of the same size.*/
-                FCML_TRACE("L flag differs expected %d got %d.",
-                        flags->l.value, l.value);
+                FCML_TRACE("Vector length differs expected %d got %d.",
+                        flags->vector_length, vector_length);
                 error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
             } else {
-                flags->l = l;
+                flags->vector_length = vector_length;
             }
         }
         if (effective_address_size) {
@@ -2680,8 +2681,10 @@ void fcml_ifn_prepare_optimizer_processing_details(
     }
 
     /* Apply L fields restrictions from mnemonic definition. */
-    processing_details->l = addr_mode->mnemonic->l;
-
+    if (addr_mode->mnemonic->l.is_not_null) {
+        processing_details->vector_length =
+                fcml_fn_mp_l_to_vector_length(addr_mode->mnemonic->l.value);
+    }
 }
 
 void fcml_ifn_asm_handle_addr_mode_errors(
@@ -3921,12 +3924,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder(
 
     if (phase == FCML_IEN_ASM_IPPP_FIRST_PHASE) {
 
-        if (FCML_DEF_PREFIX_L_1(addr_mode_def->allowed_prefixes)) {
-            context->optimizer_processing_details.l.is_not_null = FCML_TRUE;
-            context->optimizer_processing_details.l.value = 0x01;
-        } else if (FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes)) {
-            context->optimizer_processing_details.l.is_not_null = FCML_TRUE;
-            context->optimizer_processing_details.l.value = 0x00;
+        if (FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes)) {
+            context->optimizer_processing_details.vector_length = FCML_DS_128;
         }
 
     }
@@ -3935,10 +3934,6 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder(
 
         fcml_ist_asm_extension_prefixes_fields *epf = &(context->epf);
         fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
-
-        fcml_uint8_t evex_bytes[4];
-
-        evex_bytes[0] = 0x62;
 
         fcml_uint8_t p0 = 0;
         p0 = FCML_ENCODE_EVEX_P0_R(p0, encoded_mod_rm->ext_R);
@@ -3959,17 +3954,19 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder(
         p2 = FCML_ENCODE_EVEX_P2_z(p2, epf->z);
 
         if (epf->er.is_not_null) {
-            p2 = FCML_ENCODE_EVEX_P2_er(p2, epf->er.value);
+            /* Embedded rounding mode is encoded on EVEX.L'L. */
+            p2 = FCML_ENCODE_EVEX_P2_LL(p2, epf->er.value);
         } else {
-            fcml_nuint8_t *L = &(context->optimizer_processing_details.l);
-            fcml_nuint8_t *L_prim =
-                    &(context->optimizer_processing_details.L_prim);
-            if (L->is_not_null) {
-                p2 = FCML_ENCODE_EVEX_P2_L(p2, L->value);
+            fcml_uint8_t LL = 0;
+            switch(context->optimizer_processing_details.vector_length) {
+            case FCML_DS_256:
+                LL = 0x01;
+                break;
+            case FCML_DS_512:
+                LL = 0x02;
+                break;
             }
-            if (L_prim->is_not_null) {
-                p2 = FCML_ENCODE_EVEX_P2_L_prim(p2, L_prim->value);
-            }
+            p2 = FCML_ENCODE_EVEX_P2_LL(p2, LL);
         }
 
         p2 = FCML_ENCODE_EVEX_P2_b(p2, epf->b);
@@ -3980,6 +3977,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder(
                 epf->V_prim);
         p2 = FCML_ENCODE_EVEX_P2_aaa(p2, epf->aaa);
 
+        instruction_part->code[0] = 0x62;
         instruction_part->code[1] = p0;
         instruction_part->code[2] = p1;
         instruction_part->code[3] = p2;
@@ -4021,11 +4019,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder(
     if (phase == FCML_IEN_ASM_IPPP_FIRST_PHASE) {
 
         if (FCML_DEF_PREFIX_L_1(addr_mode_def->allowed_prefixes)) {
-            context->optimizer_processing_details.l.is_not_null = FCML_TRUE;
-            context->optimizer_processing_details.l.value = 0x01;
+            context->optimizer_processing_details.vector_length = FCML_DS_256;
         } else if (FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes)) {
-            context->optimizer_processing_details.l.is_not_null = FCML_TRUE;
-            context->optimizer_processing_details.l.value = 0x00;
+            context->optimizer_processing_details.vector_length = FCML_DS_128;
         }
 
     }
@@ -4067,13 +4063,15 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder(
             is_two_bytes_vex = FCML_FALSE;
         }
 
+        fcml_usize vector_length =
+                context->optimizer_processing_details.vector_length;
+
         if (is_two_bytes_vex) {
             /* Two bytes VEX prefix.*/
             prefix = FCML_ENCODE_VEXOP_R(prefix, encoded_mod_rm->ext_R);
             prefix = FCML_ENCODE_VEXOP_VVVV(prefix, epf->vvvv);
-            if (context->optimizer_processing_details.l.is_not_null) {
-                prefix = FCML_ENCODE_VEXOP_L(prefix,
-                        context->optimizer_processing_details.l.value);
+            if (vector_length == FCML_DS_256) {
+                prefix = FCML_ENCODE_VEXOP_L(prefix, 0x01);
             }
             prefix = FCML_ENCODE_VEXOP_PP(prefix, pp);
             prefix_bytes[0] = 0xC5;
@@ -4091,9 +4089,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder(
             prefix = FCML_ENCODE_VEXOP_W(prefix,
                     FCML_DEF_PREFIX_W_1(addr_mode_def->allowed_prefixes));
             prefix = FCML_ENCODE_VEXOP_VVVV(prefix, epf->vvvv);
-            if (context->optimizer_processing_details.l.is_not_null) {
-                prefix = FCML_ENCODE_VEXOP_L(prefix,
-                        context->optimizer_processing_details.l.value);
+            if (vector_length == FCML_DS_256) {
+                prefix = FCML_ENCODE_VEXOP_L(prefix, 0x01);
             }
             prefix = FCML_ENCODE_VEXOP_PP(prefix, pp);
             prefix_bytes[2] = prefix;

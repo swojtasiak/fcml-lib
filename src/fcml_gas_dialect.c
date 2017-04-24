@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1384,9 +1384,9 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas( const fcml_st_as
         } else if ( mnemonic->is_full_ds ) {
             /* Full data size is based on effective operand size attribute. */
             data_size = mnemonic->supported_osa;
-        } else if ( mnemonic->l.is_not_null ) {
-            /* Data size based on L VEX/XOP prefix field. */
-            data_size = mnemonic->l.value ? FCML_DS_256 : FCML_DS_128;
+        } else if (mnemonic->l.is_not_null) {
+            /* Data size based on L'L EVEX/VEX/XOP prefix field. */
+            data_size = fcml_fn_mp_l_to_vector_length(mnemonic->l.value);
         }
 
         if ( data_size != FCML_DS_UNDEF ) {

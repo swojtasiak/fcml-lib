@@ -2955,13 +2955,13 @@ fcml_ceh_error fcml_ifn_disassemble_core(
         instruction_details->instruction_group = 
             decoding_context.instruction_group;
 
-        /* L flag for mnemonic chooser.*/
+        /* L'L flag for mnemonic chooser.*/
         fcml_nuint8_t l;
         l.is_not_null = FCML_FALSE;
-        if (instruction_details->prefixes_details.is_vex ||
-                instruction_details->prefixes_details.is_xop) {
+        if (instruction_details->prefixes_details.is_avx) {
             l.is_not_null = FCML_TRUE;
-            l.value = instruction_details->prefixes_details.L;
+            l.value = instruction_details->prefixes_details.L_prim << 1 |
+                    instruction_details->prefixes_details.L;
         }
 
         fcml_st_mp_mnemonic *mnemonic = NULL;
