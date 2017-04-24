@@ -123,12 +123,12 @@ typedef fcml_uint32_t fcml_operand_decorators;
 #define FCML_DECOR_ER         0x080000000000LL
 #define FCML_DECOR_SAE        0x100000000000LL
 
-/* Operand decorators decoders. use only on 'fcml_operand_decorators'. */
+/* Operand decorators decoders. Use only on 'fcml_operand_decorators'. */
 
 #define FCML_GET_DECOR_BCAST_ELEMENT_SIZE(x)  (((x) >> 8) & 0xFF)
 #define FCML_IS_DECOR_BCAST(x)                ((x) & 0x00000001)
 #define FCML_IS_DECOR_Z(x)                    ((x) & 0x00000002)
-#define FCML_IS_DECOR_K1(x)                   ((x) & 0x00000004)
+#define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
 #define FCML_IS_DECOR_ER(x)                   ((x) & 0x00000008)
 #define FCML_IS_DECOR_SAE(x)                  ((x) & 0x00000010)
 

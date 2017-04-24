@@ -20,8 +20,31 @@
 #include "fcml_operand_decorators.h"
 #include "fcml_def.h"
 
-fcml_ceh_error fcml_fn_op_decor_decode(fcml_bool evex_b, fcml_bool evex_z,
-        fcml_uint8_t evex_aaa, fcml_uint8_t evex_ll, fcml_bool reg_to_reg,
+void fcml_fn_prepare_decorators_existence(fcml_operand_desc *operands,
+        fcml_st_decorators_existence *dec_existence) {
+    int i;
+    for(i = 0; i < FCML_OPERANDS_COUNT; i++) {
+        fcml_operand_decorators decorators = FCML_DECORATORS(operands[i]);
+        if (FCML_IS_DECOR_BCAST(decorators)) {
+            dec_existence->bcast = FCML_TRUE;
+        }
+        if (FCML_IS_DECOR_OPMASK_REG(decorators)) {
+            dec_existence->opmask_reg = FCML_TRUE;
+        }
+        if (FCML_IS_DECOR_Z(decorators)) {
+            dec_existence->z = FCML_TRUE;
+        }
+        if (FCML_IS_DECOR_ER(decorators)) {
+            dec_existence->er = FCML_TRUE;
+        }
+        if (FCML_IS_DECOR_SAE(decorators)) {
+            dec_existence->sea = FCML_TRUE;
+        }
+    }
+}
+
+fcml_ceh_error fcml_fn_op_decor_decode(
+        fcml_st_decorators_prefix_flags *prefix_flags, fcml_bool reg_to_reg,
         fcml_usize vector_length, fcml_operand_decorators decorators_def,
         fcml_st_operand *operand) {
 
@@ -30,7 +53,7 @@ fcml_ceh_error fcml_fn_op_decor_decode(fcml_bool evex_b, fcml_bool evex_z,
     fcml_st_operand_decorators *decorators = &(operand->decorators);
 
     /* Sets broadcast decorator, but only if EVEX.b flag is set. */
-    if (FCML_IS_DECOR_BCAST(decorators_def) && evex_b &&
+    if (FCML_IS_DECOR_BCAST(decorators_def) && prefix_flags->b &&
             operand->type == FCML_OT_ADDRESS) {
         fcml_uint8_t bcast_size = FCML_GET_DECOR_BCAST_ELEMENT_SIZE(
                 decorators_def);
@@ -39,28 +62,32 @@ fcml_ceh_error fcml_fn_op_decor_decode(fcml_bool evex_b, fcml_bool evex_z,
     }
 
     /* Operand mask register. */
-    if (FCML_IS_DECOR_K1(decorators_def) && evex_aaa > 0) {
+    if (FCML_IS_DECOR_OPMASK_REG(decorators_def) && prefix_flags->aaa > 0) {
         decorators->operand_mask_reg.type = FCML_REG_OPMASK;
         decorators->operand_mask_reg.size = FCML_DS_64;
         decorators->operand_mask_reg.x64_exp = FCML_FALSE;
-        decorators->operand_mask_reg.reg = evex_aaa;
+        decorators->operand_mask_reg.reg = prefix_flags->aaa;
     }
 
     /* Zeroying. */
-    if (FCML_IS_DECOR_Z(decorators_def) && evex_z) {
+    if (FCML_IS_DECOR_Z(decorators_def) && prefix_flags->z) {
         decorators->z = FCML_TRUE;
     }
 
-    /* Static rounding. */
-    if (FCML_IS_DECOR_ER(decorators_def) && evex_b && reg_to_reg &&
-            operand->type == FCML_OT_VIRTUAL) {
-        decorators->er.is_not_null = FCML_TRUE;
-        decorators->er.value = evex_ll;
-    }
+    if(operand->type == FCML_OT_VIRTUAL && reg_to_reg && prefix_flags->b &&
+            (vector_length == FCML_DS_128 || vector_length == FCML_DS_512)) {
 
-    /* Suppress All Exceptions. */
-    if (FCML_IS_DECOR_SAE(decorators_def) && operand->type == FCML_OT_VIRTUAL) {
-        decorators->sea = FCML_TRUE;
+        /* Static rounding. */
+        if (FCML_IS_DECOR_ER(decorators_def) ) {
+            decorators->er.is_not_null = FCML_TRUE;
+            decorators->er.value = prefix_flags->ll;
+        }
+
+        /* Suppress All Exceptions. */
+        if (FCML_IS_DECOR_SAE(decorators_def) && prefix_flags->ll == 0) {
+            decorators->sea = FCML_TRUE;
+        }
+
     }
 
     return error;

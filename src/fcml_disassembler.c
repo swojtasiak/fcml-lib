@@ -203,6 +203,8 @@ typedef struct fcml_ist_dasm_instruction_decoding_def {
     fcml_hints hints;
     /* ModRM details. */
     fcml_ist_dasm_modrm_decoding_details modrm_details;
+    /* Decorators existence. */
+    fcml_st_decorators_existence decorators_existence;
 } fcml_ist_dasm_instruction_decoding_def;
 
 /* Instruction decoder for IA instruction set, currently it is the only 
@@ -288,9 +290,9 @@ fcml_ceh_error fcml_ifn_dasm_utils_decode_segment_selector(
 }
 
 fcml_usize fcml_ifn_dasm_calculate_vector_length(fcml_uint8_t tuple_type,
-        fcml_bool er_enabled, fcml_uint8_t encoded_vector_length) {
+        fcml_bool sae_enabled, fcml_uint8_t encoded_vector_length) {
     fcml_usize vector_length = 0;
-    if (er_enabled) {
+    if (sae_enabled) {
         /* Vector length is assumed to be 512-bit in case of AVX-512 packed
          * vector instructions or 128-bit for scalar instructions.
          */
@@ -1766,6 +1768,10 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default(
         }
     }
 
+    /* Calculates decorators existence. */
+    fcml_fn_prepare_decorators_existence(&(addr_mode_desc->operands[0]),
+            &(decoding->decorators_existence));
+
     /* Insert it in appropriate order.*/
     int order = fcml_ifn_dasm_dts_calculate_decoding_order(decoding);
 
@@ -1974,14 +1980,17 @@ fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
         fcml_st_operand *operand =
                 &(decoding_context->operand_wrappers[i].operand);
 
-        fcml_uint8_t ll = decoding_context->prefixes.L_prim << 1 |
+        fcml_st_decorators_prefix_flags flags;
+        flags.b = decoding_context->prefixes.b;
+        flags.z = decoding_context->prefixes.z;
+        flags.aaa = decoding_context->prefixes.aaa;
+        flags.ll = decoding_context->prefixes.L_prim << 1 |
                 decoding_context->prefixes.L;
 
-        error = fcml_fn_op_decor_decode(decoding_context->prefixes.b,
-                decoding_context->prefixes.z, decoding_context->prefixes.aaa,
-                ll, decoding_context->is_modrm_reg_reg,
-                decoding_context->vector_length,
-                operand_decoding->decorators, operand);
+        error = fcml_fn_op_decor_decode(&flags,
+                decoding_context->is_modrm_reg_reg,
+                decoding_context->vector_length, operand_decoding->decorators,
+                operand);
     }
 
     return error;
@@ -2122,14 +2131,16 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
      * handle static rounding mode correctly. If {er} is enabled vector
      * length is implied. */
     if (prefixes->is_avx) {
-        /* Static Rounding Mode ({er}) is enabled for reg-to-reg instructions
+        /* Static Rounding Mode and SAE is enabled for reg-to-reg instructions
          * when EXEV.b is set.
          */
-        fcml_bool er_enabled = prefixes->b &&
-                decoding_context->is_modrm_reg_reg;
+        fcml_bool sae_enabled = prefixes->b &&
+                decoding_context->is_modrm_reg_reg &&
+                (instruction_decoding_def->decorators_existence.er ||
+                instruction_decoding_def->decorators_existence.sea);
 
         decoding_context->vector_length =
-                fcml_ifn_dasm_calculate_vector_length(tuple_type, er_enabled,
+                fcml_ifn_dasm_calculate_vector_length(tuple_type, sae_enabled,
                         prefixes->L | prefixes->L_prim << 1);
     }
 

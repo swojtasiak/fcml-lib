@@ -23,11 +23,29 @@
 #include "fcml_common.h"
 #include "fcml_def.h"
 
+typedef struct fcml_st_decorators_existence {
+    fcml_bool bcast;
+    fcml_bool z;
+    fcml_bool er;
+    fcml_bool opmask_reg;
+    fcml_bool sea;
+} fcml_st_decorators_existence;
+
+typedef struct fcml_st_decorators_prefix_flags {
+    fcml_bool b;
+    fcml_bool z;
+    fcml_uint8_t aaa;
+    fcml_uint8_t ll;
+} fcml_st_decorators_prefix_flags;
+
+void fcml_fn_prepare_decorators_existence(fcml_operand_desc *operands,
+        fcml_st_decorators_existence *dec_existence);
+
 /**
  * Decodes operand decorators for one operand.
  */
-fcml_ceh_error fcml_fn_op_decor_decode(fcml_bool evex_b, fcml_bool evex_z,
-        fcml_uint8_t evex_aaa, fcml_uint8_t evex_ll, fcml_bool reg_to_reg,
+fcml_ceh_error fcml_fn_op_decor_decode(
+        fcml_st_decorators_prefix_flags *prefix_flags, fcml_bool reg_to_reg,
         fcml_usize vector_length, fcml_operand_decorators decorators_def,
         fcml_st_operand *operand);
 
