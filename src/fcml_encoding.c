@@ -3190,7 +3190,7 @@ fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper(
 /* XOP/VEX opcode encoder factory. */
 /***********************************/
 
-fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder(
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_E_VEX_opcode_encoder(
         fcml_ien_asm_part_processor_phase phase,
         fcml_ist_asm_encoding_context *context,
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
@@ -3243,13 +3243,11 @@ fcml_ifn_asm_instruction_part_processor_factory_XOP_VEX_opcode_encoder(
 
     fcml_ist_asm_instruction_part_processor_descriptor descriptor = { 0 };
 
-    if (FCML_DEF_PREFIX_VEX_REQ(
-            addr_mode->allowed_prefixes) ||
-            FCML_DEF_PREFIX_XOP_REQ(addr_mode->allowed_prefixes)) {
+    if (FCML_DEF_PREFIX_IS_AVX_REQ(addr_mode->allowed_prefixes)) {
         descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
         descriptor.processor_args = NULL;
         descriptor.processor_encoder =
-                fcml_ifn_asm_instruction_part_processor_XOP_VEX_opcode_encoder;
+               fcml_ifn_asm_instruction_part_processor_XOP_E_VEX_opcode_encoder;
         descriptor.processor_acceptor = NULL;
     }
 
@@ -3751,25 +3749,24 @@ fcml_ifn_asm_instruction_part_processor_factory_mandatory_prefixes_encoder(
         fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction,
         fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
         fcml_ceh_error *error) {
+
     fcml_ist_asm_instruction_part_processor_descriptor descriptor = { 0 };
+
     fcml_bool is_mandatory =
-            FCML_DEF_PREFIX_MANDATORY_66(
-                    addr_mode->allowed_prefixes) ||
-                    FCML_DEF_PREFIX_MANDATORY_F2(addr_mode->allowed_prefixes) ||
-                    FCML_DEF_PREFIX_MANDATORY_F3(addr_mode->allowed_prefixes);
-    /* Mandatory prefixes can be applied to instructions without
-     * neither XOP nor VEX prefixes.
-     */
-    if (is_mandatory
-            && !FCML_DEF_PREFIX_VEX_REQ(
-                    addr_mode->allowed_prefixes) &&
-                    !FCML_DEF_PREFIX_XOP_REQ(addr_mode->allowed_prefixes)) {
+            FCML_DEF_PREFIX_MANDATORY_66(addr_mode->allowed_prefixes) ||
+            FCML_DEF_PREFIX_MANDATORY_F2(addr_mode->allowed_prefixes) ||
+            FCML_DEF_PREFIX_MANDATORY_F3(addr_mode->allowed_prefixes);
+
+    /* Mandatory prefixes cannot be applied to AVX instructions. */
+    if (is_mandatory &&
+            !FCML_DEF_PREFIX_IS_AVX_REQ(addr_mode->allowed_prefixes)) {
         descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
         descriptor.processor_args = NULL;
         descriptor.processor_encoder =
              fcml_ifn_asm_instruction_part_processor_mandatory_prefixes_encoder;
         descriptor.processor_acceptor = NULL;
     }
+
     return descriptor;
 }
 
@@ -3818,18 +3815,19 @@ fcml_ifn_asm_instruction_part_processor_factory_66_prefix_encoder(
         fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction,
         fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
         fcml_ceh_error *error) {
+
     fcml_ist_asm_instruction_part_processor_descriptor descriptor = { 0 };
-    /* Mandatory prefixes are handled by dedicated IPP.*/
-    if (!FCML_DEF_PREFIX_MANDATORY_66(
-            addr_mode->allowed_prefixes) &&
-            !FCML_DEF_PREFIX_VEX_REQ(addr_mode->allowed_prefixes) &&
-            !FCML_DEF_PREFIX_XOP_REQ(addr_mode->allowed_prefixes)) {
+
+    /* Mandatory prefixes are handled by dedicated IPP. */
+    if (!FCML_DEF_PREFIX_MANDATORY_66(addr_mode->allowed_prefixes) &&
+            !FCML_DEF_PREFIX_IS_AVX_REQ(addr_mode->allowed_prefixes)) {
         descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
         descriptor.processor_args = NULL;
         descriptor.processor_encoder =
                 fcml_ifn_asm_instruction_part_processor_66_prefix_encoder;
         descriptor.processor_acceptor = NULL;
     }
+
     return descriptor;
 }
 
@@ -3882,12 +3880,8 @@ fcml_ifn_asm_instruction_part_processor_factory_67_prefix_encoder(
 
     fcml_ist_asm_instruction_part_processor_descriptor descriptor = { 0 };
 
-    /* 67 prefix can be applied to instructions without neither
-     * XOP nor VEX prefixes.
-     */
-    if (!FCML_DEF_PREFIX_VEX_REQ(
-            addr_mode->allowed_prefixes) &&
-            !FCML_DEF_PREFIX_XOP_REQ(addr_mode->allowed_prefixes)) {
+    /* 67 prefix cannot be applied to AVX instructions. */
+    if (!FCML_DEF_PREFIX_IS_AVX_REQ(addr_mode->allowed_prefixes)) {
         descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
         descriptor.processor_args = NULL;
         descriptor.processor_encoder =
@@ -4113,9 +4107,10 @@ fcml_ifn_asm_instruction_part_processor_factory_VEX_XOP_prefix_encoder(
         fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction,
         fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
         fcml_ceh_error *error) {
+
     fcml_ist_asm_instruction_part_processor_descriptor descriptor = { 0 };
-    if (FCML_DEF_PREFIX_VEX_REQ(
-            addr_mode->allowed_prefixes) ||
+
+    if (FCML_DEF_PREFIX_VEX_REQ(addr_mode->allowed_prefixes) ||
             FCML_DEF_PREFIX_XOP_REQ(addr_mode->allowed_prefixes)) {
         descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
         descriptor.processor_args = NULL;
@@ -4123,6 +4118,7 @@ fcml_ifn_asm_instruction_part_processor_factory_VEX_XOP_prefix_encoder(
                 fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder;
         descriptor.processor_acceptor = NULL;
     }
+
     return descriptor;
 }
 
@@ -4210,19 +4206,21 @@ fcml_ifn_asm_instruction_part_processor_factory_REX_prefix_encoder(
         fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction,
         fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
         fcml_ceh_error *error) {
+
     fcml_ist_asm_instruction_part_processor_descriptor descriptor = { 0 };
-    /* 66 prefix can be applied to instructions without neither XOP nor
-     * VEX prefixes. Remember that this prefix can bes mandatory one.
+
+    /* 66 prefix cannot be applied to AVX instructions.
+     * Remember that this prefix can be a mandatory one.
      */
     if (FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(addr_mode->opcode_flags)
-            && !(FCML_DEF_PREFIX_VEX_REQ(addr_mode->allowed_prefixes)
-                    || FCML_DEF_PREFIX_XOP_REQ(addr_mode->allowed_prefixes))) {
+            && !FCML_DEF_PREFIX_IS_AVX_REQ(addr_mode->allowed_prefixes)) {
         descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
         descriptor.processor_args = NULL;
         descriptor.processor_encoder =
                 fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder;
         descriptor.processor_acceptor = NULL;
     }
+
     return descriptor;
 }
 

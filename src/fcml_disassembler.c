@@ -380,10 +380,8 @@ int fcml_ifn_dasm_dts_calculate_decoding_order(
         order++;
     }
 
-    /* VEX and XOP prefixes. */
-    if (FCML_DEF_PREFIX_VEX_REQ(prefixes) 
-            || FCML_DEF_PREFIX_XOP_REQ(prefixes)
-            || FCML_DEF_PREFIX_EVEX_REQ(prefixes)) {
+    /* VEX, XOP and EVEX prefixes. */
+    if (FCML_DEF_PREFIX_IS_AVX_REQ(prefixes)) {
         order++;
     }
 
@@ -1374,7 +1372,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
         return FCML_FALSE;
     }
 
-    /* EVER required. */
+    /* EVEX required. */
     if ((FCML_DEF_PREFIX_EVEX_REQ(instruction_decoding_def->prefixes_flags)
                 && !prefixes->is_evex)
             || (!FCML_DEF_PREFIX_EVEX_REQ(

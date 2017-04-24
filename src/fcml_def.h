@@ -219,6 +219,9 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_PREFIX_SUFFIX(x)                    FCML_TP_GET_BIT(x,15)
 #define FCML_DEF_PREFIX_EVEX_REQ(x)                  FCML_TP_GET_BIT(x,16)
 
+#define FCML_DEF_PREFIX_IS_AVX_REQ(x)   (FCML_DEF_PREFIX_VEX_REQ(x) || \
+    FCML_DEF_PREFIX_EVEX_REQ(x) || FCML_DEF_PREFIX_XOP_REQ(x))
+
 /*********************************
  * Opcode fields extractors.
  *********************************/
