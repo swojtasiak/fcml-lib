@@ -364,14 +364,20 @@ typedef struct fcml_st_def_instruction_desc {
 /* VSIB operand decoding. */
 /**************************/
 
-/* Vector index register.*/
+/* Vector index register. */
 #define FCML_VSIB_XMM    0x01
 #define FCML_VSIB_YMM    0x02
+#define FCML_VSIB_ZMM    0x03
 
 #define FCML_OP_VSIB_BASE            0x0D000000
 #define FCML_OP_VSIB(vector_index_register, encoded_index_value_size)        \
     (FCML_OP_VSIB_BASE | (vector_index_register) << 8 | \
             (encoded_index_value_size))
+
+/**
+ * Converts VSIB register type to corresponding data size.
+ */
+fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 /**************/
 /* Pseudo-Op. */

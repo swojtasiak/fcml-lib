@@ -151,26 +151,26 @@ typedef struct fcml_ist_dasm_addr_mode_acceptor_chain {
 } fcml_ist_dasm_addr_mode_acceptor_chain;
 
 typedef struct fcml_ist_dasm_operand_decoding {
-    /* Operand access mode.*/
+    /* Operand access mode. */
     fcml_st_def_decoded_addr_mode *decoded_addr_mode;
-    /* Operand decoder.*/
+    /* Operand decoder. */
     fcml_ifp_dasm_operand_decoder decoder;
-    /* Calculates size of the encoded operand in bytes.*/
+    /* Calculates size of the encoded operand in bytes. */
     fcml_ifp_dasm_operand_size_calculator size_calculator;
-    /* Optional hints, if operand has any.*/
+    /* Optional hints, if operand has any. */
     fcml_hints hints;
-    /* Operand decorators.*/
+    /* Operand decorators. */
     fcml_operand_decorators decorators;
 } fcml_ist_dasm_operand_decoding;
 
 typedef struct fcml_ist_dasm_modrm_decoding_details {
-    /* True if vector-index memory addressing is used.*/
+    /* True if vector-index memory addressing is used. */
     fcml_bool is_vsib;
-    /* Vector register size.*/
+    /* Vector register size. */
     fcml_usize vsib_index_size;
-    /* True if addressing mode is restricted only to register.*/
+    /* True if addressing mode is restricted only to register. */
     fcml_bool is_reg_restriction;
-    /* True if addressing mode is restricted only to memory.*/
+    /* True if addressing mode is restricted only to memory. */
     fcml_bool is_mem_restriction;
 } fcml_ist_dasm_modrm_decoding_details;
 
@@ -181,11 +181,11 @@ typedef struct fcml_ist_dasm_instruction_decoding_def {
     fcml_uint16_t addr_mode;
     /* Additional details for addressing mode. */
     fcml_uint32_t details;
-    /* Type of the instruction.*/
+    /* Type of the instruction. */
     fcml_uint64_t instruction_group;
     /* Opcodes. */
     fcml_uint8_t opcodes[FCML_OPCODES_NUM];
-    /* Instruction mnemonic */
+    /* Instruction mnemonic. */
     fcml_st_mp_mnemonic_set *mnemonics;
     /* Flags that describe prefixes usage. */
     fcml_uint32_t prefixes_flags;
@@ -199,9 +199,9 @@ typedef struct fcml_ist_dasm_instruction_decoding_def {
     fcml_ist_dasm_operand_decoding operand_decodings[FCML_OPERANDS_COUNT];
     /* Instruction decoding order, for information purpose only. */
     fcml_int order;
-    /* Instruction level hints.*/
+    /* Instruction level hints. */
     fcml_hints hints;
-    /* ModRM details.*/
+    /* ModRM details. */
     fcml_ist_dasm_modrm_decoding_details modrm_details;
 } fcml_ist_dasm_instruction_decoding_def;
 
@@ -1684,8 +1684,8 @@ void fcml_ifn_dasm_dts_prepare_modrm_decoding_details(
             fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm *)
                 decoded_addr_mode->addr_mode_args;
             modrm_details->is_vsib = FCML_TRUE;
-            modrm_details->vsib_index_size = (rm_args->vector_index_register) 
-                == FCML_VSIB_XMM ? FCML_DS_128 : FCML_DS_256;
+            modrm_details->vsib_index_size =
+                    fcml_fn_def_vsib_reg_to_ds(rm_args->vector_index_register);
         }
         if (FCMP_DEF_IS_ADDR_MODE(decoded_addr_mode->addr_mode, 
                     FCML_OP_RM_BASE)) {
@@ -2094,6 +2094,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         modrm_source.ext_R = prefixes->R;
         modrm_source.ext_R_prim = prefixes->R_prim;
         modrm_source.ext_X = prefixes->X;
+        modrm_source.ext_V_prim = prefixes->V_prim;
         modrm_source.stream = decoding_context->stream;
 
         fcml_uint8_t flags = 0;

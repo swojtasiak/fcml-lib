@@ -292,3 +292,17 @@ void fcml_fnp_def_free_addr_mode(
     }
 }
 
+/**
+ * Converts VSIB register type to corresponding data size.
+ */
+fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg) {
+    switch (vsib_reg) {
+    case FCML_VSIB_XMM:
+        return FCML_DS_128;
+    case FCML_VSIB_YMM:
+        return FCML_DS_256;
+    case FCML_VSIB_ZMM:
+        return FCML_DS_512;
+    }
+    return FCML_DS_UNDEF;
+}

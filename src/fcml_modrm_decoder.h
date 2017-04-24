@@ -44,6 +44,7 @@ typedef struct fcml_st_modrm_source {
     fcml_uint8_t ext_R_prim;
     fcml_uint8_t ext_X;
     fcml_uint8_t ext_B;
+    fcml_uint8_t ext_V_prim;
     fcml_bool is_vsib;
     fcml_usize vsib_index_size;
     fcml_st_memory_stream *stream;

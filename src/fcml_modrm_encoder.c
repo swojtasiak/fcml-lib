@@ -271,9 +271,11 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
     fcml_uint8_t f_rm = 0;
     fcml_uint8_t f_reg = 0;
 
-    fcml_uint8_t f_ext_r = 0;
-    fcml_uint8_t f_ext_x = 0;
-    fcml_uint8_t f_ext_b = 0;
+    fcml_uint8_t f_ext_R = 0;
+    fcml_uint8_t f_ext_R_prim = 0;
+    fcml_uint8_t f_ext_X = 0;
+    fcml_uint8_t f_ext_B = 0;
+    fcml_uint8_t f_ext_V_prim = 0;
 
     fcml_usize disp_size = 0;
 
@@ -292,8 +294,8 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
     }
 
     fcml_bool is_displacement = fcml_ifn_modrm_is_displacement(address);
-    fcml_bool is_base = effective_address->base.type;
-    fcml_bool is_index = effective_address->index.type;
+    fcml_bool is_base = effective_address->base.type != FCML_REG_UNDEFINED;
+    fcml_bool is_index = effective_address->index.type != FCML_REG_UNDEFINED;
 
     /* Should be treated like standard displacement when RIP addressing is
      * not available.
@@ -371,7 +373,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
             }
             f_base = effective_address->base.reg;
             if (f_base > 7) {
-                f_ext_b = 0x01;
+                f_ext_B = 0x01;
                 f_base &= 0x07;
             }
         } else {
@@ -400,7 +402,11 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
             }
             f_index = effective_address->index.reg;
             if (f_index > 7) {
-                f_ext_x = 0x01;
+                /* VSIB */
+                f_ext_X = 0x01;
+                if (f_index > 15) {
+                    f_ext_V_prim = 0x01;
+                }
                 f_index &= 0x07;
             }
         } else {
@@ -444,7 +450,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
                 return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
             }
         } else if (is_displacement) {
-            /* Absolute address or RIP.*/
+            /* Absolute address or RIP .*/
             disp_size = FCML_DS_32;
             f_rm = 0x05;
         } else {
@@ -453,7 +459,10 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
         }
 
         if (f_rm > 7) {
-            f_ext_b = 0x01;
+            f_ext_B = 0x01;
+            if (f_rm > 15) {
+                f_ext_X = 0x01;
+            }
             f_rm &= 0x07;
         }
     }
@@ -570,18 +579,24 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
     /* Encode reg/opcode.*/
     f_reg = decoded_modrm->reg_opcode;
     if (f_reg > 7) {
-        f_ext_r = 0x01;
+        f_ext_R = 0x01;
+        if (f_reg > 15) {
+            f_ext_R_prim = 0x01;
+        }
         f_reg &= 0x07;
     }
 
-    if (context->op_mode != FCML_OM_64_BIT && (f_ext_r || f_ext_x || f_ext_b)) {
+    if (context->op_mode != FCML_OM_64_BIT && (f_ext_R || f_ext_X || f_ext_B ||
+            f_ext_R_prim || f_ext_V_prim)) {
         return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
     }
 
     encoded_modrm->modrm = FCML_MODRM_ENC(f_mod, f_reg, f_rm);
-    encoded_modrm->ext_r = f_ext_r;
-    encoded_modrm->ext_x = f_ext_x;
-    encoded_modrm->ext_b = f_ext_b;
+    encoded_modrm->ext_R = f_ext_R;
+    encoded_modrm->ext_R_prim = f_ext_R_prim;
+    encoded_modrm->ext_X = f_ext_X;
+    encoded_modrm->ext_B = f_ext_B;
+    encoded_modrm->ext_V_prim = f_ext_V_prim;
 
     return FCML_CEH_GEC_NO_ERROR;
 }

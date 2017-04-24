@@ -44,9 +44,11 @@
 typedef struct fcml_st_encoded_modrm {
     fcml_uint8_t modrm;
     fcml_nuint8_t sib;
-    fcml_uint8_t ext_r;
-    fcml_uint8_t ext_x;
-    fcml_uint8_t ext_b;
+    fcml_uint8_t ext_R;
+    fcml_uint8_t ext_R_prim;
+    fcml_uint8_t ext_X;
+    fcml_uint8_t ext_B;
+    fcml_uint8_t ext_V_prim;
     fcml_uint8_t displacement[4];
     fcml_uint8_t displacement_size;
     fcml_bool is_rip;
@@ -76,6 +78,10 @@ typedef struct fcml_st_modrm_encoder_context {
     fcml_bool choose_sib_encoding;
     /* If there is alternative, use RIP encoding instead of SIB alternative. */
     fcml_bool choose_rip_encoding;
+    /* True if EVEX is available. */
+    fcml_bool is_evex;
+    /* EVEX.b field. */
+    fcml_bool b;
 } fcml_st_modrm_encoder_context;
 
 fcml_ceh_error fcml_fn_modrm_encode(fcml_st_modrm_encoder_context *context,

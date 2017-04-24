@@ -254,6 +254,12 @@ fcml_ceh_error fcml_ifn_modrm_decode_sib(
     /* Index register and scale.*/
     if (FCML_MODRM_SIB_INDEX(sib) != 4) {
         if (modrm_source->is_vsib) {
+            /* If EVEX is available, VSIB index register is extended
+             * by EVEX.V' bit.
+             */
+            if (context->is_evex) {
+                f_index |= (modrm_source->ext_V_prim << 4);
+            }
             effective_address->index.type = FCML_REG_SIMD;
             effective_address->index.size = modrm_source->vsib_index_size;
         } else {

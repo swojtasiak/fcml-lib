@@ -1712,9 +1712,8 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
                     fcml_st_register *index =
                             &(operand_def->address.effective_address.index);
                     if (index->type == FCML_REG_SIMD) {
-                        fcml_usize vsib_reg_size =
-                                args->vector_index_register == FCML_VSIB_XMM ?
-                                        FCML_DS_128 : FCML_DS_256;
+                        fcml_usize vsib_reg_size = fcml_fn_def_vsib_reg_to_ds(
+                                args->vector_index_register);
                         if (vsib_reg_size != index->size) {
                             FCML_TRACE_MSG("Wrong VSIB size.");
                             error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
@@ -3896,7 +3895,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder(
                 (!context->assembler_context->configuration.force_three_byte_VEX
                         && is_vex && epf->mmmm == 0x01
                         && !FCML_DEF_PREFIX_W_1(addr_mode_def->allowed_prefixes)
-                        && !encoded_mod_rm->ext_x && !encoded_mod_rm->ext_b);
+                        && !encoded_mod_rm->ext_X && !encoded_mod_rm->ext_B);
 
         fcml_uint8_t prefix_bytes[3];
         fcml_uint8_t prefix_size = 0;
@@ -3928,7 +3927,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder(
 
         if (is_two_bytes_vex) {
             /* Two bytes VEX prefix.*/
-            prefix = FCML_ENCODE_VEXOP_R(prefix, encoded_mod_rm->ext_r);
+            prefix = FCML_ENCODE_VEXOP_R(prefix, encoded_mod_rm->ext_R);
             prefix = FCML_ENCODE_VEXOP_VVVV(prefix, epf->vvvv);
             if (context->optimizer_processing_details.l.is_not_null) {
                 prefix = FCML_ENCODE_VEXOP_L(prefix,
@@ -3941,9 +3940,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_VEX_XOP_prefix_encoder(
         } else {
             /* Three bytes VEX or XOP prefix. */
             prefix_bytes[0] = (is_vex) ? 0xC4 : 0x8F;
-            prefix = FCML_ENCODE_VEXOP_R(prefix, encoded_mod_rm->ext_r);
-            prefix = FCML_ENCODE_VEXOP_X(prefix, encoded_mod_rm->ext_x);
-            prefix = FCML_ENCODE_VEXOP_B(prefix, encoded_mod_rm->ext_b);
+            prefix = FCML_ENCODE_VEXOP_R(prefix, encoded_mod_rm->ext_R);
+            prefix = FCML_ENCODE_VEXOP_X(prefix, encoded_mod_rm->ext_X);
+            prefix = FCML_ENCODE_VEXOP_B(prefix, encoded_mod_rm->ext_B);
             prefix = FCML_ENCODE_VEXOP_MMMM(prefix, epf->mmmm);
             prefix_bytes[1] = prefix;
             prefix = 0;
@@ -4037,9 +4036,9 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_REX_prefix_encoder(
             }
 
             /* Fields.*/
-            rex = FCML_ENCODE_REX_R(rex, encoded_mod_rm->ext_r);
-            rex = FCML_ENCODE_REX_X(rex, encoded_mod_rm->ext_x);
-            rex = FCML_ENCODE_REX_B(rex, encoded_mod_rm->ext_b);
+            rex = FCML_ENCODE_REX_R(rex, encoded_mod_rm->ext_R);
+            rex = FCML_ENCODE_REX_X(rex, encoded_mod_rm->ext_X);
+            rex = FCML_ENCODE_REX_B(rex, encoded_mod_rm->ext_B);
             rex = FCML_ENCODE_REX_B(rex, context->opcode_reg.ext_b);
 
             /* Assembler configuration.*/
