@@ -192,7 +192,7 @@ fcml_ceh_error fcml_ifn_asm_handle_pseudo_operations(
     return error;
 }
 
-fcml_bool fcml_ifn_verify_instruction(fcml_st_instruction *instruction) {
+fcml_bool fcml_ifn_verify_instruction(const fcml_st_instruction *instruction) {
 
     int i;
     fcml_bool last_found = FCML_FALSE;

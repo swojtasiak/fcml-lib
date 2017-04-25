@@ -1092,6 +1092,21 @@ fcml_int fcml_ifn_dasm_operand_size_calculator_pseudo_op(
     return 1;
 }
 
+/***********/
+/* Virtual */
+/***********/
+
+fcml_ceh_error fcml_ifn_dasm_operand_decoder_virtual(
+        fcml_ist_dasm_decoding_context *context,
+        fcml_ist_dasm_operand_wrapper *operand_wrapper,
+        fcml_operand_decorators decorators,
+        fcml_ptr args) {
+
+    operand_wrapper->operand.type = FCML_OT_VIRTUAL;
+
+    return FCML_CEH_GEC_NO_ERROR;
+}
+
 /****************************/
 /* Operand decoders table. */
 /****************************/
@@ -1102,7 +1117,7 @@ typedef struct fcml_ist_dasm_operand_decoder_def {
     fcml_fp_hts_instruction_hints_calculator hints_calculator;
 } fcml_ist_dasm_operand_decoder_def;
 
-fcml_ist_dasm_operand_decoder_def fcml_iarr_def_operand_decoders[] = { 
+fcml_ist_dasm_operand_decoder_def fcml_iarr_def_operand_decoders[] = {
     {NULL, NULL}, 
     {fcml_ifn_dasm_operand_decoder_imm, 
             fcml_ifn_dasm_operand_size_calculator_imm, NULL},
@@ -1126,7 +1141,9 @@ fcml_ist_dasm_operand_decoder_def fcml_iarr_def_operand_decoders[] = {
     {fcml_ifn_dasm_operand_decoder_rm, NULL, NULL}, 
     {fcml_ifn_dasm_operand_decoder_pseudo_op,
         fcml_ifn_dasm_operand_size_calculator_pseudo_op, 
-        fcml_fn_hts_ihc_pseudo_opcode}};
+        fcml_fn_hts_ihc_pseudo_opcode},
+    {fcml_ifn_dasm_operand_decoder_virtual, NULL, NULL}
+};
 
 void fcml_ifn_dasm_dts_free_operand_decoding(
         fcml_ist_dasm_operand_decoding *operand_decoding) {
@@ -2188,11 +2205,6 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             operand_wrappers->operand.hints |= operand_decoding->hints;
             operand_wrappers->access_mode = decoded_addr_mode->access_mode;
             operand_wrappers++;
-        } else if (operand_decoding->decorators) {
-            /* If given operand doesn't have decoder, but has decorators set
-             * it is a virtual operand.
-             */
-            operand_wrappers->operand.type = FCML_OT_VIRTUAL;
         } else {
             /* First operand without decoder is the last one.*/
             break;

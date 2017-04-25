@@ -389,6 +389,16 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 #define FCML_OP_PSEUDO_OP_BASE            0x0E000000
 #define FCML_OP_PSEUDO_OP( mask )         (FCML_OP_PSEUDO_OP_BASE | (mask))
 
+/*********************/
+/* Virtual operator. */
+/*********************/
+
+#define FCML_OP_VIRTUAL_BASE              0x0F000000
+#define FCML_OP_VIRTUAL(decorator)        (FCML_OP_PSEUDO_OP_BASE | (decorator))
+
+#define FCML_OP_VIRTUAL_ER                FCML_OP_VIRTUAL(FCML_DECOR_ER)
+#define FCML_OP_VIRTUAL_SAE               FCML_OP_VIRTUAL(FCML_DECOR_SAE)
+
 /*******************************/
 /* Segment registers encoding. */
 /*******************************/
@@ -405,7 +415,7 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 /* Useful macros related to addressing modes.*/
 
-#define FCMP_DEF_IS_ADDR_MODE( x, y )                ((x) == ((y) >> 24))
+#define FCMP_DEF_IS_ADDR_MODE(x, y)                ((x) == ((y) >> 24))
 
 /* Shorthands*/
 
