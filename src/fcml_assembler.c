@@ -192,6 +192,27 @@ fcml_ceh_error fcml_ifn_asm_handle_pseudo_operations(
     return error;
 }
 
+fcml_bool fcml_ifn_verify_instruction(fcml_st_instruction *instruction) {
+
+    int i;
+    fcml_bool last_found = FCML_FALSE;
+    fcml_bool result = FCML_TRUE;
+
+    /* Check if there are no operator gaps. */
+    for(i = 0; i < FCML_OPERANDS_COUNT; i++) {
+        if (instruction->operands[i].type == FCML_OT_NONE) {
+            last_found = FCML_TRUE;
+        } else {
+            if (last_found) {
+                result = FCML_FALSE;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
 /*****************************
  * Assembler initialization. *
  *****************************/
@@ -296,6 +317,8 @@ void LIB_CALL fcml_fn_assembler_result_prepare(
     }
 }
 
+
+
 fcml_ceh_error fcml_ifn_assemble_core(fcml_st_assembler_context *asm_context,
         const fcml_st_instruction *instruction,
         fcml_st_assembler_result *result) {
@@ -305,6 +328,10 @@ fcml_ceh_error fcml_ifn_assemble_core(fcml_st_assembler_context *asm_context,
     // Sanity check.
     if (!result || !instruction || !instruction->mnemonic || !asm_context) {
         return FCML_CEH_GEC_INVALID_INPUT;
+    }
+
+    if (!fcml_ifn_verify_instruction(instruction)) {
+        return FCML_CEH_GET_INVALID_INSTRUCTION_MODEL;
     }
 
     /* Validate and prepare entry point. */

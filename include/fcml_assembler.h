@@ -102,7 +102,7 @@ typedef struct fcml_st_assembler_result {
 typedef struct fcml_st_assembler_context {
     /** Assembler instance that should be used to assemble instructions. */
     fcml_st_assembler *assembler;
-    /** Assembler behaviour can be configured here.*/
+    /** Assembler behavior can be configured here.*/
     fcml_st_assembler_conf configuration;
     /** Instruction entry point configuration. */
     fcml_st_entry_point entry_point;

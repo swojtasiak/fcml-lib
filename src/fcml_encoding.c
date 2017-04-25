@@ -125,7 +125,7 @@ typedef struct fcml_ist_asm_addr_mode_desc_details {
     fcml_flags allowed_osa;
     /* Which ASA values are allowed for addressing mode. */
     fcml_flags allowed_asa;
-    /* Whether it's a conditional instruction or not.. */
+    /* Whether it's a conditional instruction or not. */
     fcml_bool is_conditional;
     /* Type of condition used for instruction. */
     fcml_st_condition condition;
@@ -146,12 +146,18 @@ typedef struct fcml_ist_asm_encoding_context {
     fcml_st_assembler_context *assembler_context;
     fcml_st_instruction *instruction;
     fcml_st_asm_encoder_result *encoder_result;
+    /* Number of operands inside instruction model. For short forms always 0.
+     * This value is set just after the context is set up, so it can be used
+     * anywhere.
+     */
+    fcml_usize operands_count;
     fcml_st_asm_optimizer_processing_details optimizer_processing_details;
     fcml_st_mp_mnemonic *mnemonic;
     fcml_ist_asm_part_processor_context part_processor_context;
     fcml_ist_asm_extension_prefixes_fields epf;
     fcml_st_register segment_override;
     fcml_st_modrm mod_rm;
+
     /* ModR/M related operand hints.*/
     fcml_bool is_sib_alternative_hint;
     fcml_bool is_rel_alternative_hint;
@@ -628,6 +634,10 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
     return error;
 }
 
+/**
+ * Sets size flags that are needed to assemble processed instruction.
+ * This function sets new set of flags or reduces existing set.
+ */
 fcml_bool fcml_ifn_asm_set_size_flag(
         fcml_st_nullable_size_flags *nullable_flags, fcml_flags flags) {
     if (nullable_flags->is_set) {
@@ -698,6 +708,7 @@ fcml_bool fcml_ifn_asm_accept_data_size(fcml_ist_asm_encoding_context *context,
             &(context->optimizer_processing_details);
     fcml_flags osa_flags = FCML_EN_ASF_ANY;
     fcml_flags asa_flags = FCML_EN_ASF_ANY;
+
     fcml_bool result = FCML_TRUE;
 
     if ((operand_size == FCML_OS_UNDEFINED) &&
@@ -714,7 +725,8 @@ fcml_bool fcml_ifn_asm_accept_data_size(fcml_ist_asm_encoding_context *context,
             result = (operand_size == entry_point->operand_size_attribute);
         } else {
             result = ((operand_size == FCML_DS_128) ||
-                    (operand_size == FCML_DS_256));
+                    (operand_size == FCML_DS_256) ||
+                    (operand_size == FCML_DS_512));
         }
         break;
     case FCML_EOS_EASA:
@@ -2797,6 +2809,23 @@ fcml_ceh_error fcml_ifn_asm_encode_addressing_mode_core(
     return error;
 }
 
+fcml_usize fcml_ifn_asm_count_operands(fcml_st_instruction *instruction) {
+
+    fcml_int i;
+    fcml_usize count = 0;
+
+    /* Check if there are no operator gaps. */
+    for(i = 0; i < FCML_OPERANDS_COUNT; i++) {
+        if (instruction->operands[i].type == FCML_OT_NONE) {
+            break;
+        } else {
+            count++;
+        }
+    }
+
+    return count;
+}
+
 fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
         fcml_st_assembler_context *asm_context,
         fcml_st_dialect_context_int *dialect_context,
@@ -2811,10 +2840,13 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
     /* Container for errors related to addressing mode processing. */
     fcml_ist_asm_addr_mode_error addr_mode_errors = { FCML_AMPP_UNDEFINED };
 
+    fcml_usize operands_count = fcml_ifn_asm_count_operands(&tmp_instruction);
+
     fcml_ist_asm_encoding_context context = { 0 };
     context.assembler_context = asm_context;
     context.instruction = &tmp_instruction;
     context.encoder_result = result;
+    context.operands_count = operands_count;
 
     /* Global errors container is set directly to error container
      * from results.
@@ -2830,8 +2862,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
         /* Check if there are any operands available. The short form can be
          * used only if there are no operands set.
          */
-        fcml_bool no_operands = context.instruction->operands[0].type
-                == FCML_OT_NONE;
+        fcml_bool no_operands = operands_count == 0;
 
         /* Choose addressing mode.*/
         if (addr_modes->addr_modes->size) {
@@ -3236,7 +3267,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_E_VEX_opcode_encoder(
 }
 
 fcml_ist_asm_instruction_part_processor_descriptor
-fcml_ifn_asm_instruction_part_processor_factory_XOP_VEX_opcode_encoder(
+fcml_ifn_asm_instruction_part_processor_factory_XOP_E_VEX_opcode_encoder(
         fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction,
         fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
         fcml_ceh_error *error) {
@@ -4509,6 +4540,84 @@ fcml_ifn_asm_instruction_part_processor_factory_prefixes_acceptor(
     return descriptor;
 }
 
+/*********************************/
+/* Operand decorators acceptors. */
+/*********************************/
+
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
+        fcml_ist_asm_encoding_context *context,
+        fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
+        fcml_st_def_addr_mode_desc *addr_mode_def,
+        fcml_st_instruction *instruction, fcml_ptr args) {
+
+    int i;
+    for(i = 0; i < FCML_OPERANDS_COUNT; i++) {
+        fcml_operand_decorators decorators =
+                FCML_DECORATORS(addr_mode_def->operands[i]);
+        fcml_st_operand *operand = &(instruction->operands[i]);
+        fcml_st_operand_decorators *opcode_dec = &(operand->decorators);
+
+        /* If opmask decorator is specified for addressing mode, it's a
+         * mandatory one.
+         */
+        if (FCML_IS_DECOR_OPMASK_REG(decorators) &&
+                operand->decorators.operand_mask_reg.type ==
+                        FCML_REG_UNDEFINED) {
+            return FCML_CEH_GET_MISSING_DECORATOR;
+        }
+
+        if (opcode_dec->operand_mask_reg.type != FCML_REG_UNDEFINED &&
+                !FCML_IS_DECOR_OPMASK_REG(decorators)) {
+            /* AVX-512 opmask decorator is defined, but this operator
+             * doesn't support it.
+             */
+            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        }
+
+
+        if (opcode_dec->bcast.is_not_null && !FCML_IS_DECOR_BCAST(decorators)) {
+
+            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        }
+
+        if (opcode_dec->z && !FCML_IS_DECOR_Z(decorators)) {
+            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        }
+
+        /* ER and SAE has to be set in the last available operand. */
+
+        if (opcode_dec->er.is_not_null && !FCML_IS_DECOR_ER(decorators) &&
+                i + 1 == context->operands_count) {
+            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        }
+
+        if (opcode_dec->er.is_not_null && !FCML_IS_DECOR_SAE(decorators) &&
+                i + 1 == context->operands_count) {
+            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        }
+
+    }
+
+    return FCML_CEH_GEC_NO_ERROR;
+}
+
+fcml_ist_asm_instruction_part_processor_descriptor
+fcml_ifn_asm_instruction_part_processor_factory_op_decorators_acceptor(
+        fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction,
+        fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
+        fcml_ceh_error *error) {
+
+    fcml_ist_asm_instruction_part_processor_descriptor descriptor = { 0 };
+
+    descriptor.processor_type = FCML_IEN_ASM_IPPT_VERIFIER;
+    descriptor.processor_args = NULL;
+    descriptor.processor_encoder = NULL;
+    descriptor.processor_acceptor =
+            fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor;
+
+    return descriptor;
+}
+
 /********************************************/
 /* Instruction parts factories definitions. */
 /********************************************/
@@ -4531,7 +4640,7 @@ typedef struct fcml_st_asm_instruction_part_factory_sequence {
 /* List of instruction part encoders for instruction opcode. */
 fcml_st_asm_instruction_part_factory_details
 fcml_iarr_asm_instruction_part_processor_factories_opcode_for_IA[] = {
-    { fcml_ifn_asm_instruction_part_processor_factory_XOP_VEX_opcode_encoder,
+    { fcml_ifn_asm_instruction_part_processor_factory_XOP_E_VEX_opcode_encoder,
             0 },
     { fcml_ifn_asm_instruction_part_processor_factory_reg_opcode_encoder,
             0 },
@@ -4548,6 +4657,8 @@ fcml_iarr_asm_instruction_part_processor_factories_acceptors_IA[] = {
     { fcml_ifn_asm_instruction_part_processor_factory_addr_mode_acceptor,
             0 },
     { fcml_ifn_asm_instruction_part_processor_factory_prefixes_acceptor,
+            0 },
+    { fcml_ifn_asm_instruction_part_processor_factory_op_decorators_acceptor,
             0 },
     { NULL, 0 }
 };

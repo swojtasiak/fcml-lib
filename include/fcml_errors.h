@@ -79,7 +79,13 @@ enum fcml_en_ceh_error_globals {
 	/** Error returned by parsers when there is undefined symbol used. */
 	FCML_CEH_GEC_UNDEFINED_SYMBOL = 19,
 	/** Labels are not supported. */
-	FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION = 20
+	FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION = 20,
+	/** Required operand decorator is missing. */
+	FCML_CEH_GET_MISSING_DECORATOR = 21,
+	/** Given operand decorator is not supported by operand. */
+	FCML_CEH_GET_NOT_SUPPORTED_DECORATOR = 22,
+	/** Gap between operands found. */
+	FCML_CEH_GET_INVALID_INSTRUCTION_MODEL = 23
 };
 
 /** @} */
