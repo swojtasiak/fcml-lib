@@ -4556,6 +4556,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
                 FCML_DECORATORS(addr_mode_def->operands[i]);
         fcml_st_operand *operand = &(instruction->operands[i]);
         fcml_st_operand_decorators *opcode_dec = &(operand->decorators);
+        fcml_bool last_operand = i + 1 == context->operands_count;
 
         /* If opmask decorator is specified for addressing mode, it's a
          * mandatory one.
@@ -4587,12 +4588,12 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
         /* ER and SAE has to be set in the last available operand. */
 
         if (opcode_dec->er.is_not_null && !FCML_IS_DECOR_ER(decorators) &&
-                i + 1 == context->operands_count) {
+                last_operand) {
             return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
         }
 
         if (opcode_dec->er.is_not_null && !FCML_IS_DECOR_SAE(decorators) &&
-                i + 1 == context->operands_count) {
+                last_operand) {
             return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
         }
 
