@@ -121,7 +121,10 @@ typedef fcml_uint32_t fcml_operand_decorators;
 #define FCML_DECOR_Z          0x020000000000LL
 #define FCML_DECOR_K1         0x040000000000LL
 #define FCML_DECOR_ER         0x080000000000LL
+/* SAE is supported by instruction operand. */
 #define FCML_DECOR_SAE        0x100000000000LL
+/* SAE is required by addressing mode. */
+#define FCML_DECOR_SAE_REQ   (0x200000000000LL | FCML_DECOR_SAE)
 
 /* Operand decorators decoders. Use only on 'fcml_operand_decorators'. */
 
@@ -131,6 +134,7 @@ typedef fcml_uint32_t fcml_operand_decorators;
 #define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
 #define FCML_IS_DECOR_ER(x)                   ((x) & 0x00000008)
 #define FCML_IS_DECOR_SAE(x)                  ((x) & 0x00000010)
+#define FCML_IS_DECOR_SAE_REQ(x)              ((x) & 0x00000030)
 
 /* Instruction details. */
 
@@ -398,6 +402,7 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 #define FCML_OP_VIRTUAL_ER                FCML_OP_VIRTUAL(FCML_DECOR_ER)
 #define FCML_OP_VIRTUAL_SAE               FCML_OP_VIRTUAL(FCML_DECOR_SAE)
+#define FCML_OP_VIRTUAL_SAE_REQ           FCML_OP_VIRTUAL(FCML_DECOR_SAE_REQ)
 
 /*******************************/
 /* Segment registers encoding. */
@@ -1015,67 +1020,71 @@ void fcml_fnp_def_free_addr_mode(
 
 #define FCML_GET_ADDR_MODE(x)     ( ( x ) & 0x3F000000 ) >> 24
 
-typedef struct fcml_sf_def_tma_imm {
+typedef struct fcml_st_def_tma_imm {
     fcml_uint8_t encoded_size;
     fcml_uint8_t encoded_ex_size;
     fcml_bool is_64bit_imm_allowed;
-} fcml_sf_def_tma_imm;
+} fcml_st_def_tma_imm;
 
-typedef struct fcml_sf_def_tma_explicit_reg {
+typedef struct fcml_st_def_tma_explicit_reg {
     fcml_uint8_t reg_type;
     fcml_uint8_t reg_num;
     fcml_uint8_t encoded_reg_size;
-} fcml_sf_def_tma_explicit_reg;
+} fcml_st_def_tma_explicit_reg;
 
-typedef struct fcml_sf_def_tma_opcode_reg {
+typedef struct fcml_st_def_tma_opcode_reg {
     fcml_uint8_t reg_type;
     fcml_uint8_t encoded_reg_size;
-} fcml_sf_def_tma_opcode_reg;
+} fcml_st_def_tma_opcode_reg;
 
-typedef struct fcml_sf_def_tma_immediate_dis_relative {
+typedef struct fcml_st_def_tma_immediate_dis_relative {
     fcml_uint8_t encoded_size;
 } fcml_sf_def_tma_immediate_dis_relative;
 
-typedef struct fcml_sf_def_tma_explicit_gps_reg_addressing {
+typedef struct fcml_st_def_tma_explicit_gps_reg_addressing {
     fcml_uint8_t reg_num;
     fcml_uint8_t encoded_operand_size;
     fcml_uint8_t encoded_segment_register;
-} fcml_sf_def_tma_explicit_gps_reg_addressing;
+} fcml_st_def_tma_explicit_gps_reg_addressing;
 
-typedef struct fcml_sf_def_tma_explicit_ib {
+typedef struct fcml_st_def_tma_explicit_ib {
     fcml_uint8_t ib;
-} fcml_sf_def_tma_explicit_ib;
+} fcml_st_def_tma_explicit_ib;
 
-typedef struct fcml_sf_def_tma_segment_relative_offset {
+typedef struct fcml_st_def_tma_segment_relative_offset {
     fcml_uint8_t encoded_operand_size;
     fcml_uint8_t encoded_segment_register;
-} fcml_sf_def_tma_segment_relative_offset;
+} fcml_st_def_tma_segment_relative_offset;
 
-typedef struct fcml_sf_def_tma_rm {
+typedef struct fcml_st_def_tma_rm {
     fcml_uint8_t reg_type;
     fcml_uint8_t encoded_register_operand_size;
     fcml_uint8_t encoded_memory_operand_size;
     fcml_uint8_t flags;
     fcml_uint8_t vector_index_register;
     fcml_bool is_vsib;
-} fcml_sf_def_tma_rm;
+} fcml_st_def_tma_rm;
 
-typedef struct fcml_sf_def_tma_r {
+typedef struct fcml_st_def_tma_r {
     fcml_en_register reg_type;
     fcml_uint8_t encoded_register_operand_size;
-} fcml_sf_def_tma_r;
+} fcml_st_def_tma_r;
 
-typedef struct fcml_sf_def_tma_vex_vvvv_reg {
+typedef struct fcml_st_def_tma_vex_vvvv_reg {
     fcml_uint8_t reg_type;
     fcml_uint8_t encoded_register_size;
-} fcml_sf_def_tma_vex_vvvv_reg;
+} fcml_st_def_tma_vex_vvvv_reg;
 
-typedef struct fcml_sf_def_tma_pseudo_op {
+typedef struct fcml_st_def_tma_pseudo_op {
     fcml_uint8_t mask;
-} fcml_sf_def_tma_pseudo_op;
+} fcml_st_def_tma_pseudo_op;
 
-typedef struct fcml_sf_def_tma_is {
+typedef struct fcml_st_def_tma_virtual_op {
+    fcml_operand_decorators decorators;
+} fcml_st_def_tma_virtual_op;
+
+typedef struct fcml_st_def_tma_is {
     fcml_uint8_t flags;
-} fcml_sf_def_tma_is;
+} fcml_st_def_tma_is;
 
 #endif /* FCML_DEF_H_ */

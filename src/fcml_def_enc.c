@@ -25,8 +25,7 @@ typedef fcml_ptr (*fcml_fnp_def_addr_mode_args_decoder)
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_is(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_is *is_args = (fcml_sf_def_tma_is*)
-            fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_is));
+    fcml_st_def_tma_is *is_args = FCML_ENV_ALLOC_ST(fcml_st_def_tma_is);
     if (is_args) {
         is_args->flags = ( encoded_addr_mode & 0x000000FF );
     }
@@ -35,8 +34,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_is(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_imm(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm*)
-            fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_imm));
+    fcml_st_def_tma_imm *imm_args = FCML_ENV_ALLOC_ST(fcml_st_def_tma_imm);
     if (imm_args) {
         imm_args->encoded_size = (encoded_addr_mode & 0x0000FF00) >> 8;
         imm_args->encoded_ex_size = encoded_addr_mode & 0x000000FF;
@@ -48,9 +46,8 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_imm(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_reg(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_explicit_reg *explicit_reg_args =
-            (fcml_sf_def_tma_explicit_reg*)fcml_fn_env_memory_alloc(
-                    sizeof(fcml_sf_def_tma_explicit_reg));
+    fcml_st_def_tma_explicit_reg *explicit_reg_args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_explicit_reg);
     if (explicit_reg_args) {
         explicit_reg_args->reg_type = ( encoded_addr_mode & 0x0000F000 ) >> 12;
         explicit_reg_args->reg_num = ( encoded_addr_mode & 0x00000F00 ) >> 8;
@@ -61,9 +58,8 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_reg(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_opcode_reg(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_opcode_reg *opcode_reg_args =
-            (fcml_sf_def_tma_opcode_reg*)fcml_fn_env_memory_alloc(
-                    sizeof(fcml_sf_def_tma_opcode_reg));
+    fcml_st_def_tma_opcode_reg *opcode_reg_args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_opcode_reg);
     if (opcode_reg_args) {
         opcode_reg_args->reg_type = ( encoded_addr_mode & 0x0000FF00 ) >> 8;
         opcode_reg_args->encoded_reg_size = encoded_addr_mode & 0x000000FF;
@@ -74,8 +70,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_opcode_reg(
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_immediate_dis_relative(
         fcml_operand_desc encoded_addr_mode) {
     fcml_sf_def_tma_immediate_dis_relative *immediate_dis_relative_args =
-            (fcml_sf_def_tma_immediate_dis_relative*)fcml_fn_env_memory_alloc(
-                    sizeof(fcml_sf_def_tma_immediate_dis_relative) );
+            FCML_ENV_ALLOC_ST(fcml_sf_def_tma_immediate_dis_relative);
     if (immediate_dis_relative_args) {
         immediate_dis_relative_args->encoded_size =
                 encoded_addr_mode & 0x000000FF;
@@ -85,10 +80,8 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_immediate_dis_relative(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_gps_reg_addressing(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_explicit_gps_reg_addressing *args =
-            (fcml_sf_def_tma_explicit_gps_reg_addressing*)
-            fcml_fn_env_memory_alloc(sizeof(
-                    fcml_sf_def_tma_explicit_gps_reg_addressing));
+    fcml_st_def_tma_explicit_gps_reg_addressing *args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_explicit_gps_reg_addressing);
     if (args) {
         args->reg_num =
                 (encoded_addr_mode & 0x00FF0000) >> 16;
@@ -102,9 +95,8 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_gps_reg_addressing(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_ib(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_explicit_ib *explicit_ib_args =
-            (fcml_sf_def_tma_explicit_ib*)
-            fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_explicit_ib));
+    fcml_st_def_tma_explicit_ib *explicit_ib_args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_explicit_ib);
     if (explicit_ib_args) {
         explicit_ib_args->ib = encoded_addr_mode & 0x000000FF;
     }
@@ -113,9 +105,8 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_explicit_ib(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_segment_relative_offset(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_segment_relative_offset *segment_relative_offset_args =
-            (fcml_sf_def_tma_segment_relative_offset*)fcml_fn_env_memory_alloc(
-                    sizeof(fcml_sf_def_tma_segment_relative_offset) );
+    fcml_st_def_tma_segment_relative_offset *segment_relative_offset_args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_segment_relative_offset);
     if (segment_relative_offset_args) {
         segment_relative_offset_args->encoded_operand_size =
                 (encoded_addr_mode & 0x0000FF00) >> 8;
@@ -127,8 +118,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_segment_relative_offset(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm*)
-            fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_rm));
+    fcml_st_def_tma_rm *rm_args = FCML_ENV_ALLOC_ST(fcml_st_def_tma_rm);
     if (rm_args) {
         rm_args->reg_type = (encoded_addr_mode & 0x000000F0) >> 4;
         rm_args->encoded_register_operand_size =
@@ -144,8 +134,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_r(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_r *r_args = (fcml_sf_def_tma_r*)
-            fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_r));
+    fcml_st_def_tma_r *r_args = FCML_ENV_ALLOC_ST(fcml_st_def_tma_r);
     if (r_args) {
         r_args->reg_type = (fcml_en_register)(encoded_addr_mode & 0x0000000F);
         r_args->encoded_register_operand_size =
@@ -155,11 +144,9 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_r(
 }
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vex_vvvv(
-        fcml_operand_desc encoded_addr_mode
-) {
-    fcml_sf_def_tma_vex_vvvv_reg *vex_vvvv_args =
-            (fcml_sf_def_tma_vex_vvvv_reg*)fcml_fn_env_memory_alloc(
-                    sizeof(fcml_sf_def_tma_vex_vvvv_reg));
+        fcml_operand_desc encoded_addr_mode) {
+    fcml_st_def_tma_vex_vvvv_reg *vex_vvvv_args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_vex_vvvv_reg);
     if (vex_vvvv_args) {
         vex_vvvv_args->reg_type = encoded_addr_mode & 0x0000000F;
         vex_vvvv_args->encoded_register_size =
@@ -170,8 +157,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vex_vvvv(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vsib(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_rm *vsib_args = (fcml_sf_def_tma_rm*)
-            fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_rm));
+    fcml_st_def_tma_rm *vsib_args = FCML_ENV_ALLOC_ST(fcml_st_def_tma_rm);
     if (vsib_args) {
         vsib_args->vector_index_register = encoded_addr_mode >> 8;
         vsib_args->encoded_memory_operand_size =
@@ -186,13 +172,22 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_vsib(
 
 fcml_ptr fcml_fnp_def_addr_mode_args_decoder_pseudo_op(
         fcml_operand_desc encoded_addr_mode) {
-    fcml_sf_def_tma_pseudo_op *pseudo_op_args =
-            (fcml_sf_def_tma_pseudo_op*)
-            fcml_fn_env_memory_alloc(sizeof(fcml_sf_def_tma_pseudo_op));
+    fcml_st_def_tma_pseudo_op *pseudo_op_args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_pseudo_op);
     if (pseudo_op_args) {
         pseudo_op_args->mask = (fcml_uint8_t)(encoded_addr_mode & 0x000000FF);
     }
     return pseudo_op_args;
+}
+
+fcml_ptr fcml_fnp_def_addr_mode_args_decoder_virtual_op(
+        fcml_operand_desc encoded_addr_mode) {
+    fcml_st_def_tma_virtual_op *virtual_op_args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_virtual_op);
+   if (virtual_op_args) {
+       virtual_op_args->decorators = FCML_DECORATORS(encoded_addr_mode);
+   }
+   return virtual_op_args;
 }
 
 #define FCML_DEF_DECODERS_COUNT		(sizeof(fcml_def_addr_mode_args_decoders) \
@@ -217,7 +212,8 @@ fcml_fnp_def_addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
     fcml_fnp_def_addr_mode_args_decoder_vex_vvvv,
     fcml_fnp_def_addr_mode_args_decoder_is,
     fcml_fnp_def_addr_mode_args_decoder_vsib,
-    fcml_fnp_def_addr_mode_args_decoder_pseudo_op
+    fcml_fnp_def_addr_mode_args_decoder_pseudo_op,
+    fcml_fnp_def_addr_mode_args_decoder_virtual_op
 };
 
 fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args(

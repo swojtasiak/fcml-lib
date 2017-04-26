@@ -422,7 +422,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm *) args;
+    fcml_st_def_tma_imm *imm_args = (fcml_st_def_tma_imm *) args;
     fcml_st_operand *operand = &(operand_wrapper->operand);
     fcml_st_integer *immediate = &(operand->immediate);
     fcml_st_memory_stream *stream = context->stream;
@@ -471,7 +471,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm(
 
 fcml_int fcml_ifn_dasm_operand_size_calculator_imm(
         fcml_ist_dasm_decoding_context *context, fcml_ptr args) {
-    fcml_sf_def_tma_imm *imm_args = (fcml_sf_def_tma_imm *) args;
+    fcml_st_def_tma_imm *imm_args = (fcml_st_def_tma_imm *) args;
     fcml_int size = fcml_ifn_dasm_utils_decode_encoded_size_value(context, 
             imm_args->encoded_size) / 8;
     /* 8 bytes IMM size is only supported for instructions with 
@@ -494,8 +494,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_reg(
         fcml_ptr args) {
 
     fcml_st_operand *operand = &(operand_wrapper->operand);
-    fcml_sf_def_tma_explicit_reg *reg_args = 
-        (fcml_sf_def_tma_explicit_reg*)args;
+    fcml_st_def_tma_explicit_reg *reg_args = 
+        (fcml_st_def_tma_explicit_reg*)args;
 
     operand->type = FCML_OT_REGISTER;
     operand->reg.reg = reg_args->reg_num;
@@ -524,8 +524,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_gps_reg_addressing(
     operand->type = FCML_OT_ADDRESS;
     address->address_form = FCML_AF_COMBINED;
 
-    fcml_sf_def_tma_explicit_gps_reg_addressing *reg_addr_args = 
-        (fcml_sf_def_tma_explicit_gps_reg_addressing*)args;
+    fcml_st_def_tma_explicit_gps_reg_addressing *reg_addr_args = 
+        (fcml_st_def_tma_explicit_gps_reg_addressing*)args;
 
     /* Size operator.*/
     address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value(
@@ -552,7 +552,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_opcode_reg(
         fcml_operand_decorators decorators,
         fcml_ptr args) {
 
-    fcml_sf_def_tma_opcode_reg *reg_args = (fcml_sf_def_tma_opcode_reg*) args;
+    fcml_st_def_tma_opcode_reg *reg_args = (fcml_st_def_tma_opcode_reg*) args;
 
     fcml_uint8_t reg_num = context->primary_opcode_byte & 0x07;
 
@@ -753,7 +753,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_explicit_ib(
         fcml_operand_decorators decorators,
         fcml_ptr args) {
 
-    fcml_sf_def_tma_explicit_ib *imm_args = (fcml_sf_def_tma_explicit_ib*)args;
+    fcml_st_def_tma_explicit_ib *imm_args = (fcml_st_def_tma_explicit_ib*)args;
 
     fcml_st_operand *operand = &(operand_wrapper->operand);
     fcml_st_integer *immediate = &(operand->immediate);
@@ -778,8 +778,8 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_segment_relative_offset(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_sf_def_tma_segment_relative_offset *seg_args = 
-        (fcml_sf_def_tma_segment_relative_offset*)args;
+    fcml_st_def_tma_segment_relative_offset *seg_args = 
+        (fcml_st_def_tma_segment_relative_offset*)args;
 
     fcml_st_operand *operand = &(operand_wrapper->operand);
     fcml_st_address *address = &(operand->address);
@@ -843,7 +843,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
     fcml_st_modrm *decoded_modrm = &(context->decoded_modrm);
     fcml_st_operand *operand = &(operand_wrapper->operand);
 
-    fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm*) args;
+    fcml_st_def_tma_rm *rm_args = (fcml_st_def_tma_rm*) args;
 
     if ((rm_args->flags & FCML_RMF_R) && decoded_modrm->reg.is_not_null) {
 
@@ -938,7 +938,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
 /* Far pointer indirect */
 /************************/
 
-fcml_sf_def_tma_rm fcml_isst_dasm_far_pointer_indirect_args = {
+fcml_st_def_tma_rm fcml_isst_dasm_far_pointer_indirect_args = {
     FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_FPI, FCML_RMF_M, 0, 
     FCML_FALSE };
 
@@ -947,7 +947,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_far_pointer_indirect(
         fcml_ist_dasm_operand_wrapper *operand_wrapper,
         fcml_operand_decorators decorators,
         fcml_ptr args) {
-    fcml_sf_def_tma_rm rm_args = fcml_isst_dasm_far_pointer_indirect_args;
+    fcml_st_def_tma_rm rm_args = fcml_isst_dasm_far_pointer_indirect_args;
     return fcml_ifn_dasm_operand_decoder_rm(context, operand_wrapper,
             decorators, &rm_args);
 }
@@ -963,7 +963,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_r(
         fcml_ptr args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    fcml_sf_def_tma_r *r_args = (fcml_sf_def_tma_r*) args;
+    fcml_st_def_tma_r *r_args = (fcml_st_def_tma_r*) args;
 
     operand_wrapper->operand.type = FCML_OT_REGISTER;
     fcml_st_register *reg = &(operand_wrapper->operand.reg);
@@ -990,7 +990,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_vex_vvvv(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_sf_def_tma_vex_vvvv_reg *v_args = (fcml_sf_def_tma_vex_vvvv_reg*)args;
+    fcml_st_def_tma_vex_vvvv_reg *v_args = (fcml_st_def_tma_vex_vvvv_reg*)args;
 
     operand_wrapper->operand.type = FCML_OT_REGISTER;
     fcml_st_register *reg = &(operand_wrapper->operand.reg);
@@ -1012,7 +1012,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_isX(
     /* IS4/IS5 byte is located just after ModR/M field, so it doesn't have 
      * to be read in any post processors.
      */
-    fcml_sf_def_tma_is *is_args = (fcml_sf_def_tma_is *) args;
+    fcml_st_def_tma_is *is_args = (fcml_st_def_tma_is *) args;
 
     /* Read isX byte from stream, or get cached value from context.*/
     fcml_uint8_t isX;
@@ -1698,7 +1698,7 @@ void fcml_ifn_dasm_dts_prepare_modrm_decoding_details(
     if (decoded_addr_mode) {
         if (FCMP_DEF_IS_ADDR_MODE(decoded_addr_mode->addr_mode, 
                     FCML_OP_VSIB_BASE)) {
-            fcml_sf_def_tma_rm *rm_args = (fcml_sf_def_tma_rm *)
+            fcml_st_def_tma_rm *rm_args = (fcml_st_def_tma_rm *)
                 decoded_addr_mode->addr_mode_args;
             modrm_details->is_vsib = FCML_TRUE;
             modrm_details->vsib_index_size =
@@ -1706,8 +1706,8 @@ void fcml_ifn_dasm_dts_prepare_modrm_decoding_details(
         }
         if (FCMP_DEF_IS_ADDR_MODE(decoded_addr_mode->addr_mode, 
                     FCML_OP_RM_BASE)) {
-            fcml_sf_def_tma_rm *rm_args = 
-                (fcml_sf_def_tma_rm*)decoded_addr_mode->addr_mode_args;
+            fcml_st_def_tma_rm *rm_args = 
+                (fcml_st_def_tma_rm*)decoded_addr_mode->addr_mode_args;
             modrm_details->is_reg_restriction = (rm_args->flags == FCML_RMF_R);
             modrm_details->is_mem_restriction = (rm_args->flags == FCML_RMF_M);
         }
