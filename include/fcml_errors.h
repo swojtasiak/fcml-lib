@@ -81,11 +81,14 @@ enum fcml_en_ceh_error_globals {
 	/** Labels are not supported. */
 	FCML_CEH_GEC_UNSUPPORTED_LABEL_DECLARATION = 20,
 	/** Required operand decorator is missing. */
-	FCML_CEH_GET_MISSING_DECORATOR = 21,
+	FCML_CEH_GEC_MISSING_DECORATOR = 21,
 	/** Given operand decorator is not supported by operand. */
-	FCML_CEH_GET_NOT_SUPPORTED_DECORATOR = 22,
+	FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR = 22,
 	/** Gap between operands found. */
-	FCML_CEH_GET_INVALID_INSTRUCTION_MODEL = 23
+	FCML_CEH_GEC_INVALID_INSTRUCTION_MODEL = 23,
+	/* Decorator is invalid. For example wrong register type is used in
+	 * opmask decorator. */
+	FCML_CEH_GEC_INVALID_OPERAND_DECORATOR = 24
 };
 
 /** @} */

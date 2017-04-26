@@ -317,8 +317,6 @@ void LIB_CALL fcml_fn_assembler_result_prepare(
     }
 }
 
-
-
 fcml_ceh_error fcml_ifn_assemble_core(fcml_st_assembler_context *asm_context,
         const fcml_st_instruction *instruction,
         fcml_st_assembler_result *result) {
@@ -331,7 +329,7 @@ fcml_ceh_error fcml_ifn_assemble_core(fcml_st_assembler_context *asm_context,
     }
 
     if (!fcml_ifn_verify_instruction(instruction)) {
-        return FCML_CEH_GET_INVALID_INSTRUCTION_MODEL;
+        return FCML_CEH_GEC_INVALID_INSTRUCTION_MODEL;
     }
 
     /* Validate and prepare entry point. */

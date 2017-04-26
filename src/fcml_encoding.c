@@ -1957,6 +1957,45 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
 /* ModR/M - r */
 /**************/
 
+fcml_ceh_error fcml_ifn_asm_accept_opmask_decorators(
+        fcml_operand_decorators supported_decorators,
+        fcml_st_operand_decorators *decorators) {
+
+    if (decorators->operand_mask_reg.type != FCML_REG_UNDEFINED &&
+            decorators->operand_mask_reg.type != FCML_REG_OPMASK) {
+        /* Wrong register type or size in decorator. */
+        return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
+    }
+
+    fcml_bool is_opmask_dec = decorators->operand_mask_reg.type ==
+                FCML_REG_OPMASK;
+
+    /* If opmask decorator is specified for addressing mode, it has to be
+     * defined in the operand. */
+    if (FCML_IS_DECOR_OPMASK_REG(supported_decorators) && !is_opmask_dec) {
+        return FCML_CEH_GEC_MISSING_DECORATOR;
+    }
+
+    if (is_opmask_dec && decorators->operand_mask_reg.reg == FCML_REG_K0) {
+        /* Register k0 cannot be used by opmask decorator. */
+        return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
+    }
+
+    if (is_opmask_dec && !FCML_IS_DECOR_OPMASK_REG(supported_decorators)) {
+        /* AVX-512 opmask decorator is defined, but this operator
+         * doesn't support it. */
+        return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+    }
+
+    if (!FCML_IS_DECOR_Z(supported_decorators) && decorators->z) {
+        /* Z decorator has been used but it's not supported by
+         * addressing mode. */
+        return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+    }
+
+    return FCML_CEH_GEC_NO_ERROR;
+}
+
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_r(
         fcml_ist_asm_encoding_context *context,
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
@@ -1971,7 +2010,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_r(
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
 
-    /* Some registers allow UNDEF size to be defined for them.*/
+    /* Some registers allow UNDEF size to be defined for them. */
     if ((operand_def->reg.type != FCML_REG_DR
             && operand_def->reg.type != FCML_REG_CR)
             && operand_def->reg.size != FCML_DS_UNDEF) {
@@ -1982,7 +2021,8 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_r(
         }
     }
 
-    return FCML_CEH_GEC_NO_ERROR;
+    return fcml_ifn_asm_accept_opmask_decorators(args->decorators,
+            &(operand_def->decorators));
 }
 
 fcml_ceh_error fcml_ifn_asm_operand_encoder_r(
@@ -2012,6 +2052,15 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_r(
             if (error) {
                 error = FCML_CEH_GEC_INVALID_OPPERAND;
             }
+        }
+
+        /* Opmask decorator. */
+        if(!error) {
+            if (operand_def->decorators.operand_mask_reg.type
+                    == FCML_REG_OPMASK) {
+                context->epf.aaa = operand_def->decorators.operand_mask_reg.reg;
+            }
+            context->epf.z = operand_def->decorators.z;
         }
 
     }
@@ -2304,18 +2353,18 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
 
     /* Check requireness of SAE. */
     if (FCML_IS_DECOR_SAE_REQ(decorators) && !operand_def->decorators.sea) {
-        error = FCML_CEH_GET_MISSING_DECORATOR;
+        error = FCML_CEH_GEC_MISSING_DECORATOR;
     }
 
     if (operand_def->decorators.sea && !FCML_IS_DECOR_SAE(decorators)) {
         /* SAE is not supported by this operand. */
-        error = FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        error = FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
     }
 
     if (operand_def->decorators.er.is_not_null &&
             !FCML_IS_DECOR_ER(decorators)) {
         /* ER is not supported by this operand. */
-        error = FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        error = FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
     }
 
     return error;
@@ -3340,7 +3389,7 @@ fcml_ifn_asm_instruction_part_processor_factory_operand_encoder_wrapper(
 /* XOP/VEX opcode encoder factory. */
 /***********************************/
 
-fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_E_VEX_opcode_encoder(
+fcml_ceh_error fcml_ifn_asm_instruction_part_processor_AVX_opcode_encoder(
         fcml_ien_asm_part_processor_phase phase,
         fcml_ist_asm_encoding_context *context,
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
@@ -3386,7 +3435,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_XOP_E_VEX_opcode_encoder(
 }
 
 fcml_ist_asm_instruction_part_processor_descriptor
-fcml_ifn_asm_instruction_part_processor_factory_XOP_E_VEX_opcode_encoder(
+fcml_ifn_asm_instruction_part_processor_factory_AVX_opcode_encoder(
         fcml_uint32_t flags, fcml_st_def_instruction_desc *instruction,
         fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
         fcml_ceh_error *error) {
@@ -3397,7 +3446,7 @@ fcml_ifn_asm_instruction_part_processor_factory_XOP_E_VEX_opcode_encoder(
         descriptor.processor_type = FCML_IEN_ASM_IPPT_ENCODER;
         descriptor.processor_args = NULL;
         descriptor.processor_encoder =
-               fcml_ifn_asm_instruction_part_processor_XOP_E_VEX_opcode_encoder;
+               fcml_ifn_asm_instruction_part_processor_AVX_opcode_encoder;
         descriptor.processor_acceptor = NULL;
     }
 
@@ -4662,6 +4711,10 @@ fcml_ifn_asm_instruction_part_processor_factory_prefixes_acceptor(
 /* Operand decorators acceptors. */
 /*********************************/
 
+/* In general there is a rule that decorators are handled by operand
+ * acceptors/encoders of operands that expect them. But this validation
+ * is still needed to assure that decorators aren't used in operands
+ * which don't expect them. */
 fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
         fcml_ist_asm_encoding_context *context,
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
@@ -4676,39 +4729,29 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
         fcml_st_operand_decorators *opcode_dec = &(operand->decorators);
         fcml_bool last_operand = i + 1 == context->operands_count;
 
-        /* If opmask decorator is specified for addressing mode, it's a
-         * mandatory one.
-         */
-        if (FCML_IS_DECOR_OPMASK_REG(decorators) &&
-                operand->decorators.operand_mask_reg.type ==
-                        FCML_REG_UNDEFINED) {
-            return FCML_CEH_GET_MISSING_DECORATOR;
+        if (opcode_dec->bcast.is_not_null && !FCML_IS_DECOR_BCAST(decorators)) {
+            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
         if (opcode_dec->operand_mask_reg.type != FCML_REG_UNDEFINED &&
-                !FCML_IS_DECOR_OPMASK_REG(decorators)) {
-            /* AVX-512 opmask decorator is defined, but this operator
-             * doesn't support it.
-             */
-            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
-        }
-
-        if (opcode_dec->bcast.is_not_null && !FCML_IS_DECOR_BCAST(decorators)) {
-            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+                !FCML_IS_DECOR_BCAST(decorators)) {
+            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
         if (opcode_dec->z && !FCML_IS_DECOR_Z(decorators)) {
-            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
         /* ER and SAE has to be set in the last available operand. */
 
-        if (opcode_dec->sea && last_operand) {
-            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        if (opcode_dec->sea &&
+                (!FCML_IS_DECOR_SAE(decorators) || !last_operand)) {
+            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
-        if (opcode_dec->er.is_not_null && last_operand) {
-            return FCML_CEH_GET_NOT_SUPPORTED_DECORATOR;
+        if (opcode_dec->er.is_not_null &&
+                (!FCML_IS_DECOR_ER(decorators) || !last_operand)) {
+            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
     }
@@ -4755,7 +4798,7 @@ typedef struct fcml_st_asm_instruction_part_factory_sequence {
 /* List of instruction part encoders for instruction opcode. */
 fcml_st_asm_instruction_part_factory_details
 fcml_iarr_asm_instruction_part_processor_factories_opcode_for_IA[] = {
-    { fcml_ifn_asm_instruction_part_processor_factory_XOP_E_VEX_opcode_encoder,
+    { fcml_ifn_asm_instruction_part_processor_factory_AVX_opcode_encoder,
             0 },
     { fcml_ifn_asm_instruction_part_processor_factory_reg_opcode_encoder,
             0 },

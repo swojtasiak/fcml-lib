@@ -1068,6 +1068,7 @@ typedef struct fcml_st_def_tma_rm {
 typedef struct fcml_st_def_tma_r {
     fcml_en_register reg_type;
     fcml_uint8_t encoded_register_operand_size;
+    fcml_operand_decorators decorators;
 } fcml_st_def_tma_r;
 
 typedef struct fcml_st_def_tma_vex_vvvv_reg {

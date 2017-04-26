@@ -139,6 +139,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_r(
         r_args->reg_type = (fcml_en_register)(encoded_addr_mode & 0x0000000F);
         r_args->encoded_register_operand_size =
                 (encoded_addr_mode & 0x00000FF0) >> 4;
+        r_args->decorators = FCML_DECORATORS(encoded_addr_mode);
     }
     return r_args;
 }
