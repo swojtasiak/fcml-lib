@@ -687,7 +687,7 @@ fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size(
     const fcml_st_effective_address *effective_address =
             &(address->effective_address);
 
-    fcml_flags easa;
+    fcml_flags easa = 0;
 
     fcml_st_register reg;
     if (effective_address->base.type) {
@@ -704,6 +704,7 @@ fcml_ceh_error fcml_fn_modrm_calculate_effective_address_size(
             break;
         case FCML_DS_128:
         case FCML_DS_256:
+        case FCML_DS_512:
             easa = FCML_EN_ASF_32 | FCML_EN_ASF_64;
             break;
         default:

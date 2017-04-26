@@ -639,20 +639,23 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
  * This function sets new set of flags or reduces existing set.
  */
 fcml_bool fcml_ifn_asm_set_size_flag(
-        fcml_st_nullable_size_flags *nullable_flags, fcml_flags flags) {
+        fcml_st_nullable_size_flags *nullable_flags, fcml_flags allowed_flags) {
+    /* If there are flags already set, just reduce them. */
     if (nullable_flags->is_set) {
-        if ((nullable_flags->flags & flags) == 0) {
-            /* We need flags that weren't allowed by previous
-             * operands or IPPs.
+        /* Common set of existing flags and the new ones. */
+        fcml_flags reduced_flags = nullable_flags->flags & allowed_flags;
+        if (!reduced_flags) {
+            /* At least one allowed ASA size has to be left after
+             * masking existing flags.
              */
             return FCML_FALSE;
         }
         /* Set new set of flags, take into account that these might be a
          * subset of existing ones.
          */
-        nullable_flags->flags = flags;
+        nullable_flags->flags = reduced_flags;
     } else {
-        nullable_flags->flags = flags;
+        nullable_flags->flags = allowed_flags;
         nullable_flags->is_set = FCML_TRUE;
     }
     return FCML_TRUE;
@@ -1836,27 +1839,34 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
                     fcml_st_modrm mod_rm = { 0 };
                     mod_rm.address = operand_def->address;
 
-                    fcml_flags esa;
-                    fcml_fn_modrm_calculate_effective_address_size(&mod_rm,
-                            &esa);
+                    fcml_flags easa_flags = 0;
+                    error = fcml_fn_modrm_calculate_effective_address_size(
+                            &mod_rm, &easa_flags);
 
-                    if ((esa & FCML_EN_ASF_16) && op_mode != FCML_OM_64_BIT) {
-                        context->optimizer_processing_details
-                            .allowed_easa.flags |= FCML_EN_ASF_16;
-                    }
+                    if (!error) {
 
-                    if (esa & FCML_EN_ASF_32) {
-                        context->optimizer_processing_details.allowed_easa
-                            .flags |= FCML_EN_ASF_32;
-                    }
+                        /* Potential 16-bit ASA is not available in
+                           64-bit mode. */
+                        if (op_mode == FCML_OM_64_BIT) {
+                            easa_flags &= ~FCML_EN_ASF_16;
+                        }
 
-                    if ((esa & FCML_EN_ASF_64) && op_mode != FCML_OM_16_BIT) {
-                        context->optimizer_processing_details.allowed_easa
-                            .flags |= FCML_EN_ASF_64;
+                        /* Potential 64-bit ASA is not available in
+                           16-bit mode. */
+                        if (op_mode == FCML_OM_16_BIT) {
+                            easa_flags &= ~FCML_EN_ASF_64;
+                        }
+
+                        if(!fcml_ifn_asm_set_size_flag(
+                          &(context->optimizer_processing_details.allowed_easa),
+                          easa_flags)) {
+                            FCML_TRACE_MSG("Accept ModR/M: Can not accept " \
+                                    "ASA size.");
+                            error = FCML_CEH_GEC_INVALID_OPPERAND;
+                        }
                     }
                 }
             }
-
         }
     } else {
         error = FCML_CEH_GEC_INVALID_OPPERAND;
@@ -2326,7 +2336,7 @@ fcml_nuint8_t fcml_ifn_asm_calculate_instruction_parts_length(
 }
 
 /* Responsible for assembling given addressing mode using attributes
- * provided by context.
+ * provided by the context.
  */
 fcml_ceh_error fcml_ifn_asm_process_addr_mode(
         fcml_ist_asm_encoding_context *context,
@@ -3996,8 +4006,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder(
 
         p2 = FCML_ENCODE_EVEX_P2_b(p2, epf->b);
         /* EVEX.V' is used by extended VSIB encoding and direct register
-         * encoding.
-         */
+           encoding. */
         p2 = FCML_ENCODE_EVEX_P2_V_prim(p2, encoded_mod_rm->ext_V_prim |
                 epf->V_prim);
         p2 = FCML_ENCODE_EVEX_P2_aaa(p2, epf->aaa);
