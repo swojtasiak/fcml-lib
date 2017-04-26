@@ -56,4 +56,6 @@ void fcml_fn_utils_convert_gec_to_error_info( fcml_bool enabled, fcml_st_ceh_err
 fcml_ceh_error fcml_fn_prepare_entry_point( fcml_st_entry_point *entry_point );
 fcml_bool fcml_fn_utils_is_displacement_negative( const fcml_st_integer *displacement );
 
+fcml_bool fcml_fn_util_validate_vector_length(fcml_usize vector_length);
+
 #endif /* FCML_UTILS_H_ */

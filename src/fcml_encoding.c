@@ -521,8 +521,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
         break;
     case FCML_EOS_L:
         vector_length = operand_size;
-        if (operand_size != FCML_DS_128 &&
-                operand_size != FCML_DS_256 && operand_size != FCML_DS_512 ) {
+        if (!fcml_fn_util_validate_vector_length(vector_length)) {
             error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
         }
         break;
@@ -1728,6 +1727,40 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_segment_relative_offset(
 /* ModR/M - rm */
 /***************/
 
+/* TODO: Move to fcml_operand_decorators. */
+fcml_ceh_error fcml_ifn_asm_accept_bcast_decorator(fcml_bool is_bcast_supported,
+       fcml_usize bcast_element_size, fcml_nuint8_t bcast,
+       fcml_st_asm_optimizer_processing_details *optimizer_processing_details) {
+
+    if (bcast.is_not_null) {
+
+        if (!is_bcast_supported) {
+            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+        }
+
+        fcml_usize es = bcast_element_size;
+
+        /* Check if broadcast size is correct. */
+        if (es != 2 && es != 4 && es != 8 && es != 16 &&
+                es != 32 && es != 64) {
+            return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
+        }
+
+        /* Force vector length basing on broadcast element size and number
+         * of such elements. */
+        fcml_usize vector_length = es * bcast_element_size;
+        if (!fcml_ifn_asm_set_vector_length(optimizer_processing_details,
+                vector_length)) {
+            FCML_TRACE("Vector length differs expected %d got %d.",
+                    vector_length, optimizer_processing_details->vector_length);
+            return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+        }
+
+    }
+
+    return FCML_CEH_GEC_NO_ERROR;
+}
+
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
         fcml_ist_asm_encoding_context *context,
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
@@ -1753,8 +1786,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
             } else if ((context->instruction->prefixes & FCML_PREFIX_LOCK)
                     && addr_mode->access_mode == FCML_AM_WRITE) {
                 /* Lock prefixes are only allowed for destination
-                 * memory operands.
-                 */
+                 * memory operands. */
                 error = FCML_CEH_GEC_INVALID_OPPERAND;
             } else {
                 if (!fcml_ifn_asm_accept_data_size(context, addr_mode_desc,
@@ -1796,7 +1828,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
                     }
                 }
 
-                /* Accept segment registers if any of them have been set.*/
+                /* Accept segment registers if any of them have been set. */
                 if (!error) {
 
                     fcml_st_effective_address *effective_address =
@@ -1888,6 +1920,15 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
                         }
                     }
                 }
+
+                if (!error) {
+                    /* AVX-512 Broadcast decorator. */
+                    error = fcml_ifn_asm_accept_bcast_decorator(
+                            args->is_bcast,
+                            args->bcast_element_size,
+                            operand_def->decorators.bcast,
+                            &(context->optimizer_processing_details));
+                }
             }
         }
     } else {
@@ -1947,6 +1988,11 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
                     args->encoded_memory_operand_size, mem_data_size, NULL,
                     FCML_IEN_CT_EQUAL);
 
+            /* Encode broadcast. */
+            if (operand_def->decorators.bcast.is_not_null) {
+                context->epf.b = FCML_TRUE;
+            }
+
         }
     }
 
@@ -1957,6 +2003,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
 /* ModR/M - r */
 /**************/
 
+/* TODO: Move it to fcml_operand_decorators.h. */
 fcml_ceh_error fcml_ifn_asm_accept_opmask_decorators(
         fcml_operand_decorators supported_decorators,
         fcml_st_operand_decorators *decorators) {

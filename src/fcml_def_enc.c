@@ -120,6 +120,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm(
         fcml_operand_desc encoded_addr_mode) {
     fcml_st_def_tma_rm *rm_args = FCML_ENV_ALLOC_ST(fcml_st_def_tma_rm);
     if (rm_args) {
+        fcml_operand_decorators decorators = FCML_DECORATORS(encoded_addr_mode);
         rm_args->reg_type = (encoded_addr_mode & 0x000000F0) >> 4;
         rm_args->encoded_register_operand_size =
                 (encoded_addr_mode & 0x0000FF00) >> 8;
@@ -128,6 +129,11 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm(
         rm_args->flags = encoded_addr_mode & 0x0000000F;
         rm_args->is_vsib = FCML_FALSE;
         rm_args->vector_index_register = 0;
+        rm_args->is_bcast = FCML_IS_DECOR_BCAST(decorators);
+        if (rm_args->is_bcast) {
+            rm_args->bcast_element_size =
+                    FCML_GET_DECOR_BCAST_ELEMENT_SIZE(decorators);
+        }
     }
     return rm_args;
 }
@@ -139,6 +145,7 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_r(
         r_args->reg_type = (fcml_en_register)(encoded_addr_mode & 0x0000000F);
         r_args->encoded_register_operand_size =
                 (encoded_addr_mode & 0x00000FF0) >> 4;
+        /* TODO: Decode decorators here. Hide the encoding format here! */
         r_args->decorators = FCML_DECORATORS(encoded_addr_mode);
     }
     return r_args;

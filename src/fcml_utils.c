@@ -734,3 +734,13 @@ fcml_bool fcml_fn_utils_is_displacement_negative( const fcml_st_integer *displac
     }
 
 }
+
+fcml_bool fcml_fn_util_validate_vector_length(fcml_usize vector_length) {
+    switch (vector_length) {
+    case FCML_DS_128:
+    case FCML_DS_256:
+    case FCML_DS_512:
+        return FCML_TRUE;
+    }
+    return FCML_FALSE;
+}
