@@ -58,4 +58,7 @@ fcml_bool fcml_fn_utils_is_displacement_negative( const fcml_st_integer *displac
 
 fcml_bool fcml_fn_util_validate_vector_length(fcml_usize vector_length);
 
+fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
+        fcml_st_integer *quotient, fcml_int32_t divisor);
+
 #endif /* FCML_UTILS_H_ */

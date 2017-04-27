@@ -65,9 +65,13 @@ typedef struct fcml_st_modrm_encoder_context {
     fcml_usize effective_address_size;
     /* Effective address size ModR/M was encoded for. For example
      * "effective_address_size" might be set to 32 bits, but [BX+SI]
-     * encoding forces 16 bit encoding.
+     * encoding forces 16 bit encoding. Set be encoder.
      */
     fcml_usize chosen_effective_address_size;
+    /* Used to calculate N in compressed disp8. */
+    fcml_usize effective_operand_size;
+    /* SIMD vector size. */
+    fcml_usize vector_length;
     /* This flag is set by encoder if there is alternative SIB
      * encoding available, but user chooses ModR/M only encoding.
      */
@@ -78,6 +82,8 @@ typedef struct fcml_st_modrm_encoder_context {
     fcml_bool choose_sib_encoding;
     /* If there is alternative, use RIP encoding instead of SIB alternative. */
     fcml_bool choose_rip_encoding;
+    /* SIMD instruction type. */
+    fcml_uint32_t tuple_type;
     /* True if EVEX is available. */
     fcml_bool is_evex;
     /* EVEX.b field. */

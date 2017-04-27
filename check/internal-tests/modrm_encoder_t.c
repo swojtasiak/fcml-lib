@@ -250,7 +250,7 @@ void fcml_tf_modrm_encoder_test_12(void) {
 	modrm.address.effective_address.displacement.int16 = (fcml_int16_t)0xF2F1;
 	modrm.address.address_form = FCML_AF_OFFSET;
 
-	fcml_st_modrm_encoder_context context;
+	fcml_st_modrm_encoder_context context = {0};
 	context.op_mode = FCML_OM_16_BIT;
 	context.effective_address_size = FCML_DS_16;
 
@@ -370,7 +370,7 @@ void fcml_tf_modrm_encoder_test_13(void) {
 	modrm.address.effective_address.displacement.is_signed = FCML_FALSE;
 	modrm.address.address_form = FCML_AF_OFFSET;
 
-	fcml_st_modrm_encoder_context context;
+	fcml_st_modrm_encoder_context context = {0};
 	context.op_mode = FCML_OM_16_BIT;
 	context.effective_address_size = FCML_DS_16;
 
@@ -400,7 +400,7 @@ void fcml_tf_modrm_encoder_test_14(void) {
     modrm.address.offset.off16 = (fcml_int16_t)0xF2F1;
     modrm.address.address_form = FCML_AF_OFFSET;
 
-    fcml_st_modrm_encoder_context context;
+    fcml_st_modrm_encoder_context context = {0};
     context.op_mode = FCML_OM_16_BIT;
     context.effective_address_size = FCML_DS_16;
 
@@ -1011,7 +1011,7 @@ void fcml_tf_modrm_encoder_3264_bit_encoding_5(void) {
 	fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
 	fcml_st_encoded_modrm encoded_modrm;
 	fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
-	fcml_st_modrm_encoder_context context;
+	fcml_st_modrm_encoder_context context = {0};
 	context.effective_address_size = FCML_DS_32;
 	context.op_mode = FCML_OM_32_BIT;
 	context.choose_sib_encoding = FCML_TRUE;
@@ -2094,6 +2094,181 @@ void fcml_tf_modrm_encoder_EVEX_ext_reg_3264_bit_encoding(void) {
     STF_ASSERT_EQUAL(encoded_modrm.modrm, 0xFD);
 }
 
+/* Encode compressed disp8 - uncompressed disp8n is used because ASA = 16.
+ * In fact such an addressing mode is not allowed! */
+void fcml_tf_modrm_encoder_16bit_compressed_disp8_not_available_test(void) {
+
+    fcml_st_modrm modrm;
+    fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
+
+    modrm.address.effective_address.base.reg = FCML_REG_BP;
+    modrm.address.effective_address.base.type = FCML_REG_GPR;
+    modrm.address.effective_address.base.size = FCML_DS_16;
+    modrm.address.effective_address.displacement.size = FCML_DS_8;
+    modrm.address.effective_address.displacement.int8 = (fcml_int8_t)0xF0;
+    modrm.address.effective_address.displacement.is_signed = FCML_FALSE;
+    modrm.address.address_form = FCML_AF_COMBINED;
+
+    fcml_st_modrm_encoder_context context = {0};
+    context.op_mode = FCML_OM_16_BIT;
+    context.effective_address_size = FCML_DS_16;
+    context.is_evex = FCML_TRUE;
+    context.effective_operand_size = FCML_DS_16;
+    context.vector_length = FCML_DS_128;
+
+    fcml_st_encoded_modrm encoded_modrm;
+    fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
+
+    fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm,
+            &encoded_modrm );
+
+    STF_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[0], 0xF0 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement_size, 1 );
+}
+
+/* Encode disp8 - 16-bit addressing mode but ASA overridden to 32-bites, so
+ * compression can be used. */
+void fcml_tf_modrm_encoder_16bit_compressed_disp8_available_test(void) {
+
+    fcml_st_modrm modrm;
+    fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
+
+    modrm.address.effective_address.base.reg = FCML_REG_EBP;
+    modrm.address.effective_address.base.type = FCML_REG_GPR;
+    modrm.address.effective_address.base.size = FCML_DS_32;
+    modrm.address.effective_address.displacement.size = FCML_DS_8;
+    modrm.address.effective_address.displacement.int8 = (fcml_int8_t)0xF0;
+    modrm.address.effective_address.displacement.is_signed = FCML_FALSE;
+    modrm.address.address_form = FCML_AF_COMBINED;
+
+    fcml_st_modrm_encoder_context context = {0};
+    context.op_mode = FCML_OM_16_BIT;
+    context.effective_address_size = FCML_DS_32;
+    context.is_evex = FCML_TRUE;
+    context.effective_operand_size = FCML_DS_32;
+    context.vector_length = FCML_DS_128;
+    context.tuple_type = FCML_TT_FV;
+
+    fcml_st_encoded_modrm encoded_modrm;
+    fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
+
+    fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm,
+            &encoded_modrm );
+
+    STF_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[0], 0x0F ); /* Compressed. */
+    STF_ASSERT_EQUAL( encoded_modrm.displacement_size, 1 );
+}
+
+/* Encode disp8 - 32-bit addressing. Value cannot be encoded as compressed
+ * displacement because it's too big. */
+void fcml_tf_modrm_encoder_32bit_compressed_disp8_not_available_test(void) {
+
+    fcml_st_modrm modrm;
+    fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
+
+    modrm.address.effective_address.base.reg = FCML_REG_EBP;
+    modrm.address.effective_address.base.type = FCML_REG_GPR;
+    modrm.address.effective_address.base.size = FCML_DS_32;
+    modrm.address.effective_address.displacement.size = FCML_DS_32;
+    modrm.address.effective_address.displacement.int32 = 128 * 16;
+    modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
+    modrm.address.address_form = FCML_AF_COMBINED;
+
+    fcml_st_modrm_encoder_context context = {0};
+    context.op_mode = FCML_OM_32_BIT;
+    context.effective_address_size = FCML_DS_32;
+    context.is_evex = FCML_TRUE;
+    context.effective_operand_size = FCML_DS_32;
+    context.vector_length = FCML_DS_128;
+    context.tuple_type = FCML_TT_FV;
+
+    fcml_st_encoded_modrm encoded_modrm;
+    fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
+
+    fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm,
+            &encoded_modrm );
+
+    STF_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[0], 0x00 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[1], 0x08 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[2], 0x00 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[3], 0x00 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement_size, 4 );
+}
+
+/* Encode disp8 - 32-bit addressing. 32-bit displacement compressed to
+ * disp8, becaue after compression it fits 8-bits. */
+void fcml_tf_modrm_encoder_32bit_compressed_disp8_available_test(void) {
+
+    fcml_st_modrm modrm;
+    fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
+
+    modrm.address.effective_address.base.reg = FCML_REG_EBP;
+    modrm.address.effective_address.base.type = FCML_REG_GPR;
+    modrm.address.effective_address.base.size = FCML_DS_32;
+    modrm.address.effective_address.displacement.size = FCML_DS_32;
+    modrm.address.effective_address.displacement.int32 = 127 * 16;
+    modrm.address.effective_address.displacement.is_signed = FCML_FALSE;
+    modrm.address.address_form = FCML_AF_COMBINED;
+
+    fcml_st_modrm_encoder_context context = {0};
+    context.op_mode = FCML_OM_32_BIT;
+    context.effective_address_size = FCML_DS_32;
+    context.is_evex = FCML_TRUE;
+    context.effective_operand_size = FCML_DS_32;
+    context.vector_length = FCML_DS_128;
+    context.tuple_type = FCML_TT_FV;
+
+    fcml_st_encoded_modrm encoded_modrm;
+    fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
+
+    fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm,
+            &encoded_modrm );
+
+    STF_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[0], 0x7f ); /* Compressed. */
+    STF_ASSERT_EQUAL( encoded_modrm.displacement_size, 1 );
+}
+
+/* Encode disp8 - Disp8 cannot be used because there is a remainder
+ * after division by N. */
+void fcml_tf_modrm_encoder_32bit_compressed_disp8_not_available_rem_test(void) {
+
+    fcml_st_modrm modrm;
+    fcml_fn_env_memory_clear( &modrm, sizeof( modrm ) );
+
+    modrm.address.effective_address.base.reg = FCML_REG_EBP;
+    modrm.address.effective_address.base.type = FCML_REG_GPR;
+    modrm.address.effective_address.base.size = FCML_DS_32;
+    modrm.address.effective_address.displacement.size = FCML_DS_32;
+    modrm.address.effective_address.displacement.int32 = 5 * 16 + 1;
+    modrm.address.effective_address.displacement.is_signed = FCML_TRUE;
+    modrm.address.address_form = FCML_AF_COMBINED;
+
+    fcml_st_modrm_encoder_context context = {0};
+    context.op_mode = FCML_OM_32_BIT;
+    context.effective_address_size = FCML_DS_32;
+    context.is_evex = FCML_TRUE;
+    context.effective_operand_size = FCML_DS_32;
+    context.vector_length = FCML_DS_128;
+    context.tuple_type = FCML_TT_FV;
+
+    fcml_st_encoded_modrm encoded_modrm;
+    fcml_fn_env_memory_clear( &encoded_modrm, sizeof( encoded_modrm ) );
+
+    fcml_ceh_error error = fcml_fn_modrm_encode( &context, &modrm,
+            &encoded_modrm );
+
+    STF_ASSERT_EQUAL( error, FCML_CEH_GEC_NO_ERROR );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[0], 0x51 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[1], 0x00 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[2], 0x00 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement[3], 0x00 );
+    STF_ASSERT_EQUAL( encoded_modrm.displacement_size, 4 );
+}
+
 fcml_stf_test_case fctl_ti_modrm_encoder[] = {
 	{ "fcml_tf_modrm_encoder_test_1", fcml_tf_modrm_encoder_test_1 },
 	{ "fcml_tf_modrm_encoder_test_2", fcml_tf_modrm_encoder_test_2 },
@@ -2154,6 +2329,16 @@ fcml_stf_test_case fctl_ti_modrm_encoder[] = {
 	        fcml_tf_modrm_vsib_EVEX_encoder_3264_bit_encoding },
     { "fcml_tf_modrm_encoder_EVEX_ext_reg_3264_bit_encoding",
         fcml_tf_modrm_encoder_EVEX_ext_reg_3264_bit_encoding },
+    { "fcml_tf_modrm_encoder_16bit_compressed_disp8_not_available_test",
+        fcml_tf_modrm_encoder_16bit_compressed_disp8_not_available_test },
+    { "fcml_tf_modrm_encoder_16bit_compressed_disp8_available_test",
+            fcml_tf_modrm_encoder_16bit_compressed_disp8_available_test },
+    { "fcml_tf_modrm_encoder_32bit_compressed_disp8_not_available_test",
+            fcml_tf_modrm_encoder_32bit_compressed_disp8_not_available_test },
+    { "fcml_tf_modrm_encoder_32bit_compressed_disp8_available_test",
+            fcml_tf_modrm_encoder_32bit_compressed_disp8_available_test },
+    { "fcml_tf_modrm_encoder_32bit_compressed_disp8_not_available_rem_test",
+            fcml_tf_modrm_encoder_32bit_compressed_disp8_not_available_rem_test },
 	FCML_STF_NULL_TEST
 };
 

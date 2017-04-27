@@ -87,8 +87,7 @@ typedef struct fcml_st_modrm_decoder_context {
     /** Tuple type needed to calculate N factor for compressed disp8. */
     fcml_uint32_t tuple_type;
     /** True if EVEX prefix is available. Used to handle compressed
-     * disp8 encoding.
-     */
+     * disp8 encoding. */
     fcml_bool is_evex;
     /** True if EVEX.b is set. */
     fcml_bool b;

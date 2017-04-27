@@ -117,8 +117,10 @@ fcml_ceh_error fcml_fn_utils_convert_integer_to_integer( const fcml_st_integer *
             break;
         }
 
-        destination->size = destination_size;
-        destination->is_signed = expected.is_signed;
+        if (!error) {
+            destination->size = destination_size;
+            destination->is_signed = expected.is_signed;
+        }
 
     }
 
@@ -743,4 +745,50 @@ fcml_bool fcml_fn_util_validate_vector_length(fcml_usize vector_length) {
         return FCML_TRUE;
     }
     return FCML_FALSE;
+}
+
+fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
+        fcml_st_integer *quotient, fcml_int32_t divisor) {
+    fcml_int64_t remainder;
+    quotient->is_signed = dividend->is_signed;
+    quotient->size = dividend->size;
+    switch (dividend->size) {
+    case FCML_DS_8:
+        if (dividend->is_signed) {
+            quotient->int8 = dividend->int8 / divisor;
+            remainder = dividend->int8 % divisor;
+        } else {
+            quotient->int8 = ((fcml_uint8_t)dividend->int8) / divisor;
+            remainder = ((fcml_uint8_t)dividend->int8) % divisor;
+        }
+        break;
+    case FCML_DS_16:
+        if (dividend->is_signed) {
+            quotient->int16 = dividend->int16 / divisor;
+            remainder = dividend->int16 % divisor;
+        } else {
+            quotient->int16 = ((fcml_uint16_t)dividend->int16) / divisor;
+            remainder = ((fcml_uint16_t)dividend->int16) % divisor;
+        }
+        break;
+    case FCML_DS_32:
+        if (dividend->is_signed) {
+            quotient->int32 = dividend->int32 / divisor;
+            remainder = dividend->int32 % divisor;
+        } else {
+            quotient->int32 = ((fcml_uint32_t)dividend->int32) / divisor;
+            remainder = ((fcml_uint32_t)dividend->int32) % divisor;
+        }
+        break;
+    case FCML_DS_64:
+        if (dividend->is_signed) {
+            quotient->int64 = dividend->int64 / divisor;
+            remainder = dividend->int64 % divisor;
+        } else {
+            quotient->int64 = ((fcml_uint64_t)dividend->int64) / divisor;
+            remainder = ((fcml_uint64_t)dividend->int64) % divisor;
+        }
+        break;
+    }
+    return remainder;
 }

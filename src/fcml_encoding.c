@@ -455,6 +455,14 @@ fcml_usize fcml_ifn_asm_get_effective_address_size(
     return context->assembler_context->entry_point.address_size_attribute;
 }
 
+fcml_usize fcml_ifn_asm_get_effective_operand_size(
+        fcml_ist_asm_encoding_context *context) {
+    if (context->optimizer_processing_details.eosa) {
+        return context->optimizer_processing_details.eosa;
+    }
+    return context->assembler_context->entry_point.operand_size_attribute;
+}
+
 fcml_usize fcml_ifn_asm_calculate_operand_size(
         fcml_ist_asm_encoding_context *context, fcml_usize size_operator,
         fcml_uint8_t encoded_size_operator) {
@@ -4550,7 +4558,15 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_ModRM_encoder(
         ctx.chosen_effective_address_size = 0;
         ctx.effective_address_size = fcml_ifn_asm_get_effective_address_size(
                 context);
+        ctx.effective_operand_size = fcml_ifn_asm_get_effective_operand_size(
+                context);
+        ctx.vector_length = context->optimizer_processing_details.vector_length;
         ctx.is_sib_alternative = FCML_FALSE;
+
+        /* EVEX, compressed disp8. */
+        ctx.b = context->epf.b;
+        ctx.is_evex = FCML_DEF_PREFIX_EVEX_REQ(addr_mode_def->allowed_prefixes);
+        ctx.tuple_type = FCML_GET_SIMD_TUPLETYPE(addr_mode_def->details);
 
         if (FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT(addr_mode_def->opcode_flags)) {
             context->mod_rm.reg_opcode = FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(
