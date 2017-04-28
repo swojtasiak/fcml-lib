@@ -2110,6 +2110,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
                         prefixes->L | prefixes->L_prim << 1);;
         modrm_context.tuple_type = tuple_type;
         modrm_context.b = prefixes->b;
+        modrm_context.is_evex = prefixes->is_evex;
 
         fcml_st_modrm_source modrm_source;
         modrm_source.is_vsib = modrm_details->is_vsib;
