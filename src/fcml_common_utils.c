@@ -256,6 +256,15 @@ fcml_st_register fcml_reg_DR5 = { FCML_REG_DR, FCML_DS_UNDEF, FCML_REG_DR5, FCML
 fcml_st_register fcml_reg_DR6 = { FCML_REG_DR, FCML_DS_UNDEF, FCML_REG_DR6, FCML_FALSE };
 fcml_st_register fcml_reg_DR7 = { FCML_REG_DR, FCML_DS_UNDEF, FCML_REG_DR7, FCML_FALSE };
 
+fcml_st_register fcml_reg_K0 = { FCML_REG_OPMASK, FCML_DS_64, FCML_REG_K0, FCML_FALSE };
+fcml_st_register fcml_reg_K1 = { FCML_REG_OPMASK, FCML_DS_64, FCML_REG_K1, FCML_FALSE };
+fcml_st_register fcml_reg_K2 = { FCML_REG_OPMASK, FCML_DS_64, FCML_REG_K2, FCML_FALSE };
+fcml_st_register fcml_reg_K3 = { FCML_REG_OPMASK, FCML_DS_64, FCML_REG_K3, FCML_FALSE };
+fcml_st_register fcml_reg_K4 = { FCML_REG_OPMASK, FCML_DS_64, FCML_REG_K4, FCML_FALSE };
+fcml_st_register fcml_reg_K5 = { FCML_REG_OPMASK, FCML_DS_64, FCML_REG_K5, FCML_FALSE };
+fcml_st_register fcml_reg_K6 = { FCML_REG_OPMASK, FCML_DS_64, FCML_REG_K6, FCML_FALSE };
+fcml_st_register fcml_reg_K7 = { FCML_REG_OPMASK, FCML_DS_64, FCML_REG_K7, FCML_FALSE };
+
 fcml_st_register fcml_reg_IP = { FCML_REG_IP, FCML_DS_16, FCML_REG_UNDEFINED, FCML_FALSE };
 fcml_st_register fcml_reg_EIP = { FCML_REG_IP, FCML_DS_32, FCML_REG_UNDEFINED, FCML_FALSE };
 fcml_st_register fcml_reg_RIP = { FCML_REG_IP, FCML_DS_64, FCML_REG_UNDEFINED, FCML_FALSE };

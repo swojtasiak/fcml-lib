@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,7 +21,7 @@
  *
  * Common general purpose utility functions.
  *
- * @copyright Copyright (C) 2010-2015 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2017 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 
@@ -279,6 +279,15 @@ extern LIB_EXPORT fcml_st_register fcml_reg_DR4;
 extern LIB_EXPORT fcml_st_register fcml_reg_DR5;
 extern LIB_EXPORT fcml_st_register fcml_reg_DR6;
 extern LIB_EXPORT fcml_st_register fcml_reg_DR7;
+
+extern LIB_EXPORT fcml_st_register fcml_reg_K0;
+extern LIB_EXPORT fcml_st_register fcml_reg_K1;
+extern LIB_EXPORT fcml_st_register fcml_reg_K2;
+extern LIB_EXPORT fcml_st_register fcml_reg_K3;
+extern LIB_EXPORT fcml_st_register fcml_reg_K4;
+extern LIB_EXPORT fcml_st_register fcml_reg_K5;
+extern LIB_EXPORT fcml_st_register fcml_reg_K6;
+extern LIB_EXPORT fcml_st_register fcml_reg_K7;
 
 extern LIB_EXPORT fcml_st_register fcml_reg_IP;
 extern LIB_EXPORT fcml_st_register fcml_reg_EIP;

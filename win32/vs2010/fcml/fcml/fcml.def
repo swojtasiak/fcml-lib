@@ -175,6 +175,14 @@ EXPORTS
     fcml_reg_ST5
     fcml_reg_ST6
     fcml_reg_ST7
+    fcml_reg_K0
+    fcml_reg_K1
+    fcml_reg_K2
+    fcml_reg_K3
+    fcml_reg_K4
+    fcml_reg_K5
+    fcml_reg_K6
+    fcml_reg_K7
     fcml_reg_XMM0
     fcml_reg_XMM1
     fcml_reg_XMM2

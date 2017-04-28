@@ -190,6 +190,15 @@ namespace fcml {
     extern const Register DR6;
     extern const Register DR7;
 
+    extern const Register K0;
+    extern const Register K1;
+    extern const Register K2;
+    extern const Register K3;
+    extern const Register K4;
+    extern const Register K5;
+    extern const Register K6;
+    extern const Register K7;
+
     extern const Register IP;
     extern const Register EIP;
     extern const Register RIP;

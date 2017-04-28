@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 /** @file fcml_common.hpp
  * C++ wrappers common classes.
  *
- * @copyright Copyright (C) 2010-2015 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2017 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 
@@ -146,6 +146,31 @@ public:
 
     void setValue(const T& value) {
         this->_value = value;
+    }
+
+public:
+
+    /**
+     * Checks if two nullable values are equal.
+     *
+     * @param nullable The source nullable value.
+     * @return True if they are equal; otherwise false.
+     * @since 2.0.0
+     */
+    bool operator==(const Nullable &nullable) const {
+        return _value == nullable._value &&
+                _is_not_null == nullable._is_not_null;
+    }
+
+    /**
+     * Checks if two nullable values are not equal.
+     *
+     * @param nullable The source nullable value.
+     * @return True if they are not equal; otherwise false.
+     * @since 2.0.0
+     */
+    bool operator!=(const Nullable &nullable) const {
+        return !(nullable == *this);
     }
 
 private:
@@ -1593,7 +1618,11 @@ public:
         /** Debug register */
         REG_DR = FCML_REG_DR,
         /** Instruction pointer register. Used for relative RIP addressing. */
-        REG_IP = FCML_REG_IP
+        REG_IP = FCML_REG_IP,
+        /** Opmask register
+         * @since 2.0.0
+         */
+        REG_OPMASK = FCML_REG_OPMASK
     };
 
     /**
@@ -3770,6 +3799,86 @@ public:
         return reg;
     }
 
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register K0() {
+        Register reg( ::fcml_reg_K0 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register K1() {
+        Register reg( ::fcml_reg_K1 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register K2() {
+        Register reg( ::fcml_reg_K2 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register K3() {
+        Register reg( ::fcml_reg_K3 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register K4() {
+        Register reg( ::fcml_reg_K4 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register K5() {
+        Register reg( ::fcml_reg_K5 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register K6() {
+        Register reg( ::fcml_reg_K6 );
+        return reg;
+    }
+
+    /**
+     * Factory method for a register.
+     * @return A register instance.
+     * @since 2.0.0
+     */
+    static const Register K7() {
+        Register reg( ::fcml_reg_K7 );
+        return reg;
+    }
+
 private:
 
     /** Register type. */
@@ -4883,6 +4992,179 @@ private:
 
 };
 
+/** Holds operand decorators.
+ * @since 2.0.0
+ */
+class Decorators {
+public:
+
+    /**
+     * Creates an empty operand decorators container.
+     * @since 2.0.0
+     */
+    Decorators() : _z(FCML_FALSE), _operandMaskReg(Register::UNDEF()),
+        _sae(FCML_FALSE) {
+    }
+
+    /**
+     * Sets a new AVX-512 {z} decorator.
+     *
+     * @param z {z} decorator.
+     * @return Decorators.
+     * @since 2.0.0
+     */
+    Decorators& setZ(fcml_bool z) {
+        _z = z;
+        return *this;
+    }
+
+    /**
+     * Sets a new AVX-512 {bcast} decorator.
+     *
+     * @param bcast Decorator value.
+     * @return Decorators..
+     * @since 2.0.0
+     */
+    Decorators& setBcast(const Nullable<fcml_uint8_t> &bcast) {
+        _bcast = bcast;
+        return *this;
+    }
+
+    /**
+     * Sets AVX-512 opmask register for {k} decorator.
+     *
+     * @param opmaskReg Opmask register.
+     * @since 2.0.0
+     */
+    Decorators& setOpmaskReg( const Register& opmaskReg ) {
+        _operandMaskReg = opmaskReg;
+        return *this;
+    }
+
+    /**
+     * Sets AVX-512 {er} decorator.
+     *
+     * @param er {er} decorator.
+     * @since 2.0.0
+     */
+    Decorators& setEr(const Nullable<fcml_uint8_t> &er) {
+        _er = er;
+        return *this;
+    }
+
+    /**
+     * Sets AVX-512 {sae} decorator.
+     *
+     * @param sae {sae} decorator.
+     * @since 2.0.0
+     */
+    Decorators& setSae(const fcml_bool sae) {
+        _sae = sae;
+        return *this;
+    }
+
+    /**
+     * Gets AVX-512 {z} operator.
+     *
+     * @return {z} operator.
+     * @since 2.0.0
+     */
+    fcml_bool isZ() const {
+        return _z;
+    }
+
+    /**
+     * Gets AVX-512 {bcast} decorator.
+     *
+     * @return Value of {bcast} decorator.
+     * @since 2.0.0
+     */
+    const Nullable<fcml_uint8_t>& getBcast() const {
+        return _bcast;
+    }
+
+    /**
+     * Gets constant AVX-512 opmask register for {k} decorator.
+     *
+     * @return Opmask register.
+     * @since 2.0.0
+     */
+    const Register& getOpmaskReg() const {
+        return _operandMaskReg;
+    }
+
+    /**
+     * Gets AVX-512 opmask register for {k} decorator.
+     *
+     * @return Opmask register.
+     * @since 2.0.0
+     */
+    Register& getOpmaskReg() {
+        return _operandMaskReg;
+    }
+
+    /**
+     * Gets AVX-512 {er} decorator.
+     *
+     * @return Value of {er} decorator.
+     * @since 2.0.0
+     */
+    const Nullable<fcml_uint8_t>& getEr() const {
+        return _er;
+    }
+
+    /**
+     * Gets AVX-512 {sae} decorator.
+     *
+     * @return True if {sae} is set.
+     * @since 2.0.0
+     */
+    fcml_bool isSae() const {
+        return _sae;
+    }
+
+public:
+
+    /**
+     * Checks if two decorators containers are equal or not.
+     * @param decorators Decorators.
+     * @return True if they are equal.
+     * @since 2.0.0
+     */
+    bool operator==(const Decorators &decorators) const {
+        if(&decorators == this) {
+            return true;
+        }
+        return _z == decorators._z &&
+                _bcast == decorators._bcast &&
+                _operandMaskReg == decorators._operandMaskReg &&
+                _er == decorators._er &&
+                _sae == decorators._sae;
+    }
+
+    /**
+     * Checks if two decorators are equal or not.
+     * @param decorators Decorators.
+     * @return True if they are NOT equal.
+     * @since 2.0.0
+     */
+    bool operator!=(const Decorators &decorators) const {
+        return !(decorators == *this);
+    }
+
+private:
+    /** Broadcasting: 2, 4, 8, 16, 32, 64. */
+    Nullable<fcml_uint8_t> _bcast;
+    /** Zeroing masking. */
+    fcml_bool _z;
+    /** The 64-bit k registers are: k0 through k7. */
+    Register _operandMaskReg;
+    /** Embedded rounding control. */
+    Nullable<fcml_uint8_t> _er;
+    /** Indicates support for SAE (Suppress All Exceptions). */
+    fcml_bool _sae;
+};
+
 /** Instruction operand.
  * @since 1.1.0
  */
@@ -4995,11 +5277,14 @@ public:
         case OT_REGISTER:
             equal = _register == op._register;
             break;
+        case OT_VIRTUAL:
+            equal = true;
+            break;
         case OT_NONE:
             equal = true;
             break;
         }
-        return equal && op._hints == _hints;
+        return equal && op._hints == _hints && op._decorators == _decorators;
     }
 
     /**
@@ -5356,6 +5641,38 @@ public:
        return *this;
     }
 
+    /**
+     * Gets constant decorators associated with the operand.
+     *
+     * @return The decorators associated with the operand.
+     * @since 2.0.0
+     */
+    const Decorators& getDecorators() const {
+       return _decorators;
+    }
+
+    /**
+     * Gets decorators associated with the operand.
+     *
+     * @return The decorators associated with the operand.
+     * @since 2.0.0
+     */
+    Decorators& getDecorators() {
+       return _decorators;
+    }
+
+    /**
+     * Sets new operand decorators for the operand.
+     *
+     * @param decorators The new decorators to be set.
+     * @return The operand itself.
+     * @since 2.0.0
+     */
+    Operand& setDecorators(const Decorators& decorators) {
+       _decorators = decorators;
+       return *this;
+    }
+
     // Hints
 
     /**
@@ -5464,10 +5781,14 @@ private:
     Integer _immediate;
     /** Describes far pointer. */
     FarPointer _farPointer;
-    /* Describes address. */
+    /** Describes address. */
     Address _address;
-    /* Describes register. */
+    /** Describes register. */
     Register _register;
+    /** Operand decorators.
+     * since 2.0.0
+     */
+    Decorators _decorators;
 
 };
 
@@ -8715,22 +9036,50 @@ public:
         convert( src.getOffset(), dest.offset );
     }
 
-    static void convert( const fcml_st_operand &src, Operand &dest ) {
-        dest.setHints( src.hints );
-        dest.setOperandType( static_cast<Operand::OperandType>( src.type ) );
-        convert( src.reg, dest.getRegister() );
-        convert( src.address, dest.getAddress() );
-        convert( src.far_pointer, dest.getFarPointer() );
-        convert( src.immediate, dest.getImmediate() );
+    static void convert(const fcml_st_operand &src, Operand &dest) {
+        dest.setHints(src.hints);
+        dest.setOperandType(static_cast<Operand::OperandType>(src.type));
+        convert(src.reg, dest.getRegister());
+        convert(src.address, dest.getAddress());
+        convert(src.far_pointer, dest.getFarPointer());
+        convert(src.immediate, dest.getImmediate());
+        convert(src.decorators, dest.getDecorators());
     }
 
-    static void convert( const Operand &src, fcml_st_operand &dest ) {
+    static void convert(const Operand &src, fcml_st_operand &dest) {
         dest.hints = src.getHints();
-        dest.type = static_cast<fcml_en_operand_type>( src.getOperandType() );
-        convert( src.getAddress(), dest.address );
-        convert( src.getFarPointer(), dest.far_pointer );
-        convert( src.getImmediate(), dest.immediate );
-        convert( src.getRegister(), dest.reg );
+        dest.type = static_cast<fcml_en_operand_type>(src.getOperandType());
+        convert(src.getAddress(), dest.address);
+        convert(src.getFarPointer(), dest.far_pointer);
+        convert(src.getImmediate(), dest.immediate);
+        convert(src.getRegister(), dest.reg);
+        convert(src.getDecorators(), dest.decorators);
+    }
+
+    static void convert(const fcml_st_operand_decorators &src,
+            Decorators &dest) {
+        Nullable<fcml_uint8_t> bcast;
+        bcast.setNotNull(FCML_TO_CPP_BOOL(src.bcast.is_not_null));
+        bcast.setValue(src.bcast.value);
+        dest.setBcast(bcast);
+        Nullable<fcml_uint8_t> er;
+        er.setNotNull(FCML_TO_CPP_BOOL(src.er.is_not_null));
+        er.setValue(src.er.value);
+        dest.setEr(er);
+        dest.setZ(src.z);
+        dest.setSae(src.sea);
+        convert(src.operand_mask_reg, dest.getOpmaskReg());
+    }
+
+    static void convert(const Decorators &src,
+            fcml_st_operand_decorators &dest) {
+        dest.bcast.is_not_null = src.getBcast().isNotNull();
+        dest.bcast.value = src.getBcast().getValue();
+        dest.er.is_not_null = src.getEr().isNotNull();
+        dest.er.value = src.getEr().getValue();
+        dest.z = src.isZ();
+        dest.sea = src.isSae();
+        convert(src.getOpmaskReg(), dest.operand_mask_reg);
     }
 
     static void convert( const fcml_st_condition &src, Condition &dest ) {

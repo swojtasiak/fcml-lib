@@ -108,8 +108,10 @@ typedef struct fcml_st_instruction_prefix {
     fcml_en_prefix_types prefix_type;
     /** FCML_TRUE if prefix is treated as mandatory one. */
     fcml_bool mandatory_prefix;
-    /** Place for additional bytes of VEX/EVEX/XOP prefix. */
-    fcml_uint8_t vex_xop_bytes[3];
+    /** Place for additional bytes of VEX/EVEX/XOP prefix.
+     * since 2.0.0
+     */
+    fcml_uint8_t avx_bytes[3];
 } fcml_st_instruction_prefix;
 
 /**
@@ -147,8 +149,8 @@ typedef struct fcml_st_prefixes_details {
     fcml_bool is_avx;
     /** FCML_TRUE if REX prefix exists. */
     fcml_bool is_rex;
-    /** Various fields encoded inside decoded prefixes.*/
-    fcml_uint8_t vex_xop_first_byte;
+    /** First byte of AVX prefix. */
+    fcml_uint8_t avx_first_byte;
     /** R field of REX,XOP or VEX prefix. */
     fcml_uint8_t R;
     /** EVEX R’ High-16 register specifier modifier. */

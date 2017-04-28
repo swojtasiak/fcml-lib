@@ -1850,7 +1850,7 @@ fcml_int fcml_ifn_dasm_decode_escape_opcode_bytes(
     fcml_int8_t size = 0;
 
     if (prefixes_fields->is_vex) {
-        if (prefixes_fields->vex_xop_first_byte == 0xC4) {
+        if (prefixes_fields->avx_first_byte == 0xC4) {
             /* 3-byte VEX. */
             int index = prefixes_fields->mmmm - 1;
             *virtual_opcode = fcml_iarr_dasm_escape_opcode_table[index];
@@ -2552,7 +2552,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                     if (prefix_type != FCML_PT_GROUP_UNKNOWN) {
 
                         fcml_int nbytes = fcml_fn_stream_read_bytes(stream, 
-                                &(prefix_details->vex_xop_bytes),
+                                &(prefix_details->avx_bytes),
 								xop_vex_prefix_size);
                         if (nbytes != xop_vex_prefix_size) {
                             /* Stream is incomplete, so we can not treat it 
@@ -2564,11 +2564,11 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                                 /* Decodes VEX/XOP fields.*/
                             case 0x62: {
                              	fcml_uint8_t p0 =
-                            	        prefix_details->vex_xop_bytes[0];
+                            	        prefix_details->avx_bytes[0];
                             	fcml_uint8_t p1 =
-                            	        prefix_details->vex_xop_bytes[1];
+                            	        prefix_details->avx_bytes[1];
                             	fcml_uint8_t p2 =
-                            	        prefix_details->vex_xop_bytes[2];
+                            	        prefix_details->avx_bytes[2];
 
                             	// These fields are fixed for EVEX.
                             	if ((p0 & 0x0C) || !(p1 & 0x04)) {
@@ -2614,20 +2614,20 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                             case 0xC4:
                                 if (prefix_type == FCML_PT_XOP && 
                                         FCML_VEX_MMMM(
-                                            prefix_details->vex_xop_bytes[0]) 
+                                            prefix_details->avx_bytes[0]) 
                                         < 0x08) {
                                     prefix_type = FCML_PT_GROUP_UNKNOWN;
                                     break;
                                 }
                                 prefixes_details->R = FCML_VEX_R(
-                                        prefix_details->vex_xop_bytes[0]);
+                                        prefix_details->avx_bytes[0]);
                                 prefixes_details->X = FCML_VEX_X(
-                                        prefix_details->vex_xop_bytes[0]);
+                                        prefix_details->avx_bytes[0]);
                                 if (op_mode == FCML_OM_64_BIT) {
                                     prefixes_details->B = FCML_VEX_B(
-                                            prefix_details->vex_xop_bytes[0]);
+                                            prefix_details->avx_bytes[0]);
                                     prefixes_details->W = FCML_VEX_W(
-                                            prefix_details->vex_xop_bytes[1]);
+                                            prefix_details->avx_bytes[1]);
                                 } else {
                                     /* These bits should be silently ignored 
                                      * in 32-bit mode.
@@ -2636,23 +2636,23 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                                     prefixes_details->W = 0;
                                 }
                                 prefixes_details->L = FCML_VEX_L(
-                                        prefix_details->vex_xop_bytes[1]);
+                                        prefix_details->avx_bytes[1]);
                                 prefixes_details->pp = FCML_VEX_PP(
-                                        prefix_details->vex_xop_bytes[1]);
+                                        prefix_details->avx_bytes[1]);
                                 prefixes_details->mmmm = FCML_VEX_MMMM(
-                                        prefix_details->vex_xop_bytes[0]);
+                                        prefix_details->avx_bytes[0]);
                                 prefixes_details->vvvv = FCML_VEX_VVVV(
-                                        prefix_details->vex_xop_bytes[1]);
+                                        prefix_details->avx_bytes[1]);
                                 break;
                             case 0xC5:
                                 prefixes_details->R = FCML_VEX_R(
-                                        prefix_details->vex_xop_bytes[0]);
+                                        prefix_details->avx_bytes[0]);
                                 prefixes_details->L = FCML_VEX_L(
-                                        prefix_details->vex_xop_bytes[0]);
+                                        prefix_details->avx_bytes[0]);
                                 prefixes_details->vvvv = FCML_VEX_VVVV(
-                                        prefix_details->vex_xop_bytes[0]);
+                                        prefix_details->avx_bytes[0]);
                                 prefixes_details->pp = FCML_VEX_PP(
-                                        prefix_details->vex_xop_bytes[0]);
+                                        prefix_details->avx_bytes[0]);
                                 break;
                             }
 
@@ -2661,7 +2661,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                                 prefix_type = FCML_PT_GROUP_UNKNOWN;
                             }
 
-                            prefixes_details->vex_xop_first_byte = prefix;
+                            prefixes_details->avx_first_byte = prefix;
 
                             prefix_size += xop_vex_prefix_size;
                         }

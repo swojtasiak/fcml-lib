@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 /** @file fcml_disassembler.hpp
  * C++ wrapper for the FCML disassembler.
  *
- * @copyright Copyright (C) 2010-2015 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2017 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 
@@ -381,7 +381,8 @@ public:
         PT_GROUP_4 = FCML_PT_GROUP_4,
         PT_REX = FCML_PT_REX,
         PT_VEX = FCML_PT_VEX,
-        PT_XOP = FCML_PT_XOP
+        PT_XOP = FCML_PT_XOP,
+        PT_EVEX = FCML_PT_EVEX
     };
 
     /**
@@ -448,20 +449,20 @@ public:
      * Gets the second and third bytes of the XOP/VEX prefix.
      *
      * @return A pointer to the VEX/XOP bytes.
-     * @since 1.1.0
+     * @since 2.0.0
      */
-    const fcml_uint8_t* getVexXopBytes() const {
-        return _vexXOPBytes;
+    const fcml_uint8_t* getAvxBytes() const {
+        return _AvxBytes;
     }
 
     /**
      * Gets the second and third bytes of the XOP/VEX prefix.
      *
      * @return A pointer to the VEX/XOP bytes.
-     * @since 1.1.0
+     * @since 2.0.0
      */
-    fcml_uint8_t* getVexXopBytes() {
-        return _vexXOPBytes;
+    fcml_uint8_t* getAvxBytes() {
+        return _AvxBytes;
     }
 
 private:
@@ -471,8 +472,10 @@ private:
     PrefixType _prefixType;
     /** True if the prefix is a mandatory one. */
     bool _mandatoryPrefix;
-    /** The second and third byte of the prefix. */
-    fcml_uint8_t _vexXOPBytes[2];
+    /** The second and third byte of the AVX prefix.
+     * since 2.0.0
+     */
+    fcml_uint8_t _AvxBytes[3];
 };
 
 /** Prefixes details.
@@ -496,17 +499,25 @@ public:
         _isXrelease(false),
         _isXacquire(false),
         _isVex(false),
+        _isEvex(false),
         _isXop(false),
+        _isAvx(false),
         _isRex(false),
-        _vexXopFirstByte(false),
-        _r(0),
-        _x(0),
-        _b(0),
-        _w(0),
-        _l(0),
+        _AvxPrefixFirstByte(false),
+        _R(0),
+        _RPrim(0),
+        _X(0),
+        _B(0),
+        _W(0),
+        _L(0),
+        _LPrim(0),
         _mmmm(0),
         _vvvv(0),
-        _pp(0) {
+        _VPrim(0),
+        _pp(0),
+        _aaa(0),
+        _b(false),
+        _z(false) {
     }
 
     /**
@@ -544,7 +555,7 @@ public:
      * @since 1.1.0
      */
     fcml_uint8_t getB() const {
-        return _b;
+        return _B;
     }
 
     /**
@@ -553,8 +564,8 @@ public:
      * @param b The B flag.
      * @since 1.1.0
      */
-    void setB(fcml_uint8_t b) {
-        _b = b;
+    void setB(fcml_uint8_t B) {
+        _B = B;
     }
 
     /**
@@ -698,6 +709,26 @@ public:
     }
 
     /**
+     * Sets EVEX prefix availability.
+     *
+     * @param isEvex True if EVEX prefix is available.
+     * @since 2.0.0
+     */
+    void setEvex(bool isEvex) {
+        _isEvex = isEvex;
+    }
+
+    /**
+     * Gets true if EVEX prefix is available.
+     *
+     * @return True if EVEX prefix is available.
+     * @since 2.0.0
+     */
+    bool isEvex() const {
+        return _isEvex;
+    }
+
+    /**
      * Gets true if xacquire prefix is available.
      *
      * @return True if xacquire prefix is available.
@@ -718,9 +749,9 @@ public:
     }
 
     /**
-     * Gets true if Xop prefix is available.
+     * Gets true if XOP prefix is available.
      *
-     * @return True if Xop prefix is available.
+     * @return True if XOP prefix is available.
      * @since 1.1.0
      */
     bool isXop() const {
@@ -728,7 +759,7 @@ public:
     }
 
     /**
-     * Sets Xop prefix availability.
+     * Sets XOP prefix availability.
      *
      * @param isXop True if XOP prefix is available.
      * @since 1.1.0
@@ -736,6 +767,27 @@ public:
     void setXop(bool isXop) {
         _isXop = isXop;
     }
+
+    /**
+     * Gets true if any AVX prefix is available.
+     *
+     * @return True if any AVX prefix is available.
+     * @since 2.0.0
+     */
+    bool isAvx() const {
+        return _isAvx;
+    }
+
+    /**
+     * Sets XOP prefix availability.
+     *
+     * @param isXop True if XOP prefix is available.
+     * @since 2.0.0
+     */
+    void setAvx(bool isAvx) {
+        _isAvx = isAvx;
+    }
+
 
     /**
      * Gets true if xrelease prefix is available.
@@ -764,7 +816,7 @@ public:
      * @since 1.1.0
      */
     fcml_uint8_t getL() const {
-        return _l;
+        return _L;
     }
 
     /**
@@ -773,9 +825,30 @@ public:
      * @param l The L flag.
      * @since 1.1.0
      */
-    void setL(fcml_uint8_t l) {
-        _l = l;
+    void setL(fcml_uint8_t L) {
+        _L = L;
     }
+
+    /**
+     * Gets L' flag.
+     *
+     * @return The L' flag.
+     * @since 2.0.0
+     */
+    fcml_uint8_t getLPrim() const {
+        return _LPrim;
+    }
+
+    /**
+     * Sets L' flag.
+     *
+     * @param l The L' flag.
+     * @since 2.0.0
+     */
+    void setLPrim(fcml_uint8_t lPrim) {
+        _LPrim = lPrim;
+    }
+
 
     /**
      * Gets MMMM field.
@@ -894,7 +967,7 @@ public:
      * @since 1.1.0
      */
     fcml_uint8_t getR() const {
-        return _r;
+        return _R;
     }
 
     /**
@@ -904,27 +977,47 @@ public:
      * @since 1.1.0
      */
     void setR(fcml_uint8_t r) {
-        _r = r;
+        _R = r;
     }
 
     /**
-     * Gets the first byte of the VEX/XOP prefix.
+     * Gets R' flag.
      *
-     * @return The first byte of the VEX/XOP prefix.
-     * @since 1.1.0
+     * @return The R' flag.
+     * @since 2.0.0
      */
-    fcml_uint8_t getVexXopFirstByte() const {
-        return _vexXopFirstByte;
+    fcml_uint8_t getRPrim() const {
+        return _RPrim;
+    }
+
+    /**
+     * Sets R' flag.
+     *
+     * @param rPrim The R' flag.
+     * @since 2.0.0
+     */
+    void setRPrim(fcml_uint8_t rPrim) {
+        _RPrim = rPrim;
+    }
+
+    /**
+     * Gets the first byte of the AVX prefix.
+     *
+     * @return The first byte of the AVX prefix.
+     * @since 2.0.0
+     */
+    fcml_uint8_t getAvxFirstByte() const {
+        return _AvxPrefixFirstByte;
     }
 
     /**
      * Sets a first byte of the XOP/VEX prefix.
      *
-     * @param vexXopFirstByte The first XOP/VEX prefix byte.
-     * @since 1.1.0
+     * @param avxFirstByte The first AVX prefix byte.
+     * @since 2.0.0
      */
-    void setVexXopFirstByte(fcml_uint8_t vexXopFirstByte) {
-        _vexXopFirstByte = vexXopFirstByte;
+    void setAvxFirstByte(fcml_uint8_t avxFirstByte) {
+        _AvxPrefixFirstByte = avxFirstByte;
     }
 
     /**
@@ -948,13 +1041,53 @@ public:
     }
 
     /**
+     * Gets 'aaa' field of the EVEX prefix.
+     *
+     * @return aaa field of the EVEX prefix.
+     * @since 2.0.0
+     */
+    fcml_uint8_t getAaa() const {
+        return _aaa;
+    }
+
+    /**
+     * Sets 'aaa' field of the EVEX prefix.
+     *
+     * @param aaa The 'aaa' field.
+     * @since 1.1.0
+     */
+    void setAaa(fcml_uint8_t aaa) {
+        _aaa = aaa;
+    }
+
+    /**
+      * Gets V' flag.
+      *
+      * @return The V' flag.
+      * @since 2.0.0
+      */
+     fcml_uint8_t getVPrim() const {
+         return _VPrim;
+     }
+
+     /**
+      * Sets V' flag.
+      *
+      * @param vPrim The V' flag.
+      * @since 2.0.0
+      */
+     void setVPrim(fcml_uint8_t vPrim) {
+         _VPrim = vPrim;
+     }
+
+    /**
      * Gets W flag.
      *
      * @return The W flag.
      * @since 1.1.0
      */
     fcml_uint8_t getW() const {
-        return _w;
+        return _W;
     }
 
     /**
@@ -963,8 +1096,8 @@ public:
      * @param w The W flag.
      * @since 1.1.0
      */
-    void setW(fcml_uint8_t w) {
-        _w = w;
+    void setW(fcml_uint8_t W) {
+        _W = W;
     }
 
     /**
@@ -974,7 +1107,7 @@ public:
      * @since 1.1.0
      */
     fcml_uint8_t getX() const {
-        return _x;
+        return _X;
     }
 
     /**
@@ -983,8 +1116,48 @@ public:
      * @param x The X flag.
      * @since 1.1.0
      */
-    void setX(fcml_uint8_t x) {
-        _x = x;
+    void setX(fcml_uint8_t X) {
+        _X = X;
+    }
+
+    /**
+     * Gets EVEX.b bit.
+     *
+     * @return The EVEX.b bit.
+     * @since 2.0.0
+     */
+    bool getBcast() const {
+        return _b;
+    }
+
+    /**
+     * Sets EVEX.b bit.
+     *
+     * @param b The EVEX.b bit.
+     * @since 2.0.0
+     */
+    void setBcast(bool b) {
+        _b = b;
+    }
+
+    /**
+     * Gets EVEX.z bit.
+     *
+     * @return The EVEX.z bit.
+     * @since 2.0.0
+     */
+    bool getZ() const {
+        return _z;
+    }
+
+    /**
+     * Sets EVEX.z bit.
+     *
+     * @param z The EVEX.z bit.
+     * @since 2.0.0
+     */
+    void setZ(bool z) {
+        _z = z;
     }
 
 private:
@@ -1010,28 +1183,62 @@ private:
     bool _isXacquire;
     /** FCML_TRUE if VEX prefix exists. */
     bool _isVex;
+    /** FCML_TRUE if EVEX prefix exists.
+     * since 2.0.0
+     */
+    bool _isEvex;
     /** FCML_TRUE if XOP prefix exists. */
     bool _isXop;
+    /** FCML_TRUE if any AVX prefix exists.
+     * @since 2.0.0
+     */
+    bool _isAvx;
     /** FCML_TRUE if REX prefix exists. */
     bool _isRex;
-    /** Various fields encoded inside decoded prefixes.*/
-    fcml_uint8_t _vexXopFirstByte;
-    /** R field of REX,XOP or VEX prefix. */
-    fcml_uint8_t _r;
-    /** X field of REX,XOP or VEX prefix. */
-    fcml_uint8_t _x;
-    /** B field of REX,XOP or VEX prefix. */
-    fcml_uint8_t _b;
-    /** W field of REX,XOP or VEX prefix. */
-    fcml_uint8_t _w;
-    /** L field of XOP or VEX prefix. */
-    fcml_uint8_t _l;
+    /** Various fields encoded inside decoded prefixes.
+     * since 2.0.0
+     */
+    fcml_uint8_t _AvxPrefixFirstByte;
+    /** R field of REX,XOP,VEX or EVEX prefix. */
+    fcml_uint8_t _R;
+    /** R' field of EVEX prefix.
+     * since 2.0.0
+     */
+    fcml_uint8_t _RPrim;
+    /** X field of REX,XOP,VEX or EVEX prefix. */
+    fcml_uint8_t _X;
+    /** B field of REX,XOP,VEX or EVEX prefix. */
+    fcml_uint8_t _B;
+    /** W field of REX,XOP,VEX or EVEX prefix. */
+    fcml_uint8_t _W;
+    /** L field of XOP, VEX or EVEX prefix. */
+    fcml_uint8_t _L;
+    /** L' field of EVEX prefix.
+     * since 2.0.0
+     */
+    fcml_uint8_t _LPrim;
     /** m-mmmm field of XOP or VEX prefix. */
     fcml_uint8_t _mmmm;
     /** vvvv field of XOP or VEX prefix. */
     fcml_uint8_t _vvvv;
+    /** V' field of EVEX prefix.
+     * since 2.0.0
+     */
+    fcml_uint8_t _VPrim;
     /** pp field of XOP or VEX prefix. */
     fcml_uint8_t _pp;
+    /** aaa field of EVEX prefix.
+     * since 2.0.0
+     */
+    fcml_uint8_t _aaa;
+    /** EVEX.b bit.
+     * since 2.0.0
+     */
+    bool _b;
+    /** EVEX.z bit.
+     * since 2.0.0
+     */
+    bool _z;
 };
 
 /** Operand details.
@@ -1106,8 +1313,6 @@ public:
      * @since 1.1.0
      */
     DecodedModRMDetails() :
-        _modRM(0),
-        _sib(0),
         _isRip(false) {
     }
 
@@ -1191,6 +1396,66 @@ public:
         _sib = sib;
     }
 
+    /**
+     * Gets constant N (see AVX-512 compressed disp8).
+     *
+     * @return N as nullable value.
+     * @since 2.0.0
+     */
+    const Nullable<fcml_uint32_t>& getN() const {
+        return _N;
+    }
+
+    /**
+     * Gets N (see compressed AVX-512 disp8).
+     *
+     * @return N nullable value.
+     * @since 2.0.0
+     */
+    Nullable<fcml_uint32_t>& getN() {
+        return _N;
+    }
+
+    /**
+     * Sets N (see compressed AVX-512 disp8).
+     *
+     * @param N N nullable value.
+     * @since 2.0.0
+     */
+    void setN(const Nullable<fcml_uint8_t> &N) {
+        _sib = N;
+    }
+
+    /**
+     * Gets constant raw displacement.
+     *
+     * @return Displacement.
+     * @since 2.0.0
+     */
+    const Integer& getDisplacement() const {
+        return _displacement;
+    }
+
+    /**
+     * Gets raw displacement.
+     *
+     * @return Displacement.
+     * @since 2.0.0
+     */
+    Integer& getDisplacement() {
+        return _displacement;
+    }
+
+    /**
+     * Sets displacement.
+     *
+     * @param displacement Displacement.
+     * @since 2.0.0
+     */
+    void setDisplacement(const Integer &displacement) {
+        _displacement = displacement;
+    }
+
 private:
     /** ModR/M byte if exists.*/
     Nullable<fcml_uint8_t> _modRM;
@@ -1198,6 +1463,14 @@ private:
     Nullable<fcml_uint8_t> _sib;
     /** True if RIP encoding is used by decoded instruction. This flag is used only in 64 bit mode. */
     bool _isRip;
+    /** Raw displacement.
+     * since 2.0.0
+     */
+    Integer _displacement;
+    /* N from AVX-512 compressed disp8.
+     * since 2.0.0
+     */
+    Nullable<fcml_uint32_t> _N;
 };
 
 /** Additional details about an instruction.
@@ -1698,14 +1971,21 @@ protected:
         dest.short_forms = src.isShortForms();
     }
 
-    static void convert( const fcml_st_decoded_modrm_details &src, DecodedModRMDetails &dest ) {
-        dest.setRip( FCML_TO_CPP_BOOL( src.is_rip ) );
+    static void convert(const fcml_st_decoded_modrm_details &src,
+            DecodedModRMDetails &dest) {
+        dest.setRip(FCML_TO_CPP_BOOL(src.is_rip));
         Nullable<fcml_uint8_t> modRM;
-        modRM.setNotNull( FCML_TO_CPP_BOOL( src.is_modrm ) );
-        modRM.setValue( src.modrm );
+        modRM.setNotNull(FCML_TO_CPP_BOOL(src.is_modrm));
+        modRM.setValue(src.modrm);
         Nullable<fcml_uint8_t> &sib = dest.getSib();
-        sib.setNotNull( FCML_TO_CPP_BOOL( src.sib.is_not_null ) );
+        sib.setNotNull(FCML_TO_CPP_BOOL(src.sib.is_not_null));
         sib.setValue( src.sib.value );
+        TypeConverter::convert(src.displacement.displacement,
+                        dest.getDisplacement());
+        Nullable<fcml_uint8_t> N;
+        N.setNotNull(FCML_TO_CPP_BOOL(src.displacement.N.is_not_null));
+        N.setValue(src.displacement.N.value);
+        dest.setN(N);
     }
 
     static void convert( const DecodedModRMDetails &src, fcml_st_decoded_modrm_details &dest ) {
@@ -1715,6 +1995,10 @@ protected:
         fcml_nuint8_t &sib = dest.sib;
         sib.is_not_null = src.getSib().isNotNull();
         sib.value = src.getSib().getValue();
+        TypeConverter::convert(src.getDisplacement(),
+                dest.displacement.displacement);
+        dest.displacement.N.is_not_null = src.getN().isNotNull();
+        dest.displacement.N.value = src.getN().getValue();
     }
 
     static void convert( const fcml_st_operand_details &src, OperandDetails &dest ) {
@@ -1725,50 +2009,62 @@ protected:
         dest.access_mode = static_cast<fcml_en_access_mode>( src.getAccessMode() );
     }
 
-    static void convert( const fcml_st_instruction_prefix &src, InstructionPrefixDetails &dest ) {
-        dest.setMandatoryPrefix( FCML_TO_CPP_BOOL( src.mandatory_prefix ) );
-        dest.setPrefix( src.prefix );
-        dest.setPrefixType( dest.getPrefixType() );
-        ::memcpy( dest.getVexXopBytes(), src.vex_xop_bytes, 2 );
+    static void convert(const fcml_st_instruction_prefix &src,
+            InstructionPrefixDetails &dest) {
+        dest.setMandatoryPrefix(FCML_TO_CPP_BOOL(src.mandatory_prefix));
+        dest.setPrefix(src.prefix);
+        dest.setPrefixType(dest.getPrefixType());
+        ::memcpy(dest.getAvxBytes(), src.avx_bytes,
+                sizeof(src.avx_bytes));
     }
 
     static void convert( const InstructionPrefixDetails &src, fcml_st_instruction_prefix &dest ) {
         dest.mandatory_prefix = src.isMandatoryPrefix();
         dest.prefix = src.getPrefix();
         dest.prefix_type = static_cast<fcml_en_prefix_types>( src.getPrefixType() );
-        ::memcpy( dest.vex_xop_bytes, src.getVexXopBytes(), 2 );
+        ::memcpy( dest.avx_bytes, src.getAvxBytes(), 2 );
     }
 
-    static void convert( const fcml_st_prefixes_details src, PrefixesDetails &dest ) {
-        for( int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++ ) {
-            convert( src.prefixes[i], dest.getPrefixes( i ) );
+    static void convert(const fcml_st_prefixes_details src,
+            PrefixesDetails &dest) {
+        for(int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++) {
+            convert(src.prefixes[i], dest.getPrefixes(i));
         }
-        dest.setPrefixesCount( src.prefixes_count );
-        dest.setPrefixesBytesCount( src.prefixes_bytes_count );
-        dest.setBranch( FCML_TO_CPP_BOOL( src.is_branch ) );
-        dest.setNobranch( FCML_TO_CPP_BOOL( src.is_nobranch ) );
-        dest.setLock( FCML_TO_CPP_BOOL( src.is_lock ) );
-        dest.setRep( FCML_TO_CPP_BOOL( src.is_rep ) );
-        dest.setRepne( FCML_TO_CPP_BOOL( src.is_repne ) );
-        dest.setXrelease( FCML_TO_CPP_BOOL( src.is_xrelease ) );
-        dest.setXacquire( FCML_TO_CPP_BOOL( src.is_xacquire ) );
-        dest.setVex( FCML_TO_CPP_BOOL( src.is_vex ) );
-        dest.setXop( FCML_TO_CPP_BOOL( src.is_xop ) );
-        dest.setRex( FCML_TO_CPP_BOOL( src.is_rex ) );
-        dest.setVexXopFirstByte( src.vex_xop_first_byte );
-        dest.setR( src.R );
-        dest.setX( src.X );
-        dest.setB( src.B );
-        dest.setW( src.W );
-        dest.setL( src.L );
-        dest.setMmmm( src.mmmm );
-        dest.setVvvv( src.vvvv );
-        dest.setPp( src.pp );
+        dest.setPrefixesCount(src.prefixes_count);
+        dest.setPrefixesBytesCount(src.prefixes_bytes_count);
+        dest.setBranch(FCML_TO_CPP_BOOL( src.is_branch));
+        dest.setNobranch(FCML_TO_CPP_BOOL( src.is_nobranch));
+        dest.setLock(FCML_TO_CPP_BOOL( src.is_lock));
+        dest.setRep(FCML_TO_CPP_BOOL(src.is_rep));
+        dest.setRepne(FCML_TO_CPP_BOOL(src.is_repne));
+        dest.setXrelease(FCML_TO_CPP_BOOL(src.is_xrelease));
+        dest.setXacquire(FCML_TO_CPP_BOOL(src.is_xacquire));
+        dest.setVex(FCML_TO_CPP_BOOL(src.is_vex));
+        dest.setEvex(FCML_TO_CPP_BOOL(src.is_evex));
+        dest.setXop(FCML_TO_CPP_BOOL(src.is_xop));
+        dest.setAvx(FCML_TO_CPP_BOOL(src.is_avx));
+        dest.setRex(FCML_TO_CPP_BOOL(src.is_rex));
+        dest.setAvxFirstByte(src.avx_first_byte);
+        dest.setR(src.R);
+        dest.setRPrim(src.R_prim);
+        dest.setX(src.X);
+        dest.setB(src.B);
+        dest.setW(src.W);
+        dest.setL(src.L);
+        dest.setLPrim(src.L_prim);
+        dest.setMmmm(src.mmmm);
+        dest.setVvvv(src.vvvv);
+        dest.setVPrim(src.V_prim);
+        dest.setPp(src.pp);
+        dest.setAaa(src.aaa);
+        dest.setBcast(src.b);
+        dest.setZ(src.z);
     }
 
-    static void convert( const PrefixesDetails src, fcml_st_prefixes_details &dest ) {
-        for( int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++ ) {
-            convert( src.getPrefixes(i), dest.prefixes[i] );
+    static void convert(const PrefixesDetails src,
+            fcml_st_prefixes_details &dest) {
+        for(int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++) {
+            convert(src.getPrefixes(i), dest.prefixes[i]);
         }
         dest.prefixes_count  = src.getPrefixesCount();
         dest.prefixes_bytes_count  = src.getPrefixesBytesCount();
@@ -1781,16 +2077,24 @@ protected:
         dest.is_xacquire  = src.isXacquire();
         dest.is_vex  = src.isVex();
         dest.is_xop  = src.isXop();
+        dest.is_avx  = src.isAvx();
+        dest.is_evex  = src.isEvex();
         dest.is_rex  = src.isRex();
-        dest.vex_xop_first_byte  = src.getVexXopFirstByte();
+        dest.avx_first_byte  = src.getAvxFirstByte();
         dest.R  = src.getR();
+        dest.R_prim  = src.getRPrim();
         dest.X  = src.getX();
         dest.B  = src.getB();
         dest.W  = src.getW();
         dest.L  = src.getL();
+        dest.L_prim  = src.getLPrim();
         dest.mmmm  = src.getMmmm();
         dest.vvvv  = src.getVvvv();
+        dest.V_prim  = src.getVPrim();
         dest.pp  = src.getPp();
+        dest.aaa  = src.getAaa();
+        dest.b  = src.getBcast();
+        dest.z  = src.getZ();
     }
 
     static void convert( const fcml_st_instruction_details &src, InstructionDetails &dest ) {

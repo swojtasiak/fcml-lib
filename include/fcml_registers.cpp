@@ -270,6 +270,15 @@ namespace fcml {
     const Register DR6( ::fcml_reg_DR6 );
     const Register DR7( ::fcml_reg_DR7 );
 
+    const Register K0( ::fcml_reg_K0 );
+    const Register K1( ::fcml_reg_K1 );
+    const Register K2( ::fcml_reg_K2 );
+    const Register K3( ::fcml_reg_K3 );
+    const Register K4( ::fcml_reg_K4 );
+    const Register K5( ::fcml_reg_K5 );
+    const Register K6( ::fcml_reg_K6 );
+    const Register K7( ::fcml_reg_K7 );
+
     const Register IP( ::fcml_reg_IP );
     const Register EIP( ::fcml_reg_EIP );
     const Register RIP( ::fcml_reg_RIP );

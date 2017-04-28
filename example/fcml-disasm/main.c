@@ -565,8 +565,8 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 				"bytes: 0x%02x, 0x%02x, 0x%02x.\n", prefix->prefix,
 				prefix_types[prefix->prefix_type],
 				get_boolean(prefix->mandatory_prefix),
-				prefix->vex_xop_bytes[0], prefix->vex_xop_bytes[1],
-				prefix->vex_xop_bytes[2]);
+				prefix->avx_bytes[0], prefix->avx_bytes[1],
+				prefix->avx_bytes[2]);
 		}
 
 	}
