@@ -134,7 +134,7 @@ typedef fcml_uint32_t fcml_operand_decorators;
 #define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
 #define FCML_IS_DECOR_ER(x)                   ((x) & 0x00000008)
 #define FCML_IS_DECOR_SAE(x)                  ((x) & 0x00000010)
-#define FCML_IS_DECOR_SAE_REQ(x)              ((x) & 0x00000030)
+#define FCML_IS_DECOR_SAE_REQ(x)              (((x) & 0x00000030) == 0x00000030)
 
 /* Instruction details. */
 
@@ -391,14 +391,14 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 /**************/
 
 #define FCML_OP_PSEUDO_OP_BASE            0x0E000000
-#define FCML_OP_PSEUDO_OP( mask )         (FCML_OP_PSEUDO_OP_BASE | (mask))
+#define FCML_OP_PSEUDO_OP(mask)           (FCML_OP_PSEUDO_OP_BASE | (mask))
 
 /*********************/
 /* Virtual operator. */
 /*********************/
 
 #define FCML_OP_VIRTUAL_BASE              0x0F000000
-#define FCML_OP_VIRTUAL(decorator)        (FCML_OP_PSEUDO_OP_BASE | (decorator))
+#define FCML_OP_VIRTUAL(decorator)        (FCML_OP_VIRTUAL_BASE | (decorator))
 
 #define FCML_OP_VIRTUAL_ER                FCML_OP_VIRTUAL(FCML_DECOR_ER)
 #define FCML_OP_VIRTUAL_SAE               FCML_OP_VIRTUAL(FCML_DECOR_SAE)

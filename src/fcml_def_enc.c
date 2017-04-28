@@ -270,8 +270,9 @@ fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args(
         fcml_fnp_def_addr_mode_args_decoder args_decoder =
                 fcml_def_addr_mode_args_decoders[addr_mode->addr_mode];
         if (args_decoder) {
-            addr_mode->addr_mode_args = args_decoder(
-                    encoded_addr_mode & 0x00FFFFFFLL);
+            /* Send addressing mode together with decorators, because they
+             * are used by decoders/encoders too. */
+            addr_mode->addr_mode_args = args_decoder(encoded_addr_mode);
             if (!addr_mode->addr_mode_args) {
                 fcml_fn_env_memory_free(addr_mode);
                 addr_mode = NULL;

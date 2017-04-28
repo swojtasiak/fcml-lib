@@ -498,9 +498,10 @@ fcml_usize fcml_ifn_asm_non_standard_attribute_size_calculator(
     return attribute_size;
 }
 
-fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
+fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         fcml_ist_asm_encoding_context *context,
         fcml_uint8_t encoded_operand_size, fcml_usize operand_size,
+        fcml_nuint8_t *bcast, fcml_usize bcast_element_size,
         fcml_usize *encoded_data_size,
         enum fcml_ien_asm_comparator_type comparator) {
 
@@ -528,7 +529,8 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
     case FCML_EOS_UNDEFINED:
         break;
     case FCML_EOS_L:
-        vector_length = operand_size;
+        vector_length = (bcast && bcast->is_not_null) ?
+                bcast->value * bcast_element_size : operand_size;
         if (!fcml_fn_util_validate_vector_length(vector_length)) {
             error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
         }
@@ -639,6 +641,16 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
     }
 
     return error;
+}
+
+fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
+        fcml_ist_asm_encoding_context *context,
+        fcml_uint8_t encoded_operand_size, fcml_usize operand_size,
+        fcml_usize *encoded_data_size,
+        enum fcml_ien_asm_comparator_type comparator) {
+    return fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
+            encoded_operand_size, operand_size, NULL, 0,
+            encoded_data_size, comparator);
 }
 
 /**
@@ -1740,30 +1752,26 @@ fcml_ceh_error fcml_ifn_asm_accept_bcast_decorator(fcml_bool is_bcast_supported,
        fcml_usize bcast_element_size, fcml_nuint8_t bcast,
        fcml_st_asm_optimizer_processing_details *optimizer_processing_details) {
 
-    if (bcast.is_not_null) {
+    if (!is_bcast_supported) {
+        return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+    }
 
-        if (!is_bcast_supported) {
-            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
-        }
+    fcml_usize es = bcast_element_size;
 
-        fcml_usize es = bcast_element_size;
+    /* Check if broadcast size is correct. */
+    if (es != 2 && es != 4 && es != 8 && es != 16 &&
+            es != 32 && es != 64) {
+        return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
+    }
 
-        /* Check if broadcast size is correct. */
-        if (es != 2 && es != 4 && es != 8 && es != 16 &&
-                es != 32 && es != 64) {
-            return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
-        }
-
-        /* Force vector length basing on broadcast element size and number
-         * of such elements. */
-        fcml_usize vector_length = es * bcast_element_size;
-        if (!fcml_ifn_asm_set_vector_length(optimizer_processing_details,
-                vector_length)) {
-            FCML_TRACE("Vector length differs expected %d got %d.",
-                    vector_length, optimizer_processing_details->vector_length);
-            return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
-        }
-
+    /* Force vector length basing on broadcast element size and number
+     * of such elements. */
+    fcml_usize vector_length = es * bcast.value;
+    if (!fcml_ifn_asm_set_vector_length(optimizer_processing_details,
+            vector_length)) {
+        FCML_TRACE("Vector length differs expected %d got %d.",
+                vector_length, optimizer_processing_details->vector_length);
+        return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
     }
 
     return FCML_CEH_GEC_NO_ERROR;
@@ -1806,138 +1814,142 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
             }
         }
         if (is_mem) {
-            /* OSA.*/
-            fcml_usize mem_data_size = fcml_ifn_asm_calculate_operand_size(
-                    context, operand_def->address.size_operator,
-                    args->encoded_memory_operand_size);
-            if (!fcml_ifn_asm_accept_data_size(context, addr_mode_desc,
-                    args->encoded_memory_operand_size, mem_data_size,
-                    FCML_IEN_CT_EQUAL)) {
-                FCML_TRACE_MSG("Unsupported memory operand size.");
-                error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
-            }
-            if (!error) {
 
-                /* Check VSIB.*/
-                if (args->is_vsib) {
-                    fcml_st_register *index =
-                            &(operand_def->address.effective_address.index);
-                    if (index->type == FCML_REG_SIMD) {
-                        fcml_usize vsib_reg_size = fcml_fn_def_vsib_reg_to_ds(
-                                args->vector_index_register);
-                        if (vsib_reg_size != index->size) {
-                            FCML_TRACE_MSG("Wrong VSIB size.");
-                            error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
-                        }
-                    } else {
-                        FCML_TRACE_MSG("VSIB encoding needs SIMD index" \
-                                " register.");
+            /* OSA. */
+
+            /* TODO: Move it to fcml_ifn_asm_accept_data_size. */
+            if (operand_def->decorators.bcast.is_not_null) {
+                /* AVX-512 Broadcast decorator. */
+                error = fcml_ifn_asm_accept_bcast_decorator(
+                        args->is_bcast,
+                        args->bcast_element_size,
+                        operand_def->decorators.bcast,
+                        &(context->optimizer_processing_details));
+            } else {
+
+                fcml_usize mem_data_size = fcml_ifn_asm_calculate_operand_size(
+                        context, operand_def->address.size_operator,
+                        args->encoded_memory_operand_size);
+                if (!fcml_ifn_asm_accept_data_size(context, addr_mode_desc,
+                        args->encoded_memory_operand_size, mem_data_size,
+                        FCML_IEN_CT_EQUAL)) {
+                    FCML_TRACE_MSG("Unsupported memory operand size.");
+                    error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+                }
+
+            }
+
+            /* Check VSIB. */
+            if (!error && args->is_vsib) {
+                fcml_st_register *index =
+                        &(operand_def->address.effective_address.index);
+                if (index->type == FCML_REG_SIMD) {
+                    fcml_usize vsib_reg_size = fcml_fn_def_vsib_reg_to_ds(
+                            args->vector_index_register);
+                    if (vsib_reg_size != index->size) {
+                        FCML_TRACE_MSG("Wrong VSIB size.");
                         error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                     }
-                }
-
-                /* Accept segment registers if any of them have been set. */
-                if (!error) {
-
-                    fcml_st_effective_address *effective_address =
-                            &(operand_def->address.effective_address);
-                    fcml_st_segment_selector *segment_selector =
-                            &(operand_def->address.segment_selector);
-                    fcml_st_register *segment_register =
-                            &(segment_selector->segment_selector);
-
-                    if (segment_register->reg != FCML_REG_UNDEFINED) {
-                        if (segment_register->type == FCML_REG_SEG) {
-                            /* Segment register set, so it has to be accepted.*/
-                            if (addr_mode_desc->instruction_group
-                                    & FCML_AMT_BRANCH) {
-                                /* For branch instructions only CS register
-                                 * can be used and override is not acceptable.
-                                 */
-                                if (segment_register->reg != FCML_REG_CS) {
-                                    error = FCML_CEH_GEC_INVALID_OPPERAND;
-                                }
-                            } else if ((effective_address->base.type
-                                    == FCML_REG_GPR)
-                                    && (effective_address->base.reg
-                                            == FCML_REG_BP
-                                            || effective_address->base.reg
-                                                    == FCML_REG_SP)) {
-                                /* For SP/BP registers SS segment register has
-                                 * to be used.
-                                 */
-                                if (segment_register->reg != FCML_REG_SS) {
-                                    error = FCML_CEH_GEC_INVALID_OPPERAND;
-                                }
-                            } else {
-                                if (segment_register->reg != FCML_REG_DS) {
-                                    context->segment_override =
-                                            *segment_register;
-                                }
-                            }
-                            if (error) {
-                                /* Segment register can not be overridden. */
-                                fcml_ifn_ceh_asm_add_error_msg(context,
-                                        fcml_fn_msg_get_message(
-                                FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN),
-                                   FCML_CEH_MEC_ERROR_ILLEGAL_SEG_REG_OVERRIDE);
-                            }
-                        } else {
-                            /* Wrong register type. */
-                            fcml_ifn_ceh_asm_add_error_msg(context,
-                                    fcml_fn_msg_get_message(
-                                       FCML_MC_SEGMENT_WRONG_REGISTER_TYPE_SEG),
-                                  FCML_CEH_MEC_ERROR_INVALID_REGISTER_TYPE_SEG);
-                        }
-                    }
-                }
-
-                if (!error) {
-
-                    /* ASA. */
-                    fcml_en_operating_mode op_mode =
-                            context->assembler_context->entry_point.op_mode;
-
-                    fcml_st_modrm mod_rm = { 0 };
-                    mod_rm.address = operand_def->address;
-
-                    fcml_flags easa_flags = 0;
-                    error = fcml_fn_modrm_calculate_effective_address_size(
-                            &mod_rm, &easa_flags);
-
-                    if (!error) {
-
-                        /* Potential 16-bit ASA is not available in
-                           64-bit mode. */
-                        if (op_mode == FCML_OM_64_BIT) {
-                            easa_flags &= ~FCML_EN_ASF_16;
-                        }
-
-                        /* Potential 64-bit ASA is not available in
-                           16-bit mode. */
-                        if (op_mode == FCML_OM_16_BIT) {
-                            easa_flags &= ~FCML_EN_ASF_64;
-                        }
-
-                        if(!fcml_ifn_asm_set_size_flag(
-                          &(context->optimizer_processing_details.allowed_easa),
-                          easa_flags)) {
-                            FCML_TRACE_MSG("Accept ModR/M: Can not accept " \
-                                    "ASA size.");
-                            error = FCML_CEH_GEC_INVALID_OPPERAND;
-                        }
-                    }
-                }
-
-                if (!error) {
-                    /* AVX-512 Broadcast decorator. */
-                    error = fcml_ifn_asm_accept_bcast_decorator(
-                            args->is_bcast,
-                            args->bcast_element_size,
-                            operand_def->decorators.bcast,
-                            &(context->optimizer_processing_details));
+                } else {
+                    FCML_TRACE_MSG("VSIB encoding needs SIMD index" \
+                            " register.");
+                    error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                 }
             }
+
+            /* Accept segment registers if any of them have been set. */
+            if (!error) {
+
+                fcml_st_effective_address *effective_address =
+                        &(operand_def->address.effective_address);
+                fcml_st_segment_selector *segment_selector =
+                        &(operand_def->address.segment_selector);
+                fcml_st_register *segment_register =
+                        &(segment_selector->segment_selector);
+
+                if (segment_register->reg != FCML_REG_UNDEFINED) {
+                    if (segment_register->type == FCML_REG_SEG) {
+                        /* Segment register set, so it has to be accepted.*/
+                        if (addr_mode_desc->instruction_group
+                                & FCML_AMT_BRANCH) {
+                            /* For branch instructions only CS register
+                             * can be used and override is not acceptable.
+                             */
+                            if (segment_register->reg != FCML_REG_CS) {
+                                error = FCML_CEH_GEC_INVALID_OPPERAND;
+                            }
+                        } else if ((effective_address->base.type
+                                == FCML_REG_GPR)
+                                && (effective_address->base.reg
+                                        == FCML_REG_BP
+                                        || effective_address->base.reg
+                                                == FCML_REG_SP)) {
+                            /* For SP/BP registers SS segment register has
+                             * to be used.
+                             */
+                            if (segment_register->reg != FCML_REG_SS) {
+                                error = FCML_CEH_GEC_INVALID_OPPERAND;
+                            }
+                        } else {
+                            if (segment_register->reg != FCML_REG_DS) {
+                                context->segment_override =
+                                        *segment_register;
+                            }
+                        }
+                        if (error) {
+                            /* Segment register can not be overridden. */
+                            fcml_ifn_ceh_asm_add_error_msg(context,
+                                    fcml_fn_msg_get_message(
+                            FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN),
+                               FCML_CEH_MEC_ERROR_ILLEGAL_SEG_REG_OVERRIDE);
+                        }
+                    } else {
+                        /* Wrong register type. */
+                        fcml_ifn_ceh_asm_add_error_msg(context,
+                                fcml_fn_msg_get_message(
+                                   FCML_MC_SEGMENT_WRONG_REGISTER_TYPE_SEG),
+                              FCML_CEH_MEC_ERROR_INVALID_REGISTER_TYPE_SEG);
+                    }
+                }
+            }
+
+            if (!error) {
+
+                /* ASA. */
+                fcml_en_operating_mode op_mode =
+                        context->assembler_context->entry_point.op_mode;
+
+                fcml_st_modrm mod_rm = { 0 };
+                mod_rm.address = operand_def->address;
+
+                fcml_flags easa_flags = 0;
+                error = fcml_fn_modrm_calculate_effective_address_size(
+                        &mod_rm, &easa_flags);
+
+                if (!error) {
+
+                    /* Potential 16-bit ASA is not available in
+                       64-bit mode. */
+                    if (op_mode == FCML_OM_64_BIT) {
+                        easa_flags &= ~FCML_EN_ASF_16;
+                    }
+
+                    /* Potential 64-bit ASA is not available in
+                       16-bit mode. */
+                    if (op_mode == FCML_OM_16_BIT) {
+                        easa_flags &= ~FCML_EN_ASF_64;
+                    }
+
+                    if(!fcml_ifn_asm_set_size_flag(
+                      &(context->optimizer_processing_details.allowed_easa),
+                      easa_flags)) {
+                        FCML_TRACE_MSG("Accept ModR/M: Can not accept " \
+                                "ASA size.");
+                        error = FCML_CEH_GEC_INVALID_OPPERAND;
+                    }
+                }
+            }
+
         }
     } else {
         error = FCML_CEH_GEC_INVALID_OPPERAND;
@@ -1989,15 +2001,18 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
             }
 
             context->mod_rm.address = operand_def->address;
+
+            /* Do not calculate vector length, if bcast is used. */
             fcml_usize mem_data_size = fcml_ifn_asm_calculate_operand_size(
                     context, operand_def->address.size_operator,
                     args->encoded_memory_operand_size);
-            error = fcml_ifn_asm_decode_dynamic_operand_size(context,
-                    args->encoded_memory_operand_size, mem_data_size, NULL,
-                    FCML_IEN_CT_EQUAL);
+            error = fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
+                    args->encoded_memory_operand_size, mem_data_size,
+                    &(operand_def->decorators.bcast), args->bcast_element_size,
+                    NULL, FCML_IEN_CT_EQUAL);
 
             /* Encode broadcast. */
-            if (operand_def->decorators.bcast.is_not_null) {
+            if (!error && operand_def->decorators.bcast.is_not_null) {
                 context->epf.b = FCML_TRUE;
             }
 
@@ -2016,35 +2031,29 @@ fcml_ceh_error fcml_ifn_asm_accept_opmask_decorators(
         fcml_operand_decorators supported_decorators,
         fcml_st_operand_decorators *decorators) {
 
-    if (decorators->operand_mask_reg.type != FCML_REG_UNDEFINED &&
-            decorators->operand_mask_reg.type != FCML_REG_OPMASK) {
-        /* Wrong register type or size in decorator. */
+    fcml_st_register *reg = &(decorators->operand_mask_reg);
+
+    /* Wrong register type or size in decorator. */
+    if (reg->type != FCML_REG_UNDEFINED && reg->type != FCML_REG_OPMASK) {
         return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
     }
 
-    fcml_bool is_opmask_dec = decorators->operand_mask_reg.type ==
-                FCML_REG_OPMASK;
+    fcml_bool is_opmask_dec = reg->type == FCML_REG_OPMASK;
 
-    /* If opmask decorator is specified for addressing mode, it has to be
-     * defined in the operand. */
-    if (FCML_IS_DECOR_OPMASK_REG(supported_decorators) && !is_opmask_dec) {
-        return FCML_CEH_GEC_MISSING_DECORATOR;
-    }
-
-    if (is_opmask_dec && decorators->operand_mask_reg.reg == FCML_REG_K0) {
-        /* Register k0 cannot be used by opmask decorator. */
+    /* Register k0 cannot be used by opmask decorator. */
+    if (is_opmask_dec && reg->reg == FCML_REG_K0) {
         return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
     }
 
+    /* AVX-512 opmask decorator is defined, but this operator
+     * doesn't support it. */
     if (is_opmask_dec && !FCML_IS_DECOR_OPMASK_REG(supported_decorators)) {
-        /* AVX-512 opmask decorator is defined, but this operator
-         * doesn't support it. */
         return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
     }
 
+    /* Z decorator has been used but it's not supported by
+     * addressing mode. */
     if (!FCML_IS_DECOR_Z(supported_decorators) && decorators->z) {
-        /* Z decorator has been used but it's not supported by
-         * addressing mode. */
         return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
     }
 
@@ -2381,7 +2390,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
             (fcml_st_def_tma_virtual_op*)addr_mode->addr_mode_args;
     fcml_st_asm_optimizer_processing_details *optimizer_details =
                 &(context->optimizer_processing_details);
-    fcml_operand_decorators decorators = FCML_DECORATORS(args->decorators);
+    fcml_operand_decorators decorators = args->decorators;
 
     /* Handle explicit vector length for SAE and ER aware instructions. */
     if (operand_def->decorators.sea || operand_def->decorators.er.is_not_null) {
@@ -4797,7 +4806,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
         }
 
         if (opcode_dec->operand_mask_reg.type != FCML_REG_UNDEFINED &&
-                !FCML_IS_DECOR_BCAST(decorators)) {
+                !FCML_IS_DECOR_OPMASK_REG(decorators)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 

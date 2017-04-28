@@ -1102,7 +1102,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_virtual(
         fcml_operand_decorators decorators,
         fcml_ptr args) {
 
-    operand_wrapper->operand.type = FCML_OT_VIRTUAL;
+    /* TODO: Try to move {sea} and {er} related code here. */
 
     return FCML_CEH_GEC_NO_ERROR;
 }

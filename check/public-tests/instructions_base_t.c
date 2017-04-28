@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -380,7 +380,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 			   break;
 			   }
 
-               printf("%s( \"%s\", ", macro, mnemonic );
+               printf("%s(\"%s\", ", macro, mnemonic );
 
                /* Code.*/
 
@@ -392,14 +392,14 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
                        if( i > 0 ) {
                            printf(", ");
                        }
-                       printf( "FCML_MI( " );
+                       printf( "FCML_MI(" );
                        for( j = 0; j < assembled_code_len[i]; j++ ) {
                            if( j > 0 ) {
                                printf(", ");
                            }
                            printf( "0x" FCML_PRI_INT8_HEX, assembled_code[i][j] );
                        }
-                       printf( " )" );
+                       printf( ")" );
                    }
                } else if ( assembled_code_index == 1  ) {
                    int i;
@@ -411,7 +411,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
                    }
                }
 
-               printf(" );\n");
+               printf(");\n");
             }
 
 		}
