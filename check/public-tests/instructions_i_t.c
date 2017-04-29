@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_i_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_i_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_IDIV(void) {
@@ -76,8 +76,8 @@ void fcml_tf_instruction_IMUL(void) {
     FCML_A64( "imulw 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xaf, 0x68, 0x20 );
     FCML_A64( "imulq 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xaf, 0x68, 0x20 );
     FCML_A64_A( "imul 0x0000000000000020(%rax),%ebp", 0x0f, 0xaf, 0x68, 0x20 );
-	FCML_A64_A( "imul 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xaf, 0x68, 0x20 );
-	FCML_A64_A( "imul 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xaf, 0x68, 0x20 );
+    FCML_A64_A( "imul 0x0000000000000020(%rax),%bp", 0x66, 0x0f, 0xaf, 0x68, 0x20 );
+    FCML_A64_A( "imul 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0xaf, 0x68, 0x20 );
 
     FCML_I32_M( "imul ebp,dword ptr [eax+00000020h],00000040h", 2, FCML_MI( 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x69, 0x68, 0x20, 0x40, 0x00, 0x00, 0x00 ) );
     FCML_I32_M( "imul bp,word ptr [eax+00000020h],0040h", 2, FCML_MI( 0x66, 0x6B, 0x68, 0x20, 0x40 ), FCML_MI( 0x66, 0x69, 0x68, 0x20, 0x40, 0x00  ) );
@@ -129,12 +129,12 @@ void fcml_tf_instruction_INC(void) {
     FCML_I32_M( "inc cx", 2, FCML_MI( 0x66, 0x41 ), FCML_MI( 0x66, 0xff, 0xc1 ) );
     FCML_I32( "lock inc dword ptr [ebx]", 0xF0, 0xFF, 0x03 );
     FCML_I32( "xacquire lock inc dword ptr [ebx]", 0xF2, 0xF0, 0xFF, 0x03 );
-	FCML_I32( "xrelease lock inc dword ptr [ebx]", 0xF3, 0xF0, 0xFF, 0x03 );
-	FCML_I32( "inc word ptr [ebx]", 0x66, 0xFF, 0x03 );
-	FCML_I64( "inc dword ptr [rbx]", 0xFF, 0x03 );
-	FCML_I64( "inc qword ptr [rbx]", 0x48, 0xFF, 0x03 );
-	FCML_I64_D( "inc word ptr [rbx]", 0x66, 0x40, 0xFF, 0x03 );
-	FCML_I64( "inc r12", 0x49, 0xFF, 0xC4 );
+    FCML_I32( "xrelease lock inc dword ptr [ebx]", 0xF3, 0xF0, 0xFF, 0x03 );
+    FCML_I32( "inc word ptr [ebx]", 0x66, 0xFF, 0x03 );
+    FCML_I64( "inc dword ptr [rbx]", 0xFF, 0x03 );
+    FCML_I64( "inc qword ptr [rbx]", 0x48, 0xFF, 0x03 );
+    FCML_I64_D( "inc word ptr [rbx]", 0x66, 0x40, 0xFF, 0x03 );
+    FCML_I64( "inc r12", 0x49, 0xFF, 0xC4 );
 
     FCML_A64( "incw %ax", 0x66, 0xff, 0xc0 );
     FCML_A64_A( "inc %ax", 0x66, 0xff, 0xc0 );
@@ -155,8 +155,8 @@ void fcml_tf_instruction_INC(void) {
     FCML_A64_A( "inc %spl", 0x40, 0xfe, 0xc4 );
 
     FCML_I32_M( "inc eax", 2, FCML_MI( 0x40 ), FCML_MI( 0xff, 0xc0 ) );
-	FCML_I32_M( "inc ecx", 2, FCML_MI( 0x41 ), FCML_MI( 0xff, 0xc1 ) );
-	FCML_I32_M( "inc dx", 2, FCML_MI( 0x66, 0x42 ), FCML_MI( 0x66, 0xff, 0xc2 ) );
+    FCML_I32_M( "inc ecx", 2, FCML_MI( 0x41 ), FCML_MI( 0xff, 0xc1 ) );
+    FCML_I32_M( "inc dx", 2, FCML_MI( 0x66, 0x42 ), FCML_MI( 0x66, 0xff, 0xc2 ) );
 
     FCML_A32_M( "inc %eax", 2, FCML_MI( 0x40 ), FCML_MI( 0xff, 0xc0 ) );
     FCML_A32_M( "inc %ecx", 2, FCML_MI( 0x41 ), FCML_MI( 0xff, 0xc1 ) );
@@ -266,7 +266,7 @@ void fcml_tf_instruction_INVEPT(void) {
     FCML_I32( "invept esp,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
     FCML_I64( "invept rsp,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
     FCML_I32_A( "invept esp,[eax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
-	FCML_I64_A( "invept rsp,[rax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
+    FCML_I64_A( "invept rsp,[rax]", 0x66, 0x0F, 0x38, 0x80, 0x20 );
 
     FCML_A64( "invept (%rax),%rsp", 0x66, 0x0f, 0x38, 0x80, 0x20 );
 }
@@ -275,33 +275,33 @@ void fcml_tf_instruction_INVVPID(void) {
     FCML_I32( "invvpid esp,oword ptr [eax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
     FCML_I64( "invvpid rsp,oword ptr [rax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
     FCML_I32_A( "invvpid esp,[eax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
-	FCML_I64_A( "invvpid rsp,[rax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
+    FCML_I64_A( "invvpid rsp,[rax]", 0x66, 0x0F, 0x38, 0x81, 0x20 );
 
-	FCML_A64( "invvpid (%rax),%rsp", 0x66, 0x0f, 0x38, 0x81, 0x20 );
-	FCML_A64( "invvpid (%rax),%rsp", 0x66, 0x0f, 0x38, 0x81, 0x20 );
+    FCML_A64( "invvpid (%rax),%rsp", 0x66, 0x0f, 0x38, 0x81, 0x20 );
+    FCML_A64( "invvpid (%rax),%rsp", 0x66, 0x0f, 0x38, 0x81, 0x20 );
 }
 
 fcml_stf_test_case fctl_ti_instructions_i[] = {
-	{ "fcml_tf_instruction_IDIV", fcml_tf_instruction_IDIV },
-	{ "fcml_tf_instruction_IMUL", fcml_tf_instruction_IMUL },
-	{ "fcml_tf_instruction_IN", fcml_tf_instruction_IN },
-	{ "fcml_tf_instruction_INC", fcml_tf_instruction_INC },
-	{ "fcml_tf_instruction_INS", fcml_tf_instruction_INS },
-	{ "fcml_tf_instruction_INSERTPS", fcml_tf_instruction_INSERTPS },
-	{ "fcml_tf_instruction_INSERTQ", fcml_tf_instruction_INSERTQ },
-	{ "fcml_tf_instruction_INT", fcml_tf_instruction_INT },
-	{ "fcml_tf_instruction_INVD", fcml_tf_instruction_INVD },
-	{ "fcml_tf_instruction_INVLPG", fcml_tf_instruction_INVLPG },
-	{ "fcml_tf_instruction_INVLPGA", fcml_tf_instruction_INVLPGA },
-	{ "fcml_tf_instruction_INVPCID", fcml_tf_instruction_INVPCID },
-	{ "fcml_tf_instruction_IRET", fcml_tf_instruction_IRET },
-	{ "fcml_tf_instruction_INVEPT", fcml_tf_instruction_INVEPT },
-	{ "fcml_tf_instruction_INVVPID", fcml_tf_instruction_INVVPID },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_IDIV", fcml_tf_instruction_IDIV },
+    { "fcml_tf_instruction_IMUL", fcml_tf_instruction_IMUL },
+    { "fcml_tf_instruction_IN", fcml_tf_instruction_IN },
+    { "fcml_tf_instruction_INC", fcml_tf_instruction_INC },
+    { "fcml_tf_instruction_INS", fcml_tf_instruction_INS },
+    { "fcml_tf_instruction_INSERTPS", fcml_tf_instruction_INSERTPS },
+    { "fcml_tf_instruction_INSERTQ", fcml_tf_instruction_INSERTQ },
+    { "fcml_tf_instruction_INT", fcml_tf_instruction_INT },
+    { "fcml_tf_instruction_INVD", fcml_tf_instruction_INVD },
+    { "fcml_tf_instruction_INVLPG", fcml_tf_instruction_INVLPG },
+    { "fcml_tf_instruction_INVLPGA", fcml_tf_instruction_INVLPGA },
+    { "fcml_tf_instruction_INVPCID", fcml_tf_instruction_INVPCID },
+    { "fcml_tf_instruction_IRET", fcml_tf_instruction_IRET },
+    { "fcml_tf_instruction_INVEPT", fcml_tf_instruction_INVEPT },
+    { "fcml_tf_instruction_INVVPID", fcml_tf_instruction_INVVPID },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_i = {
-	"suite-fctl_ti_instructions_i", fcml_tf_instructions_i_suite_init, fcml_tf_instructions_i_suite_cleanup, fctl_ti_instructions_i
+    "suite-fctl_ti_instructions_i", fcml_tf_instructions_i_suite_init, fcml_tf_instructions_i_suite_cleanup, fctl_ti_instructions_i
 };
 
 

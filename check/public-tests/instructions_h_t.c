@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_h_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_h_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_HADDPD(void) {
@@ -79,7 +79,7 @@ void fcml_tf_instruction_HSUBPD(void) {
 
 void fcml_tf_instruction_HSUBPS(void) {
 
-	FCML_I64( "hsubps xmm0,xmmword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x7D, 0x40, 0x20 );
+    FCML_I64( "hsubps xmm0,xmmword ptr [rax+0000000000000020h]", 0xF2, 0x0F, 0x7D, 0x40, 0x20 );
     FCML_I32( "hsubps xmm0,xmmword ptr [eax+00000020h]", 0xF2, 0x0F, 0x7D, 0x40, 0x20 );
 
     FCML_I64( "vhsubps ymm10,ymm14,ymmword ptr [r9+rax]", 0xC4, 0x41, 0x0F, 0x7D, 0x14, 0x01 );
@@ -88,16 +88,16 @@ void fcml_tf_instruction_HSUBPS(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_h[] = {
-	{ "fcml_tf_instruction_HADDPD", fcml_tf_instruction_HADDPD },
-	{ "fcml_tf_instruction_HADDPS", fcml_tf_instruction_HADDPS },
-	{ "fcml_tf_instruction_HLT", fcml_tf_instruction_HLT },
-	{ "fcml_tf_instruction_HSUBPD", fcml_tf_instruction_HSUBPD },
-	{ "fcml_tf_instruction_HSUBPS", fcml_tf_instruction_HSUBPS },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_HADDPD", fcml_tf_instruction_HADDPD },
+    { "fcml_tf_instruction_HADDPS", fcml_tf_instruction_HADDPS },
+    { "fcml_tf_instruction_HLT", fcml_tf_instruction_HLT },
+    { "fcml_tf_instruction_HSUBPD", fcml_tf_instruction_HSUBPD },
+    { "fcml_tf_instruction_HSUBPS", fcml_tf_instruction_HSUBPS },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_h = {
-	"suite-fctl_ti_instructions_h", fcml_tf_instructions_h_suite_init, fcml_tf_instructions_h_suite_cleanup, fctl_ti_instructions_h
+    "suite-fctl_ti_instructions_h", fcml_tf_instructions_h_suite_init, fcml_tf_instructions_h_suite_cleanup, fctl_ti_instructions_h
 };
 
 

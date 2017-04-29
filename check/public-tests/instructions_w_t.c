@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_w_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_w_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_WAIT(void) {
@@ -70,14 +70,14 @@ void fcml_tf_instruction_WRMSR(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_w[] = {
-	{ "fcml_tf_instruction_WAIT", fcml_tf_instruction_WAIT },
-	{ "fcml_tf_instruction_WBINVD", fcml_tf_instruction_WBINVD },
-	{ "fcml_tf_instruction_WRFSBASE", fcml_tf_instruction_WRFSBASE },
-	{ "fcml_tf_instruction_WRMSR", fcml_tf_instruction_WRMSR },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_WAIT", fcml_tf_instruction_WAIT },
+    { "fcml_tf_instruction_WBINVD", fcml_tf_instruction_WBINVD },
+    { "fcml_tf_instruction_WRFSBASE", fcml_tf_instruction_WRFSBASE },
+    { "fcml_tf_instruction_WRMSR", fcml_tf_instruction_WRMSR },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_w = {
-	"suite-fctl_ti_instructions_w", fcml_tf_instructions_w_suite_init, fcml_tf_instructions_w_suite_cleanup, fctl_ti_instructions_w
+    "suite-fctl_ti_instructions_w", fcml_tf_instructions_w_suite_init, fcml_tf_instructions_w_suite_cleanup, fctl_ti_instructions_w
 };
 

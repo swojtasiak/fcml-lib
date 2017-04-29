@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_e_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_e_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_EMMS(void) {
@@ -60,7 +60,7 @@ void fcml_tf_instruction_EXTRACTPS(void) {
 
 void fcml_tf_instruction_EXTRQ(void) {
 
-	FCML_I32( "extrq xmm1,01h,02h", 0x66, 0x0F, 0x78, 0xC1, 0x01, 0x02 );
+    FCML_I32( "extrq xmm1,01h,02h", 0x66, 0x0F, 0x78, 0xC1, 0x01, 0x02 );
     FCML_I32( "extrq xmm2,01h,02h", 0x66, 0x0F, 0x78, 0xC2, 0x01, 0x02 );
     FCML_I64( "extrq xmm1,01h,02h", 0x66, 0x0F, 0x78, 0xC1, 0x01, 0x02 );
     FCML_I64( "extrq xmm2,01h,02h", 0x66, 0x0F, 0x78, 0xC2, 0x01, 0x02 );
@@ -74,13 +74,13 @@ void fcml_tf_instruction_EXTRQ(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_e[] = {
-	{ "fcml_tf_instruction_EMMS", fcml_tf_instruction_EMMS },
-	{ "fcml_tf_instruction_ENTER", fcml_tf_instruction_ENTER },
-	{ "fcml_tf_instruction_EXTRACTPS", fcml_tf_instruction_EXTRACTPS },
-	{ "fcml_tf_instruction_EXTRQ", fcml_tf_instruction_EXTRQ },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_EMMS", fcml_tf_instruction_EMMS },
+    { "fcml_tf_instruction_ENTER", fcml_tf_instruction_ENTER },
+    { "fcml_tf_instruction_EXTRACTPS", fcml_tf_instruction_EXTRACTPS },
+    { "fcml_tf_instruction_EXTRQ", fcml_tf_instruction_EXTRQ },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_e = {
-	"suite-fctl_ti_instructions_e", fcml_tf_instructions_e_suite_init, fcml_tf_instructions_e_suite_cleanup, fctl_ti_instructions_e
+    "suite-fctl_ti_instructions_e", fcml_tf_instructions_e_suite_init, fcml_tf_instructions_e_suite_cleanup, fctl_ti_instructions_e
 };

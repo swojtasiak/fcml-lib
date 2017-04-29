@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_n_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_n_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_NEG(void) {
@@ -92,13 +92,13 @@ void fcml_tf_instruction_NOT(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_n[] = {
-	{ "fcml_tf_instruction_NEG", fcml_tf_instruction_NEG },
-	{ "fcml_tf_instruction_NOP", fcml_tf_instruction_NOP },
-	{ "fcml_tf_instruction_NOT", fcml_tf_instruction_NOT },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_NEG", fcml_tf_instruction_NEG },
+    { "fcml_tf_instruction_NOP", fcml_tf_instruction_NOP },
+    { "fcml_tf_instruction_NOT", fcml_tf_instruction_NOT },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_n = {
-	"suite-fctl_ti_instructions_n", fcml_tf_instructions_n_suite_init, fcml_tf_instructions_n_suite_cleanup, fctl_ti_instructions_n
+    "suite-fctl_ti_instructions_n", fcml_tf_instructions_n_suite_init, fcml_tf_instructions_n_suite_cleanup, fctl_ti_instructions_n
 };
 

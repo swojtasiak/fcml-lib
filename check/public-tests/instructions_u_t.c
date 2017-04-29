@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_u_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_u_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_UCOMISD(void) {
@@ -134,18 +134,18 @@ void fcml_tf_instruction_UNPCKLPS(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_u[] = {
-	{ "fcml_tf_instruction_UCOMISD", fcml_tf_instruction_UCOMISD },
-	{ "fcml_tf_instruction_UCOMISS", fcml_tf_instruction_UCOMISS },
-	{ "fcml_tf_instruction_UD2", fcml_tf_instruction_UD2 },
-	{ "fcml_tf_instruction_UNPCKHPD", fcml_tf_instruction_UNPCKHPD },
-	{ "fcml_tf_instruction_UNPCKHPS", fcml_tf_instruction_UNPCKHPS },
-	{ "fcml_tf_instruction_UNPCKLPD", fcml_tf_instruction_UNPCKLPD },
-	{ "fcml_tf_instruction_UNPCKLPS", fcml_tf_instruction_UNPCKLPS },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_UCOMISD", fcml_tf_instruction_UCOMISD },
+    { "fcml_tf_instruction_UCOMISS", fcml_tf_instruction_UCOMISS },
+    { "fcml_tf_instruction_UD2", fcml_tf_instruction_UD2 },
+    { "fcml_tf_instruction_UNPCKHPD", fcml_tf_instruction_UNPCKHPD },
+    { "fcml_tf_instruction_UNPCKHPS", fcml_tf_instruction_UNPCKHPS },
+    { "fcml_tf_instruction_UNPCKLPD", fcml_tf_instruction_UNPCKLPD },
+    { "fcml_tf_instruction_UNPCKLPS", fcml_tf_instruction_UNPCKLPS },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_u = {
-	"suite-fctl_ti_instructions_u", fcml_tf_instructions_u_suite_init, fcml_tf_instructions_u_suite_cleanup, fctl_ti_instructions_u
+    "suite-fctl_ti_instructions_u", fcml_tf_instructions_u_suite_init, fcml_tf_instructions_u_suite_cleanup, fctl_ti_instructions_u
 };
 
 

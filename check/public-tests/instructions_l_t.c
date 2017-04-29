@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_l_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_l_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_LAHF(void) {
@@ -78,7 +78,7 @@ void fcml_tf_instruction_LDS(void) {
     FCML_I32( "lds far bp,dword ptr [eax+00000020h]", 0x66, 0xc5, 0x68, 0x20 );
 
     FCML_A32( "lds 0x00000020(%eax),%ebp", 0xC5, 0x68, 0x20 );
-	FCML_A32( "lds 0x00000020(%eax),%bp", 0x66, 0xc5, 0x68, 0x20 );
+    FCML_A32( "lds 0x00000020(%eax),%bp", 0x66, 0xc5, 0x68, 0x20 );
 
     FCML_I32( "lss far ebp,fword ptr [eax+00000020h]", 0x0F, 0xB2, 0x68, 0x20 );
     FCML_I64( "lss far ebp,fword ptr [rax+0000000000000020h]", 0x0F, 0xB2, 0x68, 0x20 );
@@ -123,8 +123,8 @@ void fcml_tf_instruction_LEA(void) {
     FCML_I64( "lea rbp,[rax+0000000000000020h]", 0x48, 0x8D, 0x68, 0x20 );
 
     FCML_A32( "lea 0x00000020(%eax),%ebp", 0x8D, 0x68, 0x20 );
-	FCML_A32( "lea 0x00000020(%eax),%bp", 0x66, 0x8D, 0x68, 0x20 );
-	FCML_A64( "lea 0x0000000000000020(%rax),%rbp", 0x48, 0x8d, 0x68, 0x20 );
+    FCML_A32( "lea 0x00000020(%eax),%bp", 0x66, 0x8D, 0x68, 0x20 );
+    FCML_A64( "lea 0x0000000000000020(%rax),%rbp", 0x48, 0x8d, 0x68, 0x20 );
 }
 
 void fcml_tf_instruction_LEAVE(void) {
@@ -139,7 +139,7 @@ void fcml_tf_instruction_LFENCE(void) {
 
 void fcml_tf_instruction_LLWPCB(void) {
 
-	FCML_I32_D( "llwpcb eax", 0x8F, 0xE9, 0x60, 0x12, 0xC0 );
+    FCML_I32_D( "llwpcb eax", 0x8F, 0xE9, 0x60, 0x12, 0xC0 );
     FCML_I32( "llwpcb eax", 0x8F, 0xE9, 0x78, 0x12, 0xC0 );
 
     FCML_I64_D( "llwpcb rax", 0x8F, 0xE9, 0xE0, 0x12, 0xC0 );
@@ -158,8 +158,8 @@ void fcml_tf_instruction_LGDT(void) {
 
     FCML_A32( "lgdt 0x00000020(%eax)", 0x0f, 0x01, 0x50, 0x20 );
     FCML_A64( "lgdt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x50, 0x20 );
-	FCML_A32( "lgdt 0x00000020(%eax)", 0x0f, 0x01, 0x50, 0x20 );
-	FCML_A64( "lgdt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x50, 0x20 );
+    FCML_A32( "lgdt 0x00000020(%eax)", 0x0f, 0x01, 0x50, 0x20 );
+    FCML_A64( "lgdt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x50, 0x20 );
 }
 
 void fcml_tf_instruction_LIDT(void) {
@@ -171,8 +171,8 @@ void fcml_tf_instruction_LIDT(void) {
 
     FCML_A32( "lidt 0x00000020(%eax)", 0x0f, 0x01, 0x58, 0x20 );
     FCML_A64( "lidt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x58, 0x20 );
-	FCML_A32( "lidt 0x00000020(%eax)", 0x0f, 0x01, 0x58, 0x20 );
-	FCML_A64( "lidt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x58, 0x20 );
+    FCML_A32( "lidt 0x00000020(%eax)", 0x0f, 0x01, 0x58, 0x20 );
+    FCML_A64( "lidt 0x0000000000000020(%rax)", 0x0f, 0x01, 0x58, 0x20 );
 }
 
 void fcml_tf_instruction_LLDT(void) {
@@ -205,14 +205,14 @@ void fcml_tf_instruction_LODS(void) {
     FCML_I64_A( "lodsq", 0x48, 0xAD );
 
     FCML_A32( "rep lodsb %es:(%esi)", 0xF3, 0x26, 0xAC );
-	FCML_A32( "lodsb (%esi)", 0xAC );
-	FCML_A32( "lodsl (%esi)", 0xAD );
-	FCML_A32( "lodsw (%si)",0x66, 0x67, 0xAD );
-	FCML_A64( "lodsq (%rsi)", 0x48, 0xAD );
-	FCML_A32_A( "lodsb", 0xAC );
-	FCML_A32_A( "lodsl", 0xAD );
-	FCML_A32_A( "lodsw",0x66, 0xAD );
-	FCML_A64_A( "lodsq", 0x48, 0xAD );
+    FCML_A32( "lodsb (%esi)", 0xAC );
+    FCML_A32( "lodsl (%esi)", 0xAD );
+    FCML_A32( "lodsw (%si)",0x66, 0x67, 0xAD );
+    FCML_A64( "lodsq (%rsi)", 0x48, 0xAD );
+    FCML_A32_A( "lodsb", 0xAC );
+    FCML_A32_A( "lodsl", 0xAD );
+    FCML_A32_A( "lodsw",0x66, 0xAD );
+    FCML_A64_A( "lodsq", 0x48, 0xAD );
 }
 
 void fcml_tf_instruction_LOOP(void) {
@@ -235,7 +235,7 @@ void fcml_tf_instruction_LOOP(void) {
 
 void fcml_tf_instruction_LWPINS(void) {
 
-	FCML_I32( "lwpins ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
+    FCML_I32( "lwpins ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
     FCML_I32( "lwpins ebx,eax,33221100h", 0x8F, 0xEA, 0x60, 0x12, 0xC0, 0x00, 0x11, 0x22, 0x33 );
 
     FCML_I64( "lwpins rbx,dword ptr [rax],33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0x00, 0x00, 0x11, 0x22, 0x33 );
@@ -247,7 +247,7 @@ void fcml_tf_instruction_LWPINS(void) {
 
 void fcml_tf_instruction_LWPVAL(void) {
 
-	FCML_I32( "lwpval ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
+    FCML_I32( "lwpval ebx,dword ptr [eax],33221100h", 0x8F, 0xEA, 0x60, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
     FCML_I32( "lwpval ebx,eax,33221100h", 0x8F, 0xEA, 0x60, 0x12, 0xC8, 0x00, 0x11, 0x22, 0x33 );
 
     FCML_I64( "lwpval rbx,dword ptr [rax],33221100h", 0x8F, 0xEA, 0xE0, 0x12, 0x08, 0x00, 0x11, 0x22, 0x33 );
@@ -270,8 +270,8 @@ void fcml_tf_instruction_LSL(void) {
     FCML_I64( "lsl rcx,sp", 0x48, 0x0f, 0x03, 0xcc );
 
     FCML_A32( "lsl 0x00000020(%eax),%ebp", 0x0f, 0x03, 0x68, 0x20 );
-	FCML_A32( "lsl %sp,%ecx", 0x0f, 0x03, 0xcc );
-	FCML_A32( "lsl 0x00000020(%eax),%bp", 0x66, 0x0f, 0x03, 0x68, 0x20 );
+    FCML_A32( "lsl %sp,%ecx", 0x0f, 0x03, 0xcc );
+    FCML_A32( "lsl 0x00000020(%eax),%bp", 0x66, 0x0f, 0x03, 0x68, 0x20 );
     FCML_A32( "lsl %sp,%cx", 0x66, 0x0f, 0x03, 0xcc );
     FCML_A64( "lsl 0x0000000000000020(%rax),%rbp", 0x48, 0x0f, 0x03, 0x68, 0x20 );
 }
@@ -298,31 +298,31 @@ void fcml_tf_instruction_LZCNT(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_l[] = {
-	{ "fcml_tf_instruction_LAHF", fcml_tf_instruction_LAHF },
-	{ "fcml_tf_instruction_LAR", fcml_tf_instruction_LAR },
-	{ "fcml_tf_instruction_LDDQU", fcml_tf_instruction_LDDQU },
-	{ "fcml_tf_instruction_LDMXCSR", fcml_tf_instruction_LDMXCSR },
-	{ "fcml_tf_instruction_LDS", fcml_tf_instruction_LDS },
-	{ "fcml_tf_instruction_LEA", fcml_tf_instruction_LEA },
-	{ "fcml_tf_instruction_LEAVE", fcml_tf_instruction_LEAVE },
-	{ "fcml_tf_instruction_LFENCE", fcml_tf_instruction_LFENCE },
-	{ "fcml_tf_instruction_LLWPCB", fcml_tf_instruction_LLWPCB },
-	{ "fcml_tf_instruction_LGDT", fcml_tf_instruction_LGDT },
-	{ "fcml_tf_instruction_LIDT", fcml_tf_instruction_LIDT },
-	{ "fcml_tf_instruction_LLDT", fcml_tf_instruction_LLDT },
-	{ "fcml_tf_instruction_LMSW", fcml_tf_instruction_LMSW },
-	{ "fcml_tf_instruction_LODS", fcml_tf_instruction_LODS },
-	{ "fcml_tf_instruction_LOOP", fcml_tf_instruction_LOOP },
-	{ "fcml_tf_instruction_LWPINS", fcml_tf_instruction_LWPINS },
-	{ "fcml_tf_instruction_LWPVAL", fcml_tf_instruction_LWPVAL },
-	{ "fcml_tf_instruction_LSL", fcml_tf_instruction_LSL },
-	{ "fcml_tf_instruction_LTR", fcml_tf_instruction_LTR },
-	{ "fcml_tf_instruction_LZCNT", fcml_tf_instruction_LZCNT },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_LAHF", fcml_tf_instruction_LAHF },
+    { "fcml_tf_instruction_LAR", fcml_tf_instruction_LAR },
+    { "fcml_tf_instruction_LDDQU", fcml_tf_instruction_LDDQU },
+    { "fcml_tf_instruction_LDMXCSR", fcml_tf_instruction_LDMXCSR },
+    { "fcml_tf_instruction_LDS", fcml_tf_instruction_LDS },
+    { "fcml_tf_instruction_LEA", fcml_tf_instruction_LEA },
+    { "fcml_tf_instruction_LEAVE", fcml_tf_instruction_LEAVE },
+    { "fcml_tf_instruction_LFENCE", fcml_tf_instruction_LFENCE },
+    { "fcml_tf_instruction_LLWPCB", fcml_tf_instruction_LLWPCB },
+    { "fcml_tf_instruction_LGDT", fcml_tf_instruction_LGDT },
+    { "fcml_tf_instruction_LIDT", fcml_tf_instruction_LIDT },
+    { "fcml_tf_instruction_LLDT", fcml_tf_instruction_LLDT },
+    { "fcml_tf_instruction_LMSW", fcml_tf_instruction_LMSW },
+    { "fcml_tf_instruction_LODS", fcml_tf_instruction_LODS },
+    { "fcml_tf_instruction_LOOP", fcml_tf_instruction_LOOP },
+    { "fcml_tf_instruction_LWPINS", fcml_tf_instruction_LWPINS },
+    { "fcml_tf_instruction_LWPVAL", fcml_tf_instruction_LWPVAL },
+    { "fcml_tf_instruction_LSL", fcml_tf_instruction_LSL },
+    { "fcml_tf_instruction_LTR", fcml_tf_instruction_LTR },
+    { "fcml_tf_instruction_LZCNT", fcml_tf_instruction_LZCNT },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_l = {
-	"suite-fctl_ti_instructions_l", fcml_tf_instructions_l_suite_init, fcml_tf_instructions_l_suite_cleanup, fctl_ti_instructions_l
+    "suite-fctl_ti_instructions_l", fcml_tf_instructions_l_suite_init, fcml_tf_instructions_l_suite_cleanup, fctl_ti_instructions_l
 };
 
 

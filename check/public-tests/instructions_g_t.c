@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_g_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_g_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_GETSEC(void) {
@@ -35,10 +35,10 @@ void fcml_tf_instruction_GETSEC(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_g[] = {
-	{ "fcml_tf_instruction_GETSEC", fcml_tf_instruction_GETSEC },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_GETSEC", fcml_tf_instruction_GETSEC },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_g = {
-	"suite-fctl_ti_instructions_g", fcml_tf_instructions_g_suite_init, fcml_tf_instructions_g_suite_cleanup, fctl_ti_instructions_g
+    "suite-fctl_ti_instructions_g", fcml_tf_instructions_g_suite_init, fcml_tf_instructions_g_suite_cleanup, fctl_ti_instructions_g
 };

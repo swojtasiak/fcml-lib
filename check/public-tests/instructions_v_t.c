@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_v_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_v_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_VBROADCASTSS(void) {
@@ -1876,144 +1876,144 @@ void fcml_tf_instruction_VMFUNC(void) {
 
 void fcml_tf_instruction_VPERMIL2PS(void) {
 
-	FCML_I32( "vpermil2ps xmm0,xmm4,xmmword ptr [ecx],xmm7,01h", 0xC4, 0xE3, 0x59, 0x48, 0x01, 0x71 );
-	FCML_I64( "vpermil2ps xmm0,xmm4,xmm7,xmmword ptr [rcx],01h", 0xC4, 0xE3, 0xD9, 0x48, 0x01, 0x71 );
-	FCML_I32( "vpermil2ps ymm0,ymm4,ymmword ptr [ecx],ymm7,01h", 0xC4, 0xE3, 0x5D, 0x48, 0x01, 0x71 );
-	FCML_I64( "vpermil2ps ymm0,ymm4,ymm7,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x48, 0x01, 0x71 );
-	FCML_I64( "vpermil2ps ymm0,ymm4,ymm15,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x48, 0x01, 0xF1 );
-	FCML_I64_M( "vpermil2ps ymm0,ymm4,ymm15,ymm1,01h", 2, FCML_MI( 0xc4, 0xe3, 0xdd, 0x48, 0xc1, 0xf1 ), FCML_MI( 0xc4, 0xc3, 0x5d, 0x48, 0xc7, 0x11 ) );
+    FCML_I32( "vpermil2ps xmm0,xmm4,xmmword ptr [ecx],xmm7,01h", 0xC4, 0xE3, 0x59, 0x48, 0x01, 0x71 );
+    FCML_I64( "vpermil2ps xmm0,xmm4,xmm7,xmmword ptr [rcx],01h", 0xC4, 0xE3, 0xD9, 0x48, 0x01, 0x71 );
+    FCML_I32( "vpermil2ps ymm0,ymm4,ymmword ptr [ecx],ymm7,01h", 0xC4, 0xE3, 0x5D, 0x48, 0x01, 0x71 );
+    FCML_I64( "vpermil2ps ymm0,ymm4,ymm7,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x48, 0x01, 0x71 );
+    FCML_I64( "vpermil2ps ymm0,ymm4,ymm15,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x48, 0x01, 0xF1 );
+    FCML_I64_M( "vpermil2ps ymm0,ymm4,ymm15,ymm1,01h", 2, FCML_MI( 0xc4, 0xe3, 0xdd, 0x48, 0xc1, 0xf1 ), FCML_MI( 0xc4, 0xc3, 0x5d, 0x48, 0xc7, 0x11 ) );
 }
 
 void fcml_tf_instruction_VPERMIL2PD(void) {
 
-	FCML_I32( "vpermil2pd xmm0,xmm4,xmmword ptr [ecx],xmm7,01h", 0xC4, 0xE3, 0x59, 0x49, 0x01, 0x71 );
-	FCML_I64( "vpermil2pd xmm0,xmm4,xmm7,xmmword ptr [rcx],01h", 0xC4, 0xE3, 0xD9, 0x49, 0x01, 0x71 );
-	FCML_I32( "vpermil2pd ymm0,ymm4,ymmword ptr [ecx],ymm7,01h", 0xC4, 0xE3, 0x5D, 0x49, 0x01, 0x71 );
-	FCML_I64( "vpermil2pd ymm0,ymm4,ymm7,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x49, 0x01, 0x71 );
-	FCML_I64( "vpermil2pd ymm0,ymm4,ymm15,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x49, 0x01, 0xF1 );
-	FCML_I64_M( "vpermil2pd ymm0,ymm4,ymm15,ymm1,01h", 2, FCML_MI( 0xc4, 0xe3, 0xdd, 0x49, 0xc1, 0xf1 ), FCML_MI( 0xc4, 0xc3, 0x5d, 0x49, 0xc7, 0x11 ) );
+    FCML_I32( "vpermil2pd xmm0,xmm4,xmmword ptr [ecx],xmm7,01h", 0xC4, 0xE3, 0x59, 0x49, 0x01, 0x71 );
+    FCML_I64( "vpermil2pd xmm0,xmm4,xmm7,xmmword ptr [rcx],01h", 0xC4, 0xE3, 0xD9, 0x49, 0x01, 0x71 );
+    FCML_I32( "vpermil2pd ymm0,ymm4,ymmword ptr [ecx],ymm7,01h", 0xC4, 0xE3, 0x5D, 0x49, 0x01, 0x71 );
+    FCML_I64( "vpermil2pd ymm0,ymm4,ymm7,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x49, 0x01, 0x71 );
+    FCML_I64( "vpermil2pd ymm0,ymm4,ymm15,ymmword ptr [rcx],01h", 0xC4, 0xE3, 0xDD, 0x49, 0x01, 0xF1 );
+    FCML_I64_M( "vpermil2pd ymm0,ymm4,ymm15,ymm1,01h", 2, FCML_MI( 0xc4, 0xe3, 0xdd, 0x49, 0xc1, 0xf1 ), FCML_MI( 0xc4, 0xc3, 0x5d, 0x49, 0xc7, 0x11 ) );
 }
 
 fcml_stf_test_case fctl_ti_instructions_v[] = {
-	{ "fcml_tf_instruction_VBROADCASTSS", fcml_tf_instruction_VBROADCASTSS },
-	{ "fcml_tf_instruction_VPBROADCASTB", fcml_tf_instruction_VPBROADCASTB },
-	{ "fcml_tf_instruction_VEXTRACTF128", fcml_tf_instruction_VEXTRACTF128 },
-	{ "fcml_tf_instruction_VINSERTF128", fcml_tf_instruction_VINSERTF128 },
-	{ "fcml_tf_instruction_VMASKMOVPS_VMASKMOVPD", fcml_tf_instruction_VMASKMOVPS_VMASKMOVPD },
-	{ "fcml_tf_instruction_VPMASKMOVD_VPMASKMOVQ", fcml_tf_instruction_VPMASKMOVD_VPMASKMOVQ },
-	{ "fcml_tf_instruction_VPBLENDD", fcml_tf_instruction_VPBLENDD },
-	{ "fcml_tf_instruction_VCVTPH2PS", fcml_tf_instruction_VCVTPH2PS },
-	{ "fcml_tf_instruction_VCVTPS2PH", fcml_tf_instruction_VCVTPS2PH },
-	{ "fcml_tf_instruction_VERR", fcml_tf_instruction_VERR },
-	{ "fcml_tf_instruction_VMLOAD", fcml_tf_instruction_VMLOAD },
-	{ "fcml_tf_instruction_VMMCALL", fcml_tf_instruction_VMMCALL },
-	{ "fcml_tf_instruction_VMRUN", fcml_tf_instruction_VMRUN },
-	{ "fcml_tf_instruction_VMSAVE", fcml_tf_instruction_VMSAVE },
-	{ "fcml_tf_instruction_VPERMILPD", fcml_tf_instruction_VPERMILPD },
-	{ "fcml_tf_instruction_VPERMILPS", fcml_tf_instruction_VPERMILPS },
-	{ "fcml_tf_instruction_VPSLLVD", fcml_tf_instruction_VPSLLVD },
-	{ "fcml_tf_instruction_VPSRLVD", fcml_tf_instruction_VPSRLVD },
-	{ "fcml_tf_instruction_VPSRAVD", fcml_tf_instruction_VPSRAVD },
-	{ "fcml_tf_instruction_VPERMD", fcml_tf_instruction_VPERMD },
-	{ "fcml_tf_instruction_VPERMPD", fcml_tf_instruction_VPERMPD },
-	{ "fcml_tf_instruction_VPERMQ", fcml_tf_instruction_VPERMQ },
-	{ "fcml_tf_instruction_VPERMPS", fcml_tf_instruction_VPERMPS },
-	{ "fcml_tf_instruction_VPERM2F128", fcml_tf_instruction_VPERM2F128 },
-	{ "fcml_tf_instruction_VPERM2I128", fcml_tf_instruction_VPERM2I128 },
-	{ "fcml_tf_instruction_VEXTRACTI128", fcml_tf_instruction_VEXTRACTI128 },
-	{ "fcml_tf_instruction_VINSERTI128", fcml_tf_instruction_VINSERTI128 },
-	{ "fcml_tf_instruction_VTESTPS", fcml_tf_instruction_VTESTPS },
-	{ "fcml_tf_instruction_VGATHERDPD", fcml_tf_instruction_VGATHERDPD },
-	{ "fcml_tf_instruction_VGATHERDPS", fcml_tf_instruction_VGATHERDPS },
-	{ "fcml_tf_instruction_VPGATHERDD", fcml_tf_instruction_VPGATHERDD },
-	{ "fcml_tf_instruction_VPGATHERDQ", fcml_tf_instruction_VPGATHERDQ },
-	{ "fcml_tf_instruction_VZEROALL", fcml_tf_instruction_VZEROALL },
-	{ "fcml_tf_instruction_VZEROUPPER", fcml_tf_instruction_VZEROUPPER },
-	{ "fcml_tf_instruction_VFMADDPD", fcml_tf_instruction_VFMADDPD },
-	{ "fcml_tf_instruction_VFMADDPS", fcml_tf_instruction_VFMADDPS },
-	{ "fcml_tf_instruction_VFMADDSD", fcml_tf_instruction_VFMADDSD },
-	{ "fcml_tf_instruction_VFMADDSS", fcml_tf_instruction_VFMADDSS },
-	{ "fcml_tf_instruction_VFMADDSUBPD", fcml_tf_instruction_VFMADDSUBPD },
-	{ "fcml_tf_instruction_VFMADDSUBPS", fcml_tf_instruction_VFMADDSUBPS },
-	{ "fcml_tf_instruction_VFMSUBADDPD", fcml_tf_instruction_VFMSUBADDPD },
-	{ "fcml_tf_instruction_VFMSUBADDPS", fcml_tf_instruction_VFMSUBADDPS },
-	{ "fcml_tf_instruction_VFMSUBPD", fcml_tf_instruction_VFMSUBPD },
-	{ "fcml_tf_instruction_VFMSUBPS", fcml_tf_instruction_VFMSUBPS },
-	{ "fcml_tf_instruction_VFMSUBSD", fcml_tf_instruction_VFMSUBSD },
-	{ "fcml_tf_instruction_VFMSUBSS", fcml_tf_instruction_VFMSUBSS },
-	{ "fcml_tf_instruction_VFNMADDPD", fcml_tf_instruction_VFNMADDPD },
-	{ "fcml_tf_instruction_VFNMADDPS", fcml_tf_instruction_VFNMADDPS },
-	{ "fcml_tf_instruction_VFNMADDSD", fcml_tf_instruction_VFNMADDSD },
-	{ "fcml_tf_instruction_VFNMADDSS", fcml_tf_instruction_VFNMADDSS },
-	{ "fcml_tf_instruction_VFNMSUBPD", fcml_tf_instruction_VFNMSUBPD },
-	{ "fcml_tf_instruction_VFNMSUBPS", fcml_tf_instruction_VFNMSUBPS },
-	{ "fcml_tf_instruction_VFNMSUBSD", fcml_tf_instruction_VFNMSUBSD },
-	{ "fcml_tf_instruction_VFNMSUBSS", fcml_tf_instruction_VFNMSUBSS },
-	{ "fcml_tf_instruction_VFRCZPD", fcml_tf_instruction_VFRCZPD },
-	{ "fcml_tf_instruction_VFRCZPS", fcml_tf_instruction_VFRCZPS },
-	{ "fcml_tf_instruction_VFRCZSD", fcml_tf_instruction_VFRCZSD },
-	{ "fcml_tf_instruction_VFRCZSS", fcml_tf_instruction_VFRCZSS },
-	{ "fcml_tf_instruction_VPCMOV", fcml_tf_instruction_VPCMOV },
-	{ "fcml_tf_instruction_VPCOMU", fcml_tf_instruction_VPCOMU },
-	{ "fcml_tf_instruction_VPCOM", fcml_tf_instruction_VPCOM },
-	{ "fcml_tf_instruction_VPHADDBD", fcml_tf_instruction_VPHADDBD },
-	{ "fcml_tf_instruction_VPHADDBW", fcml_tf_instruction_VPHADDBW },
-	{ "fcml_tf_instruction_VPHADDBQ", fcml_tf_instruction_VPHADDBQ },
-	{ "fcml_tf_instruction_VPHADDDQ", fcml_tf_instruction_VPHADDDQ },
-	{ "fcml_tf_instruction_VPHADDUBD", fcml_tf_instruction_VPHADDUBD },
-	{ "fcml_tf_instruction_VPHADDUBQ", fcml_tf_instruction_VPHADDUBQ },
-	{ "fcml_tf_instruction_VPHADDUBW", fcml_tf_instruction_VPHADDUBW },
-	{ "fcml_tf_instruction_VPHADDUDQ", fcml_tf_instruction_VPHADDUDQ },
-	{ "fcml_tf_instruction_VPHADDUWD", fcml_tf_instruction_VPHADDUWD },
-	{ "fcml_tf_instruction_VPHADDUWQ", fcml_tf_instruction_VPHADDUWQ },
-	{ "fcml_tf_instruction_VPHADDWD", fcml_tf_instruction_VPHADDWD },
-	{ "fcml_tf_instruction_VPHADDWQ", fcml_tf_instruction_VPHADDWQ },
-	{ "fcml_tf_instruction_VPHSUBBW", fcml_tf_instruction_VPHSUBBW },
-	{ "fcml_tf_instruction_VPHSUBDQ", fcml_tf_instruction_VPHSUBDQ },
-	{ "fcml_tf_instruction_VPHSUBWD", fcml_tf_instruction_VPHSUBWD },
-	{ "fcml_tf_instruction_VPMACSDD", fcml_tf_instruction_VPMACSDD },
-	{ "fcml_tf_instruction_VPMACSDQH", fcml_tf_instruction_VPMACSDQH },
-	{ "fcml_tf_instruction_VPMACSDQL", fcml_tf_instruction_VPMACSDQL },
-	{ "fcml_tf_instruction_VPMACSSDD", fcml_tf_instruction_VPMACSSDD },
-	{ "fcml_tf_instruction_VPMACSSDQH", fcml_tf_instruction_VPMACSSDQH },
-	{ "fcml_tf_instruction_VPMACSSDQL", fcml_tf_instruction_VPMACSSDQL },
-	{ "fcml_tf_instruction_VPMACSSWD", fcml_tf_instruction_VPMACSSWD },
-	{ "fcml_tf_instruction_VPMACSSWW", fcml_tf_instruction_VPMACSSWW },
-	{ "fcml_tf_instruction_VPMACSWD", fcml_tf_instruction_VPMACSWD },
-	{ "fcml_tf_instruction_VPMACSWW", fcml_tf_instruction_VPMACSWW },
-	{ "fcml_tf_instruction_VPMADCSSWD", fcml_tf_instruction_VPMADCSSWD },
-	{ "fcml_tf_instruction_VPMADCSWD", fcml_tf_instruction_VPMADCSWD },
-	{ "fcml_tf_instruction_VPPERM", fcml_tf_instruction_VPPERM },
-	{ "fcml_tf_instruction_VPROTD", fcml_tf_instruction_VPROTD },
-	{ "fcml_tf_instruction_VPROTB", fcml_tf_instruction_VPROTB },
-	{ "fcml_tf_instruction_VPROTQ", fcml_tf_instruction_VPROTQ },
-	{ "fcml_tf_instruction_VPROTW", fcml_tf_instruction_VPROTW },
-	{ "fcml_tf_instruction_VPSHAB", fcml_tf_instruction_VPSHAB },
-	{ "fcml_tf_instruction_VPSHAD", fcml_tf_instruction_VPSHAD },
-	{ "fcml_tf_instruction_VPSHAQ", fcml_tf_instruction_VPSHAQ },
-	{ "fcml_tf_instruction_VPSHAW", fcml_tf_instruction_VPSHAW },
-	{ "fcml_tf_instruction_VPSHLB", fcml_tf_instruction_VPSHLB },
-	{ "fcml_tf_instruction_VPSHLD", fcml_tf_instruction_VPSHLD },
-	{ "fcml_tf_instruction_VPSHLQ", fcml_tf_instruction_VPSHLQ },
-	{ "fcml_tf_instruction_VPSHLW", fcml_tf_instruction_VPSHLW },
-	{ "fcml_tf_instruction_VMPTRLD", fcml_tf_instruction_VMPTRLD },
-	{ "fcml_tf_instruction_VMPTRST", fcml_tf_instruction_VMPTRST },
-	{ "fcml_tf_instruction_VMCLEAR", fcml_tf_instruction_VMCLEAR },
-	{ "fcml_tf_instruction_VMREAD", fcml_tf_instruction_VMREAD },
-	{ "fcml_tf_instruction_VMWRITE", fcml_tf_instruction_VMWRITE },
-	{ "fcml_tf_instruction_VMLAUNCH", fcml_tf_instruction_VMLAUNCH },
-	{ "fcml_tf_instruction_VMRESUME", fcml_tf_instruction_VMRESUME },
-	{ "fcml_tf_instruction_VMXON", fcml_tf_instruction_VMXON },
-	{ "fcml_tf_instruction_VMXOFF", fcml_tf_instruction_VMXOFF },
-	{ "fcml_tf_instruction_VMCALL", fcml_tf_instruction_VMCALL },
-	{ "fcml_tf_instruction_VMFUNC", fcml_tf_instruction_VMFUNC },
-	{ "fcml_tf_instruction_VPERMIL2PS", fcml_tf_instruction_VPERMIL2PS },
-	{ "fcml_tf_instruction_VPERMIL2PD", fcml_tf_instruction_VPERMIL2PD },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_VBROADCASTSS", fcml_tf_instruction_VBROADCASTSS },
+    { "fcml_tf_instruction_VPBROADCASTB", fcml_tf_instruction_VPBROADCASTB },
+    { "fcml_tf_instruction_VEXTRACTF128", fcml_tf_instruction_VEXTRACTF128 },
+    { "fcml_tf_instruction_VINSERTF128", fcml_tf_instruction_VINSERTF128 },
+    { "fcml_tf_instruction_VMASKMOVPS_VMASKMOVPD", fcml_tf_instruction_VMASKMOVPS_VMASKMOVPD },
+    { "fcml_tf_instruction_VPMASKMOVD_VPMASKMOVQ", fcml_tf_instruction_VPMASKMOVD_VPMASKMOVQ },
+    { "fcml_tf_instruction_VPBLENDD", fcml_tf_instruction_VPBLENDD },
+    { "fcml_tf_instruction_VCVTPH2PS", fcml_tf_instruction_VCVTPH2PS },
+    { "fcml_tf_instruction_VCVTPS2PH", fcml_tf_instruction_VCVTPS2PH },
+    { "fcml_tf_instruction_VERR", fcml_tf_instruction_VERR },
+    { "fcml_tf_instruction_VMLOAD", fcml_tf_instruction_VMLOAD },
+    { "fcml_tf_instruction_VMMCALL", fcml_tf_instruction_VMMCALL },
+    { "fcml_tf_instruction_VMRUN", fcml_tf_instruction_VMRUN },
+    { "fcml_tf_instruction_VMSAVE", fcml_tf_instruction_VMSAVE },
+    { "fcml_tf_instruction_VPERMILPD", fcml_tf_instruction_VPERMILPD },
+    { "fcml_tf_instruction_VPERMILPS", fcml_tf_instruction_VPERMILPS },
+    { "fcml_tf_instruction_VPSLLVD", fcml_tf_instruction_VPSLLVD },
+    { "fcml_tf_instruction_VPSRLVD", fcml_tf_instruction_VPSRLVD },
+    { "fcml_tf_instruction_VPSRAVD", fcml_tf_instruction_VPSRAVD },
+    { "fcml_tf_instruction_VPERMD", fcml_tf_instruction_VPERMD },
+    { "fcml_tf_instruction_VPERMPD", fcml_tf_instruction_VPERMPD },
+    { "fcml_tf_instruction_VPERMQ", fcml_tf_instruction_VPERMQ },
+    { "fcml_tf_instruction_VPERMPS", fcml_tf_instruction_VPERMPS },
+    { "fcml_tf_instruction_VPERM2F128", fcml_tf_instruction_VPERM2F128 },
+    { "fcml_tf_instruction_VPERM2I128", fcml_tf_instruction_VPERM2I128 },
+    { "fcml_tf_instruction_VEXTRACTI128", fcml_tf_instruction_VEXTRACTI128 },
+    { "fcml_tf_instruction_VINSERTI128", fcml_tf_instruction_VINSERTI128 },
+    { "fcml_tf_instruction_VTESTPS", fcml_tf_instruction_VTESTPS },
+    { "fcml_tf_instruction_VGATHERDPD", fcml_tf_instruction_VGATHERDPD },
+    { "fcml_tf_instruction_VGATHERDPS", fcml_tf_instruction_VGATHERDPS },
+    { "fcml_tf_instruction_VPGATHERDD", fcml_tf_instruction_VPGATHERDD },
+    { "fcml_tf_instruction_VPGATHERDQ", fcml_tf_instruction_VPGATHERDQ },
+    { "fcml_tf_instruction_VZEROALL", fcml_tf_instruction_VZEROALL },
+    { "fcml_tf_instruction_VZEROUPPER", fcml_tf_instruction_VZEROUPPER },
+    { "fcml_tf_instruction_VFMADDPD", fcml_tf_instruction_VFMADDPD },
+    { "fcml_tf_instruction_VFMADDPS", fcml_tf_instruction_VFMADDPS },
+    { "fcml_tf_instruction_VFMADDSD", fcml_tf_instruction_VFMADDSD },
+    { "fcml_tf_instruction_VFMADDSS", fcml_tf_instruction_VFMADDSS },
+    { "fcml_tf_instruction_VFMADDSUBPD", fcml_tf_instruction_VFMADDSUBPD },
+    { "fcml_tf_instruction_VFMADDSUBPS", fcml_tf_instruction_VFMADDSUBPS },
+    { "fcml_tf_instruction_VFMSUBADDPD", fcml_tf_instruction_VFMSUBADDPD },
+    { "fcml_tf_instruction_VFMSUBADDPS", fcml_tf_instruction_VFMSUBADDPS },
+    { "fcml_tf_instruction_VFMSUBPD", fcml_tf_instruction_VFMSUBPD },
+    { "fcml_tf_instruction_VFMSUBPS", fcml_tf_instruction_VFMSUBPS },
+    { "fcml_tf_instruction_VFMSUBSD", fcml_tf_instruction_VFMSUBSD },
+    { "fcml_tf_instruction_VFMSUBSS", fcml_tf_instruction_VFMSUBSS },
+    { "fcml_tf_instruction_VFNMADDPD", fcml_tf_instruction_VFNMADDPD },
+    { "fcml_tf_instruction_VFNMADDPS", fcml_tf_instruction_VFNMADDPS },
+    { "fcml_tf_instruction_VFNMADDSD", fcml_tf_instruction_VFNMADDSD },
+    { "fcml_tf_instruction_VFNMADDSS", fcml_tf_instruction_VFNMADDSS },
+    { "fcml_tf_instruction_VFNMSUBPD", fcml_tf_instruction_VFNMSUBPD },
+    { "fcml_tf_instruction_VFNMSUBPS", fcml_tf_instruction_VFNMSUBPS },
+    { "fcml_tf_instruction_VFNMSUBSD", fcml_tf_instruction_VFNMSUBSD },
+    { "fcml_tf_instruction_VFNMSUBSS", fcml_tf_instruction_VFNMSUBSS },
+    { "fcml_tf_instruction_VFRCZPD", fcml_tf_instruction_VFRCZPD },
+    { "fcml_tf_instruction_VFRCZPS", fcml_tf_instruction_VFRCZPS },
+    { "fcml_tf_instruction_VFRCZSD", fcml_tf_instruction_VFRCZSD },
+    { "fcml_tf_instruction_VFRCZSS", fcml_tf_instruction_VFRCZSS },
+    { "fcml_tf_instruction_VPCMOV", fcml_tf_instruction_VPCMOV },
+    { "fcml_tf_instruction_VPCOMU", fcml_tf_instruction_VPCOMU },
+    { "fcml_tf_instruction_VPCOM", fcml_tf_instruction_VPCOM },
+    { "fcml_tf_instruction_VPHADDBD", fcml_tf_instruction_VPHADDBD },
+    { "fcml_tf_instruction_VPHADDBW", fcml_tf_instruction_VPHADDBW },
+    { "fcml_tf_instruction_VPHADDBQ", fcml_tf_instruction_VPHADDBQ },
+    { "fcml_tf_instruction_VPHADDDQ", fcml_tf_instruction_VPHADDDQ },
+    { "fcml_tf_instruction_VPHADDUBD", fcml_tf_instruction_VPHADDUBD },
+    { "fcml_tf_instruction_VPHADDUBQ", fcml_tf_instruction_VPHADDUBQ },
+    { "fcml_tf_instruction_VPHADDUBW", fcml_tf_instruction_VPHADDUBW },
+    { "fcml_tf_instruction_VPHADDUDQ", fcml_tf_instruction_VPHADDUDQ },
+    { "fcml_tf_instruction_VPHADDUWD", fcml_tf_instruction_VPHADDUWD },
+    { "fcml_tf_instruction_VPHADDUWQ", fcml_tf_instruction_VPHADDUWQ },
+    { "fcml_tf_instruction_VPHADDWD", fcml_tf_instruction_VPHADDWD },
+    { "fcml_tf_instruction_VPHADDWQ", fcml_tf_instruction_VPHADDWQ },
+    { "fcml_tf_instruction_VPHSUBBW", fcml_tf_instruction_VPHSUBBW },
+    { "fcml_tf_instruction_VPHSUBDQ", fcml_tf_instruction_VPHSUBDQ },
+    { "fcml_tf_instruction_VPHSUBWD", fcml_tf_instruction_VPHSUBWD },
+    { "fcml_tf_instruction_VPMACSDD", fcml_tf_instruction_VPMACSDD },
+    { "fcml_tf_instruction_VPMACSDQH", fcml_tf_instruction_VPMACSDQH },
+    { "fcml_tf_instruction_VPMACSDQL", fcml_tf_instruction_VPMACSDQL },
+    { "fcml_tf_instruction_VPMACSSDD", fcml_tf_instruction_VPMACSSDD },
+    { "fcml_tf_instruction_VPMACSSDQH", fcml_tf_instruction_VPMACSSDQH },
+    { "fcml_tf_instruction_VPMACSSDQL", fcml_tf_instruction_VPMACSSDQL },
+    { "fcml_tf_instruction_VPMACSSWD", fcml_tf_instruction_VPMACSSWD },
+    { "fcml_tf_instruction_VPMACSSWW", fcml_tf_instruction_VPMACSSWW },
+    { "fcml_tf_instruction_VPMACSWD", fcml_tf_instruction_VPMACSWD },
+    { "fcml_tf_instruction_VPMACSWW", fcml_tf_instruction_VPMACSWW },
+    { "fcml_tf_instruction_VPMADCSSWD", fcml_tf_instruction_VPMADCSSWD },
+    { "fcml_tf_instruction_VPMADCSWD", fcml_tf_instruction_VPMADCSWD },
+    { "fcml_tf_instruction_VPPERM", fcml_tf_instruction_VPPERM },
+    { "fcml_tf_instruction_VPROTD", fcml_tf_instruction_VPROTD },
+    { "fcml_tf_instruction_VPROTB", fcml_tf_instruction_VPROTB },
+    { "fcml_tf_instruction_VPROTQ", fcml_tf_instruction_VPROTQ },
+    { "fcml_tf_instruction_VPROTW", fcml_tf_instruction_VPROTW },
+    { "fcml_tf_instruction_VPSHAB", fcml_tf_instruction_VPSHAB },
+    { "fcml_tf_instruction_VPSHAD", fcml_tf_instruction_VPSHAD },
+    { "fcml_tf_instruction_VPSHAQ", fcml_tf_instruction_VPSHAQ },
+    { "fcml_tf_instruction_VPSHAW", fcml_tf_instruction_VPSHAW },
+    { "fcml_tf_instruction_VPSHLB", fcml_tf_instruction_VPSHLB },
+    { "fcml_tf_instruction_VPSHLD", fcml_tf_instruction_VPSHLD },
+    { "fcml_tf_instruction_VPSHLQ", fcml_tf_instruction_VPSHLQ },
+    { "fcml_tf_instruction_VPSHLW", fcml_tf_instruction_VPSHLW },
+    { "fcml_tf_instruction_VMPTRLD", fcml_tf_instruction_VMPTRLD },
+    { "fcml_tf_instruction_VMPTRST", fcml_tf_instruction_VMPTRST },
+    { "fcml_tf_instruction_VMCLEAR", fcml_tf_instruction_VMCLEAR },
+    { "fcml_tf_instruction_VMREAD", fcml_tf_instruction_VMREAD },
+    { "fcml_tf_instruction_VMWRITE", fcml_tf_instruction_VMWRITE },
+    { "fcml_tf_instruction_VMLAUNCH", fcml_tf_instruction_VMLAUNCH },
+    { "fcml_tf_instruction_VMRESUME", fcml_tf_instruction_VMRESUME },
+    { "fcml_tf_instruction_VMXON", fcml_tf_instruction_VMXON },
+    { "fcml_tf_instruction_VMXOFF", fcml_tf_instruction_VMXOFF },
+    { "fcml_tf_instruction_VMCALL", fcml_tf_instruction_VMCALL },
+    { "fcml_tf_instruction_VMFUNC", fcml_tf_instruction_VMFUNC },
+    { "fcml_tf_instruction_VPERMIL2PS", fcml_tf_instruction_VPERMIL2PS },
+    { "fcml_tf_instruction_VPERMIL2PD", fcml_tf_instruction_VPERMIL2PD },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_v = {
-	"suite-fctl_ti_instructions_v", fcml_tf_instructions_v_suite_init, fcml_tf_instructions_v_suite_cleanup, fctl_ti_instructions_v
+    "suite-fctl_ti_instructions_v", fcml_tf_instructions_v_suite_init, fcml_tf_instructions_v_suite_cleanup, fctl_ti_instructions_v
 };
 
 

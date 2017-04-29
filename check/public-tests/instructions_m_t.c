@@ -22,11 +22,11 @@
 #include "instructions_base_t.h"
 
 fcml_bool fcml_tf_instructions_m_suite_init(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 fcml_bool fcml_tf_instructions_m_suite_cleanup(void) {
-	return FCML_TRUE;
+    return FCML_TRUE;
 }
 
 void fcml_tf_instruction_MASKMOVQ(void) {
@@ -44,8 +44,8 @@ void fcml_tf_instruction_MASKMOVDQU(void) {
 
     FCML_I3264( "vmaskmovdqu xmm3,xmm0", 0xc5, 0xf9, 0xf7, 0xd8 );
 
-	FCML_A3264( "maskmovdqu %xmm0,%xmm3", 0x66, 0x0f, 0xf7, 0xd8 );
-	FCML_A3264( "vmaskmovdqu %xmm0,%xmm3", 0xc5, 0xf9, 0xf7, 0xd8 );
+    FCML_A3264( "maskmovdqu %xmm0,%xmm3", 0x66, 0x0f, 0xf7, 0xd8 );
+    FCML_A3264( "vmaskmovdqu %xmm0,%xmm3", 0xc5, 0xf9, 0xf7, 0xd8 );
 }
 
 void fcml_tf_instruction_MAXPD(void) {
@@ -168,7 +168,7 @@ void fcml_tf_instruction_MONITOR(void) {
 
 void fcml_tf_instruction_MOV(void) {
 
-	FCML_I32( "mov eax,dr2", 0x0F, 0x21, 0xD0 );
+    FCML_I32( "mov eax,dr2", 0x0F, 0x21, 0xD0 );
     FCML_I32( "mov eax,dr2", 0x66, 0x0F, 0x21, 0xD0 );
 
     FCML_I64_D( "mov rax,dr2", 0x66, 0x0F, 0x21, 0xD0 );
@@ -275,9 +275,9 @@ void fcml_tf_instruction_MOV(void) {
     FCML_I64( "mov word ptr [rax],ss", 0x8C, 0x10 );
 
     FCML_A32( "mov %ss,%eax", 0x8C, 0xD0 );
-	FCML_A32( "mov %ss,%ax", 0x66, 0x8C, 0xD0 );
-	FCML_A64( "mov %ss,%rax", 0x48, 0x8C, 0xD0 );
-	FCML_A64( "mov %ss,(%rax)", 0x8C, 0x10 );
+    FCML_A32( "mov %ss,%ax", 0x66, 0x8C, 0xD0 );
+    FCML_A64( "mov %ss,%rax", 0x48, 0x8C, 0xD0 );
+    FCML_A64( "mov %ss,(%rax)", 0x8C, 0x10 );
 
     FCML_I64( "mov rax,ss", 0x48, 0x8C, 0xD0 );
 
@@ -423,7 +423,7 @@ void fcml_tf_instruction_MOVAPS(void) {
 
 void fcml_tf_instruction_MOVBE(void) {
 
-	FCML_I64( "movbe edx,dword ptr [rax]", 0x0F, 0x38, 0xF0, 0x10 );
+    FCML_I64( "movbe edx,dword ptr [rax]", 0x0F, 0x38, 0xF0, 0x10 );
     FCML_I64( "movbe rdx,qword ptr [rax]", 0x48, 0x0F, 0x38, 0xF0, 0x10 );
     FCML_I32_FAILED( "movbe eax,edx", 0x0F, 0x38, 0xF0, 0xC2 );
     FCML_I32( "movbe dx,word ptr [eax]", 0x66, 0x0F, 0x38, 0xF0, 0x10 );
@@ -439,71 +439,71 @@ void fcml_tf_instruction_MOVBE(void) {
 
 void fcml_tf_instruction_MOVQ(void) {
 
-	FCML_I32( "movq mm0,mmword ptr [eax]", 0x0F, 0x6F, 0x00 );
-	FCML_I64( "movq mm0,mmword ptr [rax]", 0x0F, 0x6F, 0x00 );
-	FCML_I64_M_A( "movq mm0,[rax]", 2, FCML_MI( 0x0f, 0x6f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x00 ) );
-	FCML_I32_D( "movq mm0,mm2", 0x0f, 0x6f, 0xc2 );
-	FCML_I64_M( "movq mm2,mm0", 2, FCML_MI( 0x0f, 0x6f, 0xd0 ), FCML_MI( 0x0f, 0x7f, 0xc2 ) );
-	/* GAS (ambigous syntax)
-	 */
-	FCML_A64_M( "movq (%rax),%mm0", 2, FCML_MI( 0x0f, 0x6f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x00 ) );
-	FCML_A64_M( "movq %mm0,%mm0", 2, FCML_MI( 0x0f, 0x7f, 0xc0 ), FCML_MI( 0x0f, 0x6f, 0xc0 ) );
+    FCML_I32( "movq mm0,mmword ptr [eax]", 0x0F, 0x6F, 0x00 );
+    FCML_I64( "movq mm0,mmword ptr [rax]", 0x0F, 0x6F, 0x00 );
+    FCML_I64_M_A( "movq mm0,[rax]", 2, FCML_MI( 0x0f, 0x6f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x00 ) );
+    FCML_I32_D( "movq mm0,mm2", 0x0f, 0x6f, 0xc2 );
+    FCML_I64_M( "movq mm2,mm0", 2, FCML_MI( 0x0f, 0x6f, 0xd0 ), FCML_MI( 0x0f, 0x7f, 0xc2 ) );
+    /* GAS (ambigous syntax)
+     */
+    FCML_A64_M( "movq (%rax),%mm0", 2, FCML_MI( 0x0f, 0x6f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x6e, 0x00 ) );
+    FCML_A64_M( "movq %mm0,%mm0", 2, FCML_MI( 0x0f, 0x7f, 0xc0 ), FCML_MI( 0x0f, 0x6f, 0xc0 ) );
 
-	FCML_I32( "movq mmword ptr [eax],mm0", 0x0F, 0x7F, 0x00 );
-	FCML_I64( "movq mmword ptr [rax],mm0",  0x0F, 0x7F, 0x00 );
-	FCML_I64_M( "movq mm0,mm2", 2, FCML_MI( 0x0f, 0x7f, 0xd0 ), FCML_MI( 0x0f, 0x6f, 0xc2 ) );
+    FCML_I32( "movq mmword ptr [eax],mm0", 0x0F, 0x7F, 0x00 );
+    FCML_I64( "movq mmword ptr [rax],mm0",  0x0F, 0x7F, 0x00 );
+    FCML_I64_M( "movq mm0,mm2", 2, FCML_MI( 0x0f, 0x7f, 0xd0 ), FCML_MI( 0x0f, 0x6f, 0xc2 ) );
 
-	FCML_A64_M( "movq %mm0,(%rax)", 2, FCML_MI( 0x0f, 0x7f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x7e, 0x00 ) );
+    FCML_A64_M( "movq %mm0,(%rax)", 2, FCML_MI( 0x0f, 0x7f, 0x00 ), FCML_MI( 0x48, 0x0f, 0x7e, 0x00 ) );
 
-	FCML_I64_A( "movq mmword ptr [rax],mm2", 0x0f, 0x7f, 0x10 );
+    FCML_I64_A( "movq mmword ptr [rax],mm2", 0x0f, 0x7f, 0x10 );
 
-	FCML_A64_M( "movq %mm2,(%rax)", 2, FCML_MI( 0x0f, 0x7f, 0x10 ), FCML_MI( 0x48, 0x0f, 0x7e, 0x10 ) );
+    FCML_A64_M( "movq %mm2,(%rax)", 2, FCML_MI( 0x0f, 0x7f, 0x10 ), FCML_MI( 0x48, 0x0f, 0x7e, 0x10 ) );
 
-	FCML_I32( "movq xmm0,mmword ptr [eax]", 0xF3, 0x0F, 0x7E, 0x00 );
-	FCML_I64( "movq xmm0,mmword ptr [rax]", 0xF3, 0x0F, 0x7E, 0x00 );
-	FCML_I64_M( "movq xmm2,xmm0", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xc2 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xd0 ) );
+    FCML_I32( "movq xmm0,mmword ptr [eax]", 0xF3, 0x0F, 0x7E, 0x00 );
+    FCML_I64( "movq xmm0,mmword ptr [rax]", 0xF3, 0x0F, 0x7E, 0x00 );
+    FCML_I64_M( "movq xmm2,xmm0", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xc2 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xd0 ) );
 
-	FCML_A64_M( "movq (%rax),%xmm0", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x00 ), FCML_MI( 0x66, 0x48, 0x0f, 0x6e, 0x00 ) );
-	FCML_A64_M( "movq %xmm0,%xmm2", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xc2 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xd0 ) );
+    FCML_A64_M( "movq (%rax),%xmm0", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x00 ), FCML_MI( 0x66, 0x48, 0x0f, 0x6e, 0x00 ) );
+    FCML_A64_M( "movq %xmm0,%xmm2", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xc2 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xd0 ) );
 
-	FCML_I32( "movq mmword ptr [eax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
-	FCML_I64( "movq mmword ptr [rax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
-	FCML_I64_M( "movq xmm0,xmm2", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xd0 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xc2 ) );
+    FCML_I32( "movq mmword ptr [eax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
+    FCML_I64( "movq mmword ptr [rax],xmm0", 0x66, 0x0F, 0xD6, 0x00 );
+    FCML_I64_M( "movq xmm0,xmm2", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xd0 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xc2 ) );
 
-	FCML_A64_M( "movq %xmm0,(%rax)", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0x00 ), FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x00 ) );
-	FCML_A64_M( "movq %xmm2,%xmm0", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xd0 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xc2 ) );
+    FCML_A64_M( "movq %xmm0,(%rax)", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0x00 ), FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x00 ) );
+    FCML_A64_M( "movq %xmm2,%xmm0", 2, FCML_MI( 0x66, 0x0f, 0xd6, 0xd0 ), FCML_MI( 0xf3, 0x0f, 0x7e, 0xc2 ) );
 
-	FCML_I32( "vmovq xmm0,mmword ptr [eax]", 0xc5, 0xfa, 0x7e, 0x00 );
-	FCML_I32_M( "vmovq xmm0,xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
+    FCML_I32( "vmovq xmm0,mmword ptr [eax]", 0xc5, 0xfa, 0x7e, 0x00 );
+    FCML_I32_M( "vmovq xmm0,xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
 
-	FCML_A32( "vmovq (%eax),%xmm0", 0xc5, 0xfa, 0x7e, 0x00 );
+    FCML_A32( "vmovq (%eax),%xmm0", 0xc5, 0xfa, 0x7e, 0x00 );
 
-	FCML_I32( "vmovq mmword ptr [eax],xmm0", 0xc5, 0xf9, 0xd6, 0x00 );
-	FCML_I32_M( "vmovq xmm0,xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
+    FCML_I32( "vmovq mmword ptr [eax],xmm0", 0xc5, 0xf9, 0xd6, 0x00 );
+    FCML_I32_M( "vmovq xmm0,xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
 
-	FCML_A32( "vmovq %xmm0,(%eax)", 0xc5, 0xf9, 0xd6, 0x00 );
-	FCML_A32_M( "vmovq %xmm0,%xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
+    FCML_A32( "vmovq %xmm0,(%eax)", 0xc5, 0xf9, 0xd6, 0x00 );
+    FCML_A32_M( "vmovq %xmm0,%xmm0", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0xc0 ), FCML_MI( 0xc5, 0xfa, 0x7e, 0xc0 ) );
 
-	FCML_I64( "vmovq mmword ptr [rcx+rax],xmm2", 0xc5, 0xf9, 0xd6, 0x14, 0x01 );
+    FCML_I64( "vmovq mmword ptr [rcx+rax],xmm2", 0xc5, 0xf9, 0xd6, 0x14, 0x01 );
 
-	FCML_A64_M( "vmovq %xmm2,(%rcx,%rax)", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x7e, 0x14, 0x01 ) );
+    FCML_A64_M( "vmovq %xmm2,(%rcx,%rax)", 2, FCML_MI( 0xc5, 0xf9, 0xd6, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x7e, 0x14, 0x01 ) );
 
-	FCML_I64_M( "movq mm2,qword ptr [rax]", 2, FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ), FCML_MI( 0x0f, 0x6f, 0x10 ) );
+    FCML_I64_M( "movq mm2,qword ptr [rax]", 2, FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ), FCML_MI( 0x0f, 0x6f, 0x10 ) );
 
-	FCML_A64_M( "movq (%rax),%mm2", 2,FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ), FCML_MI( 0x0f, 0x6f, 0x10 ) );
-	FCML_A64( "movq %rax,%mm0", 0x48, 0x0f, 0x6e, 0xc0 );
+    FCML_A64_M( "movq (%rax),%mm2", 2,FCML_MI( 0x48, 0x0f, 0x6e, 0x10 ), FCML_MI( 0x0f, 0x6f, 0x10 ) );
+    FCML_A64( "movq %rax,%mm0", 0x48, 0x0f, 0x6e, 0xc0 );
 
-	FCML_I64_A( "movq xmm2,mmword ptr [rax]", 0xf3, 0x0f, 0x7e, 0x10 );
+    FCML_I64_A( "movq xmm2,mmword ptr [rax]", 0xf3, 0x0f, 0x7e, 0x10 );
 
-	FCML_A64_M( "movq (%rax),%xmm2", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x48, 0x0f, 0x6e, 0x10 ) );
+    FCML_A64_M( "movq (%rax),%xmm2", 2, FCML_MI( 0xf3, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x48, 0x0f, 0x6e, 0x10 ) );
 
-	FCML_I64_M( "movq qword ptr [rax],xmm2", 2, FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x0f, 0xd6, 0x10 ) );
+    FCML_I64_M( "movq qword ptr [rax],xmm2", 2, FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x0f, 0xd6, 0x10 ) );
 
-	FCML_A64_M( "movq %xmm2,(%rax)", 2, FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x0f, 0xd6, 0x10 ) );
+    FCML_A64_M( "movq %xmm2,(%rax)", 2, FCML_MI( 0x66, 0x48, 0x0f, 0x7e, 0x10 ), FCML_MI( 0x66, 0x0f, 0xd6, 0x10 ) );
 
-	FCML_I64( "vmovq xmm2,mmword ptr [rcx+rax]", 0xc5, 0xfa, 0x7e, 0x14, 0x01 );
+    FCML_I64( "vmovq xmm2,mmword ptr [rcx+rax]", 0xc5, 0xfa, 0x7e, 0x14, 0x01 );
 
-	FCML_A64_M( "vmovq (%rcx,%rax),%xmm2", 2, FCML_MI( 0xc5, 0xfa, 0x7e, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x6e, 0x14, 0x01 ) );
+    FCML_A64_M( "vmovq (%rcx,%rax),%xmm2", 2, FCML_MI( 0xc5, 0xfa, 0x7e, 0x14, 0x01 ), FCML_MI( 0xc4, 0xe1, 0xf9, 0x6e, 0x14, 0x01 ) );
 }
 
 void fcml_tf_instruction_MOVD(void) {
@@ -883,11 +883,11 @@ void fcml_tf_instruction_MOVS(void) {
     FCML_I64_D( "movs word ptr [edi],word ptr [esi]", 0x66, 0x67, 0x40, 0xA5 );
 
     FCML_A32( "rep movsl (%si),(%di)", 0xF3, 0x67, 0xA5 );
-	FCML_A32( "movsw (%si),(%di)", 0x66, 0x67, 0xA5 );
-	FCML_A32( "movsl (%esi),(%edi)", 0xA5 );
+    FCML_A32( "movsw (%si),(%di)", 0x66, 0x67, 0xA5 );
+    FCML_A32( "movsl (%esi),(%edi)", 0xA5 );
     FCML_A64_A( "movsw", 0x66, 0xA5 );
-	FCML_A64_A( "movsl", 0xA5 );
-	FCML_A64_A( "movsq", 0x48, 0xA5 );
+    FCML_A64_A( "movsl", 0xA5 );
+    FCML_A64_A( "movsq", 0x48, 0xA5 );
 }
 
 void fcml_tf_instruction_MOVSD(void) {
@@ -1175,76 +1175,76 @@ void fcml_tf_instruction_MWAIT(void) {
 
 void fcml_tf_instruction_MULX(void) {
 
-	FCML_I32( "mulx eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x43, 0xF6, 0x00 );
-	FCML_I32( "mulx eax,edi,eax", 0xC4, 0xE2, 0x43, 0xF6, 0xC0 );
+    FCML_I32( "mulx eax,edi,dword ptr [eax]", 0xC4, 0xE2, 0x43, 0xF6, 0x00 );
+    FCML_I32( "mulx eax,edi,eax", 0xC4, 0xE2, 0x43, 0xF6, 0xC0 );
 
-	FCML_I64( "mulx rax,rdi,qword ptr [rax]", 0xC4, 0xE2, 0xC3, 0xF6, 0x00 );
-	FCML_I64( "mulx rax,rdi,rax", 0xC4, 0xE2, 0xC3, 0xF6, 0xC0 );
+    FCML_I64( "mulx rax,rdi,qword ptr [rax]", 0xC4, 0xE2, 0xC3, 0xF6, 0x00 );
+    FCML_I64( "mulx rax,rdi,rax", 0xC4, 0xE2, 0xC3, 0xF6, 0xC0 );
 
-	FCML_A64( "mulx (%rax),%rdi,%rax", 0xc4, 0xe2, 0xc3, 0xf6, 0x00 );
-	FCML_A64( "mulx %rax,%rdi,%rax", 0xc4, 0xe2, 0xc3, 0xf6, 0xc0 );
+    FCML_A64( "mulx (%rax),%rdi,%rax", 0xc4, 0xe2, 0xc3, 0xf6, 0x00 );
+    FCML_A64( "mulx %rax,%rdi,%rax", 0xc4, 0xe2, 0xc3, 0xf6, 0xc0 );
 }
 
 fcml_stf_test_case fctl_ti_instructions_m[] = {
-	{ "fcml_tf_instruction_MASKMOVQ", fcml_tf_instruction_MASKMOVQ },
-	{ "fcml_tf_instruction_MASKMOVDQU", fcml_tf_instruction_MASKMOVDQU },
-	{ "fcml_tf_instruction_MAXPD", fcml_tf_instruction_MAXPD },
-	{ "fcml_tf_instruction_MAXPS", fcml_tf_instruction_MAXPS },
-	{ "fcml_tf_instruction_MAXSD", fcml_tf_instruction_MAXSD },
-	{ "fcml_tf_instruction_MAXSS", fcml_tf_instruction_MAXSS },
-	{ "fcml_tf_instruction_MFENCE", fcml_tf_instruction_MFENCE },
-	{ "fcml_tf_instruction_MINPD", fcml_tf_instruction_MINPD },
-	{ "fcml_tf_instruction_MINPS", fcml_tf_instruction_MINPS },
-	{ "fcml_tf_instruction_MINSD", fcml_tf_instruction_MINSD },
-	{ "fcml_tf_instruction_MINSS", fcml_tf_instruction_MINSS },
-	{ "fcml_tf_instruction_MONITOR", fcml_tf_instruction_MONITOR },
-	{ "fcml_tf_instruction_MOV", fcml_tf_instruction_MOV },
-	{ "fcml_tf_instruction_MOVAPD", fcml_tf_instruction_MOVAPD },
-	{ "fcml_tf_instruction_MOVAPS", fcml_tf_instruction_MOVAPS },
-	{ "fcml_tf_instruction_MOVBE", fcml_tf_instruction_MOVBE },
-	{ "fcml_tf_instruction_MOVD", fcml_tf_instruction_MOVD },
-	{ "fcml_tf_instruction_MOVQ", fcml_tf_instruction_MOVQ },
-	{ "fcml_tf_instruction_MOVDDUP", fcml_tf_instruction_MOVDDUP },
-	{ "fcml_tf_instruction_MOVDQA", fcml_tf_instruction_MOVDQA },
-	{ "fcml_tf_instruction_MOVDQU", fcml_tf_instruction_MOVDQU },
-	{ "fcml_tf_instruction_MOVDQ2Q", fcml_tf_instruction_MOVDQ2Q },
-	{ "fcml_tf_instruction_MOVHLPS", fcml_tf_instruction_MOVHLPS },
-	{ "fcml_tf_instruction_MOVHPD", fcml_tf_instruction_MOVHPD },
-	{ "fcml_tf_instruction_MOVHPS", fcml_tf_instruction_MOVHPS },
-	{ "fcml_tf_instruction_MOVLHPS", fcml_tf_instruction_MOVLHPS },
-	{ "fcml_tf_instruction_MOVLPD", fcml_tf_instruction_MOVLPD },
-	{ "fcml_tf_instruction_MOVLPS", fcml_tf_instruction_MOVLPS },
-	{ "fcml_tf_instruction_MOVMSKPD", fcml_tf_instruction_MOVMSKPD },
-	{ "fcml_tf_instruction_MOVMSKPS", fcml_tf_instruction_MOVMSKPS },
-	{ "fcml_tf_instruction_MOVNTDQA", fcml_tf_instruction_MOVNTDQA },
-	{ "fcml_tf_instruction_MOVNTDQ", fcml_tf_instruction_MOVNTDQ },
-	{ "fcml_tf_instruction_MOVNTI", fcml_tf_instruction_MOVNTI },
-	{ "fcml_tf_instruction_MOVNTPD", fcml_tf_instruction_MOVNTPD },
-	{ "fcml_tf_instruction_MOVNTPS", fcml_tf_instruction_MOVNTPS },
-	{ "fcml_tf_instruction_MOVNTSD", fcml_tf_instruction_MOVNTSD },
-	{ "fcml_tf_instruction_MOVNTSS", fcml_tf_instruction_MOVNTSS },
-	{ "fcml_tf_instruction_MOVNTQ", fcml_tf_instruction_MOVNTQ },
-	{ "fcml_tf_instruction_MOVQ2DQ", fcml_tf_instruction_MOVQ2DQ },
-	{ "fcml_tf_instruction_MOVS", fcml_tf_instruction_MOVS },
-	{ "fcml_tf_instruction_MOVSD", fcml_tf_instruction_MOVSD },
-	{ "fcml_tf_instruction_MOVSHDUP", fcml_tf_instruction_MOVSHDUP },
-	{ "fcml_tf_instruction_MOVSLDUP", fcml_tf_instruction_MOVSLDUP },
-	{ "fcml_tf_instruction_MOVSS", fcml_tf_instruction_MOVSS },
-	{ "fcml_tf_instruction_MOVSX", fcml_tf_instruction_MOVSX },
-	{ "fcml_tf_instruction_MOVUPD", fcml_tf_instruction_MOVUPD },
-	{ "fcml_tf_instruction_MOVUPS", fcml_tf_instruction_MOVUPS },
-	{ "fcml_tf_instruction_MOVZX", fcml_tf_instruction_MOVZX },
-	{ "fcml_tf_instruction_MPSADBW", fcml_tf_instruction_MPSADBW },
-	{ "fcml_tf_instruction_MUL", fcml_tf_instruction_MUL },
-	{ "fcml_tf_instruction_MULPD", fcml_tf_instruction_MULPD },
-	{ "fcml_tf_instruction_MULPS", fcml_tf_instruction_MULPS },
-	{ "fcml_tf_instruction_MULSD", fcml_tf_instruction_MULSD },
-	{ "fcml_tf_instruction_MULSS", fcml_tf_instruction_MULSS },
-	{ "fcml_tf_instruction_MWAIT", fcml_tf_instruction_MWAIT },
-	{ "fcml_tf_instruction_MULX", fcml_tf_instruction_MULX },
-	FCML_STF_NULL_TEST
+    { "fcml_tf_instruction_MASKMOVQ", fcml_tf_instruction_MASKMOVQ },
+    { "fcml_tf_instruction_MASKMOVDQU", fcml_tf_instruction_MASKMOVDQU },
+    { "fcml_tf_instruction_MAXPD", fcml_tf_instruction_MAXPD },
+    { "fcml_tf_instruction_MAXPS", fcml_tf_instruction_MAXPS },
+    { "fcml_tf_instruction_MAXSD", fcml_tf_instruction_MAXSD },
+    { "fcml_tf_instruction_MAXSS", fcml_tf_instruction_MAXSS },
+    { "fcml_tf_instruction_MFENCE", fcml_tf_instruction_MFENCE },
+    { "fcml_tf_instruction_MINPD", fcml_tf_instruction_MINPD },
+    { "fcml_tf_instruction_MINPS", fcml_tf_instruction_MINPS },
+    { "fcml_tf_instruction_MINSD", fcml_tf_instruction_MINSD },
+    { "fcml_tf_instruction_MINSS", fcml_tf_instruction_MINSS },
+    { "fcml_tf_instruction_MONITOR", fcml_tf_instruction_MONITOR },
+    { "fcml_tf_instruction_MOV", fcml_tf_instruction_MOV },
+    { "fcml_tf_instruction_MOVAPD", fcml_tf_instruction_MOVAPD },
+    { "fcml_tf_instruction_MOVAPS", fcml_tf_instruction_MOVAPS },
+    { "fcml_tf_instruction_MOVBE", fcml_tf_instruction_MOVBE },
+    { "fcml_tf_instruction_MOVD", fcml_tf_instruction_MOVD },
+    { "fcml_tf_instruction_MOVQ", fcml_tf_instruction_MOVQ },
+    { "fcml_tf_instruction_MOVDDUP", fcml_tf_instruction_MOVDDUP },
+    { "fcml_tf_instruction_MOVDQA", fcml_tf_instruction_MOVDQA },
+    { "fcml_tf_instruction_MOVDQU", fcml_tf_instruction_MOVDQU },
+    { "fcml_tf_instruction_MOVDQ2Q", fcml_tf_instruction_MOVDQ2Q },
+    { "fcml_tf_instruction_MOVHLPS", fcml_tf_instruction_MOVHLPS },
+    { "fcml_tf_instruction_MOVHPD", fcml_tf_instruction_MOVHPD },
+    { "fcml_tf_instruction_MOVHPS", fcml_tf_instruction_MOVHPS },
+    { "fcml_tf_instruction_MOVLHPS", fcml_tf_instruction_MOVLHPS },
+    { "fcml_tf_instruction_MOVLPD", fcml_tf_instruction_MOVLPD },
+    { "fcml_tf_instruction_MOVLPS", fcml_tf_instruction_MOVLPS },
+    { "fcml_tf_instruction_MOVMSKPD", fcml_tf_instruction_MOVMSKPD },
+    { "fcml_tf_instruction_MOVMSKPS", fcml_tf_instruction_MOVMSKPS },
+    { "fcml_tf_instruction_MOVNTDQA", fcml_tf_instruction_MOVNTDQA },
+    { "fcml_tf_instruction_MOVNTDQ", fcml_tf_instruction_MOVNTDQ },
+    { "fcml_tf_instruction_MOVNTI", fcml_tf_instruction_MOVNTI },
+    { "fcml_tf_instruction_MOVNTPD", fcml_tf_instruction_MOVNTPD },
+    { "fcml_tf_instruction_MOVNTPS", fcml_tf_instruction_MOVNTPS },
+    { "fcml_tf_instruction_MOVNTSD", fcml_tf_instruction_MOVNTSD },
+    { "fcml_tf_instruction_MOVNTSS", fcml_tf_instruction_MOVNTSS },
+    { "fcml_tf_instruction_MOVNTQ", fcml_tf_instruction_MOVNTQ },
+    { "fcml_tf_instruction_MOVQ2DQ", fcml_tf_instruction_MOVQ2DQ },
+    { "fcml_tf_instruction_MOVS", fcml_tf_instruction_MOVS },
+    { "fcml_tf_instruction_MOVSD", fcml_tf_instruction_MOVSD },
+    { "fcml_tf_instruction_MOVSHDUP", fcml_tf_instruction_MOVSHDUP },
+    { "fcml_tf_instruction_MOVSLDUP", fcml_tf_instruction_MOVSLDUP },
+    { "fcml_tf_instruction_MOVSS", fcml_tf_instruction_MOVSS },
+    { "fcml_tf_instruction_MOVSX", fcml_tf_instruction_MOVSX },
+    { "fcml_tf_instruction_MOVUPD", fcml_tf_instruction_MOVUPD },
+    { "fcml_tf_instruction_MOVUPS", fcml_tf_instruction_MOVUPS },
+    { "fcml_tf_instruction_MOVZX", fcml_tf_instruction_MOVZX },
+    { "fcml_tf_instruction_MPSADBW", fcml_tf_instruction_MPSADBW },
+    { "fcml_tf_instruction_MUL", fcml_tf_instruction_MUL },
+    { "fcml_tf_instruction_MULPD", fcml_tf_instruction_MULPD },
+    { "fcml_tf_instruction_MULPS", fcml_tf_instruction_MULPS },
+    { "fcml_tf_instruction_MULSD", fcml_tf_instruction_MULSD },
+    { "fcml_tf_instruction_MULSS", fcml_tf_instruction_MULSS },
+    { "fcml_tf_instruction_MWAIT", fcml_tf_instruction_MWAIT },
+    { "fcml_tf_instruction_MULX", fcml_tf_instruction_MULX },
+    FCML_STF_NULL_TEST
 };
 
 fcml_stf_test_suite fctl_si_instructions_m = {
-	"suite-fctl_ti_instructions_m", fcml_tf_instructions_m_suite_init, fcml_tf_instructions_m_suite_cleanup, fctl_ti_instructions_m
+    "suite-fctl_ti_instructions_m", fcml_tf_instructions_m_suite_init, fcml_tf_instructions_m_suite_cleanup, fctl_ti_instructions_m
 };
