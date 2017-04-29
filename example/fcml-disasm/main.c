@@ -439,7 +439,7 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 			get_register(&(operand->decorators.operand_mask_reg),
 				FCML_FALSE));
 		}
-		if (operand->decorators.sea) {
+		if (operand->decorators.sae) {
 			printf("    Decorator (SEA): Enabled\n");
 		}
 		if (operand->decorators.z) {

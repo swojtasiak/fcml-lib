@@ -173,7 +173,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_virtual(fcml_bool sae,
         virtual_node->decorators.er.value = er_value;
     }
 
-    virtual_node->decorators.sea = sae;
+    virtual_node->decorators.sae = sae;
 
     node->type = FCML_EN_TN_VIRTUAL;
     node->node = virtual_node;

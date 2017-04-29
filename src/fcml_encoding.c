@@ -2399,7 +2399,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
     fcml_operand_decorators decorators = args->decorators;
 
     /* Handle explicit vector length for SAE and ER aware instructions. */
-    if (operand_def->decorators.sea || operand_def->decorators.er.is_not_null) {
+    if (operand_def->decorators.sae || operand_def->decorators.er.is_not_null) {
 
         fcml_uint8_t tuple_type =
                 FCML_GET_SIMD_TUPLETYPE(addr_mode_desc->details);
@@ -2422,11 +2422,11 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
     }
 
     /* Check requireness of SAE. */
-    if (FCML_IS_DECOR_SAE_REQ(decorators) && !operand_def->decorators.sea) {
+    if (FCML_IS_DECOR_SAE_REQ(decorators) && !operand_def->decorators.sae) {
         error = FCML_CEH_GEC_MISSING_DECORATOR;
     }
 
-    if (operand_def->decorators.sea && !FCML_IS_DECOR_SAE(decorators)) {
+    if (operand_def->decorators.sae && !FCML_IS_DECOR_SAE(decorators)) {
         /* SAE is not supported by this operand. */
         error = FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
     }
@@ -2449,7 +2449,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_virtual_op(
 
     if (phase == FCML_IEN_ASM_IPPP_FIRST_PHASE) {
 
-        if (operand_def->decorators.sea) {
+        if (operand_def->decorators.sae) {
             context->epf.b = FCML_TRUE;
         }
 
@@ -4822,7 +4822,7 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
 
         /* ER and SAE has to be set in the last available operand. */
 
-        if (opcode_dec->sea &&
+        if (opcode_dec->sae &&
                 (!FCML_IS_DECOR_SAE(decorators) || !last_operand)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }

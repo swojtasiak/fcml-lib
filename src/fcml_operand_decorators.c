@@ -84,7 +84,7 @@ fcml_ceh_error fcml_fn_op_decor_decode(
 
         /* Suppress All Exceptions. */
         if (FCML_IS_DECOR_SAE(decorators_def) && prefix_flags->ll == 0) {
-            decorators->sea = FCML_TRUE;
+            decorators->sae = FCML_TRUE;
             operand->type = FCML_OT_VIRTUAL;
         }
 

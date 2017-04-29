@@ -9067,7 +9067,7 @@ public:
         er.setValue(src.er.value);
         dest.setEr(er);
         dest.setZ(src.z);
-        dest.setSae(src.sea);
+        dest.setSae(src.sae);
         convert(src.operand_mask_reg, dest.getOpmaskReg());
     }
 
@@ -9078,7 +9078,7 @@ public:
         dest.er.is_not_null = src.getEr().isNotNull();
         dest.er.value = src.getEr().getValue();
         dest.z = src.isZ();
-        dest.sea = src.isSae();
+        dest.sae = src.isSae();
         convert(src.getOpmaskReg(), dest.operand_mask_reg);
     }
 

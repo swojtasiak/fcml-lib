@@ -625,7 +625,7 @@ void fcml_tf_parser_gas_parse_test_decorator_sae(void) {
     if (result.instruction != NULL) {
         fcml_st_operand *operand = &(result.instruction->operands[0]);
         STF_ASSERT_EQUAL(operand->type, FCML_OT_VIRTUAL);
-        STF_ASSERT_EQUAL(operand->decorators.sea, FCML_TRUE);
+        STF_ASSERT_EQUAL(operand->decorators.sae, FCML_TRUE);
     } else {
         STF_FAIL();
     }
