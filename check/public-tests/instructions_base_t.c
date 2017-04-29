@@ -233,7 +233,7 @@ fcml_bool fcml_fn_ts_instruction_test( fcml_uint8_t *code, fcml_int size, fcml_e
 		error = fcml_fn_assemble( &context, result.instruction, &asm_result );
 		if( error ) {
 		    if( !t_flags & FCML_TSF_SHOULD_FAIL ) {
-		        printf("Can not assemble: %s\n", mnemonic );
+		        printf("Can not assemble: %s (error: %d)\n", mnemonic, error);
 		    }
 			if( !(t_flags & FCML_TSF_PRINT_ONLY) ) {
 				success = t_flags & FCML_TSF_SHOULD_FAIL;

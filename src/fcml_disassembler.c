@@ -1420,9 +1420,9 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
 
     /* L field. */
     if ((FCML_DEF_PREFIX_L_1(instruction_decoding_def->prefixes_flags) && 
-                (!(prefixes->is_vex || prefixes->is_xop) || !prefixes->L))
+                (!prefixes->is_avx || !prefixes->L))
             || (FCML_DEF_PREFIX_L_0(instruction_decoding_def->prefixes_flags) 
-                && (!(prefixes->is_vex || prefixes->is_xop) || prefixes->L))) {
+                && (!prefixes->is_avx || prefixes->L))) {
         return FCML_FALSE;
     }
 

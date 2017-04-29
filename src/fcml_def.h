@@ -945,6 +945,9 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 #define FCML_OP_MODRM_R_SIMD_L_K1_Z_W   FCML_OP_MODRM_R_SIMD_L_W | \
     FCML_DECOR_Z | FCML_DECOR_K1
 
+#define FCML_OP_MODRM_R_XMM_K1_Z_W      FCML_OP_MODRM_R_XMM_W | \
+    FCML_DECOR_Z | FCML_DECOR_K1
+
 #define FCML_OP_MODRM_RM_SIMD_L_BCAST_ER_OP  FCML_OP_MODRM_RM_SIMD_L_OP | \
     FCML_DECOR_BCAST | FCML_DECOR_ER
 
