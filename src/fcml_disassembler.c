@@ -1244,7 +1244,7 @@ fcml_bool fcml_ifn_dasm_is_prefix_available(
         fcml_bool mandatory) {
     fcml_st_prefixes_details *prefixes = &(context->prefixes);
     /* Handle VEX mandatory prefixes.*/
-    if (mandatory && prefixes->is_vex && prefixes->pp) {
+    if (mandatory && (prefixes->is_vex || prefixes->is_evex) && prefixes->pp) {
         if (prefixes->pp == 0x01 && prefix == 0x66) {
             return FCML_TRUE;
         }
