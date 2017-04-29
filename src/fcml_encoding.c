@@ -1749,24 +1749,24 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_segment_relative_offset(
 
 /* TODO: Move to fcml_operand_decorators. */
 fcml_ceh_error fcml_ifn_asm_accept_bcast_decorator(fcml_bool is_bcast_supported,
-       fcml_usize bcast_element_size, fcml_nuint8_t bcast,
+       fcml_nuint8_t bcast, fcml_usize element_size,
        fcml_st_asm_optimizer_processing_details *optimizer_processing_details) {
 
     if (!is_bcast_supported) {
         return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
     }
 
-    fcml_usize es = bcast_element_size;
+    fcml_usize noe = bcast.value;
 
     /* Check if broadcast size is correct. */
-    if (es != 2 && es != 4 && es != 8 && es != 16 &&
-            es != 32 && es != 64) {
+    if (noe != 2 && noe != 4 && noe != 8 && noe != 16 &&
+            noe != 32 && noe != 64) {
         return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
     }
 
     /* Force vector length basing on broadcast element size and number
      * of such elements. */
-    fcml_usize vector_length = es * bcast.value;
+    fcml_usize vector_length = noe * element_size;
     if (!fcml_ifn_asm_set_vector_length(optimizer_processing_details,
             vector_length)) {
         FCML_TRACE("Vector length differs expected %d got %d.",
@@ -1819,12 +1819,14 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
 
             /* TODO: Move it to fcml_ifn_asm_accept_data_size. */
             if (operand_def->decorators.bcast.is_not_null) {
+
+                fcml_usize element_size =
+                        FCML_GET_SIMD_ELEMENT_SIZE(addr_mode_desc->details);
+
                 /* AVX-512 Broadcast decorator. */
                 error = fcml_ifn_asm_accept_bcast_decorator(
-                        args->is_bcast,
-                        args->bcast_element_size,
-                        operand_def->decorators.bcast,
-                        &(context->optimizer_processing_details));
+                        args->is_bcast, operand_def->decorators.bcast,
+                        element_size, &(context->optimizer_processing_details));
             } else {
 
                 fcml_usize mem_data_size = fcml_ifn_asm_calculate_operand_size(
@@ -2002,13 +2004,17 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
 
             context->mod_rm.address = operand_def->address;
 
-            /* Do not calculate vector length, if bcast is used. */
+            /* Do not calculate vector length, if broadcast is used. */
             fcml_usize mem_data_size = fcml_ifn_asm_calculate_operand_size(
                     context, operand_def->address.size_operator,
                     args->encoded_memory_operand_size);
+
+            fcml_size element_size =
+                    FCML_GET_SIMD_ELEMENT_SIZE(addr_mode_desc->details);
+
             error = fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
                     args->encoded_memory_operand_size, mem_data_size,
-                    &(operand_def->decorators.bcast), args->bcast_element_size,
+                    &(operand_def->decorators.bcast), element_size,
                     NULL, FCML_IEN_CT_EQUAL);
 
             /* Encode broadcast. */

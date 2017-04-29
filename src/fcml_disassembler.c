@@ -89,6 +89,8 @@ typedef struct fcml_ist_dasm_decoding_context {
     fcml_uint16_t addr_mode;
     fcml_usize effective_address_size_attribute;
     fcml_usize effective_operand_size_attribute;
+    /* Size of SIMD element. */
+    fcml_usize element_size;
     /* Size of SIMD vector length calculated basing on EVEX.L'L/VEX.L/XOP.L */
     fcml_usize vector_length;
     fcml_int calculated_instruction_size;
@@ -867,8 +869,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
          * instead of the one directly encoded in ModR/M.
          */
         if (FCML_IS_DECOR_BCAST(decorators) && context->prefixes.b) {
-            address->size_operator =
-                    FCML_GET_DECOR_BCAST_ELEMENT_SIZE(decorators);
+            address->size_operator = context->element_size;
         } else {
             address->size_operator =
                     fcml_ifn_dasm_utils_decode_encoded_size_value(context,
@@ -2004,8 +2005,8 @@ fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
 
         error = fcml_fn_op_decor_decode(&flags,
                 decoding_context->is_modrm_reg_reg,
-                decoding_context->vector_length, operand_decoding->decorators,
-                operand);
+                decoding_context->vector_length, decoding_context->element_size,
+                operand_decoding->decorators, operand);
     }
 
     return error;
@@ -2077,6 +2078,8 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
     decoding_context->effective_operand_size_attribute = 
         fcml_ifn_dasm_calculate_effective_osa(decoding_context, 
                 instruction_decoding_def->opcode_flags);
+    decoding_context->element_size =
+            FCML_GET_SIMD_ELEMENT_SIZE(instruction_decoding_def->details);
 
     fcml_ist_dasm_operand_wrapper *operand_wrappers = 
         &(decoding_context->operand_wrappers[0]);

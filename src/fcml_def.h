@@ -117,7 +117,7 @@ typedef fcml_uint32_t fcml_operand_decorators;
 
 /* Operand decorators encoders. */
 
-#define FCML_DECOR_BCAST(x)  (0x010000000000LL | (((fcml_uint64_t)x) << 48))
+#define FCML_DECOR_BCAST      0x010000000000LL
 #define FCML_DECOR_Z          0x020000000000LL
 #define FCML_DECOR_K1         0x040000000000LL
 #define FCML_DECOR_ER         0x080000000000LL
@@ -128,7 +128,6 @@ typedef fcml_uint32_t fcml_operand_decorators;
 
 /* Operand decorators decoders. Use only on 'fcml_operand_decorators'. */
 
-#define FCML_GET_DECOR_BCAST_ELEMENT_SIZE(x)  (((x) >> 8) & 0xFF)
 #define FCML_IS_DECOR_BCAST(x)                ((x) & 0x00000001)
 #define FCML_IS_DECOR_Z(x)                    ((x) & 0x00000002)
 #define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
@@ -138,8 +137,15 @@ typedef fcml_uint32_t fcml_operand_decorators;
 
 /* Instruction details. */
 
-#define FCML_NO_DETAILS             0x0
-#define FCML_GET_SIMD_TUPLETYPE(x)  ((x) & 0x0000000F)
+#define FCML_NO_DETAILS                 0x0
+#define FCML_SIMD_ELEMENT_SIZE(x)       ((x) << 4)
+
+#define FCML_GET_SIMD_TUPLETYPE(x)      ((x) & 0x0000000F)
+/* Compressed element size * 8. */
+#define FCML_GET_SIMD_ELEMENT_SIZE(x)  (((x) & 0x000000F0) >> 1)
+
+#define FCML_SIMD_ES_64                 FCML_SIMD_ELEMENT_SIZE(FCML_EOS_QWORD)
+#define FCML_SIMD_ES_32                 FCML_SIMD_ELEMENT_SIZE(FCML_EOS_DWORD)
 
 /* Structures used to describe instructions with they all allowed addressing
  * modes.
@@ -939,8 +945,8 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 #define FCML_OP_MODRM_R_SIMD_L_K1_Z_W   FCML_OP_MODRM_R_SIMD_L_W | \
     FCML_DECOR_Z | FCML_DECOR_K1
 
-#define FCML_OP_MODRM_RM_SIMD_L_BCAST32_ER_OP  FCML_OP_MODRM_RM_SIMD_L_OP | \
-    FCML_DECOR_BCAST(32) | FCML_DECOR_ER
+#define FCML_OP_MODRM_RM_SIMD_L_BCAST_ER_OP  FCML_OP_MODRM_RM_SIMD_L_OP | \
+    FCML_DECOR_BCAST | FCML_DECOR_ER
 
 /* End of AVX-512 */
 
@@ -1064,7 +1070,6 @@ typedef struct fcml_st_def_tma_rm {
     fcml_uint8_t vector_index_register;
     fcml_bool is_vsib;
     fcml_bool is_bcast;
-    fcml_usize bcast_element_size;
 } fcml_st_def_tma_rm;
 
 typedef struct fcml_st_def_tma_r {

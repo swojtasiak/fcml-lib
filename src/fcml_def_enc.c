@@ -130,10 +130,6 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm(
         rm_args->is_vsib = FCML_FALSE;
         rm_args->vector_index_register = 0;
         rm_args->is_bcast = FCML_IS_DECOR_BCAST(decorators);
-        if (rm_args->is_bcast) {
-            rm_args->bcast_element_size =
-                    FCML_GET_DECOR_BCAST_ELEMENT_SIZE(decorators);
-        }
     }
     return rm_args;
 }

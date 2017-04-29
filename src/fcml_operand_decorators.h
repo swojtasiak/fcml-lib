@@ -46,7 +46,7 @@ void fcml_fn_prepare_decorators_existence(fcml_operand_desc *operands,
  */
 fcml_ceh_error fcml_fn_op_decor_decode(
         fcml_st_decorators_prefix_flags *prefix_flags, fcml_bool reg_to_reg,
-        fcml_usize vector_length, fcml_operand_decorators decorators_def,
-        fcml_st_operand *operand);
+        fcml_usize vector_length, fcml_usize element_size,
+        fcml_operand_decorators decorators_def, fcml_st_operand *operand);
 
 #endif /* SRC_FCML_OPERAND_DECODERS_H_ */
