@@ -36,7 +36,7 @@ fcml_ceh_error LIB_CALL fcml_fn_render(const fcml_st_dialect *dialect,
 
     fcml_st_dialect_context_int *dialect_context_int =
             (fcml_st_dialect_context_int*)dialect;
-    if ( dialect_context_int->instruction_renderer ) {
+    if (dialect_context_int->instruction_renderer) {
         fcml_fnp_render_instruction renderer = (fcml_fnp_render_instruction)
                 dialect_context_int->instruction_renderer;
         return renderer( dialect, config, &output_stream, result );

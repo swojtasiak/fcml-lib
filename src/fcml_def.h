@@ -133,6 +133,7 @@ typedef fcml_uint32_t fcml_operand_decorators;
 #define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
 #define FCML_IS_DECOR_ER(x)                   ((x) & 0x00000008)
 #define FCML_IS_DECOR_SAE(x)                  ((x) & 0x00000010)
+#define FCML_IS_DECOR_SAE_REQ(x)              (((x) & 0x00000030) == 0x00000030)
 
 /* Instruction details. */
 
@@ -941,6 +942,13 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 /* AVX-512 */
 
+#define FCML_OP_MODRM_R_K               FCML_OP_R(FCML_REG_OPMASK, \
+        FCML_EOS_QWORD)
+#define FCML_OP_MODRM_R_K_W             (FCML_OP_MODRM_R_K | FCML_OA_W)
+#define FCML_OP_MODRM_R_K_RW            (FCML_OP_MODRM_R_K | FCML_OA_RW)
+
+#define FCML_OP_MODRM_R_K_K1_W          FCML_OP_MODRM_R_K_W | FCML_DECOR_K1
+
 #define FCML_OP_MODRM_R_SIMD_L_K1_Z_W   FCML_OP_MODRM_R_SIMD_L_W | \
     FCML_DECOR_Z | FCML_DECOR_K1
 
@@ -1088,6 +1096,10 @@ typedef struct fcml_st_def_tma_vex_vvvv_reg {
 typedef struct fcml_st_def_tma_pseudo_op {
     fcml_uint8_t mask;
 } fcml_st_def_tma_pseudo_op;
+
+typedef struct fcml_st_def_tma_virtual_op {
+    fcml_operand_decorators decorators;
+} fcml_st_def_tma_virtual_op;
 
 typedef struct fcml_st_def_tma_is {
     fcml_uint8_t flags;

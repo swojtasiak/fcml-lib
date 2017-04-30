@@ -242,7 +242,7 @@ void fcml_fn_rend_utils_format_append_operand_decorators(
 
     /* Indicates support for SAE (Suppress All Exceptions). */
     if (decorators->sae) {
-        fcml_fn_rend_utils_format_append_str(output_stream, "{sea}");
+        fcml_fn_rend_utils_format_append_str(output_stream, "{sae}");
     }
 }
 

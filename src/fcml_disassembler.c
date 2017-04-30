@@ -1103,7 +1103,33 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_virtual(
         fcml_operand_decorators decorators,
         fcml_ptr args) {
 
-    /* TODO: Try to move {sea} and {er} related code here. */
+    fcml_st_operand_decorators *op_decorators =
+            &(operand_wrapper->operand.decorators);
+
+    if(context->is_modrm_reg_reg && context->prefixes.b &&
+            (context->vector_length == FCML_DS_128 ||
+                    context->vector_length == FCML_DS_512)) {
+
+        fcml_uint8_t ll = context->prefixes.L_prim << 1 | context->prefixes.L;
+
+        /* Static rounding. */
+        if (FCML_IS_DECOR_ER(decorators) ) {
+            op_decorators->er.is_not_null = FCML_TRUE;
+            op_decorators->er.value = ll;
+            operand_wrapper->operand.type = FCML_OT_VIRTUAL;
+        }
+
+        /* Suppress All Exceptions. */
+        if (FCML_IS_DECOR_SAE(decorators) && ll == 0) {
+            op_decorators->sae = FCML_TRUE;
+            operand_wrapper->operand.type = FCML_OT_VIRTUAL;
+        }
+
+    }
+
+    if (FCML_IS_DECOR_SAE_REQ(decorators) && !op_decorators->sae) {
+        return FCML_CEH_GEC_MISSING_DECORATOR;
+    }
 
     return FCML_CEH_GEC_NO_ERROR;
 }
@@ -2215,7 +2241,9 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         }
     }
 
-    error = fcml_ifn_dasm_decode_operand_decorators(decoding_context);
+    if (!error) {
+        error = fcml_ifn_dasm_decode_operand_decorators(decoding_context);
+    }
 
     /* Decode suffix.*/
     if (!error &&
@@ -2349,11 +2377,18 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction(
                     chain = chain->next;
                 }
                 if (accept) {
+                    fcml_stream_pointer save_point =
+                            fcml_fn_stream_save_point(context->stream);
                     error = decoding_def->instruction_decoder(context, 
                             decoding_def);
                     if (!error) {
                         found = FCML_TRUE;
                         break;
+                    } else {
+                        /* We are to try the next addressing form, so
+                         * restore the stream. */
+                        fcml_fn_stream_restore_point(context->stream,
+                                save_point);
                     }
                 }
             }

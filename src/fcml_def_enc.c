@@ -184,6 +184,16 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_pseudo_op(
     return pseudo_op_args;
 }
 
+fcml_ptr fcml_fnp_def_addr_mode_args_decoder_virtual_op(
+        fcml_operand_desc encoded_addr_mode) {
+    fcml_st_def_tma_virtual_op *virtual_op_args =
+            FCML_ENV_ALLOC_ST(fcml_st_def_tma_virtual_op);
+   if (virtual_op_args) {
+       virtual_op_args->decorators = FCML_DECORATORS(encoded_addr_mode);
+   }
+   return virtual_op_args;
+}
+
 #define FCML_DEF_DECODERS_COUNT		(sizeof(fcml_def_addr_mode_args_decoders) \
     / sizeof(fcml_fnp_def_addr_mode_args_decoder))
 
@@ -207,7 +217,7 @@ fcml_fnp_def_addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
     fcml_fnp_def_addr_mode_args_decoder_is,
     fcml_fnp_def_addr_mode_args_decoder_vsib,
     fcml_fnp_def_addr_mode_args_decoder_pseudo_op,
-    NULL
+    fcml_fnp_def_addr_mode_args_decoder_virtual_op
 };
 
 fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args(

@@ -72,23 +72,5 @@ fcml_ceh_error fcml_fn_op_decor_decode(
         decorators->z = FCML_TRUE;
     }
 
-    if(operand->type == FCML_OT_NONE && reg_to_reg && prefix_flags->b &&
-            (vector_length == FCML_DS_128 || vector_length == FCML_DS_512)) {
-
-        /* Static rounding. */
-        if (FCML_IS_DECOR_ER(decorators_def) ) {
-            decorators->er.is_not_null = FCML_TRUE;
-            decorators->er.value = prefix_flags->ll;
-            operand->type = FCML_OT_VIRTUAL;
-        }
-
-        /* Suppress All Exceptions. */
-        if (FCML_IS_DECOR_SAE(decorators_def) && prefix_flags->ll == 0) {
-            decorators->sae = FCML_TRUE;
-            operand->type = FCML_OT_VIRTUAL;
-        }
-
-    }
-
     return error;
 }

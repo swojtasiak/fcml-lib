@@ -110,6 +110,8 @@ typedef struct fcml_ist_asm_extension_prefixes_fields {
     fcml_uint8_t aaa;
     /* Embedded rounding mode. */
     fcml_nuint8_t er;
+    /* Vector length explicitly set for instruction. Do not set L'L. */
+    fcml_bool explicit_vector_length;
 } fcml_ist_asm_extension_prefixes_fields;
 
 typedef struct fcml_ist_asm_opcode_reg {
@@ -2392,8 +2394,21 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
+    fcml_st_def_tma_virtual_op *args =
+            (fcml_st_def_tma_virtual_op*)addr_mode->addr_mode_args;
+
     fcml_st_asm_optimizer_processing_details *optimizer_details =
                 &(context->optimizer_processing_details);
+
+    if (operand_def->type != FCML_OT_NONE &&
+            operand_def->type != FCML_OT_VIRTUAL) {
+        return FCML_CEH_GEC_INVALID_OPPERAND;
+    }
+
+    if (FCML_IS_DECOR_SAE_REQ(args->decorators) &&
+            !operand_def->decorators.sae) {
+        return FCML_CEH_GEC_MISSING_DECORATOR;
+    }
 
     /* Handle explicit vector length for SAE and ER aware instructions. */
     if (operand_def->decorators.sae || operand_def->decorators.er.is_not_null) {
@@ -2409,6 +2424,10 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
             vector_length = FCML_DS_512;
         } else if (tuple_type == FCML_TT_T1S || tuple_type == FCML_TT_T1F) {
             vector_length = FCML_DS_128;
+        }
+
+        if (vector_length != FCML_DS_UNDEF) {
+            context->epf.explicit_vector_length = FCML_TRUE;
         }
 
         if (!fcml_ifn_asm_set_vector_length(optimizer_details, vector_length)) {
@@ -4202,13 +4221,15 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder(
             p2 = FCML_ENCODE_EVEX_P2_LL(p2, epf->er.value);
         } else {
             fcml_uint8_t LL = 0;
-            switch(context->optimizer_processing_details.vector_length) {
-            case FCML_DS_256:
-                LL = 0x01;
-                break;
-            case FCML_DS_512:
-                LL = 0x02;
-                break;
+            if (!context->epf.explicit_vector_length) {
+                switch(context->optimizer_processing_details.vector_length) {
+                case FCML_DS_256:
+                    LL = 0x01;
+                    break;
+                case FCML_DS_512:
+                    LL = 0x02;
+                    break;
+                }
             }
             p2 = FCML_ENCODE_EVEX_P2_LL(p2, LL);
         }

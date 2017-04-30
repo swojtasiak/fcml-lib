@@ -156,7 +156,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("cmp;cmpw[sf,ow,mm];cmpl[sf,od,mm];cmpq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMP, FCML_AM_RMO_IMMO ), 0 },
     { FCML_TEXT("cmp;cmpw[sf,ow,mm];cmpl[sf,od,mm];cmpq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMP, FCML_AM_RMO_IMM8 ), 0 },
     { FCML_TEXT("cmppd"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPPD, FCML_AM_ALL ), 0 },
-    { FCML_TEXT("vcmppd"), FCML_ASM_DIALECT_INSTRUCTION( F_VCMPPD, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("vcmppd;vcmpeqpd[p00];vcmpltpd[p01];vcmplepd[p02];vcmpunordpd[p03];vcmpneqpd[p04];vcmpnltpd[p05];vcmpnlepd[p06];vcmpordpd[p07];vcmpeq_uqpd[p08];vcmpngepd[p09];vcmpngtpd[p0a];vcmpfalsepd[p0b];vcmpneq_oqpd[p0c];vcmpgepd[p0d];vcmpgtpd[p0e];vcmptruepd[p0f];vcmpeq_ospd[p10];vcmplt_oqpd[p11];vcmple_oqpd[p12];vcmpunord_spd[p13];vcmpneq_uspd[p14];vcmpnlt_uqpd[p15];vcmpnle_uqpd[p16];vcmpord_spd[p17];vcmpeq_uspd[p18];vcmpnge_uqpd[p19];vcmpngt_uqpd[p1a];vcmpfalse_ospd[p1b];vcmpneq_ospd[p1c];vcmpge_oqpd[p1d];vcmpgt_oqpd[p1e];vcmptrue_uspd[p1f]"), FCML_ASM_DIALECT_INSTRUCTION( F_VCMPPD, FCML_AM_ALL ), 0 },
     { FCML_TEXT("cmpps"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPPS, FCML_AM_ALL ), 0 },
     { FCML_TEXT("vcmpps"), FCML_ASM_DIALECT_INSTRUCTION( F_VCMPPS, FCML_AM_ALL ), 0 },
     { FCML_TEXT("cmpsb[tb,sb]"), FCML_ASM_DIALECT_INSTRUCTION( F_CMPS, FCML_AM_M8_M8 ), 0 },

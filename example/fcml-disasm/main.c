@@ -561,7 +561,7 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 		for( i = 0; i < prefixes_details->prefixes_count; i++ ) {
 			fcml_st_instruction_prefix *prefix =
 				&(prefixes_details->prefixes[i]);
-			printf("   Byte: 0x%02x, Type: %s, Mandatory: %s, XOP/VEX/EVEX " \
+			printf("   Byte: 0x%02x, Type: %s, Mandatory: %s, AVX " \
 				"bytes: 0x%02x, 0x%02x, 0x%02x.\n", prefix->prefix,
 				prefix_types[prefix->prefix_type],
 				get_boolean(prefix->mandatory_prefix),
@@ -575,7 +575,8 @@ void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_r
 
 	for( i = 0; i < instruction->operands_count; i++ ) {
 		printf("  Operand: %d\n", i + 1 );
-		fcml_st_operand_details *operand_details = &(details->operand_details[i]);
+		fcml_st_operand_details *operand_details =
+		        &(details->operand_details[i]);
 		printf("   Access mode:" );
 		if( operand_details->access_mode & FCML_AM_READ ) {
 			printf( " FCML_AM_READ" );
