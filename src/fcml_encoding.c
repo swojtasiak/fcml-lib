@@ -2392,11 +2392,8 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_st_def_tma_virtual_op *args =
-            (fcml_st_def_tma_virtual_op*)addr_mode->addr_mode_args;
     fcml_st_asm_optimizer_processing_details *optimizer_details =
                 &(context->optimizer_processing_details);
-    fcml_operand_decorators decorators = args->decorators;
 
     /* Handle explicit vector length for SAE and ER aware instructions. */
     if (operand_def->decorators.sae || operand_def->decorators.er.is_not_null) {
@@ -2419,22 +2416,6 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
                     flags->vector_length, vector_length);
             error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
         }
-    }
-
-    /* Check requireness of SAE. */
-    if (FCML_IS_DECOR_SAE_REQ(decorators) && !operand_def->decorators.sae) {
-        error = FCML_CEH_GEC_MISSING_DECORATOR;
-    }
-
-    if (operand_def->decorators.sae && !FCML_IS_DECOR_SAE(decorators)) {
-        /* SAE is not supported by this operand. */
-        error = FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
-    }
-
-    if (operand_def->decorators.er.is_not_null &&
-            !FCML_IS_DECOR_ER(decorators)) {
-        /* ER is not supported by this operand. */
-        error = FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
     }
 
     return error;
@@ -4805,7 +4786,6 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
                 FCML_DECORATORS(addr_mode_def->operands[i]);
         fcml_st_operand *operand = &(instruction->operands[i]);
         fcml_st_operand_decorators *opcode_dec = &(operand->decorators);
-        fcml_bool last_operand = i + 1 == context->operands_count;
 
         if (opcode_dec->bcast.is_not_null && !FCML_IS_DECOR_BCAST(decorators)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
@@ -4820,18 +4800,13 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_op_decorator_acceptor(
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
-        /* ER and SAE has to be set in the last available operand. */
-
-        if (opcode_dec->sae &&
-                (!FCML_IS_DECOR_SAE(decorators) || !last_operand)) {
+        if (opcode_dec->sae && !FCML_IS_DECOR_SAE(decorators)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
-        if (opcode_dec->er.is_not_null &&
-                (!FCML_IS_DECOR_ER(decorators) || !last_operand)) {
+        if (opcode_dec->er.is_not_null && !FCML_IS_DECOR_ER(decorators)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
-
     }
 
     return FCML_CEH_GEC_NO_ERROR;

@@ -133,7 +133,6 @@ typedef fcml_uint32_t fcml_operand_decorators;
 #define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
 #define FCML_IS_DECOR_ER(x)                   ((x) & 0x00000008)
 #define FCML_IS_DECOR_SAE(x)                  ((x) & 0x00000010)
-#define FCML_IS_DECOR_SAE_REQ(x)              (((x) & 0x00000030) == 0x00000030)
 
 /* Instruction details. */
 
@@ -1089,10 +1088,6 @@ typedef struct fcml_st_def_tma_vex_vvvv_reg {
 typedef struct fcml_st_def_tma_pseudo_op {
     fcml_uint8_t mask;
 } fcml_st_def_tma_pseudo_op;
-
-typedef struct fcml_st_def_tma_virtual_op {
-    fcml_operand_decorators decorators;
-} fcml_st_def_tma_virtual_op;
 
 typedef struct fcml_st_def_tma_is {
     fcml_uint8_t flags;
