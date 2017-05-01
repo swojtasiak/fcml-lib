@@ -430,22 +430,18 @@ void fcml_tf_instruction_CMPS(void) {
     FCML_I64( "cmps dword ptr [esi],dword ptr [edi]", 0x67, 0xA7 );
     FCML_I64_D( "cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0x40, 0xA7 );
     FCML_I64( "cmps word ptr [esi],word ptr [edi]", 0x66, 0x67, 0xA7 );
-    /* Segment override.
-     */
-    /* ES cannot be overridden.
-     */
+    /* Segment override. */
+    /* ES cannot be overridden. */
     FCML_I32_A_FAILED( "cmps dword ptr ds:[si],dword ptr cs:[di]", 0x67, 0xA7 );
     FCML_I32_A_FAILED( "cmps dword ptr ds:[si],dword ptr ds:[di]", 0x67, 0xA7 );
     FCML_I32_A( "cmps dword ptr ds:[si],dword ptr es:[di]", 0x67, 0xA7 );
-    /* DS can be.
-     */
+    /* DS can be. */
     FCML_I32_A( "repne cmps dword ptr cs:[si],dword ptr es:[di]", 0xF2, 0x2E, 0x67, 0xA7 );
     FCML_I32_A( "cmps dword ptr ss:[si],dword ptr es:[di]", 0x36, 0x67, 0xA7 );
     FCML_I32_A( "cmps dword ptr es:[si],dword ptr es:[di]", 0x26, 0x67, 0xA7 );
     FCML_I32_A( "cmps dword ptr fs:[si],dword ptr es:[di]", 0x64, 0x67, 0xA7 );
     FCML_I32_A( "cmps dword ptr gs:[si],dword ptr es:[di]", 0x65, 0x67, 0xA7 );
-    /* Short forms.
-     */
+    /* Short forms. */
     FCML_A64_A( "cmpsb", 0xA6 );
     FCML_A32_A( "cmpsw", 0x66, 0xA7 );
     FCML_A32_A( "cmpsl", 0xA7 );
@@ -461,8 +457,9 @@ void fcml_tf_instruction_CMPS(void) {
 }
 
 void fcml_tf_instruction_CMPSD(void) {
-    /* Wrong comparison predicate.
-     */
+
+    /* Wrong comparison predicate. */
+
     FCML_I32_A_FAILED( "cmpsd xmm0,mmword ptr [eax+00000020h],08h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x08 );
     FCML_I32( "cmpsd xmm0,mmword ptr [eax+00000020h],07h", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x07 );
     FCML_A32( "cmpsd $0x07,0x00000020(%eax),%xmm0", 0xF2, 0x0F, 0xC2, 0x40, 0x20, 0x07 );
@@ -470,8 +467,9 @@ void fcml_tf_instruction_CMPSD(void) {
     FCML_A32( "cmpsd $0x06,0x00000020(%eax),%xmm0", 0xf2, 0x0f, 0xc2, 0x40, 0x20, 0x06 );
     FCML_I32( "cmpsd xmm0,xmm1,00h", 0xf2, 0x0f, 0xc2, 0xc1, 0x00 );
     FCML_A32( "cmpsd $0x00,%xmm1,%xmm0", 0xf2, 0x0f, 0xc2, 0xc1, 0x00 );
-    /* pseudo op.
-     */
+
+    /* pseudo op. */
+
     FCML_I3264_A( "cmpeqsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x00 );
     FCML_A32_D_SHORT( "cmpeqsd (%eax),%xmm0", 0xf2, 0x0f, 0xc2, 0x00, 0x00 );
     FCML_A3264_A( "cmpeqsd %xmm1,%xmm0", 0xf2, 0x0f, 0xc2, 0xc1, 0x00 );
@@ -485,15 +483,17 @@ void fcml_tf_instruction_CMPSD(void) {
     FCML_I3264_A( "cmpnltsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x05 );
     FCML_I3264_A( "cmpnlesd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x06 );
     FCML_I3264_A( "cmpordsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x07 );
-    /* Disassembling.
-     */
+
+    /* Disassembling. */
+
     FCML_I32_D_SHORT( "cmpeqsd xmm0,xmm1", 0xf2, 0x0f, 0xc2, 0xc1, 0x00 );
 
     FCML_I32_A_FAILED( "vcmpsd xmm2,xmm7,mmword ptr [ecx+eax],20h", 0xc5, 0xc3, 0xc2, 0x14, 0x01, 0x20 );
     FCML_I32( "vcmpsd xmm2,xmm7,mmword ptr [ecx+eax],0fh", 0xc5, 0xc3, 0xc2, 0x14, 0x01, 0x0F );
     FCML_I64( "vcmpsd xmm10,xmm14,mmword ptr [r9+rax],00h", 0xC4, 0x41, 0x0B, 0xC2, 0x14, 0x01, 0x00 );
-    /* pseudo op.
-     */
+
+    /* pseudo op. */
+
     FCML_I3264_A( "vcmpeqsd xmm0,xmm1,xmm2", 0xc5, 0xf3, 0xc2, 0xc2, 0x00 );
     FCML_I3264_A( "vcmpltsd xmm0,xmm1,xmm2", 0xc5, 0xf3, 0xc2, 0xc2, 0x01 );
     FCML_I3264_A( "vcmplesd xmm0,xmm1,xmm2", 0xc5, 0xf3, 0xc2, 0xc2, 0x02 );
@@ -596,13 +596,11 @@ void fcml_tf_instruction_CMPSS(void) {
     FCML_I3264_A( "cmpnltss xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x05 );
     FCML_I3264_A( "cmpnless xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x06 );
     FCML_I3264_A( "cmpordss xmm0,xmm1", 0xf3, 0x0f, 0xc2, 0xc1, 0x07 );
-    /* pseudo opcode out of range.
-     */
+    /* pseudo opcode out of range. */
     FCML_I32_A_FAILED( "vcmpss xmm2,xmm7,dword ptr [ecx+eax],20h", 0xc5, 0xc2, 0xc2, 0x14, 0x01, 0x20 );
     FCML_I32( "vcmpss xmm2,xmm7,dword ptr [ecx+eax],0fh", 0xc5, 0xc2, 0xc2, 0x14, 0x01, 0x0F );
     FCML_I64( "vcmpss xmm10,xmm14,dword ptr [r9+rax],00h", 0xC4, 0x41, 0x0A, 0xC2, 0x14, 0x01, 0x00 );
-    /* pseudo op.
-     */
+    /* pseudo op. */
     FCML_I3264_A( "vcmpeqss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x00 );
     FCML_I3264_A( "vcmpltss xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x01 );
     FCML_I3264_A( "vcmpless xmm0,xmm1,xmm2", 0xc5, 0xf2, 0xc2, 0xc2, 0x02 );
