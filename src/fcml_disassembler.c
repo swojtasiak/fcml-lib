@@ -387,11 +387,13 @@ int fcml_ifn_dasm_dts_calculate_decoding_order(
         order++;
     }
 
-    /* REX prefix. */
+    /* REX/VEX/EVEX prefix. */
     if (FCML_DEF_PREFIX_W_1(prefixes) 
             || FCML_DEF_PREFIX_W_0(prefixes) 
             || FCML_DEF_PREFIX_L_1(prefixes) 
-            || FCML_DEF_PREFIX_L_0(prefixes)) {
+            || FCML_DEF_PREFIX_L_0(prefixes)
+            || FCML_DEF_PREFIX_L_prim_1(prefixes)
+            || FCML_DEF_PREFIX_L_prim_0(prefixes)) {
         order += 2;
     }
 
@@ -869,7 +871,12 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
          * instead of the one directly encoded in ModR/M.
          */
         if (FCML_IS_DECOR_BCAST(decorators) && context->prefixes.b) {
-            address->size_operator = context->element_size;
+            fcml_usize memory_location_size =
+                    FCML_GET_DECOR_BCAST_MEMORY_LOCATION_SIZE(decorators) * 8;
+            /* Directly encoded bcast size has precedence over 
+               SIMD element size. */
+            address->size_operator = memory_location_size ?
+                    memory_location_size : context->element_size;
         } else {
             address->size_operator =
                     fcml_ifn_dasm_utils_decode_encoded_size_value(context,
@@ -1449,6 +1456,15 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
                 (!prefixes->is_avx || !prefixes->L))
             || (FCML_DEF_PREFIX_L_0(instruction_decoding_def->prefixes_flags) 
                 && (!prefixes->is_avx || prefixes->L))) {
+        return FCML_FALSE;
+    }
+
+    /* L' field. */
+    if ((FCML_DEF_PREFIX_L_prim_1(instruction_decoding_def->prefixes_flags) &&
+                (!prefixes->is_evex || !prefixes->L_prim))
+            || (FCML_DEF_PREFIX_L_prim_0(
+                    instruction_decoding_def->prefixes_flags)
+                && (!prefixes->is_evex || prefixes->L_prim))) {
         return FCML_FALSE;
     }
 

@@ -2054,7 +2054,7 @@ void fcml_tf_modrm_vsib_EVEX_encoder_3264_bit_encoding(void) {
     STF_ASSERT_EQUAL(error, FCML_CEH_GEC_NO_ERROR);
     STF_ASSERT_EQUAL(encoded_modrm.displacement_size, 0);
     STF_ASSERT_EQUAL(encoded_modrm.ext_B, 0);
-    STF_ASSERT_EQUAL(encoded_modrm.ext_R, 1);
+    STF_ASSERT_EQUAL(encoded_modrm.ext_R, 0);
     STF_ASSERT_EQUAL(encoded_modrm.ext_R_prim, 1);
     STF_ASSERT_EQUAL(encoded_modrm.ext_X, 1);
     STF_ASSERT_EQUAL(encoded_modrm.ext_V_prim, 1);

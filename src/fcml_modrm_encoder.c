@@ -452,14 +452,10 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
                 return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
             }
             f_index = effective_address->index.reg;
-            if (f_index > 7) {
-                /* VSIB */
-                f_ext_X = 0x01;
-                if (f_index > 15) {
-                    f_ext_V_prim = 0x01;
-                }
-                f_index &= 0x07;
-            }
+
+            f_ext_X = (f_index >> 3) & 0x01;
+            f_ext_V_prim = (f_index >> 4) & 0x01;
+            f_index &= 0x07;
         } else {
             f_index = 0x04;
         }
@@ -510,13 +506,9 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
             f_mod = 0x03;
         }
 
-        if (f_rm > 7) {
-            f_ext_B = 0x01;
-            if (f_rm > 15) {
-                f_ext_X = 0x01;
-            }
-            f_rm &= 0x07;
-        }
+        f_ext_B = (f_rm >> 3) & 0x01;
+        f_ext_X = (f_rm >> 4) & 0x01;
+        f_rm &= 0x07;
     }
 
     if (is_rip) {
@@ -636,13 +628,9 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
 
     /* Encode reg/opcode.*/
     f_reg = decoded_modrm->reg_opcode;
-    if (f_reg > 7) {
-        f_ext_R = 0x01;
-        if (f_reg > 15) {
-            f_ext_R_prim = 0x01;
-        }
-        f_reg &= 0x07;
-    }
+    f_ext_R = (f_reg >> 3) & 0x01;
+    f_ext_R_prim = (f_reg >> 4) & 0x01;
+    f_reg &= 0x07;
 
     if (context->op_mode != FCML_OM_64_BIT && (f_ext_R || f_ext_X || f_ext_B ||
             f_ext_R_prim || f_ext_V_prim)) {

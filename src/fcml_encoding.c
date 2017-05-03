@@ -500,11 +500,12 @@ fcml_usize fcml_ifn_asm_non_standard_attribute_size_calculator(
     return attribute_size;
 }
 
+/* TODO: Refactoring - struct for bcast fields. */
 fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         fcml_ist_asm_encoding_context *context,
         fcml_uint8_t encoded_operand_size, fcml_usize operand_size,
-        fcml_nuint8_t *bcast, fcml_usize bcast_element_size,
-        fcml_usize *encoded_data_size,
+        fcml_nuint8_t *bcast, fcml_usize bcast_memory_location_size,
+        fcml_usize bcast_element_size, fcml_usize *encoded_data_size,
         enum fcml_ien_asm_comparator_type comparator) {
 
     fcml_st_entry_point *entry_point =
@@ -578,7 +579,15 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
     default:
         if (operand_size || !FCML_IS_EOS_OPT(encoded_operand_size)) {
             if (comparator == FCML_IEN_CT_EQUAL) {
-                if (encoded_static_operand_size * 8 != operand_size) {
+                if (bcast && bcast->is_not_null) {
+                    if(operand_size != (bcast_memory_location_size ?
+                            bcast_memory_location_size :
+                            bcast->value * bcast_element_size)) {
+                        FCML_TRACE("Unsupported operand size. Expected %d got %d.",
+                                    operand_size, encoded_static_operand_size * 8);
+                        error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+                    }
+                } else if (encoded_static_operand_size * 8 != operand_size) {
                     FCML_TRACE("Unsupported operand size. Expected %d got %d.",
                             operand_size, encoded_static_operand_size * 8);
                     error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
@@ -651,7 +660,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
         fcml_usize *encoded_data_size,
         enum fcml_ien_asm_comparator_type comparator) {
     return fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
-            encoded_operand_size, operand_size, NULL, 0,
+            encoded_operand_size, operand_size, NULL, 0, 0,
             encoded_data_size, comparator);
 }
 
@@ -1819,6 +1828,9 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
 
             /* OSA. */
 
+            /* TODO: Refactoring - this piece of code is getting too
+             * complicated. */
+
             /* TODO: Move it to fcml_ifn_asm_accept_data_size. */
             if (operand_def->decorators.bcast.is_not_null) {
 
@@ -1829,8 +1841,15 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
                 error = fcml_ifn_asm_accept_bcast_decorator(
                         args->is_bcast, operand_def->decorators.bcast,
                         element_size, &(context->optimizer_processing_details));
-            } else {
 
+                /* TODO: Think about moving it to accept_data_size.*/
+                if (args->bcast_memory_location_size &&
+                        operand_def->address.size_operator !=
+                                args->bcast_memory_location_size)  {
+                    FCML_TRACE_MSG("Unsupported memory operand size.");
+                    error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+                }
+            } else {
                 fcml_usize mem_data_size = fcml_ifn_asm_calculate_operand_size(
                         context, operand_def->address.size_operator,
                         args->encoded_memory_operand_size);
@@ -1840,7 +1859,6 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
                     FCML_TRACE_MSG("Unsupported memory operand size.");
                     error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                 }
-
             }
 
             /* Check VSIB. */
@@ -2016,7 +2034,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
 
             error = fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
                     args->encoded_memory_operand_size, mem_data_size,
-                    &(operand_def->decorators.bcast), element_size,
+                    &(operand_def->decorators.bcast),
+                    args->bcast_memory_location_size, element_size,
                     NULL, FCML_IEN_CT_EQUAL);
 
             /* Encode broadcast. */
@@ -2219,10 +2238,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_vex_vvvv(
         fcml_st_register *reg = &(operand_def->reg);
         /* Only 16 registers can be encoded using VEX/XOP/EVEX.vvvv field. */
         epf->vvvv = reg->reg & 0x0F;
-        if (reg->reg > 15) {
-            /* High 16 registers has to be encoded using EVEX.V'. */
-            epf->V_prim = 0x01;
-        }
+        /* High 16 registers has to be encoded using EVEX.V'. */
+        epf->V_prim = (reg->reg >> 4) & 0x01;
     }
 
     return FCML_CEH_GEC_NO_ERROR;
@@ -4187,8 +4204,12 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_processor_EVEX_prefix_encoder(
 
     if (phase == FCML_IEN_ASM_IPPP_FIRST_PHASE) {
 
-        if (FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes)) {
+        if (FCML_DEF_PREFIX_L_1(addr_mode_def->allowed_prefixes)) {
+            context->optimizer_processing_details.vector_length = FCML_DS_256;
+        } else if (FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes)) {
             context->optimizer_processing_details.vector_length = FCML_DS_128;
+        } else if (FCML_DEF_PREFIX_L_prim_1(addr_mode_def->allowed_prefixes)) {
+            context->optimizer_processing_details.vector_length = FCML_DS_512;
         }
 
     }

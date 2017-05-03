@@ -117,7 +117,7 @@ typedef fcml_uint32_t fcml_operand_decorators;
 
 /* Operand decorators encoders. */
 
-#define FCML_DECOR_BCAST      0x010000000000LL
+#define FCML_DECOR_BCAST(x)  (0x010000000000LL | (((fcml_uint64_t)x) << 48))
 #define FCML_DECOR_Z          0x020000000000LL
 #define FCML_DECOR_K1         0x040000000000LL
 #define FCML_DECOR_ER         0x080000000000LL
@@ -128,6 +128,7 @@ typedef fcml_uint32_t fcml_operand_decorators;
 
 /* Operand decorators decoders. Use only on 'fcml_operand_decorators'. */
 
+#define FCML_GET_DECOR_BCAST_MEMORY_LOCATION_SIZE(x) (((x) >> 8) & 0xFF)
 #define FCML_IS_DECOR_BCAST(x)                ((x) & 0x00000001)
 #define FCML_IS_DECOR_Z(x)                    ((x) & 0x00000002)
 #define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
@@ -219,7 +220,8 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_PREFIX_L_1(x)                       FCML_TP_GET_BIT(x,5)
 #define FCML_DEF_PREFIX_L_0(x)                       FCML_TP_GET_BIT(x,6)
 #define FCML_DEF_PREFIX_VEX_REQ(x)                   FCML_TP_GET_BIT(x,7)
-#define FCML_DEF_PREFIX_VEXOP_VVVV(x)                FCML_TP_GET_BIT(x,8)
+/* Currently unused probably can be reused in the future. */
+#define FCML_DEF_PREFIX_RESERVED(x)                  FCML_TP_GET_BIT(x,8)
 #define FCML_DEF_PREFIX_L_IGNORE_OS(x)               FCML_TP_GET_BIT(x,9)
 #define FCML_DEF_PREFIX_XOP_REQ(x)                   FCML_TP_GET_BIT(x,10)
 #define FCML_DEF_PREFIX_HLE_ENABLED(x)               FCML_TP_GET_BIT(x,11)
@@ -228,6 +230,8 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_PREFIX_MANDATORY_F3(x)              FCML_TP_GET_BIT(x,14)
 #define FCML_DEF_PREFIX_SUFFIX(x)                    FCML_TP_GET_BIT(x,15)
 #define FCML_DEF_PREFIX_EVEX_REQ(x)                  FCML_TP_GET_BIT(x,16)
+#define FCML_DEF_PREFIX_L_prim_1(x)                  FCML_TP_GET_BIT(x,17)
+#define FCML_DEF_PREFIX_L_prim_0(x)                  FCML_TP_GET_BIT(x,18)
 
 #define FCML_DEF_PREFIX_IS_AVX_REQ(x)   (FCML_DEF_PREFIX_VEX_REQ(x) || \
     FCML_DEF_PREFIX_EVEX_REQ(x) || FCML_DEF_PREFIX_XOP_REQ(x))
@@ -757,9 +761,9 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
     FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_OWORD, FCML_EOS_OWORD | FCML_EOS_OPT, \
             FCML_RMF_RM)
 #define FCML_OP_MODRM_RM_XMM_OP_128_W  (FCML_OP_MODRM_RM_XMM_OP_128 | FCML_OA_W)
-
 #define FCML_OP_MODRM_RM_XMM_OP_128_RW \
     (FCML_OP_MODRM_RM_XMM_OP_128 | FCML_OA_RW)
+
 #define FCML_OP_MODRM_RM_YMM_OP_256    \
     FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_YWORD, FCML_EOS_YWORD | FCML_EOS_OPT, \
             FCML_RMF_RM)
@@ -767,6 +771,14 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
     (FCML_OP_MODRM_RM_YMM_OP_256 | FCML_OA_W)
 #define FCML_OP_MODRM_RM_YMM_OP_256_RW  \
     (FCML_OP_MODRM_RM_YMM_OP_256 | FCML_OA_RW)
+
+#define FCML_OP_MODRM_RM_ZMM_OP_512    \
+    FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_ZWORD, FCML_EOS_ZWORD | FCML_EOS_OPT, \
+            FCML_RMF_RM)
+#define FCML_OP_MODRM_RM_ZMM_OP_512_W   \
+    (FCML_OP_MODRM_RM_ZMM_OP_512 | FCML_OA_W)
+#define FCML_OP_MODRM_RM_ZMM_OP_512_RW  \
+    (FCML_OP_MODRM_RM_ZMM_OP_512 | FCML_OA_RW)
 
 #define FCML_OP_MODRM_RM_MMX_OP_32      \
     FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_QWORD, FCML_EOS_DWORD | FCML_EOS_OPT, \
@@ -823,6 +835,9 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 #define FCML_OP_MODRM_R_YMM            FCML_OP_R(FCML_REG_SIMD, FCML_EOS_YWORD)
 #define FCML_OP_MODRM_R_YMM_W          (FCML_OP_MODRM_R_YMM | FCML_OA_W)
 #define FCML_OP_MODRM_R_YMM_RW         (FCML_OP_MODRM_R_YMM | FCML_OA_RW)
+#define FCML_OP_MODRM_R_ZMM            FCML_OP_R(FCML_REG_SIMD, FCML_EOS_ZWORD)
+#define FCML_OP_MODRM_R_ZMM_W          (FCML_OP_MODRM_R_ZMM | FCML_OA_W)
+#define FCML_OP_MODRM_R_ZMM_RW         (FCML_OP_MODRM_R_ZMM | FCML_OA_RW)
 #define FCML_OP_MODRM_RM_SIMD_L        FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L, \
         FCML_EOS_L, FCML_RMF_RM)
 #define FCML_OP_MODRM_RM_SIMD_L_W       (FCML_OP_MODRM_RM_SIMD_L | FCML_OA_W)
@@ -955,8 +970,29 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 #define FCML_OP_MODRM_R_XMM_K1_Z_W      FCML_OP_MODRM_R_XMM_W | \
     FCML_DECOR_Z | FCML_DECOR_K1
 
-#define FCML_OP_MODRM_RM_SIMD_L_BCAST_OP  FCML_OP_MODRM_RM_SIMD_L_OP | \
-    FCML_DECOR_BCAST
+#define FCML_OP_MODRM_R_YMM_K1_Z_W      FCML_OP_MODRM_R_YMM_W | \
+    FCML_DECOR_Z | FCML_DECOR_K1
+
+#define FCML_OP_MODRM_R_ZMM_K1_Z_W      FCML_OP_MODRM_R_ZMM_W | \
+    FCML_DECOR_Z | FCML_DECOR_K1
+
+#define FCML_OP_MODRM_RM_SIMD_L_BCAST_OP     FCML_OP_MODRM_RM_SIMD_L_OP | \
+    FCML_DECOR_BCAST(FCML_EOS_UNDEFINED)
+
+#define FCML_OP_MODRM_RM_SIMD_L_BCAST_32_OP  FCML_OP_MODRM_RM_SIMD_L_OP | \
+    FCML_DECOR_BCAST(FCML_EOS_DWORD)
+
+#define FCML_OP_MODRM_RM_XMM_64_BCAST_32_OP     FCML_OP_MODRM_RM_XMM_OP_64 | \
+    FCML_DECOR_BCAST(FCML_EOS_DWORD)
+
+#define FCML_OP_MODRM_RM_XMM_128_BCAST_32_OP     FCML_OP_MODRM_RM_XMM_OP_128 | \
+    FCML_DECOR_BCAST(FCML_EOS_DWORD)
+
+#define FCML_OP_MODRM_RM_YMM_256_BCAST_32_OP     FCML_OP_MODRM_RM_YMM_OP_256 | \
+    FCML_DECOR_BCAST(FCML_EOS_DWORD)
+
+#define FCML_OP_MODRM_RM_ZMM_512_BCAST_32_OP     FCML_OP_MODRM_RM_ZMM_OP_512 | \
+    FCML_DECOR_BCAST(FCML_EOS_DWORD)
 
 /* End of AVX-512 */
 
@@ -1080,6 +1116,7 @@ typedef struct fcml_st_def_tma_rm {
     fcml_uint8_t vector_index_register;
     fcml_bool is_vsib;
     fcml_bool is_bcast;
+    fcml_usize bcast_memory_location_size;
 } fcml_st_def_tma_rm;
 
 typedef struct fcml_st_def_tma_r {
