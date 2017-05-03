@@ -105,6 +105,8 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
 
     fcml_ceh_error error = FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 
+    /* TODO: Maybe we should also try different vector lengths if there is
+       such a possibility. */
     fcml_usize easa[2];
     fcml_usize eosa[3];
 
