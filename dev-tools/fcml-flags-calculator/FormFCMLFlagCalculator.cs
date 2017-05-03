@@ -18,7 +18,7 @@ namespace ira_flags_calc
             _W_1,
             _W_0,
             _VEXL_1,
-            _VEX_LEG,
+            _VEXL_0,
             _VEX_Required,
             _VEX_VVVV_Unused,
             _VEX_L_Ignore_For_Size,
@@ -28,12 +28,9 @@ namespace ira_flags_calc
             _F2_Man,
             _F3_Man,
             Sufix,
-            _EVEX,
-            _bcast,
-            _z,
-            _k1,
-            _er,
-            _sae
+            _EVEX_Required,
+            _EVEXL_prim_1,
+            _EVEXL_prim_0
         }
 
         enum Opcodes : int
@@ -99,7 +96,7 @@ namespace ira_flags_calc
             checkBox_REXW_1.Checked = ((int)prefixes & (1 << (int)Prefixes._W_1)) != 0;
             checkBox_VEXW_1.Checked = ((int)prefixes & (1 << (int)Prefixes._W_0)) != 0;
             checkBox_VEXL_1.Checked = ((int)prefixes & (1 << (int)Prefixes._VEXL_1)) != 0;
-            checkBox_VEX_For_Legacy.Checked = ( (int)prefixes & ( 1 << (int)Prefixes._VEX_LEG ) ) != 0;
+            checkBox_VEXL_0.Checked = ( (int)prefixes & ( 1 << (int)Prefixes._VEXL_0 ) ) != 0;
             checkBox_VEX_NEDDED.Checked = ((int)prefixes & (1 << (int)Prefixes._VEX_Required)) != 0;
             checkBox_VVVV_Unused.Checked = ((int)prefixes & (1 << (int)Prefixes._VEX_VVVV_Unused)) != 0;
             checkBox_Reserved_3.Checked = ((int)prefixes & (1 << (int)Prefixes._VEX_L_Ignore_For_Size)) != 0;
@@ -109,7 +106,9 @@ namespace ira_flags_calc
             checkBox_F2_Mand.Checked = ((int)prefixes & (1 << (int)Prefixes._F2_Man)) != 0;
             checkBox_F3_Mand.Checked = ((int)prefixes & (1 << (int)Prefixes._F3_Man)) != 0;
             checkBox_Suffix.Checked = ((int)prefixes & (1 << (int)Prefixes.Sufix)) != 0;
-            checkBox_EVEX.Checked = ((int)prefixes & (1 << (int)Prefixes._EVEX)) != 0;
+            checkBox_EVEX.Checked = ((int)prefixes & (1 << (int)Prefixes._EVEX_Required)) != 0;
+            checkBox_EVEX_L_prim0.Checked = ((int)prefixes & (1 << (int)Prefixes._EVEXL_prim_0)) != 0;
+            checkBox_EVEX_L_prim1.Checked = ((int)prefixes & (1 << (int)Prefixes._EVEXL_prim_1)) != 0;
         }
 
         void MapCheckBoxesToPrefixes()
@@ -121,7 +120,7 @@ namespace ira_flags_calc
             value |= (uint)(checkBox_REXW_1.Checked ? (1 << (int)Prefixes._W_1) : 0);
             value |= (uint)(checkBox_VEXW_1.Checked ? (1 << (int)Prefixes._W_0) : 0);
             value |= (uint)(checkBox_VEXL_1.Checked ? (1 << (int)Prefixes._VEXL_1) : 0);
-            value |= (uint)(checkBox_VEX_For_Legacy.Checked ? (1 << (int)Prefixes._VEX_LEG) : 0);
+            value |= (uint)(checkBox_VEXL_0.Checked ? (1 << (int)Prefixes._VEXL_0) : 0);
             value |= (uint)(checkBox_VEX_NEDDED.Checked ? (1 << (int)Prefixes._VEX_Required) : 0);
             value |= (uint)(checkBox_VVVV_Unused.Checked ? (1 << (int)Prefixes._VEX_VVVV_Unused) : 0);
             value |= (uint)(checkBox_Reserved_3.Checked ? (1 << (int)Prefixes._VEX_L_Ignore_For_Size) : 0);
@@ -131,7 +130,9 @@ namespace ira_flags_calc
             value |= (uint)(checkBox_F2_Mand.Checked ? (1 << (int)Prefixes._F2_Man) : 0);
             value |= (uint)(checkBox_F3_Mand.Checked ? (1 << (int)Prefixes._F3_Man) : 0);
             value |= (uint)(checkBox_Suffix.Checked ? (1 << (int)Prefixes.Sufix) : 0);
-            value |= (uint)(checkBox_EVEX.Checked ? (1 << (int)Prefixes._EVEX) : 0);
+            value |= (uint)(checkBox_EVEX.Checked ? (1 << (int)Prefixes._EVEX_Required) : 0);
+            value |= (uint)(checkBox_EVEX_L_prim1.Checked ? (1 << (int)Prefixes._EVEXL_prim_1) : 0);
+            value |= (uint)(checkBox_EVEX_L_prim0.Checked ? (1 << (int)Prefixes._EVEXL_prim_0) : 0);
 
             textBoxPrefixes.Text = "0x" + value.ToString("X8");
         }
@@ -310,8 +311,16 @@ namespace ira_flags_calc
             ignoreEvents = true;
 
             // P0
+            byte p0;
+            try
+            {
+                p0 = Convert.ToByte(textBox_P0.Text, 16);
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
-            byte p0 = Convert.ToByte(textBox_P0.Text, 16);
             checkBox_EVEX_R.Checked = !(((int)p0 & (1 << (int)7)) != 0);
             checkBox_EVEX_X.Checked = !(((int)p0 & (1 << (int)6)) != 0);
             checkBox_EVEX_B.Checked = !(((int)p0 & (1 << (int)5)) != 0);
@@ -326,8 +335,14 @@ namespace ira_flags_calc
             ignoreEvents = true;
 
             // P1
-
-            byte p1 = Convert.ToByte(textBox_P1.Text, 16);
+            byte p1;
+            try {
+                p1 = Convert.ToByte(textBox_P1.Text, 16);
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
             checkBox_EVEX_W.Checked = (((int)p1 & (1 << (int)7)) != 0);
             setVVVV(comboBox_EVEX_vvvv, (byte)((p1 & 0x78) >> 3));
@@ -342,7 +357,15 @@ namespace ira_flags_calc
 
             // P2
 
-            byte p2 = Convert.ToByte(textBox_P2.Text, 16);
+            byte p2;
+            try
+            {
+                p2 = Convert.ToByte(textBox_P2.Text, 16);
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
             checkBox_EVEX_z.Checked = (((int)p2 & (1 << (int)7)) != 0);
             checkBox_EVEX_L_prim.Checked = (((int)p2 & (1 << (int)6)) != 0);

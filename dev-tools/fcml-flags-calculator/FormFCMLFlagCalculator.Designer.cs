@@ -29,6 +29,8 @@ namespace ira_flags_calc
         private void InitializeComponent()
         {
             this.groupBoxFPrefixes = new System.Windows.Forms.GroupBox();
+            this.checkBox_EVEX_L_prim0 = new System.Windows.Forms.CheckBox();
+            this.checkBox_EVEX_L_prim1 = new System.Windows.Forms.CheckBox();
             this.checkBox_EVEX = new System.Windows.Forms.CheckBox();
             this.checkBox_Suffix = new System.Windows.Forms.CheckBox();
             this.checkBox_F3_Mand = new System.Windows.Forms.CheckBox();
@@ -40,7 +42,7 @@ namespace ira_flags_calc
             this.checkBox_Reserved_3 = new System.Windows.Forms.CheckBox();
             this.checkBox_VVVV_Unused = new System.Windows.Forms.CheckBox();
             this.checkBox_VEX_NEDDED = new System.Windows.Forms.CheckBox();
-            this.checkBox_VEX_For_Legacy = new System.Windows.Forms.CheckBox();
+            this.checkBox_VEXL_0 = new System.Windows.Forms.CheckBox();
             this.checkBox_VEXL_1 = new System.Windows.Forms.CheckBox();
             this.checkBox_VEXW_1 = new System.Windows.Forms.CheckBox();
             this.checkBox_REXW_1 = new System.Windows.Forms.CheckBox();
@@ -147,6 +149,8 @@ namespace ira_flags_calc
             // 
             this.groupBoxFPrefixes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxFPrefixes.Controls.Add(this.checkBox_EVEX_L_prim0);
+            this.groupBoxFPrefixes.Controls.Add(this.checkBox_EVEX_L_prim1);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_EVEX);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_Suffix);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_F3_Mand);
@@ -158,7 +162,7 @@ namespace ira_flags_calc
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_Reserved_3);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_VVVV_Unused);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_VEX_NEDDED);
-            this.groupBoxFPrefixes.Controls.Add(this.checkBox_VEX_For_Legacy);
+            this.groupBoxFPrefixes.Controls.Add(this.checkBox_VEXL_0);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_VEXL_1);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_VEXW_1);
             this.groupBoxFPrefixes.Controls.Add(this.checkBox_REXW_1);
@@ -171,10 +175,38 @@ namespace ira_flags_calc
             this.groupBoxFPrefixes.TabStop = false;
             this.groupBoxFPrefixes.Text = "Prefixes";
             // 
+            // checkBox_EVEX_L_prim0
+            // 
+            this.checkBox_EVEX_L_prim0.AutoSize = true;
+            this.checkBox_EVEX_L_prim0.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.helpProvider.SetHelpString(this.checkBox_EVEX_L_prim0, "True if legacy SIMD instruction can be also encoded using VEX prefix.");
+            this.checkBox_EVEX_L_prim0.Location = new System.Drawing.Point(6, 201);
+            this.checkBox_EVEX_L_prim0.Name = "checkBox_EVEX_L_prim0";
+            this.helpProvider.SetShowHelp(this.checkBox_EVEX_L_prim0, true);
+            this.checkBox_EVEX_L_prim0.Size = new System.Drawing.Size(49, 17);
+            this.checkBox_EVEX_L_prim0.TabIndex = 23;
+            this.checkBox_EVEX_L_prim0.Text = "L\' (0)";
+            this.checkBox_EVEX_L_prim0.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_L_prim0.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
+            // 
+            // checkBox_EVEX_L_prim1
+            // 
+            this.checkBox_EVEX_L_prim1.AutoSize = true;
+            this.checkBox_EVEX_L_prim1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.helpProvider.SetHelpString(this.checkBox_EVEX_L_prim1, "True if legacy SIMD instruction can be also encoded using VEX prefix.");
+            this.checkBox_EVEX_L_prim1.Location = new System.Drawing.Point(6, 179);
+            this.checkBox_EVEX_L_prim1.Name = "checkBox_EVEX_L_prim1";
+            this.helpProvider.SetShowHelp(this.checkBox_EVEX_L_prim1, true);
+            this.checkBox_EVEX_L_prim1.Size = new System.Drawing.Size(49, 17);
+            this.checkBox_EVEX_L_prim1.TabIndex = 22;
+            this.checkBox_EVEX_L_prim1.Text = "L\' (1)";
+            this.checkBox_EVEX_L_prim1.UseVisualStyleBackColor = true;
+            this.checkBox_EVEX_L_prim1.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
+            // 
             // checkBox_EVEX
             // 
             this.checkBox_EVEX.AutoSize = true;
-            this.checkBox_EVEX.Location = new System.Drawing.Point(7, 387);
+            this.checkBox_EVEX.Location = new System.Drawing.Point(7, 429);
             this.checkBox_EVEX.Name = "checkBox_EVEX";
             this.checkBox_EVEX.Size = new System.Drawing.Size(100, 17);
             this.checkBox_EVEX.TabIndex = 21;
@@ -185,7 +217,7 @@ namespace ira_flags_calc
             // checkBox_Suffix
             // 
             this.checkBox_Suffix.AutoSize = true;
-            this.checkBox_Suffix.Location = new System.Drawing.Point(7, 364);
+            this.checkBox_Suffix.Location = new System.Drawing.Point(7, 406);
             this.checkBox_Suffix.Name = "checkBox_Suffix";
             this.checkBox_Suffix.Size = new System.Drawing.Size(52, 17);
             this.checkBox_Suffix.TabIndex = 15;
@@ -196,7 +228,7 @@ namespace ira_flags_calc
             // checkBox_F3_Mand
             // 
             this.checkBox_F3_Mand.AutoSize = true;
-            this.checkBox_F3_Mand.Location = new System.Drawing.Point(7, 341);
+            this.checkBox_F3_Mand.Location = new System.Drawing.Point(7, 383);
             this.checkBox_F3_Mand.Name = "checkBox_F3_Mand";
             this.checkBox_F3_Mand.Size = new System.Drawing.Size(97, 17);
             this.checkBox_F3_Mand.TabIndex = 14;
@@ -207,7 +239,7 @@ namespace ira_flags_calc
             // checkBox_F2_Mand
             // 
             this.checkBox_F2_Mand.AutoSize = true;
-            this.checkBox_F2_Mand.Location = new System.Drawing.Point(7, 318);
+            this.checkBox_F2_Mand.Location = new System.Drawing.Point(7, 360);
             this.checkBox_F2_Mand.Name = "checkBox_F2_Mand";
             this.checkBox_F2_Mand.Size = new System.Drawing.Size(97, 17);
             this.checkBox_F2_Mand.TabIndex = 13;
@@ -218,7 +250,7 @@ namespace ira_flags_calc
             // checkBox66_Mand
             // 
             this.checkBox66_Mand.AutoSize = true;
-            this.checkBox66_Mand.Location = new System.Drawing.Point(7, 295);
+            this.checkBox66_Mand.Location = new System.Drawing.Point(7, 337);
             this.checkBox66_Mand.Name = "checkBox66_Mand";
             this.checkBox66_Mand.Size = new System.Drawing.Size(97, 17);
             this.checkBox66_Mand.TabIndex = 12;
@@ -230,7 +262,7 @@ namespace ira_flags_calc
             // 
             this.checkBox_EanableHAL.AutoSize = true;
             this.checkBox_EanableHAL.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox_EanableHAL.Location = new System.Drawing.Point(7, 272);
+            this.checkBox_EanableHAL.Location = new System.Drawing.Point(7, 314);
             this.checkBox_EanableHAL.Name = "checkBox_EanableHAL";
             this.checkBox_EanableHAL.Size = new System.Drawing.Size(122, 17);
             this.checkBox_EanableHAL.TabIndex = 11;
@@ -242,7 +274,7 @@ namespace ira_flags_calc
             // 
             this.checkBox_XOP_Required.AutoSize = true;
             this.checkBox_XOP_Required.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox_XOP_Required.Location = new System.Drawing.Point(7, 249);
+            this.checkBox_XOP_Required.Location = new System.Drawing.Point(7, 291);
             this.checkBox_XOP_Required.Name = "checkBox_XOP_Required";
             this.checkBox_XOP_Required.Size = new System.Drawing.Size(94, 17);
             this.checkBox_XOP_Required.TabIndex = 10;
@@ -265,7 +297,7 @@ namespace ira_flags_calc
             // 
             this.checkBox_Reserved_3.AutoSize = true;
             this.checkBox_Reserved_3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox_Reserved_3.Location = new System.Drawing.Point(6, 226);
+            this.checkBox_Reserved_3.Location = new System.Drawing.Point(6, 268);
             this.checkBox_Reserved_3.Name = "checkBox_Reserved_3";
             this.checkBox_Reserved_3.Size = new System.Drawing.Size(139, 17);
             this.checkBox_Reserved_3.TabIndex = 8;
@@ -277,7 +309,7 @@ namespace ira_flags_calc
             // 
             this.checkBox_VVVV_Unused.AutoSize = true;
             this.checkBox_VVVV_Unused.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox_VVVV_Unused.Location = new System.Drawing.Point(6, 203);
+            this.checkBox_VVVV_Unused.Location = new System.Drawing.Point(6, 245);
             this.checkBox_VVVV_Unused.Name = "checkBox_VVVV_Unused";
             this.checkBox_VVVV_Unused.Size = new System.Drawing.Size(90, 17);
             this.checkBox_VVVV_Unused.TabIndex = 7;
@@ -289,7 +321,7 @@ namespace ira_flags_calc
             // 
             this.checkBox_VEX_NEDDED.AutoSize = true;
             this.checkBox_VEX_NEDDED.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox_VEX_NEDDED.Location = new System.Drawing.Point(6, 180);
+            this.checkBox_VEX_NEDDED.Location = new System.Drawing.Point(6, 222);
             this.checkBox_VEX_NEDDED.Name = "checkBox_VEX_NEDDED";
             this.checkBox_VEX_NEDDED.Size = new System.Drawing.Size(93, 17);
             this.checkBox_VEX_NEDDED.TabIndex = 6;
@@ -297,19 +329,19 @@ namespace ira_flags_calc
             this.checkBox_VEX_NEDDED.UseVisualStyleBackColor = true;
             this.checkBox_VEX_NEDDED.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
             // 
-            // checkBox_VEX_For_Legacy
+            // checkBox_VEXL_0
             // 
-            this.checkBox_VEX_For_Legacy.AutoSize = true;
-            this.checkBox_VEX_For_Legacy.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.helpProvider.SetHelpString(this.checkBox_VEX_For_Legacy, "True if legacy SIMD instruction can be also encoded using VEX prefix.");
-            this.checkBox_VEX_For_Legacy.Location = new System.Drawing.Point(6, 157);
-            this.checkBox_VEX_For_Legacy.Name = "checkBox_VEX_For_Legacy";
-            this.helpProvider.SetShowHelp(this.checkBox_VEX_For_Legacy, true);
-            this.checkBox_VEX_For_Legacy.Size = new System.Drawing.Size(47, 17);
-            this.checkBox_VEX_For_Legacy.TabIndex = 5;
-            this.checkBox_VEX_For_Legacy.Text = "L (0)";
-            this.checkBox_VEX_For_Legacy.UseVisualStyleBackColor = true;
-            this.checkBox_VEX_For_Legacy.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
+            this.checkBox_VEXL_0.AutoSize = true;
+            this.checkBox_VEXL_0.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.helpProvider.SetHelpString(this.checkBox_VEXL_0, "True if legacy SIMD instruction can be also encoded using VEX prefix.");
+            this.checkBox_VEXL_0.Location = new System.Drawing.Point(6, 157);
+            this.checkBox_VEXL_0.Name = "checkBox_VEXL_0";
+            this.helpProvider.SetShowHelp(this.checkBox_VEXL_0, true);
+            this.checkBox_VEXL_0.Size = new System.Drawing.Size(47, 17);
+            this.checkBox_VEXL_0.TabIndex = 5;
+            this.checkBox_VEXL_0.Text = "L (0)";
+            this.checkBox_VEXL_0.UseVisualStyleBackColor = true;
+            this.checkBox_VEXL_0.CheckedChanged += new System.EventHandler(this.checkedChanged_Prefixes);
             // 
             // checkBox_VEXL_1
             // 
@@ -1465,7 +1497,7 @@ namespace ira_flags_calc
             this.Name = "FormCalculator";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "FCML Flags Calculator 0.0.19";
+            this.Text = "FCML Flags Calculator 20";
             this.Load += new System.EventHandler(this.FormCalculator_Load);
             this.groupBoxFPrefixes.ResumeLayout(false);
             this.groupBoxFPrefixes.PerformLayout();
@@ -1491,7 +1523,7 @@ namespace ira_flags_calc
         private System.Windows.Forms.CheckBox checkBox_Reserved_3;
         private System.Windows.Forms.CheckBox checkBox_VVVV_Unused;
         private System.Windows.Forms.CheckBox checkBox_VEX_NEDDED;
-        private System.Windows.Forms.CheckBox checkBox_VEX_For_Legacy;
+        private System.Windows.Forms.CheckBox checkBox_VEXL_0;
         private System.Windows.Forms.CheckBox checkBox_VEXL_1;
         private System.Windows.Forms.CheckBox checkBox_VEXW_1;
         private System.Windows.Forms.CheckBox checkBox_REXW_1;
@@ -1593,6 +1625,8 @@ namespace ira_flags_calc
         private System.Windows.Forms.CheckBox checkBox_EVEX_V_prim;
         private System.Windows.Forms.ComboBox comboBox_EVEX_pp;
         private System.Windows.Forms.CheckBox checkBox_EVEX;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_L_prim0;
+        private System.Windows.Forms.CheckBox checkBox_EVEX_L_prim1;
     }
 }
 
