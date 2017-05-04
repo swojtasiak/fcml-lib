@@ -179,7 +179,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("vcvtpd2dq[l2];vcvtpd2dqx[l0];vcvtpd2dqy[l1]"), FCML_ASM_DIALECT_INSTRUCTION(F_VCVTPD2DQ, FCML_AM_ALL), 0 },
     { FCML_TEXT("cvtpd2pi"), FCML_ASM_DIALECT_INSTRUCTION(F_CVTPD2PI, FCML_AM_ALL), 0 },
     { FCML_TEXT("cvtpd2ps"), FCML_ASM_DIALECT_INSTRUCTION(F_CVTPD2PS, FCML_AM_ALL), 0 },
-    { FCML_TEXT("vcvtpd2psx[l0];vcvtpd2psy[l1]"), FCML_ASM_DIALECT_INSTRUCTION(F_VCVTPD2PS, FCML_AM_ALL), 0 },
+    { FCML_TEXT("vcvtpd2ps[l2];vcvtpd2psx[l0];vcvtpd2psy[l1]"), FCML_ASM_DIALECT_INSTRUCTION(F_VCVTPD2PS, FCML_AM_ALL), 0 },
     { FCML_TEXT("cvtpi2pd"), FCML_ASM_DIALECT_INSTRUCTION(F_CVTPI2PD, FCML_AM_ALL), 0 },
     { FCML_TEXT("cvtpi2ps"), FCML_ASM_DIALECT_INSTRUCTION(F_CVTPI2PS, FCML_AM_ALL), 0 },
     { FCML_TEXT("cvtps2dq"), FCML_ASM_DIALECT_INSTRUCTION(F_CVTPS2DQ, FCML_AM_ALL), 0 },
