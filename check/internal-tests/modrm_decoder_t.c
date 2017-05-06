@@ -1293,7 +1293,7 @@ void fcml_tf_modrm_3264_decoder_sib_test_compressed_disp8(void) {
 
     context.op_mode = FCML_OM_64_BIT;
     context.effective_address_size = FCML_DS_64;
-    context.effective_operand_size = FCML_DS_32;
+    context.input_size = FCML_DS_32;
     context.vector_length = FCML_DS_128;
     context.is_evex = FCML_TRUE;
     context.tuple_type = FCML_TT_FV;

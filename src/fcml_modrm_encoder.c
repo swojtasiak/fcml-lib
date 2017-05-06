@@ -65,8 +65,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_compress_disp8(
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     fcml_uint32_t n = fcml_fn_d8n_calculate_n(context->tuple_type,
-           context->b, context->effective_operand_size,
-           context->vector_length);
+           context->b, context->input_size, context->vector_length);
 
     if (n) {
 
@@ -660,7 +659,7 @@ fcml_ceh_error fcml_fn_modrm_encode(fcml_st_modrm_encoder_context *context,
             &(decoded_modrm->address.effective_address);
 
     /* Sanity check. */
-    if (context->is_evex && (context->effective_operand_size == FCML_DS_UNDEF ||
+    if (context->is_evex && (context->input_size == FCML_DS_UNDEF ||
             context->vector_length == FCML_DS_UNDEF)) {
         return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
     }

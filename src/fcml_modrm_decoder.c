@@ -58,7 +58,7 @@ fcml_uint32_t fcml_ifn_modrm_decode_compressed_disp8(
          * calculating vector length don't use memory addressing.
          */
         n = fcml_fn_d8n_calculate_n(context->tuple_type,
-                context->b, context->effective_operand_size,
+                context->b, context->input_size,
                 context->vector_length);
         if (n) {
             fcml_int32_t disp = displacement->int8 * n;

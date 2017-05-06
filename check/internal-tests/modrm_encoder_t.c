@@ -2113,7 +2113,7 @@ void fcml_tf_modrm_encoder_16bit_compressed_disp8_not_available_test(void) {
     context.op_mode = FCML_OM_16_BIT;
     context.effective_address_size = FCML_DS_16;
     context.is_evex = FCML_TRUE;
-    context.effective_operand_size = FCML_DS_16;
+    context.input_size = FCML_DS_16;
     context.vector_length = FCML_DS_128;
 
     fcml_st_encoded_modrm encoded_modrm;
@@ -2146,7 +2146,7 @@ void fcml_tf_modrm_encoder_16bit_compressed_disp8_available_test(void) {
     context.op_mode = FCML_OM_16_BIT;
     context.effective_address_size = FCML_DS_32;
     context.is_evex = FCML_TRUE;
-    context.effective_operand_size = FCML_DS_32;
+    context.input_size = FCML_DS_32;
     context.vector_length = FCML_DS_128;
     context.tuple_type = FCML_TT_FV;
 
@@ -2180,7 +2180,7 @@ void fcml_tf_modrm_encoder_32bit_compressed_disp8_not_available_test(void) {
     context.op_mode = FCML_OM_32_BIT;
     context.effective_address_size = FCML_DS_32;
     context.is_evex = FCML_TRUE;
-    context.effective_operand_size = FCML_DS_32;
+    context.input_size = FCML_DS_32;
     context.vector_length = FCML_DS_128;
     context.tuple_type = FCML_TT_FV;
 
@@ -2217,7 +2217,7 @@ void fcml_tf_modrm_encoder_32bit_compressed_disp8_available_test(void) {
     context.op_mode = FCML_OM_32_BIT;
     context.effective_address_size = FCML_DS_32;
     context.is_evex = FCML_TRUE;
-    context.effective_operand_size = FCML_DS_32;
+    context.input_size = FCML_DS_32;
     context.vector_length = FCML_DS_128;
     context.tuple_type = FCML_TT_FV;
 
@@ -2251,7 +2251,7 @@ void fcml_tf_modrm_encoder_32bit_compressed_disp8_not_available_rem_test(void) {
     context.op_mode = FCML_OM_32_BIT;
     context.effective_address_size = FCML_DS_32;
     context.is_evex = FCML_TRUE;
-    context.effective_operand_size = FCML_DS_32;
+    context.input_size = FCML_DS_32;
     context.vector_length = FCML_DS_128;
     context.tuple_type = FCML_TT_FV;
 

@@ -2130,7 +2130,6 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             FCML_GET_SIMD_TUPLETYPE(instruction_decoding_def->details);
 
     /* Decode ModRM field if there is any. */
-
     if (FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(
                 instruction_decoding_def->opcode_flags)) {
 
@@ -2145,8 +2144,8 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             decoding_context->disassembler_context->entry_point.op_mode;
         modrm_context.effective_address_size = 
             decoding_context->effective_address_size_attribute;
-        modrm_context.effective_operand_size =
-            decoding_context->effective_operand_size_attribute;
+        modrm_context.input_size =
+                FCML_GET_SIMD_ELEMENT_SIZE(instruction_decoding_def->details);
         modrm_context.vector_length =
                 fcml_ifn_dasm_calculate_vector_length(FCML_TT_NONE, FCML_FALSE,
                         prefixes->L | prefixes->L_prim << 1);;

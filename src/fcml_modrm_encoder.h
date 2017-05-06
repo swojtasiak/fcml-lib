@@ -69,7 +69,7 @@ typedef struct fcml_st_modrm_encoder_context {
      */
     fcml_usize chosen_effective_address_size;
     /* Used to calculate N in compressed disp8. */
-    fcml_usize effective_operand_size;
+    fcml_usize input_size;
     /* SIMD vector size. */
     fcml_usize vector_length;
     /* This flag is set by encoder if there is alternative SIB

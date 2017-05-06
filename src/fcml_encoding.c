@@ -640,7 +640,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         if (effective_operand_size) {
             if (flags->eosa && effective_operand_size != flags->eosa) {
                 FCML_TRACE("Wrong encoded EOSA size. Expected %d got %d.",
-                        flags->eosa, effective_operand_size);
+                        flags->eosa, input_size);
                 error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
             } else {
                 flags->eosa = effective_operand_size;
@@ -1801,7 +1801,7 @@ fcml_ceh_error fcml_ifn_asm_accept_bcast_decorator(fcml_bool is_bcast_supported,
         if (encoded_memory_operand_size < FCML_EOS_DYNAMIC_BASE) {
             if (encoded_static_operand_size * 8 != bcast_accessed_mem_size) {
                 FCML_TRACE("Unsupported broadcast operand size. "
-                        "Expected %d got %d.", operand_size,
+                        "Expected %d got %d.", bcast_accessed_mem_size,
                         encoded_static_operand_size * 8);
                 error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
             }
@@ -2432,8 +2432,6 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
         fcml_st_operand *operand_def,
         fcml_ist_asm_instruction_part *operand_enc) {
 
-    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     fcml_st_def_tma_virtual_op *args =
             (fcml_st_def_tma_virtual_op*)addr_mode->addr_mode_args;
 
@@ -2473,11 +2471,11 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
         if (!fcml_ifn_asm_set_vector_length(optimizer_details, vector_length)) {
             FCML_TRACE("Vector length differs expected %d got %d.",
                     optimizer_details->vector_length, vector_length);
-            error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+            return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
         }
     }
 
-    return error;
+    return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_ceh_error fcml_ifn_asm_operand_encoder_virtual_op(
@@ -2498,6 +2496,22 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_virtual_op(
             context->epf.b = FCML_TRUE;
         }
 
+    } else if (phase == FCML_IEN_ASM_IPPP_THIRD_PHASE) {
+
+        /* Make sure that register to register addressing mode is used, when
+         * SAE or ER decorators are used. */
+
+        fcml_st_def_tma_virtual_op *args =
+                (fcml_st_def_tma_virtual_op*) addr_mode->addr_mode_args;
+
+        if ((FCML_IS_DECOR_SAE(args->decorators) && operand_def->decorators.sae)
+                || (FCML_IS_DECOR_ER(args->decorators)
+                        && operand_def->decorators.er.is_not_null)) {
+
+            if (!context->mod_rm.reg.is_not_null) {
+                return FCML_CEH_GEC_INVALID_OPPERAND;
+            }
+        }
     }
 
     return FCML_CEH_GEC_NO_ERROR;
@@ -4245,7 +4259,15 @@ fcml_ceh_error fcml_ifn_asm_ipp_EVEX_prefix_encoder(
         } else if (FCML_DEF_PREFIX_L_prim_1(addr_mode_def->allowed_prefixes)) {
             context->optimizer_processing_details.vector_length = FCML_DS_512;
         }
+    }
 
+    if (phase == FCML_IEN_ASM_IPPP_SECOND_PHASE) {
+        /* If vector length wasn't set in the first phase, we have to assume
+         * that 128-bit vector length is used. Properly set vector length is
+         * needed to encode compressed disp8 for instance. */
+        if (!context->optimizer_processing_details.vector_length) {
+            context->optimizer_processing_details.vector_length = FCML_DS_128;
+        }
     }
 
     if (phase == FCML_IEN_ASM_IPPP_THIRD_PHASE) {
@@ -4630,8 +4652,7 @@ fcml_ceh_error fcml_ifn_asm_ipp_ModRM_encoder(
         ctx.chosen_effective_address_size = 0;
         ctx.effective_address_size = fcml_ifn_asm_get_effective_address_size(
                 context);
-        ctx.effective_operand_size = fcml_ifn_asm_get_effective_operand_size(
-                context);
+        ctx.input_size = FCML_GET_SIMD_ELEMENT_SIZE(addr_mode_def->details);
         ctx.vector_length = context->optimizer_processing_details.vector_length;
         ctx.is_sib_alternative = FCML_FALSE;
 
@@ -4881,6 +4902,45 @@ fcml_ceh_error fcml_ifn_asm_ipp_op_decorator_acceptor(
 
         if (opcode_dec->er.is_not_null && !FCML_IS_DECOR_ER(decorators)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+        }
+
+        /* Sets vector length for SAE and ER decorators. We net this piece of
+         * code here in order to have vector length properly set before the
+         * first operand is proceeded.
+         */
+        if (FCML_IS_DECOR_SAE(decorators) || FCML_IS_DECOR_ER(decorators)) {
+
+            fcml_bool er_or_sae = opcode_dec->sae || opcode_dec->er.is_not_null;
+
+            if (er_or_sae) {
+
+                fcml_usize vector_length = FCML_DS_UNDEF;
+
+                fcml_uint8_t tuple_type =
+                        FCML_GET_SIMD_TUPLETYPE(addr_mode_def->details);
+
+                /* For the following kind of SIMD instructions vector length
+                   is explicitly set. */
+                if(tuple_type == FCML_TT_FV) {
+                    vector_length = FCML_DS_512;
+                } else if (tuple_type == FCML_TT_T1S || tuple_type == FCML_TT_T1F) {
+                    vector_length = FCML_DS_128;
+                }
+
+                if (vector_length != FCML_DS_UNDEF) {
+                    context->epf.explicit_vector_length = FCML_TRUE;
+                }
+
+                fcml_st_asm_optimizer_processing_details *optimizer_details =
+                        &(context->optimizer_processing_details);
+
+                if (!fcml_ifn_asm_set_vector_length(optimizer_details,
+                        vector_length)) {
+                    FCML_TRACE("Vector length differs expected %d got %d.",
+                            optimizer_details->vector_length, vector_length);
+                    return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+                }
+            }
         }
     }
 

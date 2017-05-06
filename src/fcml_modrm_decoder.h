@@ -81,7 +81,7 @@ typedef struct fcml_st_modrm_decoder_context {
     /**
      * Used as an input size when N factor for compressed disp8 is calculated.
      */
-    fcml_usize effective_operand_size;
+    fcml_usize input_size;
     /** Length of the SIMD vector. */
     fcml_usize vector_length;
     /** Tuple type needed to calculate N factor for compressed disp8. */
