@@ -44,20 +44,12 @@ void fcml_fn_prepare_decorators_existence(fcml_operand_desc *operands,
 }
 
 fcml_ceh_error fcml_fn_op_decor_decode(
-        fcml_st_decorators_prefix_flags *prefix_flags, fcml_bool reg_to_reg,
-        fcml_usize vector_length, fcml_usize element_size,
+        fcml_st_decorators_prefix_flags *prefix_flags,
         fcml_operand_decorators decorators_def, fcml_st_operand *operand) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     fcml_st_operand_decorators *decorators = &(operand->decorators);
-
-    /* Sets broadcast decorator, but only if EVEX.b flag is set. */
-    if (FCML_IS_DECOR_BCAST(decorators_def) && prefix_flags->b &&
-            operand->type == FCML_OT_ADDRESS) {
-        decorators->bcast.is_not_null = FCML_TRUE;
-        decorators->bcast.value = vector_length / element_size;
-    }
 
     /* Operand mask register. */
     if (FCML_IS_DECOR_OPMASK_REG(decorators_def) && prefix_flags->aaa > 0) {

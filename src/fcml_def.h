@@ -117,7 +117,7 @@ typedef fcml_uint32_t fcml_operand_decorators;
 
 /* Operand decorators encoders. */
 
-#define FCML_DECOR_BCAST(x)  (0x010000000000LL | (((fcml_uint64_t)x) << 48))
+#define FCML_DECOR_BCAST      0x010000000000LL
 #define FCML_DECOR_Z          0x020000000000LL
 #define FCML_DECOR_K1         0x040000000000LL
 #define FCML_DECOR_ER         0x080000000000LL
@@ -128,7 +128,6 @@ typedef fcml_uint32_t fcml_operand_decorators;
 
 /* Operand decorators decoders. Use only on 'fcml_operand_decorators'. */
 
-#define FCML_GET_DECOR_BCAST_MEMORY_LOCATION_SIZE(x) (((x) >> 8) & 0xFF)
 #define FCML_IS_DECOR_BCAST(x)                ((x) & 0x00000001)
 #define FCML_IS_DECOR_Z(x)                    ((x) & 0x00000002)
 #define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
@@ -977,22 +976,19 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
     FCML_DECOR_Z | FCML_DECOR_K1
 
 #define FCML_OP_MODRM_RM_SIMD_L_BCAST_OP     FCML_OP_MODRM_RM_SIMD_L_OP | \
-    FCML_DECOR_BCAST(FCML_EOS_UNDEFINED)
+    FCML_DECOR_BCAST
 
-#define FCML_OP_MODRM_RM_SIMD_L_BCAST_32_OP  FCML_OP_MODRM_RM_SIMD_L_OP | \
-    FCML_DECOR_BCAST(FCML_EOS_DWORD)
+#define FCML_OP_MODRM_RM_XMM_64_BCAST_OP     FCML_OP_MODRM_RM_XMM_OP_64 | \
+    FCML_DECOR_BCAST
 
-#define FCML_OP_MODRM_RM_XMM_64_BCAST_32_OP     FCML_OP_MODRM_RM_XMM_OP_64 | \
-    FCML_DECOR_BCAST(FCML_EOS_DWORD)
+#define FCML_OP_MODRM_RM_XMM_128_BCAST_OP     FCML_OP_MODRM_RM_XMM_OP_128 | \
+    FCML_DECOR_BCAST
 
-#define FCML_OP_MODRM_RM_XMM_128_BCAST_32_OP     FCML_OP_MODRM_RM_XMM_OP_128 | \
-    FCML_DECOR_BCAST(FCML_EOS_DWORD)
+#define FCML_OP_MODRM_RM_YMM_256_BCAST_OP     FCML_OP_MODRM_RM_YMM_OP_256 | \
+    FCML_DECOR_BCAST
 
-#define FCML_OP_MODRM_RM_YMM_256_BCAST_32_OP     FCML_OP_MODRM_RM_YMM_OP_256 | \
-    FCML_DECOR_BCAST(FCML_EOS_DWORD)
-
-#define FCML_OP_MODRM_RM_ZMM_512_BCAST_32_OP     FCML_OP_MODRM_RM_ZMM_OP_512 | \
-    FCML_DECOR_BCAST(FCML_EOS_DWORD)
+#define FCML_OP_MODRM_RM_ZMM_512_BCAST_OP     FCML_OP_MODRM_RM_ZMM_OP_512 | \
+    FCML_DECOR_BCAST
 
 /* End of AVX-512 */
 
@@ -1116,7 +1112,6 @@ typedef struct fcml_st_def_tma_rm {
     fcml_uint8_t vector_index_register;
     fcml_bool is_vsib;
     fcml_bool is_bcast;
-    fcml_usize bcast_memory_location_size;
 } fcml_st_def_tma_rm;
 
 typedef struct fcml_st_def_tma_r {

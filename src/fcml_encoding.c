@@ -501,12 +501,12 @@ fcml_usize fcml_ifn_asm_non_standard_attribute_size_calculator(
     return attribute_size;
 }
 
-/* TODO: Refactoring - struct for bcast fields. */
+/* TODO: Refactoring - struct for bcast fields. Too complicated. */
 fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         fcml_ist_asm_encoding_context *context,
         fcml_uint8_t encoded_operand_size, fcml_usize operand_size,
-        fcml_nuint8_t *bcast, fcml_usize bcast_memory_location_size,
-        fcml_usize bcast_element_size, fcml_usize *encoded_data_size,
+        fcml_nuint8_t *bcast, fcml_usize element_size,
+        fcml_usize *encoded_data_size,
         enum fcml_ien_asm_comparator_type comparator) {
 
     fcml_st_entry_point *entry_point =
@@ -534,7 +534,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         break;
     case FCML_EOS_L:
         vector_length = (bcast && bcast->is_not_null) ?
-                bcast->value * bcast_element_size : operand_size;
+                bcast->value * element_size : operand_size;
         if (!fcml_fn_util_validate_vector_length(vector_length)) {
             error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
         }
@@ -581,11 +581,10 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         if (operand_size || !FCML_IS_EOS_OPT(encoded_operand_size)) {
             if (comparator == FCML_IEN_CT_EQUAL) {
                 if (bcast && bcast->is_not_null) {
-                    if(operand_size != (bcast_memory_location_size ?
-                            bcast_memory_location_size :
-                            bcast->value * bcast_element_size)) {
-                        FCML_TRACE("Unsupported operand size. Expected %d got %d.",
-                                    operand_size, encoded_static_operand_size * 8);
+                    if (operand_size != element_size) {
+                        FCML_TRACE("Unsupported broadcast operand size. " \
+                                "Expected %d got %d.", operand_size,
+                                encoded_static_operand_size * 8);
                         error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                     }
                 } else if (encoded_static_operand_size * 8 != operand_size) {
@@ -661,7 +660,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
         fcml_usize *encoded_data_size,
         enum fcml_ien_asm_comparator_type comparator) {
     return fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
-            encoded_operand_size, operand_size, NULL, 0, 0,
+            encoded_operand_size, operand_size, NULL, 0,
             encoded_data_size, comparator);
 }
 
@@ -1761,32 +1760,56 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_segment_relative_offset(
 
 /* TODO: Move to fcml_operand_decorators. */
 fcml_ceh_error fcml_ifn_asm_accept_bcast_decorator(fcml_bool is_bcast_supported,
-       fcml_nuint8_t bcast, fcml_usize element_size,
-       fcml_st_asm_optimizer_processing_details *optimizer_processing_details) {
+        fcml_nuint8_t bcast, fcml_usize element_size,
+        fcml_st_asm_optimizer_processing_details *optimizer_processing_details,
+        fcml_uint8_t encoded_memory_operand_size) {
 
-    if (!is_bcast_supported) {
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    if (!bcast.is_not_null || !is_bcast_supported) {
         return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
     }
 
     fcml_usize noe = bcast.value;
 
     /* Check if broadcast size is correct. */
-    if (noe != 2 && noe != 4 && noe != 8 && noe != 16 &&
-            noe != 32 && noe != 64) {
+    if (noe != 2 && noe != 4 && noe != 8 && noe != 16 && noe != 32
+            && noe != 64) {
         return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
     }
 
-    /* Force vector length basing on broadcast element size and number
-     * of such elements. */
-    fcml_usize vector_length = noe * element_size;
-    if (!fcml_ifn_asm_set_vector_length(optimizer_processing_details,
-            vector_length)) {
-        FCML_TRACE("Vector length differs expected %d got %d.",
-                vector_length, optimizer_processing_details->vector_length);
-        return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+    fcml_usize bcast_accessed_mem_size = noe * element_size;
+
+    fcml_uint8_t encoded_static_operand_size =
+            FCML_GET_OS(encoded_memory_operand_size);
+
+    switch (encoded_static_operand_size) {
+    case FCML_EOS_L: {
+        /* Force vector length basing on broadcast element size and number
+         * of such elements. */
+        fcml_usize vector_length = bcast_accessed_mem_size;
+        if (!fcml_ifn_asm_set_vector_length(optimizer_processing_details,
+                vector_length)) {
+            FCML_TRACE("Vector length differs expected %d got %d.",
+                    vector_length, optimizer_processing_details->vector_length);
+            error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+        }
+        break;
+    }
+    default:
+        /* Take into account only directly encoded sizes. */
+        if (encoded_memory_operand_size < FCML_EOS_DYNAMIC_BASE) {
+            if (encoded_static_operand_size * 8 != bcast_accessed_mem_size) {
+                FCML_TRACE("Unsupported broadcast operand size. "
+                        "Expected %d got %d.", operand_size,
+                        encoded_static_operand_size * 8);
+                error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+            }
+        }
+        break;
     }
 
-    return FCML_CEH_GEC_NO_ERROR;
+    return error;
 }
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
@@ -1841,12 +1864,12 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
                 /* AVX-512 Broadcast decorator. */
                 error = fcml_ifn_asm_accept_bcast_decorator(
                         args->is_bcast, operand_def->decorators.bcast,
-                        element_size, &(context->optimizer_processing_details));
+                        element_size, &(context->optimizer_processing_details),
+                        args->encoded_memory_operand_size);
 
-                /* TODO: Think about moving it to accept_data_size.*/
-                if (args->bcast_memory_location_size &&
-                        operand_def->address.size_operator !=
-                                args->bcast_memory_location_size)  {
+                /* Accept broadcast memory location size. */
+                if (operand_def->address.size_operator &&
+                        element_size != operand_def->address.size_operator) {
                     FCML_TRACE_MSG("Unsupported memory operand size.");
                     error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                 }
@@ -2035,8 +2058,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
 
             error = fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
                     args->encoded_memory_operand_size, mem_data_size,
-                    &(operand_def->decorators.bcast),
-                    args->bcast_memory_location_size, element_size,
+                    &(operand_def->decorators.bcast), element_size,
                     NULL, FCML_IEN_CT_EQUAL);
 
             /* Encode broadcast. */

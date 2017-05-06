@@ -867,20 +867,19 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_rm(
         fcml_st_address *address = &(operand->address);
         *address = decoded_modrm->address;
 
+        address->size_operator = fcml_ifn_dasm_utils_decode_encoded_size_value(
+                context, rm_args->encoded_memory_operand_size);
+
         /* If AVX-512 broadcast is used, use size operator from broadcast
          * instead of the one directly encoded in ModR/M.
          */
         if (FCML_IS_DECOR_BCAST(decorators) && context->prefixes.b) {
-            fcml_usize memory_location_size =
-                    FCML_GET_DECOR_BCAST_MEMORY_LOCATION_SIZE(decorators) * 8;
             /* Directly encoded bcast size has precedence over 
                SIMD element size. */
-            address->size_operator = memory_location_size ?
-                    memory_location_size : context->element_size;
-        } else {
-            address->size_operator =
-                    fcml_ifn_dasm_utils_decode_encoded_size_value(context,
-                            rm_args->encoded_memory_operand_size);
+            operand->decorators.bcast.is_not_null = FCML_TRUE;
+            operand->decorators.bcast.value = address->size_operator /
+                    context->element_size;
+            address->size_operator = context->element_size;
         }
 
         if (decoded_modrm->is_rip) {
@@ -2045,10 +2044,8 @@ fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
         flags.ll = decoding_context->prefixes.L_prim << 1 |
                 decoding_context->prefixes.L;
 
-        error = fcml_fn_op_decor_decode(&flags,
-                decoding_context->is_modrm_reg_reg,
-                decoding_context->vector_length, decoding_context->element_size,
-                operand_decoding->decorators, operand);
+        error = fcml_fn_op_decor_decode(&flags, operand_decoding->decorators,
+                operand);
     }
 
     return error;
