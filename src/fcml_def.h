@@ -959,8 +959,14 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 /* AVX-512 */
 
+#define FCML_OP_MODRM_RM_K_REG          \
+    FCML_OP_RM(FCML_REG_OPMASK, FCML_EOS_QWORD | FCML_EOS_OPT, \
+            FCML_EOS_UNDEFINED, FCML_RMF_R)
+#define FCML_OP_MODRM_RM_K_REG_W        (FCML_OP_MODRM_RM_K_REG | FCML_OA_W)
+#define FCML_OP_MODRM_RM_K_REG_RW       (FCML_OP_MODRM_RM_K_REG | FCML_OA_RW)
+
 #define FCML_OP_MODRM_R_K               FCML_OP_R(FCML_REG_OPMASK, \
-        FCML_EOS_QWORD)
+        FCML_EOS_QWORD | FCML_EOS_OPT)
 #define FCML_OP_MODRM_R_K_W             (FCML_OP_MODRM_R_K | FCML_OA_W)
 #define FCML_OP_MODRM_R_K_RW            (FCML_OP_MODRM_R_K | FCML_OA_RW)
 
@@ -1035,6 +1041,8 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
     FCML_OP_VEX_VVVV_REG(FCML_REG_SIMD, FCML_EOS_OWORD)
 #define FCML_OP_VEX_VVVV_YMM_REG        \
     FCML_OP_VEX_VVVV_REG(FCML_REG_SIMD, FCML_EOS_YWORD)
+#define FCML_OP_VEX_VVVV_K_REG        \
+    FCML_OP_VEX_VVVV_REG(FCML_REG_OPMASK, FCML_EOS_QWORD | FCML_EOS_OPT)
 
 /* Shorthands for IMM.*/
 

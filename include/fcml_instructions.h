@@ -478,6 +478,7 @@ typedef enum fcml_en_instruction {
     F_JECXZ = F_JCXZ,
     F_JRCXZ = F_JCXZ,
     F_JMP,
+    F_KADDW,
     F_LAR,
     F_LAHF,
     F_LDDQU,

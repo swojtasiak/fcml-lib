@@ -326,6 +326,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
     { FCML_TEXT("jcxz[aw];jecxz[ad];jrcxz[aq]"), FCML_ASM_DIALECT_INSTRUCTION( F_JCXZ, FCML_AM_ALL ), 0 },
     { FCML_TEXT("j"), FCML_ASM_DIALECT_INSTRUCTION( F_JCC, FCML_AM_ALL ), 0 },
     { FCML_TEXT("jmp"), FCML_ASM_DIALECT_INSTRUCTION( F_JMP, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("kaddw"), FCML_ASM_DIALECT_INSTRUCTION(F_KADDW, FCML_AM_ALL), 0 },
     { FCML_TEXT("lar"), FCML_ASM_DIALECT_INSTRUCTION( F_LAR, FCML_AM_ALL ), 0 },
     { FCML_TEXT("lahf"), FCML_ASM_DIALECT_INSTRUCTION( F_LAHF, FCML_AM_ALL ), 0 },
     { FCML_TEXT("lddqu"), FCML_ASM_DIALECT_INSTRUCTION( F_LDDQU, FCML_AM_ALL ), 0 },

@@ -29,6 +29,8 @@ fcml_public_check_SOURCES = main.c \
 	instructions_j_t.h \
 	instructions_l_t.c \
 	instructions_l_t.h \
+	instructions_k_t.c \
+	instructions_k_t.h \
 	instructions_m_t.c \
 	instructions_m_t.h \
 	instructions_n_t.c \

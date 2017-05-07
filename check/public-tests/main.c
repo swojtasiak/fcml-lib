@@ -42,6 +42,7 @@
 #include "instructions_i_t.h"
 #include "instructions_j_t.h"
 #include "instructions_l_t.h"
+#include "instructions_k_t.h"
 #include "instructions_m_t.h"
 #include "instructions_n_t.h"
 #include "instructions_o_t.h"
@@ -77,6 +78,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
 	&fctl_si_instructions_i,
 	&fctl_si_instructions_j,
 	&fctl_si_instructions_l,
+	&fctl_si_instructions_k,
 	&fctl_si_instructions_m,
 	&fctl_si_instructions_n,
 	&fctl_si_instructions_o,

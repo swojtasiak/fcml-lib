@@ -1313,6 +1313,10 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_IRET[] = {
     { FCML_AMT_GPI | FCML_AMT_CTI, FCML_NO_DETAILS, 0x0000, 0x00C40000, { 0xCF, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KADDW[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000000B0, 0x00D88000, { 0x0F, 0x4A, 0x00 }, { FCML_OP_MODRM_R_K_W, FCML_OP_VEX_VVVV_K_REG, FCML_OP_MODRM_RM_K_REG, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LAHF[] = {
     { FCML_AMT_GPI, FCML_NO_DETAILS, 0x0000, 0x00C40000, { 0x9F, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
@@ -5056,6 +5060,7 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
 	FCML_IA_INSTRUCTION( F_JCXZ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_JCXZ ),
 	FCML_IA_INSTRUCTION( F_JCC, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_JCC ),
 	FCML_IA_INSTRUCTION( F_JMP, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_JMP ),
+	FCML_IA_INSTRUCTION( F_KADDW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KADDW ),
 	FCML_IA_INSTRUCTION( F_LAHF, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LAHF ),
 	FCML_IA_INSTRUCTION( F_LAR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LAR ),
 	FCML_IA_INSTRUCTION( F_LDDQU, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LDDQU ),
