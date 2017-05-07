@@ -48,6 +48,9 @@
 /* Dynamic encoded operand sizes calculated at runtime. */
 
 #define FCML_EOS_DYNAMIC_BASE   0x70
+
+/* Memory location size (size operator) is optional and doesn't have to
+   be set at all. */
 #define FCML_EOS_OPT            0x80
 
 /* Operand size calculated by Effective
@@ -976,6 +979,9 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
     FCML_DECOR_Z | FCML_DECOR_K1
 
 #define FCML_OP_MODRM_RM_SIMD_L_BCAST_OP     FCML_OP_MODRM_RM_SIMD_L_OP | \
+    FCML_DECOR_BCAST
+
+#define FCML_OP_MODRM_RM_XMM_32_BCAST_OP     FCML_OP_MODRM_RM_XMM_OP_32 | \
     FCML_DECOR_BCAST
 
 #define FCML_OP_MODRM_RM_XMM_64_BCAST_OP     FCML_OP_MODRM_RM_XMM_OP_64 | \

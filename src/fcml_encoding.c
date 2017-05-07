@@ -640,7 +640,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         if (effective_operand_size) {
             if (flags->eosa && effective_operand_size != flags->eosa) {
                 FCML_TRACE("Wrong encoded EOSA size. Expected %d got %d.",
-                        flags->eosa, input_size);
+                        flags->eosa, effective_operand_size);
                 error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
             } else {
                 flags->eosa = effective_operand_size;
