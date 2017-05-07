@@ -2674,17 +2674,20 @@ fcml_ceh_error fcml_ifn_dasm_decode_prefixes(
                                         prefix_details->avx_bytes[0]);
                                 prefixes_details->X = FCML_VEX_X(
                                         prefix_details->avx_bytes[0]);
+                                /* For AVX instructions, this bit is ignored in
+                                 * 32-bit mode, but AVX-512 instructions using
+                                 * opmask registers directly use it even in
+                                 * 32-bit mode to distinguish instructions.
+                                 */
+                                prefixes_details->W = FCML_VEX_W(
+                                        prefix_details->avx_bytes[1]);
                                 if (op_mode == FCML_OM_64_BIT) {
                                     prefixes_details->B = FCML_VEX_B(
                                             prefix_details->avx_bytes[0]);
-                                    prefixes_details->W = FCML_VEX_W(
-                                            prefix_details->avx_bytes[1]);
                                 } else {
-                                    /* These bits should be silently ignored 
-                                     * in 32-bit mode.
-                                     */
+                                    /* Should be silently ignored in
+                                       32-bit mode. */
                                     prefixes_details->B = 0;
-                                    prefixes_details->W = 0;
                                 }
                                 prefixes_details->L = FCML_VEX_L(
                                         prefix_details->avx_bytes[1]);

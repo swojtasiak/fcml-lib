@@ -36,8 +36,26 @@ void fcml_tf_instruction_KADDW(void) {
     FCML_I64_A_FAILED( "kaddw k7,k7,qword [rax]", 0xC5, 0xC4, 0x4A, 0x38 );
 }
 
+void fcml_tf_instruction_KADDB(void) {
+    FCML_I3264( "kaddb k1,k2,k3", 0xC5, 0xED, 0x4A, 0xCB );
+    FCML_A3264( "kaddb %k3,%k2,%k1", 0xC5, 0xED, 0x4A, 0xCB );
+}
+
+void fcml_tf_instruction_KADDD(void) {
+    FCML_I3264( "kaddd k1,k2,k3", 0xC4, 0xE1, 0xED, 0x4A, 0xCB );
+    FCML_A3264( "kaddd %k3,%k2,%k1", 0xC4, 0xE1, 0xED, 0x4A, 0xCB );
+}
+
+void fcml_tf_instruction_KADDQ(void) {
+    FCML_I3264( "kaddq k1,k2,k3", 0xC4, 0xE1, 0xEC, 0x4A, 0xCB );
+    FCML_A3264( "kaddq %k3,%k2,%k1", 0xC4, 0xE1, 0xEC, 0x4A, 0xCB );
+}
+
 fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KADDW", fcml_tf_instruction_KADDW },
+    { "fcml_tf_instruction_KADDB", fcml_tf_instruction_KADDB },
+    { "fcml_tf_instruction_KADDD", fcml_tf_instruction_KADDD },
+    { "fcml_tf_instruction_KADDQ", fcml_tf_instruction_KADDQ },
     FCML_STF_NULL_TEST
 };
 
