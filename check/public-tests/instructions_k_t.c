@@ -54,8 +54,6 @@ void fcml_tf_instruction_KADDQ(void) {
 void fcml_tf_instruction_KANDW(void) {
     FCML_I3264( "kandw k1,k2,k3", 0xC5, 0xEC, 0x41, 0xCB );
     FCML_A3264( "kandw %k3,%k2,%k1", 0xC5, 0xEC, 0x41, 0xCB );
-    FCML_I3264( "kandw k7,k7,k7", 0xC5, 0xC4, 0x41, 0xFF );
-    FCML_I64_A_FAILED( "kandw k7,k7,qword [rax]", 0xC5, 0xC4, 0x41, 0x38 );
 }
 
 void fcml_tf_instruction_KANDB(void) {
@@ -73,6 +71,26 @@ void fcml_tf_instruction_KANDQ(void) {
     FCML_A3264( "kandq %k3,%k2,%k1", 0xC4, 0xE1, 0xEC, 0x41, 0xCB );
 }
 
+void fcml_tf_instruction_KANDNW(void) {
+    FCML_I3264( "kandnw k1,k2,k3", 0xC5, 0xEC, 0x42, 0xCB );
+    FCML_A3264( "kandnw %k3,%k2,%k1", 0xC5, 0xEC, 0x42, 0xCB );
+}
+
+void fcml_tf_instruction_KANDNB(void) {
+    FCML_I3264( "kandnb k1,k2,k3", 0xC5, 0xED, 0x42, 0xCB );
+    FCML_A3264( "kandnb %k3,%k2,%k1", 0xC5, 0xED, 0x42, 0xCB );
+}
+
+void fcml_tf_instruction_KANDND(void) {
+    FCML_I3264( "kandnd k1,k2,k3", 0xC4, 0xE1, 0xED, 0x42, 0xCB );
+    FCML_A3264( "kandnd %k3,%k2,%k1", 0xC4, 0xE1, 0xED, 0x42, 0xCB );
+}
+
+void fcml_tf_instruction_KANDNQ(void) {
+    FCML_I3264( "kandnq k1,k2,k3", 0xC4, 0xE1, 0xEC, 0x42, 0xCB );
+    FCML_A3264( "kandnq %k3,%k2,%k1", 0xC4, 0xE1, 0xEC, 0x42, 0xCB );
+}
+
 fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KADDW", fcml_tf_instruction_KADDW },
     { "fcml_tf_instruction_KADDB", fcml_tf_instruction_KADDB },
@@ -82,6 +100,10 @@ fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KANDB", fcml_tf_instruction_KANDB },
     { "fcml_tf_instruction_KANDD", fcml_tf_instruction_KANDD },
     { "fcml_tf_instruction_KANDQ", fcml_tf_instruction_KANDQ },
+    { "fcml_tf_instruction_KANDNW", fcml_tf_instruction_KANDNW },
+    { "fcml_tf_instruction_KANDNB", fcml_tf_instruction_KANDNB },
+    { "fcml_tf_instruction_KANDND", fcml_tf_instruction_KANDND },
+    { "fcml_tf_instruction_KANDNQ", fcml_tf_instruction_KANDNQ },
     FCML_STF_NULL_TEST
 };
 
