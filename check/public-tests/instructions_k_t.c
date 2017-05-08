@@ -91,6 +91,60 @@ void fcml_tf_instruction_KANDNQ(void) {
     FCML_A3264( "kandnq %k3,%k2,%k1", 0xC4, 0xE1, 0xEC, 0x42, 0xCB );
 }
 
+void fcml_tf_instruction_KMOVB(void) {
+    FCML_I32( "kmovb k1,byte ptr [eax]", 0xC5, 0xF9, 0x90, 0x08 );
+    FCML_I64( "kmovb k1,byte ptr [rax]", 0xC5, 0xF9, 0x90, 0x08 );
+    FCML_I64( "kmovb k1,k2", 0xC5, 0xF9, 0x90, 0xCA );
+    FCML_I32_A( "kmovb k1,[eax]", 0xC5, 0xF9, 0x90, 0x08 );
+
+    FCML_I32( "kmovb byte ptr [eax],k1", 0xC5, 0xF9, 0x91, 0x08 );
+    FCML_I64( "kmovb byte ptr [rax],k1", 0xC5, 0xF9, 0x91, 0x08 );
+
+    FCML_I3264( "kmovb k2,eax", 0xC5, 0xF9, 0x92, 0xD0 );
+    FCML_I3264( "kmovb eax,k2", 0xC5, 0xF9, 0x93, 0xC2 );
+}
+
+void fcml_tf_instruction_KMOVW(void) {
+    FCML_I32( "kmovw k1,word ptr [eax]", 0xC5, 0xF8, 0x90, 0x08 );
+    FCML_I64( "kmovw k1,word ptr [rax]", 0xC5, 0xF8, 0x90, 0x08 );
+    FCML_I64( "kmovw k1,k2", 0xC5, 0xF8, 0x90, 0xCA );
+    FCML_I32_A( "kmovw k1,[eax]", 0xC5, 0xF8, 0x90, 0x08 );
+
+    FCML_I32( "kmovw word ptr [eax],k1", 0xC5, 0xF8, 0x91, 0x08 );
+    FCML_I64( "kmovw word ptr [rax],k1", 0xC5, 0xF8, 0x91, 0x08 );
+
+    FCML_I3264( "kmovw k2,eax", 0xC5, 0xF8, 0x92, 0xD0 );
+    FCML_I3264( "kmovw eax,k2", 0xC5, 0xF8, 0x93, 0xC2 );
+}
+
+void fcml_tf_instruction_KMOVD(void) {
+    FCML_I32( "kmovd k1,dword ptr [eax]", 0xC4, 0xE1, 0xF9, 0x90, 0x08 );
+    FCML_I64( "kmovd k1,dword ptr [rax]", 0xC4, 0xE1, 0xF9, 0x90, 0x08 );
+    FCML_I64( "kmovd k1,k2", 0xC4, 0xE1, 0xF9, 0x90, 0xCA );
+    FCML_I32_A( "kmovd k1,[eax]", 0xC4, 0xE1, 0xF9, 0x90, 0x08 );
+
+    FCML_I32( "kmovd dword ptr [eax],k1", 0xC4, 0xE1, 0xF9, 0x91, 0x08 );
+    FCML_I64( "kmovd dword ptr [rax],k1", 0xC4, 0xE1, 0xF9, 0x91, 0x08 );
+
+    FCML_I3264( "kmovd k2,eax", 0xC5, 0xFB, 0x92, 0xD0 );
+    FCML_I3264( "kmovd eax,k2", 0xC5, 0xFB, 0x93, 0xc2 );
+}
+
+void fcml_tf_instruction_KMOVQ(void) {
+    FCML_I32( "kmovq k1,qword ptr [eax]", 0xC4, 0xE1, 0xF8, 0x90, 0x08 );
+    FCML_I64( "kmovq k1,qword ptr [rax]", 0xC4, 0xE1, 0xF8, 0x90, 0x08 );
+    FCML_I64( "kmovq k1,k2", 0xC4, 0xE1, 0xF8, 0x90, 0xCA );
+    FCML_I32_A( "kmovq k1,[eax]", 0xC4, 0xE1, 0xF8, 0x90, 0x08 );
+
+    FCML_I32( "kmovq qword ptr [eax],k1", 0xC4, 0xE1, 0xF8, 0x91, 0x08 );
+    FCML_I64( "kmovq qword ptr [rax],k1", 0xC4, 0xE1, 0xF8, 0x91, 0x08 );
+
+    FCML_I64( "kmovq k2,rax", 0xC4, 0xE1, 0xFB, 0x92, 0xD0 );
+    FCML_I32_A_FAILED( "kmovq k2,rax", 0xC4, 0xE1, 0xFB, 0x92, 0xD0 );
+    FCML_I64( "kmovq rdx,k0", 0xC4, 0xE1, 0xFB, 0x93, 0xD0 );
+    FCML_I64_A_FAILED( "kmovq rdx,k0", 0xC4, 0xE1, 0xFB, 0x93, 0xD0 );
+}
+
 fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KADDW", fcml_tf_instruction_KADDW },
     { "fcml_tf_instruction_KADDB", fcml_tf_instruction_KADDB },
@@ -104,6 +158,10 @@ fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KANDNB", fcml_tf_instruction_KANDNB },
     { "fcml_tf_instruction_KANDND", fcml_tf_instruction_KANDND },
     { "fcml_tf_instruction_KANDNQ", fcml_tf_instruction_KANDNQ },
+    { "fcml_tf_instruction_KMOVB", fcml_tf_instruction_KMOVB },
+    { "fcml_tf_instruction_KMOVW", fcml_tf_instruction_KMOVW },
+    { "fcml_tf_instruction_KMOVD", fcml_tf_instruction_KMOVD },
+    { "fcml_tf_instruction_KMOVQ", fcml_tf_instruction_KMOVQ },
     FCML_STF_NULL_TEST
 };
 
