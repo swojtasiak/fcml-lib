@@ -1405,6 +1405,22 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KNOTQ[] = {
     { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000000C8, 0x00D88000, { 0x0F, 0x44, 0x00 }, { FCML_OP_MODRM_R_K_W, FCML_OP_MODRM_RM_K_REG, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KORW[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000000B0, 0x00D88000, { 0x0F, 0x45, 0x00 }, { FCML_OP_MODRM_R_K_W, FCML_OP_VEX_VVVV_K_REG, FCML_OP_MODRM_RM_K_REG, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KORB[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000010B0, 0x00D88000, { 0x0F, 0x45, 0x00 }, { FCML_OP_MODRM_R_K_W, FCML_OP_VEX_VVVV_K_REG, FCML_OP_MODRM_RM_K_REG, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KORD[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000010A8, 0x00D88000, { 0x0F, 0x45, 0x00 }, { FCML_OP_MODRM_R_K_W, FCML_OP_VEX_VVVV_K_REG, FCML_OP_MODRM_RM_K_REG, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KORQ[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000000A8, 0x00D88000, { 0x0F, 0x45, 0x00 }, { FCML_OP_MODRM_R_K_W, FCML_OP_VEX_VVVV_K_REG, FCML_OP_MODRM_RM_K_REG, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LAHF[] = {
     { FCML_AMT_GPI, FCML_NO_DETAILS, 0x0000, 0x00C40000, { 0x9F, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
@@ -5168,6 +5184,10 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_KNOTW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KNOTW ),
     FCML_IA_INSTRUCTION( F_KNOTD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KNOTD ),
     FCML_IA_INSTRUCTION( F_KNOTQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KNOTQ ),
+    FCML_IA_INSTRUCTION( F_KORB, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KORB ),
+    FCML_IA_INSTRUCTION( F_KORW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KORW ),
+    FCML_IA_INSTRUCTION( F_KORD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KORD ),
+    FCML_IA_INSTRUCTION( F_KORQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KORQ ),
     FCML_IA_INSTRUCTION( F_LAHF, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LAHF ),
     FCML_IA_INSTRUCTION( F_LAR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LAR ),
     FCML_IA_INSTRUCTION( F_LDDQU, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LDDQU ),
