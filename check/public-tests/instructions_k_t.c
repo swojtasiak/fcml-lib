@@ -145,6 +145,26 @@ void fcml_tf_instruction_KMOVQ(void) {
     FCML_I64_A_FAILED( "kmovq rdx,k0", 0xC4, 0xE1, 0xFB, 0x93, 0xD0 );
 }
 
+void fcml_tf_instruction_KNOTW(void) {
+    FCML_I3264( "knotw k1,k3", 0xC5, 0xF8, 0x44, 0xCB );
+    FCML_A3264( "knotw %k3,%k1", 0xC5, 0xF8, 0x44, 0xCB );
+}
+
+void fcml_tf_instruction_KNOTB(void) {
+    FCML_I3264( "knotb k1,k3", 0xC5, 0xF9, 0x44, 0xCB );
+    FCML_A3264( "knotb %k3,%k1", 0xC5, 0xF9, 0x44, 0xCB );
+}
+
+void fcml_tf_instruction_KNOTD(void) {
+    FCML_I3264( "knotd k1,k3", 0xC4, 0xE1, 0xF9, 0x44, 0xCB );
+    FCML_A3264( "knotd %k3,%k1", 0xC4, 0xE1, 0xF9, 0x44, 0xCB );
+}
+
+void fcml_tf_instruction_KNOTQ(void) {
+    FCML_I3264( "knotq k1,k3", 0xC4, 0xE1, 0xF8, 0x44, 0xCB );
+    FCML_A3264( "knotq %k3,%k1", 0xC4, 0xE1, 0xF8, 0x44, 0xCB );
+}
+
 fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KADDW", fcml_tf_instruction_KADDW },
     { "fcml_tf_instruction_KADDB", fcml_tf_instruction_KADDB },
@@ -162,6 +182,10 @@ fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KMOVW", fcml_tf_instruction_KMOVW },
     { "fcml_tf_instruction_KMOVD", fcml_tf_instruction_KMOVD },
     { "fcml_tf_instruction_KMOVQ", fcml_tf_instruction_KMOVQ },
+    { "fcml_tf_instruction_KNOTB", fcml_tf_instruction_KNOTB },
+    { "fcml_tf_instruction_KNOTW", fcml_tf_instruction_KNOTW },
+    { "fcml_tf_instruction_KNOTD", fcml_tf_instruction_KNOTD },
+    { "fcml_tf_instruction_KNOTQ", fcml_tf_instruction_KNOTQ },
     FCML_STF_NULL_TEST
 };
 
