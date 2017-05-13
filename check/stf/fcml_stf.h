@@ -119,7 +119,7 @@ fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert( fcml_bool condition, 
 
 /* Fail immediate.*/
 #define STF_FAIL(value)		\
-	fcml_str_run_assert( FCML_FALSE, __FILE__, __LINE__, ("STF_FAIL()") )
+	fcml_str_run_assert( FCML_FALSE, __FILE__, __LINE__, ("STF_FAIL(" #value ")") )
 
 /* String equal.*/
 #define STF_ASSERT_STRING_EQUAL(actual, expected)		\
