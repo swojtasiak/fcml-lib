@@ -117,7 +117,7 @@ fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert( fcml_bool condition, 
 #define STF_ASSERT_PTR_NULL(value)		\
 	fcml_str_run_assert( ( value ) == NULL, __FILE__, __LINE__, ("STF_ASSERT_PTR_NULL(" #value ")") )
 
-/* Fail immediate.*/
+/* Fail immediately. */
 #define STF_FAIL(value)		\
 	fcml_str_run_assert( FCML_FALSE, __FILE__, __LINE__, ("STF_FAIL(" #value ")") )
 

@@ -1437,6 +1437,22 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KORTESTQ[] = {
     { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000000C8, 0x00D88000, { 0x0F, 0x98, 0x00 }, { FCML_OP_MODRM_R_K_W, FCML_OP_MODRM_RM_K_REG, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KSHIFTLW[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000010C8, 0x00EC8000, { 0x0F, 0x3A, 0x32 }, { FCML_OP_MODRM_R_K_W, FCML_OP_MODRM_RM_K_REG, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KSHIFTLB[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000010D0, 0x00EC8000, { 0x0F, 0x3A, 0x32 }, { FCML_OP_MODRM_R_K_W, FCML_OP_MODRM_RM_K_REG, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KSHIFTLD[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000010D0, 0x00EC8000, { 0x0F, 0x3A, 0x33 }, { FCML_OP_MODRM_R_K_W, FCML_OP_MODRM_RM_K_REG, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_KSHIFTLQ[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_NO_DETAILS, 0x000010C8, 0x00EC8000, { 0x0F, 0x3A, 0x33 }, { FCML_OP_MODRM_R_K_W, FCML_OP_MODRM_RM_K_REG, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_LAHF[] = {
     { FCML_AMT_GPI, FCML_NO_DETAILS, 0x0000, 0x00C40000, { 0x9F, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
@@ -3563,8 +3579,8 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_SHLD[] = {
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_SHRD[] = {
-    { FCML_AMT_GPI, FCML_NO_DETAILS, 0x0000, 0x00D88000, { 0x0F, 0xAC, 0x00 }, { FCML_OP_MODRM_RM_OP_W, FCML_OP_MODRM_R,FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
-    { FCML_AMT_GPI, FCML_NO_DETAILS, 0x0000, 0x00D88000, { 0x0F, 0xAD, 0x00 }, { FCML_OP_MODRM_RM_OP_W, FCML_OP_MODRM_R,FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_CL, FCML_EOS_BYTE ), FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+    { FCML_AMT_GPI, FCML_NO_DETAILS, 0x0000, 0x00D88000, { 0x0F, 0xAC, 0x00 }, { FCML_OP_MODRM_RM_OP_W, FCML_OP_MODRM_R, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    { FCML_AMT_GPI, FCML_NO_DETAILS, 0x0000, 0x00D88000, { 0x0F, 0xAD, 0x00 }, { FCML_OP_MODRM_RM_OP_W, FCML_OP_MODRM_R, FCML_OP_EXPLICIT_REG( FCML_REG_GPR, FCML_REG_CL, FCML_EOS_BYTE ), FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_SKINIT[] = {
@@ -5208,6 +5224,10 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_KORTESTW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KORTESTW ),
     FCML_IA_INSTRUCTION( F_KORTESTD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KORTESTD ),
     FCML_IA_INSTRUCTION( F_KORTESTQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KORTESTQ ),
+    FCML_IA_INSTRUCTION( F_KSHIFTLB, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KSHIFTLB ),
+    FCML_IA_INSTRUCTION( F_KSHIFTLW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KSHIFTLW ),
+    FCML_IA_INSTRUCTION( F_KSHIFTLD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KSHIFTLD ),
+    FCML_IA_INSTRUCTION( F_KSHIFTLQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_KSHIFTLQ ),
     FCML_IA_INSTRUCTION( F_LAHF, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LAHF ),
     FCML_IA_INSTRUCTION( F_LAR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LAR ),
     FCML_IA_INSTRUCTION( F_LDDQU, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_LDDQU ),

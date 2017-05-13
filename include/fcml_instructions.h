@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2017 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
 
 /** @file fcml_instructions.h
  * Instruction codes and addressing modes/instruction forms.
- * @copyright Copyright (C) 2010-2015 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2017 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 
@@ -506,6 +506,10 @@ typedef enum fcml_en_instruction {
     F_KORTESTW,
     F_KORTESTD,
     F_KORTESTQ,
+    F_KSHIFTLW,
+    F_KSHIFTLB,
+    F_KSHIFTLQ,
+    F_KSHIFTLD,
     F_LAR,
     F_LAHF,
     F_LDDQU,
