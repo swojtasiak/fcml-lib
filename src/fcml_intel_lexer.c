@@ -1,6 +1,6 @@
-#line 2 "fcml_intel_lexer.c"
+#line 1 "fcml_intel_lexer.c"
 
-#line 4 "fcml_intel_lexer.c"
+#line 3 "fcml_intel_lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -9,9 +9,243 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 6
-#define YY_FLEX_SUBMINOR_VERSION 1
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
+#endif
+
+#ifdef yy_create_buffer
+#define intel__create_buffer_ALREADY_DEFINED
+#else
+#define yy_create_buffer intel__create_buffer
+#endif
+
+#ifdef yy_delete_buffer
+#define intel__delete_buffer_ALREADY_DEFINED
+#else
+#define yy_delete_buffer intel__delete_buffer
+#endif
+
+#ifdef yy_scan_buffer
+#define intel__scan_buffer_ALREADY_DEFINED
+#else
+#define yy_scan_buffer intel__scan_buffer
+#endif
+
+#ifdef yy_scan_string
+#define intel__scan_string_ALREADY_DEFINED
+#else
+#define yy_scan_string intel__scan_string
+#endif
+
+#ifdef yy_scan_bytes
+#define intel__scan_bytes_ALREADY_DEFINED
+#else
+#define yy_scan_bytes intel__scan_bytes
+#endif
+
+#ifdef yy_init_buffer
+#define intel__init_buffer_ALREADY_DEFINED
+#else
+#define yy_init_buffer intel__init_buffer
+#endif
+
+#ifdef yy_flush_buffer
+#define intel__flush_buffer_ALREADY_DEFINED
+#else
+#define yy_flush_buffer intel__flush_buffer
+#endif
+
+#ifdef yy_load_buffer_state
+#define intel__load_buffer_state_ALREADY_DEFINED
+#else
+#define yy_load_buffer_state intel__load_buffer_state
+#endif
+
+#ifdef yy_switch_to_buffer
+#define intel__switch_to_buffer_ALREADY_DEFINED
+#else
+#define yy_switch_to_buffer intel__switch_to_buffer
+#endif
+
+#ifdef yypush_buffer_state
+#define intel_push_buffer_state_ALREADY_DEFINED
+#else
+#define yypush_buffer_state intel_push_buffer_state
+#endif
+
+#ifdef yypop_buffer_state
+#define intel_pop_buffer_state_ALREADY_DEFINED
+#else
+#define yypop_buffer_state intel_pop_buffer_state
+#endif
+
+#ifdef yyensure_buffer_stack
+#define intel_ensure_buffer_stack_ALREADY_DEFINED
+#else
+#define yyensure_buffer_stack intel_ensure_buffer_stack
+#endif
+
+#ifdef yylex
+#define intel_lex_ALREADY_DEFINED
+#else
+#define yylex intel_lex
+#endif
+
+#ifdef yyrestart
+#define intel_restart_ALREADY_DEFINED
+#else
+#define yyrestart intel_restart
+#endif
+
+#ifdef yylex_init
+#define intel_lex_init_ALREADY_DEFINED
+#else
+#define yylex_init intel_lex_init
+#endif
+
+#ifdef yylex_init_extra
+#define intel_lex_init_extra_ALREADY_DEFINED
+#else
+#define yylex_init_extra intel_lex_init_extra
+#endif
+
+#ifdef yylex_destroy
+#define intel_lex_destroy_ALREADY_DEFINED
+#else
+#define yylex_destroy intel_lex_destroy
+#endif
+
+#ifdef yyget_debug
+#define intel_get_debug_ALREADY_DEFINED
+#else
+#define yyget_debug intel_get_debug
+#endif
+
+#ifdef yyset_debug
+#define intel_set_debug_ALREADY_DEFINED
+#else
+#define yyset_debug intel_set_debug
+#endif
+
+#ifdef yyget_extra
+#define intel_get_extra_ALREADY_DEFINED
+#else
+#define yyget_extra intel_get_extra
+#endif
+
+#ifdef yyset_extra
+#define intel_set_extra_ALREADY_DEFINED
+#else
+#define yyset_extra intel_set_extra
+#endif
+
+#ifdef yyget_in
+#define intel_get_in_ALREADY_DEFINED
+#else
+#define yyget_in intel_get_in
+#endif
+
+#ifdef yyset_in
+#define intel_set_in_ALREADY_DEFINED
+#else
+#define yyset_in intel_set_in
+#endif
+
+#ifdef yyget_out
+#define intel_get_out_ALREADY_DEFINED
+#else
+#define yyget_out intel_get_out
+#endif
+
+#ifdef yyset_out
+#define intel_set_out_ALREADY_DEFINED
+#else
+#define yyset_out intel_set_out
+#endif
+
+#ifdef yyget_leng
+#define intel_get_leng_ALREADY_DEFINED
+#else
+#define yyget_leng intel_get_leng
+#endif
+
+#ifdef yyget_text
+#define intel_get_text_ALREADY_DEFINED
+#else
+#define yyget_text intel_get_text
+#endif
+
+#ifdef yyget_lineno
+#define intel_get_lineno_ALREADY_DEFINED
+#else
+#define yyget_lineno intel_get_lineno
+#endif
+
+#ifdef yyset_lineno
+#define intel_set_lineno_ALREADY_DEFINED
+#else
+#define yyset_lineno intel_set_lineno
+#endif
+
+#ifdef yyget_column
+#define intel_get_column_ALREADY_DEFINED
+#else
+#define yyget_column intel_get_column
+#endif
+
+#ifdef yyset_column
+#define intel_set_column_ALREADY_DEFINED
+#else
+#define yyset_column intel_set_column
+#endif
+
+#ifdef yywrap
+#define intel_wrap_ALREADY_DEFINED
+#else
+#define yywrap intel_wrap
+#endif
+
+#ifdef yyget_lval
+#define intel_get_lval_ALREADY_DEFINED
+#else
+#define yyget_lval intel_get_lval
+#endif
+
+#ifdef yyset_lval
+#define intel_set_lval_ALREADY_DEFINED
+#else
+#define yyset_lval intel_set_lval
+#endif
+
+#ifdef yyget_lloc
+#define intel_get_lloc_ALREADY_DEFINED
+#else
+#define yyget_lloc intel_get_lloc
+#endif
+
+#ifdef yyset_lloc
+#define intel_set_lloc_ALREADY_DEFINED
+#else
+#define yyset_lloc intel_set_lloc
+#endif
+
+#ifdef yyalloc
+#define intel_alloc_ALREADY_DEFINED
+#else
+#define yyalloc intel_alloc
+#endif
+
+#ifdef yyrealloc
+#define intel_realloc_ALREADY_DEFINED
+#else
+#define yyrealloc intel_realloc
+#endif
+
+#ifdef yyfree
+#define intel_free_ALREADY_DEFINED
+#else
+#define yyfree intel_free
 #endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
@@ -84,9 +318,15 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
+
+/* begin standard C++ headers. */
 
 /* TODO: this is always defined, so inline it */
 #define yyconst const
@@ -100,12 +340,10 @@ typedef unsigned int flex_uint32_t;
 /* Returned upon end-of-file. */
 #define YY_NULL 0
 
-/* Promotes a possibly negative, possibly signed char to an unsigned
- * integer for use as an array index.  If the signed char is negative,
- * we want to instead treat it as an 8-bit unsigned char, hence the
- * double cast.
+/* Promotes a possibly negative, possibly signed char to an
+ *   integer in range [0..255] for use as an array index.
  */
-#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+#define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 
 /* An opaque pointer. */
 #ifndef YY_TYPEDEF_YY_SCANNER_T
@@ -129,20 +367,16 @@ typedef void* yyscan_t;
  * definition of BEGIN.
  */
 #define BEGIN yyg->yy_start = 1 + 2 *
-
 /* Translate the current start state into a value that can be later handed
  * to BEGIN to return to the state.  The YYSTATE alias is for lex
  * compatibility.
  */
 #define YY_START ((yyg->yy_start - 1) / 2)
 #define YYSTATE YY_START
-
 /* Action number for EOF rule of a given start state. */
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
-
 /* Special action meaning "start processing a new file". */
-#define YY_NEW_FILE intel_restart(yyin ,yyscanner )
-
+#define YY_NEW_FILE yyrestart( yyin , yyscanner )
 #define YY_END_OF_BUFFER_CHAR 0
 
 /* Size of default input buffer. */
@@ -175,10 +409,10 @@ typedef size_t yy_size_t;
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
-
+    
     /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
      *       access to the local variable yy_act. Since yyless() is a macro, it would break
-     *       existing scanners that call yyless() from OUTSIDE intel_lex. 
+     *       existing scanners that call yyless() from OUTSIDE yylex.
      *       One obvious solution it to make yy_act a global. I tried that, and saw
      *       a 5% performance hit in a non-yylineno scanner, because yy_act is
      *       normally declared as a register variable-- so it is not worth it.
@@ -211,7 +445,6 @@ typedef size_t yy_size_t;
 		YY_DO_BEFORE_ACTION; /* set up yytext again */ \
 		} \
 	while ( 0 )
-
 #define unput(c) yyunput( c, yyg->yytext_ptr , yyscanner )
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
@@ -254,7 +487,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -271,7 +504,7 @@ struct yy_buffer_state
 	 * possible backing-up.
 	 *
 	 * When we actually see the EOF, we change the status to "new"
-	 * (via intel_restart()), so that the user can continue scanning by
+	 * (via yyrestart()), so that the user can continue scanning by
 	 * just pointing yyin at a new input file.
 	 */
 #define YY_BUFFER_EOF_PENDING 2
@@ -288,73 +521,67 @@ struct yy_buffer_state
 #define YY_CURRENT_BUFFER ( yyg->yy_buffer_stack \
                           ? yyg->yy_buffer_stack[yyg->yy_buffer_stack_top] \
                           : NULL)
-
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
 #define YY_CURRENT_BUFFER_LVALUE yyg->yy_buffer_stack[yyg->yy_buffer_stack_top]
 
-void intel_restart (FILE *input_file ,yyscan_t yyscanner );
-void intel__switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void intel__delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void intel__flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void intel_push_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void intel_pop_buffer_state (yyscan_t yyscanner );
+void yyrestart ( FILE *input_file , yyscan_t yyscanner );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size , yyscan_t yyscanner );
+void yy_delete_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yy_flush_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+void yypop_buffer_state ( yyscan_t yyscanner );
 
-static void intel_ensure_buffer_stack (yyscan_t yyscanner );
-static void intel__load_buffer_state (yyscan_t yyscanner );
-static void intel__init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t yyscanner );
+static void yyensure_buffer_stack ( yyscan_t yyscanner );
+static void yy_load_buffer_state ( yyscan_t yyscanner );
+static void yy_init_buffer ( YY_BUFFER_STATE b, FILE *file , yyscan_t yyscanner );
+#define YY_FLUSH_BUFFER yy_flush_buffer( YY_CURRENT_BUFFER , yyscanner)
 
-#define YY_FLUSH_BUFFER intel__flush_buffer(YY_CURRENT_BUFFER ,yyscanner)
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len , yyscan_t yyscanner );
 
-YY_BUFFER_STATE intel__scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+void *yyalloc ( yy_size_t , yyscan_t yyscanner );
+void *yyrealloc ( void *, yy_size_t , yyscan_t yyscanner );
+void yyfree ( void * , yyscan_t yyscanner );
 
-void *intel_alloc (yy_size_t ,yyscan_t yyscanner );
-void *intel_realloc (void *,yy_size_t ,yyscan_t yyscanner );
-void intel_free (void * ,yyscan_t yyscanner );
-
-#define yy_new_buffer intel__create_buffer
-
+#define yy_new_buffer yy_create_buffer
 #define yy_set_interactive(is_interactive) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){ \
-        intel_ensure_buffer_stack (yyscanner); \
+        yyensure_buffer_stack (yyscanner); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            intel__create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
+            yy_create_buffer( yyin, YY_BUF_SIZE , yyscanner); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
 	}
-
 #define yy_set_bol(at_bol) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){\
-        intel_ensure_buffer_stack (yyscanner); \
+        yyensure_buffer_stack (yyscanner); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            intel__create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
+            yy_create_buffer( yyin, YY_BUF_SIZE , yyscanner); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
 	}
-
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
 
 #define intel_wrap(yyscanner) (/*CONSTCOND*/1)
 #define YY_SKIP_YYWRAP
-
-typedef unsigned char YY_CHAR;
+typedef flex_uint8_t YY_CHAR;
 
 typedef int yy_state_type;
 
 #define yytext_ptr yytext_r
 
-static yy_state_type yy_get_previous_state (yyscan_t yyscanner );
-static yy_state_type yy_try_NUL_trans (yy_state_type current_state  ,yyscan_t yyscanner);
-static int yy_get_next_buffer (yyscan_t yyscanner );
-static void yynoreturn yy_fatal_error (yyconst char* msg ,yyscan_t yyscanner );
+static yy_state_type yy_get_previous_state ( yyscan_t yyscanner );
+static yy_state_type yy_try_NUL_trans ( yy_state_type current_state  , yyscan_t yyscanner);
+static int yy_get_next_buffer ( yyscan_t yyscanner );
+static void yynoreturn yy_fatal_error ( const char* msg , yyscan_t yyscanner );
 
 /* Done after the current pattern has been matched and before the
  * corresponding action - sets up yytext.
@@ -365,7 +592,6 @@ static void yynoreturn yy_fatal_error (yyconst char* msg ,yyscan_t yyscanner );
 	yyg->yy_hold_char = *yy_cp; \
 	*yy_cp = '\0'; \
 	yyg->yy_c_buf_p = yy_cp;
-
 #define YY_NUM_RULES 277
 #define YY_END_OF_BUFFER 278
 /* This struct is not used in this scanner,
@@ -375,7 +601,7 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[599] =
+static const flex_int16_t yy_accept[599] =
     {   0,
       274,  274,  278,  275,  274,  276,  271,  272,  267,  265,
       264,  266,  268,    1,    1,    1,    1,    1,  273,  263,
@@ -445,7 +671,7 @@ static yyconst flex_int16_t yy_accept[599] =
 
     } ;
 
-static yyconst YY_CHAR yy_ec[256] =
+static const YY_CHAR yy_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -477,7 +703,7 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst YY_CHAR yy_meta[77] =
+static const YY_CHAR yy_meta[77] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    2,    2,    2,    2,    2,    2,    2,    2,    2,
@@ -489,7 +715,7 @@ static yyconst YY_CHAR yy_meta[77] =
         3,    3,    3,    3,    1,    1
     } ;
 
-static yyconst flex_uint16_t yy_base[602] =
+static const flex_int16_t yy_base[602] =
     {   0,
         0,    0,  777, 1102,   75, 1102, 1102, 1102, 1102, 1102,
      1102, 1102, 1102,   68,  129,   85,   87,   88, 1102,  134,
@@ -560,7 +786,7 @@ static yyconst flex_uint16_t yy_base[602] =
        76
     } ;
 
-static yyconst flex_int16_t yy_def[602] =
+static const flex_int16_t yy_def[602] =
     {   0,
       598,    1,  598,  598,  598,  598,  598,  598,  598,  598,
       598,  598,  598,  598,  598,   15,   15,   15,  598,  599,
@@ -631,7 +857,7 @@ static yyconst flex_int16_t yy_def[602] =
       598
     } ;
 
-static yyconst flex_uint16_t yy_nxt[1179] =
+static const flex_int16_t yy_nxt[1179] =
     {   0,
         4,    5,    6,    5,    7,    8,    9,   10,   11,   12,
        13,   14,   15,   16,   17,   17,   17,   17,   17,   17,
@@ -764,7 +990,7 @@ static yyconst flex_uint16_t yy_nxt[1179] =
       598,  598,  598,  598,  598,  598,  598,  598
     } ;
 
-static yyconst flex_int16_t yy_chk[1179] =
+static const flex_int16_t yy_chk[1179] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -898,7 +1124,7 @@ static yyconst flex_int16_t yy_chk[1179] =
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static yyconst flex_int32_t yy_rule_can_match_eol[278] =
+static const flex_int32_t yy_rule_can_match_eol[278] =
     {   0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -923,30 +1149,31 @@ static yyconst flex_int32_t yy_rule_can_match_eol[278] =
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "fcml_intel_lexer.l"
-/*
-* FCML - Free Code Manipulation Library.
-* Copyright (C) 2010-2017 Slawomir Wojtasiak
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-#line 21 "fcml_intel_lexer.l"
+#line 2 "fcml_intel_lexer.l"
+ /*
+  * FCML - Free Code Manipulation Library.
+  * Copyright (C) 2010-2017 Slawomir Wojtasiak
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2.1 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the Free Software
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  */
     #include <stdio.h>
     #include <stdlib.h>
     
     #include "fcml_common_lex.h"
     #include "fcml_intel_parser_def.h"
+#line 1176 "fcml_intel_lexer.c"
 #define YY_NO_INPUT 1
 #define YY_NO_UNISTD_H 1
 #line 51 "fcml_intel_lexer.l"
@@ -959,8 +1186,9 @@ static yyconst flex_int32_t yy_rule_can_match_eol[278] =
     	yylval->size_operator.size = x; \
     	yylval->size_operator.multimedia = FCML_TRUE; \
     	return FCML_TK_SIZE_OPERATOR; }
+#line 1189 "fcml_intel_lexer.c"
 /*White spaces.*/
-#line 964 "fcml_intel_lexer.c"
+#line 1191 "fcml_intel_lexer.c"
 
 #define INITIAL 0
 
@@ -1012,7 +1240,7 @@ struct yyguts_t
 
     }; /* end struct yyguts_t */
 
-static int yy_init_globals (yyscan_t yyscanner );
+static int yy_init_globals ( yyscan_t yyscanner );
 
     /* This must go here because YYSTYPE and YYLTYPE are included
      * from bison output in section 1.*/
@@ -1020,50 +1248,50 @@ static int yy_init_globals (yyscan_t yyscanner );
     
     #    define yylloc yyg->yylloc_r
     
-int intel_lex_init (yyscan_t* scanner);
+int yylex_init (yyscan_t* scanner);
 
-int intel_lex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int intel_lex_destroy (yyscan_t yyscanner );
+int yylex_destroy ( yyscan_t yyscanner );
 
-int intel_get_debug (yyscan_t yyscanner );
+int yyget_debug ( yyscan_t yyscanner );
 
-void intel_set_debug (int debug_flag ,yyscan_t yyscanner );
+void yyset_debug ( int debug_flag , yyscan_t yyscanner );
 
-YY_EXTRA_TYPE intel_get_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE yyget_extra ( yyscan_t yyscanner );
 
-void intel_set_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void yyset_extra ( YY_EXTRA_TYPE user_defined , yyscan_t yyscanner );
 
-FILE *intel_get_in (yyscan_t yyscanner );
+FILE *yyget_in ( yyscan_t yyscanner );
 
-void intel_set_in  (FILE * _in_str ,yyscan_t yyscanner );
+void yyset_in  ( FILE * _in_str , yyscan_t yyscanner );
 
-FILE *intel_get_out (yyscan_t yyscanner );
+FILE *yyget_out ( yyscan_t yyscanner );
 
-void intel_set_out  (FILE * _out_str ,yyscan_t yyscanner );
+void yyset_out  ( FILE * _out_str , yyscan_t yyscanner );
 
-			int intel_get_leng (yyscan_t yyscanner );
+			int yyget_leng ( yyscan_t yyscanner );
 
-char *intel_get_text (yyscan_t yyscanner );
+char *yyget_text ( yyscan_t yyscanner );
 
-int intel_get_lineno (yyscan_t yyscanner );
+int yyget_lineno ( yyscan_t yyscanner );
 
-void intel_set_lineno (int _line_number ,yyscan_t yyscanner );
+void yyset_lineno ( int _line_number , yyscan_t yyscanner );
 
-int intel_get_column  (yyscan_t yyscanner );
+int yyget_column  ( yyscan_t yyscanner );
 
-void intel_set_column (int _column_no ,yyscan_t yyscanner );
+void yyset_column ( int _column_no , yyscan_t yyscanner );
 
-YYSTYPE * intel_get_lval (yyscan_t yyscanner );
+YYSTYPE * yyget_lval ( yyscan_t yyscanner );
 
-void intel_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
+void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
 
-       YYLTYPE *intel_get_lloc (yyscan_t yyscanner );
+       YYLTYPE *yyget_lloc ( yyscan_t yyscanner );
     
-        void intel_set_lloc (YYLTYPE * yylloc_param ,yyscan_t yyscanner );
+        void yyset_lloc ( YYLTYPE * yylloc_param , yyscan_t yyscanner );
     
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -1071,9 +1299,9 @@ void intel_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int intel_wrap (yyscan_t yyscanner );
+extern "C" int yywrap ( yyscan_t yyscanner );
 #else
-extern int intel_wrap (yyscan_t yyscanner );
+extern int yywrap ( yyscan_t yyscanner );
 #endif
 #endif
 
@@ -1082,19 +1310,18 @@ extern int intel_wrap (yyscan_t yyscanner );
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int ,yyscan_t yyscanner);
+static void yy_flex_strncpy ( char *, const char *, int , yyscan_t yyscanner);
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
+static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
 #endif
 
 #ifndef YY_NO_INPUT
-
 #ifdef __cplusplus
-static int yyinput (yyscan_t yyscanner );
+static int yyinput ( yyscan_t yyscanner );
 #else
-static int input (yyscan_t yyscanner );
+static int input ( yyscan_t yyscanner );
 #endif
 
 #endif
@@ -1125,7 +1352,7 @@ static int input (yyscan_t yyscanner );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		size_t n; \
+		int n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -1138,7 +1365,7 @@ static int input (yyscan_t yyscanner );
 	else \
 		{ \
 		errno=0; \
-		while ( (result = (int) fread(buf, 1, max_size, yyin))==0 && ferror(yyin)) \
+		while ( (result = (int) fread(buf, 1, (yy_size_t) max_size, yyin)) == 0 && ferror(yyin)) \
 			{ \
 			if( errno != EINTR) \
 				{ \
@@ -1179,10 +1406,10 @@ static int input (yyscan_t yyscanner );
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int intel_lex \
-               (YYSTYPE * yylval_param,YYLTYPE * yylloc_param ,yyscan_t yyscanner);
+extern int yylex \
+               (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner);
 
-#define YY_DECL int intel_lex \
+#define YY_DECL int yylex \
                (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
@@ -1232,20 +1459,21 @@ YY_DECL
 			yyout = stdout;
 
 		if ( ! YY_CURRENT_BUFFER ) {
-			intel_ensure_buffer_stack (yyscanner);
+			yyensure_buffer_stack (yyscanner);
 			YY_CURRENT_BUFFER_LVALUE =
-				intel__create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
+				yy_create_buffer( yyin, YY_BUF_SIZE , yyscanner);
 		}
 
-		intel__load_buffer_state(yyscanner );
+		yy_load_buffer_state( yyscanner );
 		}
 
 	{
 #line 66 "fcml_intel_lexer.l"
 
 
+#line 69 "fcml_intel_lexer.l"
  /* Decimal integers. */
-#line 1249 "fcml_intel_lexer.c"
+#line 1476 "fcml_intel_lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1273,9 +1501,9 @@ yy_match:
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
 				if ( yy_current_state >= 599 )
-					yy_c = yy_meta[(unsigned int) yy_c];
+					yy_c = yy_meta[yy_c];
 				}
-			yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
 		while ( yy_current_state != 598 );
@@ -1289,10 +1517,10 @@ yy_find_action:
 
 		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
 			{
-			yy_size_t yyl;
+			int yyl;
 			for ( yyl = 0; yyl < yyleng; ++yyl )
 				if ( yytext[yyl] == '\n' )
-					   
+					
     do{ yylineno++;
         yycolumn=0;
     }while(0)
@@ -1312,17 +1540,17 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 69 "fcml_intel_lexer.l"
+#line 70 "fcml_intel_lexer.l"
 { fcml_fn_pu_parse_integer( yytext, &(yylval->integer_value), 10 ); return FCML_TK_INTEGER; }
 	YY_BREAK
 /* HEX integers. */
 case 2:
-#line 73 "fcml_intel_lexer.l"
-case 3:
 #line 74 "fcml_intel_lexer.l"
+case 3:
+#line 75 "fcml_intel_lexer.l"
 case 4:
 YY_RULE_SETUP
-#line 74 "fcml_intel_lexer.l"
+#line 75 "fcml_intel_lexer.l"
 { fcml_fn_pu_parse_integer( yytext, &(yylval->integer_value), 16 ); return FCML_TK_INTEGER; }
 	YY_BREAK
 /* Floating-points in IEEE 754.
@@ -1333,1239 +1561,1239 @@ YY_RULE_SETUP
 /* GPR. */
 case 5:
 YY_RULE_SETUP
-#line 83 "fcml_intel_lexer.l"
+#line 84 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_AL)
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 84 "fcml_intel_lexer.l"
+#line 85 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_CL)
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 85 "fcml_intel_lexer.l"
+#line 86 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_DL)
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 86 "fcml_intel_lexer.l"
+#line 87 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_BL)
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 87 "fcml_intel_lexer.l"
+#line 88 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_AH)
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 88 "fcml_intel_lexer.l"
+#line 89 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_CH)
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 89 "fcml_intel_lexer.l"
+#line 90 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_DH)
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 90 "fcml_intel_lexer.l"
+#line 91 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_BH)
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 91 "fcml_intel_lexer.l"
+#line 92 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_R8L)
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 92 "fcml_intel_lexer.l"
+#line 93 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_R9L)
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 93 "fcml_intel_lexer.l"
+#line 94 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_R10L)
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 94 "fcml_intel_lexer.l"
+#line 95 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_R11L)
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 95 "fcml_intel_lexer.l"
+#line 96 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_R12L)
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 96 "fcml_intel_lexer.l"
+#line 97 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_R13L)
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 97 "fcml_intel_lexer.l"
+#line 98 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_R14L)
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 98 "fcml_intel_lexer.l"
+#line 99 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_REG(FCML_REG_R15L)
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 100 "fcml_intel_lexer.l"
+#line 101 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_X_REG(FCML_REG_SPL)
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 101 "fcml_intel_lexer.l"
+#line 102 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_X_REG(FCML_REG_BPL)
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 102 "fcml_intel_lexer.l"
+#line 103 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_X_REG(FCML_REG_SIL)
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 103 "fcml_intel_lexer.l"
+#line 104 "fcml_intel_lexer.l"
 FCML_FM_GPRS_8_X_REG(FCML_REG_DIL)
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 105 "fcml_intel_lexer.l"
+#line 106 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_AX)
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 106 "fcml_intel_lexer.l"
+#line 107 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_CX)
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 107 "fcml_intel_lexer.l"
+#line 108 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_DX)
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 108 "fcml_intel_lexer.l"
+#line 109 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_BX)
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 109 "fcml_intel_lexer.l"
+#line 110 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_SP)
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 110 "fcml_intel_lexer.l"
+#line 111 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_BP)
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 111 "fcml_intel_lexer.l"
+#line 112 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_SI)
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 112 "fcml_intel_lexer.l"
+#line 113 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_DI)
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 113 "fcml_intel_lexer.l"
+#line 114 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_R8W)
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 114 "fcml_intel_lexer.l"
+#line 115 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_R9W)
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 115 "fcml_intel_lexer.l"
+#line 116 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_R10W)
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 116 "fcml_intel_lexer.l"
+#line 117 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_R11W)
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 117 "fcml_intel_lexer.l"
+#line 118 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_R12W)
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 118 "fcml_intel_lexer.l"
+#line 119 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_R13W)
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 119 "fcml_intel_lexer.l"
+#line 120 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_R14W)
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 120 "fcml_intel_lexer.l"
+#line 121 "fcml_intel_lexer.l"
 FCML_FM_GPRS_16_REG(FCML_REG_R15W)
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 122 "fcml_intel_lexer.l"
+#line 123 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_EAX)
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 123 "fcml_intel_lexer.l"
+#line 124 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_ECX)
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 124 "fcml_intel_lexer.l"
+#line 125 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_EDX)
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 125 "fcml_intel_lexer.l"
+#line 126 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_EBX)
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 126 "fcml_intel_lexer.l"
+#line 127 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_ESP)
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 127 "fcml_intel_lexer.l"
+#line 128 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_EBP)
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 128 "fcml_intel_lexer.l"
+#line 129 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_ESI)
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 129 "fcml_intel_lexer.l"
+#line 130 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_EDI)
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 130 "fcml_intel_lexer.l"
+#line 131 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_R8D)
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 131 "fcml_intel_lexer.l"
+#line 132 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_R9D)
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 132 "fcml_intel_lexer.l"
+#line 133 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_R10D)
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 133 "fcml_intel_lexer.l"
+#line 134 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_R11D)
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 134 "fcml_intel_lexer.l"
+#line 135 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_R12D)
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 135 "fcml_intel_lexer.l"
+#line 136 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_R13D)
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 136 "fcml_intel_lexer.l"
+#line 137 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_R14D)
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 137 "fcml_intel_lexer.l"
+#line 138 "fcml_intel_lexer.l"
 FCML_FM_GPRS_32_REG(FCML_REG_R15D)
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 139 "fcml_intel_lexer.l"
+#line 140 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_RAX)
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 140 "fcml_intel_lexer.l"
+#line 141 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_RCX)
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 141 "fcml_intel_lexer.l"
+#line 142 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_RDX)
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 142 "fcml_intel_lexer.l"
+#line 143 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_RBX)
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 143 "fcml_intel_lexer.l"
+#line 144 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_RSP)
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 144 "fcml_intel_lexer.l"
+#line 145 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_RBP)
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 145 "fcml_intel_lexer.l"
+#line 146 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_RSI)
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 146 "fcml_intel_lexer.l"
+#line 147 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_RDI)
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 147 "fcml_intel_lexer.l"
+#line 148 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R8)
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 148 "fcml_intel_lexer.l"
+#line 149 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R9)
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 149 "fcml_intel_lexer.l"
+#line 150 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R10)
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 150 "fcml_intel_lexer.l"
+#line 151 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R11)
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 151 "fcml_intel_lexer.l"
+#line 152 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R12)
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 152 "fcml_intel_lexer.l"
+#line 153 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R13)
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 153 "fcml_intel_lexer.l"
+#line 154 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R14)
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 154 "fcml_intel_lexer.l"
+#line 155 "fcml_intel_lexer.l"
 FCML_FM_GPRS_64_REG(FCML_REG_R15)
 	YY_BREAK
 /* SIMD-MMX */
 case 73:
 YY_RULE_SETUP
-#line 157 "fcml_intel_lexer.l"
+#line 158 "fcml_intel_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM0)
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 158 "fcml_intel_lexer.l"
+#line 159 "fcml_intel_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM1)
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 159 "fcml_intel_lexer.l"
+#line 160 "fcml_intel_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM2)
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 160 "fcml_intel_lexer.l"
+#line 161 "fcml_intel_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM3)
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 161 "fcml_intel_lexer.l"
+#line 162 "fcml_intel_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM4)
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 162 "fcml_intel_lexer.l"
+#line 163 "fcml_intel_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM5)
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 163 "fcml_intel_lexer.l"
+#line 164 "fcml_intel_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM6)
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 164 "fcml_intel_lexer.l"
+#line 165 "fcml_intel_lexer.l"
 FCML_FM_SIMD_64_REG(FCML_REG_MM7)
 	YY_BREAK
 /* SIMD-XMM */
 case 81:
 YY_RULE_SETUP
-#line 167 "fcml_intel_lexer.l"
+#line 168 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM0)
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 168 "fcml_intel_lexer.l"
+#line 169 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM1)
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 169 "fcml_intel_lexer.l"
+#line 170 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM2)
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 170 "fcml_intel_lexer.l"
+#line 171 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM3)
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 171 "fcml_intel_lexer.l"
+#line 172 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM4)
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 172 "fcml_intel_lexer.l"
+#line 173 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM5)
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 173 "fcml_intel_lexer.l"
+#line 174 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM6)
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 174 "fcml_intel_lexer.l"
+#line 175 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM7)
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 175 "fcml_intel_lexer.l"
+#line 176 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM8)
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 176 "fcml_intel_lexer.l"
+#line 177 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM9)
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 177 "fcml_intel_lexer.l"
+#line 178 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM10)
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 178 "fcml_intel_lexer.l"
+#line 179 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM11)
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 179 "fcml_intel_lexer.l"
+#line 180 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM12)
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 180 "fcml_intel_lexer.l"
+#line 181 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM13)
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 181 "fcml_intel_lexer.l"
+#line 182 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM14)
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 182 "fcml_intel_lexer.l"
+#line 183 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM15)
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 183 "fcml_intel_lexer.l"
+#line 184 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM16)
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 184 "fcml_intel_lexer.l"
+#line 185 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM17)
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 185 "fcml_intel_lexer.l"
+#line 186 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM18)
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 186 "fcml_intel_lexer.l"
+#line 187 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM19)
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 187 "fcml_intel_lexer.l"
+#line 188 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM20)
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 188 "fcml_intel_lexer.l"
+#line 189 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM21)
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 189 "fcml_intel_lexer.l"
+#line 190 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM22)
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 190 "fcml_intel_lexer.l"
+#line 191 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM23)
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 191 "fcml_intel_lexer.l"
+#line 192 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM24)
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 192 "fcml_intel_lexer.l"
+#line 193 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM25)
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 193 "fcml_intel_lexer.l"
+#line 194 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM26)
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 194 "fcml_intel_lexer.l"
+#line 195 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM27)
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 195 "fcml_intel_lexer.l"
+#line 196 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM28)
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 196 "fcml_intel_lexer.l"
+#line 197 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM29)
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 197 "fcml_intel_lexer.l"
+#line 198 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM30)
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 198 "fcml_intel_lexer.l"
+#line 199 "fcml_intel_lexer.l"
 FCML_FM_SIMD_128_REG(FCML_REG_XMM31)
 	YY_BREAK
 /* SIMD-YMM */
 case 113:
 YY_RULE_SETUP
-#line 201 "fcml_intel_lexer.l"
+#line 202 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM0)
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 202 "fcml_intel_lexer.l"
+#line 203 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM1)
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 203 "fcml_intel_lexer.l"
+#line 204 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM2)
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 204 "fcml_intel_lexer.l"
+#line 205 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM3)
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 205 "fcml_intel_lexer.l"
+#line 206 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM4)
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 206 "fcml_intel_lexer.l"
+#line 207 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM5)
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 207 "fcml_intel_lexer.l"
+#line 208 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM6)
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 208 "fcml_intel_lexer.l"
+#line 209 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM7)
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 209 "fcml_intel_lexer.l"
+#line 210 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM8)
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 210 "fcml_intel_lexer.l"
+#line 211 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM9)
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 211 "fcml_intel_lexer.l"
+#line 212 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM10)
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 212 "fcml_intel_lexer.l"
+#line 213 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM11)
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 213 "fcml_intel_lexer.l"
+#line 214 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM12)
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 214 "fcml_intel_lexer.l"
+#line 215 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM13)
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 215 "fcml_intel_lexer.l"
+#line 216 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM14)
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 216 "fcml_intel_lexer.l"
+#line 217 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM15)
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 217 "fcml_intel_lexer.l"
+#line 218 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM16)
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 218 "fcml_intel_lexer.l"
+#line 219 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM17)
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 219 "fcml_intel_lexer.l"
+#line 220 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM18)
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 220 "fcml_intel_lexer.l"
+#line 221 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM19)
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 221 "fcml_intel_lexer.l"
+#line 222 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM20)
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 222 "fcml_intel_lexer.l"
+#line 223 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM21)
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 223 "fcml_intel_lexer.l"
+#line 224 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM22)
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 224 "fcml_intel_lexer.l"
+#line 225 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM23)
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 225 "fcml_intel_lexer.l"
+#line 226 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM24)
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 226 "fcml_intel_lexer.l"
+#line 227 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM25)
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 227 "fcml_intel_lexer.l"
+#line 228 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM26)
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 228 "fcml_intel_lexer.l"
+#line 229 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM27)
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 229 "fcml_intel_lexer.l"
+#line 230 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM28)
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 230 "fcml_intel_lexer.l"
+#line 231 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM29)
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 231 "fcml_intel_lexer.l"
+#line 232 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM30)
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 232 "fcml_intel_lexer.l"
+#line 233 "fcml_intel_lexer.l"
 FCML_FM_SIMD_256_REG(FCML_REG_YMM31)
 	YY_BREAK
 /* SIMD-ZMM */
 case 145:
 YY_RULE_SETUP
-#line 235 "fcml_intel_lexer.l"
+#line 236 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM0)
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 236 "fcml_intel_lexer.l"
+#line 237 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM1)
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 237 "fcml_intel_lexer.l"
+#line 238 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM2)
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 238 "fcml_intel_lexer.l"
+#line 239 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM3)
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 239 "fcml_intel_lexer.l"
+#line 240 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM4)
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 240 "fcml_intel_lexer.l"
+#line 241 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM5)
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 241 "fcml_intel_lexer.l"
+#line 242 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM6)
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 242 "fcml_intel_lexer.l"
+#line 243 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM7)
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 243 "fcml_intel_lexer.l"
+#line 244 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM8)
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 244 "fcml_intel_lexer.l"
+#line 245 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM9)
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 245 "fcml_intel_lexer.l"
+#line 246 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM10)
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 246 "fcml_intel_lexer.l"
+#line 247 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM11)
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 247 "fcml_intel_lexer.l"
+#line 248 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM12)
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 248 "fcml_intel_lexer.l"
+#line 249 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM13)
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 249 "fcml_intel_lexer.l"
+#line 250 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM14)
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 250 "fcml_intel_lexer.l"
+#line 251 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM15)
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 251 "fcml_intel_lexer.l"
+#line 252 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM16)
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 252 "fcml_intel_lexer.l"
+#line 253 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM17)
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 253 "fcml_intel_lexer.l"
+#line 254 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM18)
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 254 "fcml_intel_lexer.l"
+#line 255 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM19)
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 255 "fcml_intel_lexer.l"
+#line 256 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM20)
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 256 "fcml_intel_lexer.l"
+#line 257 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM21)
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 257 "fcml_intel_lexer.l"
+#line 258 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM22)
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 258 "fcml_intel_lexer.l"
+#line 259 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM23)
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 259 "fcml_intel_lexer.l"
+#line 260 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM24)
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 260 "fcml_intel_lexer.l"
+#line 261 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM25)
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 261 "fcml_intel_lexer.l"
+#line 262 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM26)
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 262 "fcml_intel_lexer.l"
+#line 263 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM27)
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 263 "fcml_intel_lexer.l"
+#line 264 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM28)
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 264 "fcml_intel_lexer.l"
+#line 265 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM29)
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 265 "fcml_intel_lexer.l"
+#line 266 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM30)
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 266 "fcml_intel_lexer.l"
+#line 267 "fcml_intel_lexer.l"
 FCML_FM_SIMD_512_REG(FCML_REG_ZMM31)
 	YY_BREAK
 /* FPU */
 case 177:
 YY_RULE_SETUP
-#line 269 "fcml_intel_lexer.l"
+#line 270 "fcml_intel_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST0)                
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 270 "fcml_intel_lexer.l"
+#line 271 "fcml_intel_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST1)
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 271 "fcml_intel_lexer.l"
+#line 272 "fcml_intel_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST2)
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 272 "fcml_intel_lexer.l"
+#line 273 "fcml_intel_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST3)
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 273 "fcml_intel_lexer.l"
+#line 274 "fcml_intel_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST4)
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 274 "fcml_intel_lexer.l"
+#line 275 "fcml_intel_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST5)
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 275 "fcml_intel_lexer.l"
+#line 276 "fcml_intel_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST6)
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 276 "fcml_intel_lexer.l"
+#line 277 "fcml_intel_lexer.l"
 FCML_FM_FPU_REG(FCML_REG_ST7)
 	YY_BREAK
 /* Control registers. */
 case 185:
 YY_RULE_SETUP
-#line 279 "fcml_intel_lexer.l"
+#line 280 "fcml_intel_lexer.l"
 FCML_FM_CR_REG(FCML_REG_CR0)
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 280 "fcml_intel_lexer.l"
+#line 281 "fcml_intel_lexer.l"
 FCML_FM_CR_REG(FCML_REG_CR2)
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 281 "fcml_intel_lexer.l"
+#line 282 "fcml_intel_lexer.l"
 FCML_FM_CR_REG(FCML_REG_CR3)
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 282 "fcml_intel_lexer.l"
+#line 283 "fcml_intel_lexer.l"
 FCML_FM_CR_REG(FCML_REG_CR4)
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 283 "fcml_intel_lexer.l"
+#line 284 "fcml_intel_lexer.l"
 FCML_FM_CR_REG(FCML_REG_CR8)
 	YY_BREAK
 /* Debug registers. */
 case 190:
 YY_RULE_SETUP
-#line 286 "fcml_intel_lexer.l"
+#line 287 "fcml_intel_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR0)
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 287 "fcml_intel_lexer.l"
+#line 288 "fcml_intel_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR1)
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 288 "fcml_intel_lexer.l"
+#line 289 "fcml_intel_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR2)
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 289 "fcml_intel_lexer.l"
+#line 290 "fcml_intel_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR3)
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 290 "fcml_intel_lexer.l"
+#line 291 "fcml_intel_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR4)
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 291 "fcml_intel_lexer.l"
+#line 292 "fcml_intel_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR5)
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 292 "fcml_intel_lexer.l"
+#line 293 "fcml_intel_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR6)
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 293 "fcml_intel_lexer.l"
+#line 294 "fcml_intel_lexer.l"
 FCML_FM_DR_REG(FCML_REG_DR7)
 	YY_BREAK
 /* Segment registers. */
 case 198:
 YY_RULE_SETUP
-#line 296 "fcml_intel_lexer.l"
+#line 297 "fcml_intel_lexer.l"
 FCML_FM_SEG_REG(FCML_REG_ES)
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 297 "fcml_intel_lexer.l"
+#line 298 "fcml_intel_lexer.l"
 FCML_FM_SEG_REG(FCML_REG_CS)
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 298 "fcml_intel_lexer.l"
+#line 299 "fcml_intel_lexer.l"
 FCML_FM_SEG_REG(FCML_REG_SS)
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 299 "fcml_intel_lexer.l"
+#line 300 "fcml_intel_lexer.l"
 FCML_FM_SEG_REG(FCML_REG_DS)
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 300 "fcml_intel_lexer.l"
+#line 301 "fcml_intel_lexer.l"
 FCML_FM_SEG_REG(FCML_REG_FS)
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 301 "fcml_intel_lexer.l"
+#line 302 "fcml_intel_lexer.l"
 FCML_FM_SEG_REG(FCML_REG_GS)
 	YY_BREAK
 /* Opmask registers. */
 case 204:
 YY_RULE_SETUP
-#line 304 "fcml_intel_lexer.l"
+#line 305 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG(FCML_REG_K0)
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 305 "fcml_intel_lexer.l"
+#line 306 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG(FCML_REG_K1)
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 306 "fcml_intel_lexer.l"
+#line 307 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG(FCML_REG_K2)
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 307 "fcml_intel_lexer.l"
+#line 308 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG(FCML_REG_K3)
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 308 "fcml_intel_lexer.l"
+#line 309 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG(FCML_REG_K4)
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 309 "fcml_intel_lexer.l"
+#line 310 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG(FCML_REG_K5)
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 310 "fcml_intel_lexer.l"
+#line 311 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG(FCML_REG_K6)
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 311 "fcml_intel_lexer.l"
+#line 312 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG(FCML_REG_K7)
 	YY_BREAK
 /* RIP */
 case 212:
 YY_RULE_SETUP
-#line 314 "fcml_intel_lexer.l"
+#line 315 "fcml_intel_lexer.l"
 FCML_FM_RIP
 	YY_BREAK
 /* Size operators. */
 case 213:
 YY_RULE_SETUP
-#line 317 "fcml_intel_lexer.l"
+#line 318 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 8 )
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 318 "fcml_intel_lexer.l"
+#line 319 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 16 )
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-#line 319 "fcml_intel_lexer.l"
+#line 320 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 32 )
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 320 "fcml_intel_lexer.l"
+#line 321 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 48 )
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-#line 321 "fcml_intel_lexer.l"
+#line 322 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 64 )
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 322 "fcml_intel_lexer.l"
+#line 323 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 80 )
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 323 "fcml_intel_lexer.l"
+#line 324 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 128 )
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 324 "fcml_intel_lexer.l"
+#line 325 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 256 )
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 325 "fcml_intel_lexer.l"
+#line 326 "fcml_intel_lexer.l"
 FCML_FM_MULTIMEDIA_SIZE_OPERAND( 64 )
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 326 "fcml_intel_lexer.l"
+#line 327 "fcml_intel_lexer.l"
 FCML_FM_MULTIMEDIA_SIZE_OPERAND( 128 )
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 327 "fcml_intel_lexer.l"
+#line 328 "fcml_intel_lexer.l"
 FCML_FM_MULTIMEDIA_SIZE_OPERAND( 256 )
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-#line 328 "fcml_intel_lexer.l"
+#line 329 "fcml_intel_lexer.l"
 FCML_FM_MULTIMEDIA_SIZE_OPERAND( 512 )
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
-#line 329 "fcml_intel_lexer.l"
+#line 330 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 14 * 8 )
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-#line 330 "fcml_intel_lexer.l"
+#line 331 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 28 * 8 )
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
-#line 331 "fcml_intel_lexer.l"
+#line 332 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 94 * 8 )
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 332 "fcml_intel_lexer.l"
+#line 333 "fcml_intel_lexer.l"
 FCML_FM_SIZE_OPERAND( 108 * 8 )
 	YY_BREAK
 /* opmask registers decorators. */
 case 229:
 YY_RULE_SETUP
-#line 335 "fcml_intel_lexer.l"
+#line 336 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG_DECORATOR(1);
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
-#line 336 "fcml_intel_lexer.l"
+#line 337 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG_DECORATOR(2);
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
-#line 337 "fcml_intel_lexer.l"
+#line 338 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG_DECORATOR(3);
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
-#line 338 "fcml_intel_lexer.l"
+#line 339 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG_DECORATOR(4);
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
-#line 339 "fcml_intel_lexer.l"
+#line 340 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG_DECORATOR(5);
 	YY_BREAK
 case 234:
 YY_RULE_SETUP
-#line 340 "fcml_intel_lexer.l"
+#line 341 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG_DECORATOR(6);
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
-#line 341 "fcml_intel_lexer.l"
+#line 342 "fcml_intel_lexer.l"
 FCML_FM_OPMASK_REG_DECORATOR(7);
 	YY_BREAK
 /* bcast decorators. */
 case 236:
 YY_RULE_SETUP
-#line 344 "fcml_intel_lexer.l"
+#line 345 "fcml_intel_lexer.l"
 FCML_FM_BCAST_DECORATOR(2);
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
-#line 345 "fcml_intel_lexer.l"
+#line 346 "fcml_intel_lexer.l"
 FCML_FM_BCAST_DECORATOR(4);
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-#line 346 "fcml_intel_lexer.l"
+#line 347 "fcml_intel_lexer.l"
 FCML_FM_BCAST_DECORATOR(8);
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 347 "fcml_intel_lexer.l"
+#line 348 "fcml_intel_lexer.l"
 FCML_FM_BCAST_DECORATOR(16);
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
-#line 348 "fcml_intel_lexer.l"
+#line 349 "fcml_intel_lexer.l"
 FCML_FM_BCAST_DECORATOR(32);
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
-#line 349 "fcml_intel_lexer.l"
+#line 350 "fcml_intel_lexer.l"
 FCML_FM_BCAST_DECORATOR(64);
 	YY_BREAK
 /* embedded rounding. */
 case 242:
 YY_RULE_SETUP
-#line 352 "fcml_intel_lexer.l"
+#line 353 "fcml_intel_lexer.l"
 FCML_FM_ER_DECORATOR(0);
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-#line 353 "fcml_intel_lexer.l"
+#line 354 "fcml_intel_lexer.l"
 FCML_FM_ER_DECORATOR(1);
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 354 "fcml_intel_lexer.l"
+#line 355 "fcml_intel_lexer.l"
 FCML_FM_ER_DECORATOR(2);
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 355 "fcml_intel_lexer.l"
+#line 356 "fcml_intel_lexer.l"
 FCML_FM_ER_DECORATOR(3);
 	YY_BREAK
 /* zeroying. */
 case 246:
 YY_RULE_SETUP
-#line 358 "fcml_intel_lexer.l"
+#line 359 "fcml_intel_lexer.l"
 { return FCML_TK_DECORATOR_Z; }
 	YY_BREAK
 /* Suppress all expression. */
 case 247:
 YY_RULE_SETUP
-#line 361 "fcml_intel_lexer.l"
+#line 362 "fcml_intel_lexer.l"
 { return FCML_TK_DECORATOR_SAE; }
 	YY_BREAK
 /* Prefixes */
 case 248:
 YY_RULE_SETUP
-#line 365 "fcml_intel_lexer.l"
+#line 366 "fcml_intel_lexer.l"
 {
                     yylval->prefixes = FCML_PREFIX_LOCK;
                     return FCML_TK_PREFIX;
@@ -2573,7 +2801,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 370 "fcml_intel_lexer.l"
+#line 371 "fcml_intel_lexer.l"
 {
                     yylval->prefixes = FCML_PREFIX_REPNE;
                     return FCML_TK_PREFIX;
@@ -2581,7 +2809,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 375 "fcml_intel_lexer.l"
+#line 376 "fcml_intel_lexer.l"
 {
                     yylval->prefixes = FCML_PREFIX_REPE;
                     return FCML_TK_PREFIX;
@@ -2589,7 +2817,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 380 "fcml_intel_lexer.l"
+#line 381 "fcml_intel_lexer.l"
 {
                     yylval->prefixes = FCML_PREFIX_XACQUIRE;
                     return FCML_TK_PREFIX;
@@ -2597,7 +2825,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-#line 385 "fcml_intel_lexer.l"
+#line 386 "fcml_intel_lexer.l"
 {
                     yylval->prefixes = FCML_PREFIX_XRELEASE;
                     return FCML_TK_PREFIX;
@@ -2605,7 +2833,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 390 "fcml_intel_lexer.l"
+#line 391 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_PREFIX_BRANCH_HINT;
                     return FCML_TK_PREFIX;
@@ -2613,7 +2841,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 395 "fcml_intel_lexer.l"
+#line 396 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_PREFIX_NOBRANCH_HINT;
                     return FCML_TK_PREFIX;
@@ -2622,7 +2850,7 @@ YY_RULE_SETUP
 /* Hints */
 case 255:
 YY_RULE_SETUP
-#line 402 "fcml_intel_lexer.l"
+#line 403 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_HINT_FAR_POINTER;
                     return FCML_TK_HINTS;
@@ -2630,7 +2858,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 407 "fcml_intel_lexer.l"
+#line 408 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_HINT_NEAR_POINTER;
                     return FCML_TK_HINTS;
@@ -2638,7 +2866,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 257:
 YY_RULE_SETUP
-#line 412 "fcml_intel_lexer.l"
+#line 413 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_HINT_LONG_FORM_POINTER;
                     return FCML_TK_HINTS;
@@ -2646,7 +2874,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
-#line 417 "fcml_intel_lexer.l"
+#line 418 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_HINT_INDIRECT_POINTER;
                     return FCML_TK_HINTS;
@@ -2654,7 +2882,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
-#line 422 "fcml_intel_lexer.l"
+#line 423 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_HINT_DIRECT_POINTER;
                     return FCML_TK_HINTS;
@@ -2662,7 +2890,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
-#line 427 "fcml_intel_lexer.l"
+#line 428 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_OP_HINT_RELATIVE_ADDRESSING;
                     return FCML_TK_EAO_HINTS;
@@ -2670,7 +2898,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-#line 432 "fcml_intel_lexer.l"
+#line 433 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_OP_HINT_ABSOLUTE_ADDRESSING;
                     return FCML_TK_EAO_HINTS;
@@ -2678,7 +2906,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
-#line 437 "fcml_intel_lexer.l"
+#line 438 "fcml_intel_lexer.l"
 {
                     yylval->hints = FCML_OP_HINT_SIB_ENCODING;
                     return FCML_TK_SIB_HINT;
@@ -2687,7 +2915,7 @@ YY_RULE_SETUP
 /* Identifiers. */
 case 263:
 YY_RULE_SETUP
-#line 443 "fcml_intel_lexer.l"
+#line 444 "fcml_intel_lexer.l"
 {
                     yylval->symbol.text = (fcml_string)yytext;
                     yylval->symbol.length = (fcml_usize)yyleng;
@@ -2697,79 +2925,79 @@ YY_RULE_SETUP
 /* Operators and parentheses. */
 case 264:
 YY_RULE_SETUP
-#line 450 "fcml_intel_lexer.l"
+#line 451 "fcml_intel_lexer.l"
 { return ','; }
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 451 "fcml_intel_lexer.l"
+#line 452 "fcml_intel_lexer.l"
 { return '+'; }
 	YY_BREAK
 case 266:
 YY_RULE_SETUP
-#line 452 "fcml_intel_lexer.l"
+#line 453 "fcml_intel_lexer.l"
 { return '-'; }
 	YY_BREAK
 case 267:
 YY_RULE_SETUP
-#line 453 "fcml_intel_lexer.l"
+#line 454 "fcml_intel_lexer.l"
 { return '*'; }
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
-#line 454 "fcml_intel_lexer.l"
+#line 455 "fcml_intel_lexer.l"
 { return '/'; }
 	YY_BREAK
 case 269:
 YY_RULE_SETUP
-#line 455 "fcml_intel_lexer.l"
+#line 456 "fcml_intel_lexer.l"
 { return '['; }
 	YY_BREAK
 case 270:
 YY_RULE_SETUP
-#line 456 "fcml_intel_lexer.l"
+#line 457 "fcml_intel_lexer.l"
 { return ']'; }
 	YY_BREAK
 case 271:
 YY_RULE_SETUP
-#line 457 "fcml_intel_lexer.l"
+#line 458 "fcml_intel_lexer.l"
 { return '('; }
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
-#line 458 "fcml_intel_lexer.l"
+#line 459 "fcml_intel_lexer.l"
 { return ')'; }
 	YY_BREAK
 case 273:
 YY_RULE_SETUP
-#line 459 "fcml_intel_lexer.l"
+#line 460 "fcml_intel_lexer.l"
 { return ':'; }
 	YY_BREAK
 /* Ignore white spaces. */
 case 274:
 YY_RULE_SETUP
-#line 462 "fcml_intel_lexer.l"
+#line 463 "fcml_intel_lexer.l"
 
 	YY_BREAK
 /* Anything else is not expected. */
 case 275:
 YY_RULE_SETUP
-#line 465 "fcml_intel_lexer.l"
+#line 466 "fcml_intel_lexer.l"
 { return FCML_TK_UNEXPECTED; }
 	YY_BREAK
 /* Ignore like white spaces. */
 case 276:
 /* rule 276 can match eol */
 YY_RULE_SETUP
-#line 468 "fcml_intel_lexer.l"
+#line 469 "fcml_intel_lexer.l"
 
 	YY_BREAK
 case 277:
 YY_RULE_SETUP
-#line 470 "fcml_intel_lexer.l"
+#line 471 "fcml_intel_lexer.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 2773 "fcml_intel_lexer.c"
+#line 3000 "fcml_intel_lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2787,7 +3015,7 @@ case YY_STATE_EOF(INITIAL):
 			/* We're scanning a new file or input source.  It's
 			 * possible that this happened because the user
 			 * just pointed yyin at a new source and called
-			 * intel_lex().  If so, then we have to assure
+			 * yylex().  If so, then we have to assure
 			 * consistency between YY_CURRENT_BUFFER and our
 			 * globals.  Here is the right place to do so, because
 			 * this is the first action (other than possibly a
@@ -2848,7 +3076,7 @@ case YY_STATE_EOF(INITIAL):
 				{
 				yyg->yy_did_buffer_switch_on_eof = 0;
 
-				if ( intel_wrap(yyscanner ) )
+				if ( yywrap( yyscanner ) )
 					{
 					/* Note: because we've taken care in
 					 * yy_get_next_buffer() to have set up
@@ -2902,7 +3130,7 @@ case YY_STATE_EOF(INITIAL):
 	} /* end of action switch */
 		} /* end of scanning one token */
 	} /* end of user's declarations */
-} /* end of intel_lex */
+} /* end of yylex */
 
 /* yy_get_next_buffer - try to read in a new buffer
  *
@@ -2916,7 +3144,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
 	char *source = yyg->yytext_ptr;
-	yy_size_t number_to_move, i;
+	int number_to_move, i;
 	int ret_val;
 
 	if ( yyg->yy_c_buf_p > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[yyg->yy_n_chars + 1] )
@@ -2945,7 +3173,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	/* Try to read more data. */
 
 	/* First move last chars to start of buffer. */
-	number_to_move = (yy_size_t) (yyg->yy_c_buf_p - yyg->yytext_ptr) - 1;
+	number_to_move = (int) (yyg->yy_c_buf_p - yyg->yytext_ptr - 1);
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
@@ -2981,7 +3209,8 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					intel_realloc((void *) b->yy_ch_buf,b->yy_buf_size + 2 ,yyscanner );
+					yyrealloc( (void *) b->yy_ch_buf,
+							 (yy_size_t) (b->yy_buf_size + 2) , yyscanner );
 				}
 			else
 				/* Can't grow it, we don't own it. */
@@ -3013,7 +3242,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		if ( number_to_move == YY_MORE_ADJ )
 			{
 			ret_val = EOB_ACT_END_OF_FILE;
-			intel_restart(yyin  ,yyscanner);
+			yyrestart( yyin  , yyscanner);
 			}
 
 		else
@@ -3027,12 +3256,15 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	else
 		ret_val = EOB_ACT_CONTINUE_SCAN;
 
-	if ((int) (yyg->yy_n_chars + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+	if ((yyg->yy_n_chars + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
 		int new_size = yyg->yy_n_chars + number_to_move + (yyg->yy_n_chars >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) intel_realloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size ,yyscanner );
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
+			(void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size , yyscanner );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
+		/* "- 2" to take care of EOB's */
+		YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int) (new_size - 2);
 	}
 
 	yyg->yy_n_chars += number_to_move;
@@ -3066,9 +3298,9 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
 			if ( yy_current_state >= 599 )
-				yy_c = yy_meta[(unsigned int) yy_c];
+				yy_c = yy_meta[yy_c];
 			}
-		yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 		}
 
 	return yy_current_state;
@@ -3095,9 +3327,9 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
 		if ( yy_current_state >= 599 )
-			yy_c = yy_meta[(unsigned int) yy_c];
+			yy_c = yy_meta[yy_c];
 		}
-	yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 	yy_is_jam = (yy_current_state == 598);
 
 	(void)yyg;
@@ -3133,7 +3365,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 		else
 			{ /* need more input */
-			int offset = yyg->yy_c_buf_p - yyg->yytext_ptr;
+			int offset = (int) (yyg->yy_c_buf_p - yyg->yytext_ptr);
 			++yyg->yy_c_buf_p;
 
 			switch ( yy_get_next_buffer( yyscanner ) )
@@ -3150,13 +3382,13 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 					 */
 
 					/* Reset buffer status. */
-					intel_restart(yyin ,yyscanner);
+					yyrestart( yyin , yyscanner);
 
 					/*FALLTHROUGH*/
 
 				case EOB_ACT_END_OF_FILE:
 					{
-					if ( intel_wrap(yyscanner ) )
+					if ( yywrap( yyscanner ) )
 						return 0;
 
 					if ( ! yyg->yy_did_buffer_switch_on_eof )
@@ -3180,7 +3412,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	yyg->yy_hold_char = *++yyg->yy_c_buf_p;
 
 	if ( c == '\n' )
-		   
+		
     do{ yylineno++;
         yycolumn=0;
     }while(0)
@@ -3195,34 +3427,34 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @note This function does not reset the start condition to @c INITIAL .
  */
-    void intel_restart  (FILE * input_file , yyscan_t yyscanner)
+    void yyrestart  (FILE * input_file , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	if ( ! YY_CURRENT_BUFFER ){
-        intel_ensure_buffer_stack (yyscanner);
+        yyensure_buffer_stack (yyscanner);
 		YY_CURRENT_BUFFER_LVALUE =
-            intel__create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
+            yy_create_buffer( yyin, YY_BUF_SIZE , yyscanner);
 	}
 
-	intel__init_buffer(YY_CURRENT_BUFFER,input_file ,yyscanner);
-	intel__load_buffer_state(yyscanner );
+	yy_init_buffer( YY_CURRENT_BUFFER, input_file , yyscanner);
+	yy_load_buffer_state( yyscanner );
 }
 
 /** Switch to a different input buffer.
  * @param new_buffer The new input buffer.
  * @param yyscanner The scanner object.
  */
-    void intel__switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
+    void yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	/* TODO. We should be able to replace this entire function body
 	 * with
-	 *		intel_pop_buffer_state();
-	 *		intel_push_buffer_state(new_buffer);
+	 *		yypop_buffer_state();
+	 *		yypush_buffer_state(new_buffer);
      */
-	intel_ensure_buffer_stack (yyscanner);
+	yyensure_buffer_stack (yyscanner);
 	if ( YY_CURRENT_BUFFER == new_buffer )
 		return;
 
@@ -3235,17 +3467,17 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		}
 
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
-	intel__load_buffer_state(yyscanner );
+	yy_load_buffer_state( yyscanner );
 
 	/* We don't actually know whether we did this switch during
-	 * EOF (intel_wrap()) processing, but the only time this flag
-	 * is looked at is after intel_wrap() is called, so it's safe
+	 * EOF (yywrap()) processing, but the only time this flag
+	 * is looked at is after yywrap() is called, so it's safe
 	 * to go ahead and always set it.
 	 */
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
-static void intel__load_buffer_state  (yyscan_t yyscanner)
+static void yy_load_buffer_state  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	yyg->yy_n_chars = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
@@ -3260,35 +3492,35 @@ static void intel__load_buffer_state  (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @return the allocated buffer state.
  */
-    YY_BUFFER_STATE intel__create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
+    YY_BUFFER_STATE yy_create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) intel_alloc(sizeof( struct yy_buffer_state ) ,yyscanner );
+	b = (YY_BUFFER_STATE) yyalloc( sizeof( struct yy_buffer_state ) , yyscanner );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in intel__create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
-	b->yy_buf_size = (yy_size_t)size;
+	b->yy_buf_size = size;
 
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) intel_alloc(b->yy_buf_size + 2 ,yyscanner );
+	b->yy_ch_buf = (char *) yyalloc( (yy_size_t) (b->yy_buf_size + 2) , yyscanner );
 	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in intel__create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_is_our_buffer = 1;
 
-	intel__init_buffer(b,file ,yyscanner);
+	yy_init_buffer( b, file , yyscanner);
 
 	return b;
 }
 
 /** Destroy the buffer.
- * @param b a buffer created with intel__create_buffer()
+ * @param b a buffer created with yy_create_buffer()
  * @param yyscanner The scanner object.
  */
-    void intel__delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
+    void yy_delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
@@ -3299,28 +3531,28 @@ static void intel__load_buffer_state  (yyscan_t yyscanner)
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		intel_free((void *) b->yy_ch_buf ,yyscanner );
+		yyfree( (void *) b->yy_ch_buf , yyscanner );
 
-	intel_free((void *) b ,yyscanner );
+	yyfree( (void *) b , yyscanner );
 }
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
- * such as during a intel_restart() or at EOF.
+ * such as during a yyrestart() or at EOF.
  */
-    static void intel__init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
+    static void yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
 
 {
 	int oerrno = errno;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-	intel__flush_buffer(b ,yyscanner);
+	yy_flush_buffer( b , yyscanner);
 
 	b->yy_input_file = file;
 	b->yy_fill_buffer = 1;
 
-    /* If b is the current buffer, then intel__init_buffer was _probably_
-     * called from intel_restart() or through yy_get_next_buffer.
+    /* If b is the current buffer, then yy_init_buffer was _probably_
+     * called from yyrestart() or through yy_get_next_buffer.
      * In that case, we don't want to reset the lineno or column.
      */
     if (b != YY_CURRENT_BUFFER){
@@ -3337,7 +3569,7 @@ static void intel__load_buffer_state  (yyscan_t yyscanner)
  * @param b the buffer state to be flushed, usually @c YY_CURRENT_BUFFER.
  * @param yyscanner The scanner object.
  */
-    void intel__flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
+    void yy_flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if ( ! b )
@@ -3358,7 +3590,7 @@ static void intel__load_buffer_state  (yyscan_t yyscanner)
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
 	if ( b == YY_CURRENT_BUFFER )
-		intel__load_buffer_state(yyscanner );
+		yy_load_buffer_state( yyscanner );
 }
 
 /** Pushes the new state onto the stack. The new state becomes
@@ -3367,15 +3599,15 @@ static void intel__load_buffer_state  (yyscan_t yyscanner)
  *  @param new_buffer The new state.
  *  @param yyscanner The scanner object.
  */
-void intel_push_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
+void yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if (new_buffer == NULL)
 		return;
 
-	intel_ensure_buffer_stack(yyscanner);
+	yyensure_buffer_stack(yyscanner);
 
-	/* This block is copied from intel__switch_to_buffer. */
+	/* This block is copied from yy_switch_to_buffer. */
 	if ( YY_CURRENT_BUFFER )
 		{
 		/* Flush out information for old buffer. */
@@ -3389,8 +3621,8 @@ void intel_push_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
 		yyg->yy_buffer_stack_top++;
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
 
-	/* copied from intel__switch_to_buffer. */
-	intel__load_buffer_state(yyscanner );
+	/* copied from yy_switch_to_buffer. */
+	yy_load_buffer_state( yyscanner );
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
@@ -3398,19 +3630,19 @@ void intel_push_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
  *  The next element becomes the new top.
  *  @param yyscanner The scanner object.
  */
-void intel_pop_buffer_state (yyscan_t yyscanner)
+void yypop_buffer_state (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if (!YY_CURRENT_BUFFER)
 		return;
 
-	intel__delete_buffer(YY_CURRENT_BUFFER ,yyscanner);
+	yy_delete_buffer(YY_CURRENT_BUFFER , yyscanner);
 	YY_CURRENT_BUFFER_LVALUE = NULL;
 	if (yyg->yy_buffer_stack_top > 0)
 		--yyg->yy_buffer_stack_top;
 
 	if (YY_CURRENT_BUFFER) {
-		intel__load_buffer_state(yyscanner );
+		yy_load_buffer_state( yyscanner );
 		yyg->yy_did_buffer_switch_on_eof = 1;
 	}
 }
@@ -3418,9 +3650,9 @@ void intel_pop_buffer_state (yyscan_t yyscanner)
 /* Allocates the stack if it does not exist.
  *  Guarantees space for at least one push.
  */
-static void intel_ensure_buffer_stack (yyscan_t yyscanner)
+static void yyensure_buffer_stack (yyscan_t yyscanner)
 {
-	int num_to_alloc;
+	yy_size_t num_to_alloc;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	if (!yyg->yy_buffer_stack) {
@@ -3430,14 +3662,14 @@ static void intel_ensure_buffer_stack (yyscan_t yyscanner)
 		 * immediate realloc on the next call.
          */
       num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
-		yyg->yy_buffer_stack = (struct yy_buffer_state**)intel_alloc
+		yyg->yy_buffer_stack = (struct yy_buffer_state**)yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
 		if ( ! yyg->yy_buffer_stack )
-			YY_FATAL_ERROR( "out of dynamic memory in intel_ensure_buffer_stack()" );
-								  
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
+
 		memset(yyg->yy_buffer_stack, 0, num_to_alloc * sizeof(struct yy_buffer_state*));
-				
+
 		yyg->yy_buffer_stack_max = num_to_alloc;
 		yyg->yy_buffer_stack_top = 0;
 		return;
@@ -3449,12 +3681,12 @@ static void intel_ensure_buffer_stack (yyscan_t yyscanner)
 		yy_size_t grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = yyg->yy_buffer_stack_max + grow_size;
-		yyg->yy_buffer_stack = (struct yy_buffer_state**)intel_realloc
+		yyg->yy_buffer_stack = (struct yy_buffer_state**)yyrealloc
 								(yyg->yy_buffer_stack,
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
 		if ( ! yyg->yy_buffer_stack )
-			YY_FATAL_ERROR( "out of dynamic memory in intel_ensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
 		memset(yyg->yy_buffer_stack + yyg->yy_buffer_stack_max, 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -3466,9 +3698,9 @@ static void intel_ensure_buffer_stack (yyscan_t yyscanner)
  * @param base the character buffer
  * @param size the size in bytes of the character buffer
  * @param yyscanner The scanner object.
- * @return the newly allocated buffer state object. 
+ * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE intel__scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
+YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
     
@@ -3478,11 +3710,11 @@ YY_BUFFER_STATE intel__scan_buffer  (char * base, yy_size_t  size , yyscan_t yys
 		/* They forgot to leave room for the EOB's. */
 		return NULL;
 
-	b = (YY_BUFFER_STATE) intel_alloc(sizeof( struct yy_buffer_state ) ,yyscanner );
+	b = (YY_BUFFER_STATE) yyalloc( sizeof( struct yy_buffer_state ) , yyscanner );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in intel__scan_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
 
-	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
+	b->yy_buf_size = (int) (size - 2);	/* "- 2" to take care of EOB's */
 	b->yy_buf_pos = b->yy_ch_buf = base;
 	b->yy_is_our_buffer = 0;
 	b->yy_input_file = NULL;
@@ -3492,53 +3724,53 @@ YY_BUFFER_STATE intel__scan_buffer  (char * base, yy_size_t  size , yyscan_t yys
 	b->yy_fill_buffer = 0;
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
-	intel__switch_to_buffer(b ,yyscanner );
+	yy_switch_to_buffer( b , yyscanner );
 
 	return b;
 }
 
-/** Setup the input buffer state to scan a string. The next call to intel_lex() will
+/** Setup the input buffer state to scan a string. The next call to yylex() will
  * scan from a @e copy of @a str.
  * @param yystr a NUL-terminated string to scan
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
- *       intel__scan_bytes() instead.
+ *       yy_scan_bytes() instead.
  */
-YY_BUFFER_STATE intel__scan_string (yyconst char * yystr , yyscan_t yyscanner)
+YY_BUFFER_STATE yy_scan_string (const char * yystr , yyscan_t yyscanner)
 {
     
-	return intel__scan_bytes(yystr,(int) strlen(yystr) ,yyscanner);
+	return yy_scan_bytes( yystr, (int) strlen(yystr) , yyscanner);
 }
 
-/** Setup the input buffer state to scan the given bytes. The next call to intel_lex() will
+/** Setup the input buffer state to scan the given bytes. The next call to yylex() will
  * scan from a @e copy of @a bytes.
  * @param yybytes the byte buffer to scan
  * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE intel__scan_bytes  (yyconst char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
+YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
 	char *buf;
 	yy_size_t n;
-	yy_size_t i;
+	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
-	n = (yy_size_t) _yybytes_len + 2;
-	buf = (char *) intel_alloc(n ,yyscanner );
+	n = (yy_size_t) (_yybytes_len + 2);
+	buf = (char *) yyalloc( n , yyscanner );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in intel__scan_bytes()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_bytes()" );
 
 	for ( i = 0; i < _yybytes_len; ++i )
 		buf[i] = yybytes[i];
 
 	buf[_yybytes_len] = buf[_yybytes_len+1] = YY_END_OF_BUFFER_CHAR;
 
-	b = intel__scan_buffer(buf,n ,yyscanner);
+	b = yy_scan_buffer( buf, n , yyscanner);
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in intel__scan_bytes()" );
+		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
@@ -3552,11 +3784,11 @@ YY_BUFFER_STATE intel__scan_bytes  (yyconst char * yybytes, int  _yybytes_len , 
 #define YY_EXIT_FAILURE 2
 #endif
 
-static void yynoreturn yy_fatal_error (yyconst char* msg , yyscan_t yyscanner)
+static void yynoreturn yy_fatal_error (const char* msg , yyscan_t yyscanner)
 {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	(void)yyg;
-	(void) fprintf( stderr, "%s\n", msg );
+	fprintf( stderr, "%s\n", msg );
 	exit( YY_EXIT_FAILURE );
 }
 
@@ -3582,7 +3814,7 @@ static void yynoreturn yy_fatal_error (yyconst char* msg , yyscan_t yyscanner)
 /** Get the user-defined data for this scanner.
  * @param yyscanner The scanner object.
  */
-YY_EXTRA_TYPE intel_get_extra  (yyscan_t yyscanner)
+YY_EXTRA_TYPE yyget_extra  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyextra;
@@ -3591,10 +3823,10 @@ YY_EXTRA_TYPE intel_get_extra  (yyscan_t yyscanner)
 /** Get the current line number.
  * @param yyscanner The scanner object.
  */
-int intel_get_lineno  (yyscan_t yyscanner)
+int yyget_lineno  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    
+
         if (! YY_CURRENT_BUFFER)
             return 0;
     
@@ -3604,10 +3836,10 @@ int intel_get_lineno  (yyscan_t yyscanner)
 /** Get the current column number.
  * @param yyscanner The scanner object.
  */
-int intel_get_column  (yyscan_t yyscanner)
+int yyget_column  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    
+
         if (! YY_CURRENT_BUFFER)
             return 0;
     
@@ -3617,7 +3849,7 @@ int intel_get_column  (yyscan_t yyscanner)
 /** Get the input stream.
  * @param yyscanner The scanner object.
  */
-FILE *intel_get_in  (yyscan_t yyscanner)
+FILE *yyget_in  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyin;
@@ -3626,7 +3858,7 @@ FILE *intel_get_in  (yyscan_t yyscanner)
 /** Get the output stream.
  * @param yyscanner The scanner object.
  */
-FILE *intel_get_out  (yyscan_t yyscanner)
+FILE *yyget_out  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyout;
@@ -3635,7 +3867,7 @@ FILE *intel_get_out  (yyscan_t yyscanner)
 /** Get the length of the current token.
  * @param yyscanner The scanner object.
  */
-int intel_get_leng  (yyscan_t yyscanner)
+int yyget_leng  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyleng;
@@ -3645,7 +3877,7 @@ int intel_get_leng  (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  */
 
-char *intel_get_text  (yyscan_t yyscanner)
+char *yyget_text  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yytext;
@@ -3655,7 +3887,7 @@ char *intel_get_text  (yyscan_t yyscanner)
  * @param user_defined The data to be associated with this scanner.
  * @param yyscanner The scanner object.
  */
-void intel_set_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
+void yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyextra = user_defined ;
@@ -3665,13 +3897,13 @@ void intel_set_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
  * @param _line_number line number
  * @param yyscanner The scanner object.
  */
-void intel_set_lineno (int  _line_number , yyscan_t yyscanner)
+void yyset_lineno (int  _line_number , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
         /* lineno is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           YY_FATAL_ERROR( "intel_set_lineno called with no buffer" );
+           YY_FATAL_ERROR( "yyset_lineno called with no buffer" );
     
     yylineno = _line_number;
 }
@@ -3680,13 +3912,13 @@ void intel_set_lineno (int  _line_number , yyscan_t yyscanner)
  * @param _column_no column number
  * @param yyscanner The scanner object.
  */
-void intel_set_column (int  _column_no , yyscan_t yyscanner)
+void yyset_column (int  _column_no , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
         /* column is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           YY_FATAL_ERROR( "intel_set_column called with no buffer" );
+           YY_FATAL_ERROR( "yyset_column called with no buffer" );
     
     yycolumn = _column_no;
 }
@@ -3695,27 +3927,27 @@ void intel_set_column (int  _column_no , yyscan_t yyscanner)
  * input buffer.
  * @param _in_str A readable stream.
  * @param yyscanner The scanner object.
- * @see intel__switch_to_buffer
+ * @see yy_switch_to_buffer
  */
-void intel_set_in (FILE *  _in_str , yyscan_t yyscanner)
+void yyset_in (FILE *  _in_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyin = _in_str ;
 }
 
-void intel_set_out (FILE *  _out_str , yyscan_t yyscanner)
+void yyset_out (FILE *  _out_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyout = _out_str ;
 }
 
-int intel_get_debug  (yyscan_t yyscanner)
+int yyget_debug  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yy_flex_debug;
 }
 
-void intel_set_debug (int  _bdebug , yyscan_t yyscanner)
+void yyset_debug (int  _bdebug , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yy_flex_debug = _bdebug ;
@@ -3723,25 +3955,25 @@ void intel_set_debug (int  _bdebug , yyscan_t yyscanner)
 
 /* Accessor methods for yylval and yylloc */
 
-YYSTYPE * intel_get_lval  (yyscan_t yyscanner)
+YYSTYPE * yyget_lval  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yylval;
 }
 
-void intel_set_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
+void yyset_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yylval = yylval_param;
 }
 
-YYLTYPE *intel_get_lloc  (yyscan_t yyscanner)
+YYLTYPE *yyget_lloc  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yylloc;
 }
     
-void intel_set_lloc (YYLTYPE *  yylloc_param , yyscan_t yyscanner)
+void yyset_lloc (YYLTYPE *  yylloc_param , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yylloc = yylloc_param;
@@ -3749,20 +3981,18 @@ void intel_set_lloc (YYLTYPE *  yylloc_param , yyscan_t yyscanner)
     
 /* User-visible API */
 
-/* intel_lex_init is special because it creates the scanner itself, so it is
+/* yylex_init is special because it creates the scanner itself, so it is
  * the ONLY reentrant function that doesn't take the scanner as the last argument.
  * That's why we explicitly handle the declaration, instead of using our macros.
  */
-
-int intel_lex_init(yyscan_t* ptr_yy_globals)
-
+int yylex_init(yyscan_t* ptr_yy_globals)
 {
     if (ptr_yy_globals == NULL){
         errno = EINVAL;
         return 1;
     }
 
-    *ptr_yy_globals = (yyscan_t) intel_alloc ( sizeof( struct yyguts_t ), NULL );
+    *ptr_yy_globals = (yyscan_t) yyalloc ( sizeof( struct yyguts_t ), NULL );
 
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
@@ -3775,39 +4005,37 @@ int intel_lex_init(yyscan_t* ptr_yy_globals)
     return yy_init_globals ( *ptr_yy_globals );
 }
 
-/* intel_lex_init_extra has the same functionality as intel_lex_init, but follows the
+/* yylex_init_extra has the same functionality as yylex_init, but follows the
  * convention of taking the scanner as the last argument. Note however, that
  * this is a *pointer* to a scanner, as it will be allocated by this call (and
  * is the reason, too, why this function also must handle its own declaration).
- * The user defined value in the first argument will be available to intel_alloc in
+ * The user defined value in the first argument will be available to yyalloc in
  * the yyextra field.
  */
-
-int intel_lex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globals )
-
+int yylex_init_extra( YY_EXTRA_TYPE yy_user_defined, yyscan_t* ptr_yy_globals )
 {
     struct yyguts_t dummy_yyguts;
 
-    intel_set_extra (yy_user_defined, &dummy_yyguts);
+    yyset_extra (yy_user_defined, &dummy_yyguts);
 
     if (ptr_yy_globals == NULL){
         errno = EINVAL;
         return 1;
     }
-	
-    *ptr_yy_globals = (yyscan_t) intel_alloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
-	
+
+    *ptr_yy_globals = (yyscan_t) yyalloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
+
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
         return 1;
     }
-    
+
     /* By setting to 0xAA, we expose bugs in
     yy_init_globals. Leave at 0x00 for releases. */
     memset(*ptr_yy_globals,0x00,sizeof(struct yyguts_t));
-    
-    intel_set_extra (yy_user_defined, *ptr_yy_globals);
-    
+
+    yyset_extra (yy_user_defined, *ptr_yy_globals);
+
     return yy_init_globals ( *ptr_yy_globals );
 }
 
@@ -3815,7 +4043,7 @@ static int yy_init_globals (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     /* Initialization is the same as for the non-reentrant scanner.
-     * This function is called from intel_lex_destroy(), so don't allocate here.
+     * This function is called from yylex_destroy(), so don't allocate here.
      */
 
     yyg->yy_buffer_stack = NULL;
@@ -3839,37 +4067,37 @@ static int yy_init_globals (yyscan_t yyscanner)
 #endif
 
     /* For future reference: Set errno on error, since we are called by
-     * intel_lex_init()
+     * yylex_init()
      */
     return 0;
 }
 
-/* intel_lex_destroy is for both reentrant and non-reentrant scanners. */
-int intel_lex_destroy  (yyscan_t yyscanner)
+/* yylex_destroy is for both reentrant and non-reentrant scanners. */
+int yylex_destroy  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
     /* Pop the buffer stack, destroying each element. */
 	while(YY_CURRENT_BUFFER){
-		intel__delete_buffer(YY_CURRENT_BUFFER ,yyscanner );
+		yy_delete_buffer( YY_CURRENT_BUFFER , yyscanner );
 		YY_CURRENT_BUFFER_LVALUE = NULL;
-		intel_pop_buffer_state(yyscanner);
+		yypop_buffer_state(yyscanner);
 	}
 
 	/* Destroy the stack itself. */
-	intel_free(yyg->yy_buffer_stack ,yyscanner);
+	yyfree(yyg->yy_buffer_stack , yyscanner);
 	yyg->yy_buffer_stack = NULL;
 
     /* Destroy the start condition stack. */
-        intel_free(yyg->yy_start_stack ,yyscanner );
+        yyfree( yyg->yy_start_stack , yyscanner );
         yyg->yy_start_stack = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
-     * intel_lex() is called, initialization will occur. */
+     * yylex() is called, initialization will occur. */
     yy_init_globals( yyscanner);
 
     /* Destroy the main struct (reentrant only). */
-    intel_free ( yyscanner , yyscanner );
+    yyfree ( yyscanner , yyscanner );
     yyscanner = NULL;
     return 0;
 }
@@ -3879,7 +4107,7 @@ int intel_lex_destroy  (yyscan_t yyscanner)
  */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char* s1, yyconst char * s2, int n , yyscan_t yyscanner)
+static void yy_flex_strncpy (char* s1, const char * s2, int n , yyscan_t yyscanner)
 {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	(void)yyg;
@@ -3891,7 +4119,7 @@ static void yy_flex_strncpy (char* s1, yyconst char * s2, int n , yyscan_t yysca
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
+static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 {
 	int n;
 	for ( n = 0; s[n]; ++n )
@@ -3903,8 +4131,7 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 470 "fcml_intel_lexer.l"
-
+#line 471 "fcml_intel_lexer.l"
 
 
 

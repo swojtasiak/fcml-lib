@@ -2,9 +2,9 @@
 #define intel_HEADER_H 1
 #define intel_IN_HEADER 1
 
-#line 6 "fcml_intel_lexer.h"
+#line 5 "fcml_intel_lexer.h"
 
-#line 8 "fcml_intel_lexer.h"
+#line 7 "fcml_intel_lexer.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -13,9 +13,243 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 6
-#define YY_FLEX_SUBMINOR_VERSION 1
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
+#endif
+
+#ifdef yy_create_buffer
+#define intel__create_buffer_ALREADY_DEFINED
+#else
+#define yy_create_buffer intel__create_buffer
+#endif
+
+#ifdef yy_delete_buffer
+#define intel__delete_buffer_ALREADY_DEFINED
+#else
+#define yy_delete_buffer intel__delete_buffer
+#endif
+
+#ifdef yy_scan_buffer
+#define intel__scan_buffer_ALREADY_DEFINED
+#else
+#define yy_scan_buffer intel__scan_buffer
+#endif
+
+#ifdef yy_scan_string
+#define intel__scan_string_ALREADY_DEFINED
+#else
+#define yy_scan_string intel__scan_string
+#endif
+
+#ifdef yy_scan_bytes
+#define intel__scan_bytes_ALREADY_DEFINED
+#else
+#define yy_scan_bytes intel__scan_bytes
+#endif
+
+#ifdef yy_init_buffer
+#define intel__init_buffer_ALREADY_DEFINED
+#else
+#define yy_init_buffer intel__init_buffer
+#endif
+
+#ifdef yy_flush_buffer
+#define intel__flush_buffer_ALREADY_DEFINED
+#else
+#define yy_flush_buffer intel__flush_buffer
+#endif
+
+#ifdef yy_load_buffer_state
+#define intel__load_buffer_state_ALREADY_DEFINED
+#else
+#define yy_load_buffer_state intel__load_buffer_state
+#endif
+
+#ifdef yy_switch_to_buffer
+#define intel__switch_to_buffer_ALREADY_DEFINED
+#else
+#define yy_switch_to_buffer intel__switch_to_buffer
+#endif
+
+#ifdef yypush_buffer_state
+#define intel_push_buffer_state_ALREADY_DEFINED
+#else
+#define yypush_buffer_state intel_push_buffer_state
+#endif
+
+#ifdef yypop_buffer_state
+#define intel_pop_buffer_state_ALREADY_DEFINED
+#else
+#define yypop_buffer_state intel_pop_buffer_state
+#endif
+
+#ifdef yyensure_buffer_stack
+#define intel_ensure_buffer_stack_ALREADY_DEFINED
+#else
+#define yyensure_buffer_stack intel_ensure_buffer_stack
+#endif
+
+#ifdef yylex
+#define intel_lex_ALREADY_DEFINED
+#else
+#define yylex intel_lex
+#endif
+
+#ifdef yyrestart
+#define intel_restart_ALREADY_DEFINED
+#else
+#define yyrestart intel_restart
+#endif
+
+#ifdef yylex_init
+#define intel_lex_init_ALREADY_DEFINED
+#else
+#define yylex_init intel_lex_init
+#endif
+
+#ifdef yylex_init_extra
+#define intel_lex_init_extra_ALREADY_DEFINED
+#else
+#define yylex_init_extra intel_lex_init_extra
+#endif
+
+#ifdef yylex_destroy
+#define intel_lex_destroy_ALREADY_DEFINED
+#else
+#define yylex_destroy intel_lex_destroy
+#endif
+
+#ifdef yyget_debug
+#define intel_get_debug_ALREADY_DEFINED
+#else
+#define yyget_debug intel_get_debug
+#endif
+
+#ifdef yyset_debug
+#define intel_set_debug_ALREADY_DEFINED
+#else
+#define yyset_debug intel_set_debug
+#endif
+
+#ifdef yyget_extra
+#define intel_get_extra_ALREADY_DEFINED
+#else
+#define yyget_extra intel_get_extra
+#endif
+
+#ifdef yyset_extra
+#define intel_set_extra_ALREADY_DEFINED
+#else
+#define yyset_extra intel_set_extra
+#endif
+
+#ifdef yyget_in
+#define intel_get_in_ALREADY_DEFINED
+#else
+#define yyget_in intel_get_in
+#endif
+
+#ifdef yyset_in
+#define intel_set_in_ALREADY_DEFINED
+#else
+#define yyset_in intel_set_in
+#endif
+
+#ifdef yyget_out
+#define intel_get_out_ALREADY_DEFINED
+#else
+#define yyget_out intel_get_out
+#endif
+
+#ifdef yyset_out
+#define intel_set_out_ALREADY_DEFINED
+#else
+#define yyset_out intel_set_out
+#endif
+
+#ifdef yyget_leng
+#define intel_get_leng_ALREADY_DEFINED
+#else
+#define yyget_leng intel_get_leng
+#endif
+
+#ifdef yyget_text
+#define intel_get_text_ALREADY_DEFINED
+#else
+#define yyget_text intel_get_text
+#endif
+
+#ifdef yyget_lineno
+#define intel_get_lineno_ALREADY_DEFINED
+#else
+#define yyget_lineno intel_get_lineno
+#endif
+
+#ifdef yyset_lineno
+#define intel_set_lineno_ALREADY_DEFINED
+#else
+#define yyset_lineno intel_set_lineno
+#endif
+
+#ifdef yyget_column
+#define intel_get_column_ALREADY_DEFINED
+#else
+#define yyget_column intel_get_column
+#endif
+
+#ifdef yyset_column
+#define intel_set_column_ALREADY_DEFINED
+#else
+#define yyset_column intel_set_column
+#endif
+
+#ifdef yywrap
+#define intel_wrap_ALREADY_DEFINED
+#else
+#define yywrap intel_wrap
+#endif
+
+#ifdef yyget_lval
+#define intel_get_lval_ALREADY_DEFINED
+#else
+#define yyget_lval intel_get_lval
+#endif
+
+#ifdef yyset_lval
+#define intel_set_lval_ALREADY_DEFINED
+#else
+#define yyset_lval intel_set_lval
+#endif
+
+#ifdef yyget_lloc
+#define intel_get_lloc_ALREADY_DEFINED
+#else
+#define yyget_lloc intel_get_lloc
+#endif
+
+#ifdef yyset_lloc
+#define intel_set_lloc_ALREADY_DEFINED
+#else
+#define yyset_lloc intel_set_lloc
+#endif
+
+#ifdef yyalloc
+#define intel_alloc_ALREADY_DEFINED
+#else
+#define yyalloc intel_alloc
+#endif
+
+#ifdef yyrealloc
+#define intel_realloc_ALREADY_DEFINED
+#else
+#define yyrealloc intel_realloc
+#endif
+
+#ifdef yyfree
+#define intel_free_ALREADY_DEFINED
+#else
+#define yyfree intel_free
 #endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
@@ -88,9 +322,15 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
+
+/* begin standard C++ headers. */
 
 /* TODO: this is always defined, so inline it */
 #define yyconst const
@@ -181,7 +421,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -192,21 +432,21 @@ struct yy_buffer_state
 	};
 #endif /* !YY_STRUCT_YY_BUFFER_STATE */
 
-void intel_restart (FILE *input_file ,yyscan_t yyscanner );
-void intel__switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void intel__delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void intel__flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void intel_push_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void intel_pop_buffer_state (yyscan_t yyscanner );
+void yyrestart ( FILE *input_file , yyscan_t yyscanner );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size , yyscan_t yyscanner );
+void yy_delete_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yy_flush_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+void yypop_buffer_state ( yyscan_t yyscanner );
 
-YY_BUFFER_STATE intel__scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE intel__scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len , yyscan_t yyscanner );
 
-void *intel_alloc (yy_size_t ,yyscan_t yyscanner );
-void *intel_realloc (void *,yy_size_t ,yyscan_t yyscanner );
-void intel_free (void * ,yyscan_t yyscanner );
+void *yyalloc ( yy_size_t , yyscan_t yyscanner );
+void *yyrealloc ( void *, yy_size_t , yyscan_t yyscanner );
+void yyfree ( void * , yyscan_t yyscanner );
 
 /* Begin user sect3 */
 
@@ -230,50 +470,50 @@ void intel_free (void * ,yyscan_t yyscanner );
 
 #define YY_EXTRA_TYPE struct fcml_st_parser_data *
 
-int intel_lex_init (yyscan_t* scanner);
+int yylex_init (yyscan_t* scanner);
 
-int intel_lex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int intel_lex_destroy (yyscan_t yyscanner );
+int yylex_destroy ( yyscan_t yyscanner );
 
-int intel_get_debug (yyscan_t yyscanner );
+int yyget_debug ( yyscan_t yyscanner );
 
-void intel_set_debug (int debug_flag ,yyscan_t yyscanner );
+void yyset_debug ( int debug_flag , yyscan_t yyscanner );
 
-YY_EXTRA_TYPE intel_get_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE yyget_extra ( yyscan_t yyscanner );
 
-void intel_set_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void yyset_extra ( YY_EXTRA_TYPE user_defined , yyscan_t yyscanner );
 
-FILE *intel_get_in (yyscan_t yyscanner );
+FILE *yyget_in ( yyscan_t yyscanner );
 
-void intel_set_in  (FILE * _in_str ,yyscan_t yyscanner );
+void yyset_in  ( FILE * _in_str , yyscan_t yyscanner );
 
-FILE *intel_get_out (yyscan_t yyscanner );
+FILE *yyget_out ( yyscan_t yyscanner );
 
-void intel_set_out  (FILE * _out_str ,yyscan_t yyscanner );
+void yyset_out  ( FILE * _out_str , yyscan_t yyscanner );
 
-			int intel_get_leng (yyscan_t yyscanner );
+			int yyget_leng ( yyscan_t yyscanner );
 
-char *intel_get_text (yyscan_t yyscanner );
+char *yyget_text ( yyscan_t yyscanner );
 
-int intel_get_lineno (yyscan_t yyscanner );
+int yyget_lineno ( yyscan_t yyscanner );
 
-void intel_set_lineno (int _line_number ,yyscan_t yyscanner );
+void yyset_lineno ( int _line_number , yyscan_t yyscanner );
 
-int intel_get_column  (yyscan_t yyscanner );
+int yyget_column  ( yyscan_t yyscanner );
 
-void intel_set_column (int _column_no ,yyscan_t yyscanner );
+void yyset_column ( int _column_no , yyscan_t yyscanner );
 
-YYSTYPE * intel_get_lval (yyscan_t yyscanner );
+YYSTYPE * yyget_lval ( yyscan_t yyscanner );
 
-void intel_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
+void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
 
-       YYLTYPE *intel_get_lloc (yyscan_t yyscanner );
+       YYLTYPE *yyget_lloc ( yyscan_t yyscanner );
     
-        void intel_set_lloc (YYLTYPE * yylloc_param ,yyscan_t yyscanner );
+        void yyset_lloc ( YYLTYPE * yylloc_param , yyscan_t yyscanner );
     
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -281,18 +521,18 @@ void intel_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int intel_wrap (yyscan_t yyscanner );
+extern "C" int yywrap ( yyscan_t yyscanner );
 #else
-extern int intel_wrap (yyscan_t yyscanner );
+extern int yywrap ( yyscan_t yyscanner );
 #endif
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int ,yyscan_t yyscanner);
+static void yy_flex_strncpy ( char *, const char *, int , yyscan_t yyscanner);
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
+static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
 #endif
 
 #ifndef YY_NO_INPUT
@@ -320,10 +560,10 @@ static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int intel_lex \
-               (YYSTYPE * yylval_param,YYLTYPE * yylloc_param ,yyscan_t yyscanner);
+extern int yylex \
+               (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner);
 
-#define YY_DECL int intel_lex \
+#define YY_DECL int yylex \
                (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
@@ -341,9 +581,154 @@ extern int intel_lex \
 #undef YY_DECL
 #endif
 
-#line 470 "fcml_intel_lexer.l"
+#ifndef intel__create_buffer_ALREADY_DEFINED
+#undef yy_create_buffer
+#endif
+#ifndef intel__delete_buffer_ALREADY_DEFINED
+#undef yy_delete_buffer
+#endif
+#ifndef intel__scan_buffer_ALREADY_DEFINED
+#undef yy_scan_buffer
+#endif
+#ifndef intel__scan_string_ALREADY_DEFINED
+#undef yy_scan_string
+#endif
+#ifndef intel__scan_bytes_ALREADY_DEFINED
+#undef yy_scan_bytes
+#endif
+#ifndef intel__init_buffer_ALREADY_DEFINED
+#undef yy_init_buffer
+#endif
+#ifndef intel__flush_buffer_ALREADY_DEFINED
+#undef yy_flush_buffer
+#endif
+#ifndef intel__load_buffer_state_ALREADY_DEFINED
+#undef yy_load_buffer_state
+#endif
+#ifndef intel__switch_to_buffer_ALREADY_DEFINED
+#undef yy_switch_to_buffer
+#endif
+#ifndef intel_push_buffer_state_ALREADY_DEFINED
+#undef yypush_buffer_state
+#endif
+#ifndef intel_pop_buffer_state_ALREADY_DEFINED
+#undef yypop_buffer_state
+#endif
+#ifndef intel_ensure_buffer_stack_ALREADY_DEFINED
+#undef yyensure_buffer_stack
+#endif
+#ifndef intel_lex_ALREADY_DEFINED
+#undef yylex
+#endif
+#ifndef intel_restart_ALREADY_DEFINED
+#undef yyrestart
+#endif
+#ifndef intel_lex_init_ALREADY_DEFINED
+#undef yylex_init
+#endif
+#ifndef intel_lex_init_extra_ALREADY_DEFINED
+#undef yylex_init_extra
+#endif
+#ifndef intel_lex_destroy_ALREADY_DEFINED
+#undef yylex_destroy
+#endif
+#ifndef intel_get_debug_ALREADY_DEFINED
+#undef yyget_debug
+#endif
+#ifndef intel_set_debug_ALREADY_DEFINED
+#undef yyset_debug
+#endif
+#ifndef intel_get_extra_ALREADY_DEFINED
+#undef yyget_extra
+#endif
+#ifndef intel_set_extra_ALREADY_DEFINED
+#undef yyset_extra
+#endif
+#ifndef intel_get_in_ALREADY_DEFINED
+#undef yyget_in
+#endif
+#ifndef intel_set_in_ALREADY_DEFINED
+#undef yyset_in
+#endif
+#ifndef intel_get_out_ALREADY_DEFINED
+#undef yyget_out
+#endif
+#ifndef intel_set_out_ALREADY_DEFINED
+#undef yyset_out
+#endif
+#ifndef intel_get_leng_ALREADY_DEFINED
+#undef yyget_leng
+#endif
+#ifndef intel_get_text_ALREADY_DEFINED
+#undef yyget_text
+#endif
+#ifndef intel_get_lineno_ALREADY_DEFINED
+#undef yyget_lineno
+#endif
+#ifndef intel_set_lineno_ALREADY_DEFINED
+#undef yyset_lineno
+#endif
+#ifndef intel_get_column_ALREADY_DEFINED
+#undef yyget_column
+#endif
+#ifndef intel_set_column_ALREADY_DEFINED
+#undef yyset_column
+#endif
+#ifndef intel_wrap_ALREADY_DEFINED
+#undef yywrap
+#endif
+#ifndef intel_get_lval_ALREADY_DEFINED
+#undef yyget_lval
+#endif
+#ifndef intel_set_lval_ALREADY_DEFINED
+#undef yyset_lval
+#endif
+#ifndef intel_get_lloc_ALREADY_DEFINED
+#undef yyget_lloc
+#endif
+#ifndef intel_set_lloc_ALREADY_DEFINED
+#undef yyset_lloc
+#endif
+#ifndef intel_alloc_ALREADY_DEFINED
+#undef yyalloc
+#endif
+#ifndef intel_realloc_ALREADY_DEFINED
+#undef yyrealloc
+#endif
+#ifndef intel_free_ALREADY_DEFINED
+#undef yyfree
+#endif
+#ifndef intel_text_ALREADY_DEFINED
+#undef yytext
+#endif
+#ifndef intel_leng_ALREADY_DEFINED
+#undef yyleng
+#endif
+#ifndef intel_in_ALREADY_DEFINED
+#undef yyin
+#endif
+#ifndef intel_out_ALREADY_DEFINED
+#undef yyout
+#endif
+#ifndef intel__flex_debug_ALREADY_DEFINED
+#undef yy_flex_debug
+#endif
+#ifndef intel_lineno_ALREADY_DEFINED
+#undef yylineno
+#endif
+#ifndef intel_tables_fload_ALREADY_DEFINED
+#undef yytables_fload
+#endif
+#ifndef intel_tables_destroy_ALREADY_DEFINED
+#undef yytables_destroy
+#endif
+#ifndef intel_TABLES_NAME_ALREADY_DEFINED
+#undef yyTABLES_NAME
+#endif
+
+#line 471 "fcml_intel_lexer.l"
 
 
-#line 348 "fcml_intel_lexer.h"
+#line 732 "fcml_intel_lexer.h"
 #undef intel_IN_HEADER
 #endif /* intel_HEADER_H */
