@@ -265,6 +265,26 @@ void fcml_tf_instruction_KTESTQ(void) {
     FCML_A3264( "ktestq %k3,%k1", 0xC4, 0xE1, 0xf8, 0x99, 0xCB );
 }
 
+void fcml_tf_instruction_KXNORW(void) {
+    FCML_I3264( "kxnorw k1,k2,k3", 0xC5, 0xEC, 0x46, 0xCB );
+    FCML_A3264( "kxnorw %k3,%k2,%k1", 0xC5, 0xEC, 0x46, 0xCB );
+}
+
+void fcml_tf_instruction_KXNORB(void) {
+    FCML_I3264( "kxnorb k1,k2,k3", 0xC5, 0xED, 0x46, 0xCB );
+    FCML_A3264( "kxnorb %k3,%k2,%k1", 0xC5, 0xED, 0x46, 0xCB );
+}
+
+void fcml_tf_instruction_KXNORD(void) {
+    FCML_I3264( "kxnord k1,k2,k3", 0xC4, 0xE1, 0xED, 0x46, 0xCB );
+    FCML_A3264( "kxnord %k3,%k2,%k1", 0xC4, 0xE1, 0xED, 0x46, 0xCB );
+}
+
+void fcml_tf_instruction_KXNORQ(void) {
+    FCML_I3264( "kxnorq k1,k2,k3", 0xC4, 0xE1, 0xEC, 0x46, 0xCB );
+    FCML_A3264( "kxnorq %k3,%k2,%k1", 0xC4, 0xE1, 0xEC, 0x46, 0xCB );
+}
+
 fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KADDW", fcml_tf_instruction_KADDW },
     { "fcml_tf_instruction_KADDB", fcml_tf_instruction_KADDB },
@@ -306,6 +326,10 @@ fcml_stf_test_case fctl_ti_instructions_k[] = {
     { "fcml_tf_instruction_KTESTW", fcml_tf_instruction_KTESTW },
     { "fcml_tf_instruction_KTESTD", fcml_tf_instruction_KTESTD },
     { "fcml_tf_instruction_KTESTQ", fcml_tf_instruction_KTESTQ },
+    { "fcml_tf_instruction_KXNORW", fcml_tf_instruction_KXNORW },
+    { "fcml_tf_instruction_KXNORB", fcml_tf_instruction_KXNORB },
+    { "fcml_tf_instruction_KXNORD", fcml_tf_instruction_KXNORD },
+    { "fcml_tf_instruction_KXNORQ", fcml_tf_instruction_KXNORQ },
     FCML_STF_NULL_TEST
 };
 
