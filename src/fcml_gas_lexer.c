@@ -1,6 +1,6 @@
-#line 1 "fcml_gas_lexer.c"
+#line 2 "fcml_gas_lexer.c"
 
-#line 3 "fcml_gas_lexer.c"
+#line 4 "fcml_gas_lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -1039,12 +1039,12 @@ static const flex_int32_t yy_rule_can_match_eol[253] =
     
     #include "fcml_common_lex.h"
     #include "fcml_gas_parser_def.h"
-#line 1042 "fcml_gas_lexer.c"
+#line 1043 "fcml_gas_lexer.c"
 #define YY_NO_INPUT 1
 #define YY_NO_UNISTD_H 1
 /* White spaces. */
 /*Dec and hex values.*/
-#line 1047 "fcml_gas_lexer.c"
+#line 1048 "fcml_gas_lexer.c"
 
 #define INITIAL 0
 
@@ -1329,7 +1329,7 @@ YY_DECL
 
 #line 59 "fcml_gas_lexer.l"
  /* Decimal integers. */
-#line 1332 "fcml_gas_lexer.c"
+#line 1333 "fcml_gas_lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -2708,7 +2708,7 @@ YY_RULE_SETUP
 #line 401 "fcml_gas_lexer.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 2711 "fcml_gas_lexer.c"
+#line 2712 "fcml_gas_lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

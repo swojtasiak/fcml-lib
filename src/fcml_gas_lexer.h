@@ -2,9 +2,9 @@
 #define gas_HEADER_H 1
 #define gas_IN_HEADER 1
 
-#line 5 "fcml_gas_lexer.h"
+#line 6 "fcml_gas_lexer.h"
 
-#line 7 "fcml_gas_lexer.h"
+#line 8 "fcml_gas_lexer.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -729,6 +729,6 @@ extern int yylex \
 #line 401 "fcml_gas_lexer.l"
 
 
-#line 732 "fcml_gas_lexer.h"
+#line 733 "fcml_gas_lexer.h"
 #undef gas_IN_HEADER
 #endif /* gas_HEADER_H */
