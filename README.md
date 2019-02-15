@@ -76,7 +76,7 @@ This code should print the following instruction:
 >adc byte ptr [ecx+eax+2],3
 
 ## Resources
-* For more information do not hesitate to head over the official project site: http://fcml-lib.com
+* For more information do not hesitate to head over the official project site: http://www.fcml-lib.com
 * You can download official binaries and source code archive directly from sourceforge: https://sourceforge.net/projects/fcml/files
 
 LICENSE
