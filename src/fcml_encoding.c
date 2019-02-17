@@ -2595,10 +2595,12 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
     }
 
 #ifdef FCML_DEBUG
-    FCML_TRACE("Accepted addressing mode %d - prefixes: 0x%04X, opcode:" \
-            " 0x%02X.", context->__def_index,
-            addr_mode->addr_mode_desc->allowed_prefixes,
-            addr_mode->addr_mode_desc->opcode_flags);
+    if(error == FCML_CEH_GEC_NO_ERROR) {
+        FCML_TRACE("Accepted addressing mode %d - prefixes: 0x%04X, opcode:" \
+                " 0x%02X.", context->__def_index,
+                addr_mode->addr_mode_desc->allowed_prefixes,
+                addr_mode->addr_mode_desc->opcode_flags);
+    }
 #endif
 
     return error;
