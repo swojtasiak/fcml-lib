@@ -664,25 +664,6 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
             encoded_data_size, comparator);
 }
 
-// Encodes opmask decorators if there are any defined for an operand.
-void fcml_ifn_asm_encode_opmask_decorator(
-        fcml_ist_asm_encoding_context *context,
-        fcml_operand_decorators supported_decorators,
-        fcml_st_operand *operand_def) {
-
-    /* Opmask decorator. */
-    if (FCML_IS_DECOR_OPMASK_REG(supported_decorators)) {
-        if (operand_def->decorators.operand_mask_reg.type == FCML_REG_OPMASK) {
-            context->epf.aaa = operand_def->decorators.operand_mask_reg.reg;
-        }
-    }
-
-    /* Z decorator. */
-    if (FCML_IS_DECOR_Z(supported_decorators)) {
-        context->epf.z = operand_def->decorators.z;
-    }
-}
-
 /**
  * Sets new vector length. If there is one already set it cannot be overridden.
  */
@@ -4257,6 +4238,25 @@ fcml_uint8_t fcml_ifn_asm_encode_pp_prefix_field(
     return pp;
 }
 
+// Encodes decorators if there are any defined for an operand.
+void fcml_ifn_asm_encode_decorators(
+        fcml_ist_asm_encoding_context *context,
+        fcml_operand_decorators supported_decorators,
+        fcml_st_operand *operand_def) {
+
+    /* Opmask decorator. */
+    if (FCML_IS_DECOR_OPMASK_REG(supported_decorators)) {
+        if (operand_def->decorators.operand_mask_reg.type == FCML_REG_OPMASK) {
+            context->epf.aaa = operand_def->decorators.operand_mask_reg.reg;
+        }
+    }
+
+    /* Z decorator. */
+    if (FCML_IS_DECOR_Z(supported_decorators)) {
+        context->epf.z = operand_def->decorators.z;
+    }
+}
+
 fcml_ceh_error fcml_ifn_asm_ipp_EVEX_prefix_encoder(
         fcml_ien_asm_part_processor_phase phase,
         fcml_ist_asm_encoding_context *context,
@@ -4285,7 +4285,7 @@ fcml_ceh_error fcml_ifn_asm_ipp_EVEX_prefix_encoder(
             fcml_operand_decorators supported_decorators =
                     FCML_DECORATORS(addr_mode_def->operands[i]);
             fcml_st_operand *operand = &context->instruction->operands[i];
-            fcml_ifn_asm_encode_opmask_decorator(context, supported_decorators, operand);
+            fcml_ifn_asm_encode_decorators(context, supported_decorators, operand);
         }
     }
 
