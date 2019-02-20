@@ -664,7 +664,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
             encoded_data_size, comparator);
 }
 
-// Encodes opmask decorators if there are any defined for a register operand.
+// Encodes opmask decorators if there are any defined for an operand.
 void fcml_ifn_asm_encode_opmask_decorator(
         fcml_ist_asm_encoding_context *context,
         fcml_operand_decorators supported_decorators,
@@ -2050,10 +2050,6 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
                     args->encoded_register_operand_size, operand_def->reg.size,
                     NULL, FCML_IEN_CT_EQUAL);
 
-            if(!error) {
-                fcml_ifn_asm_encode_opmask_decorator(context, args->decorators, operand_def);
-            }
-
         } else {
             /* Set hints for ModR/M instruction part encoder.*/
             context->is_sib_alternative_hint = (operand_def->hints
@@ -2190,11 +2186,6 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_r(
                 error = FCML_CEH_GEC_INVALID_OPPERAND;
             }
         }
-
-        if(!error) {
-            fcml_ifn_asm_encode_opmask_decorator(context, args->decorators, operand_def);
-        }
-
     }
 
     return error;
@@ -4283,11 +4274,18 @@ fcml_ceh_error fcml_ifn_asm_ipp_EVEX_prefix_encoder(
             context->optimizer_processing_details.vector_length = FCML_DS_512;
         }
 
+        // Some decorators can be encoded here globally, as we do not need any custom
+        // code dedicated for given operand type. The only information which is needed
+        // here is a list of supported decorators and actual decorators from the
+        // instruction model for a given operand. In fact we don't even care
+        // if we are dealing with a register operand or a memory addressing as long as
+        // the operand supports decorators.
+
         for (int i = 0; i < context->instruction->operands_count; i++) {
-            if (context->instruction->operands[i].decorators.z) {
-                context->epf.z = FCML_TRUE;
-                break;
-            }
+            fcml_operand_decorators supported_decorators =
+                    FCML_DECORATORS(addr_mode_def->operands[i]);
+            fcml_st_operand *operand = &context->instruction->operands[i];
+            fcml_ifn_asm_encode_opmask_decorator(context, supported_decorators, operand);
         }
     }
 
