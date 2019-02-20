@@ -311,7 +311,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit(
     return error;
 }
 
-/* 32 and 64 bit addressing mode.s*/
+/* 32 and 64 bit addressing mode */
 fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
         fcml_st_modrm_encoder_context *context,
         const fcml_st_modrm *decoded_modrm,

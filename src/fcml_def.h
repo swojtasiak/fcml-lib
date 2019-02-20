@@ -1169,6 +1169,7 @@ typedef struct fcml_st_def_tma_rm {
     fcml_uint8_t vector_index_register;
     fcml_bool is_vsib;
     fcml_bool is_bcast;
+    fcml_operand_decorators decorators;
 } fcml_st_def_tma_rm;
 
 typedef struct fcml_st_def_tma_r {

@@ -664,6 +664,25 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
             encoded_data_size, comparator);
 }
 
+// Encodes opmask decorators if there are any defined for a register operand.
+void fcml_ifn_asm_encode_opmask_decorator(
+        fcml_ist_asm_encoding_context *context,
+        fcml_operand_decorators supported_decorators,
+        fcml_st_operand *operand_def) {
+
+    /* Opmask decorator. */
+    if (FCML_IS_DECOR_OPMASK_REG(supported_decorators)) {
+        if (operand_def->decorators.operand_mask_reg.type == FCML_REG_OPMASK) {
+            context->epf.aaa = operand_def->decorators.operand_mask_reg.reg;
+        }
+    }
+
+    /* Z decorator. */
+    if (FCML_IS_DECOR_Z(supported_decorators)) {
+        context->epf.z = operand_def->decorators.z;
+    }
+}
+
 /**
  * Sets new vector length. If there is one already set it cannot be overridden.
  */
@@ -2031,6 +2050,10 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
                     args->encoded_register_operand_size, operand_def->reg.size,
                     NULL, FCML_IEN_CT_EQUAL);
 
+            if(!error) {
+                fcml_ifn_asm_encode_opmask_decorator(context, args->decorators, operand_def);
+            }
+
         } else {
             /* Set hints for ModR/M instruction part encoder.*/
             context->is_sib_alternative_hint = (operand_def->hints
@@ -2168,13 +2191,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_r(
             }
         }
 
-        /* Opmask decorator. */
         if(!error) {
-            if (operand_def->decorators.operand_mask_reg.type
-                    == FCML_REG_OPMASK) {
-                context->epf.aaa = operand_def->decorators.operand_mask_reg.reg;
-            }
-            context->epf.z = operand_def->decorators.z;
+            fcml_ifn_asm_encode_opmask_decorator(context, args->decorators, operand_def);
         }
 
     }
@@ -2684,7 +2702,10 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(
                     /* Something failed.*/
                     break;
                 }
+            } else if(descriptor->processor_encoder == NULL && descriptor->processor_acceptor == NULL) {
+                break;
             }
+
             current_processor = current_processor->next_processor;
             index++;
         }
@@ -4260,6 +4281,13 @@ fcml_ceh_error fcml_ifn_asm_ipp_EVEX_prefix_encoder(
             context->optimizer_processing_details.vector_length = FCML_DS_128;
         } else if (FCML_DEF_PREFIX_L_prim_1(addr_mode_def->allowed_prefixes)) {
             context->optimizer_processing_details.vector_length = FCML_DS_512;
+        }
+
+        for (int i = 0; i < context->instruction->operands_count; i++) {
+            if (context->instruction->operands[i].decorators.z) {
+                context->epf.z = FCML_TRUE;
+                break;
+            }
         }
     }
 

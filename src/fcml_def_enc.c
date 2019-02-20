@@ -130,6 +130,8 @@ fcml_ptr fcml_fnp_def_addr_mode_args_decoder_rm(
         rm_args->is_vsib = FCML_FALSE;
         rm_args->vector_index_register = 0;
         rm_args->is_bcast = FCML_IS_DECOR_BCAST(decorators);
+        /* TODO: Decode decorators here. Hide the encoding format here! */
+        rm_args->decorators = FCML_DECORATORS(encoded_addr_mode);
     }
     return rm_args;
 }
