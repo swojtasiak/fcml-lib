@@ -4880,7 +4880,8 @@ fcml_ceh_error fcml_ifn_asm_ipp_op_decorator_acceptor(
         fcml_st_operand *operand = &(instruction->operands[i]);
         fcml_st_operand_decorators *opcode_dec = &(operand->decorators);
 
-        if (opcode_dec->bcast.is_not_null && !FCML_IS_DECOR_BCAST(decorators)) {
+        if (opcode_dec->bcast.is_not_null &&
+                !FCML_IS_DECOR_BCAST(decorators)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
@@ -4890,7 +4891,8 @@ fcml_ceh_error fcml_ifn_asm_ipp_op_decorator_acceptor(
 
         if (opmask_reg->type != FCML_REG_UNDEFINED) {
             /* k0 register cannot be addressed as a predicate operand */
-            if (opmask_reg->type != FCML_REG_OPMASK || opmask_reg->reg == FCML_REG_K0) {
+            if (opmask_reg->type != FCML_REG_OPMASK ||
+                    opmask_reg->reg == FCML_REG_K0) {
                 return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
             }
             if (!FCML_IS_DECOR_OPMASK_REG(decorators)) {
@@ -4904,7 +4906,8 @@ fcml_ceh_error fcml_ifn_asm_ipp_op_decorator_acceptor(
             /* Zeroing-masking is not supported for memory addressing.
              * At the moment it's supported only by register operands.
              */
-            if (!FCML_IS_DECOR_Z(decorators) || operand->type != FCML_OT_REGISTER) {
+            if (!FCML_IS_DECOR_Z(decorators) ||
+                    operand->type != FCML_OT_REGISTER) {
                 return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
             }
         }
