@@ -178,14 +178,21 @@ operand_list: operand                           { $$ = fcml_fn_ast_alloc_node_op
 | operand_list ',' operand                      { $$ = fcml_fn_ast_alloc_node_operand_list( $1, $3 ); HANDLE_ERRORS($$); }
 ;
 
+/* TODO: Maybe we should decorate every operand regardless of the type?
+   It's probably a better idea as returning a nice descriptive error about unsupported decorator
+   is probably a better approach that context less syntax error. 
+*/
+
 operand: exp
 | far_pointer
 | effective_address
-| reg                                                   { $$ = fcml_fn_ast_alloc_node_register( &$1, NULL, FCML_FALSE ); HANDLE_ERRORS($$); }
-| reg FCML_TK_OPMASK_REG_DECORATOR                      { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_FALSE ); HANDLE_ERRORS($$); }
-| reg FCML_TK_OPMASK_REG_DECORATOR FCML_TK_DECORATOR_Z  { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_TRUE ); HANDLE_ERRORS($$); }
-| FCML_TK_DECORATOR_SAE                                 { $$ = fcml_fn_ast_alloc_node_virtual( FCML_TRUE, FCML_FALSE, 0 ); HANDLE_ERRORS($$); }
-| FCML_TK_DECORATOR_ER                                  { $$ = fcml_fn_ast_alloc_node_virtual( FCML_FALSE, FCML_TRUE, $1 ); HANDLE_ERRORS($$); }
+| effective_address FCML_TK_OPMASK_REG_DECORATOR                       { $$ = fcml_fn_ast_decorate_effective_address($1, &$2, FCML_FALSE); }
+| effective_address FCML_TK_OPMASK_REG_DECORATOR FCML_TK_DECORATOR_Z   { $$ = fcml_fn_ast_decorate_effective_address($1, &$2, FCML_TRUE); }
+| reg                                                                  { $$ = fcml_fn_ast_alloc_node_register( &$1, NULL, FCML_FALSE ); HANDLE_ERRORS($$); }
+| reg FCML_TK_OPMASK_REG_DECORATOR                                     { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_FALSE ); HANDLE_ERRORS($$); }
+| reg FCML_TK_OPMASK_REG_DECORATOR FCML_TK_DECORATOR_Z                 { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_TRUE ); HANDLE_ERRORS($$); }
+| FCML_TK_DECORATOR_SAE                                                { $$ = fcml_fn_ast_alloc_node_virtual( FCML_TRUE, FCML_FALSE, 0 ); HANDLE_ERRORS($$); }
+| FCML_TK_DECORATOR_ER                                                 { $$ = fcml_fn_ast_alloc_node_virtual( FCML_FALSE, FCML_TRUE, $1 ); HANDLE_ERRORS($$); }
 ;
 
 effective_address:  '[' effective_address_components ']'                      { $$ = $2; }

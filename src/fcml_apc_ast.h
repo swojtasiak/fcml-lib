@@ -173,7 +173,15 @@ fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol( fcml_ip ip, fcml_string sy
 fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol( fcml_string symbol_name, fcml_usize length );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator op, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right );
 fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer( fcml_st_ast_node *segment_selector, fcml_st_ast_node *offset );
-fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins( fcml_st_ast_node *effective_address_node, fcml_hints hints );
+
+fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins(
+        fcml_st_ast_node *effective_address_node,
+        fcml_hints hints);
+
+fcml_st_ast_node *fcml_fn_ast_decorate_effective_address(
+        fcml_st_ast_node *node,
+        fcml_st_register *opmask_reg_decorator,
+        fcml_bool zero_decorator);
 
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_details(
         fcml_st_register *segment_selector,

@@ -2076,6 +2076,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
 /* ModR/M - r */
 /**************/
 
+// TODO: global support - for now it's called from inside modrm_r operand encoder!
+
 /* TODO: Move it to fcml_operand_decorators.h. */
 fcml_ceh_error fcml_ifn_asm_accept_opmask_decorators(
         fcml_operand_decorators supported_decorators,
@@ -4251,9 +4253,11 @@ void fcml_ifn_asm_encode_decorators(
         }
     }
 
-    /* Z decorator. */
-    if (FCML_IS_DECOR_Z(supported_decorators)) {
-        context->epf.z = operand_def->decorators.z;
+    /* Zeroing-masking is not supported by instructions that write to memory. */
+    if (operand_def->type == FCML_OT_REGISTER) {
+        if (FCML_IS_DECOR_Z(supported_decorators)) {
+            context->epf.z = operand_def->decorators.z;
+        }
     }
 }
 
