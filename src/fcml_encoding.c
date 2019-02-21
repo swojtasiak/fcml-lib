@@ -2076,42 +2076,6 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
 /* ModR/M - r */
 /**************/
 
-// TODO: global support - for now it's called from inside modrm_r operand encoder!
-
-/* TODO: Move it to fcml_operand_decorators.h. */
-fcml_ceh_error fcml_ifn_asm_accept_opmask_decorators(
-        fcml_operand_decorators supported_decorators,
-        fcml_st_operand_decorators *decorators) {
-
-    fcml_st_register *reg = &(decorators->operand_mask_reg);
-
-    /* Wrong register type or size in decorator. */
-    if (reg->type != FCML_REG_UNDEFINED && reg->type != FCML_REG_OPMASK) {
-        return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
-    }
-
-    fcml_bool is_opmask_dec = reg->type == FCML_REG_OPMASK;
-
-    /* Register k0 cannot be used by opmask decorator. */
-    if (is_opmask_dec && reg->reg == FCML_REG_K0) {
-        return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
-    }
-
-    /* AVX-512 opmask decorator is defined, but this operator
-     * doesn't support it. */
-    if (is_opmask_dec && !FCML_IS_DECOR_OPMASK_REG(supported_decorators)) {
-        return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
-    }
-
-    /* Z decorator has been used but it's not supported by
-     * addressing mode. */
-    if (!FCML_IS_DECOR_Z(supported_decorators) && decorators->z) {
-        return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
-    }
-
-    return FCML_CEH_GEC_NO_ERROR;
-}
-
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_r(
         fcml_ist_asm_encoding_context *context,
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
@@ -2137,8 +2101,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_r(
         }
     }
 
-    return fcml_ifn_asm_accept_opmask_decorators(args->decorators,
-            &(operand_def->decorators));
+    return FCML_CEH_GEC_NO_ERROR;
 }
 
 fcml_ceh_error fcml_ifn_asm_operand_encoder_r(
@@ -4898,10 +4861,12 @@ fcml_ifn_asm_ipp_factory_prefixes_acceptor(
 /* Operand decorators acceptors. */
 /*********************************/
 
-/* In general there is a rule that decorators are handled by operand
- * acceptors/encoders of operands that expect them. But this validation
- * is still needed to assure that decorators aren't used in operands
- * which don't expect them. */
+/**
+ * Decorators should be accepted here. If a given rule cannot be
+ * generalized and there is a need to handle it in a concrete operator
+ * acceptor of course it is fine, but we advice to consider this function
+ * first in order not to spread decorators acceptance rules all around.
+ */
 fcml_ceh_error fcml_ifn_asm_ipp_op_decorator_acceptor(
         fcml_ist_asm_encoding_context *context,
         fcml_ist_asm_addr_mode_desc_details *addr_mode_details,
@@ -4919,13 +4884,29 @@ fcml_ceh_error fcml_ifn_asm_ipp_op_decorator_acceptor(
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
-        if (opcode_dec->operand_mask_reg.type != FCML_REG_UNDEFINED &&
-                !FCML_IS_DECOR_OPMASK_REG(decorators)) {
-            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+        /* Opmask register */
+
+        fcml_st_register *opmask_reg = &opcode_dec->operand_mask_reg;
+
+        if (opmask_reg->type != FCML_REG_UNDEFINED) {
+            /* k0 register cannot be addressed as a predicate operand */
+            if (opmask_reg->type != FCML_REG_OPMASK || opmask_reg->reg == FCML_REG_K0) {
+                return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
+            }
+            if (!FCML_IS_DECOR_OPMASK_REG(decorators)) {
+                return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+            }
         }
 
-        if (opcode_dec->z && !FCML_IS_DECOR_Z(decorators)) {
-            return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+        /* Zeroing-masking */
+
+        if (opcode_dec->z) {
+            /* Zeroing-masking is not supported for memory addressing.
+             * At the moment it's supported only by register operands.
+             */
+            if (!FCML_IS_DECOR_Z(decorators) || operand->type != FCML_OT_REGISTER) {
+                return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
+            }
         }
 
         if (opcode_dec->sae && !FCML_IS_DECOR_SAE(decorators)) {
