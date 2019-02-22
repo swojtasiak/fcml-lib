@@ -4216,7 +4216,9 @@ void fcml_ifn_asm_encode_decorators(
         }
     }
 
-    /* Zeroing-masking is not supported by instructions that write to memory. */
+    /* Zeroing-masking is not supported by instructions
+     * that write to memory.
+     */
     if (operand_def->type == FCML_OT_REGISTER &&
             FCML_IS_DECOR_Z(supported_decorators)) {
         context->epf.z = operand_def->decorators.z;
@@ -4240,18 +4242,19 @@ fcml_ceh_error fcml_ifn_asm_ipp_EVEX_prefix_encoder(
             context->optimizer_processing_details.vector_length = FCML_DS_512;
         }
 
-        // Some decorators can be encoded here globally, as we do not need any custom
-        // code dedicated for given operand type. The only information which is needed
-        // here is a list of supported decorators and actual decorators from the
-        // instruction model for a given operand. In fact we don't even care
-        // if we are dealing with a register operand or a memory addressing as long as
-        // the operand supports decorators.
+        // Some decorators can be encoded here globally, as we do not need any
+        // custom code dedicated for given operand type. The only information
+        // which is needed here is a list of supported decorators and actual
+        // decorators from the instruction model for a given operand. In fact
+        // we don't even care if we are dealing with a register operand or a
+        // memory addressing as long as the operand supports decorators.
 
         for (int i = 0; i < context->instruction->operands_count; i++) {
             fcml_operand_decorators supported_decorators =
                     FCML_DECORATORS(addr_mode_def->operands[i]);
             fcml_st_operand *operand = &context->instruction->operands[i];
-            fcml_ifn_asm_encode_decorators(context, supported_decorators, operand);
+            fcml_ifn_asm_encode_decorators(context,
+                    supported_decorators, operand);
         }
     }
 
