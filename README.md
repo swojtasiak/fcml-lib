@@ -14,14 +14,14 @@ Currently it supports such features as:
   - An instruction renderer
   - An instruction parser
   - Instructions represented as generic models
-  - UNIX/GNU/Linux and Windows (mingw, mingw64, cygwin, VS2008, VS2010, VS2013) support
+  - UNIX/GNU/Linux and Windows (mingw, mingw64, cygwin, VS2008, VS2010, VS2013, VS2015) support
   - Portable - written entirely in C (no external dependencies)
   - C++ wrapper available
   - Supported instruction sets: MMX, 3D-Now!, SSE, SSE2, SSE3, SSSE3, 
 	SSE4.1, SSE4.2, SSE4A, AVX, AVX2, AES, TBM, BMI1, BMI2, 
 	HLE, ADX, CLMUL, RDRAND, RDSEED, FMA, FMA4, LWP, SVM, XOP, VMX, SMX
 
-The following sections show a few examples in C++ language. Do not treat them as a reference manual or anything like that. They are here just to give you a general overview how the C++ API looks like. If you are interested in a bit more sophisticated use cases do not hesitate to look into the official manual on the http://fcml-lib.com.
+The following sections show a few examples in C++ language. Do not treat them as a reference manual or anything like that. They are here just to give you a general overview how the C++ API looks like. If you are interested in a bit more sophisticated use cases do not hesitate to look into the official manual on the http://www.fcml-lib.com.
 
 ## Assembling
 The following code shows how easy it is to assemble anything in a true dynamic way! Notice that it assembles generic instruction model built using an instruction builder (IB) class.
