@@ -4217,10 +4217,9 @@ void fcml_ifn_asm_encode_decorators(
     }
 
     /* Zeroing-masking is not supported by instructions that write to memory. */
-    if (operand_def->type == FCML_OT_REGISTER) {
-        if (FCML_IS_DECOR_Z(supported_decorators)) {
-            context->epf.z = operand_def->decorators.z;
-        }
+    if (operand_def->type == FCML_OT_REGISTER &&
+            FCML_IS_DECOR_Z(supported_decorators)) {
+        context->epf.z = operand_def->decorators.z;
     }
 }
 
