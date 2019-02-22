@@ -169,7 +169,6 @@ operand: '$' exp                                                           { $$ 
 | effective_address FCML_TK_OPMASK_REG_DECORATOR                           { $$ = fcml_fn_ast_decorate_effective_address($1, &$2, FCML_FALSE); }
 | effective_address FCML_TK_OPMASK_REG_DECORATOR FCML_TK_DECORATOR_Z       { $$ = fcml_fn_ast_decorate_effective_address($1, &$2, FCML_TRUE); }
 | '*' effective_address                                                    { $$ = fcml_fn_ast_set_effective_address_hins( $2, FCML_HINT_INDIRECT_POINTER ); }
-| '*' effective_address FCML_TK_OPMASK_REG_DECORATOR                       { $$ = fcml_fn_ast_set_effective_address_hins( $2, FCML_HINT_INDIRECT_POINTER ); }
 | reg                                                                      { $$ = fcml_fn_ast_alloc_node_register( &$1, NULL, FCML_FALSE ); HANDLE_ERRORS($$); }
 | reg FCML_TK_OPMASK_REG_DECORATOR                                         { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_FALSE ); HANDLE_ERRORS($$); }
 | reg FCML_TK_OPMASK_REG_DECORATOR FCML_TK_DECORATOR_Z                     { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_TRUE ); HANDLE_ERRORS($$); }
