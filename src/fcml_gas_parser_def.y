@@ -61,7 +61,7 @@
 /* AVX-512 Embedded rounding. */
 %token <int_value> FCML_TK_DECORATOR_ER
 
-/* AVX-512 zeroying. TODO: Should be probably changed to bool_value. */
+/* AVX-512 zeroying. TODO: We should consider changing it to bool_value in order to simplify decorators handling a bit. */
 %token FCML_TK_DECORATOR_Z
 
 /* AVX-512 Suppress all exceptions. */
