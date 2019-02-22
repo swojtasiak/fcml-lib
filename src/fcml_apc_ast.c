@@ -181,6 +181,18 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_virtual(fcml_bool sae,
     return node;
 }
 
+fcml_st_ast_node *fcml_fn_ast_decorate_effective_address(
+        fcml_st_ast_node *node,
+        fcml_st_register *opmask_reg_decorator,
+        fcml_bool zero_decorator) {
+    fcml_st_ast_node_effective_address *effective_address =
+            (fcml_st_ast_node_effective_address*)node->node;
+    fcml_st_operand_decorators *decorators = &effective_address->decorators;
+    decorators->operand_mask_reg = *opmask_reg_decorator;
+    decorators->z = zero_decorator;
+    return node;
+}
+
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg,
         fcml_st_register *opmask_reg_decorator, fcml_bool zero_decorator) {
 

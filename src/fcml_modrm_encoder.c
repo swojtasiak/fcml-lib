@@ -311,7 +311,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit(
     return error;
 }
 
-/* 32 and 64 bit addressing mode.s*/
+/* 32 and 64 bit addressing mode */
 fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
         fcml_st_modrm_encoder_context *context,
         const fcml_st_modrm *decoded_modrm,
@@ -659,8 +659,8 @@ fcml_ceh_error fcml_fn_modrm_encode(fcml_st_modrm_encoder_context *context,
             &(decoded_modrm->address.effective_address);
 
     /* Sanity check. */
-    if (context->is_evex && (context->input_size == FCML_DS_UNDEF ||
-            context->vector_length == FCML_DS_UNDEF)) {
+    if (context->is_evex && context->input_size == FCML_DS_UNDEF &&
+            context->vector_length == FCML_DS_UNDEF) {
         return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
     }
 
