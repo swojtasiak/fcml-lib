@@ -4909,7 +4909,10 @@ fcml_ceh_error fcml_ifn_asm_ipp_op_decorator_acceptor(
              * At the moment it's supported only by register operands.
              */
             if (!FCML_IS_DECOR_Z(decorators) ||
-                    operand->type != FCML_OT_REGISTER) {
+                    operand->type != FCML_OT_REGISTER ||
+                    // Zeroing-masking is allowed only if write
+                    // mask is defined.
+                    opmask_reg->type == FCML_REG_UNDEFINED) {
                 return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
             }
         }

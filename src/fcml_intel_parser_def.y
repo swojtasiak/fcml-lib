@@ -188,9 +188,11 @@ operand: exp
 | effective_address
 | effective_address FCML_TK_OPMASK_REG_DECORATOR                       { $$ = fcml_fn_ast_decorate_effective_address($1, &$2, FCML_FALSE); }
 | effective_address FCML_TK_OPMASK_REG_DECORATOR FCML_TK_DECORATOR_Z   { $$ = fcml_fn_ast_decorate_effective_address($1, &$2, FCML_TRUE); }
+| effective_address FCML_TK_DECORATOR_Z                                { $$ = fcml_fn_ast_decorate_effective_address($1, NULL, FCML_TRUE); }
 | reg                                                                  { $$ = fcml_fn_ast_alloc_node_register( &$1, NULL, FCML_FALSE ); HANDLE_ERRORS($$); }
 | reg FCML_TK_OPMASK_REG_DECORATOR                                     { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_FALSE ); HANDLE_ERRORS($$); }
 | reg FCML_TK_OPMASK_REG_DECORATOR FCML_TK_DECORATOR_Z                 { $$ = fcml_fn_ast_alloc_node_register( &$1, &$2, FCML_TRUE ); HANDLE_ERRORS($$); }
+| reg FCML_TK_DECORATOR_Z                                              { $$ = fcml_fn_ast_alloc_node_register( &$1, NULL, FCML_TRUE ); HANDLE_ERRORS($$); }
 | FCML_TK_DECORATOR_SAE                                                { $$ = fcml_fn_ast_alloc_node_virtual( FCML_TRUE, FCML_FALSE, 0 ); HANDLE_ERRORS($$); }
 | FCML_TK_DECORATOR_ER                                                 { $$ = fcml_fn_ast_alloc_node_virtual( FCML_FALSE, FCML_TRUE, $1 ); HANDLE_ERRORS($$); }
 ;

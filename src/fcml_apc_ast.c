@@ -188,7 +188,9 @@ fcml_st_ast_node *fcml_fn_ast_decorate_effective_address(
     fcml_st_ast_node_effective_address *effective_address =
             (fcml_st_ast_node_effective_address*)node->node;
     fcml_st_operand_decorators *decorators = &effective_address->decorators;
-    decorators->operand_mask_reg = *opmask_reg_decorator;
+    if (opmask_reg_decorator) {
+        decorators->operand_mask_reg = *opmask_reg_decorator;
+    }
     decorators->z = zero_decorator;
     return node;
 }
