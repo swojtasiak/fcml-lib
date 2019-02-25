@@ -594,6 +594,8 @@ typedef enum fcml_en_instruction {
     F_VMOVDDUP,
     F_MOVDQA,
     F_VMOVDQA,
+    F_VMOVDQA32,
+    F_VMOVDQA64,
     F_MOVDQU,
     F_VMOVDQU,
     F_MOVDQ2Q,

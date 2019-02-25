@@ -636,6 +636,21 @@ void fcml_tf_parser_gas_parse_test_decorator_opmask_k(void) {
     fcml_fn_parser_result_free(&result);
 }
 
+void fcml_tf_parser_gas_parse_test_decorator_z(void) {
+    fcml_st_parser_result result;
+    fcml_fn_parser_result_prepare(&result);
+    STF_ASSERT_EQUAL(
+            fcml_fn_parse(&internal_gas_context, "vaddpd %zmm31{z}",
+                    &result), FCML_CEH_GEC_NO_ERROR);
+    if (result.instruction != NULL) {
+        fcml_st_operand *operand = &(result.instruction->operands[0]);
+        STF_ASSERT_EQUAL(operand->decorators.z, FCML_TRUE);
+    } else {
+        STF_FAIL();
+    }
+    fcml_fn_parser_result_free(&result);
+}
+
 void fcml_tf_parser_gas_parse_test_decorator_er(void) {
     fcml_st_parser_result result;
     fcml_fn_parser_result_prepare(&result);
@@ -696,6 +711,8 @@ fcml_stf_test_case fcml_ti_parser_gas[] = {
             fcml_tf_parser_gas_parse_test_decorator_opmask },
     { "fcml_tf_parser_gas_parse_test_decorator_opmask_k",
             fcml_tf_parser_gas_parse_test_decorator_opmask_k },
+    { "fcml_tf_parser_gas_parse_test_decorator_z",
+            fcml_tf_parser_gas_parse_test_decorator_z },
     { "fcml_tf_parser_gas_parse_test_decorator_opmask_k_z_for_addressing",
             fcml_tf_parser_gas_parse_test_decorator_opmask_k_z_for_addressing },
     { "fcml_tf_parser_gas_parse_test_decorator_er",
