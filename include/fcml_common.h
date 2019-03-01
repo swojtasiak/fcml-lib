@@ -394,7 +394,7 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_TT_NONE            0
 #define FCML_TT_FV              1
 #define FCML_TT_HV              2
-#define FCML_TT_FVM             3
+#define FCML_TT_FVM             3 /* Full Mem */
 #define FCML_TT_T1S             4
 #define FCML_TT_T1F             5
 #define FCML_TT_T2              6
