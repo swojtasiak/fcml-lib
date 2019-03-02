@@ -1992,7 +1992,8 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVNTDQ[] = {
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VMOVNTDQ[] = {
-    { FCML_AMT_AVX_SIMD, FCML_NO_DETAILS, 0x10C0, 0x00D88000, { 0x0F, 0xE7, 0x00 }, { FCML_OP_MODRM_M_OP_XMM_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+    { FCML_AMT_AVX_SIMD, FCML_NO_DETAILS, 0x10C0, 0x00D88000, { 0x0F, 0xE7, 0x00 }, { FCML_OP_MODRM_M_OP_XMM_W, FCML_OP_MODRM_R_XMM, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FVM, 0x00011010, 0x00D88000, { 0x0F, 0xE7, 0x00 }, { FCML_OP_MODRM_M_OP_W, FCML_OP_MODRM_R_SIMD_L, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_MOVNTI[] = {
