@@ -600,6 +600,8 @@ typedef enum fcml_en_instruction {
     F_VMOVDQU,
     F_VMOVDQU8,
     F_VMOVDQU16,
+    F_VMOVDQU32,
+    F_VMOVDQU64,
     F_MOVDQ2Q,
     F_MOVHLPS,
     F_VMOVHLPS,
