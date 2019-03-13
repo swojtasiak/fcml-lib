@@ -391,9 +391,12 @@ typedef fcml_int64_t fcml_ip;
 
 /* SIMD tuple types. */
 
+/* Instructions affected by embedded broadcast */
 #define FCML_TT_NONE            0
 #define FCML_TT_FV              1
 #define FCML_TT_HV              2
+
+/* Instructions not affected by embedded broadcast */
 #define FCML_TT_FVM             3 /* Full Mem */
 #define FCML_TT_T1S             4
 #define FCML_TT_T1F             5
