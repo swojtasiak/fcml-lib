@@ -676,6 +676,7 @@ typedef enum fcml_en_instruction {
     F_VPABSB,
     F_VPABSW,
     F_VPABSD,
+    F_VPABSQ,
     F_VPACKSSWB,
     F_PACKSSWB,
     F_VPACKSSDW,
