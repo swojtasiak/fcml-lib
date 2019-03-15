@@ -2461,6 +2461,14 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPANDN[] = {
     { FCML_AMT_AVX2_SIMD, FCML_NO_DETAILS, 0x10A0, 0x00D88000, { 0x0F, 0xDF, 0x00 }, { FCML_OP_MODRM_R_YMM_W, FCML_OP_VEX_VVVV_YMM_REG, FCML_OP_MODRM_RM_YMM_OP_256, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPANDND[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, 0x00011010, 0x00D88000, { 0x0F, 0xDF, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPANDNQ[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_64, 0x00011008, 0x00D88000, { 0x0F, 0xDF, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_PAUSE[] = {
     { FCML_AMT_SSE2, FCML_NO_DETAILS, 0x4000, 0x00C40000, { 0x90, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
@@ -5603,6 +5611,8 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_VPANDQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPANDQ),
     FCML_IA_INSTRUCTION( F_PANDN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_PANDN),
     FCML_IA_INSTRUCTION( F_VPANDN, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPANDN),
+    FCML_IA_INSTRUCTION( F_VPANDND, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPANDND),
+    FCML_IA_INSTRUCTION( F_VPANDNQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPANDNQ),
     FCML_IA_INSTRUCTION( F_PAUSE, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_PAUSE),
     FCML_IA_INSTRUCTION( F_PAVGW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_PAVGW),
     FCML_IA_INSTRUCTION( F_PAVGB, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_PAVGB),

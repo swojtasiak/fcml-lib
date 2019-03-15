@@ -745,6 +745,8 @@ typedef enum fcml_en_instruction {
     F_VPANDQ,
     F_PANDN,
     F_VPANDN,
+    F_VPANDND,
+    F_VPANDNQ,
     F_PAUSE,
     F_PAVGW,
     F_PAVGB,
