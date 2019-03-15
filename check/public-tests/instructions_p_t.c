@@ -400,6 +400,32 @@ void fcml_tf_instruction_PAND(void) {
     FCML_A64( "vpand %ymm1,%ymm2,%ymm0", 0xc5, 0xed, 0xdb, 0xc1 );
 }
 
+void fcml_tf_instruction_VPANDD(void) {
+    FCML_A64("vpandd (%rax),%xmm2,%xmm0", 0x62, 0xf1, 0x6d, 0x08, 0xdb, 0x00);
+    FCML_A64("vpandd %xmm5,%xmm2,%xmm0", 0x62, 0xf1, 0x6d, 0x08, 0xdb, 0xc5);
+    FCML_A64("vpandd (%rax),%ymm2,%ymm0", 0x62, 0xf1, 0x6d, 0x28, 0xdb, 0x00);
+    FCML_A64("vpandd %ymm5,%ymm2,%ymm0", 0x62, 0xf1, 0x6d, 0x28, 0xdb, 0xc5);
+    FCML_A64("vpandd (%rax),%zmm2,%zmm0", 0x62, 0xf1, 0x6d, 0x48, 0xdb, 0x00);
+    FCML_A64("vpandd %zmm5,%zmm2,%zmm0", 0x62, 0xf1, 0x6d, 0x48, 0xdb, 0xc5);
+    FCML_A64("vpandd 0x0000000000000040(%rax),%zmm2,%zmm0{%k2}{z}", 0x62, 0xf1, 0x6d, 0xca, 0xdb, 0x40, 0x01);
+    FCML_A64("vpandd 0x0000000000000004(%rax){1to16},%zmm2,%zmm0{%k2}{z}", 0x62, 0xf1, 0x6d, 0xDA, 0xdb, 0x40, 0x01);
+
+    FCML_I64("vpandd zmm0{k2}{z},zmm2,dword ptr [rax+0000000000000004h]{1to16}", 0x62, 0xf1, 0x6d, 0xDA, 0xdb, 0x40, 0x01);
+}
+
+void fcml_tf_instruction_VPANDQ(void) {
+    FCML_A64("vpandq (%rax),%xmm2,%xmm0", 0x62, 0xf1, 0xED, 0x08, 0xdb, 0x00);
+    FCML_A64("vpandq %xmm5,%xmm2,%xmm0", 0x62, 0xf1, 0xED, 0x08, 0xdb, 0xc5);
+    FCML_A64("vpandq (%rax),%ymm2,%ymm0", 0x62, 0xf1, 0xED, 0x28, 0xdb, 0x00);
+    FCML_A64("vpandq %ymm5,%ymm2,%ymm0", 0x62, 0xf1, 0xED, 0x28, 0xdb, 0xc5);
+    FCML_A64("vpandq (%rax),%zmm2,%zmm0", 0x62, 0xf1, 0xED, 0x48, 0xdb, 0x00);
+    FCML_A64("vpandq %zmm5,%zmm2,%zmm0", 0x62, 0xf1, 0xED, 0x48, 0xdb, 0xc5);
+    FCML_A64("vpandq 0x0000000000000040(%rax),%zmm2,%zmm0{%k2}{z}", 0x62, 0xf1, 0xED, 0xca, 0xdb, 0x40, 0x01);
+    FCML_A64("vpandq 0x0000000000000008(%rax){1to8},%zmm2,%zmm0{%k2}{z}", 0x62, 0xf1, 0xED, 0xDA, 0xdb, 0x40, 0x01);
+
+    FCML_I64("vpandq zmm0{k2}{z},zmm2,mmword ptr [rax+0000000000000008h]{1to8}", 0x62, 0xf1, 0xED, 0xDA, 0xdb, 0x40, 0x01);
+}
+
 void fcml_tf_instruction_PANDN(void) {
 
     FCML_I64( "pandn mm0,mmword ptr [rax]", 0x0F, 0xDF, 0x00 );
@@ -3013,6 +3039,8 @@ fcml_stf_test_case fctl_ti_instructions_p[] = {
     { "fcml_tf_instruction_PADDQ", fcml_tf_instruction_PADDQ },
     { "fcml_tf_instruction_PALIGNR", fcml_tf_instruction_PALIGNR },
     { "fcml_tf_instruction_PAND", fcml_tf_instruction_PAND },
+    { "fcml_tf_instruction_VPANDD", fcml_tf_instruction_VPANDD },
+    { "fcml_tf_instruction_VPANDQ", fcml_tf_instruction_VPANDQ },
     { "fcml_tf_instruction_PANDN", fcml_tf_instruction_PANDN },
     { "fcml_tf_instruction_PAUSE", fcml_tf_instruction_PAUSE },
     { "fcml_tf_instruction_PAVGB", fcml_tf_instruction_PAVGB },
