@@ -57,12 +57,17 @@ fcml_uint32_t fcml_fn_d8n_calculate_n(fcml_uint32_t tuple_type,
         break;
 
     case FCML_TT_HV:
-        if (input_size == FCML_DS_32) {
-            if (evex_b) {
+        if (evex_b) {
+            switch (input_size) {
+            case FCML_DS_32:
                 n = 4;
-            } else {
-                n = fcml_fn_disp8_n_for_vector_len(vl, 8, 16, 32);
+                break;
+            case FCML_DS_64:
+                n = 8;
+                break;
             }
+        } else if (input_size == FCML_DS_32 || input_size == FCML_DS_64) {
+            n = fcml_fn_disp8_n_for_vector_len(vl, 8, 16, 32);
         }
         break;
 
