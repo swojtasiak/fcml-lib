@@ -2211,6 +2211,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_vex_vvvv(
         fcml_st_def_decoded_addr_mode *addr_mode, fcml_st_operand *operand_def,
         fcml_ist_asm_instruction_part *operand_enc) {
 
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
     if (phase == FCML_IEN_ASM_IPPP_FIRST_PHASE) {
         fcml_ist_asm_extension_prefixes_fields *epf = &(context->epf);
         fcml_st_register *reg = &(operand_def->reg);
@@ -2218,9 +2220,23 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_vex_vvvv(
         epf->vvvv = reg->reg & 0x0F;
         /* High 16 registers has to be encoded using EVEX.V'. */
         epf->V_prim = (reg->reg >> 4) & 0x01;
+
+        fcml_st_def_tma_vex_vvvv_reg *args = (fcml_st_def_tma_vex_vvvv_reg*)addr_mode->addr_mode_args;
+
+        // TODO: The same piece of code is used in ModRM:reg encoder.
+        if ((operand_def->reg.type != FCML_REG_DR
+                && operand_def->reg.type != FCML_REG_CR)
+                && operand_def->reg.size != FCML_DS_UNDEF) {
+            error = fcml_ifn_asm_decode_dynamic_operand_size(context,
+                    args->encoded_register_size, operand_def->reg.size,
+                    NULL, FCML_IEN_CT_EQUAL);
+            if (error) {
+                error = FCML_CEH_GEC_INVALID_OPPERAND;
+            }
+        }
     }
 
-    return FCML_CEH_GEC_NO_ERROR;
+    return error;
 }
 
 /*--------*/
