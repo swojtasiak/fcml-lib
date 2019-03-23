@@ -149,6 +149,7 @@ typedef fcml_uint32_t fcml_operand_decorators;
 
 #define FCML_SIMD_ES_64                 FCML_SIMD_ELEMENT_SIZE(FCML_EOS_QWORD)
 #define FCML_SIMD_ES_32                 FCML_SIMD_ELEMENT_SIZE(FCML_EOS_DWORD)
+#define FCML_SIMD_ES_8                  FCML_SIMD_ELEMENT_SIZE(FCML_EOS_BYTE)
 
 /* Structures used to describe instructions with they all allowed addressing
  * modes.
