@@ -828,6 +828,7 @@ typedef enum fcml_en_instruction {
     F_VPMAXUB,
     F_PMAXUD,
     F_VPMAXUD,
+    F_VPMAXUQ,
     F_PMAXUW,
     F_VPMAXUW,
     F_PMINSB,
