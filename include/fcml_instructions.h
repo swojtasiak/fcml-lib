@@ -844,6 +844,7 @@ typedef enum fcml_en_instruction {
     F_VPMINUB,
     F_PMINUD,
     F_VPMINUD,
+    F_VPMINUQ,
     F_PMOVMSKB,
     F_VPMOVMSKB,
     F_VPMOVSXBQ,
