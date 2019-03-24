@@ -4250,11 +4250,18 @@ fcml_ceh_error fcml_ifn_asm_ipp_EVEX_prefix_encoder(
 
     if (phase == FCML_IEN_ASM_IPPP_FIRST_PHASE) {
 
-        if (FCML_DEF_PREFIX_L_1(addr_mode_def->allowed_prefixes)) {
-            context->optimizer_processing_details.vector_length = FCML_DS_256;
-        } else if (FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes)) {
-            context->optimizer_processing_details.vector_length = FCML_DS_128;
-        } else if (FCML_DEF_PREFIX_L_prim_1(addr_mode_def->allowed_prefixes)) {
+        fcml_bool l0 = FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes);
+        fcml_bool l1 = FCML_DEF_PREFIX_L_1(addr_mode_def->allowed_prefixes);
+        fcml_bool l_prim_0 = FCML_DEF_PREFIX_L_prim_0(addr_mode_def->allowed_prefixes);
+        fcml_bool l_prim_1 = FCML_DEF_PREFIX_L_prim_1(addr_mode_def->allowed_prefixes);
+
+        if (!l_prim_1) {
+            if (l1) {
+                context->optimizer_processing_details.vector_length = FCML_DS_256;
+            } else if (l0) {
+                context->optimizer_processing_details.vector_length = FCML_DS_128;
+            }
+        } else if (!l1) {
             context->optimizer_processing_details.vector_length = FCML_DS_512;
         }
 
