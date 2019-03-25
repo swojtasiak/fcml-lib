@@ -884,6 +884,7 @@ typedef enum fcml_en_instruction {
     F_PMULLW,
     F_PMULLD,
     F_VPMULLD,
+    F_VPMULLQ,
     F_VPMULLW,
     F_POPCNT,
     F_POR,
