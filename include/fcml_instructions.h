@@ -889,6 +889,8 @@ typedef enum fcml_en_instruction {
     F_POPCNT,
     F_POR,
     F_VPOR,
+    F_VPORD,
+    F_VPORQ,
     F_PREFETCHT2,
     F_PREFETCHW,
     F_PREFETCHT1,

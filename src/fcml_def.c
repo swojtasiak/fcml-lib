@@ -3228,6 +3228,14 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPOR[] = {
     { FCML_AMT_AVX2_SIMD, FCML_NO_DETAILS, 0x10A0, 0x00D88000, { 0x0F, 0xEB, 0x00 }, { FCML_OP_MODRM_R_YMM_W, FCML_OP_VEX_VVVV_YMM_REG, FCML_OP_MODRM_RM_YMM_OP_256, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPORD[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, 0x00011010, 0x00d88000, { 0x0F, 0xEB, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPORQ[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_64, 0x00011008, 0x00d88000, { 0x0F, 0xEB, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_PREFETCHT2[] = {
     { FCML_AMT_SSE, FCML_NO_DETAILS, 0x0000, 0x00D99800, { 0x0F, 0x18, 0x00 }, { FCML_OP_MODRM_M_OP_8, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
@@ -5863,6 +5871,8 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_POPCNT, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_POPCNT),
     FCML_IA_INSTRUCTION( F_POR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_POR),
     FCML_IA_INSTRUCTION( F_VPOR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPOR),
+    FCML_IA_INSTRUCTION( F_VPORD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPORD),
+    FCML_IA_INSTRUCTION( F_VPORQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPORQ),
     FCML_IA_INSTRUCTION( F_PREFETCHT2, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_PREFETCHT2),
     FCML_IA_INSTRUCTION( F_PREFETCHW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_PREFETCHW),
     FCML_IA_INSTRUCTION( F_PREFETCHT1, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_PREFETCHT1),
