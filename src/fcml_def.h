@@ -1094,6 +1094,8 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
     FCML_OP_VEX_VVVV_REG(FCML_REG_SIMD, FCML_EOS_YWORD)
 #define FCML_OP_VEX_VVVV_K_REG        \
     FCML_OP_VEX_VVVV_REG(FCML_REG_OPMASK, FCML_EOS_QWORD | FCML_EOS_OPT)
+#define FCML_OP_VEX_VVVV_SIMD_REG_K1_Z   (FCML_OP_VEX_VVVV_SIMD_REG | \
+    FCML_DECOR_Z | FCML_DECOR_K1)
 
 /* Shorthands for IMM.*/
 
