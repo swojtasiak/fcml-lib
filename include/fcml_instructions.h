@@ -925,6 +925,7 @@ typedef enum fcml_en_instruction {
     F_PSRAD,
     F_PSRAW,
     F_VPSRAD,
+    F_VPSRAQ,
     F_PSRLDQ,
     F_VPSRLDQ,
     F_VPSRLQ,
