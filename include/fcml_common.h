@@ -32,11 +32,11 @@
 #include "fcml_instructions.h"
 
 /** Maximal number of the instruction operands. */
-#define FCML_OPERANDS_COUNT			5
+#define FCML_OPERANDS_COUNT           5
 /** Maximal number of bytes instruction can use. */
-#define FCML_INSTRUCTION_SIZE 		15
+#define FCML_INSTRUCTION_SIZE         15
 /** Number of opcode bytes. */
-#define FCML_OPCODES_NUM			3
+#define FCML_OPCODES_NUM              3
 
 /**
  * @defgroup PREFIX_GROUP Explicit prefixes
@@ -45,25 +45,25 @@
  */
 
 /** LOCK prefix (0xF0)*/
-#define FCML_PREFIX_LOCK			0x0001
+#define FCML_PREFIX_LOCK            0x0001
 /** REPNE prefix (0xF2) */
-#define FCML_PREFIX_REPNE			0x0002
+#define FCML_PREFIX_REPNE           0x0002
 /** REPNZ prefix (0xF2) */
-#define FCML_PREFIX_REPNZ			FCML_PREFIX_REPNE
+#define FCML_PREFIX_REPNZ           FCML_PREFIX_REPNE
 /** REP prefix (0xF3) */
-#define FCML_PREFIX_REP				0x0004
+#define FCML_PREFIX_REP             0x0004
 /** REPE prefix (0xF3) */
-#define FCML_PREFIX_REPE			FCML_PREFIX_REP
+#define FCML_PREFIX_REPE            FCML_PREFIX_REP
 /** REPZ prefix (0xF3) */
-#define FCML_PREFIX_REPZ			FCML_PREFIX_REP
+#define FCML_PREFIX_REPZ            FCML_PREFIX_REP
 /** XACQUIRE prefix (0xF2) */
-#define FCML_PREFIX_XACQUIRE		0x0008
+#define FCML_PREFIX_XACQUIRE        0x0008
 /** XRELEASE prefix (0xF3) */
-#define FCML_PREFIX_XRELEASE		0x0010
+#define FCML_PREFIX_XRELEASE        0x0010
 /** branch hint (0x2E) (SSE2 extension)*/
-#define FCML_PREFIX_BRANCH_HINT		0x0020
+#define FCML_PREFIX_BRANCH_HINT     0x0020
 /** nobranch hint (0x3E) (SSE2 extension)*/
-#define FCML_PREFIX_NOBRANCH_HINT	0x0040
+#define FCML_PREFIX_NOBRANCH_HINT   0x0040
 
 /** @} */
 
@@ -102,144 +102,144 @@ typedef fcml_int64_t fcml_ip;
  * @{
  */
 
-#define FCML_REG_AL		0
-#define FCML_REG_AX		0
-#define FCML_REG_EAX	0
-#define FCML_REG_RAX	0
-#define FCML_REG_MM0	0
-#define FCML_REG_XMM0	0
-#define FCML_REG_YMM0	0
+#define FCML_REG_AL     0
+#define FCML_REG_AX     0
+#define FCML_REG_EAX    0
+#define FCML_REG_RAX    0
+#define FCML_REG_MM0    0
+#define FCML_REG_XMM0   0
+#define FCML_REG_YMM0   0
 #define FCML_REG_ZMM0   0
 
-#define FCML_REG_CL		1
-#define FCML_REG_CX		1
-#define FCML_REG_ECX	1
-#define FCML_REG_RCX	1
-#define FCML_REG_MM1	1
-#define FCML_REG_XMM1	1
-#define FCML_REG_YMM1	1
+#define FCML_REG_CL     1
+#define FCML_REG_CX     1
+#define FCML_REG_ECX    1
+#define FCML_REG_RCX    1
+#define FCML_REG_MM1    1
+#define FCML_REG_XMM1   1
+#define FCML_REG_YMM1   1
 #define FCML_REG_ZMM1   1
 
-#define FCML_REG_DL		2
-#define FCML_REG_DX		2
-#define FCML_REG_EDX	2
-#define FCML_REG_RDX	2
-#define FCML_REG_MM2	2
-#define FCML_REG_XMM2	2
-#define FCML_REG_YMM2	2
+#define FCML_REG_DL     2
+#define FCML_REG_DX     2
+#define FCML_REG_EDX    2
+#define FCML_REG_RDX    2
+#define FCML_REG_MM2    2
+#define FCML_REG_XMM2   2
+#define FCML_REG_YMM2   2
 #define FCML_REG_ZMM2   2
 
-#define FCML_REG_BL		3
-#define FCML_REG_BX		3
-#define FCML_REG_EBX	3
-#define FCML_REG_RBX	3
-#define FCML_REG_MM3	3
-#define FCML_REG_XMM3	3
-#define FCML_REG_YMM3	3
+#define FCML_REG_BL     3
+#define FCML_REG_BX     3
+#define FCML_REG_EBX    3
+#define FCML_REG_RBX    3
+#define FCML_REG_MM3    3
+#define FCML_REG_XMM3   3
+#define FCML_REG_YMM3   3
 #define FCML_REG_ZMM3   3
 
-#define FCML_REG_AH		4
-#define FCML_REG_SP		4
-#define FCML_REG_SPL	4
-#define FCML_REG_ESP	4
-#define FCML_REG_RSP	4
-#define FCML_REG_MM4	4
-#define FCML_REG_XMM4	4
-#define FCML_REG_YMM4	4
+#define FCML_REG_AH     4
+#define FCML_REG_SP     4
+#define FCML_REG_SPL    4
+#define FCML_REG_ESP    4
+#define FCML_REG_RSP    4
+#define FCML_REG_MM4    4
+#define FCML_REG_XMM4   4
+#define FCML_REG_YMM4   4
 #define FCML_REG_ZMM4   4
 
-#define FCML_REG_CH		5
-#define FCML_REG_BP		5
-#define FCML_REG_BPL	5
-#define FCML_REG_EBP	5
-#define FCML_REG_RBP	5
-#define FCML_REG_MM5	5
-#define FCML_REG_XMM5	5
-#define FCML_REG_YMM5	5
+#define FCML_REG_CH     5
+#define FCML_REG_BP     5
+#define FCML_REG_BPL    5
+#define FCML_REG_EBP    5
+#define FCML_REG_RBP    5
+#define FCML_REG_MM5    5
+#define FCML_REG_XMM5   5
+#define FCML_REG_YMM5   5
 #define FCML_REG_ZMM5   5
 
-#define FCML_REG_DH		6
-#define FCML_REG_SI		6
-#define FCML_REG_SIL	6
-#define FCML_REG_ESI	6
-#define FCML_REG_RSI	6
-#define FCML_REG_MM6	6
-#define FCML_REG_XMM6	6
-#define FCML_REG_YMM6	6
+#define FCML_REG_DH     6
+#define FCML_REG_SI     6
+#define FCML_REG_SIL    6
+#define FCML_REG_ESI    6
+#define FCML_REG_RSI    6
+#define FCML_REG_MM6    6
+#define FCML_REG_XMM6   6
+#define FCML_REG_YMM6   6
 #define FCML_REG_ZMM6   6
 
-#define FCML_REG_BH		7
-#define FCML_REG_DI		7
-#define FCML_REG_DIL	7
-#define FCML_REG_EDI	7
-#define FCML_REG_RDI	7
-#define FCML_REG_MM7	7
-#define FCML_REG_XMM7	7
-#define FCML_REG_YMM7	7
+#define FCML_REG_BH     7
+#define FCML_REG_DI     7
+#define FCML_REG_DIL    7
+#define FCML_REG_EDI    7
+#define FCML_REG_RDI    7
+#define FCML_REG_MM7    7
+#define FCML_REG_XMM7   7
+#define FCML_REG_YMM7   7
 #define FCML_REG_ZMM7   7
 
-#define FCML_REG_R8L	8
-#define FCML_REG_R8W	8
-#define FCML_REG_R8D	8
-#define FCML_REG_R8		8
-#define FCML_REG_XMM8	8
-#define FCML_REG_YMM8	8
+#define FCML_REG_R8L    8
+#define FCML_REG_R8W    8
+#define FCML_REG_R8D    8
+#define FCML_REG_R8     8
+#define FCML_REG_XMM8   8
+#define FCML_REG_YMM8   8
 #define FCML_REG_ZMM8   8
 
-#define FCML_REG_R9L	9
-#define FCML_REG_R9W	9
-#define FCML_REG_R9D	9
-#define FCML_REG_R9		9
-#define FCML_REG_XMM9	9
-#define FCML_REG_YMM9	9
+#define FCML_REG_R9L    9
+#define FCML_REG_R9W    9
+#define FCML_REG_R9D    9
+#define FCML_REG_R9     9
+#define FCML_REG_XMM9   9
+#define FCML_REG_YMM9   9
 #define FCML_REG_ZMM9   9
 
-#define FCML_REG_R10L	10
-#define FCML_REG_R10W	10
-#define FCML_REG_R10D	10
-#define FCML_REG_R10	10
-#define FCML_REG_XMM10	10
-#define FCML_REG_YMM10	10
+#define FCML_REG_R10L   10
+#define FCML_REG_R10W   10
+#define FCML_REG_R10D   10
+#define FCML_REG_R10    10
+#define FCML_REG_XMM10  10
+#define FCML_REG_YMM10  10
 #define FCML_REG_ZMM10  10
 
-#define FCML_REG_R11L	11
-#define FCML_REG_R11W	11
-#define FCML_REG_R11D	11
-#define FCML_REG_R11	11
-#define FCML_REG_XMM11	11
-#define FCML_REG_YMM11	11
+#define FCML_REG_R11L   11
+#define FCML_REG_R11W   11
+#define FCML_REG_R11D   11
+#define FCML_REG_R11    11
+#define FCML_REG_XMM11  11
+#define FCML_REG_YMM11  11
 #define FCML_REG_ZMM11  11
 
-#define FCML_REG_R12L	12
-#define FCML_REG_R12W	12
-#define FCML_REG_R12D	12
-#define FCML_REG_R12	12
-#define FCML_REG_XMM12	12
-#define FCML_REG_YMM12	12
+#define FCML_REG_R12L   12
+#define FCML_REG_R12W   12
+#define FCML_REG_R12D   12
+#define FCML_REG_R12    12
+#define FCML_REG_XMM12  12
+#define FCML_REG_YMM12  12
 #define FCML_REG_ZMM12  12
 
-#define FCML_REG_R13L	13
-#define FCML_REG_R13W	13
-#define FCML_REG_R13D	13
-#define FCML_REG_R13	13
-#define FCML_REG_XMM13	13
-#define FCML_REG_YMM13	13
+#define FCML_REG_R13L   13
+#define FCML_REG_R13W   13
+#define FCML_REG_R13D   13
+#define FCML_REG_R13    13
+#define FCML_REG_XMM13  13
+#define FCML_REG_YMM13  13
 #define FCML_REG_ZMM13  13
 
-#define FCML_REG_R14L	14
-#define FCML_REG_R14W	14
-#define FCML_REG_R14D	14
-#define FCML_REG_R14	14
-#define FCML_REG_XMM14	14
-#define FCML_REG_YMM14	14
+#define FCML_REG_R14L   14
+#define FCML_REG_R14W   14
+#define FCML_REG_R14D   14
+#define FCML_REG_R14    14
+#define FCML_REG_XMM14  14
+#define FCML_REG_YMM14  14
 #define FCML_REG_ZMM14  14
 
-#define FCML_REG_R15L	15
-#define FCML_REG_R15W	15
-#define FCML_REG_R15D	15
-#define FCML_REG_R15	15
-#define FCML_REG_XMM15	15
-#define FCML_REG_YMM15	15
+#define FCML_REG_R15L   15
+#define FCML_REG_R15W   15
+#define FCML_REG_R15D   15
+#define FCML_REG_R15    15
+#define FCML_REG_XMM15  15
+#define FCML_REG_YMM15  15
 #define FCML_REG_ZMM15  15
 
 #define FCML_REG_XMM16  16
@@ -308,42 +308,42 @@ typedef fcml_int64_t fcml_ip;
 
 /* Segment registers. */
 
-#define FCML_REG_ES		0
-#define FCML_REG_CS		1
-#define FCML_REG_SS		2
-#define FCML_REG_DS		3
-#define FCML_REG_FS		4
-#define FCML_REG_GS		5
+#define FCML_REG_ES     0
+#define FCML_REG_CS     1
+#define FCML_REG_SS     2
+#define FCML_REG_DS     3
+#define FCML_REG_FS     4
+#define FCML_REG_GS     5
 
 /* FPU registers */
 
-#define FCML_REG_ST0	0
-#define FCML_REG_ST1	1
-#define FCML_REG_ST2	2
-#define FCML_REG_ST3	3
-#define FCML_REG_ST4	4
-#define FCML_REG_ST5	5
-#define FCML_REG_ST6	6
-#define FCML_REG_ST7	7
+#define FCML_REG_ST0    0
+#define FCML_REG_ST1    1
+#define FCML_REG_ST2    2
+#define FCML_REG_ST3    3
+#define FCML_REG_ST4    4
+#define FCML_REG_ST5    5
+#define FCML_REG_ST6    6
+#define FCML_REG_ST7    7
 
 /* Control registers. */
 
-#define FCML_REG_CR0	0
-#define FCML_REG_CR2	2
-#define FCML_REG_CR3	3
-#define FCML_REG_CR4	4
-#define FCML_REG_CR8	8
+#define FCML_REG_CR0    0
+#define FCML_REG_CR2    2
+#define FCML_REG_CR3    3
+#define FCML_REG_CR4    4
+#define FCML_REG_CR8    8
 
 /* Debug register. */
 
-#define FCML_REG_DR0	0
-#define FCML_REG_DR1	1
-#define FCML_REG_DR2	2
-#define FCML_REG_DR3	3
-#define FCML_REG_DR4	4
-#define FCML_REG_DR5	5
-#define FCML_REG_DR6	6
-#define FCML_REG_DR7	7
+#define FCML_REG_DR0    0
+#define FCML_REG_DR1    1
+#define FCML_REG_DR2    2
+#define FCML_REG_DR3    3
+#define FCML_REG_DR4    4
+#define FCML_REG_DR5    5
+#define FCML_REG_DR6    6
+#define FCML_REG_DR7    7
 
 /* Opmask registers. */
 
@@ -506,11 +506,11 @@ typedef struct fcml_st_condition {
  * @{
  */
 
-#define    FCML_EN_ASF_ANY	0x00
-#define    FCML_EN_ASF_16	0x01
-#define    FCML_EN_ASF_32	0x02
-#define    FCML_EN_ASF_64	0x04
-#define    FCML_EN_ASF_ALL	FCML_EN_ASF_16 | FCML_EN_ASF_32 | FCML_EN_ASF_64
+#define    FCML_EN_ASF_ANY    0x00
+#define    FCML_EN_ASF_16     0x01
+#define    FCML_EN_ASF_32     0x02
+#define    FCML_EN_ASF_64     0x04
+#define    FCML_EN_ASF_ALL    FCML_EN_ASF_16 | FCML_EN_ASF_32 | FCML_EN_ASF_64
 
 /** @} */
 
