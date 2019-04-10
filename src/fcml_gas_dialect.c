@@ -889,6 +889,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("vpunpckhdq"), FCML_ASM_DIALECT_INSTRUCTION(F_VPUNPCKHDQ, FCML_AM_ALL), 0 },
     { FCML_TEXT("pxor"), FCML_ASM_DIALECT_INSTRUCTION(F_PXOR, FCML_AM_ALL), 0 },
     { FCML_TEXT("vpxor"), FCML_ASM_DIALECT_INSTRUCTION(F_VPXOR, FCML_AM_ALL), 0 },
+    { FCML_TEXT("vpxord"), FCML_ASM_DIALECT_INSTRUCTION(F_VPXORD, FCML_AM_ALL), 0 },
+    { FCML_TEXT("vpxorq"), FCML_ASM_DIALECT_INSTRUCTION(F_VPXORQ, FCML_AM_ALL), 0 },
     { FCML_TEXT("prefetch"), FCML_ASM_DIALECT_INSTRUCTION(F_PREFETCH, FCML_AM_ALL), 0 },
     { FCML_TEXT("rcl;rclw[sf,ow,mm];rcll[sf,od,mm];rclq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION(F_RCL, FCML_AM_RMO), 0 },
     { FCML_TEXT("rcl;rclw[sf,ow,mm];rcll[sf,od,mm];rclq[sf,oq,mm]"), FCML_ASM_DIALECT_INSTRUCTION(F_RCL, FCML_AM_RMO_IMM8), 0 },

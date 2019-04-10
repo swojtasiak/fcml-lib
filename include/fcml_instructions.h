@@ -970,6 +970,8 @@ typedef enum fcml_en_instruction {
     F_VPUNPCKHDQ,
     F_PXOR,
     F_VPXOR,
+    F_VPXORD,
+    F_VPXORQ,
     F_PREFETCH,
     F_RCL,
     F_RCR,
