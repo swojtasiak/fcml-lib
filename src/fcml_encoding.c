@@ -4427,6 +4427,15 @@ fcml_ceh_error fcml_ifn_asm_ipp_VEX_XOP_prefix_encoder(
         fcml_usize vector_length =
                 context->optimizer_processing_details.vector_length;
 
+        /* VEX/XOP supports 128/256 vector length only. */
+        if (vector_length > FCML_DS_256) {
+            fcml_ifn_ceh_asm_add_error_msg(context,
+                    fcml_fn_msg_get_message(
+                            FCML_MC_CEH_GEC_INVALID_OPPERAND_SIZE),
+                            FCML_CEH_MEC_ERROR_INVALID_VECTOR_LENGTH);
+            return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+        }
+
         if (is_two_bytes_vex) {
             /* Two bytes VEX prefix.*/
             prefix = FCML_ENCODE_VEXOP_R(prefix, encoded_mod_rm->ext_R);
