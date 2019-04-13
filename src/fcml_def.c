@@ -4130,7 +4130,8 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_UCOMISD[] = {
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VUCOMISD[] = {
-    { FCML_AMT_AVX_SIMD, FCML_NO_DETAILS, 0x10C0, 0x00D88000, { 0x0F, 0x2E, 0x00 }, { FCML_OP_MODRM_R_XMM, FCML_OP_MODRM_RM_XMM_OP_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+    { FCML_AMT_AVX_SIMD, FCML_NO_DETAILS, 0x10C0, 0x00D88000, { 0x0F, 0x2E, 0x00 }, { FCML_OP_MODRM_R_XMM, FCML_OP_MODRM_RM_XMM_OP_64, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    { FCML_AMT_AVX512_SIMD, FCML_TT_T1S | FCML_SIMD_ES_64, 0x00011048, 0x00D88000, { 0x0F, 0x2E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_64, FCML_OP_VIRTUAL_SAE, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_UCOMISS[] = {
@@ -4138,7 +4139,8 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_UCOMISS[] = {
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VUCOMISS[] = {
-    { FCML_AMT_AVX_SIMD, FCML_NO_DETAILS, 0x00C0, 0x00D88000, { 0x0F, 0x2E, 0x00 }, { FCML_OP_MODRM_R_XMM, FCML_OP_MODRM_RM_XMM_OP_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+    { FCML_AMT_AVX_SIMD, FCML_NO_DETAILS, 0x00C0, 0x00D88000, { 0x0F, 0x2E, 0x00 }, { FCML_OP_MODRM_R_XMM, FCML_OP_MODRM_RM_XMM_OP_32, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    { FCML_AMT_AVX512_SIMD, FCML_TT_T1S | FCML_SIMD_ES_32, 0x00010050, 0x00D88000, { 0x0F, 0x2E, 0x00 }, { FCML_OP_MODRM_R_XMM_W, FCML_OP_MODRM_RM_XMM_OP_32, FCML_OP_VIRTUAL_SAE, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_UD2[] = {
