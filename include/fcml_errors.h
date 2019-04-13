@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2019 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -131,7 +131,9 @@ enum fcml_en_ceh_message_errors {
 	/** Symbol is undefined. */
 	FCML_CEH_MEC_ERROR_UNDEFINED_SYMBOL = 1011,
 	/** Parsed line exceed maximal allowed length. */
-	FCML_CEH_MEC_ERROR_PARSED_LINE_TOO_LONG = 1012
+	FCML_CEH_MEC_ERROR_PARSED_LINE_TOO_LONG = 1012,
+	/** Invalid vector length size. */
+	FCML_CEH_MEC_ERROR_INVALID_VECTOR_LENGTH = 1013
 };
 
 /** Codes for textual warnings. */
