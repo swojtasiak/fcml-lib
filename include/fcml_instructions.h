@@ -1215,6 +1215,8 @@ typedef enum fcml_en_instruction {
     F_VMXON,
     F_VMCALL,
     F_VMFUNC,
+    F_VALIGND,
+    F_VALIGNQ,
     F_VBROADCASTSD,
     F_VBROADCASTSS,
     F_VBROADCASTI128,
