@@ -106,7 +106,19 @@ void fcml_tf_instruction_VBROADCASTSS(void) {
     FCML_I64("vbroadcastss ymm2{k5}{z},dword ptr [rcx+rax]", 0x62, 0xf2, 0x7d, 0xad, 0x18, 0x14, 0x01);
     FCML_I64("vbroadcastss ymm2{k6},dword ptr [rcx+rax]", 0x62, 0xf2, 0x7d, 0x2e, 0x18, 0x14, 0x01);
     FCML_I64("vbroadcastss ymm2{k5}{z},xmm3", 0x62, 0xf2, 0x7d, 0xad, 0x18, 0xd3);
-    FCML_I64_M("vbroadcastss ymm2,xmm3", 2, FCML_MI(0x62, 0xf2, 0x7d, 0x28, 0x18, 0xd3), FCML_MI(0xc4, 0xe2, 0x7d, 0x18, 0xd3));
+}
+
+void fcml_tf_instruction_VCOMPRESSPD(void) {
+    FCML_I64("vcompresspd xmm2{k5}{z},xmm13", 0x62, 0x72, 0xfd, 0x8d, 0x8a, 0xea);
+    FCML_I64("vcompresspd ymm2{k5}{z},ymm13", 0x62, 0x72, 0xfd, 0xad, 0x8a, 0xea);
+    FCML_I64("vcompresspd zmm2{k5}{z},zmm13", 0x62, 0x72, 0xfd, 0xcd, 0x8a, 0xea);
+    FCML_I64("vcompresspd ymm2{k5},ymm13", 0x62, 0x72, 0xfd, 0x2d, 0x8a, 0xea);
+    FCML_I64("vcompresspd zmm2{k5},zmm13", 0x62, 0x72, 0xfd, 0x4d, 0x8a, 0xea);
+    FCML_I64("vcompresspd ymm2,ymm13", 0x62, 0x72, 0xfd, 0x28, 0x8a, 0xea);
+    FCML_I64("vcompresspd zmm2{k5},zmm13", 0x62, 0x72, 0xfd, 0x4d, 0x8a, 0xea);
+    FCML_I64("vcompresspd xmmword ptr [rcx+rax],xmm13", 0x62, 0x72, 0xfd, 0x08, 0x8a, 0x2c, 0x01);
+    FCML_I64("vcompresspd ymmword ptr [rcx+rax],ymm13", 0x62, 0x72, 0xfd, 0x28, 0x8a, 0x2c, 0x01);
+    FCML_I64("vcompresspd zmmword ptr [rcx+rax],zmm13", 0x62, 0x72, 0xfd, 0x48, 0x8a, 0x2c, 0x01);
 }
 
 void fcml_tf_instruction_VPBROADCASTB(void) {
@@ -2227,6 +2239,7 @@ void fcml_tf_instruction_VBLENDMPS(void) {
 
 fcml_stf_test_case fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VBROADCASTSS", fcml_tf_instruction_VBROADCASTSS },
+    { "fcml_tf_instruction_VCOMPRESSPD", fcml_tf_instruction_VCOMPRESSPD },
     { "fcml_tf_instruction_VPBROADCASTB", fcml_tf_instruction_VPBROADCASTB },
     { "fcml_tf_instruction_VEXTRACTF128", fcml_tf_instruction_VEXTRACTF128 },
     { "fcml_tf_instruction_VINSERTF128", fcml_tf_instruction_VINSERTF128 },
