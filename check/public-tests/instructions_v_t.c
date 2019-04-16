@@ -119,6 +119,21 @@ void fcml_tf_instruction_VCOMPRESSPD(void) {
     FCML_I64("vcompresspd xmmword ptr [rcx+rax],xmm13", 0x62, 0x72, 0xfd, 0x08, 0x8a, 0x2c, 0x01);
     FCML_I64("vcompresspd ymmword ptr [rcx+rax],ymm13", 0x62, 0x72, 0xfd, 0x28, 0x8a, 0x2c, 0x01);
     FCML_I64("vcompresspd zmmword ptr [rcx+rax],zmm13", 0x62, 0x72, 0xfd, 0x48, 0x8a, 0x2c, 0x01);
+    FCML_I64("vcompresspd zmmword ptr [rcx+0000000000000040h],zmm13", 0x62, 0x72, 0xfd, 0x48, 0x8a, 0x69, 0x08);
+}
+
+void fcml_tf_instruction_VCOMPRESSPS(void) {
+    FCML_I64("vcompressps xmm2{k5}{z},xmm13", 0x62, 0x72, 0x7d, 0x8d, 0x8a, 0xea);
+    FCML_I64("vcompressps ymm2{k5}{z},ymm13", 0x62, 0x72, 0x7d, 0xad, 0x8a, 0xea);
+    FCML_I64("vcompressps zmm2{k5}{z},zmm13", 0x62, 0x72, 0x7d, 0xcd, 0x8a, 0xea);
+    FCML_I64("vcompressps ymm2{k5},ymm13", 0x62, 0x72, 0x7d, 0x2d, 0x8a, 0xea);
+    FCML_I64("vcompressps zmm2{k5},zmm13", 0x62, 0x72, 0x7d, 0x4d, 0x8a, 0xea);
+    FCML_I64("vcompressps ymm2,ymm13", 0x62, 0x72, 0x7d, 0x28, 0x8a, 0xea);
+    FCML_I64("vcompressps zmm2{k5},zmm13", 0x62, 0x72, 0x7d, 0x4d, 0x8a, 0xea);
+    FCML_I64("vcompressps xmmword ptr [rcx+rax],xmm13", 0x62, 0x72, 0x7d, 0x08, 0x8a, 0x2c, 0x01);
+    FCML_I64("vcompressps ymmword ptr [rcx+rax],ymm13", 0x62, 0x72, 0x7d, 0x28, 0x8a, 0x2c, 0x01);
+    FCML_I64("vcompressps zmmword ptr [rcx+rax],zmm13", 0x62, 0x72, 0x7d, 0x48, 0x8a, 0x2c, 0x01);
+    FCML_I64("vcompressps zmmword ptr [rcx+0000000000000040h],zmm13", 0x62, 0x72, 0x7d, 0x48, 0x8a, 0x69, 0x10);
 }
 
 void fcml_tf_instruction_VPBROADCASTB(void) {
@@ -2240,6 +2255,7 @@ void fcml_tf_instruction_VBLENDMPS(void) {
 fcml_stf_test_case fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VBROADCASTSS", fcml_tf_instruction_VBROADCASTSS },
     { "fcml_tf_instruction_VCOMPRESSPD", fcml_tf_instruction_VCOMPRESSPD },
+    { "fcml_tf_instruction_VCOMPRESSPS", fcml_tf_instruction_VCOMPRESSPS },
     { "fcml_tf_instruction_VPBROADCASTB", fcml_tf_instruction_VPBROADCASTB },
     { "fcml_tf_instruction_VEXTRACTF128", fcml_tf_instruction_VEXTRACTF128 },
     { "fcml_tf_instruction_VINSERTF128", fcml_tf_instruction_VINSERTF128 },
