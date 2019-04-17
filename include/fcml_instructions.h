@@ -1206,6 +1206,7 @@ typedef enum fcml_en_instruction {
     F_VPBROADCASTQ,
     F_VCOMPRESSPD,
     F_VCOMPRESSPS,
+    F_VCVTPD2QQ,
     F_VMPTRLD,
     F_VMPTRST,
     F_VMCLEAR,
