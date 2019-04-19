@@ -1165,7 +1165,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("vcompresspd"), FCML_ASM_DIALECT_INSTRUCTION(F_VCOMPRESSPD, FCML_AM_ALL), 0 },
     { FCML_TEXT("vcompressps"), FCML_ASM_DIALECT_INSTRUCTION(F_VCOMPRESSPS, FCML_AM_ALL), 0 },
     { FCML_TEXT("vcvtpd2qq"), FCML_ASM_DIALECT_INSTRUCTION(F_VCVTPD2QQ, FCML_AM_ALL), 0 },
-    { FCML_TEXT("vcvtpd2udq"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTPD2UDQ, FCML_AM_ALL), 0 },
+    { FCML_TEXT("vcvtpd2udq[l2];vcvtpd2udqx[l0];vcvtpd2udqy[l1]"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTPD2UDQ, FCML_AM_ALL), 0 },
     { FCML_TEXT("vmptrld"), FCML_ASM_DIALECT_INSTRUCTION(F_VMPTRLD, FCML_AM_ALL), 0 },
     { FCML_TEXT("vmptrst"), FCML_ASM_DIALECT_INSTRUCTION(F_VMPTRST, FCML_AM_ALL), 0 },
     { FCML_TEXT("vmclear"), FCML_ASM_DIALECT_INSTRUCTION(F_VMCLEAR, FCML_AM_ALL), 0 },
@@ -1523,7 +1523,22 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_gas(
             for (i = 0; i < instrunction->operands_count; i++) {
                 fcml_st_operand *operand = &(instrunction->operands[i]);
                 if (operand->type == FCML_OT_ADDRESS) {
-                    operand->address.size_operator = data_size;
+                    /* If broadcast addressing mode is used the memory operand
+                     * size has to be set to the size of the element (input size)
+                     * that given instruction operates on.
+                     */
+                    fcml_nuint8_t bcast = operand->decorators.bcast;
+                    if (bcast.is_not_null) {
+                       /* The instruction memory operand size is always a
+                        * multiplication of broadcast and the element size.
+                        * It's why we divide instruction memory operand
+                        * size by the broadcast multiplier to get
+                        * the element size.
+                        */
+                        operand->address.size_operator = data_size / bcast.value;
+                    } else {
+                        operand->address.size_operator = data_size;
+                    }
                     changed = FCML_TRUE;
                 }
             }

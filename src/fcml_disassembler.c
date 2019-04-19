@@ -37,6 +37,7 @@
 #include "fcml_trace.h"
 #include "fcml_messages.h"
 #include "fcml_operand_decorators.h"
+#include "fcml_trace.h"
 
 /* R,X and B are stored in 1's complement form.*/
 #define FCML_VEX_W(x)                FCML_TP_GET_BIT(x, 7)
@@ -138,17 +139,14 @@ typedef fcml_int (*fcml_ifp_dasm_operand_size_calculator)(
 
 /* Decoders responsible for instruction disassembling. */
 typedef fcml_ceh_error (*fcml_ifp_dasm_instruction_decoder)(
-        fcml_ist_dasm_decoding_context *context,
-        struct fcml_ist_dasm_instruction_decoding_def 
-        *instruction_decoding_def);
+        fcml_ist_dasm_decoding_context *context);
 
 typedef fcml_bool (*fcml_ifp_dasm_instruction_acceptor)(
-        fcml_ist_dasm_decoding_context *context, 
-        struct fcml_ist_dasm_instruction_decoding_def 
-        *instruction_decoding_def);
+        fcml_ist_dasm_decoding_context *context);
 
 typedef struct fcml_ist_dasm_addr_mode_acceptor_chain {
     struct fcml_ist_dasm_addr_mode_acceptor_chain *next;
+    fcml_string name;
     fcml_ifp_dasm_instruction_acceptor acceptor;
 } fcml_ist_dasm_addr_mode_acceptor_chain;
 
@@ -213,8 +211,7 @@ typedef struct fcml_ist_dasm_instruction_decoding_def {
  * one supported decoder.
  */
 fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
-        fcml_ist_dasm_decoding_context *decoding_context,
-        fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def);
+        fcml_ist_dasm_decoding_context *decoding_context);
 
 /*********************
  * Utility functions.
@@ -273,7 +270,7 @@ fcml_uint8_t fcml_ifn_dasm_utils_override_segment_reg(
 }
 
 fcml_ceh_error fcml_ifn_dasm_utils_decode_segment_selector(
-        fcml_ist_dasm_decoding_context *context, 
+        fcml_ist_dasm_decoding_context *context,
         fcml_st_segment_selector *selector,
         fcml_uint8_t encoded_segment_reg) {
     fcml_uint8_t seg_reg = ~FCML_SEG_ALLOW_OVERRIDE & encoded_segment_reg;
@@ -1150,6 +1147,9 @@ typedef struct fcml_ist_dasm_operand_decoder_def {
     fcml_fp_hts_instruction_hints_calculator hints_calculator;
 } fcml_ist_dasm_operand_decoder_def;
 
+/* Order of elements in this array is really important and
+ * is related to addressing mode.
+ */
 fcml_ist_dasm_operand_decoder_def fcml_iarr_def_operand_decoders[] = {
     {NULL, NULL}, 
     {fcml_ifn_dasm_operand_decoder_imm, 
@@ -1394,90 +1394,103 @@ typedef fcml_ifp_dasm_instruction_acceptor
     (*fcml_ifp_dasm_instruction_acceptor_factory)
         (fcml_st_def_addr_mode_desc *addr_mode_desc);
 
+typedef struct fcml_ist_dasm_instruction_acceptor_factory {
+    fcml_string name;
+    fcml_ifp_dasm_instruction_acceptor_factory acceptor;
+} fcml_ist_dasm_instruction_acceptor_factory;
+
+#define FCML_IA_FACTORY(fn)     { #fn, fn }
+
 /**************/
 /* Prefixes.  */
 /**************/
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
-        fcml_ist_dasm_decoding_context *context,
-        fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def) {
+        fcml_ist_dasm_decoding_context *context) {
+
+    fcml_ist_dasm_instruction_decoding_def *decoding_def =
+                context->decoding_def;
 
     /* Prefixes. */
     fcml_st_prefixes_details *prefixes = &(context->prefixes);
 
     /* LOCK prefix. */
     if (prefixes->is_lock && !FCML_DEF_PREFIX_LOCK_ALLOWED(
-                instruction_decoding_def->prefixes_flags)) {
-        /* Lock prefix is not allowed. */
+                decoding_def->prefixes_flags)) {
+        FCML_TRACE("Lock prefix is not allowed.");
         return FCML_FALSE;
     }
 
     /* VEX required. */
-    if ((FCML_DEF_PREFIX_VEX_REQ(instruction_decoding_def->prefixes_flags) 
+    if ((FCML_DEF_PREFIX_VEX_REQ(decoding_def->prefixes_flags)
                 && !prefixes->is_vex)
             || (!FCML_DEF_PREFIX_VEX_REQ(
-                    instruction_decoding_def->prefixes_flags) 
+                    decoding_def->prefixes_flags)
                 && prefixes->is_vex)) {
-        /* VEX prefix is required. */
+        FCML_TRACE("VEX prefix is required.");
         return FCML_FALSE;
     }
 
     /* EVEX required. */
-    if ((FCML_DEF_PREFIX_EVEX_REQ(instruction_decoding_def->prefixes_flags)
-                && !prefixes->is_evex)
-            || (!FCML_DEF_PREFIX_EVEX_REQ(
-                    instruction_decoding_def->prefixes_flags)
-                && prefixes->is_evex)) {
-        /* EVEX prefix is required. */
+    fcml_bool evex_req = FCML_DEF_PREFIX_EVEX_REQ(decoding_def->prefixes_flags);
+    if ((evex_req && !prefixes->is_evex) || (!evex_req && prefixes->is_evex)) {
+        FCML_TRACE("EVEX prefix is required.");
         return FCML_FALSE;
     }
 
     /* XOP required. */
-    if ((FCML_DEF_PREFIX_XOP_REQ(instruction_decoding_def->prefixes_flags) 
+    if ((FCML_DEF_PREFIX_XOP_REQ(decoding_def->prefixes_flags)
                 && !prefixes->is_xop)
             || (!FCML_DEF_PREFIX_XOP_REQ(
-                    instruction_decoding_def->prefixes_flags) 
+                    decoding_def->prefixes_flags)
                 && prefixes->is_xop)) {
-        /* VEX prefix is required.*/
+        FCML_TRACE("XOP prefix is required.");
         return FCML_FALSE;
     }
 
     /* W field. */
-    if ((FCML_DEF_PREFIX_W_0(instruction_decoding_def->prefixes_flags) 
+    if ((FCML_DEF_PREFIX_W_0(decoding_def->prefixes_flags)
                 && prefixes->W)
-            || (FCML_DEF_PREFIX_W_1(instruction_decoding_def->prefixes_flags) 
+            || (FCML_DEF_PREFIX_W_1(decoding_def->prefixes_flags)
                 && !prefixes->W)) {
+        FCML_TRACE("Prefix field 'W' has unsupported value.");
         return FCML_FALSE;
     }
 
     /* L field. */
-    if ((FCML_DEF_PREFIX_L_1(instruction_decoding_def->prefixes_flags) && 
+    if ((FCML_DEF_PREFIX_L_1(decoding_def->prefixes_flags) &&
                 (!prefixes->is_avx || !prefixes->L))
-            || (FCML_DEF_PREFIX_L_0(instruction_decoding_def->prefixes_flags) 
+            || (FCML_DEF_PREFIX_L_0(decoding_def->prefixes_flags)
                 && (!prefixes->is_avx || prefixes->L))) {
+        FCML_TRACE("Prefix field L has unsupported value.");
         return FCML_FALSE;
     }
 
     /* L' field. */
-    if ((FCML_DEF_PREFIX_L_prim_1(instruction_decoding_def->prefixes_flags) &&
+    if ((FCML_DEF_PREFIX_L_prim_1(decoding_def->prefixes_flags) &&
                 (!prefixes->is_evex || !prefixes->L_prim))
             || (FCML_DEF_PREFIX_L_prim_0(
-                    instruction_decoding_def->prefixes_flags)
+                    decoding_def->prefixes_flags)
                 && (!prefixes->is_evex || prefixes->L_prim))) {
-        return FCML_FALSE;
+        /* If it's a chance that this is a rounding in AVX-512,
+         * let's go with it. */
+        if (!(decoding_def->decorators_existence.er && prefixes->b)) {
+            FCML_TRACE("Prefix field L' has unsupported value.");
+            return FCML_FALSE;
+        }
     }
 
     /* Mandatory prefixes. */
 
     fcml_bool found = FCML_FALSE;
     if (FCML_DEF_PREFIX_MANDATORY_66(
-                instruction_decoding_def->prefixes_flags)) {
+                decoding_def->prefixes_flags)) {
         found = fcml_ifn_dasm_is_prefix_available(context, 0x66, FCML_TRUE);
     } else if (FCML_DEF_PREFIX_MANDATORY_F2(
-                instruction_decoding_def->prefixes_flags)) {
+                decoding_def->prefixes_flags)) {
         found = fcml_ifn_dasm_is_prefix_available(context, 0xF2, FCML_TRUE);
     } else if (FCML_DEF_PREFIX_MANDATORY_F3(
-                instruction_decoding_def->prefixes_flags)) {
+                decoding_def->prefixes_flags)) {
         found = fcml_ifn_dasm_is_prefix_available(context, 0xF3, FCML_TRUE);
     } else {
         /* Mandatory prefixes not used. */
@@ -1485,6 +1498,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
     }
     if (!found) {
         /* Mandatory prefixes not found. */
+        FCML_TRACE("Missing mandatory prefix.");
         return FCML_FALSE;
     }
 
@@ -1502,8 +1516,10 @@ fcml_ifn_dasm_instruction_acceptor_factory_prefixes(
 /**********/
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm(
-        fcml_ist_dasm_decoding_context *context, 
-        fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def) {
+        fcml_ist_dasm_decoding_context *context) {
+
+    fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def =
+                context->decoding_def;
 
     fcml_uint32_t opcode_flags = instruction_decoding_def->opcode_flags;
     fcml_st_memory_stream *code = context->stream;
@@ -1520,6 +1536,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_modrm(
             return FCML_FALSE;
         }
     }
+
     if (modrm_details->is_reg_restriction) {
         fcml_bool modrm_found = FCML_FALSE;
         fcml_uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found);
@@ -1563,8 +1580,10 @@ fcml_ifn_dasm_instruction_acceptor_factory_modrm(
 /********************/
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_size_attributes_restrictions(
-        fcml_ist_dasm_decoding_context *context,
-        fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def) {
+        fcml_ist_dasm_decoding_context *context) {
+
+    fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def =
+                context->decoding_def;
 
     /* Check EOSA. These fields allow us to restrict instruction decoding only
      * to specific effective operand sizes. For instance we can define 
@@ -1647,8 +1666,10 @@ fcml_ifn_dasm_instruction_acceptor_factory_size_attributes_restrictions(
 /********************/
 
 fcml_bool fcml_ifn_dasm_instruction_acceptor_addr_mode(
-        fcml_ist_dasm_decoding_context *context,
-        fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def) {
+        fcml_ist_dasm_decoding_context *context) {
+
+    fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def =
+            context->decoding_def;
 
     fcml_st_disassembler_context *disassembler_context = 
         context->disassembler_context;
@@ -1669,13 +1690,65 @@ fcml_ifn_dasm_instruction_acceptor_factory_addr_mode(
     return fcml_ifn_dasm_instruction_acceptor_addr_mode;
 }
 
-fcml_ifp_dasm_instruction_acceptor_factory 
+/************/
+/* AVX-512. */
+/************/
+
+/* This acceptor is dedicated for AVX-512 broadcast and rounding. */
+fcml_bool fcml_ifn_dasm_instruction_acceptor_avx512(
+        fcml_ist_dasm_decoding_context *context) {
+
+    fcml_ist_dasm_instruction_decoding_def *decoding_def =
+            context->decoding_def;
+
+    if (context->prefixes.b) {
+
+        fcml_st_memory_stream *code = context->stream;
+
+        /* We need to check ModR/M to know if instruction
+         * uses memory addressing. */
+        fcml_bool modrm_found = FCML_FALSE;
+        fcml_uint8_t modrm = fcml_fn_stream_peek(code, &modrm_found);
+        fcml_bool is_reg = !modrm_found || FCML_MODRM_DEC_MOD(modrm) == 3;
+
+        if (is_reg && !decoding_def->decorators_existence.er &&
+                !decoding_def->decorators_existence.sae) {
+            /* Register-to-register addressing with prefix flag 'b' set,
+             * has to support rounding. */
+            FCML_TRACE("Prefix flag 'b' is set but rounding is not supported.");
+            return FCML_FALSE;
+        }
+
+        if (!is_reg && !decoding_def->decorators_existence.bcast) {
+            /* Memory addressing with prefix flag 'b' set
+             * has to support broadcasting. */
+            FCML_TRACE("Prefix flag 'b' is set but broadcast is not supported.");
+            return FCML_FALSE;
+        }
+    }
+
+    return FCML_TRUE;
+}
+
+fcml_ifp_dasm_instruction_acceptor
+fcml_ifn_dasm_instruction_acceptor_factory_avx512(
+        fcml_st_def_addr_mode_desc *addr_mode_desc) {
+    return ((addr_mode_desc->instruction_group == FCML_AMT_AVX512_SIMD) &&
+            FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(
+                    addr_mode_desc->opcode_flags)) ?
+            fcml_ifn_dasm_instruction_acceptor_avx512 : NULL;
+}
+
+
+fcml_ist_dasm_instruction_acceptor_factory
 fcml_iarr_dasm_dts_acceptor_factories[] = { 
-    fcml_ifn_dasm_instruction_acceptor_factory_prefixes,
-    fcml_ifn_dasm_instruction_acceptor_factory_addr_mode,
-    fcml_ifn_dasm_instruction_acceptor_factory_modrm,
-    fcml_ifn_dasm_instruction_acceptor_factory_size_attributes_restrictions,
-    NULL };
+    FCML_IA_FACTORY(fcml_ifn_dasm_instruction_acceptor_factory_prefixes),
+    FCML_IA_FACTORY(fcml_ifn_dasm_instruction_acceptor_factory_addr_mode),
+    FCML_IA_FACTORY(fcml_ifn_dasm_instruction_acceptor_factory_modrm),
+    FCML_IA_FACTORY(fcml_ifn_dasm_instruction_acceptor_factory_size_attributes_restrictions),
+    FCML_IA_FACTORY(fcml_ifn_dasm_instruction_acceptor_factory_avx512),
+    {NULL, NULL}
+};
 
 fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain(
         fcml_st_def_addr_mode_desc *addr_mode_desc, 
@@ -1685,15 +1758,15 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain(
 
     fcml_ist_dasm_addr_mode_acceptor_chain *current = NULL, *chain_root = NULL;
 
-    fcml_ifp_dasm_instruction_acceptor_factory *factory = 
+    fcml_ist_dasm_instruction_acceptor_factory *factory =
         &(fcml_iarr_dasm_dts_acceptor_factories[0]);
 
-    while (*factory) {
+    while (factory->acceptor) {
         /* Asks every factory for acceptor dedicated to the provided 
          * addressing mode description.
          */
         fcml_ifp_dasm_instruction_acceptor acceptor = 
-            (*factory)(addr_mode_desc);
+            factory->acceptor(addr_mode_desc);
         if (acceptor) {
             fcml_ist_dasm_addr_mode_acceptor_chain *chain_element = 
                 (fcml_ist_dasm_addr_mode_acceptor_chain*)
@@ -1706,6 +1779,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain(
                 }
                 return FCML_CEH_GEC_OUT_OF_MEMORY;
             }
+            chain_element->name = factory->name;
             chain_element->acceptor = acceptor;
             if (!chain_root) {
                 chain_root = chain_element;
@@ -2052,10 +2126,12 @@ fcml_ceh_error fcml_ifn_dasm_decode_operand_decorators(
 }
 
 fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
-        fcml_ist_dasm_decoding_context *decoding_context,
-        fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def) {
+        fcml_ist_dasm_decoding_context *decoding_context) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    fcml_ist_dasm_instruction_decoding_def *instruction_decoding_def =
+            decoding_context->decoding_def;
 
     /* Instruction hints.*/
 
@@ -2082,7 +2158,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         decoding_context->prefixes.is_rep = FCML_FALSE;
     }
 
-    /* Branches, take into account that this condition do not
+    /* Branches, take into account that this condition does not
      * collide with multi-instructions.
      */
     if (instruction_decoding_def->instruction != F_JCC) {
@@ -2194,7 +2270,7 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
         fcml_bool sae_enabled = prefixes->b &&
                 decoding_context->is_modrm_reg_reg &&
                 (instruction_decoding_def->decorators_existence.er ||
-                instruction_decoding_def->decorators_existence.sea);
+                instruction_decoding_def->decorators_existence.sae);
 
         decoding_context->vector_length =
                 fcml_ifn_dasm_calculate_vector_length(tuple_type, sae_enabled,
@@ -2237,6 +2313,11 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             &(instruction_decoding_def->operand_decodings[i]);
         fcml_st_def_decoded_addr_mode *decoded_addr_mode = 
             operand_decoding->decoded_addr_mode;
+        /* It's important not to break the loop before it
+         * goes through all the operands to make sure
+         * that all of them will be cleaned. */
+        fcml_fn_env_memory_clear(operand_wrappers,
+                sizeof(fcml_ist_dasm_operand_wrapper));
         if (operand_decoding->decoder) {
             error = operand_decoding->decoder(decoding_context,
                     operand_wrappers, operand_decoding->decorators,
@@ -2247,9 +2328,6 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             operand_wrappers->operand.hints |= operand_decoding->hints;
             operand_wrappers->access_mode = decoded_addr_mode->access_mode;
             operand_wrappers++;
-        } else {
-            /* First operand without decoder is the last one.*/
-            break;
         }
     }
 
@@ -2269,6 +2347,8 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             error = FCML_CEH_GEC_EOF;
         }
     }
+
+
 
     return error;
 }
@@ -2370,10 +2450,17 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction(
 
         fcml_st_coll_list_element *current = 
             tree_element->instruction_decoding_defs->head;
+        int i = 0;
         while (current) {
             fcml_ist_dasm_instruction_decoding_def *decoding_def = 
                 (fcml_ist_dasm_instruction_decoding_def*) current->item;
             if (decoding_def) {
+
+                FCML_TRACE("Accepting next addressing mode %d - " \
+                        "prefixes: 0x%08X, opcode: 0x%08X.",
+                        i, decoding_def->prefixes_flags,
+                        decoding_def->opcode_flags);
+
                 /* Set current decoding definition.*/
                 context->decoding_def = decoding_def;
                 /* Try to accept this addressing mode.*/
@@ -2381,22 +2468,34 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction(
                 fcml_ist_dasm_addr_mode_acceptor_chain *chain = 
                     decoding_def->instruction_acceptors_chain;
                 while (chain) {
-                    if (chain->acceptor && !chain->acceptor(context, 
-                                decoding_def)) {
+                    if (chain->acceptor && !chain->acceptor(context)) {
+                        FCML_TRACE("Denied addressing mode %d - " \
+                                "prefixes: 0x%08X, opcode: 0x%08X. Acceptor: %s",
+                                i, decoding_def->prefixes_flags,
+                                decoding_def->opcode_flags,
+                                chain->name);
                         accept = FCML_FALSE;
                         break;
                     }
                     chain = chain->next;
                 }
                 if (accept) {
+                    FCML_TRACE("Accepted addressing mode %d - " \
+                            "prefixes: 0x%08X, opcode: 0x%08X.",
+                            i, decoding_def->prefixes_flags,
+                            decoding_def->opcode_flags);
                     fcml_stream_pointer save_point =
                             fcml_fn_stream_save_point(context->stream);
-                    error = decoding_def->instruction_decoder(context, 
-                            decoding_def);
+                    error = decoding_def->instruction_decoder(context);
                     if (!error) {
                         found = FCML_TRUE;
                         break;
                     } else {
+                        FCML_TRACE("Instruction decoding failed for "
+                                "addressing mode %d - " \
+                                "prefixes: 0x%08X, opcode: 0x%08X. Error: %d",
+                                i, decoding_def->prefixes_flags,
+                                decoding_def->opcode_flags, error);
                         /* We are to try the next addressing form, so
                          * restore the stream. */
                         fcml_fn_stream_restore_point(context->stream,
@@ -2405,6 +2504,7 @@ fcml_ceh_error fcml_ifn_dasm_decode_instruction(
                 }
             }
             current = current->next;
+            i++;
         }
 
     } else {
@@ -3186,4 +3286,3 @@ void LIB_CALL fcml_fn_disassembler_free(fcml_st_disassembler *disassembler) {
         fcml_fn_env_memory_free(dec_disasm);
     }
 }
-

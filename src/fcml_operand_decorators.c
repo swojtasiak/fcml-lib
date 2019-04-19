@@ -38,7 +38,7 @@ void fcml_fn_prepare_decorators_existence(fcml_operand_desc *operands,
             dec_existence->er = FCML_TRUE;
         }
         if (FCML_IS_DECOR_SAE(decorators)) {
-            dec_existence->sea = FCML_TRUE;
+            dec_existence->sae = FCML_TRUE;
         }
     }
 }
@@ -63,6 +63,8 @@ fcml_ceh_error fcml_fn_op_decor_decode(
     if (FCML_IS_DECOR_Z(decorators_def) && prefix_flags->z) {
         decorators->z = FCML_TRUE;
     }
+
+
 
     return error;
 }

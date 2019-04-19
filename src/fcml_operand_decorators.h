@@ -28,7 +28,7 @@ typedef struct fcml_st_decorators_existence {
     fcml_bool z;
     fcml_bool er;
     fcml_bool opmask_reg;
-    fcml_bool sea;
+    fcml_bool sae;
 } fcml_st_decorators_existence;
 
 typedef struct fcml_st_decorators_prefix_flags {
