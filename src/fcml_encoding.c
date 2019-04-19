@@ -517,8 +517,9 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
     fcml_usize effective_address_size = FCML_DS_UNDEF;
     fcml_usize effective_operand_size = FCML_DS_UNDEF;
     fcml_usize vector_length = FCML_DS_UNDEF;
-    fcml_uint8_t encoded_static_operand_size = FCML_GET_OS(
-            encoded_operand_size);
+
+    fcml_uint8_t encoded_static_operand_size =
+            FCML_GET_OS(encoded_operand_size);
 
     if ((operand_size == FCML_OS_UNDEFINED)
             && FCML_IS_EOS_OPT(encoded_operand_size)) {
@@ -581,6 +582,10 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         if (operand_size || !FCML_IS_EOS_OPT(encoded_operand_size)) {
             if (comparator == FCML_IEN_CT_EQUAL) {
                 if (bcast && bcast->is_not_null) {
+                    // Memory operand size in case of broadcast is always same
+                    // as element size (input size) so the real memory operand
+                    // size is multiplication of the element size and broadcast
+                    // multiplier.
                     if (operand_size != element_size) {
                         FCML_TRACE("Unsupported broadcast operand size. " \
                                 "Expected %d got %d.", operand_size,

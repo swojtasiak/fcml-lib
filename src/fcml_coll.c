@@ -96,6 +96,7 @@ fcml_st_coll_list_element *fcml_fn_coll_list_insert(
             element->prev = prev_element;
             element->next = prev_element->next;
             prev_element->next = element;
+            list->size++;
         }
     } else {
         element = fcml_fn_coll_list_add_front(list, item);
