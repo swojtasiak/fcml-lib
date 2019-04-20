@@ -1494,7 +1494,7 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
         found = fcml_ifn_dasm_is_prefix_available(context, 0xF3, FCML_TRUE);
     } else {
         /* Mandatory prefixes not used. */
-        found = FCML_TRUE;
+        found = !((prefixes->is_vex || prefixes->is_evex) && prefixes->pp);
     }
     if (!found) {
         /* Mandatory prefixes not found. */
