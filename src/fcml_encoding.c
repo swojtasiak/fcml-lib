@@ -2465,6 +2465,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_virtual_op(
 
         if (operand_def->decorators.sae) {
             context->epf.b = FCML_TRUE;
+            context->epf.er.value = 0;
+            context->epf.er.is_not_null = FCML_TRUE;
         }
 
         if (operand_def->decorators.er.is_not_null) {
@@ -2540,7 +2542,9 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
 #ifdef FCML_DEBUG
-    FCML_TRACE("Accepting addressing mode: %d", context->__def_index);
+    FCML_TRACE("Accepting addressing mode: %d, prefixes: 0x%08X, opcode: 0x%08X.", context->__def_index, \
+            addr_mode->addr_mode_desc->allowed_prefixes, \
+            addr_mode->addr_mode_desc->opcode_flags);
 #endif
 
     int index = 0;
