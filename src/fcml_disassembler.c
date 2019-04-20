@@ -295,10 +295,11 @@ fcml_usize fcml_ifn_dasm_calculate_vector_length(fcml_uint8_t tuple_type,
         /* Vector length is assumed to be 512-bit in case of AVX-512 packed
          * vector instructions or 128-bit for scalar instructions.
          */
-        if(tuple_type == FCML_TT_FV) {
-            vector_length = FCML_DS_512;
-        } else if (tuple_type == FCML_TT_T1S || tuple_type == FCML_TT_T1F) {
+        if (tuple_type == FCML_TT_T1S || tuple_type == FCML_TT_T1F) {
+            /* SIMD scalar instructions. */
             vector_length = FCML_DS_128;
+        } else {
+            vector_length = FCML_DS_512;
         }
     } else {
         switch (encoded_vector_length) {
@@ -1458,26 +1459,29 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
     }
 
     /* L field. */
+    fcml_bool l = FCML_TRUE;
     if ((FCML_DEF_PREFIX_L_1(decoding_def->prefixes_flags) &&
                 (!prefixes->is_avx || !prefixes->L))
             || (FCML_DEF_PREFIX_L_0(decoding_def->prefixes_flags)
                 && (!prefixes->is_avx || prefixes->L))) {
         FCML_TRACE("Prefix field L has unsupported value.");
-        return FCML_FALSE;
+        l = FCML_FALSE;
     }
 
     /* L' field. */
+    fcml_bool l_prim = FCML_TRUE;
     if ((FCML_DEF_PREFIX_L_prim_1(decoding_def->prefixes_flags) &&
                 (!prefixes->is_evex || !prefixes->L_prim))
             || (FCML_DEF_PREFIX_L_prim_0(
                     decoding_def->prefixes_flags)
                 && (!prefixes->is_evex || prefixes->L_prim))) {
-        /* If it's a chance that this is a rounding in AVX-512,
-         * let's go with it. */
-        if (!(decoding_def->decorators_existence.er && prefixes->b)) {
-            FCML_TRACE("Prefix field L' has unsupported value.");
-            return FCML_FALSE;
-        }
+        FCML_TRACE("Prefix field L' has unsupported value.");
+        l_prim = FCML_FALSE;
+    }
+
+    if ((!l || !l_prim) && !((decoding_def->decorators_existence.er ||
+            decoding_def->decorators_existence.sae ) && prefixes->b)) {
+        return FCML_FALSE;
     }
 
     /* Mandatory prefixes. */
