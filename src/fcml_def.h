@@ -416,6 +416,16 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 #define FCML_OP_VIRTUAL_ER                FCML_OP_VIRTUAL(FCML_DECOR_ER)
 #define FCML_OP_VIRTUAL_SAE               FCML_OP_VIRTUAL(FCML_DECOR_SAE)
+/* This operand encoding is needed to encode SAE in cases where virtual operand
+ * is not the last one. In such a case when SAE is not used the operands
+ * ordering may be disturbed, because there will be a gap between operand
+ * encoders. To avoid such hard to handle situations we need to prepare two
+ * addressing mode descriptions one supporting SAO virtual operand and one
+ * without it, but we have to mark the SAE virtual operand as a mandatory
+ * one in order to use such a address mode only if SAE is defined. It's
+ * needed because by default SAE is optional as may be omitted when the
+ * virtual operand is the last one.
+ */
 #define FCML_OP_VIRTUAL_SAE_REQ           FCML_OP_VIRTUAL(FCML_DECOR_SAE_REQ)
 
 /*******************************/
@@ -1069,6 +1079,21 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 
 #define FCML_OP_MODRM_M_OP_64_K1_W           (FCML_OP_MODRM_M_OP_64_W | FCML_DECOR_K1)
+
+#define FCML_OP_MODRM_RM_XMM_OP_64_K1_Z      \
+    FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_XWORD, FCML_EOS_QWORD | FCML_EOS_OPT, \
+            FCML_RMF_RM) | FCML_DECOR_Z | FCML_DECOR_K1
+#define FCML_OP_MODRM_RM_XMM_OP_64_K1_Z_W   (FCML_OP_MODRM_RM_XMM_OP_64_K1_Z | FCML_OA_W)
+
+#define FCML_OP_MODRM_RM_XMM_OP_128_K1_Z      \
+    FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_XWORD, FCML_EOS_XWORD | FCML_EOS_OPT, \
+            FCML_RMF_RM) | FCML_DECOR_Z | FCML_DECOR_K1
+#define FCML_OP_MODRM_RM_XMM_OP_128_K1_Z_W   (FCML_OP_MODRM_RM_XMM_OP_128_K1_Z | FCML_OA_W)
+
+#define FCML_OP_MODRM_RM_YMM_OP_256_K1_Z      \
+    FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_YWORD, FCML_EOS_YWORD | FCML_EOS_OPT, \
+            FCML_RMF_RM) | FCML_DECOR_Z | FCML_DECOR_K1
+#define FCML_OP_MODRM_RM_YMM_OP_256_K1_Z_W   (FCML_OP_MODRM_RM_YMM_OP_256_K1_Z | FCML_OA_W)
 
 /* End of AVX-512 */
 
