@@ -1235,6 +1235,7 @@ typedef enum fcml_en_instruction {
     F_VBROADCASTF64X4,
     F_VCVTPH2PS,
     F_VCVTPS2PH,
+    F_VCVTPS2QQ,
     F_VCVTPS2UDQ,
     F_VERR,
     F_VERW,
