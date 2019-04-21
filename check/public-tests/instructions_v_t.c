@@ -171,6 +171,41 @@ void fcml_tf_instruction_VCVTPD2QQ(void) {
     FCML_I32("vcvtpd2qq xmm1{k4}{z},mmword ptr [esp+00000020h]{1to2}", 0x62, 0xf1, 0xfd, 0x9c, 0x7b, 0x4c, 0x24, 0x04);
 }
 
+void fcml_tf_instruction_VCVTPS2UDQ(void) {
+    FCML_I64("vcvtps2udq xmm3,xmm0", 0x62, 0xf1, 0x7c, 0x08, 0x79, 0xd8);
+    FCML_I32("vcvtps2udq xmm3,xmm0", 0x62, 0xf1, 0x7c, 0x08, 0x79, 0xd8);
+    FCML_I32("vcvtps2udq ymm0,ymmword ptr [eax]", 0x62, 0xf1, 0x7c, 0x28, 0x79, 0x00);
+    FCML_A64("vcvtps2udq %xmm0,%xmm3", 0x62, 0xf1, 0x7c, 0x08, 0x79, 0xd8);
+    FCML_A64("vcvtps2udq %xmm0,%xmm3", 0x62, 0xf1, 0x7c, 0x08, 0x79, 0xd8);
+    FCML_A64("vcvtps2udq (%rax),%ymm0", 0x62, 0xf1, 0x7c, 0x28, 0x79, 0x00);
+
+    /* {k} */
+    FCML_I64("vcvtps2udq ymm10{k1},ymmword ptr [r9+r8]", 0x62, 0x11, 0x7c, 0x29, 0x79, 0x14, 0x01);
+    FCML_A64("vcvtps2udq (%r9,%r8),%ymm10{%k1}", 0x62, 0x11, 0x7c, 0x29, 0x79, 0x14, 0x01);
+    FCML_I64("vcvtps2udq xmm10{k1},xmmword ptr [r9+r8]", 0x62, 0x11, 0x7c, 0x09, 0x79, 0x14, 0x01);
+    FCML_A64("vcvtps2udq (%r9,%r8),%xmm10{%k1}", 0x62, 0x11, 0x7c, 0x09, 0x79, 0x14, 0x01);
+    FCML_I64("vcvtps2udq zmm1{k1},zmmword ptr [r9+r8]", 0x62, 0x91, 0x7c, 0x49, 0x79, 0x0c, 0x01);
+    FCML_A64("vcvtps2udq (%r9,%r8),%zmm1{%k1}", 0x62, 0x91, 0x7c, 0x49, 0x79, 0x0c, 0x01);
+
+    /* {k}{z} */
+    FCML_I64("vcvtps2udq ymm10{k1}{z},ymmword ptr [r9+r8]", 0x62, 0x11, 0x7c, 0xa9, 0x79, 0x14, 0x01);
+
+    /* {bcast} */
+    FCML_I64("vcvtps2udq zmm31,dword ptr [rsi]{1to16}", 0x62, 0x61, 0x7c, 0x58, 0x79, 0x3e);
+
+    /* {k}{z}{bcast} */
+    FCML_I64("vcvtps2udq ymm31{k7}{z},dword ptr [rsi]{1to8}", 0x62, 0x61, 0x7c, 0xbf, 0x79, 0x3e);
+    FCML_A64("vcvtps2udq (%rsi){1to8},%ymm31{%k7}{z}", 0x62, 0x61, 0x7c, 0xbf, 0x79, 0x3e);
+
+    /* {rn} */
+    FCML_I64("vcvtps2udq zmm31{k7}{z},zmm4,{rn-sae}", 0x62, 0x61, 0x7c, 0x9f, 0x79, 0xfc);
+
+    /* Compressed disp8 */
+    FCML_I64("vcvtps2udq xmm1{k4}{z},dword ptr [rsp+0000000000000020h]{1to4}", 0x62, 0xf1, 0x7c, 0x9c, 0x79, 0x4c, 0x24, 0x08);
+    FCML_I64("vcvtps2udq xmm1{k4}{z},dword ptr [rsp+00000000000001d0h]{1to4}", 0x62, 0xf1, 0x7c, 0x9c, 0x79, 0x4c, 0x24, 0x74);
+    FCML_I32("vcvtps2udq xmm1{k4}{z},dword ptr [esp+00000020h]{1to4}", 0x62, 0xf1, 0x7c, 0x9c, 0x79, 0x4c, 0x24, 0x08);
+}
+
 void fcml_tf_instruction_VCVTPD2UDQ(void) {
     FCML_I64("vcvtpd2udq xmm3,xmm0", 0x62, 0xf1, 0xfc, 0x08, 0x79, 0xd8);
     FCML_I32("vcvtpd2udq xmm3,xmm0", 0x62, 0xf1, 0xfc, 0x08, 0x79, 0xd8);
@@ -2383,8 +2418,9 @@ fcml_stf_test_case fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VCOMPRESSPD", fcml_tf_instruction_VCOMPRESSPD },
     { "fcml_tf_instruction_VCOMPRESSPS", fcml_tf_instruction_VCOMPRESSPS },
     { "fcml_tf_instruction_VCVTPD2QQ", fcml_tf_instruction_VCVTPD2QQ },
-    //{ "fcml_tf_instruction_VCVTPD2UDQ", fcml_tf_instruction_VCVTPD2UDQ },
+    { "fcml_tf_instruction_VCVTPD2UDQ", fcml_tf_instruction_VCVTPD2UDQ },
     { "fcml_tf_instruction_VCVTPD2UQQ", fcml_tf_instruction_VCVTPD2UQQ },
+    { "fcml_tf_instruction_VCVTPS2UDQ", fcml_tf_instruction_VCVTPS2UDQ },
     { "fcml_tf_instruction_VPBROADCASTB", fcml_tf_instruction_VPBROADCASTB },
     { "fcml_tf_instruction_VEXTRACTF128", fcml_tf_instruction_VEXTRACTF128 },
     { "fcml_tf_instruction_VINSERTF128", fcml_tf_instruction_VINSERTF128 },
