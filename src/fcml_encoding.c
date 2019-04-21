@@ -591,6 +591,9 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
                                 "Expected %d got %d.", operand_size,
                                 encoded_static_operand_size * 8);
                         error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+                    } else if (bcast->value * element_size !=
+                            encoded_static_operand_size * 8) {
+                        error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                     }
                 } else if (encoded_static_operand_size * 8 != operand_size) {
                     FCML_TRACE("Unsupported operand size. Expected %d got %d.",
