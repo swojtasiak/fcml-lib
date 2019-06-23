@@ -1,0 +1,8 @@
+version: '3'
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c 'autoreconf -i && ./configure && make && make check'
+  

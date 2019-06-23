@@ -92,3 +92,11 @@ DOXYDIR = docs/doxygen
 endif
 
 SUBDIRS = include src check example $(DOXYDIR)
+
+docker-build:
+	@echo 'Building an image for dockerized unit tests.'
+	docker-compose -f docker-compose.yml build
+
+docker-tests: docker-build
+	@echo 'Running the dockerized unit tests.'
+	docker-compose -f docker-compose.yml run --rm tests
