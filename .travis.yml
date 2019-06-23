@@ -1,5 +1,0 @@
-language: cpp
-dist: trusty
-script:
-  - autoreconf -i && ./configure && make && make check
-
