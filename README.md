@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/swojtasiak/fcml-lib.svg?branch=master)](https://travis-ci.org/swojtasiak/fcml-lib)
+[![CircleCI](https://circleci.com/gh/swojtasiak/fcml-lib/tree/master.svg?style=svg)](https://circleci.com/gh/swojtasiak/fcml-lib/tree/master)
 
 # FCML
 This is a general purpose machine code manipulation library for IA-32 and Intel 64 architectures.
