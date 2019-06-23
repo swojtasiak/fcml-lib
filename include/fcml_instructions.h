@@ -1241,6 +1241,7 @@ typedef enum fcml_en_instruction {
     F_VCVTQQ2PD,
     F_VCVTQQ2PS,
     F_VCVTSD2USI,
+    F_VCVTSS2USI,
     F_VERR,
     F_VERW,
     F_VMMCALL,

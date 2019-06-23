@@ -267,8 +267,21 @@ void fcml_tf_instruction_VCVTSD2USI(void) {
     FCML_I64("vcvtsd2usi eax,mmword ptr [rsp+0000000000000020h]", 0x62, 0xf1, 0x7f, 0x08, 0x79, 0x44, 0x24, 0x04);
     FCML_I32("vcvtsd2usi eax,mmword ptr [edx]", 0x62, 0xf1, 0x7f, 0x08, 0x79, 0x02);
     FCML_I32("vcvtsd2usi rax,mmword ptr [edx]", 0x62, 0xf1, 0xff, 0x08, 0x79, 0x02);
-    FCML_A32_D("vcvtsd2usi eax,mmword ptr [edx]", 0x62, 0xf1, 0x7f, 0x08, 0x79, 0x02);
-    FCML_A32_D("vcvtsd2usi rax,mmword ptr [edx]", 0x62, 0xf1, 0xff, 0x08, 0x79, 0x02);
+    FCML_A32("vcvtsd2usi (%edx),%eax", 0x62, 0xf1, 0x7f, 0x08, 0x79, 0x02);
+    FCML_A32("vcvtsd2usi (%edx),%rax", 0x62, 0xf1, 0xff, 0x08, 0x79, 0x02);
+}
+
+void fcml_tf_instruction_VCVTSS2USI(void) {
+    FCML_I64("vcvtss2usi eax,xmm0", 0x62, 0xf1, 0x7e, 0x08, 0x79, 0xc0);
+    FCML_I64("vcvtss2usi eax,dword ptr [rdx]", 0x62, 0xf1, 0x7e, 0x08, 0x79, 0x02);
+    FCML_I64("vcvtss2usi rax,xmm0", 0x62, 0xf1, 0xfe, 0x08, 0x79, 0xc0);
+    FCML_I64("vcvtss2usi rax,dword ptr [rdx]", 0x62, 0xf1, 0xfe, 0x08, 0x79, 0x02);
+    FCML_I64("vcvtss2usi eax,xmm0,{rn-sae}", 0x62, 0xf1, 0x7e, 0x18, 0x79, 0xc0);
+    FCML_I64("vcvtss2usi eax,dword ptr [rsp+0000000000000010h]", 0x62, 0xf1, 0x7e, 0x08, 0x79, 0x44, 0x24, 0x04);
+    FCML_I32("vcvtss2usi eax,dword ptr [edx]", 0x62, 0xf1, 0x7e, 0x08, 0x79, 0x02);
+    FCML_I32("vcvtss2usi rax,dword ptr [edx]", 0x62, 0xf1, 0xfe, 0x08, 0x79, 0x02);
+    FCML_A32("vcvtss2usi (%edx),%eax", 0x62, 0xf1, 0x7e, 0x08, 0x79, 0x02);
+    FCML_A32("vcvtss2usi (%edx),%rax", 0x62, 0xf1, 0xfe, 0x08, 0x79, 0x02);
 }
 
 void fcml_tf_instruction_VCVTPD2UQQ(void) {
@@ -2553,6 +2566,7 @@ void fcml_tf_instruction_VBLENDMPS(void) {
 fcml_stf_test_case fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VCVTQQ2PS", fcml_tf_instruction_VCVTQQ2PS },
     { "fcml_tf_instruction_VCVTSD2USI", fcml_tf_instruction_VCVTSD2USI },
+    { "fcml_tf_instruction_VCVTSS2USI", fcml_tf_instruction_VCVTSS2USI },
     { "fcml_tf_instruction_VCVTQQ2PD",fcml_tf_instruction_VCVTQQ2PD },
     { "fcml_tf_instruction_VCVTPS2UQQ", fcml_tf_instruction_VCVTPS2UQQ },
     { "fcml_tf_instruction_VCVTPS2QQ", fcml_tf_instruction_VCVTPS2QQ },
