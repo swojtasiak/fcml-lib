@@ -4426,6 +4426,10 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VCVTUDQ2PD[] = {
     { FCML_AMT_AVX512_SIMD, FCML_TT_HV | FCML_SIMD_ES_32, 0x00034050, 0x00D88000, { 0x0F, 0x7A, 0x00 }, { FCML_OP_MODRM_R_ZMM_K1_Z_W, FCML_OP_MODRM_RM_YMM_256_BCAST_OP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VCVTUDQ2PS[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, 0x00012000, 0x00D88000, { 0x0F, 0x7A, 0x00 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_VIRTUAL_ER, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VERR[] = {
     { FCML_AMT_SYSTEM, FCML_NO_DETAILS, 0x0000, 0x00D9A000, { 0x0F, 0x00, 0x00 }, { FCML_OP_MODRM_RM_OP_16, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
@@ -6333,6 +6337,7 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_VCVTTPD2QQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VCVTTPD2QQ),
     FCML_IA_INSTRUCTION( F_VCVTTPD2UDQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VCVTTPD2UDQ),
     FCML_IA_INSTRUCTION( F_VCVTUDQ2PD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VCVTUDQ2PD),
+    FCML_IA_INSTRUCTION( F_VCVTUDQ2PS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VCVTUDQ2PS),
     FCML_IA_INSTRUCTION( F_VERR, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VERR),
     FCML_IA_INSTRUCTION( F_VERW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VERW),
     FCML_IA_INSTRUCTION( F_VEXTRACTF128, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VEXTRACTF128 ),
