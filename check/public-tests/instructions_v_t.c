@@ -284,6 +284,18 @@ void fcml_tf_instruction_VCVTUQQ2PS(void) {
     FCML_I32("vcvtuqq2ps xmm1{k4}{z},mmword ptr [esp+00000020h]{1to2}", 0x62, 0xf1, 0xff, 0x9c, 0x7a, 0x4c, 0x24, 0x04);
 }
 
+void fcml_tf_instruction_VCVTUSI2SD(void) {
+    FCML_I64_D("vcvtusi2sd xmm1,xmm2,qword ptr [rsp+0000000000000040h]", 0x62, 0xf1, 0xef, 0x08, 0x7b, 0x4c, 0x24, 0x08)
+    FCML_I64_D("vcvtusi2sd xmm1,xmm2,dword ptr [rsp+0000000000000040h]", 0x62, 0xf1, 0x6f, 0x08, 0x7b, 0x4c, 0x24, 0x08)
+    FCML_I64("vcvtusi2sd xmm3,xmm0,dword ptr [rax]", 0x62, 0xf1, 0x7f, 0x08, 0x7b, 0x18);
+    FCML_I32("vcvtusi2sd xmm3,xmm0,dword ptr [eax]", 0x62, 0xf1, 0x7f, 0x08, 0x7b, 0x18);
+    FCML_I64_A("vcvtusi2sd xmm3,xmm0,ebx", 0x62, 0xf1, 0x7f, 0x08, 0x7b, 0xdb);
+    FCML_I32_A("vcvtusi2sd xmm3,xmm0,ebx", 0x62, 0xf1, 0x7f, 0x08, 0x7b, 0xdb);
+    FCML_I64_A("vcvtusi2sd xmm3,xmm0,rdx", 0x62, 0xf1, 0xff, 0x08, 0x7b, 0xda);
+    FCML_I64_A("vcvtusi2sd xmm3,xmm10,rcx,{rn-sae}", 0x62, 0xf1, 0xaf, 0x18, 0x7b, 0xd9);
+    FCML_A64_D("vcvtusi2sd {rn-sae},%rcx,%xmm10,%xmm3", 0x62, 0xf1, 0xaf, 0x18, 0x7b, 0xd9);
+}
+
 void fcml_tf_instruction_VCVTQQ2PS(void) {
     FCML_I64("vcvtqq2ps xmm3,xmm0", 0x62, 0xf1, 0xfc, 0x08, 0x5b, 0xd8);
     FCML_I32("vcvtqq2ps xmm3,xmm0", 0x62, 0xf1, 0xfc, 0x08, 0x5b, 0xd8);
@@ -2888,6 +2900,7 @@ void fcml_tf_instruction_VBLENDMPS(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_v[] = {
+    { "fcml_tf_instruction_VCVTUSI2SD", fcml_tf_instruction_VCVTUSI2SD },
     { "fcml_tf_instruction_VCVTUQQ2PS", fcml_tf_instruction_VCVTUQQ2PS },
     { "fcml_tf_instruction_VCVTUQQ2PD", fcml_tf_instruction_VCVTUQQ2PD },
     { "fcml_tf_instruction_VCVTUDQ2PS", fcml_tf_instruction_VCVTUDQ2PS },
