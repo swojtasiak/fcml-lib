@@ -292,8 +292,22 @@ void fcml_tf_instruction_VCVTUSI2SD(void) {
     FCML_I64_A("vcvtusi2sd xmm3,xmm0,ebx", 0x62, 0xf1, 0x7f, 0x08, 0x7b, 0xdb);
     FCML_I32_A("vcvtusi2sd xmm3,xmm0,ebx", 0x62, 0xf1, 0x7f, 0x08, 0x7b, 0xdb);
     FCML_I64_A("vcvtusi2sd xmm3,xmm0,rdx", 0x62, 0xf1, 0xff, 0x08, 0x7b, 0xda);
+    FCML_I64_A_FAILED("vcvtusi2sd xmm3,xmm10,ecx,{rn-sae}", 0x62, 0xf1, 0xAE, 0x18, 0x7b, 0xd9);
     FCML_I64_A("vcvtusi2sd xmm3,xmm10,rcx,{rn-sae}", 0x62, 0xf1, 0xaf, 0x18, 0x7b, 0xd9);
     FCML_A64_D("vcvtusi2sd {rn-sae},%rcx,%xmm10,%xmm3", 0x62, 0xf1, 0xaf, 0x18, 0x7b, 0xd9);
+}
+
+void fcml_tf_instruction_VCVTUSI2SS(void) {
+    FCML_I64_D("vcvtusi2ss xmm1,xmm2,qword ptr [rsp+0000000000000040h]", 0x62, 0xf1, 0xee, 0x08, 0x7b, 0x4c, 0x24, 0x08)
+    FCML_I64_D("vcvtusi2ss xmm1,xmm2,dword ptr [rsp+0000000000000040h]", 0x62, 0xf1, 0x6E, 0x08, 0x7b, 0x4c, 0x24, 0x08)
+    FCML_I64("vcvtusi2ss xmm3,xmm0,dword ptr [rax]", 0x62, 0xf1, 0x7E, 0x08, 0x7b, 0x18);
+    FCML_I32("vcvtusi2ss xmm3,xmm0,dword ptr [eax]", 0x62, 0xf1, 0x7E, 0x08, 0x7b, 0x18);
+    FCML_I64_A("vcvtusi2ss xmm3,xmm0,ebx", 0x62, 0xf1, 0x7E, 0x08, 0x7b, 0xdb);
+    FCML_I32_A("vcvtusi2ss xmm3,xmm0,ebx", 0x62, 0xf1, 0x7E, 0x08, 0x7b, 0xdb);
+    FCML_I64_A("vcvtusi2ss xmm3,xmm0,rdx", 0x62, 0xf1, 0xfe, 0x08, 0x7b, 0xda);
+    FCML_I64("vcvtusi2ss xmm3,xmm10,ecx,{rn-sae}", 0x62, 0xf1, 0x2e, 0x18, 0x7b, 0xd9);
+    FCML_I64_A("vcvtusi2ss xmm3,xmm10,rcx,{rn-sae}", 0x62, 0xf1, 0xAE, 0x18, 0x7b, 0xd9);
+    FCML_A64_D("vcvtusi2ss {rn-sae},%rcx,%xmm10,%xmm3", 0x62, 0xf1, 0xAE, 0x18, 0x7b, 0xd9);
 }
 
 void fcml_tf_instruction_VCVTQQ2PS(void) {
@@ -2900,6 +2914,7 @@ void fcml_tf_instruction_VBLENDMPS(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_v[] = {
+    { "fcml_tf_instruction_VCVTUSI2SS", fcml_tf_instruction_VCVTUSI2SS },
     { "fcml_tf_instruction_VCVTUSI2SD", fcml_tf_instruction_VCVTUSI2SD },
     { "fcml_tf_instruction_VCVTUQQ2PS", fcml_tf_instruction_VCVTUQQ2PS },
     { "fcml_tf_instruction_VCVTUQQ2PD", fcml_tf_instruction_VCVTUQQ2PD },
