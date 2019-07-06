@@ -147,6 +147,12 @@
     <ClCompile Include="..\..\..\..\src\fcml_utils.c">
       <Filter>Source Files\fcml</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_disp8_n.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_operand_decorators.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\fcml_apc_ast.h">
@@ -307,6 +313,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\fcml_types.h">
       <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_disp8_n.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_operand_decorators.h">
+      <Filter>Source Files\fcml</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
