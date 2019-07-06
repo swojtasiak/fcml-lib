@@ -1,0 +1,11 @@
+Release-lib
+Release-dll
+Debug-lib
+Debug-dll
+x64
+*.suo
+*.sdf
+*.ncb
+*.aps
+*.user
+*.VC.db

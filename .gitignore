@@ -31,3 +31,6 @@ test-driver
 .libs
 *.pc
 *.swp
+*.opendb
+*.db-shm
+*.db-wal
