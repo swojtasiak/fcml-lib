@@ -1210,6 +1210,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("vcvttpd2udq[l2];vcvttpd2udqx[l0];vcvttpd2udqy[l1]"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTTPD2UDQ, FCML_AM_ALL), 0 },
     { FCML_TEXT("vcvtuqq2ps[l2];vcvtuqq2psx[l0];vcvtuqq2psy[l1]"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTUQQ2PS, FCML_AM_ALL), 0 },
     { FCML_TEXT("vdbpsadbw"), FCML_ASM_DIALECT_INSTRUCTION( F_VDBPSADBW, FCML_AM_ALL), 0 },
+    { FCML_TEXT("vexpandpd"), FCML_ASM_DIALECT_INSTRUCTION( F_VEXPANDPD, FCML_AM_ALL), 0 },
     { FCML_TEXT("vcvtudq2pd"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTUDQ2PD, FCML_AM_ALL), 0 },
     { FCML_TEXT("vcvtudq2ps"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTUDQ2PS, FCML_AM_ALL), 0 },
     { FCML_TEXT("vcvtuqq2pd"), FCML_ASM_DIALECT_INSTRUCTION( F_VCVTUQQ2PD, FCML_AM_ALL), 0 },
