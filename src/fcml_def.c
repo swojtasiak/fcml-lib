@@ -1318,11 +1318,13 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VINSERTF128[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VFIXUPIMMPD[] = {
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_64, 0x00011008, 0x00EC8000, { 0x0F, 0x3A, 0x54 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    // This definition is a bit to wide and is narrowed by the limits of SAE - we should narrow it here too.
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_64, 0x00011008, 0x00EC8000, { 0x0F, 0x3A, 0x54 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_VIRTUAL_SAE_REQ, FCML_OP_IB }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VFIXUPIMMPS[] = {
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, 0x00011010, 0x00EC8000, { 0x0F, 0x3A, 0x54 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    // This definition is a bit to wide and is narrowed by the limits of SAE - we should narrow it here too.
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, 0x00011010, 0x00EC8000, { 0x0F, 0x3A, 0x54 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_VIRTUAL_SAE_REQ, FCML_OP_IB }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
