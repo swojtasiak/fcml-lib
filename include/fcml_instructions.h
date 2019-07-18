@@ -473,6 +473,8 @@ typedef enum fcml_en_instruction {
     F_VEXTRACTI32X8,
     F_VEXTRACTI64X4,
     F_VINSERTF128,
+    F_VFIXUPIMMPD,
+    F_VFIXUPIMMPS,
     F_INSERTQ,
     F_INT3,
     F_INT,
