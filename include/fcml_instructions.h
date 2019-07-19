@@ -475,6 +475,7 @@ typedef enum fcml_en_instruction {
     F_VINSERTF128,
     F_VFIXUPIMMPD,
     F_VFIXUPIMMPS,
+    F_VFIXUPIMMSD,
     F_INSERTQ,
     F_INT3,
     F_INT,
