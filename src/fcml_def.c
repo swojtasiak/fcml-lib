@@ -19,6 +19,26 @@
 
 #include "fcml_def.h"
 
+// These are local constants defined to be used only here in this definition file.
+
+#define F_LOCK         0x00000001
+#define F_REPNE        0x00000002
+#define F_REP          0x00000004
+#define F_W1           0x00000008
+#define F_W0           0x00000010
+#define F_L128         0x00040040
+#define F_L256         0x00040020
+#define F_L512         0x00020040
+#define F_VEX          0x00000080
+#define F_VVVV_UNUSED  0x00000100
+#define F_IGNORE_L     0x00000200
+#define F_XOP          0x00000400
+#define F_HLE          0x00000800
+#define F_66           0x00001000
+#define F_F2           0x00002000
+#define F_F3           0x00004000
+#define F_EVEX         0x00010000
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_AAA[] = {
     { FCML_AMT_GPI, FCML_NO_DETAILS, 0x0000, 0x00440000, { 0x37, 0x00, 0x00 }, { FCML_NA, FCML_NA, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_NO_OPERANS, FCML_HINT_NO_HINTS }
 };
@@ -1318,14 +1338,17 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VINSERTF128[] = {
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VFIXUPIMMPD[] = {
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_64, 0x00011008, 0x00EC8000, { 0x0F, 0x3A, 0x54 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
-    // This definition is a bit to wide and is narrowed by the limits of SAE - we should narrow it here too.
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_64, 0x00011008, 0x00EC8000, { 0x0F, 0x3A, 0x54 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_VIRTUAL_SAE_REQ, FCML_OP_IB }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VFIXUPIMMPS[] = {
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, 0x00011010, 0x00EC8000, { 0x0F, 0x3A, 0x54 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
-    // This definition is a bit to wide and is narrowed by the limits of SAE - we should narrow it here too.
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, 0x00011010, 0x00EC8000, { 0x0F, 0x3A, 0x54 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_VIRTUAL_SAE_REQ, FCML_OP_IB }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VFIXUPIMMSD[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_T1S | FCML_SIMD_ES_64, F_EVEX | F_66 | F_W1, 0x00EC8000, { 0x0F, 0x3A, 0x55 }, { FCML_OP_MODRM_R_XMM_K1_Z_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_OP_64, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    { FCML_AMT_AVX512_SIMD, FCML_TT_T1S | FCML_SIMD_ES_64, F_EVEX | F_66 | F_W1, 0x00EC8000, { 0x0F, 0x3A, 0x55 }, { FCML_OP_MODRM_R_XMM_K1_Z_W, FCML_OP_VEX_VVVV_XMM_REG, FCML_OP_MODRM_RM_XMM_OP_64, FCML_OP_VIRTUAL_SAE_REQ, FCML_OP_IB }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_INT3[] = {
@@ -5791,6 +5814,7 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_VINSERTF128, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VINSERTF128 ),
     FCML_IA_INSTRUCTION( F_VFIXUPIMMPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VFIXUPIMMPD ),
     FCML_IA_INSTRUCTION( F_VFIXUPIMMPS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VFIXUPIMMPS ),
+    FCML_IA_INSTRUCTION( F_VFIXUPIMMSD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VFIXUPIMMSD ),
     FCML_IA_INSTRUCTION( F_INT3, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_INT3 ),
     FCML_IA_INSTRUCTION( F_INT, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_INT ),
     FCML_IA_INSTRUCTION( F_INTO, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_INTO ),
