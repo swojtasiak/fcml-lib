@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\fcml">
+      <UniqueIdentifier>{eaa5753f-598d-455b-877e-1b77749f4997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\include">
+      <UniqueIdentifier>{71e56462-a75b-4a81-90c4-f7650c4b5127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Def">
+      <UniqueIdentifier>{2e966e01-d0da-4627-8fb4-a592544477be}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_apc_ast.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_assembler.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_ceh.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_choosers.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_coll.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_common_dialect.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_common_utils.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_decoding_tree.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_def.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_def_enc.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_dialect.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_dialect_int.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_disassembler.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_encoding.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_env_int.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_gas_dialect.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_gas_lexer.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_gas_parser.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_gas_parser_def.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_gas_rend.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_hints.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_intel_dialect.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_intel_lexer.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_intel_parser.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_intel_parser_def.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_intel_rend.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_lag_assembler.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_messages.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_mnemonic_parser.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_modrm_decoder.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_modrm_encoder.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_optimizers.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_parser.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_parser_int.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_parser_utils.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_rend_utils.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_renderer.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_stream.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_symbols.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_utils.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_disp8_n.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\fcml_operand_decorators.c">
+      <Filter>Source Files\fcml</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\fcml_apc_ast.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_assembler_int.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_ceh.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_coll.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_common_dialect.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_common_lex.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_debug.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_decoding_tree.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_def.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_dialect_int.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_encoding.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_env_int.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_gas_lexer.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_gas_parser.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_gas_parser_def.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_gas_rend.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_hints.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_intel_lexer.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_intel_parser.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_intel_parser_def.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_intel_rend.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_messages.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_mnemonic_parser.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_modrm.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_modrm_decoder.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_modrm_encoder.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_parser_data.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_parser_int.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_parser_utils.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_rend_utils.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_stream.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_trace.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_utils.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_assembler.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_choosers.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_common.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_common_utils.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_dialect.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_disassembler.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_env.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_errors.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_gas_dialect.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_instructions.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_intel_dialect.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_lag_assembler.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_lib_export.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_optimizers.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_parser.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_renderer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_symbols.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\fcml_types.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_disp8_n.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\fcml_operand_decorators.h">
+      <Filter>Source Files\fcml</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="fcml.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fcml.def">
+      <Filter>Def</Filter>
+    </None>
+  </ItemGroup>
+</Project>
