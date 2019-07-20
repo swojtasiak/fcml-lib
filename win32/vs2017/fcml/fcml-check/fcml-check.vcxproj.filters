@@ -120,6 +120,9 @@
     <ClCompile Include="..\..\..\..\check\public-tests\general_usage_t.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\check\public-tests\instructions_k_t.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\check\public-tests\assembler_t.h">
@@ -219,6 +222,9 @@
       <Filter>stf</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\check\public-tests\general_usage_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\check\public-tests\instructions_k_t.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
