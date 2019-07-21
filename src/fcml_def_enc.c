@@ -304,6 +304,8 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg) {
         return FCML_DS_256;
     case FCML_VSIB_ZMM:
         return FCML_DS_512;
+    case FCML_VSIB_UNDEF:
+        return FCML_DS_UNDEF;
     }
     return FCML_DS_UNDEF;
 }
