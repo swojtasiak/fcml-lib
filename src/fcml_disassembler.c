@@ -1471,10 +1471,10 @@ fcml_bool fcml_ifn_dasm_instruction_acceptor_prefixes(
     /* L' field. */
     fcml_bool l_prim = FCML_TRUE;
     if ((FCML_DEF_PREFIX_L_prim_1(decoding_def->prefixes_flags) &&
-                (!prefixes->is_evex || !prefixes->L_prim))
+                (!prefixes->is_avx || !prefixes->L_prim))
             || (FCML_DEF_PREFIX_L_prim_0(
                     decoding_def->prefixes_flags)
-                && (!prefixes->is_evex || prefixes->L_prim))) {
+                && (!prefixes->is_avx || prefixes->L_prim))) {
         FCML_TRACE("Prefix field L' has unsupported value.");
         l_prim = FCML_FALSE;
     }
@@ -2219,6 +2219,9 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
 
         fcml_uint32_t offset = stream->offset;
 
+        fcml_usize vector_length = fcml_ifn_dasm_calculate_vector_length(
+                FCML_TT_NONE, FCML_FALSE, prefixes->L | prefixes->L_prim << 1);
+
         fcml_st_modrm_decoder_context modrm_context;
         modrm_context.op_mode = 
             decoding_context->disassembler_context->entry_point.op_mode;
@@ -2226,16 +2229,25 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             decoding_context->effective_address_size_attribute;
         modrm_context.input_size =
                 FCML_GET_SIMD_ELEMENT_SIZE(instruction_decoding_def->details);
-        modrm_context.vector_length =
-                fcml_ifn_dasm_calculate_vector_length(FCML_TT_NONE, FCML_FALSE,
-                        prefixes->L | prefixes->L_prim << 1);;
+
+        modrm_context.vector_length = vector_length;
         modrm_context.tuple_type = tuple_type;
         modrm_context.b = prefixes->b;
         modrm_context.is_evex = prefixes->is_evex;
 
         fcml_st_modrm_source modrm_source;
         modrm_source.is_vsib = modrm_details->is_vsib;
-        modrm_source.vsib_index_size = modrm_details->vsib_index_size;
+
+        if (modrm_details->is_vsib) {
+            if (modrm_details->vsib_index_size == FCML_DS_UNDEF) {
+                modrm_source.vsib_index_size = vector_length;
+            } else {
+                modrm_source.vsib_index_size = modrm_details->vsib_index_size;
+            }
+        } else {
+            modrm_source.vsib_index_size = 0;
+        }
+
         modrm_source.ext_B = prefixes->B;
         modrm_source.ext_R = prefixes->R;
         modrm_source.ext_R_prim = prefixes->R_prim;

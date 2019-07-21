@@ -389,6 +389,8 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_VSIB_XMM    0x01
 #define FCML_VSIB_YMM    0x02
 #define FCML_VSIB_ZMM    0x03
+/* Size based on vector length. */
+#define FCML_VSIB_UNDEF  0x04
 
 #define FCML_OP_VSIB_BASE            0x0D000000
 #define FCML_OP_VSIB(vector_index_register, encoded_index_value_size)        \

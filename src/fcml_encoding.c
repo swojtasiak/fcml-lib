@@ -1900,7 +1900,8 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
                 if (index->type == FCML_REG_SIMD) {
                     fcml_usize vsib_reg_size = fcml_fn_def_vsib_reg_to_ds(
                             args->vector_index_register);
-                    if (vsib_reg_size != index->size) {
+                    if (vsib_reg_size != FCML_DS_UNDEF &&
+                            vsib_reg_size != index->size) {
                         FCML_TRACE_MSG("Wrong VSIB size.");
                         error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                     }
@@ -2074,6 +2075,23 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
                 context->epf.b = FCML_TRUE;
             }
 
+            /* Encode VSIB */
+            if (!error && args->is_vsib) {
+                fcml_st_register *index =
+                        &(operand_def->address.effective_address.index);
+                if (index->type == FCML_REG_SIMD) {
+                    if (args->vector_index_register == FCML_VSIB_UNDEF &&
+                            !fcml_ifn_asm_set_vector_length(
+                            &context->optimizer_processing_details,
+                            index->size)) {
+                        error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+                    }
+                } else {
+                    FCML_TRACE_MSG("VSIB encoding needs SIMD index"
+                            " register.");
+                    error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
+                }
+            }
         }
     }
 
@@ -4297,6 +4315,9 @@ fcml_ceh_error fcml_ifn_asm_ipp_EVEX_prefix_encoder(
         /* If vector length wasn't set in the first phase, we have to assume
          * that 128-bit vector length is used. Properly set vector length is
          * needed to encode compressed disp8 for instance. */
+        // TODO: Vector length is used by fcml_ifn_asm_ipp_ModRM_encoder in the second phase.
+        // We should consider moving this code there or somewhere else to make sure
+        // it's properly set in the second phase.
         if (!context->optimizer_processing_details.vector_length) {
             context->optimizer_processing_details.vector_length = FCML_DS_128;
         }
