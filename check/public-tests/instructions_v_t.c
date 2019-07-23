@@ -3873,7 +3873,32 @@ void fcml_tf_instruction_VINSERTF64X2(void) {
     FCML_I64_A_FAILED("vinsertf64x2 zmm3{k2}{z},zmm12,ymm0,14h", 0x62, 0xf3, 0x9D, 0xca, 0x18, 0xd8, 0x14);
 }
 
+void fcml_tf_instruction_VINSERTF32X8(void) {
+    FCML_I64("vinsertf32x8 zmm3,zmm12,ymm0,14h", 0x62, 0xf3, 0x1d, 0x48, 0x1a, 0xd8, 0x14);
+    FCML_I64("vinsertf32x8 zmm3{k2},zmm12,ymm0,14h", 0x62, 0xf3, 0x1d, 0x4a, 0x1a, 0xd8, 0x14);
+    FCML_I64("vinsertf32x8 zmm3{k2}{z},zmm12,ymm0,14h", 0x62, 0xf3, 0x1d, 0xca, 0x1a, 0xd8, 0x14);
+    FCML_I64("vinsertf32x8 zmm3{k2}{z},zmm12,ymmword ptr [r9+r8],14h", 0x62, 0x93, 0x1d, 0xca, 0x1a, 0x1c, 0x01, 0x14);
+    FCML_I64("vinsertf32x8 zmm3{k2}{z},zmm12,ymmword ptr [rsp+00000000000001d0h],14h", 0x62, 0xf3, 0x1d, 0xca, 0x1a, 0x9c, 0x24, 0xd0, 0x01, 0x00, 0x00, 0x14);
+
+    FCML_I64_A_FAILED("vinsertf32x8 zmm3{k2}{z},zmm12,xmmword ptr [r9+r8],14h", 0x62, 0x93, 0x1d, 0xca, 0x1a, 0x1c, 0x01, 0x14);
+    FCML_I64_A_FAILED("vinsertf32x8 zmm3{k2}{z},zmm12,zmm0,14h", 0x62, 0xf3, 0x1d, 0xca, 0x1a, 0xd8, 0x14);
+}
+
+void fcml_tf_instruction_VINSERTF64X4(void) {
+    FCML_I64("vinsertf64x4 zmm3,zmm12,ymm0,14h", 0x62, 0xf3, 0x9d, 0x48, 0x1a, 0xd8, 0x14);
+    FCML_I64("vinsertf64x4 zmm3{k2},zmm12,ymm0,14h", 0x62, 0xf3, 0x9d, 0x4a, 0x1a, 0xd8, 0x14);
+    FCML_I64("vinsertf64x4 zmm3{k2}{z},zmm12,ymm0,14h", 0x62, 0xf3, 0x9d, 0xca, 0x1a, 0xd8, 0x14);
+    FCML_I64("vinsertf64x4 zmm3{k2}{z},zmm12,ymmword ptr [r9+r8],14h", 0x62, 0x93, 0x9d, 0xca, 0x1a, 0x1c, 0x01, 0x14);
+    FCML_I64("vinsertf64x4 zmm3{k2}{z},zmm12,ymmword ptr [rsp+00000000000003a0h],14h", 0x62, 0xf3, 0x9d, 0xca, 0x1a, 0x5c, 0x24, 0x1d, 0x14);
+
+    FCML_I64_A_FAILED("vinsertf64x4 zmm3{k2}{z},zmm12,xmmword ptr [r9+r8],14h", 0x62, 0x93, 0x9D, 0xca, 0x18, 0x1c, 0x01, 0x14);
+    FCML_I64_A_FAILED("vinsertf64x4 zmm3{k2}{z},zmm12,zmm0,14h", 0x62, 0xf3, 0x9D, 0xca, 0x18, 0xd8, 0x14);
+}
+
+
 fcml_stf_test_case fctl_ti_instructions_v[] = {
+    { "fcml_tf_instruction_VINSERTF32X8", fcml_tf_instruction_VINSERTF32X8 },
+    { "fcml_tf_instruction_VINSERTF64X4", fcml_tf_instruction_VINSERTF64X4 },
     { "fcml_tf_instruction_VINSERTF64X2", fcml_tf_instruction_VINSERTF64X2 },
     { "fcml_tf_instruction_VINSERTF32X4", fcml_tf_instruction_VINSERTF32X4 },
     { "fcml_tf_instruction_VGETMANTPD", fcml_tf_instruction_VGETMANTPD },
