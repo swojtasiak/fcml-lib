@@ -1311,6 +1311,7 @@ typedef enum fcml_en_instruction {
     F_VGETMANTPS,
     F_VGETMANTSD,
     F_VGETMANTSS,
+    F_VINSERTF32X4,
     F_VZEROALL,
     F_VZEROUPPER,
     F_VPCOMB,
