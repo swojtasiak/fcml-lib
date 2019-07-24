@@ -1278,6 +1278,7 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("vinserti32x8"), FCML_ASM_DIALECT_INSTRUCTION(F_VINSERTI32X8, FCML_AM_ALL), 0 },
     { FCML_TEXT("vinserti64x4"), FCML_ASM_DIALECT_INSTRUCTION(F_VINSERTI64X4, FCML_AM_ALL), 0 },
     { FCML_TEXT("vpblendmb"), FCML_ASM_DIALECT_INSTRUCTION(F_VPBLENDMB, FCML_AM_ALL), 0 },
+    { FCML_TEXT("vpblendmw"), FCML_ASM_DIALECT_INSTRUCTION(F_VPBLENDMW, FCML_AM_ALL), 0 },
     { FCML_TEXT("vzeroall"), FCML_ASM_DIALECT_INSTRUCTION(F_VZEROALL, FCML_AM_ALL), 0 },
     { FCML_TEXT("vzeroupper"), FCML_ASM_DIALECT_INSTRUCTION(F_VZEROUPPER, FCML_AM_ALL), 0 },
     { FCML_TEXT("vpcomb;vpcomltb[p00];vpcomleb[p01];vpcomgtb[p02];vpcomgeb[p03];vpcomeqb[p04];vpcomneqb[p05];vpcomfalseb[p06];vpcomtrueb[p07]"), FCML_ASM_DIALECT_INSTRUCTION(F_VPCOMB, FCML_AM_ALL), 0 },

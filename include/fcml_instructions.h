@@ -1320,6 +1320,7 @@ typedef enum fcml_en_instruction {
     F_VINSERTI32X8,
     F_VINSERTI64X4,
     F_VPBLENDMB,
+    F_VPBLENDMW,
     F_VZEROALL,
     F_VZEROUPPER,
     F_VPCOMB,
