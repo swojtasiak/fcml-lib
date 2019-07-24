@@ -1322,6 +1322,7 @@ typedef enum fcml_en_instruction {
     F_VPBLENDMB,
     F_VPBLENDMW,
     F_VPBLENDMD,
+    F_VPBLENDMQ,
     F_VZEROALL,
     F_VZEROUPPER,
     F_VPCOMB,
