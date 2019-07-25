@@ -4353,7 +4353,21 @@ void fcml_tf_instruction_VBROADCASTI64X4(void) {
     FCML_A64("vbroadcasti64x4 0x0000000000000040(%rsp),%zmm1{%k4}{z}", 0x62, 0xf2, 0xfd, 0xcc, 0x5b, 0x4c, 0x24, 0x02);
 }
 
+void fcml_tf_instruction_VPBROADCASTMB2Q(void) {
+    FCML_I64("vpbroadcastmb2q xmm1,k1", 0x62, 0xf2, 0xfe, 0x08, 0x2a, 0xc9);
+    FCML_I64("vpbroadcastmb2q ymm1,k2", 0x62, 0xf2, 0xfe, 0x28, 0x2a, 0xca);
+    FCML_I64("vpbroadcastmb2q zmm1,k3", 0x62, 0xf2, 0xfe, 0x48, 0x2a, 0xcb);
+}
+
+void fcml_tf_instruction_VPBROADCASTMW2D(void) {
+    FCML_I64("vpbroadcastmw2d xmm1,k1", 0x62, 0xf2, 0x7e, 0x08, 0x3a, 0xc9);
+    FCML_I64("vpbroadcastmw2d ymm1,k2", 0x62, 0xf2, 0x7e, 0x28, 0x3a, 0xca);
+    FCML_I64("vpbroadcastmw2d zmm1,k3", 0x62, 0xf2, 0x7e, 0x48, 0x3a, 0xcb);
+}
+
 fcml_stf_test_case fctl_ti_instructions_v[] = {
+    { "fcml_tf_instruction_VPBROADCASTMB2Q", fcml_tf_instruction_VPBROADCASTMB2Q },
+    { "fcml_tf_instruction_VPBROADCASTMW2D", fcml_tf_instruction_VPBROADCASTMW2D },
     { "fcml_tf_instruction_VBROADCASTI32X2", fcml_tf_instruction_VBROADCASTI32X2 },
     { "fcml_tf_instruction_VBROADCASTI32X4", fcml_tf_instruction_VBROADCASTI32X4 },
     { "fcml_tf_instruction_VBROADCASTI64X2", fcml_tf_instruction_VBROADCASTI64X2 },
