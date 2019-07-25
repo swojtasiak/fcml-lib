@@ -690,6 +690,12 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 #define FCML_OP_MODRM_M_OP_128_W        (FCML_OP_MODRM_M_OP_128 | FCML_OA_W)
 #define FCML_OP_MODRM_M_OP_128_RW       (FCML_OP_MODRM_M_OP_128 | FCML_OA_RW)
 
+#define FCML_OP_MODRM_M_OP_256          \
+    FCML_OP_RM(FCML_REG_UNDEFINED, FCML_EOS_UNDEFINED, FCML_EOS_YWORD | \
+            FCML_EOS_OPT, FCML_RMF_M)
+#define FCML_OP_MODRM_M_OP_256_W        (FCML_OP_MODRM_M_OP_256 | FCML_OA_W)
+#define FCML_OP_MODRM_M_OP_256_RW       (FCML_OP_MODRM_M_OP_256 | FCML_OA_RW)
+
 #define FCML_OP_MODRM_M_OP_XMM          \
     FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_UNDEFINED, FCML_EOS_XWORD | \
             FCML_EOS_OPT, FCML_RMF_M)
