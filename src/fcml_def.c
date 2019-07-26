@@ -4427,6 +4427,14 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPCMPUB[] = {
     { FCML_AMT_AVX512_SIMD, FCML_TT_FVM, F_EVEX | F_66 | F_W0, 0x00EC8000, { 0x0F, 0x3A, 0x3E }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPCMPW[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FVM, F_EVEX | F_66 | F_W1, 0x00EC8000, { 0x0F, 0x3A, 0x3F }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPCMPUW[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FVM, F_EVEX | F_66 | F_W1, 0x00EC8000, { 0x0F, 0x3A, 0x3E }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPCMPD[] = {
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, F_EVEX | F_66 | F_W0, 0x00EC8000, { 0x0F, 0x3A, 0x1F }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
@@ -6648,6 +6656,8 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_VPBROADCASTMW2D, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPBROADCASTMW2D),
     FCML_IA_INSTRUCTION( F_VPCMPB, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPCMPB),
     FCML_IA_INSTRUCTION( F_VPCMPUB, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPCMPUB),
+    FCML_IA_INSTRUCTION( F_VPCMPW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPCMPW),
+    FCML_IA_INSTRUCTION( F_VPCMPUW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPCMPUW),
     FCML_IA_INSTRUCTION( F_VPCMPD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPCMPD),
     FCML_IA_INSTRUCTION( F_VPCMPUD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPCMPUD),
     FCML_IA_INSTRUCTION( F_VPCMPQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPCMPQ),
