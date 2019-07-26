@@ -1237,6 +1237,8 @@ typedef enum fcml_en_instruction {
     F_VPCMPUQ,
     F_VCOMPRESSPD,
     F_VCOMPRESSPS,
+    F_VPCOMPRESSD,
+    F_VPCOMPRESSQ,
     F_VCVTPD2QQ,
     F_VCVTTPS2UQQ,
     F_VCVTTPS2QQ,
