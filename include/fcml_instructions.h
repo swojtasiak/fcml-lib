@@ -1229,6 +1229,8 @@ typedef enum fcml_en_instruction {
     F_VPBROADCASTMW2D,
     F_VPCMPB,
     F_VPCMPUB,
+    F_VPCMPW,
+    F_VPCMPUW,
     F_VPCMPD,
     F_VPCMPUD,
     F_VPCMPQ,
