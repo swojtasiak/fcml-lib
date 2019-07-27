@@ -1303,6 +1303,7 @@ typedef enum fcml_en_instruction {
     F_VPERMI2W,
     F_VPERMI2D,
     F_VPERMI2Q,
+    F_VPERMI2PS,
     F_VEXTRACTI128,
     F_VINSERTI128,
     F_VPSRAVD,
