@@ -4766,6 +4766,14 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPERMI2PD[] = {
     { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_64, F_EVEX | F_66 | F_W1, 0x00ec8000, { 0x0F, 0x38, 0x77 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
 
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPEXPANDD[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_T1S | FCML_SIMD_ES_32, F_EVEX | F_66 | F_W0, 0x00ec8000, { 0x0F, 0x38, 0x89 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPEXPANDQ[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_T1S | FCML_SIMD_ES_64, F_EVEX | F_66 | F_W1, 0x00ec8000, { 0x0F, 0x38, 0x89 }, { FCML_OP_MODRM_R_SIMD_L_K1_Z_W, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_NA, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
+};
+
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VEXTRACTI128[] = {
     { FCML_AMT_AVX2_SIMD, FCML_NO_DETAILS, 0x10B0, 0x00EC8000, { 0x0F, 0x3A, 0x39 }, { FCML_OP_MODRM_RM_XMM_OP_128_W, FCML_OP_MODRM_R_YMM, FCML_OP_IB, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS }
 };
@@ -6824,6 +6832,8 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_VPERMI2Q, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPERMI2Q),
     FCML_IA_INSTRUCTION( F_VPERMI2PS, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPERMI2PS),
     FCML_IA_INSTRUCTION( F_VPERMI2PD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPERMI2PD),
+    FCML_IA_INSTRUCTION( F_VPEXPANDD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPEXPANDD),
+    FCML_IA_INSTRUCTION( F_VPEXPANDQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPEXPANDQ),
     FCML_IA_INSTRUCTION( F_VEXTRACTI128, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VEXTRACTI128),
     FCML_IA_INSTRUCTION( F_VINSERTI128, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VINSERTI128),
     FCML_IA_INSTRUCTION( F_VPSRAVD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPSRAVD),
