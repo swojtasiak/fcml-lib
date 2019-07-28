@@ -6440,6 +6440,30 @@ void fcml_tf_instruction_VPMOVQ2M(void) {
     FCML_I64("vpmovq2m k1,zmm2", 0x62, 0xf2, 0xfe, 0x48, 0x39, 0xca);
 }
 
+void fcml_tf_instruction_VPMOVM2B(void) {
+    FCML_I64("vpmovm2b xmm1,k2", 0x62, 0xf2, 0x7e, 0x08, 0x28, 0xca);
+    FCML_I64("vpmovm2b ymm1,k2", 0x62, 0xf2, 0x7e, 0x28, 0x28, 0xca);
+    FCML_I64("vpmovm2b zmm1,k2", 0x62, 0xf2, 0x7e, 0x48, 0x28, 0xca);
+}
+
+void fcml_tf_instruction_VPMOVM2W(void) {
+    FCML_I64("vpmovm2w xmm1,k2", 0x62, 0xf2, 0xfe, 0x08, 0x28, 0xca);
+    FCML_I64("vpmovm2w ymm1,k2", 0x62, 0xf2, 0xfe, 0x28, 0x28, 0xca);
+    FCML_I64("vpmovm2w zmm1,k2", 0x62, 0xf2, 0xfe, 0x48, 0x28, 0xca);
+}
+
+void fcml_tf_instruction_VPMOVM2D(void) {
+    FCML_I64("vpmovm2d xmm1,k2", 0x62, 0xf2, 0x7e, 0x08, 0x38, 0xca);
+    FCML_I64("vpmovm2d ymm1,k2", 0x62, 0xf2, 0x7e, 0x28, 0x38, 0xca);
+    FCML_I64("vpmovm2d zmm1,k2", 0x62, 0xf2, 0x7e, 0x48, 0x38, 0xca);
+}
+
+void fcml_tf_instruction_VPMOVM2Q(void) {
+    FCML_I64("vpmovm2q xmm1,k2", 0x62, 0xf2, 0xfe, 0x08, 0x38, 0xca);
+    FCML_I64("vpmovm2q ymm1,k2", 0x62, 0xf2, 0xfe, 0x28, 0x38, 0xca);
+    FCML_I64("vpmovm2q zmm1,k2", 0x62, 0xf2, 0xfe, 0x48, 0x38, 0xca);
+}
+
 void fcml_tf_instruction_VPMOVDB(void) {
     FCML_I32("vpmovdb xmm0,xmm0", 0x62, 0xf2, 0x7e, 0x08, 0x31, 0xc0);
     FCML_I32("vpmovdb xmm0,ymm0", 0x62, 0xf2, 0x7e, 0x28, 0x31, 0xc0);
@@ -6541,6 +6565,10 @@ fcml_stf_test_case fctl_ti_instructions_v[] = {
     { "fcml_tf_instruction_VPMOVW2M", fcml_tf_instruction_VPMOVW2M },
     { "fcml_tf_instruction_VPMOVD2M", fcml_tf_instruction_VPMOVD2M },
     { "fcml_tf_instruction_VPMOVQ2M", fcml_tf_instruction_VPMOVQ2M },
+    { "fcml_tf_instruction_VPMOVM2B", fcml_tf_instruction_VPMOVM2B },
+    { "fcml_tf_instruction_VPMOVM2W", fcml_tf_instruction_VPMOVM2W },
+    { "fcml_tf_instruction_VPMOVM2D", fcml_tf_instruction_VPMOVM2D },
+    { "fcml_tf_instruction_VPMOVM2Q", fcml_tf_instruction_VPMOVM2Q },
     { "fcml_tf_instruction_VPMADD52HUQ", fcml_tf_instruction_VPMADD52HUQ },
     { "fcml_tf_instruction_VPMADD52LUQ", fcml_tf_instruction_VPMADD52LUQ },
     { "fcml_tf_instruction_VPLZCNTD", fcml_tf_instruction_VPLZCNTD },
