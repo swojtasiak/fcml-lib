@@ -1003,6 +1003,12 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 /* AVX-512 */
 
+#define FCML_OP_MODRM_RM_SIMD_REG          \
+    FCML_OP_RM(FCML_REG_SIMD, FCML_EOS_L | FCML_EOS_OPT, \
+            FCML_EOS_UNDEFINED, FCML_RMF_R)
+#define FCML_OP_MODRM_RM_SIMD_REG_W        (FCML_OP_MODRM_RM_SIMD_REG | FCML_OA_W)
+#define FCML_OP_MODRM_RM_SIMD_REG_RW       (FCML_OP_MODRM_RM_SIMD_REG | FCML_OA_RW)
+
 #define FCML_OP_MODRM_RM_K_REG          \
     FCML_OP_RM(FCML_REG_OPMASK, FCML_EOS_QWORD | FCML_EOS_OPT, \
             FCML_EOS_UNDEFINED, FCML_RMF_R)
