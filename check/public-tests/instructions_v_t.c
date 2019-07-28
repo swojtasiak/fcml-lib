@@ -6416,7 +6416,35 @@ void fcml_tf_instruction_VPMADD52LUQ(void) {
     FCML_A64("vpmadd52luq 0x0000000000000040(%rsp){1to2},%xmm2,%xmm1", 0x62, 0xf2, 0xed, 0x18, 0xb4, 0x4c, 0x24, 0x08);
 }
 
+void fcml_tf_instruction_VPMOVB2M(void) {
+    FCML_I64("vpmovb2m k1,xmm2", 0x62, 0xf2, 0x7e, 0x08, 0x29, 0xca);
+    FCML_I64("vpmovb2m k1,ymm2", 0x62, 0xf2, 0x7e, 0x28, 0x29, 0xca);
+    FCML_I64("vpmovb2m k1,zmm2", 0x62, 0xf2, 0x7e, 0x48, 0x29, 0xca);
+}
+
+void fcml_tf_instruction_VPMOVW2M(void) {
+    FCML_I64("vpmovw2m k1,xmm2", 0x62, 0xf2, 0xfe, 0x08, 0x29, 0xca);
+    FCML_I64("vpmovw2m k1,ymm2", 0x62, 0xf2, 0xfe, 0x28, 0x29, 0xca);
+    FCML_I64("vpmovw2m k1,zmm2", 0x62, 0xf2, 0xfe, 0x48, 0x29, 0xca);
+}
+
+void fcml_tf_instruction_VPMOVD2M(void) {
+    FCML_I64("vpmovd2m k1,xmm2", 0x62, 0xf2, 0x7e, 0x08, 0x39, 0xca);
+    FCML_I64("vpmovd2m k1,ymm2", 0x62, 0xf2, 0x7e, 0x28, 0x39, 0xca);
+    FCML_I64("vpmovd2m k1,zmm2", 0x62, 0xf2, 0x7e, 0x48, 0x39, 0xca);
+}
+
+void fcml_tf_instruction_VPMOVQ2M(void) {
+    FCML_I64("vpmovq2m k1,xmm2", 0x62, 0xf2, 0xfe, 0x08, 0x39, 0xca);
+    FCML_I64("vpmovq2m k1,ymm2", 0x62, 0xf2, 0xfe, 0x28, 0x39, 0xca);
+    FCML_I64("vpmovq2m k1,zmm2", 0x62, 0xf2, 0xfe, 0x48, 0x39, 0xca);
+}
+
 fcml_stf_test_case fctl_ti_instructions_v[] = {
+    { "fcml_tf_instruction_VPMOVB2M", fcml_tf_instruction_VPMOVB2M },
+    { "fcml_tf_instruction_VPMOVW2M", fcml_tf_instruction_VPMOVW2M },
+    { "fcml_tf_instruction_VPMOVD2M", fcml_tf_instruction_VPMOVD2M },
+    { "fcml_tf_instruction_VPMOVQ2M", fcml_tf_instruction_VPMOVQ2M },
     { "fcml_tf_instruction_VPMADD52HUQ", fcml_tf_instruction_VPMADD52HUQ },
     { "fcml_tf_instruction_VPMADD52LUQ", fcml_tf_instruction_VPMADD52LUQ },
     { "fcml_tf_instruction_VPLZCNTD", fcml_tf_instruction_VPLZCNTD },
