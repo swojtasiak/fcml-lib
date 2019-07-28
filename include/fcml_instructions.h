@@ -1315,6 +1315,8 @@ typedef enum fcml_en_instruction {
     F_VPEXPANDQ,
     F_VPLZCNTD,
     F_VPLZCNTQ,
+    F_VPMADD52HUQ,
+    F_VPMADD52LUQ,
     F_VEXTRACTI128,
     F_VINSERTI128,
     F_VPSRAVD,
