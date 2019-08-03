@@ -252,6 +252,7 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_OPCODE_FLAGS_POS(x)                  (((x) & 0x00000700) >> 8)
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(x)           (((x) & 0x00007800) >> 11)
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(x)      FCML_TP_GET_BIT(x,15)
+/* Reg/Opcode field is used as an opcode extension. */
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT(x)        FCML_TP_GET_BIT(x,16)
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_NUM(x)           (((x) & 0x000C0000) >> 18)
 #define FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE(x)       (((x) & 0x00300000) >> 20)
@@ -1169,9 +1170,13 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 #define FCML_OP_VEX_VVVV_ZMM_REG        \
     FCML_OP_VEX_VVVV_REG(FCML_REG_SIMD, FCML_EOS_ZWORD)
 #define FCML_OP_VEX_VVVV_K_REG        \
-    FCML_OP_VEX_VVVV_REG(FCML_REG_OPMASK, FCML_EOS_QWORD | FCML_EOS_OPT)
-#define FCML_OP_VEX_VVVV_SIMD_REG_K1_Z   (FCML_OP_VEX_VVVV_SIMD_REG | \
-    FCML_DECOR_Z | FCML_DECOR_K1)
+    FCML_OP_VEX_VVVV_REG(FCML_REG_OPMASK, \
+            FCML_EOS_QWORD | FCML_EOS_OPT)
+#define FCML_OP_VEX_VVVV_SIMD_REG_K1_Z   \
+    (FCML_OP_VEX_VVVV_SIMD_REG | \
+            FCML_DECOR_Z | FCML_DECOR_K1)
+#define FCML_OP_VEX_VVVV_SIMD_REG_K1_Z_W   \
+    (FCML_OP_VEX_VVVV_SIMD_REG_K1_Z | FCML_OA_W)
 
 /* Shorthands for IMM.*/
 
