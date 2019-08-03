@@ -1344,6 +1344,8 @@ typedef enum fcml_en_instruction {
     F_VPMULTISHIFTQB,
     F_VPROLVD,
     F_VPROLVQ,
+    F_VPROLD,
+    F_VPROLQ,
     F_VPMADD52HUQ,
     F_VPMADD52LUQ,
     F_VEXTRACTI128,
