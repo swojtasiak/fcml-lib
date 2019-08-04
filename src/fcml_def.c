@@ -4690,11 +4690,19 @@ struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPTERNLOGQ[] = {
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPTESTMB[] = {
-    { FCML_AMT_AVX512_SIMD, FCML_TT_FVM, F_EVEX | F_66 | F_W0, 0x00EC8000, { 0x0F, 0x38, 0x26 }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FVM, F_EVEX | F_66 | F_W0, 0x00EC8000, { 0x0F, 0x38, 0x26 }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPTESTMW[] = {
-    { FCML_AMT_AVX512_SIMD, FCML_TT_FVM, F_EVEX | F_66 | F_W1, 0x00EC8000, { 0x0F, 0x38, 0x26 }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_OP_IB, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FVM, F_EVEX | F_66 | F_W1, 0x00EC8000, { 0x0F, 0x38, 0x26 }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPTESTMD[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_32, F_EVEX | F_66 | F_W0, 0x00EC8000, { 0x0F, 0x38, 0x27 }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
+};
+
+struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPTESTMQ[] = {
+    { FCML_AMT_AVX512_SIMD, FCML_TT_FV | FCML_SIMD_ES_64, F_EVEX | F_66 | F_W1, 0x00EC8000, { 0x0F, 0x38, 0x27 }, { FCML_OP_MODRM_R_K_K1_W, FCML_OP_VEX_VVVV_SIMD_REG, FCML_OP_MODRM_RM_SIMD_L_BCAST_OP, FCML_NA, FCML_NA }, FCML_AM_UNKNOWN, FCML_HINT_NO_HINTS },
 };
 
 struct fcml_st_def_addr_mode_desc fcml_st_def_addr_mode_desc_VPERMD[] = {
@@ -7097,6 +7105,8 @@ struct fcml_st_def_instruction_desc fcml_ext_instructions_def[] = {
     FCML_IA_INSTRUCTION( F_VPTERNLOGQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPTERNLOGQ),
     FCML_IA_INSTRUCTION( F_VPTESTMB, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPTESTMB),
     FCML_IA_INSTRUCTION( F_VPTESTMW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPTESTMW),
+    FCML_IA_INSTRUCTION( F_VPTESTMD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPTESTMD),
+    FCML_IA_INSTRUCTION( F_VPTESTMQ, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPTESTMQ),
     FCML_IA_INSTRUCTION( F_VPERMD, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPERMD),
     FCML_IA_INSTRUCTION( F_VPERMW, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPERMW),
     FCML_IA_INSTRUCTION( F_VPERMT2W, FCML_EMPTY_MNEMONIC, fcml_st_def_addr_mode_desc_VPERMT2W),
