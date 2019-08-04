@@ -1373,6 +1373,7 @@ typedef enum fcml_en_instruction {
     F_VPTERNLOGD,
     F_VPTERNLOGQ,
     F_VPTESTMB,
+    F_VPTESTMW,
     F_VPERMPD,
     F_VPERMQ,
     F_VPERMPS,
