@@ -127,13 +127,17 @@ typedef fcml_uint32_t fcml_operand_decorators;
 /* SAE is supported by instruction operand. */
 #define FCML_DECOR_SAE        0x100000000000LL
 /* SAE is required by addressing mode. */
-#define FCML_DECOR_SAE_REQ   (0x200000000000LL | FCML_DECOR_SAE)
+#define FCML_DECOR_SAE_REQ    (0x200000000000LL | FCML_DECOR_SAE)
+/* Predicate operand is mandatory and cannot be omited. */
+#define FCML_DECOR_K1_REQ     (0x400000000000LL | FCML_DECOR_K1)
+
 
 /* Operand decorators decoders. Use only on 'fcml_operand_decorators'. */
 
 #define FCML_IS_DECOR_BCAST(x)                ((x) & 0x00000001)
 #define FCML_IS_DECOR_Z(x)                    ((x) & 0x00000002)
 #define FCML_IS_DECOR_OPMASK_REG(x)           ((x) & 0x00000004)
+#define FCML_IS_DECOR_OPMASK_REG_REQ(x)       (((x) & 0x00000044) == 0x00000044)
 #define FCML_IS_DECOR_ER(x)                   ((x) & 0x00000008)
 #define FCML_IS_DECOR_SAE(x)                  ((x) & 0x00000010)
 #define FCML_IS_DECOR_SAE_REQ(x)              (((x) & 0x00000030) == 0x00000030)

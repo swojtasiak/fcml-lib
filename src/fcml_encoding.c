@@ -2544,7 +2544,7 @@ fcml_ist_asm_operand_encoder_def fcml_iarr_asm_def_operand_encoders[] = {
         { fcml_ifn_asm_operand_encoder_isX,
                 fcml_ifn_asm_operand_acceptor_isX, NULL },
         { fcml_ifn_asm_operand_encoder_rm, fcml_ifn_asm_operand_acceptor_rm,
-                NULL },
+                fcml_fn_hts_ihc_modrm_hints },
         { fcml_ifn_asm_operand_encoder_pseudo_op,
                 fcml_ifn_asm_operand_acceptor_pseudo_op, NULL },
         { fcml_ifn_asm_operand_encoder_virtual_op,
@@ -4965,6 +4965,12 @@ fcml_ceh_error fcml_ifn_asm_ipp_op_decorator_acceptor(
             if (!FCML_IS_DECOR_OPMASK_REG(decorators)) {
                 return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
             }
+        }
+
+        /* Opmask register can be mandatory for some instructions. */
+        if (FCML_IS_DECOR_OPMASK_REG_REQ(decorators) &&
+                opmask_reg->type != FCML_REG_OPMASK) {
+            return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
         }
 
         /* Zeroing-masking */

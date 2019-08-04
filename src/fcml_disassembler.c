@@ -1172,7 +1172,7 @@ fcml_ist_dasm_operand_decoder_def fcml_iarr_def_operand_decoders[] = {
     {fcml_ifn_dasm_operand_decoder_vex_vvvv, NULL, NULL}, 
     {fcml_ifn_dasm_operand_decoder_isX, 
         fcml_ifn_dasm_operand_size_calculator_isX, NULL}, 
-    {fcml_ifn_dasm_operand_decoder_rm, NULL, NULL}, 
+    {fcml_ifn_dasm_operand_decoder_rm, NULL, fcml_fn_hts_ihc_modrm_hints},
     {fcml_ifn_dasm_operand_decoder_pseudo_op,
         fcml_ifn_dasm_operand_size_calculator_pseudo_op, 
         fcml_fn_hts_ihc_pseudo_opcode},
