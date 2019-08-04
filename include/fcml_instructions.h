@@ -1370,6 +1370,8 @@ typedef enum fcml_en_instruction {
     F_VPSRLVW,
     F_VPSRLVD,
     F_VPSRLVQ,
+    F_VPTERNLOGD,
+    F_VPTERNLOGQ,
     F_VPERMPD,
     F_VPERMQ,
     F_VPERMPS,
