@@ -147,6 +147,10 @@ fcml_uint32_t fcml_fn_d8n_calculate_n(fcml_uint32_t tuple_type,
         n = 16;
         break;
 
+    case FCML_TT_T1x4:
+        n = 16;
+        break;
+
     case FCML_TT_DUP:
         n = fcml_fn_disp8_n_for_vector_len(vl, 8, 32, 64);
         break;

@@ -1493,7 +1493,9 @@ typedef enum fcml_en_instruction {
     F_XTEST,
     F_RDSEED,
     F_CLAC,
-    F_STAC
+    F_STAC,
+    F_V4FMADDPS,
+    F_V4FNMADDPS
 } fcml_en_instruction;
 
 /** @} */

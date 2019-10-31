@@ -408,6 +408,8 @@ typedef fcml_int64_t fcml_ip;
 #define FCML_TT_OVM             11
 #define FCML_TT_M128            12
 #define FCML_TT_DUP             13
+#define FCML_TT_T1x4            14 /* Tuple1_4X */
+
 
 /* Embedded rounding mode. */
 
