@@ -1325,6 +1325,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
     { FCML_TEXT("rdseed"), FCML_ASM_DIALECT_INSTRUCTION( F_RDSEED, FCML_AM_ALL ), 0 },
     { FCML_TEXT("clac"), FCML_ASM_DIALECT_INSTRUCTION( F_CLAC, FCML_AM_ALL ), 0 },
     { FCML_TEXT("stac"), FCML_ASM_DIALECT_INSTRUCTION( F_STAC, FCML_AM_ALL ), 0 },
+    { FCML_TEXT("v4fmaddps"), FCML_ASM_DIALECT_INSTRUCTION(F_V4FMADDPS, FCML_AM_ALL), 0 },
+    { FCML_TEXT("v4fnmaddps"), FCML_ASM_DIALECT_INSTRUCTION(F_V4FNMADDPS, FCML_AM_ALL), 0 },
     { NULL, 0, 0 }
 };
 
