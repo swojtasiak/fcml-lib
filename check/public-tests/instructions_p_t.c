@@ -7088,6 +7088,13 @@ void fcml_tf_instruction_PREFETCH(void) {
     FCML_A64( "prefetchw (%rax)", 0x0f, 0x0d, 0x08 );
 }
 
+void fcml_tf_instruction_PREFETCHWT1(void) {
+    FCML_I32("prefetchwt1 byte ptr [eax]", 0x0f, 0x0d, 0x10);
+    FCML_I64("prefetchwt1 byte ptr [rax]", 0x0f, 0x0d, 0x10);
+    FCML_A64("prefetchwt1 (%rax)", 0x0f, 0x0d, 0x10);
+    FCML_A64("prefetchwt1 (%rax)", 0x0f, 0x0d, 0x10);
+}
+
 void fcml_tf_instruction_PF2IW(void) {
 
     FCML_I32( "pf2iw mm0,mmword ptr [eax]", 0x0F, 0x0F, 0x00, 0x1C );
@@ -7162,6 +7169,7 @@ void fcml_tf_instruction_PEXT(void) {
 }
 
 fcml_stf_test_case fctl_ti_instructions_p[] = {
+    { "fcml_tf_instruction_PREFETCHWT1", fcml_tf_instruction_PREFETCHWT1 },
     { "fcml_tf_instruction_PABS", fcml_tf_instruction_PABS },
     { "fcml_tf_instruction_PACKSS", fcml_tf_instruction_PACKSS },
     { "fcml_tf_instruction_PACKUSD", fcml_tf_instruction_PACKUSD },

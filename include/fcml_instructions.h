@@ -908,6 +908,7 @@ typedef enum fcml_en_instruction {
     F_PREFETCHT1,
     F_PREFETCHNTA,
     F_PREFETCHT0,
+    F_PREFETCHWT1,
     F_PSADBW,
     F_VPSADBW,
     F_PSHUFB,
