@@ -1507,7 +1507,9 @@ typedef enum fcml_en_instruction {
     F_VGATHERPF1DPS,
     F_VGATHERPF1QPS,
     F_VGATHERPF1DPD,
-    F_VGATHERPF1QPD
+    F_VGATHERPF1QPD,
+    F_VP4DPWSSDS,
+    F_VP4DPWSSD
 } fcml_en_instruction;
 
 /** @} */
