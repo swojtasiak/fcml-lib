@@ -1513,7 +1513,11 @@ typedef enum fcml_en_instruction {
     F_VRCP28PD,
     F_VRCP28SD,
     F_VRCP28PS,
-    F_VRCP28SS
+    F_VRCP28SS,
+    F_VRSQRT28PD,
+    F_VRSQRT28SD,
+    F_VRSQRT28PS,
+    F_VRSQRT28SS
 } fcml_en_instruction;
 
 /** @} */
