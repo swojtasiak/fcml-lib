@@ -1499,7 +1499,11 @@ typedef enum fcml_en_instruction {
     F_V4FMADDSS,
     F_V4FNMADDSS,
     F_VEXP2PD,
-    F_VEXP2PS
+    F_VEXP2PS,
+    F_VGATHERPF0DPS,
+    F_VGATHERPF0QPS,
+    F_VGATHERPF0DPD,
+    F_VGATHERPF0QPD
 } fcml_en_instruction;
 
 /** @} */
