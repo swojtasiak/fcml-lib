@@ -9436,7 +9436,39 @@ void fcml_tf_instruction_VGATHERPF0QPD(void) {
     FCML_A64("vgatherpf0qpd 0x0000000000000020(%rax,%zmm5){%k3}", 0x62, 0xf2, 0xfd, 0x4b, 0xc7, 0x4c, 0x28, 0x04);
 }
 
+void fcml_tf_instruction_VGATHERPF1DPS(void) {
+    FCML_I32("vgatherpf1dps dword ptr [eax+zmm5]{k1}", 0x62, 0xf2, 0x7d, 0x49, 0xc6, 0x14, 0x28);
+    FCML_I32("vgatherpf1dps dword ptr [eax+zmm5+00000020h]{k3}", 0x62, 0xf2, 0x7d, 0x4b, 0xc6, 0x54, 0x28, 0x08);
+    FCML_A64("vgatherpf1dps (%rax,%zmm5){%k1}", 0x62, 0xf2, 0x7d, 0x49, 0xc6, 0x14, 0x28);
+    FCML_A64("vgatherpf1dps 0x0000000000000020(%rax,%zmm5){%k3}", 0x62, 0xf2, 0x7d, 0x4b, 0xc6, 0x54, 0x28, 0x08);
+}
+
+void fcml_tf_instruction_VGATHERPF1QPS(void) {
+    FCML_I32("vgatherpf1qps mmword ptr [eax+zmm5]{k1}", 0x62, 0xf2, 0x7d, 0x49, 0xc7, 0x14, 0x28);
+    FCML_I32("vgatherpf1qps mmword ptr [eax+zmm5+00000020h]{k3}", 0x62, 0xf2, 0x7d, 0x4b, 0xc7, 0x54, 0x28, 0x08);
+    FCML_A64("vgatherpf1qps (%rax,%zmm5){%k1}", 0x62, 0xf2, 0x7d, 0x49, 0xc7, 0x14, 0x28);
+    FCML_A64("vgatherpf1qps 0x0000000000000020(%rax,%zmm5){%k3}", 0x62, 0xf2, 0x7d, 0x4b, 0xc7, 0x54, 0x28, 0x08);
+}
+
+void fcml_tf_instruction_VGATHERPF1DPD(void) {
+    FCML_I32("vgatherpf1dpd dword ptr [eax+ymm5]{k1}", 0x62, 0xf2, 0xfd, 0x49, 0xc6, 0x14, 0x28);
+    FCML_I32("vgatherpf1dpd dword ptr [eax+ymm5+00000020h]{k3}", 0x62, 0xf2, 0xfd, 0x4b, 0xc6, 0x54, 0x28, 0x04);
+    FCML_A64("vgatherpf1dpd (%rax,%ymm5){%k1}", 0x62, 0xf2, 0xfd, 0x49, 0xc6, 0x14, 0x28);
+    FCML_A64("vgatherpf1dpd 0x0000000000000020(%rax,%ymm5){%k3}", 0x62, 0xf2, 0xfd, 0x4b, 0xc6, 0x54, 0x28, 0x04);
+}
+
+void fcml_tf_instruction_VGATHERPF1QPD(void) {
+    FCML_I32("vgatherpf1qpd mmword ptr [eax+zmm5]{k1}", 0x62, 0xf2, 0xfd, 0x49, 0xc7, 0x14, 0x28);
+    FCML_I32("vgatherpf1qpd mmword ptr [eax+zmm5+00000020h]{k3}", 0x62, 0xf2, 0xfd, 0x4b, 0xc7, 0x54, 0x28, 0x04);
+    FCML_A64("vgatherpf1qpd (%rax,%zmm5){%k1}", 0x62, 0xf2, 0xfd, 0x49, 0xc7, 0x14, 0x28);
+    FCML_A64("vgatherpf1qpd 0x0000000000000020(%rax,%zmm5){%k3}", 0x62, 0xf2, 0xfd, 0x4b, 0xc7, 0x54, 0x28, 0x04);
+}
+
 fcml_stf_test_case fctl_ti_instructions_v[] = {
+    { "fcml_tf_instruction_VGATHERPF1DPS", fcml_tf_instruction_VGATHERPF1DPS },
+    { "fcml_tf_instruction_VGATHERPF1QPS", fcml_tf_instruction_VGATHERPF1QPS },
+    { "fcml_tf_instruction_VGATHERPF1DPD", fcml_tf_instruction_VGATHERPF1DPD },
+    { "fcml_tf_instruction_VGATHERPF1QPD", fcml_tf_instruction_VGATHERPF1QPD },
     { "fcml_tf_instruction_VGATHERPF0DPS", fcml_tf_instruction_VGATHERPF0DPS },
     { "fcml_tf_instruction_VGATHERPF0QPS", fcml_tf_instruction_VGATHERPF0QPS },
     { "fcml_tf_instruction_VGATHERPF0DPD", fcml_tf_instruction_VGATHERPF0DPD },
