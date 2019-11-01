@@ -1456,6 +1456,8 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_gas_mnemonics[] = {
     { FCML_TEXT("stac"), FCML_ASM_DIALECT_INSTRUCTION(F_STAC, FCML_AM_ALL), 0 },
     { FCML_TEXT("v4fmaddps"), FCML_ASM_DIALECT_INSTRUCTION(F_V4FMADDPS, FCML_AM_ALL), 0 },
     { FCML_TEXT("v4fnmaddps"), FCML_ASM_DIALECT_INSTRUCTION(F_V4FNMADDPS, FCML_AM_ALL), 0 },
+    { FCML_TEXT("v4fmaddss"), FCML_ASM_DIALECT_INSTRUCTION(F_V4FMADDSS, FCML_AM_ALL), 0 },
+    { FCML_TEXT("v4fnmaddss"), FCML_ASM_DIALECT_INSTRUCTION(F_V4FNMADDSS, FCML_AM_ALL), 0 },
     { NULL, 0, 0 }
 };
 
