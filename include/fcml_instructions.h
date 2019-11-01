@@ -1495,7 +1495,9 @@ typedef enum fcml_en_instruction {
     F_CLAC,
     F_STAC,
     F_V4FMADDPS,
-    F_V4FNMADDPS
+    F_V4FNMADDPS,
+    F_V4FMADDSS,
+    F_V4FNMADDSS
 } fcml_en_instruction;
 
 /** @} */
