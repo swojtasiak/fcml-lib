@@ -46,24 +46,34 @@ typedef struct fcml_st_assembler fcml_st_assembler;
  * Assembler runtime configuration.
  */
 typedef struct fcml_st_assembler_conf {
-    /** Set to true in order to force assembler to increment IP address by length of the assembled instruction. */
+    /** Set to true in order to force assembler to increment IP address by
+     * length of the assembled instruction. */
     fcml_bool increment_ip;
-    /** True if optional error and warning messages should be collected during processing. */
+    /** True if optional error and warning messages should be collected
+     *  during processing. */
     fcml_bool enable_error_messages;
-    /** If there are SIB and "ModR/M only" encodings available, choose the SIB based one. */
+    /** If there are SIB and "ModR/M only" encodings available, choose
+     * the SIB based one. */
     fcml_bool choose_sib_encoding;
-    /** If memory address can be encoded as relative or absolute value choose the absolute addressing. It works in 64 bit mode only. */
+    /** If memory address can be encoded as relative or absolute value choose
+     * the absolute addressing. It works in 64 bit mode only. */
     fcml_bool choose_abs_encoding;
-    /** Sometimes REX prefix is useless so it is just omitted in the final machine code. By setting this flag to true you can force this prefix to be added anyway. */
+    /** Sometimes REX prefix is useless so it is just omitted in the final
+     * machine code. By setting this flag to true you can force this prefix
+to be added anyway. */
     fcml_bool force_rex_prefix;
-    /** Every 2 byte VEX/XOP prefix can be encoded using three byte form. Setting this flag to true forces it. */
+    /** Every 2 byte VEX/XOP prefix can be encoded using three byte form.
+     * Setting this flag to true forces it. */
     fcml_bool force_three_byte_VEX;
-    /** Optimizer implementation that should be used by assembler. Setting it to NULL causes assembler to use default one. */
+    /** Optimizer implementation that should be used by assembler. Setting it
+     *  to NULL causes assembler to use default one. */
     fcml_fnp_asm_optimizer optimizer;
-    /** This field is passed to the chosen optimizer. It can be used to configure its behavior. */
+    /** This field is passed to the chosen optimizer. It can be used to
+     *  configure its behavior. */
     fcml_uint16_t optimizer_flags;
-    /** instruction chooser implementation that should be used by assembler to choose most appropriate instruction encoding.
-     * Setting this value to NULL cause assembler to use default instruction chooser. */
+    /** instruction chooser implementation that should be used by assembler
+     * to choose most appropriate instruction encoding. Setting this value to
+     * NULL cause assembler to use default instruction chooser. */
     fcml_fnp_asm_instruction_chooser chooser;
 } fcml_st_assembler_conf;
 
@@ -120,7 +130,8 @@ typedef struct fcml_st_assembler_context {
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  * @see fcml_fn_assembler_free
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assembler_init( const fcml_st_dialect *dialect, fcml_st_assembler **assembler );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assembler_init(
+        const fcml_st_dialect *dialect, fcml_st_assembler **assembler);
 
 /**
  * Assembles one instruction encoded in the generic instruction model.
@@ -134,44 +145,53 @@ LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assembler_init( const fcml_st_dialect
  * thread safe.
  *
  * @param context Assembler context (Assembler, Entry Point, Configuration).
- * @param instruction Instruction encoded as generic instruction model (Dialect dependent).
+ * @param instruction Instruction encoded as generic instruction model
+ * (Dialect dependent).
  * @param result Result holder (Remember to prepare it appropriately).
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  * @see fcml_fn_assembler_result_prepare fcml_fn_assembler_init
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assemble( fcml_st_assembler_context *context, const fcml_st_instruction *instruction,
-        fcml_st_assembler_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_assemble(
+        fcml_st_assembler_context *context,
+        const fcml_st_instruction *instruction,
+        fcml_st_assembler_result *result);
 
 /**
  * Prepares reusable result holder for assembler.
- * Every instance of fcml_st_assembler_result structure is reusable from the assembler's
- * point of view, so it has to be prepared in the right way in order to allow assembler to
- * reuse it correctly. It is up to the library user to allocate space for the holder itself.
- * This function is only responsible for cleaning the structure correctly and preparing it
- * for the first assembling process. Notice that assembler has to clean the result holder at the
- * beginning so you can not pass an uninitialized memory block because it can even cause
- * a crash due to illegal memory access.
+ * Every instance of fcml_st_assembler_result structure is reusable from
+ * the assembler's point of view, so it has to be prepared in the right way
+ * in order to allow assembler to reuse it correctly. It is up to the library
+ * user to allocate space for the holder itself. This function is only
+ * responsible for cleaning the structure correctly and preparing it for the
+ * first assembling process. Notice that assembler has to clean the result
+ * holder at the beginning so you can not pass an uninitialized memory block
+ * because it can even cause a crash due to illegal memory access.
  *
  * @param result Result holder instance to be prepared.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_assembler_result_prepare( fcml_st_assembler_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_assembler_result_prepare(
+        fcml_st_assembler_result *result);
 
 /**
  * Cleans result holder.
- * Frees all memory blocks allocated by the assembler and held inside the result holder (Instructions, errors etc.).
- * Notice that result holder itself is not freed and can be even safety reused after call to this function.
- * In fact this function is also called internally by the assembler in order to clean result holder before
- * reusing it.
+ * Frees all memory blocks allocated by the assembler and held inside the
+ * result holder (Instructions, errors etc.). Notice that result holder itself
+ * is not freed and can be even safety reused after call to this function. In
+ * fact this function is also called internally by the assembler in order to
+ * clean result holder before reusing it.
  * @param result Result holder to clean.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_assembler_result_free( fcml_st_assembler_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_assembler_result_free(
+        fcml_st_assembler_result *result);
 
 /**
  * Frees assembled instruction.
- * Take into account that it does not free whole chain recursively but only the one instruction you have provided.
+ * Take into account that it does not free whole chain recursively but only
+ * the one instruction you have provided.
  * @param instruction Instruction to be freed.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_assembler_instruction_free( fcml_st_assembled_instruction *instruction );
+LIB_EXPORT void LIB_CALL fcml_fn_assembler_instruction_free(
+        fcml_st_assembled_instruction *instruction);
 
 /**
  * Detaches given instruction from the instructions chain.
@@ -188,7 +208,9 @@ LIB_EXPORT void LIB_CALL fcml_fn_assembler_instruction_free( fcml_st_assembled_i
  * @param instruction Instruction to be detached from the chain.
  *
  */
-LIB_EXPORT void LIB_CALL fcml_fn_assembler_instruction_detach( fcml_st_assembled_instruction **chain, fcml_st_assembled_instruction *instruction );
+LIB_EXPORT void LIB_CALL fcml_fn_assembler_instruction_detach(
+        fcml_st_assembled_instruction **chain,
+        fcml_st_assembled_instruction *instruction);
 
 /**
  * Frees assembler instance.
@@ -196,7 +218,7 @@ LIB_EXPORT void LIB_CALL fcml_fn_assembler_instruction_detach( fcml_st_assembled
  * to be deallocated as soon as it is not needed anymore.
  * @param assembler Assembler to be freed.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_assembler_free( fcml_st_assembler *assembler );
+LIB_EXPORT void LIB_CALL fcml_fn_assembler_free(fcml_st_assembler *assembler);
 
 #ifdef __cplusplus
 }

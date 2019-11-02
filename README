@@ -14,4 +14,4 @@ Currently it supports such features as:
 * Portable - written entirely in C (no external dependencies)
 * Supported instruction sets: MMX, 3D-Now!, SSE, SSE2, SSE3, SSSE3, 
 	SSE4.1, SSE4.2, SSE4A, AVX, AVX2, AES, TBM, BMI1, BMI2, 
-	HLE, ADX, CLMUL, RDRAND, RDSEED, FMA, FMA4, LWP, SVM, XOP, VMX, SMX
+	HLE, ADX, CLMUL, RDRAND, RDSEED, FMA, FMA4, LWP, SVM, XOP, VMX, SMX, AVX-512, XEON PHI

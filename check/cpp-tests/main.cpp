@@ -32,7 +32,6 @@
 #include "disassembler_t.hpp"
 #include "errors_t.hpp"
 #include "parser_t.hpp"
-#include "avx512_t.hpp"
 
 fcml_stf_test_suite *fcml_arr_cpp_suites[] = {
     &fcml_si_cpp_dialect,
@@ -42,7 +41,6 @@ fcml_stf_test_suite *fcml_arr_cpp_suites[] = {
     &fcml_si_cpp_errors,
     &fcml_si_cpp_parser,
     &fcml_si_cpp_assembler,
-    &fcml_si_cpp_avx512,
     FCML_STF_NULL_SUITE
 };
 

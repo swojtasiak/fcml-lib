@@ -44,9 +44,10 @@ namespace fcml {
  */
 class AssemblingFailedException: public ErrorContainerAwareException {
 public:
-    AssemblingFailedException( const fcml_cstring msg, ErrorContainer errorContainer = ErrorContainer(),
-            fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) :
-        ErrorContainerAwareException( msg, errorContainer, error ){
+    AssemblingFailedException(const fcml_cstring msg,
+            ErrorContainer errorContainer = ErrorContainer(),
+            fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR) :
+            ErrorContainerAwareException(msg, errorContainer, error) {
     }
 };
 
@@ -61,20 +62,22 @@ public:
      *
      * @param buffer Pointer to the machine code buffer.
      * @param len Number of machine code bytes.
-     * @param errorContainer Potential warnings related to the assembled instruction.
+     * @param errorContainer Potential warnings related to the
+     *  assembled instruction.
      * @since 1.1.0
      *
      */
-    AssembledInstruction( const fcml_uint8_t *buffer, fcml_usize len, const ErrorContainer &errorContainer ) {
-        set( buffer, len, errorContainer );
+    AssembledInstruction(const fcml_uint8_t *buffer, fcml_usize len,
+            const ErrorContainer &errorContainer) {
+        set(buffer, len, errorContainer);
     }
 
     /**
      * Copy constructor.
      * @since 1.1.0
      */
-    AssembledInstruction( const AssembledInstruction& cpy ) {
-        set( cpy._code, cpy._codeLength, cpy._warningContainer );
+    AssembledInstruction(const AssembledInstruction &cpy) {
+        set(cpy._code, cpy._codeLength, cpy._warningContainer);
     }
 
     /**
@@ -84,12 +87,12 @@ public:
      * @return A reference to the destination instruction.
      * @since 1.1.0
      */
-    AssembledInstruction& operator=( const AssembledInstruction &cpy ) {
-        if ( &cpy != this ) {
-            if( this->_code ) {
-                delete [] this->_code;
+    AssembledInstruction& operator=(const AssembledInstruction &cpy) {
+        if (&cpy != this) {
+            if (this->_code) {
+                delete[] this->_code;
             }
-            set( cpy._code, cpy._codeLength, cpy._warningContainer );
+            set(cpy._code, cpy._codeLength, cpy._warningContainer);
         }
         return *this;
     }
@@ -98,8 +101,8 @@ public:
      * @since 1.1.0
      */
     virtual ~AssembledInstruction() {
-        if( _code ) {
-            delete [] _code;
+        if (_code) {
+            delete[] _code;
             _code = NULL;
         }
     }
@@ -146,11 +149,12 @@ private:
      * @param warnings The warnings container.
      * @since 1.1.0
      */
-    void set( const fcml_uint8_t *buffer, fcml_usize len, const ErrorContainer warnigns ) {
+    void set(const fcml_uint8_t *buffer, fcml_usize len,
+            const ErrorContainer warnigns) {
         _warningContainer = warnigns;
-        if( len > 0 ) {
+        if (len > 0) {
             _code = new fcml_uint8_t[len];
-            for( fcml_usize i = 0; i < len; i++ ) {
+            for (fcml_usize i = 0; i < len; i++) {
                 _code[i] = buffer[i];
             }
         } else {
@@ -182,7 +186,7 @@ public:
      * @since 1.1.0
      */
     AssemblerResult() :
-        _chosenInstructionIndex(-1) {
+            _chosenInstructionIndex(-1) {
     }
 
 public:
@@ -194,10 +198,10 @@ public:
      * @since 1.1.0
      */
     const AssembledInstruction* getChosenInstruction() const {
-        if( _chosenInstructionIndex == -1 ) {
+        if (_chosenInstructionIndex == -1) {
             return NULL;
         }
-        return &(_assembledInstructions[ _chosenInstructionIndex ]);
+        return &(_assembledInstructions[_chosenInstructionIndex]);
     }
 
     /**
@@ -217,7 +221,7 @@ public:
      * @since 1.1.0
      */
     fcml_usize getSize() const {
-		return static_cast<fcml_usize>(_assembledInstructions.size());
+        return static_cast<fcml_usize>(_assembledInstructions.size());
     }
 
     /**
@@ -227,7 +231,7 @@ public:
      * @since 1.1.0
      */
     operator const AssembledInstruction*() const {
-        if( _chosenInstructionIndex == -1 ) {
+        if (_chosenInstructionIndex == -1) {
             return NULL;
         }
         return &(_assembledInstructions[_chosenInstructionIndex]);
@@ -240,9 +244,10 @@ public:
      * @throw BadArgumentException Array index out of bound.
      * @since 1.1.0
      */
-    const AssembledInstruction& operator[] ( fcml_usize index ) const {
-        if( index > _assembledInstructions.size() ) {
-            throw BadArgumentException(FCML_TEXT("Array index out of bound."), FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
+    const AssembledInstruction& operator[](fcml_usize index) const {
+        if (index > _assembledInstructions.size()) {
+            throw BadArgumentException(FCML_TEXT("Array index out of bound."),
+                    FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
         }
         return _assembledInstructions[index];
     }
@@ -255,21 +260,24 @@ public:
      * @return Output stream from the parameter.
      * @since 1.1.0
      */
-    friend std::basic_ostream<fcml_uint8_t>& operator<< ( std::basic_ostream<fcml_uint8_t> &out, const AssemblerResult &result ) {
+    friend std::basic_ostream<fcml_uint8_t>& operator<<(
+            std::basic_ostream<fcml_uint8_t> &out,
+            const AssemblerResult &result) {
         const AssembledInstruction *assembled = result.getChosenInstruction();
-        if( assembled ) {
+        if (assembled) {
             // If chosen instruction is not available, do not
             // stream anything. It's not so common, because
             // instructions choosers are obliged to chose something.
-            if( assembled->getCode() && assembled->getCodeLength() > 0 ) {
-                out.write( assembled->getCode(), assembled->getCodeLength() );
+            if (assembled->getCode() && assembled->getCodeLength() > 0) {
+                out.write(assembled->getCode(), assembled->getCodeLength());
             }
         }
         return out;
     }
 
     /**
-     * Clears assembler result by removing all assembled instructions, errors and reseting the chosen instruction.
+     * Clears assembler result by removing all assembled instructions,
+     * errors and reseting the chosen instruction.
      * @since 1.1.0
      */
     void clear() {
@@ -282,7 +290,7 @@ protected:
 
     friend Assembler;
 
-    void setErrorContainer(const ErrorContainer& errorContainer) {
+    void setErrorContainer(const ErrorContainer &errorContainer) {
         _errorContainer = errorContainer;
     }
 
@@ -290,7 +298,7 @@ protected:
         return _assembledInstructions;
     }
 
-    void setChoosenInstructionIndex( fcml_int index ) {
+    void setChoosenInstructionIndex(fcml_int index) {
         _chosenInstructionIndex = index;
     }
 
@@ -306,7 +314,8 @@ private:
 };
 
 /** Assembler configuration.
- * For more information about the flags, see fcml_st_assembler_conf structure documentation.
+ * For more information about the flags, see fcml_st_assembler_conf
+ * structure documentation.
  * @since 1.1.0
  */
 class AssemblerConf {
@@ -316,17 +325,17 @@ public:
      * @since 1.1.0
      */
     AssemblerConf() :
-        _throwExceptionOnError(true),
-        _incrementIp(true),
-        _enableErrorMessages(true),
-        _chooseSibEncoding(false),
-        _chooseAbsEncoding(false),
-        _forceRexPrefix(false),
-        _forceThreeByteVEX(false),
-        _noBranchPrediction(false),
-        _optimizer(NULL),
-        _optimizerFlags(0),
-        _chooser(NULL) {
+            _throwExceptionOnError(true),
+            _incrementIp(true),
+            _enableErrorMessages(true),
+            _chooseSibEncoding(false),
+            _chooseAbsEncoding(false),
+            _forceRexPrefix(false),
+            _forceThreeByteVEX(false),
+            _noBranchPrediction(false),
+            _optimizer(NULL),
+            _optimizerFlags(0),
+            _chooser(NULL) {
     }
 
 public:
@@ -460,7 +469,8 @@ public:
     /**
      * Returns true if exception should be thrown when assembling fails.
      *
-     * @return True if exception is the preferred way of error handling in case of failure.
+     * @return True if exception is the preferred way of error handling
+     *  in case of failure.
      * @since 1.1.0
      */
     bool isThrowExceptionOnError() const {
@@ -470,7 +480,8 @@ public:
     /**
      * Sets the way how the error handling is done.
      *
-     * @param throwExceptionOnError True if exception should be thrown in case of failure.
+     * @param throwExceptionOnError True if exception should be thrown
+     *  in case of failure.
      * @since 1.1.0
      */
     void setThrowExceptionOnError(bool throwExceptionOnError) {
@@ -507,14 +518,15 @@ public:
     }
 
     /**
-     * Creates an entry point instance for given operating mode and optional instruction pointer.
+     * Creates an entry point instance for given operating mode
+     *  and optional instruction pointer.
      *
      * @param operatingMode The processor operating mode.
      * @param ip The instruction pointer.
      * @since 1.1.0
      */
-    AssemblerContext( EntryPoint::OperatingMode operatingMode, fcml_ip ip = 0 ) :
-        _entryPoint( operatingMode, ip ) {
+    AssemblerContext(EntryPoint::OperatingMode operatingMode, fcml_ip ip = 0) :
+            _entryPoint(operatingMode, ip) {
     }
 
 public:
@@ -552,7 +564,8 @@ public:
     }
 
     /**
-     * Gets reference to the constant entry point instance associated with the context.
+     * Gets reference to the constant entry point instance
+     * associated with the context.
      *
      * @return Reference to the constant entry point.
      * @since 1.1.0
@@ -588,18 +601,19 @@ public:
      * @param ip The new IP.
      * @since 1.1.0
      */
-    void setIP( fcml_ip ip ) {
+    void setIP(fcml_ip ip) {
         _entryPoint.setIP(ip);
     }
 
     /**
      * Increments entry point by given number of bytes.
      *
-     * @param ip Number of bytes the instruction pointer has to be incremented by.
+     * @param ip Number of bytes the instruction pointer
+     * has to be incremented by.
      * @since 1.1.0
      */
-    void incrementIP( fcml_ip ip ) {
-        _entryPoint.incrementIP( ip );
+    void incrementIP(fcml_ip ip) {
+        _entryPoint.incrementIP(ip);
     }
 
     /**
@@ -608,8 +622,8 @@ public:
      * @param operatingMode Processor operating mode to be set.
      * @since 1.1.0
      */
-    void setOperatingMode( EntryPoint::OperatingMode operatingMode ) {
-        _entryPoint.setOpMode( operatingMode );
+    void setOperatingMode(EntryPoint::OperatingMode operatingMode) {
+        _entryPoint.setOpMode(operatingMode);
     }
 
     /**
@@ -618,8 +632,8 @@ public:
      * @param addressSizeAttribute The address size attribute.
      * @since 1.1.0
      */
-    void setAddressSizeAttribute( fcml_usize addressSizeAttribute ) {
-       _entryPoint.setAddressSizeAttribute( addressSizeAttribute );
+    void setAddressSizeAttribute(fcml_usize addressSizeAttribute) {
+        _entryPoint.setAddressSizeAttribute(addressSizeAttribute);
     }
 
     /**
@@ -628,8 +642,8 @@ public:
      * @param operandSizeAttribute The operand size attribute.
      * @since 1.1.0
      */
-    void setOperandSizeAttribute( fcml_usize operandSizeAttribute ) {
-       _entryPoint.setOperandSizeAttribute( operandSizeAttribute );
+    void setOperandSizeAttribute(fcml_usize operandSizeAttribute) {
+        _entryPoint.setOperandSizeAttribute(operandSizeAttribute);
     }
 
 private:
@@ -648,33 +662,38 @@ private:
 class AssemblerTypeConverter {
 public:
 
-    static void convert( const fcml_st_assembler_context &src, AssemblerContext &dest ) {
+    static void convert(const fcml_st_assembler_context &src,
+            AssemblerContext &dest) {
+        // Converts assembler configuration and entry point.
+        // Both of them have dedicated conversion methods.
+        convert(src.configuration, dest.getConfig());
+        TypeConverter::convert(src.entry_point, dest.getEntryPoint());
+    }
+
+    static void convert(const AssemblerContext &src,
+            fcml_st_assembler_context &dest) {
         // Converts assembler configuration and entry point. Both of them
         // have dedicated conversion methods.
-        convert( src.configuration, dest.getConfig() );
-        TypeConverter::convert( src.entry_point, dest.getEntryPoint() );
+        convert(src.getConfig(), dest.configuration);
+        TypeConverter::convert(src.getEntryPoint(), dest.entry_point);
     }
 
-    static void convert( const AssemblerContext &src, fcml_st_assembler_context &dest ) {
-        // Converts assembler configuration and entry point. Both of them
-        // have dedicated conversion methods.
-        convert( src.getConfig(), dest.configuration );
-        TypeConverter::convert( src.getEntryPoint(), dest.entry_point );
+    static void convert(const fcml_st_assembler_conf &src,
+            AssemblerConf &dest) {
+        dest.setChooseAbsEncoding(FCML_TO_CPP_BOOL(src.choose_abs_encoding));
+        dest.setChooseSibEncoding(FCML_TO_CPP_BOOL(src.choose_sib_encoding));
+        dest.setChooser(src.chooser);
+        dest.setEnableErrorMessages(
+                FCML_TO_CPP_BOOL(src.enable_error_messages));
+        dest.setForceRexPrefix(FCML_TO_CPP_BOOL(src.force_rex_prefix));
+        dest.setForceThreeByteVex(FCML_TO_CPP_BOOL(src.force_three_byte_VEX));
+        dest.setIncrementIp(FCML_TO_CPP_BOOL(src.increment_ip));
+        dest.setOptimizer(src.optimizer);
+        dest.setOptimizerFlags(src.optimizer_flags);
     }
 
-    static void convert( const fcml_st_assembler_conf &src, AssemblerConf &dest ) {
-		dest.setChooseAbsEncoding( FCML_TO_CPP_BOOL( src.choose_abs_encoding ) );
-        dest.setChooseSibEncoding( FCML_TO_CPP_BOOL( src.choose_sib_encoding ) );
-        dest.setChooser( src.chooser );
-        dest.setEnableErrorMessages( FCML_TO_CPP_BOOL( src.enable_error_messages ) );
-        dest.setForceRexPrefix( FCML_TO_CPP_BOOL( src.force_rex_prefix ) );
-        dest.setForceThreeByteVex( FCML_TO_CPP_BOOL( src.force_three_byte_VEX ) );
-        dest.setIncrementIp( FCML_TO_CPP_BOOL( src.increment_ip ) );
-        dest.setOptimizer( src.optimizer );
-        dest.setOptimizerFlags( src.optimizer_flags );
-    }
-
-    static void convert( const AssemblerConf &src, fcml_st_assembler_conf &dest ) {
+    static void convert(const AssemblerConf &src,
+            fcml_st_assembler_conf &dest) {
         dest.choose_abs_encoding = src.isChooseAbsEncoding();
         dest.choose_sib_encoding = src.isChooseSibEncoding();
         dest.chooser = src.getChooser();
@@ -690,7 +709,8 @@ public:
 
 /**
  * An assembler wrapper.
- * As you can see the assembler instance is managed internally and is not exposed outside.
+ * As you can see the assembler instance is managed internally
+ * and is not exposed outside.
  * @since 1.1.0
  * @remarks This class is thread-safe.
  */
@@ -706,9 +726,11 @@ public:
      */
     Assembler(Dialect &dialect) :
             _dialect(dialect) {
-        fcml_ceh_error error = ::fcml_fn_assembler_init( extractDialect( dialect ), &_assembler);
+        fcml_ceh_error error = ::fcml_fn_assembler_init(extractDialect(dialect),
+                &_assembler);
         if (error) {
-            throw InitException(FCML_TEXT("Cannot initialize the assembler."), error);
+            throw InitException(FCML_TEXT("Cannot initialize the assembler."),
+                    error);
         }
     }
 
@@ -730,25 +752,27 @@ public:
      * @param ctx The assembler context.
      * @param instruction The generic instruction model to be assembled.
      * @param[out] result Assembler result.
-     * @throw AssemblingFailedException Thrown if assembling fails and AssemblerConf.isThrowExceptionOnError returns true.
+     * @throw AssemblingFailedException Thrown if assembling fails
+     * and AssemblerConf.isThrowExceptionOnError returns true.
      * @return Error code.
      * @since 1.1.0
      */
-    fcml_ceh_error assemble( AssemblerContext &ctx, const Instruction &instruction, AssemblerResult &result ) {
+    fcml_ceh_error assemble(AssemblerContext &ctx,
+            const Instruction &instruction, AssemblerResult &result) {
 
         // Prepare assembler context.
         fcml_st_assembler_context context;
-        AssemblerTypeConverter::convert( ctx, context );
+        AssemblerTypeConverter::convert(ctx, context);
 
         context.assembler = _assembler;
 
         // Prepare instruction.
         fcml_st_instruction inst;
-        TypeConverter::convert( instruction, inst );
+        TypeConverter::convert(instruction, inst);
 
         // Prepare assembler result.
         fcml_st_assembler_result res;
-        ::fcml_fn_assembler_result_prepare( &res );
+        ::fcml_fn_assembler_result_prepare(&res);
 
         fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -756,39 +780,47 @@ public:
 
             result.clear();
 
-            error = ::fcml_fn_assemble( &context, &inst, &res );
+            error = ::fcml_fn_assemble(&context, &inst, &res);
 
             // Free instruction mnemonic.
-            TypeConverter::free( inst );
+            TypeConverter::free(inst);
 
             // Failed or not, convert assembler errors.
             ErrorContainer errorContainer;
-            ErrorTypeConverter::convert( res.errors, errorContainer );
+            ErrorTypeConverter::convert(res.errors, errorContainer);
 
             // Prepares assembler result.
-            result.setErrorContainer( errorContainer );
+            result.setErrorContainer(errorContainer);
 
-            if( error && ctx.getConfig().isThrowExceptionOnError() ) {
-                ::fcml_fn_assembler_result_free( &res );
-                throw AssemblingFailedException( FCML_TEXT("Assembling failed."), errorContainer, error );
+            if (error && ctx.getConfig().isThrowExceptionOnError()) {
+                ::fcml_fn_assembler_result_free(&res);
+                throw AssemblingFailedException(FCML_TEXT("Assembling failed."),
+                        errorContainer, error);
             }
 
-            if( !error ) {
+            if (!error) {
 
-                std::vector<AssembledInstruction> &assembledInstructions = result.getAssembledInstructions();
+                std::vector<AssembledInstruction> &assembledInstructions =
+                        result.getAssembledInstructions();
 
                 assembledInstructions.clear();
 
-                if( res.number_of_instructions > 0 ) {
+                if (res.number_of_instructions > 0) {
                     ErrorContainer instructionWarnings;
                     fcml_int i = 0;
-                    fcml_st_assembled_instruction *next_instruction = res.instructions;
-                    while( next_instruction ) {
-                        fcml_st_ceh_error_container &instruction_warnings = next_instruction->warnings;
-                        ErrorTypeConverter::convert( instruction_warnings, instructionWarnings );
-                        AssembledInstruction assembledInstruction( next_instruction->code, next_instruction->code_length, instructionWarnings );
-                        assembledInstructions.push_back( assembledInstruction );
-                        if( next_instruction == res.chosen_instruction ) {
+                    fcml_st_assembled_instruction *next_instruction =
+                            res.instructions;
+                    while (next_instruction) {
+                        fcml_st_ceh_error_container &instruction_warnings =
+                                next_instruction->warnings;
+                        ErrorTypeConverter::convert(instruction_warnings,
+                                instructionWarnings);
+                        AssembledInstruction assembledInstruction(
+                                next_instruction->code,
+                                next_instruction->code_length,
+                                instructionWarnings);
+                        assembledInstructions.push_back(assembledInstruction);
+                        if (next_instruction == res.chosen_instruction) {
                             result.setChoosenInstructionIndex(i);
                         }
                         next_instruction = next_instruction->next;
@@ -798,16 +830,17 @@ public:
 
                 // Convert it back to the context because it might have been
                 // modified during assembling process (IP incrementing etc).
-                TypeConverter::convert( context.entry_point, ctx.getEntryPoint() );
+                TypeConverter::convert(context.entry_point,
+                        ctx.getEntryPoint());
 
             }
 
-            ::fcml_fn_assembler_result_free( &res );
+            ::fcml_fn_assembler_result_free(&res);
 
-        } catch( std::exception &exc ) {
+        } catch (std::exception &exc) {
             // If anything failed, free assembler results.
-            TypeConverter::free( inst );
-            ::fcml_fn_assembler_result_free( &res );
+            TypeConverter::free(inst);
+            ::fcml_fn_assembler_result_free(&res);
             throw exc;
         }
 
@@ -844,12 +877,10 @@ public:
      * @param assembledInstructions Assembled instructions.
      * @since 1.1.0
      */
-    CodeIterator( std::vector<AssembledInstruction> &assembledInstructions ) :
-        _buffer(NULL),
-        _len(0),
-        _pos(0),
-        _iterator(assembledInstructions.begin()),
-        _assembledInstructions(assembledInstructions) {
+    CodeIterator(std::vector<AssembledInstruction> &assembledInstructions) :
+            _buffer(NULL), _len(0), _pos(0), _iterator(
+                    assembledInstructions.begin()), _assembledInstructions(
+                    assembledInstructions) {
     }
 
     /**
@@ -865,11 +896,11 @@ public:
      * @since 1.1.0
      */
     bool hasNext() {
-        if( _buffer && _pos >= _len ) {
+        if (_buffer && _pos >= _len) {
             _buffer = NULL;
         }
-        if( !_buffer ) {
-            if( _iterator == _assembledInstructions.end() ) {
+        if (!_buffer) {
+            if (_iterator == _assembledInstructions.end()) {
                 return false;
             }
             AssembledInstruction &current = *_iterator++;
@@ -888,8 +919,9 @@ public:
      * @since 1.1.0
      */
     fcml_uint8_t next() {
-        if( ( !_buffer || _pos >= _len ) && !hasNext() ) {
-            throw IllegalStateException( FCML_TEXT( "No more elements in the iterator." ) );
+        if ((!_buffer || _pos >= _len) && !hasNext()) {
+            throw IllegalStateException(
+                    FCML_TEXT("No more elements in the iterator."));
         }
         return _buffer[_pos++];
     }

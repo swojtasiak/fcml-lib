@@ -19,7 +19,7 @@ Currently it supports such features as:
   - C++ wrapper available
   - Supported instruction sets: MMX, 3D-Now!, SSE, SSE2, SSE3, SSSE3, 
 	SSE4.1, SSE4.2, SSE4A, AVX, AVX2, AES, TBM, BMI1, BMI2, 
-	HLE, ADX, CLMUL, RDRAND, RDSEED, FMA, FMA4, LWP, SVM, XOP, VMX, SMX
+	HLE, ADX, CLMUL, RDRAND, RDSEED, FMA, FMA4, LWP, SVM, XOP, VMX, SMX, AVX-512, XEON PHI
 
 The following sections show a few examples in C++ language. Do not treat them as a reference manual or anything like that. They are here just to give you a general overview how the C++ API looks like. If you are interested in a bit more sophisticated use cases do not hesitate to look into the official manual on the http://www.fcml-lib.com.
 
