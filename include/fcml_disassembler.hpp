@@ -1970,10 +1970,7 @@ private:
  */
 class DisassemblerTypeConverter {
 
-protected:
-
-    friend class Disassembler;
-    friend class Renderer;
+public:
 
     static void convert( const DisassemblerContext &src, fcml_st_disassembler_context &dest ) {
         dest.code = src.getCode();
@@ -1995,7 +1992,7 @@ protected:
     static void convert(const fcml_st_decoded_modrm_details &src,
             DecodedModRMDetails &dest) {
         dest.setRip(FCML_TO_CPP_BOOL(src.is_rip));
-        Nullable<fcml_uint8_t> modRM;
+        Nullable<fcml_uint8_t> &modRM = dest.getModRM();
         modRM.setNotNull(FCML_TO_CPP_BOOL(src.is_modrm));
         modRM.setValue(src.modrm);
         Nullable<fcml_uint8_t> &sib = dest.getSib();
@@ -2034,16 +2031,17 @@ protected:
             InstructionPrefixDetails &dest) {
         dest.setMandatoryPrefix(FCML_TO_CPP_BOOL(src.mandatory_prefix));
         dest.setPrefix(src.prefix);
-        dest.setPrefixType(dest.getPrefixType());
+        dest.setPrefixType(static_cast<InstructionPrefixDetails::PrefixType>(src.prefix_type));
         ::memcpy(dest.getAvxBytes(), src.avx_bytes,
                 sizeof(src.avx_bytes));
     }
 
-    static void convert( const InstructionPrefixDetails &src, fcml_st_instruction_prefix &dest ) {
+    static void convert( const InstructionPrefixDetails &src,
+            fcml_st_instruction_prefix &dest ) {
         dest.mandatory_prefix = src.isMandatoryPrefix();
         dest.prefix = src.getPrefix();
         dest.prefix_type = static_cast<fcml_en_prefix_types>( src.getPrefixType() );
-        ::memcpy( dest.avx_bytes, src.getAvxBytes(), 2 );
+        ::memcpy(dest.avx_bytes, src.getAvxBytes(), sizeof(dest.avx_bytes));
     }
 
     static void convert(const fcml_st_prefixes_details src,
@@ -2087,35 +2085,35 @@ protected:
         for(int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++) {
             convert(src.getPrefixes(i), dest.prefixes[i]);
         }
-        dest.prefixes_count  = src.getPrefixesCount();
-        dest.prefixes_bytes_count  = src.getPrefixesBytesCount();
-        dest.is_branch  = src.isBranch();
-        dest.is_nobranch  = src.isNobranch();
-        dest.is_lock  = src.isLock();
-        dest.is_rep  = src.isRep();
-        dest.is_repne  = src.isRepne();
-        dest.is_xrelease  = src.isXrelease();
-        dest.is_xacquire  = src.isXacquire();
-        dest.is_vex  = src.isVex();
-        dest.is_xop  = src.isXop();
-        dest.is_avx  = src.isAvx();
-        dest.is_evex  = src.isEvex();
-        dest.is_rex  = src.isRex();
+        dest.prefixes_count = src.getPrefixesCount();
+        dest.prefixes_bytes_count = src.getPrefixesBytesCount();
+        dest.is_branch = src.isBranch();
+        dest.is_nobranch = src.isNobranch();
+        dest.is_lock = src.isLock();
+        dest.is_rep = src.isRep();
+        dest.is_repne = src.isRepne();
+        dest.is_xrelease = src.isXrelease();
+        dest.is_xacquire = src.isXacquire();
+        dest.is_vex = src.isVex();
+        dest.is_xop = src.isXop();
+        dest.is_avx = src.isAvx();
+        dest.is_evex = src.isEvex();
+        dest.is_rex = src.isRex();
         dest.avx_first_byte  = src.getAvxFirstByte();
-        dest.R  = src.getR();
-        dest.R_prim  = src.getRPrim();
-        dest.X  = src.getX();
-        dest.B  = src.getB();
-        dest.W  = src.getW();
-        dest.L  = src.getL();
-        dest.L_prim  = src.getLPrim();
-        dest.mmmm  = src.getMmmm();
-        dest.vvvv  = src.getVvvv();
-        dest.V_prim  = src.getVPrim();
-        dest.pp  = src.getPp();
-        dest.aaa  = src.getAaa();
-        dest.b  = src.getBcast();
-        dest.z  = src.getZ();
+        dest.R = src.getR();
+        dest.R_prim = src.getRPrim();
+        dest.X = src.getX();
+        dest.B = src.getB();
+        dest.W = src.getW();
+        dest.L = src.getL();
+        dest.L_prim = src.getLPrim();
+        dest.mmmm = src.getMmmm();
+        dest.vvvv = src.getVvvv();
+        dest.V_prim = src.getVPrim();
+        dest.pp = src.getPp();
+        dest.aaa = src.getAaa();
+        dest.b = src.getBcast();
+        dest.z = src.getZ() ? 1 : 0;
     }
 
     static void convert( const fcml_st_instruction_details &src, InstructionDetails &dest ) {
@@ -2132,6 +2130,10 @@ protected:
         convert( src.modrm_details, dest.getModRmDetails() );
         for( int i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
             convert( src.operand_details[i], dest.getOperandDetails(i) );
+        }
+        fcml_uint8_t *code = dest.getInstructionCode();
+        for( int i = 0; i < FCML_INSTRUCTION_SIZE; i++ ) {
+            code[i] = src.instruction_code[i];
         }
         convert( src.prefixes_details, dest.getPrefixesDetails() );
     }
@@ -2150,6 +2152,9 @@ protected:
         convert( src.getModRmDetails(), dest.modrm_details );
         for( int i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
             convert( src.getOperandDetails(i), dest.operand_details[i] );
+        }
+        for( int i = 0; i < FCML_INSTRUCTION_SIZE; i++ ) {
+            dest.instruction_code[i] = src.getInstructionCode()[i];
         }
         convert( src.getPrefixesDetails(), dest.prefixes_details );
     }
