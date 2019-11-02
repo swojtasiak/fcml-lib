@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2017 Slawomir Wojtasiak
+ * Copyright (C) 2010-2019 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1422,8 +1422,8 @@ public:
      * @param N N nullable value.
      * @since 2.0.0
      */
-    void setN(const Nullable<fcml_uint8_t> &N) {
-        _sib = N;
+    void setN(const Nullable<fcml_uint32_t> &N) {
+        _N = N;
     }
 
     /**
@@ -1912,7 +1912,7 @@ protected:
      * @return Instruction details.
      * @since 1.1.0
      */
-    InstructionDetails& getInstructionDetails() {
+    InstructionDetails& getInstructionDetailsInternal() {
         return _instructionDetails;
     }
 
@@ -2003,7 +2003,7 @@ protected:
         sib.setValue( src.sib.value );
         TypeConverter::convert(src.displacement.displacement,
                         dest.getDisplacement());
-        Nullable<fcml_uint8_t> N;
+        Nullable<fcml_uint32_t> N;
         N.setNotNull(FCML_TO_CPP_BOOL(src.displacement.N.is_not_null));
         N.setValue(src.displacement.N.value);
         dest.setN(N);
@@ -2156,7 +2156,7 @@ protected:
 
     static void convert( const fcml_st_disassembler_result &src, DisassemblerResult &dest ) {
         TypeConverter::convert( src.instruction, dest.getInstructionInternal() );
-        convert( src.instruction_details, dest.getInstructionDetails() );
+        convert( src.instruction_details, dest.getInstructionDetailsInternal() );
     }
 
     static void convert( const DisassemblerResult &src, fcml_st_disassembler_result &dest ) {
