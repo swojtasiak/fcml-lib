@@ -51,19 +51,24 @@ typedef struct fcml_st_disassembler fcml_st_disassembler;
 
 /** Disassembler configuration. */
 typedef struct fcml_st_disassembler_conf {
-    /** Set to true in order to make disassembler to increment IP address by length of the disassembled instruction. */
+    /** Set to true in order to make disassembler to increment IP address by
+     * length of the disassembled instruction. */
     fcml_bool increment_ip;
-    /** True if optional error and warning messages should be collected during processing. */
+    /** True if optional error and warning messages should be collected
+     * during processing. */
     fcml_bool enable_error_messages;
     /** True if suffixes for carry flag has to be used by disassembler.*/
     fcml_bool carry_flag_conditional_suffix;
-    /** There are two groups of suffixes for conditional instructions, you can choose which one should be used. */
+    /** There are two groups of suffixes for conditional instructions, you
+     * can choose which one should be used. */
     fcml_uint8_t conditional_group;
     /** Set to true in order to use short forms.
-     * For instance 'cmpsb' will be used instead of 'cmps byte ptr [si],byte ptr [di]'
+     * For instance 'cmpsb' will be used instead of
+     * 'cmps byte ptr [si],byte ptr [di]'
      */
     fcml_bool short_forms;
-    /** True if displacement should be sign extended to effective address size; otherwise false. */
+    /** True if displacement should be sign extended to effective
+     * address size; otherwise false. */
     fcml_bool extend_disp_to_asa;
     /** If set to true assembler will return FCML_CEH_GEC_UNKNOWN_INSTRUCTION
      * error code if instruction is not known.
@@ -87,7 +92,8 @@ typedef struct fcml_st_disassembler_context {
 
 /* Prefixes */
 
-/** Available types of instruction prefixes. For more information see Intel/AMD Architecture Manual. */
+/** Available types of instruction prefixes. For more information see
+ * Intel/AMD Architecture Manual. */
 typedef enum fcml_en_prefix_types {
     FCML_PT_GROUP_UNKNOWN = 0,
     FCML_PT_GROUP_1 = 1,
@@ -203,7 +209,8 @@ typedef struct fcml_st_decoded_modrm_details {
     fcml_uint8_t modrm;
     /** SIB byte if exists.*/
     fcml_nuint8_t sib;
-    /** True if RIP encoding is used by decoded instruction. This flag is used only in 64 bit mode. */
+    /** True if RIP encoding is used by decoded instruction. This flag is
+     * used only in 64 bit mode. */
     fcml_bool is_rip;
     /** True if ModR/M exists. */
     fcml_bool is_modrm;
@@ -214,12 +221,14 @@ typedef struct fcml_st_decoded_modrm_details {
 /** Additional instruction details provided by disassembler. */
 typedef struct fcml_st_instruction_details {
     /** True if this is a shortcut.
-     * A good example of such instruction is 'cmpsb' as opposed to 'cmps byte ptr [si],byte ptr [di]'.
-     * It is very important to take this information into consideration when instruction
-     * models are analyzed because there is no operands in the GIM for shortcuts.
+     * A good example of such instruction is 'cmpsb' as opposed to
+     * 'cmps byte ptr [si],byte ptr [di]'. It is very important to take this
+     * information into consideration when instruction models are analyzed
+     * because there is no operands in the GIM for shortcuts.
      */
     fcml_bool is_shortcut;
-    /** True if given instruction is a short form of pseudo-ops instructions. See 'vcmpunordsd' for instance. */
+    /** True if given instruction is a short form of pseudo-ops instructions.
+     * See 'vcmpunordsd' for instance. */
     fcml_bool is_pseudo_op;
     /** Code of the disassembled instruction. */
     fcml_uint8_t instruction_code[FCML_INSTRUCTION_SIZE];
@@ -232,18 +241,21 @@ typedef struct fcml_st_instruction_details {
     /** Details about decoded ModR/M and SIB bytes. */
     fcml_st_decoded_modrm_details modrm_details;
     /** Opcode field 's'.
-     * This is set only for informational purpose only and you should not use it for any critical functionality.
+     * This is set only for informational purpose only and you should not
+     * use it for any critical functionality.
      */
     fcml_bool opcode_field_s_bit;
     /** Opcode field 'w'.
-     * This is set only for informational purpose only and you should not use it for any critical functionality.
+     * This is set only for informational purpose only and you should not
+     * use it for any critical functionality.
      */
     fcml_bool opcode_field_w_bit;
     /** Instruction code/number. @see fcml_instructions.h header file. */
     fcml_en_instruction instruction;
     /** Pseudo operation code. */
     fcml_en_pseudo_operations pseudo_op;
-    /** Code of the instruction form/addressing mode of the instruction above. */
+    /** Code of the instruction form/addressing mode of the instruction
+     *  above. */
     fcml_uint16_t addr_mode;
     /** Instruction group. */
     fcml_uint64_t instruction_group;
@@ -255,7 +267,8 @@ typedef struct fcml_st_instruction_details {
 typedef struct fcml_st_disassembler_result {
     /** All errors and warnings messages going here. */
     fcml_st_ceh_error_container errors;
-    /** Additional disassembler specific information about decoded instruction. */
+    /** Additional disassembler specific information about decoded
+     *  instruction. */
     fcml_st_instruction_details instruction_details;
     /** Decoded instruction in its generic form.*/
     fcml_st_instruction instruction;
@@ -263,17 +276,19 @@ typedef struct fcml_st_disassembler_result {
 
 /**
  * Initializes disassembler instance.
- * Initializes disassembler instance for given dialect. Disassembler initialized in
- * such a way is dialect dependent and generates generic instruction models compliant
- * to the syntax supported by the dialect (Intel, AT&T). Every disassembler instance has
- * to be freed using fcml_fn_disassembler_free() function as soon as it is not needed anymore.
+ * Initializes disassembler instance for given dialect. Disassembler
+ * initialized in such a way is dialect dependent and generates generic
+ * instruction models compliant to the syntax supported by the dialect
+ * (Intel, AT&T). Every disassembler instance has to be freed using
+ * fcml_fn_disassembler_free() function as soon as it is not needed anymore.
  *
  * @param dialect Dialect for newly created disassembler.
  * @param[out] disassembler Initialized disassembler instance.
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  * @see fcml_fn_disassembler_free
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( const fcml_st_dialect *dialect, fcml_st_disassembler **disassembler );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassembler_init(
+        const fcml_st_dialect *dialect, fcml_st_disassembler **disassembler);
 
 /**
  * Disassembles one instruction from provided code buffer.
@@ -291,41 +306,48 @@ LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassembler_init( const fcml_st_dial
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  * @see fcml_fn_disassembler_result_free
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassemble( fcml_st_disassembler_context *context, fcml_st_disassembler_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_disassemble(
+        fcml_st_disassembler_context *context,
+        fcml_st_disassembler_result *result);
 
 /**
  * Prepares reusable result holder for disassembler.
- * Every instance of fcml_st_disassembler_result structure is reusable from the disassembler's
- * point of view, so it has to be prepared in the right way in order to allow disassembler to
- * reuse it correctly. It is up to the library user to allocate space for the holder itself.
- * This function is only responsible for cleaning the structure correctly and preparing it
- * for first disassembling process. Notice that disassembler has to clean the result holder
- * at the beginning so you can not pass an uninitialized memory block because it can even
- * cause a crash due to illegal memory access.
+ * Every instance of fcml_st_disassembler_result structure is reusable from
+ * the disassembler's point of view, so it has to be prepared in the right
+ * way in order to allow disassembler to reuse it correctly. It is up to the
+ * library user to allocate space for the holder itself. This function is only
+ * responsible for cleaning the structure correctly and preparing it for first
+ * disassembling process. Notice that disassembler has to clean the result
+ * holder at the beginning so you can not pass an uninitialized memory
+ * block because it can even cause a crash due to illegal memory access.
  *
  * @param result Result holder instance to be prepared.
  * @see fcml_fn_disassembler_result_free
  */
-LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_prepare( fcml_st_disassembler_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_prepare(
+        fcml_st_disassembler_result *result);
 
 /**
  * Cleans result holder.
- * Frees all memory blocks allocated by the disassembler and held inside the result holder
- * (Instructions, errors etc.). Notice that result holder itself is not freed and can be
- * even safety reused after calling this function. In fact this function is also called
- * internally by assembler in order to clean result holder before reusing it.
+ * Frees all memory blocks allocated by the disassembler and held inside
+ * the result holder (Instructions, errors etc.). Notice that result holder
+ * itself is not freed and can be even safety reused after calling this
+ * function. In fact this function is also called internally by assembler in
+ * order to clean result holder before reusing it.
  *
  * @param result Result holder to clean.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_free( fcml_st_disassembler_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_disassembler_result_free(
+        fcml_st_disassembler_result *result);
 
 /**
  * Frees disassembler instance.
- * Every disassembler instance manages some resources internally and as such it has
- * to be deallocated as soon as it is not needed anymore.
+ * Every disassembler instance manages some resources internally and as
+ * such it has to be deallocated as soon as it is not needed anymore.
  * @param disassembler Disassembler to be freed.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_disassembler_free( fcml_st_disassembler *disassembler );
+LIB_EXPORT void LIB_CALL fcml_fn_disassembler_free(
+        fcml_st_disassembler *disassembler);
 
 #ifdef __cplusplus
 }

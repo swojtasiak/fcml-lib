@@ -54,8 +54,8 @@ protected:
      * @since 1.1.0
      */
     virtual ~Dialect() {
-        if ( _dialect ) {
-            ::fcml_fn_dialect_free( _dialect );
+        if (_dialect) {
+            ::fcml_fn_dialect_free(_dialect);
             _dialect = NULL;
         }
     }
@@ -70,7 +70,7 @@ protected:
      * @return The wrapped FCML dialect.
      * @since 1.1.0
      */
-    fcml_st_dialect *getDialect() const {
+    fcml_st_dialect* getDialect() const {
         return _dialect;
     }
 
@@ -80,7 +80,7 @@ protected:
      * @param dialect The new dialect for the wrapper.
      * @since 1.1.0
      */
-    void setDialect( fcml_st_dialect *dialect ) {
+    void setDialect(fcml_st_dialect *dialect) {
         this->_dialect = dialect;
     }
 
@@ -91,7 +91,8 @@ private:
 
 };
 
-/** Inherit from this class in order to get access to the native FCML dialect structure.
+/** Inherit from this class in order to get access to the native FCML
+ * dialect structure.
  * @since 1.1.0
  */
 class DialectAware {
@@ -101,24 +102,26 @@ public:
      * Default constructor.
      * @since 1.1.0
      */
-    DialectAware() {}
+    DialectAware() {
+    }
 
     /**
      * Virtual destructor.
      * @since 1.1.0
      */
-    virtual ~DialectAware() {}
+    virtual ~DialectAware() {
+    }
 
-     /**
-      * Extracts the native FCML dialect from the dialect object.
-      *
-      * @param dialect The wrapper.
-      * @return The wrapped FCML dialect.
-      * @since 1.1.0
-      */
-     fcml_st_dialect *extractDialect( const Dialect &dialect ) const {
-         return dialect.getDialect();
-     }
+    /**
+     * Extracts the native FCML dialect from the dialect object.
+     *
+     * @param dialect The wrapper.
+     * @return The wrapped FCML dialect.
+     * @since 1.1.0
+     */
+    fcml_st_dialect* extractDialect(const Dialect &dialect) const {
+        return dialect.getDialect();
+    }
 };
 
 }
