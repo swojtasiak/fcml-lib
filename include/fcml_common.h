@@ -643,10 +643,7 @@ typedef struct fcml_st_address {
  * Rounding mode.
  */
 typedef enum fcml_en_embeeded_rounding_control {
-    FCML_ERC_RNE,
-    FCML_ERC_RD,
-    FCML_ERC_RU,
-    FCML_ERC_RZ
+    FCML_ERC_RNE, FCML_ERC_RD, FCML_ERC_RU, FCML_ERC_RZ
 } fcml_en_embeeded_rounding_control;
 
 /**
