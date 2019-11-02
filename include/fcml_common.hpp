@@ -120,7 +120,7 @@ template<typename T>
 class Nullable {
 public:
 
-    Nullable( const T& value, bool is_not_null = false ) :
+    Nullable( const T& value, bool is_not_null = true ) :
         _value( value ), _is_not_null( is_not_null ) {
     }
 
@@ -9084,8 +9084,7 @@ public:
         convert(src.operand_mask_reg, dest.getOpmaskReg());
     }
 
-    static void convert(const Decorators &src,
-            fcml_st_operand_decorators &dest) {
+    static void convert(const Decorators &src, fcml_st_operand_decorators &dest) {
         dest.bcast.is_not_null = src.getBcast().isNotNull();
         dest.bcast.value = src.getBcast().getValue();
         dest.er.is_not_null = src.getEr().isNotNull();

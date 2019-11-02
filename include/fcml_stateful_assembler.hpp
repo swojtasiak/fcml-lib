@@ -63,7 +63,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler( Assembler &assembler, AssemblerContext &context, bool enableParser = false ) :
-        _instructionBuilder(IB(FCML_TEXT(""))),
+        _instructionBuilder(IB(FCML_TEXT("")), false),
         _assembler(assembler),
         _context(context),
         _codeLength(0) {

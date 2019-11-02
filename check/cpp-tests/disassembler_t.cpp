@@ -29,6 +29,7 @@
 #include <fcml_gas_dialect.hpp>
 #include <fcml_stateful_disassembler.hpp>
 #include <fcml_gas_mnemonics.hpp>
+#include <string.h>
 
 using namespace fcml;
 using namespace fcml::gas;
@@ -201,12 +202,237 @@ void fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only_stream(void) {
 
 }
 
+void fcml_tf_cpp_disassembleshould_convert_instruction_details_correctly(void) {
+
+    fcml_st_instruction_details details = {};
+
+    fcml_st_prefixes_details *prefixes_details = &(details.prefixes_details);
+    prefixes_details->B = 1;
+    prefixes_details->L = 2;
+    prefixes_details->L_prim = 3;
+    prefixes_details->R = 4;
+    prefixes_details->R_prim = 5;
+    prefixes_details->V_prim = 6;
+    prefixes_details->W = 7;
+    prefixes_details->X = 8;
+    prefixes_details->aaa = 9;
+    prefixes_details->avx_first_byte = 10;
+    prefixes_details->b = 1;
+    prefixes_details->is_avx = FCML_TRUE;
+    prefixes_details->is_branch = FCML_TRUE;
+    prefixes_details->is_evex = FCML_TRUE;
+    prefixes_details->is_lock = FCML_TRUE;
+    prefixes_details->is_nobranch = FCML_TRUE;
+    prefixes_details->is_rep = FCML_TRUE;
+    prefixes_details->is_repne = FCML_TRUE;
+    prefixes_details->is_rex = FCML_TRUE;
+    prefixes_details->is_vex = FCML_TRUE;
+    prefixes_details->is_xacquire = FCML_TRUE;
+    prefixes_details->is_xop = FCML_TRUE;
+    prefixes_details->is_xrelease = FCML_TRUE;
+    prefixes_details->mmmm = 12;
+    prefixes_details->pp = 13;
+
+    fcml_st_instruction_prefix *prefix = &(prefixes_details->prefixes[0]);
+    prefix->prefix = 0x62;
+    prefix->avx_bytes[0] = 0x31;
+    prefix->avx_bytes[1] = 0x40;
+    prefix->avx_bytes[2] = 0x64;
+    prefix->prefix_type = FCML_PT_EVEX;
+    prefix->mandatory_prefix = FCML_TRUE;
+
+    prefixes_details->prefixes_bytes_count = 1;
+    prefixes_details->prefixes_count = 8;
+    prefixes_details->vvvv = 14;
+    prefixes_details->z = 1;
+
+    fcml_st_decoded_modrm_details *modrm_details = &(details.modrm_details);
+    modrm_details->displacement.N.value = 8;
+    modrm_details->displacement.N.is_not_null = FCML_TRUE;
+    modrm_details->displacement.displacement.size = 32;
+    modrm_details->displacement.displacement.int32= 0x12345678;
+    modrm_details->is_modrm = FCML_TRUE;
+    modrm_details->is_rip = FCML_TRUE;
+    modrm_details->modrm = 0x40;
+    modrm_details->sib.value = 0x20;
+    modrm_details->sib.is_not_null = FCML_TRUE;
+
+    details.operand_details[0].access_mode  = FCML_AM_READ_WRITE;
+    details.operand_details[1].access_mode  = FCML_AM_READ;
+    details.operand_details[2].access_mode  = FCML_AM_WRITE;
+    details.operand_details[3].access_mode  = FCML_AM_READ_WRITE;
+    details.operand_details[4].access_mode  = FCML_AM_READ_WRITE;
+
+    details.is_shortcut = FCML_TRUE;
+    details.is_pseudo_op = FCML_TRUE;
+    details.instruction_code[0] = 0x01;
+    details.instruction_code[FCML_INSTRUCTION_SIZE - 1] = 0xFF;
+
+    details.instruction_size = 15;
+    details.opcode_field_s_bit = FCML_TRUE;
+    details.opcode_field_w_bit = FCML_TRUE;
+    details.instruction = F_VAESDEC;
+    details.pseudo_op = FP_DB;
+
+    details.pseudo_op = FP_DB;
+    details.addr_mode = 0x1111;
+    details.instruction_group = FCML_AMT_GPI;
+    details.tuple_type = FCML_TT_M128;
+
+    InstructionDetails destDetails;
+
+    DisassemblerTypeConverter::convert(details, destDetails);
+
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getB(), 1);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getL(), 2);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getLPrim(), 3);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getR(), 4);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getRPrim(), 5);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getVPrim(), 6);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getW(), 7);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getX(), 8);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getAaa(), 9);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getAvxFirstByte(), 10);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getBcast(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isAvx(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isBranch(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isEvex(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isLock(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isNobranch(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isRep(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isRepne(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isRex(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isVex(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isXacquire(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isXop(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().isXrelease(), true);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getMmmm(), 12);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPp(), 13);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPrefixesBytesCount(), 1);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPrefixesCount(), 8);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getVvvv(), 14);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getZ(), true);
+
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPrefixes(0).getPrefix(), 0x62);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPrefixes(0).getAvxBytes()[0], 0x31);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPrefixes(0).getAvxBytes()[1], 0x40);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPrefixes(0).getAvxBytes()[2], 0x64);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPrefixes(0).getPrefixType(), InstructionPrefixDetails::PT_EVEX);
+    STF_ASSERT_EQUAL(destDetails.getPrefixesDetails().getPrefixes(0).isMandatoryPrefix(), true);
+
+    DecodedModRMDetails &modrmDetails = destDetails.getModRmDetails();
+    STF_ASSERT(modrmDetails.getN() == Nullable<fcml_uint32_t>(8));
+    STF_ASSERT(modrmDetails.getDisplacement() == Integer(fcml_int32_t(0x12345678)));
+    STF_ASSERT(modrmDetails.getModRM() == Nullable<fcml_uint8_t>(0x40));
+    STF_ASSERT(modrmDetails.isRip());
+    STF_ASSERT(modrmDetails.getSib() == Nullable<fcml_uint8_t>(0x20));
+
+    STF_ASSERT_EQUAL(destDetails.getOperandDetails(0).getAccessMode(), OperandDetails::AM_READ_WRITE);
+    STF_ASSERT_EQUAL(destDetails.getOperandDetails(1).getAccessMode(), OperandDetails::AM_READ);
+    STF_ASSERT_EQUAL(destDetails.getOperandDetails(2).getAccessMode(), OperandDetails::AM_WRITE);
+    STF_ASSERT_EQUAL(destDetails.getOperandDetails(3).getAccessMode(), OperandDetails::AM_READ_WRITE);
+    STF_ASSERT_EQUAL(destDetails.getOperandDetails(4).getAccessMode(), OperandDetails::AM_READ_WRITE);
+
+    STF_ASSERT(destDetails.isShortcut());
+    STF_ASSERT(destDetails.isPseudoOp());
+    STF_ASSERT_EQUAL(destDetails.getInstructionCode()[0], 0x01);
+    STF_ASSERT_EQUAL(destDetails.getInstructionCode()[FCML_INSTRUCTION_SIZE - 1], 0xFF);
+    STF_ASSERT_EQUAL(destDetails.getInstructionSize(), 15);
+    STF_ASSERT(destDetails.isOpcodeFieldSBit());
+    STF_ASSERT(destDetails.isOpcodeFieldWBit());
+    STF_ASSERT_EQUAL(destDetails.getInstruction(), F_VAESDEC);
+    STF_ASSERT_EQUAL(destDetails.getPseudoOp(), FP_DB);
+    STF_ASSERT(destDetails.getAddrMode() == 0x1111);
+    STF_ASSERT(destDetails.getInstructionGroup() == FCML_AMT_GPI);
+    STF_ASSERT(destDetails.getTupleType() == FCML_TT_M128);
+
+    fcml_st_instruction_details det = {};
+
+    DisassemblerTypeConverter::convert(destDetails, det);
+
+    prefixes_details = &(det.prefixes_details);
+    STF_ASSERT_EQUAL(prefixes_details->B, 1);
+    STF_ASSERT_EQUAL(prefixes_details->L, 2);
+    STF_ASSERT_EQUAL(prefixes_details->L_prim, 3);
+    STF_ASSERT_EQUAL(prefixes_details->R, 4);
+    STF_ASSERT_EQUAL(prefixes_details->R_prim, 5);
+    STF_ASSERT_EQUAL(prefixes_details->V_prim, 6);
+    STF_ASSERT_EQUAL(prefixes_details->W, 7);
+    STF_ASSERT_EQUAL(prefixes_details->X, 8);
+    STF_ASSERT_EQUAL(prefixes_details->aaa, 9);
+    STF_ASSERT_EQUAL(prefixes_details->avx_first_byte, 10);
+    STF_ASSERT(prefixes_details->b);
+    STF_ASSERT(prefixes_details->is_avx);
+    STF_ASSERT(prefixes_details->is_branch);
+    STF_ASSERT(prefixes_details->is_evex);
+    STF_ASSERT(prefixes_details->is_lock);
+    STF_ASSERT(prefixes_details->is_nobranch);
+    STF_ASSERT(prefixes_details->is_rep);
+    STF_ASSERT(prefixes_details->is_repne);
+    STF_ASSERT(prefixes_details->is_rex);
+    STF_ASSERT(prefixes_details->is_vex);
+    STF_ASSERT(prefixes_details->is_xacquire);
+    STF_ASSERT(prefixes_details->is_xop);
+    STF_ASSERT(prefixes_details->is_xrelease);
+    STF_ASSERT_EQUAL(prefixes_details->mmmm, 12);
+    STF_ASSERT_EQUAL(prefixes_details->pp, 13);
+
+    prefix = &(prefixes_details->prefixes[0]);
+    STF_ASSERT_EQUAL(prefix->prefix, 0x62);
+    STF_ASSERT_EQUAL(prefix->avx_bytes[0], 0x31);
+    STF_ASSERT_EQUAL(prefix->avx_bytes[1], 0x40);
+    STF_ASSERT_EQUAL(prefix->avx_bytes[2], 0x64);
+    STF_ASSERT_EQUAL(prefix->prefix_type, FCML_PT_EVEX);
+    STF_ASSERT_EQUAL(prefix->mandatory_prefix, FCML_TRUE);
+
+    STF_ASSERT_EQUAL(prefixes_details->prefixes_bytes_count, 1);
+    STF_ASSERT_EQUAL(prefixes_details->prefixes_count, 8);
+    STF_ASSERT_EQUAL(prefixes_details->vvvv, 14);
+    STF_ASSERT_EQUAL(prefixes_details->z, 1);
+
+    modrm_details = &(det.modrm_details);
+    STF_ASSERT_EQUAL(modrm_details->displacement.N.value, 8);
+    STF_ASSERT_EQUAL(modrm_details->displacement.N.is_not_null, FCML_TRUE);
+    STF_ASSERT_EQUAL(modrm_details->displacement.displacement.size, 32);
+    STF_ASSERT_EQUAL(modrm_details->displacement.displacement.int32, 0x12345678);
+    STF_ASSERT_EQUAL(modrm_details->is_modrm, FCML_TRUE);
+    STF_ASSERT_EQUAL(modrm_details->is_rip, FCML_TRUE);
+    STF_ASSERT_EQUAL(modrm_details->modrm, 0x40);
+    STF_ASSERT_EQUAL(modrm_details->sib.value, 0x20);
+    STF_ASSERT_EQUAL(modrm_details->sib.is_not_null, FCML_TRUE);
+
+    STF_ASSERT_EQUAL(det.operand_details[0].access_mode, FCML_AM_READ_WRITE);
+    STF_ASSERT_EQUAL(det.operand_details[1].access_mode, FCML_AM_READ);
+    STF_ASSERT_EQUAL(det.operand_details[2].access_mode, FCML_AM_WRITE);
+    STF_ASSERT_EQUAL(det.operand_details[3].access_mode, FCML_AM_READ_WRITE);
+    STF_ASSERT_EQUAL(det.operand_details[4].access_mode, FCML_AM_READ_WRITE);
+
+    STF_ASSERT_EQUAL(det.is_shortcut, FCML_TRUE);
+    STF_ASSERT_EQUAL(det.is_pseudo_op, FCML_TRUE);
+    STF_ASSERT_EQUAL(det.instruction_code[0], 0x01);
+    STF_ASSERT_EQUAL(det.instruction_code[FCML_INSTRUCTION_SIZE - 1], 0xFF);
+
+    STF_ASSERT_EQUAL(det.instruction_size, 15);
+    STF_ASSERT_EQUAL(det.opcode_field_s_bit, FCML_TRUE);
+    STF_ASSERT_EQUAL(det.opcode_field_w_bit, FCML_TRUE);
+    STF_ASSERT_EQUAL(det.instruction, F_VAESDEC);
+    STF_ASSERT_EQUAL(det.pseudo_op, FP_DB);
+
+    STF_ASSERT_EQUAL(det.pseudo_op, FP_DB);
+    STF_ASSERT_EQUAL(det.addr_mode, 0x1111);
+    STF_ASSERT_EQUAL(det.instruction_group, FCML_AMT_GPI);
+    STF_ASSERT_EQUAL(det.tuple_type, FCML_TT_M128);
+
+    // To make sure that all fields are taken into account while converting these structs.
+    STF_ASSERT_EQUAL(memcmp(&det, &details, sizeof(details)), 0);
+}
 
 fcml_stf_test_case fcml_ti_cpp_disassembler[] = {
     { "fcml_tf_cpp_disassemble", fcml_tf_cpp_disassemble },
     { "fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only", fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only },
     { "fcml_tf_cpp_disassemble_instruction_buffer_disassemble_render", fcml_tf_cpp_disassemble_instruction_buffer_disassemble_render },
     { "fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only_stream", fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only_stream },
+    { "fcml_tf_cpp_disassembleshould_convert_instruction_details_correctly", fcml_tf_cpp_disassembleshould_convert_instruction_details_correctly },
     FCML_STF_NULL_TEST
 };
 
