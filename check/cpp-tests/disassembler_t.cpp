@@ -427,12 +427,58 @@ void fcml_tf_cpp_disassembleshould_convert_instruction_details_correctly(void) {
     STF_ASSERT_EQUAL(memcmp(&det, &details, sizeof(details)), 0);
 }
 
+void fcml_tf_cpp_disassemble_avx512_disp8_bcast(void) {
+
+
+    fcml_uint8_t code[] = {0x62, 0xf2, 0xed, 0x58, 0x0d, 0x4c, 0x24, 0x08};
+
+    try {
+
+        IntelDialect dialect;
+
+        Disassembler disassembler( dialect );
+
+        DisassemblerContext ctx( code , sizeof( code ) );
+        ctx.setIP(0x401000);
+        ctx.setOperatingMode(EntryPoint::OM_64_BIT);
+        ctx.setAddressSizeAttribute(64);
+        ctx.setOperandSizeAttribute(64);
+
+        DisassemblerResult result;
+
+        disassembler.disassemble( ctx, result );
+
+        const Instruction &instruction = result.getInstruction();
+        const InstructionDetails &details = result.getInstructionDetails();
+
+        STF_ASSERT( instruction.getMnemonic() == M_VPERMILPD );
+
+        STF_ASSERT_EQUAL(instruction[2].getAddress().getEffectiveAddress().getDisplacement(), 64);
+        STF_ASSERT_EQUAL(instruction[2].getDecorators().getBcast(), fcml::Nullable<fcml_uint8_t>(8, true));
+        STF_ASSERT_EQUAL(details.getModRmDetails().getN(), fcml::Nullable<fcml_uint32_t>(8, true));
+
+        Renderer renderer( dialect );
+
+        RenderConfig config;
+
+        fcml_cstring instructionMnemonic;
+
+        renderer.render( config, result, instructionMnemonic );
+
+        STF_ASSERT_STRING_EQUAL( instructionMnemonic.c_str(), FCML_TEXT("vpermilpd zmm1,zmm2,mmword ptr [rsp+64]{1to8}") );
+
+    } catch( BaseException &exc ) {
+        STF_FAIL("Exception while disassembling the code.");
+    }
+}
+
 fcml_stf_test_case fcml_ti_cpp_disassembler[] = {
     { "fcml_tf_cpp_disassemble", fcml_tf_cpp_disassemble },
     { "fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only", fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only },
     { "fcml_tf_cpp_disassemble_instruction_buffer_disassemble_render", fcml_tf_cpp_disassemble_instruction_buffer_disassemble_render },
     { "fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only_stream", fcml_tf_cpp_disassemble_instruction_buffer_disassemble_only_stream },
     { "fcml_tf_cpp_disassembleshould_convert_instruction_details_correctly", fcml_tf_cpp_disassembleshould_convert_instruction_details_correctly },
+    { "fcml_tf_cpp_disassemble_avx512_disp8_bcast", fcml_tf_cpp_disassemble_avx512_disp8_bcast },
     FCML_STF_NULL_TEST
 };
 

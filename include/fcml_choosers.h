@@ -41,7 +41,7 @@ extern "C" {
  * Instruction chooser uses this function to get next instruction from the chain.
  * @param instruction Current instruction.
  */
-typedef fcml_ptr (*fcml_fnp_chooser_next)( fcml_ptr instruction );
+typedef fcml_ptr (*fcml_fnp_chooser_next)(fcml_ptr instruction);
 
 /** Gets instruction code from current abstract instruction pointer.
  * Gets instruction pointer and fills given instruction code
@@ -49,7 +49,8 @@ typedef fcml_ptr (*fcml_fnp_chooser_next)( fcml_ptr instruction );
  * @param instruction Instruction pointer.
  * @param instruction_code Holder for the instruction code.
  */
-typedef void (*fcml_fnp_chooser_extract)( fcml_ptr instruction, fcml_st_instruction_code *instruction_code );
+typedef void (*fcml_fnp_chooser_extract)(fcml_ptr instruction,
+        fcml_st_instruction_code *instruction_code);
 
 /** Instruction chooser context used to communicate with environment. */
 typedef struct fcml_st_chooser_context {
@@ -64,17 +65,20 @@ typedef struct fcml_st_chooser_context {
 /** Instruction chooser function pointer declaration.
  * @param chooser_context Instruction chooser context.
  */
-typedef fcml_ptr (LIB_CALL *fcml_fnp_asm_instruction_chooser)( fcml_st_chooser_context *chooser_context );
+typedef fcml_ptr (LIB_CALL *fcml_fnp_asm_instruction_chooser)(
+        fcml_st_chooser_context *chooser_context);
 
 /** Default instruction chooser which chooses the shortest instruction available.
  * @param chooser_context Instruction chooser context.
  */
-fcml_ptr LIB_EXPORT LIB_CALL fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *chooser_context );
+fcml_ptr LIB_EXPORT LIB_CALL fcml_fn_asm_default_instruction_chooser(
+        fcml_st_chooser_context *chooser_context);
 
 /** NULL chooser which do not chose anything.
  * @param chooser_context Instruction chooser context.
  */
-fcml_ptr LIB_EXPORT LIB_CALL fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *chooser_context );
+fcml_ptr LIB_EXPORT LIB_CALL fcml_fn_asm_no_instruction_chooser(
+        fcml_st_chooser_context *chooser_context);
 
 #ifdef __cplusplus
 }

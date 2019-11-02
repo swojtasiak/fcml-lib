@@ -14,9 +14,7 @@ fcml_cpp_check_SOURCES = main.cpp \
 	errors_t.cpp \
 	errors_t.hpp \
 	parser_t.cpp \
-	parser_t.hpp \
-	avx512_t.cpp \
-	avx512_t.hpp
+	parser_t.hpp
 
 fcml_cpp_check_CPPFLAGS = -Wall -Wno-write-strings -I$(top_srcdir)/include -I$(top_srcdir)/check/stf @FCML_IMPORT_LIB@
 
