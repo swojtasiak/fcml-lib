@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2019 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -53,7 +53,8 @@ typedef struct fcml_st_parser_config {
      */
     fcml_bool disable_symbols_declaration;
     /** Set to true in order to allow overriding existing labels.
-     * If set to false parser returns "Symbol already exists" error when symbol already exists.
+     * If set to false parser returns "Symbol already exists" error when
+     *  symbol already exists.
      */
     fcml_bool override_labels;
     /** By default parser ignores all symbol declarations
@@ -77,7 +78,8 @@ typedef struct fcml_st_parser_context {
     fcml_st_dialect *dialect;
     /** Parser configuration. */
     fcml_st_parser_config configuration;
-    /** Instruction pointer. RIP/EIP register value used as a value for newly declared symbols.
+    /** Instruction pointer. RIP/EIP register value used as a value for
+     * newly declared symbols.
      * This value is never changed by the parser.
      */
     fcml_ip ip;
@@ -125,31 +127,37 @@ typedef struct fcml_st_parser_result {
  * @param result Reusable result holder.
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, const fcml_string instruction, fcml_st_parser_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_parse(
+        fcml_st_parser_context *context, const fcml_string instruction,
+        fcml_st_parser_result *result);
 
 /**
  * Prepares reusable result holder for parser.
- * Every instance of fcml_st_parser_result structure is reusable from the parser's
- * point of view, so it has to be prepared in the right way in order to allow parser to
- * reuse it correctly. It is up to the library user to allocate space for the holder itself.
- * This function is only responsible for cleaning the structure correctly and preparing it
- * for the first parsing process. Notice that parser has to clean the result holder at the
- * beginning so you can not pass an uninitialized memory block because it can even cause
+ * Every instance of fcml_st_parser_result structure is reusable from the
+ * parser's point of view, so it has to be prepared in the right way in order
+ * to allow parser to reuse it correctly. It is up to the library user to
+ * allocate space for the holder itself. This function is only responsible
+ * for cleaning the structure correctly and preparing it for the first parsing
+ * process. Notice that parser has to clean the result holder at the beginning
+ * so you can not pass an uninitialized memory block because it can even cause
  * a crash due to illegal memory access.
  *
  * @param result Result holder instance to be prepared.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_parser_result_prepare( fcml_st_parser_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_parser_result_prepare(
+        fcml_st_parser_result *result);
 
 /**
  * Cleans result holder.
- * Frees all memory blocks allocated by the parser and held inside the result holder (Instructions, errors etc.).
- * Notice that result holder itself is not freed and can be even safety reused after call to this function.
- * In fact this function is also called internally by the parser in order to clean result holder before
- * reusing it.
+ * Frees all memory blocks allocated by the parser and held inside the result
+ * holder (Instructions, errors etc.). Notice that result holder itself is
+ * not freed and can be even safety reused after call to this function. In fact
+ * this function is also called internally by the parser in order to clean
+ * result holder before  reusing it.
  * @param result Result holder to clean.
  */
-LIB_EXPORT void LIB_CALL fcml_fn_parser_result_free( fcml_st_parser_result *result );
+LIB_EXPORT void LIB_CALL fcml_fn_parser_result_free(
+        fcml_st_parser_result *result);
 
 #ifdef __cplusplus
 }

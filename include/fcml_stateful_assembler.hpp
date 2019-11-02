@@ -35,11 +35,13 @@
 namespace fcml {
 
 /**
- * It's a stateful assembler which can be used to assemble instructions one by one on the fly.
- * By default is works with the general instruction models as well as with instruction builders,
- * but it can be also configured to parse whole statements using internally managed parser.
- * It holds it's own state, so it's not necessary to update instruction pointer etc while it's working.
- * Assembled instructions are placed inside a dedicated vector, but generated machine code is accessing
+ * It's a stateful assembler which can be used to assemble instructions one by
+ * one on the fly. By default is works with the general instruction models as
+ * well as with instruction builders, but it can be also configured to parse
+ * whole statements using internally managed parser. It holds it's own state,
+ * so it's not necessary to update instruction pointer etc while it's working.
+ * Assembled instructions are placed inside a dedicated vector, but generated
+ * machine code is accessing
  * directly by the dedicated CodeIterator.
  *
  * @since 1.1.0
@@ -53,29 +55,31 @@ public:
     };
 
     /**
-     * Creates a stateful assembler for the given assembler and assembler context. Bear in mind that
-     * assembler and context are not copied in any way and have to be valid as long as the stateful assembler
-     * in in use. Parsing support can be enabled optionally using the third parameter.
+     * Creates a stateful assembler for the given assembler and assembler
+     * context. Bear in mind that assembler and context are not copied in
+     * any way and have to be valid as long as the stateful assembler in in
+     * use. Parsing support can be enabled optionally using the third parameter.
      *
      * @param assembler The assembled that will be used to assemble the code.
      * @param context The assembler context.
      * @param enableParser Enables parsing support.
      * @since 1.1.0
      */
-    StatefulAssembler( Assembler &assembler, AssemblerContext &context, bool enableParser = false ) :
-        _instructionBuilder(IB(FCML_TEXT("")), false),
-        _assembler(assembler),
-        _context(context),
-        _codeLength(0) {
+    StatefulAssembler(Assembler &assembler, AssemblerContext &context,
+            bool enableParser = false) :
+            _instructionBuilder(IB(FCML_TEXT("")), false),
+            _assembler(assembler),
+            _context(context),
+            _codeLength(0) {
         // Create parser if needed.
-        _parser = enableParser ? new Parser( assembler.getDialect() ) : NULL;
+        _parser = enableParser ? new Parser(assembler.getDialect()) : NULL;
     }
 
     /** Destructor.
      * @since 1.1.0
      */
     virtual ~StatefulAssembler() {
-        if( _parser ) {
+        if (_parser) {
             delete _parser;
         }
     }
@@ -92,7 +96,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const IB &ib) {
-        return add( ib );
+        return add(ib);
     }
 
     /**
@@ -122,7 +126,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const fcml_cstring &mnemonic) {
-        return inst( mnemonic );
+        return inst(mnemonic);
     }
 
     /**
@@ -135,16 +139,16 @@ public:
      */
     StatefulAssembler& inst(const fcml_cstring &mnemonic) {
         flush();
-        if( _parser ) {
+        if (_parser) {
             // Parse instruction and then pass it to the assembler.
-            _parserContext.setIp( _context.getEntryPoint().getIP() );
+            _parserContext.setIp(_context.getEntryPoint().getIP());
             ParserConfig &config = _parserContext.getConfig();
             config.setThrowExceptionOnError(true);
-            _parser->parse( _parserContext, mnemonic, _parserResult );
+            _parser->parse(_parserContext, mnemonic, _parserResult);
             *this << _parserResult.getInstruction();
         } else {
-            // Parser is not available, so treat this string as a full instruction which
-            // have to be parsed.
+            // Parser is not available, so treat this string as a full
+            // instruction which have to be parsed.
             _instructionBuilder.setNotNull(true);
             _instructionBuilder.setValue(IB(mnemonic));
         }
@@ -152,7 +156,8 @@ public:
     }
 
     /**
-     * Adds the new register operand to the instruction builder associated with the buffer.
+     * Adds the new register operand to the instruction builder associated
+     * with the buffer.
      *
      * @param reg The register.
      * @return The stateful assembler itself.
@@ -160,11 +165,12 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const Register &reg) {
-        return op( Operand( reg ) );
+        return op(Operand(reg));
     }
 
     /**
-     * Adds the new immediate operand to the instruction builder associated with the buffer.
+     * Adds the new immediate operand to the instruction builder associated
+     * with the buffer.
      *
      * @param imm The immediate value.
      * @return The stateful assembler itself.
@@ -172,11 +178,12 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const Integer &imm) {
-        return op( Operand( imm ) );
+        return op(Operand(imm));
     }
 
     /**
-     * Adds the new address operand to the instruction builder associated with the buffer.
+     * Adds the new address operand to the instruction builder associated
+     * with the buffer.
      *
      * @param address The address.
      * @return The stateful assembler itself.
@@ -184,11 +191,12 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const Address &address) {
-        return op( Operand( address ) );
+        return op(Operand(address));
     }
 
     /**
-     * Adds the new far pointer operand to the instruction builder associated with the buffer.
+     * Adds the new far pointer operand to the instruction builder associated
+     * with the buffer.
      *
      * @param pointer The far pointer.
      * @return The stateful assembler itself.
@@ -196,7 +204,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const FarPointer &pointer) {
-        return op( Operand( pointer ) );
+        return op(Operand(pointer));
     }
 
     /**
@@ -208,7 +216,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const Operand &operand) {
-        return op( operand );
+        return op(operand);
     }
 
     /**
@@ -220,16 +228,18 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& op(const Operand &operand) {
-        if( !_instructionBuilder.isNotNull() ) {
-            throw IllegalStateException( FCML_TEXT( "No instruction builder available." ) );
+        if (!_instructionBuilder.isNotNull()) {
+            throw IllegalStateException(
+                    FCML_TEXT("No instruction builder available."));
         }
         IB &ib = _instructionBuilder.getValue();
-        ib.op( operand );
+        ib.op(operand);
         return *this;
     }
 
     /**
-     * Adds the new register operand to the instruction builder associated with the buffer.
+     * Adds the new register operand to the instruction builder associated
+     * with the buffer.
      *
      * @param reg The register.
      * @return The stateful assembler itself.
@@ -237,11 +247,12 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& op(const Register &reg) {
-        return op( Operand( reg ) );
+        return op(Operand(reg));
     }
 
     /**
-     * Adds the new immediate operand to the instruction builder associated with the buffer.
+     * Adds the new immediate operand to the instruction builder associated
+     * with the buffer.
      *
      * @param imm The immediate value.
      * @return The stateful assembler itself.
@@ -249,11 +260,12 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& op(const Integer &imm) {
-        return op( Operand( imm ) );
+        return op(Operand(imm));
     }
 
     /**
-     * Adds the new address operand to the instruction builder associated with the buffer.
+     * Adds the new address operand to the instruction builder associated
+     * with the buffer.
      *
      * @param address The address.
      * @return The stateful assembler itself.
@@ -261,11 +273,12 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& op(const Address &address) {
-        return op( Operand( address ) );
+        return op(Operand(address));
     }
 
     /**
-     * Adds the new far pointer operand to the instruction builder associated with the buffer.
+     * Adds the new far pointer operand to the instruction builder associated
+     * with the buffer.
      *
      * @param pointer The far pointer.
      * @return The stateful assembler itself.
@@ -273,7 +286,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& op(const FarPointer &pointer) {
-        return op( Operand( pointer ) );
+        return op(Operand(pointer));
     }
 
     /**
@@ -297,7 +310,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const Instruction &instruction) {
-        return inst( instruction );
+        return inst(instruction);
     }
 
     /**
@@ -317,7 +330,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const InstructionHint &hint) {
-        return set( hint );
+        return set(hint);
     }
 
     /**
@@ -327,7 +340,7 @@ public:
      * @since 1.1.0
      */
     StatefulAssembler& operator <<(const OperandHint &hint) {
-       return set( hint );
+        return set(hint);
     }
 
     /**
@@ -336,9 +349,10 @@ public:
      * @return The instruction builder with the new prefix set for it.
      * @since 1.1.0
      */
-    StatefulAssembler& set( const InstructionPrefix &prefix ) {
-        if( !_instructionBuilder.isNotNull() ) {
-            throw IllegalStateException( FCML_TEXT( "No instruction builder available." ) );
+    StatefulAssembler& set(const InstructionPrefix &prefix) {
+        if (!_instructionBuilder.isNotNull()) {
+            throw IllegalStateException(
+                    FCML_TEXT("No instruction builder available."));
         }
         _instructionBuilder.getValue() << prefix;
         return *this;
@@ -350,9 +364,10 @@ public:
      * @return The instruction builder with the new hint added to it.
      * @since 1.1.0
      */
-    StatefulAssembler& set( const InstructionHint &hint ) {
-        if( !_instructionBuilder.isNotNull() ) {
-            throw IllegalStateException( FCML_TEXT( "No instruction builder available." ) );
+    StatefulAssembler& set(const InstructionHint &hint) {
+        if (!_instructionBuilder.isNotNull()) {
+            throw IllegalStateException(
+                    FCML_TEXT("No instruction builder available."));
         }
         _instructionBuilder.getValue() << hint;
         return *this;
@@ -364,9 +379,10 @@ public:
      * @return The instruction builder with the new hint added to it.
      * @since 1.1.0
      */
-    StatefulAssembler& set( const OperandHint &hint ) {
-        if( !_instructionBuilder.isNotNull() ) {
-            throw IllegalStateException( FCML_TEXT( "No instruction builder available." ) );
+    StatefulAssembler& set(const OperandHint &hint) {
+        if (!_instructionBuilder.isNotNull()) {
+            throw IllegalStateException(
+                    FCML_TEXT("No instruction builder available."));
         }
         _instructionBuilder.getValue() << hint;
         return *this;
@@ -386,34 +402,39 @@ public:
         flush();
 
         // Just in case.
-        AssemblerConf& config = _context.getConfig();
-        config.setIncrementIp( true );
-        config.setThrowExceptionOnError( true );
+        AssemblerConf &config = _context.getConfig();
+        config.setIncrementIp(true);
+        config.setThrowExceptionOnError(true);
 
         // Assembler the instruction.
-        _assembler.assemble( _context, instruction, _result );
+        _assembler.assemble(_context, instruction, _result);
 
         // Store the chosen assembled instruction for future use.
-        const AssembledInstruction *assembledInstruction = _result.getChosenInstruction();
-        if( assembledInstruction ) {
-            _assembledInstructions.push_back( *assembledInstruction );
+        const AssembledInstruction *assembledInstruction =
+                _result.getChosenInstruction();
+        if (assembledInstruction) {
+            _assembledInstructions.push_back(*assembledInstruction);
             _codeLength += assembledInstruction->getCodeLength();
         } else {
-            throw AssemblingFailedException( FCML_TEXT( "Chosen instruction hasn't been set. It seems that the instruction chooser isn't working correctly." ) );
+            throw AssemblingFailedException(
+                    FCML_TEXT("Chosen instruction hasn't been set. It seems "
+                            "that the instruction chooser isn't working "
+                            "correctly."));
         }
 
         return *this;
     }
 
     /**
-     * Gets iterator which allows to iterate through the whole machine code byte by byte.
+     * Gets iterator which allows to iterate through the whole machine
+     * code byte by byte.
      *
      * @return Iterator instance.
      * @since 1.1.0
      */
     CodeIterator getCodeIterator() {
         flush();
-        return CodeIterator( _assembledInstructions );
+        return CodeIterator(_assembledInstructions);
     }
 
     /**
@@ -444,7 +465,7 @@ public:
      * @throw AssemblingFailedException
      */
     void flush() {
-        if( _instructionBuilder.isNotNull() ) {
+        if (_instructionBuilder.isNotNull()) {
             // Build an instruction using the instruction builder.
             Instruction instruction = _instructionBuilder.getValue().build();
             // And clean the builder, is everything succeed.
@@ -501,8 +522,8 @@ public:
      * @param symbolTable The new symbol table.
      * @since 1.1.0
      */
-    void setSymbolTable( SymbolTable *symbolTable ) {
-        _parserContext.setSymbolTable( symbolTable );
+    void setSymbolTable(SymbolTable *symbolTable) {
+        _parserContext.setSymbolTable(symbolTable);
     }
 
 private:

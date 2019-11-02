@@ -35,7 +35,8 @@
 extern "C" {
 #endif
 
-/** Disables "SystemV/386 SVR3.2" compatibility for the non-commutative arithmetic floating point operations with two register operands. */
+/** Disables "SystemV/386 SVR3.2" compatibility for the non-commutative
+ * arithmetic floating point operations with two register operands. */
 #define FCML_GAS_DIALECT_CF_SYSV_SVR32_INCOMPATIBLE       0x00000001
 
 /** Default combination of configuration flags. */
@@ -51,7 +52,8 @@ extern "C" {
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  * @see fcml_fn_dialect_free
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_dialect_init_gas( fcml_uint32_t config_flags, fcml_st_dialect **dialect );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_dialect_init_gas(
+        fcml_uint32_t config_flags, fcml_st_dialect **dialect);
 
 #ifdef __cplusplus
 }

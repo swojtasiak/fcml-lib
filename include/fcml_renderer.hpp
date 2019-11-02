@@ -38,8 +38,9 @@ namespace fcml {
  */
 class RenderingFailedException: public BaseException {
 public:
-    RenderingFailedException( const fcml_cstring &msg, fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) :
-        BaseException( msg,  error ){
+    RenderingFailedException(const fcml_cstring &msg, fcml_ceh_error error =
+            FCML_CEH_GEC_NO_ERROR) :
+            BaseException(msg, error) {
     }
 };
 
@@ -56,10 +57,10 @@ public:
      * @since 1.1.0
      */
     RenderConfig() :
-        _throwExceptionOnError(true),
-        _renderFlags(0),
-        _preferedMnemonicPadding(FCML_REND_DEFAULT_MNEMONIC_PADDING),
-        _preferedCodePadding(FCML_REND_DEFAULT_CODE_PADDING) {
+            _throwExceptionOnError(true),
+            _renderFlags(0),
+            _preferedMnemonicPadding(FCML_REND_DEFAULT_MNEMONIC_PADDING),
+            _preferedCodePadding(FCML_REND_DEFAULT_CODE_PADDING) {
     }
 
     /**
@@ -68,11 +69,11 @@ public:
      * @param renderFlags The renderer flags.
      * @since 1.1.0
      */
-    RenderConfig( fcml_uint32_t renderFlags ) :
-        _throwExceptionOnError(true),
-        _renderFlags(renderFlags),
-        _preferedMnemonicPadding(0),
-        _preferedCodePadding(0) {
+    RenderConfig(fcml_uint32_t renderFlags) :
+            _throwExceptionOnError(true),
+            _renderFlags(renderFlags),
+            _preferedMnemonicPadding(0),
+            _preferedCodePadding(0) {
     }
 
     /** @since 1.1.0 */
@@ -108,7 +109,8 @@ public:
     /**
      * Returns true if exception should be thrown when disassembling fails.
      *
-     * @return True if exception is the preferred way of error handling in case of failure.
+     * @return True if exception is the preferred way of error handling
+     * in case of failure.
      * @since 1.1.0
      */
     bool isThrowExceptionOnError() const {
@@ -118,7 +120,8 @@ public:
     /**
      * Sets the way how the error handling is done.
      *
-     * @param throwExceptionOnError True if exception should be thrown in case of failure.
+     * @param throwExceptionOnError True if exception should be thrown
+     * in case of failure.
      * @since 1.1.0
      */
     void setThrowExceptionOnError(bool throwExceptionOnError) {
@@ -146,7 +149,7 @@ private:
 class RenderTypeConverter {
 public:
 
-    static void convert( const RenderConfig &src, fcml_st_render_config &dest ) {
+    static void convert(const RenderConfig &src, fcml_st_render_config &dest) {
         dest.prefered_code_padding = src.getPreferedCodePadding();
         dest.prefered_mnemonic_padding = src.getPreferedMnemonicPadding();
         dest.render_flags = src.getRenderFlags();
@@ -166,8 +169,8 @@ public:
      * @param dialect The dialect instance.
      * @since 1.1.0
      */
-    Renderer( Dialect &dialect ) :
-        _dialect( dialect ) {
+    Renderer(Dialect &dialect) :
+            _dialect(dialect) {
     }
 
     /**
@@ -179,26 +182,31 @@ public:
      * @throw RenderingFailedException Rendering failed.
      * @return The error code.
      */
-    fcml_ceh_error render( const RenderConfig &renderConfig, DisassemblerResult &assemblerResult, fcml_cstring &result ) {
+    fcml_ceh_error render(const RenderConfig &renderConfig,
+            DisassemblerResult &assemblerResult, fcml_cstring &result) {
 
         result.clear();
 
         fcml_st_render_config render_config;
-        RenderTypeConverter::convert( renderConfig, render_config );
+        RenderTypeConverter::convert(renderConfig, render_config);
 
         fcml_st_disassembler_result disassembler_result;
         fcml_fn_disassembler_result_prepare(&disassembler_result);
 
-        DisassemblerTypeConverter::convert( assemblerResult, disassembler_result );
+        DisassemblerTypeConverter::convert(assemblerResult,
+                disassembler_result);
 
         fcml_char buffer[FCML_REND_MAX_BUFF_LEN];
 
-        fcml_ceh_error error = ::fcml_fn_render( extractDialect( _dialect ), &render_config, buffer, FCML_REND_MAX_BUFF_LEN, &disassembler_result );
+        fcml_ceh_error error = ::fcml_fn_render(extractDialect(_dialect),
+                &render_config, buffer, FCML_REND_MAX_BUFF_LEN,
+                &disassembler_result);
 
-        DisassemblerTypeConverter::free( disassembler_result );
+        DisassemblerTypeConverter::free(disassembler_result);
 
-        if( error && renderConfig.isThrowExceptionOnError() ) {
-            throw RenderingFailedException( FCML_TEXT( "Can not render instruction." ), error );
+        if (error && renderConfig.isThrowExceptionOnError()) {
+            throw RenderingFailedException(
+                    FCML_TEXT("Can not render instruction."), error);
         }
 
         result = buffer;

@@ -46,7 +46,7 @@ public:
      * @since 1.1.0
      */
     Symbol() :
-        _value(0) {
+            _value(0) {
     }
 
     /**
@@ -56,8 +56,8 @@ public:
      * @param value The symbol value.
      * @since 1.1.0
      */
-    Symbol( const fcml_cstring &name, fcml_int64_t value ) :
-        _name(name), _value(value) {
+    Symbol(const fcml_cstring &name, fcml_int64_t value) :
+            _name(name), _value(value) {
     }
 
     /**
@@ -112,7 +112,7 @@ public:
      * @param name The symbol name.
      * @since 1.1.0
      */
-    void setName(const fcml_cstring& name) {
+    void setName(const fcml_cstring &name) {
         _name = name;
     }
 
@@ -135,8 +135,9 @@ private:
 
 };
 
-/* Due to the performance purposes and the way symbol table is managed internally, it
- * has to be wrapped directly without doing any conversions when needed.
+/* Due to the performance purposes and the way symbol table is managed
+ * internally, it has to be wrapped directly without doing any conversions
+ * when needed.
  * @since 1.1.0
  */
 class SymbolTable: public NonCopyable {
@@ -147,10 +148,13 @@ public:
      * @throw InitException The symbol table can't be allocated.
      * @since 1.1.0
      */
-    SymbolTable() : _symbolTable(NULL) {
+    SymbolTable() :
+            _symbolTable(NULL) {
         _symbolTable = ::fcml_fn_symbol_table_alloc();
-        if( !_symbolTable ) {
-            throw InitException( FCML_TEXT( "Symbol table can not be initialized correctly." ) );
+        if (!_symbolTable) {
+            throw InitException(
+                    FCML_TEXT(
+                            "Symbol table can not be initialized correctly."));
         }
     }
 
@@ -159,8 +163,8 @@ public:
      * @since 1.1.0
      */
     virtual ~SymbolTable() {
-        if( _symbolTable ) {
-            ::fcml_fn_symbol_table_free( _symbolTable );
+        if (_symbolTable) {
+            ::fcml_fn_symbol_table_free(_symbolTable);
             _symbolTable = NULL;
         }
     }
@@ -174,7 +178,7 @@ protected:
      * @return  The native symbol table.
      * @since 1.1.0
      */
-    fcml_st_symbol_table &getSymbolTable() {
+    fcml_st_symbol_table& getSymbolTable() {
         return _symbolTable;
     }
 
@@ -187,8 +191,9 @@ public:
      * @param value The symbol value.
      * @since 1.1.0
      */
-    void add( const fcml_cstring &symbolName, fcml_int64_t value ) {
-        if( ::fcml_fn_symbol_add_raw( _symbolTable, symbolName.c_str(), value ) == FCML_CEH_GEC_OUT_OF_MEMORY ) {
+    void add(const fcml_cstring &symbolName, fcml_int64_t value) {
+        if (::fcml_fn_symbol_add_raw(_symbolTable, symbolName.c_str(), value)
+                == FCML_CEH_GEC_OUT_OF_MEMORY) {
             throw std::bad_alloc();
         }
     }
@@ -199,9 +204,9 @@ public:
      * @param symbolName The symbol name.
      * @since 1.1.0
      */
-    void remove( const fcml_cstring &symbolName ) {
+    void remove(const fcml_cstring &symbolName) {
         const fcml_string key = symbolName.c_str();
-        ::fcml_fn_symbol_remove( _symbolTable, key);
+        ::fcml_fn_symbol_remove(_symbolTable, key);
     }
 
     /**
@@ -211,8 +216,8 @@ public:
      * @return true If symbol of the name exists in the table.
      * @since 1.1.0
      */
-    bool contains( const fcml_cstring &symbolName ) const {
-        return ::fcml_fn_symbol_get( _symbolTable, symbolName.c_str() ) != NULL;
+    bool contains(const fcml_cstring &symbolName) const {
+        return ::fcml_fn_symbol_get(_symbolTable, symbolName.c_str()) != NULL;
     }
 
     /**
@@ -223,12 +228,13 @@ public:
      * @return The found symbol.
      * @since 1.1.0
      */
-    Symbol get( const fcml_cstring &symbolName ) const {
+    Symbol get(const fcml_cstring &symbolName) const {
         Symbol symbol;
-        fcml_st_symbol *found_symbol = ::fcml_fn_symbol_get( _symbolTable, symbolName.c_str() );
-        if( found_symbol ) {
-            symbol.setName( found_symbol->symbol );
-            symbol.setValue( found_symbol->value );
+        fcml_st_symbol *found_symbol = ::fcml_fn_symbol_get(_symbolTable,
+                symbolName.c_str());
+        if (found_symbol) {
+            symbol.setName(found_symbol->symbol);
+            symbol.setValue(found_symbol->value);
         }
         return symbol;
     }
@@ -250,7 +256,7 @@ public:
      * @param symbolTable The symbol table wrapper.
      * @since 1.1.0
      */
-    fcml_st_symbol_table &extractSymbolTable( SymbolTable &symbolTable ) {
+    fcml_st_symbol_table& extractSymbolTable(SymbolTable &symbolTable) {
         return symbolTable.getSymbolTable();
     }
 };

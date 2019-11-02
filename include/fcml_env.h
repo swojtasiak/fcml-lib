@@ -38,7 +38,7 @@ extern "C" {
  * @param size Size of the memory to allocate.
  * @return The allocated memory block or NULL in case of out of memory.
  */
-typedef fcml_ptr (*fcml_fp_env_memory_alloc_handler)( fcml_usize size );
+typedef fcml_ptr (*fcml_fp_env_memory_alloc_handler)(fcml_usize size);
 
 /** Memory reallocator handler function pointer declaration.
  * Memory reallocation handlers are used to reallocate requested memory in
@@ -47,38 +47,47 @@ typedef fcml_ptr (*fcml_fp_env_memory_alloc_handler)( fcml_usize size );
  * @param size Size of the memory to allocate.
  * @return The reallocated memory block or NULL in case of out of memory.
  */
-typedef fcml_ptr (*fcml_fp_env_memory_realloc_handler)( fcml_ptr ptr, fcml_usize size );
+typedef fcml_ptr (*fcml_fp_env_memory_realloc_handler)(fcml_ptr ptr,
+        fcml_usize size);
 
 /** Memory deallocator handler function pointer declaration.
  * Memory deallocation handlers are used to free requested memory blocks in
  * environment specific way.
  * @param memory_block The memory block to free.
  */
-typedef void (*fcml_fp_env_memory_free_handler)( fcml_ptr memory_block );
+typedef void (*fcml_fp_env_memory_free_handler)(fcml_ptr memory_block);
 
 /**
- * Registers the new dedicated handler responsible for allocating memory for the sake
- * of internal FCML implementation.
+ * Registers the new dedicated handler responsible for allocating
+ * memory for the sake of internal FCML implementation.
  * @param handler New memory allocation handler.
  * @return The replaced memory handler.
  */
-LIB_EXPORT fcml_fp_env_memory_alloc_handler LIB_CALL fcml_fn_env_register_memory_alloc_handler( fcml_fp_env_memory_alloc_handler handler );
+LIB_EXPORT fcml_fp_env_memory_alloc_handler LIB_CALL
+    fcml_fn_env_register_memory_alloc_handler(
+        fcml_fp_env_memory_alloc_handler handler);
 
 /**
- * Registers the new dedicated handler responsible for reallocating memory for the sake
+ * Registers the new dedicated handler responsible for reallocating
+ * memory for the sake
  * of internal FCML implementation.
  * @param handler New memory reallocation handler.
  * @return The replaced memory handler.
  */
-LIB_EXPORT fcml_fp_env_memory_realloc_handler LIB_CALL fcml_fn_env_register_memory_realloc_handler( fcml_fp_env_memory_realloc_handler handler );
+LIB_EXPORT fcml_fp_env_memory_realloc_handler LIB_CALL
+    fcml_fn_env_register_memory_realloc_handler(
+        fcml_fp_env_memory_realloc_handler handler);
 
 /**
- * Registers the new dedicated handler responsible for deallocating the memory for the sake
+ * Registers the new dedicated handler responsible for deallocating the
+ * memory for the sake
  * of internal FCML implementation.
  * @param handler New memory deallocation handler.
  * @return The replaced memory handler.
  */
-LIB_EXPORT fcml_fp_env_memory_free_handler LIB_CALL fcml_fn_env_register_memory_free_handler( fcml_fp_env_memory_free_handler handler );
+LIB_EXPORT fcml_fp_env_memory_free_handler LIB_CALL
+    fcml_fn_env_register_memory_free_handler(
+        fcml_fp_env_memory_free_handler handler);
 
 #ifdef __cplusplus
 }

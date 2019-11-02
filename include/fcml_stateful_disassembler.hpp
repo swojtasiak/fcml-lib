@@ -32,7 +32,8 @@
 
 namespace fcml {
 
-/** Stateful disassembler can be used when you have to disassemble a larger piece of code one instruction by one.
+/** Stateful disassembler can be used when you have to disassemble a larger
+ * piece of code one instruction by one.
  * It also supports rendering directly using internally managed renderer.
  *
  * @since 1.1.0
@@ -41,26 +42,32 @@ namespace fcml {
 class StatefulDisassembler {
 public:
 
-    /** Creates a stateful disassembler for given FCML disassembler and context. Rendering support can be enabled optionally.
-     * @param disassembler The classic FCML disassembler used to disassemble instructions.
+    /** Creates a stateful disassembler for given FCML disassembler and context.
+     * Rendering support can be enabled optionally.
+     * @param disassembler The classic FCML disassembler used to
+     *  disassemble instructions.
      * @param context The disassembler context.
-     * @param enableRendering Enables instruction rendering, which is disabled by default.
+     * @param enableRendering Enables instruction rendering, which is
+     *  disabled by default.
      */
-    StatefulDisassembler( Disassembler &disassembler, DisassemblerContext &context, bool enableRendering = false ) :
-        _disassembler(disassembler),
-        _disassemblerContext(context) {
-        _renderer = enableRendering ? new Renderer( disassembler.getDialect() ) : NULL;
-        // End of line characters to be used when instructions are rendered directly to the output stream.
+    StatefulDisassembler(Disassembler &disassembler,
+            DisassemblerContext &context, bool enableRendering = false) :
+            _disassembler(disassembler),
+            _disassemblerContext(context) {
+        _renderer = enableRendering ?
+                new Renderer(disassembler.getDialect()) : NULL;
+        // End of line characters to be used when instructions are
+        // rendered directly to the output stream.
 #if defined(_WIN32)
         _endOfLine = FCML_TEXT( "\r\n" );
 #else
-        _endOfLine = FCML_TEXT( "\n" );
+        _endOfLine = FCML_TEXT("\n");
 #endif
     }
 
     /** Destructor. */
     virtual ~StatefulDisassembler() {
-        if( _renderer ) {
+        if (_renderer) {
             delete _renderer;
         }
     }
@@ -72,16 +79,16 @@ public:
      * @throws DisassemblingFailedException
      * @since 1.1.0
      */
-    StatefulDisassembler& operator >>( Instruction &instruction ) {
+    StatefulDisassembler& operator >>(Instruction &instruction) {
 
         // IP has to be incremented automatically, instruction by instruction.
-        DisassemblerConf& config = _disassemblerContext.getDisassemblerConf();
-        config.setIncrementIp( true );
-        config.setThrowExceptionOnError( true );
+        DisassemblerConf &config = _disassemblerContext.getDisassemblerConf();
+        config.setIncrementIp(true);
+        config.setThrowExceptionOnError(true);
 
         // We don't care about error handling here, because it's disassembler
         // who is responsible for correctly handling it.
-        _disassembler.disassemble( _disassemblerContext, _disassemblerResult );
+        _disassembler.disassemble(_disassemblerContext, _disassemblerResult);
 
         instruction = _disassemblerResult.getInstruction();
 
@@ -98,29 +105,29 @@ public:
      *         RenderingFailedException
      * @since 1.1.0
      */
-    StatefulDisassembler& operator >>( fcml_cstring &instruction ) {
+    StatefulDisassembler& operator >>(fcml_cstring &instruction) {
 
-        if( !_renderer ) {
-            throw IllegalStateException( FCML_TEXT( "Rendering is disabled." ) );
+        if (!_renderer) {
+            throw IllegalStateException(FCML_TEXT("Rendering is disabled."));
         }
 
         // IP has to be incremented automatically, instruction by instruction.
-        DisassemblerConf& config = _disassemblerContext.getDisassemblerConf();
-        config.setIncrementIp( true );
-        config.setThrowExceptionOnError( true );
+        DisassemblerConf &config = _disassemblerContext.getDisassemblerConf();
+        config.setIncrementIp(true);
+        config.setThrowExceptionOnError(true);
 
-        _disassembler.disassemble( _disassemblerContext, _disassemblerResult );
+        _disassembler.disassemble(_disassemblerContext, _disassemblerResult);
 
-        _rendererConfig.setThrowExceptionOnError( true );
-
-        _renderer->render( _rendererConfig, _disassemblerResult, instruction );
+        _rendererConfig.setThrowExceptionOnError(true);
+        _renderer->render(_rendererConfig, _disassemblerResult, instruction);
 
         return *this;
 
     }
 
     /**
-     * Disassembles the next instruction from the buffer and renders it directly into the output stream.
+     * Disassembles the next instruction from the buffer and renders it
+     * directly into the output stream.
      * @param[out] ostream The output stream.
      * @return A reference to the stateful disassembler.
      * @throws DisassemblingFailedException,
@@ -128,7 +135,7 @@ public:
      *         RenderingFailedException
      * @since 1.1.0
      */
-    StatefulDisassembler& operator >>( fcml_costream &ostream ) {
+    StatefulDisassembler& operator >>(fcml_costream &ostream) {
 
         fcml_cstring instruction;
 
@@ -152,7 +159,8 @@ public:
     }
 
     /**
-     * Gets renderer configuration used by the internally managed instruction renderer.
+     * Gets renderer configuration used by the internally managed
+     * instruction renderer.
      * @return The renderer configuration.
      * @since 1.1.0
      */
@@ -176,7 +184,7 @@ public:
      * @param endOfLine A sequence of characters used as line ending.
      * @since 1.1.0
      */
-    void setEndOfLine(const fcml_cstring& endOfLine) {
+    void setEndOfLine(const fcml_cstring &endOfLine) {
         _endOfLine = endOfLine;
     }
 

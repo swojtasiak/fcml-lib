@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2019 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,8 +42,10 @@ namespace fcml {
  */
 class ParsingFailedException: public ErrorContainerAwareException {
 public:
-    ParsingFailedException( const fcml_cstring msg, ErrorContainer &errorContainer, fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) :
-        ErrorContainerAwareException( msg, errorContainer, error ){
+    ParsingFailedException(const fcml_cstring msg,
+            ErrorContainer &errorContainer,
+            fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR) :
+            ErrorContainerAwareException(msg, errorContainer, error) {
     }
 };
 
@@ -58,12 +60,12 @@ public:
      * @since 1.1.0
      */
     ParserConfig() :
-        _throwExceptionOnError(true),
-        _ignoreUndefinedSymbols(false),
-        _disableSymbolsDeclaration(true),
-        _overrideLabels(false),
-        _allocSymbolTableIfNeeded(false),
-        _enableErrorMessages(true) {
+            _throwExceptionOnError(true),
+            _ignoreUndefinedSymbols(false),
+            _disableSymbolsDeclaration(true),
+            _overrideLabels(false),
+            _allocSymbolTableIfNeeded(false),
+            _enableErrorMessages(true) {
     }
 
     /** @since 1.1.0 */
@@ -126,8 +128,10 @@ public:
     }
 
     /**
-     * Sets exception on error flag. Has to be set to true if exception should be thrown in case of error.
-     * @param throwExceptionOnError True if exception should be thrown in case of error.
+     * Sets exception on error flag. Has to be set to true if exception
+     * should be thrown in case of error.
+     * @param throwExceptionOnError True if exception should be thrown
+     * in case of error.
      * @since 1.1.0
      */
     void setThrowExceptionOnError(bool throwExceptionOnError) {
@@ -155,21 +159,20 @@ public:
      * @param ip The instruction pointer.
      * @since 1.1.0
      */
-    ParserContext( fcml_ip ip = 0 ) :
-        _ip(ip),
-        _symbolTable(NULL) {
+    ParserContext(fcml_ip ip = 0) :
+            _ip(ip), _symbolTable(NULL) {
     }
 
     /**
-     * Creates a parser context for given symbol table and optional instruction pointer.
+     * Creates a parser context for given symbol table and optional
+     * instruction pointer.
      *
      * @param symbolTable The symbol table.
      * @param ip The instruction pointer.
      * @since 1.1.0
      */
-    ParserContext( SymbolTable *symbolTable, fcml_ip ip = 0 ) :
-        _ip(ip),
-        _symbolTable(symbolTable) {
+    ParserContext(SymbolTable *symbolTable, fcml_ip ip = 0) :
+            _ip(ip), _symbolTable(symbolTable) {
     }
 
 public:
@@ -217,10 +220,11 @@ public:
     /**
      * Increments instruction pointer by given number of bytes.
      *
-     * @param ip The number of bytes the instruction pointer has to be incremented by.
+     * @param ip The number of bytes the instruction pointer has
+     * to be incremented by.
      * @since 1.1.0
      */
-    void incrementIP( fcml_ip ip ) {
+    void incrementIP(fcml_ip ip) {
         _ip += ip;
     }
 
@@ -250,7 +254,7 @@ public:
      * @param symbolTable The symbol table for the parser context.
      * @since 1.1.0
      */
-    void setSymbolTable(SymbolTable* symbolTable) {
+    void setSymbolTable(SymbolTable *symbolTable) {
         _symbolTable = symbolTable;
     }
 
@@ -303,7 +307,7 @@ public:
      * @return Gets symbol if there is any.
      * @since 1.1.0
      */
-    const Nullable<Symbol> &getSymbol() const {
+    const Nullable<Symbol>& getSymbol() const {
         return _symbol;
     }
 
@@ -326,7 +330,7 @@ protected:
      * @param errors A new error container.
      * @since 1.1.0
      */
-    void setErrors(const ErrorContainer& errors) {
+    void setErrors(const ErrorContainer &errors) {
         _errors = errors;
     }
 
@@ -335,7 +339,7 @@ protected:
      * @param instruction The instruction.
      * @since 1.1.0
      */
-    void setInstruction(const Instruction& instruction) {
+    void setInstruction(const Instruction &instruction) {
         _instruction = instruction;
     }
 
@@ -344,7 +348,7 @@ protected:
      * @param symbol The symbol.
      * @since 1.1.0
      */
-    void setSymbol(const Nullable<Symbol>& symbol) {
+    void setSymbol(const Nullable<Symbol> &symbol) {
         _symbol = symbol;
     }
 
@@ -367,7 +371,7 @@ private:
 class ParserTypeConverter {
 public:
 
-    static void convert( ParserConfig &src, fcml_st_parser_config &dest ) {
+    static void convert(ParserConfig &src, fcml_st_parser_config &dest) {
         dest.alloc_symbol_table_if_needed = src.isAllocSymbolTableIfNeeded();
         dest.disable_symbols_declaration = src.isDisableSymbolsDeclaration();
         dest.enable_error_messages = src.isEnableErrorMessages();
@@ -389,8 +393,8 @@ public:
      * @param dialect The dialect instance.
      * @since 1.1.0
      */
-    Parser( const Dialect &dialect ) :
-        _dialect(dialect) {
+    Parser(const Dialect &dialect) :
+            _dialect(dialect) {
     }
 
     /**
@@ -403,56 +407,67 @@ public:
      * @throw ParsingFailedException Parsing failed.
      * @since 1.1.0
      */
-    fcml_ceh_error parse( ParserContext &ctx, const fcml_cstring &instruction, ParserResult &parserResult ) {
+    fcml_ceh_error parse(ParserContext &ctx, const fcml_cstring &instruction,
+            ParserResult &parserResult) {
 
         // Prepare parser context.
-        fcml_st_parser_context context = {0};
-        ParserTypeConverter::convert( ctx.getConfig(), context.configuration );
+        fcml_st_parser_context context = { 0 };
+        ParserTypeConverter::convert(ctx.getConfig(), context.configuration);
         context.ip = ctx.getIp();
         SymbolTable *symbolTable = ctx.getSymbolTable();
-        context.symbol_table = ( symbolTable ) ? extractSymbolTable( *symbolTable ) : NULL;
-        context.dialect = extractDialect( _dialect );
+        context.symbol_table =
+                (symbolTable) ? extractSymbolTable(*symbolTable) : NULL;
+        context.dialect = extractDialect(_dialect);
 
         fcml_st_parser_result parser_result;
-        ::fcml_fn_parser_result_prepare( &parser_result );
+        ::fcml_fn_parser_result_prepare(&parser_result);
 
         try {
 
             parserResult.clean();
 
             // Prepare instruction.
-            fcml_ceh_error error = ::fcml_fn_parse( &context, instruction.c_str(), &parser_result );
+            fcml_ceh_error error = ::fcml_fn_parse(&context,
+                    instruction.c_str(), &parser_result);
 
             ErrorContainer errorContainer;
-            ErrorTypeConverter::convert( parser_result.errors, errorContainer );
+            ErrorTypeConverter::convert(parser_result.errors, errorContainer);
 
-            parserResult.setErrors( errorContainer );
+            parserResult.setErrors(errorContainer);
 
-            if( !error && !parser_result.instruction ) {
+            if (!error && !parser_result.instruction) {
                 // Just in case, it should never happen.
                 error = FCML_CEH_GEC_INTERNAL_ERROR;
             }
 
-            if( error && ctx.getConfig().isThrowExceptionOnError() ) {
-                ::fcml_fn_parser_result_free( &parser_result );
-                throw ParsingFailedException( errorContainer.prepareErrorMessage( FCML_TEXT("Parsing failed") ), errorContainer, error );
+            if (error && ctx.getConfig().isThrowExceptionOnError()) {
+                ::fcml_fn_parser_result_free(&parser_result);
+                throw ParsingFailedException(
+                        errorContainer.prepareErrorMessage(
+                                FCML_TEXT("Parsing failed")), errorContainer,
+                        error);
             }
 
-            if( !error ) {
+            if (!error) {
 
                 Instruction parsedInstruction;
-                TypeConverter::convert( *(parser_result.instruction), parsedInstruction );
+                TypeConverter::convert(*(parser_result.instruction),
+                        parsedInstruction);
 
-                parserResult.setInstruction( parsedInstruction );
-                parserResult.setSymbol( parser_result.symbol ? Symbol( parser_result.symbol->symbol, parser_result.symbol->value ) : Symbol() );
+                parserResult.setInstruction(parsedInstruction);
+                parserResult.setSymbol(
+                        parser_result.symbol ?
+                                Symbol(parser_result.symbol->symbol,
+                                        parser_result.symbol->value) :
+                                Symbol());
 
             }
 
-            ::fcml_fn_parser_result_free( &parser_result );
+            ::fcml_fn_parser_result_free(&parser_result);
 
-        } catch( std::exception &exc ) {
+        } catch (std::exception &exc) {
             // If anything failed, free assembler results.
-            ::fcml_fn_parser_result_free( &parser_result );
+            ::fcml_fn_parser_result_free(&parser_result);
             throw exc;
         }
 

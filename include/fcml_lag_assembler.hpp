@@ -81,9 +81,10 @@ public:
      * @throw BadArgumentException
      * @since 1.1.0
      */
-    const AssembledInstruction& operator[] ( fcml_usize index ) const {
-        if( index > _assembledInstructions.size() ) {
-            throw BadArgumentException(FCML_TEXT("Array index out of bound."), FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
+    const AssembledInstruction& operator[](fcml_usize index) const {
+        if (index > _assembledInstructions.size()) {
+            throw BadArgumentException(FCML_TEXT("Array index out of bound."),
+                    FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
         }
         return _assembledInstructions[index];
     }
@@ -99,17 +100,19 @@ public:
     }
 
     /**
-     * Gets iterator which allows to iterate through the whole machine code byte by byte.
+     * Gets iterator which allows to iterate through the whole machine code
+     * byte by byte.
      *
      * @return Iterator instance.
      * @since 1.1.0
      */
     CodeIterator getCodeIterator() {
-        return CodeIterator( _assembledInstructions );
+        return CodeIterator(_assembledInstructions);
     }
 
     /**
-     * Clears the result. Remember not to use the CodeIterator after the result is cleared up.
+     * Clears the result. Remember not to use the CodeIterator after the
+     * result is cleared up.
      * @since 1.1.0
      */
     void clear() {
@@ -138,7 +141,7 @@ protected:
      * @param errorContainer The new error container to be set.
      * @since 1.1.0
      */
-    void setErrorContainer(const ErrorContainer& errorContainer) {
+    void setErrorContainer(const ErrorContainer &errorContainer) {
         _errorContainer = errorContainer;
     }
 
@@ -163,7 +166,7 @@ public:
      * @since 1.1.0
      */
     MultiPassAssemblerContext() :
-        _symbolTable( NULL ) {
+            _symbolTable( NULL) {
     }
 
     /**
@@ -172,9 +175,9 @@ public:
      * @param ip The instruction pointer.
      * @since 1.1.0
      */
-    MultiPassAssemblerContext( EntryPoint::OperatingMode operatingMode, fcml_ip ip = 0 ) :
-        _entryPoint( operatingMode, ip ),
-        _symbolTable( NULL ) {
+    MultiPassAssemblerContext(EntryPoint::OperatingMode operatingMode,
+            fcml_ip ip = 0) :
+            _entryPoint(operatingMode, ip), _symbolTable( NULL) {
     }
 
 public:
@@ -205,7 +208,7 @@ public:
      * @return Assembler configuration.
      * @since 1.1.0
      */
-    void setConfig(const AssemblerConf& config) {
+    void setConfig(const AssemblerConf &config) {
         _config = config;
     }
 
@@ -235,7 +238,7 @@ public:
      * @param entryPoint Entry point to be set.
      * @since 1.1.0
      */
-    void setEntryPoint(const EntryPoint& entryPoint) {
+    void setEntryPoint(const EntryPoint &entryPoint) {
         _entryPoint = entryPoint;
     }
 
@@ -245,18 +248,19 @@ public:
      * @param ip A new instruction pointer.
      * @since 1.1.0
      */
-    void setIP( fcml_ip ip ) {
+    void setIP(fcml_ip ip) {
         _entryPoint.setIP(ip);
     }
 
     /**
      * Increments the instruction pointer by given number of bytes.
      *
-     * @param ip The number of bytes the instruction pointer should be incremented by.
+     * @param ip The number of bytes the instruction pointer should
+     * be incremented by.
      * @since 1.1.0
      */
-    void incrementIP( fcml_ip ip ) {
-        _entryPoint.incrementIP( ip );
+    void incrementIP(fcml_ip ip) {
+        _entryPoint.incrementIP(ip);
     }
 
     /**
@@ -265,8 +269,8 @@ public:
      * @param operatingMode The new operating mode.
      * @since 1.1.0
      */
-    void setOperatingMode( EntryPoint::OperatingMode operatingMode ) {
-        _entryPoint.setOpMode( operatingMode );
+    void setOperatingMode(EntryPoint::OperatingMode operatingMode) {
+        _entryPoint.setOpMode(operatingMode);
     }
 
     /**
@@ -275,8 +279,8 @@ public:
      * @param addressSizeAttribute The address size attribute.
      * @since 1.1.0
      */
-    void setAddressSizeAttribute( fcml_usize addressSizeAttribute ) {
-       _entryPoint.setAddressSizeAttribute( addressSizeAttribute );
+    void setAddressSizeAttribute(fcml_usize addressSizeAttribute) {
+        _entryPoint.setAddressSizeAttribute(addressSizeAttribute);
     }
 
     /**
@@ -285,8 +289,8 @@ public:
      * @param operandSizeAttribute The operand size attribute.
      * @since 1.1.0
      */
-    void setOperandSizeAttribute( fcml_usize operandSizeAttribute ) {
-       _entryPoint.setOperandSizeAttribute( operandSizeAttribute );
+    void setOperandSizeAttribute(fcml_usize operandSizeAttribute) {
+        _entryPoint.setOperandSizeAttribute(operandSizeAttribute);
     }
 
     /**
@@ -315,7 +319,7 @@ public:
      * @param symbolTable The new symbol table to be set.
      * @since 1.1.0
      */
-    void setSymbolTable( SymbolTable* symbolTable ) {
+    void setSymbolTable(SymbolTable *symbolTable) {
         _symbolTable = symbolTable;
     }
 
@@ -329,10 +333,13 @@ private:
 };
 
 /**
- * An assembler wrapper, as you can see the assembler context is managed internally and
+ * An assembler wrapper, as you can see the assembler context is
+ * managed internally and
  * is not exposed outside.
  */
-class MultiPassAssembler: public NonCopyable, protected DialectAware, protected SymbolTableAware {
+class MultiPassAssembler: public NonCopyable,
+        protected DialectAware,
+        protected SymbolTableAware {
 public:
 
     /**
@@ -343,9 +350,11 @@ public:
      */
     MultiPassAssembler(Dialect &dialect) :
             _dialect(dialect) {
-        fcml_ceh_error error = ::fcml_fn_assembler_init( extractDialect( dialect ), &_assembler);
+        fcml_ceh_error error = ::fcml_fn_assembler_init(extractDialect(dialect),
+                &_assembler);
         if (error) {
-            throw InitException(FCML_TEXT("Cannot initialize the assembler."), error);
+            throw InitException(FCML_TEXT("Cannot initialize the assembler."),
+                    error);
         }
     }
 
@@ -366,27 +375,30 @@ public:
      * Assembles given instruction model.
      *
      * @param ctx Assembler context.
-     * @param instructions A pointer to the NULL terminated array of the instructions.
+     * @param instructions A pointer to the NULL terminated array of
+     * the instructions.
      * @param[out] result Assembler result.
      * @throw AssemblingFailedException Assembler failed.
      * @return Error code.
      * @since 1.1.0
      */
-    fcml_ceh_error assemble( MultiPassAssemblerContext &ctx, const fcml_string *instructions, MultiPassAssemblerResult &result ) {
+    fcml_ceh_error assemble(MultiPassAssemblerContext &ctx,
+            const fcml_string *instructions, MultiPassAssemblerResult &result) {
 
         /* Prepare assembler context. */
-        fcml_st_lag_assembler_context context = {0};
+        fcml_st_lag_assembler_context context = { 0 };
 
-        AssemblerTypeConverter::convert( ctx.getConfig(), context.configuration );
-        TypeConverter::convert( ctx.getEntryPoint(), context.entry_point );
+        AssemblerTypeConverter::convert(ctx.getConfig(), context.configuration);
+        TypeConverter::convert(ctx.getEntryPoint(), context.entry_point);
 
         SymbolTable *symbolTable = ctx.getSymbolTable();
-        context.symbol_table = symbolTable ? extractSymbolTable( *symbolTable ) : NULL;
+        context.symbol_table =
+                symbolTable ? extractSymbolTable(*symbolTable) : NULL;
         context.assembler = _assembler;
 
         /* Prepare assembler result. */
         fcml_st_lag_assembler_result res;
-        ::fcml_fn_lag_assembler_result_prepare( &res );
+        ::fcml_fn_lag_assembler_result_prepare(&res);
 
         fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -394,49 +406,59 @@ public:
 
             result.clear();
 
-            error = ::fcml_fn_lag_assemble( &context, instructions, &res );
+            error = ::fcml_fn_lag_assemble(&context, instructions, &res);
 
             /* Failed or not, convert assembler errors. */
 
             ErrorContainer errorContainer;
-            ErrorTypeConverter::convert( res.errors, errorContainer );
+            ErrorTypeConverter::convert(res.errors, errorContainer);
 
             /* Prepares assembler result. */
 
-            result.setErrorContainer( errorContainer );
+            result.setErrorContainer(errorContainer);
 
-            if( error && ctx.getConfig().isThrowExceptionOnError() ) {
-                ::fcml_fn_lag_assembler_result_free( &res );
-                throw AssemblingFailedException( errorContainer.prepareErrorMessage( FCML_TEXT("Assembling failed") ), errorContainer, error );
+            if (error && ctx.getConfig().isThrowExceptionOnError()) {
+                ::fcml_fn_lag_assembler_result_free(&res);
+                throw AssemblingFailedException(
+                        errorContainer.prepareErrorMessage(
+                                FCML_TEXT("Assembling failed")), errorContainer,
+                        error);
             }
 
-            if( !error ) {
+            if (!error) {
 
-                std::vector<AssembledInstruction> &assembledInstructions = result.getAssembledInstructions();
+                std::vector<AssembledInstruction> &assembledInstructions =
+                        result.getAssembledInstructions();
 
                 assembledInstructions.clear();
 
                 ErrorContainer instructionWarnings;
-                fcml_st_assembled_instruction *next_instruction = res.instructions;
-                while( next_instruction ) {
-                    fcml_st_ceh_error_container &instruction_warnings = next_instruction->warnings;
-                    ErrorTypeConverter::convert( instruction_warnings, instructionWarnings );
-                    const AssembledInstruction assembledInstruction( next_instruction->code, next_instruction->code_length, instructionWarnings );
-                    assembledInstructions.push_back( assembledInstruction );
+                fcml_st_assembled_instruction *next_instruction =
+                        res.instructions;
+                while (next_instruction) {
+                    fcml_st_ceh_error_container &instruction_warnings =
+                            next_instruction->warnings;
+                    ErrorTypeConverter::convert(instruction_warnings,
+                            instructionWarnings);
+                    const AssembledInstruction assembledInstruction(
+                            next_instruction->code,
+                            next_instruction->code_length, instructionWarnings);
+                    assembledInstructions.push_back(assembledInstruction);
                     next_instruction = next_instruction->next;
                 }
 
                 // Convert it back to the context because it might have been
                 // modified during assembling process (IP incrementation etc).
-                TypeConverter::convert( context.entry_point, ctx.getEntryPoint() );
+                TypeConverter::convert(context.entry_point,
+                        ctx.getEntryPoint());
 
             }
 
-            ::fcml_fn_lag_assembler_result_free( &res );
+            ::fcml_fn_lag_assembler_result_free(&res);
 
-        } catch( std::exception &exc ) {
+        } catch (std::exception &exc) {
             // If anything failed, free assembler results.
-            ::fcml_fn_lag_assembler_result_free( &res );
+            ::fcml_fn_lag_assembler_result_free(&res);
             throw exc;
         }
 
