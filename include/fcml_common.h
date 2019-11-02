@@ -73,7 +73,8 @@
 typedef enum fcml_en_operating_mode {
     /** Real-addressing mode, virtual 8086 mode. */
     FCML_OM_16_BIT = 1,
-    /** Protected/Compatibility mode when 'D' segment descriptor flag is set to 1. */
+    /** Protected/Compatibility mode when 'D' segment descriptor
+     * flag is set to 1. */
     FCML_OM_32_BIT,
     /** 64-bit mode. ('L' flag of segment descriptor set to 1.) */
     FCML_OM_64_BIT,
@@ -419,7 +420,8 @@ typedef fcml_int64_t fcml_ip;
 
 /**
  * Register type.
- * Every register is represented as an integer value and it's register type. This enumeration provides all supported register types.
+ * Every register is represented as an integer value and it's
+ * register type. This enumeration provides all supported register types.
  */
 typedef enum fcml_en_register {
     /** Undefined register type. */
@@ -502,8 +504,9 @@ typedef struct fcml_st_condition {
  *********************************/
 
 /**
- * @defgroup SUPPORTED_SIZE_GROUP These values can be used in order to prepare a mask of supported sizes.
- * Used mainly by optimizers where instructions can be assembled using different attribute sizes.
+ * @defgroup SUPPORTED_SIZE_GROUP These values can be used in order to
+ * prepare a mask of supported sizes. Used mainly by optimizers where
+ * instructions can be assembled using different attribute sizes.
  * @{
  */
 
@@ -563,14 +566,16 @@ typedef struct fcml_st_far_pointer {
 
 /**
  * Addressing form.
- * Distinguish between two types of addressing forms: effective addressing and explicit absolute offset.
+ * Distinguish between two types of addressing forms: effective addressing
+ * and explicit absolute offset.
  */
 typedef enum fcml_en_address_form {
     /** Default value set if memory addressing hasn't been configured. */
     FCML_AF_UNDEFINED,
     /** Absolute offset (address). */
     FCML_AF_OFFSET,
-    /** Effective address combined from address components like base register, index registers, factor, displacement etc... */
+    /** Effective address combined from address components like base register,
+     * index registers, factor, displacement etc... */
     FCML_AF_COMBINED
 } fcml_en_effective_address_form;
 
@@ -692,8 +697,9 @@ typedef enum fcml_en_operand_hints {
      */
     FCML_OP_HINT_UNDEFIEND = 0x0000,
     /**
-     * SIMD operand. All operands which uses SIMD registers (mmx, xmm, ymm) have this flag set. It is for instance
-     * used by Intel syntax renderer for data size operators (mmword ptr, xmmword ptr, ymmword ptr).
+     * SIMD operand. All operands which uses SIMD registers (mmx, xmm, ymm)
+     * have this flag set. It is for instance used by Intel syntax renderer
+     * for data size operators (mmword ptr, xmmword ptr, ymmword ptr).
      */
     FCML_OP_HINT_MULTIMEDIA_INSTRUCTION = 0x0001,
     /**
@@ -702,8 +708,10 @@ typedef enum fcml_en_operand_hints {
      */
     FCML_OP_HINT_DISPLACEMENT_RELATIVE_ADDRESS = 0x0002,
     /**
-     * Pseudo opcode. Hint set for last operand (Intel syntax) which contains comparison predicate of the following instructions:
-     * CMPSD, VCMPSD, CMPSS, VCMPSS, VPCOMB, VPCOMW, VPCOMD, VPCOMQ, VPCOMUB, VPCOMUW, VPCOMUD, VPCOMUQ.
+     * Pseudo opcode. Hint set for last operand (Intel syntax) which contains
+     * comparison predicate of the following instructions: CMPSD, VCMPSD, CMPSS,
+     *  VCMPSS, VPCOMB, VPCOMW, VPCOMD, VPCOMQ, VPCOMUB, VPCOMUW,
+     *  VPCOMUD, VPCOMUQ.
      */
     FCML_OP_HINT_PSEUDO_OPCODE = 0x0004,
     /**
@@ -757,7 +765,8 @@ typedef enum fcml_en_instruction_hints {
     FCML_HINT_FAR_POINTER = 0x0001,
     /** Hints instruction to use NEAR pointer to address the memory. */
     FCML_HINT_NEAR_POINTER = 0x0002,
-    /** This hint is used only by assembler in order to force it to generate three byte VEX/XOP prefix even if prefix fields fits into two bytes. */
+    /** This hint is used only by assembler in order to force it to generate
+     * three byte VEX/XOP prefix even if prefix fields fits into two bytes. */
     FCML_HINT_LONG_FORM_POINTER = 0x0004,
     /** Hints instruction to use INDIRECT pointer to address the memory. */
     FCML_HINT_INDIRECT_POINTER = 0x0008,
@@ -767,18 +776,22 @@ typedef enum fcml_en_instruction_hints {
 
 /**
  * Generic instruction model.
- * Generic instruction model (GIM) is a common structure used to describe instruction in a common way used by FCML assembler and disassembler.
+ * Generic instruction model (GIM) is a common structure used to describe
+ * instruction in a common way used by FCML assembler and disassembler.
  */
 typedef struct fcml_st_instruction {
-    /** Describes explicit instruction prefixes. @ref PREFIX_GROUP "List of explicit prefixes." */
+    /** Describes explicit instruction prefixes. @ref PREFIX_GROUP "List
+     * of explicit prefixes." */
     fcml_prefixes prefixes;
     /** Holds instruction level hints. */
     fcml_hints hints;
-    /** Dialect-dependent instruction mnemonic. @see fcml_en_instruction_hints */
+    /** Dialect-dependent instruction mnemonic.
+     * @see fcml_en_instruction_hints */
     fcml_char *mnemonic;
     /** True for conditional instructions. */
     fcml_bool is_conditional;
-    /** Describes condition used by assembled/disassembled conditional instruction. */
+    /** Describes condition used by assembled/disassembled
+     * conditional instruction. */
     fcml_st_condition condition;
     /** Fixed size array of instruction operands. */
     fcml_st_operand operands[FCML_OPERANDS_COUNT];
@@ -814,7 +827,8 @@ typedef struct fcml_st_entry_point {
     fcml_usize address_size_attribute;
     /** Default operand size attribute (See 'D' flag of segment descriptor.)*/
     fcml_usize operand_size_attribute;
-    /** Instruction pointer EIP/RIP. Take into account that even in 16 bit mode EIP register is used.*/
+    /** Instruction pointer EIP/RIP. Take into account that even in 16 bit
+     *  mode EIP register is used.*/
     fcml_ip ip;
 } fcml_st_entry_point;
 

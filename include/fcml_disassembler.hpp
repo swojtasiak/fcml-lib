@@ -43,8 +43,10 @@ namespace fcml {
  */
 class DisassemblingFailedException: public ErrorContainerAwareException {
 public:
-    DisassemblingFailedException( const fcml_cstring &msg, const ErrorContainer &errorContainer, fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) :
-        ErrorContainerAwareException( msg, errorContainer, error ){
+    DisassemblingFailedException(const fcml_cstring &msg,
+            const ErrorContainer &errorContainer,
+            fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR) :
+            ErrorContainerAwareException(msg, errorContainer, error) {
     }
 };
 
@@ -61,14 +63,14 @@ public:
      * @since 1.1.0
      */
     DisassemblerConf() :
-        _throwExceptionOnError(true),
-        _incrementIP(true),
-        _enableErrorMessages(true),
-        _carryFlagConditionalSuffix(false),
-        _conditionalGroup(false),
-        _shortForms(false),
-        _extendDispToASA(false),
-        _failIfUnknownInstruction(false) {
+            _throwExceptionOnError(true),
+            _incrementIP(true),
+            _enableErrorMessages(true),
+            _carryFlagConditionalSuffix(false),
+            _conditionalGroup(false),
+            _shortForms(false),
+            _extendDispToASA(false),
+            _failIfUnknownInstruction(false) {
     }
 
     /** @since 1.1.0 */
@@ -144,7 +146,8 @@ public:
     /**
      * Returns true if exception should be thrown when disassembling fails.
      *
-     * @return True if exception is the preferred way of error handling in case of failure.
+     * @return True if exception is the preferred way of error
+     * handling in case of failure.
      * @since 1.1.0
      */
     bool isThrowExceptionOnError() const {
@@ -154,7 +157,8 @@ public:
     /**
      * Sets the way how the error handling is done.
      *
-     * @param throwExceptionOnError True if exception should be thrown in case of failure.
+     * @param throwExceptionOnError True if exception should be thrown
+     * in case of failure.
      * @since 1.1.0
      */
     void setThrowExceptionOnError(bool throwExceptionOnError) {
@@ -184,8 +188,7 @@ public:
      * @since 1.1.0
      */
     DisassemblerContext() :
-        _code(NULL),
-        _codeLength(0) {
+            _code(NULL), _codeLength(0) {
     }
 
     /**
@@ -195,9 +198,8 @@ public:
      * @param codeLength Size of the buffer in bytes.
      * @since 1.1.0
      */
-    DisassemblerContext( fcml_ptr code, fcml_usize codeLength ) :
-        _code(code),
-        _codeLength(codeLength) {
+    DisassemblerContext(fcml_ptr code, fcml_usize codeLength) :
+            _code(code), _codeLength(codeLength) {
     }
 
 public:
@@ -273,7 +275,8 @@ public:
     }
 
     /**
-     * Gets reference to the constant entry point instance associated with the context.
+     * Gets reference to the constant entry point instance
+     * associated with the context.
      *
      * @return Reference to the constant entry point.
      * @since 1.1.0
@@ -299,7 +302,7 @@ public:
      * @param entryPoint The entry point which is copied to the context.
      * @since 1.1.0
      */
-    void setEntryPoint(const EntryPoint& entryPoint) {
+    void setEntryPoint(const EntryPoint &entryPoint) {
         _entryPoint = entryPoint;
     }
 
@@ -309,18 +312,19 @@ public:
      * @param ip The new IP.
      * @since 1.1.0
      */
-    void setIP( fcml_ip ip ) {
+    void setIP(fcml_ip ip) {
         _entryPoint.setIP(ip);
     }
 
     /**
      * Increments entry point by given number of bytes.
      *
-     * @param ip Number of bytes the instruction pointer has to be incremented by.
+     * @param ip Number of bytes the instruction pointer has to be
+     *  incremented by.
      * @since 1.1.0
      */
-    void incrementIP( fcml_ip ip ) {
-        _entryPoint.incrementIP( ip );
+    void incrementIP(fcml_ip ip) {
+        _entryPoint.incrementIP(ip);
     }
 
     /**
@@ -329,8 +333,8 @@ public:
      * @param operatingMode Processor operating mode to be set.
      * @since 1.1.0
      */
-    void setOperatingMode( EntryPoint::OperatingMode operatingMode ) {
-        _entryPoint.setOpMode( operatingMode );
+    void setOperatingMode(EntryPoint::OperatingMode operatingMode) {
+        _entryPoint.setOpMode(operatingMode);
     }
 
     /**
@@ -339,8 +343,8 @@ public:
      * @param addressSizeAttribute The address size attribute.
      * @since 1.1.0
      */
-    void setAddressSizeAttribute( fcml_usize addressSizeAttribute ) {
-       _entryPoint.setAddressSizeAttribute( addressSizeAttribute );
+    void setAddressSizeAttribute(fcml_usize addressSizeAttribute) {
+        _entryPoint.setAddressSizeAttribute(addressSizeAttribute);
     }
 
     /**
@@ -349,8 +353,8 @@ public:
      * @param operandSizeAttribute The operand size attribute.
      * @since 1.1.0
      */
-    void setOperandSizeAttribute( fcml_usize operandSizeAttribute ) {
-       _entryPoint.setOperandSizeAttribute( operandSizeAttribute );
+    void setOperandSizeAttribute(fcml_usize operandSizeAttribute) {
+        _entryPoint.setOperandSizeAttribute(operandSizeAttribute);
     }
 
 private:
@@ -398,7 +402,8 @@ public:
     /**
      * Sets mandatory prefix flag for the prefix.
      *
-     * @param mandatoryPrefix Set to true in order to make the prefix mandatory one.
+     * @param mandatoryPrefix Set to true in order to make the
+     * prefix mandatory one.
      * @since 1.1.0
      */
     void setMandatoryPrefix(bool mandatoryPrefix) {
@@ -489,35 +494,35 @@ public:
      * @since 1.1.0
      */
     PrefixesDetails() :
-        _prefixesCount(0),
-        _prefixesBytesCount(0),
-        _isBranch(false),
-        _isNobranch(false),
-        _isLock(false),
-        _isRep(false),
-        _isRepne(false),
-        _isXrelease(false),
-        _isXacquire(false),
-        _isVex(false),
-        _isEvex(false),
-        _isXop(false),
-        _isAvx(false),
-        _isRex(false),
-        _AvxPrefixFirstByte(false),
-        _R(0),
-        _RPrim(0),
-        _X(0),
-        _B(0),
-        _W(0),
-        _L(0),
-        _LPrim(0),
-        _mmmm(0),
-        _vvvv(0),
-        _VPrim(0),
-        _pp(0),
-        _aaa(0),
-        _b(false),
-        _z(false) {
+            _prefixesCount(0),
+            _prefixesBytesCount(0),
+            _isBranch(false),
+            _isNobranch(false),
+            _isLock(false),
+            _isRep(false),
+            _isRepne(false),
+            _isXrelease(false),
+            _isXacquire(false),
+            _isVex(false),
+            _isEvex(false),
+            _isXop(false),
+            _isAvx(false),
+            _isRex(false),
+            _AvxPrefixFirstByte(false),
+            _R(0),
+            _RPrim(0),
+            _X(0),
+            _B(0),
+            _W(0),
+            _L(0),
+            _LPrim(0),
+            _mmmm(0),
+            _vvvv(0),
+            _VPrim(0),
+            _pp(0),
+            _aaa(0),
+            _b(false),
+            _z(false) {
     }
 
     /**
@@ -528,8 +533,8 @@ public:
      * @since 1.1.0
      */
     const InstructionPrefixDetails& operator[](fcml_usize index) const {
-        if( index >= FCML_DASM_PREFIXES_COUNT ) {
-            throw IllegalArgumentException( FCML_TEXT( "Index out of bound." ) );
+        if (index >= FCML_DASM_PREFIXES_COUNT) {
+            throw IllegalArgumentException(FCML_TEXT("Index out of bound."));
         }
         return _prefixes[index];
     }
@@ -542,8 +547,8 @@ public:
      * @since 1.1.0
      */
     InstructionPrefixDetails& operator[](fcml_usize index) {
-        if( index >= FCML_DASM_PREFIXES_COUNT ) {
-            throw IllegalArgumentException( FCML_TEXT( "Index out of bound." ) );
+        if (index >= FCML_DASM_PREFIXES_COUNT) {
+            throw IllegalArgumentException(FCML_TEXT("Index out of bound."));
         }
         return _prefixes[index];
     }
@@ -788,7 +793,6 @@ public:
         _isAvx = isAvx;
     }
 
-
     /**
      * Gets true if xrelease prefix is available.
      *
@@ -849,7 +853,6 @@ public:
         _LPrim = lPrim;
     }
 
-
     /**
      * Gets MMMM field.
      *
@@ -898,9 +901,10 @@ public:
      * @throw BadArgumentException Array index out of bound.
      * @since 1.1.0
      */
-    const InstructionPrefixDetails& getPrefixes( fcml_usize index ) const {
-        if( index > FCML_DASM_PREFIXES_COUNT ) {
-            throw BadArgumentException(FCML_TEXT("Array index out of bound."), FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
+    const InstructionPrefixDetails& getPrefixes(fcml_usize index) const {
+        if (index > FCML_DASM_PREFIXES_COUNT) {
+            throw BadArgumentException(FCML_TEXT("Array index out of bound."),
+                    FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
         }
         return _prefixes[index];
     }
@@ -913,9 +917,10 @@ public:
      * @throw BadArgumentException Array index out of bound.
      * @since 1.1.0
      */
-    InstructionPrefixDetails& getPrefixes( fcml_usize index ) {
-        if( index > FCML_DASM_PREFIXES_COUNT ) {
-            throw BadArgumentException(FCML_TEXT("Array index out of bound."), FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
+    InstructionPrefixDetails& getPrefixes(fcml_usize index) {
+        if (index > FCML_DASM_PREFIXES_COUNT) {
+            throw BadArgumentException(FCML_TEXT("Array index out of bound."),
+                    FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
         }
         return _prefixes[index];
     }
@@ -1061,24 +1066,24 @@ public:
     }
 
     /**
-      * Gets V' flag.
-      *
-      * @return The V' flag.
-      * @since 2.0.0
-      */
-     fcml_uint8_t getVPrim() const {
-         return _VPrim;
-     }
+     * Gets V' flag.
+     *
+     * @return The V' flag.
+     * @since 2.0.0
+     */
+    fcml_uint8_t getVPrim() const {
+        return _VPrim;
+    }
 
-     /**
-      * Sets V' flag.
-      *
-      * @param vPrim The V' flag.
-      * @since 2.0.0
-      */
-     void setVPrim(fcml_uint8_t vPrim) {
-         _VPrim = vPrim;
-     }
+    /**
+     * Sets V' flag.
+     *
+     * @param vPrim The V' flag.
+     * @since 2.0.0
+     */
+    void setVPrim(fcml_uint8_t vPrim) {
+        _VPrim = vPrim;
+    }
 
     /**
      * Gets W flag.
@@ -1264,7 +1269,7 @@ public:
      * @since 1.1.0
      */
     OperandDetails() :
-        _accessMode( AM_ACCESS_MODE_UNDEFINED ) {
+            _accessMode(AM_ACCESS_MODE_UNDEFINED) {
     }
 
     /**
@@ -1273,8 +1278,8 @@ public:
      * @param accessMode Access mode.
      * @since 1.1.0
      */
-    OperandDetails( AccessMode accessMode ) :
-        _accessMode( accessMode ) {
+    OperandDetails(AccessMode accessMode) :
+            _accessMode(accessMode) {
     }
 
     /**
@@ -1313,7 +1318,7 @@ public:
      * @since 1.1.0
      */
     DecodedModRMDetails() :
-        _isRip(false) {
+            _isRip(false) {
     }
 
     /**
@@ -1332,7 +1337,7 @@ public:
      * @param isRip True if RIP byte is available.
      * @since 1.1.0
      */
-    void setRip( bool isRip ) {
+    void setRip(bool isRip) {
         _isRip = isRip;
     }
 
@@ -1362,7 +1367,7 @@ public:
      * @param modRM ModR/M nullable byte.
      * @since 1.1.0
      */
-    void setModRM( const Nullable<fcml_uint8_t> &modRM ) {
+    void setModRM(const Nullable<fcml_uint8_t> &modRM) {
         _modRM = modRM;
     }
 
@@ -1392,7 +1397,7 @@ public:
      * @param sib The SIB nullable byte.
      * @since 1.1.0
      */
-    void setSib( const Nullable<fcml_uint8_t> &sib ) {
+    void setSib(const Nullable<fcml_uint8_t> &sib) {
         _sib = sib;
     }
 
@@ -1461,7 +1466,8 @@ private:
     Nullable<fcml_uint8_t> _modRM;
     /** SIB byte if exists.*/
     Nullable<fcml_uint8_t> _sib;
-    /** True if RIP encoding is used by decoded instruction. This flag is used only in 64 bit mode. */
+    /** True if RIP encoding is used by decoded instruction. This flag is
+     * used only in 64 bit mode. */
     bool _isRip;
     /** Raw displacement.
      * since 2.0.0
@@ -1523,7 +1529,8 @@ public:
     }
 
     /**
-     * Gets a pointer to the instruction code. See fcml_en_instruction for more details.
+     * Gets a pointer to the instruction code. See fcml_en_instruction
+     * for more details.
      *
      * @return The pointer to the instruction code.
      * @since 1.1.0
@@ -1533,7 +1540,8 @@ public:
     }
 
     /**
-     * Gets a pointer to the instruction code. See fcml_en_instruction for more details.
+     * Gets a pointer to the instruction code. See fcml_en_instruction
+     * for more details.
      *
      * @return The pointer to the instruction code.
      * @since 1.1.0
@@ -1543,7 +1551,8 @@ public:
     }
 
     /**
-     * Gets instruction group. See fcml_instructions.h for all available groups.
+     * Gets instruction group. See fcml_instructions.h for all
+     * available groups.
      *
      * @return The instruction group.
      * @since 1.1.0
@@ -1553,7 +1562,8 @@ public:
     }
 
     /**
-     * Sets an instruction group. See fcml_instructions.h for all available groups.
+     * Sets an instruction group. See fcml_instructions.h for all
+     * available groups.
      *
      * @param instructionGroup The instruction group.
      * @since 1.1.0
@@ -1628,7 +1638,7 @@ public:
      * @param modRmDetails The new instruction details.
      * @since 1.1.0
      */
-    void setModRmDetails(const DecodedModRMDetails& modRmDetails) {
+    void setModRmDetails(const DecodedModRMDetails &modRmDetails) {
         _modRMDetails = modRmDetails;
     }
 
@@ -1680,9 +1690,10 @@ public:
      * @throw BadArgumentException Array index out of bound.
      * @since 1.1.0
      */
-    const OperandDetails& getOperandDetails( fcml_usize index ) const {
-        if( index > FCML_OPERANDS_COUNT ) {
-            throw BadArgumentException(FCML_TEXT("Array index out of bound."), FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
+    const OperandDetails& getOperandDetails(fcml_usize index) const {
+        if (index > FCML_OPERANDS_COUNT) {
+            throw BadArgumentException(FCML_TEXT("Array index out of bound."),
+                    FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
         }
         return _operandDetails[index];
     }
@@ -1695,9 +1706,10 @@ public:
      * @throw BadArgumentException Array index out of bound.
      * @since 1.1.0
      */
-    OperandDetails& getOperandDetails( fcml_usize index ) {
-        if( index > FCML_OPERANDS_COUNT ) {
-            throw BadArgumentException(FCML_TEXT("Array index out of bound."), FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
+    OperandDetails& getOperandDetails(fcml_usize index) {
+        if (index > FCML_OPERANDS_COUNT) {
+            throw BadArgumentException(FCML_TEXT("Array index out of bound."),
+                    FCML_CEH_GEC_VALUE_OUT_OF_RANGE);
         }
         return _operandDetails[index];
     }
@@ -1728,7 +1740,7 @@ public:
      * @param prefixesDetails The new prefixes details.
      * @since 1.1.0
      */
-    void setPrefixesDetails(const PrefixesDetails& prefixesDetails) {
+    void setPrefixesDetails(const PrefixesDetails &prefixesDetails) {
         _prefixesDetails = prefixesDetails;
     }
 
@@ -1787,20 +1799,22 @@ public:
      * @since 2.0.0
      */
     void setTupleType(fcml_uint8_t tupleType) {
-       _tupleType = tupleType;
+        _tupleType = tupleType;
     }
 
 private:
 
     /**
      * True if this is a shortcut.
-     * A good example of such instruction is 'cmpsb' as opposed to 'cmps byte ptr [si],byte ptr [di]'.
-     * It is very important to take this information into consideration when instruction
-     * models are analyzed because there is no operands in the GIM for shortcuts.
+     * A good example of such instruction is 'cmpsb' as opposed to 'cmps
+     * byte ptr [si],byte ptr [di]'. It is very important to take this
+     * information into consideration when instruction models are analyzed
+     * because there is no operands in the GIM for shortcuts.
      */
     bool _isShortcut;
     /**
-     * True if given instruction is a short form of pseudo-ops instructions. See 'vcmpunordsd' for instance.
+     * True if given instruction is a short form of pseudo-ops instructions.
+     * See 'vcmpunordsd' for instance.
      */
     bool _isPseudoOp;
     /**
@@ -1824,11 +1838,13 @@ private:
      */
     DecodedModRMDetails _modRMDetails;
     /** Opcode field 's'.
-     * This is set only for informational purpose only and you should not use it for any critical functionality.
+     * This is set only for informational purpose only and you should not use
+     * it for any critical functionality.
      */
     bool _opcodeFieldSBit;
     /** Opcode field 'w'.
-     * This is set only for informational purpose only and you should not use it for any critical functionality.
+     * This is set only for informational purpose only and you should not
+     * use it for any critical functionality.
      */
     bool _opcodeFieldWBit;
     /**
@@ -1863,7 +1879,8 @@ class DisassemblerResult {
 public:
 
     /**
-     * Gets errors container with errors related to the failed disassembling process.
+     * Gets errors container with errors related to the failed
+     * disassembling process.
      *
      * @return The error container.
      * @since 1.1.0
@@ -1873,7 +1890,8 @@ public:
     }
 
     /**
-     * Gets errors container with errors related to the failed disassembling process.
+     * Gets errors container with errors related to the failed
+     * disassembling process.
      *
      * @return The error container.
      * @since 1.1.0
@@ -1921,7 +1939,7 @@ protected:
      * @param instructionDetails The instruction details.
      * @since 1.1.0
      */
-    void setInstructionDetails(const InstructionDetails& instructionDetails) {
+    void setInstructionDetails(const InstructionDetails &instructionDetails) {
         _instructionDetails = instructionDetails;
     }
 
@@ -1939,7 +1957,7 @@ protected:
      * @param instruction The instruction to be copied to the result.
      * @since 1.1.0
      */
-    void setInstruction(const Instruction& instruction) {
+    void setInstruction(const Instruction &instruction) {
         _instruction = instruction;
     }
 
@@ -1948,7 +1966,7 @@ protected:
      * @param errorContainer The error container.
      * @since 1.1.0
      */
-    void setErrorContainer(const ErrorContainer& errorContainer) {
+    void setErrorContainer(const ErrorContainer &errorContainer) {
         _errorContainer = errorContainer;
     }
 
@@ -1972,14 +1990,16 @@ class DisassemblerTypeConverter {
 
 public:
 
-    static void convert( const DisassemblerContext &src, fcml_st_disassembler_context &dest ) {
+    static void convert(const DisassemblerContext &src,
+            fcml_st_disassembler_context &dest) {
         dest.code = src.getCode();
         dest.code_length = src.getCodeLength();
-        TypeConverter::convert( src.getEntryPoint(), dest.entry_point );
-        convert( src.getDisassemblerConf(), dest.configuration );
+        TypeConverter::convert(src.getEntryPoint(), dest.entry_point);
+        convert(src.getDisassemblerConf(), dest.configuration);
     }
 
-    static void convert( const DisassemblerConf &src, fcml_st_disassembler_conf &dest ) {
+    static void convert(const DisassemblerConf &src,
+            fcml_st_disassembler_conf &dest) {
         dest.conditional_group = src.getConditionalGroup();
         dest.carry_flag_conditional_suffix = src.isCarryFlagConditionalSuffix();
         dest.enable_error_messages = src.isEnableErrorMessages();
@@ -1997,16 +2017,17 @@ public:
         modRM.setValue(src.modrm);
         Nullable<fcml_uint8_t> &sib = dest.getSib();
         sib.setNotNull(FCML_TO_CPP_BOOL(src.sib.is_not_null));
-        sib.setValue( src.sib.value );
+        sib.setValue(src.sib.value);
         TypeConverter::convert(src.displacement.displacement,
-                        dest.getDisplacement());
+                dest.getDisplacement());
         Nullable<fcml_uint32_t> N;
         N.setNotNull(FCML_TO_CPP_BOOL(src.displacement.N.is_not_null));
         N.setValue(src.displacement.N.value);
         dest.setN(N);
     }
 
-    static void convert( const DecodedModRMDetails &src, fcml_st_decoded_modrm_details &dest ) {
+    static void convert(const DecodedModRMDetails &src,
+            fcml_st_decoded_modrm_details &dest) {
         dest.is_modrm = src.getModRM().isNotNull();
         dest.is_rip = src.isRip();
         dest.modrm = src.getModRM().getValue();
@@ -2019,41 +2040,46 @@ public:
         dest.displacement.N.value = src.getN().getValue();
     }
 
-    static void convert( const fcml_st_operand_details &src, OperandDetails &dest ) {
-        dest.setAccessMode( static_cast<OperandDetails::AccessMode>( src.access_mode ) );
+    static void convert(const fcml_st_operand_details &src,
+            OperandDetails &dest) {
+        dest.setAccessMode(
+                static_cast<OperandDetails::AccessMode>(src.access_mode));
     }
 
-    static void convert( const OperandDetails &src, fcml_st_operand_details &dest ) {
-        dest.access_mode = static_cast<fcml_en_access_mode>( src.getAccessMode() );
+    static void convert(const OperandDetails &src,
+            fcml_st_operand_details &dest) {
+        dest.access_mode =
+                static_cast<fcml_en_access_mode>(src.getAccessMode());
     }
 
     static void convert(const fcml_st_instruction_prefix &src,
             InstructionPrefixDetails &dest) {
         dest.setMandatoryPrefix(FCML_TO_CPP_BOOL(src.mandatory_prefix));
         dest.setPrefix(src.prefix);
-        dest.setPrefixType(static_cast<InstructionPrefixDetails::PrefixType>(src.prefix_type));
-        ::memcpy(dest.getAvxBytes(), src.avx_bytes,
-                sizeof(src.avx_bytes));
+        dest.setPrefixType(
+                static_cast<InstructionPrefixDetails::PrefixType>(src.prefix_type));
+        ::memcpy(dest.getAvxBytes(), src.avx_bytes, sizeof(src.avx_bytes));
     }
 
-    static void convert( const InstructionPrefixDetails &src,
-            fcml_st_instruction_prefix &dest ) {
+    static void convert(const InstructionPrefixDetails &src,
+            fcml_st_instruction_prefix &dest) {
         dest.mandatory_prefix = src.isMandatoryPrefix();
         dest.prefix = src.getPrefix();
-        dest.prefix_type = static_cast<fcml_en_prefix_types>( src.getPrefixType() );
+        dest.prefix_type =
+                static_cast<fcml_en_prefix_types>(src.getPrefixType());
         ::memcpy(dest.avx_bytes, src.getAvxBytes(), sizeof(dest.avx_bytes));
     }
 
     static void convert(const fcml_st_prefixes_details src,
             PrefixesDetails &dest) {
-        for(int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++) {
+        for (int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++) {
             convert(src.prefixes[i], dest.getPrefixes(i));
         }
         dest.setPrefixesCount(src.prefixes_count);
         dest.setPrefixesBytesCount(src.prefixes_bytes_count);
-        dest.setBranch(FCML_TO_CPP_BOOL( src.is_branch));
-        dest.setNobranch(FCML_TO_CPP_BOOL( src.is_nobranch));
-        dest.setLock(FCML_TO_CPP_BOOL( src.is_lock));
+        dest.setBranch(FCML_TO_CPP_BOOL(src.is_branch));
+        dest.setNobranch(FCML_TO_CPP_BOOL(src.is_nobranch));
+        dest.setLock(FCML_TO_CPP_BOOL(src.is_lock));
         dest.setRep(FCML_TO_CPP_BOOL(src.is_rep));
         dest.setRepne(FCML_TO_CPP_BOOL(src.is_repne));
         dest.setXrelease(FCML_TO_CPP_BOOL(src.is_xrelease));
@@ -2082,7 +2108,7 @@ public:
 
     static void convert(const PrefixesDetails src,
             fcml_st_prefixes_details &dest) {
-        for(int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++) {
+        for (int i = 0; i < FCML_DASM_PREFIXES_COUNT; i++) {
             convert(src.getPrefixes(i), dest.prefixes[i]);
         }
         dest.prefixes_count = src.getPrefixesCount();
@@ -2099,7 +2125,7 @@ public:
         dest.is_avx = src.isAvx();
         dest.is_evex = src.isEvex();
         dest.is_rex = src.isRex();
-        dest.avx_first_byte  = src.getAvxFirstByte();
+        dest.avx_first_byte = src.getAvxFirstByte();
         dest.R = src.getR();
         dest.R_prim = src.getRPrim();
         dest.X = src.getX();
@@ -2116,29 +2142,31 @@ public:
         dest.z = src.getZ() ? 1 : 0;
     }
 
-    static void convert( const fcml_st_instruction_details &src, InstructionDetails &dest ) {
-        dest.setTupleType( src.tuple_type );
-        dest.setAddrMode( src.addr_mode );
-        dest.setInstruction( src.instruction );
-        dest.setInstructionGroup( src.instruction_group );
-        dest.setInstructionSize( src.instruction_size );
-        dest.setOpcodeFieldSBit( FCML_TO_CPP_BOOL( src.opcode_field_s_bit ) );
-        dest.setOpcodeFieldWBit( FCML_TO_CPP_BOOL( src.opcode_field_w_bit ) );
-        dest.setIsPseudoOp( FCML_TO_CPP_BOOL( src.is_pseudo_op ) );
-        dest.setPseudoOp( src.pseudo_op );
-        dest.setShortcut( FCML_TO_CPP_BOOL( src.is_shortcut ) );
-        convert( src.modrm_details, dest.getModRmDetails() );
-        for( int i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-            convert( src.operand_details[i], dest.getOperandDetails(i) );
+    static void convert(const fcml_st_instruction_details &src,
+            InstructionDetails &dest) {
+        dest.setTupleType(src.tuple_type);
+        dest.setAddrMode(src.addr_mode);
+        dest.setInstruction(src.instruction);
+        dest.setInstructionGroup(src.instruction_group);
+        dest.setInstructionSize(src.instruction_size);
+        dest.setOpcodeFieldSBit(FCML_TO_CPP_BOOL(src.opcode_field_s_bit));
+        dest.setOpcodeFieldWBit(FCML_TO_CPP_BOOL(src.opcode_field_w_bit));
+        dest.setIsPseudoOp(FCML_TO_CPP_BOOL(src.is_pseudo_op));
+        dest.setPseudoOp(src.pseudo_op);
+        dest.setShortcut(FCML_TO_CPP_BOOL(src.is_shortcut));
+        convert(src.modrm_details, dest.getModRmDetails());
+        for (int i = 0; i < FCML_OPERANDS_COUNT; i++) {
+            convert(src.operand_details[i], dest.getOperandDetails(i));
         }
         fcml_uint8_t *code = dest.getInstructionCode();
-        for( int i = 0; i < FCML_INSTRUCTION_SIZE; i++ ) {
+        for (int i = 0; i < FCML_INSTRUCTION_SIZE; i++) {
             code[i] = src.instruction_code[i];
         }
-        convert( src.prefixes_details, dest.getPrefixesDetails() );
+        convert(src.prefixes_details, dest.getPrefixesDetails());
     }
 
-    static void convert( const InstructionDetails &src, fcml_st_instruction_details &dest ) {
+    static void convert(const InstructionDetails &src,
+            fcml_st_instruction_details &dest) {
         dest.tuple_type = src.getTupleType();
         dest.addr_mode = src.getAddrMode();
         dest.instruction = src.getInstruction();
@@ -2149,28 +2177,30 @@ public:
         dest.is_pseudo_op = src.isPseudoOp();
         dest.pseudo_op = src.getPseudoOp();
         dest.is_shortcut = src.isShortcut();
-        convert( src.getModRmDetails(), dest.modrm_details );
-        for( int i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
-            convert( src.getOperandDetails(i), dest.operand_details[i] );
+        convert(src.getModRmDetails(), dest.modrm_details);
+        for (int i = 0; i < FCML_OPERANDS_COUNT; i++) {
+            convert(src.getOperandDetails(i), dest.operand_details[i]);
         }
-        for( int i = 0; i < FCML_INSTRUCTION_SIZE; i++ ) {
+        for (int i = 0; i < FCML_INSTRUCTION_SIZE; i++) {
             dest.instruction_code[i] = src.getInstructionCode()[i];
         }
-        convert( src.getPrefixesDetails(), dest.prefixes_details );
+        convert(src.getPrefixesDetails(), dest.prefixes_details);
     }
 
-    static void convert( const fcml_st_disassembler_result &src, DisassemblerResult &dest ) {
-        TypeConverter::convert( src.instruction, dest.getInstructionInternal() );
-        convert( src.instruction_details, dest.getInstructionDetailsInternal() );
+    static void convert(const fcml_st_disassembler_result &src,
+            DisassemblerResult &dest) {
+        TypeConverter::convert(src.instruction, dest.getInstructionInternal());
+        convert(src.instruction_details, dest.getInstructionDetailsInternal());
     }
 
-    static void convert( const DisassemblerResult &src, fcml_st_disassembler_result &dest ) {
-        TypeConverter::convert( src.getInstruction(), dest.instruction );
-        convert( src.getInstructionDetails(), dest.instruction_details );
+    static void convert(const DisassemblerResult &src,
+            fcml_st_disassembler_result &dest) {
+        TypeConverter::convert(src.getInstruction(), dest.instruction);
+        convert(src.getInstructionDetails(), dest.instruction_details);
     }
 
-    static void free( fcml_st_disassembler_result &src ) {
-        TypeConverter::free( src.instruction );
+    static void free(fcml_st_disassembler_result &src) {
+        TypeConverter::free(src.instruction);
     }
 
 };
@@ -2178,7 +2208,7 @@ public:
 /** Disassembler wrapper.
  * @since 1.1.0
  */
-class Disassembler : public NonCopyable, protected DialectAware {
+class Disassembler: public NonCopyable, protected DialectAware {
 public:
 
     /**
@@ -2190,9 +2220,11 @@ public:
      */
     Disassembler(Dialect &dialect) :
             _dialect(dialect) {
-        fcml_ceh_error error = ::fcml_fn_disassembler_init( extractDialect( dialect ), &_disassembler);
+        fcml_ceh_error error = ::fcml_fn_disassembler_init(
+                extractDialect(dialect), &_disassembler);
         if (error) {
-            throw InitException(FCML_TEXT("Cannot initialize the disassembler."), error);
+            throw InitException(
+                    FCML_TEXT("Cannot initialize the disassembler."), error);
         }
     }
 
@@ -2218,51 +2250,55 @@ public:
      * @return Error code.
      * @since 1.1.0
      */
-    fcml_ceh_error disassemble( DisassemblerContext &ctx, DisassemblerResult &disassemblerResult ) {
+    fcml_ceh_error disassemble(DisassemblerContext &ctx,
+            DisassemblerResult &disassemblerResult) {
 
         fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
         fcml_st_disassembler_context context;
-        DisassemblerTypeConverter::convert( ctx, context );
+        DisassemblerTypeConverter::convert(ctx, context);
 
         context.disassembler = _disassembler;
 
         /* Prepare assembler result. */
         fcml_st_disassembler_result disassembler_result;
-        ::fcml_fn_disassembler_result_prepare( &disassembler_result );
+        ::fcml_fn_disassembler_result_prepare(&disassembler_result);
 
         try {
 
             disassemblerResult.clean();
 
-            error = ::fcml_fn_disassemble( &context, &disassembler_result );
+            error = ::fcml_fn_disassemble(&context, &disassembler_result);
 
             ErrorContainer errorContainer;
-            ErrorTypeConverter::convert( disassembler_result.errors, errorContainer );
+            ErrorTypeConverter::convert(disassembler_result.errors,
+                    errorContainer);
 
-            disassemblerResult.setErrorContainer( errorContainer );
+            disassemblerResult.setErrorContainer(errorContainer);
 
-            if( error && ctx.getDisassemblerConf().isThrowExceptionOnError() ) {
-                ::fcml_fn_disassembler_result_free( &disassembler_result );
-                throw DisassemblingFailedException( FCML_TEXT("Assembling failed."), errorContainer, error );
+            if (error && ctx.getDisassemblerConf().isThrowExceptionOnError()) {
+                ::fcml_fn_disassembler_result_free(&disassembler_result);
+                throw DisassemblingFailedException(
+                        FCML_TEXT("Assembling failed."), errorContainer, error);
             }
 
-            if( !error ) {
+            if (!error) {
 
                 // Convert result.
-                DisassemblerTypeConverter::convert( disassembler_result, disassemblerResult );
+                DisassemblerTypeConverter::convert(disassembler_result,
+                        disassemblerResult);
 
-                ctx.getEntryPoint().setIP( context.entry_point.ip );
-                ctx.setCode( context.code );
-                ctx.setCodeLength( context.code_length );
+                ctx.getEntryPoint().setIP(context.entry_point.ip);
+                ctx.setCode(context.code);
+                ctx.setCodeLength(context.code_length);
 
             }
 
-            ::fcml_fn_disassembler_result_free( &disassembler_result );
+            ::fcml_fn_disassembler_result_free(&disassembler_result);
 
-        } catch( std::exception &exc ) {
+        } catch (std::exception &exc) {
             // If anything failed, free assembler results.
-            ::fcml_fn_disassembler_result_free( &disassembler_result );
+            ::fcml_fn_disassembler_result_free(&disassembler_result);
             throw exc;
         }
 
