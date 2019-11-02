@@ -247,6 +247,8 @@ typedef struct fcml_st_instruction_details {
     fcml_uint16_t addr_mode;
     /** Instruction group. */
     fcml_uint64_t instruction_group;
+    /** avx-512 tuple type */
+    fcml_uint8_t tuple_type;
 } fcml_st_instruction_details;
 
 /** Reusable disassembler result holder. */

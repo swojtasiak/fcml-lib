@@ -1772,6 +1772,24 @@ public:
         _isPseudoOp = isPseudoOp;
     }
 
+    /**
+     * Gets avx-512 tuple type.
+     * @since 2.0.0
+     */
+    fcml_uint8_t getTupleType() const {
+        return _tupleType;
+    }
+
+    /**
+     * Sets avx-512 tuple type.
+     *
+     * @param isPseudoOp True if the instruction is a pseudo operation.
+     * @since 2.0.0
+     */
+    void setTupleType(fcml_uint8_t tupleType) {
+       _tupleType = tupleType;
+    }
+
 private:
 
     /**
@@ -1829,7 +1847,10 @@ private:
      * Instruction group.
      */
     fcml_uint64_t _instructionGroup;
-
+    /**
+     * Tuple type used by avx-512 instructions to calculate disp8.
+     */
+    fcml_uint8_t _tupleType;
 };
 
 /** Disassembler result.
@@ -2098,6 +2119,7 @@ protected:
     }
 
     static void convert( const fcml_st_instruction_details &src, InstructionDetails &dest ) {
+        dest.setTupleType( src.tuple_type );
         dest.setAddrMode( src.addr_mode );
         dest.setInstruction( src.instruction );
         dest.setInstructionGroup( src.instruction_group );
@@ -2115,6 +2137,7 @@ protected:
     }
 
     static void convert( const InstructionDetails &src, fcml_st_instruction_details &dest ) {
+        dest.tuple_type = src.getTupleType();
         dest.addr_mode = src.getAddrMode();
         dest.instruction = src.getInstruction();
         dest.instruction_group = src.getInstructionGroup();

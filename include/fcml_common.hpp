@@ -1488,7 +1488,9 @@ private:
      * @remark An internal API.
      * @since 1.1.0
      */
-    void callMathExpression( fcml_int64_t (*signedExpressionFn)( fcml_int64_t thisValue, fcml_int64_t thatValue ), fcml_uint64_t (*unsignedExpressionFn)( fcml_uint64_t thisValue, fcml_uint64_t thatValue ), Integer &result, const Integer &src ) const {
+    void callMathExpression( fcml_int64_t (*signedExpressionFn)( fcml_int64_t thisValue, fcml_int64_t thatValue ),
+            fcml_uint64_t (*unsignedExpressionFn)( fcml_uint64_t thisValue, fcml_uint64_t thatValue ),
+            Integer &result, const Integer &src ) const {
 
         if(  _isSigned ) {
 
@@ -1599,6 +1601,7 @@ private:
 class Register {
 public:
 
+    // TODO: Do we need this REG_ prefix here?
     /** Register types.
      * @since 1.1.0
      */
@@ -4999,6 +5002,16 @@ class Decorators {
 public:
 
     /**
+     * Rounding mode.
+     */
+    enum EmbeededRoundingControl {
+        FCML_ERC_RNE = 0,
+        FCML_ERC_RD,
+        FCML_ERC_RU,
+        FCML_ERC_RZ
+    };
+
+    /**
      * Creates an empty operand decorators container.
      * @since 2.0.0
      */
@@ -5047,7 +5060,7 @@ public:
      * @param er {er} decorator.
      * @since 2.0.0
      */
-    Decorators& setEr(const Nullable<fcml_uint8_t> &er) {
+    Decorators& setEr(const Nullable<EmbeededRoundingControl> &er) {
         _er = er;
         return *this;
     }
@@ -5109,7 +5122,7 @@ public:
      * @return Value of {er} decorator.
      * @since 2.0.0
      */
-    const Nullable<fcml_uint8_t>& getEr() const {
+    const Nullable<EmbeededRoundingControl>& getEr() const {
         return _er;
     }
 
@@ -5160,7 +5173,7 @@ private:
     /** The 64-bit k registers are: k0 through k7. */
     Register _operandMaskReg;
     /** Embedded rounding control. */
-    Nullable<fcml_uint8_t> _er;
+    Nullable<EmbeededRoundingControl> _er;
     /** Indicates support for SAE (Suppress All Exceptions). */
     fcml_bool _sae;
 };
@@ -9039,10 +9052,10 @@ public:
     static void convert(const fcml_st_operand &src, Operand &dest) {
         dest.setHints(src.hints);
         dest.setOperandType(static_cast<Operand::OperandType>(src.type));
-        convert(src.reg, dest.getRegister());
         convert(src.address, dest.getAddress());
         convert(src.far_pointer, dest.getFarPointer());
         convert(src.immediate, dest.getImmediate());
+        convert(src.reg, dest.getRegister());
         convert(src.decorators, dest.getDecorators());
     }
 
@@ -9062,9 +9075,9 @@ public:
         bcast.setNotNull(FCML_TO_CPP_BOOL(src.bcast.is_not_null));
         bcast.setValue(src.bcast.value);
         dest.setBcast(bcast);
-        Nullable<fcml_uint8_t> er;
+        Nullable<Decorators::EmbeededRoundingControl> er;
         er.setNotNull(FCML_TO_CPP_BOOL(src.er.is_not_null));
-        er.setValue(src.er.value);
+        er.setValue(static_cast<Decorators::EmbeededRoundingControl>(src.er.value));
         dest.setEr(er);
         dest.setZ(src.z);
         dest.setSae(src.sae);
@@ -9076,7 +9089,7 @@ public:
         dest.bcast.is_not_null = src.getBcast().isNotNull();
         dest.bcast.value = src.getBcast().getValue();
         dest.er.is_not_null = src.getEr().isNotNull();
-        dest.er.value = src.getEr().getValue();
+        dest.er.value = static_cast<fcml_uint8_t>(src.getEr().getValue());
         dest.z = src.isZ();
         dest.sae = src.isSae();
         convert(src.getOpmaskReg(), dest.operand_mask_reg);
