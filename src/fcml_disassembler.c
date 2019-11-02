@@ -117,6 +117,8 @@ typedef struct fcml_ist_dasm_decoding_context {
     fcml_bool opcode_field_s_bit;
     /* is4/is5 byte.*/
     fcml_nuint8_t isX_byte;
+    /* Instruction tuple type used to calculate disp8 */
+    fcml_uint8_t tuple_type;
     /* Currently proceeded decoding definition.*/
     struct fcml_ist_dasm_instruction_decoding_def *decoding_def;
 } fcml_ist_dasm_decoding_context;
@@ -2269,6 +2271,8 @@ fcml_ceh_error fcml_ifn_dasm_instruction_decoder_IA(
             return error;
         }
 
+        decoding_context->tuple_type = tuple_type;
+
         decoding_context->is_modrm_reg_reg =
                 decoding_context->decoded_modrm.reg.is_not_null;
 
@@ -3209,6 +3213,9 @@ fcml_ceh_error fcml_ifn_disassemble_core(
             }
 
         }
+
+        /* avx-512 */
+        instruction_details->tuple_type = decoding_context.tuple_type;
 
         /* Clean operands for short forms.*/
         fcml_ifn_dasm_clean_operands_for_short_forms(instruction, 

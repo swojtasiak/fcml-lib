@@ -17,11 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef COMMON_T_HPP_
-#define COMMON_T_HPP_
+
+#ifndef CHECK_CPP_TESTS_AVX512_T_HPP_
+#define CHECK_CPP_TESTS_AVX512_T_HPP_
 
 #include <fcml_stf.h>
 
-extern fcml_stf_test_suite fcml_si_cpp_common;
+extern fcml_stf_test_suite fcml_si_cpp_avx512;
 
-#endif /* COMMON_T_HPP_ */
+#endif /* CHECK_CPP_TESTS_AVX512_T_HPP_ */

@@ -44,7 +44,8 @@ namespace fcml {
  */
 class AssemblingFailedException: public ErrorContainerAwareException {
 public:
-    AssemblingFailedException( const fcml_cstring msg, ErrorContainer errorContainer = ErrorContainer(), fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) :
+    AssemblingFailedException( const fcml_cstring msg, ErrorContainer errorContainer = ErrorContainer(),
+            fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR ) :
         ErrorContainerAwareException( msg, errorContainer, error ){
     }
 };

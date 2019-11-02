@@ -1,8 +1,20 @@
 /*
- * main.cpp
+ * FCML - Free Code Manipulation Library.
+ * Copyright (C) 2010-2019 Slawomir Wojtasiak
  *
- *  Created on: Jul 5, 2014
- *      Author: tas
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <stdlib.h>
@@ -20,6 +32,7 @@
 #include "disassembler_t.hpp"
 #include "errors_t.hpp"
 #include "parser_t.hpp"
+#include "avx512_t.hpp"
 
 fcml_stf_test_suite *fcml_arr_cpp_suites[] = {
     &fcml_si_cpp_dialect,
@@ -29,6 +42,7 @@ fcml_stf_test_suite *fcml_arr_cpp_suites[] = {
     &fcml_si_cpp_errors,
     &fcml_si_cpp_parser,
     &fcml_si_cpp_assembler,
+    &fcml_si_cpp_avx512,
     FCML_STF_NULL_SUITE
 };
 
