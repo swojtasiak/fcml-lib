@@ -58,32 +58,35 @@ typedef fcml_ptr (*fcml_fp_env_memory_realloc_handler)(fcml_ptr ptr,
 typedef void (*fcml_fp_env_memory_free_handler)(fcml_ptr memory_block);
 
 /**
- * Registers the new dedicated handler responsible for allocating memory for the sake
- * of internal FCML implementation.
+ * Registers the new dedicated handler responsible for allocating
+ * memory for the sake of internal FCML implementation.
  * @param handler New memory allocation handler.
  * @return The replaced memory handler.
  */
 LIB_EXPORT fcml_fp_env_memory_alloc_handler LIB_CALL
     fcml_fn_env_register_memory_alloc_handler(
-            fcml_fp_env_memory_alloc_handler handler);
+        fcml_fp_env_memory_alloc_handler handler);
 
 /**
- * Registers the new dedicated handler responsible for reallocating memory for the sake
+ * Registers the new dedicated handler responsible for reallocating
+ * memory for the sake
  * of internal FCML implementation.
  * @param handler New memory reallocation handler.
  * @return The replaced memory handler.
  */
 LIB_EXPORT fcml_fp_env_memory_realloc_handler LIB_CALL
     fcml_fn_env_register_memory_realloc_handler(
-            fcml_fp_env_memory_realloc_handler handler);
+        fcml_fp_env_memory_realloc_handler handler);
 
 /**
- * Registers the new dedicated handler responsible for deallocating the memory for the sake
+ * Registers the new dedicated handler responsible for deallocating the
+ * memory for the sake
  * of internal FCML implementation.
  * @param handler New memory deallocation handler.
  * @return The replaced memory handler.
  */
-LIB_EXPORT fcml_fp_env_memory_free_handler LIB_CALL fcml_fn_env_register_memory_free_handler(
+LIB_EXPORT fcml_fp_env_memory_free_handler LIB_CALL
+    fcml_fn_env_register_memory_free_handler(
         fcml_fp_env_memory_free_handler handler);
 
 #ifdef __cplusplus

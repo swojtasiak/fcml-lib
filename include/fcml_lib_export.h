@@ -30,7 +30,7 @@
  * in fact you should define the symbol before including anything from the FCML library.
  * This declaration can be omitted as long as you use undecorated symbol names.
  *
- * @copyright Copyright (C) 2010-2015 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2019 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 

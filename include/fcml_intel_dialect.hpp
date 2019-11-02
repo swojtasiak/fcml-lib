@@ -44,13 +44,14 @@ public:
      * @param flags Optional flags.
      * @since 1.1.0
      */
-    IntelDialect( fcml_uint32_t flags = FCML_INTEL_DIALECT_CF_DEFAULT ) {
+    IntelDialect(fcml_uint32_t flags = FCML_INTEL_DIALECT_CF_DEFAULT) {
         fcml_st_dialect *dialect;
-        fcml_ceh_error error = ::fcml_fn_dialect_init_intel( flags, &dialect );
-        if ( error ) {
-            throw InitException( FCML_TEXT( "Can not initialize the Intel dialect." ), error );
+        fcml_ceh_error error = ::fcml_fn_dialect_init_intel(flags, &dialect);
+        if (error) {
+            throw InitException(
+                    FCML_TEXT("Can not initialize the Intel dialect."), error);
         }
-        setDialect( dialect );
+        setDialect(dialect);
     }
     /**
      * Virtual destructor.

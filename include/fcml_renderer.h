@@ -76,7 +76,8 @@ extern "C" {
 #define FCML_REND_FLAG_CODE_PADDING				0x00002000
 /** Renders the mnemonic padding between the mnemonic and the operands. */
 #define FCML_REND_FLAG_MNEMONIC_PADDING			0x00004000
-/** Should be used only with FCML_REND_FLAG_HEX_IMM and FCML_REND_FLAG_HEX_DISPLACEMENT flags. */
+/** Should be used only with FCML_REND_FLAG_HEX_IMM and FCML_REND_FLAG_
+ * HEX_DISPLACEMENT flags. */
 #define FCML_REND_FLAG_REMOVE_LEADING_ZEROS		0x00008000
 
 /** Default set of the rendering flags. */
@@ -111,8 +112,10 @@ typedef struct fcml_st_render_config {
  * @return Error code or FCML_CEH_GEC_NO_ERROR.
  *
  */
-LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_render( const fcml_st_dialect *dialect, const fcml_st_render_config *config, fcml_char *buffer, fcml_usize buffer_len,
-        const fcml_st_disassembler_result *result );
+LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_render(
+        const fcml_st_dialect *dialect, const fcml_st_render_config *config,
+        fcml_char *buffer, fcml_usize buffer_len,
+        const fcml_st_disassembler_result *result);
 
 #ifdef __cplusplus
 }

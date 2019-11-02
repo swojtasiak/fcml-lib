@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2017 Slawomir Wojtasiak
+ * Copyright (C) 2010-2019 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -109,7 +109,7 @@ typedef fcml_ceh_error (*fcml_fnp_asm_optimizer_callback)(fcml_ptr args);
 typedef fcml_ceh_error (LIB_CALL *fcml_fnp_asm_optimizer)(
         fcml_st_asm_optimizer_context *context,
         fcml_st_asm_optimizer_processing_details *ds_flags,
-        fcml_fnp_asm_optimizer_callback callback, fcml_ptr args );
+        fcml_fnp_asm_optimizer_callback callback, fcml_ptr args);
 
 /* Optimizers flags that can be used to configure optimization process. */
 #define FCML_OPTF_ASA_16        0x01
@@ -134,7 +134,7 @@ typedef fcml_ceh_error (LIB_CALL *fcml_fnp_asm_optimizer)(
 LIB_EXPORT fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
         fcml_st_asm_optimizer_context *context,
         fcml_st_asm_optimizer_processing_details *ds_flags,
-        fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args );
+        fcml_fnp_asm_optimizer_callback callback, fcml_ptr callback_args);
 
 #ifdef __cplusplus
 }

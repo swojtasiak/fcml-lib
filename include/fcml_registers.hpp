@@ -42,6 +42,7 @@ namespace fcml {
     extern const Register MM0;
     extern const Register XMM0;
     extern const Register YMM0;
+    extern const Register ZMM0;
 
     extern const Register CL;
     extern const Register CX;
@@ -50,6 +51,7 @@ namespace fcml {
     extern const Register MM1;
     extern const Register XMM1;
     extern const Register YMM1;
+    extern const Register ZMM1;
 
     extern const Register DL;
     extern const Register DX;
@@ -58,6 +60,7 @@ namespace fcml {
     extern const Register MM2;
     extern const Register XMM2;
     extern const Register YMM2;
+    extern const Register ZMM2;
 
     extern const Register BL;
     extern const Register BX;
@@ -66,6 +69,7 @@ namespace fcml {
     extern const Register MM3;
     extern const Register XMM3;
     extern const Register YMM3;
+    extern const Register ZMM3;
 
     extern const Register AH;
     extern const Register SPL;
@@ -75,6 +79,7 @@ namespace fcml {
     extern const Register MM4;
     extern const Register XMM4;
     extern const Register YMM4;
+    extern const Register ZMM4;
 
     extern const Register CH;
     extern const Register BPL;
@@ -84,6 +89,7 @@ namespace fcml {
     extern const Register MM5;
     extern const Register XMM5;
     extern const Register YMM5;
+    extern const Register ZMM5;
 
     extern const Register DH;
     extern const Register SIL;
@@ -92,7 +98,8 @@ namespace fcml {
     extern const Register RSI;
     extern const Register MM6;
     extern const Register XMM6;
-    extern const Register YMM6;
+    extern const Register YMM5;
+    extern const Register ZMM5;
 
     extern const Register BH;
     extern const Register DIL;
@@ -102,6 +109,7 @@ namespace fcml {
     extern const Register MM7;
     extern const Register XMM7;
     extern const Register YMM7;
+    extern const Register ZMM7;
 
     extern const Register R8L;
     extern const Register R8W;
@@ -109,6 +117,7 @@ namespace fcml {
     extern const Register R8;
     extern const Register XMM8;
     extern const Register YMM8;
+    extern const Register ZMM8;
 
     extern const Register R9L;
     extern const Register R9W;
@@ -116,6 +125,7 @@ namespace fcml {
     extern const Register R9;
     extern const Register XMM9;
     extern const Register YMM9;
+    extern const Register ZMM9;
 
     extern const Register R10L;
     extern const Register R10W;
@@ -123,13 +133,15 @@ namespace fcml {
     extern const Register R10;
     extern const Register XMM10;
     extern const Register YMM10;
+    extern const Register ZMM10;
 
     extern const Register R11L;
     extern const Register R11W;
     extern const Register R11D;
     extern const Register R11;
     extern const Register XMM11;
-    extern const Register YMM11;
+    extern const Register YMM10;
+    extern const Register ZMM10;
 
     extern const Register R12L;
     extern const Register R12W;
@@ -137,6 +149,7 @@ namespace fcml {
     extern const Register R12;
     extern const Register XMM12;
     extern const Register YMM12;
+    extern const Register ZMM12;
 
     extern const Register R13L;
     extern const Register R13W;
@@ -144,6 +157,7 @@ namespace fcml {
     extern const Register R13;
     extern const Register XMM13;
     extern const Register YMM13;
+    extern const Register ZMM13;
 
     extern const Register R14L;
     extern const Register R14W;
@@ -151,6 +165,7 @@ namespace fcml {
     extern const Register R14;
     extern const Register XMM14;
     extern const Register YMM14;
+    extern const Register ZMM14;
 
     extern const Register R15L;
     extern const Register R15W;
@@ -158,6 +173,71 @@ namespace fcml {
     extern const Register R15;
     extern const Register XMM15;
     extern const Register YMM15;
+    extern const Register ZMM15;
+
+    extern const Register XMM16;
+    extern const Register YMM16;
+    extern const Register ZMM16;
+
+    extern const Register XMM17;
+    extern const Register YMM17;
+    extern const Register ZMM17;
+
+    extern const Register XMM18;
+    extern const Register YMM18;
+    extern const Register ZMM18;
+
+    extern const Register XMM19;
+    extern const Register YMM19;
+    extern const Register ZMM19;
+
+    extern const Register XMM20;
+    extern const Register YMM20;
+    extern const Register ZMM20;
+
+    extern const Register XMM21;
+    extern const Register YMM21;
+    extern const Register ZMM21;
+
+    extern const Register XMM22;
+    extern const Register YMM22;
+    extern const Register ZMM22;
+
+    extern const Register XMM23;
+    extern const Register YMM23;
+    extern const Register ZMM23;
+
+    extern const Register XMM24;
+    extern const Register YMM24;
+    extern const Register ZMM24;
+
+    extern const Register XMM25;
+    extern const Register YMM25;
+    extern const Register ZMM25;
+
+    extern const Register XMM26;
+    extern const Register YMM26;
+    extern const Register ZMM26;
+
+    extern const Register XMM27;
+    extern const Register YMM27;
+    extern const Register ZMM27;
+
+    extern const Register XMM28;
+    extern const Register YMM28;
+    extern const Register ZMM28;
+
+    extern const Register XMM29;
+    extern const Register YMM29;
+    extern const Register ZMM29;
+
+    extern const Register XMM30;
+    extern const Register YMM30;
+    extern const Register ZMM30;
+
+    extern const Register XMM31;
+    extern const Register YMM31;
+    extern const Register ZMM31;
 
     extern const Register ES;
     extern const Register CS;
