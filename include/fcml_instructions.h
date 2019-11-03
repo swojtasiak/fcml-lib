@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2017 Slawomir Wojtasiak
+ * Copyright (C) 2010-2019 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -97,7 +97,7 @@
 
 /** Instruction forms. */
 enum fcml_en_instruction_addr_mode_codes {
-    FCML_AM_UNKNOWN = 0,
+    FCML_AM_UNKNOWN,
     FCML_AM_NO_OPERANS,
     FCML_AM_IMM8,
     FCML_AM_IMMO,
