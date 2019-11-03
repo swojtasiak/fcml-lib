@@ -454,7 +454,7 @@ public:
      * Gets the second and third bytes of the XOP/VEX prefix.
      *
      * @return A pointer to the VEX/XOP bytes.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     const fcml_uint8_t* getAvxBytes() const {
         return _AvxBytes;
@@ -464,7 +464,7 @@ public:
      * Gets the second and third bytes of the XOP/VEX prefix.
      *
      * @return A pointer to the VEX/XOP bytes.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     fcml_uint8_t* getAvxBytes() {
         return _AvxBytes;
@@ -478,7 +478,7 @@ private:
     /** True if the prefix is a mandatory one. */
     bool _mandatoryPrefix;
     /** The second and third byte of the AVX prefix.
-     * since 2.0.0
+     * since 1.2.0
      */
     fcml_uint8_t _AvxBytes[3];
 };
@@ -717,7 +717,7 @@ public:
      * Sets EVEX prefix availability.
      *
      * @param isEvex True if EVEX prefix is available.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setEvex(bool isEvex) {
         _isEvex = isEvex;
@@ -727,7 +727,7 @@ public:
      * Gets true if EVEX prefix is available.
      *
      * @return True if EVEX prefix is available.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     bool isEvex() const {
         return _isEvex;
@@ -777,7 +777,7 @@ public:
      * Gets true if any AVX prefix is available.
      *
      * @return True if any AVX prefix is available.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     bool isAvx() const {
         return _isAvx;
@@ -787,7 +787,7 @@ public:
      * Sets XOP prefix availability.
      *
      * @param isXop True if XOP prefix is available.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setAvx(bool isAvx) {
         _isAvx = isAvx;
@@ -837,7 +837,7 @@ public:
      * Gets L' flag.
      *
      * @return The L' flag.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     fcml_uint8_t getLPrim() const {
         return _LPrim;
@@ -847,7 +847,7 @@ public:
      * Sets L' flag.
      *
      * @param l The L' flag.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setLPrim(fcml_uint8_t lPrim) {
         _LPrim = lPrim;
@@ -989,7 +989,7 @@ public:
      * Gets R' flag.
      *
      * @return The R' flag.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     fcml_uint8_t getRPrim() const {
         return _RPrim;
@@ -999,7 +999,7 @@ public:
      * Sets R' flag.
      *
      * @param rPrim The R' flag.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setRPrim(fcml_uint8_t rPrim) {
         _RPrim = rPrim;
@@ -1009,7 +1009,7 @@ public:
      * Gets the first byte of the AVX prefix.
      *
      * @return The first byte of the AVX prefix.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     fcml_uint8_t getAvxFirstByte() const {
         return _AvxPrefixFirstByte;
@@ -1019,7 +1019,7 @@ public:
      * Sets a first byte of the XOP/VEX prefix.
      *
      * @param avxFirstByte The first AVX prefix byte.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setAvxFirstByte(fcml_uint8_t avxFirstByte) {
         _AvxPrefixFirstByte = avxFirstByte;
@@ -1049,7 +1049,7 @@ public:
      * Gets 'aaa' field of the EVEX prefix.
      *
      * @return aaa field of the EVEX prefix.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     fcml_uint8_t getAaa() const {
         return _aaa;
@@ -1069,7 +1069,7 @@ public:
      * Gets V' flag.
      *
      * @return The V' flag.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     fcml_uint8_t getVPrim() const {
         return _VPrim;
@@ -1079,7 +1079,7 @@ public:
      * Sets V' flag.
      *
      * @param vPrim The V' flag.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setVPrim(fcml_uint8_t vPrim) {
         _VPrim = vPrim;
@@ -1129,7 +1129,7 @@ public:
      * Gets EVEX.b bit.
      *
      * @return The EVEX.b bit.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     bool getBcast() const {
         return _b;
@@ -1139,7 +1139,7 @@ public:
      * Sets EVEX.b bit.
      *
      * @param b The EVEX.b bit.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setBcast(bool b) {
         _b = b;
@@ -1149,7 +1149,7 @@ public:
      * Gets EVEX.z bit.
      *
      * @return The EVEX.z bit.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     bool getZ() const {
         return _z;
@@ -1159,7 +1159,7 @@ public:
      * Sets EVEX.z bit.
      *
      * @param z The EVEX.z bit.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setZ(bool z) {
         _z = z;
@@ -1189,25 +1189,25 @@ private:
     /** FCML_TRUE if VEX prefix exists. */
     bool _isVex;
     /** FCML_TRUE if EVEX prefix exists.
-     * since 2.0.0
+     * since 1.2.0
      */
     bool _isEvex;
     /** FCML_TRUE if XOP prefix exists. */
     bool _isXop;
     /** FCML_TRUE if any AVX prefix exists.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     bool _isAvx;
     /** FCML_TRUE if REX prefix exists. */
     bool _isRex;
     /** Various fields encoded inside decoded prefixes.
-     * since 2.0.0
+     * since 1.2.0
      */
     fcml_uint8_t _AvxPrefixFirstByte;
     /** R field of REX,XOP,VEX or EVEX prefix. */
     fcml_uint8_t _R;
     /** R' field of EVEX prefix.
-     * since 2.0.0
+     * since 1.2.0
      */
     fcml_uint8_t _RPrim;
     /** X field of REX,XOP,VEX or EVEX prefix. */
@@ -1219,7 +1219,7 @@ private:
     /** L field of XOP, VEX or EVEX prefix. */
     fcml_uint8_t _L;
     /** L' field of EVEX prefix.
-     * since 2.0.0
+     * since 1.2.0
      */
     fcml_uint8_t _LPrim;
     /** m-mmmm field of XOP or VEX prefix. */
@@ -1227,21 +1227,21 @@ private:
     /** vvvv field of XOP or VEX prefix. */
     fcml_uint8_t _vvvv;
     /** V' field of EVEX prefix.
-     * since 2.0.0
+     * since 1.2.0
      */
     fcml_uint8_t _VPrim;
     /** pp field of XOP or VEX prefix. */
     fcml_uint8_t _pp;
     /** aaa field of EVEX prefix.
-     * since 2.0.0
+     * since 1.2.0
      */
     fcml_uint8_t _aaa;
     /** EVEX.b bit.
-     * since 2.0.0
+     * since 1.2.0
      */
     bool _b;
     /** EVEX.z bit.
-     * since 2.0.0
+     * since 1.2.0
      */
     bool _z;
 };
@@ -1405,7 +1405,7 @@ public:
      * Gets constant N (see AVX-512 compressed disp8).
      *
      * @return N as nullable value.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     const Nullable<fcml_uint32_t>& getN() const {
         return _N;
@@ -1415,7 +1415,7 @@ public:
      * Gets N (see compressed AVX-512 disp8).
      *
      * @return N nullable value.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     Nullable<fcml_uint32_t>& getN() {
         return _N;
@@ -1425,7 +1425,7 @@ public:
      * Sets N (see compressed AVX-512 disp8).
      *
      * @param N N nullable value.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setN(const Nullable<fcml_uint32_t> &N) {
         _N = N;
@@ -1435,7 +1435,7 @@ public:
      * Gets constant raw displacement.
      *
      * @return Displacement.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     const Integer& getDisplacement() const {
         return _displacement;
@@ -1445,7 +1445,7 @@ public:
      * Gets raw displacement.
      *
      * @return Displacement.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     Integer& getDisplacement() {
         return _displacement;
@@ -1455,7 +1455,7 @@ public:
      * Sets displacement.
      *
      * @param displacement Displacement.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setDisplacement(const Integer &displacement) {
         _displacement = displacement;
@@ -1470,11 +1470,11 @@ private:
      * used only in 64 bit mode. */
     bool _isRip;
     /** Raw displacement.
-     * since 2.0.0
+     * since 1.2.0
      */
     Integer _displacement;
     /* N from AVX-512 compressed disp8.
-     * since 2.0.0
+     * since 1.2.0
      */
     Nullable<fcml_uint32_t> _N;
 };
@@ -1786,7 +1786,7 @@ public:
 
     /**
      * Gets avx-512 tuple type.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     fcml_uint8_t getTupleType() const {
         return _tupleType;
@@ -1796,7 +1796,7 @@ public:
      * Sets avx-512 tuple type.
      *
      * @param isPseudoOp True if the instruction is a pseudo operation.
-     * @since 2.0.0
+     * @since 1.2.0
      */
     void setTupleType(fcml_uint8_t tupleType) {
         _tupleType = tupleType;
