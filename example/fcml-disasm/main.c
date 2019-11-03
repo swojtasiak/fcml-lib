@@ -134,93 +134,92 @@ fcml_string fcml_reg_sidm_symbol_table[4][32] = {
     }
 };
 
-fcml_string fcml_reg_operand_mask_symbol_table[8] = {
-    "k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"
-};
+fcml_string fcml_reg_operand_mask_symbol_table[8] = { "k0", "k1", "k2", "k3",
+        "k4", "k5", "k6", "k7" };
 
-fcml_string fcml_rounding_modes[4] = {
-    "{rn-sae}", "{rd-sae}", "{ru-sae}", "{rz-sae}"
-};
+fcml_string fcml_rounding_modes[4] = { "{rn-sae}", "{rd-sae}", "{ru-sae}",
+        "{rz-sae}" };
 
-fcml_string get_register( const fcml_st_register *reg, fcml_bool is_rex ) {
-	fcml_string printable_reg;
-	fcml_int rs = 0;
-	if (reg->type != FCML_REG_SIMD) {
-		switch (reg->size) {
-		case 8:
-			rs = 0;
-			break;
-		case 16:
-			rs = 1;
-			break;
-		case 32:
-			rs = 2;
-			break;
-		case 64:
-			rs = 3;
-			break;
-		}
-		if (reg->type == FCML_REG_OPMASK) {
-			printable_reg = fcml_reg_operand_mask_symbol_table[reg->reg];
-		} else if (reg->type == FCML_REG_IP ) {
-			printable_reg = fcml_reg_gpr_symbol_table_ip[rs];
-		} else {
-			if (is_rex) {
-				if (reg->type == FCML_REG_GPR) {
-					printable_reg = fcml_reg_gpr_symbol_table_rex[rs][reg->reg];
-				} else {
-					printable_reg = fcml_reg_symbol_table_rex[reg->type][reg->reg];
-				}
-			} else {
-				if (reg->type == FCML_REG_GPR) {
-					printable_reg = fcml_reg_gpr_symbol_table[rs][reg->reg];
-				} else {
-					printable_reg = fcml_reg_symbol_table[reg->type][reg->reg];
-				}
-			}
-		}
-	} else {
-		switch (reg->size) {
-		case 64:
-			rs = 0;
-			break;
-		case 128:
-			rs = 1;
-			break;
-		case 256:
-			rs = 2;
-			break;
-		case 512:
-		    rs = 3;
-		    break;
-		default:
-			return "Invalid register";
-		}
-		printable_reg = fcml_reg_sidm_symbol_table[rs][reg->reg];
-	}
-	return printable_reg;
+fcml_string get_register(const fcml_st_register *reg, fcml_bool is_rex) {
+    fcml_string printable_reg;
+    fcml_int rs = 0;
+    if (reg->type != FCML_REG_SIMD) {
+        switch (reg->size) {
+        case 8:
+            rs = 0;
+            break;
+        case 16:
+            rs = 1;
+            break;
+        case 32:
+            rs = 2;
+            break;
+        case 64:
+            rs = 3;
+            break;
+        }
+        if (reg->type == FCML_REG_OPMASK) {
+            printable_reg = fcml_reg_operand_mask_symbol_table[reg->reg];
+        } else if (reg->type == FCML_REG_IP) {
+            printable_reg = fcml_reg_gpr_symbol_table_ip[rs];
+        } else {
+            if (is_rex) {
+                if (reg->type == FCML_REG_GPR) {
+                    printable_reg = fcml_reg_gpr_symbol_table_rex[rs][reg->reg];
+                } else {
+                    printable_reg =
+                            fcml_reg_symbol_table_rex[reg->type][reg->reg];
+                }
+            } else {
+                if (reg->type == FCML_REG_GPR) {
+                    printable_reg = fcml_reg_gpr_symbol_table[rs][reg->reg];
+                } else {
+                    printable_reg = fcml_reg_symbol_table[reg->type][reg->reg];
+                }
+            }
+        }
+    } else {
+        switch (reg->size) {
+        case 64:
+            rs = 0;
+            break;
+        case 128:
+            rs = 1;
+            break;
+        case 256:
+            rs = 2;
+            break;
+        case 512:
+            rs = 3;
+            break;
+        default:
+            return "Invalid register";
+        }
+        printable_reg = fcml_reg_sidm_symbol_table[rs][reg->reg];
+    }
+    return printable_reg;
 }
 
-void print_error_msg( fcml_st_ceh_error_container *errors ) {
-	fcml_st_ceh_error_info *error = errors->errors;
-	while( error ) {
-		// Print error message.
-		if( error->level == FCML_EN_CEH_EL_WARN ) {
-			printf("WARN: ");
-		} else if( error->level == FCML_EN_CEH_EL_ERROR ) {
-			printf("ERROR: ");
-		}
-		printf("%3d: %s\n", error->code, error->message );
-		error = error->next_error;
-	}
+void print_error_msg(fcml_st_ceh_error_container *errors) {
+    fcml_st_ceh_error_info *error = errors->errors;
+    while (error) {
+        // Print error message.
+        if (error->level == FCML_EN_CEH_EL_WARN) {
+            printf("WARN: ");
+        } else if (error->level == FCML_EN_CEH_EL_ERROR) {
+            printf("ERROR: ");
+        }
+        printf("%3d: %s\n", error->code, error->message);
+        error = error->next_error;
+    }
 }
 
-fcml_string get_boolean( fcml_bool b ) {
-	return b ? "true" : "false";
+fcml_string get_boolean(fcml_bool b) {
+    return b ? "true" : "false";
 }
 
 void print_integer(fcml_st_integer *integer, fcml_string prefix) {
-    switch(integer->size) {
+    switch (integer->size) {
     case FCML_DS_8:
         printf("%s0x%02x\n", prefix, integer->int8);
         break;
@@ -236,543 +235,583 @@ void print_integer(fcml_st_integer *integer, fcml_string prefix) {
     }
 }
 
-void print_address( fcml_st_address *address, fcml_bool is_rex ) {
+void print_address(fcml_st_address *address, fcml_bool is_rex) {
 
-	printf("    Address form: ");
-	switch( address->address_form ) {
-	case FCML_AF_UNDEFINED:
-		printf("Undefined.\n");
-		break;
-	case FCML_AF_OFFSET:
-		printf("Offset.\n");
-		break;
-	case FCML_AF_COMBINED:
-		printf("Combined (Effective address).\n");
-		break;
-	default:
-		printf("Unknown.\n");
-	}
-	printf("    Segment register: %s (default: %s)\n", get_register( &(address->segment_selector.segment_selector), is_rex ), get_boolean( address->segment_selector.is_default_reg ) );
-	printf("    Size operator: %d\n", address->size_operator );
-	if( address->address_form == FCML_AF_OFFSET ) {
-		printf("    Offset:\n" );
-		printf("     Size: %d\n", address->offset.size );
-		printf("     Signed: %s\n", get_boolean( address->offset.is_signed ) );
-		switch( address->offset.size ) {
-		case FCML_DS_16:
-			printf("     Value: 0x%04x\n", address->offset.off16 );
-			break;
-		case FCML_DS_32:
-			printf("     Value: 0x%08x\n", address->offset.off32 );
-			break;
-		case FCML_DS_64:
-			printf("     Value: 0x%016lx\n", (uint64_t)address->offset.off64 );
-			break;
-		}
-	} else if( address->address_form == FCML_AF_COMBINED ) {
-		printf("    Effective address:\n" );
-		printf("     Base: %s\n", get_register( &(address->effective_address.base), is_rex ) );
-		printf("     Index: %s\n", get_register( &(address->effective_address.index), is_rex ) );
-		printf("     Scale factor: %d\n", address->effective_address.scale_factor );
-		fcml_st_integer *displacement = &(address->effective_address.displacement);
-		printf("     Displacement:\n" );
-		printf("      Size: %d\n", displacement->size );
-		printf("      Signed: %s\n", get_boolean( displacement->is_signed ) );
-		print_integer(displacement, "      Value: ");
-	}
+    printf("    Address form: ");
+    switch (address->address_form) {
+    case FCML_AF_UNDEFINED:
+        printf("Undefined.\n");
+        break;
+    case FCML_AF_OFFSET:
+        printf("Offset.\n");
+        break;
+    case FCML_AF_COMBINED:
+        printf("Combined (Effective address).\n");
+        break;
+    default:
+        printf("Unknown.\n");
+    }
+    printf("    Segment register: %s (default: %s)\n",
+            get_register(&(address->segment_selector.segment_selector), is_rex),
+            get_boolean(address->segment_selector.is_default_reg));
+    printf("    Size operator: %d\n", address->size_operator);
+    if (address->address_form == FCML_AF_OFFSET) {
+        printf("    Offset:\n");
+        printf("     Size: %d\n", address->offset.size);
+        printf("     Signed: %s\n", get_boolean(address->offset.is_signed));
+        switch (address->offset.size) {
+        case FCML_DS_16:
+            printf("     Value: 0x%04x\n", address->offset.off16);
+            break;
+        case FCML_DS_32:
+            printf("     Value: 0x%08x\n", address->offset.off32);
+            break;
+        case FCML_DS_64:
+            printf("     Value: 0x%016lx\n", (uint64_t) address->offset.off64);
+            break;
+        }
+    } else if (address->address_form == FCML_AF_COMBINED) {
+        printf("    Effective address:\n");
+        printf("     Base: %s\n",
+                get_register(&(address->effective_address.base), is_rex));
+        printf("     Index: %s\n",
+                get_register(&(address->effective_address.index), is_rex));
+        printf("     Scale factor: %d\n",
+                address->effective_address.scale_factor);
+        fcml_st_integer *displacement =
+                &(address->effective_address.displacement);
+        printf("     Displacement:\n");
+        printf("      Size: %d\n", displacement->size);
+        printf("      Signed: %s\n", get_boolean(displacement->is_signed));
+        print_integer(displacement, "      Value: ");
+    }
 
 }
 
-void print_immediate( fcml_st_integer *immediate ) {
-	printf("    Signed: %s\n", get_boolean( immediate->is_signed ) );
-	printf("    Size: %d\n", immediate->size );
-	printf("    Value: " );
-	switch( immediate->size ) {
-	case FCML_DS_8:
-		printf("0x%02x\n", immediate->int8);
-		break;
-	case FCML_DS_16:
-		printf("0x%04x\n", immediate->int16);
-		break;
-	case FCML_DS_32:
-		printf("0x%08x\n", immediate->int32);
-		break;
-	case FCML_DS_64:
-		printf("0x%016lx\n", immediate->int64);
-		break;
-	}
+void print_immediate(fcml_st_integer *immediate) {
+    printf("    Signed: %s\n", get_boolean(immediate->is_signed));
+    printf("    Size: %d\n", immediate->size);
+    printf("    Value: ");
+    switch (immediate->size) {
+    case FCML_DS_8:
+        printf("0x%02x\n", immediate->int8);
+        break;
+    case FCML_DS_16:
+        printf("0x%04x\n", immediate->int16);
+        break;
+    case FCML_DS_32:
+        printf("0x%08x\n", immediate->int32);
+        break;
+    case FCML_DS_64:
+        printf("0x%016lx\n", immediate->int64);
+        break;
+    }
 }
 
-void print_far_pointer( fcml_st_far_pointer *far_pointer ) {
-	printf("     Segment: 0x%04x\n", far_pointer->segment );
-	printf("     Offset size: %d\n", far_pointer->offset_size );
-	if( far_pointer->offset_size == FCML_DS_16 ) {
-		printf("     Offset: 0x%04x\n", far_pointer->offset16 );
-	}
-	if( far_pointer->offset_size == FCML_DS_32 ) {
-		printf("     Offset: 0x%08x\n", far_pointer->offset32 );
-	}
+void print_far_pointer(fcml_st_far_pointer *far_pointer) {
+    printf("     Segment: 0x%04x\n", far_pointer->segment);
+    printf("     Offset size: %d\n", far_pointer->offset_size);
+    if (far_pointer->offset_size == FCML_DS_16) {
+        printf("     Offset: 0x%04x\n", far_pointer->offset16);
+    }
+    if (far_pointer->offset_size == FCML_DS_32) {
+        printf("     Offset: 0x%08x\n", far_pointer->offset32);
+    }
 }
 
-void print_instruction_details( fcml_st_dialect *dialect, fcml_st_disassembler_result *result, fcml_st_render_config *render_config ) {
+void print_instruction_details(fcml_st_dialect *dialect,
+        fcml_st_disassembler_result *result,
+        fcml_st_render_config *render_config) {
 
-	int i;
+    int i;
 
-	fcml_char buffer[FCML_REND_MAX_BUFF_LEN];
+    fcml_char buffer[FCML_REND_MAX_BUFF_LEN];
 
-	fcml_ceh_error error = fcml_fn_render( dialect, render_config, buffer, sizeof( buffer ), result );
-	if( error ) {
-		printf( "Can not render instruction. Error code: %d\n", error );
-		return;
-	}
+    fcml_ceh_error error = fcml_fn_render(dialect, render_config, buffer,
+            sizeof(buffer), result);
+    if (error) {
+        printf("Can not render instruction. Error code: %d\n", error);
+        return;
+    }
 
-	printf("Basic information:\n");
+    printf("Basic information:\n");
 
-	printf(" Disassembled instruction: %s\n", buffer);
+    printf(" Disassembled instruction: %s\n", buffer);
 
-	fcml_st_instruction *instruction = &(result->instruction);
+    fcml_st_instruction *instruction = &(result->instruction);
 
-	printf(" Mnemonic: %s\n", instruction->mnemonic );
+    printf(" Mnemonic: %s\n", instruction->mnemonic);
 
-	if( instruction->is_conditional ) {
-		char neg[2] = {0};
-		if( instruction->condition.is_negation ) {
-			neg[0] = 'n';
-		}
-		printf(" Conditional instruction. Condition: \"%s%s\".\n", neg, conditions[ instruction->condition.condition_type ] );
-	}
+    if (instruction->is_conditional) {
+        char neg[2] = { 0 };
+        if (instruction->condition.is_negation) {
+            neg[0] = 'n';
+        }
+        printf(" Conditional instruction. Condition: \"%s%s\".\n", neg,
+                conditions[instruction->condition.condition_type]);
+    }
 
-	if( instruction->hints ) {
+    if (instruction->hints) {
 
-		printf(" Instruction hints:");
+        printf(" Instruction hints:");
 
-		if( instruction->hints & FCML_HINT_FAR_POINTER ) {
-			printf(" FCML_HINT_FAR_POINTER");
-		}
+        if (instruction->hints & FCML_HINT_FAR_POINTER) {
+            printf(" FCML_HINT_FAR_POINTER");
+        }
 
-		if( instruction->hints & FCML_HINT_NEAR_POINTER ) {
-			printf(" FCML_HINT_NEAR_POINTER");
-		}
+        if (instruction->hints & FCML_HINT_NEAR_POINTER) {
+            printf(" FCML_HINT_NEAR_POINTER");
+        }
 
-		if( instruction->hints & FCML_HINT_LONG_FORM_POINTER ) {
-			printf(" FCML_HINT_LONG_FORM_POINTER");
-		}
+        if (instruction->hints & FCML_HINT_LONG_FORM_POINTER) {
+            printf(" FCML_HINT_LONG_FORM_POINTER");
+        }
 
-		if( instruction->hints & FCML_HINT_INDIRECT_POINTER ) {
-			printf(" FCML_HINT_INDIRECT_POINTER");
-		}
+        if (instruction->hints & FCML_HINT_INDIRECT_POINTER) {
+            printf(" FCML_HINT_INDIRECT_POINTER");
+        }
 
-		printf("\n");
-	}
+        printf("\n");
+    }
 
-	if( instruction->prefixes ) {
+    if (instruction->prefixes) {
 
-		printf(" Explicit prefixes:");
+        printf(" Explicit prefixes:");
 
-		if( instruction->prefixes & FCML_PREFIX_LOCK ) {
-			printf(" FCML_PREFIX_LOCK");
-		}
-		if( instruction->prefixes & FCML_PREFIX_REPNE ) {
-			printf(" FCML_PREFIX_REPNE");
-		}
-		if( instruction->prefixes & FCML_PREFIX_REP ) {
-			printf(" FCML_PREFIX_REP");
-		}
-		if( instruction->prefixes & FCML_PREFIX_XACQUIRE ) {
-			printf(" FCML_PREFIX_XACQUIRE");
-		}
-		if( instruction->prefixes & FCML_PREFIX_XRELEASE ) {
-			printf(" FCML_PREFIX_XRELEASE");
-		}
-		if( instruction->prefixes & FCML_PREFIX_BRANCH_HINT ) {
-			printf(" FCML_PREFIX_BRANCH_HINT");
-		}
-		if( instruction->prefixes & FCML_PREFIX_NOBRANCH_HINT ) {
-			printf(" FCML_PREFIX_NOBRANCH_HINT");
-		}
+        if (instruction->prefixes & FCML_PREFIX_LOCK) {
+            printf(" FCML_PREFIX_LOCK");
+        }
+        if (instruction->prefixes & FCML_PREFIX_REPNE) {
+            printf(" FCML_PREFIX_REPNE");
+        }
+        if (instruction->prefixes & FCML_PREFIX_REP) {
+            printf(" FCML_PREFIX_REP");
+        }
+        if (instruction->prefixes & FCML_PREFIX_XACQUIRE) {
+            printf(" FCML_PREFIX_XACQUIRE");
+        }
+        if (instruction->prefixes & FCML_PREFIX_XRELEASE) {
+            printf(" FCML_PREFIX_XRELEASE");
+        }
+        if (instruction->prefixes & FCML_PREFIX_BRANCH_HINT) {
+            printf(" FCML_PREFIX_BRANCH_HINT");
+        }
+        if (instruction->prefixes & FCML_PREFIX_NOBRANCH_HINT) {
+            printf(" FCML_PREFIX_NOBRANCH_HINT");
+        }
 
-		printf("\n");
-	}
+        printf("\n");
+    }
 
-	printf( " Number of operands: %d\n", instruction->operands_count );
+    printf(" Number of operands: %d\n", instruction->operands_count);
 
-	printf( "  Operands:\n" );
+    printf("  Operands:\n");
 
-	for( i = 0; i < instruction->operands_count; i++ ) {
-		printf("   Operand: %d\n", i + 1 );
-		fcml_st_operand *operand = &(instruction->operands[i]);
-		printf("    Type: %s\n", operand_types[ operand->type ] );
-		switch( operand->type ) {
-		case FCML_OT_IMMEDIATE: {
-			print_immediate( &(operand->immediate) );
-			break;
-		}
-		case FCML_OT_FAR_POINTER: {
-			print_far_pointer( &(operand->far_pointer) );
-			break;
-		}
-		case FCML_OT_ADDRESS: {
-			print_address( &(operand->address), result->instruction_details.prefixes_details.is_rex );
-			break;
-		}
-		case FCML_OT_REGISTER:
-			printf( "    Register: %s (Type: %s, Size: %d)\n", get_register( &(operand->reg), result->instruction_details.prefixes_details.is_rex ), register_type[operand->reg.type], operand->reg.size );
-			break;
-		case FCML_OT_VIRTUAL:
-		    /* Do nothing. */
-		    break;
-		case FCML_OT_NONE:
-		    /* Do nothing. */
-		    break;
-		}
-		/* Print operand decorators. */
-		if (operand->decorators.bcast.is_not_null) {
-			printf("    Decorator (BCAST): {1to%d}\n",
-				operand->decorators.bcast.value);
-		}
-		if (operand->decorators.er.is_not_null) {
-			printf("    Decorator (ER): %s\n",
-				fcml_rounding_modes[operand->decorators.er.value]);
-		}
-		if (operand->decorators.operand_mask_reg.type != FCML_REG_UNDEFINED) {
-			printf("    Decorator (Opmask register): %s\n",
-			get_register(&(operand->decorators.operand_mask_reg),
-				FCML_FALSE));
-		}
-		if (operand->decorators.sae) {
-			printf("    Decorator (SEA): Enabled\n");
-		}
-		if (operand->decorators.z) {
-			printf("    Decorator (z): Enabled\n");
-		}
-	}
+    for (i = 0; i < instruction->operands_count; i++) {
+        printf("   Operand: %d\n", i + 1);
+        fcml_st_operand *operand = &(instruction->operands[i]);
+        printf("    Type: %s\n", operand_types[operand->type]);
+        switch (operand->type) {
+        case FCML_OT_IMMEDIATE: {
+            print_immediate(&(operand->immediate));
+            break;
+        }
+        case FCML_OT_FAR_POINTER: {
+            print_far_pointer(&(operand->far_pointer));
+            break;
+        }
+        case FCML_OT_ADDRESS: {
+            print_address(&(operand->address),
+                    result->instruction_details.prefixes_details.is_rex);
+            break;
+        }
+        case FCML_OT_REGISTER:
+            printf("    Register: %s (Type: %s, Size: %d)\n",
+                    get_register(&(operand->reg),
+                            result->instruction_details.prefixes_details.is_rex),
+                    register_type[operand->reg.type], operand->reg.size);
+            break;
+        case FCML_OT_VIRTUAL:
+            /* Do nothing. */
+            break;
+        case FCML_OT_NONE:
+            /* Do nothing. */
+            break;
+        }
+        /* Print operand decorators. */
+        if (operand->decorators.bcast.is_not_null) {
+            printf("    Decorator (BCAST): {1to%d}\n",
+                    operand->decorators.bcast.value);
+        }
+        if (operand->decorators.er.is_not_null) {
+            printf("    Decorator (ER): %s\n",
+                    fcml_rounding_modes[operand->decorators.er.value]);
+        }
+        if (operand->decorators.operand_mask_reg.type != FCML_REG_UNDEFINED) {
+            printf("    Decorator (Opmask register): %s\n",
+                    get_register(&(operand->decorators.operand_mask_reg),
+                    FCML_FALSE));
+        }
+        if (operand->decorators.sae) {
+            printf("    Decorator (SEA): Enabled\n");
+        }
+        if (operand->decorators.z) {
+            printf("    Decorator (z): Enabled\n");
+        }
+    }
 
-	printf( "Details:\n" );
+    printf("Details:\n");
 
-	fcml_st_instruction_details *details = &(result->instruction_details);
+    fcml_st_instruction_details *details = &(result->instruction_details);
 
-	printf(" Instruction code: 0x");
-	for( i = 0; i < details->instruction_size; i++ ) {
-		printf( "%02x", details->instruction_code[i] );
-	}
-	printf("\n");
+    printf(" Instruction code: 0x");
+    for (i = 0; i < details->instruction_size; i++) {
+        printf("%02x", details->instruction_code[i]);
+    }
+    printf("\n");
 
-	printf( " Instruction code length: %d\n", details->instruction_size );
-	printf( " Pseudo-op: %s\n", details->is_pseudo_op ? "true" : "false" );
-	printf( " Shortcut: %s\n", details->is_shortcut ? "true" : "false" );
+    printf(" Instruction code length: %d\n", details->instruction_size);
+    printf(" Pseudo-op: %s\n", details->is_pseudo_op ? "true" : "false");
+    printf(" Shortcut: %s\n", details->is_shortcut ? "true" : "false");
 
-	/* ModR/M */
+    /* ModR/M */
 
-	fcml_st_decoded_modrm_details *modrm_details = &(details->modrm_details);
-	if( modrm_details ) {
-		printf( " ModR/M details:\n" );
-		printf( "  Is RIP: %s\n", get_boolean( modrm_details->is_rip ) );
-		printf( "  ModR/M byte: 0x%02x\n", modrm_details->modrm );
-		if( modrm_details->sib.is_not_null ) {
-			printf( "  SIB byte: 0x%02x\n", modrm_details->sib.value );
-		}
-		if (modrm_details->displacement.displacement.size > 0) {
-		    fcml_st_integer *disp = &(modrm_details->displacement.displacement);
-		    printf("  Displacement:\n");
-		    print_integer(disp, "   Value: ");
-		    if(modrm_details->displacement.N.is_not_null) {
-		        printf("   N: %d\n", modrm_details->displacement.N.value);
-		    }
-		}
-	}
+    fcml_st_decoded_modrm_details *modrm_details = &(details->modrm_details);
+    if (modrm_details) {
+        printf(" ModR/M details:\n");
+        printf("  Is RIP: %s\n", get_boolean(modrm_details->is_rip));
+        printf("  ModR/M byte: 0x%02x\n", modrm_details->modrm);
+        if (modrm_details->sib.is_not_null) {
+            printf("  SIB byte: 0x%02x\n", modrm_details->sib.value);
+        }
+        if (modrm_details->displacement.displacement.size > 0) {
+            fcml_st_integer *disp = &(modrm_details->displacement.displacement);
+            printf("  Displacement:\n");
+            print_integer(disp, "   Value: ");
+            if (modrm_details->displacement.N.is_not_null) {
+                printf("   N: %d\n", modrm_details->displacement.N.value);
+            }
+        }
+    }
 
-	/* Prefixes details. */
+    /* Prefixes details. */
 
-	fcml_st_prefixes_details *prefixes_details = &(details->prefixes_details);
-	if( prefixes_details->prefixes_bytes_count ) {
-		printf( " Prefixes details:\n" );
-		printf( "  Prefixes size in bytes: %d\n", prefixes_details->prefixes_bytes_count );
-		printf( "  Number of available prefixes: %d\n", prefixes_details->prefixes_count );
-		printf( "  Available prefixes (flags):" );
-		if( prefixes_details->is_branch ) {
-			printf(" branch");
-		}
-		if( prefixes_details->is_lock ) {
-			printf(" lock");
-		}
-		if( prefixes_details->is_nobranch ) {
-			printf(" nobranch");
-		}
-		if( prefixes_details->is_rep ) {
-			printf(" rep");
-		}
-		if( prefixes_details->is_repne ) {
-			printf(" repne");
-		}
-		if( prefixes_details->is_rex ) {
-			printf(" rex");
-		}
-		if( prefixes_details->is_vex ) {
-			printf(" vex");
-		}
-		if( prefixes_details->is_xacquire ) {
-			printf(" xacquire");
-		}
-		if( prefixes_details->is_xrelease ) {
-			printf(" xrelease");
-		}
-		if( prefixes_details->is_xop ) {
-			printf(" xop");
-		}
+    fcml_st_prefixes_details *prefixes_details = &(details->prefixes_details);
+    if (prefixes_details->prefixes_bytes_count) {
+        printf(" Prefixes details:\n");
+        printf("  Prefixes size in bytes: %d\n",
+                prefixes_details->prefixes_bytes_count);
+        printf("  Number of available prefixes: %d\n",
+                prefixes_details->prefixes_count);
+        printf("  Available prefixes (flags):");
+        if (prefixes_details->is_branch) {
+            printf(" branch");
+        }
+        if (prefixes_details->is_lock) {
+            printf(" lock");
+        }
+        if (prefixes_details->is_nobranch) {
+            printf(" nobranch");
+        }
+        if (prefixes_details->is_rep) {
+            printf(" rep");
+        }
+        if (prefixes_details->is_repne) {
+            printf(" repne");
+        }
+        if (prefixes_details->is_rex) {
+            printf(" rex");
+        }
+        if (prefixes_details->is_vex) {
+            printf(" vex");
+        }
+        if (prefixes_details->is_xacquire) {
+            printf(" xacquire");
+        }
+        if (prefixes_details->is_xrelease) {
+            printf(" xrelease");
+        }
+        if (prefixes_details->is_xop) {
+            printf(" xop");
+        }
+        if (prefixes_details->is_evex) {
+            printf(" evex");
+        }
 
-		printf( "\n  Prefixes fields:");
+        printf("\n  Prefixes fields:");
 
-		fcml_bool is_evex = prefixes_details->is_evex;
-		fcml_bool is_vex = prefixes_details->is_vex;
-		fcml_bool is_xop = prefixes_details->is_xop;
-		fcml_bool is_rex = prefixes_details->is_rex;
+        fcml_bool is_evex = prefixes_details->is_evex;
+        fcml_bool is_vex = prefixes_details->is_vex;
+        fcml_bool is_xop = prefixes_details->is_xop;
+        fcml_bool is_rex = prefixes_details->is_rex;
 
-		if (is_vex || is_xop || is_evex)
-			printf(" mmmm:%d", prefixes_details->mmmm);
-		if (is_vex || is_xop || is_rex || is_evex)
-			printf(" R:%d", prefixes_details->R);
-		if (is_evex)
-			printf(" R':%d", prefixes_details->R_prim);
-		if (is_evex)
-			printf(" b:%d", prefixes_details->b);
-		if (is_vex || is_xop || is_rex || is_evex)
-			printf(" X:%d", prefixes_details->X);
-		if (is_vex || is_xop || is_rex  || is_evex)
-			printf(" B:%d", prefixes_details->B);
-		if (is_vex || is_xop || is_rex || is_evex)
-			printf(" W:%d", prefixes_details->W);
-		if (is_vex || is_xop || is_evex)
-			printf(" vvvv:%d", prefixes_details->vvvv);
-		if (is_evex)
-			printf(" V':%d", prefixes_details->V_prim);
-		if (is_vex || is_xop || is_evex)
-			printf(" L:%d", prefixes_details->L);
-		if (is_evex )
-			printf(" L':%d", prefixes_details->L_prim);
-		if (is_vex || is_xop || is_evex)
-			printf(" pp:%d", prefixes_details->pp);
-		if (is_evex)
-			printf(" aaa:%d", prefixes_details->aaa);
-		if (is_evex)
-			printf(" z:%d", prefixes_details->z);
+        if (is_vex || is_xop || is_evex)
+            printf(" mmmm:%d", prefixes_details->mmmm);
+        if (is_vex || is_xop || is_rex || is_evex)
+            printf(" R:%d", prefixes_details->R);
+        if (is_evex)
+            printf(" R':%d", prefixes_details->R_prim);
+        if (is_evex)
+            printf(" b:%d", prefixes_details->b);
+        if (is_vex || is_xop || is_rex || is_evex)
+            printf(" X:%d", prefixes_details->X);
+        if (is_vex || is_xop || is_rex || is_evex)
+            printf(" B:%d", prefixes_details->B);
+        if (is_vex || is_xop || is_rex || is_evex)
+            printf(" W:%d", prefixes_details->W);
+        if (is_vex || is_xop || is_evex)
+            printf(" vvvv:%d", prefixes_details->vvvv);
+        if (is_evex)
+            printf(" V':%d", prefixes_details->V_prim);
+        if (is_vex || is_xop || is_evex)
+            printf(" L:%d", prefixes_details->L);
+        if (is_evex)
+            printf(" L':%d", prefixes_details->L_prim);
+        if (is_vex || is_xop || is_evex)
+            printf(" pp:%d", prefixes_details->pp);
+        if (is_evex)
+            printf(" aaa:%d", prefixes_details->aaa);
+        if (is_evex)
+            printf(" z:%d", prefixes_details->z);
 
-		printf( "\n  Available prefixes (details):\n" );
+        printf("\n  Available prefixes (details):\n");
 
-		for( i = 0; i < prefixes_details->prefixes_count; i++ ) {
-			fcml_st_instruction_prefix *prefix =
-				&(prefixes_details->prefixes[i]);
-			printf("   Byte: 0x%02x, Type: %s, Mandatory: %s, AVX " \
-				"bytes: 0x%02x, 0x%02x, 0x%02x.\n", prefix->prefix,
-				prefix_types[prefix->prefix_type],
-				get_boolean(prefix->mandatory_prefix),
-				prefix->avx_bytes[0], prefix->avx_bytes[1],
-				prefix->avx_bytes[2]);
-		}
+        for (i = 0; i < prefixes_details->prefixes_count; i++) {
+            fcml_st_instruction_prefix *prefix =
+                    &(prefixes_details->prefixes[i]);
+            printf("   Byte: 0x%02x, Type: %s, Mandatory: %s, AVX "
+                    "bytes: 0x%02x, 0x%02x, 0x%02x.\n", prefix->prefix,
+                    prefix_types[prefix->prefix_type],
+                    get_boolean(prefix->mandatory_prefix), prefix->avx_bytes[0],
+                    prefix->avx_bytes[1], prefix->avx_bytes[2]);
+        }
 
-	}
+    }
 
-	printf( " Operands details:\n" );
+    printf(" Operands details:\n");
 
-	for( i = 0; i < instruction->operands_count; i++ ) {
-		printf("  Operand: %d\n", i + 1 );
-		fcml_st_operand_details *operand_details =
-		        &(details->operand_details[i]);
-		printf("   Access mode:" );
-		if( operand_details->access_mode & FCML_AM_READ ) {
-			printf( " FCML_AM_READ" );
-		}
-		if( operand_details->access_mode & FCML_AM_WRITE ) {
-			printf( " FCML_AM_WRITE" );
-		}
-		if(!operand_details->access_mode) {
-			printf( " FCML_AM_ACCESS_MODE_UNDEFINED" );
-		}
-		printf("\n");
-	}
+    for (i = 0; i < instruction->operands_count; i++) {
+        printf("  Operand: %d\n", i + 1);
+        fcml_st_operand_details *operand_details =
+                &(details->operand_details[i]);
+        printf("   Access mode:");
+        if (operand_details->access_mode & FCML_AM_READ) {
+            printf(" FCML_AM_READ");
+        }
+        if (operand_details->access_mode & FCML_AM_WRITE) {
+            printf(" FCML_AM_WRITE");
+        }
+        if (!operand_details->access_mode) {
+            printf(" FCML_AM_ACCESS_MODE_UNDEFINED");
+        }
+        printf("\n");
+    }
 
 }
 
 int main(int argc, char **argv) {
 
-	fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-	/* Interpret arguments. */
+    /* Interpret arguments. */
 
-	if( argc <= 1 ) {
-		printf("Bad arguments.\n");
-		exit(1);
-	}
+    if (argc <= 1) {
+        printf("Bad arguments.\n");
+        exit(1);
+    }
 
-	fcml_st_disassembler_context context = {0};
+    fcml_st_disassembler_context context = { 0 };
 
-	fcml_st_render_config render_config = {0};
+    fcml_st_render_config render_config = { 0 };
 
-	fcml_bool gas_dialect = 0;
+    fcml_bool gas_dialect = 0;
 
-	fcml_uint8_t code[FCML_INSTRUCTION_SIZE] = {0};
+    fcml_uint8_t code[FCML_INSTRUCTION_SIZE] = { 0 };
 
-	fcml_int code_length = 0;
+    fcml_int code_length = 0;
 
-	int i;
-	for( i = 1; i < argc; i++ ) {
-		if( strcmp( argv[i], "-m16" ) == 0 ) {
-			context.entry_point.op_mode = FCML_OM_16_BIT;
-		} else if( strcmp( argv[i], "-m32" ) == 0 ) {
-			context.entry_point.op_mode = FCML_OM_32_BIT;
-		} else if( strcmp( argv[i], "-m64" ) == 0 ) {
-			context.entry_point.op_mode = FCML_OM_64_BIT;
-		} else if( strcmp( argv[i], "-asa16" ) == 0 ) {
-			context.entry_point.address_size_attribute = FCML_DS_16;
-		} else if( strcmp( argv[i], "-asa32" ) == 0 ) {
-			context.entry_point.address_size_attribute = FCML_DS_32;
-		} else if( strcmp( argv[i], "-asa64" ) == 0 ) {
-			context.entry_point.address_size_attribute = FCML_DS_64;
-		} else if( strcmp( argv[i], "-osa16" ) == 0 ) {
-			context.entry_point.operand_size_attribute = FCML_DS_16;
-		} else if( strcmp( argv[i], "-osa32" ) == 0 ) {
-			context.entry_point.operand_size_attribute = FCML_DS_32;
-		} else if( strcmp( argv[i], "-osa64" ) == 0 ) {
-			context.entry_point.operand_size_attribute = FCML_DS_64;
-		} else if( strcmp( argv[i], "-ip" ) == 0 ) {
-			if( ++i < argc ) {
-				char *res;
-				errno = 0;
-				context.entry_point.ip = strtoll( argv[i], &res, 16 );
-				if ((errno == ERANGE && (context.entry_point.ip == FCML_INT64_MAX || context.entry_point.ip == FCML_INT64_MIN)) || (errno != 0 && context.entry_point.ip == 0) || (argv[i] == res) ) {
-				   perror("Wrong instruction pointer.");
-				   exit(EXIT_FAILURE);
-			    }
-			} else {
-				printf("IP not set.\n");
-				exit(1);
-			}
-		} else if( strcmp( argv[i], "-s" ) == 0 ) {
-			context.configuration.short_forms = FCML_TRUE;
-		} else if( strcmp( argv[i], "-e" ) == 0 ) {
-			context.configuration.extend_disp_to_asa = FCML_TRUE;
-		} else if( strcmp( argv[i], "-rc" ) == 0 ) {
-			render_config.render_flags |= FCML_REND_FLAG_RENDER_CODE;
-		} else if( strcmp( argv[i], "-rh" ) == 0 ) {
-			render_config.render_flags |= FCML_REND_FLAG_HEX_IMM | FCML_REND_FLAG_HEX_DISPLACEMENT;
-		} else if( strcmp( argv[i], "-rz" ) == 0 ) {
-			render_config.render_flags |= FCML_REND_FLAG_REMOVE_LEADING_ZEROS;
-		} else if( strcmp( argv[i], "-rs" ) == 0 ) {
-			render_config.render_flags |= FCML_REND_FLAG_RENDER_DEFAULT_SEG;
-		} else if( strcmp( argv[i], "-gas" ) == 0 ) {
-			gas_dialect = FCML_TRUE;
-		} else if( strcmp( argv[i], "--help" ) == 0 ) {
-			printf("usage: fcml_disasm [-s] [-e] [-rc] [-rh] [-rz] [-rs] [-gas] \n" \
-                   "       [-asa<size>] [-osa<size>] <-m<size>> <-ip address> <code>\n\n" \
-                   "       -m16      16 bit addressing mode\n" \
-                   "       -m32      32 bit addressing mode\n" \
-                   "       -m64      64 bit addressing mode\n" \
-                   "       -asa16    16 bit address size attribute\n" \
-                   "       -asa32    32 bit address size attribute\n" \
-                   "       -asa64    63 bit address size attribute\n" \
-                   "       -osa16    16 bit operand size attribute\n" \
-                   "       -osa32    32 bit operand size attribute\n" \
-                   "       -osa64    63 bit operand size attribute\n" \
-                   "       -ip       Instruction pointer address\n" \
-                   "       -s        Prefer short instruction forms\n" \
-                   "       -e        Extend displacement size to address size attribute\n" \
-                   "       -rc       Render instruction code\n" \
-                   "       -rh       Render immediate values and displacement as HEX\n" \
-                   "       -rz       Remove leading zeros\n" \
-                   "       -gas      Use GNU assembler/AT&T dialect (Intel dialect is used by default)\n\n" \
-                   "example: fcml_disasm -m32 -ip 0x4001000 0x678316010203\n\n" \
-                   );
-			exit(0);
-		} else if( i + 1 == argc ) {
-			/* Parse instruction code. */
-			char buff[3] = {0};
-			char *code_str = argv[i];
-			fcml_int code_str_size = strlen( code_str );
-			fcml_int j, index = 0;
-			for( j = 0; j < code_str_size; j += 2 ) {
-				buff[0] = code_str[j];
-				buff[1] = 0;
-				if( j + 2 <= code_str_size ) {
-					buff[1] = code_str[j + 1];
-				}
-				if( j == 0 && strcmp( buff, "0x" ) == 0 ) {
-					continue;
-				}
-				char *res;
-				errno = 0;
-				code[index++] = (fcml_uint8_t)strtol( buff, &res, 16 );
-				fcml_int8_t code_byte = code[index - 1];
-				if ((errno == ERANGE && (code_byte == FCML_INT8_MAX || code_byte == FCML_INT8_MIN)) || (errno != 0 && code_byte == 0) || (buff == res) ) {
-				   printf("Wrong instruction code: %s\n", code_str );
-				   exit(EXIT_FAILURE);
-				}
-			}
-			code_length = index;
-		}
-	}
+    int i;
+    for (i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-m16") == 0) {
+            context.entry_point.op_mode = FCML_OM_16_BIT;
+        } else if (strcmp(argv[i], "-m32") == 0) {
+            context.entry_point.op_mode = FCML_OM_32_BIT;
+            if (context.entry_point.address_size_attribute == FCML_DS_UNDEF) {
+                context.entry_point.address_size_attribute = FCML_DS_32;
+            }
+            if (context.entry_point.operand_size_attribute == FCML_DS_UNDEF) {
+                context.entry_point.operand_size_attribute = FCML_DS_32;
+            }
+        } else if (strcmp(argv[i], "-m64") == 0) {
+            context.entry_point.op_mode = FCML_OM_64_BIT;
+            if (context.entry_point.address_size_attribute == FCML_DS_UNDEF) {
+                context.entry_point.address_size_attribute = FCML_DS_64;
+            }
+            if (context.entry_point.operand_size_attribute == FCML_DS_UNDEF) {
+                context.entry_point.operand_size_attribute = FCML_DS_64;
+            }
+        } else if (strcmp(argv[i], "-asa16") == 0) {
+            context.entry_point.address_size_attribute = FCML_DS_16;
+        } else if (strcmp(argv[i], "-asa32") == 0) {
+            context.entry_point.address_size_attribute = FCML_DS_32;
+        } else if (strcmp(argv[i], "-asa64") == 0) {
+            context.entry_point.address_size_attribute = FCML_DS_64;
+        } else if (strcmp(argv[i], "-osa16") == 0) {
+            context.entry_point.operand_size_attribute = FCML_DS_16;
+        } else if (strcmp(argv[i], "-osa32") == 0) {
+            context.entry_point.operand_size_attribute = FCML_DS_32;
+        } else if (strcmp(argv[i], "-osa64") == 0) {
+            context.entry_point.operand_size_attribute = FCML_DS_64;
+        } else if (strcmp(argv[i], "-ip") == 0) {
+            if (++i < argc) {
+                char *res;
+                errno = 0;
+                context.entry_point.ip = strtoll(argv[i], &res, 16);
+                if ((errno == ERANGE
+                        && (context.entry_point.ip == FCML_INT64_MAX
+                                || context.entry_point.ip == FCML_INT64_MIN))
+                        || (errno != 0 && context.entry_point.ip == 0)
+                        || (argv[i] == res)) {
+                    perror("Wrong instruction pointer.");
+                    exit(EXIT_FAILURE);
+                }
+            } else {
+                printf("IP not set.\n");
+                exit(1);
+            }
+        } else if (strcmp(argv[i], "-s") == 0) {
+            context.configuration.short_forms = FCML_TRUE;
+        } else if (strcmp(argv[i], "-e") == 0) {
+            context.configuration.extend_disp_to_asa = FCML_TRUE;
+        } else if (strcmp(argv[i], "-rc") == 0) {
+            render_config.render_flags |= FCML_REND_FLAG_RENDER_CODE;
+        } else if (strcmp(argv[i], "-rh") == 0) {
+            render_config.render_flags |= FCML_REND_FLAG_HEX_IMM
+                    | FCML_REND_FLAG_HEX_DISPLACEMENT;
+        } else if (strcmp(argv[i], "-rz") == 0) {
+            render_config.render_flags |= FCML_REND_FLAG_REMOVE_LEADING_ZEROS;
+        } else if (strcmp(argv[i], "-rs") == 0) {
+            render_config.render_flags |= FCML_REND_FLAG_RENDER_DEFAULT_SEG;
+        } else if (strcmp(argv[i], "-gas") == 0) {
+            gas_dialect = FCML_TRUE;
+        } else if (strcmp(argv[i], "--help") == 0) {
+            printf(
+                    "usage: fcml_disasm [-s] [-e] [-rc] [-rh] [-rz] [-rs] [-gas] \n"
+                            "       [-asa<size>] [-osa<size>] <-m<size>> <-ip address> <code>\n\n"
+                            "       -m16      16 bit addressing mode\n"
+                            "       -m32      32 bit addressing mode\n"
+                            "       -m64      64 bit addressing mode\n"
+                            "       -asa16    16 bit address size attribute\n"
+                            "       -asa32    32 bit address size attribute\n"
+                            "       -asa64    63 bit address size attribute\n"
+                            "       -osa16    16 bit operand size attribute\n"
+                            "       -osa32    32 bit operand size attribute\n"
+                            "       -osa64    63 bit operand size attribute\n"
+                            "       -ip       Instruction pointer address\n"
+                            "       -s        Prefer short instruction forms\n"
+                            "       -e        Extend displacement size to address size attribute\n"
+                            "       -rc       Render instruction code\n"
+                            "       -rh       Render immediate values and displacement as HEX\n"
+                            "       -rz       Remove leading zeros\n"
+                            "       -gas      Use GNU assembler/AT&T dialect (Intel dialect is used by default)\n\n"
+                            "example: fcml_disasm -m32 -ip 0x4001000 0x678316010203\n\n");
+            exit(0);
+        } else if (i + 1 == argc) {
+            /* Parse instruction code. */
+            char buff[3] = { 0 };
+            char *code_str = argv[i];
+            fcml_int code_str_size = strlen(code_str);
+            fcml_int j, index = 0;
+            for (j = 0; j < code_str_size; j += 2) {
+                buff[0] = code_str[j];
+                buff[1] = 0;
+                if (j + 2 <= code_str_size) {
+                    buff[1] = code_str[j + 1];
+                }
+                if (j == 0 && strcmp(buff, "0x") == 0) {
+                    continue;
+                }
+                char *res;
+                errno = 0;
+                code[index++] = (fcml_uint8_t) strtol(buff, &res, 16);
+                fcml_int8_t code_byte = code[index - 1];
+                if ((errno == ERANGE
+                        && (code_byte == FCML_INT8_MAX
+                                || code_byte == FCML_INT8_MIN))
+                        || (errno != 0 && code_byte == 0) || (buff == res)) {
+                    printf("Wrong instruction code: %s\n", code_str);
+                    exit(EXIT_FAILURE);
+                }
+            }
+            code_length = index;
+        }
+    }
 
-	context.configuration.enable_error_messages = FCML_TRUE;
+    context.configuration.enable_error_messages = FCML_TRUE;
 
-	if( !context.entry_point.op_mode ) {
-		printf("Addressing mode not specified.\n");
-		exit(1);
-	}
+    if (!context.entry_point.op_mode) {
+        printf("Addressing mode not specified.\n");
+        exit(1);
+    }
 
-	if( !code_length ) {
-		printf("Instruction code not specified.\n");
-		exit(1);
-	}
+    if (!code_length) {
+        printf("Instruction code not specified.\n");
+        exit(1);
+    }
 
-	/* Initialize dialect to use with disassembler. */
+    /* Initialize dialect to use with disassembler. */
 
-	fcml_st_dialect *dialect;
+    fcml_st_dialect *dialect;
 
-	if( gas_dialect ) {
-		error = fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT, &dialect );
-	} else {
-		error = fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT, &dialect );
-	}
+    if (gas_dialect) {
+        error = fcml_fn_dialect_init_gas( FCML_GAS_DIALECT_CF_DEFAULT,
+                &dialect);
+    } else {
+        error = fcml_fn_dialect_init_intel( FCML_INTEL_DIALECT_CF_DEFAULT,
+                &dialect);
+    }
 
-	if( error ) {
-		printf( "Can not initialize dialect, error: %d\n", error );
-		exit(1);
-	}
+    if (error) {
+        printf("Can not initialize dialect, error: %d\n", error);
+        exit(1);
+    }
 
-	/* Initialize disassembler for used dialect. */
+    /* Initialize disassembler for used dialect. */
 
-	fcml_st_disassembler *disassembler;
+    fcml_st_disassembler *disassembler;
 
-	error = fcml_fn_disassembler_init( dialect, &disassembler );
-	if( error ) {
-		fcml_fn_dialect_free( dialect );
-		printf( "Can not initialize assembler, error: %d\n", error );
-		exit(1);
-	}
+    error = fcml_fn_disassembler_init(dialect, &disassembler);
+    if (error) {
+        fcml_fn_dialect_free(dialect);
+        printf("Can not initialize assembler, error: %d\n", error);
+        exit(1);
+    }
 
-	/* Prepare disassembler context. */
+    /* Prepare disassembler context. */
 
-	context.disassembler = disassembler;
-	context.code = code;
-	context.code_length = code_length;
+    context.disassembler = disassembler;
+    context.code = code;
+    context.code_length = code_length;
 
-	fcml_st_disassembler_result result;
+    fcml_st_disassembler_result result;
 
-	fcml_fn_disassembler_result_prepare( &result );
+    fcml_fn_disassembler_result_prepare(&result);
 
-	error = fcml_fn_disassemble( &context, &result );
-	if( !error ) {
-		print_instruction_details( dialect, &result, &render_config );
-	} else {
-		printf("Disassembling failed with error code: %d\n", error );
-		print_error_msg( &(result.errors) );
-	}
+    error = fcml_fn_disassemble(&context, &result);
+    if (!error) {
+        print_instruction_details(dialect, &result, &render_config);
+    } else {
+        printf("Disassembling failed with error code: %d\n", error);
+        print_error_msg(&(result.errors));
+    }
 
-	fcml_fn_disassembler_result_free( &result );
+    fcml_fn_disassembler_result_free(&result);
 
-	/* Free everything. */
+    /* Free everything. */
 
-	fcml_fn_disassembler_free( disassembler );
+    fcml_fn_disassembler_free(disassembler);
 
-	fcml_fn_dialect_free( dialect );
+    fcml_fn_dialect_free(dialect);
 
-	return 0;
+    return 0;
 }

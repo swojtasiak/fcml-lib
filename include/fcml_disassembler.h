@@ -115,7 +115,7 @@ typedef struct fcml_st_instruction_prefix {
     /** FCML_TRUE if prefix is treated as mandatory one. */
     fcml_bool mandatory_prefix;
     /** Place for additional bytes of VEX/EVEX/XOP prefix.
-     * since 2.0.0
+     * since 1.2.0
      */
     fcml_uint8_t avx_bytes[3];
 } fcml_st_instruction_prefix;
