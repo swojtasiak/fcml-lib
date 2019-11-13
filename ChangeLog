@@ -18,4 +18,6 @@
  18.10.2016 (1.1.3)
  - bug fix in tests (https://github.com/swojtasiak/fcml-lib/pull/3)
  - additional Apache 2.0 license added to hsdis
-
+ 13.11.2019 (1.2.0)
+ - bug fixes
+ - AVX-512 support

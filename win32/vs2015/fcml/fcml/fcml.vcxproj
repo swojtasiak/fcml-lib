@@ -420,6 +420,8 @@ copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\fcml_disp8_n.c" />
+    <ClCompile Include="..\..\..\..\src\fcml_operand_decorators.c" />
     <ClCompile Include="dllmain.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug-dll|Win32'">
       </PrecompiledHeader>
@@ -498,6 +500,7 @@ copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
     <ClInclude Include="..\..\..\..\src\fcml_decoding_tree.h" />
     <ClInclude Include="..\..\..\..\src\fcml_def.h" />
     <ClInclude Include="..\..\..\..\src\fcml_dialect_int.h" />
+    <ClInclude Include="..\..\..\..\src\fcml_disp8_n.h" />
     <ClInclude Include="..\..\..\..\src\fcml_encoding.h" />
     <ClInclude Include="..\..\..\..\src\fcml_env_int.h" />
     <ClInclude Include="..\..\..\..\src\fcml_gas_lexer.h" />
@@ -514,6 +517,7 @@ copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
     <ClInclude Include="..\..\..\..\src\fcml_modrm.h" />
     <ClInclude Include="..\..\..\..\src\fcml_modrm_decoder.h" />
     <ClInclude Include="..\..\..\..\src\fcml_modrm_encoder.h" />
+    <ClInclude Include="..\..\..\..\src\fcml_operand_decorators.h" />
     <ClInclude Include="..\..\..\..\src\fcml_parser_data.h" />
     <ClInclude Include="..\..\..\..\src\fcml_parser_int.h" />
     <ClInclude Include="..\..\..\..\src\fcml_parser_utils.h" />

@@ -301,6 +301,7 @@
     <ClCompile Include="..\..\..\..\check\public-tests\instructions_h_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\instructions_i_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\instructions_j_t.c" />
+    <ClCompile Include="..\..\..\..\check\public-tests\instructions_k_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\instructions_l_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\instructions_m_t.c" />
     <ClCompile Include="..\..\..\..\check\public-tests\instructions_n_t.c" />
@@ -337,6 +338,7 @@
     <ClInclude Include="..\..\..\..\check\public-tests\instructions_h_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\instructions_i_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\instructions_j_t.h" />
+    <ClInclude Include="..\..\..\..\check\public-tests\instructions_k_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\instructions_l_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\instructions_m_t.h" />
     <ClInclude Include="..\..\..\..\check\public-tests\instructions_n_t.h" />
