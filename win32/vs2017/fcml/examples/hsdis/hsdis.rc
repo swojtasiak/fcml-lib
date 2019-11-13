@@ -7,13 +7,13 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "windows.h"
+#include "afxres.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Angielski (Stany Zjednoczone) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,1,2,1
- PRODUCTVERSION 1,1,2,1
+ FILEVERSION 1,2,0,0
+ PRODUCTVERSION 1,2,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -69,12 +69,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SWKSoftware"
             VALUE "FileDescription", "hsdis"
-            VALUE "FileVersion", "1.1.2.1"
+            VALUE "FileVersion", "1.2.0.0"
             VALUE "InternalName", "hsdis"
             VALUE "LegalCopyright", "Copyright (C) 2014-2016 Slawomir Wojtasiak"
             VALUE "OriginalFilename", "hsdis"
             VALUE "ProductName", "hsdis"
-            VALUE "ProductVersion", "1.1.2.1"
+            VALUE "ProductVersion", "1.2.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -83,7 +83,7 @@ BEGIN
     END
 END
 
-#endif    // English (United States) resources
+#endif    // Angielski (Stany Zjednoczone) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
