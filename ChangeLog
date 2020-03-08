@@ -8,16 +8,16 @@
  - 'dist' build targed has been fixed.
  - pkg-config support.
  - Lexer generated using newer version of flex.
- 04.08.2015 (1.1.1)
+04.08.2015 (1.1.1)
  - Bug fix #1 - FCML-based HSDIS crashes when used with WinPerfAsmProfiler
  - Some minor build related changes
  - Internal unit tests have been disabled for MinGW and Cygwin builds.
  - \DEBUG option has been added to hsdis (Debug) for VS2013 project.
- 23.09.2016 (1.1.2)
+23.09.2016 (1.1.2)
  - hsdis - License changed to LGPL 2.1
- 18.10.2016 (1.1.3)
+18.10.2016 (1.1.3)
  - bug fix in tests (https://github.com/swojtasiak/fcml-lib/pull/3)
  - additional Apache 2.0 license added to hsdis
- 13.11.2019 (1.2.0)
+13.11.2019 (1.2.0)
  - bug fixes
  - AVX-512 support
