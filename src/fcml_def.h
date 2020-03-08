@@ -179,7 +179,7 @@ typedef struct fcml_st_def_addr_mode_desc {
 } fcml_st_def_addr_mode_desc;
 
 /* Instruction code definition for multi-instructions. Currently only the
- * instructions with suffixes uses this mechanism.
+ * instructions with suffixes use this mechanism.
  */
 typedef struct fcml_st_def_instruction_code_desc {
     /* Instruction code.*/
@@ -228,18 +228,16 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_PREFIX_L_1(x)                       FCML_TP_GET_BIT(x,5)
 #define FCML_DEF_PREFIX_L_0(x)                       FCML_TP_GET_BIT(x,6)
 #define FCML_DEF_PREFIX_VEX_REQ(x)                   FCML_TP_GET_BIT(x,7)
-/* Currently unused probably can be reused in the future. */
-#define FCML_DEF_PREFIX_RESERVED(x)                  FCML_TP_GET_BIT(x,8)
-#define FCML_DEF_PREFIX_L_IGNORE_OS(x)               FCML_TP_GET_BIT(x,9)
-#define FCML_DEF_PREFIX_XOP_REQ(x)                   FCML_TP_GET_BIT(x,10)
-#define FCML_DEF_PREFIX_HLE_ENABLED(x)               FCML_TP_GET_BIT(x,11)
-#define FCML_DEF_PREFIX_MANDATORY_66(x)              FCML_TP_GET_BIT(x,12)
-#define FCML_DEF_PREFIX_MANDATORY_F2(x)              FCML_TP_GET_BIT(x,13)
-#define FCML_DEF_PREFIX_MANDATORY_F3(x)              FCML_TP_GET_BIT(x,14)
-#define FCML_DEF_PREFIX_SUFFIX(x)                    FCML_TP_GET_BIT(x,15)
-#define FCML_DEF_PREFIX_EVEX_REQ(x)                  FCML_TP_GET_BIT(x,16)
-#define FCML_DEF_PREFIX_L_prim_1(x)                  FCML_TP_GET_BIT(x,17)
-#define FCML_DEF_PREFIX_L_prim_0(x)                  FCML_TP_GET_BIT(x,18)
+#define FCML_DEF_PREFIX_L_IGNORE_OS(x)               FCML_TP_GET_BIT(x,8)
+#define FCML_DEF_PREFIX_XOP_REQ(x)                   FCML_TP_GET_BIT(x,9)
+#define FCML_DEF_PREFIX_HLE_ENABLED(x)               FCML_TP_GET_BIT(x,10)
+#define FCML_DEF_PREFIX_MANDATORY_66(x)              FCML_TP_GET_BIT(x,11)
+#define FCML_DEF_PREFIX_MANDATORY_F2(x)              FCML_TP_GET_BIT(x,12)
+#define FCML_DEF_PREFIX_MANDATORY_F3(x)              FCML_TP_GET_BIT(x,13)
+#define FCML_DEF_PREFIX_SUFFIX(x)                    FCML_TP_GET_BIT(x,14)
+#define FCML_DEF_PREFIX_EVEX_REQ(x)                  FCML_TP_GET_BIT(x,15)
+#define FCML_DEF_PREFIX_L_prim_1(x)                  FCML_TP_GET_BIT(x,16)
+#define FCML_DEF_PREFIX_L_prim_0(x)                  FCML_TP_GET_BIT(x,17)
 
 #define FCML_DEF_PREFIX_IS_AVX_REQ(x)   (FCML_DEF_PREFIX_VEX_REQ(x) || \
     FCML_DEF_PREFIX_EVEX_REQ(x) || FCML_DEF_PREFIX_XOP_REQ(x))
