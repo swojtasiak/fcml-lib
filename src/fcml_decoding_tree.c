@@ -39,7 +39,7 @@ typedef fcml_ceh_error (*fcml_ifp_dt_dts_opcode_callback)( fcml_st_dt_decoding_t
         fcml_st_def_addr_mode_desc *opcode_desc, fcml_ist_dt_dts_opcodes *opcodes );
 
 /* Sets opcode field into a opcode byte. */
-fcml_uint8_t fcml_ifn_dt_dts_utils_set_opcode_byte_field( fcml_uint8_t opcode_byte, int opcode_field_pos, int field_size, fcml_uint8_t field_value ) {
+fcml_uint8_t fcml_ifn_dt_dts_utils_set_opcode_byte_field( fcml_uint8_t opcode_byte, int opcode_flags_pos, int field_size, fcml_uint8_t field_value ) {
 
     /* Mask for opcode field.*/
     fcml_uint8_t bit_mask = 0x00;
@@ -50,8 +50,8 @@ fcml_uint8_t fcml_ifn_dt_dts_utils_set_opcode_byte_field( fcml_uint8_t opcode_by
     }
     bit_mask = ~bit_mask;
 
-    /* Preparing opcode with opcode_filed set.*/
-    return ( opcode_byte & bit_mask ) | ( field_value << opcode_field_pos );
+    /* Preparing opcode with opcode field set. */
+    return ( opcode_byte & bit_mask ) | ( field_value << opcode_flags_pos );
 }
 
 fcml_ceh_error fcml_ifn_dt_dts_default_opcode_callback( fcml_st_dt_decoding_tree *dec_tree, fcml_st_def_instruction_desc *instruction_desc,
