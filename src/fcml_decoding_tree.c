@@ -111,7 +111,7 @@ fcml_ceh_error fcml_ifn_dt_dts_handle_next_opcode_byte( fcml_st_dt_decoding_tree
 
         fcml_uint32_t opcode_flags = opcode_desc->opcode_flags;
 
-        int opcode_flags_pos = FCML_DEF_OPCODE_FLAGS_POS( opcode_flags );
+        int opcode_field_pos = FCML_DEF_OPCODE_FIELD_POS( opcode_flags );
 
         /* Opcode field: REG and TTTN.*/
         if ( FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_REG( opcode_flags ) || FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN( opcode_flags )) {
@@ -129,7 +129,7 @@ fcml_ceh_error fcml_ifn_dt_dts_handle_next_opcode_byte( fcml_st_dt_decoding_tree
             int i;
             for ( i = 0; i < number_of_opcodes && !error; i++ ) {
                 /* Prepare opcode byte with register/condition field.*/
-                fcml_uint8_t encoded_opcode_byte = fcml_ifn_dt_dts_utils_set_opcode_byte_field( opcode_byte, opcode_flags_pos, field_size, (fcml_uint8_t) i );
+                fcml_uint8_t encoded_opcode_byte = fcml_ifn_dt_dts_utils_set_opcode_byte_field( opcode_byte, opcode_field_pos, field_size, (fcml_uint8_t) i );
                 opcodes->opcode_bytes[opcode_byte_num] = encoded_opcode_byte;
                 /* Handle next opcode byte.*/
                 error = fcml_ifn_dt_dts_handle_next_opcode_byte( dec_tree, instruction_desc, opcode_desc, opcodes, callback, opcode_bytes_count,
