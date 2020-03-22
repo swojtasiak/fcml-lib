@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,6 @@
  * @param assembler Assembler dialect should be extracted from.
  * @return Extracted dialect.
  */
-fcml_st_dialect *fcml_fn_assembler_extract_dialect( fcml_st_assembler *assembler );
+fcml_st_dialect *fcml_fn_assembler_extract_dialect(fcml_st_assembler *assembler);
 
 #endif /* FCML_ASSEMBLER_INT_H_ */
