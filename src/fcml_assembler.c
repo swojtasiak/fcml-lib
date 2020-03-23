@@ -93,7 +93,7 @@ fcml_ceh_error LIB_CALL fcml_fn_assembler_init(const fcml_st_dialect *dialect,
     }
 
     /* Initializes classic processor instructions encoding. */
-    fcml_ceh_error error = fcml_fn_asm_init_instruction_encodings(
+    fcml_ceh_error error = fcml_fn_init_instruction_addr_modes(
             (fcml_st_dialect_context_int*) dialect,
             &(enc_asm->instructions_map));
     if (error) {
@@ -106,7 +106,7 @@ fcml_ceh_error LIB_CALL fcml_fn_assembler_init(const fcml_st_dialect *dialect,
             (fcml_st_dialect_context_int*) dialect,
             &(enc_asm->pseudo_operations_map));
     if (error) {
-        fcml_fn_asm_free_instruction_encodings(enc_asm->instructions_map);
+        fcml_fn_free_instruction_addr_modes(enc_asm->instructions_map);
         fcml_fn_env_memory_free(enc_asm);
         return error;
     }
@@ -192,7 +192,7 @@ void LIB_CALL fcml_fn_assembler_free(fcml_st_assembler *assembler) {
     if (assembler) {
         enc_assembler *enc_asm = (enc_assembler*) assembler;
         if (enc_asm->instructions_map) {
-            fcml_fn_asm_free_instruction_encodings(enc_asm->instructions_map);
+            fcml_fn_free_instruction_addr_modes(enc_asm->instructions_map);
         }
         /* Frees pseudo operations encoding. */
         if (enc_asm->pseudo_operations_map) {
@@ -265,8 +265,8 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
     }
 
     /* Find instruction addressing modes/forms. */
-    fcml_st_asm_instruction_addr_modes *addr_modes = NULL;
-    error = fcml_fn_asm_get_instruction_encodings(enc_asm->instructions_map,
+    fcml_st_instruction_addr_modes *addr_modes = NULL;
+    error = fcml_fn_get_instruction_addr_modes(enc_asm->instructions_map,
             tmp_instruction.mnemonic, &addr_modes);
     if (error) {
         if (error == FCML_CEH_GEC_UNKNOWN_MNEMONIC) {
@@ -279,12 +279,11 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
 
     /* Execute instruction encoder. */
     if (addr_modes) {
-        if (addr_modes->instruction_encoder) {
+        if (addr_modes->encoder) {
             fcml_st_asm_encoder_result enc_result = { { 0 } };
 
-            error = addr_modes->instruction_encoder(asm_context,
-                    enc_asm->dialect_context, &tmp_instruction, &enc_result,
-                    addr_modes);
+            error = addr_modes->encoder(asm_context, enc_asm->dialect_context,
+                    &tmp_instruction, &enc_result, addr_modes);
             if (!error) {
                 result->instructions = enc_result.instructions;
                 result->number_of_instructions =
