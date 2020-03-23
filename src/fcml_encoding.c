@@ -5815,7 +5815,7 @@ void fcml_ifn_asm_prepare_instruction_encoding_details(
     }
 }
 
-fcml_ceh_error fcml_fn_init_instruction_addr_modes(
+fcml_ceh_error fcml_fn_init_instructions_addr_modes(
         fcml_st_dialect_context_int *dialect_context, fcml_coll_map *inst_map) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -5859,7 +5859,7 @@ fcml_ceh_error fcml_fn_init_instruction_addr_modes(
 
 }
 
-void fcml_fn_free_instruction_addr_modes(fcml_coll_map instructions_map) {
+void fcml_fn_free_instructions_addr_modes(fcml_coll_map instructions_map) {
     if (instructions_map) {
         fcml_fn_coll_map_free(instructions_map);
     }

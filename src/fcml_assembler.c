@@ -93,7 +93,7 @@ fcml_ceh_error LIB_CALL fcml_fn_assembler_init(const fcml_st_dialect *dialect,
     }
 
     /* Initializes classic processor instructions encoding. */
-    fcml_ceh_error error = fcml_fn_init_instruction_addr_modes(
+    fcml_ceh_error error = fcml_fn_init_instructions_addr_modes(
             (fcml_st_dialect_context_int*) dialect,
             &(enc_asm->instructions_map));
     if (error) {
@@ -106,7 +106,7 @@ fcml_ceh_error LIB_CALL fcml_fn_assembler_init(const fcml_st_dialect *dialect,
             (fcml_st_dialect_context_int*) dialect,
             &(enc_asm->pseudo_operations_map));
     if (error) {
-        fcml_fn_free_instruction_addr_modes(enc_asm->instructions_map);
+        fcml_fn_free_instructions_addr_modes(enc_asm->instructions_map);
         fcml_fn_env_memory_free(enc_asm);
         return error;
     }
@@ -192,7 +192,7 @@ void LIB_CALL fcml_fn_assembler_free(fcml_st_assembler *assembler) {
     if (assembler) {
         enc_assembler *enc_asm = (enc_assembler*) assembler;
         if (enc_asm->instructions_map) {
-            fcml_fn_free_instruction_addr_modes(enc_asm->instructions_map);
+            fcml_fn_free_instructions_addr_modes(enc_asm->instructions_map);
         }
         /* Frees pseudo operations encoding. */
         if (enc_asm->pseudo_operations_map) {

@@ -68,7 +68,7 @@ typedef struct fcml_st_instruction_addr_modes {
 } fcml_st_instruction_addr_modes;
 
 /** Prepares static instruction address modes map. */
-fcml_ceh_error fcml_fn_init_instruction_addr_modes(
+fcml_ceh_error fcml_fn_init_instructions_addr_modes(
         fcml_st_dialect_context_int *context,
         fcml_coll_map *instructions_map);
 
@@ -79,6 +79,6 @@ fcml_ceh_error fcml_fn_get_instruction_addr_modes(
         fcml_st_instruction_addr_modes **);
 
 /** Frees all the addressing modes. */
-void fcml_fn_free_instruction_addr_modes(fcml_coll_map instructions_map);
+void fcml_fn_free_instructions_addr_modes(fcml_coll_map instructions_map);
 
 #endif /* FCML_ASM_ENCODING_H_ */
