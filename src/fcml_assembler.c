@@ -86,8 +86,7 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
 fcml_ceh_error LIB_CALL fcml_fn_assembler_init(const fcml_st_dialect *dialect,
         fcml_st_assembler **assembler) {
     /* Allocate assembler instance.*/
-    enc_assembler *enc_asm = (enc_assembler*) fcml_fn_env_memory_alloc_clear(
-            sizeof(enc_assembler));
+    FCML_ENV_ALLOC_CLEAR(enc_asm, enc_assembler)
     if (!enc_asm) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
