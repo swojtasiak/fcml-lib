@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,12 +29,24 @@ typedef struct fcml_st_hts_calculated_hints {
     fcml_hints operand_hints;
 } fcml_st_hts_calculated_hints;
 
-typedef fcml_st_hts_calculated_hints (*fcml_fp_hts_instruction_hints_calculator)( fcml_st_def_addr_mode_desc *addr_mode,
-        fcml_st_def_decoded_addr_mode *decoded_addr_mode );
+typedef fcml_st_hts_calculated_hints (*fcml_fp_hts_instruction_hints_calculator)(
+        const fcml_st_def_addr_mode_desc *addr_mode,
+        fcml_st_def_decoded_addr_mode *decoded_addr_mode);
 
-fcml_st_hts_calculated_hints fcml_fn_hts_ihc_far_pointer( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
-fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
-fcml_st_hts_calculated_hints fcml_fn_hts_ihc_immediate_dis_relative( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
-fcml_st_hts_calculated_hints fcml_fn_hts_ihc_pseudo_opcode( fcml_st_def_addr_mode_desc *addr_mode, fcml_st_def_decoded_addr_mode *decoded_addr_mode );
+fcml_st_hts_calculated_hints fcml_fn_hts_ihc_far_pointer(
+        const fcml_st_def_addr_mode_desc *addr_mode,
+        fcml_st_def_decoded_addr_mode *decoded_addr_mode);
+
+fcml_st_hts_calculated_hints fcml_fn_hts_ihc_modrm_hints(
+        const fcml_st_def_addr_mode_desc *addr_mode,
+        fcml_st_def_decoded_addr_mode *decoded_addr_mode);
+
+fcml_st_hts_calculated_hints fcml_fn_hts_ihc_immediate_dis_relative(
+        const fcml_st_def_addr_mode_desc *addr_mode,
+        fcml_st_def_decoded_addr_mode *decoded_addr_mode);
+
+fcml_st_hts_calculated_hints fcml_fn_hts_ihc_pseudo_opcode(
+        const fcml_st_def_addr_mode_desc *addr_mode,
+        fcml_st_def_decoded_addr_mode *decoded_addr_mode);
 
 #endif /* FCML_HINTS_H_ */

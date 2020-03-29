@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -151,8 +151,11 @@ fcml_string fcml_fn_cmn_dialect_render_mnemonic( fcml_string mnemonic, fcml_st_c
     return rendered_mnemonic;
 }
 
-fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic( const fcml_st_dialect *dialect, fcml_st_mp_mnemonic_set *mnemonic_set, fcml_st_mp_mnemonic **mnemonics,
-        fcml_st_condition *condition, int *mnemonics_counter ) {
+fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic(
+        const fcml_st_dialect *dialect,
+        fcml_st_mp_mnemonic_set *mnemonic_set,
+        fcml_st_mp_mnemonic **mnemonics,
+        const fcml_st_condition *condition, int *mnemonics_counter) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 

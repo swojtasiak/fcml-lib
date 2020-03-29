@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2017 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1382,8 +1382,8 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_register_intel(
 
 fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_intel(
         const fcml_st_dialect *dialect,
-        fcml_st_def_instruction_desc *instruction,
-        fcml_st_def_addr_mode_desc *addr_mode,
+        const fcml_st_def_instruction_desc *instruction,
+        const fcml_st_def_addr_mode_desc *addr_mode,
         fcml_st_mp_mnemonic_set **mnemonics) {
 
     fcml_string mnemonic_pattern = NULL;
@@ -1424,8 +1424,9 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_intel(
  */
 fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel(
         const fcml_st_dialect *dialect,
-        fcml_st_def_instruction_desc *instruction,
-        fcml_st_def_addr_mode_desc *addr_mode, fcml_st_condition *condition,
+        const fcml_st_def_instruction_desc *instruction,
+        const fcml_st_def_addr_mode_desc *addr_mode,
+        const fcml_st_condition *condition,
         fcml_st_mp_mnemonic **mnemonics, int *mnemonics_counter) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1448,8 +1449,9 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel(
 
 fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel(
         const fcml_st_assembler_conf *configuration,
-        const fcml_st_dialect *dialect, fcml_st_instruction *instrunction,
-        fcml_st_def_addr_mode_desc *addr_mode_desc,
+        const fcml_st_dialect *dialect,
+        fcml_st_instruction *instrunction,
+        const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_en_instruction instruction_code, fcml_st_mp_mnemonic *mnemonic,
         fcml_bool *has_been_changed) {
 
