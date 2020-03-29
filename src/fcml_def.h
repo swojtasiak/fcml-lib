@@ -249,6 +249,8 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_REG(x)           ((x) & 0x00000001)
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_W(x)             ((x) & 0x00000002)
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_S(x)             ((x) & 0x00000004)
+/* tttn field for conditional instructions, specifies a condition
+ * asserted or negated. The field is located in opcode byte. */
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(x)          ((x) & 0x00000040)
 #define FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT(x)     ((x) & 0x00000080)
 #define FCML_DEF_OPCODE_FLAGS_POS(x)                  (((x) & 0x00000700) >> 8)

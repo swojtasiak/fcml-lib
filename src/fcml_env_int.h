@@ -30,6 +30,9 @@
 #define FCML_ENV_ALLOC_ST(str)   (str*) \
     fcml_fn_env_memory_alloc_clear(sizeof(str));
 
+#define FCML_ENV_ALLOC_CLEAR(variable, type) type* variable = (type*) \
+    fcml_fn_env_memory_alloc_clear(sizeof(type));
+
 fcml_ptr fcml_fn_env_memory_alloc( fcml_usize size );
 fcml_ptr fcml_fn_env_memory_realloc( fcml_ptr ptr, fcml_usize size );
 fcml_ptr fcml_fn_env_memory_alloc_clear( fcml_usize size );
