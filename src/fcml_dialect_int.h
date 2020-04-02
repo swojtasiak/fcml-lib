@@ -88,7 +88,7 @@ typedef void (*fcml_fnp_asm_dialect_free)( fcml_st_dialect *dialect );
 typedef struct fcml_st_dialect_context_int {
     fcml_coll_map dialect_mnemonics_lookup;
     /**
-     * Gets instruction descriptions for mnemonic.
+     * Gets mnemonics for given instruction addressing mode.
      */
     fcml_fnp_asm_dialect_get_mnemonic get_mnemonic;
     /**

@@ -62,7 +62,7 @@ typedef struct fcml_st_instruction_addr_modes {
     /* All addressing modes for given mnemonic are available in this list. */
     fcml_st_coll_list *addr_modes;
     /* An instruction mnemonic shared by all the addressing modes. */
-    fcml_string mnemonic;
+    const fcml_string mnemonic;
     /* Predefined instruction encoder responsible for encoding the instruction. */
     fcml_fp_instruction_encoder encoder;
 } fcml_st_instruction_addr_modes;
