@@ -1388,23 +1388,24 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_intel(
 
     fcml_string mnemonic_pattern = NULL;
 
-    fcml_uint32_t keys[] = { FCML_ASM_DIALECT_INSTRUCTION(
-            instruction->instruction, addr_mode->addr_mode ),
+    fcml_uint32_t keys[] = {
             FCML_ASM_DIALECT_INSTRUCTION(
-                    instruction->instruction, FCML_AM_ALL) };
+                    instruction->instruction, addr_mode->addr_mode ),
+            FCML_ASM_DIALECT_INSTRUCTION(
+                    instruction->instruction, FCML_AM_ALL)
+    };
 
     fcml_st_dialect_context_int *dialect_context =
             (fcml_st_dialect_context_int*) dialect;
 
     int i;
-    for (i = 0; i < sizeof( keys ) / sizeof(fcml_uint32_t) &&
-        !mnemonic_pattern; i++) {
-        fcml_st_dialect_mnemonic *dialect_mnemonic =
-                (fcml_st_dialect_mnemonic*)
-                fcml_fn_coll_map_get( dialect_context->dialect_mnemonics_lookup,
-                &( keys[i] ) );
-        if (dialect_mnemonic) {
-            mnemonic_pattern = dialect_mnemonic->mnemonic;
+    fcml_size keys_num = sizeof( keys ) / sizeof(fcml_uint32_t);
+    for (i = 0; i < keys_num && !mnemonic_pattern; i++) {
+        fcml_st_dialect_mnemonic *mnemonic = (fcml_st_dialect_mnemonic*)
+                fcml_fn_coll_map_get(dialect_context->dialect_mnemonics_lookup,
+                        &(keys[i]));
+        if (mnemonic) {
+            mnemonic_pattern = mnemonic->mnemonic;
         }
     }
 
@@ -1431,17 +1432,14 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_st_mp_mnemonic_set *mnemonic_set;
+    fcml_st_mp_mnemonic_set *mnemonic_set = NULL;
 
     error = fcml_ifn_asm_dialect_get_parsed_mnemonics_intel(
             dialect, instruction, addr_mode, &mnemonic_set);
-    if ( !error ) {
-
+    if (!error) {
         error = fcml_fn_cmn_dialect_get_mnemonic(dialect, mnemonic_set,
                 mnemonics, condition, mnemonics_counter);
-
-        fcml_fn_mp_free_mnemonics( mnemonic_set );
-
+        fcml_fn_mp_free_mnemonics(mnemonic_set);
     }
 
     return error;
