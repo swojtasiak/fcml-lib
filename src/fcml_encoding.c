@@ -3377,13 +3377,16 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
     return error;
 }
 
+static void free_ipp_desc(ipp_desc desc) {
+    if (desc.args_deallocator) {
+        desc.args_deallocator(desc.args);
+    }
+}
+
 static void free_ipp_chain(ipp_chain *chain) {
     if (chain) {
         free_ipp_chain(chain->next_processor);
-        ipp_desc *descriptor = &(chain->descriptor);
-        if (descriptor->args_deallocator) {
-            descriptor->args_deallocator(descriptor->args);
-        }
+        free_ipp_desc(chain->descriptor);
         fcml_fn_env_memory_free(chain);
     }
 }
@@ -4830,8 +4833,7 @@ fcml_ceh_error fcml_ifn_asm_ipp_addr_mode_acceptor(
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-ipp_desc
-fcml_ifn_asm_ipp_factory_addr_mode_acceptor(
+ipp_desc fcml_ifn_asm_ipp_factory_addr_mode_acceptor(
         fcml_uint32_t flags, const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode, fcml_hints *hints,
         fcml_ceh_error *error) {
@@ -5042,26 +5044,31 @@ fcml_ifn_asm_ipp_factory_op_decorators_acceptor(
 /* Instruction parts factories definitions. */
 /********************************************/
 
-typedef struct fcml_st_asm_instruction_part_factory_details {
+typedef struct ipp_factory_details {
     ipp_factory factory;
-    fcml_string instruction_part_processor_name;
+    fcml_string ipp_name;
     fcml_uint32_t flags;
-} fcml_st_asm_instruction_part_factory_details;
+} ipp_factory_details;
 
-typedef enum fcml_st_instruction_part_choice_type {
-    FCML_IPCT_ONE, FCML_IPCT_ALL,
-} fcml_st_instruction_part_choice_type;
+typedef enum ipp_choice_type {
+    /* Only one instruction part processor from the given sequence may
+     * be chosen for given addressing mode encoding. */
+    FCML_IPCT_ONE,
+    /* All instruction part processors from given sequence may be added
+     * to given addressing mode encoding. */
+    FCML_IPCT_ALL
+} ipp_choice_type;
 
-typedef struct fcml_st_asm_instruction_part_factory_sequence {
-    fcml_st_asm_instruction_part_factory_details *details;
-    fcml_st_instruction_part_choice_type choice_type;
+typedef struct ipp_factory_sequence {
+    ipp_factory_details *details;
+    ipp_choice_type choice_type;
     fcml_bool is_short_form_supported;
-} fcml_st_asm_instruction_part_factory_sequence;
+} ipp_factory_sequence;
 
 #define FCML_IPP_FACTORY(fn, flags)     { fn, #fn "-" #flags, flags }
 
 /* List of instruction part encoders for instruction opcode. */
-fcml_st_asm_instruction_part_factory_details
+ipp_factory_details
 fcml_iarr_asm_instruction_part_processor_factories_opcode_for_IA[] = {
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_AVX_opcode_encoder, 0),
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_reg_opcode_encoder, 0),
@@ -5071,7 +5078,7 @@ fcml_iarr_asm_instruction_part_processor_factories_opcode_for_IA[] = {
 };
 
 /* List of instruction addressing mode acceptors. */
-fcml_st_asm_instruction_part_factory_details
+ipp_factory_details
 fcml_iarr_asm_instruction_part_processor_factories_acceptors_IA[] = {
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_addr_mode_acceptor, 0),
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_prefixes_acceptor, 0),
@@ -5080,7 +5087,7 @@ fcml_iarr_asm_instruction_part_processor_factories_acceptors_IA[] = {
 };
 
 /* List of instruction part encoders for instruction prefixes. */
-fcml_st_asm_instruction_part_factory_details
+ipp_factory_details
 fcml_iarr_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_branch_hints_prefix_encoder, 0),
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_rep_prefix_encoder, 0),
@@ -5098,14 +5105,14 @@ fcml_iarr_asm_instruction_part_processor_factories_prefixes_for_IA[] = {
 };
 
 /* ModR/M byte encoder.*/
-fcml_st_asm_instruction_part_factory_details
+ipp_factory_details
 fcml_iarr_asm_instruction_part_processor_factories_ModRM_for_IA[] = {
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_ModRM_encoder, 0),
     { NULL, NULL, 0 }
 };
 
 /* List of instruction part encoders for instruction operands.*/
-fcml_st_asm_instruction_part_factory_details
+ipp_factory_details
 fcml_iarr_asm_instruction_part_processor_factories_operands_for_IA[] = {
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_operand_encoder_wrapper, 0),
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_operand_encoder_wrapper, 1),
@@ -5115,14 +5122,13 @@ fcml_iarr_asm_instruction_part_processor_factories_operands_for_IA[] = {
     { NULL, NULL, 0 }
 };
 
-fcml_st_asm_instruction_part_factory_details
+ipp_factory_details
 fcml_iarr_asm_instruction_part_processor_factories_suffixes_for_IA[] = {
     FCML_IPP_FACTORY(fcml_ifn_asm_ipp_factory_suffix_encoder, 0),
     { NULL, NULL, 0 }
 };
 
-fcml_st_asm_instruction_part_factory_sequence
-fcml_iarr_asm_instruction_part_processor_factory_sequences_for_IA[] = {
+static ipp_factory_sequence ipp_factory_sequences_for_IA[] = {
     { fcml_iarr_asm_instruction_part_processor_factories_acceptors_IA,
             FCML_IPCT_ALL, FCML_TRUE },
     { fcml_iarr_asm_instruction_part_processor_factories_prefixes_for_IA,
@@ -5140,7 +5146,7 @@ fcml_iarr_asm_instruction_part_processor_factory_sequences_for_IA[] = {
 
 /* Instruction part processors chain builder dedicated for
  * Intel and AMD processors. */
-fcml_ceh_error ipp_chain_builder_for_IA(
+static fcml_ceh_error ipp_chain_builder_for_IA(
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode, int *parts,
         fcml_hints *hints, ipp_chain **chain_out) {
@@ -5149,44 +5155,30 @@ fcml_ceh_error ipp_chain_builder_for_IA(
     int instruction_parts = 0;
     ipp_chain *chain = NULL;
     ipp_chain *current_chain = NULL;
-    fcml_st_asm_instruction_part_factory_sequence *current_factories_sequence =
-            &fcml_iarr_asm_instruction_part_processor_factory_sequences_for_IA[0];
+    ipp_factory_sequence *sequence = &ipp_factory_sequences_for_IA[0];
 
-    while (current_factories_sequence->details) {
+    while (sequence->details) {
 
-        int processor_counter = 0;
+        int ipp_counter = 0;
+        ipp_choice_type choice = sequence->choice_type;
+        ipp_factory_details *factory = sequence->details;
 
-        fcml_st_instruction_part_choice_type choice =
-                current_factories_sequence->choice_type;
-        fcml_st_asm_instruction_part_factory_details *current_factory =
-                current_factories_sequence->details;
+        while (factory->factory) {
 
-        while (current_factory->factory) {
+            ipp_desc desc = factory->factory(factory->flags, instruction,
+                    addr_mode, hints, &error);
+            if (desc.encoder || desc.acceptor) {
 
-            ipp_desc descriptor =
-                    current_factory->factory(current_factory->flags,
-                            instruction, addr_mode, hints, &error);
-            if (descriptor.encoder || descriptor.acceptor) {
-
-                processor_counter++;
-
-                descriptor.ipp_name =
-                        current_factory->instruction_part_processor_name;
-
-                descriptor.is_short_form_supported =
-                        current_factories_sequence->is_short_form_supported;
+                ipp_counter++;
+                desc.ipp_name = factory->ipp_name;
+                desc.is_short_form_supported = sequence->
+                        is_short_form_supported;
 
                 /* Check max number of the instruction part processors.*/
-                if (processor_counter > FCML_ASM_MAX_PART_PROCESSORS) {
+                if (ipp_counter > FCML_ASM_MAX_PART_PROCESSORS) {
                     FCML_TRACE_MSG("Max number of instructions part processors" \
                             " has been reached.");
-                    /* Free processor arguments if there are any in the
-                     * descriptor.
-                     */
-                    if (descriptor.args_deallocator) {
-                        descriptor.args_deallocator(
-                                descriptor.args);
-                    }
+                    free_ipp_desc(desc);
                     free_ipp_chain(chain);
                     return FCML_CEH_GEC_INTERNAL_ERROR;
                 }
@@ -5194,10 +5186,7 @@ fcml_ceh_error ipp_chain_builder_for_IA(
                 /* Allocate chain element for new instruction part encoder.*/
                 FCML_ENV_ALLOC_CLEAR(new_chain, ipp_chain);
                 if (!new_chain) {
-                    if (descriptor.args_deallocator) {
-                        descriptor.args_deallocator(
-                                descriptor.args);
-                    }
+                    free_ipp_desc(desc);
                     free_ipp_chain(chain);
                     return FCML_CEH_GEC_OUT_OF_MEMORY;
                 }
@@ -5210,9 +5199,11 @@ fcml_ceh_error ipp_chain_builder_for_IA(
                     current_chain = new_chain;
                 }
 
-                current_chain->descriptor = descriptor;
+                current_chain->descriptor = desc;
 
-                if (descriptor.type == IPPT_ENCODER) {
+                if (desc.type == IPPT_ENCODER) {
+                    /* Only instruction encoders generate
+                     * real instruction bytes. */
                     instruction_parts++;
                 }
 
@@ -5220,18 +5211,19 @@ fcml_ceh_error ipp_chain_builder_for_IA(
                     break;
                 }
             }
+
             if (error) {
                 free_ipp_chain(chain);
                 return error;
             }
-            current_factory++;
+
+            factory++;
         }
 
-        current_factories_sequence++;
+        sequence++;
     }
 
     *parts = instruction_parts;
-
     *chain_out = chain;
 
     return error;
@@ -5251,16 +5243,15 @@ static ipp_chain_builder choose_ipp_chain_builder(
 
 /* Default data size calculator. */
 
-typedef struct fcml_st_asm_def_data_size_calc_args {
+typedef struct data_size_calc_args {
     fcml_int mem_index;
     fcml_int reg_index;
-} fcml_st_asm_def_data_size_calc_args;
+} data_size_calc_args;
 
-fcml_usize fcml_asm_default_reg_based_memory_data_size_calculator(
+static fcml_usize reg_based_memory_data_size_calculator(
         fcml_st_instruction *instruction, fcml_ptr args) {
     fcml_usize data = FCML_DS_UNDEF;
-    fcml_st_asm_def_data_size_calc_args *dsc_args =
-            (fcml_st_asm_def_data_size_calc_args*) args;
+    data_size_calc_args *dsc_args = (data_size_calc_args*) args;
     if (instruction->operands_count >= dsc_args->reg_index + 1) {
         fcml_st_operand *operand = &(instruction->operands[dsc_args->reg_index]);
         if (operand->type == FCML_OT_REGISTER) {
@@ -5319,14 +5310,13 @@ static fcml_ceh_error prepare_mem_data_size_calculator(
     }
 
     if (mem_index != -1 && reg_index != -1) {
-        FCML_ENV_ALLOC_CLEAR(args, fcml_st_asm_def_data_size_calc_args);
+        FCML_ENV_ALLOC_CLEAR(args, data_size_calc_args);
         if (!args) {
             return FCML_CEH_GEC_OUT_OF_MEMORY;
         }
         args->mem_index = mem_index;
         args->reg_index = reg_index;
-        details->ds_calculator =
-                &fcml_asm_default_reg_based_memory_data_size_calculator;
+        details->ds_calculator = &reg_based_memory_data_size_calculator;
         details->ds_calculator_args = args;
     }
 
@@ -5508,7 +5498,7 @@ static fcml_ceh_error alloc_instruction_addr_modes(
 }
 
 /* Prepares addressing modes encoders for all mnemonics associated with given instruction. */
-static fcml_ceh_error register_addr_modes_for_instruction_mnemonics(
+static fcml_ceh_error build_addr_modes_encodings_for_instruction_mnemonics(
         init_context *init_context,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
@@ -5661,8 +5651,8 @@ static fcml_ceh_error generic_addr_mode_encoding_builder(
      * processed instruction, bet be have to provide specific parameterized
      * encoders for every mnemonic which represents given instruction.
      * The function below is responsible for that. */
-    error = register_addr_modes_for_instruction_mnemonics(init_context, instruction,
-            addr_mode_desc, addr_mode);
+    error = build_addr_modes_encodings_for_instruction_mnemonics(init_context,
+            instruction, addr_mode_desc, addr_mode);
     if (error) {
         free_addr_mode_encoding(init_context->dialect_context, addr_mode);
         return error;
