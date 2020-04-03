@@ -49,7 +49,8 @@ typedef struct fcml_st_dialect_pseudpo_operation_mnemonic {
 	fcml_en_pseudo_operations pseudo_operation;
 } fcml_st_dialect_pseudpo_operation_mnemonic;
 
-typedef void (*fcml_fnp_asm_dialect_free_mnemonic)( fcml_st_mp_mnemonic *mnemonics );
+typedef void (*fcml_fnp_asm_dialect_free_mnemonic)(
+        fcml_st_mp_mnemonic *mnemonics);
 
 /* Returns all mnemonics registered for given instruction. */
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_mnemonic)(
@@ -75,7 +76,7 @@ typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_assembler_preprocessor)(
         fcml_st_instruction *instrunction,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_en_instruction instruction,
-        fcml_st_mp_mnemonic *mnemonic,
+        const fcml_st_mp_mnemonic *mnemonic,
         fcml_bool *has_been_changed );
 
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_disassembler_postprocessor)( const fcml_st_disassembler_conf *conf, const fcml_st_mp_mnemonic *mnemonic, fcml_st_disassembler_result *disassembler_result );

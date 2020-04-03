@@ -51,7 +51,7 @@ typedef fcml_ceh_error (*fcml_fp_instruction_encoder)(
         fcml_st_dialect_context_int *dialect_context,
         fcml_st_instruction *instruction,
         fcml_st_asm_encoder_result *result,
-        struct fcml_st_instruction_addr_modes *addr_modes);
+        struct fcml_st_instruction_addr_modes *addr_modes_encodings);
 
 /** Supported addressing modes of one particular instruction.
  * Most of the instructions support more than one addressing mode.
@@ -60,7 +60,7 @@ typedef fcml_ceh_error (*fcml_fp_instruction_encoder)(
  */
 typedef struct fcml_st_instruction_addr_modes {
     /* All addressing modes for given mnemonic are available in this list. */
-    fcml_st_coll_list *addr_modes;
+    fcml_st_coll_list *addr_modes_encodings;
     /* An instruction mnemonic shared by all the addressing modes. */
     const fcml_string mnemonic;
     /* Predefined instruction encoder responsible for encoding the instruction. */

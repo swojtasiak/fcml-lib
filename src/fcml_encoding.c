@@ -160,7 +160,7 @@ typedef struct encoding_context {
      */
     fcml_usize operands_count;
     fcml_st_asm_optimizer_processing_details optimizer_processing_details;
-    fcml_st_mp_mnemonic *mnemonic;
+    const fcml_st_mp_mnemonic *mnemonic;
     part_processor_context part_processor_context;
     extension_prefixes_fields epf;
     fcml_st_register segment_override;
@@ -295,11 +295,13 @@ typedef fcml_ceh_error (*ipp_chain_builder)(
         const fcml_st_def_instruction_desc*, const fcml_st_def_addr_mode_desc*,
         int *parts, fcml_hints*, ipp_chain**);
 
-typedef struct addr_mode_encoding_details {
+/* Consists all information needed to encode given
+ * instruction addressing mode. */
+typedef struct addr_mode_encoding {
     /* Instruction code. */
     fcml_en_instruction instruction;
     /* Mnemonic configuration chosen for given addressing mode.*/
-    fcml_st_mp_mnemonic *mnemonic;
+    const fcml_st_mp_mnemonic *mnemonic;
     /* Instruction definition.*/
     const fcml_st_def_addr_mode_desc *addr_mode_desc;
     /* Some pre-calculated information about instruction addressing mode.
@@ -318,7 +320,7 @@ typedef struct addr_mode_encoding_details {
     fcml_hints hints;
     /* True if details are cloned for alternative mnemonics. */
     fcml_bool is_cloned;
-} addr_mode_encoding_details;
+} addr_mode_encoding;
 
 static void free_instruction_addr_modes(
         fcml_st_instruction_addr_modes *addr_modes,
@@ -2576,7 +2578,7 @@ operand_encoder_def fcml_iarr_asm_def_operand_encoders[] = {
 
 fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
         encoding_context *context,
-        addr_mode_encoding_details *addr_mode,
+        addr_mode_encoding *addr_mode,
         fcml_st_instruction *instruction) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -2643,7 +2645,7 @@ fcml_nuint8_t fcml_ifn_asm_calculate_instruction_parts_length(
  * provided by the context.
  */
 fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
-        addr_mode_encoding_details *addr_mode,
+        addr_mode_encoding *addr_mode,
         inst_part_container *inst_part_container) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -2794,7 +2796,7 @@ void fcml_ifn_asm_free_assembled_instruction(
 
 fcml_ceh_error fcml_ifn_asm_assemble_instruction(
         encoding_context *context,
-        addr_mode_encoding_details *addr_mode,
+        addr_mode_encoding *addr_mode,
         fcml_st_assembled_instruction **assembled_instruction) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -2847,7 +2849,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction(
 /** Arguments passed through the optimization process. */
 typedef struct fcml_st_asm_enc_optimizer_callback_args {
     /** Currently processed addressing mode. */
-    addr_mode_encoding_details *addr_mode;
+    addr_mode_encoding *addr_mode;
     /** Encoding context instance. */
     encoding_context *context;
 } fcml_st_asm_enc_optimizer_callback_args;
@@ -2859,7 +2861,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_and_collect_instruction(fcml_ptr args) {
     fcml_st_asm_enc_optimizer_callback_args *callback_args =
             (fcml_st_asm_enc_optimizer_callback_args*)args;
     encoding_context *context = callback_args->context;
-    addr_mode_encoding_details *addr_mode = callback_args->addr_mode;
+    addr_mode_encoding *addr_mode = callback_args->addr_mode;
     fcml_st_asm_encoder_result *encoding_result = context->encoder_result;
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -2994,7 +2996,7 @@ void fcml_fcml_ifn_prepare_chooser_context(fcml_st_chooser_context *context,
 
 void fcml_ifn_prepare_optimizer_processing_details(
         fcml_st_asm_optimizer_processing_details *processing_details,
-        addr_mode_encoding_details *addr_mode) {
+        addr_mode_encoding *addr_mode) {
 
     /* Apply address attribute size restrictions from mnemonic definition.*/
     fcml_usize asa = addr_mode->mnemonic->supported_asa;
@@ -3062,7 +3064,7 @@ void fcml_ifn_asm_handle_addr_mode_errors(
 
 fcml_ceh_error fcml_ifn_asm_encode_addressing_mode_core(
         encoding_context *context,
-        addr_mode_encoding_details *addr_mode,
+        addr_mode_encoding *addr_mode,
         addr_mode_error *addr_mode_errors) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -3186,13 +3188,13 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
         fcml_bool no_operands = operands_count == 0;
 
         /* Choose addressing mode.*/
-        if (addr_modes->addr_modes->size) {
+        if (addr_modes->addr_modes_encodings->size) {
 
             /* Gets first addressing mode available for chosen instruction
              * definition.
              */
             fcml_st_coll_list_element *addr_mode_element =
-                    addr_modes->addr_modes->head;
+                    addr_modes->addr_modes_encodings->head;
 
 #ifdef FCML_DEBUG
             int index = 0;
@@ -3209,8 +3211,8 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
 
                 error = FCML_CEH_GEC_NO_ERROR;
 
-                addr_mode_encoding_details *addr_mode =
-                        (addr_mode_encoding_details*)
+                addr_mode_encoding *addr_mode =
+                        (addr_mode_encoding*)
                         addr_mode_element->item;
 
                 /* Encoding context has to be prepared for new addressing
@@ -5411,9 +5413,9 @@ static fcml_ceh_error precalculate_addr_mode(
     return error;
 }
 
-static void free_addr_mode_encoding_details(
+static void free_addr_mode_encoding(
         fcml_st_dialect_context_int *dialect_context,
-        addr_mode_encoding_details *addr_mode) {
+        addr_mode_encoding *addr_mode) {
     /* Processor chains and calculator arguments are shared for clones
      * so do not free them.
      */
@@ -5431,7 +5433,8 @@ static void free_addr_mode_encoding_details(
         }
 
         if (addr_mode->mnemonic) {
-            dialect_context->free_mnemonic(addr_mode->mnemonic);
+            dialect_context->free_mnemonic(
+                    (fcml_st_mp_mnemonic*)addr_mode->mnemonic);
         }
 
         fcml_fn_env_memory_free(addr_mode);
@@ -5440,11 +5443,11 @@ static void free_addr_mode_encoding_details(
 
 /* Handler for hash map responsible for freeing addressing modes. */
 static void free_addr_mode_item_handler(fcml_ptr item_value, fcml_ptr args) {
-    addr_mode_encoding_details *addr_mode =
-            (addr_mode_encoding_details*) item_value;
+    addr_mode_encoding *addr_mode =
+            (addr_mode_encoding*) item_value;
     fcml_st_dialect_context_int *dialect_context =
                 (fcml_st_dialect_context_int*) args;
-    free_addr_mode_encoding_details(dialect_context, addr_mode);
+    free_addr_mode_encoding(dialect_context, addr_mode);
 }
 
 static fcml_fp_instruction_encoder choose_instruction_encoder(
@@ -5458,11 +5461,11 @@ static fcml_fp_instruction_encoder choose_instruction_encoder(
     return encoder;
 }
 
-typedef fcml_ceh_error (*addr_mode_encoding_details_builder)(
+typedef fcml_ceh_error (*addr_mode_encoding_builder)(
         init_context*, const fcml_st_def_instruction_desc*,
         const fcml_st_def_addr_mode_desc*);
 
-typedef void (*addr_mode_encoding_details_enricher)(addr_mode_encoding_details*,
+typedef void (*addr_mode_encoding_enricher)(addr_mode_encoding*,
         fcml_ptr args);
 
 /* Frees instruction addressing modes container and all addressing modes stored there. */
@@ -5470,8 +5473,8 @@ static void free_instruction_addr_modes(
         fcml_st_instruction_addr_modes *addr_modes,
         fcml_st_dialect_context_int *dialect_context) {
     if (addr_modes) {
-        if (addr_modes->addr_modes) {
-            fcml_fn_coll_list_free(addr_modes->addr_modes,
+        if (addr_modes->addr_modes_encodings) {
+            fcml_fn_coll_list_free(addr_modes->addr_modes_encodings,
                     free_addr_mode_item_handler, dialect_context);
         }
         fcml_fn_env_memory_free(addr_modes);
@@ -5489,8 +5492,8 @@ static fcml_ceh_error alloc_instruction_addr_modes(
                     sizeof(fcml_st_instruction_addr_modes));
     if (addr_modes) {
         /* Allocate list for addressing modes. */
-        addr_modes->addr_modes = fcml_fn_coll_list_alloc();
-        if (addr_modes->addr_modes) {
+        addr_modes->addr_modes_encodings = fcml_fn_coll_list_alloc();
+        if (addr_modes->addr_modes_encodings) {
             /* Do not care about freeing this piece of memory.
              * Procedure responsible for freeing addressing mode is
              * responsible for it.
@@ -5517,7 +5520,7 @@ static fcml_ceh_error register_addr_modes_for_instruction_mnemonics(
         init_context *init_context,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
-        addr_mode_encoding_details *addr_mode) {
+        addr_mode_encoding *addr_mode) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -5566,16 +5569,15 @@ static fcml_ceh_error register_addr_modes_for_instruction_mnemonics(
 
         if (!error) {
             fcml_bool is_cloned = (i > 0);
-            addr_mode_encoding_details *addr_mode_for_mnemonic = addr_mode;
+            addr_mode_encoding *encoding_for_mnemonic = addr_mode;
 
             if (is_cloned) {
                 /* Clone encoding details for secondary mnemonics.*/
-                FCML_ENV_ALLOC_CLEAR(encoding_details_clone,
-                        addr_mode_encoding_details);
-                if (encoding_details_clone) {
-                    *encoding_details_clone = *addr_mode_for_mnemonic;
-                    encoding_details_clone->is_cloned = FCML_TRUE;
-                    addr_mode_for_mnemonic = encoding_details_clone;
+                FCML_ENV_ALLOC_CLEAR(encoding_clone, addr_mode_encoding);
+                if (encoding_clone) {
+                    *encoding_clone = *encoding_for_mnemonic;
+                    encoding_clone->is_cloned = FCML_TRUE;
+                    encoding_for_mnemonic = encoding_clone;
                 } else {
                     error = FCML_CEH_GEC_OUT_OF_MEMORY;
                 }
@@ -5586,12 +5588,13 @@ static fcml_ceh_error register_addr_modes_for_instruction_mnemonics(
                  * it doesn't matter if it is cloned addressing mode or not
                  * it is responsible for deallocating it.
                  */
-                addr_mode_for_mnemonic->mnemonic = mnemonics[i];
-                if (!fcml_fn_coll_list_add_back(addr_modes->addr_modes,
-                        addr_mode_for_mnemonic)) {
+                encoding_for_mnemonic->mnemonic = mnemonics[i];
+                if (!fcml_fn_coll_list_add_back(
+                        addr_modes->addr_modes_encodings,
+                        encoding_for_mnemonic)) {
                     /* Free holder allocated earlier.*/
                     if (is_cloned) {
-                        fcml_fn_env_memory_free(addr_mode_for_mnemonic);
+                        fcml_fn_env_memory_free(encoding_for_mnemonic);
                     }
                     error = FCML_CEH_GEC_OUT_OF_MEMORY;
                 }
@@ -5611,15 +5614,15 @@ static fcml_ceh_error register_addr_modes_for_instruction_mnemonics(
     return error;
 }
 
-static fcml_ceh_error generic_addr_mode_encoding_details_builder(
+static fcml_ceh_error generic_addr_mode_encoding_builder(
         init_context *init_context,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
-        addr_mode_encoding_details_enricher enricher, fcml_ptr enricher_args) {
+        addr_mode_encoding_enricher enricher, fcml_ptr enricher_args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    FCML_ENV_ALLOC_CLEAR(addr_mode, addr_mode_encoding_details);
+    FCML_ENV_ALLOC_CLEAR(addr_mode, addr_mode_encoding);
 
     if (!addr_mode) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -5635,13 +5638,13 @@ static fcml_ceh_error generic_addr_mode_encoding_details_builder(
 
     error = precalculate_addr_mode(addr_mode_desc, details);
     if (error) {
-        free_addr_mode_encoding_details(init_context->dialect_context, addr_mode);
+        free_addr_mode_encoding(init_context->dialect_context, addr_mode);
         return error;
     }
 
     error = prepare_mem_data_size_calculator(addr_mode_desc, details);
     if (error) {
-        free_addr_mode_encoding_details(init_context->dialect_context, addr_mode);
+        free_addr_mode_encoding(init_context->dialect_context, addr_mode);
         return error;
     }
 
@@ -5656,7 +5659,7 @@ static fcml_ceh_error generic_addr_mode_encoding_details_builder(
     error = builder(instruction, addr_mode_desc, &instruction_parts,
             &(addr_mode->hints), &addr_mode->ipp_chain);
     if (error) {
-        free_addr_mode_encoding_details(init_context->dialect_context, addr_mode);
+        free_addr_mode_encoding(init_context->dialect_context, addr_mode);
         return error;
     }
 
@@ -5669,7 +5672,7 @@ static fcml_ceh_error generic_addr_mode_encoding_details_builder(
     error = register_addr_modes_for_instruction_mnemonics(init_context, instruction,
             addr_mode_desc, addr_mode);
     if (error) {
-        free_addr_mode_encoding_details(init_context->dialect_context, addr_mode);
+        free_addr_mode_encoding(init_context->dialect_context, addr_mode);
         return error;
     }
 
@@ -5683,8 +5686,8 @@ typedef struct cond_enricher_args {
 
 /* Enriches addressing mode encoder by adding details about
  * instruction condition. */
-static void generic_addr_more_conditional_enricher(
-        addr_mode_encoding_details *addr_mode, fcml_ptr args) {
+static void conditional_addr_more_encoding_enricher(
+        addr_mode_encoding *addr_mode, fcml_ptr args) {
     cond_enricher_args *enricher_args = (cond_enricher_args*) args;
     addr_mode_desc_details *details = &(addr_mode->addr_mode_details);
     details->is_conditional = FCML_TRUE;
@@ -5694,7 +5697,7 @@ static void generic_addr_more_conditional_enricher(
 }
 
 /* Builder for conditional instructions (tttn) */
-static fcml_ceh_error conditional_addr_mode_encoding_details_builder(
+static fcml_ceh_error conditional_addr_mode_encoding_builder(
         init_context *init_context,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode_desc) {
@@ -5704,54 +5707,44 @@ static fcml_ceh_error conditional_addr_mode_encoding_details_builder(
     int i;
     for (i = 0; i < FCML_NUMBER_OF_CONDITIONS * 2 && !error; i++) {
         cond_enricher_args enricher_args = {condition_num: i};
-        error = generic_addr_mode_encoding_details_builder(
+        error = generic_addr_mode_encoding_builder(
                 init_context, instruction, addr_mode_desc,
-                &generic_addr_more_conditional_enricher,
+                &conditional_addr_more_encoding_enricher,
                 &enricher_args);
     }
 
     return error;
 }
 
-static fcml_ceh_error default_addr_mode_encoding_details_builder(
+static fcml_ceh_error default_addr_mode_encoding_builder(
         init_context *init_context,
         const fcml_st_def_instruction_desc *instruction,
-        const fcml_st_def_addr_mode_desc *addr_mode_desc) {
-    return generic_addr_mode_encoding_details_builder(init_context,
-            instruction, addr_mode_desc, NULL, NULL);
+        const fcml_st_def_addr_mode_desc *addr_mode) {
+    return generic_addr_mode_encoding_builder(init_context, instruction,
+            addr_mode, NULL, NULL);
 }
 
-static addr_mode_encoding_details_builder encoding_details_builder_factory(
-        fcml_st_def_addr_mode_desc *addr_mode_desc) {
-    if (FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(addr_mode_desc->opcode_flags)) {
-        return &conditional_addr_mode_encoding_details_builder;
+static addr_mode_encoding_builder encoding_builder_factory(
+        fcml_st_def_addr_mode_desc *addr_mode) {
+    if (FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(addr_mode->opcode_flags)) {
+        return &conditional_addr_mode_encoding_builder;
     }
-    return &default_addr_mode_encoding_details_builder;
+    return &default_addr_mode_encoding_builder;
 }
 
-static fcml_ceh_error prepare_instruction_encoding_details(
+/* All the generated addressing modes encodings are registered in
+ * instruction map see: init_context. */
+static fcml_ceh_error build_instruction_encodings(
         init_context *init_context,
         fcml_st_def_instruction_desc *instruction) {
-    /* Prepare encoders for given instruction.*/
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     int i;
-    for (i = 0; i < instruction->opcode_desc_count; i++) {
-
-        fcml_st_def_addr_mode_desc *addr_mode_desc =
-                &(instruction->addr_modes[i]);
-
-        addr_mode_encoding_details_builder encoding_details_builder =
-                encoding_details_builder_factory(addr_mode_desc);
-
+    for (i = 0; i < instruction->opcode_desc_count && !error; i++) {
+        fcml_st_def_addr_mode_desc *addr_mode = &(instruction->addr_modes[i]);
         /* Prepare encoders for given addressing mode.*/
-        error = encoding_details_builder(init_context, instruction,
-                addr_mode_desc);
-        if (error) {
-            break;
-        }
-
-        addr_mode_desc++;
+        error = encoding_builder_factory(addr_mode)(init_context, instruction,
+                addr_mode);
     }
 
     return error;
@@ -5790,7 +5783,7 @@ fcml_ceh_error fcml_fn_init_instructions_addr_modes(
     int i = 0;
     fcml_st_def_instruction_desc *inst = &(fcml_ext_instructions_def[i++]);
     while (inst->mnemonic && !error) {
-        error = prepare_instruction_encoding_details(&init_context, inst);
+        error = build_instruction_encodings(&init_context, inst);
         inst = &(fcml_ext_instructions_def[i++]);
     }
 

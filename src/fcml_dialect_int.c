@@ -79,12 +79,12 @@ fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic( fcml_st_mp_mnemonic *mn
     return new_mnemonic;
 }
 
-void fcml_fn_asm_dialect_free_mnemonic( fcml_st_mp_mnemonic *mnemonic ) {
+void fcml_fn_asm_dialect_free_mnemonic(fcml_st_mp_mnemonic *mnemonic) {
     if (mnemonic) {
         if (mnemonic->mnemonic) {
-            fcml_fn_env_str_strfree( mnemonic->mnemonic );
+            fcml_fn_env_str_strfree(mnemonic->mnemonic);
         }
-        fcml_fn_env_memory_free( mnemonic );
+        fcml_fn_env_memory_free(mnemonic);
     }
 }
 
