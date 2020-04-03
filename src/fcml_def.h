@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1213,8 +1213,9 @@ typedef struct fcml_st_def_decoded_addr_mode {
     fcml_ptr addr_mode_args;
 } fcml_st_def_decoded_addr_mode;
 
-fcml_st_def_decoded_addr_mode* fcml_fn_def_decode_addr_mode_args(
-        fcml_operand_desc encoded_addr_mode, fcml_ceh_error *error);
+fcml_ceh_error fcml_fn_def_decode_addr_mode_args(
+        const fcml_operand_desc encoded_addr_mode,
+        fcml_st_def_decoded_addr_mode **decoded_addr_mode);
 
 void fcml_fnp_def_free_addr_mode(
         fcml_st_def_decoded_addr_mode *decoded_addr_mode);
