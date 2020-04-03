@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2017 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1229,8 +1229,8 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_operand_decoding(
     operand_decoding->hints = 0;
     operand_decoding->decorators = FCML_DECORATORS(operand_desc);
 
-    fcml_st_def_decoded_addr_mode *decoded_addr_mode = 
-        fcml_fn_def_decode_addr_mode_args(operand_desc, &error);
+    fcml_st_def_decoded_addr_mode *decoded_addr_mode;
+    error = fcml_fn_def_decode_addr_mode_args(operand_desc, &decoded_addr_mode);
     if (error) {
         return error;
     }

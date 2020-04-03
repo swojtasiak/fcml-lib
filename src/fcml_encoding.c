@@ -2813,9 +2813,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction(
         fcml_usize code_length = context->instruction_size.value;
 
         /* Allocate memory block for assembled code.*/
-        fcml_st_assembled_instruction *asm_inst =
-                (fcml_st_assembled_instruction*)fcml_fn_env_memory_alloc_clear(
-                        sizeof(fcml_st_assembled_instruction));
+        FCML_ENV_ALLOC_CLEAR(asm_inst, fcml_st_assembled_instruction)
         if (asm_inst) {
             asm_inst->code = (fcml_uint8_t*) fcml_fn_env_memory_alloc(
                     code_length);
@@ -3390,7 +3388,7 @@ static void free_ipp_chain(ipp_chain *chain) {
     }
 }
 
-struct fcml_st_asm_operand_encoder_wrapper_args {
+typedef struct fcml_st_asm_operand_encoder_wrapper_args {
     /* Decoder operand addressing.*/
     fcml_st_def_decoded_addr_mode *decoded_addr_mode;
     /* Operands acceptor.*/
@@ -3401,7 +3399,7 @@ struct fcml_st_asm_operand_encoder_wrapper_args {
     int operand_index;
     /* Operand hints.*/
     fcml_hints hints;
-};
+} fcml_st_asm_operand_encoder_wrapper_args;
 
 void fcml_ifn_asm_processor_operand_encoder_args_deallocator(fcml_ptr ptr) {
     struct fcml_st_asm_operand_encoder_wrapper_args *wrapper_wrgs =
@@ -3481,10 +3479,7 @@ fcml_ifn_asm_ipp_factory_operand_encoder_wrapper(
 
     ipp_desc descriptor = { 0 };
 
-    struct fcml_st_asm_operand_encoder_wrapper_args *wrapper_args =
-            (struct fcml_st_asm_operand_encoder_wrapper_args*)
-            fcml_fn_env_memory_alloc_clear(
-                    sizeof(struct fcml_st_asm_operand_encoder_wrapper_args));
+    FCML_ENV_ALLOC_CLEAR(wrapper_args, fcml_st_asm_operand_encoder_wrapper_args)
     if (!wrapper_args) {
         *error = FCML_CEH_GEC_OUT_OF_MEMORY;
         return descriptor;
@@ -3492,8 +3487,8 @@ fcml_ifn_asm_ipp_factory_operand_encoder_wrapper(
 
     if (addr_mode->operands[flags] != FCML_NA) {
 
-        wrapper_args->decoded_addr_mode = fcml_fn_def_decode_addr_mode_args(
-                addr_mode->operands[flags], error);
+        *error = fcml_fn_def_decode_addr_mode_args(addr_mode->operands[flags],
+                &(wrapper_args->decoded_addr_mode));
         if (*error) {
             fcml_fn_env_memory_free(wrapper_args);
             return descriptor;
@@ -5197,9 +5192,7 @@ fcml_ceh_error ipp_chain_builder_for_IA(
                 }
 
                 /* Allocate chain element for new instruction part encoder.*/
-                ipp_chain *new_chain = (ipp_chain*)
-                        fcml_fn_env_memory_alloc_clear(
-                        sizeof(ipp_chain));
+                FCML_ENV_ALLOC_CLEAR(new_chain, ipp_chain);
                 if (!new_chain) {
                     if (descriptor.args_deallocator) {
                         descriptor.args_deallocator(
@@ -5282,7 +5275,6 @@ static fcml_ceh_error prepare_mem_data_size_calculator(
         addr_mode_desc_details *details) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     fcml_int mem_index = -1;
     fcml_int reg_index = -1;
 
@@ -5299,8 +5291,9 @@ static fcml_ceh_error prepare_mem_data_size_calculator(
         }
         if (FCMP_DEF_IS_ADDR_MODE(FCML_GET_ADDR_MODE(addr_mode),
                 FCML_OP_RM_BASE)) {
-            fcml_st_def_decoded_addr_mode *dec_addr_mode =
-                    fcml_fn_def_decode_addr_mode_args(addr_mode, &error);
+            fcml_st_def_decoded_addr_mode *dec_addr_mode;
+            error = fcml_fn_def_decode_addr_mode_args(addr_mode,
+                    &dec_addr_mode);
             if (error) {
                 return error;
             }
@@ -5326,10 +5319,7 @@ static fcml_ceh_error prepare_mem_data_size_calculator(
     }
 
     if (mem_index != -1 && reg_index != -1) {
-        fcml_st_asm_def_data_size_calc_args *args =
-                (fcml_st_asm_def_data_size_calc_args*)
-                fcml_fn_env_memory_alloc_clear(
-                        sizeof(fcml_st_asm_def_data_size_calc_args));
+        FCML_ENV_ALLOC_CLEAR(args, fcml_st_asm_def_data_size_calc_args);
         if (!args) {
             return FCML_CEH_GEC_OUT_OF_MEMORY;
         }
@@ -5343,17 +5333,15 @@ static fcml_ceh_error prepare_mem_data_size_calculator(
     return error;
 }
 
-/* Precalculates some data using given addressing mode.
- * By precalculating them we can get some performance benefits further.
+/* Calculates some flags basing on addressing modes descriptions
+ * in order to get some performance benefits further.
  */
 static fcml_ceh_error precalculate_addr_mode(
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         addr_mode_desc_details *details) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     fcml_uint32_t allowed_prefixes = addr_mode_desc->allowed_prefixes;
-
     fcml_uint32_t opcode_flags = addr_mode_desc->opcode_flags;
 
     /* Calculate OSA and ASA flags.*/
@@ -5382,8 +5370,7 @@ static fcml_ceh_error precalculate_addr_mode(
         if (FCML_DEF_OPCODE_FLAGS_EOSA_64(opcode_flags)) {
             osa_restriction_flags |= FCML_EN_ASF_64;
         }
-        osa_flags =
-                (osa_flags == FCML_EN_ASF_ANY) ?
+        osa_flags = (osa_flags == FCML_EN_ASF_ANY) ?
                         osa_restriction_flags :
                         osa_flags & osa_restriction_flags;
     }
@@ -5399,14 +5386,12 @@ static fcml_ceh_error precalculate_addr_mode(
         if (FCML_DEF_OPCODE_FLAGS_EASA_64(opcode_flags)) {
             asa_restriction_flags |= FCML_EN_ASF_64;
         }
-        asa_flags =
-                (asa_flags == FCML_EN_ASF_ANY) ?
+        asa_flags = (asa_flags == FCML_EN_ASF_ANY) ?
                         asa_restriction_flags :
                         asa_flags & asa_restriction_flags;
     }
 
     /* Sets calculated values in details.*/
-
     details->allowed_asa = asa_flags;
     details->allowed_osa = osa_flags;
 
@@ -5439,6 +5424,13 @@ static void free_addr_mode_encoding(
 
         fcml_fn_env_memory_free(addr_mode);
     }
+}
+
+/* A freeing handler dedicated for map holding instruction addressing modes containers. */
+static void free_instruction_entry(fcml_ptr key, fcml_ptr value,
+        fcml_ptr args) {
+    free_instruction_addr_modes((fcml_st_instruction_addr_modes*) value,
+            (fcml_st_dialect_context_int*) args);
 }
 
 /* Handler for hash map responsible for freeing addressing modes. */
@@ -5734,7 +5726,7 @@ static addr_mode_encoding_builder encoding_builder_factory(
 
 /* All the generated addressing modes encodings are registered in
  * instruction map see: init_context. */
-static fcml_ceh_error build_instruction_encodings(
+static fcml_ceh_error build_instruction_addr_modes_encodings(
         init_context *init_context,
         fcml_st_def_instruction_desc *instruction) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -5750,23 +5742,16 @@ static fcml_ceh_error build_instruction_encodings(
     return error;
 }
 
-/* A freeing handler dedicated for map holding instruction addressing modes containers. */
-static void free_instruction_entry(fcml_ptr key, fcml_ptr value,
-        fcml_ptr args) {
-    free_instruction_addr_modes((fcml_st_instruction_addr_modes*) value,
-            (fcml_st_dialect_context_int*) args);
-}
-
 fcml_ceh_error fcml_fn_init_instructions_addr_modes(
         fcml_st_dialect_context_int *dialect_context,
         fcml_coll_map *inst_map) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     fcml_coll_map instructions_map;
-
     /* Allocate map for all instructions.*/
-    fcml_st_coll_map_descriptor inst_map_desc = fcml_coll_map_descriptor_string;
+    fcml_st_coll_map_descriptor inst_map_desc =
+            fcml_coll_map_descriptor_string;
+
     inst_map_desc.entry_free_function = free_instruction_entry;
     inst_map_desc.entry_free_args = dialect_context;
 
@@ -5782,14 +5767,16 @@ fcml_ceh_error fcml_fn_init_instructions_addr_modes(
 
     int i = 0;
     fcml_st_def_instruction_desc *inst = &(fcml_ext_instructions_def[i++]);
-    while (inst->mnemonic && !error) {
-        error = build_instruction_encodings(&init_context, inst);
+    while (inst->instruction != F_UNKNOWN && !error) {
+        /* Adds all addressing modes  */
+        error = build_instruction_addr_modes_encodings(&init_context, inst);
         inst = &(fcml_ext_instructions_def[i++]);
     }
 
     if (error) {
         /* Free everything that have been properly allocated. */
         fcml_fn_coll_map_free(instructions_map);
+        instructions_map = NULL;
     }
 
     *inst_map = instructions_map;
