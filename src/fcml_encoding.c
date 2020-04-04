@@ -258,7 +258,7 @@ typedef fcml_ceh_error (*operand_acceptor)(operand_acceptor_args *args);
 typedef struct ipp_encoder_args {
     part_processor_phase phase;
     encoding_context *context;
-    addr_mode_desc_details *addr_mode_details;
+    const addr_mode_desc_details *addr_mode_details;
     const fcml_st_def_addr_mode_desc *addr_mode_def;
     inst_part *instruction_part;
     fcml_ptr args;
@@ -3425,9 +3425,9 @@ static ipp_desc ipp_AVX_opcode_encoder_factory(ipp_factory_args *args,
 /* Generic primary opcode encoder. */
 /***********************************/
 
-typedef fcml_uint8_t (*opcode_byte_encoder)(
-        encoding_context *context, addr_mode_desc_details *addr_mode_details,
-        const fcml_st_def_addr_mode_desc *addr_mode_def, fcml_uint8_t opcode);
+typedef fcml_uint8_t (*opcode_byte_encoder)(encoding_context*,
+        const addr_mode_desc_details*, const fcml_st_def_addr_mode_desc*,
+        fcml_uint8_t opcode);
 
 typedef struct opcode_byte_encoder_wrapper {
     opcode_byte_encoder opcode_byte_encoder;
@@ -3459,20 +3459,20 @@ static fcml_ceh_error ipp_generic_primary_opcode_encoder(ipp_encoder_args *args)
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-/**************************************************/
-/* Opcode with condition encoded encoder factory. */
-/**************************************************/
+/*********************************************************/
+/* Opcode with condition encoded (tttn) encoder factory. */
+/*********************************************************/
 
-fcml_uint8_t fcml_asm_conditional_primary_opcode_byte_encoder(
+static fcml_uint8_t conditional_primary_opcode_byte_encoder(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_def, fcml_uint8_t opcode) {
-    return (opcode + addr_mode_details->condition.condition_type * 2
-            + (addr_mode_details->condition.is_negation ? 1 : 0));
+    return opcode + addr_mode_details->condition.condition_type * 2 +
+            (addr_mode_details->condition.is_negation ? 1 : 0);
 }
 
-opcode_byte_encoder_wrapper fcml_conditional_opcode_encoder_wrapper = {
-        &fcml_asm_conditional_primary_opcode_byte_encoder
+static opcode_byte_encoder_wrapper conditional_opcode_encoder_wrapper = {
+        &conditional_primary_opcode_byte_encoder
 };
 
 static ipp_desc ipp_conditional_opcode_encoder_factory(ipp_factory_args *args,
@@ -3480,7 +3480,7 @@ static ipp_desc ipp_conditional_opcode_encoder_factory(ipp_factory_args *args,
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(args->addr_mode->opcode_flags)) {
         descriptor.type = IPPT_ENCODER;
-        descriptor.args = &fcml_conditional_opcode_encoder_wrapper;
+        descriptor.args = &conditional_opcode_encoder_wrapper;
         descriptor.encoder = ipp_generic_primary_opcode_encoder;
         descriptor.acceptor = NULL;
     }
@@ -3493,7 +3493,7 @@ static ipp_desc ipp_conditional_opcode_encoder_factory(ipp_factory_args *args,
 
 static fcml_uint8_t reg_primary_opcode_byte_encoder(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_def, fcml_uint8_t opcode) {
     return opcode + context->opcode_reg.opcode_reg;
 }
@@ -5151,7 +5151,7 @@ static fcml_ceh_error alloc_instruction_addr_modes(
 }
 
 /* Prepares addressing modes encoders for all mnemonics associated with given instruction. */
-static fcml_ceh_error build_addr_modes_encodings_for_instruction_mnemonics(
+static fcml_ceh_error build_addr_modes_encodings_for_mnemonics(
         init_context *init_context,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
@@ -5304,7 +5304,7 @@ static fcml_ceh_error generic_addr_mode_encoding_builder(
      * processed instruction, bet be have to provide specific parameterized
      * encoders for every mnemonic which represents given instruction.
      * The function below is responsible for that. */
-    error = build_addr_modes_encodings_for_instruction_mnemonics(init_context,
+    error = build_addr_modes_encodings_for_mnemonics(init_context,
             instruction, addr_mode_desc, addr_mode);
     if (error) {
         free_addr_mode_encoding(init_context->dialect_context, addr_mode);
