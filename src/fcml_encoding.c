@@ -237,7 +237,7 @@ typedef fcml_ceh_error (*operand_encoder)(part_processor_phase,
  * accepted, the instruction addressing mode can be used to encode
  * instruction. */
 typedef fcml_ceh_error (*operand_acceptor)(encoding_context *,
-        addr_mode_desc_details *, const fcml_st_def_addr_mode_desc *,
+        const addr_mode_desc_details *, const fcml_st_def_addr_mode_desc *,
         fcml_st_def_decoded_addr_mode *, const fcml_st_operand *, inst_part *);
 
 /* Instruction part encoder arguments. */
@@ -255,12 +255,19 @@ typedef struct ipp_encoder_args {
  * by the encoder. */
 typedef fcml_ceh_error (*ipp_encoder)(ipp_encoder_args *args);
 
+/* Instruction part acceptors arguments. */
+typedef struct ipp_acceptor_args {
+    encoding_context *context;
+    const fcml_st_instruction *instruction;
+    const addr_mode_desc_details *addr_mode_details;
+    const fcml_st_def_addr_mode_desc *addr_mode_def;
+    fcml_ptr args;
+} ipp_acceptor_args;
+
 /* Instruction part acceptor.
  * Responsible for checking if corresponding instruction part can be
  * encoded for the currently encoded instruction. */
-typedef fcml_ceh_error (*ipp_acceptor)(encoding_context*,
-        addr_mode_desc_details*, const fcml_st_def_addr_mode_desc*,
-        const fcml_st_instruction*, fcml_ptr args);
+typedef fcml_ceh_error (*ipp_acceptor)(ipp_acceptor_args*);
 
 typedef struct operand_encoder_def {
     operand_encoder encoder;
@@ -285,16 +292,16 @@ typedef struct ipp_desc {
     fcml_bool is_short_form_supported;
 } ipp_desc;
 
-typedef struct ipp_acceptor_args {
+typedef struct ipp_factory_args {
     fcml_uint32_t flags;
     const fcml_st_def_instruction_desc *instruction;
     const fcml_st_def_addr_mode_desc *addr_mode;
     fcml_hints *hints;
-} ipp_acceptor_args;
+} ipp_factory_args;
 
 /* Prepares instruction part processor for given instruction's
  * addressing mode. */
-typedef ipp_desc (*ipp_factory)(ipp_acceptor_args*, fcml_ceh_error*);
+typedef ipp_desc (*ipp_factory)(ipp_factory_args*, fcml_ceh_error*);
 
 /* Chain of instruction part processors chosen for addressing mode. */
 typedef struct ipp_chain {
@@ -955,7 +962,7 @@ fcml_bool fcml_ifn_asm_try_to_convert_integer_and_set_flag(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_imm(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def,
@@ -1146,7 +1153,8 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_imm(
 /*********************/
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_explicit_reg(
-        encoding_context *context, addr_mode_desc_details *addr_mode_details,
+        encoding_context *context,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def, inst_part *operand_enc) {
@@ -1197,7 +1205,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_explicit_reg(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_opcode_reg(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def, inst_part *operand_enc) {
@@ -1246,7 +1254,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_opcode_reg(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_immediate_dis_relative(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def,
@@ -1514,7 +1522,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_immediate_dis_relative(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_far_pointer(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def,
@@ -1593,7 +1601,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_far_pointer(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_explicit_gps_reg_addressing(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def,
@@ -1632,7 +1640,7 @@ fcml_ceh_error fcml_ifn_asm_operand_acceptor_explicit_gps_reg_addressing(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_explicit_ib(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def,
@@ -1682,7 +1690,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_explicit_ib(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_segment_relative_offset(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def,
@@ -1854,7 +1862,7 @@ fcml_ceh_error fcml_ifn_asm_accept_bcast_decorator(fcml_bool is_bcast_supported,
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_rm(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def,
@@ -2138,7 +2146,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_rm(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_r(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode, const fcml_st_operand *operand_def,
         inst_part *operand_enc) {
@@ -2242,7 +2250,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_far_pointer_indirect(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_vex_vvvv(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode, const fcml_st_operand *operand_def,
         inst_part *operand_enc) {
@@ -2305,7 +2313,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_vex_vvvv(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_isX(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode, const fcml_st_operand *operand_def,
         inst_part *operand_enc) {
@@ -2384,7 +2392,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_isX(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_pseudo_op(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode, const fcml_st_operand *operand_def,
         inst_part *operand_enc) {
@@ -2457,7 +2465,7 @@ fcml_ceh_error fcml_ifn_asm_operand_encoder_pseudo_op(
 
 fcml_ceh_error fcml_ifn_asm_operand_acceptor_virtual_op(
         encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
+        const addr_mode_desc_details *addr_mode_details,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
         fcml_st_def_decoded_addr_mode *addr_mode,
         const fcml_st_operand *operand_def,
@@ -2604,18 +2612,22 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
 
     int index = 0;
 
+    ipp_acceptor_args acceptor_args = {
+            context: context,
+            instruction: instruction,
+            addr_mode_details: &(addr_mode->addr_mode_details),
+            addr_mode_def: addr_mode->addr_mode_desc
+    };
+
     ipp_chain *current_processor = addr_mode->ipp_chain;
     while (current_processor) {
+        ipp_desc *descriptor = &(current_processor->descriptor);
         context->last_ipp = index;
-        ipp_desc *descriptor =
-                &(current_processor->descriptor);
         context->part_processor_context.part_processor_index = index;
         if (!context->is_short_form || descriptor->is_short_form_supported) {
             if (descriptor->acceptor) {
-                error = descriptor->acceptor(context,
-                        &(addr_mode->addr_mode_details),
-                        addr_mode->addr_mode_desc, instruction,
-                        descriptor->args);
+                acceptor_args.args = descriptor->args;
+                error = descriptor->acceptor(&acceptor_args);
                 if (error != FCML_CEH_GEC_NO_ERROR) {
                     FCML_TRACE("Addressing mode not accepted. Acceptor (%s) "
                             "failed: %d",
@@ -2642,8 +2654,10 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
 
 /* All currently supported encoding phases. */
 part_processor_phase fcml_iarr_asm_executed_phases[] = {
-        IPPP_FIRST_PHASE, IPPP_SECOND_PHASE,
-        IPPP_THIRD_PHASE };
+        IPPP_FIRST_PHASE,
+        IPPP_SECOND_PHASE,
+        IPPP_THIRD_PHASE
+};
 
 fcml_nuint8_t fcml_ifn_asm_calculate_instruction_parts_length(
         inst_part *instruction_part, fcml_int parts_num) {
@@ -3436,14 +3450,11 @@ fcml_bool fcml_ifn_asm_accept_operand_hints(
     return FCML_TRUE;
 }
 
-static fcml_ceh_error
-ipp_acceptor_operand_encoder_wrapper(
-        encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
-        const fcml_st_def_addr_mode_desc *addr_mode_desc,
-        const fcml_st_instruction *instruction, fcml_ptr args) {
+static fcml_ceh_error ipp_acceptor_operand_encoder_wrapper(
+        ipp_acceptor_args *args) {
+    const fcml_st_instruction *instruction = args->instruction;
     ipp_operand_encoder_wrapper_args *wrapper_args =
-            (ipp_operand_encoder_wrapper_args*) args;
+            (ipp_operand_encoder_wrapper_args*) args->args;
     const fcml_st_operand *operand =
             &(instruction->operands[wrapper_args->operand_index]);
     if (wrapper_args->operand_acceptor) {
@@ -3452,8 +3463,8 @@ ipp_acceptor_operand_encoder_wrapper(
         if (!operand_hints
                 || fcml_ifn_asm_accept_operand_hints(wrapper_args->hints,
                         operand_hints)) {
-            return wrapper_args->operand_acceptor(context, addr_mode_details,
-                    addr_mode_desc, wrapper_args->decoded_addr_mode, operand,
+            return wrapper_args->operand_acceptor(args->context, args->addr_mode_details,
+                    args->addr_mode_def, wrapper_args->decoded_addr_mode, operand,
                     NULL);
         } else {
             FCML_TRACE_MSG("Hints do not match.");
@@ -3483,7 +3494,7 @@ static fcml_ceh_error ipp_operand_encoder_wrapper(ipp_encoder_args *args) {
     }
 }
 
-static ipp_desc ipp_operand_encoder_wrapper_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_operand_encoder_wrapper_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
 
     ipp_desc descriptor = { 0 };
@@ -3579,7 +3590,7 @@ static fcml_ceh_error ipp_AVX_opcode_encoder(ipp_encoder_args *args) {
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-static ipp_desc ipp_AVX_opcode_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_AVX_opcode_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_PREFIX_IS_AVX_REQ(args->addr_mode->allowed_prefixes)) {
@@ -3645,7 +3656,7 @@ opcode_byte_encoder_wrapper fcml_conditional_opcode_encoder_wrapper = {
         &fcml_asm_conditional_primary_opcode_byte_encoder
 };
 
-ipp_desc ipp_conditional_opcode_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_conditional_opcode_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(args->addr_mode->opcode_flags)) {
@@ -3672,7 +3683,7 @@ static opcode_byte_encoder_wrapper primary_opcode_encoder_wrapper = {
         &reg_primary_opcode_byte_encoder
 };
 
-static ipp_desc ipp_reg_opcode_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_reg_opcode_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_REG(args->addr_mode->opcode_flags)) {
@@ -3702,7 +3713,7 @@ static fcml_ceh_error ipp_simple_opcode_encoder(ipp_encoder_args *args) {
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-static ipp_desc ipp_simple_opcode_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_simple_opcode_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     descriptor.type = IPPT_ENCODER;
@@ -3727,7 +3738,7 @@ static fcml_ceh_error ipp_instruction_suffix_encoder(ipp_encoder_args *args) {
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-static ipp_desc ipp_suffix_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_suffix_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_PREFIX_SUFFIX(args->addr_mode->allowed_prefixes)) {
@@ -3762,7 +3773,7 @@ static fcml_ceh_error ipp_branch_hints_prefix_encoder(ipp_encoder_args *args) {
 }
 
 static ipp_desc ipp_branch_hints_prefix_encoder_factory(
-        ipp_acceptor_args *args, fcml_ceh_error *error) {
+        ipp_factory_args *args, fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     /* Branch hints are allowed only for JCC instructions.*/
     if (args->instruction->instruction == F_JCC) {
@@ -3788,7 +3799,7 @@ static fcml_ceh_error ipp_rep_prefix_encoder(ipp_encoder_args *args) {
     return error;
 }
 
-static ipp_desc ipp_rep_prefix_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_rep_prefix_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_PREFIX_REP_XRELEASE_ALLOWED(
@@ -3816,7 +3827,7 @@ static fcml_ceh_error ipp_repne_prefix_encoder(ipp_encoder_args *args) {
     return error;
 }
 
-static ipp_desc ipp_repne_prefix_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_repne_prefix_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_PREFIX_REPNE_XACQUIRE_ALLOWED(
@@ -3878,7 +3889,7 @@ static fcml_ceh_error ipp_hle_prefixes_prefix_encoder(ipp_encoder_args *args) {
     return error;
 }
 
-static ipp_desc ipp_hle_prefixes_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_hle_prefixes_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_PREFIX_HLE_ENABLED(args->addr_mode->allowed_prefixes)) {
@@ -3923,7 +3934,7 @@ static fcml_ceh_error ipp_lock_prefix_encoder(ipp_encoder_args *args) {
     return error;
 }
 
-static ipp_desc ipp_lock_prefix_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_lock_prefix_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_PREFIX_LOCK_ALLOWED(args->addr_mode->allowed_prefixes)) {
@@ -3964,7 +3975,7 @@ static fcml_ceh_error ipp_segment_override_prefix_encoder(
 }
 
 static ipp_desc ipp_segment_override_prefix_encoder_factory(
-        ipp_acceptor_args *args, fcml_ceh_error *error) {
+        ipp_factory_args *args, fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     descriptor.type = IPPT_ENCODER;
     descriptor.args = NULL;
@@ -3993,7 +4004,7 @@ static fcml_ceh_error ipp_mandatory_prefixes_encoder(
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-static ipp_desc ipp_mandatory_prefixes_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_mandatory_prefixes_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
 
     ipp_desc descriptor = { 0 };
@@ -4049,7 +4060,7 @@ static fcml_ceh_error ipp_66_prefix_encoder(ipp_encoder_args *args) {
 }
 
 static ipp_desc ipp_66_prefix_encoder_factory(
-        ipp_acceptor_args *args, fcml_ceh_error *error) {
+        ipp_factory_args *args, fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     /* Mandatory prefixes are handled by dedicated IPP. */
     if (!FCML_DEF_PREFIX_MANDATORY_66(args->addr_mode->allowed_prefixes) &&
@@ -4090,7 +4101,7 @@ static fcml_ceh_error ipp_67_prefix_encoder(ipp_encoder_args *args) {
     return error;
 }
 
-static ipp_desc ipp_67_prefix_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_67_prefix_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     /* 67 prefix cannot be applied to AVX instructions. */
@@ -4249,7 +4260,7 @@ static fcml_ceh_error ipp_EVEX_prefix_encoder(ipp_encoder_args *args) {
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-static ipp_desc ipp_EVEX_prefix_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_EVEX_prefix_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_PREFIX_EVEX_REQ(args->addr_mode->allowed_prefixes)) {
@@ -4367,7 +4378,7 @@ static fcml_ceh_error ipp_VEX_XOP_prefix_encoder(ipp_encoder_args *args) {
 }
 
 static ipp_desc ipp_VEX_XOP_prefix_encoder_factory(
-        ipp_acceptor_args *args, fcml_ceh_error *error) {
+        ipp_factory_args *args, fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     if (FCML_DEF_PREFIX_VEX_REQ(args->addr_mode->allowed_prefixes) ||
             FCML_DEF_PREFIX_XOP_REQ(args->addr_mode->allowed_prefixes)) {
@@ -4454,7 +4465,7 @@ static fcml_ceh_error ipp_REX_prefix_encoder(ipp_encoder_args *args) {
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-static ipp_desc ipp_REX_prefix_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_REX_prefix_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
 
     ipp_desc descriptor = { 0 };
@@ -4609,7 +4620,7 @@ static fcml_ceh_error ipp_ModRM_encoder(ipp_encoder_args *args) {
     return error;
 }
 
-static ipp_desc ipp_ModRM_encoder_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_ModRM_encoder_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     /* Check if instruction has ModR/M byte.*/
@@ -4626,11 +4637,11 @@ static ipp_desc ipp_ModRM_encoder_factory(ipp_acceptor_args *args,
 /* Addressing mode validators. */
 /*******************************/
 
-fcml_ceh_error ipp_addr_mode_acceptor(
-        encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
-        const fcml_st_def_addr_mode_desc *addr_mode_def,
-        const fcml_st_instruction *instruction, fcml_ptr args) {
+static fcml_ceh_error ipp_addr_mode_acceptor(ipp_acceptor_args *args) {
+
+    encoding_context *context = args->context;
+    const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
+    const addr_mode_desc_details *addr_mode_details = args->addr_mode_details;
 
     fcml_en_operating_mode op_mode =
             context->assembler_context->entry_point.op_mode;
@@ -4679,7 +4690,7 @@ fcml_ceh_error ipp_addr_mode_acceptor(
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-ipp_desc ipp_addr_mode_acceptor_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_addr_mode_acceptor_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     descriptor.type = IPPT_VERIFIER;
@@ -4693,12 +4704,10 @@ ipp_desc ipp_addr_mode_acceptor_factory(ipp_acceptor_args *args,
 /* Prefixes validators. */
 /************************/
 
-fcml_ceh_error ipp_prefixes_acceptor(
-        encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
-        const fcml_st_def_addr_mode_desc *addr_mode_def,
-        const fcml_st_instruction *instruction, fcml_ptr args) {
+static fcml_ceh_error ipp_prefixes_acceptor(ipp_acceptor_args *args) {
     /* Check if LOCK prefix is allowed for given addressing mode.*/
+    const fcml_st_instruction *instruction = args->instruction;
+    const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
     if (instruction->prefixes) {
         if ((instruction->prefixes & FCML_PREFIX_LOCK)
                 && !FCML_DEF_PREFIX_LOCK_ALLOWED(
@@ -4737,7 +4746,7 @@ fcml_ceh_error ipp_prefixes_acceptor(
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-static ipp_desc ipp_prefixes_acceptor_factory( ipp_acceptor_args *args,
+static ipp_desc ipp_prefixes_acceptor_factory( ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     descriptor.type = IPPT_VERIFIER;
@@ -4757,11 +4766,10 @@ static ipp_desc ipp_prefixes_acceptor_factory( ipp_acceptor_args *args,
  * acceptor of course it is fine, but we advice to consider this function
  * first in order not to spread decorators acceptance rules all around.
  */
-static fcml_ceh_error ipp_op_decorator_acceptor(
-        encoding_context *context,
-        addr_mode_desc_details *addr_mode_details,
-        const fcml_st_def_addr_mode_desc *addr_mode_def,
-        const fcml_st_instruction *instruction, fcml_ptr args) {
+static fcml_ceh_error ipp_op_decorator_acceptor(ipp_acceptor_args *args) {
+
+    const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
+    const fcml_st_instruction *instruction = args->instruction;
 
     int i;
     for(i = 0; i < FCML_OPERANDS_COUNT; i++) {
@@ -4843,11 +4851,11 @@ static fcml_ceh_error ipp_op_decorator_acceptor(
                 }
 
                 if (vector_length != FCML_DS_UNDEF) {
-                    context->epf.explicit_vector_length = FCML_TRUE;
+                    args->context->epf.explicit_vector_length = FCML_TRUE;
                 }
 
                 fcml_st_asm_optimizer_processing_details *optimizer_details =
-                        &(context->optimizer_processing_details);
+                        &(args->context->optimizer_processing_details);
 
                 if (!fcml_ifn_asm_set_vector_length(optimizer_details,
                         vector_length)) {
@@ -4862,7 +4870,7 @@ static fcml_ceh_error ipp_op_decorator_acceptor(
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-static ipp_desc ipp_op_decorators_acceptor_factory(ipp_acceptor_args *args,
+static ipp_desc ipp_op_decorators_acceptor_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
     descriptor.type = IPPT_VERIFIER;
@@ -4985,7 +4993,7 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
 
         while (factory->factory) {
 
-            ipp_acceptor_args factory_args = {
+            ipp_factory_args factory_args = {
                 flags: factory->flags,
                 instruction: instruction,
                 addr_mode: addr_mode,
