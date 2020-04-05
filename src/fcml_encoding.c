@@ -227,6 +227,12 @@ typedef struct init_context {
     fcml_st_dialect_context_int *dialect_context;
 } init_context;
 
+/** Builds addressing mode encodings for given addressing mode.
+ * All the built encodings are registered in the provided context. */
+typedef fcml_ceh_error (*addr_mode_encoding_builder)(
+        init_context*, const fcml_st_def_instruction_desc*,
+        const fcml_st_def_addr_mode_desc*);
+
 typedef struct operand_encoder_args {
     part_processor_phase phase;
     encoding_context *context;
@@ -355,6 +361,10 @@ typedef struct addr_mode_encoding {
     /* True if details are cloned for alternative mnemonics. */
     fcml_bool is_cloned;
 } addr_mode_encoding;
+
+/** Used by addressing modes encoding builders to enrich encoders. */
+typedef void (*addr_mode_encoding_enricher)(addr_mode_encoding*,
+        fcml_ptr args);
 
 static void free_instruction_addr_modes(
         fcml_st_instruction_addr_modes *addr_modes,
@@ -2648,7 +2658,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction(
         fcml_usize code_length = context->instruction_size.value;
 
         /* Allocate memory block for assembled code.*/
-        FCML_ENV_ALLOC_CLEAR(asm_inst, fcml_st_assembled_instruction)
+        FCML_ENV_ALLOC_CLEAR(asm_inst, fcml_st_assembled_instruction);
         if (asm_inst) {
             asm_inst->code = (fcml_uint8_t*) fcml_fn_env_memory_alloc(
                     code_length);
@@ -3318,7 +3328,7 @@ static ipp_desc ipp_operand_encoder_wrapper_factory(ipp_factory_args *args,
 
     ipp_desc descriptor = { 0 };
 
-    FCML_ENV_ALLOC_CLEAR(wrapper_args, ipp_operand_encoder_wrapper_args)
+    FCML_ENV_ALLOC_CLEAR(wrapper_args, ipp_operand_encoder_wrapper_args);
     if (!wrapper_args) {
         *error = FCML_CEH_GEC_OUT_OF_MEMORY;
         return descriptor;
@@ -4897,7 +4907,6 @@ static ipp_chain_builder choose_ipp_chain_builder(
 /* Default data size calculator. */
 
 typedef struct data_size_calc_args {
-    fcml_int mem_index;
     fcml_int reg_index;
 } data_size_calc_args;
 
@@ -4919,7 +4928,7 @@ static fcml_ceh_error prepare_mem_data_size_calculator(
         addr_mode_desc_details *details) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    fcml_int mem_index = -1;
+    fcml_bool mem_access = FCML_FALSE;
     fcml_int reg_index = -1;
 
     /* Just in case.*/
@@ -4929,45 +4938,31 @@ static fcml_ceh_error prepare_mem_data_size_calculator(
     fcml_int i;
     for (i = 0; i < FCML_OPERANDS_COUNT; i++) {
         fcml_operand_desc operand_desc = addr_mode_desc->operands[i];
-        fcml_uint64_t addr_mode = FCML_ADDR_MODE(operand_desc);
+        fcml_uint64_t addr_mode = FCML_GET_ADDR_MODE(operand_desc);
         if (addr_mode == FCML_NA) {
             break;
         }
-        if (FCMP_DEF_IS_ADDR_MODE(FCML_GET_ADDR_MODE(addr_mode),
-                FCML_OP_RM_BASE)) {
-            fcml_st_def_decoded_addr_mode *dec_addr_mode;
-            error = fcml_fn_def_decode_addr_mode_args(addr_mode,
-                    &dec_addr_mode);
-            if (error) {
-                return error;
-            }
-            fcml_st_def_tma_rm *rm_args =
-                    (fcml_st_def_tma_rm*) dec_addr_mode->addr_mode_args;
-            if (!rm_args) {
-                return FCML_CEH_GEC_OUT_OF_MEMORY;
-            }
-            if (rm_args->flags & FCML_RMF_M) {
-                mem_index = i;
-            }
-            fcml_fnp_def_free_addr_mode(dec_addr_mode);
+        if (FCMP_DEF_IS_ADDR_MODE(addr_mode, FCML_OP_RM_BASE) &&
+                (operand_desc & FCML_RMF_M)) {
+            mem_access = FCML_TRUE;
         }
-        if (FCMP_DEF_IS_ADDR_MODE(FCML_GET_ADDR_MODE(addr_mode), FCML_OP_R_BASE)
-                || FCMP_DEF_IS_ADDR_MODE(FCML_GET_ADDR_MODE(addr_mode),
-                        FCML_OP_OPCODE_REG_BASE)
-                || FCMP_DEF_IS_ADDR_MODE(FCML_GET_ADDR_MODE(addr_mode),
-                                FCML_OP_EXPLICIT_REG_BASE)
-                || FCMP_DEF_IS_ADDR_MODE(FCML_GET_ADDR_MODE(addr_mode),
+        if (FCMP_DEF_IS_ADDR_MODE(addr_mode, FCML_OP_R_BASE)
+                || FCMP_DEF_IS_ADDR_MODE(addr_mode, FCML_OP_OPCODE_REG_BASE)
+                || FCMP_DEF_IS_ADDR_MODE(addr_mode, FCML_OP_EXPLICIT_REG_BASE)
+                || FCMP_DEF_IS_ADDR_MODE(addr_mode,
                         FCML_OP_VEX_VVVV_REG_BASE)) {
             reg_index = i;
         }
     }
 
-    if (mem_index != -1 && reg_index != -1) {
+    /* We check for memory access existence, because it makes no sense
+     * to register custom memory operand size calculator if there
+     * is no memory access there. */
+    if (mem_access && reg_index != -1) {
         FCML_ENV_ALLOC_CLEAR(args, data_size_calc_args);
         if (!args) {
             return FCML_CEH_GEC_OUT_OF_MEMORY;
         }
-        args->mem_index = mem_index;
         args->reg_index = reg_index;
         details->ds_calculator = &reg_based_memory_data_size_calculator;
         details->ds_calculator_args = args;
@@ -5096,13 +5091,6 @@ static fcml_fp_instruction_encoder choose_instruction_encoder(
     return encoder;
 }
 
-typedef fcml_ceh_error (*addr_mode_encoding_builder)(
-        init_context*, const fcml_st_def_instruction_desc*,
-        const fcml_st_def_addr_mode_desc*);
-
-typedef void (*addr_mode_encoding_enricher)(addr_mode_encoding*,
-        fcml_ptr args);
-
 /* Frees instruction addressing modes container and all addressing modes stored there. */
 static void free_instruction_addr_modes(
         fcml_st_instruction_addr_modes *addr_modes,
@@ -5121,24 +5109,18 @@ static fcml_ceh_error alloc_instruction_addr_modes(
         const fcml_string mnemonic,
         const fcml_st_def_instruction_desc *instruction,
         fcml_st_instruction_addr_modes **out_addr_modes) {
-
-    fcml_st_instruction_addr_modes *addr_modes =
-            (fcml_st_instruction_addr_modes*) fcml_fn_env_memory_alloc(
-                    sizeof(fcml_st_instruction_addr_modes));
+    FCML_ENV_ALLOC_CLEAR(addr_modes, fcml_st_instruction_addr_modes);
     if (addr_modes) {
         /* Allocate list for addressing modes. */
         addr_modes->addr_modes_encodings = fcml_fn_coll_list_alloc();
         if (addr_modes->addr_modes_encodings) {
             /* Do not care about freeing this piece of memory.
              * Procedure responsible for freeing addressing mode is
-             * responsible for it.
-             */
+             * responsible for it. */
             addr_modes->mnemonic = mnemonic;
             addr_modes->encoder = choose_instruction_encoder(
                     instruction->instruction_type);
-
             *out_addr_modes = addr_modes;
-
             return FCML_CEH_GEC_NO_ERROR;
         } else {
             fcml_fn_env_memory_free(addr_modes);
@@ -5336,9 +5318,7 @@ static fcml_ceh_error conditional_addr_mode_encoding_builder(
         init_context *init_context,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode_desc) {
-
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     int i;
     for (i = 0; i < FCML_NUMBER_OF_CONDITIONS * 2 && !error; i++) {
         cond_enricher_args enricher_args = {condition_num: i};
@@ -5347,7 +5327,6 @@ static fcml_ceh_error conditional_addr_mode_encoding_builder(
                 &conditional_addr_more_encoding_enricher,
                 &enricher_args);
     }
-
     return error;
 }
 
@@ -5373,15 +5352,14 @@ static fcml_ceh_error build_instruction_addr_modes_encodings(
         init_context *init_context,
         fcml_st_def_instruction_desc *instruction) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     int i;
     for (i = 0; i < instruction->opcode_desc_count && !error; i++) {
         fcml_st_def_addr_mode_desc *addr_mode = &(instruction->addr_modes[i]);
         /* Prepare encoders for given addressing mode.*/
-        error = encoding_builder_factory(addr_mode)(init_context, instruction,
-                addr_mode);
+        addr_mode_encoding_builder builder =
+                encoding_builder_factory(addr_mode);
+        error = builder(init_context, instruction, addr_mode);
     }
-
     return error;
 }
 

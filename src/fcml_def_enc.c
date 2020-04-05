@@ -20,8 +20,6 @@
 #include "fcml_def.h"
 #include "fcml_env_int.h"
 
-typedef fcml_ptr (*addr_mode_args_decoder)(fcml_operand_desc);
-
 static fcml_ptr args_decoder_is(fcml_operand_desc encoded_addr_mode) {
     FCML_ENV_ALLOC_CLEAR(is_args, fcml_st_def_tma_is);
     if (is_args) {
@@ -41,7 +39,7 @@ static fcml_ptr args_decoder_imm(fcml_operand_desc encoded_addr_mode) {
     return imm_args;
 }
 
-fcml_ptr args_decoder_explicit_reg(fcml_operand_desc addr_mode) {
+static fcml_ptr args_decoder_explicit_reg(fcml_operand_desc addr_mode) {
     FCML_ENV_ALLOC_CLEAR(explicit_reg_args, fcml_st_def_tma_explicit_reg);
     if (explicit_reg_args) {
         explicit_reg_args->reg_type = (addr_mode & 0x0000F000 ) >> 12;
@@ -51,7 +49,7 @@ fcml_ptr args_decoder_explicit_reg(fcml_operand_desc addr_mode) {
     return explicit_reg_args;
 }
 
-fcml_ptr args_decoder_opcode_reg(fcml_operand_desc encoded_addr_mode) {
+static fcml_ptr args_decoder_opcode_reg(fcml_operand_desc encoded_addr_mode) {
     FCML_ENV_ALLOC_CLEAR(opcode_reg_args, fcml_st_def_tma_opcode_reg);
     if (opcode_reg_args) {
         opcode_reg_args->reg_type = (encoded_addr_mode & 0x0000FF00) >> 8;
@@ -162,7 +160,7 @@ static fcml_ptr args_decoder_pseudo_op(fcml_operand_desc addr_mode) {
     return pseudo_op_args;
 }
 
-fcml_ptr args_decoder_virtual_op(fcml_operand_desc encoded_addr_mode) {
+static fcml_ptr args_decoder_virtual_op(fcml_operand_desc encoded_addr_mode) {
     FCML_ENV_ALLOC_CLEAR(virtual_op_args, fcml_st_def_tma_virtual_op);
     if (virtual_op_args) {
         virtual_op_args->decorators = FCML_DECORATORS(encoded_addr_mode);
@@ -170,14 +168,16 @@ fcml_ptr args_decoder_virtual_op(fcml_operand_desc encoded_addr_mode) {
     return virtual_op_args;
 }
 
-#define FCML_DEF_DECODERS_COUNT		(sizeof(fcml_def_addr_mode_args_decoders) \
-    / sizeof(addr_mode_args_decoder))
+typedef fcml_ptr (*addr_mode_args_decoder)(fcml_operand_desc);
+
+#define FCML_DEF_DECODERS_COUNT (sizeof(addr_mode_args_decoders) \
+        / sizeof(addr_mode_args_decoder))
 
 /**
  * Ordering is really important here because every decoder corresponds
  * to one addressing mode from "fcml_def.h".
  */
-addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
+static addr_mode_args_decoder addr_mode_args_decoders[] = {
     NULL,
     args_decoder_imm,
     args_decoder_explicit_reg,
@@ -196,34 +196,35 @@ addr_mode_args_decoder fcml_def_addr_mode_args_decoders[] = {
     args_decoder_virtual_op
 };
 
+static fcml_en_access_mode decode_access_mode(
+        const fcml_operand_desc operand_desc) {
+    fcml_en_access_mode access_mode = FCML_AM_ACCESS_MODE_UNDEFINED;
+    if (operand_desc & FCML_OA_W) {
+        /* Destination operands for some instructions can be
+         * also a source operands. In such a case "READ" flag
+         * has to be set for such operands. */
+        access_mode |= FCML_AM_WRITE;
+        if (operand_desc & FCML_OA_R) {
+            access_mode |= FCML_AM_READ;
+        }
+    } else {
+        /* All operands but destination ones have the access mode
+         * automatically set to "READ". */
+        access_mode = FCML_AM_READ;
+    }
+    return access_mode;
+}
+
 fcml_ceh_error fcml_fn_def_decode_addr_mode_args(
-        const fcml_operand_desc encoded_addr_mode,
+        const fcml_operand_desc operand_desc,
         fcml_st_def_decoded_addr_mode **decoded_addr_mode) {
-
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     *decoded_addr_mode = NULL;
 
     FCML_ENV_ALLOC_CLEAR(addr_mode, fcml_st_def_decoded_addr_mode);
     if (addr_mode) {
-        addr_mode->addr_mode = FCML_GET_ADDR_MODE(encoded_addr_mode);
-        /* Store access mode for this operand decoding. */
-        fcml_int access_mode = FCML_AM_ACCESS_MODE_UNDEFINED;
-        if (encoded_addr_mode & FCML_OA_W) {
-            /* Destination operands for some instructions can be
-             * also a source operands. In such a case "READ" flag
-             * has to be set for such operands. */
-            access_mode |= (fcml_int)FCML_AM_WRITE;
-            if (encoded_addr_mode & FCML_OA_R) {
-                access_mode |= (fcml_int)FCML_AM_READ;
-            }
-        } else {
-            /* All operands but destination ones have the access mode
-             * automatically set to "READ". */
-            access_mode |= (fcml_int)FCML_AM_READ;
-        }
-
-        addr_mode->access_mode = (fcml_en_access_mode)access_mode;
+        addr_mode->addr_mode = FCML_GET_ADDR_MODE(operand_desc);
+        addr_mode->access_mode = decode_access_mode(operand_desc);
         if (addr_mode->addr_mode > FCML_DEF_DECODERS_COUNT) {
             /* Corrupted instruction model. */
             fcml_fn_env_memory_free(addr_mode);
@@ -232,11 +233,11 @@ fcml_ceh_error fcml_fn_def_decode_addr_mode_args(
 
         addr_mode->addr_mode_args = NULL;
         addr_mode_args_decoder args_decoder =
-                fcml_def_addr_mode_args_decoders[addr_mode->addr_mode];
+                addr_mode_args_decoders[addr_mode->addr_mode];
         if (args_decoder) {
             /* Send addressing mode together with decorators, because they
              * are used by decoders/encoders too. */
-            addr_mode->addr_mode_args = args_decoder(encoded_addr_mode);
+            addr_mode->addr_mode_args = args_decoder(operand_desc);
             if (!addr_mode->addr_mode_args) {
                 fcml_fn_env_memory_free(addr_mode);
                 return FCML_CEH_GEC_OUT_OF_MEMORY;
