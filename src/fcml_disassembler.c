@@ -1818,7 +1818,7 @@ void fcml_ifn_dasm_dts_prepare_modrm_decoding_details(
         fcml_st_def_decoded_addr_mode *decoded_addr_mode, 
         fcml_ist_dasm_modrm_decoding_details *modrm_details) {
     if (decoded_addr_mode) {
-        if (FCMP_DEF_IS_ADDR_MODE(decoded_addr_mode->addr_mode, 
+        if (FCMP_DEF_IS_ADDR_MODE(decoded_addr_mode->addr_mode,
                     FCML_OP_VSIB_BASE)) {
             fcml_st_def_tma_rm *rm_args = (fcml_st_def_tma_rm *)
                 decoded_addr_mode->addr_mode_args;
