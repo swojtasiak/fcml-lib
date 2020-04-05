@@ -506,8 +506,7 @@ static fcml_st_memory_stream inst_part_stream(inst_part *inst_part) {
     return stream;
 }
 
-fcml_usize fcml_ifn_asm_get_effective_address_size(
-        encoding_context *context) {
+static fcml_usize get_effective_address_size(encoding_context *context) {
     if (context->optimizer_processing_details.easa) {
         return context->optimizer_processing_details.easa;
     }
@@ -731,12 +730,10 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
 /**
  * Sets new vector length. If there is one already set it cannot be overridden.
  */
-fcml_bool fcml_ifn_asm_set_vector_length(
+static fcml_bool set_vector_length(
         fcml_st_asm_optimizer_processing_details *optimizer_details,
         fcml_flags vector_length) {
-
     fcml_bool result = FCML_TRUE;
-
     if (vector_length != FCML_DS_UNDEF) {
         if (optimizer_details->vector_length) {
             if (optimizer_details->vector_length != vector_length) {
@@ -746,7 +743,6 @@ fcml_bool fcml_ifn_asm_set_vector_length(
             optimizer_details->vector_length = vector_length;
         }
     }
-
     return result;
 }
 
@@ -1762,7 +1758,7 @@ fcml_ceh_error fcml_ifn_asm_accept_bcast_decorator(fcml_bool is_bcast_supported,
         /* Force vector length basing on broadcast element size and number
          * of such elements. */
         fcml_usize vector_length = bcast_accessed_mem_size;
-        if (!fcml_ifn_asm_set_vector_length(optimizer_processing_details,
+        if (!set_vector_length(optimizer_processing_details,
                 vector_length)) {
             FCML_TRACE("Vector length differs expected %d got %d.",
                     vector_length, optimizer_processing_details->vector_length);
@@ -2043,7 +2039,7 @@ static fcml_ceh_error operand_encoder_rm(operand_encoder_args *args) {
                         &(operand_def->address.effective_address.index);
                 if (index->type == FCML_REG_SIMD) {
                     if (addr_mode_args->vector_index_register == FCML_VSIB_UNDEF &&
-                            !fcml_ifn_asm_set_vector_length(
+                            !set_vector_length(
                             &context->optimizer_processing_details,
                             index->size)) {
                         error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
@@ -2345,7 +2341,7 @@ static fcml_ceh_error operand_acceptor_virtual_op(operand_acceptor_args *args) {
             context->epf.explicit_vector_length = FCML_TRUE;
         }
 
-        if (!fcml_ifn_asm_set_vector_length(optimizer_details, vector_length)) {
+        if (!set_vector_length(optimizer_details, vector_length)) {
             FCML_TRACE("Vector length differs expected %d got %d.",
                     optimizer_details->vector_length, vector_length);
             return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
@@ -2387,7 +2383,7 @@ static fcml_ceh_error operand_encoder_virtual_op(operand_encoder_args *args) {
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-operand_encoder_def fcml_iarr_asm_def_operand_encoders[] = {
+static operand_encoder_def operand_encoders[] = {
         { NULL, NULL, NULL },
         { operand_encoder_imm, operand_acceptor_imm, NULL },
         { operand_encoder_explicit_reg, operand_acceptor_explicit_reg, NULL },
@@ -3345,8 +3341,7 @@ static ipp_desc ipp_operand_encoder_wrapper_factory(ipp_factory_args *args,
         }
 
         operand_encoder_def *encoders_def =
-                &(fcml_iarr_asm_def_operand_encoders[
-                    wrapper_args->decoded_addr_mode->addr_mode]);
+                &operand_encoders[wrapper_args->decoded_addr_mode->addr_mode];
         wrapper_args->operand_encoder = encoders_def->encoder;
         wrapper_args->operand_acceptor = encoders_def->acceptor;
 
@@ -3947,8 +3942,7 @@ static ipp_desc ipp_67_prefix_encoder_factory(ipp_factory_args *args,
 /**  EVEX  **/
 /************/
 
-fcml_uint8_t fcml_ifn_asm_encode_pp_prefix_field(
-        fcml_uint32_t allowed_prefixes) {
+static fcml_uint8_t encode_pp_prefix_field(fcml_uint32_t allowed_prefixes) {
     fcml_uint8_t pp = 0;
     if (FCML_DEF_PREFIX_MANDATORY_66(allowed_prefixes)) {
         pp = 0x01;
@@ -3960,24 +3954,19 @@ fcml_uint8_t fcml_ifn_asm_encode_pp_prefix_field(
     return pp;
 }
 
-// Encodes decorators if there are any defined for an operand.
-void fcml_ifn_asm_encode_decorators(
-        encoding_context *context,
-        fcml_operand_decorators supported_decorators,
+/* Encodes decorators if there are any defined for an operand. */
+static void encode_decorators(encoding_context *context,
+        fcml_operand_decorators decorators,
         fcml_st_operand *operand_def) {
-
     /* Opmask decorator. */
-    if (FCML_IS_DECOR_OPMASK_REG(supported_decorators)) {
+    if (FCML_IS_DECOR_OPMASK_REG(decorators)) {
         if (operand_def->decorators.operand_mask_reg.type == FCML_REG_OPMASK) {
             context->epf.aaa = operand_def->decorators.operand_mask_reg.reg;
         }
     }
-
     /* Zeroing-masking is not supported by instructions
-     * that write to memory.
-     */
-    if (operand_def->type == FCML_OT_REGISTER &&
-            FCML_IS_DECOR_Z(supported_decorators)) {
+     * that write to memory. */
+    if (operand_def->type == FCML_OT_REGISTER && FCML_IS_DECOR_Z(decorators)) {
         context->epf.z = operand_def->decorators.z;
     }
 }
@@ -4009,13 +3998,11 @@ static fcml_ceh_error ipp_EVEX_prefix_encoder(ipp_encoder_args *args) {
         // decorators from the instruction model for a given operand. In fact
         // we don't even care if we are dealing with a register operand or a
         // memory addressing as long as the operand supports decorators.
-
         for (int i = 0; i < context->instruction->operands_count; i++) {
             fcml_operand_decorators supported_decorators =
                     FCML_DECORATORS(addr_mode_def->operands[i]);
             fcml_st_operand *operand = &context->instruction->operands[i];
-            fcml_ifn_asm_encode_decorators(context,
-                    supported_decorators, operand);
+            encode_decorators(context, supported_decorators, operand);
         }
     }
 
@@ -4045,10 +4032,10 @@ static fcml_ceh_error ipp_EVEX_prefix_encoder(ipp_encoder_args *args) {
 
         /* Third bit of P1 is always set to 1. */
         fcml_uint8_t p1 = 0x04;
-        p1 = FCML_ENCODE_EVEX_P1_W(p1,
-                FCML_DEF_PREFIX_W_1(addr_mode_def->allowed_prefixes));
+        p1 = FCML_ENCODE_EVEX_P1_W(p1, FCML_DEF_PREFIX_W_1(
+                addr_mode_def->allowed_prefixes));
         p1 = FCML_ENCODE_EVEX_P1_vvvv(p1, epf->vvvv);
-        p1 = FCML_ENCODE_EVEX_P1_pp(p1, fcml_ifn_asm_encode_pp_prefix_field(
+        p1 = FCML_ENCODE_EVEX_P1_pp(p1, encode_pp_prefix_field(
                 addr_mode_def->allowed_prefixes));
 
         fcml_uint8_t p2 = 0;
@@ -4106,6 +4093,7 @@ static ipp_desc ipp_EVEX_prefix_encoder_factory(ipp_factory_args *args,
 /********************/
 
 static fcml_ceh_error ipp_VEX_XOP_prefix_encoder(ipp_encoder_args *args) {
+
     encoding_context *context = args->context;
     const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
     inst_part *instruction_part = args->instruction_part;
@@ -4116,17 +4104,14 @@ static fcml_ceh_error ipp_VEX_XOP_prefix_encoder(ipp_encoder_args *args) {
         } else if (FCML_DEF_PREFIX_L_0(addr_mode_def->allowed_prefixes)) {
             context->optimizer_processing_details.vector_length = FCML_DS_128;
         }
-    }
-
-    if (args->phase == IPPP_THIRD_PHASE) {
+    } else if (args->phase == IPPP_THIRD_PHASE) {
         extension_prefixes_fields *epf = &(context->epf);
         fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
         /* Check if one byte VEX encoding can be used.*/
         fcml_bool is_vex = FCML_DEF_PREFIX_VEX_REQ(
                 addr_mode_def->allowed_prefixes);
         /* Remember, the 2-byte VEX implies a leading 0Fh opcode byte,
-         * it's why "m-mmmm" field should be 1.
-         */
+         * it's why "m-mmmm" field should be 1. */
         fcml_bool is_two_bytes_vex =
                 (!context->assembler_context->configuration.force_three_byte_VEX
                         && is_vex && epf->mmmm == 0x01
@@ -4137,7 +4122,7 @@ static fcml_ceh_error ipp_VEX_XOP_prefix_encoder(ipp_encoder_args *args) {
         fcml_uint8_t prefix_size = 0;
 
         /* Encode PP.*/
-        fcml_uint8_t pp = fcml_ifn_asm_encode_pp_prefix_field(
+        fcml_uint8_t pp = encode_pp_prefix_field(
                 addr_mode_def->allowed_prefixes);
 
         fcml_uint8_t prefix = 0;
@@ -4145,8 +4130,7 @@ static fcml_ceh_error ipp_VEX_XOP_prefix_encoder(ipp_encoder_args *args) {
         /* If an instruction syntax can be encoded using the two-byte form,
          * it can also be encoded using the three byte form of VEX. Three byte
          * VEX can be forced using configuration or "long_form"
-         * instruction level hint.
-         */
+         * instruction level hint. */
         if (context->assembler_context->configuration.force_three_byte_VEX
                 || (context->instruction->hints &
                         FCML_HINT_LONG_FORM_POINTER)) {
@@ -4233,7 +4217,6 @@ static fcml_ceh_error ipp_REX_prefix_encoder(ipp_encoder_args *args) {
     }
 
     if (args->phase == IPPP_THIRD_PHASE) {
-
         /* REX prefix is only available in 64 bit mode. Neither VEX nor
          * XOP are allowed here, but it's checked before this encoder
          * is registered for
@@ -4241,7 +4224,6 @@ static fcml_ceh_error ipp_REX_prefix_encoder(ipp_encoder_args *args) {
         if (context->assembler_context->entry_point.op_mode == FCML_OM_64_BIT) {
 
             fcml_uint8_t rex = FCML_ENCODE_REX_BASE;
-
             fcml_st_asm_optimizer_processing_details *size_flags =
                     &(context->optimizer_processing_details);
             fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
@@ -4277,8 +4259,7 @@ static fcml_ceh_error ipp_REX_prefix_encoder(ipp_encoder_args *args) {
             /* Even if REX do not contains any flags set in some cases
              * registers BPL, SPL, DIL, SIL needs REX to be defined.
              * Additionally we can force it to occur by setting a
-             * configuration flag.
-             */
+             * configuration flag. */
             if (rex != FCML_ENCODE_REX_BASE
                     || (FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(
                             addr_mode_def->opcode_flags)
@@ -4317,13 +4298,10 @@ static ipp_desc ipp_REX_prefix_encoder_factory(ipp_factory_args *args,
 /* ModR/M encoder factories. */
 /*****************************/
 
-fcml_ceh_error fcml_ifn_asm_instruction_part_rip_post_processor(
-        encoding_context *context,
-        inst_part *instruction_part,
-        fcml_ptr post_processor_args) {
+static fcml_ceh_error ipp_rip_post_processor(encoding_context *context,
+        inst_part *instruction_part, fcml_ptr post_processor_args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     fcml_st_assembler_context *assembler_context = context->assembler_context;
     fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
 
@@ -4340,57 +4318,46 @@ fcml_ceh_error fcml_ifn_asm_instruction_part_rip_post_processor(
                 assembler_context->entry_point.ip,
                 context->instruction_size.value, encoded_mod_rm);
     }
-
     return error;
 }
 
 static fcml_ceh_error ipp_ModRM_encoder(ipp_encoder_args *args) {
-
-    encoding_context *context = args->context;
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    encoding_context *context = args->context;
     const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
     fcml_st_assembler_context *assembler_context = context->assembler_context;
     inst_part *instruction_part = args->instruction_part;
 
     if (args->phase == IPPP_SECOND_PHASE) {
-
         fcml_st_modrm_encoder_context ctx;
         ctx.op_mode = assembler_context->entry_point.op_mode;
-
-        /* Hints have higher precedence than configuration.*/
-
         /* Chooses relative or absolute addressing. Configuration as well
-         * as rel/abs hints take effect only in 64 bit addressing mode.
-         */
+         * as rel/abs hints take effect only in 64 bit addressing mode. */
+        ctx.choose_rip_encoding = !assembler_context->configuration.choose_abs_encoding;
+        ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
 
-        ctx.choose_rip_encoding =
-                !assembler_context->configuration.choose_abs_encoding;
-        ctx.choose_sib_encoding =
-                assembler_context->configuration.choose_sib_encoding;
-
+        /* Hints have higher precedence than configuration. */
         if (context->is_sib_alternative_hint) {
             ctx.choose_sib_encoding = FCML_TRUE;
             /* SIB hint has higher precedence than RIP configuration. There
              * is no way to encode RIP using SIB, so RIP flag has to be
              * cleared in order to encode absolute offset using requested
-             * SIB encoding.
-             */
+             * SIB encoding. */
             ctx.choose_rip_encoding = FCML_FALSE;
         }
 
         if (context->is_rel_alternative_hint) {
-            /* RIP encoding has been forced by using "rel" hint.*/
+            /* RIP encoding has been forced by using "rel" hint. */
             ctx.choose_rip_encoding = FCML_TRUE;
         }
 
         if (context->is_abs_alternative_hint) {
-            /* Absolute offset encoding has been forced by using "abs" hint.*/
+            /* Absolute offset encoding has been forced by using "abs" hint. */
             ctx.choose_rip_encoding = FCML_FALSE;
         }
 
         ctx.chosen_effective_address_size = 0;
-        ctx.effective_address_size = fcml_ifn_asm_get_effective_address_size(
-                context);
+        ctx.effective_address_size = get_effective_address_size(context);
         ctx.input_size = FCML_GET_SIMD_ELEMENT_SIZE(addr_mode_def->details);
         ctx.vector_length = context->optimizer_processing_details.vector_length;
         ctx.is_sib_alternative = FCML_FALSE;
@@ -4415,13 +4382,11 @@ static fcml_ceh_error ipp_ModRM_encoder(ipp_encoder_args *args) {
                         && !context->encoded_mod_rm.is_rip_encoded) {
                     /* ModR/M + 4bytes displacement.*/
                     instruction_part->code_length = 5;
-                    instruction_part->post_processor =
-                            fcml_ifn_asm_instruction_part_rip_post_processor;
+                    instruction_part->post_processor = ipp_rip_post_processor;
                     instruction_part->post_processor_args = NULL;
                 } else {
                     fcml_st_memory_stream stream =
-                            inst_part_stream(
-                                    instruction_part);
+                            inst_part_stream(instruction_part);
                     fcml_st_encoded_modrm *encoded_modrm =
                             &(context->encoded_mod_rm);
                     fcml_fn_stream_write(&stream, encoded_modrm->modrm);
@@ -4439,12 +4404,10 @@ static fcml_ceh_error ipp_ModRM_encoder(ipp_encoder_args *args) {
             } else {
                 /* ModRM encoded to the form not supported by current
                  * addressing mode. For example, addressing mode needs ASA 32,
-                 * but assembled ModRM required 16 bit ASA.
-                 * */
+                 * but assembled ModRM required 16 bit ASA. */
                 error = FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
             }
         }
-
     }
     return error;
 }
@@ -4467,55 +4430,44 @@ static ipp_desc ipp_ModRM_encoder_factory(ipp_factory_args *args,
 /*******************************/
 
 static fcml_ceh_error ipp_addr_mode_acceptor(ipp_acceptor_args *args) {
-
     encoding_context *context = args->context;
     const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
     const addr_mode_desc_details *addr_mode_details = args->addr_mode_details;
-
     fcml_en_operating_mode op_mode =
             context->assembler_context->entry_point.op_mode;
+    fcml_st_asm_optimizer_processing_details *optimizer_details =
+            &(context->optimizer_processing_details);
+    fcml_uint32_t opcode_flags = addr_mode_def->opcode_flags;
 
-    if (!FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(
-            addr_mode_def->opcode_flags) && op_mode == FCML_OM_64_BIT) {
+    if (!FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(opcode_flags) &&
+            op_mode == FCML_OM_64_BIT) {
         return FCML_CEH_GEC_INVALID_OPERATING_MODE;
-    } else if (!FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(
-            addr_mode_def->opcode_flags)
-            && (op_mode == FCML_OM_16_BIT || op_mode == FCML_OM_32_BIT)) {
+    } else if (!FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(opcode_flags) &&
+            (op_mode == FCML_OM_16_BIT || op_mode == FCML_OM_32_BIT)) {
         return FCML_CEH_GEC_INVALID_OPERATING_MODE;
     }
-
     /* Set restrictions if there are any.*/
     if (addr_mode_details->allowed_osa != FCML_EN_ASF_ANY) {
-        context->optimizer_processing_details.allowed_eosa.flags =
-                addr_mode_details->allowed_osa;
-        context->optimizer_processing_details.allowed_eosa.is_set = FCML_TRUE;
+        optimizer_details->allowed_eosa.flags = addr_mode_details->allowed_osa;
+        optimizer_details->allowed_eosa.is_set = FCML_TRUE;
     }
     if (addr_mode_details->allowed_asa != FCML_EN_ASF_ANY) {
-        context->optimizer_processing_details.allowed_easa.flags =
-                addr_mode_details->allowed_asa;
-        context->optimizer_processing_details.allowed_easa.is_set = FCML_TRUE;
+        optimizer_details->allowed_easa.flags = addr_mode_details->allowed_asa;
+        optimizer_details->allowed_easa.is_set = FCML_TRUE;
     }
-
     /* Force 64 bit OSA in 64 bit addressing mode.*/
     if (op_mode == FCML_OM_64_BIT) {
-        if (FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA(
-                addr_mode_def->opcode_flags)) {
-            context->optimizer_processing_details.allowed_eosa.flags =
-                    FCML_EN_ASF_64;
-            context->optimizer_processing_details.allowed_eosa.is_set =
-                    FCML_TRUE;
-        } else if (FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT(
-                addr_mode_def->opcode_flags)) {
+        if (FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA(opcode_flags)) {
+            optimizer_details->allowed_eosa.flags = FCML_EN_ASF_64;
+            optimizer_details->allowed_eosa.is_set = FCML_TRUE;
+        } else if (FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT(opcode_flags)) {
             /* Remember, if 64 bit EOSA is used by default it can
-             * be overridden to 16 bits only.
-             */
-            context->optimizer_processing_details.allowed_eosa.flags =
+             * be overridden to 16 bits only. */
+            optimizer_details->allowed_eosa.flags =
                     (FCML_EN_ASF_64 | FCML_EN_ASF_16);
-            context->optimizer_processing_details.allowed_eosa.is_set =
-                    FCML_TRUE;
+            optimizer_details->allowed_eosa.is_set = FCML_TRUE;
         }
     }
-
     return FCML_CEH_GEC_NO_ERROR;
 }
 
@@ -4596,7 +4548,6 @@ static ipp_desc ipp_prefixes_acceptor_factory( ipp_factory_args *args,
  * first in order not to spread decorators acceptance rules all around.
  */
 static fcml_ceh_error ipp_op_decorator_acceptor(ipp_acceptor_args *args) {
-
     const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
     const fcml_st_instruction *instruction = args->instruction;
 
@@ -4613,9 +4564,7 @@ static fcml_ceh_error ipp_op_decorator_acceptor(ipp_acceptor_args *args) {
         }
 
         /* Opmask register */
-
         const fcml_st_register *opmask_reg = &opcode_dec->operand_mask_reg;
-
         if (opmask_reg->type != FCML_REG_UNDEFINED) {
             /* k0 register cannot be addressed as a predicate operand */
             if (opmask_reg->type != FCML_REG_OPMASK ||
@@ -4626,19 +4575,15 @@ static fcml_ceh_error ipp_op_decorator_acceptor(ipp_acceptor_args *args) {
                 return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
             }
         }
-
         /* Opmask register can be mandatory for some instructions. */
         if (FCML_IS_DECOR_OPMASK_REG_REQ(decorators) &&
                 opmask_reg->type != FCML_REG_OPMASK) {
             return FCML_CEH_GEC_INVALID_OPERAND_DECORATOR;
         }
-
         /* Zeroing-masking */
-
         if (opcode_dec->z) {
             /* Zeroing-masking is not supported for memory addressing.
-             * At the moment it's supported only by register operands.
-             */
+             * At the moment it's supported only by register operands. */
             if (!FCML_IS_DECOR_Z(decorators) ||
                     operand->type != FCML_OT_REGISTER ||
                     // Zeroing-masking is allowed only if write
@@ -4651,26 +4596,19 @@ static fcml_ceh_error ipp_op_decorator_acceptor(ipp_acceptor_args *args) {
         if (opcode_dec->sae && !FCML_IS_DECOR_SAE(decorators)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
-
         if (opcode_dec->er.is_not_null && !FCML_IS_DECOR_ER(decorators)) {
             return FCML_CEH_GEC_NOT_SUPPORTED_DECORATOR;
         }
 
         /* Sets vector length for SAE and ER decorators. We net this piece of
          * code here in order to have vector length properly set before the
-         * first operand is proceeded.
-         */
+         * first operand is proceeded. */
         if (FCML_IS_DECOR_SAE(decorators) || FCML_IS_DECOR_ER(decorators)) {
-
             fcml_bool er_or_sae = opcode_dec->sae || opcode_dec->er.is_not_null;
-
             if (er_or_sae) {
-
                 fcml_usize vector_length = FCML_DS_UNDEF;
-
                 fcml_uint8_t tuple_type =
                         FCML_GET_SIMD_TUPLETYPE(addr_mode_def->details);
-
                 /* For the following kind of SIMD instructions vector length
                    is explicitly set. */
                 if(tuple_type == FCML_TT_FV) {
@@ -4678,16 +4616,12 @@ static fcml_ceh_error ipp_op_decorator_acceptor(ipp_acceptor_args *args) {
                 } else if (tuple_type == FCML_TT_T1S || tuple_type == FCML_TT_T1F) {
                     vector_length = FCML_DS_128;
                 }
-
                 if (vector_length != FCML_DS_UNDEF) {
                     args->context->epf.explicit_vector_length = FCML_TRUE;
                 }
-
                 fcml_st_asm_optimizer_processing_details *optimizer_details =
                         &(args->context->optimizer_processing_details);
-
-                if (!fcml_ifn_asm_set_vector_length(optimizer_details,
-                        vector_length)) {
+                if (!set_vector_length(optimizer_details, vector_length)) {
                     FCML_TRACE("Vector length differs expected %d got %d.",
                             optimizer_details->vector_length, vector_length);
                     return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
@@ -4815,13 +4749,11 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
     ipp_factory_sequence *sequence = &ipp_factory_sequences_for_IA[0];
 
     while (sequence->details) {
-
         int ipp_counter = 0;
         ipp_choice_type choice = sequence->choice_type;
         ipp_factory_details *factory = sequence->details;
 
         while (factory->factory) {
-
             ipp_factory_args factory_args = {
                 flags: factory->flags,
                 instruction: instruction,
@@ -4831,7 +4763,6 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
 
             ipp_desc desc = factory->factory(&factory_args, &error);
             if (desc.encoder || desc.acceptor) {
-
                 ipp_counter++;
                 desc.ipp_name = factory->ipp_name;
                 desc.is_short_form_supported = sequence->
@@ -4879,10 +4810,8 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
                 free_ipp_chain(chain);
                 return error;
             }
-
             factory++;
         }
-
         sequence++;
     }
 
@@ -4914,7 +4843,7 @@ static fcml_usize reg_based_memory_data_size_calculator(
         fcml_st_instruction *instruction, fcml_ptr args) {
     fcml_usize data = FCML_DS_UNDEF;
     data_size_calc_args *dsc_args = (data_size_calc_args*) args;
-    if (instruction->operands_count >= dsc_args->reg_index + 1) {
+    if (instruction->operands_count > dsc_args->reg_index) {
         fcml_st_operand *operand = &(instruction->operands[dsc_args->reg_index]);
         if (operand->type == FCML_OT_REGISTER) {
             return operand->reg.size;
@@ -5040,8 +4969,7 @@ static void free_addr_mode_encoding(
         fcml_st_dialect_context_int *dialect_context,
         addr_mode_encoding *addr_mode) {
     /* Processor chains and calculator arguments are shared for clones
-     * so do not free them.
-     */
+     * so do not free them. */
     if (addr_mode) {
         if (!addr_mode->is_cloned) {
             if (addr_mode->ipp_chain) {
@@ -5054,12 +4982,10 @@ static void free_addr_mode_encoding(
                 fcml_fn_env_memory_free(args);
             }
         }
-
         if (addr_mode->mnemonic) {
             dialect_context->free_mnemonic(
                     (fcml_st_mp_mnemonic*)addr_mode->mnemonic);
         }
-
         fcml_fn_env_memory_free(addr_mode);
     }
 }
