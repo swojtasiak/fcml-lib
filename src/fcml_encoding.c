@@ -296,9 +296,12 @@ typedef struct operand_encoder_def {
 } operand_encoder_def;
 
 typedef enum ipp_type {
+    /* Instruction part processor is responsible only for verifying state,
+     * so it doesn't build anything.  */
     IPPT_VERIFIER,
-    IPPT_ENCODER,
-    IPPT_DECORATOR,
+    /** Instruction part processor is responsible for building a part
+     * of an instruction. */
+    IPPT_ENCODER
 } ipp_type;
 
 /* Describes one instruction part processor. */
@@ -316,6 +319,7 @@ typedef struct ipp_factory_args {
     fcml_uint32_t flags;
     const fcml_st_def_instruction_desc *instruction;
     const fcml_st_def_addr_mode_desc *addr_mode;
+    /* Instruction level hints go here. */
     fcml_hints *hints;
 } ipp_factory_args;
 
@@ -2525,6 +2529,9 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
                 context->part_processor_context.part_processor_index = index;
                 encoder_args.phase = fcml_iarr_asm_executed_phases[i];
                 encoder_args.args = descriptor->args;
+                /* If IPP is just a verifier, do not pass instruction part
+                 * there. It's not needed because IPP doesn't encode any
+                 * bytes anyway. */
                 encoder_args.instruction_part = descriptor->type ==
                         IPPT_VERIFIER ? NULL : current_instruction_part;;
                 error = descriptor->encoder(&encoder_args);
@@ -3232,7 +3239,10 @@ static void free_ipp_chain(ipp_chain *chain) {
     }
 }
 
-typedef struct ipp_operand_encoder_wrapper_args {
+typedef struct ipp_operand_wrapper_args {
+    /* This value is set to true if operand is defined for given
+     * instruction addressing mode. */
+    fcml_bool operand_defined;
     /* Decoder operand addressing.*/
     fcml_st_def_decoded_addr_mode *decoded_addr_mode;
     /* Operands acceptor.*/
@@ -3243,11 +3253,11 @@ typedef struct ipp_operand_encoder_wrapper_args {
     int operand_index;
     /* Operand hints.*/
     fcml_hints hints;
-} ipp_operand_encoder_wrapper_args;
+} ipp_operand_wrapper_args;
 
-static void ipp_operand_encoder_args_deallocator(fcml_ptr ptr) {
-    ipp_operand_encoder_wrapper_args *wrapper_wrgs =
-            (ipp_operand_encoder_wrapper_args*) ptr;
+static void ipp_operand_wrapper_args_deallocator(fcml_ptr ptr) {
+    ipp_operand_wrapper_args *wrapper_wrgs =
+            (ipp_operand_wrapper_args*) ptr;
     if (wrapper_wrgs->decoded_addr_mode) {
         fcml_fnp_def_free_addr_mode(wrapper_wrgs->decoded_addr_mode);
     }
@@ -3264,11 +3274,11 @@ fcml_bool fcml_ifn_asm_accept_operand_hints(
     return FCML_TRUE;
 }
 
-static fcml_ceh_error ipp_acceptor_operand_encoder_wrapper(
+static fcml_ceh_error ipp_operand_wrapper_acceptor(
         ipp_acceptor_args *args) {
     const fcml_st_instruction *instruction = args->instruction;
-    ipp_operand_encoder_wrapper_args *wrapper_args =
-            (ipp_operand_encoder_wrapper_args*) args->args;
+    ipp_operand_wrapper_args *wrapper_args =
+            (ipp_operand_wrapper_args*) args->args;
     const fcml_st_operand *operand =
             &(instruction->operands[wrapper_args->operand_index]);
     if (wrapper_args->operand_acceptor) {
@@ -3290,18 +3300,20 @@ static fcml_ceh_error ipp_acceptor_operand_encoder_wrapper(
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
     } else {
-        /* This operand shouldn't be defined.*/
-        if (instruction->operands[wrapper_args->operand_index].type
-                != FCML_OT_NONE) {
-            return FCML_CEH_GEC_INVALID_OPPERAND;
+        if (!wrapper_args->operand_defined) {
+            /* This operand shouldn't be set for the instruction being
+             * encoded. */
+            if (operand->type != FCML_OT_NONE) {
+                return FCML_CEH_GEC_INVALID_OPPERAND;
+            }
         }
         return FCML_CEH_GEC_NO_ERROR;
     }
 }
 
-static fcml_ceh_error ipp_operand_encoder_wrapper(ipp_encoder_args *args) {
-    ipp_operand_encoder_wrapper_args *wrapper_args =
-            (ipp_operand_encoder_wrapper_args*) args->args;
+static fcml_ceh_error ipp_operand_wrapper_encoder(ipp_encoder_args *args) {
+    ipp_operand_wrapper_args *wrapper_args =
+            (ipp_operand_wrapper_args*) args->args;
     fcml_st_operand *operand = &(args->context->instruction->
             operands[wrapper_args->operand_index]);
     if (wrapper_args->operand_encoder) {
@@ -3319,52 +3331,61 @@ static fcml_ceh_error ipp_operand_encoder_wrapper(ipp_encoder_args *args) {
     }
 }
 
-static ipp_desc ipp_operand_encoder_wrapper_factory(ipp_factory_args *args,
+static ipp_desc ipp_operand_wrapper_factory(ipp_factory_args *args,
         fcml_ceh_error *error) {
 
     ipp_desc descriptor = { 0 };
 
-    FCML_ENV_ALLOC_CLEAR(wrapper_args, ipp_operand_encoder_wrapper_args);
+    FCML_ENV_ALLOC_CLEAR(wrapper_args, ipp_operand_wrapper_args);
     if (!wrapper_args) {
         *error = FCML_CEH_GEC_OUT_OF_MEMORY;
         return descriptor;
     }
 
-    if (args->addr_mode->operands[args->flags] != FCML_NA) {
+    fcml_uint32_t operand_index = args->flags;
+    fcml_operand_desc operand_desc = args->addr_mode->operands[operand_index];
 
-        *error = fcml_fn_def_decode_addr_mode_args(
-                args->addr_mode->operands[args->flags],
+    if (operand_desc != FCML_NA) {
+        *error = fcml_fn_def_decode_addr_mode_args(operand_desc,
                 &(wrapper_args->decoded_addr_mode));
         if (*error) {
             fcml_fn_env_memory_free(wrapper_args);
             return descriptor;
         }
 
-        operand_encoder_def *encoders_def =
+        operand_encoder_def *def =
                 &operand_encoders[wrapper_args->decoded_addr_mode->addr_mode];
-        wrapper_args->operand_encoder = encoders_def->encoder;
-        wrapper_args->operand_acceptor = encoders_def->acceptor;
 
-        if (encoders_def->hints_calculator) {
-            fcml_st_hts_calculated_hints calculated_hints =
-                    encoders_def->hints_calculator(args->addr_mode,
-                            wrapper_args->decoded_addr_mode);
-            *args->hints |= calculated_hints.instruction_hints;
-            wrapper_args->hints = calculated_hints.operand_hints;
+        wrapper_args->operand_encoder = def->encoder;
+        wrapper_args->operand_acceptor = def->acceptor;
+        wrapper_args->operand_defined = FCML_TRUE;
+
+        if (def->hints_calculator) {
+            fcml_st_hts_calculated_hints hints = def->hints_calculator(
+                    args->addr_mode, wrapper_args->decoded_addr_mode);
+            *args->hints |= hints.instruction_hints;
+            wrapper_args->hints = hints.operand_hints;
         }
 
         descriptor.type = IPPT_ENCODER;
     } else {
+        wrapper_args->operand_defined = FCML_FALSE;
+        /* This operand is not defined for the given instruction,
+         * so let's treat this IPP as a verifier just in order
+         * to allow the wrapper to verify if the operand it handles
+         * is not set for an instruction being encoded. The
+         * acceptor will be called in order to verify that, but
+         * instruction part won't be generated for this IPP, because
+         * encoder won't be even called.
+         */
         descriptor.type = IPPT_VERIFIER;
     }
 
-    wrapper_args->operand_index = args->flags;
-
-    descriptor.args_deallocator = ipp_operand_encoder_args_deallocator;
-    descriptor.encoder = ipp_operand_encoder_wrapper;
-    descriptor.acceptor = ipp_acceptor_operand_encoder_wrapper;
+    descriptor.args_deallocator = ipp_operand_wrapper_args_deallocator;
     descriptor.args = wrapper_args;
-
+    descriptor.encoder = ipp_operand_wrapper_encoder;
+    descriptor.acceptor = ipp_operand_wrapper_acceptor;
+    wrapper_args->operand_index = operand_index;
     return descriptor;
 }
 
@@ -4712,11 +4733,11 @@ static ipp_factory_details ipp_factories_ModRM_for_IA[] = {
 
 /* List of instruction part encoders for instruction operands.*/
 static ipp_factory_details ipp_factories_operands_for_IA[] = {
-    FCML_IPP_FACTORY(ipp_operand_encoder_wrapper_factory, 0),
-    FCML_IPP_FACTORY(ipp_operand_encoder_wrapper_factory, 1),
-    FCML_IPP_FACTORY(ipp_operand_encoder_wrapper_factory, 2),
-    FCML_IPP_FACTORY(ipp_operand_encoder_wrapper_factory, 3),
-    FCML_IPP_FACTORY(ipp_operand_encoder_wrapper_factory, 4),
+    FCML_IPP_FACTORY(ipp_operand_wrapper_factory, 0),
+    FCML_IPP_FACTORY(ipp_operand_wrapper_factory, 1),
+    FCML_IPP_FACTORY(ipp_operand_wrapper_factory, 2),
+    FCML_IPP_FACTORY(ipp_operand_wrapper_factory, 3),
+    FCML_IPP_FACTORY(ipp_operand_wrapper_factory, 4),
     { NULL, NULL, 0 }
 };
 
@@ -4762,7 +4783,7 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
             };
 
             ipp_desc desc = factory->factory(&factory_args, &error);
-            if (desc.encoder || desc.acceptor) {
+            if (!error && (desc.encoder || desc.acceptor)) {
                 ipp_counter++;
                 desc.ipp_name = factory->ipp_name;
                 desc.is_short_form_supported = sequence->
