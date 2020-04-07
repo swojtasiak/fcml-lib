@@ -170,14 +170,14 @@ static fcml_ptr args_decoder_virtual_op(fcml_operand_desc encoded_addr_mode) {
 
 typedef fcml_ptr (*addr_mode_args_decoder)(fcml_operand_desc);
 
-#define FCML_DEF_DECODERS_COUNT (sizeof(addr_mode_args_decoders) \
+#define FCML_DEF_DECODERS_COUNT (sizeof(args_decoders) \
         / sizeof(addr_mode_args_decoder))
 
 /**
  * Ordering is really important here because every decoder corresponds
  * to one addressing mode from "fcml_def.h".
  */
-static addr_mode_args_decoder addr_mode_args_decoders[] = {
+static addr_mode_args_decoder args_decoders[] = {
     NULL,
     args_decoder_imm,
     args_decoder_explicit_reg,
@@ -218,6 +218,7 @@ static fcml_en_access_mode decode_access_mode(
 fcml_ceh_error fcml_fn_def_decode_addr_mode_args(
         const fcml_operand_desc operand_desc,
         fcml_st_def_decoded_addr_mode **decoded_addr_mode) {
+
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     *decoded_addr_mode = NULL;
 
@@ -232,12 +233,11 @@ fcml_ceh_error fcml_fn_def_decode_addr_mode_args(
         }
 
         addr_mode->addr_mode_args = NULL;
-        addr_mode_args_decoder args_decoder =
-                addr_mode_args_decoders[addr_mode->addr_mode];
-        if (args_decoder) {
+        addr_mode_args_decoder decoder = args_decoders[addr_mode->addr_mode];
+        if (decoder) {
             /* Send addressing mode together with decorators, because they
              * are used by decoders/encoders too. */
-            addr_mode->addr_mode_args = args_decoder(operand_desc);
+            addr_mode->addr_mode_args = decoder(operand_desc);
             if (!addr_mode->addr_mode_args) {
                 fcml_fn_env_memory_free(addr_mode);
                 return FCML_CEH_GEC_OUT_OF_MEMORY;
