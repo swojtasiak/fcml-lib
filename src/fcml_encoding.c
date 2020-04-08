@@ -270,6 +270,22 @@ typedef struct ipp_encoder_args {
     fcml_ptr args;
 } ipp_encoder_args;
 
+typedef struct ipp_operand_wrapper_args {
+    /* This value is set to true if operand is defined for given
+     * instruction addressing mode. */
+    fcml_bool operand_defined;
+    /* Decoder operand addressing.*/
+    fcml_st_def_decoded_addr_mode *decoded_addr_mode;
+    /* Operands acceptor.*/
+    operand_acceptor operand_acceptor;
+    /* Function responsible for encoding operand.*/
+    operand_encoder operand_encoder;
+    /* Index of the operand to encode.*/
+    int operand_index;
+    /* Operand hints.*/
+    fcml_hints hints;
+} ipp_operand_wrapper_args;
+
 /* Instruction part encoder.
  * After instruction part is accepted it is encoded to an array of bytes
  * by the encoder. */
@@ -319,7 +335,8 @@ typedef struct ipp_factory_args {
     fcml_uint32_t flags;
     const fcml_st_def_instruction_desc *instruction;
     const fcml_st_def_addr_mode_desc *addr_mode;
-    /* Instruction level hints go here. */
+    /* Pointer to instruction level hints which may
+     * be optionally set by IPP builders. */
     fcml_hints *hints;
 } ipp_factory_args;
 
@@ -332,12 +349,6 @@ typedef struct ipp_chain {
     struct ipp_chain *next_processor;
     ipp_desc descriptor;
 } ipp_chain;
-
-/* Builds a chain of instruction part processors responsible for
- * encoding given instruction's addressing mode. */
-typedef fcml_ceh_error (*ipp_chain_builder)(
-        const fcml_st_def_instruction_desc*, const fcml_st_def_addr_mode_desc*,
-        int *parts, fcml_hints*, ipp_chain**);
 
 /* Consists all information needed to encode given
  * instruction addressing mode. */
@@ -365,6 +376,19 @@ typedef struct addr_mode_encoding {
     /* True if details are cloned for alternative mnemonics. */
     fcml_bool is_cloned;
 } addr_mode_encoding;
+
+typedef struct ipp_chain_builder_out {
+    /* Generated instruction part processors chain for given
+     * instruction's addressing mode. */
+    ipp_chain *ipp_chain;
+    /* Instruction level addressing mode related hints. */
+    fcml_hints hints;
+} ipp_chain_builder_out;
+
+/* Builds a chain of instruction part processors responsible for
+ * encoding given instruction's addressing mode. */
+typedef fcml_ceh_error (*ipp_chain_builder)(const fcml_st_def_addr_mode_desc*,
+        const fcml_st_def_instruction_desc*, ipp_chain_builder_out *out);
 
 /** Used by addressing modes encoding builders to enrich encoders. */
 typedef void (*addr_mode_encoding_enricher)(addr_mode_encoding*,
@@ -2471,17 +2495,16 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
 }
 
 /* All currently supported encoding phases. */
-part_processor_phase fcml_iarr_asm_executed_phases[] = {
+static part_processor_phase execution_phases[] = {
         IPPP_FIRST_PHASE,
         IPPP_SECOND_PHASE,
         IPPP_THIRD_PHASE
 };
 
-fcml_nuint8_t fcml_ifn_asm_calculate_instruction_parts_length(
-        inst_part *instruction_part, fcml_int parts_num) {
-    fcml_nuint8_t length = { 0, FCML_TRUE };
-    while (parts_num-- > 0) {
-        length.value += instruction_part++->code_length;
+static fcml_uint8_t inst_parts_len(inst_part *inst_part, fcml_int count) {
+    fcml_uint8_t length = 0;
+    while (count-- > 0) {
+        length += inst_part++->code_length;
     }
     return length;
 }
@@ -2509,7 +2532,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
     };
 
     int i;
-    int size = sizeof(fcml_iarr_asm_executed_phases) /
+    int size = sizeof(execution_phases) /
             sizeof(part_processor_phase);
     for (i = 0; !error && i < size; i++) {
         inst_part *current_instruction_part = part;
@@ -2527,7 +2550,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
                 }
                 first = FCML_FALSE;
                 context->part_processor_context.part_processor_index = index;
-                encoder_args.phase = fcml_iarr_asm_executed_phases[i];
+                encoder_args.phase = execution_phases[i];
                 encoder_args.args = descriptor->args;
                 /* If IPP is just a verifier, do not pass instruction part
                  * there. It's not needed because IPP doesn't encode any
@@ -2559,9 +2582,8 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
     if (!error) {
 
         /* Calculate instruction size.*/
-        context->instruction_size =
-                fcml_ifn_asm_calculate_instruction_parts_length(
-                        part, addr_mode->instruction_parts);
+        FCML_SET_VALUE(context->instruction_size,
+                inst_parts_len(part, addr_mode->instruction_parts));
 
         fcml_bool recalculate_size = FCML_FALSE;
 
@@ -2579,9 +2601,8 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
         }
 
         if (recalculate_size) {
-            context->instruction_size =
-                    fcml_ifn_asm_calculate_instruction_parts_length(
-                            part, addr_mode->instruction_parts);
+            FCML_SET_VALUE(context->instruction_size,
+                    inst_parts_len(part, addr_mode->instruction_parts));
         }
 
 #ifdef FCML_DEBUG
@@ -3239,22 +3260,6 @@ static void free_ipp_chain(ipp_chain *chain) {
     }
 }
 
-typedef struct ipp_operand_wrapper_args {
-    /* This value is set to true if operand is defined for given
-     * instruction addressing mode. */
-    fcml_bool operand_defined;
-    /* Decoder operand addressing.*/
-    fcml_st_def_decoded_addr_mode *decoded_addr_mode;
-    /* Operands acceptor.*/
-    operand_acceptor operand_acceptor;
-    /* Function responsible for encoding operand.*/
-    operand_encoder operand_encoder;
-    /* Index of the operand to encode.*/
-    int operand_index;
-    /* Operand hints.*/
-    fcml_hints hints;
-} ipp_operand_wrapper_args;
-
 static void ipp_operand_wrapper_args_deallocator(fcml_ptr ptr) {
     ipp_operand_wrapper_args *wrapper_wrgs =
             (ipp_operand_wrapper_args*) ptr;
@@ -3264,11 +3269,12 @@ static void ipp_operand_wrapper_args_deallocator(fcml_ptr ptr) {
     fcml_fn_env_memory_free(wrapper_wrgs);
 }
 
-fcml_bool fcml_ifn_asm_accept_operand_hints(
-        fcml_hints addr_mode_desc_operand_hints, fcml_hints operand_hints) {
+static fcml_bool accept_operand_hints(fcml_hints addr_mode_hints,
+        fcml_hints operand_hints) {
+    /** If caller expects SIMD addressing mode to be chosen, then
+     * reject all non SIMD ones. */
     if ((operand_hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION)
-            && !(addr_mode_desc_operand_hints
-                    & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION)) {
+            && !(addr_mode_hints & FCML_OP_HINT_MULTIMEDIA_INSTRUCTION)) {
         return FCML_FALSE;
     }
     return FCML_TRUE;
@@ -3284,7 +3290,7 @@ static fcml_ceh_error ipp_operand_wrapper_acceptor(
     if (wrapper_args->operand_acceptor) {
         /* Check hints.*/
         fcml_hints operand_hints = operand->hints;
-        if (!operand_hints || fcml_ifn_asm_accept_operand_hints(
+        if (!operand_hints || accept_operand_hints(
                 wrapper_args->hints, operand_hints)) {
             operand_acceptor_args acceptor_args = {
                 context: args->context,
@@ -4759,9 +4765,9 @@ static ipp_factory_sequence ipp_factory_sequences_for_IA[] = {
 /* Instruction part processors chain builder dedicated for
  * Intel and AMD processors. */
 static fcml_ceh_error ipp_chain_builder_for_IA(
+        const fcml_st_def_addr_mode_desc *addr_mode_desc,
         const fcml_st_def_instruction_desc *instruction,
-        const fcml_st_def_addr_mode_desc *addr_mode, int *parts,
-        fcml_hints *hints, ipp_chain **chain_out) {
+        ipp_chain_builder_out *out) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     int instruction_parts = 0;
@@ -4778,8 +4784,8 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
             ipp_factory_args factory_args = {
                 flags: factory->flags,
                 instruction: instruction,
-                addr_mode: addr_mode,
-                hints: hints
+                addr_mode: addr_mode_desc,
+                hints: &(out->hints)
             };
 
             ipp_desc desc = factory->factory(&factory_args, &error);
@@ -4816,12 +4822,6 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
 
                 current_chain->descriptor = desc;
 
-                if (desc.type == IPPT_ENCODER) {
-                    /* Only instruction encoders generate
-                     * real instruction bytes. */
-                    instruction_parts++;
-                }
-
                 if (choice == FCML_IPCT_ONE) {
                     break;
                 }
@@ -4836,8 +4836,7 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
         sequence++;
     }
 
-    *parts = instruction_parts;
-    *chain_out = chain;
+    out->ipp_chain = chain;
 
     return error;
 }
@@ -5178,6 +5177,20 @@ static fcml_ceh_error build_addr_modes_encodings_for_mnemonics(
     return error;
 }
 
+/* Returns a number of instruction parts needed to encode instruction using
+ * given instruction part processors chain. Only encoders need instruction
+ * parts as they generate real instruction bytes. */
+static int inst_parts_for_chain(ipp_chain *chain) {
+    int parts = 0;
+    while(chain) {
+        if (chain->descriptor.type == IPPT_ENCODER) {
+            parts++;
+        }
+        chain = chain->next_processor;
+    }
+    return parts;
+}
+
 static fcml_ceh_error generic_addr_mode_encoding_builder(
         init_context *init_context,
         const fcml_st_def_instruction_desc *instruction,
@@ -5219,15 +5232,18 @@ static fcml_ceh_error generic_addr_mode_encoding_builder(
     ipp_chain_builder builder = choose_ipp_chain_builder(
             instruction->instruction_type);
 
-    int instruction_parts;
-    error = builder(instruction, addr_mode_desc, &instruction_parts,
-            &(addr_mode->hints), &addr_mode->ipp_chain);
+    /* Populates addressing mode encoding with instruction
+     * part processors and instruction level hints. */
+    ipp_chain_builder_out out = {NULL};
+    error = builder(addr_mode_desc, instruction, &out);
     if (error) {
         free_addr_mode_encoding(init_context->dialect_context, addr_mode);
         return error;
     }
 
-    addr_mode->instruction_parts = instruction_parts;
+    addr_mode->ipp_chain = out.ipp_chain;
+    addr_mode->instruction_parts = inst_parts_for_chain(out.ipp_chain);
+    addr_mode->hints = out.hints | addr_mode_desc->instruction_hints;
 
     /* The addressing mode encoder built above is a generic one for the
      * processed instruction, bet be have to provide specific parameterized
