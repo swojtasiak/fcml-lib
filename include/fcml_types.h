@@ -264,4 +264,7 @@ typedef struct fcml_st_integer {
     fcml_int64_t int64;
 } fcml_st_integer;
 
+#define FCML_SET_VALUE(x, y) x.value = y; x.is_not_null = FCML_TRUE;
+#define FCML_SET_NULL(x)     x.value = 0; x.is_not_null = FCML_FALSE;
+
 #endif /* FCML_TYPES_H_ */
