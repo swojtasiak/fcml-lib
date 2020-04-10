@@ -230,7 +230,7 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    // Sanity check.
+    /* Sanity check. */
     if (!result || !instruction || !instruction->mnemonic || !asm_context) {
         return FCML_CEH_GEC_INVALID_INPUT;
     }
@@ -246,21 +246,18 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
     }
 
     /* Take into account that dialect can modify source instruction by
-     * preparing it for the assembler, so we have to use a local copy here.
-     */
+       preparing it for the assembler, so we have to use a local copy here. */
     fcml_st_instruction tmp_instruction = *instruction;
 
     enc_assembler *enc_asm = (enc_assembler*) asm_context->assembler;
 
     /* The first place where the dialect can interfere with the
-     * instruction definition.
-     */
-    fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor =
-            enc_asm->dialect_context->assembler_preprocessor;
-    if (assembler_preprocessor) {
-        assembler_preprocessor(&(asm_context->configuration),
-                (fcml_st_dialect*) enc_asm->dialect_context, &tmp_instruction,
-                NULL, F_UNKNOWN, NULL, NULL);
+       instruction definition. */
+    fcml_fnp_asm_preprocessor preprocessor =
+            enc_asm->dialect_context->asm_preprocessor;
+    if (preprocessor) {
+        preprocessor((fcml_st_dialect*) enc_asm->dialect_context,
+                NULL, NULL, F_UNKNOWN, &tmp_instruction, NULL);
     }
 
     /* Find instruction addressing modes/forms. */
@@ -280,7 +277,6 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
     if (addr_modes) {
         if (addr_modes->encoder) {
             fcml_st_asm_encoder_result enc_result = { { 0 } };
-
             error = addr_modes->encoder(asm_context, enc_asm->dialect_context,
                     &tmp_instruction, &enc_result, addr_modes);
             if (!error) {
@@ -288,7 +284,6 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
                 result->number_of_instructions =
                         enc_result.number_of_instructions;
                 result->chosen_instruction = enc_result.chosen_instruction;
-
                 /* Increment IP by chosen instruction length. */
                 if (result->chosen_instruction
                         && asm_context->configuration.increment_ip) {
@@ -296,7 +291,6 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
                             result->chosen_instruction->code_length;
                 }
             }
-
             /* Convert encoding result to assembler result. */
             result->errors = enc_result.errors;
         } else {

@@ -1445,14 +1445,13 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel(
     return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel(
-        const fcml_st_assembler_conf *configuration,
+static fcml_ceh_error create_asm_preprocessor(
         const fcml_st_dialect *dialect,
-        fcml_st_instruction *instrunction,
         const fcml_st_def_addr_mode_desc *addr_mode_desc,
-        fcml_en_instruction instruction_code,
         const fcml_st_mp_mnemonic *mnemonic,
-        fcml_bool *has_been_changed) {
+        fcml_en_instruction instruction_code,
+        fcml_st_instruction *instrunction,
+        fcml_bool *inst_changed) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -1495,8 +1494,8 @@ fcml_ceh_error fcml_ifn_asm_dialect_assembler_preprocessor_intel(
 
         }
 
-        if ( has_been_changed ) {
-            *has_been_changed = changed;
+        if ( inst_changed ) {
+            *inst_changed = changed;
         }
 
     }
@@ -1563,9 +1562,8 @@ fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel(fcml_uint32_t config_flags,
     dialect_context_intel->get_register =
             &fcml_ifn_asm_dialect_get_register_intel;
     dialect_context_intel->free_dialect = &fcml_fn_cmn_dialect_free;
-    dialect_context_intel->assembler_preprocessor =
-            &fcml_ifn_asm_dialect_assembler_preprocessor_intel;
-    dialect_context_intel->disassembler_postprocessor = NULL;
+    dialect_context_intel->asm_preprocessor = &create_asm_preprocessor;
+    dialect_context_intel->disasm_postprocessor = NULL;
 
     *dialect = (fcml_st_dialect*) dialect_context_intel;
 

@@ -70,16 +70,14 @@ typedef fcml_string    (*fcml_fnp_asm_dialect_render_mnemonic)( fcml_string mnem
 typedef fcml_string    (*fcml_fnp_asm_dialect_get_pseudo_operation_mnemonic)( fcml_en_pseudo_operations pseudo_operation );
 typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_register)( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex );
 
-typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_assembler_preprocessor)(
-        const fcml_st_assembler_conf *conf,
-        const fcml_st_dialect *dialect,
-        fcml_st_instruction *instrunction,
-        const fcml_st_def_addr_mode_desc *addr_mode_desc,
-        fcml_en_instruction instruction,
-        const fcml_st_mp_mnemonic *mnemonic,
-        fcml_bool *has_been_changed );
+typedef fcml_ceh_error (*fcml_fnp_asm_preprocessor)(const fcml_st_dialect*,
+        const fcml_st_def_addr_mode_desc*, const fcml_st_mp_mnemonic*,
+        fcml_en_instruction, fcml_st_instruction*, fcml_bool *inst_changed);
 
-typedef fcml_ceh_error (*fcml_fnp_asm_dialect_prepare_disassembler_postprocessor)( const fcml_st_disassembler_conf *conf, const fcml_st_mp_mnemonic *mnemonic, fcml_st_disassembler_result *disassembler_result );
+typedef fcml_ceh_error (*fcml_fnp_disasm_postprocessor)(
+        const fcml_st_mp_mnemonic*,
+        fcml_st_disassembler_result*);
+
 typedef fcml_ceh_error (*fcml_fnp_parse_instruction)( fcml_ip ip, const fcml_string asm_mnemonic, fcml_st_parser_ast *ast );
 typedef fcml_ceh_error (*fcml_fnp_render_instruction)( const fcml_st_dialect *dialect, const fcml_st_render_config *config, fcml_st_memory_stream *output_stream, const fcml_st_disassembler_result *result );
 typedef fcml_st_dialect_pseudpo_operation_mnemonic *(*fcml_fnp_asm_get_pseudo_operation_mnemonics)();
@@ -106,8 +104,8 @@ typedef struct fcml_st_dialect_context_int {
     fcml_fnp_asm_dialect_free_mnemonic free_mnemonic;
     fcml_fnp_asm_dialect_render_mnemonic render_mnemonic;
     fcml_fnp_asm_dialect_get_register get_register;
-    fcml_fnp_asm_dialect_prepare_assembler_preprocessor assembler_preprocessor;
-    fcml_fnp_asm_dialect_prepare_disassembler_postprocessor disassembler_postprocessor;
+    fcml_fnp_asm_preprocessor asm_preprocessor;
+    fcml_fnp_disasm_postprocessor disasm_postprocessor;
     fcml_fnp_asm_dialect_free free_dialect;
     fcml_fnp_render_instruction instruction_renderer;
     fcml_fnp_parse_instruction instruction_parser;
