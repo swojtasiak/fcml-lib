@@ -450,8 +450,10 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
     (encoded & ~FCML_SEG_ALLOW_OVERRIDE)
 
 /* Useful macros related to addressing modes.*/
+#define FCMP_DEF_IS_ADDR_MODE(x, y)            ((x) == ((y) >> 24))
 
-#define FCMP_DEF_IS_ADDR_MODE(x, y)                ((x) == ((y) >> 24))
+/* Addressing mode checking macro for not shifted addressing mode codes. */
+#define FCML_IS_ADDR_MODE(mode, code)          (((mode) & (code)) == (code))
 
 /* Shorthands*/
 

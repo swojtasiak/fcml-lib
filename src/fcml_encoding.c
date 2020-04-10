@@ -509,7 +509,7 @@ enum fcml_ien_asm_comparator_type {
     FCML_IEN_CT_EQUAL, FCML_IEN_CT_EQUAL_OR_LESS,
 };
 
-void fcml_ifn_asm_clean_context(encoding_context *context) {
+static void clean_context(encoding_context *context) {
     fcml_st_asm_optimizer_processing_details *data_size_flags =
             &(context->optimizer_processing_details);
     data_size_flags->easa = FCML_DS_UNDEF;
@@ -2802,7 +2802,8 @@ fcml_bool fcml_ifn_asm_accept_instruction_hints(fcml_hints addr_mode_dest_hints,
     return FCML_TRUE;
 }
 
-void fcml_ifn_asm_set_attribute_size_flag_for_size(fcml_usize attribute_size,
+/* Sets attribute size flag for given real size. */
+static void set_attribute_size_flag(fcml_usize attribute_size,
         fcml_st_nullable_size_flags *flags) {
     fcml_flags flag = 0;
     switch (attribute_size) {
@@ -2852,39 +2853,39 @@ fcml_ptr fcml_ifn_chooser_next(fcml_ptr instruction_ptr) {
     return NULL;
 }
 
-void fcml_fcml_ifn_prepare_chooser_context(fcml_st_chooser_context *context,
+static fcml_st_chooser_context prepare_chooser_context(
         fcml_st_assembled_instruction *instructions) {
-    if (context) {
-        context->extract = &fcml_ifn_chooser_extract;
-        context->next = &fcml_ifn_chooser_next;
-        context->instruction = instructions;
-    }
+    fcml_st_chooser_context context;
+    context.extract = &fcml_ifn_chooser_extract;
+    context.next = &fcml_ifn_chooser_next;
+    context.instruction = instructions;
+    return context;
 }
 
-void fcml_ifn_prepare_optimizer_processing_details(
-        fcml_st_asm_optimizer_processing_details *processing_details,
-        addr_mode_encoding *addr_mode) {
+static void prepare_optimizer_processing_details(
+        const addr_mode_encoding *addr_mode,
+        fcml_st_asm_optimizer_processing_details *processing_details) {
+
+    const fcml_st_mp_mnemonic *mnemonic =  addr_mode->mnemonic;
 
     /* Apply address attribute size restrictions from mnemonic definition.*/
-    fcml_usize asa = addr_mode->mnemonic->supported_asa;
+    fcml_usize asa = mnemonic->supported_asa;
     processing_details->easa = asa;
     if (asa) {
-        fcml_ifn_asm_set_attribute_size_flag_for_size(asa,
-                &(processing_details->allowed_easa));
+        set_attribute_size_flag(asa, &(processing_details->allowed_easa));
     }
 
     /* Apply operand attribute size restrictions from mnemonic definition.*/
-    fcml_usize osa = addr_mode->mnemonic->supported_osa;
+    fcml_usize osa = mnemonic->supported_osa;
     processing_details->eosa = osa;
     if (osa) {
-        fcml_ifn_asm_set_attribute_size_flag_for_size(osa,
-                &(processing_details->allowed_eosa));
+        set_attribute_size_flag(osa, &(processing_details->allowed_eosa));
     }
 
     /* Apply L fields restrictions from mnemonic definition. */
-    if (addr_mode->mnemonic->l.is_not_null) {
+    if (mnemonic->l.is_not_null) {
         processing_details->vector_length =
-                fcml_fn_mp_l_to_vector_length(addr_mode->mnemonic->l.value);
+                fcml_fn_mp_l_to_vector_length(mnemonic->l.value);
     }
 }
 
@@ -2929,9 +2930,8 @@ void fcml_ifn_asm_handle_addr_mode_errors(
 
 }
 
-fcml_ceh_error fcml_ifn_asm_encode_addressing_mode_core(
-        encoding_context *context,
-        addr_mode_encoding *addr_mode,
+static fcml_ceh_error encode_addressing_mode_core(
+        encoding_context *context, addr_mode_encoding *addr_mode,
         addr_mode_error *addr_mode_errors) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -2998,11 +2998,9 @@ fcml_ceh_error fcml_ifn_asm_encode_addressing_mode_core(
     return error;
 }
 
-fcml_usize fcml_ifn_asm_count_operands(fcml_st_instruction *instruction) {
-
+static fcml_usize count_operands(fcml_st_instruction *instruction) {
     fcml_int i;
     fcml_usize count = 0;
-
     /* Check if there are no operator gaps. */
     for(i = 0; i < FCML_OPERANDS_COUNT; i++) {
         if (instruction->operands[i].type == FCML_OT_NONE) {
@@ -3011,7 +3009,6 @@ fcml_usize fcml_ifn_asm_count_operands(fcml_st_instruction *instruction) {
             count++;
         }
     }
-
     return count;
 }
 
@@ -3023,110 +3020,79 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
         fcml_st_instruction_addr_modes *addr_modes) {
 
     /* Make a local copy of the instruction, because it still can be
-     * changed by the preprocessor.
-     */
+       changed by the preprocessor. */
     fcml_st_instruction tmp_instruction = *instruction;
-
     /* Container for errors related to addressing mode processing. */
     addr_mode_error addr_mode_errors = { AMPP_UNDEFINED };
+    fcml_usize operands_count = count_operands(&tmp_instruction);
 
-    fcml_usize operands_count = fcml_ifn_asm_count_operands(&tmp_instruction);
-
-    encoding_context context = { 0 };
-    context.assembler_context = asm_context;
-    context.instruction = &tmp_instruction;
-    context.encoder_result = result;
-    context.operands_count = operands_count;
-
-    /* Global errors container is set directly to error container
-     * from results.
-     */
-    context.error_container = &(result->errors);
-
-    fcml_bool instruction_has_been_changed;
+    encoding_context context = {
+        assembler_context: asm_context,
+        instruction: &tmp_instruction,
+        encoder_result: result,
+        operands_count: operands_count,
+        /* Global errors container is set directly to error container
+         * from results. */
+        error_container: &(result->errors)
+    };
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+    fcml_bool inst_changed;
 
     if (addr_modes) {
-
         /* Check if there are any operands available. The short form can be
-         * used only if there are no operands set.
-         */
+           used only if there are no operands set. */
         fcml_bool no_operands = operands_count == 0;
-
         /* Choose addressing mode.*/
         if (addr_modes->addr_modes_encodings->size) {
-
             /* Gets first addressing mode available for chosen instruction
-             * definition.
-             */
-            fcml_st_coll_list_element *addr_mode_element =
+               definition. */
+            fcml_st_coll_list_element *addr_mode_elem =
                     addr_modes->addr_modes_encodings->head;
 
 #ifdef FCML_DEBUG
             int index = 0;
 #endif
             /* This loop iterates through all available addressing
-             * modes one by one..
-             */
-            while (addr_mode_element) {
+               modes one by one. */
+            while (addr_mode_elem) {
 
                 /* This flag is used by preprocessor to signal the fact
-                 * that instruction has been changed.
-                 */
-                instruction_has_been_changed = FCML_FALSE;
-
+                   that instruction has been changed. */
+                inst_changed = FCML_FALSE;
                 error = FCML_CEH_GEC_NO_ERROR;
-
-                addr_mode_encoding *addr_mode =
-                        (addr_mode_encoding*)
-                        addr_mode_element->item;
+                addr_mode_encoding *addr_mode = (addr_mode_encoding*)
+                        addr_mode_elem->item;
 
                 /* Encoding context has to be prepared for new addressing
-                 * mode because it is reused.
-                 */
-                fcml_ifn_asm_clean_context(&context);
+                   mode because it is reused. */
+                clean_context(&context);
 
                 /* Call instruction preprocessor again, passing found mnemonic
-                 * definition this time. Parsed mnemonic can contain some
-                 * dialect specific information, so we have to provide
-                 * dialect a way to modify instruction definition basing
-                 * on that information.
-                 */
-                fcml_fnp_asm_dialect_prepare_assembler_preprocessor
-                    assembler_preprocessor =
-                        dialect_context->assembler_preprocessor;
-
-                if (assembler_preprocessor) {
-                    assembler_preprocessor(
-                            &(context.assembler_context->configuration),
-                            (fcml_st_dialect*) dialect_context,
-                            &tmp_instruction,
-                            addr_mode->addr_mode_desc,
-                            addr_mode->instruction, addr_mode->mnemonic,
-                            &instruction_has_been_changed);
+                   definition this time. Parsed mnemonic can contain some
+                   dialect specific information, so we have to provide
+                   dialect a way to modify instruction definition basing
+                   on that information. */
+                fcml_fnp_asm_preprocessor preprocessor =
+                        dialect_context->asm_preprocessor;
+                if (preprocessor) {
+                    preprocessor((fcml_st_dialect*) dialect_context,
+                            addr_mode->addr_mode_desc, addr_mode->mnemonic,
+                            addr_mode->instruction, &tmp_instruction,
+                            &inst_changed);
                 }
 
-                /* This information is necessary to ignore operands
-                 * encoding process.
-                 */
-
                 /* Ignore all short forms if there are operands available.*/
-
-                fcml_bool is_short_form = addr_mode->mnemonic->is_shortcut
-                        && no_operands;
-
-                context.is_short_form = is_short_form;
+                context.is_short_form = addr_mode->mnemonic->is_shortcut &&
+                        no_operands;
 
                 /* Prepare processing context for optimizer using currently
-                 * used addressing mode.
-                 */
-                fcml_ifn_prepare_optimizer_processing_details(
-                        &(context.optimizer_processing_details), addr_mode);
+                   used addressing mode. */
+                prepare_optimizer_processing_details(addr_mode,
+                        &(context.optimizer_processing_details));
 
                 /* Make it accessible through encoding context. Certain
-                 * encoders might need this information.
-                 */
+                   encoders might need this information. */
                 context.mnemonic = addr_mode->mnemonic;
 
 #ifdef FCML_DEBUG
@@ -3140,70 +3106,52 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
                         addr_mode->addr_mode_details.ds_calculator_args;
 
                 /* Try to encode prepared addressing mode. */
-                error = fcml_ifn_asm_encode_addressing_mode_core(&context,
-                        addr_mode, &addr_mode_errors);
+                error = encode_addressing_mode_core(&context, addr_mode,
+                        &addr_mode_errors);
 
-                addr_mode_element = addr_mode_element->next;
+                addr_mode_elem = addr_mode_elem->next;
 
 #ifdef FCML_DEBUG
                 index++;
 #endif
                 /* Restore instruction if preprocessor has changed anything.*/
-                if (instruction_has_been_changed) {
+                if (inst_changed) {
                     tmp_instruction = *instruction;
                 }
-
             }
-
             /* Addressing modes related errors have higher priority than
-             * any others.
-             */
+               any others. */
             if (addr_mode_errors.addr_mode_errors.errors) {
-
                 /* There might be something collected before addressing mode
-                 * processing took place, so is has to be free'd.
-                 */
+                   processing took place, so is has to be free'd. */
                 fcml_fn_ceh_free_errors_only(context.error_container);
-
                 *(context.error_container) = addr_mode_errors.addr_mode_errors;
             }
-
             /* Set current error code to the best error collected while
-             * processing addressing modes.
-             */
+               processing addressing modes. */
             if (addr_mode_errors.error_code) {
                 error = addr_mode_errors.error_code;
             }
-
             /* Check if there is at least one assembled instruction.*/
             if (result->number_of_instructions == 0) {
-
                 /* Instruction has been found but can not be assembled in
-                 * this form or addressing mode.
-                 */
+                   this form or addressing mode. */
                 if (!error) {
                     /* Just in case. Use more general error code, but in
-                     * theory it should never happened because acceptors and
-                     * optimizers should return more accurate error codes.
-                     */
+                       theory it should never happened because acceptors and
+                       optimizers should return more accurate error codes. */
                     error = FCML_CEH_GEC_INVALID_INSTRUCTION_FORM;
                 }
-
             } else {
-
-                /* Assemblation succeed so free errors but leave warning
-                 * as they are.
-                 */
-                fcml_fn_ceh_free_errors_only_with_level(context.error_container,
-                        FCML_EN_CEH_EL_ERROR);
-
+                /* Assembling process has succeed so free errors but leave
+                   warning as they are. */
+                fcml_fn_ceh_free_errors_only_with_level(
+                        context.error_container, FCML_EN_CEH_EL_ERROR);
                 /* Last error code should be also cleaned. */
                 error = FCML_CEH_GEC_NO_ERROR;
-
             }
 
             if (!error) {
-
                 /* Choose instruction.*/
                 fcml_fnp_asm_instruction_chooser chooser =
                         asm_context->configuration.chooser;
@@ -3212,29 +3160,19 @@ fcml_ceh_error fcml_ifn_asm_instruction_encoder_IA(
                 }
 
                 if (result->number_of_instructions == 1) {
-
                     /* There is only one instruction so chooser is
-                     * not needed.
-                     */
-                    result->chosen_instruction =
-                            (fcml_st_assembled_instruction*)
-                            result->instructions;
-
+                       not needed. */
+                    result->chosen_instruction = result->instructions;
                 } else {
-
                     /* Prepares chooser context. */
-                    fcml_st_chooser_context chooser_context;
-                    fcml_fcml_ifn_prepare_chooser_context(&chooser_context,
-                            result->instructions);
-
+                    fcml_st_chooser_context chooser_context =
+                            prepare_chooser_context(result->instructions);
                     /* Chooses most appropriate instruction. */
                     result->chosen_instruction =
                             (fcml_st_assembled_instruction*) chooser(
                                     &chooser_context);
                 }
-
             }
-
         } else {
             FCML_TRACE_MSG("There is no addressing mode for given " \
                     "instruction. It should never happened, so it's an" \

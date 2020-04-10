@@ -3234,17 +3234,15 @@ fcml_ceh_error fcml_ifn_disassemble_core(
         }
 
         /* Execute disassembler post processor if needed.*/
-        fcml_fnp_asm_dialect_prepare_disassembler_postprocessor post_processor 
-            = int_disasm->dialect_context->disassembler_postprocessor;
+        fcml_fnp_disasm_postprocessor post_processor 
+            = int_disasm->dialect_context->disasm_postprocessor;
         if (post_processor) {
-            post_processor(&(context->configuration), mnemonic, result);
+            post_processor(mnemonic, result);
         }
 
     } else if (decoding_context.errors.errors) {
-
         /* If there are any errors, return them back to the user.*/
         result->errors = decoding_context.errors;
-
     }
 
     return error;
