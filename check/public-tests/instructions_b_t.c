@@ -167,7 +167,6 @@ void fcml_tf_instruction_BTC(void) {
     FCML_I32( "btc dword ptr [esi],eax", 0x0F, 0xBB, 0x06 );
     FCML_A32( "btc %eax,(%esi)", 0x0F, 0xBB, 0x06 );
     FCML_I32( "btc eax,eax", 0x0F, 0xBB, 0xC0 );
-    FCML_I32_A_FAILED( "lock btc eax,eax", 0xF0, 0x0F, 0xBB, 0xC0 );
     /* Such addressing mode is supported but only by disassembler, assembler doesn't allow it.
      */
     FCML_I32_D( "lock btc eax,eax", 0xF0, 0x0F, 0xBB, 0xC0 );

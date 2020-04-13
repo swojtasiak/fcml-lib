@@ -47,11 +47,9 @@ struct fcml_st_instruction_addr_modes;
 
 /** Instruction encoders have to be compatible with this pointer. */
 typedef fcml_ceh_error (*fcml_fp_instruction_encoder)(
-        fcml_st_assembler_context *context,
-        fcml_st_dialect_context_int *dialect_context,
-        fcml_st_instruction *instruction,
-        fcml_st_asm_encoder_result *result,
-        struct fcml_st_instruction_addr_modes *addr_modes_encodings);
+        fcml_st_assembler_context*, fcml_st_dialect_context_int*,
+        struct fcml_st_instruction_addr_modes*, fcml_st_instruction*,
+        fcml_st_asm_encoder_result*);
 
 /** Supported addressing modes of one particular instruction.
  * Most of the instructions support more than one addressing mode.

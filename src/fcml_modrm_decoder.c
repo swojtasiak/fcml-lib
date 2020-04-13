@@ -105,7 +105,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_displacement(
     }
 
     if (displacement_extension_size) {
-        fcml_fn_utils_extend_integer(&integer, displacement_extension_size);
+        fcml_fn_utils_extend_int(&integer, displacement_extension_size);
     }
 
     if (displacement) {
@@ -115,7 +115,7 @@ fcml_ceh_error fcml_ifn_modrm_decode_displacement(
     if (offset) {
 
         if (offset_extension_size) {
-            fcml_fn_utils_extend_integer(&integer, offset_extension_size);
+            fcml_fn_utils_extend_int(&integer, offset_extension_size);
         }
 
         error = fcml_fn_utils_integer_to_offset(&integer, offset);

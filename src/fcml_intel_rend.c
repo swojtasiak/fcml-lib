@@ -210,7 +210,7 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( const fcml_st_rende
         /* Displacement.*/
         if ( effective_address->displacement.size > 0 ) {
 
-            if ( ( render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT ) || !fcml_fn_utils_is_displacement_negative( &( effective_address->displacement ) ) ) {
+            if ( ( render_flags & FCML_REND_FLAG_HEX_DISPLACEMENT ) || !fcml_fn_utils_is_disp_neg( &( effective_address->displacement ) ) ) {
                 fcml_fn_rend_utils_format_append_str_if( output_stream, FCML_TEXT( "+" ), !first );
                 first = FCML_FALSE;
             }

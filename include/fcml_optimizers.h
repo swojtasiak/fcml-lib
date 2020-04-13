@@ -118,6 +118,7 @@ typedef fcml_ceh_error (LIB_CALL *fcml_fnp_asm_optimizer)(
 #define FCML_OPTF_OSA_16        0x10
 #define FCML_OPTF_OSA_32        0x20
 #define FCML_OPTF_OSA_64        0x30
+/* Do not choose the optimal form, but return all possibilities. */
 #define FCML_OPTF_ALL_FORMS     0xFF
 
 /**

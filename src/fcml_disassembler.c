@@ -463,7 +463,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_imm(
     }
 
     if (size_ex != size) {
-        error = fcml_fn_utils_convert_integer_to_integer(immediate, immediate, 
+        error = fcml_fn_utils_conv_int_to_int(immediate, immediate, 
                 size, size_ex);
         if (error) {
             return error;
@@ -649,7 +649,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative(
 
     switch (context->effective_operand_size_attribute) {
     case FCML_DS_16:
-        error = fcml_fn_utils_convert_integer_to_int16(&integer, &offset16);
+        error = fcml_fn_utils_conv_int_to_int16(&integer, &offset16);
         if (!error) {
             offset->off16 = ((fcml_int32_t) ip + 
                     context->calculated_instruction_size + offset16) 
@@ -658,7 +658,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative(
         }
         break;
     case FCML_DS_32:
-        error = fcml_fn_utils_convert_integer_to_int32(&integer, &offset32);
+        error = fcml_fn_utils_conv_int_to_int32(&integer, &offset32);
         if (!error) {
             offset->off32 = ((fcml_int32_t) ip + 
                     context->calculated_instruction_size + offset32);
@@ -666,7 +666,7 @@ fcml_ceh_error fcml_ifn_dasm_operand_decoder_immediate_dis_relative(
         }
         break;
     case FCML_DS_64:
-        error = fcml_fn_utils_convert_integer_to_int32(&integer, &offset32);
+        error = fcml_fn_utils_conv_int_to_int32(&integer, &offset32);
         if (!error) {
             offset->off64 = ((fcml_int64_t)ip + 
                     context->calculated_instruction_size + offset32);
@@ -3269,7 +3269,7 @@ fcml_ceh_error LIB_CALL fcml_fn_disassemble(
     fcml_ceh_error error = fcml_ifn_disassemble_core(context, result);
     if (error) {
         // Try to convert error code to error message if there is such need.
-        fcml_fn_utils_convert_gec_to_error_info(
+        fcml_fn_utils_conv_gec_to_error_info(
                 context->configuration.enable_error_messages, 
                 &(result->errors), error);
     }

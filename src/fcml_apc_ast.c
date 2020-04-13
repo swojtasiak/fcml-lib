@@ -944,7 +944,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate(
         /* Floats are not supported yet. */
         error = FCML_CEH_GEC_FEATURE_NOT_SUPPORTED;
     } else if (value->type == FCML_EN_ET_INTEGER) {
-        error = fcml_fn_utils_int64_to_integer(value->integer_value.value,
+        error = fcml_fn_utils_conv_int64_to_int(value->integer_value.value,
                 value->integer_value.is_signed, immediate, FCML_ENUSF_ALL);
     } else {
         /* Unknown value type.*/
@@ -1109,7 +1109,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand(
 
         fcml_st_integer disp_value;
 
-        error = fcml_fn_utils_int64_to_integer(value.integer_value.value,
+        error = fcml_fn_utils_conv_int64_to_int(value.integer_value.value,
                 value.integer_value.is_signed, &disp_value,
                 is_combined ?
                         FCML_ENUSF_ALL :
