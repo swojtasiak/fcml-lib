@@ -692,8 +692,8 @@ fcml_ceh_error LIB_CALL fcml_fn_lag_assemble( fcml_st_lag_assembler_context *con
     fcml_ceh_error error = fcml_ifn_lag_assemble_core( context, source_code, result );
 
     if ( error ) {
-        // Try to convert error code to error message if there is such need.
-        fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &( result->errors ), error );
+        /* Try to convert error code to error message if there is such need. */
+        fcml_fn_utils_conv_gec_to_error_info( context->configuration.enable_error_messages, &( result->errors ), error );
     }
 
     return error;

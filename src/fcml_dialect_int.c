@@ -103,7 +103,7 @@ fcml_ceh_error fcml_fn_asm_dialect_alloc_mnemonic_lookup( fcml_st_dialect_contex
     dialect_context->dialect_mnemonics_lookup = fcml_fn_coll_map_alloc( &fcml_coll_map_descriptor_uint32, capacity, &map_error );
     if (map_error) {
         fcml_fn_env_memory_free( dialect_context );
-        return fcml_fn_utils_convert_map_error( map_error );
+        return fcml_fn_utils_conv_map_error(map_error);
     }
 
     fcml_st_dialect_mnemonic *current = mnemonic;
@@ -112,7 +112,7 @@ fcml_ceh_error fcml_fn_asm_dialect_alloc_mnemonic_lookup( fcml_st_dialect_contex
         if (map_error) {
             fcml_fn_coll_map_free( dialect_context->dialect_mnemonics_lookup );
             fcml_fn_env_memory_free( dialect_context );
-            return fcml_fn_utils_convert_map_error( map_error );
+            return fcml_fn_utils_conv_map_error(map_error);
         }
         current++;
     }

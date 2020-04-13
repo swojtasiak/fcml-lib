@@ -106,6 +106,8 @@ int main(int argc, char **argv) {
             context.configuration.force_three_byte_VEX = FCML_TRUE;
         } else if (strcmp(argv[i], "-gas") == 0) {
             gas_dialect = FCML_TRUE;
+        } else if (strcmp(argv[i], "-all") == 0) {
+            context.configuration.optimizer_flags = FCML_OPTF_ALL_FORMS;
         } else if (strcmp(argv[i], "--help") == 0) {
             printf(
                     "usage: fcml_asm [-abs] [-sib] [-rex] [-gas] [-asa<size>] [-osa<size>]\n"
@@ -124,6 +126,7 @@ int main(int argc, char **argv) {
                             "                 (Especially useful in 64 bit mode, see RIP addressing.)\n"
                             "       -sib      If instruction can be encoded using SIB byte do it\n"
                             "       -rex      Use REX prefix even if it is optional for assembled instruction\n"
+                            "       -all      Return all possible forms of the instruction\n"
                             "       -gas      Use GNU assembler/AT&T dialect (Intel dialect is used by default)\n\n"
                             "example: fcml_asm -m32 -ip 0x4001000 \"add eax,1\"\n\n");
             exit(0);

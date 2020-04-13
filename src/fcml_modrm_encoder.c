@@ -77,7 +77,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_compress_disp8(
         if (remainder == 0) {
             /* Check if we can still store compressed displacement
              * on 8-bits. */
-            error = fcml_fn_utils_convert_integer_to_integer(
+            error = fcml_fn_utils_conv_int_to_int(
                     &compressed_disp, dest, asa, FCML_DS_8);
         } else {
             error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -87,7 +87,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_compress_disp8(
 
     if (error == FCML_CEH_GEC_VALUE_OUT_OF_RANGE || !n) {
         /* Displacement cannot be compressed, so force disp32. */
-        error = fcml_fn_utils_convert_integer_to_integer(displacement, dest,
+        error = fcml_fn_utils_conv_int_to_int(displacement, dest,
                 asa, asa == FCML_DS_16 ? FCML_DS_16 : FCML_DS_32);
     }
 
@@ -125,19 +125,19 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement(
         } else {
 
             /* Convert displacement to 8 bits value.*/
-            error = fcml_fn_utils_convert_integer_to_integer(&src, &dest, asa,
+            error = fcml_fn_utils_conv_int_to_int(&src, &dest, asa,
                     FCML_DS_8);
 
             if (error == FCML_CEH_GEC_VALUE_OUT_OF_RANGE) {
                 /* Convert displacement to 32 bits value.*/
-                error = fcml_fn_utils_convert_integer_to_integer(&src, &dest,
+                error = fcml_fn_utils_conv_int_to_int(&src, &dest,
                         asa, asa == FCML_DS_16 ? FCML_DS_16 : FCML_DS_32);
             }
 
         }
 
     } else {
-        error = fcml_fn_utils_convert_integer_to_integer(&src, &dest, asa,
+        error = fcml_fn_utils_conv_int_to_int(&src, &dest, asa,
                 *disp_size);
     }
 
@@ -531,7 +531,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
 
         /* Extends RIP address to 64 bit value.*/
         if (rip_address.size != FCML_DS_64) {
-            error = fcml_fn_utils_extend_integer(&rip_address, FCML_DS_64);
+            error = fcml_fn_utils_extend_int(&rip_address, FCML_DS_64);
             if (error) {
                 return error;
             }

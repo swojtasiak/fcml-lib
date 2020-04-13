@@ -180,7 +180,7 @@ fcml_ceh_error LIB_CALL fcml_fn_assemble(fcml_st_assembler_context *context,
     fcml_ceh_error error = assemble_core(context, instruction, result);
     if (error) {
         // Try to convert error code to error message if there is such need.
-        fcml_fn_utils_convert_gec_to_error_info(
+        fcml_fn_utils_conv_gec_to_error_info(
                 context->configuration.enable_error_messages, &(result->errors),
                 error);
     }
@@ -278,7 +278,7 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
         if (addr_modes->encoder) {
             fcml_st_asm_encoder_result enc_result = { { 0 } };
             error = addr_modes->encoder(asm_context, enc_asm->dialect_context,
-                    &tmp_instruction, &enc_result, addr_modes);
+                    addr_modes, &tmp_instruction, &enc_result);
             if (!error) {
                 result->instructions = enc_result.instructions;
                 result->number_of_instructions =
@@ -347,7 +347,7 @@ static fcml_ceh_error db_pseudo_operation_encoder(
             && instruction->operands[0].type == FCML_OT_IMMEDIATE) {
 
         fcml_uint8_t value;
-        error = fcml_fn_utils_convert_integer_to_uint8(
+        error = fcml_fn_utils_conv_int_to_uint8(
                 &(instruction->operands[0].immediate), &value);
         if (error) {
             return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -391,7 +391,7 @@ static fcml_ceh_error init_pseudo_operation_encodings(
     fcml_coll_map po_map = fcml_fn_coll_map_alloc(
             &fcml_coll_map_descriptor_string, 10, &map_error);
     if (map_error) {
-        return fcml_fn_utils_convert_map_error(map_error);
+        return fcml_fn_utils_conv_map_error(map_error);
     }
 
     fcml_st_dialect_pseudpo_operation_mnemonic *mnemonics_map =
@@ -405,7 +405,7 @@ static fcml_ceh_error init_pseudo_operation_encodings(
                         &map_error);
                 if (map_error) {
                     fcml_fn_coll_map_free(po_map);
-                    return fcml_fn_utils_convert_map_error(map_error);
+                    return fcml_fn_utils_conv_map_error(map_error);
                 }
             } else {
                 FCML_TRACE( "Unsupported pseudo operation code: %d.",

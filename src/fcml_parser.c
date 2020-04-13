@@ -43,7 +43,7 @@ fcml_ceh_error LIB_CALL fcml_fn_parse( fcml_st_parser_context *context, const fc
     }
     if ( error ) {
         // Try to convert error code to error message if there is such need.
-        fcml_fn_utils_convert_gec_to_error_info( context->configuration.enable_error_messages, &( result_out->errors ), error );
+        fcml_fn_utils_conv_gec_to_error_info( context->configuration.enable_error_messages, &( result_out->errors ), error );
     }
     return error;
 }

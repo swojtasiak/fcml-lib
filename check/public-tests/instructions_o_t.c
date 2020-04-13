@@ -33,7 +33,6 @@ fcml_bool fcml_tf_instructions_o_suite_cleanup(void) {
 void fcml_tf_instruction_OR(void) {
 
     FCML_I32_M( "or al,42h", 2, FCML_MI( 0x80, 0xc8, 0x42 ), FCML_MI( 0x0c, 0x42 ) );
-    FCML_I32_A_FAILED( "lock or al,42h", 0xF0, 0x80, 0xc8, 0x42 );
     FCML_I32_D( "lock or al,42h", 0xF0, 0x80, 0xc8, 0x42 );
 
     FCML_I32_M( "or ax,8042h", 2, FCML_MI( 0x66, 0x81, 0xc8, 0x42, 0x80 ), FCML_MI( 0x66, 0x0d, 0x42, 0x80 ) );

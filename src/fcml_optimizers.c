@@ -25,62 +25,54 @@
 
 #include "fcml_trace.h"
 
-typedef struct fcml_ist_asm_opt_optimization_path_element {
+typedef struct opt_path_element {
     fcml_flags flags;
 	fcml_usize attribute_size;
-} fcml_ist_asm_opt_optimization_path_element;
+} opt_path_element;
 
-fcml_ist_asm_opt_optimization_path_element
-fcml_iarr_asm_opt_16_32_bit_optimization_path_16[] = {
+static opt_path_element opt_16_32_bit_path_16[] = {
 	{ FCML_EN_ASF_16, FCML_DS_16 },
 	{ FCML_EN_ASF_32, FCML_DS_32 }
 };
 
-fcml_ist_asm_opt_optimization_path_element
-fcml_iarr_asm_opt_16_32_bit_optimization_path_32[] = {
+static opt_path_element opt_16_32_bit_path_32[] = {
 	{ FCML_EN_ASF_32, FCML_DS_32 },
 	{ FCML_EN_ASF_16, FCML_DS_16 }
 };
 
-fcml_ist_asm_opt_optimization_path_element
-fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_64[] = {
+static opt_path_element opt_64_bit_path_for_asa_64[] = {
 	{ FCML_EN_ASF_64, FCML_DS_64 },
 	{ FCML_EN_ASF_32, FCML_DS_32 }
 };
 
-fcml_ist_asm_opt_optimization_path_element
-fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_32[] = {
+static opt_path_element opt_64_bit_path_for_asa_32[] = {
 	{ FCML_EN_ASF_32, FCML_DS_32 },
 	{ FCML_EN_ASF_64, FCML_DS_64 }
 };
 
-fcml_ist_asm_opt_optimization_path_element
-fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_16[] = {
+static opt_path_element opt_64_bit_path_for_osa_16[] = {
 	{ FCML_EN_ASF_16, FCML_DS_16 },
 	{ FCML_EN_ASF_64, FCML_DS_64 },
 	{ FCML_EN_ASF_32, FCML_DS_32 }
 };
 
-fcml_ist_asm_opt_optimization_path_element
-fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_32[] = {
+static opt_path_element opt_64_bit_path_for_osa_32[] = {
 	{ FCML_EN_ASF_32, FCML_DS_32 },
 	{ FCML_EN_ASF_64, FCML_DS_64 },
 	{ FCML_EN_ASF_16, FCML_DS_16 }
 };
 
-fcml_ist_asm_opt_optimization_path_element
-fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_64[] = {
+static opt_path_element opt_64_bit_path_for_osa_64[] = {
 	{ FCML_EN_ASF_64, FCML_DS_64 },
 	{ FCML_EN_ASF_32, FCML_DS_32 },
 	{ FCML_EN_ASF_16, FCML_DS_16 }
 };
 
-fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path(fcml_flags flags,
-        fcml_int path_length, fcml_ist_asm_opt_optimization_path_element *path,
-        fcml_usize *attribute_dest) {
+static fcml_int go_through_opt_path(fcml_flags flags, fcml_int path_length,
+        opt_path_element *path, fcml_usize *attribute_dest) {
     int i, count = 0;
     for (i = 0; i < path_length; i++) {
-        fcml_ist_asm_opt_optimization_path_element *element = &(path[i]);
+        opt_path_element *element = &(path[i]);
         if ((flags & element->flags) || (flags == FCML_EN_ASF_ANY)) {
             attribute_dest[count++] = element->attribute_size;
         }
@@ -88,7 +80,7 @@ fcml_int fcml_ifn_asm_opt_go_through_the_optimization_path(fcml_flags flags,
     return count;
 }
 
-fcml_int fcml_ifn_asm_opt_try_setting_attribute_size(fcml_flags flags,
+static fcml_int try_set_attribute_size(fcml_flags flags,
         fcml_uint16_t opt_flags, fcml_usize attribute_size,
         fcml_usize *attribute_dest) {
     if ((flags & opt_flags) || (flags == FCML_EN_ASF_ANY)) {
@@ -113,7 +105,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
     fcml_int easa_count = 0;
     fcml_int eosa_count = 0;
 
-    fcml_ist_asm_opt_optimization_path_element *path;
+    opt_path_element *path;
 
     fcml_uint16_t opt_flags = context->optimizer_flags;
 
@@ -123,12 +115,22 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
         return FCML_CEH_GEC_INTERNAL_ERROR;
     }
 
+    FCML_TRACE("Allowed ASA set: %d, flags: 0x%02X.",
+                    ds_flags->allowed_easa.is_set,
+                    ds_flags->allowed_easa.flags);
+
+    FCML_TRACE("Allowed OSA set: %d, flags: 0x%02X.",
+                    ds_flags->allowed_eosa.is_set,
+                    ds_flags->allowed_eosa.flags);
+
     /* ASA */
 
     if (ds_flags->easa) {
         /* Effective address size has been already chosen and cannot
          * be changed.
          */
+        FCML_TRACE("ASA forced to %d bits by addr mode acceptors.",
+                ds_flags->easa);
         easa[easa_count++] = ds_flags->easa;
     } else {
         /* Maybe user has already forced any address size attribute to
@@ -138,20 +140,23 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
         fcml_flags attr_size_flag = 0;
         switch (opt_flags & 0x000F) {
         case FCML_OPTF_ASA_16:
+            FCML_TRACE("ASA forced to 16 bits by optimizer_flags (config).");
             attr_size = FCML_DS_16;
             attr_size_flag = FCML_EN_ASF_16;
             break;
         case FCML_OPTF_ASA_32:
+            FCML_TRACE("ASA forced to 32 bits by optimizer_flags (config).");
             attr_size = FCML_DS_32;
             attr_size_flag = FCML_EN_ASF_32;
             break;
         case FCML_OPTF_ASA_64:
+            FCML_TRACE("ASA forced to 64 bits by optimizer_flags (config).");
             attr_size = FCML_DS_64;
             attr_size_flag = FCML_EN_ASF_64;
             break;
         }
         if (attr_size) {
-            easa_count = fcml_ifn_asm_opt_try_setting_attribute_size(
+            easa_count = try_set_attribute_size(
                     ds_flags->allowed_easa.flags, attr_size_flag, attr_size,
                     &(easa[easa_count]));
         }
@@ -163,6 +168,8 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
         /* Effective address size has been already chosen and cannot
          * be changed.
          */
+        FCML_TRACE("OSA forced to %d bits by addr mode acceptors.",
+                ds_flags->eosa);
         eosa[eosa_count++] = ds_flags->eosa;
     } else {
         /* Maybe user has already forced any address size attribute to
@@ -172,20 +179,23 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
         fcml_flags attr_size_flag = 0;
         switch (opt_flags & 0x00F0) {
         case FCML_OPTF_OSA_16:
+            FCML_TRACE("OSA forced to 16 bits by optimizer_flags (config).");
             attr_size = FCML_DS_16;
             attr_size_flag = FCML_EN_ASF_16;
             break;
         case FCML_OPTF_OSA_32:
+            FCML_TRACE("OSA forced to 32 bits by optimizer_flags (config).");
             attr_size = FCML_DS_32;
             attr_size_flag = FCML_EN_ASF_32;
             break;
         case FCML_OPTF_OSA_64:
+            FCML_TRACE("OSA forced to 64 bits by optimizer_flags (config).");
             attr_size = FCML_DS_64;
             attr_size_flag = FCML_EN_ASF_64;
             break;
         }
         if (attr_size) {
-            eosa_count = fcml_ifn_asm_opt_try_setting_attribute_size(
+            eosa_count = try_set_attribute_size(
                     ds_flags->allowed_eosa.flags, attr_size_flag, attr_size,
                     &(eosa[eosa_count]));
         }
@@ -197,17 +207,15 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
         switch (context->op_mode) {
         case FCML_OM_16_BIT:
         case FCML_OM_32_BIT:
-            path = (context->asa == FCML_DS_16) ?
-                    fcml_iarr_asm_opt_16_32_bit_optimization_path_16 :
-                    fcml_iarr_asm_opt_16_32_bit_optimization_path_32;
-            easa_count = fcml_ifn_asm_opt_go_through_the_optimization_path(
+            path = (context->asa == FCML_DS_16) ? opt_16_32_bit_path_16 :
+                    opt_16_32_bit_path_32;
+            easa_count = go_through_opt_path(
                     ds_flags->allowed_easa.flags, 2, path, easa);
             break;
         case FCML_OM_64_BIT:
-            path = (context->asa == FCML_DS_32) ?
-                    fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_32 :
-                    fcml_iarr_asm_opt_64_bit_optimization_path_for_asa_64;
-            easa_count = fcml_ifn_asm_opt_go_through_the_optimization_path(
+            path = (context->asa == FCML_DS_32) ? opt_64_bit_path_for_asa_32 :
+                    opt_64_bit_path_for_asa_64;
+            easa_count = go_through_opt_path(
                     ds_flags->allowed_easa.flags, 2, path, easa);
             break;
         }
@@ -219,28 +227,24 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
         switch (context->op_mode) {
         case FCML_OM_16_BIT:
         case FCML_OM_32_BIT:
-            path = (context->osa == FCML_DS_16) ?
-                    fcml_iarr_asm_opt_16_32_bit_optimization_path_16 :
-                    fcml_iarr_asm_opt_16_32_bit_optimization_path_32;
-            eosa_count = fcml_ifn_asm_opt_go_through_the_optimization_path(
+            path = (context->osa == FCML_DS_16) ? opt_16_32_bit_path_16 :
+                    opt_16_32_bit_path_32;
+            eosa_count = go_through_opt_path(
                     ds_flags->allowed_eosa.flags, 2, path, eosa);
             break;
         case FCML_OM_64_BIT:
             switch (context->osa) {
             case FCML_DS_16:
-                path =
-                      &fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_16[0];
+                path = &opt_64_bit_path_for_osa_16[0];
                 break;
             case FCML_DS_32:
-                path =
-                      &fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_32[0];
+                path = &opt_64_bit_path_for_osa_32[0];
                 break;
             case FCML_DS_64:
-                path =
-                      &fcml_iarr_asm_opt_64_bit_optimization_path_for_osa_64[0];
+                path = &opt_64_bit_path_for_osa_64[0];
                 break;
             }
-            eosa_count = fcml_ifn_asm_opt_go_through_the_optimization_path(
+            eosa_count = go_through_opt_path(
                     ds_flags->allowed_eosa.flags, 3, path, eosa);
             break;
         }
@@ -248,15 +252,20 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
 
     ds_flags->break_optimization = FCML_FALSE;
 
+    /* If true all addressing modes of given instruction will
+     * be encoded not only the optimal one.
+     */
+    fcml_bool all_forms = opt_flags == FCML_OPTF_ALL_FORMS;
+
     int i, j;
-    for (i = 0; i < easa_count &&
-            ((opt_flags == FCML_OPTF_ALL_FORMS) || error) &&
+    for (i = 0; i < easa_count && (all_forms || error) &&
             !ds_flags->break_optimization; i++) {
         ds_flags->easa = easa[i];
-        for (j = 0; j < eosa_count &&
-                ((opt_flags == FCML_OPTF_ALL_FORMS) || error) &&
+        for (j = 0; j < eosa_count && (all_forms || error) &&
                 !ds_flags->break_optimization; j++) {
             ds_flags->eosa = eosa[j];
+            FCML_TRACE("Optimizing for (EASA: %d, EOSA: %d).",
+                    ds_flags->easa, ds_flags->eosa);
             error = callback(callback_args);
         }
     }
