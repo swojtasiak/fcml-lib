@@ -98,5 +98,11 @@ fcml_bool fcml_fn_util_validate_vector_len(fcml_usize vector_length);
 fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
         fcml_st_integer *quotient, fcml_int32_t divisor);
 
+/**
+ * Returns TRUE if value can be safely cast to int32.
+ */
+static inline fcml_bool safe_cast_i6432(fcml_int64_t value) {
+    return value <= FCML_INT32_MAX && value >= FCML_INT32_MIN;
+}
 
 #endif /* FCML_UTILS_H_ */
