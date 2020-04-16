@@ -105,4 +105,81 @@ static inline fcml_bool safe_cast_i6432(fcml_int64_t value) {
     return value <= FCML_INT32_MAX && value >= FCML_INT32_MIN;
 }
 
+/**
+ * Returns TRUE if value can be safely cast to int16.
+ */
+static inline fcml_bool safe_cast_i6416(fcml_int64_t value) {
+    return value <= FCML_INT16_MAX && value >= FCML_INT16_MIN;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int8.
+ */
+static inline fcml_bool safe_cast_i648(fcml_int64_t value) {
+    return value <= FCML_INT8_MAX && value >= FCML_INT8_MIN;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int32.
+ */
+static inline fcml_bool safe_cast_i3216(fcml_int32_t value) {
+    return value <= FCML_INT16_MAX && value >= FCML_INT16_MIN;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int16.
+ */
+static inline fcml_bool safe_cast_i328(fcml_int32_t value) {
+    return value <= FCML_INT8_MAX && value >= FCML_INT8_MIN;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int8.
+ */
+static inline fcml_bool safe_cast_i168(fcml_int16_t value) {
+    return value <= FCML_INT8_MAX && value >= FCML_INT8_MIN;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int32.
+ */
+static inline fcml_bool safe_cast_ui6432(fcml_uint64_t value) {
+    return value <= FCML_UINT32_MAX;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int16.
+ */
+static inline fcml_bool safe_cast_ui6416(fcml_uint64_t value) {
+    return value <= FCML_UINT16_MAX;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int8.
+ */
+static inline fcml_bool safe_cast_ui648(fcml_uint64_t value) {
+    return value <= FCML_UINT8_MAX;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int32.
+ */
+static inline fcml_bool safe_cast_ui3216(fcml_uint32_t value) {
+    return value <= FCML_UINT16_MAX;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int16.
+ */
+static inline fcml_bool safe_cast_ui328(fcml_uint32_t value) {
+    return value <= FCML_UINT8_MAX;
+}
+
+/**
+ * Returns TRUE if value can be safely cast to int8.
+ */
+static inline fcml_bool safe_cast_ui168(fcml_uint16_t value) {
+    return value <= FCML_UINT8_MAX;
+}
+
 #endif /* FCML_UTILS_H_ */

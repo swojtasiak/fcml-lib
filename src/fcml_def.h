@@ -288,8 +288,9 @@ typedef struct fcml_st_def_instruction_desc {
 #define FCML_OP_IMM(encoded_size, encoded_ex_size)   (FCML_OP_IMM_BASE | \
         (encoded_size) << 8 | (encoded_ex_size))
 
-#define FCML_OP_IMM_64    (FCML_OP_IMM_BASE | 1 << 16 | FCML_EOS_EOSA << 8 | \
-        FCML_EOS_UNDEFINED)
+#define FCML_OP_IMM_64_ALLOWED  1 << 16
+#define FCML_OP_IMM_64   (FCML_OP_IMM(FCML_EOS_EOSA, FCML_EOS_UNDEFINED) | \
+        FCML_OP_IMM_64_ALLOWED)
 
 /* Register explicitly set.*/
 #define FCML_OP_EXPLICIT_REG_BASE 0x02000000
@@ -1194,6 +1195,7 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 #define FCML_OP_IW           FCML_OP_IMM(FCML_EOS_WORD, FCML_EOS_UNDEFINED)
 #define FCML_OP_IW_EX_EOSA   FCML_OP_IMM(FCML_EOS_WORD, FCML_EOS_EOSA)
 #define FCML_OP_ID           FCML_OP_IMM(FCML_EOS_DWORD, FCML_EOS_UNDEFINED)
+/* its used only by MOV for imm64 */
 #define FCML_OP_ID_EX_EOSA   FCML_OP_IMM(FCML_EOS_DWORD, FCML_EOS_EOSA)
 #define FCML_OP_EX_EOSA      FCML_OP_IMM(FCML_EOS_EOSA, FCML_EOS_EOSA)
 #define FCML_OP_IMM_EOSA     FCML_OP_IMM(FCML_EOS_EOSA, FCML_EOS_UNDEFINED)

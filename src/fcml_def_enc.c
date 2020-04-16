@@ -34,7 +34,7 @@ static fcml_ptr args_decoder_imm(fcml_operand_desc encoded_addr_mode) {
         imm_args->encoded_size = (encoded_addr_mode & 0x0000FF00) >> 8;
         imm_args->encoded_ex_size = encoded_addr_mode & 0x000000FF;
         imm_args->is_64bit_imm_allowed =
-                (encoded_addr_mode & 0x00FF0000) >> 16;
+                encoded_addr_mode & FCML_OP_IMM_64_ALLOWED;
     }
     return imm_args;
 }
