@@ -40,6 +40,16 @@ typedef enum fcml_en_stream_seek_type {
     FCML_EN_ST_CURRENT
 } fcml_en_stream_seek_type;
 
+static inline fcml_st_memory_stream fcml_fn_stream_init(void *base_address,
+        fcml_int32_t offset, fcml_int32_t size) {
+    fcml_st_memory_stream stream = {
+        .base_address = base_address,
+        .offset = offset,
+        .size = size
+    };
+    return stream;
+}
+
 void fcml_fn_stream_seek( fcml_st_memory_stream *stream, fcml_int32_t offset, fcml_en_stream_seek_type type );
 fcml_uint8_t fcml_fn_stream_read( fcml_st_memory_stream *stream, fcml_bool *result );
 fcml_bool fcml_fn_stream_write( fcml_st_memory_stream *stream, fcml_uint8_t data );

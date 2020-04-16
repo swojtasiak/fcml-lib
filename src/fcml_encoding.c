@@ -785,12 +785,12 @@ static fcml_bool set_vector_length(
  * Sets size flags that are needed to assemble processed instruction.
  * This function sets new set of flags or reduces existing set.
  */
-fcml_bool fcml_ifn_asm_set_size_flag(
-        fcml_st_nullable_size_flags *nullable_flags, fcml_flags allowed_flags) {
+static fcml_bool set_size_flags(fcml_st_nullable_size_flags *flags,
+        fcml_flags allowed_flags) {
     /* If there are flags already set, just reduce them. */
-    if (nullable_flags->is_set) {
+    if (flags->is_set) {
         /* Common set of existing flags and the new ones. */
-        fcml_flags reduced_flags = nullable_flags->flags & allowed_flags;
+        fcml_flags reduced_flags = flags->flags & allowed_flags;
         if (!reduced_flags) {
             /* At least one allowed ASA size has to be left after
              * masking existing flags.
@@ -800,12 +800,40 @@ fcml_bool fcml_ifn_asm_set_size_flag(
         /* Set new set of flags, take into account that these might be a
          * subset of existing ones.
          */
-        nullable_flags->flags = reduced_flags;
+        flags->flags = reduced_flags;
     } else {
-        nullable_flags->flags = allowed_flags;
-        nullable_flags->is_set = FCML_TRUE;
+        flags->flags = allowed_flags;
+        flags->is_set = FCML_TRUE;
     }
     return FCML_TRUE;
+}
+
+static inline fcml_bool set_easa_flags(encoding_context *context,
+        fcml_flags allowed_flags) {
+    return set_size_flags(&(context->optimizer_processing_details.allowed_easa),
+            allowed_flags);
+}
+
+static inline fcml_bool set_eosa_flags(encoding_context *context,
+        fcml_flags allowed_flags) {
+    return set_size_flags(&(context->optimizer_processing_details.allowed_eosa),
+            allowed_flags);
+}
+
+static inline fcml_bool get_eosa_flags(encoding_context *context) {
+    return context->optimizer_processing_details.allowed_eosa.flags;
+}
+
+static inline fcml_flags allowed_flags_for_op_mode(encoding_context *context) {
+    switch (context->assembler_context->entry_point.op_mode) {
+    case FCML_OM_64_BIT:
+        return FCML_EN_ASF_ALL;
+    case FCML_OM_32_BIT:
+        return FCML_EN_ASF_16 | FCML_EN_ASF_32;
+    case FCML_OM_16_BIT:
+        return FCML_EN_ASF_16;
+    }
+    return FCML_EN_ASF_ANY;
 }
 
 fcml_ceh_error fcml_ifn_asm_accept_segment_register(
@@ -961,13 +989,11 @@ static fcml_bool accept_data_size(encoding_context *context,
         break;
     }
 
-    if (osa_flags && !fcml_ifn_asm_set_size_flag(
-            &(data_size_flags->allowed_eosa), osa_flags)) {
+    if (osa_flags && !set_eosa_flags(context, osa_flags)) {
         result = FCML_FALSE;
     }
 
-    if (asa_flags && !fcml_ifn_asm_set_size_flag(
-            &(data_size_flags->allowed_easa), asa_flags)) {
+    if (asa_flags && !set_easa_flags(context, asa_flags)) {
         result = FCML_FALSE;
     }
 
@@ -982,136 +1008,169 @@ static fcml_bool accept_data_size(encoding_context *context,
 /* Immediate value */
 /*******************/
 
-static fcml_bool convert_integer_and_set_flag(
-        const fcml_st_integer *source, fcml_st_integer *destination,
-        fcml_usize expected_size,
-        fcml_usize size, fcml_flags flag, fcml_flags *flags) {
-
-    /* We expect signed integers here, but of course user is not forced
-     * to provide values that match expected size. In such cases values are
-     * converted to appropriate size using sign set by user. Anyway sometimes
-     * user is not able to guess if values are signed or not in given context.
-     * Parsers might be a good example. To avoid sign problem, if source
-     * operand has expected size (so conversion to the expected size is not
-     * necessary) we can treat it like signed value.
-     */
-
-    fcml_st_integer tmp = *source;
-    if (!expected_size) {
-        expected_size = size;
+/**
+ * Converts an integer value being encoded to fit a destination IMM field.
+ *
+ * In general signed integer values are expected here, but of course user
+ * has a freedom to provide unsigned values too. The values also do not have
+ * to be of the same size as the IMM fields. Consequently, if size does not
+ * match a conversion has to be carried out. It introduces an interesting
+ * kind of problem. While the integer value is of the same size (in bytes) as
+ * the destination IMM field or is smaller, then we can convert it without any
+ * problems, but things get a bit more complicated when the value is stored
+ * in a bigger field. For instance, in case when IMM field is 32-bit long and
+ * the provided value has 64-bits. If we were sure that the provided sign was
+ * correct we could do the needed conversions in the similar way as in the
+ * previous case. Unfortunately it's not always the case. Consider parsing of
+ * the following instruction:
+ *
+ * adc rbp,0ffffffffffffffffh
+ *
+ * (Disassembler may be configured to render sign-extended values)
+ *
+ * In such a case it's the parser that is responsible for converting the
+ * given literal to an integer value. The parser is context less so
+ * in case of hexadecimal values it's unable to infer the correct
+ * sign. In this particular case the unsigned 64-bit integer is used
+ * by the parser to represent the value while it should be considered
+ * as signed one in this particular context - but we know that being
+ * aware of the context. The algorithm here is a result of a trade off,
+ * just to handle such cases correctly. Having said that, it's a subjective
+ * decision and there is a chance that the algorithm will change in
+ * the future.
+ */
+static fcml_bool conv_int_and_set_flag(const fcml_st_integer *value,
+        fcml_st_integer *imm, fcml_usize imm_size, fcml_usize exp_size,
+        fcml_flags flag, fcml_flags *flags) {
+    /* exp_size - potentially sign-extended size expected by an instruction */
+    fcml_st_integer tmp = *value;
+    if (!exp_size) {
+       /* In this case immediate values are not sign-extended
+        * so integer value size expected by an instruction in the same
+        * as the IMM field size. */
+        exp_size = imm_size;
     } else {
-        if (tmp.size == expected_size) {
+        /* Real size is specified so most likely it's an instruction
+         * which sign-extends the integer values from IMM fields before
+         * usage. */
+        if (tmp.size == exp_size) {
+            /* Sizes are the same, so it's probably the case where
+             * disassembler rendered sign-extended value in the first
+             * place. So with high certainty we can treat it as a
+             * signed value. */
             tmp.is_signed = FCML_TRUE;
         }
     }
-
-    fcml_ceh_error error = fcml_fn_utils_conv_int_to_int(&tmp,
-            destination, expected_size, size);
+    fcml_ceh_error error = fcml_fn_utils_conv_int_to_int(&tmp, imm, exp_size,
+            imm_size);
     if (!error && flags) {
         *flags |= flag;
     }
-
     return !error;
+}
+
+/*
+ * Checks if given integer encoded in fcml_st_integer structure fits
+ * IMM field of given size. The rules of encoding such values
+ * in respect to their signs and sizes are not so obvious and
+ * to some respect subjective, so there is a risk of changes
+ * in the future. Considering the fact that the accepting phase where
+ * this function is used is in general a kind of optimization in order
+ * to reject addressing modes which cannot be used to encode given instruction
+ * as soon as possible it's not required to be 100% accurate. That is, it
+ * cannot return false negatives but false positives are allowed because
+ * such addressing modes will be rejected by encoders anyway.
+ * Consequently, this implementation may return false positives in
+ * some rare cases but it is fast and does not duplicate the logic
+ * from encoding phase. It just rejects addressing modes which
+ * are explicitly incorrect for given offset.
+ */
+static fcml_bool int_fit_imm(const fcml_st_integer *value,
+        fcml_usize imm_size) {
+    fcml_uint64_t i64;
+    fcml_uint32_t i32;
+    fcml_uint16_t i16;
+    /* Values which occupies less or same number of bytes that IMM
+     * value always fits. */
+    if (value->size > imm_size) {
+        switch (imm_size) {
+        case FCML_DS_8:
+            switch (value->size) {
+            case FCML_DS_64:
+                i64 = (fcml_uint64_t)(value->int64 & 0xFFFFFFFFFFFFFF00UL);
+                return i64 == 0x0UL || i64 == 0xFFFFFFFFFFFFFF00UL;
+            case FCML_DS_32:
+                i32 = (fcml_uint32_t)(value->int32 & 0xFFFFFF00);
+                return i32 == 0 || i32 == 0xFFFFFF00;
+            case FCML_DS_16:
+                i16 = (fcml_uint16_t)(value->int16 & 0xFF00);
+                return i16 == 0 || i16 == 0xFF00;
+            }
+            break;
+        case FCML_DS_16:
+            switch (value->size) {
+            case FCML_DS_64:
+                i64 = (fcml_uint64_t)(value->int64 & 0xFFFFFFFFFFFF0000UL);
+                return i64 == 0x0UL || i64 == 0xFFFFFFFFFFFF0000UL;
+            case FCML_DS_32:
+                i32 = (fcml_uint32_t)(value->int32 & 0xFFFF0000);
+                return i32 == 0 || i32 == 0xFFFF0000;
+            }
+            break;
+        case FCML_DS_32:
+            if (value->size == FCML_DS_64) {
+                i64 = (fcml_uint64_t)(value->int64 & 0xFFFFFFFF00000000UL);
+                return i64 == 0x0UL || i64 == 0xFFFFFFFF00000000UL;
+            }
+            break;
+        }
+    }
+    return FCML_TRUE;
 }
 
 static fcml_ceh_error operand_acceptor_imm(operand_acceptor_args *args) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     encoding_context *context = args->context;
     const fcml_st_operand *operand_def = args->operand_def;
-    fcml_st_def_decoded_addr_mode *addr_mode = args->addr_mode;
 
     if (operand_def->type == FCML_OT_IMMEDIATE) {
-        fcml_st_integer destination = { 0 };
-        fcml_flags flags = 0;
-        fcml_st_def_tma_imm *addr_mode_args = (fcml_st_def_tma_imm*)
-                addr_mode->addr_mode_args;
-        fcml_uint8_t size = addr_mode_args->encoded_size;
-        fcml_uint8_t size_ex = addr_mode_args->encoded_ex_size;
-        const fcml_st_integer *immediate = &(operand_def->immediate);
-        fcml_en_operating_mode op_mode =
-                context->assembler_context->entry_point.op_mode;
-        fcml_bool is_convertable = FCML_FALSE;
+        const fcml_st_def_tma_imm *addr_mode_args =
+                (fcml_st_def_tma_imm*)args->addr_mode->addr_mode_args;
+        const fcml_st_integer *imm = &(operand_def->immediate);
 
-        fcml_flags osa_flags =
-                context->optimizer_processing_details.allowed_eosa.flags;
-        if (!osa_flags) {
-            osa_flags = FCML_EN_ASF_ALL;
+        /* EOSA flags potentially allowed for given addressing mode. */
+        fcml_flags accepted_flags = 0;
+
+        fcml_flags flags = get_eosa_flags(context);
+        if (!flags) {
+            flags = allowed_flags_for_op_mode(context);
         }
 
-        /* Not all EOSA values are available for every addressing mode.
-         * Additional flags can enable or disable some of them.
+        fcml_uint8_t imm_size = addr_mode_args->encoded_size;
+        fcml_bool fits = FCML_FALSE;
+
+        /* At this point some EASA flags may be already rejected, we have to
+         * take it into account and check these which are still valid.
          */
-
-        if (size != FCML_EOS_EOSA && size_ex != FCML_EOS_EOSA) {
-            is_convertable |= convert_integer_and_set_flag(
-                    immediate, &destination, FCML_GET_OS(size_ex) * 8,
-                    FCML_GET_OS(size) * 8, 0,
-                    NULL);
-        } else if (size == FCML_EOS_EOSA && size_ex == FCML_EOS_EOSA) {
-            /* Destination size calculated by EOSA.*/
-            if (osa_flags & FCML_EN_ASF_16)
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination, FCML_DS_16, FCML_DS_16,
-                                FCML_EN_ASF_16, &flags);
-            if (osa_flags & FCML_EN_ASF_32)
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination, FCML_DS_32, FCML_DS_32,
-                                FCML_EN_ASF_32, &flags);
-            if ((osa_flags & FCML_EN_ASF_64) && op_mode == FCML_OM_64_BIT) {
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination, FCML_DS_64,
-                                (addr_mode_args->is_64bit_imm_allowed) ? FCML_DS_64 :
-                                        FCML_DS_32, FCML_EN_ASF_64, &flags);
+        if (imm_size != FCML_EOS_EOSA) {
+            fits = int_fit_imm(imm, FCML_GET_OS(imm_size) * 8);
+        } else if (imm_size == FCML_EOS_EOSA) {
+            if ((flags & FCML_EN_ASF_16) && int_fit_imm(imm, FCML_DS_16)) {
+                accepted_flags |= FCML_EN_ASF_16;
+                fits |= FCML_TRUE;
             }
-        } else if (size == FCML_EOS_EOSA) {
-            if (osa_flags & FCML_EN_ASF_16)
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination,
-                                FCML_GET_OS(size_ex) * 8, FCML_DS_16,
-                                FCML_EN_ASF_16, &flags);
-            if (osa_flags & FCML_EN_ASF_32)
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination,
-                                FCML_GET_OS(size_ex) * 8, FCML_DS_32,
-                                FCML_EN_ASF_32, &flags);
-            if ((osa_flags & FCML_EN_ASF_64) && op_mode == FCML_OM_64_BIT) {
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination,
-                                FCML_GET_OS(size_ex) * 8,
-                                addr_mode_args->is_64bit_imm_allowed ? FCML_DS_64 :
-                                        FCML_DS_32, FCML_EN_ASF_64, &flags);
+            if ((flags & FCML_EN_ASF_32) && int_fit_imm(imm, FCML_DS_32)) {
+                accepted_flags |= FCML_EN_ASF_32;
+                fits |= FCML_TRUE;
             }
-        } else {
-            /* IMM extended to effective address size attribute.*/
-            if (osa_flags & FCML_EN_ASF_16)
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination,
-                                FCML_DS_16, FCML_GET_OS(size) * 8,
-                                FCML_EN_ASF_16, &flags);
-            if (osa_flags & FCML_EN_ASF_32)
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination, FCML_DS_32,
-                                FCML_GET_OS(size) * 8, FCML_EN_ASF_32, &flags);
-            if ((osa_flags & FCML_EN_ASF_64) && op_mode == FCML_OM_64_BIT) {
-                is_convertable |=
-                        convert_integer_and_set_flag(
-                                immediate, &destination,
-                                FCML_DS_64, FCML_GET_OS(size) * 8,
-                                FCML_EN_ASF_64, &flags);
+            if ((flags & FCML_EN_ASF_64) && (int_fit_imm(imm, FCML_DS_32)
+                    || addr_mode_args->is_64bit_imm_allowed)) {
+                    accepted_flags |= FCML_EN_ASF_64;
+                    fits |= FCML_TRUE;
             }
         }
 
-        if (!is_convertable || (flags && !fcml_ifn_asm_set_size_flag(
-                &(context->optimizer_processing_details.allowed_eosa),
-                flags))) {
+        if (!fits || (accepted_flags && !set_eosa_flags(context, accepted_flags))) {
             FCML_TRACE_MSG("Accept IMM: Can not accept IMM value.");
             error = FCML_CEH_GEC_INVALID_OPPERAND;
         }
@@ -1120,73 +1179,58 @@ static fcml_ceh_error operand_acceptor_imm(operand_acceptor_args *args) {
     } else {
         error = FCML_CEH_GEC_INVALID_OPPERAND;
     }
+
     return error;
 }
 
 static fcml_ceh_error operand_encoder_imm(operand_encoder_args *args) {
-
-    const fcml_st_operand *operand_def = args->operand_def;
-    inst_part *operand_enc = args->operand_enc;
-    encoding_context *context = args->context;
-
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     if (args->phase == IPPP_FIRST_PHASE) {
-
         fcml_st_def_tma_imm *addr_mode_args =
                 (fcml_st_def_tma_imm*)args->addr_mode->addr_mode_args;
-        fcml_uint8_t size = addr_mode_args->encoded_size;
-        fcml_uint8_t size_ex = addr_mode_args->encoded_ex_size;
-
-        const fcml_st_integer *source_imm = &(operand_def->immediate);
-        fcml_st_integer converted_source;
-
-        fcml_usize eosa_size = context->optimizer_processing_details.eosa;
+        /* Encoded size of IMM field. */
+        fcml_uint8_t enc_imm_size = addr_mode_args->encoded_size;
+        /* Encoded size of the value while it's interpreted by an instruction.
+         * In some cases instruction extends the value encoded
+         * in IMM field to larger values. For instance an 8-bit integer
+         * value may be sign extended to 32-bites before its use. */
+        fcml_uint8_t enc_ext_size = addr_mode_args->encoded_ex_size;
+        fcml_usize eosa = args->context->optimizer_processing_details.eosa;
 
         /* Remember that only one addressing mode of MOV instruction for
          * 64 bits mode can encode IMM64. */
-        fcml_usize eosa_imm = eosa_size;
-        if (!addr_mode_args->is_64bit_imm_allowed && eosa_size == FCML_DS_64) {
-            eosa_imm = FCML_DS_32;
+        fcml_usize imm_size_for_eosa = eosa;
+        if (!addr_mode_args->is_64bit_imm_allowed && eosa == FCML_DS_64) {
+            imm_size_for_eosa = FCML_DS_32;
         }
 
-        if ((size == FCML_EOS_EOSA || size_ex == FCML_EOS_EOSA) && !eosa_size) {
+        if ((enc_imm_size == FCML_EOS_EOSA || enc_ext_size == FCML_EOS_EOSA)
+                && !eosa) {
             FCML_TRACE_MSG("EOSA size not set! Processing failed.");
             return FCML_CEH_GEC_INTERNAL_ERROR;
         }
 
-        fcml_bool is_converted = FCML_FALSE;
+        fcml_bool fits = FCML_FALSE; /* True if offset fits IMM field. */
+        const fcml_st_integer *imm = &(args->operand_def->immediate);
 
-        if (size != FCML_EOS_EOSA && size_ex != FCML_EOS_EOSA) {
-            is_converted = convert_integer_and_set_flag(
-                    source_imm, &converted_source, FCML_GET_OS(size_ex) * 8,
-                    FCML_GET_OS(size) * 8, 0, NULL);
-        } else if (size == FCML_EOS_EOSA && size_ex == FCML_EOS_EOSA) {
-            is_converted = convert_integer_and_set_flag(
-                    source_imm, &converted_source, eosa_size, eosa_imm, 0,
-                    NULL);
-        } else if (size == FCML_EOS_EOSA) {
-            is_converted = convert_integer_and_set_flag(
-                    source_imm, &converted_source, FCML_GET_OS(size_ex) * 8,
-                    eosa_imm, 0, NULL);
-        } else {
-            is_converted = convert_integer_and_set_flag(
-                    source_imm, &converted_source, eosa_size,
-                    FCML_GET_OS(size) * 8, 0, NULL);
-        }
+        fcml_usize imm_size = enc_imm_size == FCML_EOS_EOSA ?
+                imm_size_for_eosa : FCML_GET_OS(enc_imm_size) * 8;
+        fcml_usize operand_size = enc_ext_size == FCML_EOS_EOSA ?
+                eosa : FCML_GET_OS(enc_ext_size) * 8;
 
-        if (!is_converted) {
-            error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
-        }
-
-        if (!error) {
-            fcml_st_memory_stream stream = {
-                    &(operand_enc->code), 0, sizeof(operand_enc->code)
-            };
-            error = fcml_fn_utils_encode_integer(&stream, &converted_source);
+        fcml_st_integer dest_imm;
+        fits = conv_int_and_set_flag(imm, &dest_imm, imm_size, operand_size, 0, NULL);
+        if (fits) {
+            inst_part *operand_enc = args->operand_enc;
+            fcml_st_memory_stream stream = fcml_fn_stream_init(
+                    &(operand_enc->code), 0, sizeof(operand_enc->code));
+            error = fcml_fn_utils_encode_integer(&stream, &dest_imm);
             if (!error) {
                 operand_enc->code_length = stream.offset;
             }
+        } else {
+            error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
         }
     }
 
@@ -1321,8 +1365,7 @@ static fcml_ceh_error operand_acceptor_immediate_dis_relative(
                 }
             }
         }
-        if (!fcml_ifn_asm_set_size_flag(
-                &(context->optimizer_processing_details.allowed_eosa), flags)) {
+        if (!set_eosa_flags(context, flags)) {
             error = FCML_CEH_GEC_INVALID_OPPERAND;
         }
     } else {
@@ -1528,9 +1571,7 @@ static fcml_ceh_error operand_acceptor_far_pointer(
     switch (context->assembler_context->entry_point.op_mode) {
     case FCML_OM_16_BIT:
         if (operand_def->far_pointer.offset_size == FCML_DS_16) {
-            if (!fcml_ifn_asm_set_size_flag(
-                    &(context->optimizer_processing_details.allowed_eosa),
-                    FCML_EN_ASF_16)) {
+            if (!set_eosa_flags(context, FCML_EN_ASF_16)) {
                 /* Size can not be used by this operand. */
                 result = FCML_CEH_GEC_INVALID_OPPERAND;
             }
@@ -1540,8 +1581,7 @@ static fcml_ceh_error operand_acceptor_far_pointer(
         }
         break;
     case FCML_OM_32_BIT:
-        if (!fcml_ifn_asm_set_size_flag(
-                &(context->optimizer_processing_details.allowed_eosa),
+        if (!set_eosa_flags(context,
                 (operand_def->far_pointer.offset_size == FCML_DS_16) ?
                         (FCML_EN_ASF_16 | FCML_EN_ASF_32) : FCML_EN_ASF_32)) {
             /* Size can not be used by this operand. */
@@ -1693,18 +1733,18 @@ static fcml_ceh_error operand_acceptor_segment_relative_offset(
         /* Check if address can be converted to 16, 32 or 64 bits. */
         src_addr.is_signed = FCML_TRUE;
 
-        is_convertable |= convert_integer_and_set_flag(&src_addr, &conv_addr,
+        /* TODO: change to: int_fit_imm */
+        is_convertable |= conv_int_and_set_flag(&src_addr, &conv_addr,
                 FCML_DS_32, FCML_DS_32, FCML_EN_ASF_32, &flags);
         if (context->assembler_context->entry_point.op_mode == FCML_OM_64_BIT) {
-            is_convertable |= convert_integer_and_set_flag(&src_addr, &conv_addr,
+            is_convertable |= conv_int_and_set_flag(&src_addr, &conv_addr,
                     FCML_DS_64, FCML_DS_64, FCML_EN_ASF_64, &flags);
         } else {
-            is_convertable |= convert_integer_and_set_flag(&src_addr, &conv_addr,
+            is_convertable |= conv_int_and_set_flag(&src_addr, &conv_addr,
                     FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags);
         }
 
-        if (!fcml_ifn_asm_set_size_flag(
-                &(context->optimizer_processing_details.allowed_easa), flags)) {
+        if (!set_easa_flags(context, flags)) {
             error = FCML_CEH_GEC_INVALID_OPPERAND;
         }
 
@@ -1977,9 +2017,7 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
                         easa_flags &= ~FCML_EN_ASF_64;
                     }
 
-                    if(!fcml_ifn_asm_set_size_flag(
-                      &(context->optimizer_processing_details.allowed_easa),
-                      easa_flags)) {
+                    if(!set_easa_flags(context, easa_flags)) {
                         FCML_TRACE_MSG("Accept ModR/M: Can not accept " \
                                 "ASA size.");
                         error = FCML_CEH_GEC_INVALID_OPPERAND;
@@ -2272,7 +2310,8 @@ static fcml_ceh_error operand_acceptor_pseudo_op(operand_acceptor_args *args) {
     if (operand_def->type == FCML_OT_IMMEDIATE && !is_pseudo_op) {
         /* IMM8 encoding is given directly in operand.*/
         fcml_st_integer destination;
-        if (!convert_integer_and_set_flag(
+        /* TODO: change to: int_fit_imm */
+        if (!conv_int_and_set_flag(
                 &(operand_def->immediate), &destination, FCML_DS_8, FCML_DS_8,
                 0, NULL)) {
             return FCML_CEH_GEC_INVALID_OPPERAND;
@@ -2303,7 +2342,8 @@ static fcml_ceh_error operand_encoder_pseudo_op(operand_encoder_args *args ) {
         if (operand_def->type == FCML_OT_IMMEDIATE) {
             /* IMM8 encoding is given directly in operand.*/
             fcml_st_integer destination;
-            if (!convert_integer_and_set_flag(
+            /* TODO: change to: int_fit_imm */
+            if (!conv_int_and_set_flag(
                     &(operand_def->immediate), &destination, FCML_DS_8,
                     FCML_DS_8, 0, NULL)) {
                 return FCML_CEH_GEC_INVALID_OPPERAND;

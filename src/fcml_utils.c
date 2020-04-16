@@ -47,7 +47,7 @@ fcml_ceh_error fcml_fn_utils_conv_int64_to_int(const fcml_uint64_t src,
             dest->size = FCML_DS_32;
         } else {
             if (filter & FCML_ENUSF_64) {
-                dest->int64 = src;
+                dest->int64 = imm;
                 dest->size = FCML_DS_64;
             } else {
                 error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
@@ -818,3 +818,4 @@ fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
     }
     return remainder;
 }
+
