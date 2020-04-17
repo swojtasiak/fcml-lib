@@ -156,10 +156,6 @@ typedef struct encoding_context {
     const fcml_st_assembler_context *assembler_context;
     /* Instruction being encoded. */
     const fcml_st_instruction *instruction;
-    /* Number of operands inside instruction model. For short forms always 0.
-     * This value is set just after the context is set up, so it can be used
-     * anywhere. */
-    fcml_usize operands_count;
     fcml_st_asm_optimizer_processing_details optimizer_processing_details;
     const fcml_st_mp_mnemonic *mnemonic;
     part_processor_context part_processor_context;
@@ -3054,7 +3050,6 @@ static fcml_ceh_error instruction_encoder_IA(
     encoding_context context = {
         assembler_context: asm_context,
         instruction: &tmp_instruction,
-        operands_count: operands_count,
         /* Global errors container is set directly to error container
          * from results. */
         error_container: &(result->errors)
