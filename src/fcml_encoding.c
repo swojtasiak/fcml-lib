@@ -24,6 +24,7 @@
 #include <fcml_errors.h>
 #include <fcml_optimizers.h>
 #include <fcml_choosers.h>
+#include <fcml_assembler.h>
 
 #include "fcml_def.h"
 #include "fcml_env_int.h"
@@ -124,7 +125,7 @@ typedef struct opcode_reg {
  * to implement this function.
  */
 typedef fcml_usize (*memory_data_size_calculator)(
-        fcml_st_instruction *instruction, fcml_ptr args);
+        const fcml_st_instruction *instruction, fcml_ptr args);
 
 typedef struct addr_mode_desc_details {
     /* Which OSA values are allowed for addressing mode. */
@@ -151,13 +152,13 @@ typedef struct part_processor_context {
 } part_processor_context;
 
 typedef struct encoding_context {
-    fcml_st_assembler_context *assembler_context;
-    fcml_st_instruction *instruction;
-    fcml_st_asm_encoder_result *encoder_result;
+    /* Assembler configuration. */
+    const fcml_st_assembler_context *assembler_context;
+    /* Instruction being encoded. */
+    const fcml_st_instruction *instruction;
     /* Number of operands inside instruction model. For short forms always 0.
      * This value is set just after the context is set up, so it can be used
-     * anywhere.
-     */
+     * anywhere. */
     fcml_usize operands_count;
     fcml_st_asm_optimizer_processing_details optimizer_processing_details;
     const fcml_st_mp_mnemonic *mnemonic;
@@ -575,7 +576,7 @@ fcml_usize fcml_ifn_asm_calculate_operand_size(
 }
 
 fcml_usize fcml_ifn_asm_non_standard_attribute_size_calculator(
-        fcml_st_entry_point *entry_point, fcml_usize operand_size, fcml_usize l,
+        const fcml_st_entry_point *entry_point, fcml_usize operand_size, fcml_usize l,
         fcml_usize u, fcml_ceh_error *error) {
     fcml_usize attribute_size = 0;
     if (operand_size == l) {
@@ -599,7 +600,7 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
         fcml_usize *encoded_data_size,
         enum fcml_ien_asm_comparator_type comparator) {
 
-    fcml_st_entry_point *entry_point =
+    const fcml_st_entry_point *entry_point =
             &(context->assembler_context->entry_point);
     fcml_st_asm_optimizer_processing_details *flags =
             &(context->optimizer_processing_details);
@@ -880,7 +881,7 @@ static fcml_bool accept_data_size(encoding_context *context,
         fcml_uint8_t encoded_operand_size,
         fcml_usize operand_size, enum fcml_ien_asm_comparator_type comparator) {
 
-    fcml_st_entry_point *entry_point =
+    const fcml_st_entry_point *entry_point =
             &(context->assembler_context->entry_point);
     fcml_st_asm_optimizer_processing_details *data_size_flags =
             &(context->optimizer_processing_details);
@@ -1165,8 +1166,8 @@ static fcml_ceh_error operand_acceptor_imm(operand_acceptor_args *args) {
             }
             if ((flags & FCML_EN_ASF_64) && (int_fit_imm(imm, FCML_DS_32)
                     || addr_mode_args->is_64bit_imm_allowed)) {
-                    accepted_flags |= FCML_EN_ASF_64;
-                    fits |= FCML_TRUE;
+                accepted_flags |= FCML_EN_ASF_64;
+                fits |= FCML_TRUE;
             }
         }
 
@@ -1292,7 +1293,8 @@ static fcml_ceh_error operand_acceptor_opcode_reg(operand_acceptor_args *args) {
     }
 
     if (!accept_data_size(args->context, args->addr_mode_desc,
-            addr_mode_args->encoded_reg_size, operand_def->reg.size, FCML_IEN_CT_EQUAL)) {
+            addr_mode_args->encoded_reg_size,
+            operand_def->reg.size, FCML_IEN_CT_EQUAL)) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
 
@@ -2036,7 +2038,7 @@ static fcml_ceh_error operand_encoder_rm(operand_encoder_args *args) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     const fcml_st_operand *operand_def = args->operand_def;
     encoding_context *context = args->context;
-    fcml_st_entry_point *entry_point =
+    const fcml_st_entry_point *entry_point =
             &(context->assembler_context->entry_point);
     fcml_st_def_tma_rm *addr_mode_args = (fcml_st_def_tma_rm*)
             args->addr_mode->addr_mode_args;
@@ -2473,8 +2475,8 @@ static operand_encoder_def operand_encoders[] = {
 
 fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
         encoding_context *context,
-        addr_mode_encoding *addr_mode,
-        fcml_st_instruction *instruction) {
+        const addr_mode_encoding *addr_mode,
+        const fcml_st_instruction *instruction) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2751,6 +2753,8 @@ typedef struct fcml_st_asm_enc_optimizer_callback_args {
     addr_mode_encoding *addr_mode;
     /** Encoding context instance. */
     encoding_context *context;
+    /** All assembled instructions end up here. */
+    fcml_st_asm_encoder_result *result;
 } fcml_st_asm_enc_optimizer_callback_args;
 
 /** Assembles instruction and puts it to the instructions chain. */
@@ -2761,7 +2765,7 @@ static fcml_ceh_error assemble_and_collect_instruction(fcml_ptr args) {
             (fcml_st_asm_enc_optimizer_callback_args*)args;
     encoding_context *context = callback_args->context;
     addr_mode_encoding *addr_mode = callback_args->addr_mode;
-    fcml_st_asm_encoder_result *encoding_result = context->encoder_result;
+    fcml_st_asm_encoder_result *result = callback_args->result;
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -2778,8 +2782,7 @@ static fcml_ceh_error assemble_and_collect_instruction(fcml_ptr args) {
         fcml_bool ignore = FCML_FALSE;
 
         /* Check if such instruction has been already assembled. */
-        fcml_st_assembled_instruction *instruction =
-                encoding_result->instructions;
+        fcml_st_assembled_instruction *instruction = result->instructions;
         while (instruction) {
             if (instruction->code_length == assembled_instruction->code_length
                     && fcml_fn_env_memory_cmp(instruction->code,
@@ -2798,11 +2801,11 @@ static fcml_ceh_error assemble_and_collect_instruction(fcml_ptr args) {
              * instructions chain.
              */
             fcml_st_assembled_instruction *instructions =
-                    encoding_result->instructions;
-            encoding_result->instructions = assembled_instruction;
+                    result->instructions;
+            result->instructions = assembled_instruction;
             assembled_instruction->next = instructions;
 
-            encoding_result->number_of_instructions++;
+            result->number_of_instructions++;
 
         } else {
             /* Free ignored instruction.*/
@@ -2857,8 +2860,8 @@ static void set_attribute_size_flag(fcml_usize attribute_size,
 
 void fcml_ifn_prepare_optimizer_context(
         fcml_st_asm_optimizer_context *optimizer_context,
-        fcml_st_assembler_context *assembler_context) {
-    fcml_st_entry_point *entry_point = &(assembler_context->entry_point);
+        const fcml_st_assembler_context *assembler_context) {
+    const fcml_st_entry_point *entry_point = &(assembler_context->entry_point);
     optimizer_context->op_mode = entry_point->op_mode;
     optimizer_context->optimizer_flags =
             assembler_context->configuration.optimizer_flags;
@@ -2964,7 +2967,7 @@ static void handle_addr_mode_errors(
 
 static fcml_ceh_error encode_addressing_mode_core(
         encoding_context *context, addr_mode_encoding *addr_mode,
-        addr_mode_error *addr_mode_errors) {
+        addr_mode_error *addr_mode_errors, fcml_st_asm_encoder_result *result) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_st_asm_optimizer_context optimizer_context = { 0 };
@@ -2985,6 +2988,7 @@ static fcml_ceh_error encode_addressing_mode_core(
             fcml_st_asm_enc_optimizer_callback_args args;
             args.addr_mode = addr_mode;
             args.context = context;
+            args.result = result;
 
             fcml_ifn_prepare_optimizer_context(&optimizer_context,
                     context->assembler_context);
@@ -3050,7 +3054,6 @@ static fcml_ceh_error instruction_encoder_IA(
     encoding_context context = {
         assembler_context: asm_context,
         instruction: &tmp_instruction,
-        encoder_result: result,
         operands_count: operands_count,
         /* Global errors container is set directly to error container
          * from results. */
@@ -3127,7 +3130,7 @@ static fcml_ceh_error instruction_encoder_IA(
 
                 /* Try to encode prepared addressing mode. */
                 error = encode_addressing_mode_core(&context, addr_mode,
-                        &addr_mode_errors);
+                        &addr_mode_errors, result);
 
                 addr_mode_elem = addr_mode_elem->next;
 
@@ -3278,7 +3281,7 @@ static fcml_ceh_error ipp_operand_wrapper_acceptor(
 static fcml_ceh_error ipp_operand_wrapper_encoder(ipp_encoder_args *args) {
     ipp_operand_wrapper_args *wrapper_args =
             (ipp_operand_wrapper_args*) args->args;
-    fcml_st_operand *operand = &(args->context->instruction->
+    const fcml_st_operand *operand = &(args->context->instruction->
             operands[wrapper_args->operand_index]);
     if (wrapper_args->operand_encoder) {
         operand_encoder_args wrapped_encoder_args = {
@@ -3569,7 +3572,7 @@ static fcml_ceh_error ipp_branch_hints_prefix_encoder(ipp_encoder_args *args) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     inst_part *instruction_part = args->instruction_part;
     if (args->phase == IPPP_THIRD_PHASE) {
-        fcml_st_instruction *instruction = args->context->instruction;
+        const fcml_st_instruction *instruction = args->context->instruction;
         if (instruction->prefixes & FCML_PREFIX_BRANCH_HINT) {
             instruction_part->code[0] = 0x3E;
             instruction_part->code_length = 1;
@@ -3852,7 +3855,8 @@ static fcml_ceh_error ipp_66_prefix_encoder(ipp_encoder_args *args) {
                 encode = FCML_TRUE;
                 /* SIMD instructions do not need 0x66 to change EOSA.*/
             } else if (!(addr_type & FCML_AMT_SIMD)) {
-                fcml_st_entry_point *entry_point = &(context->assembler_context->entry_point);
+                const fcml_st_entry_point *entry_point =
+                        &(context->assembler_context->entry_point);
                 fcml_usize osa = entry_point->operand_size_attribute;
                 fcml_usize eosa = context->optimizer_processing_details.eosa;
                 encode = (osa == FCML_DS_16 && eosa == FCML_DS_32)
@@ -3891,7 +3895,7 @@ static fcml_ceh_error ipp_67_prefix_encoder(ipp_encoder_args *args) {
     if (args->phase == IPPP_THIRD_PHASE) {
         /* If effective address size is not set, it means that instruction
          * is not interested in ASA and just doesn't use it. */
-        fcml_st_entry_point *entry_point =
+        const fcml_st_entry_point *entry_point =
                 &(context->assembler_context->entry_point);
         fcml_usize asa = entry_point->address_size_attribute;
         fcml_usize easa = context->optimizer_processing_details.easa;
@@ -3942,17 +3946,17 @@ static fcml_uint8_t encode_pp_prefix_field(fcml_uint32_t allowed_prefixes) {
 /* Encodes decorators if there are any defined for an operand. */
 static void encode_decorators(encoding_context *context,
         fcml_operand_decorators decorators,
-        fcml_st_operand *operand_def) {
+        const fcml_st_operand *operand) {
     /* Opmask decorator. */
     if (FCML_IS_DECOR_OPMASK_REG(decorators)) {
-        if (operand_def->decorators.operand_mask_reg.type == FCML_REG_OPMASK) {
-            context->epf.aaa = operand_def->decorators.operand_mask_reg.reg;
+        if (operand->decorators.operand_mask_reg.type == FCML_REG_OPMASK) {
+            context->epf.aaa = operand->decorators.operand_mask_reg.reg;
         }
     }
     /* Zeroing-masking is not supported by instructions
      * that write to memory. */
-    if (operand_def->type == FCML_OT_REGISTER && FCML_IS_DECOR_Z(decorators)) {
-        context->epf.z = operand_def->decorators.z;
+    if (operand->type == FCML_OT_REGISTER && FCML_IS_DECOR_Z(decorators)) {
+        context->epf.z = operand->decorators.z;
     }
 }
 
@@ -3986,7 +3990,7 @@ static fcml_ceh_error ipp_EVEX_prefix_encoder(ipp_encoder_args *args) {
         for (int i = 0; i < context->instruction->operands_count; i++) {
             fcml_operand_decorators supported_decorators =
                     FCML_DECORATORS(addr_mode_def->operands[i]);
-            fcml_st_operand *operand = &context->instruction->operands[i];
+            const fcml_st_operand *operand = &context->instruction->operands[i];
             encode_decorators(context, supported_decorators, operand);
         }
     }
@@ -4238,7 +4242,7 @@ static fcml_ceh_error ipp_REX_prefix_encoder(ipp_encoder_args *args) {
             rex = FCML_ENCODE_REX_B(rex, context->opcode_reg.ext_b);
 
             /* Assembler configuration.*/
-            fcml_st_assembler_conf *cfg =
+            const fcml_st_assembler_conf *cfg =
                     &(context->assembler_context->configuration);
 
             /* Even if REX do not contains any flags set in some cases
@@ -4287,7 +4291,8 @@ static fcml_ceh_error ipp_rip_post_processor(encoding_context *context,
         inst_part *instruction_part, fcml_ptr post_processor_args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    fcml_st_assembler_context *assembler_context = context->assembler_context;
+    const fcml_st_assembler_context *assembler_context =
+            context->assembler_context;
     fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
 
     if (!context->instruction_size.is_not_null) {
@@ -4310,7 +4315,8 @@ static fcml_ceh_error ipp_ModRM_encoder(ipp_encoder_args *args) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     encoding_context *context = args->context;
     const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
-    fcml_st_assembler_context *assembler_context = context->assembler_context;
+    const fcml_st_assembler_context *assembler_context =
+            context->assembler_context;
     inst_part *instruction_part = args->instruction_part;
 
     if (args->phase == IPPP_SECOND_PHASE) {
@@ -4818,11 +4824,12 @@ typedef struct data_size_calc_args {
 } data_size_calc_args;
 
 static fcml_usize reg_based_memory_data_size_calculator(
-        fcml_st_instruction *instruction, fcml_ptr args) {
+        const fcml_st_instruction *instruction, fcml_ptr args) {
     fcml_usize data = FCML_DS_UNDEF;
     data_size_calc_args *dsc_args = (data_size_calc_args*) args;
     if (instruction->operands_count > dsc_args->reg_index) {
-        fcml_st_operand *operand = &(instruction->operands[dsc_args->reg_index]);
+        const fcml_st_operand *operand =
+                &(instruction->operands[dsc_args->reg_index]);
         if (operand->type == FCML_OT_REGISTER) {
             return operand->reg.size;
         }
