@@ -514,15 +514,8 @@ enum fcml_ien_asm_comparator_type {
 };
 
 static void clean_context(encoding_context *context) {
-    fcml_st_asm_optimizer_processing_details *data_size_flags =
-            &(context->optimizer_processing_details);
-    data_size_flags->easa = FCML_DS_UNDEF;
-    data_size_flags->eosa = FCML_DS_UNDEF;
-    data_size_flags->vector_length = FCML_DS_UNDEF;
-    data_size_flags->allowed_easa.flags = FCML_EN_ASF_ANY;
-    data_size_flags->allowed_easa.is_set = FCML_FALSE;
-    data_size_flags->allowed_eosa.flags = FCML_EN_ASF_ANY;
-    data_size_flags->allowed_eosa.is_set = FCML_FALSE;
+    context->optimizer_processing_details =
+            (fcml_st_asm_optimizer_processing_details){0};
     /* Clears segment override set by acceptor functions.*/
     context->segment_override.reg = 0;
     context->segment_override.size = FCML_DS_UNDEF;
@@ -2968,6 +2961,11 @@ static fcml_ceh_error encode_addressing_mode_core(
     if (!context->instruction->hints || accept_instruction_hints(
             addr_mode->hints, context->instruction->hints)) {
 
+        /* Prepare processing context for optimizer using currently
+          used addressing mode. */
+        prepare_optimizer_processing_details(addr_mode,
+                &(context->optimizer_processing_details));
+
         error = fcml_ifn_asm_accept_addr_mode(context, addr_mode,
                 context->instruction);
         if (!error) {
@@ -3095,11 +3093,6 @@ static fcml_ceh_error instruction_encoder_IA(
                 /* Ignore all short forms if there are operands available.*/
                 context.is_short_form = addr_mode->mnemonic->is_shortcut &&
                         no_operands;
-
-                /* Prepare processing context for optimizer using currently
-                   used addressing mode. */
-                prepare_optimizer_processing_details(addr_mode,
-                        &(context.optimizer_processing_details));
 
                 /* Make it accessible through encoding context. Certain
                    encoders might need this information. */
