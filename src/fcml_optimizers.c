@@ -97,6 +97,11 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
 
     fcml_ceh_error error = FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 
+    const fcml_st_entry_point *entry_point = context->entry_point;
+
+    fcml_usize ep_asa = entry_point->address_size_attribute;
+    fcml_usize ep_osa = entry_point->operand_size_attribute;
+
     /* TODO: Maybe we should also try different vector lengths if there is
        such a possibility. */
     fcml_usize easa[2];
@@ -204,16 +209,16 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
     /* Choosing the best optimization path for ASA.*/
 
     if (!easa_count) {
-        switch (context->op_mode) {
+        switch (entry_point->op_mode) {
         case FCML_OM_16_BIT:
         case FCML_OM_32_BIT:
-            path = (context->asa == FCML_DS_16) ? opt_16_32_bit_path_16 :
+            path = (ep_asa == FCML_DS_16) ? opt_16_32_bit_path_16 :
                     opt_16_32_bit_path_32;
             easa_count = go_through_opt_path(
                     ds_flags->allowed_easa.flags, 2, path, easa);
             break;
         case FCML_OM_64_BIT:
-            path = (context->asa == FCML_DS_32) ? opt_64_bit_path_for_asa_32 :
+            path = (ep_asa == FCML_DS_32) ? opt_64_bit_path_for_asa_32 :
                     opt_64_bit_path_for_asa_64;
             easa_count = go_through_opt_path(
                     ds_flags->allowed_easa.flags, 2, path, easa);
@@ -224,16 +229,16 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
     /* Choosing the best optimization path for OSA.*/
 
     if (!eosa_count) {
-        switch (context->op_mode) {
+        switch (entry_point->op_mode) {
         case FCML_OM_16_BIT:
         case FCML_OM_32_BIT:
-            path = (context->osa == FCML_DS_16) ? opt_16_32_bit_path_16 :
+            path = (ep_osa == FCML_DS_16) ? opt_16_32_bit_path_16 :
                     opt_16_32_bit_path_32;
             eosa_count = go_through_opt_path(
                     ds_flags->allowed_eosa.flags, 2, path, eosa);
             break;
         case FCML_OM_64_BIT:
-            switch (context->osa) {
+            switch (ep_osa) {
             case FCML_DS_16:
                 path = &opt_64_bit_path_for_osa_16[0];
                 break;

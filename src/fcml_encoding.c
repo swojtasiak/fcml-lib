@@ -2854,17 +2854,6 @@ static void set_attribute_size_flag(fcml_usize attribute_size,
     }
 }
 
-void fcml_ifn_prepare_optimizer_context(
-        fcml_st_asm_optimizer_context *optimizer_context,
-        const fcml_st_assembler_context *assembler_context) {
-    const fcml_st_entry_point *entry_point = &(assembler_context->entry_point);
-    optimizer_context->op_mode = entry_point->op_mode;
-    optimizer_context->optimizer_flags =
-            assembler_context->configuration.optimizer_flags;
-    optimizer_context->asa = entry_point->address_size_attribute;
-    optimizer_context->osa = entry_point->operand_size_attribute;
-}
-
 void fcml_ifn_chooser_extract(fcml_ptr instruction_ptr,
         fcml_st_instruction_code *instruction_code) {
     if (instruction_ptr) {
@@ -2966,11 +2955,12 @@ static fcml_ceh_error encode_addressing_mode_core(
         addr_mode_error *addr_mode_errors, fcml_st_asm_encoder_result *result) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    fcml_st_asm_optimizer_context optimizer_context = { 0 };
     fcml_st_ceh_error_container *global_error_container =
             context->error_container;
     /* Errors container for current processing. */
     fcml_st_ceh_error_container addr_mode_error_container = { 0 };
+    const fcml_st_assembler_context *assembler_context =
+            context->assembler_context;
 
     context->error_container = &addr_mode_error_container;
 
@@ -2986,12 +2976,14 @@ static fcml_ceh_error encode_addressing_mode_core(
             args.context = context;
             args.result = result;
 
-            fcml_ifn_prepare_optimizer_context(&optimizer_context,
-                    context->assembler_context);
+            fcml_st_asm_optimizer_context optimizer_context = {
+                    .entry_point = &(assembler_context->entry_point),
+                    .optimizer_flags = assembler_context->configuration.optimizer_flags
+            };
 
             /* Optimizer implementation can be provided by user. */
             fcml_fnp_asm_optimizer optimizer =
-                    context->assembler_context->configuration.optimizer;
+                    assembler_context->configuration.optimizer;
             if (!optimizer) {
                 optimizer = &fcml_fn_asm_default_optimizer;
             }
