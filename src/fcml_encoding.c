@@ -244,10 +244,10 @@ typedef fcml_ceh_error (*operand_encoder)(operand_encoder_args*);
 
 typedef struct operand_acceptor_args {
     encoding_context *context;
-    const addr_mode_desc_details *addr_mode_details;
+    const fcml_st_operand *operand;
     const fcml_st_def_addr_mode_desc *addr_mode_desc;
+    const addr_mode_desc_details *addr_mode_details;
     fcml_st_def_decoded_addr_mode *addr_mode;
-    const fcml_st_operand *operand_def;
     inst_part *operand_enc;
 } operand_acceptor_args;
 
@@ -1073,7 +1073,7 @@ static fcml_bool conv_int_and_set_flag(const fcml_st_integer *value,
  * Consequently, this implementation may return false positives in
  * some rare cases but it is fast and does not duplicate the logic
  * from encoding phase. It just rejects addressing modes which
- * are explicitly incorrect for given offset.
+ * are explicitly incorrect for given values.
  */
 static fcml_bool int_fit_imm(const fcml_st_integer *value,
         fcml_usize imm_size) {
@@ -1121,12 +1121,12 @@ static fcml_bool int_fit_imm(const fcml_st_integer *value,
 static fcml_ceh_error operand_acceptor_imm(operand_acceptor_args *args) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     encoding_context *context = args->context;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
 
-    if (operand_def->type == FCML_OT_IMMEDIATE) {
+    if (operand->type == FCML_OT_IMMEDIATE) {
         const fcml_st_def_tma_imm *addr_mode_args =
                 (fcml_st_def_tma_imm*)args->addr_mode->addr_mode_args;
-        const fcml_st_integer *imm = &(operand_def->immediate);
+        const fcml_st_integer *imm = &(operand->immediate);
 
         /* EOSA flags potentially allowed for given addressing mode. */
         fcml_flags accepted_flags = 0;
@@ -1236,13 +1236,13 @@ static fcml_ceh_error operand_acceptor_explicit_reg(
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_st_def_tma_explicit_reg *addr_mode_args =
             (fcml_st_def_tma_explicit_reg*)args->addr_mode->addr_mode_args;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
 
-    if (operand_def->type != FCML_OT_REGISTER
-            || operand_def->reg.type != addr_mode_args->reg_type
-            || operand_def->reg.reg != addr_mode_args->reg_num
+    if (operand->type != FCML_OT_REGISTER
+            || operand->reg.type != addr_mode_args->reg_type
+            || operand->reg.reg != addr_mode_args->reg_num
             || !accept_data_size(args->context, args->addr_mode_desc,
-                    addr_mode_args->encoded_reg_size, operand_def->reg.size,
+                    addr_mode_args->encoded_reg_size, operand->reg.size,
                     FCML_IEN_CT_EQUAL)) {
         error = FCML_CEH_GEC_INVALID_OPPERAND;
     }
@@ -1272,18 +1272,18 @@ static fcml_ceh_error operand_encoder_explicit_reg(operand_encoder_args *args) {
 
 static fcml_ceh_error operand_acceptor_opcode_reg(operand_acceptor_args *args) {
 
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
     fcml_st_def_tma_opcode_reg *addr_mode_args =
             (fcml_st_def_tma_opcode_reg*) args->addr_mode->addr_mode_args;
 
-    if (operand_def->type != FCML_OT_REGISTER
-            || operand_def->reg.type != addr_mode_args->reg_type) {
+    if (operand->type != FCML_OT_REGISTER
+            || operand->reg.type != addr_mode_args->reg_type) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
 
     if (!accept_data_size(args->context, args->addr_mode_desc,
             addr_mode_args->encoded_reg_size,
-            operand_def->reg.size, FCML_IEN_CT_EQUAL)) {
+            operand->reg.size, FCML_IEN_CT_EQUAL)) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
 
@@ -1319,10 +1319,10 @@ static fcml_ceh_error operand_acceptor_immediate_dis_relative(
      * OSA size. */
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     encoding_context *context = args->context;
-    const fcml_st_operand *operand_def = args->operand_def;
-    fcml_bool is_offset = (operand_def->type == FCML_OT_ADDRESS
-            && operand_def->address.address_form == FCML_AF_OFFSET);
-    fcml_bool is_imm = (operand_def->type == FCML_OT_IMMEDIATE);
+    const fcml_st_operand *operand = args->operand;
+    fcml_bool is_offset = (operand->type == FCML_OT_ADDRESS
+            && operand->address.address_form == FCML_AF_OFFSET);
+    fcml_bool is_imm = (operand->type == FCML_OT_IMMEDIATE);
 
     if (is_imm || is_offset) {
         fcml_flags flags = 0;
@@ -1338,7 +1338,7 @@ static fcml_ceh_error operand_acceptor_immediate_dis_relative(
                  */
                 flags = FCML_EN_ASF_32 | FCML_EN_ASF_16;
             } else {
-                fcml_usize size_operator = operand_def->address.size_operator;
+                fcml_usize size_operator = operand->address.size_operator;
                 switch (size_operator) {
                 case FCML_DS_UNDEF:
                     flags = FCML_EN_ASF_32 | FCML_EN_ASF_16;
@@ -1554,14 +1554,14 @@ static fcml_ceh_error operand_encoder_imm_disp_relative(
 static fcml_ceh_error operand_acceptor_far_pointer(
         operand_acceptor_args *args) {
     fcml_ceh_error result = FCML_CEH_GEC_NO_ERROR;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
     encoding_context *context = args->context;
-    if (operand_def->type != FCML_OT_FAR_POINTER) {
+    if (operand->type != FCML_OT_FAR_POINTER) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
     switch (context->assembler_context->entry_point.op_mode) {
     case FCML_OM_16_BIT:
-        if (operand_def->far_pointer.offset_size == FCML_DS_16) {
+        if (operand->far_pointer.offset_size == FCML_DS_16) {
             if (!set_eosa_flags(context, FCML_EN_ASF_16)) {
                 /* Size can not be used by this operand. */
                 result = FCML_CEH_GEC_INVALID_OPPERAND;
@@ -1573,7 +1573,7 @@ static fcml_ceh_error operand_acceptor_far_pointer(
         break;
     case FCML_OM_32_BIT:
         if (!set_eosa_flags(context,
-                (operand_def->far_pointer.offset_size == FCML_DS_16) ?
+                (operand->far_pointer.offset_size == FCML_DS_16) ?
                         (FCML_EN_ASF_16 | FCML_EN_ASF_32) : FCML_EN_ASF_32)) {
             /* Size can not be used by this operand. */
             result = FCML_CEH_GEC_INVALID_OPPERAND;
@@ -1619,26 +1619,26 @@ static fcml_ceh_error operand_acceptor_explicit_gps_reg_addressing(
         operand_acceptor_args *args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
     fcml_st_def_tma_explicit_gps_reg_addressing *addr_mode_args =
             (fcml_st_def_tma_explicit_gps_reg_addressing*)
             args->addr_mode->addr_mode_args;
 
-    if ((operand_def->type != FCML_OT_ADDRESS)
-            || (operand_def->address.effective_address.base.reg !=
+    if ((operand->type != FCML_OT_ADDRESS)
+            || (operand->address.effective_address.base.reg !=
                     addr_mode_args->reg_num)) {
         error = FCML_CEH_GEC_INVALID_OPPERAND;
     } else if (!accept_data_size(args->context, args->addr_mode_desc,
-            FCML_EOS_EASA, operand_def->address.effective_address.base.size,
+            FCML_EOS_EASA, operand->address.effective_address.base.size,
             FCML_IEN_CT_EQUAL)) {
         error = FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
     } else if (!accept_data_size(args->context, args->addr_mode_desc,
-            addr_mode_args->encoded_operand_size, operand_def->address.size_operator,
+            addr_mode_args->encoded_operand_size, operand->address.size_operator,
             FCML_IEN_CT_EQUAL)) {
         error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
     } else {
         error = fcml_ifn_asm_accept_segment_register(args->context,
-                &(operand_def->address.segment_selector.segment_selector),
+                &(operand->address.segment_selector.segment_selector),
                 addr_mode_args->encoded_segment_register);
     }
 
@@ -1652,12 +1652,12 @@ static fcml_ceh_error operand_acceptor_explicit_gps_reg_addressing(
 static fcml_ceh_error operand_acceptor_explicit_ib(
         operand_acceptor_args *args) {
     fcml_ceh_error error = FCML_CEH_GEC_INVALID_OPPERAND;
-    const fcml_st_operand *operand_def = args->operand_def;
-    if (operand_def->type == FCML_OT_IMMEDIATE) {
+    const fcml_st_operand *operand = args->operand;
+    if (operand->type == FCML_OT_IMMEDIATE) {
         fcml_st_integer dest;
         /* We are interested in errors only here. */
         error = fcml_fn_utils_conv_int_to_int(
-                &(operand_def->immediate), &dest, FCML_DS_8, FCML_DS_8);
+                &(operand->immediate), &dest, FCML_DS_8, FCML_DS_8);
     }
     return error;
 }
@@ -1689,24 +1689,24 @@ static fcml_ceh_error operand_acceptor_segment_relative_offset(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    const fcml_st_operand *operand_def = args->operand_def;
-    if (operand_def->type == FCML_OT_ADDRESS) {
+    const fcml_st_operand *operand = args->operand;
+    if (operand->type == FCML_OT_ADDRESS) {
 
         fcml_st_def_tma_segment_relative_offset *addr_mode_args =
                 (fcml_st_def_tma_segment_relative_offset*)
                 args->addr_mode->addr_mode_args;
 
-        const fcml_st_address *address = &(operand_def->address);
+        const fcml_st_address *address = &(operand->address);
 
         if (address->address_form != FCML_AF_OFFSET) {
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
 
         encoding_context *context = args->context;
-        if (operand_def->address.size_operator != FCML_OS_UNDEFINED) {
+        if (operand->address.size_operator != FCML_OS_UNDEFINED) {
             if (!accept_data_size(context, args->addr_mode_desc,
                     addr_mode_args->encoded_operand_size,
-                    operand_def->address.size_operator, FCML_IEN_CT_EQUAL)) {
+                    operand->address.size_operator, FCML_IEN_CT_EQUAL)) {
                 return FCML_CEH_GEC_INVALID_OPPERAND;
             }
         }
@@ -1841,18 +1841,18 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     encoding_context *context = args->context;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
     const fcml_st_def_tma_rm *addr_mode_args = (fcml_st_def_tma_rm*)
             args->addr_mode->addr_mode_args;
 
-    fcml_bool is_reg = operand_def->type == FCML_OT_REGISTER;
-    fcml_bool is_mem = operand_def->type == FCML_OT_ADDRESS;;
+    fcml_bool is_reg = operand->type == FCML_OT_REGISTER;
+    fcml_bool is_mem = operand->type == FCML_OT_ADDRESS;;
     fcml_bool result = ((addr_mode_args->flags & FCML_RMF_R) && is_reg) ||
             ((addr_mode_args->flags & FCML_RMF_M) && is_mem);
 
     if (result) {
         if (is_reg) {
-            if (addr_mode_args->reg_type != operand_def->reg.type) {
+            if (addr_mode_args->reg_type != operand->reg.type) {
                 /* Different register type.*/
                 error = FCML_CEH_GEC_INVALID_OPPERAND;
             } else if ((context->instruction->prefixes & FCML_PREFIX_LOCK)
@@ -1863,7 +1863,7 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
             } else {
                 if (!accept_data_size(context, args->addr_mode_desc,
                         addr_mode_args->encoded_register_operand_size,
-                        operand_def->reg.size, FCML_IEN_CT_EQUAL)) {
+                        operand->reg.size, FCML_IEN_CT_EQUAL)) {
                     FCML_TRACE_MSG("Unsupported register size.");
                     error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                 }
@@ -1877,26 +1877,26 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
              * complicated. */
 
             /* TODO: Move it to accept_data_size. */
-            if (operand_def->decorators.bcast.is_not_null) {
+            if (operand->decorators.bcast.is_not_null) {
 
                 fcml_usize element_size =
                         FCML_GET_SIMD_ELEMENT_SIZE(args->addr_mode_desc->details);
 
                 /* AVX-512 Broadcast decorator. */
                 error = accept_bcast_decorator(
-                        addr_mode_args->is_bcast, operand_def->decorators.bcast,
+                        addr_mode_args->is_bcast, operand->decorators.bcast,
                         element_size, &(context->optimizer_processing_details),
                         addr_mode_args->encoded_memory_operand_size);
 
                 /* Accept broadcast memory location size. */
-                if (operand_def->address.size_operator &&
-                        element_size != operand_def->address.size_operator) {
+                if (operand->address.size_operator &&
+                        element_size != operand->address.size_operator) {
                     FCML_TRACE_MSG("Unsupported memory operand size.");
                     error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                 }
             } else {
                 fcml_usize mem_data_size = fcml_ifn_asm_calculate_operand_size(
-                        context, operand_def->address.size_operator,
+                        context, operand->address.size_operator,
                         addr_mode_args->encoded_memory_operand_size);
                 if (!accept_data_size(context, args->addr_mode_desc,
                         addr_mode_args->encoded_memory_operand_size, mem_data_size,
@@ -1909,7 +1909,7 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
             /* Check VSIB. */
             if (!error && addr_mode_args->is_vsib) {
                 const fcml_st_register *index =
-                        &(operand_def->address.effective_address.index);
+                        &(operand->address.effective_address.index);
                 if (index->type == FCML_REG_SIMD) {
                     fcml_usize vsib_reg_size = fcml_fn_def_vsib_reg_to_ds(
                             addr_mode_args->vector_index_register);
@@ -1929,9 +1929,9 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
             if (!error) {
 
                 const fcml_st_effective_address *effective_address =
-                        &(operand_def->address.effective_address);
+                        &(operand->address.effective_address);
                 const fcml_st_segment_selector *segment_selector =
-                        &(operand_def->address.segment_selector);
+                        &(operand->address.segment_selector);
                 const fcml_st_register *segment_register =
                         &(segment_selector->segment_selector);
 
@@ -1988,7 +1988,7 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
                         context->assembler_context->entry_point.op_mode;
 
                 fcml_st_modrm mod_rm = { 0 };
-                mod_rm.address = operand_def->address;
+                mod_rm.address = operand->address;
 
                 fcml_flags easa_flags = 0;
                 error = fcml_fn_modrm_calculate_effective_address_size(
@@ -2112,19 +2112,19 @@ static fcml_ceh_error operand_encoder_rm(operand_encoder_args *args) {
 static fcml_ceh_error operand_acceptor_r(operand_acceptor_args *args) {
     fcml_st_def_tma_r *addr_mode_args = (fcml_st_def_tma_r*)
             args->addr_mode->addr_mode_args;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
 
-    if (operand_def->type != FCML_OT_REGISTER
-            || operand_def->reg.type != addr_mode_args->reg_type) {
+    if (operand->type != FCML_OT_REGISTER
+            || operand->reg.type != addr_mode_args->reg_type) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
 
     /* Some registers allow UNDEF size to be defined for them. */
-    if ((operand_def->reg.type != FCML_REG_DR
-            && operand_def->reg.type != FCML_REG_CR)
-            && operand_def->reg.size != FCML_DS_UNDEF) {
+    if ((operand->reg.type != FCML_REG_DR
+            && operand->reg.type != FCML_REG_CR)
+            && operand->reg.size != FCML_DS_UNDEF) {
         if (!accept_data_size(args->context, args->addr_mode_desc,
-                addr_mode_args->encoded_register_operand_size, operand_def->reg.size,
+                addr_mode_args->encoded_register_operand_size, operand->reg.size,
                 FCML_IEN_CT_EQUAL)) {
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
@@ -2169,15 +2169,15 @@ static fcml_ceh_error operand_encoder_r(operand_encoder_args *args) {
 static fcml_ceh_error operand_acceptor_vex_vvvv(operand_acceptor_args *args) {
     fcml_st_def_tma_vex_vvvv_reg *addr_mode_args =
             (fcml_st_def_tma_vex_vvvv_reg*) args->addr_mode->addr_mode_args;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
 
-    if (operand_def->type != FCML_OT_REGISTER
-            || operand_def->reg.type != addr_mode_args->reg_type) {
+    if (operand->type != FCML_OT_REGISTER
+            || operand->reg.type != addr_mode_args->reg_type) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
 
     if (!accept_data_size(args->context, args->addr_mode_desc,
-            addr_mode_args->encoded_register_size, operand_def->reg.size,
+            addr_mode_args->encoded_register_size, operand->reg.size,
             FCML_IEN_CT_EQUAL)) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
@@ -2223,26 +2223,26 @@ static fcml_ceh_error operand_encoder_vex_vvvv(operand_encoder_args *args) {
 
 static fcml_ceh_error operand_acceptor_isX(operand_acceptor_args *args) {
     encoding_context *context = args->context;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
     fcml_st_def_tma_is *is_args =
             (fcml_st_def_tma_is*) args->addr_mode->addr_mode_args;
 
     if ((is_args->flags & FCML_ISF_IS4) ||
             (is_args->flags & FCML_ISF_IS5_SRC)) {
         /* IS4/IS5(src) */
-        if (operand_def->type != FCML_OT_REGISTER
-                || operand_def->reg.type != FCML_REG_SIMD) {
+        if (operand->type != FCML_OT_REGISTER
+                || operand->reg.type != FCML_REG_SIMD) {
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
         if (!accept_data_size(context, args->addr_mode_desc, FCML_EOS_L,
-                operand_def->reg.size, FCML_IEN_CT_EQUAL)) {
+                operand->reg.size, FCML_IEN_CT_EQUAL)) {
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
-    } else if (operand_def->type == FCML_OT_IMMEDIATE) {
+    } else if (operand->type == FCML_OT_IMMEDIATE) {
         /* IS5 - m2z */
         fcml_int8_t imm_value;
         fcml_ceh_error error = fcml_fn_utils_conv_int_to_int8(
-                &(operand_def->immediate), &imm_value);
+                &(operand->immediate), &imm_value);
         if (error) {
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
@@ -2293,17 +2293,17 @@ static fcml_ceh_error operand_encoder_isX(operand_encoder_args *args) {
 
 static fcml_ceh_error operand_acceptor_pseudo_op(operand_acceptor_args *args) {
     encoding_context *context = args->context;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
     fcml_st_def_tma_pseudo_op *pseudo_op_args =
             (fcml_st_def_tma_pseudo_op*) args->addr_mode->addr_mode_args;
     fcml_bool is_pseudo_op = context->mnemonic->pseudo_op.is_not_null;
 
-    if (operand_def->type == FCML_OT_IMMEDIATE && !is_pseudo_op) {
+    if (operand->type == FCML_OT_IMMEDIATE && !is_pseudo_op) {
         /* IMM8 encoding is given directly in operand.*/
         fcml_st_integer destination;
         /* TODO: change to: int_fit_imm */
         if (!conv_int_and_set_flag(
-                &(operand_def->immediate), &destination, FCML_DS_8, FCML_DS_8,
+                &(operand->immediate), &destination, FCML_DS_8, FCML_DS_8,
                 0, NULL)) {
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
@@ -2314,7 +2314,7 @@ static fcml_ceh_error operand_acceptor_pseudo_op(operand_acceptor_args *args) {
                     FCML_CEH_MEC_ERROR_INVALID_PSEUDO_OPCODE_VALUE);
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
-    } else if (!is_pseudo_op || operand_def->type != FCML_OT_NONE) {
+    } else if (!is_pseudo_op || operand->type != FCML_OT_NONE) {
         /* IMM8 is not available in operand, so its value should be given
          * in mnemonic configuration. In such case, operand
          * shouldn't exist.
@@ -2356,24 +2356,24 @@ static fcml_ceh_error operand_encoder_pseudo_op(operand_encoder_args *args ) {
 
 static fcml_ceh_error operand_acceptor_virtual_op(operand_acceptor_args *args) {
     encoding_context *context = args->context;
-    const fcml_st_operand *operand_def = args->operand_def;
+    const fcml_st_operand *operand = args->operand;
     fcml_st_def_tma_virtual_op *addr_mode_args =
             (fcml_st_def_tma_virtual_op*)args->addr_mode->addr_mode_args;
     fcml_st_asm_optimizer_processing_details *optimizer_details =
                 &(context->optimizer_processing_details);
 
-    if (operand_def->type != FCML_OT_NONE &&
-            operand_def->type != FCML_OT_VIRTUAL) {
+    if (operand->type != FCML_OT_NONE &&
+            operand->type != FCML_OT_VIRTUAL) {
         return FCML_CEH_GEC_INVALID_OPPERAND;
     }
 
     if (FCML_IS_DECOR_SAE_REQ(addr_mode_args->decorators) &&
-            !operand_def->decorators.sae) {
+            !operand->decorators.sae) {
         return FCML_CEH_GEC_MISSING_DECORATOR;
     }
 
     /* Handle explicit vector length for SAE and ER aware instructions. */
-    if (operand_def->decorators.sae || operand_def->decorators.er.is_not_null) {
+    if (operand->decorators.sae || operand->decorators.er.is_not_null) {
 
         fcml_uint8_t tuple_type =
                 FCML_GET_SIMD_TUPLETYPE(args->addr_mode_desc->details);
@@ -3238,7 +3238,7 @@ static fcml_ceh_error ipp_operand_wrapper_acceptor(
                 addr_mode_details: args->addr_mode_details,
                 addr_mode_desc: args->addr_mode_def,
                 addr_mode: wrapper_args->decoded_addr_mode,
-                operand_def: operand,
+                operand: operand,
                 operand_enc: NULL
             };
             return wrapper_args->operand_acceptor(&acceptor_args);
