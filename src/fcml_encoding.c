@@ -116,11 +116,6 @@ typedef struct extension_prefixes_fields {
     fcml_bool explicit_vector_length;
 } extension_prefixes_fields;
 
-typedef struct opcode_reg {
-    fcml_uint8_t opcode_reg;
-    fcml_uint8_t ext_b;
-} opcode_reg;
-
 /* Responsible for calculating memory data size. Custom calculators have \
  * to implement this function.
  */
@@ -142,13 +137,23 @@ typedef struct addr_mode_desc_details {
     fcml_ptr ds_calculator_args;
 } addr_mode_desc_details;
 
-typedef union part_processor_cache {
-    fcml_uint8_t is5_m2z;
-} part_processor_cache;
+/* Encoded operand register details. */
+struct opcode_reg {
+    fcml_uint8_t opcode_reg;
+    fcml_uint8_t ext_b;
+};
 
 /* is5 encoder consists of two parts which need to exchange state. */
 struct isX_state {
     fcml_uint8_t is5_byte;
+};
+
+/* Some hints which can be set by encoders in order to control
+ * ModR/M encoding process. */
+struct modrm_hints {
+    fcml_bool is_sib_alternative_hint;
+    fcml_bool is_rel_alternative_hint;
+    fcml_bool is_abs_alternative_hint;
 };
 
 typedef struct encoding_context {
@@ -162,24 +167,28 @@ typedef struct encoding_context {
     fcml_st_asm_optimizer_processing_details optimizer_processing_details;
     /* isX related state used to exchange information between is5 encoders. */
     struct isX_state isX_state;
+    /* Prefixes fields set by encoders. Used to encode instruction prefixes. */
     extension_prefixes_fields epf;
+    /* Used to force specific non-default segment register. */
     fcml_st_register segment_override;
+    /* All encoders are allowed to fill ModR/M details which
+     * are then used to encode ModR/M field. */
     fcml_st_modrm mod_rm;
-
-    /* ModR/M related operand hints.*/
-    fcml_bool is_sib_alternative_hint;
-    fcml_bool is_rel_alternative_hint;
-    fcml_bool is_abs_alternative_hint;
-    /* True if SIB alternative is available, but hasn't been chosen.*/
-    fcml_bool is_sib_alternative_encoding;
+    /* ModR/M related operand hints. */
+    struct modrm_hints modrm_hints;
+    /* ModR/M encoded into an intermediate form. All ModR/M fields
+     * can be found here. Provided by 'ipp_ModRM_encoder'. */
     fcml_st_encoded_modrm encoded_mod_rm;
-    opcode_reg opcode_reg;
+    /* Opcode register to be encoded directly in the opcode and REX field. */
+    struct opcode_reg opcode_reg;
+    /* Encoded instruction size in bytes. */
     fcml_nuint8_t instruction_size;
-    fcml_bool is_short_form;
+    /* Information for REX encoder that REX prefix is needed
+     * to encode register opcode. */
     fcml_bool reg_opcode_needs_rex;
-
     /* Operand size calculator selected for processed addressing mode.*/
     memory_data_size_calculator ds_calculator;
+    /* Arguments for data size calculator. */
     fcml_ptr ds_calculator_args;
     /* Error messages.*/
     fcml_st_ceh_error_container *error_container;
@@ -397,6 +406,8 @@ typedef void (*addr_mode_encoding_enricher)(addr_mode_encoding*,
 static void free_instruction_addr_modes(
         fcml_st_instruction_addr_modes *addr_modes,
         fcml_st_dialect_context_int *dialect_context);
+
+static fcml_bool is_short_form(encoding_context *context);
 
 /* Hints optimizer not to try another addressing mode but
  * to break processing immediately. It can be used in
@@ -1432,7 +1443,7 @@ static fcml_ceh_error ipp_imm_dis_rel_post_processor(
     if (enc_rel_size != FCML_EOS_UNDEFINED && enc_rel_size != FCML_EOS_BYTE) {
         FCML_TRACE_MSG("Wrong size of encoded relative address.");
         return FCML_CEH_GEC_INVALID_OPPERAND;
-    } else if (!context->instruction_size.is_not_null) {
+    } else if (FCML_IS_NULL(context->instruction_size)) {
         /* Should never happened.*/
         return FCML_CEH_GEC_INTERNAL_ERROR;
     }
@@ -2052,17 +2063,17 @@ static fcml_ceh_error operand_encoder_rm(operand_encoder_args *args) {
 
         } else {
             /* Set hints for ModR/M instruction part encoder.*/
-            context->is_sib_alternative_hint = (operand->hints
+            context->modrm_hints.is_sib_alternative_hint = (operand->hints
                     & FCML_OP_HINT_SIB_ENCODING);
 
             if (entry_point->op_mode == FCML_OM_64_BIT) {
-                context->is_abs_alternative_hint = (operand->hints
+                context->modrm_hints.is_abs_alternative_hint = (operand->hints
                         & FCML_OP_HINT_ABSOLUTE_ADDRESSING);
-                context->is_rel_alternative_hint = (operand->hints
+                context->modrm_hints.is_rel_alternative_hint = (operand->hints
                         & FCML_OP_HINT_RELATIVE_ADDRESSING);
             } else {
-                context->is_abs_alternative_hint = FCML_FALSE;
-                context->is_rel_alternative_hint = FCML_FALSE;
+                context->modrm_hints.is_abs_alternative_hint = FCML_FALSE;
+                context->modrm_hints.is_rel_alternative_hint = FCML_FALSE;
             }
 
             context->mod_rm.address = operand->address;
@@ -2460,12 +2471,12 @@ static operand_encoder_def operand_encoders[] = {
  * Instruction encoders. *
  *************************/
 
-fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
-        encoding_context *context,
-        const addr_mode_encoding *addr_mode,
-        const fcml_st_instruction *instruction) {
+fcml_ceh_error fcml_ifn_asm_accept_addr_mode(encoding_context *context,
+        const addr_mode_encoding *addr_mode) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
+    const fcml_st_instruction *instruction = context->instruction;
 
 #ifdef FCML_DEBUG
     FCML_TRACE("Accepting addressing mode: %d, prefixes: 0x%08X, opcode: 0x%08X.", context->__def_index, \
@@ -2486,7 +2497,7 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(
     while (current_processor) {
         ipp_desc *descriptor = &(current_processor->descriptor);
         context->last_ipp = index;
-        if (!context->is_short_form || descriptor->is_short_form_supported) {
+        if (!is_short_form(context) || descriptor->is_short_form_supported) {
             if (descriptor->acceptor) {
                 acceptor_args.args = descriptor->args;
                 error = descriptor->acceptor(&acceptor_args);
@@ -2562,9 +2573,8 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
         while (current_processor) {
             context->last_ipp = index;
             ipp_desc *descriptor = &(current_processor->descriptor);
-            if (descriptor->encoder
-                    && (!context->is_short_form || (context->is_short_form
-                            && descriptor->is_short_form_supported))) {
+            if (descriptor->encoder && (!is_short_form(context)
+                    || descriptor->is_short_form_supported)) {
                 if (!first && descriptor->type == IPPT_ENCODER) {
                     current_instruction_part++;
                 }
@@ -2962,8 +2972,7 @@ static fcml_ceh_error encode_addressing_mode_core(
         prepare_optimizer_processing_details(addr_mode,
                 &(context->optimizer_processing_details));
 
-        error = fcml_ifn_asm_accept_addr_mode(context, addr_mode,
-                context->instruction);
+        error = fcml_ifn_asm_accept_addr_mode(context, addr_mode);
         if (!error) {
             fcml_st_asm_enc_optimizer_callback_args args;
             args.addr_mode = addr_mode;
@@ -3085,10 +3094,6 @@ static fcml_ceh_error instruction_encoder_IA(
                             addr_mode->instruction, &tmp_instruction,
                             &inst_changed);
                 }
-
-                /* Ignore all short forms if there are operands available.*/
-                context.is_short_form = addr_mode->mnemonic->is_shortcut &&
-                        no_operands;
 
                 /* Make it accessible through encoding context. Certain
                    encoders might need this information. */
@@ -4271,9 +4276,9 @@ static fcml_ceh_error ipp_rip_post_processor(encoding_context *context,
             context->assembler_context;
     fcml_st_encoded_modrm *encoded_mod_rm = &(context->encoded_mod_rm);
 
-    if (!context->instruction_size.is_not_null) {
+    if (FCML_IS_NULL(context->instruction_size)) {
         /* Should never happened.*/
-        FCML_TRACE_MSG("instruction can not be null here.");
+        FCML_TRACE_MSG("instruction size has to be set here.");
         error = FCML_CEH_GEC_INTERNAL_ERROR;
     } else {
         /* Encode ModR/M and displacement.*/
@@ -4304,7 +4309,7 @@ static fcml_ceh_error ipp_ModRM_encoder(ipp_encoder_args *args) {
         ctx.choose_sib_encoding = assembler_context->configuration.choose_sib_encoding;
 
         /* Hints have higher precedence than configuration. */
-        if (context->is_sib_alternative_hint) {
+        if (context->modrm_hints.is_sib_alternative_hint) {
             ctx.choose_sib_encoding = FCML_TRUE;
             /* SIB hint has higher precedence than RIP configuration. There
              * is no way to encode RIP using SIB, so RIP flag has to be
@@ -4313,12 +4318,12 @@ static fcml_ceh_error ipp_ModRM_encoder(ipp_encoder_args *args) {
             ctx.choose_rip_encoding = FCML_FALSE;
         }
 
-        if (context->is_rel_alternative_hint) {
+        if (context->modrm_hints.is_rel_alternative_hint) {
             /* RIP encoding has been forced by using "rel" hint. */
             ctx.choose_rip_encoding = FCML_TRUE;
         }
 
-        if (context->is_abs_alternative_hint) {
+        if (context->modrm_hints.is_abs_alternative_hint) {
             /* Absolute offset encoding has been forced by using "abs" hint. */
             ctx.choose_rip_encoding = FCML_FALSE;
         }
@@ -4367,7 +4372,6 @@ static fcml_ceh_error ipp_ModRM_encoder(ipp_encoder_args *args) {
                     }
                     instruction_part->code_length = stream.offset;
                 }
-                context->is_sib_alternative_encoding = ctx.is_sib_alternative;
             } else {
                 /* ModRM encoded to the form not supported by current
                  * addressing mode. For example, addressing mode needs ASA 32,
@@ -5334,4 +5338,9 @@ fcml_ceh_error fcml_fn_get_instruction_addr_modes(
 
 static void break_optimization(encoding_context *context) {
     context->optimizer_processing_details.break_optimization = FCML_TRUE;
+}
+
+static inline fcml_bool is_short_form(encoding_context *context) {
+    return context->mnemonic->is_shortcut
+            && context->instruction->operands_count == 0;
 }
