@@ -642,10 +642,6 @@ fcml_ceh_error fcml_fn_utils_extend_int(fcml_st_integer *integer,
     return error;
 }
 
-fcml_bool fcml_fn_utils_is_reg_undef(const fcml_st_register *reg) {
-    return reg->type == FCML_REG_UNDEFINED;
-}
-
 fcml_ceh_error fcml_fn_utils_conv_map_error(fcml_int error) {
     fcml_ceh_error ceh_error = FCML_CEH_GEC_NO_ERROR;
     switch (error) {
@@ -686,7 +682,7 @@ void fcml_fn_utils_conv_gec_to_error_info(fcml_bool enabled,
     }
 }
 
-fcml_ceh_error fcml_fn_prepare_entry_point(fcml_st_entry_point *entry_point) {
+fcml_ceh_error fcml_fn_utils_prepare_entry_point(fcml_st_entry_point *entry_point) {
 
     /* Mode has to be set. */
     if (entry_point->op_mode != FCML_OM_16_BIT &&
@@ -763,7 +759,7 @@ fcml_bool fcml_fn_utils_is_disp_neg(const fcml_st_integer *disp) {
     }
 }
 
-fcml_bool fcml_fn_util_validate_vector_len(fcml_usize vector_length) {
+fcml_bool fcml_fn_utils_validate_vector_len(fcml_usize vector_length) {
     switch (vector_length) {
     case FCML_DS_128:
     case FCML_DS_256:
