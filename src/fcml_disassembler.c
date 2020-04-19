@@ -3039,7 +3039,7 @@ fcml_ceh_error fcml_ifn_disassemble_core(
     fcml_ist_dasm_disassembler *int_disasm = 
         (fcml_ist_dasm_disassembler *)context->disassembler;
 
-    error = fcml_fn_prepare_entry_point(&(context->entry_point));
+    error = fcml_fn_utils_prepare_entry_point(&(context->entry_point));
     if (error) {
         return error;
     }

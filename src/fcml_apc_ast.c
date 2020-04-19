@@ -1082,9 +1082,9 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand(
     fcml_st_effective_address *effective_address =
             &(address->effective_address);
 
-    fcml_bool is_combined = !fcml_fn_utils_is_reg_undef(
+    fcml_bool is_combined = !is_reg_undef(
             &(effective_address_node->base))
-            || !fcml_fn_utils_is_reg_undef(&(effective_address_node->index));
+            || !is_reg_undef(&(effective_address_node->index));
 
     address->address_form = is_combined ? FCML_AF_COMBINED : FCML_AF_OFFSET;
 

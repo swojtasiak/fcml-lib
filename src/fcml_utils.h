@@ -82,18 +82,16 @@ fcml_ceh_error fcml_fn_utils_integer_to_offset(const fcml_st_integer *src,
 fcml_ceh_error fcml_fn_utils_extend_int(fcml_st_integer *src,
         fcml_usize ext);
 
-fcml_bool fcml_fn_utils_is_reg_undef(const fcml_st_register *reg);
-
 fcml_ceh_error fcml_fn_utils_conv_map_error(fcml_int error);
 
 void fcml_fn_utils_conv_gec_to_error_info(fcml_bool enabled,
         fcml_st_ceh_error_container *error_container, fcml_ceh_error code );
 
-fcml_ceh_error fcml_fn_prepare_entry_point(fcml_st_entry_point *entry_point);
+fcml_ceh_error fcml_fn_utils_prepare_entry_point(fcml_st_entry_point *entry_point);
 
 fcml_bool fcml_fn_utils_is_disp_neg(const fcml_st_integer *displacement);
 
-fcml_bool fcml_fn_util_validate_vector_len(fcml_usize vector_length);
+fcml_bool fcml_fn_utils_validate_vector_len(fcml_usize vector_length);
 
 fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
         fcml_st_integer *quotient, fcml_int32_t divisor);
@@ -104,5 +102,26 @@ fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
 static inline fcml_bool safe_cast_i6432(fcml_int64_t value) {
     return value <= FCML_INT32_MAX && value >= FCML_INT32_MIN;
 }
+
+/**
+ * Returns true if operand is SIMD register.
+ */
+static inline fcml_bool is_simd_reg(const fcml_st_operand *operand) {
+    return operand->type == FCML_OT_REGISTER &&
+            operand->reg.type == FCML_REG_SIMD;
+}
+
+/**
+ * Returns true if operand is IMM.
+ */
+static inline fcml_bool is_imm(const fcml_st_operand *operand) {
+    return operand->type == FCML_OT_IMMEDIATE;
+}
+
+/* Returns true if register type is undefined. */
+static inline fcml_bool is_reg_undef(const fcml_st_register *reg) {
+    return reg->type == FCML_REG_UNDEFINED;
+}
+
 
 #endif /* FCML_UTILS_H_ */

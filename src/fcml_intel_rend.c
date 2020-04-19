@@ -181,13 +181,13 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_intel( const fcml_st_rende
     if ( address->address_form == FCML_AF_COMBINED ) {
 
         /* Append base register.*/
-        if ( !fcml_fn_utils_is_reg_undef( &( effective_address->base ) ) ) {
+        if (!is_reg_undef(&(effective_address->base))) {
             fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( effective_address->base ), prefixes->is_rex );
             first = FCML_FALSE;
         }
 
         /* Append index register.*/
-        if ( !fcml_fn_utils_is_reg_undef( &( effective_address->index ) ) ) {
+        if (!is_reg_undef(&(effective_address->index))) {
             fcml_fn_rend_utils_format_append_str_if( output_stream, FCML_TEXT( "+" ), !first );
             fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( effective_address->index ), prefixes->is_rex );
             first = FCML_FALSE;

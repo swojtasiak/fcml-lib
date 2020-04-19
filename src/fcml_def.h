@@ -383,7 +383,6 @@ typedef struct fcml_st_def_instruction_desc {
 
 #define FCML_OP_OPERAND_ISx_BASE    0x0C000000
 #define FCML_OP_OPERAND_IS4         (FCML_OP_OPERAND_ISx_BASE | FCML_ISF_IS4)
-
 #define FCML_OP_OPERAND_IS5(flags)  (FCML_OP_OPERAND_ISx_BASE | FCML_ISF_IS5 | \
         flags)
 

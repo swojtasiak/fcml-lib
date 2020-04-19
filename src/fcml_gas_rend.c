@@ -127,12 +127,12 @@ fcml_ceh_error fcml_ifn_rend_operand_renderer_address_gas( const fcml_st_render_
         fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "(" ) );
 
         /* Append base register.*/
-        if ( !fcml_fn_utils_is_reg_undef( &( effective_address->base ) ) ) {
+        if (!is_reg_undef(&(effective_address->base ))) {
             fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( effective_address->base ), prefixes->is_rex );
         }
 
         /* Append index register.*/
-        if ( !fcml_fn_utils_is_reg_undef( &( effective_address->index ) ) ) {
+        if (!is_reg_undef(&(effective_address->index))) {
             fcml_fn_rend_utils_format_append_str( output_stream, FCML_TEXT( "," ) );
             fcml_fn_rend_utils_format_append_reg( dialect_context, output_stream, &( effective_address->index ), prefixes->is_rex );
         }

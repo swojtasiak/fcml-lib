@@ -240,7 +240,7 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
     }
 
     /* Validate and prepare entry point. */
-    error = fcml_fn_prepare_entry_point(&(asm_context->entry_point));
+    error = fcml_fn_utils_prepare_entry_point(&(asm_context->entry_point));
     if (error) {
         return error;
     }
