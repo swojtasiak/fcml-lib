@@ -422,71 +422,71 @@ static void break_optimization(encoding_context *context);
 
 #ifdef FCML_DEBUG
 
-fcml_char fcml_idarr_asm_data_attr_flags_buff[64];
+static fcml_char print_data_attr_flags_buff[64];
 
-fcml_string fcml_idfn_asm_print_attr_size_flags(fcml_flags flags) {
+static fcml_string debug_print_attr_size_flags(fcml_flags flags) {
     int index = 0;
     if(flags == FCML_EN_ASF_ANY) {
-        sprintf(fcml_idarr_asm_data_attr_flags_buff, "ANY");
+        sprintf(print_data_attr_flags_buff, "ANY");
     } else {
         if(flags & FCML_EN_ASF_16) {
-            index += sprintf(fcml_idarr_asm_data_attr_flags_buff, "2");
+            index += sprintf(print_data_attr_flags_buff, "2");
         }
         if(flags & FCML_EN_ASF_32) {
-            index += sprintf(fcml_idarr_asm_data_attr_flags_buff + index, "4");
+            index += sprintf(print_data_attr_flags_buff + index, "4");
         }
         if(flags & FCML_EN_ASF_64) {
-            index += sprintf(fcml_idarr_asm_data_attr_flags_buff + index, "8");
+            index += sprintf(print_data_attr_flags_buff + index, "8");
         }
     }
-    return fcml_idarr_asm_data_attr_flags_buff;
+    return print_data_attr_flags_buff;
 }
 
-fcml_char fcml_idarr_asm_data_flags_buff[512];
+static fcml_char print_data_flags_buff[512];
 
-fcml_string fcml_idfn_asm_encode_size_flags(
+static fcml_string debug_print_size_flags(
         fcml_st_asm_optimizer_processing_details *size_flags) {
 
     int index = 0;
 
     /* Vector length. */
     if(size_flags->vector_length) {
-        index += sprintf(fcml_idarr_asm_data_flags_buff, "Vector length: %d, ",
+        index += sprintf(print_data_flags_buff, "Vector length: %d, ",
                 size_flags->vector_length);
     } else {
-        index += sprintf(fcml_idarr_asm_data_flags_buff, "L: NS, ");
+        index += sprintf(print_data_flags_buff, "L: NS, ");
     }
 
     /* Allowed EOSA.*/
     if(size_flags->allowed_eosa.is_set) {
-        index += sprintf(fcml_idarr_asm_data_flags_buff + index,
+        index += sprintf(print_data_flags_buff + index,
                 "Allowed OSA: [%s], ",
-                fcml_idfn_asm_print_attr_size_flags(
+                debug_print_attr_size_flags(
                         size_flags->allowed_eosa.flags));
     } else {
-        index += sprintf(fcml_idarr_asm_data_flags_buff + index,
+        index += sprintf(print_data_flags_buff + index,
                 "Allowed OSA: NS, ");
     }
 
     /* Allowed EASA.*/
     if(size_flags->allowed_easa.is_set) {
-        index += sprintf(fcml_idarr_asm_data_flags_buff + index,
-                "Allowed ASA: [%s], ", fcml_idfn_asm_print_attr_size_flags(
+        index += sprintf(print_data_flags_buff + index,
+                "Allowed ASA: [%s], ", debug_print_attr_size_flags(
                         size_flags->allowed_easa.flags));
     } else {
-        index += sprintf(fcml_idarr_asm_data_flags_buff + index,
+        index += sprintf(print_data_flags_buff + index,
                 "Allowed ASA: NS, ");
     }
 
     /* Chosen OSA.*/
-    index += sprintf(fcml_idarr_asm_data_flags_buff + index, "EOSA: %d, ",
+    index += sprintf(print_data_flags_buff + index, "EOSA: %d, ",
             size_flags->eosa);
 
     /* Chosen OSA.*/
-    index += sprintf(fcml_idarr_asm_data_flags_buff + index, "EASA: %d",
+    index += sprintf(print_data_flags_buff + index, "EASA: %d",
             size_flags->easa);
 
-    return fcml_idarr_asm_data_flags_buff;
+    return print_data_flags_buff;
 }
 
 #endif
@@ -2639,7 +2639,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
                 " 0x%02X (%s).", context->__def_index,
                 addr_mode->addr_mode_desc->allowed_prefixes,
                 addr_mode->addr_mode_desc->opcode_flags,
-                fcml_idfn_asm_encode_size_flags(
+                debug_print_size_flags(
                         &(context->optimizer_processing_details)));
 #endif
     } else {
@@ -2648,7 +2648,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
                 " opcode: 0x%02X (%s).", context->__def_index,
                 addr_mode->addr_mode_desc->allowed_prefixes,
                 addr_mode->addr_mode_desc->opcode_flags,
-                fcml_idfn_asm_encode_size_flags(
+                debug_print_size_flags(
                         &(context->optimizer_processing_details)));
 #endif
     }
