@@ -552,14 +552,6 @@ static fcml_usize get_effective_address_size(encoding_context *context) {
     return context->assembler_context->entry_point.address_size_attribute;
 }
 
-fcml_usize fcml_ifn_asm_get_effective_operand_size(
-        encoding_context *context) {
-    if (context->optimizer_processing_details.eosa) {
-        return context->optimizer_processing_details.eosa;
-    }
-    return context->assembler_context->entry_point.operand_size_attribute;
-}
-
 fcml_usize fcml_ifn_asm_calculate_operand_size(
         encoding_context *context, fcml_usize size_operator,
         fcml_uint8_t encoded_size_operator) {
@@ -596,7 +588,7 @@ fcml_usize fcml_ifn_asm_non_standard_attribute_size_calculator(
 }
 
 /* TODO: Refactoring - struct for bcast fields. Too complicated. */
-fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
+static fcml_ceh_error decode_dynamic_operand_size_bcast(
         encoding_context *context,
         fcml_uint8_t encoded_operand_size, fcml_usize operand_size,
         const fcml_nuint8_t *bcast, fcml_usize element_size,
@@ -711,12 +703,10 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
     }
 
     if (!error) {
-
         /* If size is not set yet it sets it to the calculated
          * value, but if it's already set it only checks if the newly
          * calculated one has the same size.
          */
-
         if (vector_length) {
             if (flags->vector_length && flags->vector_length != vector_length) {
                 /* All dynamic operands have to be of the same size.*/
@@ -727,41 +717,16 @@ fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size_bcast(
                 flags->vector_length = vector_length;
             }
         }
-        if (effective_address_size) {
-            if (flags->easa && effective_address_size != flags->easa) {
-                FCML_TRACE("Wrong encoded EASA size. Expected %d got %d.",
-                        flags->easa, effective_address_size);
-                error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
-            } else {
-                flags->easa = effective_address_size;
-                if (encoded_data_size) {
-                    *encoded_data_size = effective_address_size;
-                }
-            }
-        }
-        if (effective_operand_size) {
-            if (flags->eosa && effective_operand_size != flags->eosa) {
-                FCML_TRACE("Wrong encoded EOSA size. Expected %d got %d.",
-                        flags->eosa, effective_operand_size);
-                error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
-            } else {
-                flags->eosa = effective_operand_size;
-                if (encoded_data_size) {
-                    *encoded_data_size = effective_operand_size;
-                }
-            }
-        }
     }
 
     return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_decode_dynamic_operand_size(
-        encoding_context *context,
+static fcml_ceh_error decode_dynamic_operand_size(encoding_context *context,
         fcml_uint8_t encoded_operand_size, fcml_usize operand_size,
         fcml_usize *encoded_data_size,
         enum fcml_ien_asm_comparator_type comparator) {
-    return fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
+    return decode_dynamic_operand_size_bcast(context,
             encoded_operand_size, operand_size, NULL, 0,
             encoded_data_size, comparator);
 }
@@ -1273,7 +1238,7 @@ static fcml_ceh_error operand_encoder_explicit_reg(operand_encoder_args *args) {
         const fcml_st_register *reg = &(args->operand->reg);
         /* Encode IMM.*/
         fcml_usize encoded_size;
-        error = fcml_ifn_asm_decode_dynamic_operand_size(args->context,
+        error = decode_dynamic_operand_size(args->context,
                 addr_mode_args->encoded_reg_size, reg->size, &encoded_size,
                 FCML_IEN_CT_EQUAL);
     }
@@ -2057,7 +2022,7 @@ static fcml_ceh_error operand_encoder_rm(operand_encoder_args *args) {
             }
 
             /* Modify data size flags if there is such need.*/
-            error = fcml_ifn_asm_decode_dynamic_operand_size(context,
+            error = decode_dynamic_operand_size(context,
                     addr_mode_args->encoded_register_operand_size, operand->reg.size,
                     NULL, FCML_IEN_CT_EQUAL);
 
@@ -2086,7 +2051,7 @@ static fcml_ceh_error operand_encoder_rm(operand_encoder_args *args) {
             fcml_size element_size = FCML_GET_SIMD_ELEMENT_SIZE(
                     args->addr_mode_def->details);
 
-            error = fcml_ifn_asm_decode_dynamic_operand_size_bcast(context,
+            error = decode_dynamic_operand_size_bcast(context,
                     addr_mode_args->encoded_memory_operand_size, mem_data_size,
                     &(operand->decorators.bcast), element_size,
                     NULL, FCML_IEN_CT_EQUAL);
@@ -2164,7 +2129,7 @@ static fcml_ceh_error operand_encoder_r(operand_encoder_args *args) {
         if ((operand->reg.type != FCML_REG_DR
                 && operand->reg.type != FCML_REG_CR)
                 && operand->reg.size != FCML_DS_UNDEF) {
-            error = fcml_ifn_asm_decode_dynamic_operand_size(context,
+            error = decode_dynamic_operand_size(context,
                     addr_mode_args->encoded_register_operand_size,
                     operand->reg.size, NULL, FCML_IEN_CT_EQUAL);
             if (error) {
@@ -2219,7 +2184,7 @@ static fcml_ceh_error operand_encoder_vex_vvvv(operand_encoder_args *args) {
         if ((operand->reg.type != FCML_REG_DR
                 && operand->reg.type != FCML_REG_CR)
                 && operand->reg.size != FCML_DS_UNDEF) {
-            error = fcml_ifn_asm_decode_dynamic_operand_size(context,
+            error = decode_dynamic_operand_size(context,
                     addr_mode_args->encoded_register_size, operand->reg.size,
                     NULL, FCML_IEN_CT_EQUAL);
             if (error) {
@@ -4179,12 +4144,6 @@ static fcml_ceh_error ipp_REX_prefix_encoder(ipp_encoder_args *args) {
     encoding_context *context = args->context;
     const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
     inst_part *instruction_part = args->instruction_part;
-
-    if (args->phase == IPPP_FIRST_PHASE) {
-        if (FCML_DEF_PREFIX_W_1(addr_mode_def->allowed_prefixes)) {
-            context->optimizer_processing_details.eosa = FCML_DS_64;
-        }
-    }
 
     if (args->phase == IPPP_THIRD_PHASE) {
         /* REX prefix is only available in 64 bit mode. Neither VEX nor
