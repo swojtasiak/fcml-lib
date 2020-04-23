@@ -123,5 +123,19 @@ static inline fcml_bool is_reg_undef(const fcml_st_register *reg) {
     return reg->type == FCML_REG_UNDEFINED;
 }
 
+/* Returns true if integer value is 0. */
+static inline fcml_bool is_integer_zero(const fcml_st_integer *imm) {
+    switch(imm->size) {
+    case FCML_DS_8:
+        return imm->int8 == 0;
+    case FCML_DS_16:
+        return imm->int16 == 0;
+    case FCML_DS_32:
+        return imm->int32 == 0;
+    case FCML_DS_64:
+        return imm->int64 == 0;
+    }
+    return FCML_FALSE;
+}
 
 #endif /* FCML_UTILS_H_ */

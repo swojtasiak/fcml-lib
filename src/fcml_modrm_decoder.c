@@ -394,6 +394,13 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit(
                 return error;
             }
         }
+
+        /* [EBP] can be only encoded with displacement 0, so do not return
+         * it as it was used only in order to encode [EBP]. */
+        if (effective_address->base.reg == FCML_REG_EBP
+                && is_integer_zero(&(effective_address->displacement))) {
+            effective_address->displacement = (struct fcml_st_integer) {0};
+        }
     }
 
     /* Decodes register if something needs it.*/

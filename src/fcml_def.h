@@ -441,6 +441,7 @@ fcml_usize fcml_fn_def_vsib_reg_to_ds(fcml_uint8_t vsib_reg);
 
 #define FCML_SEG_ALLOW_OVERRIDE                      0x80
 #define FCML_SEG_DENY_OVERRIDE                       0x00
+#define FCML_SEG_GET_REG(encoded_reg)                (encoded_reg & 0x7F)
 #define FCML_SEG_ENCODE_REGISTER(reg_num, override)  (reg_num | override)
 
 #define FCML_SEG_DECODE_IS_OVERRIDE_ALLOWED(encoded) \

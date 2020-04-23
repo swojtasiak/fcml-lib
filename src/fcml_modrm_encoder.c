@@ -334,6 +334,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
     const fcml_st_address *address = &(decoded_modrm->address);
     const fcml_st_effective_address *effective_address =
             &(address->effective_address);
+    fcml_st_integer displacement = address->effective_address.displacement;
 
     /* Check if addressing mode and effective address size are compatible.*/
     if ((context->chosen_effective_address_size == FCML_DS_64
@@ -352,7 +353,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
      */
     fcml_bool is_rip_disp = effective_address->base.type == FCML_REG_IP;
 
-    /* Sanity check.*/
+    /* Sanity check. */
     if ((is_base || is_index) && address->address_form != FCML_AF_COMBINED) {
         return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
     }
@@ -382,18 +383,24 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
                     context->is_sib_alternative = FCML_FALSE;
                 } else {
                     /* In case of 64 bit addressing SIB is needed to encode
-                     * absolute address.
-                     */
-                    choose_sib =
-                            (context->op_mode == FCML_OM_64_BIT) ?
+                     * absolute address. */
+                    choose_sib = (context->op_mode == FCML_OM_64_BIT) ?
                                     FCML_TRUE : context->choose_sib_encoding;
                     context->is_sib_alternative = FCML_TRUE;
                 }
 
             } else if (is_base) {
-                /* [esp],edx can be only encoded with using of SIB byte.*/
+                /* [esp],edx can be only encoded with using of SIB byte. */
                 if (effective_address->base.reg == FCML_REG_ESP) {
                     choose_sib = FCML_TRUE;
+                } else if (effective_address->base.reg == FCML_REG_EBP
+                        && !is_displacement) {
+                    /* This addressing mode can be only encoded with
+                     * displacement set to 0. */
+                    disp_size = FCML_DS_8;
+                    displacement.int8 = 0;
+                    displacement.size = FCML_DS_8;
+                    is_displacement = FCML_TRUE;
                 } else {
                     /* RIP relative addressing can not be encoded using SIB.*/
                     if (effective_address->base.type != FCML_REG_IP) {
@@ -568,7 +575,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
         if (is_base || is_index) {
 
             fcml_ceh_error error = fcml_ifn_modrm_encode_displacement(context,
-                    &(effective_address->displacement), encoded_modrm,
+                    &displacement, encoded_modrm,
                     context->chosen_effective_address_size, &disp_size,
                     is_rip_disp);
             if (error) {
