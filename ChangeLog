@@ -21,3 +21,8 @@
 13.11.2019 (1.2.0)
  - bug fixes
  - AVX-512 support
+24.04.2020 (1.2.1)
+ - a new option (-all) added to fcml-asm
+ - lots of refactoring and cleanup
+ - important bug fixes: a bug in [ebp] encoding fixed (assembler)
+ - important bug fixes: a bug in es segment register override fixed (assembler)
