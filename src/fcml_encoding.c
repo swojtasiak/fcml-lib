@@ -3023,8 +3023,12 @@ static fcml_ceh_error encode_addressing_mode_core(
             args.context = context;
             args.result = result;
 
+            const fcml_st_entry_point *entry_point = &(assembler_context->entry_point);
+
             fcml_st_asm_optimizer_context optimizer_context = {
-                    .entry_point = &(assembler_context->entry_point),
+                    .op_mode = entry_point->op_mode,
+                    .asa = entry_point->address_size_attribute,
+                    .osa = entry_point->operand_size_attribute,
                     .optimizer_flags = assembler_context->configuration.optimizer_flags
             };
 

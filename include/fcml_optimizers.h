@@ -39,13 +39,20 @@ extern "C" {
 
 /** Optimizer context used as a connector with the environment. */
 typedef struct fcml_st_asm_optimizer_context {
-    /** Instruction's entry point provided by the caller. The
-     * same which is available in the assembler context. */
-    const fcml_st_entry_point *entry_point;
     /** Optimizer flags passed through the assembler context.
      * @see fcml_st_assembler_conf
      */
     fcml_uint16_t optimizer_flags;
+    /** Processor operating mode 16/32/64-bit. */
+    fcml_en_operating_mode op_mode;
+    /** Default address size attribute not modified by prefixes yet.
+     * (See 'D' flag of segment descriptor.)
+     */
+    fcml_usize asa;
+    /** Default operand size attribute not modified by prefixes yet.
+     * (See 'D' flag of segment descriptor.)
+     */
+    fcml_usize osa;
 } fcml_st_asm_optimizer_context;
 
 /** Processing details for optimizers. */

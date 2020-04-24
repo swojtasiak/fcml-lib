@@ -97,10 +97,8 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
 
     fcml_ceh_error error = FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
 
-    const fcml_st_entry_point *entry_point = context->entry_point;
-
-    fcml_usize ep_asa = entry_point->address_size_attribute;
-    fcml_usize ep_osa = entry_point->operand_size_attribute;
+    fcml_usize ep_asa = context->asa;
+    fcml_usize ep_osa = context->osa;
 
     /* TODO: Maybe we should also try different vector lengths if there is
        such a possibility. */
@@ -209,7 +207,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
     /* Choosing the best optimization path for ASA.*/
 
     if (!easa_count) {
-        switch (entry_point->op_mode) {
+        switch (context->op_mode) {
         case FCML_OM_16_BIT:
         case FCML_OM_32_BIT:
             path = (ep_asa == FCML_DS_16) ? opt_16_32_bit_path_16 :
@@ -229,7 +227,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
     /* Choosing the best optimization path for OSA.*/
 
     if (!eosa_count) {
-        switch (entry_point->op_mode) {
+        switch (context->op_mode) {
         case FCML_OM_16_BIT:
         case FCML_OM_32_BIT:
             path = (ep_osa == FCML_DS_16) ? opt_16_32_bit_path_16 :
