@@ -201,7 +201,7 @@ typedef struct encoding_context {
 
 struct acceptor_ctx {
     /** Assembler behavior can be configured here.*/
-    fcml_st_assembler_conf configuration;
+    const fcml_st_assembler_conf configuration;
     /* Instruction entry point configuration. */
     const fcml_st_entry_point *entry_point;
     /* Assembled instruction. */
