@@ -42,11 +42,11 @@ typedef enum fcml_en_stream_seek_type {
 
 static inline fcml_st_memory_stream fcml_fn_stream_init(void *base_address,
         fcml_int32_t offset, fcml_int32_t size) {
-    return (fcml_st_memory_stream) {
-        .base_address = base_address,
-        .offset = offset,
-        .size = size
-    };
+    fcml_st_memory_stream stream;
+    stream.base_address = base_address;
+    stream.offset = offset;
+    stream.size = size;
+    return stream;
 }
 
 void fcml_fn_stream_seek( fcml_st_memory_stream *stream, fcml_int32_t offset, fcml_en_stream_seek_type type );

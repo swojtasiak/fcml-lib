@@ -72,7 +72,7 @@ static fcml_ptr args_decoder_explicit_gps_reg_addressing(
         fcml_operand_desc addr_mode) {
     FCML_ENV_ALLOC_CLEAR(args, fcml_st_def_tma_explicit_gps_reg_addressing);
     if (args) {
-        args->reg_num = (addr_mode & 0x00FF0000) >> 16;
+        args->reg_num = (fcml_uint8_t)((addr_mode & 0x00FF0000) >> 16);
         args->encoded_operand_size = (addr_mode & 0x0000FF00) >> 8;
         args->encoded_segment_register = addr_mode & 0x000000FF;
     }
@@ -108,7 +108,7 @@ static fcml_ptr args_decoder_rm(fcml_operand_desc addr_mode) {
         rm_args->encoded_register_operand_size =
                 (addr_mode & 0x0000FF00) >> 8;
         rm_args->encoded_memory_operand_size =
-                (addr_mode & 0x00FF0000) >> 16;
+                (fcml_uint8_t)((addr_mode & 0x00FF0000) >> 16);
         rm_args->flags = addr_mode & 0x0000000F;
         rm_args->is_vsib = FCML_FALSE;
         rm_args->vector_index_register = 0;
@@ -122,7 +122,7 @@ static fcml_ptr args_decoder_r(fcml_operand_desc addr_mode) {
     if (r_args) {
         r_args->reg_type = (fcml_en_register)(addr_mode & 0x0000000F);
         r_args->encoded_register_operand_size =
-                (addr_mode & 0x00000FF0) >> 4;
+                (fcml_uint8_t)((addr_mode & 0x00000FF0) >> 4);
         /* TODO: Decode decorators here. Hide the encoding format here! */
         r_args->decorators = FCML_DECORATORS(addr_mode);
     }
@@ -134,7 +134,7 @@ static fcml_ptr args_decoder_vex_vvvv(fcml_operand_desc addr_mode) {
     if (vex_vvvv_args) {
         vex_vvvv_args->reg_type = addr_mode & 0x0000000F;
         vex_vvvv_args->encoded_register_size =
-                (addr_mode & 0x00000FF0) >> 4;
+                (fcml_uint8_t)((addr_mode & 0x00000FF0) >> 4);
     }
     return vex_vvvv_args;
 }
@@ -142,7 +142,7 @@ static fcml_ptr args_decoder_vex_vvvv(fcml_operand_desc addr_mode) {
 static fcml_ptr args_decoder_vsib(fcml_operand_desc addr_mode) {
     FCML_ENV_ALLOC_CLEAR(vsib_args, fcml_st_def_tma_rm);
     if (vsib_args) {
-        vsib_args->vector_index_register = addr_mode >> 8;
+        vsib_args->vector_index_register = (fcml_uint8_t)(addr_mode >> 8);
         vsib_args->encoded_memory_operand_size = addr_mode & 0x000000FF;
         vsib_args->encoded_register_operand_size = 0;
         vsib_args->flags = FCML_RMF_M;
@@ -203,9 +203,9 @@ static fcml_en_access_mode decode_access_mode(
         /* Destination operands for some instructions can be
          * also a source operands. In such a case "READ" flag
          * has to be set for such operands. */
-        access_mode |= FCML_AM_WRITE;
+        access_mode = (fcml_en_access_mode)(access_mode | FCML_AM_WRITE);
         if (operand_desc & FCML_OA_R) {
-            access_mode |= FCML_AM_READ;
+            access_mode = (fcml_en_access_mode)(access_mode | FCML_AM_READ);
         }
     } else {
         /* All operands but destination ones have the access mode

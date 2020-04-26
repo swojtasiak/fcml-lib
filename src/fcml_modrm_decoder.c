@@ -399,7 +399,8 @@ fcml_ceh_error fcml_ifn_modrm_decode_3264bit(
          * it as it was used only in order to encode [EBP]. */
         if (effective_address->base.reg == FCML_REG_EBP
                 && is_integer_zero(&(effective_address->displacement))) {
-            effective_address->displacement = (struct fcml_st_integer) {0};
+            fcml_fn_env_memory_clear(&(effective_address->displacement), 
+                sizeof(fcml_st_integer));
         }
     }
 

@@ -1,18 +1,18 @@
 10.06.2014 (1.0.0)
- - First official release.
+ - First official release
 03.02.2015 (1.1.0)
- - Wrapper for C++ language.
- - Some minor fixes in unit tests.
- - Multi-pass assembler tests could have failed on some systems due to a bug.
- - Several missing 'extern "C"' declarations added.
- - 'dist' build targed has been fixed.
- - pkg-config support.
- - Lexer generated using newer version of flex.
+ - Wrapper for C++ language
+ - Some minor fixes in unit tests
+ - Multi-pass assembler tests could have failed on some systems due to a bug
+ - Several missing 'extern "C"' declarations added
+ - 'dist' build targed has been fixed
+ - pkg-config support
+ - Lexer generated using newer version of flex
 04.08.2015 (1.1.1)
  - Bug fix #1 - FCML-based HSDIS crashes when used with WinPerfAsmProfiler
  - Some minor build related changes
- - Internal unit tests have been disabled for MinGW and Cygwin builds.
- - \DEBUG option has been added to hsdis (Debug) for VS2013 project.
+ - Internal unit tests have been disabled for MinGW and Cygwin builds
+ - \DEBUG option has been added to hsdis (Debug) for VS2013 project
 23.09.2016 (1.1.2)
  - hsdis - License changed to LGPL 2.1
 18.10.2016 (1.1.3)
@@ -26,3 +26,6 @@
  - lots of refactoring and cleanup
  - important bug fixes: a bug in [ebp] encoding fixed (assembler)
  - important bug fixes: a bug in es segment register override fixed (assembler)
+26.04.2020 (1.2.2)
+ - some c99 features were removed in order to continue with VS support
+ - support for vs2015 removed
