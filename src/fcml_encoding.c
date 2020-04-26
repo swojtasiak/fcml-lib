@@ -546,8 +546,8 @@ enum fcml_ien_asm_comparator_type {
 };
 
 static void clean_context(encoding_context *context) {
-    context->optimizer_processing_details =
-            (fcml_st_asm_optimizer_processing_details){0};
+    fcml_fn_env_memory_clear(&(context->optimizer_processing_details),
+            sizeof(fcml_st_asm_optimizer_processing_details));
     /* Clears segment override set by acceptor functions.*/
     context->segment_override.reg = 0;
     context->segment_override.size = FCML_DS_UNDEF;
@@ -1406,9 +1406,11 @@ static fcml_ceh_error ipp_imm_dis_rel_post_processor(
         return error;
     }
 
-    fcml_st_integer disp = { is_signed: FCML_TRUE };
+    fcml_st_integer disp = {0};
     fcml_uint8_t inst_size = context->instruction_size.value;
     fcml_ip ip  = context->assembler_context->entry_point.ip;
+
+    disp.is_signed = FCML_TRUE;
 
     int disp_size = disp_size_for_enc_rel(osa, enc_rel_size);
     switch (osa) {
@@ -2515,12 +2517,11 @@ fcml_ceh_error fcml_ifn_asm_accept_addr_mode(struct acceptor_ctx *ctx,
 
     int index = 0;
 
-    ipp_acceptor_args acceptor_args = {
-            context: ctx,
-            instruction: instruction,
-            addr_mode_details: &(addr_mode->addr_mode_details),
-            addr_mode_def: addr_mode->addr_mode_desc
-    };
+    ipp_acceptor_args acceptor_args = {0};
+    acceptor_args.context = ctx;
+    acceptor_args.instruction = instruction;
+    acceptor_args.addr_mode_details = &(addr_mode->addr_mode_details);
+    acceptor_args.addr_mode_def = addr_mode->addr_mode_desc;
 
     ipp_chain *current_processor = addr_mode->ipp_chain;
     while (current_processor) {
@@ -2586,11 +2587,10 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
 
-    ipp_encoder_args encoder_args = {
-        context: context,
-        addr_mode_details: &(addr_mode->addr_mode_details),
-        addr_mode_def: addr_mode->addr_mode_desc,
-    };
+    ipp_encoder_args encoder_args = { IPPP_FIRST_PHASE };
+    encoder_args.context = context;
+    encoder_args.addr_mode_details = &(addr_mode->addr_mode_details);
+    encoder_args.addr_mode_def = addr_mode->addr_mode_desc;
 
     int i;
     int size = sizeof(execution_phases) /
@@ -3005,14 +3005,14 @@ static fcml_ceh_error encode_addressing_mode_core(
 
         /* TODO: Let's move it to a dedicated function. */
         struct acceptor_ctx acceptor_ctx = {
-                .configuration = context->assembler_context->configuration,
-                .entry_point = &(context->assembler_context->entry_point),
-                .instruction = context->instruction,
-                .mnemonic = context->mnemonic,
-                .optimizer_processing_details = &(context->optimizer_processing_details),
-                .ds_calculator = context->ds_calculator,
-                .ds_calculator_args = context->ds_calculator_args,
-                .error_container = context->error_container
+            context->assembler_context->configuration,
+            &(context->assembler_context->entry_point),
+            context->instruction,
+            context->mnemonic,
+            &(context->optimizer_processing_details),
+            context->ds_calculator,
+            context->ds_calculator_args,
+            context->error_container
         };
 
         error = fcml_ifn_asm_accept_addr_mode(&acceptor_ctx, addr_mode);
@@ -3025,12 +3025,11 @@ static fcml_ceh_error encode_addressing_mode_core(
 
             const fcml_st_entry_point *entry_point = &(assembler_context->entry_point);
 
-            fcml_st_asm_optimizer_context optimizer_context = {
-                    .op_mode = entry_point->op_mode,
-                    .asa = entry_point->address_size_attribute,
-                    .osa = entry_point->operand_size_attribute,
-                    .optimizer_flags = assembler_context->configuration.optimizer_flags
-            };
+            fcml_st_asm_optimizer_context optimizer_context = {0};
+            optimizer_context.op_mode = entry_point->op_mode;
+            optimizer_context.asa = entry_point->address_size_attribute;
+            optimizer_context.osa = entry_point->operand_size_attribute;
+            optimizer_context.optimizer_flags = assembler_context->configuration.optimizer_flags;
 
             /* Optimizer implementation can be provided by user. */
             fcml_fnp_asm_optimizer optimizer =
@@ -3090,13 +3089,12 @@ static fcml_ceh_error instruction_encoder_IA(
     addr_mode_error addr_mode_errors = { AMPP_UNDEFINED };
     fcml_usize operands_count = count_operands(&tmp_instruction);
 
-    encoding_context context = {
-        assembler_context: asm_context,
-        instruction: &tmp_instruction,
-        /* Global errors container is set directly to error container
-         * from results. */
-        error_container: &(result->errors)
-    };
+    encoding_context context = { 0 };
+    context.assembler_context = asm_context;
+    context.instruction = &tmp_instruction;
+    /* Global errors container is set directly to error container
+     * from results. */
+    context.error_container = &(result->errors);
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_bool inst_changed;
@@ -3282,14 +3280,13 @@ static fcml_ceh_error ipp_operand_wrapper_acceptor(
         fcml_hints operand_hints = operand->hints;
         if (!operand_hints || accept_operand_hints(
                 wrapper_args->hints, operand_hints)) {
-            operand_acceptor_args acceptor_args = {
-                context: args->context,
-                addr_mode_details: args->addr_mode_details,
-                addr_mode_desc: args->addr_mode_def,
-                addr_mode: wrapper_args->decoded_addr_mode,
-                operand: operand,
-                operand_enc: NULL
-            };
+            operand_acceptor_args acceptor_args = {0};
+            acceptor_args.context = args->context,
+            acceptor_args.addr_mode_details = args->addr_mode_details;
+            acceptor_args.addr_mode_desc = args->addr_mode_def;
+            acceptor_args.addr_mode = wrapper_args->decoded_addr_mode;
+            acceptor_args.operand = operand;
+            acceptor_args.operand_enc = NULL;
             return wrapper_args->operand_acceptor(&acceptor_args);
         } else {
             FCML_TRACE_MSG("Hints do not match.");
@@ -3313,14 +3310,13 @@ static fcml_ceh_error ipp_operand_wrapper_encoder(ipp_encoder_args *args) {
     const fcml_st_operand *operand = &(args->context->instruction->
             operands[wrapper_args->operand_index]);
     if (wrapper_args->operand_encoder) {
-        operand_encoder_args wrapped_encoder_args = {
-            phase: args->phase,
-            context: args->context,
-            addr_mode_def: args->addr_mode_def,
-            addr_mode: wrapper_args->decoded_addr_mode,
-            operand: operand,
-            operand_enc: args->instruction_part
-        };
+        operand_encoder_args wrapped_encoder_args = { IPPP_FIRST_PHASE };
+        wrapped_encoder_args.phase = args->phase;
+        wrapped_encoder_args.context = args->context;
+        wrapped_encoder_args.addr_mode_def = args->addr_mode_def;
+        wrapped_encoder_args.addr_mode = wrapper_args->decoded_addr_mode;
+        wrapped_encoder_args.operand = operand;
+        wrapped_encoder_args.operand_enc = args->instruction_part;
         return wrapper_args->operand_encoder(&wrapped_encoder_args);
     } else {
         return FCML_CEH_GEC_NO_ERROR;
@@ -4779,12 +4775,11 @@ static fcml_ceh_error ipp_chain_builder_for_IA(
         ipp_factory_details *factory = sequence->details;
 
         while (factory->factory) {
-            ipp_factory_args factory_args = {
-                flags: factory->flags,
-                instruction: instruction,
-                addr_mode: addr_mode_desc,
-                hints: &(out->hints)
-            };
+            ipp_factory_args factory_args = { 0 };
+            factory_args.flags = factory->flags;
+            factory_args.instruction = instruction;
+            factory_args.addr_mode = addr_mode_desc;
+            factory_args.hints = &(out->hints);
 
             ipp_desc desc = factory->factory(&factory_args, &error);
             if (!error && (desc.encoder || desc.acceptor)) {
@@ -5283,7 +5278,8 @@ static fcml_ceh_error conditional_addr_mode_encoding_builder(
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     int i;
     for (i = 0; i < FCML_NUMBER_OF_CONDITIONS * 2 && !error; i++) {
-        cond_enricher_args enricher_args = {condition_num: i};
+        cond_enricher_args enricher_args = { 0 };
+        enricher_args.condition_num = i;
         error = generic_addr_mode_encoding_builder(
                 init_context, instruction, addr_mode_desc,
                 &conditional_addr_more_encoding_enricher,

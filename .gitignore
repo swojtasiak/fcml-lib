@@ -23,6 +23,7 @@ config.h.in~
 compile
 /valgrind*
 /fcml-*.tar.gz
+/fcml-*.tar.xz
 autoscan-*.log
 configure.scan
 test-driver
@@ -34,3 +35,4 @@ test-driver
 *.opendb
 *.db-shm
 *.db-wal
+

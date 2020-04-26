@@ -14,7 +14,7 @@ Currently it supports such features as:
   - An instruction renderer
   - An instruction parser
   - Instructions represented as generic models
-  - UNIX/GNU/Linux and Windows (mingw, mingw64, cygwin, VS2015, VS2017, VS2019) support
+  - UNIX/GNU/Linux and Windows (mingw, mingw64, cygwin, VS2017, VS2019) support
   - Portable - written entirely in C (no external dependencies)
   - C++ wrapper available
   - Supported instruction sets: MMX, 3D-Now!, SSE, SSE2, SSE3, SSSE3, 
