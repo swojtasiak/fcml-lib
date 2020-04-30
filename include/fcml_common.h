@@ -510,10 +510,14 @@ typedef struct fcml_st_condition {
  * @{
  */
 
+/* Addressing mode is not set, so the caller does not care about it - any
+ * addressing mode is allowed. */
 #define    FCML_EN_ASF_ANY    0x00
 #define    FCML_EN_ASF_16     0x01
 #define    FCML_EN_ASF_32     0x02
 #define    FCML_EN_ASF_64     0x04
+/* All addressing modes are allowed, but in this particular case it's explicitly stated.
+ * Effectively it's the same option as FCML_EN_ASF_ANY. */
 #define    FCML_EN_ASF_ALL    FCML_EN_ASF_16 | FCML_EN_ASF_32 | FCML_EN_ASF_64
 
 /** @} */
