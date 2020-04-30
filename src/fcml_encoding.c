@@ -199,6 +199,22 @@ typedef struct encoding_context {
 #endif
 } encoding_context;
 
+/** Optimizer context for acceptors. */
+struct acceptor_optimizer_ctx {
+    /** Allowed values of the operand size attribute calculated by the
+     * assembler engine.
+     * It is the optimizer who decides which one should be finally used.
+     */
+    fcml_st_nullable_size_flags allowed_eosa;
+    /** Allowed values of the address size attribute calculated by the
+     * assembler engine.
+     * It is optimizer who decides which one should be finally used.
+     */
+    fcml_st_nullable_size_flags allowed_easa;
+    /** Vector length of AVX instructions. Set to FCML_DS_UNDEF if not used. */
+    fcml_usize vector_length;
+};
+
 struct acceptor_ctx {
     /** Assembler behavior can be configured here.*/
     const fcml_st_assembler_conf configuration;
@@ -209,7 +225,7 @@ struct acceptor_ctx {
     /* Mnemonic chosen for addressing mode being encoded. */
     const fcml_st_mp_mnemonic *mnemonic;
     /* All optimizer related control fields are stored here. */
-    fcml_st_asm_optimizer_processing_details *optimizer_processing_details;
+    struct acceptor_optimizer_ctx optimizer_ctx;
     /* Operand size calculator selected for processed addressing mode.*/
     memory_data_size_calculator ds_calculator;
     /* Arguments for data size calculator. */
@@ -752,17 +768,15 @@ static fcml_ceh_error decode_dynamic_operand_size(encoding_context *context,
 /**
  * Sets new vector length. If there is one already set it cannot be overridden.
  */
-static fcml_bool set_vector_length(
-        fcml_st_asm_optimizer_processing_details *optimizer_details,
-        fcml_flags vector_length) {
+static fcml_bool set_vector_length(fcml_usize *dest_vector_length, fcml_flags vector_length) {
     fcml_bool result = FCML_TRUE;
     if (vector_length != FCML_DS_UNDEF) {
-        if (optimizer_details->vector_length) {
-            if (optimizer_details->vector_length != vector_length) {
+        if (*dest_vector_length) {
+            if (*dest_vector_length != vector_length) {
                 return FCML_FALSE;
             }
         } else {
-            optimizer_details->vector_length = vector_length;
+            *dest_vector_length = vector_length;
         }
     }
     return result;
@@ -832,12 +846,13 @@ static fcml_bool accept_data_size(struct acceptor_ctx *context,
         fcml_usize operand_size, enum fcml_ien_asm_comparator_type comparator) {
 
     const fcml_st_entry_point *entry_point = context->entry_point;
-    fcml_st_asm_optimizer_processing_details *data_size_flags =
-            context->optimizer_processing_details;
+    struct acceptor_optimizer_ctx *optimizer = &(context->optimizer_ctx);
+
     fcml_flags osa_flags = FCML_EN_ASF_ANY;
     fcml_flags asa_flags = FCML_EN_ASF_ANY;
 
-    fcml_bool result = FCML_TRUE;
+    /* True if allowed addressing modes have been accepted. */
+    fcml_bool accepted = FCML_TRUE;
 
     if ((operand_size == FCML_OS_UNDEFINED) &&
             FCML_IS_EOS_OPT(encoded_operand_size)) {
@@ -850,35 +865,35 @@ static fcml_bool accept_data_size(struct acceptor_ctx *context,
         break;
     case FCML_EOS_L:
         if (FCML_DEF_PREFIX_L_IGNORE_OS(addr_mode_desc->allowed_prefixes)) {
-            result = (operand_size == entry_point->operand_size_attribute);
+            accepted = (operand_size == entry_point->operand_size_attribute);
         } else {
-            result = ((operand_size == FCML_DS_128) ||
+            accepted = ((operand_size == FCML_DS_128) ||
                     (operand_size == FCML_DS_256) ||
                     (operand_size == FCML_DS_512));
         }
         break;
     case FCML_EOS_EASA:
         if (entry_point->op_mode == FCML_OM_32_BIT) {
-            result = ((operand_size == FCML_DS_16) ||
+            accepted = ((operand_size == FCML_DS_16) ||
                     (operand_size == FCML_DS_32));
         } else {
-            result = ((operand_size == FCML_DS_32) ||
+            accepted = ((operand_size == FCML_DS_32) ||
                     (operand_size == FCML_DS_64));
         }
-        if (result) {
+        if (accepted) {
             asa_flags = (operand_size / FCML_ASM_FCF);
         }
         break;
     case FCML_EOS_EOSA:
         if (entry_point->op_mode == FCML_OM_32_BIT) {
-            result = ((operand_size == FCML_DS_16) ||
+            accepted = ((operand_size == FCML_DS_16) ||
                     (operand_size == FCML_DS_32));
         } else {
-            result = ((operand_size == FCML_DS_16) ||
+            accepted = ((operand_size == FCML_DS_16) ||
                     (operand_size == FCML_DS_32) ||
                     (operand_size == FCML_DS_64));
         }
-        if (result) {
+        if (accepted) {
             osa_flags = (operand_size / FCML_ASM_FCF);
         }
         break;
@@ -888,7 +903,7 @@ static fcml_bool accept_data_size(struct acceptor_ctx *context,
         } else if (operand_size == 28 * 8) {
             osa_flags |= (FCML_EN_ASF_32 | FCML_EN_ASF_64);
         } else {
-            result = FCML_FALSE;
+            accepted = FCML_FALSE;
         }
         break;
     case FCML_EOS_32_64:
@@ -896,7 +911,7 @@ static fcml_bool accept_data_size(struct acceptor_ctx *context,
                 (FCML_DS_64 * 2)) {
             osa_flags = (operand_size / 2 / FCML_ASM_FCF);
         } else {
-            result = FCML_FALSE;
+            accepted = FCML_FALSE;
         }
         break;
     case FCML_EOS_94_108:
@@ -905,7 +920,7 @@ static fcml_bool accept_data_size(struct acceptor_ctx *context,
         } else if (operand_size == 108 * 8) {
             osa_flags |= (FCML_EN_ASF_32 | FCML_EN_ASF_64);
         } else {
-            result = FCML_FALSE;
+            accepted = FCML_FALSE;
         }
         break;
     case FCML_EOS_FPI:
@@ -922,34 +937,32 @@ static fcml_bool accept_data_size(struct acceptor_ctx *context,
             osa_flags |= FCML_EN_ASF_64;
             break;
         default:
-            result = FCML_FALSE;
+            accepted = FCML_FALSE;
         }
         break;
     default:
         if (comparator == FCML_IEN_CT_EQUAL) {
-            result = (FCML_GET_OS(encoded_operand_size) * 8 == operand_size);
+            accepted = (FCML_GET_OS(encoded_operand_size) * 8 == operand_size);
         } else {
-            result = (FCML_GET_OS(encoded_operand_size) * 8 >= operand_size);
+            accepted = (FCML_GET_OS(encoded_operand_size) * 8 >= operand_size);
         }
-        if (!result && FCML_IS_EOS_OPT(encoded_operand_size) &&
+        if (!accepted && FCML_IS_EOS_OPT(encoded_operand_size) &&
                 operand_size == 0) {
             /* Operand size is optional, so return TRUE anyway.*/
-            result = FCML_TRUE;
+            accepted = FCML_TRUE;
         }
         break;
     }
 
-    if (osa_flags && !set_eosa_flags(context->optimizer_processing_details,
-            osa_flags)) {
-        result = FCML_FALSE;
+    if (osa_flags && !set_size_flags(&(optimizer->allowed_eosa), osa_flags)) {
+        accepted = FCML_FALSE;
     }
 
-    if (asa_flags && !set_easa_flags(context->optimizer_processing_details,
-            asa_flags)) {
-        result = FCML_FALSE;
+    if (asa_flags && !set_size_flags(&(optimizer->allowed_easa), asa_flags)) {
+        accepted = FCML_FALSE;
     }
 
-    return result;
+    return accepted;
 }
 
 /*********************************
@@ -1093,7 +1106,7 @@ static fcml_ceh_error operand_acceptor_imm(operand_acceptor_args *args) {
         /* EOSA flags potentially allowed for given addressing mode. */
         fcml_flags accepted_flags = 0;
 
-        fcml_flags flags = get_eosa_flags(context->optimizer_processing_details);
+        fcml_flags flags = context->optimizer_ctx.allowed_eosa.flags;
         if (!flags) {
             flags = allowed_flags_for_op_mode(context->entry_point);
         }
@@ -1122,8 +1135,8 @@ static fcml_ceh_error operand_acceptor_imm(operand_acceptor_args *args) {
             }
         }
 
-        if (!fits || (accepted_flags && !set_eosa_flags(
-                context->optimizer_processing_details, accepted_flags))) {
+        if (!fits || (accepted_flags && !set_size_flags(
+                &(context->optimizer_ctx.allowed_eosa), accepted_flags))) {
             FCML_TRACE_MSG("Accept IMM: Can not accept IMM value.");
             error = FCML_CEH_GEC_INVALID_OPPERAND;
         }
@@ -1319,7 +1332,7 @@ static fcml_ceh_error operand_acceptor_immediate_dis_relative(
                 }
             }
         }
-        if (!set_eosa_flags(context->optimizer_processing_details, flags)) {
+        if (!set_size_flags(&(context->optimizer_ctx.allowed_eosa), flags)) {
             error = FCML_CEH_GEC_INVALID_OPPERAND;
         }
     } else {
@@ -1527,7 +1540,7 @@ static fcml_ceh_error operand_acceptor_far_pointer(
     switch (context->entry_point->op_mode) {
     case FCML_OM_16_BIT:
         if (operand->far_pointer.offset_size == FCML_DS_16) {
-            if (!set_eosa_flags(context->optimizer_processing_details,
+            if (!set_size_flags(&(context->optimizer_ctx.allowed_eosa),
                     FCML_EN_ASF_16)) {
                 /* Size can not be used by this operand. */
                 result = FCML_CEH_GEC_INVALID_OPPERAND;
@@ -1538,7 +1551,7 @@ static fcml_ceh_error operand_acceptor_far_pointer(
         }
         break;
     case FCML_OM_32_BIT:
-        if (!set_eosa_flags(context->optimizer_processing_details,
+        if (!set_size_flags(&(context->optimizer_ctx.allowed_eosa),
                 (operand->far_pointer.offset_size == FCML_DS_16) ?
                         (FCML_EN_ASF_16 | FCML_EN_ASF_32) : FCML_EN_ASF_32)) {
             /* Size can not be used by this operand. */
@@ -1761,7 +1774,7 @@ static fcml_ceh_error operand_acceptor_segment_relative_offset(
                     FCML_DS_16, FCML_DS_16, FCML_EN_ASF_16, &flags);
         }
 
-        if (!set_easa_flags(context->optimizer_processing_details, flags)) {
+        if (!set_size_flags(&(context->optimizer_ctx.allowed_easa), flags)) {
             error = FCML_CEH_GEC_INVALID_OPPERAND;
         }
 
@@ -1813,7 +1826,7 @@ static fcml_ceh_error operand_encoder_segment_relative_offset(
 /* TODO: Move to fcml_operand_decorators. */
 static fcml_ceh_error accept_bcast_decorator(fcml_bool is_bcast_supported,
         fcml_nuint8_t bcast, fcml_usize element_size,
-        fcml_st_asm_optimizer_processing_details *optimizer_processing_details,
+        struct acceptor_optimizer_ctx *optimizer_ctx,
         fcml_uint8_t encoded_memory_operand_size) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -1839,10 +1852,10 @@ static fcml_ceh_error accept_bcast_decorator(fcml_bool is_bcast_supported,
         /* Force vector length basing on broadcast element size and number
          * of such elements. */
         fcml_usize vector_length = bcast_accessed_mem_size;
-        if (!set_vector_length(optimizer_processing_details,
+        if (!set_vector_length(&(optimizer_ctx->vector_length),
                 vector_length)) {
             FCML_TRACE("Vector length differs expected %d got %d.",
-                    vector_length, optimizer_processing_details->vector_length);
+                    vector_length, optimizer_ctx->vector_length);
             error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
         }
         break;
@@ -1911,7 +1924,7 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
                 /* AVX-512 Broadcast decorator. */
                 error = accept_bcast_decorator(
                         addr_mode_args->is_bcast, operand->decorators.bcast,
-                        element_size, context->optimizer_processing_details,
+                        element_size, &(context->optimizer_ctx),
                         addr_mode_args->encoded_memory_operand_size);
 
                 /* Accept broadcast memory location size. */
@@ -2029,7 +2042,7 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
                         easa_flags &= ~FCML_EN_ASF_64;
                     }
 
-                    if(!set_easa_flags(context->optimizer_processing_details,
+                    if(!set_size_flags(&(context->optimizer_ctx.allowed_easa),
                             easa_flags)) {
                         FCML_TRACE_MSG("Accept ModR/M: Can not accept " \
                                 "ASA size.");
@@ -2112,7 +2125,7 @@ static fcml_ceh_error operand_encoder_rm(operand_encoder_args *args) {
                 if (index->type == FCML_REG_SIMD) {
                     if (addr_mode_args->vector_index_register == FCML_VSIB_UNDEF &&
                             !set_vector_length(
-                            &context->optimizer_processing_details,
+                            &(context->optimizer_processing_details.vector_length),
                             index->size)) {
                         error = FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                     }
@@ -2402,8 +2415,7 @@ static fcml_ceh_error operand_acceptor_virtual_op(operand_acceptor_args *args) {
     const fcml_st_operand *operand = args->operand;
     fcml_st_def_tma_virtual_op *addr_mode_args =
             (fcml_st_def_tma_virtual_op*)args->addr_mode->addr_mode_args;
-    fcml_st_asm_optimizer_processing_details *optimizer_details =
-                context->optimizer_processing_details;
+    struct acceptor_optimizer_ctx *optimizer_ctx = &(context->optimizer_ctx);
 
     if (operand->type != FCML_OT_NONE &&
             operand->type != FCML_OT_VIRTUAL) {
@@ -2431,9 +2443,9 @@ static fcml_ceh_error operand_acceptor_virtual_op(operand_acceptor_args *args) {
             vector_length = FCML_DS_128;
         }
 
-        if (!set_vector_length(optimizer_details, vector_length)) {
+        if (!set_vector_length(&(optimizer_ctx->vector_length), vector_length)) {
             FCML_TRACE("Vector length differs expected %d got %d.",
-                    optimizer_details->vector_length, vector_length);
+                    optimizer_ctx->vector_length, vector_length);
             return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
         }
     }
@@ -2502,7 +2514,7 @@ static operand_encoder_def operand_encoders[] = {
  * Instruction encoders. *
  *************************/
 
-fcml_ceh_error fcml_ifn_asm_accept_addr_mode(struct acceptor_ctx *ctx,
+static fcml_ceh_error accept_addr_mode(struct acceptor_ctx *ctx,
         const addr_mode_encoding *addr_mode) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -2980,18 +2992,38 @@ static void handle_addr_mode_errors(
 
 }
 
+static struct acceptor_ctx prep_acceptor_ctx(encoding_context *context) {
+    struct acceptor_optimizer_ctx optimizer_ctx = {
+        context->optimizer_processing_details.allowed_eosa,
+        context->optimizer_processing_details.allowed_easa,
+        context->optimizer_processing_details.vector_length
+    };
+    struct acceptor_ctx acceptor_ctx = {
+        context->assembler_context->configuration,
+        &(context->assembler_context->entry_point),
+        context->instruction,
+        context->mnemonic,
+        optimizer_ctx,
+        context->ds_calculator,
+        context->ds_calculator_args,
+        context->error_container
+    };
+    return acceptor_ctx;
+}
+
 static fcml_ceh_error encode_addressing_mode_core(
         encoding_context *context, addr_mode_encoding *addr_mode,
         addr_mode_error *addr_mode_errors, fcml_st_asm_encoder_result *result) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    fcml_st_ceh_error_container *global_error_container =
-            context->error_container;
+
+    const fcml_st_assembler_context *asm_ctx = context->assembler_context;
+
+    /* Just to recreate it after the processing. */
+    fcml_st_ceh_error_container *global_errors = context->error_container;
+
     /* Errors container for current processing. */
     fcml_st_ceh_error_container addr_mode_error_container = { 0 };
-    const fcml_st_assembler_context *assembler_context =
-            context->assembler_context;
-
     context->error_container = &addr_mode_error_container;
 
     /* Check if addressing mode matches the hints, if there are any. */
@@ -3003,19 +3035,8 @@ static fcml_ceh_error encode_addressing_mode_core(
         prepare_optimizer_processing_details(addr_mode,
                 &(context->optimizer_processing_details));
 
-        /* TODO: Let's move it to a dedicated function. */
-        struct acceptor_ctx acceptor_ctx = {
-            context->assembler_context->configuration,
-            &(context->assembler_context->entry_point),
-            context->instruction,
-            context->mnemonic,
-            &(context->optimizer_processing_details),
-            context->ds_calculator,
-            context->ds_calculator_args,
-            context->error_container
-        };
-
-        error = fcml_ifn_asm_accept_addr_mode(&acceptor_ctx, addr_mode);
+        struct acceptor_ctx acceptor_ctx = prep_acceptor_ctx(context);
+        error = accept_addr_mode(&acceptor_ctx, addr_mode);
         if (!error) {
 
             fcml_st_asm_enc_optimizer_callback_args args;
@@ -3023,20 +3044,27 @@ static fcml_ceh_error encode_addressing_mode_core(
             args.context = context;
             args.result = result;
 
-            const fcml_st_entry_point *entry_point = &(assembler_context->entry_point);
-
-            fcml_st_asm_optimizer_context optimizer_context = {0};
-            optimizer_context.op_mode = entry_point->op_mode;
-            optimizer_context.asa = entry_point->address_size_attribute;
-            optimizer_context.osa = entry_point->operand_size_attribute;
-            optimizer_context.optimizer_flags = assembler_context->configuration.optimizer_flags;
+            fcml_st_asm_optimizer_context optimizer_context = { NULL };
+            optimizer_context.entry_point = &(asm_ctx->entry_point);
+            optimizer_context.optimizer_flags =
+                    asm_ctx->configuration.optimizer_flags;
 
             /* Optimizer implementation can be provided by user. */
             fcml_fnp_asm_optimizer optimizer =
-                    assembler_context->configuration.optimizer;
+                    asm_ctx->configuration.optimizer;
             if (!optimizer) {
                 optimizer = &fcml_fn_asm_default_optimizer;
             }
+
+            fcml_st_asm_optimizer_processing_details *optimizer_details =
+                    &(context->optimizer_processing_details);
+
+            optimizer_details->allowed_eosa =
+                    acceptor_ctx.optimizer_ctx.allowed_eosa;
+            optimizer_details->allowed_easa =
+                    acceptor_ctx.optimizer_ctx.allowed_easa;
+            optimizer_details->vector_length =
+                    acceptor_ctx.optimizer_ctx.vector_length;
 
             error = optimizer(&optimizer_context,
                     &(context->optimizer_processing_details),
@@ -3056,7 +3084,7 @@ static fcml_ceh_error encode_addressing_mode_core(
        about how they are handled. */
     fcml_fn_ceh_free_errors_only(&addr_mode_error_container);
 
-    context->error_container = global_error_container;
+    context->error_container = global_errors;
 
     return error;
 }
@@ -3928,10 +3956,9 @@ static fcml_ceh_error ipp_67_prefix_encoder(ipp_encoder_args *args) {
         fcml_usize asa = entry_point->address_size_attribute;
         fcml_usize easa = context->optimizer_processing_details.easa;
         if (easa && (asa != easa)) {
-            fcml_bool encode = (asa == FCML_DS_16 && easa == FCML_DS_32)
+            if ((asa == FCML_DS_16 && easa == FCML_DS_32)
                     || (asa == FCML_DS_32 && easa == FCML_DS_16)
-                    || (asa == FCML_DS_64 && easa == FCML_DS_32);
-            if (encode) {
+                    || (asa == FCML_DS_64 && easa == FCML_DS_32)) {
                 instruction_part->code[0] = 0x67;
                 instruction_part->code_length = 1;
             } else {
@@ -4459,37 +4486,39 @@ static fcml_ceh_error ipp_addr_mode_acceptor(ipp_acceptor_args *args) {
     const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
     const addr_mode_desc_details *addr_mode_details = args->addr_mode_details;
     fcml_en_operating_mode op_mode = context->entry_point->op_mode;
-    fcml_st_asm_optimizer_processing_details *optimizer_details =
-            context->optimizer_processing_details;
+    struct acceptor_optimizer_ctx *optimizer_ctx = &(context->optimizer_ctx);
     fcml_uint32_t opcode_flags = addr_mode_def->opcode_flags;
 
-    if (!FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(opcode_flags) &&
-            op_mode == FCML_OM_64_BIT) {
+    if (!FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(opcode_flags)
+            && op_mode == FCML_OM_64_BIT) {
         return FCML_CEH_GEC_INVALID_OPERATING_MODE;
-    } else if (!FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(opcode_flags) &&
-            (op_mode == FCML_OM_16_BIT || op_mode == FCML_OM_32_BIT)) {
+    } else if (!FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(opcode_flags)
+            && (op_mode == FCML_OM_16_BIT || op_mode == FCML_OM_32_BIT)) {
         return FCML_CEH_GEC_INVALID_OPERATING_MODE;
     }
+
     /* Set restrictions if there are any.*/
     if (addr_mode_details->allowed_osa != FCML_EN_ASF_ANY) {
-        optimizer_details->allowed_eosa.flags = addr_mode_details->allowed_osa;
-        optimizer_details->allowed_eosa.is_set = FCML_TRUE;
+        optimizer_ctx->allowed_eosa.flags = addr_mode_details->allowed_osa;
+        optimizer_ctx->allowed_eosa.is_set = FCML_TRUE;
     }
+
     if (addr_mode_details->allowed_asa != FCML_EN_ASF_ANY) {
-        optimizer_details->allowed_easa.flags = addr_mode_details->allowed_asa;
-        optimizer_details->allowed_easa.is_set = FCML_TRUE;
+        optimizer_ctx->allowed_easa.flags = addr_mode_details->allowed_asa;
+        optimizer_ctx->allowed_easa.is_set = FCML_TRUE;
     }
+
     /* Force 64 bit OSA in 64 bit addressing mode.*/
     if (op_mode == FCML_OM_64_BIT) {
         if (FCML_DEF_OPCODE_FLAGS_FORCE_64BITS_EOSA(opcode_flags)) {
-            optimizer_details->allowed_eosa.flags = FCML_EN_ASF_64;
-            optimizer_details->allowed_eosa.is_set = FCML_TRUE;
+            optimizer_ctx->allowed_eosa.flags = FCML_EN_ASF_64;
+            optimizer_ctx->allowed_eosa.is_set = FCML_TRUE;
         } else if (FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT(opcode_flags)) {
             /* Remember, if 64 bit EOSA is used by default it can
              * be overridden to 16 bits only. */
-            optimizer_details->allowed_eosa.flags =
+            optimizer_ctx->allowed_eosa.flags =
                     (FCML_EN_ASF_64 | FCML_EN_ASF_16);
-            optimizer_details->allowed_eosa.is_set = FCML_TRUE;
+            optimizer_ctx->allowed_eosa.is_set = FCML_TRUE;
         }
     }
     return FCML_CEH_GEC_NO_ERROR;
@@ -4640,11 +4669,12 @@ static fcml_ceh_error ipp_op_decorator_acceptor(ipp_acceptor_args *args) {
                 } else if (tuple_type == FCML_TT_T1S || tuple_type == FCML_TT_T1F) {
                     vector_length = FCML_DS_128;
                 }
-                fcml_st_asm_optimizer_processing_details *optimizer_details =
-                        args->context->optimizer_processing_details;
-                if (!set_vector_length(optimizer_details, vector_length)) {
+
+                if (!set_vector_length(
+                        &(args->context->optimizer_ctx.vector_length),
+                        vector_length)) {
                     FCML_TRACE("Vector length differs expected %d got %d.",
-                            optimizer_details->vector_length, vector_length);
+                            args->context->optimizer_ctx.vector_length, vector_length);
                     return FCML_CEH_GEC_INVALID_OPPERAND_SIZE;
                 }
             }
