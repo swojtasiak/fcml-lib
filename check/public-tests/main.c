@@ -161,8 +161,7 @@ int main(int argc, char **argv) {
 	}
 
 	/* Run tests.*/
-	//result = fcml_stf_run_tests( "Public API tests", fcml_arr_suites );
-	FCML_I32_A( "repne cmps byte ptr [si],byte ptr [di]", 0xF2, 0x67, 0xA6 );
+	result = fcml_stf_run_tests( "Public API tests", fcml_arr_suites );
 
     fcml_fn_disassembler_free( disassembler_intel );
     fcml_fn_disassembler_free( disassembler_gas );
