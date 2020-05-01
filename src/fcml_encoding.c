@@ -809,25 +809,6 @@ static fcml_bool set_size_flags(fcml_st_nullable_size_flags *flags,
     return FCML_TRUE;
 }
 
-static inline fcml_bool set_easa_flags(
-        fcml_st_asm_optimizer_processing_details *optimizer_processing_details,
-        fcml_flags allowed_flags) {
-    return set_size_flags(&(optimizer_processing_details->allowed_easa),
-            allowed_flags);
-}
-
-static inline fcml_bool set_eosa_flags(
-        fcml_st_asm_optimizer_processing_details *optimizer_processing_details,
-        fcml_flags allowed_flags) {
-    return set_size_flags(&(optimizer_processing_details->allowed_eosa),
-            allowed_flags);
-}
-
-static inline fcml_bool get_eosa_flags(
-        fcml_st_asm_optimizer_processing_details *optimizer_processing_details) {
-    return optimizer_processing_details->allowed_eosa.flags;
-}
-
 static inline fcml_flags allowed_flags_for_op_mode(const fcml_st_entry_point *entry_point) {
     switch (entry_point->op_mode) {
     case FCML_OM_64_BIT:
