@@ -24,17 +24,19 @@
 
 #include "fcml_coll.h"
 
-fcml_ptr LIB_CALL fcml_fn_asm_no_instruction_chooser( fcml_st_chooser_context *context ) {
+fcml_ptr LIB_CALL fcml_fn_asm_no_instruction_chooser(
+        fcml_st_chooser_context *context) {
     return NULL;
 }
 
-fcml_ptr LIB_CALL fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_context *context ) {
+fcml_ptr LIB_CALL fcml_fn_asm_default_instruction_chooser(
+        fcml_st_chooser_context *context) {
     fcml_st_instruction_code instruction_code;
     fcml_ptr instruction = context->instruction;
     fcml_ptr shortest = NULL;
     fcml_usize shortest_code_length = 0;
-    while ( instruction ) {
-        context->extract( instruction, &instruction_code );
+    while (instruction) {
+        context->extract(instruction, &instruction_code);
         if (!shortest) {
             shortest = instruction;
             shortest_code_length = instruction_code.code_length;
@@ -44,7 +46,7 @@ fcml_ptr LIB_CALL fcml_fn_asm_default_instruction_chooser( fcml_st_chooser_conte
                 shortest_code_length = instruction_code.code_length;
             }
         }
-        instruction = context->next( instruction );
+        instruction = context->next(instruction);
     }
     return shortest;
 }

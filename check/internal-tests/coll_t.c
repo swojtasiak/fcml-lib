@@ -221,41 +221,6 @@ void fcml_itf_coll_test_iterate_handler( fcml_ptr key, fcml_ptr value, fcml_ptr 
 	iterator_counter++;
 }
 
-void fcml_tf_coll_test_iterate(void) {
-
-	iterator_counter = 0;
-
-	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
-
-	fcml_st_coll_map_descriptor descriptor = fcml_coll_map_descriptor_string;
-	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
-	fcml_coll_map *map = fcml_fn_coll_map_alloc(&descriptor, 10, &error );
-	if( map == NULL || error ) {
-		STF_FAIL( "Can not create hash map." );
-	} else {
-		/* index 1.*/
-		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
-		/* Conflict, both of the following keys are conflicted, but take into account*/
-		/* that it depends on default built-in implementation of hashing function.*/
-		fcml_fn_coll_map_put( map, "KEY_B", "VALUE_B", &error );
-		fcml_fn_coll_map_put( map, "KEY_R", "VALUE_R", &error );
-		fcml_fn_coll_map_put( map, "KEY_C", "VALUE_C", &error );
-		fcml_fn_coll_map_put( map, "KEY_D", "VALUE_D", &error );
-		fcml_fn_coll_map_put( map, "KEY_E", "VALUE_E", &error );
-		fcml_fn_coll_map_put( map, "KEY_F", "VALUE_F", &error );
-		fcml_fn_coll_map_put( map, "KEY_G", "VALUE_G", &error );
-		fcml_fn_coll_map_put( map, "KEY_H", "VALUE_H", &error );
-		fcml_fn_coll_map_iterate( map, fcml_itf_coll_test_iterate_handler );
-		STF_ASSERT_EQUAL( iterator_counter, 9 );
-		iterator_counter = 0;
-		fcml_fn_coll_map_clear( map );
-		fcml_fn_coll_map_iterate( map, fcml_itf_coll_test_iterate_handler );
-		STF_ASSERT_EQUAL( iterator_counter, 0 );
-	}
-
-	fcml_fn_coll_map_free( map );
-}
-
 void fcml_tf_coll_test_extend(void) {
 
 	iterator_counter = 0;
@@ -295,7 +260,6 @@ fcml_stf_test_case fcml_ti_coll[] = {
 	{ "fcml_tf_coll_test_put_different_keys", fcml_tf_coll_test_put_different_keys },
 	{ "fcml_tf_coll_test_remove_keys", fcml_tf_coll_test_remove_keys },
 	{ "fcml_tf_coll_test_clear", fcml_tf_coll_test_clear },
-	{ "fcml_tf_coll_test_iterate", fcml_tf_coll_test_iterate },
 	{ "fcml_tf_coll_test_extend", fcml_tf_coll_test_extend },
 	FCML_STF_NULL_TEST
 };

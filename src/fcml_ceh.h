@@ -23,10 +23,18 @@
 #include <fcml_types.h>
 #include <fcml_errors.h>
 
-void fcml_fn_ceh_move_errors( fcml_st_ceh_error_container *destination, fcml_st_ceh_error_container *source );
-void fcml_fn_ceh_free_errors_only( fcml_st_ceh_error_container *error_container );
-void fcml_fn_ceh_free_errors_only_with_level( fcml_st_ceh_error_container *error_container, fcml_en_ceh_error_level level );
-fcml_st_ceh_error_info *fcml_fn_ceh_add_error( fcml_st_ceh_error_container *error_container, const fcml_string message, fcml_ceh_error code,
+void fcml_fn_ceh_move_errors(fcml_st_ceh_error_container *destination,
+        fcml_st_ceh_error_container *source);
+
+void fcml_fn_ceh_free_errors_only(fcml_st_ceh_error_container *error_container);
+
+void fcml_fn_ceh_free_errors_only_with_level(
+        fcml_st_ceh_error_container *error_container,
+        fcml_en_ceh_error_level level);
+
+fcml_st_ceh_error_info *fcml_fn_ceh_add_error(
+        fcml_st_ceh_error_container *error_container,
+        const fcml_string message, fcml_ceh_error code,
         fcml_en_ceh_error_level level );
 
 #endif /* FCML_CEH_H_ */
