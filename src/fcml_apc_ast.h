@@ -152,16 +152,26 @@ typedef struct fcml_st_cif_converter_context {
 } fcml_st_cif_converter_context;
 
 /* Function pointer for node visitor. */
-typedef fcml_ceh_error (*fcml_fnp_ast_node_visitor)( fcml_st_ast_node *node, fcml_ptr visitor_args );
+typedef fcml_ceh_error (*fcml_fnp_ast_node_visitor)(fcml_st_ast_node *node,
+        fcml_ptr visitor_args );
 
 /* Operations */
 
-fcml_st_ast_node *fcml_fn_ast_alloc_node_integer( fcml_st_ast_val_integer *integer_value );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_float( fcml_st_ast_val_float *float_value );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list( fcml_st_ast_node *operand_l, fcml_st_ast_node *operand_r );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction( fcml_prefixes prefixes, fcml_string mnemonic, fcml_usize length, fcml_hints hints,
-        fcml_st_ast_node *operand_list );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_pseudo_operation( fcml_string mnemonic, fcml_usize length, fcml_st_ast_node *exp );
+fcml_st_ast_node *fcml_fn_ast_alloc_node_integer(
+        fcml_st_ast_val_integer *integer_value);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_float(
+        fcml_st_ast_val_float *float_value);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list(
+        fcml_st_ast_node *operand_l, fcml_st_ast_node *operand_r);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction(fcml_prefixes prefixes,
+        fcml_string mnemonic, fcml_usize length, fcml_hints hints,
+        fcml_st_ast_node *operand_list);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_pseudo_operation(fcml_string mnemonic,
+        fcml_usize length, fcml_st_ast_node *exp);
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_virtual(fcml_bool sae,
         fcml_bool er_enabled, fcml_uint8_t er_value);
@@ -169,33 +179,51 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_virtual(fcml_bool sae,
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg,
         fcml_st_register *opmask_reg_decorator, fcml_bool zero_decorator);
 
-fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol( fcml_ip ip, fcml_string symbol, fcml_usize length );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol( fcml_string symbol_name, fcml_usize length );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_exp( fcml_en_ast_exp_node_operator op, fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer( fcml_st_ast_node *segment_selector, fcml_st_ast_node *offset );
+fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol(fcml_ip ip,
+        fcml_string symbol, fcml_usize length);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol(fcml_string symbol_name,
+        fcml_usize length);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_exp(fcml_en_ast_exp_node_operator op,
+        fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer(
+        fcml_st_ast_node *segment_selector, fcml_st_ast_node *offset);
 
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins(
         fcml_st_ast_node *effective_address_node,
         fcml_hints hints);
 
 fcml_st_ast_node *fcml_fn_ast_decorate_effective_address(
-        fcml_st_ast_node *node,
-        fcml_st_register *opmask_reg_decorator,
+        fcml_st_ast_node *node, fcml_st_register *opmask_reg_decorator,
         fcml_bool zero_decorator);
 
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_details(
-        fcml_st_register *segment_selector,
-        fcml_st_size_operator *size_operator, fcml_uint8_t bcast_decorator,
-        fcml_st_ast_node *effective_address );
+        fcml_st_register *segment_selector, fcml_st_size_operator *size_operator,
+        fcml_uint8_t bcast_decorator, fcml_st_ast_node *effective_address );
 
-fcml_st_ast_node *fcml_fn_ast_set_displacemnt( fcml_st_ast_node *displacement, fcml_st_ast_node *effective_address );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address( fcml_st_register *base, fcml_st_register *index, fcml_st_ast_val_integer *scale_factor,
-        fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints );
-fcml_st_ast_node *fcml_fn_ast_alloc_node_uminus( fcml_st_ast_node *exp );
-void fcml_fn_ast_free_node( fcml_st_ast_node *exp );
-fcml_ceh_error fcml_fn_ast_visit_nodes( fcml_st_ast_node *ast_tree, fcml_fnp_ast_node_visitor visitor, fcml_ptr visitor_args );
-fcml_ceh_error fcml_fn_ast_extract_used_symbols( fcml_st_ast_node *ast_tree, fcml_st_coll_list **extracted_symbols );
-fcml_ceh_error fcml_fn_ast_to_cif_converter( fcml_st_cif_converter_context *context, fcml_st_ast_node *ast_tree, fcml_st_instruction **instruction );
-void fcml_fn_ast_free_converted_cif( fcml_st_instruction *cif_instruction );
+fcml_st_ast_node *fcml_fn_ast_set_displacemnt(fcml_st_ast_node *displacement,
+        fcml_st_ast_node *effective_address);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address(fcml_st_register *base,
+        fcml_st_register *index, fcml_st_ast_val_integer *scale_factor,
+        fcml_st_ast_node *displacement, fcml_bool uminus_displacement, fcml_hints hints);
+
+fcml_st_ast_node *fcml_fn_ast_alloc_node_uminus(fcml_st_ast_node *exp);
+
+void fcml_fn_ast_free_node(fcml_st_ast_node *exp);
+
+fcml_ceh_error visit_nodes(fcml_st_ast_node *ast_tree,
+        fcml_fnp_ast_node_visitor visitor, fcml_ptr visitor_args);
+
+fcml_ceh_error fcml_fn_ast_extract_used_symbols(fcml_st_ast_node *ast_tree,
+        fcml_st_coll_list **extracted_symbols);
+
+fcml_ceh_error fcml_fn_ast_to_cif_converter(
+        fcml_st_cif_converter_context *context,
+        fcml_st_ast_node *ast_tree, fcml_st_instruction **instruction);
+
+void fcml_fn_ast_free_converted_cif(fcml_st_instruction *cif_instruction);
 
 #endif /* FCML_APC_AST_H_ */
