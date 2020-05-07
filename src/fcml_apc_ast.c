@@ -33,17 +33,14 @@ struct fcml_ist_ast_extracted_symbols {
 };
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_integer(
-    fcml_st_ast_val_integer *integer_value)
-{
-    fcml_st_ast_node *node = (fcml_st_ast_node*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node));
+    fcml_st_ast_val_integer *integer_value) {
+
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
-
-    fcml_st_ast_node_value *value_node = (fcml_st_ast_node_value*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node_value));
     
+    FCML_ENV_ALLOC_CLEAR(value_node, fcml_st_ast_node_value);
     if (!value_node) {
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -59,19 +56,14 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_integer(
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_float(
-    fcml_st_ast_val_float *float_value
-) {
+    fcml_st_ast_val_float *float_value) {
 
-    fcml_st_ast_node *node = (fcml_st_ast_node*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node));
-
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
 
-    fcml_st_ast_node_value *exp_node = (fcml_st_ast_node_value*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node_value));
-
+    FCML_ENV_ALLOC_CLEAR(exp_node, fcml_st_ast_node_value);
     if (!exp_node) {
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -97,7 +89,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_pseudo_operation(
         return NULL;
     }
 
-    fcml_st_ast_node *pseudo_operation = fcml_fn_ast_alloc_node_instruction(0, 
+    fcml_st_ast_node *pseudo_operation = fcml_fn_ast_alloc_node_instruction(0,
         mnemonic, length, 0, operand_list);
     if (!pseudo_operation) {
         fcml_fn_ast_free_node(operand_list);
@@ -107,25 +99,16 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_pseudo_operation(
     return pseudo_operation;
 }
 
-fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction(
-    fcml_prefixes prefixes, 
-    fcml_string mnemonic, 
-    fcml_usize length, 
-    fcml_hints hints,
-    fcml_st_ast_node *operands_list
-) {
+fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction(fcml_prefixes prefixes,
+    fcml_string mnemonic, fcml_usize length, fcml_hints hints,
+    fcml_st_ast_node *operands_list) {
 
-    fcml_st_ast_node *node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear(
-            sizeof(fcml_st_ast_node));
-
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
 
-    fcml_st_ast_node_instruction *instruction_node = 
-        (fcml_st_ast_node_instruction*)fcml_fn_env_memory_alloc_clear(
-                sizeof(fcml_st_ast_node_instruction));
-
+    FCML_ENV_ALLOC_CLEAR(instruction_node, fcml_st_ast_node_instruction);
     if (!instruction_node) {
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -153,16 +136,12 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_instruction(
 fcml_st_ast_node *fcml_fn_ast_alloc_node_virtual(fcml_bool sae,
         fcml_bool er_enabled, fcml_uint8_t er_value) {
 
-    fcml_st_ast_node *node = (fcml_st_ast_node*)
-            fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node));
-
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
 
-    fcml_st_ast_node_virtual *virtual_node = (fcml_st_ast_node_virtual*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node_virtual));
-
+    FCML_ENV_ALLOC_CLEAR(virtual_node, fcml_st_ast_node_virtual);
     if (!virtual_node) {
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -185,12 +164,14 @@ fcml_st_ast_node *fcml_fn_ast_decorate_effective_address(
         fcml_st_ast_node *node,
         fcml_st_register *opmask_reg_decorator,
         fcml_bool zero_decorator) {
-    fcml_st_ast_node_effective_address *effective_address =
-            (fcml_st_ast_node_effective_address*)node->node;
-    fcml_st_operand_decorators *decorators = &effective_address->decorators;
+
+    fcml_st_operand_decorators *decorators =
+            &((fcml_st_ast_node_effective_address*)node->node)->decorators;
+
     if (opmask_reg_decorator) {
         decorators->operand_mask_reg = *opmask_reg_decorator;
     }
+
     decorators->z = zero_decorator;
     return node;
 }
@@ -198,16 +179,12 @@ fcml_st_ast_node *fcml_fn_ast_decorate_effective_address(
 fcml_st_ast_node *fcml_fn_ast_alloc_node_register(fcml_st_register *reg,
         fcml_st_register *opmask_reg_decorator, fcml_bool zero_decorator) {
 
-    fcml_st_ast_node *node = (fcml_st_ast_node*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node));
-
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
 
-    fcml_st_ast_node_register *reg_node = (fcml_st_ast_node_register*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node_register));
-
+    FCML_ENV_ALLOC_CLEAR(reg_node, fcml_st_ast_node_register);
     if (!reg_node) {
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -287,12 +264,9 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_operand_list(
 }
 
 fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol(fcml_ip ip,
-    fcml_string symbol_name, fcml_usize length) 
-{
+    fcml_string symbol_name, fcml_usize length) {
 
-    fcml_st_symbol *symbol = (fcml_st_symbol*)fcml_fn_env_memory_alloc_clear(
-            sizeof(fcml_st_symbol));
-
+    FCML_ENV_ALLOC_CLEAR(symbol, fcml_st_symbol);
     if (!symbol) {
         return FCML_FALSE;
     }
@@ -310,19 +284,14 @@ fcml_st_symbol *fcml_fn_ast_alloc_node_define_symbol(fcml_ip ip,
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol(fcml_string symbol_name,
-        fcml_usize length) 
-{
+        fcml_usize length) {
 
-    fcml_st_ast_node *node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear(
-            sizeof(fcml_st_ast_node));
-
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
 
-    fcml_st_ast_node_use_symbol *symbol_node = (fcml_st_ast_node_use_symbol*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node_use_symbol));
-
+    FCML_ENV_ALLOC_CLEAR(symbol_node, fcml_st_ast_node_use_symbol);
     if (!symbol_node){
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -345,19 +314,14 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_use_symbol(fcml_string symbol_name,
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_exp(fcml_en_ast_exp_node_operator op,
-    fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right) 
-{
+    fcml_st_ast_node *exp_left, fcml_st_ast_node *exp_right) {
 
-    fcml_st_ast_node *node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear(
-            sizeof(fcml_st_ast_node));
-
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
 
-    fcml_st_ast_node_exp *exp_node = (fcml_st_ast_node_exp*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node_exp));
-
+    FCML_ENV_ALLOC_CLEAR(exp_node, fcml_st_ast_node_exp);
     if (!exp_node) {
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -375,19 +339,14 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_exp(fcml_en_ast_exp_node_operator op,
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer(
     fcml_st_ast_node *segment_selector,
-    fcml_st_ast_node *offset)
-{
+    fcml_st_ast_node *offset) {
 
-    fcml_st_ast_node *node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear(
-            sizeof(fcml_st_ast_node));
-
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
 
-    fcml_st_ast_node_far_pointer *fp_node = (fcml_st_ast_node_far_pointer*)
-        fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_ast_node_far_pointer));
-
+    FCML_ENV_ALLOC_CLEAR(fp_node, fcml_st_ast_node_far_pointer);
     if (!fp_node) {
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -404,8 +363,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_far_pointer(
 
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins(
     fcml_st_ast_node *effective_address_node,
-    fcml_hints hints) 
-{
+    fcml_hints hints) {
 
     fcml_st_ast_node_effective_address *effective_address =
         (fcml_st_ast_node_effective_address *) effective_address_node->node;
@@ -415,11 +373,8 @@ fcml_st_ast_node *fcml_fn_ast_set_effective_address_hins(
 }
 
 fcml_st_ast_node *fcml_fn_ast_set_effective_address_details(
-    fcml_st_register *segment_selector,
-    fcml_st_size_operator *size_operator,
-    fcml_uint8_t bcast_decorator,
-    fcml_st_ast_node *effective_address_node)
-{
+    fcml_st_register *segment_selector, fcml_st_size_operator *size_operator,
+    fcml_uint8_t bcast_decorator, fcml_st_ast_node *effective_address_node) {
 
     fcml_st_ast_node_effective_address *effective_address =
         (fcml_st_ast_node_effective_address *)effective_address_node->node;
@@ -448,9 +403,7 @@ fcml_st_ast_node *fcml_fn_ast_set_effective_address_details(
 }
 
 fcml_st_ast_node *fcml_fn_ast_set_displacemnt(
-    fcml_st_ast_node *displacement,
-    fcml_st_ast_node *effective_address_node)
-{
+    fcml_st_ast_node *displacement, fcml_st_ast_node *effective_address_node) {
 
     fcml_st_ast_node_effective_address *effective_address =
         (fcml_st_ast_node_effective_address *)effective_address_node->node;
@@ -463,24 +416,16 @@ fcml_st_ast_node *fcml_fn_ast_set_displacemnt(
 }
 
 fcml_st_ast_node *fcml_fn_ast_alloc_node_effective_address(
-    fcml_st_register *base,
-    fcml_st_register *index,
-    fcml_st_ast_val_integer *scale_factor,
-    fcml_st_ast_node *displacement,
-    fcml_bool uminus_displacement,
-    fcml_hints hints)
-{
+    fcml_st_register *base, fcml_st_register *index,
+    fcml_st_ast_val_integer *scale_factor, fcml_st_ast_node *displacement,
+    fcml_bool uminus_displacement, fcml_hints hints) {
 
-    fcml_st_ast_node *node = (fcml_st_ast_node*)fcml_fn_env_memory_alloc_clear(
-            sizeof(fcml_st_ast_node));
+    FCML_ENV_ALLOC_CLEAR(node, fcml_st_ast_node);
     if (!node) {
         return NULL;
     }
 
-    fcml_st_ast_node_effective_address *ea_node = 
-        (fcml_st_ast_node_effective_address*)fcml_fn_env_memory_alloc_clear(
-            sizeof(fcml_st_ast_node_effective_address));
-
+    FCML_ENV_ALLOC_CLEAR(ea_node, fcml_st_ast_node_effective_address);
     if (!ea_node) {
         fcml_fn_env_memory_free(node);
         return NULL;
@@ -556,8 +501,7 @@ fcml_st_ast_node *fcml_fn_ast_alloc_node_uminus(fcml_st_ast_node *exp) {
 
 }
 
-void fcml_ifn_ast_free_operand_node_list_action(fcml_ptr item_value,
-        fcml_ptr args) {
+static void free_operand_node_list_action(fcml_ptr item_value, fcml_ptr args) {
     fcml_st_ast_node *node = (fcml_st_ast_node*) item_value;
     fcml_fn_ast_free_node(node);
 }
@@ -580,7 +524,7 @@ void fcml_fn_ast_free_node(fcml_st_ast_node *exp) {
             fcml_st_ast_node_operand_list *operand_list =
                     (fcml_st_ast_node_operand_list*) exp->node;
             fcml_fn_coll_list_free(operand_list->operands,
-                    fcml_ifn_ast_free_operand_node_list_action, NULL);
+                    free_operand_node_list_action, NULL);
         }
             break;
         case FCML_EN_TN_EXP: {
@@ -630,7 +574,9 @@ void fcml_fn_ast_free_node(fcml_st_ast_node *exp) {
 
 fcml_ceh_error fcml_fn_ast_visit_nodes(fcml_st_ast_node *ast_node,
         fcml_fnp_ast_node_visitor visitor, fcml_ptr visitor_args) {
+
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
     if (ast_node) {
         switch (ast_node->type) {
         case FCML_EN_TN_INSTRUCTION: {
@@ -710,9 +656,11 @@ fcml_ceh_error fcml_fn_ast_visit_nodes(fcml_st_ast_node *ast_node,
 }
 
 /* Visitor responsible for extracting used symbols. */
-fcml_ceh_error fcml_ifn_ast_extract_symbols_visitor(fcml_st_ast_node *node,
+static fcml_ceh_error extract_symbols_visitor(fcml_st_ast_node *node,
         fcml_ptr visitor_args) {
+
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
     if (node->type == FCML_EN_TN_USE_SYMBOL) {
         fcml_st_ast_node_use_symbol *symbol_node =
                 (fcml_st_ast_node_use_symbol*) node->node;
@@ -731,6 +679,7 @@ fcml_ceh_error fcml_ifn_ast_extract_symbols_visitor(fcml_st_ast_node *node,
             }
         }
     }
+
     return error;
 }
 
@@ -744,7 +693,7 @@ fcml_ceh_error fcml_fn_ast_extract_used_symbols(fcml_st_ast_node *ast_tree,
     symbols.symbols = NULL;
 
     error = fcml_fn_ast_visit_nodes(ast_tree,
-            &fcml_ifn_ast_extract_symbols_visitor, &symbols);
+            &extract_symbols_visitor, &symbols);
     if (error) {
         if (symbols.symbols) {
             fcml_fn_coll_list_free(symbols.symbols, NULL, NULL);
@@ -766,15 +715,15 @@ void fcml_fn_ast_free_converted_cif(fcml_st_instruction *cif_instruction) {
     }
 }
 
-float fcml_ifn_ast_get_float_value(fcml_st_ast_node_value *value) {
+static inline float get_float_value(fcml_st_ast_node_value *value) {
     return value->float_value.value;
 }
 
-fcml_int64_t fcml_ifn_ast_get_integer_value(fcml_st_ast_node_value *value) {
+static inline fcml_int64_t get_integer_value(fcml_st_ast_node_value *value) {
     return (fcml_int64_t) value->integer_value.value;
 }
 
-fcml_st_ast_val_integer fcml_ifn_ast_convert_to_val_integer(fcml_int64_t val) {
+static fcml_st_ast_val_integer convert_to_val_integer(fcml_int64_t val) {
     fcml_st_ast_val_integer int_value;
     int_value.value = (fcml_uint64_t) val;
     int_value.is_signed = val < 0;
@@ -782,7 +731,7 @@ fcml_st_ast_val_integer fcml_ifn_ast_convert_to_val_integer(fcml_int64_t val) {
     return int_value;
 }
 
-fcml_ceh_error fcml_ifn_ast_eval_symbol(fcml_st_cif_converter_context *context,
+static fcml_ceh_error eval_symbol(fcml_st_cif_converter_context *context,
         fcml_st_ast_node_use_symbol *symbol_node,
         fcml_st_ast_node_value *result) {
 
@@ -844,7 +793,7 @@ fcml_ceh_error fcml_ifn_ast_eval_exp(fcml_st_cif_converter_context *context,
             return error;
         }
         if (result->type == FCML_EN_ET_INTEGER) {
-            result->integer_value = fcml_ifn_ast_convert_to_val_integer(
+            result->integer_value = convert_to_val_integer(
                     -((fcml_int64_t) result->integer_value.value));
         } else {
             result->float_value.value = -result->float_value.value;
@@ -854,7 +803,7 @@ fcml_ceh_error fcml_ifn_ast_eval_exp(fcml_st_cif_converter_context *context,
     case FCML_EN_TN_USE_SYMBOL: {
         fcml_st_ast_node_use_symbol *symbol_node =
                 (fcml_st_ast_node_use_symbol*) exp->node;
-        error = fcml_ifn_ast_eval_symbol(context, symbol_node, result);
+        error = eval_symbol(context, symbol_node, result);
         break;
     }
     case FCML_EN_TN_EXP: {
@@ -879,48 +828,45 @@ fcml_ceh_error fcml_ifn_ast_eval_exp(fcml_st_cif_converter_context *context,
         switch (exp_node->op) {
         case FCML_EN_EXN_SUB:
             if (is_float) {
-                result->float_value.value = fcml_ifn_ast_get_float_value(&lval)
-                        - fcml_ifn_ast_get_float_value(&rval);
+                result->float_value.value =
+                        get_float_value(&lval) - get_float_value(&rval);
             } else {
-                result->integer_value = fcml_ifn_ast_convert_to_val_integer(
-                        fcml_ifn_ast_get_integer_value(&lval)
-                                - fcml_ifn_ast_get_integer_value(&rval));
+                result->integer_value = convert_to_val_integer(
+                        get_integer_value(&lval) - get_integer_value(&rval));
             }
             break;
         case FCML_EN_EXN_ADD:
             if (is_float) {
-                result->float_value.value = fcml_ifn_ast_get_float_value(&lval)
-                        + fcml_ifn_ast_get_float_value(&rval);
+                result->float_value.value =
+                        get_float_value(&lval) + get_float_value(&rval);
             } else {
-                result->integer_value = fcml_ifn_ast_convert_to_val_integer(
-                        fcml_ifn_ast_get_integer_value(&lval)
-                                + fcml_ifn_ast_get_integer_value(&rval));
+                result->integer_value = convert_to_val_integer(
+                        get_integer_value(&lval) + get_integer_value(&rval));
             }
             break;
         case FCML_EN_EXN_MUL:
             if (is_float) {
-                result->float_value.value = fcml_ifn_ast_get_float_value(&lval)
-                        * fcml_ifn_ast_get_float_value(&rval);
+                result->float_value.value =
+                        get_float_value(&lval) * get_float_value(&rval);
             } else {
-                result->integer_value = fcml_ifn_ast_convert_to_val_integer(
-                        fcml_ifn_ast_get_integer_value(&lval)
-                                * fcml_ifn_ast_get_integer_value(&rval));
+                result->integer_value = convert_to_val_integer(
+                        get_integer_value(&lval) * get_integer_value(&rval));
             }
             break;
         case FCML_EN_EXN_DIV:
             if (is_float) {
-                result->float_value.value = fcml_ifn_ast_get_float_value(&lval)
-                        / fcml_ifn_ast_get_float_value(&rval);
+                result->float_value.value =
+                        get_float_value(&lval) / get_float_value(&rval);
             } else {
-                fcml_int64_t divisor = fcml_ifn_ast_get_integer_value(&rval);
+                fcml_int64_t divisor = get_integer_value(&rval);
                 if (divisor == 0) {
                     fcml_fn_ceh_add_error(context->errors, "Division by zero.",
                             FCML_CEH_MEC_ERROR_DIVISION_BY_0,
                             FCML_EN_CEH_EL_ERROR);
                     error = FCML_CEH_GEC_INVALID_INPUT;
                 } else {
-                    result->integer_value = fcml_ifn_ast_convert_to_val_integer(
-                            fcml_ifn_ast_get_integer_value(&lval) / divisor);
+                    result->integer_value = convert_to_val_integer(
+                            get_integer_value(&lval) / divisor);
                 }
             }
             break;
@@ -936,8 +882,8 @@ fcml_ceh_error fcml_ifn_ast_eval_exp(fcml_st_cif_converter_context *context,
     return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate(
-        fcml_st_ast_node_value *value, fcml_st_integer *immediate) {
+static fcml_ceh_error convert_value_to_immediate(fcml_st_ast_node_value *value,
+        fcml_st_integer *immediate) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     immediate->is_signed = FCML_FALSE;
     if (value->type == FCML_EN_ET_FLOAT) {
@@ -954,7 +900,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_value_to_immediate(
     return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand(
+static fcml_ceh_error convert_far_pointer_node_to_operand(
         fcml_st_cif_converter_context *context,
         fcml_st_ast_node_far_pointer *far_pointer_node,
         fcml_st_far_pointer *far_pointer_operand) {
@@ -1063,7 +1009,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_far_pointer_node_to_operand(
     return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand(
+static fcml_ceh_error convert_effective_address_node_to_operand(
         fcml_st_cif_converter_context *context,
         fcml_st_instruction *cif_instruction,
         fcml_st_ast_node_effective_address *effective_address_node,
@@ -1082,8 +1028,7 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand(
     fcml_st_effective_address *effective_address =
             &(address->effective_address);
 
-    fcml_bool is_combined = !is_reg_undef(
-            &(effective_address_node->base))
+    fcml_bool is_combined = !is_reg_undef(&(effective_address_node->base))
             || !is_reg_undef(&(effective_address_node->index));
 
     address->address_form = is_combined ? FCML_AF_COMBINED : FCML_AF_OFFSET;
@@ -1157,11 +1102,12 @@ fcml_ceh_error fcml_ifn_ast_util_convert_effective_address_node_to_operand(
     return error;
 }
 
-fcml_ceh_error fcml_ifn_ast_handle_ast_node(
-        fcml_st_cif_converter_context *context,
+static fcml_ceh_error handle_ast_node(fcml_st_cif_converter_context *context,
         fcml_st_instruction *cif_instruction, fcml_st_operand *current_operand,
         fcml_st_ast_node *ast_node) {
+
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
+
     switch (ast_node->type) {
     case FCML_EN_TN_INSTRUCTION: {
         fcml_st_ast_node_instruction *node_instruction =
@@ -1174,7 +1120,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node(
         if (cif_instruction->mnemonic) {
             /* Handle operands.*/
             if (node_instruction->operands) {
-                error = fcml_ifn_ast_handle_ast_node(context, cif_instruction,
+                error = handle_ast_node(context, cif_instruction,
                         NULL, node_instruction->operands);
             }
         } else {
@@ -1193,7 +1139,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node(
             fcml_st_coll_list_element *current = operand_list->operands->head;
             int i = 0;
             while (current && i < FCML_OPERANDS_COUNT) {
-                error = fcml_ifn_ast_handle_ast_node(context, cif_instruction,
+                error = handle_ast_node(context, cif_instruction,
                         &(cif_instruction->operands[i++]),
                         (fcml_st_ast_node*) current->item);
                 if (error) {
@@ -1214,7 +1160,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node(
         if (!error) {
             if (current_operand != NULL) {
                 /* Convert value to immediate operand.*/
-                error = fcml_ifn_ast_util_convert_value_to_immediate(&value,
+                error = convert_value_to_immediate(&value,
                         &(current_operand->immediate));
                 if (!error) {
                     current_operand->type = FCML_OT_IMMEDIATE;
@@ -1244,7 +1190,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node(
     case FCML_EN_TN_FAR_POINTER: {
         fcml_st_ast_node_far_pointer *far_pointer_node =
                 (fcml_st_ast_node_far_pointer*) ast_node->node;
-        error = fcml_ifn_ast_util_convert_far_pointer_node_to_operand(context,
+        error = convert_far_pointer_node_to_operand(context,
                 far_pointer_node, &(current_operand->far_pointer));
         current_operand->type = FCML_OT_FAR_POINTER;
         break;
@@ -1252,7 +1198,7 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node(
     case FCML_EN_TN_EFFECTIVE_ADDRESS: {
         fcml_st_ast_node_effective_address *effective_address_node =
                 (fcml_st_ast_node_effective_address*) ast_node->node;
-        error = fcml_ifn_ast_util_convert_effective_address_node_to_operand(
+        error = convert_effective_address_node_to_operand(
                 context, cif_instruction, effective_address_node,
                 effective_address_node->address_form, current_operand);
         current_operand->type = FCML_OT_ADDRESS;
@@ -1263,8 +1209,8 @@ fcml_ceh_error fcml_ifn_ast_handle_ast_node(
         error = FCML_CEH_GEC_INTERNAL_ERROR;
         break;
     }
-    return error;
 
+    return error;
 }
 
 fcml_ceh_error fcml_fn_ast_to_cif_converter(
@@ -1277,7 +1223,7 @@ fcml_ceh_error fcml_fn_ast_to_cif_converter(
             (fcml_st_instruction*) fcml_fn_env_memory_alloc_clear(
                     sizeof(fcml_st_instruction));
     if (instruction) {
-        error = fcml_ifn_ast_handle_ast_node(context, instruction, NULL,
+        error = handle_ast_node(context, instruction, NULL,
                 ast_instruction_node);
         if (error) {
             fcml_fn_ast_free_converted_cif(instruction);
