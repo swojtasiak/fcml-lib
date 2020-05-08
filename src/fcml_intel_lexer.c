@@ -1,6 +1,6 @@
-#line 1 "fcml_intel_lexer.c"
+#line 2 "fcml_intel_lexer.c"
 
-#line 3 "fcml_intel_lexer.c"
+#line 4 "fcml_intel_lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -1173,7 +1173,7 @@ static const flex_int32_t yy_rule_can_match_eol[278] =
     
     #include "fcml_common_lex.h"
     #include "fcml_intel_parser_def.h"
-#line 1176 "fcml_intel_lexer.c"
+#line 1177 "fcml_intel_lexer.c"
 #define YY_NO_INPUT 1
 #define YY_NO_UNISTD_H 1
 #line 51 "fcml_intel_lexer.l"
@@ -1186,9 +1186,9 @@ static const flex_int32_t yy_rule_can_match_eol[278] =
     	yylval->size_operator.size = x; \
     	yylval->size_operator.multimedia = FCML_TRUE; \
     	return FCML_TK_SIZE_OPERATOR; }
-#line 1189 "fcml_intel_lexer.c"
+#line 1190 "fcml_intel_lexer.c"
 /*White spaces.*/
-#line 1191 "fcml_intel_lexer.c"
+#line 1192 "fcml_intel_lexer.c"
 
 #define INITIAL 0
 
@@ -1473,7 +1473,7 @@ YY_DECL
 
 #line 69 "fcml_intel_lexer.l"
  /* Decimal integers. */
-#line 1476 "fcml_intel_lexer.c"
+#line 1477 "fcml_intel_lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -2997,7 +2997,7 @@ YY_RULE_SETUP
 #line 471 "fcml_intel_lexer.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 3000 "fcml_intel_lexer.c"
+#line 3001 "fcml_intel_lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

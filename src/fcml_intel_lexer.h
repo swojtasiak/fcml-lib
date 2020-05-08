@@ -2,9 +2,9 @@
 #define intel_HEADER_H 1
 #define intel_IN_HEADER 1
 
-#line 5 "fcml_intel_lexer.h"
+#line 6 "fcml_intel_lexer.h"
 
-#line 7 "fcml_intel_lexer.h"
+#line 8 "fcml_intel_lexer.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -729,6 +729,6 @@ extern int yylex \
 #line 471 "fcml_intel_lexer.l"
 
 
-#line 732 "fcml_intel_lexer.h"
+#line 733 "fcml_intel_lexer.h"
 #undef intel_IN_HEADER
 #endif /* intel_HEADER_H */
