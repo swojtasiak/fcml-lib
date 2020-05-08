@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,16 +33,16 @@ fcml_ceh_error fcml_fn_utils_conv_int64_to_int(const fcml_uint64_t src,
 
     if (is_src_signed) {
         fcml_int64_t imm = (fcml_int64_t) src;
-        if ((filter & FCML_ENUSF_8) && imm <= FCML_INT8_MAX &&
-                imm >= FCML_INT8_MIN) {
+        if ((filter & FCML_ENUSF_8) && imm <= FCML_INT8_MAX
+                && imm >= FCML_INT8_MIN) {
             dest->int8 = (fcml_int8_t) imm;
             dest->size = FCML_DS_8;
-        } else if ((filter & FCML_ENUSF_16) && imm <= FCML_INT16_MAX &&
-                imm >= FCML_INT16_MIN) {
+        } else if ((filter & FCML_ENUSF_16) && imm <= FCML_INT16_MAX
+                && imm >= FCML_INT16_MIN) {
             dest->int16 = (fcml_int16_t) imm;
             dest->size = FCML_DS_16;
-        } else if ((filter & FCML_ENUSF_32) && imm <= FCML_INT32_MAX &&
-                imm >= FCML_INT32_MIN) {
+        } else if ((filter & FCML_ENUSF_32) && imm <= FCML_INT32_MAX
+                && imm >= FCML_INT32_MIN) {
             dest->int32 = (fcml_int32_t) imm;
             dest->size = FCML_DS_32;
         } else {
@@ -184,8 +184,8 @@ fcml_ceh_error fcml_fn_utils_conv_int_to_uint8(const fcml_st_integer *src,
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_conv_int_to_uint16(
-        const fcml_st_integer *src, fcml_uint16_t *dest) {
+fcml_ceh_error fcml_fn_utils_conv_int_to_uint16(const fcml_st_integer *src,
+        fcml_uint16_t *dest) {
     switch (src->size) {
     case FCML_DS_8:
         if (src->is_signed) {
@@ -229,8 +229,8 @@ fcml_ceh_error fcml_fn_utils_conv_int_to_uint16(
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_conv_int_to_uint32(
-        const fcml_st_integer *src, fcml_uint32_t *dest) {
+fcml_ceh_error fcml_fn_utils_conv_int_to_uint32(const fcml_st_integer *src,
+        fcml_uint32_t *dest) {
     switch (src->size) {
     case FCML_DS_8:
         if (src->is_signed) {
@@ -335,8 +335,8 @@ fcml_ceh_error fcml_fn_utils_conv_int_to_int8(const fcml_st_integer *src,
         break;
     case FCML_DS_64:
         if (src->is_signed) {
-            if ((fcml_int64_t) src->int64 < FCML_INT8_MIN ||
-                    (fcml_int64_t) src->int64 > FCML_INT8_MAX) {
+            if ((fcml_int64_t) src->int64 < FCML_INT8_MIN
+                    || (fcml_int64_t) src->int64 > FCML_INT8_MAX) {
                 return FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
             }
             *dest = (fcml_int8_t) src->int64;
@@ -353,11 +353,12 @@ fcml_ceh_error fcml_fn_utils_conv_int_to_int8(const fcml_st_integer *src,
     return FCML_CEH_GEC_NO_ERROR;
 }
 
-fcml_ceh_error fcml_fn_utils_conv_int_to_int16(
-        const fcml_st_integer *src, fcml_int16_t *dest) {
+fcml_ceh_error fcml_fn_utils_conv_int_to_int16(const fcml_st_integer *src,
+        fcml_int16_t *dest) {
     switch (src->size) {
     case FCML_DS_8:
-        *dest = src->is_signed ? (fcml_int16_t) src->int8 :
+        *dest = src->is_signed ?
+                (fcml_int16_t) src->int8 :
                 (fcml_int16_t) (fcml_uint8_t) src->int8;
         break;
     case FCML_DS_16:
@@ -399,11 +400,13 @@ fcml_ceh_error fcml_fn_utils_conv_int_to_int32(const fcml_st_integer *src,
         fcml_int32_t *dest) {
     switch (src->size) {
     case FCML_DS_8:
-        *dest = src->is_signed ? (fcml_int32_t) src->int8 :
+        *dest = src->is_signed ?
+                (fcml_int32_t) src->int8 :
                 (fcml_int32_t) (fcml_uint8_t) src->int8;
         break;
     case FCML_DS_16:
-        *dest = src->is_signed ? (fcml_int32_t) src->int16 :
+        *dest = src->is_signed ?
+                (fcml_int32_t) src->int16 :
                 (fcml_int32_t) (fcml_uint16_t) src->int16;
         break;
     case FCML_DS_32:
@@ -432,15 +435,18 @@ fcml_ceh_error fcml_fn_utils_conv_int_to_int64(const fcml_st_integer *src,
         fcml_int64_t *dest) {
     switch (src->size) {
     case FCML_DS_8:
-        *dest = src->is_signed ? (fcml_int64_t) src->int8 :
+        *dest = src->is_signed ?
+                (fcml_int64_t) src->int8 :
                 (fcml_int64_t) (fcml_uint8_t) src->int8;
         break;
     case FCML_DS_16:
-        *dest = src->is_signed ? (fcml_int64_t) src->int16 :
+        *dest = src->is_signed ?
+                (fcml_int64_t) src->int16 :
                 (fcml_int64_t) (fcml_uint16_t) src->int16;
         break;
     case FCML_DS_32:
-        *dest = src->is_signed ? (fcml_int64_t) src->int32 :
+        *dest = src->is_signed ?
+                (fcml_int64_t) src->int32 :
                 (fcml_int64_t) (fcml_uint32_t) src->int32;
         break;
     case FCML_DS_64:
@@ -666,7 +672,7 @@ void fcml_fn_utils_conv_gec_to_error_info(fcml_bool enabled,
         fcml_st_ceh_error_container *error_container, fcml_ceh_error code) {
     if (enabled) {
         /* Prepare standard description of the error code,
-           but only if there is no other error on the list. */
+         but only if there is no other error on the list. */
         fcml_st_ceh_error_info *current = error_container->errors;
         while (current) {
             if (current->level == FCML_EN_CEH_EL_ERROR) {
@@ -675,25 +681,27 @@ void fcml_fn_utils_conv_gec_to_error_info(fcml_bool enabled,
             current = current->next_error;
         }
 
-        if (!fcml_fn_ceh_add_error(error_container, fcml_fn_msg_get_message(
-                (fcml_en_msg_message_code) code), code, FCML_EN_CEH_EL_ERROR)) {
+        if (!fcml_fn_ceh_add_error(error_container,
+                fcml_fn_msg_get_message((fcml_en_msg_message_code) code), code,
+                FCML_EN_CEH_EL_ERROR)) {
             FCML_TRACE_MSG("Out of memory, can not allocate space for error info.");
         }
     }
 }
 
-fcml_ceh_error fcml_fn_utils_prepare_entry_point(fcml_st_entry_point *entry_point) {
+fcml_ceh_error fcml_fn_utils_prepare_entry_point(
+        fcml_st_entry_point *entry_point) {
 
     /* Mode has to be set. */
-    if (entry_point->op_mode != FCML_OM_16_BIT &&
-            entry_point->op_mode != FCML_OM_32_BIT &&
-            entry_point->op_mode != FCML_OM_64_BIT) {
+    if (entry_point->op_mode != FCML_OM_16_BIT
+            && entry_point->op_mode != FCML_OM_32_BIT
+            && entry_point->op_mode != FCML_OM_64_BIT) {
         return FCML_CEH_GEC_INVALID_OPERATING_MODE;
     }
 
     /* 16 bit address size attribute is not supported in 64bit mode. */
-    if (entry_point->op_mode == FCML_OM_64_BIT &&
-            entry_point->address_size_attribute == FCML_DS_16) {
+    if (entry_point->op_mode == FCML_OM_64_BIT&&
+    entry_point->address_size_attribute == FCML_DS_16) {
         return FCML_CEH_GEC_INVALID_ADDRESS_SIZE;
     }
 
@@ -780,8 +788,8 @@ fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
             quotient->int8 = dividend->int8 / divisor;
             remainder = dividend->int8 % divisor;
         } else {
-            quotient->int8 = ((fcml_uint8_t)dividend->int8) / divisor;
-            remainder = ((fcml_uint8_t)dividend->int8) % divisor;
+            quotient->int8 = ((fcml_uint8_t) dividend->int8) / divisor;
+            remainder = ((fcml_uint8_t) dividend->int8) % divisor;
         }
         break;
     case FCML_DS_16:
@@ -789,8 +797,8 @@ fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
             quotient->int16 = dividend->int16 / divisor;
             remainder = dividend->int16 % divisor;
         } else {
-            quotient->int16 = ((fcml_uint16_t)dividend->int16) / divisor;
-            remainder = ((fcml_uint16_t)dividend->int16) % divisor;
+            quotient->int16 = ((fcml_uint16_t) dividend->int16) / divisor;
+            remainder = ((fcml_uint16_t) dividend->int16) % divisor;
         }
         break;
     case FCML_DS_32:
@@ -798,8 +806,8 @@ fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
             quotient->int32 = dividend->int32 / divisor;
             remainder = dividend->int32 % divisor;
         } else {
-            quotient->int32 = ((fcml_uint32_t)dividend->int32) / divisor;
-            remainder = ((fcml_uint32_t)dividend->int32) % divisor;
+            quotient->int32 = ((fcml_uint32_t) dividend->int32) / divisor;
+            remainder = ((fcml_uint32_t) dividend->int32) % divisor;
         }
         break;
     case FCML_DS_64:
@@ -807,8 +815,8 @@ fcml_int64_t fcml_fn_utils_divide_integer(const fcml_st_integer *dividend,
             quotient->int64 = dividend->int64 / divisor;
             remainder = dividend->int64 % divisor;
         } else {
-            quotient->int64 = ((fcml_uint64_t)dividend->int64) / divisor;
-            remainder = ((fcml_uint64_t)dividend->int64) % divisor;
+            quotient->int64 = ((fcml_uint64_t) dividend->int64) / divisor;
+            remainder = ((fcml_uint64_t) dividend->int64) % divisor;
         }
         break;
     }
