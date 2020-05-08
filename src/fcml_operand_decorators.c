@@ -64,7 +64,5 @@ fcml_ceh_error fcml_fn_op_decor_decode(
         decorators->z = FCML_TRUE;
     }
 
-
-
     return error;
 }
