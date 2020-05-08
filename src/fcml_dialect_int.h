@@ -34,9 +34,9 @@
 
 #define FCML_ASM_DIALECT_MAX_MNEMONIC_COUNT 50
 
-#define FCML_ASM_DIALECT_INSTRUCTION( x, y )	( ( ( x ) << 16 ) | ( y ) )
-#define FCML_ASM_DIALECT_GET_INSTRUCTION( x )	( ( x ) >> 16 )
-#define FCML_ASM_DIALECT_GET_ADDR_MODE( x )		( ( x ) & 0x0000FFFF )
+#define FCML_ASM_DIALECT_INSTRUCTION(x,y)	(((x) << 16) | (y))
+#define FCML_ASM_DIALECT_GET_INSTRUCTION(x)	((x) >> 16)
+#define FCML_ASM_DIALECT_GET_ADDR_MODE(x)	((x) & 0x0000FFFF)
 
 typedef struct fcml_st_dialect_mnemonic {
     fcml_string mnemonic;
@@ -49,12 +49,10 @@ typedef struct fcml_st_dialect_pseudo_op_mnemonic {
     fcml_en_pseudo_operations pseudo_operation;
 } fcml_st_dialect_pseudo_op_mnemonic;
 
-typedef void (*fcml_fnp_free_mnemonic)(
-        fcml_st_mp_mnemonic *mnemonics);
+typedef void (*fcml_fnp_free_mnemonic)(fcml_st_mp_mnemonic *mnemonics);
 
 /* Returns all mnemonics registered for given instruction. */
-typedef fcml_ceh_error (*fcml_fnp_get_mnemonic)(
-        const fcml_st_dialect *dialect,
+typedef fcml_ceh_error (*fcml_fnp_get_mnemonic)(const fcml_st_dialect *dialect,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode,
         const fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics,
@@ -73,9 +71,8 @@ typedef fcml_string (*fcml_fnp_render_mnemonic)(
 typedef fcml_string (*fcml_fnp_get_pseudo_operation_mnemonic)(
         fcml_en_pseudo_operations pseudo_operation);
 
-typedef fcml_ceh_error (*fcml_fnp_get_register)(
-        const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length,
-        fcml_bool is_rex);
+typedef fcml_ceh_error (*fcml_fnp_get_register)(const fcml_st_register *reg,
+        fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex);
 
 typedef fcml_ceh_error (*fcml_fnp_asm_preprocessor)(const fcml_st_dialect*,
         const fcml_st_def_addr_mode_desc*, const fcml_st_mp_mnemonic*,
@@ -92,8 +89,7 @@ typedef fcml_ceh_error (*fcml_fnp_render_instruction)(
         fcml_st_memory_stream *output_stream,
         const fcml_st_disassembler_result *result);
 
-typedef fcml_st_dialect_pseudo_op_mnemonic* (
-        *fcml_fnp_get_pseudo_operation_mnemonics)();
+typedef fcml_st_dialect_pseudo_op_mnemonic* (*fcml_fnp_get_pseudo_operation_mnemonics)();
 
 typedef void (*fcml_fnp_dialect_free)(fcml_st_dialect *dialect);
 
