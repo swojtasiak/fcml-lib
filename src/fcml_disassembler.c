@@ -1807,7 +1807,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_allocate_acceptors_chain(
  * Decoding callback. *
  **********************/
 
-void fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default(
+static void dispose_inst_def_callback_default(
         fcml_st_dialect_context_int *dialect, 
         fcml_ptr decoding_ptr) {
     fcml_ifn_dasm_dts_free_decoding_def(
@@ -1836,7 +1836,7 @@ void fcml_ifn_dasm_dts_prepare_modrm_decoding_details(
     }
 }
 
-fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default(
+static fcml_ceh_error prepare_inst_def_callback_default(
         fcml_st_dialect_context_int *dialect, 
         fcml_st_dt_diss_tree_element *element,
         fcml_st_def_instruction_desc *instruction_desc, 
@@ -1845,10 +1845,7 @@ fcml_ceh_error fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default(
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     /* Prepare instruction decoding structure.*/
-    fcml_ist_dasm_instruction_decoding_def *decoding = 
-        (fcml_ist_dasm_instruction_decoding_def*)
-        fcml_fn_env_memory_alloc_clear(
-                sizeof(fcml_ist_dasm_instruction_decoding_def));
+    FCML_ENV_ALLOC_CLEAR(decoding, fcml_ist_dasm_instruction_decoding_def);
     if (!decoding) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -2981,8 +2978,8 @@ fcml_ceh_error LIB_CALL fcml_fn_disassembler_init(
         error = fcml_fn_dt_dts_tree_init(
                 (fcml_st_dialect_context_int*)dialect,
                 &(int_disasm->decoding_tree),
-                &fcml_ifn_dasm_dts_prepare_instruction_decoding_callback_default,
-                &fcml_ifn_dasm_dts_dispose_instruction_decoding_callback_default);
+                &prepare_inst_def_callback_default,
+                &dispose_inst_def_callback_default);
         if (!error) {
             *disassembler = (fcml_st_disassembler*) int_disasm;
         }
