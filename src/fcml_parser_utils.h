@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,9 +46,15 @@ typedef struct fcml_st_parser_data {
     fcml_st_ceh_error_container errors;
 } fcml_st_parser_data;
 
-void fcml_fn_pu_parse_integer( const fcml_char *str, fcml_st_ast_val_integer *integer_value, int base );
-void fcml_fn_pu_parse_float( const fcml_char *str, fcml_st_ast_val_float *float_value );
-void fcml_fn_pu_parse_register( fcml_en_register type, fcml_usize size, fcml_uint8_t num, fcml_bool x64_exp, fcml_st_register *reg_dest );
-fcml_char *fcml_fn_pu_reg_type_to_string( fcml_en_register type );
+void fcml_fn_pu_parse_integer(const fcml_char *str,
+        fcml_st_ast_val_integer *integer_value, int base);
+
+void fcml_fn_pu_parse_float(const fcml_char *str,
+        fcml_st_ast_val_float *float_value);
+
+void fcml_fn_pu_parse_register(fcml_en_register type, fcml_usize size,
+        fcml_uint8_t num, fcml_bool x64_exp, fcml_st_register *reg_dest);
+
+fcml_char* fcml_fn_pu_reg_type_to_string(fcml_en_register type);
 
 #endif /* FCML_PUTILS_H_ */

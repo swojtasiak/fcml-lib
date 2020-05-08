@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,7 +23,7 @@
 
 fcml_st_register fcml_reg_AL = { FCML_REG_GPR, FCML_DS_8, FCML_REG_AL, FCML_FALSE };
 fcml_st_register fcml_reg_AX = { FCML_REG_GPR, FCML_DS_16, FCML_REG_AX, FCML_FALSE };
-fcml_st_register fcml_reg_EAX = { FCML_REG_GPR, FCML_DS_32, FCML_REG_EAX, FCML_FALSE };
+fcml_st_register fcml_reg_EAX = { FCML_REG_GPR, FCML_DS_32, FCML_REG_EAX, FCML_FALSE } ;
 fcml_st_register fcml_reg_RAX = { FCML_REG_GPR, FCML_DS_64, FCML_REG_RAX, FCML_FALSE };
 fcml_st_register fcml_reg_MM0 = { FCML_REG_SIMD, FCML_DS_64, FCML_REG_MM0, FCML_FALSE };
 fcml_st_register fcml_reg_XMM0 = { FCML_REG_SIMD, FCML_DS_128, FCML_REG_XMM0, FCML_FALSE };
@@ -269,7 +269,7 @@ fcml_st_register fcml_reg_IP = { FCML_REG_IP, FCML_DS_16, FCML_REG_UNDEFINED, FC
 fcml_st_register fcml_reg_EIP = { FCML_REG_IP, FCML_DS_32, FCML_REG_UNDEFINED, FCML_FALSE };
 fcml_st_register fcml_reg_RIP = { FCML_REG_IP, FCML_DS_64, FCML_REG_UNDEFINED, FCML_FALSE };
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_8( fcml_uint8_t value ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_8(fcml_uint8_t value) {
     fcml_st_operand imm = { FCML_OT_NONE };
     imm.type = FCML_OT_IMMEDIATE;
     imm.immediate.size = FCML_DS_8;
@@ -277,7 +277,7 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_8( fcml_uint8_t value )
     return imm;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_8( fcml_int8_t value ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_8(fcml_int8_t value) {
     fcml_st_operand imm = { FCML_OT_NONE };
     imm.type = FCML_OT_IMMEDIATE;
     imm.immediate.size = FCML_DS_8;
@@ -286,7 +286,8 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_8( fcml_int8_t value ) {
     return imm;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_16( fcml_uint16_t value ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_16(
+        fcml_uint16_t value) {
     fcml_st_operand imm = { FCML_OT_NONE };
     imm.type = FCML_OT_IMMEDIATE;
     imm.immediate.size = FCML_DS_16;
@@ -294,7 +295,7 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_16( fcml_uint16_t value
     return imm;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_16( fcml_int16_t value ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_16(fcml_int16_t value) {
     fcml_st_operand imm = { FCML_OT_NONE };
     imm.type = FCML_OT_IMMEDIATE;
     imm.immediate.size = FCML_DS_16;
@@ -303,7 +304,7 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_16( fcml_int16_t value ) 
     return imm;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_32( fcml_uint32_t value ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_32(fcml_uint32_t value) {
     fcml_st_operand imm = { FCML_OT_NONE };
     imm.type = FCML_OT_IMMEDIATE;
     imm.immediate.size = FCML_DS_32;
@@ -311,7 +312,7 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_32( fcml_uint32_t value
     return imm;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_32( fcml_int32_t value ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_32(fcml_int32_t value) {
     fcml_st_operand imm = { FCML_OT_NONE };
     imm.type = FCML_OT_IMMEDIATE;
     imm.immediate.size = FCML_DS_32;
@@ -320,7 +321,7 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_32( fcml_int32_t value ) 
     return imm;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_64( fcml_uint64_t value ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_64(fcml_uint64_t value) {
     fcml_st_operand imm = { FCML_OT_NONE };
     imm.type = FCML_OT_IMMEDIATE;
     imm.immediate.size = FCML_DS_64;
@@ -328,7 +329,7 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_unsigned_imm_64( fcml_uint64_t value
     return imm;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_64(fcml_int64_t value) {
     fcml_st_operand imm = { FCML_OT_NONE };
     imm.type = FCML_OT_IMMEDIATE;
     imm.immediate.size = FCML_DS_64;
@@ -337,37 +338,40 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_signed_imm_64( fcml_int64_t value ) 
     return imm;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_reg( fcml_st_register *reg ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_reg(fcml_st_register *reg) {
     fcml_st_operand reg_operand = { FCML_OT_NONE };
     reg_operand.type = FCML_OT_REGISTER;
     reg_operand.reg = *reg;
     return reg_operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_far_pointer_offset16( fcml_int16_t seg, fcml_int16_t offset ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_far_pointer_offset16(
+        fcml_int16_t seg, fcml_int16_t offset) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_FAR_POINTER;
-    fcml_st_far_pointer *far_pointer = &( operand.far_pointer );
+    fcml_st_far_pointer *far_pointer = &(operand.far_pointer);
     far_pointer->segment = seg;
     far_pointer->offset16 = offset;
     far_pointer->offset_size = FCML_DS_16;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_far_pointer_offset32( fcml_int16_t seg, fcml_int32_t offset ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_far_pointer_offset32(
+        fcml_int16_t seg, fcml_int32_t offset) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_FAR_POINTER;
-    fcml_st_far_pointer *far_pointer = &( operand.far_pointer );
+    fcml_st_far_pointer *far_pointer = &(operand.far_pointer);
     far_pointer->segment = seg;
     far_pointer->offset32 = offset;
     far_pointer->offset_size = FCML_DS_32;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_16(fcml_int16_t offset,
+        fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
+    fcml_st_address *address = &(operand.address);
     address->address_form = FCML_AF_OFFSET;
     address->offset.off16 = offset;
     address->offset.size = FCML_DS_16;
@@ -375,10 +379,11 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_16( fcml_int16_t offset,
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_32(fcml_int32_t offset,
+        fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
+    fcml_st_address *address = &(operand.address);
     address->address_form = FCML_AF_OFFSET;
     address->offset.off32 = offset;
     address->offset.size = FCML_DS_32;
@@ -386,10 +391,11 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_32( fcml_int32_t offset,
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t offset, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_abs_64(
+        fcml_int64_t offset, fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
+    fcml_st_address *address = &(operand.address);
     address->address_form = FCML_AF_OFFSET;
     address->offset.off64 = offset;
     address->offset.size = FCML_DS_64;
@@ -398,10 +404,11 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_abs_64( fcml_int64_t off
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t offset, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_rel_64(
+        fcml_int64_t offset, fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
+    fcml_st_address *address = &(operand.address);
     address->address_form = FCML_AF_OFFSET;
     address->offset.off64 = offset;
     address->offset.size = FCML_DS_64;
@@ -410,11 +417,12 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_offset_rel_64( fcml_int64_t off
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_16(fcml_int16_t disp,
+        fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
-    fcml_st_effective_address *effective_address = &( address->effective_address );
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
     address->address_form = FCML_AF_COMBINED;
     address->size_operator = size_operator;
     effective_address->displacement.int16 = disp;
@@ -422,11 +430,12 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_16( fcml_int16_t disp, fcm
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_32(fcml_int32_t disp,
+        fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
-    fcml_st_effective_address *effective_address = &( address->effective_address );
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
     address->address_form = FCML_AF_COMBINED;
     address->size_operator = size_operator;
     effective_address->displacement.int32 = disp;
@@ -434,11 +443,12 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_32( fcml_int32_t disp, fcm
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_64(fcml_int64_t disp,
+        fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
-    fcml_st_effective_address *effective_address = &( address->effective_address );
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
     address->address_form = FCML_AF_COMBINED;
     address->size_operator = size_operator;
     effective_address->displacement.int64 = disp;
@@ -446,11 +456,12 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_disp_64( fcml_int64_t disp, fcm
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *base, fcml_int8_t disp, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_8(
+        fcml_st_register *base, fcml_int8_t disp, fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
-    fcml_st_effective_address *effective_address = &( address->effective_address );
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
     address->address_form = FCML_AF_COMBINED;
     address->size_operator = size_operator;
     effective_address->displacement.int8 = disp;
@@ -459,29 +470,38 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_8( fcml_st_register *bas
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_16( fcml_st_register *base, fcml_int16_t disp, fcml_usize size_operator ) {
-    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_16( disp, size_operator );
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_16(
+        fcml_st_register *base, fcml_int16_t disp, fcml_usize size_operator) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_16(disp,
+            size_operator);
     operand.address.effective_address.base = *base;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_32( fcml_st_register *base, fcml_int32_t disp, fcml_usize size_operator ) {
-    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( disp, size_operator );
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_32(
+        fcml_st_register *base, fcml_int32_t disp, fcml_usize size_operator) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32(disp,
+            size_operator);
     operand.address.effective_address.base = *base;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_64( fcml_st_register *base, fcml_int64_t disp, fcml_usize size_operator ) {
-    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_64( disp, size_operator );
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_b_disp_64(
+        fcml_st_register *base, fcml_int64_t disp, fcml_usize size_operator) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_64(disp,
+            size_operator);
     operand.address.effective_address.base = *base;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp, fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_8(
+        fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp,
+        fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
-    fcml_st_effective_address *effective_address = &( address->effective_address );
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address =
+            &(address->effective_address);
     address->address_form = FCML_AF_COMBINED;
     address->size_operator = size_operator;
     effective_address->displacement.int8 = disp;
@@ -491,28 +511,37 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_8( fcml_st_register *in
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_32( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp, fcml_usize size_operator ) {
-    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( disp, size_operator );
-    fcml_st_effective_address *effective_address = &( operand.address.effective_address );
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_32(
+        fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp,
+        fcml_usize size_operator) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32(disp,
+            size_operator);
+    fcml_st_effective_address *effective_address =
+            &(operand.address.effective_address);
     effective_address->index = *index;
     effective_address->scale_factor = scale_factor;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_64( fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp, fcml_usize size_operator ) {
-    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( (fcml_int32_t) disp, size_operator );
-    fcml_st_effective_address *effective_address = &( operand.address.effective_address );
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_is_disp_64(
+        fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp,
+        fcml_usize size_operator) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32(
+            (fcml_int32_t) disp, size_operator);
+    fcml_st_effective_address *effective_address =
+            &(operand.address.effective_address);
     effective_address->index = *index;
     effective_address->scale_factor = scale_factor;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int8_t disp,
-        fcml_usize size_operator ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_8(
+        fcml_st_register *base, fcml_st_register *index,
+        fcml_uint8_t scale_factor, fcml_int8_t disp, fcml_usize size_operator) {
     fcml_st_operand operand = { FCML_OT_NONE };
     operand.type = FCML_OT_ADDRESS;
-    fcml_st_address *address = &( operand.address );
-    fcml_st_effective_address *effective_address = &( address->effective_address );
+    fcml_st_address *address = &(operand.address);
+    fcml_st_effective_address *effective_address = &(address->effective_address);
     address->address_form = FCML_AF_COMBINED;
     address->size_operator = size_operator;
     effective_address->displacement.int8 = disp;
@@ -523,63 +552,74 @@ fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_8( fcml_st_register *b
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_32( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int32_t disp,
-        fcml_usize size_operator ) {
-    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( disp, size_operator );
-    fcml_st_effective_address *effective_address = &( operand.address.effective_address );
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_32(
+        fcml_st_register *base, fcml_st_register *index,
+        fcml_uint8_t scale_factor, fcml_int32_t disp, fcml_usize size_operator) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32(disp,
+            size_operator);
+    fcml_st_effective_address *effective_address =
+            &(operand.address.effective_address);
     effective_address->base = *base;
     effective_address->index = *index;
     effective_address->scale_factor = scale_factor;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_64( fcml_st_register *base, fcml_st_register *index, fcml_uint8_t scale_factor, fcml_int64_t disp,
-        fcml_usize size_operator ) {
-    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32( (fcml_int32_t) disp, size_operator );
-    fcml_st_effective_address *effective_address = &( operand.address.effective_address );
+fcml_st_operand LIB_CALL fcml_fn_cu_operand_addr_bis_disp_64(
+        fcml_st_register *base, fcml_st_register *index,
+        fcml_uint8_t scale_factor, fcml_int64_t disp, fcml_usize size_operator) {
+    fcml_st_operand operand = fcml_fn_cu_operand_addr_disp_32(
+            (fcml_int32_t) disp, size_operator);
+    fcml_st_effective_address *effective_address =
+            &(operand.address.effective_address);
     effective_address->base = *base;
     effective_address->index = *index;
     effective_address->scale_factor = scale_factor;
     return operand;
 }
 
-fcml_st_operand LIB_CALL fcml_fn_cu_add_operand_hints( fcml_st_operand operand, fcml_hints hints ) {
+fcml_st_operand LIB_CALL fcml_fn_cu_add_operand_hints(fcml_st_operand operand,
+        fcml_hints hints) {
     operand.hints = hints;
     return operand;
 }
 
-fcml_st_instruction* LIB_CALL fcml_fn_cu_clone_instruction( fcml_st_instruction *instruction ) {
+fcml_st_instruction* LIB_CALL fcml_fn_cu_clone_instruction(
+        fcml_st_instruction *instruction) {
     if (!instruction) {
         return NULL;
     }
-    fcml_st_instruction *new_inst = (fcml_st_instruction*) fcml_fn_env_memory_alloc_clear( sizeof(fcml_st_instruction) );
+    fcml_st_instruction *new_inst =
+            (fcml_st_instruction*) fcml_fn_env_memory_alloc_clear(
+                    sizeof(fcml_st_instruction));
     if (!new_inst) {
         return NULL;
     }
     *new_inst = *instruction;
-    new_inst->mnemonic = fcml_fn_env_str_strdup( instruction->mnemonic );
+    new_inst->mnemonic = fcml_fn_env_str_strdup(instruction->mnemonic);
     if (!new_inst->mnemonic) {
-        fcml_fn_env_memory_free( new_inst );
+        fcml_fn_env_memory_free(new_inst);
         return NULL;
     }
     return new_inst;
 }
 
-void LIB_CALL fcml_fn_cu_free_instruction( fcml_st_instruction *instruction ) {
+void LIB_CALL fcml_fn_cu_free_instruction(fcml_st_instruction *instruction) {
     if (instruction) {
         if (instruction->mnemonic) {
-            fcml_fn_env_str_strfree( instruction->mnemonic );
+            fcml_fn_env_str_strfree(instruction->mnemonic);
         }
-        fcml_fn_env_memory_free( instruction );
+        fcml_fn_env_memory_free(instruction);
     }
 }
 
-fcml_st_operand *fcml_fn_cu_find_operand( fcml_st_instruction *instruction, fcml_en_operand_type operand_type ) {
+fcml_st_operand* fcml_fn_cu_find_operand(fcml_st_instruction *instruction,
+        fcml_en_operand_type operand_type) {
     fcml_int i;
-    for ( i = 0; i < FCML_OPERANDS_COUNT; i++ ) {
+    for (i = 0; i < FCML_OPERANDS_COUNT; i++) {
         fcml_en_operand_type type = instruction->operands[i].type;
         if (type == operand_type) {
-            return &( instruction->operands[i] );
+            return &(instruction->operands[i]);
         } else if (type == FCML_OT_NONE) {
             break;
         }

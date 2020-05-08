@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2019 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  * 
  * This piece of software is available under LGPL or Apache License.
  * 

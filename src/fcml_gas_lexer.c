@@ -1018,7 +1018,7 @@ static const flex_int32_t yy_rule_can_match_eol[253] =
 #line 2 "fcml_gas_lexer.l"
  /*
   * FCML - Free Code Manipulation Library.
-  * Copyright (C) 2010-2017 Slawomir Wojtasiak
+  * Copyright (C) 2010-2020 Slawomir Wojtasiak
   *
   * This library is free software; you can redistribute it and/or
   * modify it under the terms of the GNU Lesser General Public

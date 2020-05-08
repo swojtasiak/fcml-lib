@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,11 +35,18 @@ typedef struct fcml_st_parser_ast {
     fcml_st_ceh_error_container errors;
 } fcml_st_parser_ast;
 
-fcml_ceh_error fcml_fn_parse_to_cif( fcml_st_parser_context *context, const fcml_string instruction, fcml_st_parser_result *result_out );
-fcml_ceh_error fcml_fn_parse_to_ast( fcml_st_parser_context *context, const fcml_string instruction, fcml_st_parser_ast *ast_out );
-fcml_ceh_error fcml_fn_parser_add_symbol_to_symbol_table( fcml_st_ceh_error_container *errors, fcml_st_symbol_table symbol_table, fcml_st_symbol *symbol,
-        fcml_bool allow_override );
-void fcml_fn_parser_free_ast( fcml_st_parser_ast *ast );
-void fcml_fn_parser_free_symbol( fcml_st_symbol *symbol );
+fcml_ceh_error fcml_fn_parse_to_cif(fcml_st_parser_context *context,
+        const fcml_string instruction, fcml_st_parser_result *result_out);
+
+fcml_ceh_error fcml_fn_parse_to_ast(fcml_st_parser_context *context,
+        const fcml_string instruction, fcml_st_parser_ast *ast_out);
+
+fcml_ceh_error fcml_fn_parser_add_symbol_to_symbol_table(
+        fcml_st_ceh_error_container *errors, fcml_st_symbol_table symbol_table,
+        fcml_st_symbol *symbol, fcml_bool allow_override);
+
+void fcml_fn_parser_free_ast(fcml_st_parser_ast *ast);
+
+void fcml_fn_parser_free_symbol(fcml_st_symbol *symbol);
 
 #endif /* FCML_PARSER_INT_H_ */

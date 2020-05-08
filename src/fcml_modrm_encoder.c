@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@
 #include "fcml_utils.h"
 #include "fcml_disp8_n.h"
 
-fcml_st_memory_stream fcml_ifn_modrm_map_displacement_to_stream(
+static fcml_st_memory_stream map_displacement_to_stream(
         fcml_st_encoded_modrm *encoded_modrm) {
     fcml_st_memory_stream stream;
     stream.base_address = &(encoded_modrm->displacement);
@@ -36,11 +36,11 @@ fcml_st_memory_stream fcml_ifn_modrm_map_displacement_to_stream(
     return stream;
 }
 
-fcml_ceh_error fcml_ifn_modrm_is_displacement(const fcml_st_address *address) {
+static inline fcml_ceh_error is_displacement(const fcml_st_address *address) {
     return address->offset.size || address->effective_address.displacement.size;
 }
 
-fcml_ceh_error fcml_ifn_modrm_convert_absolute_address_to_integer(
+static fcml_ceh_error convert_absolute_address_to_integer(
         const fcml_st_address *address, fcml_st_integer *integer) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     if (address->address_form == FCML_AF_OFFSET) {
@@ -57,20 +57,17 @@ fcml_ceh_error fcml_ifn_modrm_convert_absolute_address_to_integer(
     return error;
 }
 
-fcml_ceh_error fcml_ifn_modrm_encode_compress_disp8(
+static fcml_ceh_error encode_compress_disp8(
         const fcml_st_modrm_encoder_context *context,
         const fcml_st_integer *displacement, fcml_st_integer *dest,
         fcml_usize asa) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     fcml_uint32_t n = fcml_fn_d8n_calculate_n(context->tuple_type,
            context->b, context->input_size, context->vector_length);
 
     if (n) {
-
         fcml_st_integer compressed_disp;
-
         fcml_int64_t remainder = fcml_fn_utils_divide_integer(
                 displacement, &compressed_disp, n);
 
@@ -82,7 +79,6 @@ fcml_ceh_error fcml_ifn_modrm_encode_compress_disp8(
         } else {
             error = FCML_CEH_GEC_VALUE_OUT_OF_RANGE;
         }
-
     }
 
     if (error == FCML_CEH_GEC_VALUE_OUT_OF_RANGE || !n) {
@@ -95,7 +91,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_compress_disp8(
 }
 
 /* Optionally extends and encodes displacement.*/
-fcml_ceh_error fcml_ifn_modrm_encode_displacement(
+static fcml_ceh_error encode_displacement(
         fcml_st_modrm_encoder_context *context,
         const fcml_st_integer *displacement,
         fcml_st_encoded_modrm *encoded_modrm, fcml_usize asa,
@@ -114,14 +110,11 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement(
     }
 
     if (*disp_size == FCML_DS_UNDEF) {
-
         /* Check if compressed disp8 has to be used. Notice that for EVEX
          * encoded instructions disp8 is always compressed. */
         if (!is_rip && context->is_evex && asa != FCML_DS_16) {
-
-           error = fcml_ifn_modrm_encode_compress_disp8(context, &src, &dest,
+           error = encode_compress_disp8(context, &src, &dest,
                    asa);
-
         } else {
 
             /* Convert displacement to 8 bits value.*/
@@ -133,9 +126,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement(
                 error = fcml_fn_utils_conv_int_to_int(&src, &dest,
                         asa, asa == FCML_DS_16 ? FCML_DS_16 : FCML_DS_32);
             }
-
         }
-
     } else {
         error = fcml_fn_utils_conv_int_to_int(&src, &dest, asa,
                 *disp_size);
@@ -146,7 +137,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement(
     }
 
     /* Gets displacement as stream. */
-    fcml_st_memory_stream stream = fcml_ifn_modrm_map_displacement_to_stream(
+    fcml_st_memory_stream stream = map_displacement_to_stream(
             encoded_modrm);
 
     /* Writes displacement to the stream. */
@@ -162,8 +153,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_displacement(
     return error;
 }
 
-fcml_ceh_error fcml_ifn_modrm_encode_16bit(
-        fcml_st_modrm_encoder_context *context,
+static fcml_ceh_error encode_16bit(fcml_st_modrm_encoder_context *context,
         const fcml_st_modrm *decoded_modrm,
         fcml_st_encoded_modrm *encoded_modrm) {
 
@@ -185,19 +175,17 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit(
     /* Check if there is disp16 addressing mode encoded.*/
     if (!effective_address->base.type
             && (effective_address->displacement.size || address->offset.size)) {
-
         /* Sign extends displacement to 16 bits if there is such need,
          * and encode it. Remember that in 16 bit addressing mode address
          * form doesn't matter.
          */
-
         fcml_st_integer absolute_address;
 
-        error = fcml_ifn_modrm_convert_absolute_address_to_integer(address,
+        error = convert_absolute_address_to_integer(address,
                 &absolute_address);
         if (!error) {
             fcml_usize disp_size = FCML_DS_16;
-            error = fcml_ifn_modrm_encode_displacement(context,
+            error = encode_displacement(context,
                     &absolute_address, encoded_modrm, FCML_DS_16, &disp_size,
                     FCML_FALSE);
         }
@@ -221,7 +209,6 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit(
         }
 
         if (!error) {
-
             /* There is base register set.*/
             switch (effective_address->base.reg) {
             case FCML_REG_BX:
@@ -259,11 +246,10 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit(
             }
 
             if (!error) {
-
                 /* Encode displacement if there is any.*/
                 fcml_usize disp_size = FCML_DS_UNDEF;
                 if (effective_address->displacement.size) {
-                    error = fcml_ifn_modrm_encode_displacement(context,
+                    error = encode_displacement(context,
                             &(effective_address->displacement), encoded_modrm,
                             FCML_DS_16, &disp_size, FCML_FALSE);
                 }
@@ -288,11 +274,8 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit(
                         break;
                     }
                 }
-
             }
-
         }
-
     } else if (decoded_modrm->reg.is_not_null) {
         f_mod = 0x03;
         f_rm = decoded_modrm->reg.value;
@@ -312,8 +295,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_16bit(
 }
 
 /* 32 and 64 bit addressing mode */
-fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
-        fcml_st_modrm_encoder_context *context,
+static fcml_ceh_error encode_3264bit(fcml_st_modrm_encoder_context *context,
         const fcml_st_modrm *decoded_modrm,
         fcml_st_encoded_modrm *encoded_modrm) {
 
@@ -344,7 +326,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
         return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
     }
 
-    fcml_bool is_displacement = fcml_ifn_modrm_is_displacement(address);
+    fcml_bool is_disp = is_displacement(address);
     fcml_bool is_base = effective_address->base.type != FCML_REG_UNDEFINED;
     fcml_bool is_index = effective_address->index.type != FCML_REG_UNDEFINED;
 
@@ -366,7 +348,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
         if (is_index) {
             choose_sib = FCML_TRUE;
         } else {
-            if (!is_base && is_displacement) {
+            if (!is_base && is_disp) {
 
                 /* disp32 or RIP*/
 
@@ -394,13 +376,13 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
                 if (effective_address->base.reg == FCML_REG_ESP) {
                     choose_sib = FCML_TRUE;
                 } else if (effective_address->base.reg == FCML_REG_EBP
-                        && !is_displacement) {
+                        && !is_disp) {
                     /* This addressing mode can be only encoded with
                      * displacement set to 0. */
                     disp_size = FCML_DS_8;
                     displacement.int8 = 0;
                     displacement.size = FCML_DS_8;
-                    is_displacement = FCML_TRUE;
+                    is_disp = FCML_TRUE;
                 } else {
                     /* RIP relative addressing can not be encoded using SIB.*/
                     if (effective_address->base.type != FCML_REG_IP) {
@@ -437,7 +419,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
             /* SIB without base register, there is only one addressing
              * mode with this combination and it needs disp32.
              */
-            if (!is_displacement) {
+            if (!is_disp) {
                 return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
             }
             disp_size = FCML_DS_32;
@@ -502,7 +484,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
             if (effective_address->displacement.size) {
                 return FCML_CEH_GEC_INVALID_ADDRESSING_FORM;
             }
-        } else if (is_displacement) {
+        } else if (is_disp) {
             /* Absolute address or RIP. Disp8 is not supported in
              * this case, so force disp32. */
             disp_size = FCML_DS_32;
@@ -570,11 +552,11 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
 
         f_mod = 0x00;
 
-    } else if (is_displacement || is_rip_disp) {
+    } else if (is_disp || is_rip_disp) {
 
         if (is_base || is_index) {
 
-            fcml_ceh_error error = fcml_ifn_modrm_encode_displacement(context,
+            fcml_ceh_error error = encode_displacement(context,
                     &displacement, encoded_modrm,
                     context->chosen_effective_address_size, &disp_size,
                     is_rip_disp);
@@ -609,7 +591,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
              * order to convert it to ASA size.
              */
             fcml_usize error =
-                    fcml_ifn_modrm_convert_absolute_address_to_integer(address,
+                    convert_absolute_address_to_integer(address,
                             &absolute_address);
             if (error) {
                 return error;
@@ -619,7 +601,7 @@ fcml_ceh_error fcml_ifn_modrm_encode_3264bit(
             * cannot be encoded as disp8. */
             disp_size = FCML_DS_32;
 
-            error = fcml_ifn_modrm_encode_displacement(context,
+            error = encode_displacement(context,
                     &absolute_address, encoded_modrm,
                     context->chosen_effective_address_size, &disp_size,
                     is_rip_disp);
@@ -691,10 +673,10 @@ fcml_ceh_error fcml_fn_modrm_encode(fcml_st_modrm_encoder_context *context,
     context->chosen_effective_address_size = easa;
 
     if (easa == FCML_DS_16) {
-        error = fcml_ifn_modrm_encode_16bit(context, decoded_modrm,
+        error = encode_16bit(context, decoded_modrm,
                 encoded_modrm);
     } else if (easa == FCML_DS_32 || easa == FCML_DS_64) {
-        error = fcml_ifn_modrm_encode_3264bit(context, decoded_modrm,
+        error = encode_3264bit(context, decoded_modrm,
                 encoded_modrm);
     } else {
         /* Unknown addressing mode.*/

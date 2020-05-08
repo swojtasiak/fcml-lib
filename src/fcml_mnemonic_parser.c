@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2017 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,7 +43,7 @@
 #include <fcml_common.h>
 #include <fcml_types.h>
 
-enum fcml_ien_mp_parser_state {
+enum parser_state {
     FCML_MP_PS_MNEMONIC,
     FCML_MP_PS_BETWEEN_MNEMONICS,
     FCML_MP_PS_ATTRIBUTE_KEY,
@@ -52,7 +52,7 @@ enum fcml_ien_mp_parser_state {
 
 #define FCML_IDF_MP_BUFF_LEN 256
 
-void fcml_ifn_mp_clean_mnemonic(fcml_st_mp_mnemonic *mnemonic) {
+static void clean_mnemonic(fcml_st_mp_mnemonic *mnemonic) {
     mnemonic->supported_osa = FCML_DS_UNDEF;
     mnemonic->supported_asa = FCML_DS_UNDEF;
     mnemonic->mnemonic = NULL;
@@ -73,41 +73,41 @@ void fcml_ifn_mp_clean_mnemonic(fcml_st_mp_mnemonic *mnemonic) {
     mnemonic->suffix.value = 0x00;
 }
 
-fcml_ceh_error fcml_ifn_mp_dup_mnemonic(fcml_st_mp_mnemonic *parsed_mnemonic,
-        fcml_st_coll_list *mnemonics, fcml_string mnemonic_buff,
-fcml_usize len) {
+static fcml_ceh_error dup_mnemonic(fcml_st_mp_mnemonic *parsed_mnemonic,
+        fcml_st_coll_list *mnemonics, fcml_string mnemonic_buff, fcml_usize len) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     /* Allocate space for new mnemonic.*/
-    fcml_st_mp_mnemonic *new_mnemonic = (fcml_st_mp_mnemonic*)
-    fcml_fn_env_memory_alloc_clear( sizeof(fcml_st_mp_mnemonic) );
-    if ( new_mnemonic == NULL ) {
+    fcml_st_mp_mnemonic *new_mnemonic =
+            (fcml_st_mp_mnemonic*) fcml_fn_env_memory_alloc_clear(
+                    sizeof(fcml_st_mp_mnemonic));
+    if (new_mnemonic == NULL) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
 
     /* Prepare mnemonic string.*/
     *new_mnemonic = *parsed_mnemonic;
 
-    new_mnemonic->mnemonic = fcml_fn_env_str_stralloc( len + 1 );
-    if ( new_mnemonic->mnemonic == NULL ) {
-        fcml_fn_env_memory_free( new_mnemonic );
+    new_mnemonic->mnemonic = fcml_fn_env_str_stralloc(len + 1);
+    if (new_mnemonic->mnemonic == NULL) {
+        fcml_fn_env_memory_free(new_mnemonic);
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     } else {
-        fcml_fn_env_str_strncpy( new_mnemonic->mnemonic, mnemonic_buff, len );
+        fcml_fn_env_str_strncpy(new_mnemonic->mnemonic, mnemonic_buff, len);
     }
 
     /* Add mnemonic to list of already parsed mnemonics.*/
-    if ( !fcml_fn_coll_list_add_back( mnemonics, new_mnemonic ) ) {
-        fcml_fn_env_str_strfree( new_mnemonic->mnemonic );
-        fcml_fn_env_memory_free( new_mnemonic );
+    if (!fcml_fn_coll_list_add_back(mnemonics, new_mnemonic)) {
+        fcml_fn_env_str_strfree(new_mnemonic->mnemonic);
+        fcml_fn_env_memory_free(new_mnemonic);
         error = FCML_CEH_GEC_OUT_OF_MEMORY;
     }
 
     return error;
 }
 
-fcml_ceh_error fcml_ifn_parse_attribute_size_flag(fcml_char flag_code,
+static fcml_ceh_error parse_attribute_size_flag(fcml_char flag_code,
         fcml_usize *flags) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     switch (flag_code) {
@@ -129,7 +129,7 @@ fcml_ceh_error fcml_ifn_parse_attribute_size_flag(fcml_char flag_code,
     return error;
 }
 
-fcml_ceh_error fcml_ifn_handle_attribute_value(fcml_char attr_key,
+static fcml_ceh_error handle_attribute_value(fcml_char attr_key,
         fcml_char *attr_value, int attr_value_len,
         fcml_st_mp_mnemonic *mnemonic) {
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -181,11 +181,11 @@ fcml_ceh_error fcml_ifn_handle_attribute_value(fcml_char attr_key,
         }
         break;
     case 'o':
-        error = fcml_ifn_parse_attribute_size_flag(attr_value[0],
+        error = parse_attribute_size_flag(attr_value[0],
                 &mnemonic->supported_osa);
         break;
     case 'a':
-        error = fcml_ifn_parse_attribute_size_flag(attr_value[0],
+        error = parse_attribute_size_flag(attr_value[0],
                 &mnemonic->supported_asa);
         break;
     case 'd':
@@ -213,22 +213,41 @@ fcml_ceh_error fcml_ifn_handle_attribute_value(fcml_char attr_key,
     return error;
 }
 
+static fcml_bool is_attribute_size_supported(
+        fcml_usize supported_attribute_size, fcml_usize attribute_size) {
+    if (supported_attribute_size == FCML_DS_UNDEF) {
+        return FCML_TRUE;
+    }
+    return supported_attribute_size == attribute_size;
+}
+
+static void coll_list_action_free_mnemonic(fcml_ptr item_value, fcml_ptr args) {
+    if (item_value) {
+        fcml_st_mp_mnemonic *parsed_mnemonic = (fcml_st_mp_mnemonic*) item_value;
+        if (parsed_mnemonic->mnemonic) {
+            fcml_fn_env_str_strfree(parsed_mnemonic->mnemonic);
+        }
+        fcml_fn_env_memory_free(parsed_mnemonic);
+    }
+}
+
 fcml_ceh_error fcml_fn_mp_parse_mnemonics(fcml_string mnemonics_pattern,
-fcml_st_mp_mnemonic_set **mnemonics_set) {
+        fcml_st_mp_mnemonic_set **mnemonics_set) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_char mnemonic_buff[FCML_IDF_MP_BUFF_LEN];
     int mnemonic_index = 0;
 
-    fcml_st_mp_mnemonic_set *mnemonics = (fcml_st_mp_mnemonic_set*)
-            fcml_fn_env_memory_alloc_clear(sizeof(fcml_st_mp_mnemonic_set));
+    fcml_st_mp_mnemonic_set *mnemonics =
+            (fcml_st_mp_mnemonic_set*) fcml_fn_env_memory_alloc_clear(
+                    sizeof(fcml_st_mp_mnemonic_set));
     if (!mnemonics) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
 
     mnemonics->mnemonics = fcml_fn_coll_list_alloc();
     if (!mnemonics->mnemonics) {
-        fcml_fn_env_memory_free( mnemonics );
+        fcml_fn_env_memory_free(mnemonics);
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
 
@@ -236,9 +255,9 @@ fcml_st_mp_mnemonic_set **mnemonics_set) {
 
     fcml_st_mp_mnemonic mnemonic;
 
-    fcml_ifn_mp_clean_mnemonic(&mnemonic);
+    clean_mnemonic(&mnemonic);
 
-    enum fcml_ien_mp_parser_state state = FCML_MP_PS_MNEMONIC;
+    enum parser_state state = FCML_MP_PS_MNEMONIC;
     fcml_char attr_key;
     int attr_value_index = 0;
     fcml_char attr_value[6];
@@ -250,9 +269,9 @@ fcml_st_mp_mnemonic_set **mnemonics_set) {
         fcml_char c = mnemonics_pattern[i];
 
         if (state == FCML_MP_PS_MNEMONIC) {
-            switch ( c ) {
-                case '[':
-                if ( mnemonic_index > 0 ) {
+            switch (c) {
+            case '[':
+                if (mnemonic_index > 0) {
                     state = FCML_MP_PS_ATTRIBUTE_KEY;
                     mnemonic.is_default = FCML_FALSE;
                 } else {
@@ -260,71 +279,70 @@ fcml_st_mp_mnemonic_set **mnemonics_set) {
                     error = FCML_CEH_GEC_INVALID_INPUT;
                 }
                 break;
-                case ';':
-                if ( mnemonic_index > 0 ) {
-                    error = fcml_ifn_mp_dup_mnemonic(&mnemonic,
-                            mnemonics->mnemonics, mnemonic_buff,
-                            mnemonic_index);
+            case ';':
+                if (mnemonic_index > 0) {
+                    error = dup_mnemonic(&mnemonic, mnemonics->mnemonics,
+                            mnemonic_buff, mnemonic_index);
                 } else {
                     /* empty mnemonic.*/
                     error = FCML_CEH_GEC_INVALID_INPUT;
                 }
-                fcml_ifn_mp_clean_mnemonic( &mnemonic );
+                clean_mnemonic(&mnemonic);
                 mnemonic_index = 0;
                 break;
-                default:
-                if ( mnemonic_index < FCML_IDF_MP_BUFF_LEN &&
-                        (fcml_fn_env_is_alpha(c) || fcml_fn_env_is_digit(c) ||
-                                c == '_' )) {
+            default:
+                if (mnemonic_index < FCML_IDF_MP_BUFF_LEN
+                        && (fcml_fn_env_is_alpha(c) || fcml_fn_env_is_digit(c)
+                                || c == '_')) {
                     mnemonic_buff[mnemonic_index++] = c;
                 } else {
                     error = FCML_CEH_GEC_INVALID_INPUT;
                 }
                 break;
             }
-        } else if ( state == FCML_MP_PS_BETWEEN_MNEMONICS ) {
+        } else if (state == FCML_MP_PS_BETWEEN_MNEMONICS) {
 
-            if ( c != ';' ) {
+            if (c != ';') {
                 error = FCML_CEH_GEC_INVALID_INPUT;
                 break;
             }
 
-            error = fcml_ifn_mp_dup_mnemonic(&mnemonic, mnemonics->mnemonics,
-                    mnemonic_buff, mnemonic_index);
+            error = dup_mnemonic(&mnemonic, mnemonics->mnemonics, mnemonic_buff,
+                    mnemonic_index);
 
-            fcml_ifn_mp_clean_mnemonic( &mnemonic );
+            clean_mnemonic(&mnemonic);
             mnemonic_index = 0;
 
             state = FCML_MP_PS_MNEMONIC;
 
         } else {
-            switch ( c ) {
-                case ']':
-                if ( state != FCML_MP_PS_ATTRIBUTE_VALUE ||
-                        attr_value_index == 0 ) {
+            switch (c) {
+            case ']':
+                if (state != FCML_MP_PS_ATTRIBUTE_VALUE
+                        || attr_value_index == 0) {
                     error = FCML_CEH_GEC_INVALID_INPUT;
                     break;
                 }
                 /* Handle last mnemonic attribute.*/
-                error = fcml_ifn_handle_attribute_value(attr_key, attr_value,
-                        attr_value_index, &mnemonic );
+                error = handle_attribute_value(attr_key, attr_value,
+                        attr_value_index, &mnemonic);
                 attr_value_index = 0;
                 state = FCML_MP_PS_BETWEEN_MNEMONICS;
                 break;
-                case ',':
-                if ( state != FCML_MP_PS_ATTRIBUTE_VALUE ||
-                        attr_value_index == 0) {
+            case ',':
+                if (state != FCML_MP_PS_ATTRIBUTE_VALUE
+                        || attr_value_index == 0) {
                     error = FCML_CEH_GEC_INVALID_INPUT;
                     break;
                 }
-                error = fcml_ifn_handle_attribute_value(attr_key, attr_value,
+                error = handle_attribute_value(attr_key, attr_value,
                         attr_value_index, &mnemonic);
                 attr_value_index = 0;
                 state = FCML_MP_PS_ATTRIBUTE_KEY;
                 break;
-                default:
-                if (state != FCML_MP_PS_ATTRIBUTE_KEY &&
-                        state != FCML_MP_PS_ATTRIBUTE_VALUE) {
+            default:
+                if (state != FCML_MP_PS_ATTRIBUTE_KEY
+                        && state != FCML_MP_PS_ATTRIBUTE_VALUE) {
                     error = FCML_CEH_GEC_INVALID_INPUT;
                     break;
                 }
@@ -336,8 +354,8 @@ fcml_st_mp_mnemonic_set **mnemonics_set) {
                         error = FCML_CEH_GEC_INVALID_INPUT;
                     }
                 } else if (state == FCML_MP_PS_ATTRIBUTE_VALUE) {
-                    if ((fcml_fn_env_is_alpha(c) || fcml_fn_env_is_digit(c) ||
-                            c == '*') && attr_value_index < 5) {
+                    if ((fcml_fn_env_is_alpha(c) || fcml_fn_env_is_digit(c)
+                            || c == '*') && attr_value_index < 5) {
                         attr_value[attr_value_index++] = c;
                         attr_value[attr_value_index] = '\0';
                     } else {
@@ -353,8 +371,8 @@ fcml_st_mp_mnemonic_set **mnemonics_set) {
     }
 
     if (!error && mnemonic_index) {
-        error = fcml_ifn_mp_dup_mnemonic(&mnemonic, mnemonics->mnemonics,
-                mnemonic_buff, mnemonic_index);
+        error = dup_mnemonic(&mnemonic, mnemonics->mnemonics, mnemonic_buff,
+                mnemonic_index);
     }
 
     if (error) {
@@ -372,15 +390,7 @@ fcml_st_mp_mnemonic_set **mnemonics_set) {
     return error;
 }
 
-fcml_bool fcml_ifn_mp_is_attribute_size_supported(
-        fcml_usize supported_attribute_size, fcml_usize attribute_size) {
-    if (supported_attribute_size == FCML_DS_UNDEF) {
-        return FCML_TRUE;
-    }
-    return supported_attribute_size == attribute_size;
-}
-
-fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic(
+fcml_st_mp_mnemonic* fcml_fn_mp_choose_mnemonic(
         fcml_st_mp_mnemonic_set *mnemonics, fcml_st_mp_config *config) {
 
     fcml_st_mp_mnemonic *chosen_mnemonic = NULL;
@@ -403,9 +413,9 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic(
             }
 
             /* Size attributes.*/
-            if (fcml_ifn_mp_is_attribute_size_supported(mnemonic->supported_asa,
+            if (is_attribute_size_supported(mnemonic->supported_asa,
                     config->effective_asa)
-                    && fcml_ifn_mp_is_attribute_size_supported(
+                    && is_attribute_size_supported(
                             mnemonic->supported_osa, config->effective_osa)) {
 
                 /* Memory data size.*/
@@ -430,7 +440,7 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic(
                             if ((config->use_shortcut
                                     && ((mnemonic->pseudo_op.is_not_null
                                             && mnemonic->pseudo_op.value
-                                                == config->pseudo_opcode.value)
+                                                    == config->pseudo_opcode.value)
                                             || mnemonic->is_shortcut))
                                     || (!config->use_shortcut
                                             && !mnemonic->pseudo_op.is_not_null
@@ -472,23 +482,11 @@ fcml_st_mp_mnemonic *fcml_fn_mp_choose_mnemonic(
 
 }
 
-void fcml_ifp_coll_list_action_free_mnemonic(fcml_ptr item_value,
-        fcml_ptr args) {
-    if (item_value) {
-        fcml_st_mp_mnemonic *parsed_mnemonic =
-                (fcml_st_mp_mnemonic *) item_value;
-        if (parsed_mnemonic->mnemonic) {
-            fcml_fn_env_str_strfree(parsed_mnemonic->mnemonic);
-        }
-        fcml_fn_env_memory_free(parsed_mnemonic);
-    }
-}
-
 void fcml_fn_mp_free_mnemonics(fcml_st_mp_mnemonic_set *mnemonics) {
     if (mnemonics) {
         if (mnemonics->mnemonics) {
             fcml_fn_coll_list_free(mnemonics->mnemonics,
-                    &fcml_ifp_coll_list_action_free_mnemonic, NULL);
+                    &coll_list_action_free_mnemonic, NULL);
         }
         fcml_fn_env_memory_free(mnemonics);
     }

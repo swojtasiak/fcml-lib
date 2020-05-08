@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2017 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,38 +22,40 @@
 #include <stdlib.h>
 #include <errno.h>
 
-void fcml_fn_pu_parse_integer( const fcml_char *str, fcml_st_ast_val_integer *integer_value, int base ) {
+void fcml_fn_pu_parse_integer(const fcml_char *str,
+        fcml_st_ast_val_integer *integer_value, int base) {
 #ifdef FCML_MSCC
     fcml_uint64_t value = _strtoui64( str, NULL, base );
 #else
-    fcml_uint64_t value = strtoull( str, NULL, base );
+    fcml_uint64_t value = strtoull(str, NULL, base);
 #endif
-    integer_value->overflow = ( errno == ERANGE );
+    integer_value->overflow = ( errno == ERANGE);
     integer_value->value = value;
     integer_value->is_signed = FCML_FALSE;
 }
 
-void fcml_fn_pu_parse_float( const fcml_char *str, fcml_st_ast_val_float *float_value ) {
+void fcml_fn_pu_parse_float(const fcml_char *str,
+        fcml_st_ast_val_float *float_value) {
     // Floats are not supported yet.
 #ifdef FCML_MSCC
     float_value->value = (float)strtod( str, NULL );
 #else
-    float_value->value = strtof( str, NULL );
+    float_value->value = strtof(str, NULL);
 #endif
-    float_value->overflow = ( errno == ERANGE ) ? FCML_TRUE : FCML_FALSE;
+    float_value->overflow = ( errno == ERANGE) ? FCML_TRUE : FCML_FALSE;
 }
 
-void fcml_fn_pu_parse_register( fcml_en_register type, fcml_usize size,
-        fcml_uint8_t reg, fcml_bool x64_exp, fcml_st_register *reg_dest ) {
+void fcml_fn_pu_parse_register(fcml_en_register type, fcml_usize size,
+        fcml_uint8_t reg, fcml_bool x64_exp, fcml_st_register *reg_dest) {
     reg_dest->type = type;
     reg_dest->size = size;
     reg_dest->reg = reg;
     reg_dest->x64_exp = x64_exp;
 }
 
-fcml_char *fcml_fn_pu_reg_type_to_string( fcml_en_register type ) {
+fcml_char* fcml_fn_pu_reg_type_to_string(fcml_en_register type) {
     fcml_char *desc;
-    switch ( type ) {
+    switch (type) {
     case FCML_REG_GPR:
         desc = "GPR";
         break;

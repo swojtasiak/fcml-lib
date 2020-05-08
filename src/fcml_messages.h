@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2015 Slawomir Wojtasiak
+ * Copyright (C) 2010-2020 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,8 +58,10 @@ typedef enum fcml_en_msg_message_code {
     FCML_MC_SEGMENT_PARSED_LINE_TO_LONG
 } fcml_en_msg_message_code;
 
-fcml_string fcml_fn_msg_get_message( fcml_en_msg_message_code code );
-void fcml_fn_msg_add_error_message( fcml_st_ceh_error_container *errors, fcml_en_msg_message_code msg_code, fcml_ceh_error code, fcml_en_ceh_error_level level,
-        ... );
+fcml_string fcml_fn_msg_get_message(fcml_en_msg_message_code code);
+
+void fcml_fn_msg_add_error_message(fcml_st_ceh_error_container *errors,
+        fcml_en_msg_message_code msg_code, fcml_ceh_error code,
+        fcml_en_ceh_error_level level, ...);
 
 #endif /* FCML_MESSAGES_H_ */
