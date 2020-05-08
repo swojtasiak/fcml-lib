@@ -30,13 +30,17 @@
 extern fcml_string fcml_ar_asm_conditional_suffixes[3][16];
 extern fcml_string fcml_ar_asm_conditional_suffixes_render[2][16];
 
-fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic(
-        const fcml_st_dialect *dialect, fcml_st_mp_mnemonic_set *mnemonic_set,
-        fcml_st_mp_mnemonic **mnemonics, const fcml_st_condition *condition,
-        int *mnemonics_counter );
+fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic(const fcml_st_dialect *dialect,
+        fcml_st_mp_mnemonic_set *mnemonic_set, fcml_st_mp_mnemonic **mnemonics,
+        const fcml_st_condition *condition, int *mnemonics_counter);
 
-fcml_string fcml_fn_cmn_dialect_render_mnemonic( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry );
-fcml_ceh_error fcml_fn_cmn_dialect_get_register( const fcml_st_register *reg, fcml_string *printable_reg, fcml_bool is_rex );
-void fcml_fn_cmn_dialect_free( fcml_st_dialect *dialect );
+fcml_string fcml_fn_cmn_dialect_render_mnemonic(fcml_string mnemonic,
+        fcml_st_condition *condition, fcml_uint8_t conditional_group,
+        fcml_bool show_carry);
+
+fcml_ceh_error fcml_fn_cmn_dialect_get_register(const fcml_st_register *reg,
+        fcml_string *printable_reg, fcml_bool is_rex);
+
+void fcml_fn_cmn_dialect_free(fcml_st_dialect *dialect);
 
 #endif /* FCML_COMMON_DIALECT_H_ */
