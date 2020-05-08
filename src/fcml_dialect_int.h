@@ -39,49 +39,63 @@
 #define FCML_ASM_DIALECT_GET_ADDR_MODE( x )		( ( x ) & 0x0000FFFF )
 
 typedef struct fcml_st_dialect_mnemonic {
-	fcml_string mnemonic;
-	fcml_uint32_t instruction;
-	fcml_uint32_t flags;
+    fcml_string mnemonic;
+    fcml_uint32_t instruction;
+    fcml_uint32_t flags;
 } fcml_st_dialect_mnemonic;
 
-typedef struct fcml_st_dialect_pseudpo_operation_mnemonic {
-	fcml_string mnemonic;
-	fcml_en_pseudo_operations pseudo_operation;
-} fcml_st_dialect_pseudpo_operation_mnemonic;
+typedef struct fcml_st_dialect_pseudo_op_mnemonic {
+    fcml_string mnemonic;
+    fcml_en_pseudo_operations pseudo_operation;
+} fcml_st_dialect_pseudo_op_mnemonic;
 
-typedef void (*fcml_fnp_asm_dialect_free_mnemonic)(
+typedef void (*fcml_fnp_free_mnemonic)(
         fcml_st_mp_mnemonic *mnemonics);
 
 /* Returns all mnemonics registered for given instruction. */
-typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_mnemonic)(
+typedef fcml_ceh_error (*fcml_fnp_get_mnemonic)(
         const fcml_st_dialect *dialect,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode,
-        const fcml_st_condition *condition,
-        fcml_st_mp_mnemonic **mnemonics, int *mnemonic_counter);
+        const fcml_st_condition *condition, fcml_st_mp_mnemonic **mnemonics,
+        int *mnemonic_counter);
 
-typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_parsed_mnemonics)(
+typedef fcml_ceh_error (*fcml_fnp_get_parsed_mnemonics)(
         const fcml_st_dialect *dialect,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode,
         fcml_st_mp_mnemonic_set **mnemonics);
 
-typedef fcml_string    (*fcml_fnp_asm_dialect_render_mnemonic)( fcml_string mnemonic, fcml_st_condition *condition, fcml_uint8_t conditional_group, fcml_bool show_carry );
-typedef fcml_string    (*fcml_fnp_asm_dialect_get_pseudo_operation_mnemonic)( fcml_en_pseudo_operations pseudo_operation );
-typedef fcml_ceh_error (*fcml_fnp_asm_dialect_get_register)( const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex );
+typedef fcml_string (*fcml_fnp_render_mnemonic)(
+        fcml_string mnemonic, fcml_st_condition *condition,
+        fcml_uint8_t conditional_group, fcml_bool show_carry);
+
+typedef fcml_string (*fcml_fnp_get_pseudo_operation_mnemonic)(
+        fcml_en_pseudo_operations pseudo_operation);
+
+typedef fcml_ceh_error (*fcml_fnp_get_register)(
+        const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length,
+        fcml_bool is_rex);
 
 typedef fcml_ceh_error (*fcml_fnp_asm_preprocessor)(const fcml_st_dialect*,
         const fcml_st_def_addr_mode_desc*, const fcml_st_mp_mnemonic*,
         fcml_en_instruction, fcml_st_instruction*, fcml_bool *inst_changed);
 
 typedef fcml_ceh_error (*fcml_fnp_disasm_postprocessor)(
-        const fcml_st_mp_mnemonic*,
-        fcml_st_disassembler_result*);
+        const fcml_st_mp_mnemonic*, fcml_st_disassembler_result*);
 
-typedef fcml_ceh_error (*fcml_fnp_parse_instruction)( fcml_ip ip, const fcml_string asm_mnemonic, fcml_st_parser_ast *ast );
-typedef fcml_ceh_error (*fcml_fnp_render_instruction)( const fcml_st_dialect *dialect, const fcml_st_render_config *config, fcml_st_memory_stream *output_stream, const fcml_st_disassembler_result *result );
-typedef fcml_st_dialect_pseudpo_operation_mnemonic *(*fcml_fnp_asm_get_pseudo_operation_mnemonics)();
-typedef void (*fcml_fnp_asm_dialect_free)( fcml_st_dialect *dialect );
+typedef fcml_ceh_error (*fcml_fnp_parse_instruction)(fcml_ip ip,
+        const fcml_string asm_mnemonic, fcml_st_parser_ast *ast);
+
+typedef fcml_ceh_error (*fcml_fnp_render_instruction)(
+        const fcml_st_dialect *dialect, const fcml_st_render_config *config,
+        fcml_st_memory_stream *output_stream,
+        const fcml_st_disassembler_result *result);
+
+typedef fcml_st_dialect_pseudo_op_mnemonic* (
+        *fcml_fnp_get_pseudo_operation_mnemonics)();
+
+typedef void (*fcml_fnp_dialect_free)(fcml_st_dialect *dialect);
 
 /* Internal representation of dialect context.*/
 typedef struct fcml_st_dialect_context_int {
@@ -89,33 +103,42 @@ typedef struct fcml_st_dialect_context_int {
     /**
      * Gets mnemonics for given instruction addressing mode.
      */
-    fcml_fnp_asm_dialect_get_mnemonic get_mnemonic;
+    fcml_fnp_get_mnemonic get_mnemonic;
     /**
      * Gets mnemonics for pseudo operation.
      */
-    fcml_fnp_asm_get_pseudo_operation_mnemonics get_pseudo_operation_mnemonics;
-    fcml_fnp_asm_dialect_get_parsed_mnemonics get_parsed_mnemonics;
-    fcml_fnp_asm_dialect_get_pseudo_operation_mnemonic get_pseudo_operation_mnemonic;
+    fcml_fnp_get_pseudo_operation_mnemonics get_pseudo_op_mnemonics;
+    fcml_fnp_get_parsed_mnemonics get_parsed_mnemonics;
+    fcml_fnp_get_pseudo_operation_mnemonic get_pseudo_op_mnemonic;
     /**
      * Used to free mnemonics when assembler is disposed. Some dialect may
      * use static mnemonic while other may generate them like AT&Tdialect
      * does. This function givens a way to free them in a proper way.
      */
-    fcml_fnp_asm_dialect_free_mnemonic free_mnemonic;
-    fcml_fnp_asm_dialect_render_mnemonic render_mnemonic;
-    fcml_fnp_asm_dialect_get_register get_register;
+    fcml_fnp_free_mnemonic free_mnemonic;
+    fcml_fnp_render_mnemonic render_mnemonic;
+    fcml_fnp_get_register get_register;
     fcml_fnp_asm_preprocessor asm_preprocessor;
     fcml_fnp_disasm_postprocessor disasm_postprocessor;
-    fcml_fnp_asm_dialect_free free_dialect;
+    fcml_fnp_dialect_free free_dialect;
     fcml_fnp_render_instruction instruction_renderer;
     fcml_fnp_parse_instruction instruction_parser;
     fcml_uint32_t config_flags;
 } fcml_st_dialect_context_int;
 
-fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic_with_suffix( fcml_st_mp_mnemonic *mnemonic, fcml_string suffix );
-fcml_st_mp_mnemonic *fcml_fn_asm_dialect_alloc_mnemonic( fcml_st_mp_mnemonic *mnemonic );
-void fcml_fn_asm_dialect_free_mnemonic( fcml_st_mp_mnemonic *mnemonic );
-fcml_ceh_error fcml_fn_asm_dialect_alloc_mnemonic_lookup( fcml_st_dialect_context_int **dialect_context, fcml_st_dialect_mnemonic *mnemonic, fcml_usize capacity );
-void fcml_fn_asm_dialect_free_mnemonic_lookup( fcml_st_dialect_context_int *dialect_context );
+fcml_st_mp_mnemonic* fcml_fn_asm_dialect_alloc_mnemonic_with_suffix(
+        fcml_st_mp_mnemonic *mnemonic, fcml_string suffix);
+
+fcml_st_mp_mnemonic* fcml_fn_asm_dialect_alloc_mnemonic(
+        fcml_st_mp_mnemonic *mnemonic);
+
+void fcml_fn_asm_dialect_free_mnemonic(fcml_st_mp_mnemonic *mnemonic);
+
+fcml_ceh_error fcml_fn_asm_dialect_alloc_mnemonic_lookup(
+        fcml_st_dialect_context_int **dialect_context,
+        fcml_st_dialect_mnemonic *mnemonic, fcml_usize capacity);
+
+void fcml_fn_asm_dialect_free_mnemonic_lookup(
+        fcml_st_dialect_context_int *dialect_context);
 
 #endif /* FCML_ASM_DIALECT_INT_H_ */

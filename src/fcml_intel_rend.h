@@ -28,7 +28,10 @@
 
 #include "fcml_stream.h"
 
-fcml_ceh_error fcml_fn_rend_render_instruction_intel( const fcml_st_dialect *dialect_context, const fcml_st_render_config *config, fcml_st_memory_stream *output_stream,
-        const fcml_st_disassembler_result *result );
+fcml_ceh_error fcml_fn_rend_render_instruction_intel(
+        const fcml_st_dialect *dialect_context,
+        const fcml_st_render_config *config,
+        fcml_st_memory_stream *output_stream,
+        const fcml_st_disassembler_result *result);
 
 #endif /* FCML_INTEL_REND_H_ */

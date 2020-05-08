@@ -1364,9 +1364,9 @@ fcml_st_dialect_mnemonic fcml_arr_dialect_intel_mnemonics[] = {
 /* * END OF MNEMONICS **/
 /* *********************/
 
-fcml_ceh_error fcml_ifn_asm_dialect_get_register_intel(
-        const fcml_st_register *reg, fcml_string buffer, fcml_int buffer_length,
-        fcml_bool is_rex ) {
+static fcml_ceh_error get_register(const fcml_st_register *reg,
+        fcml_string buffer, fcml_int buffer_length, fcml_bool is_rex ) {
+
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
     fcml_string printable_reg;
 
@@ -1380,8 +1380,7 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_register_intel(
     return error;
 }
 
-fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_intel(
-        const fcml_st_dialect *dialect,
+static fcml_ceh_error get_parsed_mnemonics(const fcml_st_dialect *dialect,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode,
         fcml_st_mp_mnemonic_set **mnemonics) {
@@ -1423,19 +1422,17 @@ fcml_ceh_error fcml_ifn_asm_dialect_get_parsed_mnemonics_intel(
  * given addressing mode. Bear in mind that there are addressing
  * modes/instruction forms which have more than one mnemonics available.
  */
-fcml_ceh_error fcml_ifn_asm_dialect_get_mnemonic_intel(
-        const fcml_st_dialect *dialect,
+static fcml_ceh_error get_mnemonic(const fcml_st_dialect *dialect,
         const fcml_st_def_instruction_desc *instruction,
         const fcml_st_def_addr_mode_desc *addr_mode,
         const fcml_st_condition *condition,
         fcml_st_mp_mnemonic **mnemonics, int *mnemonics_counter) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-
     fcml_st_mp_mnemonic_set *mnemonic_set = NULL;
 
-    error = fcml_ifn_asm_dialect_get_parsed_mnemonics_intel(
-            dialect, instruction, addr_mode, &mnemonic_set);
+    error = get_parsed_mnemonics(dialect, instruction, addr_mode,
+            &mnemonic_set);
     if (!error) {
         error = fcml_fn_cmn_dialect_get_mnemonic(dialect, mnemonic_set,
                 mnemonics, condition, mnemonics_counter);
@@ -1503,7 +1500,7 @@ static fcml_ceh_error create_asm_preprocessor(
     return error;
 }
 
-fcml_string fcml_fnp_asm_dialect_get_pseudo_operation_mnemonic_intel(
+static fcml_string get_pseudo_op_mnemonic(
         fcml_en_pseudo_operations pseudo_operation) {
     fcml_string mnemonic = NULL;
     switch ( pseudo_operation ) {
@@ -1516,14 +1513,13 @@ fcml_string fcml_fnp_asm_dialect_get_pseudo_operation_mnemonic_intel(
     return mnemonic;
 }
 
-fcml_st_dialect_pseudpo_operation_mnemonic
-fcml_iarr_dialect_pseudpo_operation_mnemonic_intel[] = {
-        { "db", FP_DB }, { NULL, FP_NO_PSEUDO_OP }
+static fcml_st_dialect_pseudo_op_mnemonic pseudpo_op_mnemonic[] = {
+        { "db", FP_DB },
+        { NULL, FP_NO_PSEUDO_OP }
 };
 
-fcml_st_dialect_pseudpo_operation_mnemonic *
-fcml_ifn_asm_get_pseudo_operation_mnemonics_intel( void ) {
-    return &fcml_iarr_dialect_pseudpo_operation_mnemonic_intel[0];
+static fcml_st_dialect_pseudo_op_mnemonic *get_pseudo_op_mnemonics( void ) {
+    return &pseudpo_op_mnemonic[0];
 }
 
 fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel(fcml_uint32_t config_flags,
@@ -1543,24 +1539,18 @@ fcml_ceh_error LIB_CALL fcml_fn_dialect_init_intel(fcml_uint32_t config_flags,
     }
 
     /* Prepares dialect instance.*/
-    dialect_context_intel->get_mnemonic =
-            &fcml_ifn_asm_dialect_get_mnemonic_intel;
-    dialect_context_intel->get_parsed_mnemonics =
-            &fcml_ifn_asm_dialect_get_parsed_mnemonics_intel;
+    dialect_context_intel->get_mnemonic = &get_mnemonic;
+    dialect_context_intel->get_parsed_mnemonics = &get_parsed_mnemonics;
     dialect_context_intel->render_mnemonic =
             &fcml_fn_cmn_dialect_render_mnemonic;
-    dialect_context_intel->get_pseudo_operation_mnemonics =
-            &fcml_ifn_asm_get_pseudo_operation_mnemonics_intel;
-    dialect_context_intel->get_pseudo_operation_mnemonic =
-            &fcml_fnp_asm_dialect_get_pseudo_operation_mnemonic_intel;
-    dialect_context_intel->free_mnemonic =
-            &fcml_fn_asm_dialect_free_mnemonic;
+    dialect_context_intel->get_pseudo_op_mnemonics = &get_pseudo_op_mnemonics;
+    dialect_context_intel->get_pseudo_op_mnemonic = &get_pseudo_op_mnemonic;
+    dialect_context_intel->free_mnemonic = &fcml_fn_asm_dialect_free_mnemonic;
     dialect_context_intel->instruction_renderer =
             &fcml_fn_rend_render_instruction_intel;
     dialect_context_intel->instruction_parser =
             &fcml_fn_intel_parse_instruction_to_ast;
-    dialect_context_intel->get_register =
-            &fcml_ifn_asm_dialect_get_register_intel;
+    dialect_context_intel->get_register = &get_register;
     dialect_context_intel->free_dialect = &fcml_fn_cmn_dialect_free;
     dialect_context_intel->asm_preprocessor = &create_asm_preprocessor;
     dialect_context_intel->disasm_postprocessor = NULL;

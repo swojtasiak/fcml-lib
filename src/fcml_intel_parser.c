@@ -30,30 +30,33 @@
 #include "fcml_parser_int.h"
 
 void intel_error(YYLTYPE *yylloc, struct fcml_st_parser_data *pd,
-        const char *error ) {
+        const char *error) {
     /* Stores parser error into standard container. */
-    fcml_fn_ceh_add_error( &( pd->errors ), (const fcml_string) error,
-            FCML_CEH_MEC_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR );
+    fcml_fn_ceh_add_error(&(pd->errors), (const fcml_string) error,
+            FCML_CEH_MEC_ERROR_INVALID_SYNTAX, FCML_EN_CEH_EL_ERROR);
 }
 
-void *intel_alloc( yy_size_t size, yyscan_t yyscanner ) {
-    return fcml_fn_env_memory_alloc( (fcml_usize) size );
+void* intel_alloc(yy_size_t size, yyscan_t yyscanner) {
+    return fcml_fn_env_memory_alloc((fcml_usize) size);
 }
 
-void *intel_realloc( void *ptr, yy_size_t size, yyscan_t yyscanner ) {
-    return fcml_fn_env_memory_realloc( ptr, (fcml_usize) size );
+void* intel_realloc(void *ptr, yy_size_t size, yyscan_t yyscanner) {
+    return fcml_fn_env_memory_realloc(ptr, (fcml_usize) size);
 }
 
-void intel_free( void *ptr, yyscan_t yyscanner ) {
-    return fcml_fn_env_memory_free( ptr );
+void intel_free(void *ptr, yyscan_t yyscanner) {
+    return fcml_fn_env_memory_free(ptr);
 }
 
-fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_ip ip, const fcml_string mnemonic, fcml_st_parser_ast *ast ) {
+fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast(fcml_ip ip,
+        const fcml_string mnemonic, fcml_st_parser_ast *ast) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     /* Instruction size is limited to prevent from parser's stack and buffer overflow. */
-    if ( !mnemonic || !ast || fcml_fn_env_str_strlen( mnemonic ) > FCML_PARSER_MAX_INSTRUCTION_LEN ) {
+    if (!mnemonic || !ast
+            || fcml_fn_env_str_strlen(mnemonic)
+                    > FCML_PARSER_MAX_INSTRUCTION_LEN) {
         return FCML_CEH_GEC_INVALID_INPUT;
     }
 
@@ -62,22 +65,22 @@ fcml_ceh_error fcml_fn_intel_parse_instruction_to_ast( fcml_ip ip, const fcml_st
     parser.ip = ip;
 
     /* Set up scanner. */
-    if ( intel_lex_init_extra( &parser, &( parser.scannerInfo ) ) ) {
+    if (intel_lex_init_extra(&parser, &(parser.scannerInfo))) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
 
-    intel__scan_string( mnemonic, parser.scannerInfo );
+    intel__scan_string(mnemonic, parser.scannerInfo);
 
-    int yyresult = intel_parse( &parser );
+    int yyresult = intel_parse(&parser);
 
-    intel_lex_destroy( parser.scannerInfo );
+    intel_lex_destroy(parser.scannerInfo);
 
     ast->errors = parser.errors;
     ast->symbol = parser.symbol;
     ast->tree = parser.tree;
 
-    if ( yyresult ) {
-        switch ( yyresult ) {
+    if (yyresult) {
+        switch (yyresult) {
         case 1: /*Syntax error.*/
             error = FCML_CEH_GEC_INVALID_INPUT;
             break;
