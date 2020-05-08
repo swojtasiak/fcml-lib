@@ -60,14 +60,17 @@ fcml_string fcml_iarr_messages[] = {
 };
 
 fcml_string fcml_fn_msg_get_message(fcml_en_msg_message_code code) {
-	return fcml_iarr_messages[code];
+    return fcml_iarr_messages[code];
 }
 
-void fcml_fn_msg_add_error_message( fcml_st_ceh_error_container *errors, fcml_en_msg_message_code msg_code, fcml_ceh_error code, fcml_en_ceh_error_level level, ... ) {
-	fcml_char buffer[FCML_MAX_MESSAGE_LENGTH];
-	va_list args;
-	va_start( args, level );
-	fcml_fn_env_str_vsnprintf( buffer, sizeof( buffer ), fcml_fn_msg_get_message( msg_code ), args );
-	va_end( args );
-	fcml_fn_ceh_add_error( errors, (const fcml_string)buffer, code, level );
+void fcml_fn_msg_add_error_message(fcml_st_ceh_error_container *errors,
+        fcml_en_msg_message_code msg_code, fcml_ceh_error code,
+        fcml_en_ceh_error_level level, ...) {
+    fcml_char buffer[FCML_MAX_MESSAGE_LENGTH];
+    va_list args;
+    va_start(args, level);
+    fcml_fn_env_str_vsnprintf(buffer, sizeof(buffer),
+            fcml_fn_msg_get_message(msg_code), args);
+    va_end(args);
+    fcml_fn_ceh_add_error(errors, (const fcml_string) buffer, code, level);
 }
