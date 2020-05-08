@@ -3165,7 +3165,7 @@ fcml_ceh_error fcml_ifn_disassemble_core(
 
             /* Gets mnemonic for pseudo operation. */
             instruction->mnemonic = int_disasm->dialect_context->
-                get_pseudo_operation_mnemonic(decoding_context.pseudo_op);
+                get_pseudo_op_mnemonic(decoding_context.pseudo_op);
             instruction_details->pseudo_op = decoding_context.pseudo_op;
 
         } else {

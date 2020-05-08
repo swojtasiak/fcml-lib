@@ -394,8 +394,8 @@ static fcml_ceh_error init_pseudo_operation_encodings(
         return fcml_fn_utils_conv_map_error(map_error);
     }
 
-    fcml_st_dialect_pseudpo_operation_mnemonic *mnemonics_map =
-            dialect->get_pseudo_operation_mnemonics();
+    fcml_st_dialect_pseudo_op_mnemonic *mnemonics_map =
+            dialect->get_pseudo_op_mnemonics();
     if (mnemonics_map) {
         while (mnemonics_map->mnemonic) {
             pseudo_operation_desc *desc = find_desc_for_pseudo_operation(
