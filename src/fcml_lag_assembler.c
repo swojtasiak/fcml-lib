@@ -29,23 +29,23 @@
 #include "fcml_messages.h"
 #include "fcml_utils.h"
 
-typedef struct fcml_ist_lag_pass_holder {
+typedef struct lag_pass_holder {
     /* Pass number. */
     fcml_int pass;
-} fcml_ist_lag_pass_holder;
+} lag_pass_holder;
 
 /* Holds information about last symbol value modification. */
-typedef struct fcml_ist_lag_symbol_state {
+typedef struct symbol_state {
     /* Name of the symbol. */
     fcml_string symbol_name;
     /* Pass which modified symbol. */
     fcml_int pass;
-} fcml_ist_symbol_state;
+} symbol_state;
 
-typedef struct fcml_ist_lag_instruction {
+typedef struct lag_instruction {
     fcml_ip ip;
     /* Next instruction. */
-    struct fcml_ist_lag_instruction *next;
+    struct lag_instruction *next;
     /* If instruction has symbols, we have its AST just to reassemble it when needed. */
     fcml_st_parser_ast ast;
     /* List of symbols used by instruction. Every symbol is represented by its name (list of fcml_string). */
@@ -58,29 +58,29 @@ typedef struct fcml_ist_lag_instruction {
     fcml_int line;
     /* Generated instruction can not be shorter than */
     fcml_int size_guard;
-} fcml_ist_lag_instruction;
+} lag_instruction;
 
 /* Details about processing errors. */
-typedef struct fcml_ist_lag_error_details {
+typedef struct lag_error_details {
     /* Errors. */
     fcml_st_ceh_error_container errors;
     /* Line where assembling failed. */
     fcml_int line;
-} fcml_ist_lag_error_details;
+} lag_error_details;
 
 /* Context shared between multiple passes. */
-typedef struct fcml_ist_lag_processing_context {
+typedef struct lag_asseblation_context {
     /* Parsed/Converted/Assembled instructions. */
-    fcml_ist_lag_instruction *first_instruction;
-    fcml_ist_lag_instruction *last_instruction;
+    lag_instruction *first_instruction;
+    lag_instruction *last_instruction;
     /* One line assembler used to assemble code. */
     fcml_st_assembler_context assembler_context;
     /* Global errors going here. */
-    fcml_ist_lag_error_details error_details;
-} fcml_ist_log_asseblation_context;
+    lag_error_details error_details;
+} lag_asseblation_context;
 
 /* Returns true if any of the symbols from given list exists in the state map. */
-fcml_bool fcml_ifn_lag_is_any_symbol_modified(fcml_coll_map symbol_state_map,
+static fcml_bool is_any_symbol_modified(fcml_coll_map symbol_state_map,
         fcml_st_coll_list *symbol_names) {
     if (symbol_names) {
         fcml_st_coll_list_element *element = symbol_names->head;
@@ -95,23 +95,24 @@ fcml_bool fcml_ifn_lag_is_any_symbol_modified(fcml_coll_map symbol_state_map,
     return FCML_FALSE;
 }
 
-/* Frees symbol state structure used by secod pass and laters. */
-void fcml_ifn_lag_map_symbol_state_free(fcml_ptr key, fcml_ptr value,
+/* Frees symbol state structure used by second pass and later. */
+static void map_symbol_state_free(fcml_ptr key, fcml_ptr value,
         fcml_ptr args) {
     if (value) {
-        /* Symbol name is managed by parser context, so it can not be free'd here. */
-        fcml_ist_symbol_state *symbol = (fcml_ist_symbol_state*) value;
+        /* Symbol name is managed by parser context, so it can not
+         * be free'd here. */
+        symbol_state *symbol = (symbol_state*) value;
         fcml_fn_env_memory_free(symbol);
     }
 }
 
 /* Decides if symbol state has to be removed from state stable. */
-fcml_bool fcml_ifn_lag_map_prev_pass_symbol_if(fcml_ptr key, fcml_ptr value,
+static fcml_bool map_prev_pass_symbol_if(fcml_ptr key, fcml_ptr value,
         fcml_ptr args) {
     fcml_bool remove = FCML_FALSE;
-    fcml_ist_lag_pass_holder *pass_holder = (fcml_ist_lag_pass_holder*) args;
+    lag_pass_holder *pass_holder = (lag_pass_holder*) args;
     if (value && pass_holder) {
-        fcml_ist_symbol_state *symbol = (fcml_ist_symbol_state*) value;
+        symbol_state *symbol = (symbol_state*) value;
         if (symbol->pass < pass_holder->pass) {
             remove = FCML_TRUE;
         }
@@ -120,16 +121,16 @@ fcml_bool fcml_ifn_lag_map_prev_pass_symbol_if(fcml_ptr key, fcml_ptr value,
 }
 
 /* Adds symbol status to the map. */
-fcml_ceh_error fcml_ifn_lag_add_symbol_state(fcml_coll_map symbol_state_map,
+static fcml_ceh_error add_symbol_state(fcml_coll_map symbol_state_map,
         fcml_string symbol, fcml_int pass) {
-    fcml_ist_symbol_state *state =
-            (fcml_ist_symbol_state*) fcml_fn_coll_map_get(symbol_state_map,
+    symbol_state *state =
+            (symbol_state*) fcml_fn_coll_map_get(symbol_state_map,
                     symbol);
     if (state) {
         state->pass = pass;
     } else {
-        state = (fcml_ist_symbol_state*) fcml_fn_env_memory_alloc(
-                sizeof(fcml_ist_symbol_state));
+        state = (symbol_state*) fcml_fn_env_memory_alloc(
+                sizeof(symbol_state));
         if (!state) {
             return FCML_CEH_GEC_OUT_OF_MEMORY;
         }
@@ -147,49 +148,47 @@ fcml_ceh_error fcml_ifn_lag_add_symbol_state(fcml_coll_map symbol_state_map,
 }
 
 /* Allocates map used as fast-access storage for symbols statuses. */
-fcml_coll_map fcml_ifn_lag_alloc_symbol_state_map() {
+static fcml_coll_map alloc_symbol_state_map() {
     fcml_st_coll_map_descriptor map_descriptor = fcml_coll_map_descriptor_string;
-    map_descriptor.entry_free_function = &fcml_ifn_lag_map_symbol_state_free;
+    map_descriptor.entry_free_function = &map_symbol_state_free;
     fcml_int map_error = 0;
     return fcml_fn_coll_map_alloc(&map_descriptor, 10, &map_error);
 }
 
 /* Removes all symbols from previous passes. */
-void fcml_ifn_lag_clean_symbol_state_map(fcml_coll_map symbol_state_map,
+static void clean_symbol_state_map(fcml_coll_map symbol_state_map,
         fcml_int pass) {
-    fcml_ist_lag_pass_holder holder;
+    lag_pass_holder holder;
     holder.pass = pass;
     fcml_fn_coll_map_remove_if(symbol_state_map,
-            &fcml_ifn_lag_map_prev_pass_symbol_if, &holder);
+            &map_prev_pass_symbol_if, &holder);
 }
 
 /* Adds new instruction to the processing context. */
-fcml_ist_lag_instruction* fcml_ifn_lag_add_lag_instruction_to_context(
-        fcml_ist_log_asseblation_context *processing_ctx) {
-    fcml_ist_lag_instruction *lag_instruction =
-            (fcml_ist_lag_instruction*) fcml_fn_env_memory_alloc_clear(
-                    sizeof(fcml_ist_lag_instruction));
-    if (!lag_instruction) {
+static lag_instruction* instruction_to_context(
+        lag_asseblation_context *processing_ctx) {
+    FCML_ENV_ALLOC_CLEAR(instruction, lag_instruction);
+    if (!instruction) {
         return NULL;
     }
     if (!processing_ctx->first_instruction) {
-        processing_ctx->first_instruction = lag_instruction;
-        processing_ctx->last_instruction = lag_instruction;
+        processing_ctx->first_instruction = instruction;
+        processing_ctx->last_instruction = instruction;
     } else {
-        processing_ctx->last_instruction->next = lag_instruction;
-        processing_ctx->last_instruction = lag_instruction;
+        processing_ctx->last_instruction->next = instruction;
+        processing_ctx->last_instruction = instruction;
     }
-    return lag_instruction;
+    return instruction;
 }
 
 /* Free lag instruction. */
-void fcml_ifn_lag_free_instruction(fcml_ist_lag_instruction *instruction,
+static void free_instruction(lag_instruction *instruction,
         fcml_st_symbol_table symbol_table) {
     if (instruction) {
-        fcml_ist_lag_instruction *current = instruction;
+        lag_instruction *current = instruction;
         while (current) {
 
-            fcml_ist_lag_instruction *next = current->next;
+            lag_instruction *next = current->next;
 
             /* It is really important! Remember that the same symbol is stored
              * in the internal symbol table, and  it's symbol table that is
@@ -218,8 +217,8 @@ void fcml_ifn_lag_free_instruction(fcml_ist_lag_instruction *instruction,
     }
 }
 
-fcml_st_assembled_instruction* fcml_ifn_lag_choose_second_pass_best_instruction(
-        fcml_ist_lag_instruction *lag_instruction,
+static fcml_st_assembled_instruction* choose_second_pass_best_inst(
+        lag_instruction *lag_instruction,
         fcml_st_assembler_result *assembler_result) {
 
     fcml_st_assembled_instruction **instructions =
@@ -260,7 +259,7 @@ fcml_st_assembled_instruction* fcml_ifn_lag_choose_second_pass_best_instruction(
 }
 
 /* Chooses best instruction as a result for the first pass. */
-fcml_st_assembled_instruction* fcml_ifn_lag_choose_first_pass_best_instruction(
+static fcml_st_assembled_instruction* choose_first_pass_best_instruction(
         fcml_int ignored_symbols, fcml_st_assembler_result *assembler_result) {
 
     fcml_st_assembled_instruction *chosen_instruction = NULL;
@@ -291,9 +290,9 @@ fcml_st_assembled_instruction* fcml_ifn_lag_choose_first_pass_best_instruction(
 }
 
 /* First pass of the load-and-go assembler. */
-fcml_ceh_error fcml_ifn_lag_assembler_pass_1(
+static fcml_ceh_error assembler_pass_1(
         fcml_st_lag_assembler_context *context, const fcml_string *source_code,
-        fcml_ist_log_asseblation_context *processing_ctx,
+        lag_asseblation_context *processing_ctx,
         fcml_bool *invoke_next_pass) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
@@ -348,8 +347,8 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1(
         if (!fcml_fn_env_str_strblank(instruction)) {
 
             /* Allocate space for current instruction. */
-            fcml_ist_lag_instruction *lag_instruction =
-                    fcml_ifn_lag_add_lag_instruction_to_context(processing_ctx);
+            lag_instruction *lag_instruction =
+                    instruction_to_context(processing_ctx);
             if (!lag_instruction) {
                 break;
             }
@@ -456,7 +455,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1(
 
                     /* Choose the best instruction. */
                     fcml_st_assembled_instruction *chosen_instruction =
-                            fcml_ifn_lag_choose_first_pass_best_instruction(
+                            choose_first_pass_best_instruction(
                                     cif_context.ignored_symbols,
                                     &assembler_result);
 
@@ -491,9 +490,9 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_1(
 
 }
 
-fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n(
+static fcml_ceh_error assembler_pass_2_to_n(
         fcml_st_lag_assembler_context *context,
-        fcml_ist_log_asseblation_context *processing_ctx) {
+        lag_asseblation_context *processing_ctx) {
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -504,7 +503,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n(
     fcml_fn_assembler_result_prepare(&assembler_result);
 
     /* Allocate map for information about symbols modifications. */
-    fcml_coll_map symbol_state_map = fcml_ifn_lag_alloc_symbol_state_map();
+    fcml_coll_map symbol_state_map = alloc_symbol_state_map();
     if (!symbol_state_map) {
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
@@ -517,7 +516,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n(
     /* Main loop of second and further passes. */
     while (!error && invoke_next_pass) {
 
-        fcml_ist_lag_instruction *lag_instruction =
+        lag_instruction *lag_instruction =
                 processing_ctx->first_instruction;
 
         fcml_ip ip_disp = 0;
@@ -537,7 +536,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n(
                 def_symbol->value += ip_disp;
 
                 /* Adds symbol to the map of recently modified symbols. */
-                error = fcml_ifn_lag_add_symbol_state(symbol_state_map,
+                error = add_symbol_state(symbol_state_map,
                         def_symbol->symbol, pass);
                 if (error) {
                     break;
@@ -554,7 +553,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n(
                     && (!lag_instruction->instruction
                             || lag_instruction->undefined_symbols
                             || (lag_instruction->used_symbols && ip_disp)
-                            || fcml_ifn_lag_is_any_symbol_modified(
+                            || is_any_symbol_modified(
                                     symbol_state_map,
                                     lag_instruction->used_symbols))) {
 
@@ -618,7 +617,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n(
                 /* Choose the best instruction form. */
 
                 fcml_st_assembled_instruction *choosen_instruction =
-                        fcml_ifn_lag_choose_second_pass_best_instruction(
+                        choose_second_pass_best_inst(
                                 lag_instruction, &assembler_result);
 
                 if (lag_instruction->instruction) {
@@ -638,7 +637,7 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n(
         }
 
         /* Remove symbols from previous passes. */
-        fcml_ifn_lag_clean_symbol_state_map(symbol_state_map, pass);
+        clean_symbol_state_map(symbol_state_map, pass);
 
         /* Invoke next phase if and only if current phase modified any symbols. */
         invoke_next_pass = fcml_fn_coll_map_size(symbol_state_map) > 0;
@@ -658,13 +657,12 @@ fcml_ceh_error fcml_ifn_lag_assembler_pass_2_to_n(
 }
 
 /* Copies assembled instructions from LAG context to the result. */
-void fcml_ifn_lag_convert_instructions(
-        fcml_ist_log_asseblation_context *processing_ctx,
+static void convert_instructions(lag_asseblation_context *processing_ctx,
         fcml_st_lag_assembler_result *result) {
-    fcml_ist_lag_instruction *current_lag = processing_ctx->first_instruction;
+    lag_instruction *current_lag = processing_ctx->first_instruction;
     fcml_st_assembled_instruction *first = NULL, *current = NULL;
     while (current_lag) {
-        fcml_ist_lag_instruction *next = current_lag->next;
+        lag_instruction *next = current_lag->next;
         if (current_lag->instruction && !first) {
             first = current_lag->instruction;
             current = first;
@@ -685,7 +683,7 @@ fcml_ceh_error LIB_CALL fcml_ifn_lag_assemble_core(
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
-    fcml_ist_log_asseblation_context processing_ctx = { 0 };
+    lag_asseblation_context processing_ctx = { 0 };
 
     /* Free result of the previous assemblation. */
     fcml_fn_lag_assembler_result_free(result);
@@ -713,17 +711,17 @@ fcml_ceh_error LIB_CALL fcml_ifn_lag_assemble_core(
     /* Pass 1 */
     fcml_bool invoke_next_pass = FCML_FALSE;
 
-    error = fcml_ifn_lag_assembler_pass_1(context, source_code, &processing_ctx,
+    error = assembler_pass_1(context, source_code, &processing_ctx,
             &invoke_next_pass);
 
     /* Pass 2 */
     if (!error && invoke_next_pass) {
-        error = fcml_ifn_lag_assembler_pass_2_to_n(context, &processing_ctx);
+        error = assembler_pass_2_to_n(context, &processing_ctx);
     }
 
     /* Prepare result. */
     if (!error) {
-        fcml_ifn_lag_convert_instructions(&processing_ctx, result);
+        convert_instructions(&processing_ctx, result);
     }
 
     /* Copy line number in case of errors. */
@@ -732,7 +730,7 @@ fcml_ceh_error LIB_CALL fcml_ifn_lag_assemble_core(
     }
 
     /* Free all assembled instructions. In case of error clean symbol table as well. */
-    fcml_ifn_lag_free_instruction(processing_ctx.first_instruction,
+    free_instruction(processing_ctx.first_instruction,
             error ? context->symbol_table : NULL);
 
     /* It's our own symbol table so free it. Remember that user's symbol table is populated
