@@ -35,7 +35,7 @@ All release packages code can be found here: https://github.com/swojtasiak/fcml-
 
 ### GNU/Linux
 
-If you are using Debian based GNU/Linux distribution like Ubuntu or Debian itself you can install the library
+If you use Debian based GNU/Linux distribution like Ubuntu or Debian itself you can install the library
 from packages:
 
 ```shell script
@@ -146,7 +146,7 @@ project in order to use the built libraries.
 Visual Studio Express is fully supported, so if you do not have access to the full version, you can build the
 library using the express version. 
 
-## Quick Guide
+## Quick Start
 
 The following sections show some really basic use cases of C and C++ API. Comprehensive documentation is available here: [manual](http://www.fcml-lib.com/manual.html). 
 
@@ -155,7 +155,10 @@ The following sections show some really basic use cases of C and C++ API. Compre
 A quick guide how to use the library in C language.
 
 #### Assembler
-The FCML assembler allows us to assemble instructions encoded in a generic instruction model (called GIM in the next sections) prepared by the user or returned as a result of the instruction parsing process. Therefore the first thing is the GIM. For the purpose of this chapter we will prepare it on our own, but you can also convert a textual instruction to a GIM instance using FCML parsers (see: Parser for more details about parsing).
+The FCML assembler allows us to assemble instructions encoded in a [generic instruction model](http://www.fcml-lib.com/manual.html#generic_instruction_model) 
+(called GIM in the next sections) prepared by the user or returned as a result of the instruction parsing process. 
+Therefore the first thing is the GIM. For the purpose of this chapter we will prepare it on our own, but you can also 
+convert a textual instruction to a GIM instance using FCML parsers (see: Parser for more details about parsing).
 
 So for instance the GIM for a simple instruction: "adc ax, 0x8042" can be encoded as follows:
 ```c	
@@ -710,7 +713,7 @@ This code should print the following instruction:
 
 ## Resources
 * For more information do not hesitate to head over the official project site: http://www.fcml-lib.com
-* You can download official binaries and source code archive directly from sourceforge: https://sourceforge.net/projects/fcml/files
+* You can download official binaries and source code archive directly from sourceforge: https://sourceforge.net/projects/fcml/files and GitHub releases: [releases](https://github.com/swojtasiak/fcml-lib/releases)
 
 LICENSE
 ---
