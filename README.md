@@ -138,7 +138,7 @@ If you have Doxygen installed the API documentation will also be generated. As y
 There are solutions prepared for Visual Studio available in win32/vs2017 and win32/vs2019 directories. Everything
 you need to do is to load such a solution using your Visual Studio and click build. All paths are relative to the 
 distribution directory so everything should be built without any problems. You can also choose between a few 
-configurations in order to build static or dynamic libraries. Solutions supports x86 and x64 builds.
+configurations in order to build static or dynamic libraries. All the solutions support x86 and x64 builds.
 
 Remember that header files available in ${DIST_DIR}/include have to be added as include directory to the destination 
 project in order to use the built libraries.
@@ -376,7 +376,7 @@ int main(int argc, char **argv) {
     }
  
     fcml_st_assembler *assembler;
-    if((error = fcml_fn_assembler_init( dialect, &assembler))) {
+    if ((error = fcml_fn_assembler_init(dialect, &assembler))) {
         fprintf(stderr, "Can not initialize assembler: %d\n", error);
         fcml_fn_dialect_free(dialect);
         exit(1);
@@ -410,7 +410,7 @@ int main(int argc, char **argv) {
         fcml_st_assembled_instruction *ins_code = asm_result.chosen_instruction;
         int i;
         printf("Chosen instruction code: ");
-        for(i = 0; i < ins_code->code_length; i++) {
+        for (i = 0; i < ins_code->code_length; i++) {
             printf("%2x", ins_code->code[i]);
         }
         printf("\n");
@@ -659,8 +659,10 @@ See the [Instruction renderer](http://www.fcml-lib.com/manual.html#instruction-r
 
 ### C++ language
 
+The complete manual for C++ language can be found here: [C++ wrapper](http://www.fcml-lib.com/manual.html#cpp-wrapper)
+
 #### Assembling
-The following code shows how easy it is to assemble anything in a true dynamic way! Notice that it assembles [generic instruction model](http://www.fcml-lib.com/manual.html#generic_instruction_model) built using an instruction builder (IB) class.
+The following code shows how easy it is to assemble instructions in a truly dynamic way! Notice that it assembles [generic instruction model](http://www.fcml-lib.com/manual.html#generic_instruction_model) built using an instruction builder (IB) class.
 
 ```cpp
 IntelDialect dialect;
@@ -670,7 +672,7 @@ Instruction instruction = IB(M_MOV).reg(EAX).offd( 0x40302010 );
 AssemblerResult result;
 assembler.assemble( ctx, instruction, result );
 CodeIterator it = result.getCodeIterator();
-while( it.hasNext() ) {
+while (it.hasNext()) {
 	fcml_uint8_t codeByte = it.next();
 	...
 }
