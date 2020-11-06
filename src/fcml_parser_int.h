@@ -29,7 +29,7 @@
 typedef struct fcml_st_parser_ast {
     /* Defined symbol. */
     fcml_st_symbol *symbol;
-    /* Abstract syntax tree of parsed isntruction. */
+    /* Abstract syntax tree of parsed instruction. */
     fcml_st_ast_node *tree;
     /* All potential errors going here. */
     fcml_st_ceh_error_container errors;
