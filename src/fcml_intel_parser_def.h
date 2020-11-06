@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,20 +31,31 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_INTEL_FCML_INTEL_PARSER_DEF_H_INCLUDED
 # define YY_INTEL_FCML_INTEL_PARSER_DEF_H_INCLUDED
 /* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+#ifndef INTEL_DEBUG
+# if defined YYDEBUG
 #if YYDEBUG
+#   define INTEL_DEBUG 1
+#  else
+#   define INTEL_DEBUG 0
+#  endif
+# else /* ! defined YYDEBUG */
+#  define INTEL_DEBUG 0
+# endif /* ! defined YYDEBUG */
+#endif  /* ! defined INTEL_DEBUG */
+#if INTEL_DEBUG
 extern int intel_debug;
 #endif
 
 /* Token type.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
+#ifndef INTEL_TOKENTYPE
+# define INTEL_TOKENTYPE
+  enum intel_tokentype
   {
     FCML_TK_UNEXPECTED = 258,
     FCML_TK_REG_GPR = 259,
@@ -96,11 +108,10 @@ extern int intel_debug;
 #define FCML_OP_UMINUS 280
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
+#if ! defined INTEL_STYPE && ! defined INTEL_STYPE_IS_DECLARED
+union INTEL_STYPE
 {
-#line 121 "fcml_intel_parser_def.y" /* yacc.c:1909  */
+#line 125 "fcml_intel_parser_def.y"
 
     /*Complex values.*/
     fcml_st_ast_val_integer integer_value;
@@ -117,30 +128,37 @@ union YYSTYPE
     fcml_bool bool_value;
     fcml_int int_value;
 
-#line 121 "fcml_intel_parser_def.h" /* yacc.c:1909  */
-};
+#line 132 "fcml_intel_parser_def.h"
 
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+};
+typedef union INTEL_STYPE INTEL_STYPE;
+# define INTEL_STYPE_IS_TRIVIAL 1
+# define INTEL_STYPE_IS_DECLARED 1
 #endif
 
 /* Location type.  */
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
+#if ! defined INTEL_LTYPE && ! defined INTEL_LTYPE_IS_DECLARED
+typedef struct INTEL_LTYPE INTEL_LTYPE;
+struct INTEL_LTYPE
 {
   int first_line;
   int first_column;
   int last_line;
   int last_column;
 };
-# define YYLTYPE_IS_DECLARED 1
-# define YYLTYPE_IS_TRIVIAL 1
+# define INTEL_LTYPE_IS_DECLARED 1
+# define INTEL_LTYPE_IS_TRIVIAL 1
 #endif
 
 
 
 int intel_parse (struct fcml_st_parser_data *pd);
+/* "%code provides" blocks.  */
+#line 27 "fcml_intel_parser_def.y"
+
+  #define YYSTYPE INTEL_STYPE
+  #define YYLTYPE INTEL_LTYPE
+
+#line 163 "fcml_intel_parser_def.h"
 
 #endif /* !YY_INTEL_FCML_INTEL_PARSER_DEF_H_INCLUDED  */

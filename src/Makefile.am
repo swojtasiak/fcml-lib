@@ -2,7 +2,7 @@
 
 BUILT_SOURCES = fcml_intel_parser_def.h fcml_gas_parser_def.h fcml_intel_lexer.h fcml_gas_lexer.h
 
-AM_YFLAGS = -d
+AM_YFLAGS = -d -Wno-yacc
 
 lib_LTLIBRARIES = libfcml.la
 
