@@ -30,7 +30,7 @@
 #include "fcml_ceh.h"
 #include "fcml_stream.h"
 
-fcml_string fcml_iarr_rend_utils_rounding_modes[4] = {
+static fcml_string rounding_modes[4] = {
         "{rn-sae}", "{rd-sae}",
         "{ru-sae}", "{rz-sae}"
 };
@@ -268,7 +268,7 @@ void fcml_fn_rend_utils_format_append_operand_decorators(
     /* Embedded rounding control. */
     if (decorators->er.is_not_null) {
         fcml_fn_rend_utils_format_append_str(output_stream,
-                fcml_iarr_rend_utils_rounding_modes[decorators->er.value]);
+                rounding_modes[decorators->er.value]);
     }
 
     /* Indicates support for SAE (Suppress All Exceptions). */
