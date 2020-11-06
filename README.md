@@ -51,6 +51,7 @@ sudo apt-get install libfcml-dev
 In case of other GNU/Linux distributions you may have to install it manually. FCML uses autotools, so its installing process is standardized and follows all autotools rules. Consequently everything you have to do is to execute the following commands:
 
 ```shell script
+autoreconf -i
 ./configure
 make && make install
 ```
