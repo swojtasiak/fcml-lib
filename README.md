@@ -433,7 +433,7 @@ in case of GNU/Linux and MinGW include files are installed in the dedicated subd
 Just head over to the INSTALL file available in the distribution archive in order to investigate the subject
 in great depth.
 
-The example should prints the following result:
+The example should print the following result:
 
 Chosen instruction code: `66154280`
 
