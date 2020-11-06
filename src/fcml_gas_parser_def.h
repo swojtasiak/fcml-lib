@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,20 +31,31 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_GAS_FCML_GAS_PARSER_DEF_H_INCLUDED
 # define YY_GAS_FCML_GAS_PARSER_DEF_H_INCLUDED
 /* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+#ifndef GAS_DEBUG
+# if defined YYDEBUG
 #if YYDEBUG
+#   define GAS_DEBUG 1
+#  else
+#   define GAS_DEBUG 0
+#  endif
+# else /* ! defined YYDEBUG */
+#  define GAS_DEBUG 0
+# endif /* ! defined YYDEBUG */
+#endif  /* ! defined GAS_DEBUG */
+#if GAS_DEBUG
 extern int gas_debug;
 #endif
 
 /* Token type.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
+#ifndef GAS_TOKENTYPE
+# define GAS_TOKENTYPE
+  enum gas_tokentype
   {
     FCML_TK_UNEXPECTED = 258,
     FCML_TK_REG_GPR = 259,
@@ -88,11 +100,10 @@ extern int gas_debug;
 #define FCML_OP_UMINUS 276
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
+#if ! defined GAS_STYPE && ! defined GAS_STYPE_IS_DECLARED
+union GAS_STYPE
 {
-#line 113 "fcml_gas_parser_def.y" /* yacc.c:1909  */
+#line 117 "fcml_gas_parser_def.y"
 
     /*Complex values.*/
     fcml_st_ast_val_integer integer_value;
@@ -107,30 +118,37 @@ union YYSTYPE
     fcml_bool bool_value;
     fcml_int int_value;
 
-#line 111 "fcml_gas_parser_def.h" /* yacc.c:1909  */
-};
+#line 122 "fcml_gas_parser_def.h"
 
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+};
+typedef union GAS_STYPE GAS_STYPE;
+# define GAS_STYPE_IS_TRIVIAL 1
+# define GAS_STYPE_IS_DECLARED 1
 #endif
 
 /* Location type.  */
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
+#if ! defined GAS_LTYPE && ! defined GAS_LTYPE_IS_DECLARED
+typedef struct GAS_LTYPE GAS_LTYPE;
+struct GAS_LTYPE
 {
   int first_line;
   int first_column;
   int last_line;
   int last_column;
 };
-# define YYLTYPE_IS_DECLARED 1
-# define YYLTYPE_IS_TRIVIAL 1
+# define GAS_LTYPE_IS_DECLARED 1
+# define GAS_LTYPE_IS_TRIVIAL 1
 #endif
 
 
 
 int gas_parse (struct fcml_st_parser_data *pd);
+/* "%code provides" blocks.  */
+#line 27 "fcml_gas_parser_def.y"
+
+  #define YYSTYPE GAS_STYPE
+  #define YYLTYPE GAS_LTYPE
+
+#line 153 "fcml_gas_parser_def.h"
 
 #endif /* !YY_GAS_FCML_GAS_PARSER_DEF_H_INCLUDED  */

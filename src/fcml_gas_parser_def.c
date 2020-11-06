@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,11 +41,14 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 /* Identify Bison output.  */
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.4"
+#define YYBISON_VERSION "3.5.1"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -58,7 +62,9 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
-
+/* Substitute the type names.  */
+#define YYSTYPE         GAS_STYPE
+#define YYLTYPE         GAS_LTYPE
 /* Substitute the variable and function names.  */
 #define yyparse         gas_parse
 #define yylex           gas_lex
@@ -66,29 +72,39 @@
 #define yydebug         gas_debug
 #define yynerrs         gas_nerrs
 
+/* First part of user prologue.  */
+#line 32 "fcml_gas_parser_def.y"
 
-/* Copy the first part of user declarations.  */
-#line 26 "fcml_gas_parser_def.y" /* yacc.c:339  */
+  #include <stdio.h>
+  #include "fcml_parser_utils.h"
+    
+  /* Macro responsible for handling 'Out of memory' errors. */
+  #define HANDLE_ERRORS(x) if( !x ) { yyerror(&yylloc, pd, \
+    "Out of memory."); YYERROR; }
+    
+  /* Macro responsible for adding error messages to result. */
+  #define ADD_ERROR_MSG(x) { yyerror(&yylloc, pd, x); }  
 
-    #include <stdio.h>
-    
-    #include "fcml_parser_utils.h"
-    
-    /* Macro responsible for handling 'Out of memory' errors. */
-    #define HANDLE_ERRORS(x) if( !x ) { yyerror(&yylloc, pd, \
-        "Out of memory."); YYERROR; }
-    
-    /* Macro responsible for adding error messages to result. */
-    #define ADD_ERROR_MSG(x) { yyerror(&yylloc, pd, x); }
-    
+#line 89 "fcml_gas_parser_def.c"
 
-#line 86 "fcml_gas_parser_def.c" /* yacc.c:339  */
-
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
+# ifndef YY_CAST
+#  ifdef __cplusplus
+#   define YY_CAST(Type, Val) static_cast<Type> (Val)
+#   define YY_REINTERPRET_CAST(Type, Val) reinterpret_cast<Type> (Val)
 #  else
-#   define YY_NULLPTR 0
+#   define YY_CAST(Type, Val) ((Type) (Val))
+#   define YY_REINTERPRET_CAST(Type, Val) ((Type) (Val))
+#  endif
+# endif
+# ifndef YY_NULLPTR
+#  if defined __cplusplus
+#   if 201103L <= __cplusplus
+#    define YY_NULLPTR nullptr
+#   else
+#    define YY_NULLPTR 0
+#   endif
+#  else
+#   define YY_NULLPTR ((void*)0)
 #  endif
 # endif
 
@@ -100,22 +116,30 @@
 # define YYERROR_VERBOSE 0
 #endif
 
-/* In a future release of Bison, this section will be replaced
-   by #include "y.tab.h".  */
+/* Use api.header.include to #include this header
+   instead of duplicating it here.  */
 #ifndef YY_GAS_FCML_GAS_PARSER_DEF_H_INCLUDED
 # define YY_GAS_FCML_GAS_PARSER_DEF_H_INCLUDED
 /* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+#ifndef GAS_DEBUG
+# if defined YYDEBUG
 #if YYDEBUG
+#   define GAS_DEBUG 1
+#  else
+#   define GAS_DEBUG 0
+#  endif
+# else /* ! defined YYDEBUG */
+#  define GAS_DEBUG 0
+# endif /* ! defined YYDEBUG */
+#endif  /* ! defined GAS_DEBUG */
+#if GAS_DEBUG
 extern int gas_debug;
 #endif
 
 /* Token type.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
+#ifndef GAS_TOKENTYPE
+# define GAS_TOKENTYPE
+  enum gas_tokentype
   {
     FCML_TK_UNEXPECTED = 258,
     FCML_TK_REG_GPR = 259,
@@ -160,11 +184,10 @@ extern int gas_debug;
 #define FCML_OP_UMINUS 276
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
+#if ! defined GAS_STYPE && ! defined GAS_STYPE_IS_DECLARED
+union GAS_STYPE
 {
-#line 113 "fcml_gas_parser_def.y" /* yacc.c:355  */
+#line 117 "fcml_gas_parser_def.y"
 
     /*Complex values.*/
     fcml_st_ast_val_integer integer_value;
@@ -179,70 +202,125 @@ union YYSTYPE
     fcml_bool bool_value;
     fcml_int int_value;
 
-#line 183 "fcml_gas_parser_def.c" /* yacc.c:355  */
-};
+#line 206 "fcml_gas_parser_def.c"
 
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+};
+typedef union GAS_STYPE GAS_STYPE;
+# define GAS_STYPE_IS_TRIVIAL 1
+# define GAS_STYPE_IS_DECLARED 1
 #endif
 
 /* Location type.  */
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
+#if ! defined GAS_LTYPE && ! defined GAS_LTYPE_IS_DECLARED
+typedef struct GAS_LTYPE GAS_LTYPE;
+struct GAS_LTYPE
 {
   int first_line;
   int first_column;
   int last_line;
   int last_column;
 };
-# define YYLTYPE_IS_DECLARED 1
-# define YYLTYPE_IS_TRIVIAL 1
+# define GAS_LTYPE_IS_DECLARED 1
+# define GAS_LTYPE_IS_TRIVIAL 1
 #endif
 
 
 
 int gas_parse (struct fcml_st_parser_data *pd);
+/* "%code provides" blocks.  */
+#line 27 "fcml_gas_parser_def.y"
+
+  #define YYSTYPE GAS_STYPE
+  #define YYLTYPE GAS_LTYPE
+
+#line 237 "fcml_gas_parser_def.c"
 
 #endif /* !YY_GAS_FCML_GAS_PARSER_DEF_H_INCLUDED  */
 
-/* Copy the second part of user declarations.  */
-#line 128 "fcml_gas_parser_def.y" /* yacc.c:358  */
+/* Second part of user prologue.  */
+#line 132 "fcml_gas_parser_def.y"
 
     #include "fcml_gas_lexer.h"
     #define yyscanner ((yyscan_t)pd->scannerInfo)
     void gas_error(YYLTYPE *yyloc, struct fcml_st_parser_data *pd,
     	const char *error );
 
-#line 219 "fcml_gas_parser_def.c" /* yacc.c:358  */
+#line 249 "fcml_gas_parser_def.c"
+
 
 #ifdef short
 # undef short
 #endif
 
-#ifdef YYTYPE_UINT8
-typedef YYTYPE_UINT8 yytype_uint8;
-#else
-typedef unsigned char yytype_uint8;
+/* On compilers that do not define __PTRDIFF_MAX__ etc., make sure
+   <limits.h> and (if available) <stdint.h> are included
+   so that the code can choose integer types of a good width.  */
+
+#ifndef __PTRDIFF_MAX__
+# include <limits.h> /* INFRINGES ON USER NAME SPACE */
+# if defined __STDC_VERSION__ && 199901 <= __STDC_VERSION__
+#  include <stdint.h> /* INFRINGES ON USER NAME SPACE */
+#  define YY_STDINT_H
+# endif
 #endif
 
-#ifdef YYTYPE_INT8
-typedef YYTYPE_INT8 yytype_int8;
+/* Narrow types that promote to a signed type and that can represent a
+   signed or unsigned integer of at least N bits.  In tables they can
+   save space and decrease cache pressure.  Promoting to a signed type
+   helps avoid bugs in integer arithmetic.  */
+
+#ifdef __INT_LEAST8_MAX__
+typedef __INT_LEAST8_TYPE__ yytype_int8;
+#elif defined YY_STDINT_H
+typedef int_least8_t yytype_int8;
 #else
 typedef signed char yytype_int8;
 #endif
 
-#ifdef YYTYPE_UINT16
-typedef YYTYPE_UINT16 yytype_uint16;
+#ifdef __INT_LEAST16_MAX__
+typedef __INT_LEAST16_TYPE__ yytype_int16;
+#elif defined YY_STDINT_H
+typedef int_least16_t yytype_int16;
 #else
-typedef unsigned short int yytype_uint16;
+typedef short yytype_int16;
 #endif
 
-#ifdef YYTYPE_INT16
-typedef YYTYPE_INT16 yytype_int16;
+#if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
+typedef __UINT_LEAST8_TYPE__ yytype_uint8;
+#elif (!defined __UINT_LEAST8_MAX__ && defined YY_STDINT_H \
+       && UINT_LEAST8_MAX <= INT_MAX)
+typedef uint_least8_t yytype_uint8;
+#elif !defined __UINT_LEAST8_MAX__ && UCHAR_MAX <= INT_MAX
+typedef unsigned char yytype_uint8;
 #else
-typedef short int yytype_int16;
+typedef short yytype_uint8;
+#endif
+
+#if defined __UINT_LEAST16_MAX__ && __UINT_LEAST16_MAX__ <= __INT_MAX__
+typedef __UINT_LEAST16_TYPE__ yytype_uint16;
+#elif (!defined __UINT_LEAST16_MAX__ && defined YY_STDINT_H \
+       && UINT_LEAST16_MAX <= INT_MAX)
+typedef uint_least16_t yytype_uint16;
+#elif !defined __UINT_LEAST16_MAX__ && USHRT_MAX <= INT_MAX
+typedef unsigned short yytype_uint16;
+#else
+typedef int yytype_uint16;
+#endif
+
+#ifndef YYPTRDIFF_T
+# if defined __PTRDIFF_TYPE__ && defined __PTRDIFF_MAX__
+#  define YYPTRDIFF_T __PTRDIFF_TYPE__
+#  define YYPTRDIFF_MAXIMUM __PTRDIFF_MAX__
+# elif defined PTRDIFF_MAX
+#  ifndef ptrdiff_t
+#   include <stddef.h> /* INFRINGES ON USER NAME SPACE */
+#  endif
+#  define YYPTRDIFF_T ptrdiff_t
+#  define YYPTRDIFF_MAXIMUM PTRDIFF_MAX
+# else
+#  define YYPTRDIFF_T long
+#  define YYPTRDIFF_MAXIMUM LONG_MAX
+# endif
 #endif
 
 #ifndef YYSIZE_T
@@ -250,15 +328,27 @@ typedef short int yytype_int16;
 #  define YYSIZE_T __SIZE_TYPE__
 # elif defined size_t
 #  define YYSIZE_T size_t
-# elif ! defined YYSIZE_T
+# elif defined __STDC_VERSION__ && 199901 <= __STDC_VERSION__
 #  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
 #  define YYSIZE_T size_t
 # else
-#  define YYSIZE_T unsigned int
+#  define YYSIZE_T unsigned
 # endif
 #endif
 
-#define YYSIZE_MAXIMUM ((YYSIZE_T) -1)
+#define YYSIZE_MAXIMUM                                  \
+  YY_CAST (YYPTRDIFF_T,                                 \
+           (YYPTRDIFF_MAXIMUM < YY_CAST (YYSIZE_T, -1)  \
+            ? YYPTRDIFF_MAXIMUM                         \
+            : YY_CAST (YYSIZE_T, -1)))
+
+#define YYSIZEOF(X) YY_CAST (YYPTRDIFF_T, sizeof (X))
+
+/* Stored state numbers (used for stacks). */
+typedef yytype_int8 yy_state_t;
+
+/* State numbers in computations.  */
+typedef int yy_state_fast_t;
 
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
@@ -272,30 +362,19 @@ typedef short int yytype_int16;
 # endif
 #endif
 
-#ifndef YY_ATTRIBUTE
-# if (defined __GNUC__                                               \
-      && (2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)))  \
-     || defined __SUNPRO_C && 0x5110 <= __SUNPRO_C
-#  define YY_ATTRIBUTE(Spec) __attribute__(Spec)
+#ifndef YY_ATTRIBUTE_PURE
+# if defined __GNUC__ && 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
+#  define YY_ATTRIBUTE_PURE __attribute__ ((__pure__))
 # else
-#  define YY_ATTRIBUTE(Spec) /* empty */
+#  define YY_ATTRIBUTE_PURE
 # endif
 #endif
 
-#ifndef YY_ATTRIBUTE_PURE
-# define YY_ATTRIBUTE_PURE   YY_ATTRIBUTE ((__pure__))
-#endif
-
 #ifndef YY_ATTRIBUTE_UNUSED
-# define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
-#endif
-
-#if !defined _Noreturn \
-     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
-# if defined _MSC_VER && 1200 <= _MSC_VER
-#  define _Noreturn __declspec (noreturn)
+# if defined __GNUC__ && 2 < __GNUC__ + (7 <= __GNUC_MINOR__)
+#  define YY_ATTRIBUTE_UNUSED __attribute__ ((__unused__))
 # else
-#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
+#  define YY_ATTRIBUTE_UNUSED
 # endif
 #endif
 
@@ -306,13 +385,13 @@ typedef short int yytype_int16;
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
-    _Pragma ("GCC diagnostic push") \
-    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")\
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
-# define YY_IGNORE_MAYBE_UNINITIALIZED_END \
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
 # define YY_INITIAL_VALUE(Value) Value
@@ -325,6 +404,20 @@ typedef short int yytype_int16;
 # define YY_INITIAL_VALUE(Value) /* Nothing. */
 #endif
 
+#if defined __cplusplus && defined __GNUC__ && ! defined __ICC && 6 <= __GNUC__
+# define YY_IGNORE_USELESS_CAST_BEGIN                          \
+    _Pragma ("GCC diagnostic push")                            \
+    _Pragma ("GCC diagnostic ignored \"-Wuseless-cast\"")
+# define YY_IGNORE_USELESS_CAST_END            \
+    _Pragma ("GCC diagnostic pop")
+#endif
+#ifndef YY_IGNORE_USELESS_CAST_BEGIN
+# define YY_IGNORE_USELESS_CAST_BEGIN
+# define YY_IGNORE_USELESS_CAST_END
+#endif
+
+
+#define YY_ASSERT(E) ((void) (0 && (E)))
 
 #if ! defined yyoverflow || YYERROR_VERBOSE
 
@@ -396,24 +489,25 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-         || (defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL \
-             && defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
+         || (defined GAS_LTYPE_IS_TRIVIAL && GAS_LTYPE_IS_TRIVIAL \
+             && defined GAS_STYPE_IS_TRIVIAL && GAS_STYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
-  yytype_int16 yyss_alloc;
+  yy_state_t yyss_alloc;
   YYSTYPE yyvs_alloc;
   YYLTYPE yyls_alloc;
 };
 
 /* The size of the maximum gap between one aligned stack and the next.  */
-# define YYSTACK_GAP_MAXIMUM (sizeof (union yyalloc) - 1)
+# define YYSTACK_GAP_MAXIMUM (YYSIZEOF (union yyalloc) - 1)
 
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define YYSTACK_BYTES(N) \
-     ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE) + sizeof (YYLTYPE)) \
+     ((N) * (YYSIZEOF (yy_state_t) + YYSIZEOF (YYSTYPE) \
+             + YYSIZEOF (YYLTYPE)) \
       + 2 * YYSTACK_GAP_MAXIMUM)
 
 # define YYCOPY_NEEDED 1
@@ -426,11 +520,11 @@ union yyalloc
 # define YYSTACK_RELOCATE(Stack_alloc, Stack)                           \
     do                                                                  \
       {                                                                 \
-        YYSIZE_T yynewbytes;                                            \
+        YYPTRDIFF_T yynewbytes;                                         \
         YYCOPY (&yyptr->Stack_alloc, Stack, yysize);                    \
         Stack = &yyptr->Stack_alloc;                                    \
-        yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
-        yyptr += yynewbytes / sizeof (*yyptr);                          \
+        yynewbytes = yystacksize * YYSIZEOF (*Stack) + YYSTACK_GAP_MAXIMUM; \
+        yyptr += yynewbytes / YYSIZEOF (*yyptr);                        \
       }                                                                 \
     while (0)
 
@@ -442,12 +536,12 @@ union yyalloc
 # ifndef YYCOPY
 #  if defined __GNUC__ && 1 < __GNUC__
 #   define YYCOPY(Dst, Src, Count) \
-      __builtin_memcpy (Dst, Src, (Count) * sizeof (*(Src)))
+      __builtin_memcpy (Dst, Src, YY_CAST (YYSIZE_T, (Count)) * sizeof (*(Src)))
 #  else
 #   define YYCOPY(Dst, Src, Count)              \
       do                                        \
         {                                       \
-          YYSIZE_T yyi;                         \
+          YYPTRDIFF_T yyi;                      \
           for (yyi = 0; yyi < (Count); yyi++)   \
             (Dst)[yyi] = (Src)[yyi];            \
         }                                       \
@@ -470,17 +564,18 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  86
 
-/* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
-   by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   276
 
+
+/* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
+   as returned by yylex, with out-of-bounds checking.  */
 #define YYTRANSLATE(YYX)                                                \
-  ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+  (0 <= (YYX) && (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex, without out-of-bounds checking.  */
-static const yytype_uint8 yytranslate[] =
+   as returned by yylex.  */
+static const yytype_int8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -512,20 +607,20 @@ static const yytype_uint8 yytranslate[] =
       15,    16,    17,    18,    19,    20,    25
 };
 
-#if YYDEBUG
+#if GAS_DEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   142,   142,   143,   144,   145,   146,   147,   150,   151,
-     152,   153,   156,   157,   160,   163,   164,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   181,
-     182,   183,   187,   188,   189,   193,   194,   195,   196,   197,
-     198,   201,   205,   206,   207,   208,   209,   210,   211,   212,
-     216,   217,   218,   219,   220,   221,   222,   227
+       0,   146,   146,   147,   148,   149,   150,   151,   154,   155,
+     156,   157,   160,   161,   164,   167,   168,   171,   172,   173,
+     174,   175,   176,   177,   178,   179,   180,   181,   182,   185,
+     186,   187,   191,   192,   193,   197,   198,   199,   200,   201,
+     202,   205,   209,   210,   211,   212,   213,   214,   215,   216,
+     220,   221,   222,   223,   224,   225,   226,   231
 };
 #endif
 
-#if YYDEBUG || YYERROR_VERBOSE || 0
+#if GAS_DEBUG || YYERROR_VERBOSE || 0
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
@@ -548,7 +643,7 @@ static const char *const yytname[] =
 # ifdef YYPRINT
 /* YYTOKNUM[NUM] -- (External) token number corresponding to the
    (internal) symbol number NUM (which must be that of a token).  */
-static const yytype_uint16 yytoknum[] =
+static const yytype_int16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
@@ -557,14 +652,14 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -27
+#define YYPACT_NINF (-27)
 
-#define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-27)))
+#define yypact_value_is_default(Yyn) \
+  ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF -1
+#define YYTABLE_NINF (-1)
 
-#define yytable_value_is_error(Yytable_value) \
+#define yytable_value_is_error(Yyn) \
   0
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -585,7 +680,7 @@ static const yytype_int8 yypact[] =
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
      Performed when YYTABLE does not specify something else to do.  Zero
      means the default is an error.  */
-static const yytype_uint8 yydefact[] =
+static const yytype_int8 yydefact[] =
 {
        2,    14,    12,     0,     0,     3,     0,     8,     4,     5,
       42,    47,     0,     0,    57,     1,    14,    13,    10,    50,
@@ -615,7 +710,7 @@ static const yytype_int8 yydefgoto[] =
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule whose
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
-static const yytype_uint8 yytable[] =
+static const yytype_int8 yytable[] =
 {
       14,    57,     9,    58,    55,    59,     1,     2,     3,    41,
       42,    19,    20,    21,    52,    23,    24,    25,    53,    10,
@@ -632,7 +727,7 @@ static const yytype_uint8 yytable[] =
       50,    60,    74,    62,    40
 };
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int8 yycheck[] =
 {
        3,    12,    26,    14,    30,    16,    18,    19,    20,    12,
       13,     4,     5,     6,     7,     8,     9,    10,    11,    17,
@@ -651,7 +746,7 @@ static const yytype_uint8 yycheck[] =
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
-static const yytype_uint8 yystos[] =
+static const yytype_int8 yystos[] =
 {
        0,    18,    19,    20,    32,    33,    34,    35,    44,    26,
       17,    18,    21,    29,    42,     0,    18,    19,    35,     4,
@@ -665,7 +760,7 @@ static const yytype_uint8 yystos[] =
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
-static const yytype_uint8 yyr1[] =
+static const yytype_int8 yyr1[] =
 {
        0,    31,    32,    32,    32,    32,    32,    32,    33,    33,
       33,    33,    34,    34,    35,    36,    36,    37,    37,    37,
@@ -676,7 +771,7 @@ static const yytype_uint8 yyr1[] =
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
-static const yytype_uint8 yyr2[] =
+static const yytype_int8 yyr2[] =
 {
        0,     2,     0,     1,     1,     2,     3,     3,     1,     2,
        2,     3,     1,     2,     1,     1,     3,     2,     1,     2,
@@ -699,22 +794,22 @@ static const yytype_uint8 yyr2[] =
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
-#define YYBACKUP(Token, Value)                                  \
-do                                                              \
-  if (yychar == YYEMPTY)                                        \
-    {                                                           \
-      yychar = (Token);                                         \
-      yylval = (Value);                                         \
-      YYPOPSTACK (yylen);                                       \
-      yystate = *yyssp;                                         \
-      goto yybackup;                                            \
-    }                                                           \
-  else                                                          \
-    {                                                           \
-      yyerror (&yylloc, pd, YY_("syntax error: cannot back up")); \
-      YYERROR;                                                  \
-    }                                                           \
-while (0)
+#define YYBACKUP(Token, Value)                                    \
+  do                                                              \
+    if (yychar == YYEMPTY)                                        \
+      {                                                           \
+        yychar = (Token);                                         \
+        yylval = (Value);                                         \
+        YYPOPSTACK (yylen);                                       \
+        yystate = *yyssp;                                         \
+        goto yybackup;                                            \
+      }                                                           \
+    else                                                          \
+      {                                                           \
+        yyerror (&yylloc, pd, YY_("syntax error: cannot back up")); \
+        YYERROR;                                                  \
+      }                                                           \
+  while (0)
 
 /* Error token number */
 #define YYTERROR        1
@@ -749,7 +844,7 @@ while (0)
 
 
 /* Enable debugging if requested.  */
-#if YYDEBUG
+#if GAS_DEBUG
 
 # ifndef YYFPRINTF
 #  include <stdio.h> /* INFRINGES ON USER NAME SPACE */
@@ -768,15 +863,15 @@ do {                                            \
    we won't break user code: when these are the locations we know.  */
 
 #ifndef YY_LOCATION_PRINT
-# if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
+# if defined GAS_LTYPE_IS_TRIVIAL && GAS_LTYPE_IS_TRIVIAL
 
 /* Print *YYLOCP on YYO.  Private, do not rely on its existence. */
 
 YY_ATTRIBUTE_UNUSED
-static unsigned
+static int
 yy_location_print_ (FILE *yyo, YYLTYPE const * const yylocp)
 {
-  unsigned res = 0;
+  int res = 0;
   int end_col = 0 != yylocp->last_column ? yylocp->last_column - 1 : 0;
   if (0 <= yylocp->first_line)
     {
@@ -819,166 +914,167 @@ do {                                                                      \
 } while (0)
 
 
-/*----------------------------------------.
-| Print this symbol's value on YYOUTPUT.  |
-`----------------------------------------*/
+/*-----------------------------------.
+| Print this symbol's value on YYO.  |
+`-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, struct fcml_st_parser_data *pd)
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, struct fcml_st_parser_data *pd)
 {
-  FILE *yyo = yyoutput;
-  YYUSE (yyo);
+  FILE *yyoutput = yyo;
+  YYUSE (yyoutput);
   YYUSE (yylocationp);
   YYUSE (pd);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
-    YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
+    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
 # endif
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   switch (yytype)
     {
-          case 4: /* FCML_TK_REG_GPR  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 845 "fcml_gas_parser_def.c" /* yacc.c:684  */
+    case 4: /* FCML_TK_REG_GPR  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 941 "fcml_gas_parser_def.c"
         break;
 
     case 5: /* FCML_TK_REG_SIMD  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 851 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 947 "fcml_gas_parser_def.c"
         break;
 
     case 6: /* FCML_TK_REG_FPU  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 857 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 953 "fcml_gas_parser_def.c"
         break;
 
     case 7: /* FCML_TK_REG_SEG  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 863 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 959 "fcml_gas_parser_def.c"
         break;
 
     case 8: /* FCML_TK_REG_OPMASK  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 869 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 965 "fcml_gas_parser_def.c"
         break;
 
     case 9: /* FCML_TK_REG_CR  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 875 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 971 "fcml_gas_parser_def.c"
         break;
 
     case 10: /* FCML_TK_REG_DR  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 881 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 977 "fcml_gas_parser_def.c"
         break;
 
     case 11: /* FCML_TK_REG_RIP  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 887 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 983 "fcml_gas_parser_def.c"
         break;
 
     case 16: /* FCML_TK_OPMASK_REG_DECORATOR  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 893 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 989 "fcml_gas_parser_def.c"
         break;
 
     case 17: /* FCML_TK_INTEGER  */
-#line 109 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Integer: %ld Overflow: %d", ((*yyvaluep).integer_value).value, ((*yyvaluep).integer_value).overflow); }
-#line 899 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 113 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Integer: %ld Overflow: %d", ((*yyvaluep).integer_value).value, ((*yyvaluep).integer_value).overflow); }
+#line 995 "fcml_gas_parser_def.c"
         break;
 
     case 33: /* instruction  */
-#line 110 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
-#line 905 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 114 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
+#line 1001 "fcml_gas_parser_def.c"
         break;
 
     case 36: /* operand_list  */
-#line 110 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
-#line 911 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 114 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
+#line 1007 "fcml_gas_parser_def.c"
         break;
 
     case 37: /* operand  */
-#line 110 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
-#line 917 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 114 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
+#line 1013 "fcml_gas_parser_def.c"
         break;
 
     case 38: /* effective_address  */
-#line 110 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
-#line 923 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 114 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
+#line 1019 "fcml_gas_parser_def.c"
         break;
 
     case 39: /* effective_address_components  */
-#line 110 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
-#line 929 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 114 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
+#line 1025 "fcml_gas_parser_def.c"
         break;
 
     case 40: /* effective_address_components_without_dis  */
-#line 110 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
-#line 935 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 114 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
+#line 1031 "fcml_gas_parser_def.c"
         break;
 
     case 41: /* segment_selector  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 941 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 1037 "fcml_gas_parser_def.c"
         break;
 
     case 42: /* exp  */
-#line 110 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
-#line 947 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 114 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
+#line 1043 "fcml_gas_parser_def.c"
         break;
 
     case 43: /* reg  */
-#line 111 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
-#line 953 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 115 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "Type: %s Size: %d Reg: %d x64_exp: %d", fcml_fn_pu_reg_type_to_string( ((*yyvaluep).reg_value).type ), ((*yyvaluep).reg_value).size, ((*yyvaluep).reg_value).reg, ((*yyvaluep).reg_value).x64_exp); }
+#line 1049 "fcml_gas_parser_def.c"
         break;
 
     case 44: /* pseudo_operation  */
-#line 110 "fcml_gas_parser_def.y" /* yacc.c:684  */
-      { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
-#line 959 "fcml_gas_parser_def.c" /* yacc.c:684  */
+#line 114 "fcml_gas_parser_def.y"
+         { YYFPRINTF(yyoutput, "AST-Type: %d", ((*yyvaluep).ast)->type); }
+#line 1055 "fcml_gas_parser_def.c"
         break;
-
 
       default:
         break;
     }
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+/*---------------------------.
+| Print this symbol on YYO.  |
+`---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, struct fcml_st_parser_data *pd)
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, struct fcml_st_parser_data *pd)
 {
-  YYFPRINTF (yyoutput, "%s %s (",
+  YYFPRINTF (yyo, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  YY_LOCATION_PRINT (yyoutput, *yylocationp);
-  YYFPRINTF (yyoutput, ": ");
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp, pd);
-  YYFPRINTF (yyoutput, ")");
+  YY_LOCATION_PRINT (yyo, *yylocationp);
+  YYFPRINTF (yyo, ": ");
+  yy_symbol_value_print (yyo, yytype, yyvaluep, yylocationp, pd);
+  YYFPRINTF (yyo, ")");
 }
 
 /*------------------------------------------------------------------.
@@ -987,7 +1083,7 @@ yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYL
 `------------------------------------------------------------------*/
 
 static void
-yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)
+yy_stack_print (yy_state_t *yybottom, yy_state_t *yytop)
 {
   YYFPRINTF (stderr, "Stack now");
   for (; yybottom <= yytop; yybottom++)
@@ -1010,20 +1106,20 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, struct fcml_st_parser_data *pd)
+yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, struct fcml_st_parser_data *pd)
 {
-  unsigned long int yylno = yyrline[yyrule];
+  int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
   int yyi;
-  YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
+  YYFPRINTF (stderr, "Reducing stack by rule %d (line %d):\n",
              yyrule - 1, yylno);
   /* The symbols being reduced.  */
   for (yyi = 0; yyi < yynrhs; yyi++)
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr,
-                       yystos[yyssp[yyi + 1 - yynrhs]],
-                       &(yyvsp[(yyi + 1) - (yynrhs)])
+                       yystos[+yyssp[yyi + 1 - yynrhs]],
+                       &yyvsp[(yyi + 1) - (yynrhs)]
                        , &(yylsp[(yyi + 1) - (yynrhs)])                       , pd);
       YYFPRINTF (stderr, "\n");
     }
@@ -1038,12 +1134,12 @@ do {                                    \
 /* Nonzero means print parse trace.  It is left uninitialized so that
    multiple parsers can coexist.  */
 int yydebug;
-#else /* !YYDEBUG */
+#else /* !GAS_DEBUG */
 # define YYDPRINTF(Args)
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
-#endif /* !YYDEBUG */
+#endif /* !GAS_DEBUG */
 
 
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
@@ -1067,13 +1163,13 @@ int yydebug;
 
 # ifndef yystrlen
 #  if defined __GLIBC__ && defined _STRING_H
-#   define yystrlen strlen
+#   define yystrlen(S) (YY_CAST (YYPTRDIFF_T, strlen (S)))
 #  else
 /* Return the length of YYSTR.  */
-static YYSIZE_T
+static YYPTRDIFF_T
 yystrlen (const char *yystr)
 {
-  YYSIZE_T yylen;
+  YYPTRDIFF_T yylen;
   for (yylen = 0; yystr[yylen]; yylen++)
     continue;
   return yylen;
@@ -1109,12 +1205,12 @@ yystpcpy (char *yydest, const char *yysrc)
    backslash-backslash).  YYSTR is taken from yytname.  If YYRES is
    null, do not copy; instead, return the length of what the result
    would have been.  */
-static YYSIZE_T
+static YYPTRDIFF_T
 yytnamerr (char *yyres, const char *yystr)
 {
   if (*yystr == '"')
     {
-      YYSIZE_T yyn = 0;
+      YYPTRDIFF_T yyn = 0;
       char const *yyp = yystr;
 
       for (;;)
@@ -1127,7 +1223,10 @@ yytnamerr (char *yyres, const char *yystr)
           case '\\':
             if (*++yyp != '\\')
               goto do_not_strip_quotes;
-            /* Fall through.  */
+            else
+              goto append;
+
+          append:
           default:
             if (yyres)
               yyres[yyn] = *yyp;
@@ -1142,10 +1241,10 @@ yytnamerr (char *yyres, const char *yystr)
     do_not_strip_quotes: ;
     }
 
-  if (! yyres)
+  if (yyres)
+    return yystpcpy (yyres, yystr) - yyres;
+  else
     return yystrlen (yystr);
-
-  return yystpcpy (yyres, yystr) - yyres;
 }
 # endif
 
@@ -1158,19 +1257,19 @@ yytnamerr (char *yyres, const char *yystr)
    *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
    required number of bytes is too large to store.  */
 static int
-yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
-                yytype_int16 *yyssp, int yytoken)
+yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
+                yy_state_t *yyssp, int yytoken)
 {
-  YYSIZE_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
-  YYSIZE_T yysize = yysize0;
   enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
   /* Internationalized format string. */
   const char *yyformat = YY_NULLPTR;
-  /* Arguments of yyformat. */
+  /* Arguments of yyformat: reported tokens (one for the "unexpected",
+     one per "expected"). */
   char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
-  /* Number of reported tokens (one for the "unexpected", one per
-     "expected"). */
+  /* Actual size of YYARG. */
   int yycount = 0;
+  /* Cumulated lengths of YYARG.  */
+  YYPTRDIFF_T yysize = 0;
 
   /* There are many possibilities here to consider:
      - If this state is a consistent state with a default action, then
@@ -1197,7 +1296,9 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
   */
   if (yytoken != YYEMPTY)
     {
-      int yyn = yypact[*yyssp];
+      int yyn = yypact[+*yyssp];
+      YYPTRDIFF_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
+      yysize = yysize0;
       yyarg[yycount++] = yytname[yytoken];
       if (!yypact_value_is_default (yyn))
         {
@@ -1222,11 +1323,12 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                   }
                 yyarg[yycount++] = yytname[yyx];
                 {
-                  YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
-                  if (! (yysize <= yysize1
-                         && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                  YYPTRDIFF_T yysize1
+                    = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
+                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+                    yysize = yysize1;
+                  else
                     return 2;
-                  yysize = yysize1;
                 }
               }
         }
@@ -1238,6 +1340,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
       case N:                               \
         yyformat = S;                       \
       break
+    default: /* Avoid compiler warnings. */
       YYCASE_(0, YY_("syntax error"));
       YYCASE_(1, YY_("syntax error, unexpected %s"));
       YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
@@ -1248,10 +1351,13 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
     }
 
   {
-    YYSIZE_T yysize1 = yysize + yystrlen (yyformat);
-    if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+    /* Don't count the "%s"s in the final size, but reserve room for
+       the terminator.  */
+    YYPTRDIFF_T yysize1 = yysize + (yystrlen (yyformat) - 2 * yycount) + 1;
+    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+      yysize = yysize1;
+    else
       return 2;
-    yysize = yysize1;
   }
 
   if (*yymsg_alloc < yysize)
@@ -1277,8 +1383,8 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
         }
       else
         {
-          yyp++;
-          yyformat++;
+          ++yyp;
+          ++yyformat;
         }
   }
   return 0;
@@ -1302,54 +1408,53 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocatio
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   switch (yytype)
     {
-          case 33: /* instruction  */
-#line 106 "fcml_gas_parser_def.y" /* yacc.c:1257  */
-      { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
-#line 1309 "fcml_gas_parser_def.c" /* yacc.c:1257  */
+    case 33: /* instruction  */
+#line 110 "fcml_gas_parser_def.y"
+            { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
+#line 1415 "fcml_gas_parser_def.c"
         break;
 
     case 36: /* operand_list  */
-#line 106 "fcml_gas_parser_def.y" /* yacc.c:1257  */
-      { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
-#line 1315 "fcml_gas_parser_def.c" /* yacc.c:1257  */
+#line 110 "fcml_gas_parser_def.y"
+            { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
+#line 1421 "fcml_gas_parser_def.c"
         break;
 
     case 37: /* operand  */
-#line 106 "fcml_gas_parser_def.y" /* yacc.c:1257  */
-      { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
-#line 1321 "fcml_gas_parser_def.c" /* yacc.c:1257  */
+#line 110 "fcml_gas_parser_def.y"
+            { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
+#line 1427 "fcml_gas_parser_def.c"
         break;
 
     case 38: /* effective_address  */
-#line 106 "fcml_gas_parser_def.y" /* yacc.c:1257  */
-      { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
-#line 1327 "fcml_gas_parser_def.c" /* yacc.c:1257  */
+#line 110 "fcml_gas_parser_def.y"
+            { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
+#line 1433 "fcml_gas_parser_def.c"
         break;
 
     case 39: /* effective_address_components  */
-#line 106 "fcml_gas_parser_def.y" /* yacc.c:1257  */
-      { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
-#line 1333 "fcml_gas_parser_def.c" /* yacc.c:1257  */
+#line 110 "fcml_gas_parser_def.y"
+            { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
+#line 1439 "fcml_gas_parser_def.c"
         break;
 
     case 40: /* effective_address_components_without_dis  */
-#line 106 "fcml_gas_parser_def.y" /* yacc.c:1257  */
-      { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
-#line 1339 "fcml_gas_parser_def.c" /* yacc.c:1257  */
+#line 110 "fcml_gas_parser_def.y"
+            { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
+#line 1445 "fcml_gas_parser_def.c"
         break;
 
     case 42: /* exp  */
-#line 106 "fcml_gas_parser_def.y" /* yacc.c:1257  */
-      { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
-#line 1345 "fcml_gas_parser_def.c" /* yacc.c:1257  */
+#line 110 "fcml_gas_parser_def.y"
+            { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
+#line 1451 "fcml_gas_parser_def.c"
         break;
 
     case 44: /* pseudo_operation  */
-#line 106 "fcml_gas_parser_def.y" /* yacc.c:1257  */
-      { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
-#line 1351 "fcml_gas_parser_def.c" /* yacc.c:1257  */
+#line 110 "fcml_gas_parser_def.y"
+            { fcml_fn_ast_free_node(((*yyvaluep).ast)); }
+#line 1457 "fcml_gas_parser_def.c"
         break;
-
 
       default:
         break;
@@ -1379,7 +1484,7 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
 
 /* Location data for the lookahead symbol.  */
 static YYLTYPE yyloc_default
-# if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
+# if defined GAS_LTYPE_IS_TRIVIAL && GAS_LTYPE_IS_TRIVIAL
   = { 1, 1, 1, 1 }
 # endif
 ;
@@ -1388,7 +1493,7 @@ YYLTYPE yylloc = yyloc_default;
     /* Number of syntax errors so far.  */
     int yynerrs;
 
-    int yystate;
+    yy_state_fast_t yystate;
     /* Number of tokens to shift before error messages enabled.  */
     int yyerrstatus;
 
@@ -1401,9 +1506,9 @@ YYLTYPE yylloc = yyloc_default;
        to reallocate them elsewhere.  */
 
     /* The state stack.  */
-    yytype_int16 yyssa[YYINITDEPTH];
-    yytype_int16 *yyss;
-    yytype_int16 *yyssp;
+    yy_state_t yyssa[YYINITDEPTH];
+    yy_state_t *yyss;
+    yy_state_t *yyssp;
 
     /* The semantic value stack.  */
     YYSTYPE yyvsa[YYINITDEPTH];
@@ -1418,7 +1523,7 @@ YYLTYPE yylloc = yyloc_default;
     /* The locations where the error started and ended.  */
     YYLTYPE yyerror_range[3];
 
-    YYSIZE_T yystacksize;
+    YYPTRDIFF_T yystacksize;
 
   int yyn;
   int yyresult;
@@ -1433,7 +1538,7 @@ YYLTYPE yylloc = yyloc_default;
   /* Buffer for error messages, and its allocated size.  */
   char yymsgbuf[128];
   char *yymsg = yymsgbuf;
-  YYSIZE_T yymsg_alloc = sizeof yymsgbuf;
+  YYPTRDIFF_T yymsg_alloc = sizeof yymsgbuf;
 #endif
 
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N), yylsp -= (N))
@@ -1455,39 +1560,52 @@ YYLTYPE yylloc = yyloc_default;
   yychar = YYEMPTY; /* Cause a token to be read.  */
 
 /* User initialization code.  */
-#line 135 "fcml_gas_parser_def.y" /* yacc.c:1429  */
+#line 139 "fcml_gas_parser_def.y"
 { 
     /* Uncomment it in order to enable debugging */
     /* gas_debug = 1; */
 }
 
-#line 1465 "fcml_gas_parser_def.c" /* yacc.c:1429  */
+#line 1570 "fcml_gas_parser_def.c"
+
   yylsp[0] = yylloc;
   goto yysetstate;
 
+
 /*------------------------------------------------------------.
-| yynewstate -- Push a new state, which is found in yystate.  |
+| yynewstate -- push a new state, which is found in yystate.  |
 `------------------------------------------------------------*/
- yynewstate:
+yynewstate:
   /* In all cases, when you get here, the value and location stacks
      have just been pushed.  So pushing a state here evens the stacks.  */
   yyssp++;
 
- yysetstate:
-  *yyssp = yystate;
+
+/*--------------------------------------------------------------------.
+| yysetstate -- set current state (the top of the stack) to yystate.  |
+`--------------------------------------------------------------------*/
+yysetstate:
+  YYDPRINTF ((stderr, "Entering state %d\n", yystate));
+  YY_ASSERT (0 <= yystate && yystate < YYNSTATES);
+  YY_IGNORE_USELESS_CAST_BEGIN
+  *yyssp = YY_CAST (yy_state_t, yystate);
+  YY_IGNORE_USELESS_CAST_END
 
   if (yyss + yystacksize - 1 <= yyssp)
+#if !defined yyoverflow && !defined YYSTACK_RELOCATE
+    goto yyexhaustedlab;
+#else
     {
       /* Get the current used size of the three stacks, in elements.  */
-      YYSIZE_T yysize = yyssp - yyss + 1;
+      YYPTRDIFF_T yysize = yyssp - yyss + 1;
 
-#ifdef yyoverflow
+# if defined yyoverflow
       {
         /* Give user a chance to reallocate the stack.  Use copies of
            these so that the &'s don't force the real ones into
            memory.  */
+        yy_state_t *yyss1 = yyss;
         YYSTYPE *yyvs1 = yyvs;
-        yytype_int16 *yyss1 = yyss;
         YYLTYPE *yyls1 = yyls;
 
         /* Each stack pointer address is followed by the size of the
@@ -1495,19 +1613,15 @@ YYLTYPE yylloc = yyloc_default;
            conditional around just the two extra args, but that might
            be undefined if yyoverflow is a macro.  */
         yyoverflow (YY_("memory exhausted"),
-                    &yyss1, yysize * sizeof (*yyssp),
-                    &yyvs1, yysize * sizeof (*yyvsp),
-                    &yyls1, yysize * sizeof (*yylsp),
+                    &yyss1, yysize * YYSIZEOF (*yyssp),
+                    &yyvs1, yysize * YYSIZEOF (*yyvsp),
+                    &yyls1, yysize * YYSIZEOF (*yylsp),
                     &yystacksize);
-
-        yyls = yyls1;
         yyss = yyss1;
         yyvs = yyvs1;
+        yyls = yyls1;
       }
-#else /* no yyoverflow */
-# ifndef YYSTACK_RELOCATE
-      goto yyexhaustedlab;
-# else
+# else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
         goto yyexhaustedlab;
@@ -1516,44 +1630,45 @@ YYLTYPE yylloc = yyloc_default;
         yystacksize = YYMAXDEPTH;
 
       {
-        yytype_int16 *yyss1 = yyss;
+        yy_state_t *yyss1 = yyss;
         union yyalloc *yyptr =
-          (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
+          YY_CAST (union yyalloc *,
+                   YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
         if (! yyptr)
           goto yyexhaustedlab;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
         YYSTACK_RELOCATE (yyls_alloc, yyls);
-#  undef YYSTACK_RELOCATE
+# undef YYSTACK_RELOCATE
         if (yyss1 != yyssa)
           YYSTACK_FREE (yyss1);
       }
 # endif
-#endif /* no yyoverflow */
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
       yylsp = yyls + yysize - 1;
 
-      YYDPRINTF ((stderr, "Stack size increased to %lu\n",
-                  (unsigned long int) yystacksize));
+      YY_IGNORE_USELESS_CAST_BEGIN
+      YYDPRINTF ((stderr, "Stack size increased to %ld\n",
+                  YY_CAST (long, yystacksize)));
+      YY_IGNORE_USELESS_CAST_END
 
       if (yyss + yystacksize - 1 <= yyssp)
         YYABORT;
     }
-
-  YYDPRINTF ((stderr, "Entering state %d\n", yystate));
+#endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
 
   if (yystate == YYFINAL)
     YYACCEPT;
 
   goto yybackup;
 
+
 /*-----------.
 | yybackup.  |
 `-----------*/
 yybackup:
-
   /* Do appropriate processing given the current state.  Read a
      lookahead token if we need one and don't already have one.  */
 
@@ -1603,15 +1718,14 @@ yybackup:
 
   /* Shift the lookahead token.  */
   YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
-
-  /* Discard the shifted token.  */
-  yychar = YYEMPTY;
-
   yystate = yyn;
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   *++yyvsp = yylval;
   YY_IGNORE_MAYBE_UNINITIALIZED_END
   *++yylsp = yylloc;
+
+  /* Discard the shifted token.  */
+  yychar = YYEMPTY;
   goto yynewstate;
 
 
@@ -1626,7 +1740,7 @@ yydefault:
 
 
 /*-----------------------------.
-| yyreduce -- Do a reduction.  |
+| yyreduce -- do a reduction.  |
 `-----------------------------*/
 yyreduce:
   /* yyn is the number of a rule to reduce with.  */
@@ -1642,271 +1756,273 @@ yyreduce:
      GCC warning that YYVAL may be used uninitialized.  */
   yyval = yyvsp[1-yylen];
 
-  /* Default location.  */
+  /* Default location. */
   YYLLOC_DEFAULT (yyloc, (yylsp - yylen), yylen);
+  yyerror_range[1] = yyloc;
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 3:
-#line 143 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { pd->tree = (yyvsp[0].ast);   pd->symbol = NULL; }
-#line 1654 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+  case 3:
+#line 147 "fcml_gas_parser_def.y"
+                                        { pd->tree = (yyvsp[0].ast);   pd->symbol = NULL; }
+#line 1769 "fcml_gas_parser_def.c"
     break;
 
   case 4:
-#line 144 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { pd->tree = (yyvsp[0].ast);   pd->symbol = NULL; }
-#line 1660 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 148 "fcml_gas_parser_def.y"
+                                        { pd->tree = (yyvsp[0].ast);   pd->symbol = NULL; }
+#line 1775 "fcml_gas_parser_def.c"
     break;
 
   case 5:
-#line 145 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { pd->tree = NULL; pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, (yyvsp[-1].symbol).text, (yyvsp[-1].symbol).length ); HANDLE_ERRORS( pd->symbol ); }
-#line 1666 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 149 "fcml_gas_parser_def.y"
+                                        { pd->tree = NULL; pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, (yyvsp[-1].symbol).text, (yyvsp[-1].symbol).length ); HANDLE_ERRORS( pd->symbol ); }
+#line 1781 "fcml_gas_parser_def.c"
     break;
 
   case 6:
-#line 146 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { pd->tree = (yyvsp[0].ast);   pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, (yyvsp[-2].symbol).text, (yyvsp[-2].symbol).length ); HANDLE_ERRORS( pd->symbol ); }
-#line 1672 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 150 "fcml_gas_parser_def.y"
+                                        { pd->tree = (yyvsp[0].ast);   pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, (yyvsp[-2].symbol).text, (yyvsp[-2].symbol).length ); HANDLE_ERRORS( pd->symbol ); }
+#line 1787 "fcml_gas_parser_def.c"
     break;
 
   case 7:
-#line 147 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { pd->tree = (yyvsp[0].ast);   pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, (yyvsp[-2].symbol).text, (yyvsp[-2].symbol).length ); HANDLE_ERRORS( pd->symbol ); }
-#line 1678 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 151 "fcml_gas_parser_def.y"
+                                        { pd->tree = (yyvsp[0].ast);   pd->symbol = fcml_fn_ast_alloc_node_define_symbol( pd->ip, (yyvsp[-2].symbol).text, (yyvsp[-2].symbol).length ); HANDLE_ERRORS( pd->symbol ); }
+#line 1793 "fcml_gas_parser_def.c"
     break;
 
   case 8:
-#line 150 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( 0, (yyvsp[0].symbol).text, (yyvsp[0].symbol).length, 0, NULL ); HANDLE_ERRORS((yyval.ast)); }
-#line 1684 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 154 "fcml_gas_parser_def.y"
+                                        { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( 0, (yyvsp[0].symbol).text, (yyvsp[0].symbol).length, 0, NULL ); HANDLE_ERRORS((yyval.ast)); }
+#line 1799 "fcml_gas_parser_def.c"
     break;
 
   case 9:
-#line 151 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( 0, (yyvsp[-1].symbol).text, (yyvsp[-1].symbol).length, 0, (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1690 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 155 "fcml_gas_parser_def.y"
+                                        { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( 0, (yyvsp[-1].symbol).text, (yyvsp[-1].symbol).length, 0, (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1805 "fcml_gas_parser_def.c"
     break;
 
   case 10:
-#line 152 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( (yyvsp[-1].prefixes), (yyvsp[0].symbol).text, (yyvsp[0].symbol).length, 0, NULL ); HANDLE_ERRORS((yyval.ast)); }
-#line 1696 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 156 "fcml_gas_parser_def.y"
+                                        { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( (yyvsp[-1].prefixes), (yyvsp[0].symbol).text, (yyvsp[0].symbol).length, 0, NULL ); HANDLE_ERRORS((yyval.ast)); }
+#line 1811 "fcml_gas_parser_def.c"
     break;
 
   case 11:
-#line 153 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( (yyvsp[-2].prefixes), (yyvsp[-1].symbol).text, (yyvsp[-1].symbol).length, 0, (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1702 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 157 "fcml_gas_parser_def.y"
+                                        { (yyval.ast) = fcml_fn_ast_alloc_node_instruction( (yyvsp[-2].prefixes), (yyvsp[-1].symbol).text, (yyvsp[-1].symbol).length, 0, (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1817 "fcml_gas_parser_def.c"
     break;
 
   case 13:
-#line 157 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { if( (yyvsp[-1].prefixes) & (yyvsp[0].prefixes) ) { ADD_ERROR_MSG( "Doubled prefixes." ); YYERROR; } else { (yyval.prefixes) = (yyvsp[-1].prefixes) | (yyvsp[0].prefixes); } }
-#line 1708 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 161 "fcml_gas_parser_def.y"
+                                        { if( (yyvsp[-1].prefixes) & (yyvsp[0].prefixes) ) { ADD_ERROR_MSG( "Doubled prefixes." ); YYERROR; } else { (yyval.prefixes) = (yyvsp[-1].prefixes) | (yyvsp[0].prefixes); } }
+#line 1823 "fcml_gas_parser_def.c"
     break;
 
   case 15:
-#line 163 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_operand_list( (yyvsp[0].ast), NULL ); HANDLE_ERRORS((yyval.ast)); }
-#line 1714 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 167 "fcml_gas_parser_def.y"
+                                        { (yyval.ast) = fcml_fn_ast_alloc_node_operand_list( (yyvsp[0].ast), NULL ); HANDLE_ERRORS((yyval.ast)); }
+#line 1829 "fcml_gas_parser_def.c"
     break;
 
   case 16:
-#line 164 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_operand_list( (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1720 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 168 "fcml_gas_parser_def.y"
+                                        { (yyval.ast) = fcml_fn_ast_alloc_node_operand_list( (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1835 "fcml_gas_parser_def.c"
     break;
 
   case 17:
-#line 167 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = (yyvsp[0].ast); }
-#line 1726 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 171 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = (yyvsp[0].ast); }
+#line 1841 "fcml_gas_parser_def.c"
     break;
 
   case 19:
-#line 169 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_decorate_effective_address((yyvsp[-1].ast), &(yyvsp[0].reg_value), FCML_FALSE); }
-#line 1732 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 173 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_decorate_effective_address((yyvsp[-1].ast), &(yyvsp[0].reg_value), FCML_FALSE); }
+#line 1847 "fcml_gas_parser_def.c"
     break;
 
   case 20:
-#line 170 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_decorate_effective_address((yyvsp[-2].ast), &(yyvsp[-1].reg_value), FCML_TRUE); }
-#line 1738 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 174 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_decorate_effective_address((yyvsp[-2].ast), &(yyvsp[-1].reg_value), FCML_TRUE); }
+#line 1853 "fcml_gas_parser_def.c"
     break;
 
   case 21:
-#line 171 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_decorate_effective_address((yyvsp[-1].ast), NULL, FCML_TRUE); }
-#line 1744 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 175 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_decorate_effective_address((yyvsp[-1].ast), NULL, FCML_TRUE); }
+#line 1859 "fcml_gas_parser_def.c"
     break;
 
   case 22:
-#line 172 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_set_effective_address_hins( (yyvsp[0].ast), FCML_HINT_INDIRECT_POINTER ); }
-#line 1750 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 176 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_set_effective_address_hins( (yyvsp[0].ast), FCML_HINT_INDIRECT_POINTER ); }
+#line 1865 "fcml_gas_parser_def.c"
     break;
 
   case 23:
-#line 173 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[0].reg_value), NULL, FCML_FALSE ); HANDLE_ERRORS((yyval.ast)); }
-#line 1756 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 177 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[0].reg_value), NULL, FCML_FALSE ); HANDLE_ERRORS((yyval.ast)); }
+#line 1871 "fcml_gas_parser_def.c"
     break;
 
   case 24:
-#line 174 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[-1].reg_value), &(yyvsp[0].reg_value), FCML_FALSE ); HANDLE_ERRORS((yyval.ast)); }
-#line 1762 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 178 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[-1].reg_value), &(yyvsp[0].reg_value), FCML_FALSE ); HANDLE_ERRORS((yyval.ast)); }
+#line 1877 "fcml_gas_parser_def.c"
     break;
 
   case 25:
-#line 175 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[-2].reg_value), &(yyvsp[-1].reg_value), FCML_TRUE ); HANDLE_ERRORS((yyval.ast)); }
-#line 1768 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 179 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[-2].reg_value), &(yyvsp[-1].reg_value), FCML_TRUE ); HANDLE_ERRORS((yyval.ast)); }
+#line 1883 "fcml_gas_parser_def.c"
     break;
 
   case 26:
-#line 176 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[-1].reg_value), NULL, FCML_TRUE ); HANDLE_ERRORS((yyval.ast)); }
-#line 1774 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 180 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_alloc_node_register( &(yyvsp[-1].reg_value), NULL, FCML_TRUE ); HANDLE_ERRORS((yyval.ast)); }
+#line 1889 "fcml_gas_parser_def.c"
     break;
 
   case 27:
-#line 177 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_virtual( FCML_TRUE, FCML_FALSE, 0 ); HANDLE_ERRORS((yyval.ast)); }
-#line 1780 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 181 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_alloc_node_virtual( FCML_TRUE, FCML_FALSE, 0 ); HANDLE_ERRORS((yyval.ast)); }
+#line 1895 "fcml_gas_parser_def.c"
     break;
 
   case 28:
-#line 178 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_virtual( FCML_FALSE, FCML_TRUE, (yyvsp[0].int_value) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1786 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 182 "fcml_gas_parser_def.y"
+                                                                           { (yyval.ast) = fcml_fn_ast_alloc_node_virtual( FCML_FALSE, FCML_TRUE, (yyvsp[0].int_value) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1901 "fcml_gas_parser_def.c"
     break;
 
   case 30:
-#line 182 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_set_effective_address_details( &(yyvsp[-1].reg_value), FCML_OS_UNDEFINED, 0, (yyvsp[0].ast) ); }
-#line 1792 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 186 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_set_effective_address_details( &(yyvsp[-1].reg_value), FCML_OS_UNDEFINED, 0, (yyvsp[0].ast) ); }
+#line 1907 "fcml_gas_parser_def.c"
     break;
 
   case 31:
-#line 183 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_set_effective_address_details( NULL, FCML_OS_UNDEFINED, (yyvsp[0].int_value), (yyvsp[-1].ast) ); }
-#line 1798 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 187 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_set_effective_address_details( NULL, FCML_OS_UNDEFINED, (yyvsp[0].int_value), (yyvsp[-1].ast) ); }
+#line 1913 "fcml_gas_parser_def.c"
     break;
 
   case 33:
-#line 188 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_set_displacemnt( (yyvsp[-1].ast), (yyvsp[0].ast) ); }
-#line 1804 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 192 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_set_displacemnt( (yyvsp[-1].ast), (yyvsp[0].ast) ); }
+#line 1919 "fcml_gas_parser_def.c"
     break;
 
   case 34:
-#line 189 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, (yyvsp[0].ast), FCML_FALSE, 0); }
-#line 1810 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 193 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, NULL, NULL, (yyvsp[0].ast), FCML_FALSE, 0); }
+#line 1925 "fcml_gas_parser_def.c"
     break;
 
   case 35:
-#line 193 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[-1].reg_value), NULL, NULL, NULL, FCML_FALSE, 0 ); }
-#line 1816 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 197 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[-1].reg_value), NULL, NULL, NULL, FCML_FALSE, 0 ); }
+#line 1931 "fcml_gas_parser_def.c"
     break;
 
   case 36:
-#line 194 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[-1].reg_value), NULL, NULL, NULL, FCML_FALSE, 0 ); }
-#line 1822 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 198 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[-1].reg_value), NULL, NULL, NULL, FCML_FALSE, 0 ); }
+#line 1937 "fcml_gas_parser_def.c"
     break;
 
   case 37:
-#line 195 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[-3].reg_value), &(yyvsp[-1].reg_value), NULL, NULL, FCML_FALSE, 0 ); }
-#line 1828 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 199 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[-3].reg_value), &(yyvsp[-1].reg_value), NULL, NULL, FCML_FALSE, 0 ); }
+#line 1943 "fcml_gas_parser_def.c"
     break;
 
   case 38:
-#line 196 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, &(yyvsp[-1].reg_value), NULL, NULL, FCML_FALSE, 0 ); }
-#line 1834 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 200 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, &(yyvsp[-1].reg_value), NULL, NULL, FCML_FALSE, 0 ); }
+#line 1949 "fcml_gas_parser_def.c"
     break;
 
   case 39:
-#line 197 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[-5].reg_value), &(yyvsp[-3].reg_value), &(yyvsp[-1].integer_value), NULL, FCML_FALSE, 0 ); }
-#line 1840 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 201 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( &(yyvsp[-5].reg_value), &(yyvsp[-3].reg_value), &(yyvsp[-1].integer_value), NULL, FCML_FALSE, 0 ); }
+#line 1955 "fcml_gas_parser_def.c"
     break;
 
   case 40:
-#line 198 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, &(yyvsp[-3].reg_value), &(yyvsp[-1].integer_value), NULL, FCML_FALSE, 0 ); }
-#line 1846 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 202 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_effective_address( NULL, &(yyvsp[-3].reg_value), &(yyvsp[-1].integer_value), NULL, FCML_FALSE, 0 ); }
+#line 1961 "fcml_gas_parser_def.c"
     break;
 
   case 41:
-#line 201 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.reg_value) = (yyvsp[-1].reg_value); }
-#line 1852 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 205 "fcml_gas_parser_def.y"
+                                                      { (yyval.reg_value) = (yyvsp[-1].reg_value); }
+#line 1967 "fcml_gas_parser_def.c"
     break;
 
   case 42:
-#line 205 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_integer( &(yyvsp[0].integer_value) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1858 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 209 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_integer( &(yyvsp[0].integer_value) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1973 "fcml_gas_parser_def.c"
     break;
 
   case 43:
-#line 206 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_SUB, (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1864 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 210 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_SUB, (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1979 "fcml_gas_parser_def.c"
     break;
 
   case 44:
-#line 207 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_ADD, (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1870 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 211 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_ADD, (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1985 "fcml_gas_parser_def.c"
     break;
 
   case 45:
-#line 208 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_DIV, (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1876 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 212 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_DIV, (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1991 "fcml_gas_parser_def.c"
     break;
 
   case 46:
-#line 209 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_MUL, (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1882 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 213 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_exp( FCML_EN_EXN_MUL, (yyvsp[-2].ast), (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 1997 "fcml_gas_parser_def.c"
     break;
 
   case 47:
-#line 210 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_use_symbol( (yyvsp[0].symbol).text, (yyvsp[0].symbol).length ); HANDLE_ERRORS((yyval.ast)); }
-#line 1888 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 214 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_use_symbol( (yyvsp[0].symbol).text, (yyvsp[0].symbol).length ); HANDLE_ERRORS((yyval.ast)); }
+#line 2003 "fcml_gas_parser_def.c"
     break;
 
   case 48:
-#line 211 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_uminus( (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1894 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 215 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = fcml_fn_ast_alloc_node_uminus( (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 2009 "fcml_gas_parser_def.c"
     break;
 
   case 49:
-#line 212 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = (yyvsp[-1].ast); }
-#line 1900 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 216 "fcml_gas_parser_def.y"
+                                                      { (yyval.ast) = (yyvsp[-1].ast); }
+#line 2015 "fcml_gas_parser_def.c"
     break;
 
   case 57:
-#line 227 "fcml_gas_parser_def.y" /* yacc.c:1646  */
-    { (yyval.ast) = fcml_fn_ast_alloc_node_pseudo_operation( (yyvsp[-1].symbol).text, (yyvsp[-1].symbol).length, (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
-#line 1906 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 231 "fcml_gas_parser_def.y"
+                                      { (yyval.ast) = fcml_fn_ast_alloc_node_pseudo_operation( (yyvsp[-1].symbol).text, (yyvsp[-1].symbol).length, (yyvsp[0].ast) ); HANDLE_ERRORS((yyval.ast)); }
+#line 2021 "fcml_gas_parser_def.c"
     break;
 
 
-#line 1910 "fcml_gas_parser_def.c" /* yacc.c:1646  */
+#line 2025 "fcml_gas_parser_def.c"
+
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1932,14 +2048,13 @@ yyreduce:
   /* Now 'shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
-
-  yyn = yyr1[yyn];
-
-  yystate = yypgoto[yyn - YYNTOKENS] + *yyssp;
-  if (0 <= yystate && yystate <= YYLAST && yycheck[yystate] == *yyssp)
-    yystate = yytable[yystate];
-  else
-    yystate = yydefgoto[yyn - YYNTOKENS];
+  {
+    const int yylhs = yyr1[yyn] - YYNTOKENS;
+    const int yyi = yypgoto[yylhs] + *yyssp;
+    yystate = (0 <= yyi && yyi <= YYLAST && yycheck[yyi] == *yyssp
+               ? yytable[yyi]
+               : yydefgoto[yylhs]);
+  }
 
   goto yynewstate;
 
@@ -1971,7 +2086,7 @@ yyerrlab:
           {
             if (yymsg != yymsgbuf)
               YYSTACK_FREE (yymsg);
-            yymsg = (char *) YYSTACK_ALLOC (yymsg_alloc);
+            yymsg = YY_CAST (char *, YYSTACK_ALLOC (YY_CAST (YYSIZE_T, yymsg_alloc)));
             if (!yymsg)
               {
                 yymsg = yymsgbuf;
@@ -2022,14 +2137,11 @@ yyerrlab:
 | yyerrorlab -- error raised explicitly by YYERROR.  |
 `---------------------------------------------------*/
 yyerrorlab:
+  /* Pacify compilers when the user code never invokes YYERROR and the
+     label yyerrorlab therefore never appears in user code.  */
+  if (0)
+    YYERROR;
 
-  /* Pacify compilers like GCC when the user code never invokes
-     YYERROR and the label yyerrorlab therefore never appears in user
-     code.  */
-  if (/*CONSTCOND*/ 0)
-     goto yyerrorlab;
-
-  yyerror_range[1] = yylsp[1-yylen];
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
   YYPOPSTACK (yylen);
@@ -2095,12 +2207,14 @@ yyacceptlab:
   yyresult = 0;
   goto yyreturn;
 
+
 /*-----------------------------------.
 | yyabortlab -- YYABORT comes here.  |
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
   goto yyreturn;
+
 
 #if !defined yyoverflow || YYERROR_VERBOSE
 /*-------------------------------------------------.
@@ -2112,6 +2226,10 @@ yyexhaustedlab:
   /* Fall through.  */
 #endif
 
+
+/*-----------------------------------------------------.
+| yyreturn -- parsing is finished, return the result.  |
+`-----------------------------------------------------*/
 yyreturn:
   if (yychar != YYEMPTY)
     {
@@ -2128,7 +2246,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[*yyssp], yyvsp, yylsp, pd);
+                  yystos[+*yyssp], yyvsp, yylsp, pd);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -2141,5 +2259,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 230 "fcml_gas_parser_def.y" /* yacc.c:1906  */
+#line 234 "fcml_gas_parser_def.y"
 

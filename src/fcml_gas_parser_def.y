@@ -21,20 +21,24 @@
 %locations
 %parse-param { struct fcml_st_parser_data *pd }
 %lex-param { yyscan_t yyscanner }
-%name-prefix "gas_"
+%define api.prefix {gas_}
+
+%code provides
+{
+  #define YYSTYPE GAS_STYPE
+  #define YYLTYPE GAS_LTYPE
+}
 
 %{
-    #include <stdio.h>
+  #include <stdio.h>
+  #include "fcml_parser_utils.h"
     
-    #include "fcml_parser_utils.h"
+  /* Macro responsible for handling 'Out of memory' errors. */
+  #define HANDLE_ERRORS(x) if( !x ) { yyerror(&yylloc, pd, \
+    "Out of memory."); YYERROR; }
     
-    /* Macro responsible for handling 'Out of memory' errors. */
-    #define HANDLE_ERRORS(x) if( !x ) { yyerror(&yylloc, pd, \
-        "Out of memory."); YYERROR; }
-    
-    /* Macro responsible for adding error messages to result. */
-    #define ADD_ERROR_MSG(x) { yyerror(&yylloc, pd, x); }
-    
+  /* Macro responsible for adding error messages to result. */
+  #define ADD_ERROR_MSG(x) { yyerror(&yylloc, pd, x); }  
 %}
 
 /* Uncomment it in order to enable debugging */
