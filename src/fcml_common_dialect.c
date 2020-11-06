@@ -29,7 +29,7 @@
 
 #define FCML_CMN_DIALECT_CND_GROUPS 3
 
-fcml_string fcml_ar_asm_conditional_suffixes[3][16] = {
+static fcml_string conditional_suffixes[3][16] = {
     {
             FCML_TEXT("o"), FCML_TEXT("no"),  FCML_TEXT("b"),
             FCML_TEXT("nb"), FCML_TEXT("e"), FCML_TEXT("ne"),
@@ -51,7 +51,7 @@ fcml_string fcml_ar_asm_conditional_suffixes[3][16] = {
     }
 };
 
-fcml_string fcml_ar_asm_conditional_suffixes_render[2][16] = {
+static fcml_string conditional_suffixes_render[2][16] = {
 	{
 	        FCML_TEXT("o"), FCML_TEXT("no"), FCML_TEXT("b"), FCML_TEXT("nb"),
 	        FCML_TEXT("e"), FCML_TEXT("ne"), FCML_TEXT("be"), FCML_TEXT("nbe"),
@@ -66,7 +66,7 @@ fcml_string fcml_ar_asm_conditional_suffixes_render[2][16] = {
 	}
 };
 
-fcml_string fcml_ar_asm_dialect_reg_symbol_table[7][16] = {
+static fcml_string reg_symbol_table[7][16] = {
 	{
 	        "<none>", "<none>", "<none>", "<none>", "<none>", "<none>", "<none>",
 	        "<none>", "<none>", "<none>", "<none>", "<none>", "<none>",
@@ -107,7 +107,7 @@ fcml_string fcml_ar_asm_dialect_reg_symbol_table[7][16] = {
 	}
 };
 
-fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table[4][16] = {
+static fcml_string reg_gpr_symbol_table[4][16] = {
 	{
 	        "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "r8l", "r9l",
 	        "r10l", "r11l", "r12l", "r13l", "r14l", "r15l"
@@ -126,7 +126,7 @@ fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table[4][16] = {
 	}
 };
 
-fcml_string fcml_ar_asm_dialect_reg_symbol_table_rex[7][16] = {
+static fcml_string reg_symbol_table_rex[7][16] = {
 	{
 	        "<none>", "<none>", "<none>", "<none>", "<none>", "<none>",
 	        "<none>", "<none>", "<none>", "<none>", "<none>", "<none>",
@@ -170,15 +170,15 @@ fcml_string fcml_ar_asm_dialect_reg_symbol_table_rex[7][16] = {
 	}
 };
 
-fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[4] = {
+static fcml_string reg_gpr_symbol_table_ip[4] = {
 	"<unknown ip>", "ip", "eip", "rip"
 };
 
-fcml_string fcml_ar_asm_dialect_reg_operand_mask_symbol_table[8] = {
+static fcml_string reg_operand_mask_symbol_table[8] = {
     "k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"
 };
 
-fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[4][16] = {
+static fcml_string reg_gpr_symbol_table_rex[4][16] = {
 	{
 	        "al", "cl", "dl", "bl", "spl", "bpl", "sil", "dil", "r8l", "r9l",
 	        "r10l", "r11l", "r12l", "r13l", "r14l", "r15l"
@@ -197,7 +197,7 @@ fcml_string fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[4][16] = {
 	}
 };
 
-fcml_string fcml_ar_asm_dialect_reg_sidm_symbol_table[4][32] = {
+static fcml_string reg_sidm_symbol_table[4][32] = {
 	{
 	  "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7",
 	  "<wrong register>", "<wrong register>", "<wrong register>",
@@ -250,7 +250,7 @@ fcml_string fcml_fn_cmn_dialect_render_mnemonic(fcml_string mnemonic,
         }
 
         if (!suffix) {
-            suffix = fcml_ar_asm_conditional_suffixes_render[conditional_group][cond];
+            suffix = conditional_suffixes_render[conditional_group][cond];
         }
 
         fcml_usize mnemonic_len = fcml_fn_env_str_strlen(mnemonic);
@@ -289,8 +289,7 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic(const fcml_st_dialect *dialect,
 
             int i;
             for (i = 0; i < FCML_CMN_DIALECT_CND_GROUPS; i++) {
-                fcml_string suffix =
-                        fcml_ar_asm_conditional_suffixes[i][suffix_nr];
+                fcml_string suffix = conditional_suffixes[i][suffix_nr];
                 if (suffix) {
                     mnemonics[counter] =
                             fcml_fn_asm_dialect_alloc_mnemonic_with_suffix(
@@ -352,26 +351,21 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_register(const fcml_st_register *reg,
             break;
         }
         if (reg->type == FCML_REG_OPMASK) {
-            *printable_reg =
-                    fcml_ar_asm_dialect_reg_operand_mask_symbol_table[reg->reg];
+            *printable_reg = reg_operand_mask_symbol_table[reg->reg];
         } else if (reg->type == FCML_REG_IP) {
-            *printable_reg = fcml_ar_asm_dialect_reg_gpr_symbol_table_ip[rs];
+            *printable_reg = reg_gpr_symbol_table_ip[rs];
         } else {
             if (is_rex) {
                 if (reg->type == FCML_REG_GPR) {
-                    *printable_reg =
-                            fcml_ar_asm_dialect_reg_gpr_symbol_table_rex[rs][reg->reg];
+                    *printable_reg = reg_gpr_symbol_table_rex[rs][reg->reg];
                 } else {
-                    *printable_reg =
-                            fcml_ar_asm_dialect_reg_symbol_table_rex[reg->type][reg->reg];
+                    *printable_reg = reg_symbol_table_rex[reg->type][reg->reg];
                 }
             } else {
                 if (reg->type == FCML_REG_GPR) {
-                    *printable_reg =
-                            fcml_ar_asm_dialect_reg_gpr_symbol_table[rs][reg->reg];
+                    *printable_reg = reg_gpr_symbol_table[rs][reg->reg];
                 } else {
-                    *printable_reg =
-                            fcml_ar_asm_dialect_reg_symbol_table[reg->type][reg->reg];
+                    *printable_reg = reg_symbol_table[reg->type][reg->reg];
                 }
             }
         }
@@ -392,8 +386,7 @@ fcml_ceh_error fcml_fn_cmn_dialect_get_register(const fcml_st_register *reg,
         default:
             return FCML_CEH_GEC_INVALID_INPUT;
         }
-        *printable_reg =
-                fcml_ar_asm_dialect_reg_sidm_symbol_table[rs][reg->reg];
+        *printable_reg = reg_sidm_symbol_table[rs][reg->reg];
     }
 
     return FCML_CEH_GEC_NO_ERROR;
