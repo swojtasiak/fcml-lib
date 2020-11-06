@@ -27,9 +27,6 @@
 #include "fcml_ceh.h"
 #include "fcml_mnemonic_parser.h"
 
-extern fcml_string fcml_ar_asm_conditional_suffixes[3][16];
-extern fcml_string fcml_ar_asm_conditional_suffixes_render[2][16];
-
 fcml_ceh_error fcml_fn_cmn_dialect_get_mnemonic(const fcml_st_dialect *dialect,
         fcml_st_mp_mnemonic_set *mnemonic_set, fcml_st_mp_mnemonic **mnemonics,
         const fcml_st_condition *condition, int *mnemonics_counter);
