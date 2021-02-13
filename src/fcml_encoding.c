@@ -604,6 +604,29 @@ static fcml_usize calculate_operand_size(const fcml_st_instruction *instruction,
     return size_operator;
 }
 
+static void handle_segment_override(operand_encoder_args *args) {
+    const fcml_st_operand *operand = args->operand;
+
+    const fcml_st_register *base = &(operand->address.effective_address.base);
+    const fcml_st_segment_selector *segment_selector =
+            &(operand->address.segment_selector);
+    const fcml_st_register *segment_register =
+            &(segment_selector->segment_selector);
+
+    if (segment_register->type == FCML_REG_SEG) {
+        if (segment_register->type == FCML_REG_SEG) {
+            if (!(args->addr_mode_def->instruction_group & FCML_AMT_BRANCH)
+                    && !(base->type == FCML_REG_GPR
+                            && (base->reg == FCML_REG_BP
+                                    || base->reg == FCML_REG_SP))) {
+                if (segment_register->reg != FCML_REG_DS) {
+                    args->context->segment_override = *segment_register;
+                }
+            }
+        }
+    }
+}
+
 fcml_usize fcml_ifn_asm_non_standard_attribute_size_calculator(
         const fcml_st_entry_point *entry_point, fcml_usize operand_size, fcml_usize l,
         fcml_usize u, fcml_ceh_error *error) {
@@ -643,6 +666,8 @@ static fcml_ceh_error decode_dynamic_operand_size_bcast(
 
     if ((operand_size == FCML_OS_UNDEFINED)
             && FCML_IS_EOS_OPT(encoded_operand_size)) {
+        /* Operand size is optional and does not have to be specified for
+         * the addressing mode. */
         return error;
     }
 
@@ -768,7 +793,8 @@ static fcml_ceh_error decode_dynamic_operand_size(encoding_context *context,
 /**
  * Sets new vector length. If there is one already set it cannot be overridden.
  */
-static fcml_bool set_vector_length(fcml_usize *dest_vector_length, fcml_flags vector_length) {
+static fcml_bool set_vector_length(fcml_usize *dest_vector_length,
+        fcml_flags vector_length) {
     fcml_bool result = FCML_TRUE;
     if (vector_length != FCML_DS_UNDEF) {
         if (*dest_vector_length) {
@@ -1796,6 +1822,10 @@ static fcml_ceh_error operand_encoder_segment_relative_offset(
             /* ASA should be set by optimizer.*/
             error = FCML_CEH_GEC_INVALID_OPPERAND;
         }
+
+        if (!error) {
+        	handle_segment_override(args);
+        }
     }
     return error;
 }
@@ -2118,27 +2148,7 @@ static fcml_ceh_error operand_encoder_rm(operand_encoder_args *args) {
             }
 
             if (!error) {
-                const fcml_st_register *base =
-                        &(operand->address.effective_address.base);
-                const fcml_st_segment_selector *segment_selector =
-                        &(operand->address.segment_selector);
-                const fcml_st_register *segment_register =
-                        &(segment_selector->segment_selector);
-
-                if (segment_register->type == FCML_REG_SEG) {
-                    if (segment_register->type == FCML_REG_SEG) {
-                        /* TODO: Move these conditions to dedicated methods. */
-                        if (!(args->addr_mode_def->instruction_group
-                                & FCML_AMT_BRANCH)
-                                && !(base->type == FCML_REG_GPR
-                                        && (base->reg == FCML_REG_BP
-                                                || base->reg == FCML_REG_SP))) {
-                            if (segment_register->reg != FCML_REG_DS) {
-                                context->segment_override = *segment_register;
-                            }
-                        }
-                    }
-                }
+                handle_segment_override(args);
             }
         }
     }
