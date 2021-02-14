@@ -28,22 +28,22 @@
 /* Register configurations used for 16 bit addressing form decoding */
 
 struct fcml_st_register fcml_modrm_addressing_form_reg_16[8][2] = {
-	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE },
-	        { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE } },
-	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE },
-	        { FCML_REG_GPR, FCML_DS_16, FCML_REG_DI, FCML_FALSE } },
-	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BP, FCML_FALSE },
-	        { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE } },
-	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BP, FCML_FALSE },
-	        { FCML_REG_GPR, FCML_DS_16, FCML_REG_DI, FCML_FALSE } },
-	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE },
-	        { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } },
-	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_DI, FCML_FALSE },
-	        { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } },
-	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BP, FCML_FALSE },
-	        { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } },
-	{ { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE },
-	        { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } }
+    { { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE },
+            { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE } },
+    { { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE },
+            { FCML_REG_GPR, FCML_DS_16, FCML_REG_DI, FCML_FALSE } },
+    { { FCML_REG_GPR, FCML_DS_16, FCML_REG_BP, FCML_FALSE },
+            { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE } },
+    { { FCML_REG_GPR, FCML_DS_16, FCML_REG_BP, FCML_FALSE },
+            { FCML_REG_GPR, FCML_DS_16, FCML_REG_DI, FCML_FALSE } },
+    { { FCML_REG_GPR, FCML_DS_16, FCML_REG_SI, FCML_FALSE },
+            { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } },
+    { { FCML_REG_GPR, FCML_DS_16, FCML_REG_DI, FCML_FALSE },
+            { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } },
+    { { FCML_REG_GPR, FCML_DS_16, FCML_REG_BP, FCML_FALSE },
+            { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } },
+    { { FCML_REG_GPR, FCML_DS_16, FCML_REG_BX, FCML_FALSE },
+            { FCML_REG_UNDEFINED, 0, 0, FCML_FALSE } }
 };
 
 static fcml_uint32_t decode_compressed_disp8(
@@ -265,15 +265,15 @@ static fcml_ceh_error decode_sib(fcml_st_modrm_decoder_context *context,
 
     /* Base register and displacement.*/
     if (f_mod == 0 && FCML_MODRM_SIB_BASE(sib) == 5) {
-
-        address->address_form = FCML_AF_OFFSET;
+        if (f_index == 4) {
+            address->address_form = FCML_AF_OFFSET;
+        }
 
         /* In this case base register doesn't exist.*/
         error = decode_displacement(context,
                 stream, &(effective_address->displacement),
                 &(modrm_details->displacement), &(address->offset), FCML_DS_32,
                 effective_address_size, 0);
-
     } else {
         /* Effective address size affects base register.*/
         effective_address->base.type = FCML_REG_GPR;
