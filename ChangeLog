@@ -32,5 +32,5 @@
 14.02.2021 (1.2.3)
  - bug fix: https://github.com/swojtasiak/fcml-lib/issues/313
  - bug fix: https://github.com/swojtasiak/fcml-lib/issues/314
- - bison upgraded, deprecated directives romoved
+ - bison upgraded, deprecated directives removed
  
