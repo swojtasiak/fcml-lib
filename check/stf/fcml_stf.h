@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2021 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -95,37 +95,46 @@ extern fcml_stf_test_result fcml_gl_stf_test_result;
 
 /* Asserts */
 
-fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert( fcml_bool condition, const fcml_string file, fcml_int line, const fcml_string message );
+fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_str_run_assert(fcml_bool condition,
+        const fcml_string file, fcml_int line, const fcml_string message);
 
 /* Equals.*/
 #define STF_ASSERT_EQUAL(actual, expected)		\
-	( fcml_str_run_assert( (actual) == (expected), __FILE__, __LINE__, ("STF_ASSERT_EQUAL(" #actual "," #expected ")") ) )
+	(fcml_str_run_assert((actual) == (expected), __FILE__, __LINE__, \
+	        ("STF_ASSERT_EQUAL(" #actual "," #expected ")")))
 
 /* Not equal.*/
 #define STF_ASSERT_NOT_EQUAL(actual, expected)		\
-	( fcml_str_run_assert( (actual) != (expected), __FILE__, __LINE__, ("STF_ASSERT_NOT_EQUAL(" #actual "," #expected ")") ) )
+	(fcml_str_run_assert((actual) != (expected), __FILE__, __LINE__, \
+	        ("STF_ASSERT_NOT_EQUAL(" #actual "," #expected ")")))
 
 /* Boolean.*/
 #define STF_ASSERT(condition)		\
-	fcml_str_run_assert( (condition), __FILE__, __LINE__, ("STF_ASSERT(" #condition ")") )
+	fcml_str_run_assert((condition), __FILE__, __LINE__, \
+	        ("STF_ASSERT(" #condition ")"))
 
 /* Not NULL.*/
 #define STF_ASSERT_PTR_NOT_NULL(value)		\
-	fcml_str_run_assert( ( value ) != NULL, __FILE__, __LINE__, ("STF_ASSERT_PTR_NOT_NULL(" #value ")") )
+	fcml_str_run_assert((value) != NULL, __FILE__, __LINE__, \
+	        ("STF_ASSERT_PTR_NOT_NULL(" #value ")") )
 
 /* Not NULL.*/
 #define STF_ASSERT_PTR_NULL(value)		\
-	fcml_str_run_assert( ( value ) == NULL, __FILE__, __LINE__, ("STF_ASSERT_PTR_NULL(" #value ")") )
+	fcml_str_run_assert((value) == NULL, __FILE__, __LINE__, \
+	        ("STF_ASSERT_PTR_NULL(" #value ")"))
 
 /* Fail immediately. */
 #define STF_FAIL(value)		\
-	fcml_str_run_assert( FCML_FALSE, __FILE__, __LINE__, ("STF_FAIL(" #value ")") )
+	fcml_str_run_assert( FCML_FALSE, __FILE__, __LINE__, \
+	        ("STF_FAIL(" #value ")"))
 
 /* String equal.*/
 #define STF_ASSERT_STRING_EQUAL(actual, expected)		\
-	fcml_str_run_assert( (strcmp(actual,expected)==0), __FILE__, __LINE__, ("STF_ASSERT_STRING_EQUAL(" #actual "," #expected ")") )
+	fcml_str_run_assert( (strcmp(actual,expected)==0), __FILE__, __LINE__, \
+	        ("STF_ASSERT_STRING_EQUAL(" #actual "," #expected ")"))
 
-fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_stf_run_tests( const fcml_string test_name, fcml_stf_test_suite **suite );
+fcml_bool LIB_CALL_STF LIB_EXPORT_STF fcml_stf_run_tests(
+        const fcml_string test_name, fcml_stf_test_suite **suite);
 
 #ifdef __cplusplus
 }
