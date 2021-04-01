@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2021 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,26 +38,27 @@
 #include "symbols_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
-	&fctl_si_modrm_encoder,
+    &fctl_si_modrm_encoder,
     &fctl_si_modrm_decoder,
     &fctl_si_stream,
     &fcml_si_coll,
     &fcml_si_utils,
-	&fcml_si_intel_parser,
-	&fcml_si_gas_parser,
-	&fcml_si_mnemonic_parser,
-	&fcml_si_lag_assembler,
-	&fcml_si_env,
-	&fcml_si_ceh,
-	&fcml_si_common_utils,
-	&fctl_si_symbols,
-	FCML_STF_NULL_SUITE
+    &fcml_si_intel_parser,
+    &fcml_si_gas_parser,
+    &fcml_si_mnemonic_parser,
+    &fcml_si_lag_assembler,
+    &fcml_si_env,
+    &fcml_si_ceh,
+    &fcml_si_common_utils,
+    &fctl_si_symbols,
+    FCML_STF_NULL_SUITE
 };
 
 int main(int argc, char **argv) {
 
-	/* Run tests.*/
-	fcml_bool result = fcml_stf_run_tests( FCML_TEXT( "Internal unit tests" ), fcml_arr_suites );
+    /* Run tests.*/
+    fcml_bool result = fcml_stf_run_tests( FCML_TEXT( "Internal unit tests" ),
+            fcml_arr_suites );
 
-	exit( result ? 0 : 1 );
+    exit( result ? 0 : 1 );
 }
