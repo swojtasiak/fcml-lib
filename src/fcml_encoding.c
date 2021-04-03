@@ -2017,7 +2017,7 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
                         FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN),
                            FCML_CEH_MEC_ERROR_ILLEGAL_SEG_REG_OVERRIDE);
                     }
-                } else {
+                } else if(segment_register->type != FCML_REG_UNDEFINED) {
                     /* Wrong register type. */
                     add_error_msg(context->error_container,
                             context->configuration.enable_error_messages,
@@ -2977,6 +2977,7 @@ static void handle_addr_mode_errors(
         addr_mode_errors->error_code = error_code;
         addr_mode_errors->ipp_failed = ipp_failed;
         addr_mode_errors->phase = phase;
+        /* Just to make sure it won't be freed twice.  */
         addr_mode_error_container->errors = NULL;
         addr_mode_error_container->last_error = NULL;
     }
@@ -3116,12 +3117,8 @@ static fcml_ceh_error instruction_encoder_IA(
     context.error_container = &(result->errors);
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
-    fcml_bool inst_changed;
 
     if (addr_modes) {
-        /* Check if there are any operands available. The short form can be
-           used only if there are no operands set. */
-        fcml_bool no_operands = operands_count == 0;
         /* Choose addressing mode.*/
         if (addr_modes->addr_modes_encodings->size) {
             /* Gets first addressing mode available for chosen instruction
@@ -3135,9 +3132,6 @@ static fcml_ceh_error instruction_encoder_IA(
             /* This loop iterates through all available addressing
                modes one by one. */
             while (addr_mode_elem) {
-                /* This flag is used by preprocessor to signal the fact
-                   that instruction has been changed. */
-                inst_changed = FCML_FALSE;
                 error = FCML_CEH_GEC_NO_ERROR;
                 addr_mode_encoding *addr_mode = (addr_mode_encoding*)
                         addr_mode_elem->item;
@@ -3146,6 +3140,9 @@ static fcml_ceh_error instruction_encoder_IA(
                    mode because it is reused. */
                 clean_context(&context);
 
+                /* This flag is used by preprocessor to signal the fact
+                   that instruction has been changed. */
+                fcml_bool inst_changed = FCML_FALSE;
                 /* Call instruction preprocessor again, passing found mnemonic
                    definition this time. Parsed mnemonic can contain some
                    dialect specific information, so we have to provide

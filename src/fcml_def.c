@@ -19,7 +19,9 @@
 
 #include "fcml_def.h"
 
-// These are local constants defined to be used only here in this definition file.
+/* These are local constants defined to be used only here in
+ * this definition file.
+ */
 
 #define F_NONE         0
 #define F_LOCK         1
