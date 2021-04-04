@@ -564,7 +564,7 @@ static void free_errors(struct error_container *errors) {
 }
 
 static fcml_bool has_errors(struct error_container *errors) {
-    return errors->errors.errors != NULL;
+    return errors != NULL && errors->errors.errors != NULL;
 }
 
 static void add_error(struct error_container *errors, fcml_string message,
