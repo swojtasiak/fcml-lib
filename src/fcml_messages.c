@@ -25,7 +25,7 @@
 
 #define FCML_MAX_MESSAGE_LENGTH		512
 
-fcml_string fcml_iarr_messages[] = {
+static fcml_string error_messages[] = {
 	/* Messages for global error codes. */
 	FCML_TEXT("No error."),
 	FCML_TEXT("Out of memory."),
@@ -60,7 +60,7 @@ fcml_string fcml_iarr_messages[] = {
 };
 
 fcml_string fcml_fn_msg_get_message(fcml_en_msg_message_code code) {
-    return fcml_iarr_messages[code];
+    return error_messages[code];
 }
 
 void fcml_fn_msg_add_error_message(fcml_st_ceh_error_container *errors,

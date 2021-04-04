@@ -86,13 +86,27 @@ typedef enum addr_mode_proc_phase {
     AMPP_PROCESS
 } addr_mode_proc_phase;
 
+/* An error container that holds an information whether errors messages are
+   enabled or not. */
+struct error_container {
+    /** True if optional error and warning messages should be collected
+     *  during processing. */
+    fcml_bool enabled;
+    /* A common error container. */
+    fcml_st_ceh_error_container error_container;
+};
+
+/*
+ * This container holds errors collected while all addressing modes are
+ * processed.
+ */
 typedef struct addr_mode_error {
     /** Addressing mode processing failed in the phase: */
     addr_mode_proc_phase phase;
     /** Error code */
     fcml_ceh_error error_code;
     /** Local errors container, dedicated to addressing mode processing. */
-    fcml_st_ceh_error_container addr_mode_errors;
+    struct error_container errors;
     /** Ordinal number of failed instruction part processor. */
     fcml_int ipp_failed;
 } addr_mode_error;
@@ -191,7 +205,7 @@ typedef struct encoding_context {
     /* Arguments for data size calculator. */
     fcml_ptr ds_calculator_args;
     /* Error messages.*/
-    fcml_st_ceh_error_container *error_container;
+    struct error_container error_container;
     /* Number of lastly proceeded instruction part processor. */
     fcml_int last_ipp;
 #ifdef FCML_DEBUG
@@ -231,7 +245,7 @@ struct acceptor_ctx {
     /* Arguments for data size calculator. */
     fcml_ptr ds_calculator_args;
     /* Error messages.*/
-    fcml_st_ceh_error_container *error_container;
+    struct error_container error_container;
     /* Number of lastly proceeded instruction part processor. */
     fcml_int last_ipp;
 #ifdef FCML_DEBUG
@@ -377,6 +391,8 @@ typedef struct ipp_desc {
     ipp_type type;
     fcml_ptr args;
     fcml_fp_env_memory_free_handler args_deallocator;
+    /* True if a given instruction part processor should be also invoked
+     * for short instruction forms. */
     fcml_bool is_short_form_supported;
 } ipp_desc;
 
@@ -536,12 +552,27 @@ static fcml_string debug_print_size_flags(
 /* Error handling helper functions */
 /***********************************/
 
-static void add_error_msg(fcml_st_ceh_error_container *error_container,
-        fcml_bool enable_error_messages, fcml_string message,
+static void move_errors(struct error_container *destination,
+        struct error_container *source) {
+    fcml_fn_ceh_move_errors(&destination->error_container,
+            &source->error_container);
+}
+
+static void free_errors(struct error_container *errors) {
+    if (errors) {
+        fcml_fn_ceh_free_errors_only(&errors->error_container);
+    }
+}
+
+static fcml_bool has_errors(struct error_container *errors) {
+    return errors->error_container.errors != NULL;
+}
+
+static void add_error(struct error_container *errors, fcml_string message,
         fcml_ceh_error error_code) {
-    if (enable_error_messages) {
+    if (errors->enabled) {
         fcml_bool add_error = FCML_TRUE;
-        fcml_st_ceh_error_info *current = error_container->errors;
+        fcml_st_ceh_error_info *current = errors->error_container.errors;
         // Only one error message is currently allowed.
         while (current) {
             if (current->code == FCML_EN_CEH_EL_ERROR) {
@@ -551,7 +582,7 @@ static void add_error_msg(fcml_st_ceh_error_container *error_container,
             current = current->next_error;
         }
         if (add_error) {
-            fcml_fn_ceh_add_error(error_container, message, error_code,
+            fcml_fn_ceh_add_error(&errors->error_container, message, error_code,
                     FCML_EN_CEH_EL_ERROR);
         }
     }
@@ -1616,8 +1647,7 @@ static fcml_ceh_error accept_segment_register(
                     FCML_SEG_GET_REG(encoded_segment_register)) {
                 if (!(encoded_segment_register & FCML_SEG_ALLOW_OVERRIDE)) {
                     /* Register can not be overridden. */
-                    add_error_msg(context->error_container,
-                            context->configuration.enable_error_messages,
+                    add_error(&context->error_container,
                             fcml_fn_msg_get_message(
                                 FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN),
                             FCML_CEH_MEC_ERROR_ILLEGAL_SEG_REG_OVERRIDE);
@@ -1626,8 +1656,7 @@ static fcml_ceh_error accept_segment_register(
             }
         } else {
             /* Wrong register type, segment register should be used. */
-            add_error_msg(context->error_container,
-                    context->configuration.enable_error_messages,
+            add_error(&context->error_container,
                     fcml_fn_msg_get_message(
                             FCML_MC_SEGMENT_WRONG_REGISTER_TYPE_SEG),
                     FCML_CEH_MEC_ERROR_INVALID_REGISTER_TYPE_SEG);
@@ -2011,16 +2040,14 @@ static fcml_ceh_error operand_acceptor_rm(operand_acceptor_args *args) {
                     }
                     if (error) {
                         /* Segment register can not be overridden. */
-                        add_error_msg(context->error_container,
-                                context->configuration.enable_error_messages,
+                        add_error(&context->error_container,
                                 fcml_fn_msg_get_message(
                         FCML_MC_SEGMENT_REGISTER_CAN_NOT_BE_OVERRIDDEN),
                            FCML_CEH_MEC_ERROR_ILLEGAL_SEG_REG_OVERRIDE);
                     }
                 } else if(segment_register->type != FCML_REG_UNDEFINED) {
                     /* Wrong register type. */
-                    add_error_msg(context->error_container,
-                            context->configuration.enable_error_messages,
+                    add_error(&context->error_container,
                             fcml_fn_msg_get_message(
                                FCML_MC_SEGMENT_WRONG_REGISTER_TYPE_SEG),
                           FCML_CEH_MEC_ERROR_INVALID_REGISTER_TYPE_SEG);
@@ -2354,8 +2381,7 @@ static fcml_ceh_error operand_acceptor_pseudo_op(operand_acceptor_args *args) {
             return FCML_CEH_GEC_INVALID_OPPERAND;
         }
         if (destination.int8 & (~pseudo_op_args->mask)) {
-            add_error_msg(context->error_container,
-                    context->configuration.enable_error_messages,
+            add_error(&context->error_container,
                     fcml_fn_msg_get_message(
                             FCML_MC_SEGMENT_INVALID_PSEUDO_OPCODE_IMM),
                     FCML_CEH_MEC_ERROR_INVALID_PSEUDO_OPCODE_VALUE);
@@ -2942,53 +2968,18 @@ static void prepare_optimizer_processing_details(
     }
 }
 
-static void handle_addr_mode_errors(
-        addr_mode_error *addr_mode_errors,
-        fcml_st_ceh_error_container *addr_mode_error_container,
-        fcml_ceh_error error_code, fcml_int ipp_failed,
-        addr_mode_proc_phase phase) {
-
-    fcml_bool choose_error = FCML_FALSE;
-
-    /* Priorities are as follows: phase, number of failed ipp, error codes. */
-
-    /* Phase. */
-    if (phase == addr_mode_errors->phase) {
-        /* IPP ordinal. */
-        if (ipp_failed == addr_mode_errors->ipp_failed) {
-            /* Error code. */
-            fcml_ceh_error cec = addr_mode_errors->error_code;
-            if (cec == FCML_CEH_GEC_NO_ERROR
-                    || (cec == FCML_CEH_GEC_INVALID_OPPERAND
-                            && (cec != error_code))) {
-                choose_error = FCML_TRUE;
-            }
-        } else if (ipp_failed > addr_mode_errors->ipp_failed) {
-            choose_error = FCML_TRUE;
-        }
-    } else if (phase > addr_mode_errors->phase) {
-        choose_error = FCML_TRUE;
-    }
-
-    if (choose_error) {
-        /* Treat current error as most important one. */
-        fcml_fn_ceh_free_errors_only(&(addr_mode_errors->addr_mode_errors));
-        addr_mode_errors->addr_mode_errors = *addr_mode_error_container;
-        addr_mode_errors->error_code = error_code;
-        addr_mode_errors->ipp_failed = ipp_failed;
-        addr_mode_errors->phase = phase;
-        /* Just to make sure it won't be freed twice.  */
-        addr_mode_error_container->errors = NULL;
-        addr_mode_error_container->last_error = NULL;
-    }
-
-}
-
 static struct acceptor_ctx prep_acceptor_ctx(encoding_context *context) {
     struct acceptor_optimizer_ctx optimizer_ctx = {
         context->optimizer_processing_details.allowed_eosa,
         context->optimizer_processing_details.allowed_easa,
         context->optimizer_processing_details.vector_length
+    };
+    /* This error container is here to collect errors from acceptors
+     * invoked for only one addressing mode being considered by
+     * the processor. */
+    struct error_container ctx_error_container = {
+        context->assembler_context->configuration.enable_error_messages,
+        { NULL, NULL }
     };
     struct acceptor_ctx acceptor_ctx = {
         context->assembler_context->configuration,
@@ -2998,9 +2989,49 @@ static struct acceptor_ctx prep_acceptor_ctx(encoding_context *context) {
         optimizer_ctx,
         context->ds_calculator,
         context->ds_calculator_args,
-        context->error_container
+        ctx_error_container
     };
     return acceptor_ctx;
+}
+
+static void handle_addr_mode_errors(
+        addr_mode_error *addr_modes_errors,
+        struct error_container *local_errors,
+        fcml_ceh_error error_code, fcml_int ipp_failed,
+        addr_mode_proc_phase phase) {
+
+    fcml_bool choose_error = FCML_FALSE;
+
+    /* Priorities are as follows: phase, number of failed ipp, error codes. */
+
+    /* Phase. */
+    if (phase == addr_modes_errors->phase) {
+        /* IPP ordinal. */
+        if (ipp_failed == addr_modes_errors->ipp_failed) {
+            /* Error code. */
+            fcml_ceh_error cec = addr_modes_errors->error_code;
+            if (cec == FCML_CEH_GEC_NO_ERROR
+                    || (cec == FCML_CEH_GEC_INVALID_OPPERAND
+                            && (cec != error_code))) {
+                choose_error = FCML_TRUE;
+            }
+        } else if (ipp_failed > addr_modes_errors->ipp_failed) {
+            choose_error = FCML_TRUE;
+        }
+    } else if (phase > addr_modes_errors->phase) {
+        choose_error = FCML_TRUE;
+    }
+
+    if (choose_error) {
+        /* Move all errors from the local errors container prepared for the
+         * currently processed addressing mode to the one shared by all the
+         * addressing modes being considered.
+         */
+        move_errors(&addr_modes_errors->errors, local_errors);
+        addr_modes_errors->error_code = error_code;
+        addr_modes_errors->ipp_failed = ipp_failed;
+        addr_modes_errors->phase = phase;
+    }
 }
 
 static fcml_ceh_error encode_addressing_mode_core(
@@ -3010,13 +3041,6 @@ static fcml_ceh_error encode_addressing_mode_core(
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     const fcml_st_assembler_context *asm_ctx = context->assembler_context;
-
-    /* Just to recreate it after the processing. */
-    fcml_st_ceh_error_container *global_errors = context->error_container;
-
-    /* Errors container for current processing. */
-    fcml_st_ceh_error_container addr_mode_error_container = { 0 };
-    context->error_container = &addr_mode_error_container;
 
     /* Check if addressing mode matches the hints, if there are any. */
     if (!context->instruction->hints || accept_instruction_hints(
@@ -3064,19 +3088,17 @@ static fcml_ceh_error encode_addressing_mode_core(
         } else {
             /* Addressing mode hasn't been proceeded, so handle errors. */
             handle_addr_mode_errors(addr_mode_errors,
-                    &addr_mode_error_container, error, acceptor_ctx.last_ipp,
+                    &acceptor_ctx.error_container, error, acceptor_ctx.last_ipp,
                     AMPP_PROCESS);
         }
+
+        /* If there are any locally collected errors left (haven't been moved
+         * to the shared container) just free them.
+         * See: handle_addr_mode_errors. */
+        free_errors(&acceptor_ctx.error_container);
     } else {
         FCML_TRACE_MSG("Addressing mode ignored due to hints incompatibility.");
     }
-
-    /* Free errors stored in local container. See:
-       handle_addr_mode_errors function for more details
-       about how they are handled. */
-    fcml_fn_ceh_free_errors_only(&addr_mode_error_container);
-
-    context->error_container = global_errors;
 
     return error;
 }
@@ -3105,22 +3127,27 @@ static fcml_ceh_error instruction_encoder_IA(
     /* Make a local copy of the instruction, because it still can be
        changed by the preprocessor. */
     fcml_st_instruction tmp_instruction = *instruction;
-    /* Container for errors related to addressing mode processing. */
-    addr_mode_error addr_mode_errors = { AMPP_UNDEFINED };
     fcml_usize operands_count = count_operands(&tmp_instruction);
+    fcml_bool errors_enabled = asm_context->configuration.enable_error_messages;
 
     encoding_context context = { 0 };
     context.assembler_context = asm_context;
     context.instruction = &tmp_instruction;
-    /* Global errors container is set directly to error container
-     * from results. */
-    context.error_container = &(result->errors);
+    /* Share the global errors container in order to extend it instead of
+     * rewriting it with the local errors only. */
+    context.error_container.enabled = errors_enabled;
+    context.error_container.error_container = result->errors;
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     if (addr_modes) {
         /* Choose addressing mode.*/
         if (addr_modes->addr_modes_encodings->size) {
+            /* Container for errors related to addressing modes processing.
+             * It's shared by all the addressing modes. */
+            addr_mode_error addr_mode_errors = { AMPP_UNDEFINED,
+                   FCML_CEH_GEC_NO_ERROR, { errors_enabled, {NULL} }, 0};
+
             /* Gets first addressing mode available for chosen instruction
                definition. */
             fcml_st_coll_list_element *addr_mode_elem =
@@ -3187,11 +3214,9 @@ static fcml_ceh_error instruction_encoder_IA(
             }
             /* Addressing modes related errors have higher priority than
                any others. */
-            if (addr_mode_errors.addr_mode_errors.errors) {
-                /* There might be something collected before addressing mode
-                   processing took place, so it has to be free'd. */
-                fcml_fn_ceh_free_errors_only(context.error_container);
-                *(context.error_container) = addr_mode_errors.addr_mode_errors;
+            if (has_errors(&addr_mode_errors.errors)) {
+                /* Move collected errors to the global context. */
+                move_errors(&context.error_container, &addr_mode_errors.errors);
             }
             /* Set current error code to the best error collected while
                processing addressing modes. */
@@ -3212,7 +3237,8 @@ static fcml_ceh_error instruction_encoder_IA(
                 /* Assembling process has succeed so free errors but leave
                    warning as they are. */
                 fcml_fn_ceh_free_errors_only_with_level(
-                        context.error_container, FCML_EN_CEH_EL_ERROR);
+                        &context.error_container.error_container,
+                        FCML_EN_CEH_EL_ERROR);
                 /* Last error code should be also cleaned. */
                 error = FCML_CEH_GEC_NO_ERROR;
             }
@@ -3246,6 +3272,9 @@ static fcml_ceh_error instruction_encoder_IA(
             error = FCML_CEH_GEC_INTERNAL_ERROR;
         }
     }
+
+    /* Make sure collected errors have been copied to the result. */
+    result->errors = context.error_container.error_container;
 
     return error;
 }
@@ -3710,8 +3739,7 @@ static fcml_ceh_error ipp_hle_prefixes_prefix_encoder(ipp_encoder_args *args) {
                 instruction_part->code_length = 1;
                 found = FCML_TRUE;
             } else {
-                add_error_msg(context->error_container,
-                        context->assembler_context->configuration.enable_error_messages,
+                add_error(&context->error_container,
                         fcml_fn_msg_get_message(
                                 FCML_MC_SEGMENT_HLE_PREFIXES_NOT_ALLOWED),
                         FCML_CEH_MEC_ERROR_HLE_PREFIX_NOT_ALLOWED);
@@ -3721,8 +3749,7 @@ static fcml_ceh_error ipp_hle_prefixes_prefix_encoder(ipp_encoder_args *args) {
         if (context->instruction->prefixes & FCML_PREFIX_XRELEASE) {
             if (found) {
                 /* Only one HLA prefix is allowed for instruction.*/
-                add_error_msg(context->error_container,
-                        context->assembler_context->configuration.enable_error_messages,
+                add_error(&context->error_container,
                         fcml_fn_msg_get_message(
                                 FCML_MC_SEGMENT_HLE_MORE_THAN_ONE_PREFIX),
                         FCML_CEH_MEC_ERROR_HLE_MORE_THAN_ONE_PREFIX);
@@ -3733,8 +3760,7 @@ static fcml_ceh_error ipp_hle_prefixes_prefix_encoder(ipp_encoder_args *args) {
                 instruction_part->code[0] = 0xF3;
                 instruction_part->code_length = 1;
             } else {
-                add_error_msg(context->error_container,
-                        context->assembler_context->configuration.enable_error_messages,
+                add_error(&context->error_container,
                         fcml_fn_msg_get_message(
                                 FCML_MC_SEGMENT_HLE_PREFIXES_NOT_ALLOWED),
                         FCML_CEH_MEC_ERROR_HLE_PREFIX_NOT_ALLOWED);
@@ -4186,8 +4212,7 @@ static fcml_ceh_error ipp_VEX_XOP_prefix_encoder(ipp_encoder_args *args) {
 
         /* VEX/XOP supports 128/256 vector length only. */
         if (vector_length > FCML_DS_256) {
-            add_error_msg(context->error_container,
-                    context->assembler_context->configuration.enable_error_messages,
+            add_error(&context->error_container,
                     fcml_fn_msg_get_message(
                             FCML_MC_CEH_GEC_INVALID_OPPERAND_SIZE),
                             FCML_CEH_MEC_ERROR_INVALID_VECTOR_LENGTH);
