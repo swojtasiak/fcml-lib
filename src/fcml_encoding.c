@@ -93,7 +93,7 @@ struct error_container {
      *  during processing. */
     fcml_bool enabled;
     /* A common error container. */
-    fcml_st_ceh_error_container error_container;
+    fcml_st_ceh_error_container errors;
 };
 
 /*
@@ -205,7 +205,7 @@ typedef struct encoding_context {
     /* Arguments for data size calculator. */
     fcml_ptr ds_calculator_args;
     /* Error messages.*/
-    struct error_container error_container;
+    struct error_container errors;
     /* Number of lastly proceeded instruction part processor. */
     fcml_int last_ipp;
 #ifdef FCML_DEBUG
@@ -554,25 +554,24 @@ static fcml_string debug_print_size_flags(
 
 static void move_errors(struct error_container *destination,
         struct error_container *source) {
-    fcml_fn_ceh_move_errors(&destination->error_container,
-            &source->error_container);
+    fcml_fn_ceh_move_errors(&destination->errors, &source->errors);
 }
 
 static void free_errors(struct error_container *errors) {
     if (errors) {
-        fcml_fn_ceh_free_errors_only(&errors->error_container);
+        fcml_fn_ceh_free_errors_only(&errors->errors);
     }
 }
 
 static fcml_bool has_errors(struct error_container *errors) {
-    return errors->error_container.errors != NULL;
+    return errors->errors.errors != NULL;
 }
 
 static void add_error(struct error_container *errors, fcml_string message,
         fcml_ceh_error error_code) {
     if (errors->enabled) {
         fcml_bool add_error = FCML_TRUE;
-        fcml_st_ceh_error_info *current = errors->error_container.errors;
+        fcml_st_ceh_error_info *current = errors->errors.errors;
         // Only one error message is currently allowed.
         while (current) {
             if (current->code == FCML_EN_CEH_EL_ERROR) {
@@ -582,7 +581,7 @@ static void add_error(struct error_container *errors, fcml_string message,
             current = current->next_error;
         }
         if (add_error) {
-            fcml_fn_ceh_add_error(&errors->error_container, message, error_code,
+            fcml_fn_ceh_add_error(&errors->errors, message, error_code,
                     FCML_EN_CEH_EL_ERROR);
         }
     }
@@ -3135,8 +3134,8 @@ static fcml_ceh_error instruction_encoder_IA(
     context.instruction = &tmp_instruction;
     /* Share the global errors container in order to extend it instead of
      * rewriting it with the local errors only. */
-    context.error_container.enabled = errors_enabled;
-    context.error_container.error_container = result->errors;
+    context.errors.enabled = errors_enabled;
+    context.errors.errors = result->errors;
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
@@ -3216,7 +3215,7 @@ static fcml_ceh_error instruction_encoder_IA(
                any others. */
             if (has_errors(&addr_mode_errors.errors)) {
                 /* Move collected errors to the global context. */
-                move_errors(&context.error_container, &addr_mode_errors.errors);
+                move_errors(&context.errors, &addr_mode_errors.errors);
             }
             /* Set current error code to the best error collected while
                processing addressing modes. */
@@ -3236,8 +3235,7 @@ static fcml_ceh_error instruction_encoder_IA(
             } else {
                 /* Assembling process has succeed so free errors but leave
                    warning as they are. */
-                fcml_fn_ceh_free_errors_only_with_level(
-                        &context.error_container.error_container,
+                fcml_fn_ceh_free_errors_only_with_level(&context.errors.errors,
                         FCML_EN_CEH_EL_ERROR);
                 /* Last error code should be also cleaned. */
                 error = FCML_CEH_GEC_NO_ERROR;
@@ -3274,7 +3272,7 @@ static fcml_ceh_error instruction_encoder_IA(
     }
 
     /* Make sure collected errors have been copied to the result. */
-    result->errors = context.error_container.error_container;
+    result->errors = context.errors.errors;
 
     return error;
 }
@@ -3739,7 +3737,7 @@ static fcml_ceh_error ipp_hle_prefixes_prefix_encoder(ipp_encoder_args *args) {
                 instruction_part->code_length = 1;
                 found = FCML_TRUE;
             } else {
-                add_error(&context->error_container,
+                add_error(&context->errors,
                         fcml_fn_msg_get_message(
                                 FCML_MC_SEGMENT_HLE_PREFIXES_NOT_ALLOWED),
                         FCML_CEH_MEC_ERROR_HLE_PREFIX_NOT_ALLOWED);
@@ -3749,7 +3747,7 @@ static fcml_ceh_error ipp_hle_prefixes_prefix_encoder(ipp_encoder_args *args) {
         if (context->instruction->prefixes & FCML_PREFIX_XRELEASE) {
             if (found) {
                 /* Only one HLA prefix is allowed for instruction.*/
-                add_error(&context->error_container,
+                add_error(&context->errors,
                         fcml_fn_msg_get_message(
                                 FCML_MC_SEGMENT_HLE_MORE_THAN_ONE_PREFIX),
                         FCML_CEH_MEC_ERROR_HLE_MORE_THAN_ONE_PREFIX);
@@ -3760,7 +3758,7 @@ static fcml_ceh_error ipp_hle_prefixes_prefix_encoder(ipp_encoder_args *args) {
                 instruction_part->code[0] = 0xF3;
                 instruction_part->code_length = 1;
             } else {
-                add_error(&context->error_container,
+                add_error(&context->errors,
                         fcml_fn_msg_get_message(
                                 FCML_MC_SEGMENT_HLE_PREFIXES_NOT_ALLOWED),
                         FCML_CEH_MEC_ERROR_HLE_PREFIX_NOT_ALLOWED);
@@ -4212,7 +4210,7 @@ static fcml_ceh_error ipp_VEX_XOP_prefix_encoder(ipp_encoder_args *args) {
 
         /* VEX/XOP supports 128/256 vector length only. */
         if (vector_length > FCML_DS_256) {
-            add_error(&context->error_container,
+            add_error(&context->errors,
                     fcml_fn_msg_get_message(
                             FCML_MC_CEH_GEC_INVALID_OPPERAND_SIZE),
                             FCML_CEH_MEC_ERROR_INVALID_VECTOR_LENGTH);
