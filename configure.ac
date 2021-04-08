@@ -114,6 +114,13 @@ AS_CASE(
 	)]
 )
 
+# Check whether the compiler can hide symbols
+VISIBILITY_CFLAGS=""
+AS_COMPILER_FLAG([-fvisibility=hidden], [VISIBILITY_CFLAGS="-fvisibility=hidden"])
+AC_SUBST(VISIBILITY_CFLAGS)
+
+CFLAGS="$CFLAGS $VISIBILITY_CFLAGS"
+
 AC_OUTPUT
 echo "***************************************************
 ${PACKAGE_NAME} version ${PACKAGE_VERSION}

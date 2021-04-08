@@ -53,7 +53,7 @@
 #endif
 
 #ifndef LIB_EXPORT
-#define LIB_EXPORT
+#define LIB_EXPORT __attribute__((visibility("default")))
 #endif
 
 #ifndef LIB_CALL

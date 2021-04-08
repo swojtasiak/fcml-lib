@@ -70,7 +70,7 @@
 #define ADDR_FORM	FCML_OM_32_BIT
 #endif
 
-char HELP[] = "Optional arguments:\n"
+__attribute__((visibility("default"))) char HELP[] = "Optional arguments:\n"
         " code - Print machine code before mnemonic.\n"
         " intel - Use intel dialect.\n"
         " gas - Use GNU assembler dialect (AT&T).\n"
@@ -105,7 +105,7 @@ typedef struct hsdis_app {
 void parse_options(hsdis_app *app);
 void prepare_render_config(fcml_st_render_config *config, hsdis_app *app);
 
-void* HSDIS_CALL decode_instructions(void *start, void *end,
+__attribute__((visibility("default"))) void* HSDIS_CALL decode_instructions(void *start, void *end,
         jvm_event_callback event_callback, void *event_stream,
         jvm_printf_callback printf_callback, void *printf_stream,
         const char *options) {
@@ -238,7 +238,7 @@ void* HSDIS_CALL decode_instructions(void *start, void *end,
 
 }
 
-void prepare_render_config(fcml_st_render_config *config, hsdis_app *app) {
+__attribute__((visibility("default"))) void prepare_render_config(fcml_st_render_config *config, hsdis_app *app) {
 
     config->render_flags = ( FCML_REND_FLAG_RENDER_INDIRECT_HINT
             | FCML_REND_FLAG_RENDER_ABS_HINT |
@@ -271,7 +271,7 @@ void prepare_render_config(fcml_st_render_config *config, hsdis_app *app) {
     }
 }
 
-void parse_options(hsdis_app *app) {
+__attribute__((visibility("default"))) void parse_options(hsdis_app *app) {
 
 #ifdef FCML_MSCC
 	/* Intel dialect by default for Microsoft compilers. */
