@@ -49,7 +49,7 @@ typedef struct fcml_st_parser_config {
      */
     fcml_bool ignore_undefined_symbols;
     /** Disables symbols support.
-     * It set to true every defined label will cause an error.
+     * If set to true every defined label will cause an error.
      */
     fcml_bool disable_symbols_declaration;
     /** Set to true in order to allow overriding existing labels.
