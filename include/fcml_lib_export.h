@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2021 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,7 @@
  * in fact you should define the symbol before including anything from the FCML library.
  * This declaration can be omitted as long as you use undecorated symbol names.
  *
- * @copyright Copyright (C) 2010-2020 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2021 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 
@@ -53,7 +53,11 @@
 #endif
 
 #ifndef LIB_EXPORT
+#ifdef SUPPORT_VISIBILITY_HIDDEN
 #define LIB_EXPORT __attribute__((visibility("default")))
+#else
+#define LIB_EXPORT
+#endif
 #endif
 
 #ifndef LIB_CALL

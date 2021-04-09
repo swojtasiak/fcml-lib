@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([fcml], [1.2.3], [bugs@fcml-lib.com])
+AC_INIT([fcml], [1.2.3], [slawomir.wojtasiak@fcml-lib.com])
 AM_INIT_AUTOMAKE
 LT_PREREQ([2.2])
 LT_INIT[win32-dll]
@@ -118,6 +118,9 @@ AS_CASE(
 VISIBILITY_CFLAGS=""
 AS_COMPILER_FLAG([-fvisibility=hidden], [VISIBILITY_CFLAGS="-fvisibility=hidden"])
 AC_SUBST(VISIBILITY_CFLAGS)
+
+AS_IF([test -n "$VISIBILITY_CFLAGS"],
+    [AC_DEFINE([SUPPORT_VISIBILITY_HIDDEN], [1], [Support for -fvisibility=hidden flag.])])
 
 CFLAGS="$CFLAGS $VISIBILITY_CFLAGS"
 

@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2021 Slawomir Wojtasiak
  * 
  * This piece of software is available under LGPL or Apache License.
  * 
@@ -29,7 +29,7 @@
  *
  * Apache License:
  * 
- * Copyright 2010-2019 Sławomir Wojtasiak
+ * Copyright 2010-2021 Sławomir Wojtasiak
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,13 +64,12 @@
 #if _M_X64 || __x86_64__
 #define MACH_ARCH	"amd64"
 #define ADDR_FORM	FCML_OM_64_BIT
-/* 64-bit */
 #else
 #define MACH_ARCH	"i386"
 #define ADDR_FORM	FCML_OM_32_BIT
 #endif
 
-__attribute__((visibility("default"))) char HELP[] = "Optional arguments:\n"
+static char HELP[] = "Optional arguments:\n"
         " code - Print machine code before mnemonic.\n"
         " intel - Use intel dialect.\n"
         " gas - Use GNU assembler dialect (AT&T).\n"
@@ -102,10 +101,10 @@ typedef struct hsdis_app {
     hdis_config config;
 } hsdis_app;
 
-void parse_options(hsdis_app *app);
-void prepare_render_config(fcml_st_render_config *config, hsdis_app *app);
+static void parse_options(hsdis_app *app);
+static void prepare_render_config(fcml_st_render_config *config, hsdis_app *app);
 
-__attribute__((visibility("default"))) void* HSDIS_CALL decode_instructions(void *start, void *end,
+void* HSDIS_CALL decode_instructions(void *start, void *end,
         jvm_event_callback event_callback, void *event_stream,
         jvm_printf_callback printf_callback, void *printf_stream,
         const char *options) {
@@ -238,7 +237,7 @@ __attribute__((visibility("default"))) void* HSDIS_CALL decode_instructions(void
 
 }
 
-__attribute__((visibility("default"))) void prepare_render_config(fcml_st_render_config *config, hsdis_app *app) {
+static void prepare_render_config(fcml_st_render_config *config, hsdis_app *app) {
 
     config->render_flags = ( FCML_REND_FLAG_RENDER_INDIRECT_HINT
             | FCML_REND_FLAG_RENDER_ABS_HINT |
@@ -271,7 +270,7 @@ __attribute__((visibility("default"))) void prepare_render_config(fcml_st_render
     }
 }
 
-__attribute__((visibility("default"))) void parse_options(hsdis_app *app) {
+static void parse_options(hsdis_app *app) {
 
 #ifdef FCML_MSCC
 	/* Intel dialect by default for Microsoft compilers. */
@@ -319,5 +318,4 @@ __attribute__((visibility("default"))) void parse_options(hsdis_app *app) {
 
         current = strchr(current, ',');
     }
-
 }

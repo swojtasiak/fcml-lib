@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2021 Slawomir Wojtasiak
  * 
  * This piece of software is available under LGPL or Apache License.
  * 
@@ -29,7 +29,7 @@
  *
  * Apache License:
  * 
- * Copyright 2010-2017 Sławomir Wojtasiak
+ * Copyright 2010-2021 Sławomir Wojtasiak
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,8 +58,14 @@
 #endif
 #endif
 
+/* If HSDIS_API is not defined here try to use the standard exporting
+ * macro from fcml-lib. */
 #ifndef HSDIS_API
+#ifdef LIB_EXPORT
+#define HSDIS_API LIB_EXPORT
+#else
 #define HSDIS_API
+#endif
 #endif
 
 #ifdef FCML_MSCC
