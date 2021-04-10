@@ -3,10 +3,11 @@ jobs:
     docker:
       - image: ubuntu:20.04
     steps:
-      - checkout
       - run: |
           apt-get update -qq
           apt-get install build-essential autoconf libtool-bin flex bison -y
+      - checkout
+      - run: |
           autoreconf -i
           ./configure
           make && make check
