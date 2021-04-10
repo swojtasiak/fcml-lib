@@ -35,6 +35,4 @@ test-driver
 *.opendb
 *.db-shm
 *.db-wal
-m4/*.m4
-!m4/as-compiler-flag.m4
 
