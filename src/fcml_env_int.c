@@ -72,31 +72,31 @@ fcml_ptr fcml_fn_env_memory_alloc_clear(fcml_usize size) {
     return ptr;
 }
 
-inline fcml_ptr fcml_fn_env_memory_alloc(fcml_usize size) {
+fcml_ptr fcml_fn_env_memory_alloc(fcml_usize size) {
     return memory_alloc(size);
 }
 
-inline fcml_ptr fcml_fn_env_memory_realloc(fcml_ptr ptr, fcml_usize size) {
+fcml_ptr fcml_fn_env_memory_realloc(fcml_ptr ptr, fcml_usize size) {
     return memory_realloc(ptr, size);
 }
 
-inline void fcml_fn_env_memory_copy(fcml_ptr dest, const fcml_ptr src,
+void fcml_fn_env_memory_copy(fcml_ptr dest, const fcml_ptr src,
         fcml_usize len) {
     memcpy(dest, src, (fcml_usize) len);
 }
 
-inline void fcml_fn_env_memory_clear(fcml_ptr src, fcml_usize len) {
+void fcml_fn_env_memory_clear(fcml_ptr src, fcml_usize len) {
     memset(src, 0, (fcml_usize) len);
 }
 
-inline fcml_bool fcml_fn_env_memory_cmp(const fcml_ptr src1,
+fcml_bool fcml_fn_env_memory_cmp(const fcml_ptr src1,
         const fcml_ptr src2, fcml_usize len) {
     return strncmp((char*) src1, (char*) src2, len) == 0 ?
     FCML_TRUE :
                                                            FCML_FALSE;
 }
 
-inline void fcml_fn_env_memory_free(fcml_ptr ptr) {
+void fcml_fn_env_memory_free(fcml_ptr ptr) {
     memory_free(ptr);
 }
 
@@ -120,20 +120,20 @@ fcml_bool fcml_fn_env_str_strblank(const fcml_string str) {
     return FCML_TRUE;
 }
 
-inline fcml_usize fcml_fn_env_str_strlen(const fcml_string str) {
+fcml_usize fcml_fn_env_str_strlen(const fcml_string str) {
     return (fcml_usize) strlen(str);
 }
 
-inline void fcml_fn_env_str_strcpy( fcml_string dst, const fcml_string src) {
+void fcml_fn_env_str_strcpy( fcml_string dst, const fcml_string src) {
     strcpy(dst, src);
 }
 
-inline fcml_bool fcml_fn_env_str_strcmp(const fcml_string src1,
+fcml_bool fcml_fn_env_str_strcmp(const fcml_string src1,
         const fcml_string src2) {
     return !strcmp(src1, src2);
 }
 
-inline void fcml_fn_env_str_strncpy( fcml_string dst, const fcml_string src,
+void fcml_fn_env_str_strncpy( fcml_string dst, const fcml_string src,
         fcml_usize len) {
     strncpy(dst, src, (fcml_usize) len);
 }
@@ -147,21 +147,21 @@ fcml_string fcml_fn_env_str_strdup(const fcml_string str) {
     return new_str;
 }
 
-inline fcml_string fcml_fn_env_str_stralloc(fcml_usize len) {
+fcml_string fcml_fn_env_str_stralloc(fcml_usize len) {
     return (fcml_string) fcml_fn_env_memory_alloc_clear(len);
 }
 
-inline void fcml_fn_env_str_strclr( fcml_string str) {
+void fcml_fn_env_str_strclr( fcml_string str) {
     str[0] = '\0';
 }
 
-inline void fcml_fn_env_str_strfree( fcml_string str) {
+void fcml_fn_env_str_strfree( fcml_string str) {
     if (str) {
         fcml_fn_env_memory_free(str);
     }
 }
 
-inline void fcml_fn_env_str_vsnprintf( fcml_string buffer, fcml_usize maxlen,
+void fcml_fn_env_str_vsnprintf( fcml_string buffer, fcml_usize maxlen,
         const fcml_string format, va_list args) {
     vsnprintf(buffer, (fcml_usize) maxlen, format, args);
 }
@@ -174,11 +174,11 @@ fcml_string format, ...) {
     va_end(args);
 }
 
-inline fcml_bool fcml_fn_env_is_alpha(fcml_char c) {
+fcml_bool fcml_fn_env_is_alpha(fcml_char c) {
     return isalpha(c);
 }
 
-inline fcml_bool fcml_fn_env_is_digit(fcml_char c) {
+fcml_bool fcml_fn_env_is_digit(fcml_char c) {
     return isdigit(c);
 }
 

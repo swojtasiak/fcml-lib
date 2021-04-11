@@ -180,6 +180,7 @@
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>fcml.def</ModuleDefinitionFile>
@@ -217,6 +218,7 @@ copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformTarget)\$(C
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>fcml.def</ModuleDefinitionFile>
@@ -250,6 +252,7 @@ copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformTarget)\$(C
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>fcml.def</ModuleDefinitionFile>
@@ -288,6 +291,7 @@ copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformTarget)\$(C
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>fcml.def</ModuleDefinitionFile>
@@ -323,6 +327,7 @@ copy $(TargetDir)\$(TargetName).lib $(SolutionDir)\..\dist\$(PlatformTarget)\$(C
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
@@ -356,6 +361,7 @@ copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PostBuildEvent>
       <Command>mkdir $(SolutionDir)\..\dist
@@ -385,6 +391,7 @@ copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
@@ -419,6 +426,7 @@ copy $(TargetPath) $(SolutionDir)\..\dist\$(PlatformTarget)\$(ConfigurationName)
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4005;4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PostBuildEvent>
       <Command>mkdir $(SolutionDir)\..\dist
