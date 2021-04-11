@@ -29,8 +29,12 @@
 26.04.2020 (1.2.2)
  - some c99 features were removed in order to continue with VS support
  - support for vs2015 removed
-14.02.2021 (1.2.3)
+11.04.2021 (1.2.3)
  - bug fix: https://github.com/swojtasiak/fcml-lib/issues/313
  - bug fix: https://github.com/swojtasiak/fcml-lib/issues/314
+ - bug fix: https://github.com/swojtasiak/fcml-lib/issues/318
  - bison upgraded, deprecated directives removed
- 
+ - symbols are not exported by default anymore
+ - the error handling refactored a bit
+ - lots of code cleanups
+
