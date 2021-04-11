@@ -124,7 +124,7 @@ int main(int argc, char **argv) {
 	if( error ) {
 		fcml_fn_dialect_free( dialect_intel );
 		fcml_fn_dialect_free( dialect_gas );
-		printf("Can not initialize INTEL assembler.\n");
+		printf("Cannot initialize INTEL assembler.\n");
 		exit(1);
 	}
 
@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
 		fcml_fn_assembler_free( assembler_intel );
 		fcml_fn_dialect_free( dialect_intel );
 		fcml_fn_dialect_free( dialect_gas );
-		printf("Can not initialize AT&T assembler.\n");
+		printf("Cannot initialize AT&T assembler.\n");
 		exit(1);
 	}
 
@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
 		fcml_fn_assembler_free( assembler_gas );
 		fcml_fn_dialect_free( dialect_intel );
 		fcml_fn_dialect_free( dialect_gas );
-		printf( "Can not allocate INTEL disassembler.\n" );
+		printf( "Cannot allocate INTEL disassembler.\n" );
 		exit(1);
 	}
 
@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
 		fcml_fn_assembler_free( assembler_gas );
 		fcml_fn_dialect_free( dialect_intel );
 		fcml_fn_dialect_free( dialect_gas );
-		printf( "Can not allocate AT&T disassembler.\n" );
+		printf( "Cannot allocate AT&T disassembler.\n" );
 		exit(1);
 	}
 
