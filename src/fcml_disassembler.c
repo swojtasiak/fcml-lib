@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2021 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -316,7 +316,7 @@ static fcml_usize decode_encoded_size_value(
     fcml_usize result = 0;
     /* Extracts size explicitly encoded in the encoded operand size. */
     fcml_uint8_t size = (encoded_size & ~FCML_EOS_OPT);
-    if (size >= FCML_EOS_DYNAMIC_BASE) {
+    if (FCML_IS_EOS_DYNAMIC(size)) {
         switch (size) {
         case FCML_EOS_EOSA:
             result = context->effective_operand_size_attribute;
