@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2021 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,25 +56,26 @@
 /* Operand size calculated by Effective
  * Operand Size Attribute and Effective Address Size Attribute.
  */
-#define FCML_EOS_EOSA           0x7F
-#define FCML_EOS_EASA           0x7E
+#define FCML_EOS_EOSA           (FCML_EOS_DYNAMIC_BASE + 0x0F)
+#define FCML_EOS_EASA           (FCML_EOS_DYNAMIC_BASE + 0x0E)
 
 /* Operand size calculated on EVEX.L'L/VEX.L/XOP/L fields. */
-#define FCML_EOS_L              0x7D
+#define FCML_EOS_L              (FCML_EOS_DYNAMIC_BASE + 0x0D)
 
 /* Operand sizes that cannot be simply written as number of bytes.*/
-#define FCML_EOS_14_28          0x7C
-#define FCML_EOS_94_108         0x7B
-#define FCML_EOS_32_64          0x7A
+#define FCML_EOS_14_28          (FCML_EOS_DYNAMIC_BASE + 0x0C)
+#define FCML_EOS_94_108         (FCML_EOS_DYNAMIC_BASE + 0x0B)
+#define FCML_EOS_32_64          (FCML_EOS_DYNAMIC_BASE + 0x0A)
 
 /* Far pointer indirect.*/
-#define FCML_EOS_FPI            0x79
+#define FCML_EOS_FPI            (FCML_EOS_DYNAMIC_BASE + 0x09)
 
 /* Far pointer.*/
-#define FCML_EOS_FP             0x78
+#define FCML_EOS_FP             (FCML_EOS_DYNAMIC_BASE + 0x08)
 
 /* True if encoded operand size is a dynamic one.*/
-#define FCML_IS_EOS_DYNAMIC(x)  (((x) & 0x40) != 0)
+#define FCML_IS_EOS_DYNAMIC(x)  (((x) & FCML_EOS_DYNAMIC_BASE) == \
+        FCML_EOS_DYNAMIC_BASE)
 #define FCML_IS_EOS_OPT(x)      (((x) & 0x80) != 0)
 #define FCML_GET_OS(x)          ((x) & ~FCML_EOS_OPT)
 
