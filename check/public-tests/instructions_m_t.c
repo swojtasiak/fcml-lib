@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -384,7 +384,6 @@ void fcml_tf_instruction_MONITOR(void) {
 }
 
 void fcml_tf_instruction_MOV(void) {
-
     FCML_I32( "mov eax,dr2", 0x0F, 0x21, 0xD0 );
     FCML_I32( "mov eax,dr2", 0x66, 0x0F, 0x21, 0xD0 );
 
@@ -608,6 +607,9 @@ void fcml_tf_instruction_MOV(void) {
     FCML_I64_A("mov dword ptr ds:[rcx],eax", 0x89, 0x01);
     FCML_I64_D("mov dword ptr [rcx],eax", 0x89, 0x01);
     FCML_I64("mov dword ptr gs:[rcx],eax", 0x65, 0x89, 0x01);
+
+    FCML_I32( "mov ecx,dword ptr [eax*4+00000004h]", 0x8b, 0x0c, 0x85, 0x04, 0x00, 0x00, 0x00 );
+    FCML_A32( "mov 0x00000004(,%eax,4),%ecx", 0x8b, 0x0c, 0x85, 0x04, 0x00, 0x00, 0x00 );
 }
 
 void fcml_tf_instruction_MOVAPD(void) {

@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_INTEL_FCML_INTEL_PARSER_DEF_H_INCLUDED
 # define YY_INTEL_FCML_INTEL_PARSER_DEF_H_INCLUDED
@@ -52,37 +53,46 @@
 extern int intel_debug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef INTEL_TOKENTYPE
 # define INTEL_TOKENTYPE
   enum intel_tokentype
   {
-    FCML_TK_UNEXPECTED = 258,
-    FCML_TK_REG_GPR = 259,
-    FCML_TK_REG_SIMD = 260,
-    FCML_TK_REG_FPU = 261,
-    FCML_TK_REG_SEG = 262,
-    FCML_TK_REG_OPMASK = 263,
-    FCML_TK_REG_CR = 264,
-    FCML_TK_REG_DR = 265,
-    FCML_TK_REG_RIP = 266,
-    FCML_TK_DECORATOR_BCAST = 267,
-    FCML_TK_DECORATOR_ER = 268,
-    FCML_TK_DECORATOR_Z = 269,
-    FCML_TK_DECORATOR_SAE = 270,
-    FCML_TK_OPMASK_REG_DECORATOR = 271,
-    FCML_TK_INTEGER = 272,
-    FCML_TK_FLOAT = 273,
-    FCML_TK_SIZE_OPERATOR = 274,
-    FCML_TK_SYMBOL = 275,
-    FCML_TK_HINTS = 276,
-    FCML_TK_EAO_HINTS = 277,
-    FCML_TK_SIB_HINT = 278,
-    FCML_TK_PREFIX = 279,
-    FCML_OP_UMINUS = 280
+    INTEL_EMPTY = -2,
+    INTEL_EOF = 0,                 /* "end of file"  */
+    INTEL_error = 256,             /* error  */
+    INTEL_UNDEF = 257,             /* "invalid token"  */
+    FCML_TK_UNEXPECTED = 258,      /* FCML_TK_UNEXPECTED  */
+    FCML_TK_REG_GPR = 259,         /* FCML_TK_REG_GPR  */
+    FCML_TK_REG_SIMD = 260,        /* FCML_TK_REG_SIMD  */
+    FCML_TK_REG_FPU = 261,         /* FCML_TK_REG_FPU  */
+    FCML_TK_REG_SEG = 262,         /* FCML_TK_REG_SEG  */
+    FCML_TK_REG_OPMASK = 263,      /* FCML_TK_REG_OPMASK  */
+    FCML_TK_REG_CR = 264,          /* FCML_TK_REG_CR  */
+    FCML_TK_REG_DR = 265,          /* FCML_TK_REG_DR  */
+    FCML_TK_REG_RIP = 266,         /* FCML_TK_REG_RIP  */
+    FCML_TK_DECORATOR_BCAST = 267, /* FCML_TK_DECORATOR_BCAST  */
+    FCML_TK_DECORATOR_ER = 268,    /* FCML_TK_DECORATOR_ER  */
+    FCML_TK_DECORATOR_Z = 269,     /* FCML_TK_DECORATOR_Z  */
+    FCML_TK_DECORATOR_SAE = 270,   /* FCML_TK_DECORATOR_SAE  */
+    FCML_TK_OPMASK_REG_DECORATOR = 271, /* FCML_TK_OPMASK_REG_DECORATOR  */
+    FCML_TK_INTEGER = 272,         /* FCML_TK_INTEGER  */
+    FCML_TK_FLOAT = 273,           /* FCML_TK_FLOAT  */
+    FCML_TK_SIZE_OPERATOR = 274,   /* FCML_TK_SIZE_OPERATOR  */
+    FCML_TK_SYMBOL = 275,          /* FCML_TK_SYMBOL  */
+    FCML_TK_HINTS = 276,           /* FCML_TK_HINTS  */
+    FCML_TK_EAO_HINTS = 277,       /* FCML_TK_EAO_HINTS  */
+    FCML_TK_SIB_HINT = 278,        /* FCML_TK_SIB_HINT  */
+    FCML_TK_PREFIX = 279,          /* FCML_TK_PREFIX  */
+    FCML_OP_UMINUS = 280           /* FCML_OP_UMINUS  */
   };
+  typedef enum intel_tokentype intel_token_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define INTEL_EMPTY -2
+#define INTEL_EOF 0
+#define INTEL_error 256
+#define INTEL_UNDEF 257
 #define FCML_TK_UNEXPECTED 258
 #define FCML_TK_REG_GPR 259
 #define FCML_TK_REG_SIMD 260
@@ -128,7 +138,7 @@ union INTEL_STYPE
     fcml_bool bool_value;
     fcml_int int_value;
 
-#line 132 "fcml_intel_parser_def.h"
+#line 142 "fcml_intel_parser_def.h"
 
 };
 typedef union INTEL_STYPE INTEL_STYPE;
@@ -152,13 +162,15 @@ struct INTEL_LTYPE
 
 
 
+
 int intel_parse (struct fcml_st_parser_data *pd);
+
 /* "%code provides" blocks.  */
 #line 27 "fcml_intel_parser_def.y"
 
   #define YYSTYPE INTEL_STYPE
   #define YYLTYPE INTEL_LTYPE
 
-#line 163 "fcml_intel_parser_def.h"
+#line 175 "fcml_intel_parser_def.h"
 
 #endif /* !YY_INTEL_FCML_INTEL_PARSER_DEF_H_INCLUDED  */

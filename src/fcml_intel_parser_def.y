@@ -1,6 +1,6 @@
  /*
   * FCML - Free Code Manipulation Library.
-  * Copyright (C) 2010-2020 Slawomir Wojtasiak
+  * Copyright (C) 2010-2024 Slawomir Wojtasiak
   *
   * This library is free software; you can redistribute it and/or
   * modify it under the terms of the GNU Lesser General Public
@@ -215,6 +215,8 @@ effective_address_components: reg             { $$ = fcml_fn_ast_alloc_node_effe
 | reg '+' reg '*' FCML_TK_INTEGER             { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, NULL, FCML_FALSE, 0 ); }
 | reg '+' reg '*' FCML_TK_INTEGER '+' exp     { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_FALSE, 0 ); }
 | reg '+' reg '*' FCML_TK_INTEGER '-' exp     { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, &$5, $7, FCML_TRUE, 0 ); }
+| reg '*' FCML_TK_INTEGER '+' exp             { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, &$1, &$3, $5, FCML_FALSE, 0 ); }
+| reg '*' FCML_TK_INTEGER '-' exp             { $$ = fcml_fn_ast_alloc_node_effective_address( NULL, &$1, &$3, $5, FCML_TRUE, 0 ); }
 | reg '+' reg '+' exp                         { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_FALSE, 0 ); }
 | reg '+' reg '-' exp                         { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, &$3, NULL, $5, FCML_TRUE, 0 ); }
 | reg '+' exp                                 { $$ = fcml_fn_ast_alloc_node_effective_address( &$1, NULL, NULL, $3, FCML_FALSE, 0 ); }

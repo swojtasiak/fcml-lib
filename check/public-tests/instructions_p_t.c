@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -6634,6 +6634,7 @@ void fcml_tf_instruction_PUSH(void) {
     FCML_I32_M( "push 0ffffffffh", 2, FCML_MI( 0x68, 0xff, 0xff, 0xff, 0xff ), FCML_MI( 0x6a, 0xff ) );
     FCML_I32_M( "push 00000020h", 2, FCML_MI( 0x68, 0x20, 0x00, 0x00, 0x00 ), FCML_MI( 0x6a, 0x20 ) );
     FCML_I32_M( "push 0ffffh", 2, FCML_MI( 0x66, 0x68, 0xff, 0xff ), FCML_MI( 0x66, 0x6a, 0xff ) );
+    FCML_I32_M_A("push -080h", 2, FCML_MI(0x68, 0x80, 0xff, 0xff, 0xff), FCML_MI(0x6a, 0x80));
     FCML_I32( "push 50402020h", 0x68, 0x20, 0x20, 0x40, 0x50 );
     FCML_I32( "push 11ff20ffh", 0x68, 0xFF, 0x20, 0xFF, 0x11 );
     FCML_I64( "push 11ffh", 0x66, 0x68, 0xff, 0x11 );
