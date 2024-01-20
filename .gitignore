@@ -35,4 +35,5 @@ test-driver
 *.opendb
 *.db-shm
 *.db-wal
-
+.vscode
+configure~
