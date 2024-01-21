@@ -802,6 +802,19 @@ typedef struct fcml_st_instruction {
  * Instruction definition.
  *********************************/
 
+/** 
+ * Details describing an assembled instruction.
+ * It may help to choose the final instruction if there are more than one.
+ */
+typedef struct fcml_st_assembled_instruction_details {
+    /* The instruction group flags. */
+    fcml_uint64_t instruction_group;
+    /* If the instruction overrides the default address size attribute. */
+    fcml_bool asa_override;
+    /* If the instruction overrides the default operand size attribute. */
+    fcml_bool osa_override;
+} fcml_st_assembled_instruction_details;
+
 /**
  * An encoded instruction.
  */
@@ -810,6 +823,9 @@ typedef struct fcml_st_instruction_code {
     fcml_uint8_t *code;
     /** Instruction code length. */
     fcml_usize code_length;
+    /** Instruction flags, which can be helpful while choosing 
+     *  the final instruction. */
+    fcml_st_assembled_instruction_details details;
 } fcml_st_instruction_code;
 
 /****************************

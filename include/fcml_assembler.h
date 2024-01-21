@@ -78,19 +78,6 @@ typedef struct fcml_st_assembler_conf {
     fcml_fnp_asm_instruction_chooser chooser;
 } fcml_st_assembler_conf;
 
-/** 
- * Details describing an assembled instruction.
- * It may help to choose the final instruction if there are more than one.
- */
-typedef struct fcml_st_instruction_details {
-    /* The instruction group flags. */
-    fcml_uint64_t instruction_group;
-    /* If the instruction overrides the default address size attribute. */
-    fcml_bool asa_override;
-    /* If the instruction overrides the default operand size attribute. */
-    fcml_bool osa_override;
-} fcml_st_instruction_details;
-
 /**
  * This structure represents an encoded instruction.
  * Every instruction can be encoded to more than one binary form.
@@ -108,7 +95,7 @@ typedef struct fcml_st_assembled_instruction {
     fcml_usize code_length;
     /** Instruction flags, which can be helpful while choosing 
      *  the final instruction. */
-    fcml_st_instruction_details details;
+    fcml_st_assembled_instruction_details details;
 #ifdef FCML_DEBUG
     fcml_uint8_t __def_index;
 #endif

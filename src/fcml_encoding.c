@@ -266,7 +266,6 @@ typedef struct inst_part {
     fcml_int code_length;
     fcml_ptr post_processor_args;
     inst_part_post_processor post_processor;
-    fcml_st_instruction_flags flags;
 } inst_part;
 
 typedef struct inst_part_container {
@@ -2786,6 +2785,29 @@ void fcml_ifn_asm_free_assembled_instruction(
     }
 }
 
+static void fcml_ifn_asm_fill_instruction_details(encoding_context *context,
+    addr_mode_encoding *addr_mode,
+    fcml_st_assembled_instruction *assembled_instruction) {
+    assembled_instruction->details.instruction_group = 
+        addr_mode->addr_mode_desc->instruction_group;
+    /* If EOSA and EASA differ from the default one
+       it means that they have been overridden. */
+    const fcml_st_entry_point *entry_point =
+        &(context->assembler_context->entry_point);
+    fcml_usize osa = entry_point->operand_size_attribute;
+    fcml_usize asa = entry_point->address_size_attribute;
+    fcml_usize eosa = context->optimizer_processing_details.eosa;
+    fcml_usize easa = context->optimizer_processing_details.easa;
+
+    if (osa != eosa) {
+        assembled_instruction->details.osa_override = FCML_TRUE;
+    }
+
+    if (asa != easa) {
+        assembled_instruction->details.asa_override = FCML_TRUE;
+    }
+}
+
 /** 
  * Assembles an instruction using the provided addressing mode
  * encoder. The encoder still may fail, as the adressing mode
@@ -2807,10 +2829,9 @@ static fcml_ceh_error fcml_ifn_asm_assemble_instruction(
 
     /* Assemble instruction parts.*/
     if (!error) {
-
         fcml_usize code_length = context->instruction_size.value;
 
-        /* Allocate memory block for assembled code.*/
+        /* Allocate a memory block for the assembled code. */
         FCML_ENV_ALLOC_CLEAR(asm_inst, fcml_st_assembled_instruction);
         if (asm_inst) {
             asm_inst->code = (fcml_uint8_t*) fcml_fn_env_memory_alloc(
@@ -2820,6 +2841,7 @@ static fcml_ceh_error fcml_ifn_asm_assemble_instruction(
                 /* Copies instruction parts to the destination code array. */
                 fcml_ifn_asm_assemble_instruction_parts(asm_inst,
                         &instruction_part_container);
+                fcml_ifn_asm_fill_instruction_details(context, addr_mode, asm_inst);
                 *assembled_instruction = asm_inst;
             } else {
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -2831,7 +2853,6 @@ static fcml_ceh_error fcml_ifn_asm_assemble_instruction(
         if (error && asm_inst) {
             fcml_fn_env_memory_free(asm_inst);
         }
-
     }
 
     /* Always free instruction parts when they are not needed anymore. */
@@ -2868,47 +2889,47 @@ static fcml_ceh_error fcml_ifn_assemble_and_collect_instruction(fcml_ptr args) {
 
     error = fcml_ifn_asm_assemble_instruction(context, addr_mode,
             &assembled_instruction);
-    if (!error) {
+    if (error) {
+        return error;
+    }
 
 #ifdef FCML_DEBUG
         assembled_instruction->__def_index = context->__def_index;
 #endif
 
-        fcml_bool ignore = FCML_FALSE;
+    fcml_bool ignore = FCML_FALSE;
 
-        /* Check if such instruction has been already assembled. */
-        fcml_st_assembled_instruction *instruction = result->instructions;
-        while (instruction) {
-            if (instruction->code_length == assembled_instruction->code_length
-                    && fcml_fn_env_memory_cmp(instruction->code,
-                            assembled_instruction->code,
-                            instruction->code_length)) {
-                /* Instructions are the same.*/
-                ignore = FCML_TRUE;
-                break;
-            }
-            instruction = instruction->next;
+    /* Check if such instruction has been already assembled. */
+    fcml_st_assembled_instruction *instruction = result->instructions;
+    while (instruction) {
+        if (instruction->code_length == assembled_instruction->code_length
+                && fcml_fn_env_memory_cmp(instruction->code,
+                        assembled_instruction->code,
+                        instruction->code_length)) {
+            /* Instructions are the same.*/
+            ignore = FCML_TRUE;
+            break;
         }
-
-        if (!ignore) {
-
-            /* Insert newly assembled instruction to the front of the
-             * instructions chain.
-             */
-            fcml_st_assembled_instruction *instructions =
-                    result->instructions;
-            result->instructions = assembled_instruction;
-            assembled_instruction->next = instructions;
-
-            result->number_of_instructions++;
-
-        } else {
-            /* Free ignored instruction.*/
-            fcml_ifn_asm_free_assembled_instruction(assembled_instruction);
-        }
+        instruction = instruction->next;
     }
 
-    return error;
+    if (!ignore) {
+        /* Insert newly assembled instruction to the front of the
+         * instructions chain.
+         */
+        fcml_st_assembled_instruction *instructions =
+                result->instructions;
+        result->instructions = assembled_instruction;
+        assembled_instruction->next = instructions;
+
+        result->number_of_instructions++;
+
+    } else {
+        /* Free ignored instruction.*/
+        fcml_ifn_asm_free_assembled_instruction(assembled_instruction);
+    }
+
+    return FCML_CEH_GEC_NO_ERROR;
 }
 
 static fcml_bool accept_instruction_hints(fcml_hints addr_mode_dest_hints,
@@ -2960,6 +2981,7 @@ void fcml_ifn_chooser_extract(fcml_ptr instruction_ptr,
                 (fcml_st_assembled_instruction*) instruction_ptr;
         instruction_code->code = instruction->code;
         instruction_code->code_length = instruction->code_length;
+        instruction_code->details = instruction->details;
     }
 }
 

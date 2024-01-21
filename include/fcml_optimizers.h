@@ -71,7 +71,7 @@ typedef struct fcml_st_asm_optimizer_processing_details {
     /** Effective operand size attribute chosen for currently processed
      * instruction form.
      * If it is set it can not be changed anymore. It has higher priority than
-     * flags above. Take into account that it is effective operand size
+     * flags above. Take into account that it is the effective operand size
      * attribute so it can be forced using instruction prefixes to override
      * the default attribute size.
      */

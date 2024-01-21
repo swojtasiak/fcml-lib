@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2021 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -132,7 +132,6 @@ typedef fcml_uint32_t fcml_operand_decorators;
 /* Predicate operand is mandatory and cannot be omited. */
 #define FCML_DECOR_K1_REQ     (0x400000000000LL | FCML_DECOR_K1)
 
-
 /* Operand decorators decoders. Use only on 'fcml_operand_decorators'. */
 
 #define FCML_IS_DECOR_BCAST(x)                ((x) & 0x00000001)
@@ -254,13 +253,13 @@ typedef struct fcml_st_def_instruction_desc {
  * asserted or negated. The field is located in opcode byte. */
 #define FCML_DEF_OPCODE_FLAGS_OPCODE_FIELD_TTTN(x)          ((x) & 0x00000040)
 #define FCML_DEF_OPCODE_FLAGS_64BITS_EOSA_BY_DEFAULT(x)     ((x) & 0x00000080)
-#define FCML_DEF_OPCODE_FLAGS_POS(x)                  (((x) & 0x00000700) >> 8)
-#define FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(x)           (((x) & 0x00007800) >> 11)
-#define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(x)      FCML_TP_GET_BIT(x,15)
+#define FCML_DEF_OPCODE_FLAGS_POS(x)                        (((x) & 0x00000700) >> 8)
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_EXT(x)                 (((x) & 0x00007800) >> 11)
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_MODRM(x)            FCML_TP_GET_BIT(x,15)
 /* Reg/Opcode field is used as an opcode extension. */
-#define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT(x)        FCML_TP_GET_BIT(x,16)
-#define FCML_DEF_OPCODE_FLAGS_OPCODE_NUM(x)           (((x) & 0x000C0000) >> 18)
-#define FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE(x)       (((x) & 0x00300000) >> 20)
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_IS_EXT(x)              FCML_TP_GET_BIT(x,16)
+#define FCML_DEF_OPCODE_FLAGS_OPCODE_NUM(x)                 (((x) & 0x000C0000) >> 18)
+#define FCML_DEF_OPCODE_FLAGS_PRIMARY_OPCODE(x)             (((x) & 0x00300000) >> 20)
 #define FCML_DEF_OPCODE_FLAGS_64_BIT_MODE_SUPPORTED(x)      ((x) & 0x00800000)
 #define FCML_DEF_OPCODE_FLAGS_16_32_BIT_MODE_SUPPORTED(x)   ((x) & 0x00400000)
 #define FCML_DEF_OPCODE_FLAGS_EOSA_16(x)                    ((x) & 0x01000000)
