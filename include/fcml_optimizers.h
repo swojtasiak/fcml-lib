@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,7 +57,7 @@ typedef struct fcml_st_asm_optimizer_processing_details {
     fcml_st_nullable_size_flags allowed_eosa;
     /** Allowed values of the address size attribute calculated by the
      * assembler engine.
-     * It is optimizer who decides which one should be finally used.
+     * It is the optimizer who decides which one should be finally used.
      */
     fcml_st_nullable_size_flags allowed_easa;
     /** Effective address size attribute chosen for currently processed

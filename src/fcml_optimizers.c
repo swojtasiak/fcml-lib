@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -128,7 +128,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
                     ds_flags->allowed_eosa.is_set,
                     ds_flags->allowed_eosa.flags);
 
-    /* ASA */
+    /* Address size attribute. */
 
     if (ds_flags->easa) {
         /* Effective address size has been already chosen and cannot
@@ -138,9 +138,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
                 ds_flags->easa);
         easa[easa_count++] = ds_flags->easa;
     } else {
-        /* Maybe user has already forced any address size attribute to
-         * be chosen?
-         */
+        /* Maybe the user has already asked for a specific ASA? */
         fcml_usize attr_size = 0;
         fcml_flags attr_size_flag = 0;
         switch (opt_flags & 0x000F) {
@@ -167,7 +165,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
         }
     }
 
-    /* OSA */
+    /* Operand size attribute. */
 
     if (ds_flags->eosa) {
         /* Effective address size has been already chosen and cannot
@@ -177,9 +175,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
                 ds_flags->eosa);
         eosa[eosa_count++] = ds_flags->eosa;
     } else {
-        /* Maybe user has already forced any address size attribute to
-         * be chosen?
-         */
+        /* Maybe the user has already asked for a specific OSA? */
         fcml_usize attr_size = 0;
         fcml_flags attr_size_flag = 0;
         switch (opt_flags & 0x00F0) {
@@ -257,7 +253,7 @@ fcml_ceh_error LIB_CALL fcml_fn_asm_default_optimizer(
 
     ds_flags->break_optimization = FCML_FALSE;
 
-    /* If true all addressing modes of given instruction will
+    /* If true all addressing modes available for a given instruction will
      * be encoded not only the optimal one.
      */
     fcml_bool all_forms = opt_flags == FCML_OPTF_ALL_FORMS;

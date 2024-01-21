@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,7 +58,7 @@ typedef struct fcml_st_chooser_context {
     fcml_ptr instruction;
     /** Gets next instruction code from iterator. */
     fcml_fnp_chooser_next next;
-    /** Extracts instruction code from abstract instruction pointer.*/
+    /** Extracts instruction code from the opaque instruction pointer.*/
     fcml_fnp_chooser_extract extract;
 } fcml_st_chooser_context;
 
