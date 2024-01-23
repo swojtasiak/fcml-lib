@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2021 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,6 +35,7 @@
 #include "env_t.h"
 #include "ceh_t.h"
 #include "common_utils_t.h"
+#include "instruction_chooser_t.h"
 #include "symbols_t.h"
 
 fcml_stf_test_suite *fcml_arr_suites[] = {
@@ -50,6 +51,7 @@ fcml_stf_test_suite *fcml_arr_suites[] = {
     &fcml_si_env,
     &fcml_si_ceh,
     &fcml_si_common_utils,
+    &fcml_si_instruction_chooser,
     &fctl_si_symbols,
     FCML_STF_NULL_SUITE
 };
