@@ -1,6 +1,6 @@
 /**
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -165,10 +165,12 @@ int main(int argc, char **argv) {
     fcml_st_parser_context parser_context = { 0 };
     parser_context.dialect = dialect;
     parser_context.ip = ip;
-    parser_context.symbol_table = NULL; /* We do not use symbols in case of one line assembler. */
+    /* The symbol table is not needed in case when only the one-line 
+    * asembler is used. */
+    parser_context.symbol_table = NULL; 
     parser_context.configuration.ignore_undefined_symbols = FCML_FALSE;
 
-    /* Parse instruction mnemonic. */
+    /* Parse the instruction mnemonic. */
 
     fcml_st_parser_result parser_result;
 
@@ -236,7 +238,7 @@ int main(int argc, char **argv) {
     }
 
     if (chosen) {
-        printf("Best instruction chosen by the assembler: %d\n", chosen);
+        printf("The best instruction chosen by the assembler: %d\n", chosen);
     }
 
     fcml_fn_assembler_result_free(&asm_result);

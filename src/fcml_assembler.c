@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -68,6 +68,8 @@ static fcml_bool verify_instruction(const fcml_st_instruction *instruction);
 
 static void free_instruction_chain(fcml_st_assembled_instruction *chain);
 
+/** It encodes a pseudo operation like "db" if no intruction were found 
+ * for given bytes. */
 static fcml_ceh_error encode_pseudo_operation(
         const fcml_st_assembler_context *asm_context,
         const fcml_coll_map pseudo_operations_map,
@@ -91,7 +93,11 @@ fcml_ceh_error LIB_CALL fcml_fn_assembler_init(const fcml_st_dialect *dialect,
         return FCML_CEH_GEC_OUT_OF_MEMORY;
     }
 
-    /* Initializes classic processor instructions encoding. */
+    /* Adds all known instructions to the instructions map. Every supported
+     * instruction has its own preinitialized inctructions encoders which
+     * are used to encode them later when the assember is used. They are
+     * initialized once and shared later in order to save memory and CPU.
+     */
     fcml_ceh_error error = fcml_fn_init_instructions_addr_modes(
             (fcml_st_dialect_context_int*) dialect,
             &(enc_asm->instructions_map));
@@ -170,6 +176,7 @@ void LIB_CALL fcml_fn_assembler_result_prepare(fcml_st_assembler_result *result)
     }
 }
 
+/** see documentation in header files */
 fcml_ceh_error LIB_CALL fcml_fn_assemble(fcml_st_assembler_context *context,
         const fcml_st_instruction *instruction,
         fcml_st_assembler_result *result) {
@@ -187,6 +194,7 @@ fcml_ceh_error LIB_CALL fcml_fn_assemble(fcml_st_assembler_context *context,
     return error;
 }
 
+/** see documentation in header files */
 void LIB_CALL fcml_fn_assembler_free(fcml_st_assembler *assembler) {
     if (assembler) {
         enc_assembler *enc_asm = (enc_assembler*) assembler;
@@ -202,8 +210,9 @@ void LIB_CALL fcml_fn_assembler_free(fcml_st_assembler *assembler) {
     }
 }
 
-/** This is an internal function used by assembler
- * internals to extract dialect from the assembler instance. */
+/** This is an internal function used by the assembler
+ * internals to extract a dialect instance from the assembler. 
+ */
 fcml_st_dialect* fcml_fn_assembler_extract_dialect(fcml_st_assembler *assembler) {
     fcml_st_dialect *dialect = NULL;
     if (assembler) {
@@ -239,14 +248,15 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
         return FCML_CEH_GEC_INVALID_INSTRUCTION_MODEL;
     }
 
-    /* Validate and prepare entry point. */
+    /* Validate and prepare the entry point. */
     error = fcml_fn_utils_prepare_entry_point(&(asm_context->entry_point));
     if (error) {
         return error;
     }
 
-    /* Take into account that dialect can modify source instruction by
-       preparing it for the assembler, so we have to use a local copy here. */
+    /* Take into account that the dialect can modify the source instruction by
+       optionally preconfigure it for the assembler, so we have to 
+       use a local copy here, to keep the original instance untouched. */
     fcml_st_instruction tmp_instruction = *instruction;
 
     enc_assembler *enc_asm = (enc_assembler*) asm_context->assembler;
@@ -273,7 +283,7 @@ static fcml_ceh_error assemble_core(fcml_st_assembler_context *asm_context,
         }
     }
 
-    /* Execute instruction encoder. */
+    /* Executes the found instruction encoder. */
     if (addr_modes) {
         if (addr_modes->encoder) {
             fcml_st_asm_encoder_result enc_result = { { 0 } };
@@ -455,7 +465,7 @@ static fcml_bool verify_instruction(const fcml_st_instruction *instruction) {
     fcml_bool last_found = FCML_FALSE;
     fcml_bool result = FCML_TRUE;
 
-    /* Check if there are no operator gaps. */
+    /* Check if there are no gaps in the operands list. */
     for (i = 0; i < FCML_OPERANDS_COUNT; i++) {
         if (instruction->operands[i].type == FCML_OT_NONE) {
             last_found = FCML_TRUE;

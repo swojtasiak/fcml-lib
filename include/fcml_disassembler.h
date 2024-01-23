@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -224,10 +224,11 @@ typedef struct fcml_st_instruction_details {
      * A good example of such instruction is 'cmpsb' as opposed to
      * 'cmps byte ptr [si],byte ptr [di]'. It is very important to take this
      * information into consideration when instruction models are analyzed
-     * because there is no operands in the GIM for shortcuts.
+     * because there are no operands available in the GIM in 
+     * case of such shortcuts.
      */
     fcml_bool is_shortcut;
-    /** True if given instruction is a short form of pseudo-ops instructions.
+    /** True if a given instruction is a short form of pseudo-ops instructions.
      * See 'vcmpunordsd' for instance. */
     fcml_bool is_pseudo_op;
     /** Code of the disassembled instruction. */

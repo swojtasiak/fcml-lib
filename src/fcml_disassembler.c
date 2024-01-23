@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2021 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -2260,8 +2260,6 @@ static fcml_ceh_error instruction_decoder_IA(
         }
     }
 
-
-
     return error;
 }
 
@@ -2570,7 +2568,7 @@ static fcml_ceh_error decode_prefixes(decoding_context *decoding_context) {
                 break;
             }
 
-            /* Handle VEX/XOP prefixes.*/
+            /* Handle VEX/XOP prefixes. */
             if (prefix_type == FCML_PT_VEX || prefix_type == FCML_PT_XOP
             		|| prefix_type == FCML_PT_EVEX) {
 

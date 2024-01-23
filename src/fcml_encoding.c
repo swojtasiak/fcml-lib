@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2021 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -197,8 +197,8 @@ typedef struct encoding_context {
     struct opcode_reg opcode_reg;
     /* Encoded instruction size in bytes. */
     fcml_nuint8_t instruction_size;
-    /* Information for REX encoder that REX prefix is needed
-     * to encode register opcode. */
+    /* Information for the REX encoder that the REX prefix is needed
+     * to encode a register opcode. */
     fcml_bool reg_opcode_needs_rex;
     /* Operand size calculator selected for processed addressing mode.*/
     memory_data_size_calculator ds_calculator;
@@ -259,7 +259,8 @@ struct inst_part;
 typedef fcml_ceh_error (*inst_part_post_processor)(encoding_context *context,
         struct inst_part *, fcml_ptr post_processor_args);
 
-/* Represents a part of assembled instruction, for instance imm8 or ModRM part. */
+/* Represents a part of an assembled instruction, 
+   for instance imm8 or ModRM part. */
 typedef struct inst_part {
     fcml_uint8_t code[10];
     fcml_int code_length;
@@ -2652,10 +2653,10 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
     encoder_args.addr_mode_details = &(addr_mode->addr_mode_details);
     encoder_args.addr_mode_def = addr_mode->addr_mode_desc;
 
-    int i;
-    int size = sizeof(execution_phases) /
-            sizeof(part_processor_phase);
-    for (i = 0; !error && i < size; i++) {
+    int phase;
+    int phases_count = sizeof(execution_phases) / sizeof(part_processor_phase);
+    for (phase = 0; !error && phase < phases_count; phase++) {
+        /* Gets through all the instruction part processors for every phase. */
         inst_part *current_instruction_part = part;
         ipp_chain *current_processor = addr_mode->ipp_chain;
         fcml_bool first = FCML_TRUE;
@@ -2670,7 +2671,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
                     current_instruction_part++;
                 }
                 first = FCML_FALSE;
-                encoder_args.phase = execution_phases[i];
+                encoder_args.phase = execution_phases[phase];
                 encoder_args.args = descriptor->args;
                 /* If IPP is just a verifier, do not pass instruction part
                  * there. It's not needed because IPP doesn't encode any
@@ -2708,6 +2709,7 @@ fcml_ceh_error fcml_ifn_asm_process_addr_mode(encoding_context *context,
         fcml_bool recalculate_size = FCML_FALSE;
 
         /* Execute potential post processors.*/
+        int i;
         for (i = 0; i < addr_mode->instruction_parts; i++) {
             inst_part *ip = &(part[i]);
             if (ip->post_processor) {
@@ -2783,7 +2785,36 @@ void fcml_ifn_asm_free_assembled_instruction(
     }
 }
 
-fcml_ceh_error fcml_ifn_asm_assemble_instruction(
+static void fcml_ifn_asm_fill_instruction_details(encoding_context *context,
+    addr_mode_encoding *addr_mode,
+    fcml_st_assembled_instruction *assembled_instruction) {
+    assembled_instruction->details.instruction_group = 
+        addr_mode->addr_mode_desc->instruction_group;
+    /* If EOSA and EASA differ from the default one
+       it means that they have been overridden. */
+    const fcml_st_entry_point *entry_point =
+        &(context->assembler_context->entry_point);
+    fcml_usize osa = entry_point->operand_size_attribute;
+    fcml_usize asa = entry_point->address_size_attribute;
+    fcml_usize eosa = context->optimizer_processing_details.eosa;
+    fcml_usize easa = context->optimizer_processing_details.easa;
+
+    if (osa != eosa) {
+        assembled_instruction->details.osa_override = FCML_TRUE;
+    }
+
+    if (asa != easa) {
+        assembled_instruction->details.asa_override = FCML_TRUE;
+    }
+}
+
+/** 
+ * Assembles an instruction using the provided addressing mode
+ * encoder. The encoder still may fail, as the adressing mode
+ * accepting phase is not 100% correct and may return
+ * false positives in some cases.
+ */
+static fcml_ceh_error fcml_ifn_asm_assemble_instruction(
         encoding_context *context,
         addr_mode_encoding *addr_mode,
         fcml_st_assembled_instruction **assembled_instruction) {
@@ -2798,10 +2829,9 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction(
 
     /* Assemble instruction parts.*/
     if (!error) {
-
         fcml_usize code_length = context->instruction_size.value;
 
-        /* Allocate memory block for assembled code.*/
+        /* Allocate a memory block for the assembled code. */
         FCML_ENV_ALLOC_CLEAR(asm_inst, fcml_st_assembled_instruction);
         if (asm_inst) {
             asm_inst->code = (fcml_uint8_t*) fcml_fn_env_memory_alloc(
@@ -2811,6 +2841,7 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction(
                 /* Copies instruction parts to the destination code array. */
                 fcml_ifn_asm_assemble_instruction_parts(asm_inst,
                         &instruction_part_container);
+                fcml_ifn_asm_fill_instruction_details(context, addr_mode, asm_inst);
                 *assembled_instruction = asm_inst;
             } else {
                 error = FCML_CEH_GEC_OUT_OF_MEMORY;
@@ -2822,7 +2853,6 @@ fcml_ceh_error fcml_ifn_asm_assemble_instruction(
         if (error && asm_inst) {
             fcml_fn_env_memory_free(asm_inst);
         }
-
     }
 
     /* Always free instruction parts when they are not needed anymore. */
@@ -2843,8 +2873,8 @@ typedef struct fcml_st_asm_enc_optimizer_callback_args {
     fcml_st_asm_encoder_result *result;
 } fcml_st_asm_enc_optimizer_callback_args;
 
-/** Assembles instruction and puts it to the instructions chain. */
-static fcml_ceh_error assemble_and_collect_instruction(fcml_ptr args) {
+/** Assembles an instruction and attaches it to the instructions chain. */
+static fcml_ceh_error fcml_ifn_assemble_and_collect_instruction(fcml_ptr args) {
 
     /* Restore important information from callback arguments.*/
     fcml_st_asm_enc_optimizer_callback_args *callback_args =
@@ -2859,47 +2889,47 @@ static fcml_ceh_error assemble_and_collect_instruction(fcml_ptr args) {
 
     error = fcml_ifn_asm_assemble_instruction(context, addr_mode,
             &assembled_instruction);
-    if (!error) {
+    if (error) {
+        return error;
+    }
 
 #ifdef FCML_DEBUG
         assembled_instruction->__def_index = context->__def_index;
 #endif
 
-        fcml_bool ignore = FCML_FALSE;
+    fcml_bool ignore = FCML_FALSE;
 
-        /* Check if such instruction has been already assembled. */
-        fcml_st_assembled_instruction *instruction = result->instructions;
-        while (instruction) {
-            if (instruction->code_length == assembled_instruction->code_length
-                    && fcml_fn_env_memory_cmp(instruction->code,
-                            assembled_instruction->code,
-                            instruction->code_length)) {
-                /* Instructions are the same.*/
-                ignore = FCML_TRUE;
-                break;
-            }
-            instruction = instruction->next;
+    /* Check if such instruction has been already assembled. */
+    fcml_st_assembled_instruction *instruction = result->instructions;
+    while (instruction) {
+        if (instruction->code_length == assembled_instruction->code_length
+                && fcml_fn_env_memory_cmp(instruction->code,
+                        assembled_instruction->code,
+                        instruction->code_length)) {
+            /* Instructions are the same.*/
+            ignore = FCML_TRUE;
+            break;
         }
-
-        if (!ignore) {
-
-            /* Insert newly assembled instruction to the front of the
-             * instructions chain.
-             */
-            fcml_st_assembled_instruction *instructions =
-                    result->instructions;
-            result->instructions = assembled_instruction;
-            assembled_instruction->next = instructions;
-
-            result->number_of_instructions++;
-
-        } else {
-            /* Free ignored instruction.*/
-            fcml_ifn_asm_free_assembled_instruction(assembled_instruction);
-        }
+        instruction = instruction->next;
     }
 
-    return error;
+    if (!ignore) {
+        /* Insert newly assembled instruction to the front of the
+         * instructions chain.
+         */
+        fcml_st_assembled_instruction *instructions =
+                result->instructions;
+        result->instructions = assembled_instruction;
+        assembled_instruction->next = instructions;
+
+        result->number_of_instructions++;
+
+    } else {
+        /* Free ignored instruction.*/
+        fcml_ifn_asm_free_assembled_instruction(assembled_instruction);
+    }
+
+    return FCML_CEH_GEC_NO_ERROR;
 }
 
 static fcml_bool accept_instruction_hints(fcml_hints addr_mode_dest_hints,
@@ -2951,6 +2981,7 @@ void fcml_ifn_chooser_extract(fcml_ptr instruction_ptr,
                 (fcml_st_assembled_instruction*) instruction_ptr;
         instruction_code->code = instruction->code;
         instruction_code->code_length = instruction->code_length;
+        instruction_code->details = instruction->details;
     }
 }
 
@@ -3073,12 +3104,14 @@ static fcml_ceh_error encode_addressing_mode_core(
 
     const fcml_st_assembler_context *asm_ctx = context->assembler_context;
 
-    /* Check if addressing mode matches the hints, if there are any. */
+    /* Checks if the addressing mode matches the hints, if there are any.
+       To ignore addressing modes which will fail to encode the instruction
+       as soon as possible, to save CPU. */
     if (!context->instruction->hints || accept_instruction_hints(
             addr_mode->hints, context->instruction->hints)) {
 
         /* Prepare processing context for optimizer using currently
-          used addressing mode. */
+           used addressing mode. */
         prepare_optimizer_processing_details(addr_mode,
                 &(context->optimizer_processing_details));
 
@@ -3096,7 +3129,7 @@ static fcml_ceh_error encode_addressing_mode_core(
             optimizer_context.optimizer_flags =
                     asm_ctx->configuration.optimizer_flags;
 
-            /* Optimizer implementation can be provided by user. */
+            /* An optimizer implementation can be provided by the user. */
             fcml_fnp_asm_optimizer optimizer =
                     asm_ctx->configuration.optimizer;
             if (!optimizer) {
@@ -3115,9 +3148,9 @@ static fcml_ceh_error encode_addressing_mode_core(
 
             error = optimizer(&optimizer_context,
                     &(context->optimizer_processing_details),
-                    assemble_and_collect_instruction, &args);
+                    fcml_ifn_assemble_and_collect_instruction, &args);
         } else {
-            /* Addressing mode hasn't been proceeded, so handle errors. */
+            /* Addressing mode hasn't been accepted, so handle errors. */
             handle_addr_mode_errors(addr_mode_errors,
                     &acceptor_ctx.error_container, error, acceptor_ctx.last_ipp,
                     AMPP_PROCESS);
@@ -3164,23 +3197,24 @@ static fcml_ceh_error instruction_encoder_IA(
     encoding_context context = { 0 };
     context.assembler_context = asm_context;
     context.instruction = &tmp_instruction;
-    /* Share the global errors container in order to extend it instead of
-     * rewriting it with the local errors only. */
+    /* Share the global errors container in order to collect
+     * all errors in one place accessible by the caller.
+     */
     context.errors.enabled = errors_enabled;
     context.errors.errors = result->errors;
 
     fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR;
 
     if (addr_modes) {
-        /* Choose addressing mode.*/
+        /* Try to encode the instruction by using all found addressing modes. */
         if (addr_modes->addr_modes_encodings->size) {
             /* Container for errors related to addressing modes processing.
              * It's shared by all the addressing modes. */
             addr_mode_error addr_mode_errors = { AMPP_UNDEFINED,
                    FCML_CEH_GEC_NO_ERROR, { errors_enabled, {NULL} }, 0};
 
-            /* Gets first addressing mode available for chosen instruction
-               definition. */
+            /* Gets the first addressing mode available for the chosen 
+               instruction definition. */
             fcml_st_coll_list_element *addr_mode_elem =
                     addr_modes->addr_modes_encodings->head;
 
@@ -3229,7 +3263,8 @@ static fcml_ceh_error instruction_encoder_IA(
                 context.ds_calculator_args =
                         addr_mode->addr_mode_details.ds_calculator_args;
 
-                /* Try to encode prepared addressing mode. */
+                /* Try to encode the instruction using the prepared
+                   addressing mode. */
                 error = encode_addressing_mode_core(&context, addr_mode,
                         &addr_mode_errors, result);
 
@@ -3238,7 +3273,7 @@ static fcml_ceh_error instruction_encoder_IA(
 #ifdef FCML_DEBUG
                 index++;
 #endif
-                /* Restore instruction if preprocessor has changed anything.*/
+                /* Restore the instruction if the preprocessor has changed anything.*/
                 if (inst_changed) {
                     tmp_instruction = *instruction;
                 }
@@ -3927,9 +3962,12 @@ static ipp_desc ipp_mandatory_prefixes_encoder_factory(ipp_factory_args *args,
             FCML_DEF_PREFIX_MANDATORY_F2(addr_mode->allowed_prefixes) ||
             FCML_DEF_PREFIX_MANDATORY_F3(addr_mode->allowed_prefixes);
 
-    /* Mandatory prefixes cannot be applied to AVX instructions. */
-    if (is_mandatory &&
-            !FCML_DEF_PREFIX_IS_AVX_REQ(addr_mode->allowed_prefixes)) {
+    /* Mandatory prefixes cannot be applied to AVX instructions, as they
+       are encoded in a different way there, as parts of 
+       their VEX/XOP/EVEX prefixes. */
+    fcml_bool is_avx = FCML_DEF_PREFIX_IS_AVX_REQ(addr_mode->allowed_prefixes);
+    
+    if (is_mandatory && !is_avx) {
         descriptor.type = IPPT_ENCODER;
         descriptor.args = NULL;
         descriptor.encoder = ipp_mandatory_prefixes_encoder;
@@ -3939,45 +3977,43 @@ static ipp_desc ipp_mandatory_prefixes_encoder_factory(ipp_factory_args *args,
     return descriptor;
 }
 
-/* 66 prefix.*/
+/* 66 prefix. */
 
 static fcml_ceh_error ipp_66_prefix_encoder(ipp_encoder_args *args) {
     encoding_context *context = args->context;
     const fcml_st_def_addr_mode_desc *addr_mode_def = args->addr_mode_def;
     inst_part *instruction_part = args->instruction_part;
-    if (args->phase == IPPP_THIRD_PHASE) {
-        fcml_bool encode = FCML_FALSE;
-        fcml_uint64_t addr_type = addr_mode_def->instruction_group;
-        /* Mandatory 0x66 prefix is encoded in different way in case of
-         * VEX encoded instructions. */
-        if (!(addr_type & FCML_AMT_VEXx)) {
-            if (FCML_DEF_PREFIX_MANDATORY_66(addr_mode_def->allowed_prefixes)) {
-                encode = FCML_TRUE;
-                /* SIMD instructions do not need 0x66 to change EOSA.*/
-            } else if (!(addr_type & FCML_AMT_SIMD)) {
-                const fcml_st_entry_point *entry_point =
-                        &(context->assembler_context->entry_point);
-                fcml_usize osa = entry_point->operand_size_attribute;
-                fcml_usize eosa = context->optimizer_processing_details.eosa;
-                encode = (osa == FCML_DS_16 && eosa == FCML_DS_32)
-                        || (osa == FCML_DS_32 && eosa == FCML_DS_16)
-                        || (osa == FCML_DS_64 && eosa == FCML_DS_32);
-            }
-            if (encode) {
-                instruction_part->code[0] = 0x66;
-                instruction_part->code_length = 1;
-            }
-        }
+    if (args->phase != IPPP_THIRD_PHASE) {
+        return FCML_CEH_GEC_NO_ERROR;
     }
+    fcml_bool encode = FCML_FALSE;
+    fcml_uint64_t addr_type = addr_mode_def->instruction_group;
+    
+    const fcml_st_entry_point *entry_point =
+            &(context->assembler_context->entry_point);
+    fcml_usize osa = entry_point->operand_size_attribute;
+    fcml_usize eosa = context->optimizer_processing_details.eosa;
+    encode = (osa == FCML_DS_16 && eosa == FCML_DS_32)
+            || (osa == FCML_DS_32 && eosa == FCML_DS_16)
+            || (osa == FCML_DS_64 && eosa == FCML_DS_32);
+
+    if (encode) {
+        instruction_part->code[0] = 0x66;
+        instruction_part->code_length = 1;
+    }
+
     return FCML_CEH_GEC_NO_ERROR;
 }
 
 static ipp_desc ipp_66_prefix_encoder_factory(
         ipp_factory_args *args, fcml_ceh_error *error) {
     ipp_desc descriptor = { 0 };
-    /* Mandatory prefixes are handled by dedicated IPP. */
-    if (!FCML_DEF_PREFIX_MANDATORY_66(args->addr_mode->allowed_prefixes) &&
-            !FCML_DEF_PREFIX_IS_AVX_REQ(args->addr_mode->allowed_prefixes)) {
+    /* SIMD instructions do not need 0x66 to change EOSA. */
+    fcml_bool is_simd = args->addr_mode->instruction_group & FCML_AMT_SIMD;
+    /* Mandatory prefixes are handled by a dedicated IPP. */
+    fcml_bool is_mandatory = FCML_DEF_PREFIX_MANDATORY_66(
+        args->addr_mode->allowed_prefixes);
+    if (!is_mandatory && !is_simd) {
         descriptor.type = IPPT_ENCODER;
         descriptor.args = NULL;
         descriptor.encoder = ipp_66_prefix_encoder;

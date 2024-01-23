@@ -41,6 +41,8 @@ fcml_internal_check_SOURCES = main.c \
 	modrm_decoder_t.h \
 	modrm_encoder_t.c \
 	modrm_encoder_t.h \
+	instruction_chooser_t.c \
+	instruction_chooser_t.h \
 	stream_t.c \
 	stream_t.h \
 	utils_t.c \

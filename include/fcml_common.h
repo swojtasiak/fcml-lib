@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2024 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -755,30 +755,28 @@ typedef struct fcml_st_operand {
 
 /**
  * Instruction level hints.
- * Set of the hints that can be only defined on the
- * level of the whole instruction. They can not be used
- * with operands.
+ * Set of hints which can be defined on the instruction level.
  */
 typedef enum fcml_en_instruction_hints {
     /** No hints defined. */
     FCML_HINT_NO_HINTS,
-    /** Hints instruction to use FAR pointer to address the memory. */
+    /** Hints an instruction to use a FAR pointer to address the memory. */
     FCML_HINT_FAR_POINTER = 0x0001,
-    /** Hints instruction to use NEAR pointer to address the memory. */
+    /** Hints an instruction to use a NEAR pointer to address the memory. */
     FCML_HINT_NEAR_POINTER = 0x0002,
-    /** This hint is used only by assembler in order to force it to generate
-     * three byte VEX/XOP prefix even if prefix fields fits into two bytes. */
+    /** This hint is used only by the assembler in order to force it to generate
+     * three byte VEX/XOP prefix even if prefix fields fit in two bytes. */
     FCML_HINT_LONG_FORM_POINTER = 0x0004,
-    /** Hints instruction to use INDIRECT pointer to address the memory. */
+    /** Hints an instruction to use an INDIRECT pointer to address the memory. */
     FCML_HINT_INDIRECT_POINTER = 0x0008,
-    /** Hints instruction to use DIRECT memory addressing. */
+    /** Hints an instruction to use a DIRECT memory addressing. */
     FCML_HINT_DIRECT_POINTER = 0x0010
 } fcml_en_instruction_hints;
 
 /**
- * Generic instruction model.
- * Generic instruction model (GIM) is a common structure used to describe
- * instruction in a common way used by FCML assembler and disassembler.
+ * Represents an instruction as a generic model.
+ * The generic instruction model (GIM) is a common structure used to describe an
+ * instruction in a common way used by the FCML assembler and disassembler.
  */
 typedef struct fcml_st_instruction {
     /** Describes explicit instruction prefixes. @ref PREFIX_GROUP "List
@@ -804,6 +802,19 @@ typedef struct fcml_st_instruction {
  * Instruction definition.
  *********************************/
 
+/** 
+ * Details describing an assembled instruction.
+ * It may help to choose the final instruction if there are more than one.
+ */
+typedef struct fcml_st_assembled_instruction_details {
+    /* The instruction group flags. */
+    fcml_uint64_t instruction_group;
+    /* If the instruction overrides the default address size attribute. */
+    fcml_bool asa_override;
+    /* If the instruction overrides the default operand size attribute. */
+    fcml_bool osa_override;
+} fcml_st_assembled_instruction_details;
+
 /**
  * An encoded instruction.
  */
@@ -812,6 +823,9 @@ typedef struct fcml_st_instruction_code {
     fcml_uint8_t *code;
     /** Instruction code length. */
     fcml_usize code_length;
+    /** Instruction flags, which can be helpful while choosing 
+     *  the final instruction. */
+    fcml_st_assembled_instruction_details details;
 } fcml_st_instruction_code;
 
 /****************************
@@ -819,17 +833,17 @@ typedef struct fcml_st_instruction_code {
  ****************************/
 
 /**
- * Describes address of an instruction code.
+ * Describes the execution context for the instruction being assembled.
  */
 typedef struct fcml_st_entry_point {
-    /** Processor operating mode 16/32/64-bit.*/
+    /** The processor operating mode 16/32/64-bit.*/
     fcml_en_operating_mode op_mode;
-    /** Default address size attribute (See 'D' flag of segment descriptor.)*/
+    /** The default address size attribute (See 'D' flag of segment descriptor.)*/
     fcml_usize address_size_attribute;
-    /** Default operand size attribute (See 'D' flag of segment descriptor.)*/
+    /** The default operand size attribute (See 'D' flag of segment descriptor.)*/
     fcml_usize operand_size_attribute;
-    /** Instruction pointer EIP/RIP. Take into account that even in 16 bit
-     *  mode EIP register is used.*/
+    /** The instruction pointer EIP/RIP. Take into account that even in 16-bit
+     *  mode the EIP register is used. */
     fcml_ip ip;
 } fcml_st_entry_point;
 
