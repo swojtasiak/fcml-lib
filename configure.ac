@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([fcml], [1.2.4], [slawomir.wojtasiak@fcml-lib.com])
+AC_INIT([fcml], [1.3.0], [slawomir.wojtasiak@fcml-lib.com])
 AM_INIT_AUTOMAKE
 LT_PREREQ([2.2])
 LT_INIT[win32-dll]
