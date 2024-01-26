@@ -1,8 +1,7 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = win32/dist.bat \
-	win32/vs2017/fcml/examples/hsdis/dllmain.cpp \
+EXTRA_DIST = win32/vs2017/fcml/examples/hsdis/dllmain.cpp \
 	win32/vs2017/fcml/examples/hsdis/hsdis.def \
 	win32/vs2017/fcml/examples/hsdis/hsdis.rc \
 	win32/vs2017/fcml/examples/hsdis/hsdis.vcxproj \
