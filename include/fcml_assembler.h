@@ -48,7 +48,7 @@ typedef struct fcml_st_assembler fcml_st_assembler;
 typedef struct fcml_st_assembler_conf {
     /** Set to true in order to force assembler to increment IP address by
      * length of the assembled instruction. */
-    fcml_bool increment_ip;git push --set-upstream origin changelog_update
+    fcml_bool increment_ip;
     /** True if optional error and warning messages should be collected
      *  during processing. */
     fcml_bool enable_error_messages;
