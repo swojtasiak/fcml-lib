@@ -45,7 +45,7 @@ if HAVE_DOXYGEN
 DOXYDIR = docs/doxygen
 endif
 
-SUBDIRS = include src check example $(DOXYDIR)
+SUBDIRS = include src check example win32 $(DOXYDIR)
 
 docker-build:
 	@echo 'Building an image for dockerized unit tests.'
@@ -54,3 +54,13 @@ docker-build:
 docker-tests: docker-build
 	@echo 'Running the dockerized unit tests.'
 	docker-compose -f docker-compose.yml run --rm tests
+
+build-release:
+	rm -Rf dist
+	mkdir dist
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_srcdir)/win32 build-release
+	$(MAKE) $(AM_MAKEFLAGS) dist dist-xz
+	mv fcml-*.tar.* dist/
+	cp win32/dist/*.zip dist/
+
+.PHONY: build-release

@@ -37,3 +37,4 @@ test-driver
 *.db-wal
 .vscode
 configure~
+dist/

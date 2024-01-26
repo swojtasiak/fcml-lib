@@ -90,15 +90,16 @@ AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/doxygen/doxyfile])])
 # Configuration files.
 AC_CONFIG_FILES([Makefile
                  src/Makefile
-				 check/Makefile
-				 check/stf/Makefile                 
-				 check/internal-tests/Makefile
-				 check/public-tests/Makefile
-				 check/cpp-tests/Makefile
-				 example/Makefile
-				 example/fcml-disasm/Makefile
-				 example/fcml-asm/Makefile
-				 example/hsdis/Makefile
+                 check/Makefile
+                 check/stf/Makefile                 
+                 check/internal-tests/Makefile
+                 check/public-tests/Makefile
+                 check/cpp-tests/Makefile
+                 example/Makefile
+                 example/fcml-disasm/Makefile
+                 example/fcml-asm/Makefile
+                 example/hsdis/Makefile
+								 win32/Makefile
                  include/Makefile
                  docs/doxygen/Makefile])
 
