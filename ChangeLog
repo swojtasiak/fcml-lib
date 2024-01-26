@@ -37,4 +37,10 @@
  - symbols are not exported by default anymore
  - the error handling refactored a bit
  - lots of code cleanups
-
+26.01.2024 (1.3.0)
+ - bug fix: https://github.com/swojtasiak/fcml-lib/issues/331
+ - bug fix: https://github.com/swojtasiak/fcml-lib/issues/330
+ - improvements in the default instruction chooser
+ - bison upgraded
+ - code cleanup
+ - bug fix in vmovaps
