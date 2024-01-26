@@ -99,7 +99,7 @@ AC_CONFIG_FILES([Makefile
                  example/fcml-disasm/Makefile
                  example/fcml-asm/Makefile
                  example/hsdis/Makefile
-								 win32/Makefile
+                 win32/Makefile
                  include/Makefile
                  docs/doxygen/Makefile])
 
