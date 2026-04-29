@@ -1,5 +1,9 @@
 name: Pull Request
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     branches: [ master ]
@@ -7,7 +11,7 @@ on:
 jobs:
   build:
     name: Build (${{ matrix.compiler }}, ${{ matrix.configure-flags || 'default' }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
