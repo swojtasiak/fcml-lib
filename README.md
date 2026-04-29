@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/swojtasiak/fcml-lib/tree/master.svg?style=svg)](https://circleci.com/gh/swojtasiak/fcml-lib/tree/master)
+[![Build and Test](https://github.com/swojtasiak/fcml-lib/actions/workflows/build.yml/badge.svg)](https://github.com/swojtasiak/fcml-lib/actions/workflows/build.yml)
 
 # FCML
 
