@@ -1,0 +1,61 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build (${{ matrix.compiler }}, ${{ matrix.configure-flags || 'default' }})
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - compiler: gcc
+            cc: gcc
+            cxx: g++
+          - compiler: clang
+            cc: clang
+            cxx: clang++
+          - compiler: gcc
+            cc: gcc
+            cxx: g++
+            configure-flags: --enable-debug
+          - compiler: gcc
+            cc: gcc
+            cxx: g++
+            configure-flags: --disable-cpp-wrapper
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y build-essential autoconf libtool-bin flex bison clang
+
+      - name: Bootstrap build system
+        run: autoreconf -i
+
+      - name: Configure
+        run: ./configure ${{ matrix.configure-flags }}
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
+
+      - name: Build
+        run: make
+
+      - name: Test
+        run: make check
+
+      - name: Upload test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs-${{ matrix.compiler }}-${{ matrix.configure-flags || 'default' }}
+          path: |
+            check/*.log
+            test-suite.log
