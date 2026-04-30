@@ -1,4 +1,4 @@
-WIN32_FINAL_DIST = vs2019
+WIN32_FINAL_DIST = vs2022
 
 define build_win32
 	rm -Rf $(1)/dist

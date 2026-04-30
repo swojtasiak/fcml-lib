@@ -1,0 +1,163 @@
+name: Windows Build
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          $tag = git describe --tags --exact-match 2>$null
+          $tagFound = $LASTEXITCODE -eq 0
+          $LASTEXITCODE = 0
+          if ($tagFound -and $tag) {
+            $version = $tag.Trim() -replace '^v', ''
+          } else {
+            $version = (Select-String -Path "configure.ac" `
+              -Pattern 'AC_INIT\(\[fcml\],\s*\[([^\]]+)\]').Matches[0].Groups[1].Value
+          }
+          "value=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Patch RC version
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.value }}"
+          $numeric = ($version -replace '-.*', '').Split('.')
+          while ($numeric.Count -lt 4) { $numeric += '0' }
+          $commaVer = $numeric[0..3] -join ','
+          $dotVer   = $numeric[0..3] -join '.'
+
+          $rcFiles = @(
+            "win32/vs2022/fcml/fcml/fcml.rc",
+            "win32/vs2022/fcml/examples/hsdis/hsdis.rc"
+          )
+          foreach ($rc in $rcFiles) {
+            $c = Get-Content $rc -Raw
+            $c = $c -replace '(FILEVERSION\s+)\d+,\d+,\d+,\d+',              "`${1}$commaVer"
+            $c = $c -replace '(PRODUCTVERSION\s+)\d+,\d+,\d+,\d+',           "`${1}$commaVer"
+            $c = $c -replace '(VALUE "FileVersion",\s+")\d[\d.]+(")',         "`${1}$dotVer`${2}"
+            $c = $c -replace '(VALUE "ProductVersion",\s+")\d[\d.]+(")',      "`${1}$dotVer`${2}"
+            Set-Content $rc $c -NoNewline
+          }
+
+      - name: Build all configurations
+        shell: pwsh
+        run: |
+          $sln = "win32/vs2022/fcml/fcml.sln"
+          $platforms = @("Win32", "x64")
+          $configs  = @("Release-dll", "Release-lib", "Debug-dll", "Debug-lib")
+          foreach ($p in $platforms) {
+            foreach ($c in $configs) {
+              Write-Host "=== $c | $p ==="
+              msbuild $sln /p:Configuration=$c /p:Platform=$p /m
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            }
+          }
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          $base = "win32/vs2022/fcml"
+          $tests = @(
+            @{ Exe = "$base/Release-dll/fcml-check.exe" },
+            @{ Exe = "$base/Release-dll/fcml-check-cpp.exe" },
+            @{ Exe = "$base/x64/Release-dll/fcml-check.exe" },
+            @{ Exe = "$base/x64/Release-dll/fcml-check-cpp.exe" }
+          )
+          foreach ($t in $tests) {
+            Write-Host "=== $($t.Exe) ==="
+            & $t.Exe
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+
+      - name: Assemble fcml archive
+        id: fcml_pkg
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.value }}"
+          $archive = "fcml-$version-win32-VS.zip"
+          $dist    = "win32/vs2022/dist"
+          $pkg     = "fcml-pkg"
+          New-Item -ItemType Directory -Force $pkg | Out-Null
+
+          # Copy binaries — rename dirs to lowercase to match release convention
+          Get-ChildItem -Path $dist -Recurse -File | ForEach-Object {
+            $rel  = $_.FullName.Substring((Resolve-Path $dist).Path.Length + 1)
+            $dest = Join-Path $pkg $rel.ToLower()
+            New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+            Copy-Item $_.FullName $dest
+          }
+
+          # Copy include headers
+          Copy-Item -Recurse include (Join-Path $pkg "include")
+
+          Compress-Archive -Path "$pkg/*" -DestinationPath $archive
+          "archive=$archive" >> $env:GITHUB_OUTPUT
+          "pkgdir=$pkg"      >> $env:GITHUB_OUTPUT
+
+      - name: Assemble hsdis archives
+        id: hsdis_pkg
+        shell: pwsh
+        run: |
+          $version  = "${{ steps.version.outputs.value }}"
+          $base     = "win32/vs2022/fcml"
+
+          $builds = @(
+            @{ Dll = "$base/x64/Release-lib/hsdis.dll"; Lib = "$base/x64/Release-lib/hsdis.lib"; DllName = "hsdis-amd64.dll"; LibName = "hsdis-amd64.lib"; Archive = "hsdis-$version-win32-amd64.zip" },
+            @{ Dll = "$base/Release-lib/hsdis.dll";     Lib = "$base/Release-lib/hsdis.lib";     DllName = "hsdis-i386.dll";  LibName = "hsdis-i386.lib";  Archive = "hsdis-$version-win32-x86.zip"  }
+          )
+
+          $archives = @()
+          foreach ($b in $builds) {
+            $pkg = "hsdis-pkg-$($b.Archive)"
+            New-Item -ItemType Directory -Force $pkg | Out-Null
+            Copy-Item $b.Dll (Join-Path $pkg $b.DllName)
+            Copy-Item $b.Lib (Join-Path $pkg $b.LibName)
+            Copy-Item COPYING $pkg
+            Compress-Archive -Path "$pkg/*" -DestinationPath $b.Archive
+            $archives += $b.Archive
+          }
+
+          "amd64=$($archives[0])" >> $env:GITHUB_OUTPUT
+          "x86=$($archives[1])"   >> $env:GITHUB_OUTPUT
+
+      - name: Upload fcml artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.fcml_pkg.outputs.archive }}
+          path: ${{ steps.fcml_pkg.outputs.pkgdir }}/
+
+      - name: Upload hsdis amd64 artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.hsdis_pkg.outputs.amd64 }}
+          path: ${{ steps.hsdis_pkg.outputs.amd64 }}
+
+      - name: Upload hsdis x86 artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.hsdis_pkg.outputs.x86 }}
+          path: ${{ steps.hsdis_pkg.outputs.x86 }}
+
+      - name: Attach archives to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release upload $tag "${{ steps.fcml_pkg.outputs.archive }}"
+          gh release upload $tag "${{ steps.hsdis_pkg.outputs.amd64 }}"
+          gh release upload $tag "${{ steps.hsdis_pkg.outputs.x86 }}"

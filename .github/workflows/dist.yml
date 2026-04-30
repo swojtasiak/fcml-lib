@@ -1,0 +1,53 @@
+name: Distribution Archives
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+jobs:
+  dist:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y build-essential autoconf libtool-bin flex bison
+
+      - name: Bootstrap build system
+        run: autoreconf -i
+
+      - name: Configure
+        run: ./configure
+
+      - name: Build distribution archives
+        id: dist
+        run: |
+          make dist
+          make dist-xz
+          echo "tarball=$(ls fcml-*.tar.gz)" >> "$GITHUB_OUTPUT"
+          echo "tarxz=$(ls fcml-*.tar.xz)"   >> "$GITHUB_OUTPUT"
+
+      - name: Upload tar.gz artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.dist.outputs.tarball }}
+          path: ${{ steps.dist.outputs.tarball }}
+
+      - name: Upload tar.xz artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.dist.outputs.tarxz }}
+          path: ${{ steps.dist.outputs.tarxz }}
+
+      - name: Attach archives to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.ref_name }}" \
+            "${{ steps.dist.outputs.tarball }}" \
+            "${{ steps.dist.outputs.tarxz }}"
