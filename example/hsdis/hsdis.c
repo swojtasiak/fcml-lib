@@ -69,6 +69,8 @@
 #define ADDR_FORM	FCML_OM_32_BIT
 #endif
 
+#define WITH_NL(s, nl) ((nl) ? s "\n" : s)
+
 static char HELP[] = "Optional arguments:\n"
         " code - Print machine code before mnemonic.\n"
         " intel - Use intel dialect.\n"
@@ -103,11 +105,40 @@ typedef struct hsdis_app {
 
 static void parse_options(hsdis_app *app);
 static void prepare_render_config(fcml_st_render_config *config, hsdis_app *app);
+static void* decode_instructions_core(fcml_ip ip, unsigned char* buffer, uintptr_t length,
+        jvm_event_callback event_callback, void *event_stream,
+        jvm_printf_callback printf_callback, void *printf_stream,
+        const char *options, int newline);
+
+void* HSDIS_CALL decode_instructions_virtual(void *start, void *end,
+        unsigned char* buffer, uintptr_t length,
+        jvm_event_callback event_callback, void *event_stream,
+        jvm_printf_callback printf_callback, void *printf_stream,
+        const char *options, int newline) {
+    return decode_instructions_core(
+        (fcml_ip)start, buffer, length, event_callback, event_stream,
+        printf_callback, printf_stream, options, newline);
+}
 
 void* HSDIS_CALL decode_instructions(void *start, void *end,
         jvm_event_callback event_callback, void *event_stream,
         jvm_printf_callback printf_callback, void *printf_stream,
         const char *options) {
+
+    /* Current instruction pointer. */
+    fcml_ip ip = (fcml_ip) start;
+
+    uintptr_t code_length = (uintptr_t) end - (uintptr_t) start;
+
+    return decode_instructions_core(
+        ip, (unsigned char*)ip, code_length, event_callback, event_stream,
+        printf_callback, printf_stream, options, 1);
+}
+
+static void* decode_instructions_core(fcml_ip ip, unsigned char* code_buffer, uintptr_t code_length,
+        jvm_event_callback event_callback, void *event_stream,
+        jvm_printf_callback printf_callback, void *printf_stream,
+        const char *options, int newline) {
 
     hsdis_app app = { 0 };
 
@@ -121,16 +152,10 @@ void* HSDIS_CALL decode_instructions(void *start, void *end,
 
     fcml_char buffer[FCML_REND_MAX_BUFF_LEN] = { 0 };
 
-    /* Current instruction pointer. */
-    fcml_ip ip = (fcml_ip) start;
-
-    intptr_t code_length = (intptr_t) end - (intptr_t) start;
-
 #if __x86_64__ || _M_X64
-    (*printf_callback)(printf_stream, "RIP: 0x%llx Code size: 0x%08x\n",
-            (intptr_t) start, code_length);
+    (*printf_callback)(printf_stream, WITH_NL("RIP: 0x%llx Code size: 0x%08x", newline), (unsigned long long) ip, code_length);
 #else
-	(*printf_callback)(printf_stream, "RIP: 0x%x Code size: 0x%08x\n", (intptr_t)start, code_length );
+	(*printf_callback)(printf_stream, WITH_NL("RIP: 0x%x Code size: 0x%08x", newline), (intptr_t)ip, code_length);
 #endif
 
     /* Inform internal disassembler about used architecture. */
@@ -149,27 +174,23 @@ void* HSDIS_CALL decode_instructions(void *start, void *end,
 
     if (error) {
         (*printf_callback)(printf_stream,
-                "Fatal error: Can not initialize Intel dialect. Error code: %d",
-                error);
-        return start;
+                "Fatal error: Cannot initialize Intel dialect. Error code: %d", error);
+        return (void*)ip;
     }
 
     /* Initialize assembler. */
     error = fcml_fn_disassembler_init(app.dialect, &(app.disassembler));
     if (error) {
         (*printf_callback)(printf_stream,
-                "Fatal error: Can not initialize disassembler. Error code: %d",
-                error);
+                "Fatal error: Cannot initialize disassembler. Error code: %d", error);
         fcml_fn_dialect_free(app.dialect);
-        return start;
+        return (void*)ip;
     }
 
     /* Prepare structures for disassembler results. */
     fcml_st_disassembler_result disassembler_result;
 
     fcml_fn_disassembler_result_prepare(&disassembler_result);
-
-    fcml_bool finish = FCML_FALSE;
 
     /* Prepares disassembler context. */
 
@@ -184,9 +205,9 @@ void* HSDIS_CALL decode_instructions(void *start, void *end,
     fcml_st_render_config config = { 0 };
     prepare_render_config(&config, &app);
 
-    while (ip < (fcml_ip) end) {
+    while (code_length > 0) {
 
-        context.code = (fcml_ptr) ip;
+        context.code = (fcml_ptr) code_buffer;
         context.code_length = (fcml_usize) code_length;
 
         context.entry_point.ip = ip;
@@ -197,8 +218,7 @@ void* HSDIS_CALL decode_instructions(void *start, void *end,
         error = fcml_fn_disassemble(&context, &disassembler_result);
         if (error) {
             (*printf_callback)(printf_stream,
-                    "Fatal error: Disassembling failed with error code: %d",
-                    error);
+                    "Fatal error: Disassembling failed with error code: %d", error);
             break;
         }
 
@@ -207,6 +227,7 @@ void* HSDIS_CALL decode_instructions(void *start, void *end,
 
         /* Skip to the next instruction. */
         ip += code_len;
+        code_buffer += code_len;
 
         error = fcml_fn_render(app.dialect, &config, buffer, sizeof(buffer),
                 &disassembler_result);
@@ -221,10 +242,11 @@ void* HSDIS_CALL decode_instructions(void *start, void *end,
         /* End current instruction. */
         (*event_callback)(event_stream, "/insn", (void*) ip);
 
-        (*printf_callback)(printf_stream, "\n");
+        if (newline) {
+            (*printf_callback)(printf_stream, "\n");
+        }
 
         code_length -= code_len;
-
     }
 
     fcml_fn_disassembler_result_free(&disassembler_result);
@@ -234,7 +256,6 @@ void* HSDIS_CALL decode_instructions(void *start, void *end,
     fcml_fn_dialect_free(app.dialect);
 
     return (void*) ip;
-
 }
 
 static void prepare_render_config(fcml_st_render_config *config, hsdis_app *app) {

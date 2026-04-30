@@ -86,6 +86,13 @@ HSDIS_API void* HSDIS_CALL decode_instructions(void *start, void *end,
         jvm_event_callback, void *event_stream, jvm_printf_callback,
         void *printf_stream, const char *options);
 
+/* Called directly by jvm.so/jvm.dll. */
+HSDIS_API void* HSDIS_CALL decode_instructions_virtual(void *start, void *end,
+        unsigned char* buffer, uintptr_t length,
+        jvm_event_callback event_callback, void *event_stream,
+        jvm_printf_callback printf_callback, void *printf_stream,
+        const char *options, int newline);
+
 #ifdef __cplusplus
 }
 #endif

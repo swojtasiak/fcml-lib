@@ -38,3 +38,4 @@ test-driver
 .vscode
 configure~
 dist/
+*.log

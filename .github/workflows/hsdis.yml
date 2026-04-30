@@ -1,0 +1,115 @@
+name: hsdis Integration Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  hsdis:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version: ['8', '21']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y build-essential autoconf libtool-bin flex bison
+
+      - name: Build and install fcml
+        run: |
+          autoreconf -i
+          ./configure
+          make
+          sudo make install
+          sudo ldconfig
+
+      - name: Build hsdis
+        run: make -C example/hsdis
+
+      - name: Install hsdis plugin into JDK
+        run: |
+          # JDK 8 keeps native libs under jre/lib/amd64/; JDK 9+ uses lib/
+          if [ -d "$JAVA_HOME/jre/lib/amd64" ]; then
+            sudo cp example/hsdis/.libs/libhsdis.so "$JAVA_HOME/jre/lib/amd64/hsdis-amd64.so"
+          else
+            sudo cp example/hsdis/.libs/libhsdis.so "$JAVA_HOME/lib/hsdis-amd64.so"
+          fi
+
+      - name: Compile Java test class
+        run: |
+          mkdir -p /tmp/hsdis-test
+          cat > /tmp/hsdis-test/HsdisTest.java << 'EOF'
+          public class HsdisTest {
+              // volatile sink prevents the compiler from eliminating dead code
+              private static volatile int sink;
+
+              static int compute(int n) {
+                  int sum = 0;
+                  for (int i = 0; i < n; i++) sum += i * i;
+                  return sum;
+              }
+
+              public static void main(String[] args) {
+                  // Enough iterations to reliably trigger C2 compilation
+                  for (int i = 0; i < 20_000; i++) sink = compute(100);
+                  System.out.println("Result: " + sink);
+              }
+          }
+          EOF
+          javac /tmp/hsdis-test/HsdisTest.java
+
+      - name: Run Java with JIT disassembly
+        run: |
+          java \
+            -XX:+UnlockDiagnosticVMOptions \
+            -XX:+PrintAssembly \
+            -XX:PrintAssemblyOptions=intel \
+            -XX:-TieredCompilation \
+            -XX:CompileThreshold=500 \
+            -XX:CompileCommand=print,HsdisTest::compute \
+            -cp /tmp/hsdis-test \
+            HsdisTest 2>&1 | tee /tmp/hsdis-output-java${{ matrix.java-version }}.txt
+          # tee swallows the java exit code; check via PIPESTATUS
+          [ "${PIPESTATUS[0]}" -eq 0 ]
+
+      - name: Verify disassembly output
+        run: |
+          out=/tmp/hsdis-output-java${{ matrix.java-version }}.txt
+          # hsdis prints this line at the start of each disassembled block
+          if grep -qE "RIP: 0x[0-9a-f]+ Code size: 0x[0-9a-f]+" "$out"; then
+            echo "hsdis loaded successfully"
+          else
+            echo "ERROR: hsdis marker not found — plugin may not have been loaded"
+            grep -i "hsdis\|could not load\|error" "$out" | head -20 || true
+            exit 1
+          fi
+
+          # Check that actual instructions appear in the output
+          if grep -qE "^\s+0x[0-9a-f]+:?\s+(mov|push|pop|call|ret|add|sub|imul|xor|test|jmp)" \
+              "$out"; then
+            echo "Disassembly output contains x86 instructions — hsdis is working"
+          else
+            echo "ERROR: No x86 instructions found in disassembly output"
+            head -50 "$out"
+            exit 1
+          fi
+
+      - name: Upload disassembly output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsdis-output-java${{ matrix.java-version }}
+          path: /tmp/hsdis-output-java${{ matrix.java-version }}.txt
