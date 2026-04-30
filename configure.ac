@@ -1,18 +1,17 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.70])
 AC_INIT([fcml], [1.3.1-dev], [slawomir.wojtasiak@fcml-lib.com])
 AM_INIT_AUTOMAKE
 LT_PREREQ([2.2])
-LT_INIT[win32-dll]
+LT_INIT([win32-dll])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([include/fcml_common.h])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
-AC_PROG_CC_STDC
 AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_AWK
@@ -27,7 +26,7 @@ AC_PROG_MAKE_SET
 AC_ARG_ENABLE([debug],
 	[AS_HELP_STRING([--enable-debug],
 	[enable debug code @<:@default=no@:>@])],
-	[debug="$withval"], [debug=no])
+	[debug="$enableval"], [debug=no])
 
 # Configure options: --disable-cpp-wrapper[=no].
 AC_ARG_ENABLE([cpp_wrapper],
@@ -82,7 +81,7 @@ internal_test_msg="$internal_test_msg"$'\n'"                           built on 
 	[internal_test=yes]
 )
 
-AM_CONDITIONAL([CPP_WRAPPER], [ [test -n "$CXX"] && [test "x$cpp_wrapper" = xyes] ])
+AM_CONDITIONAL([CPP_WRAPPER], [test -n "$CXX" && test "x$cpp_wrapper" = xyes])
 AM_CONDITIONAL([ENABLE_INTERNAL_TESTS], [test "x$internal_test" = xyes])
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/doxygen/doxyfile])])
