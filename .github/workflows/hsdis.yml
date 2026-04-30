@@ -79,8 +79,8 @@ jobs:
 
       - name: Verify disassembly output
         run: |
-          # hsdis fires this event string when it is loaded and starts work
-          if grep -q "Disassembling for mach=" /tmp/hsdis-output.txt; then
+          # hsdis prints this line at the start of each disassembled block
+          if grep -qE "RIP: 0x[0-9a-f]+ Code size: 0x[0-9a-f]+" /tmp/hsdis-output.txt; then
             echo "hsdis loaded successfully"
           else
             echo "ERROR: hsdis marker not found — plugin may not have been loaded"
