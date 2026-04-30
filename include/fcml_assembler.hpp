@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2026 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 /** @file fcml_assembler.hpp
  * C++ wrapper for FCML assembler.
  *
- * @copyright Copyright (C) 2010-2020 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2026 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 
@@ -46,9 +46,24 @@ class AssemblingFailedException: public ErrorContainerAwareException {
 public:
     AssemblingFailedException(const fcml_cstring msg,
             ErrorContainer errorContainer = ErrorContainer(),
-            fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR) :
+            fcml_ceh_error error = FCML_CEH_GEC_NO_ERROR,
+            fcml_int errorLine = 0) :
             ErrorContainerAwareException(msg, errorContainer, error) {
+        _errorLine = errorLine;
     }
+
+    /**
+     * Gets error line.
+     *
+     * @return Error line.
+     * @since 1.1.0
+     */
+    const fcml_int getErrorLine() const {
+        return _errorLine;
+    }
+
+    private:
+        fcml_int _errorLine;
 };
 
 /** Describes an assembled instruction.
@@ -68,8 +83,10 @@ public:
      *
      */
     AssembledInstruction(const fcml_uint8_t *buffer, fcml_usize len,
-            const ErrorContainer &errorContainer) {
-        set(buffer, len, errorContainer);
+            const ErrorContainer &errorContainer,
+            const fcml_st_assembled_instruction_details &details =
+                    fcml_st_assembled_instruction_details()) {
+        set(buffer, len, errorContainer, details);
     }
 
     /**
@@ -77,7 +94,7 @@ public:
      * @since 1.1.0
      */
     AssembledInstruction(const AssembledInstruction &cpy) {
-        set(cpy._code, cpy._codeLength, cpy._warningContainer);
+        set(cpy._code, cpy._codeLength, cpy._warningContainer, cpy._details);
     }
 
     /**
@@ -92,7 +109,7 @@ public:
             if (this->_code) {
                 delete[] this->_code;
             }
-            set(cpy._code, cpy._codeLength, cpy._warningContainer);
+            set(cpy._code, cpy._codeLength, cpy._warningContainer, cpy._details);
         }
         return *this;
     }
@@ -139,19 +156,32 @@ public:
         return _warningContainer;
     }
 
+    /**
+     * Gets instruction details (group flags, address/operand size overrides).
+     *
+     * @return Instruction details.
+     * @since 1.1.0
+     */
+    const fcml_st_assembled_instruction_details& getDetails() const {
+        return _details;
+    }
+
 private:
 
     /**
      * Fills the assembled instruction with new data.
      *
      * @param buffer The code buffer.
-     * @param len The code buffer lenght.
+     * @param len The code buffer length.
      * @param warnings The warnings container.
+     * @param details The instruction details.
      * @since 1.1.0
      */
     void set(const fcml_uint8_t *buffer, fcml_usize len,
-            const ErrorContainer warnigns) {
-        _warningContainer = warnigns;
+            const ErrorContainer warnings,
+            const fcml_st_assembled_instruction_details &details) {
+        _warningContainer = warnings;
+        _details = details;
         if (len > 0) {
             _code = new fcml_uint8_t[len];
             for (fcml_usize i = 0; i < len; i++) {
@@ -167,6 +197,9 @@ private:
 
     /** Warnings related to this instruction. */
     ErrorContainer _warningContainer;
+
+    /** Instruction details. */
+    fcml_st_assembled_instruction_details _details;
 
     /** Pointer to the instruction machine code. */
     fcml_uint8_t *_code;
@@ -332,7 +365,6 @@ public:
             _chooseAbsEncoding(false),
             _forceRexPrefix(false),
             _forceThreeByteVEX(false),
-            _noBranchPrediction(false),
             _optimizer(NULL),
             _optimizerFlags(0),
             _chooser(NULL) {
@@ -496,7 +528,6 @@ private:
     bool _chooseAbsEncoding;
     bool _forceRexPrefix;
     bool _forceThreeByteVEX;
-    bool _noBranchPrediction;
     fcml_fnp_asm_optimizer _optimizer;
     fcml_uint16_t _optimizerFlags;
     fcml_fnp_asm_instruction_chooser _chooser;
@@ -818,7 +849,8 @@ public:
                         AssembledInstruction assembledInstruction(
                                 next_instruction->code,
                                 next_instruction->code_length,
-                                instructionWarnings);
+                                instructionWarnings,
+                                next_instruction->details);
                         assembledInstructions.push_back(assembledInstruction);
                         if (next_instruction == res.chosen_instruction) {
                             result.setChoosenInstructionIndex(i);

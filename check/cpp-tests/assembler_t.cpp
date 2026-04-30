@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2026 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -134,7 +134,7 @@ void fcml_tf_cpp_assemble_instruction_builder_short(void) {
 
     // Long form, don't be afraid short alternatives are presented below.
     instruction = IB::inst(_FT("mov")).farPtr().longFormPtr().lock().repe().reg( Register::EAX() ).off( (fcml_int32_t)0x401000, FCML_DS_32 ).build();
-
+	
     fcml_st_instruction instStr;
 
     TypeConverter::convert( instruction, instStr );
@@ -371,6 +371,7 @@ void fcml_tf_cpp_multi_pass_assemble_error(void) {
 			// Undefined symbol, see the assembled source code.
 			STF_ASSERT_EQUAL( exc.getMsg(), fcml_cstring( FCML_TEXT( "Assembling failed: Undefined symbol: finish_xxxxxx." ) ) );
 			STF_ASSERT_EQUAL( exc.getError(), FCML_CEH_GEC_UNDEFINED_SYMBOL );
+			STF_ASSERT_EQUAL( exc.getErrorLine(), 3);
 			STF_ASSERT( true ); // OK.
 		}
 
@@ -435,6 +436,7 @@ void fcml_tf_cpp_assemble(void) {
 			// Checks access to the constant assembled instruction.
 			const AssembledInstruction chosenInstruction = *result.getChosenInstruction();
 			const fcml_uint8_t *buffer = chosenInstruction.getCode();
+			STF_ASSERT_EQUAL(chosenInstruction.getDetails().instruction_group, FCML_AMT_GPI);
 			STF_ASSERT_PTR_NOT_NULL( buffer );
 			fcml_usize len = chosenInstruction.getCodeLength();
 			STF_ASSERT_EQUAL( len, 5 );

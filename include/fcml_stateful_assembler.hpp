@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2026 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 /** @file fcml_stateful_assembler.hpp
  * Stateful FCML assembler implementation.
  *
- * @copyright Copyright (C) 2010-2020 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2026 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 
@@ -406,7 +406,7 @@ public:
         config.setIncrementIp(true);
         config.setThrowExceptionOnError(true);
 
-        // Assembler the instruction.
+        // Assemble the instruction.
         _assembler.assemble(_context, instruction, _result);
 
         // Store the chosen assembled instruction for future use.

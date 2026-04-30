@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2026 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 /** @file fcml_lag_assembler.hpp
  * C++ wrapper for the Multi-pass FCML assembler.
  *
- * @copyright Copyright (C) 2010-2020 Slawomir Wojtasiak. All rights reserved.
+ * @copyright Copyright (C) 2010-2026 Slawomir Wojtasiak. All rights reserved.
  * This project is released under the GNU Lesser General Public License.
  */
 
@@ -42,7 +42,7 @@ public:
      * Default constructor.
      * @since 1.1.0
      */
-    MultiPassAssemblerResult() {
+    MultiPassAssemblerResult() : _errorLine(0) {
     }
 
     /**
@@ -62,6 +62,16 @@ public:
      */
     const ErrorContainer& getErrorContainer() const {
         return _errorContainer;
+    }
+
+    /**
+     * Gets the line number where assembling failed, or 0 if no error.
+     *
+     * @return The error line number.
+     * @since 1.1.0
+     */
+    fcml_int getErrorLine() const {
+        return _errorLine;
     }
 
     /**
@@ -118,6 +128,7 @@ public:
     void clear() {
         _errorContainer.clean();
         _assembledInstructions.clear();
+        _errorLine = 0;
     }
 
 protected:
@@ -145,12 +156,18 @@ protected:
         _errorContainer = errorContainer;
     }
 
+    void setErrorLine(fcml_int errorLine) {
+        _errorLine = errorLine;
+    }
+
 private:
 
     /** Errors container. */
     ErrorContainer _errorContainer;
     /** Vector of all assembled instructions. */
     std::vector<AssembledInstruction> _assembledInstructions;
+    /** Line number where assembling failed; 0 if no error. */
+    fcml_int _errorLine;
 
 };
 
@@ -416,13 +433,15 @@ public:
             /* Prepares assembler result. */
 
             result.setErrorContainer(errorContainer);
+            result.setErrorLine(res.error_line);
 
             if (error && ctx.getConfig().isThrowExceptionOnError()) {
+                fcml_int errorLine = res.error_line;
                 ::fcml_fn_lag_assembler_result_free(&res);
                 throw AssemblingFailedException(
                         errorContainer.prepareErrorMessage(
                                 FCML_TEXT("Assembling failed")), errorContainer,
-                        error);
+                        error, errorLine);
             }
 
             if (!error) {
@@ -442,7 +461,8 @@ public:
                             instructionWarnings);
                     const AssembledInstruction assembledInstruction(
                             next_instruction->code,
-                            next_instruction->code_length, instructionWarnings);
+                            next_instruction->code_length, instructionWarnings,
+                            next_instruction->details);
                     assembledInstructions.push_back(assembledInstruction);
                     next_instruction = next_instruction->next;
                 }
