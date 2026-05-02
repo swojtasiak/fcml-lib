@@ -18,7 +18,7 @@ FCML gives you a clean, portable API to do it in C or C++.
 - Instruction renderer and parser
 - Generic instruction model (GIM) shared by assembler and disassembler
 - C++ wrapper
-- Windows support: MinGW, MinGW-w64, Cygwin, VS2017, VS2019
+- Windows support: MinGW, MinGW-w64, Cygwin, VS2022
 - Instruction sets: MMX, 3DNow!, SSE–SSE4A, AVX, AVX2, AVX-512, AES, TBM,
   BMI1, BMI2, HLE, ADX, CLMUL, FMA, FMA4, LWP, SVM, XOP, VMX, SMX, XEON PHI
 

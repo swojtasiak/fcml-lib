@@ -1,5 +1,0 @@
-LIBRARY	"hsdis"
-EXPORTS
-	decode_instructions				@1
-	decode_instructions_virtual		@2
-	
