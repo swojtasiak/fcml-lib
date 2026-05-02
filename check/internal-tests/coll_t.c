@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2026 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,7 +43,7 @@ void fcml_tf_coll_test_put_the_same_key(void) {
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 10, &error );
 	if( map == NULL || error ) {
-		STF_FAIL( "Can not create hash map." );
+		STF_FAIL( "Cannot create hash map." );
 	} else {
 		fcml_fn_coll_map_put( map, "KEY_1", "VALUE_1", &error );
 		STF_ASSERT_STRING_EQUAL( fcml_fn_coll_map_get( map, "KEY_1" ), "VALUE_1" );
@@ -63,7 +63,7 @@ void fcml_tf_coll_test_put_different_keys(void) {
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 10, &error );
 	if( map == NULL || error ) {
-		STF_FAIL( "Can not create hash map." );
+		STF_FAIL( "Cannot create hash map." );
 	} else {
 		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -100,7 +100,7 @@ void fcml_tf_coll_test_remove_keys(void) {
 	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&descriptor, 10, &error );
 	if( map == NULL || error ) {
-		STF_FAIL( "Can not create hash map." );
+		STF_FAIL( "Cannot create hash map." );
 	} else {
 		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -179,7 +179,7 @@ void fcml_tf_coll_test_clear(void) {
 	descriptor.entry_free_function = fcml_itf_coll_map_entry_handler_test;
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&descriptor, 10, &error );
 	if( map == NULL || error ) {
-		STF_FAIL( "Can not create hash map." );
+		STF_FAIL( "Cannot create hash map." );
 	} else {
 		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -229,7 +229,7 @@ void fcml_tf_coll_test_extend(void) {
 
 	fcml_coll_map *map = fcml_fn_coll_map_alloc(&fcml_coll_map_descriptor_string, 2, &error );
 	if( map == NULL || error ) {
-		STF_FAIL( "Can not create hash map." );
+		STF_FAIL( "Cannot create hash map." );
 	} else {
 		/* index 1.*/
 		fcml_fn_coll_map_put( map, "KEY_A", "VALUE_A", &error );
@@ -255,12 +255,79 @@ void fcml_tf_coll_test_extend(void) {
 	fcml_fn_coll_map_free( map );
 }
 
+void fcml_tf_coll_test_remove_chain_head(void) {
+	/* Removing the head of a hash-collision chain must leave the rest of
+	   the chain reachable. Use capacity=2 so uint32 keys 0 and 2 both hash
+	   to bucket 0; key 2 is inserted last and therefore becomes the head. */
+	fcml_int error = FCML_COLL_ERROR_NO_ERROR;
+	fcml_coll_map map = fcml_fn_coll_map_alloc(
+		&fcml_coll_map_descriptor_uint32, 2, &error);
+	if (map == NULL || error) {
+		STF_FAIL("Cannot create hash map.");
+	} else {
+		fcml_uint32_t key0 = 0, key2 = 2;
+		fcml_fn_coll_map_put(map, &key0, "VALUE_0", &error);
+		STF_ASSERT(error == FCML_COLL_ERROR_NO_ERROR);
+		fcml_fn_coll_map_put(map, &key2, "VALUE_2", &error);
+		STF_ASSERT(error == FCML_COLL_ERROR_NO_ERROR);
+		STF_ASSERT(fcml_fn_coll_map_size(map) == 2);
+		/* Remove the chain head (key2). */
+		fcml_fn_coll_map_remove(map, &key2);
+		STF_ASSERT(fcml_fn_coll_map_size(map) == 1);
+		/* key0 must still be reachable after its chain predecessor was removed. */
+		STF_ASSERT_STRING_EQUAL(fcml_fn_coll_map_get(map, &key0), "VALUE_0");
+		STF_ASSERT_PTR_NULL(fcml_fn_coll_map_get(map, &key2));
+	}
+	fcml_fn_coll_map_free(map);
+}
+
+void fcml_tf_coll_list_test_insert(void) {
+	/* fcml_fn_coll_list_insert must update the successor's prev pointer
+	   when inserting in the middle, and update list->tail when inserting
+	   after the current tail element. */
+	fcml_st_coll_list *list = fcml_fn_coll_list_alloc();
+	if (!list) {
+		STF_FAIL("Cannot allocate list.");
+		return;
+	}
+
+	/* Build: A <-> B */
+	fcml_st_coll_list_element *ea = fcml_fn_coll_list_add_back(list, "A");
+	fcml_st_coll_list_element *eb = fcml_fn_coll_list_add_back(list, "B");
+	STF_ASSERT(list->size == 2);
+
+	/* Insert C after A → A <-> C <-> B */
+	fcml_st_coll_list_element *ec = fcml_fn_coll_list_insert(list, ea, "C");
+	STF_ASSERT(list->size == 3);
+	STF_ASSERT(ea->next == ec);
+	STF_ASSERT(ec->prev == ea);
+	STF_ASSERT(ec->next == eb);
+
+	/* B's backward link must point to C, not A. */
+	STF_ASSERT(eb->prev == ec);
+	
+	/* Tail is still B. */
+	STF_ASSERT(list->tail == eb);
+
+	/* Insert D after B (current tail) → list->tail must become D. */
+	fcml_st_coll_list_element *ed = fcml_fn_coll_list_insert(list, eb, "D");
+	STF_ASSERT(list->size == 4);
+	STF_ASSERT(eb->next == ed);
+	STF_ASSERT(ed->prev == eb);
+	STF_ASSERT(ed->next == NULL);
+	STF_ASSERT(list->tail == ed);
+
+	fcml_fn_coll_list_free(list, NULL, NULL);
+}
+
 fcml_stf_test_case fcml_ti_coll[] = {
 	{ "fcml_tf_coll_test_put_the_same_key", fcml_tf_coll_test_put_the_same_key },
 	{ "fcml_tf_coll_test_put_different_keys", fcml_tf_coll_test_put_different_keys },
 	{ "fcml_tf_coll_test_remove_keys", fcml_tf_coll_test_remove_keys },
 	{ "fcml_tf_coll_test_clear", fcml_tf_coll_test_clear },
 	{ "fcml_tf_coll_test_extend", fcml_tf_coll_test_extend },
+	{ "fcml_tf_coll_test_remove_chain_head", fcml_tf_coll_test_remove_chain_head },
+	{ "fcml_tf_coll_list_test_insert", fcml_tf_coll_list_test_insert },
 	FCML_STF_NULL_TEST
 };
 

@@ -1,6 +1,6 @@
 /*
  * FCML - Free Code Manipulation Library.
- * Copyright (C) 2010-2020 Slawomir Wojtasiak
+ * Copyright (C) 2010-2026 Slawomir Wojtasiak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,6 +78,11 @@ fcml_st_coll_list_element* fcml_fn_coll_list_insert(fcml_st_coll_list *list,
             element->item = item;
             element->prev = prev_element;
             element->next = prev_element->next;
+            if (element->next) {
+                element->next->prev = element;
+            } else {
+                list->tail = element;
+            }
             prev_element->next = element;
             list->size++;
         }
@@ -339,7 +344,7 @@ void fcml_fn_coll_map_remove(fcml_coll_map map_int, const fcml_ptr key) {
             if (previous_entry) {
                 previous_entry->next = entry->next;
             } else {
-                map->map_entries[index] = NULL;
+                map->map_entries[index] = entry->next;
             }
             fcml_fn_env_memory_free(entry);
             map->size--;
